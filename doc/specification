@@ -1,0 +1,19 @@
+IM Specification
+
+  Huang Peng <phuang@redhat.com>
+
+1. Introducation
+    About
+	Architecture
+
+
+Chapter 1 Introducation
+
+About
+
+This document contain the specification of IM which is a software that managers all input services in the system.
+
+Architecture
+
+IM manager provides a directory service. All IM services will register themself in this directory service. All clients can enumerate serivces in a specified directoy folder and get a nodification when a specified folder's contain be changed.
+

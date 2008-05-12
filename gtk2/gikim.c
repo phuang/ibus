@@ -1,0 +1,68 @@
+/* vim:set et ts=4: */
+/* GIK - The G Input Toolkit
+ * Copyright (C) 2008-2009 Huang Peng
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+#include <gtk/gtk.h>
+#include <gtk/gtkimmodule.h>
+#include <string.h>
+#include <stdio.h>
+#include "gikimclient.h"
+#include "gikimcontext.h"
+
+#define GIK_LOCALDIR ""
+
+static const GtkIMContextInfo gik_im_info = {
+	"gik",
+	"The G Input Toolkit",
+	"gik",
+	GIK_LOCALDIR,
+	""
+};
+
+static const GtkIMContextInfo * info_list[] = {
+	&gik_im_info
+};
+
+void 
+im_module_init (GTypeModule *type_module)
+{
+	gik_im_client_register_type(type_module);
+	gik_im_context_register_type(type_module);
+}
+
+void
+im_module_exit (void)
+{
+}
+
+GtkIMContext *
+im_module_create (const gchar *context_id)
+{
+	if (strcmp (context_id, "gik") == 0)
+		return gik_im_context_new ();
+	return NULL;
+}
+
+void
+im_module_list (const GtkIMContextInfo ***contexts,
+                int                      *n_contexts)
+{
+	*contexts = info_list;
+	*n_contexts = G_N_ELEMENTS (info_list);
+}
+
