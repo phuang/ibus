@@ -4,3 +4,6 @@ test-server:
 
 test-engine:
 	$(PYTHON) ./eng_demo.py
+
+clean:
+	$(RM) *.pyc 
