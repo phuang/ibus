@@ -1,6 +1,7 @@
 import weakref
 import gobject
 import ibus
+from engine import EngineFactory
 
 class FactoryManager (ibus.Object):
 	__gsignals__ = {
@@ -28,7 +29,7 @@ class FactoryManager (ibus.Object):
 				raise ibus.IBusException (
 						"Factory [%s] has been registered!" % object_path)
 
-			factory = ibus.EngineFactory (ibusconn, object_path)
+			factory = EngineFactory (ibusconn, object_path)
 			self._factories[object_path] = factory
 			self._ibusconn_factory_dict[ibusconn].append (object_path)
 

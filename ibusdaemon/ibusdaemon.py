@@ -5,11 +5,12 @@ import dbus.server
 import dbus.lowlevel
 import dbus.mainloop.glib
 import ibus
+from bus import IBusProxy
 
 class IBusServer (dbus.server.Server):
 	def __init__ (self):
 		dbus.server.Server.__init__ (self, ibus.IBUS_ADDR)
-		self._ibus = ibus.IBusProxy ()
+		self._ibus = IBusProxy ()
 
 		self.register_object (self._ibus, ibus.IBUS_PATH)
 

@@ -3,13 +3,16 @@ import weakref
 import dbus
 import ibus
 from ibus import keysyms
+from clientmanager import ClientManager
+from factorymanager import FactoryManager
+from connection import Connection
 
 class IBus (ibus.Object):
 	def __init__ (self):
 		ibus.Object.__init__ (self)
 		self._connections = {}
-		self._client_manager = ibus.ClientManager ()
-		self._factory_manager = ibus.FactoryManager ()
+		self._client_manager = ClientManager ()
+		self._factory_manager = FactoryManager ()
 		
 		self._focused_client = None
 		self._last_focused_client = None
@@ -18,7 +21,7 @@ class IBus (ibus.Object):
 
 	def new_connection (self, dbusconn):
 		assert dbusconn not in self._connections
-		self._connections[dbusconn] = ibus.Connection (dbusconn)
+		self._connections[dbusconn] = Connection (dbusconn)
 
 	def remove_connection (self, dbusconn):
 		assert dbusconn in self._connections
