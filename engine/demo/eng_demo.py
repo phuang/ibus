@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import interface
 import gobject
 import gtk
 import dbus.connection
 import dbus.mainloop.glib
-import ibus.keysyms as keysyms
+from ibus import keysyms
+from ibus import interface
 from ibus.common import \
 	IBUS_NAME, \
 	IBUS_IFACE, \
