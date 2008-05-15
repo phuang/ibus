@@ -781,7 +781,7 @@ error:
     if (message)
         dbus_message_unref (message);
     if (pendingcall)
-        dbus_pending_call_cance (pendingcall);
+        dbus_pending_call_cancel (pendingcall);
     if (user_data && free_function)
         free_function (user_data);
     return False;
