@@ -300,9 +300,11 @@ gik_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
     if (context == CURRENT_CONTEXT && gik_im_client_is_enabled (priv->client)) {
         /* It is the focused context */
         gint x, y;
-        gdk_window_get_origin (priv->client_window, &x, &y);
-        area->x += x;
-        area->y += y;
+        if(priv->client_window) {
+            gdk_window_get_origin (priv->client_window, &x, &y);
+            area->x += x;
+            area->y += y;
+        }
         gik_im_client_set_cursor_location (priv->client, area);
     }
     gtk_im_context_set_cursor_location (priv->slave, area);
