@@ -5,6 +5,8 @@ IBUS_IFACE = "org.freedesktop.IBus"
 IBUS_PATH  = "/org/freedesktop/IBus"
 IBUS_NAME  = "org.freedesktop.IBus"
 
+IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
+
 IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.IBus.EngineFactory"
 IBUS_ENGINE_IFACE = "org.freedesktop.IBus.Engine"
 
