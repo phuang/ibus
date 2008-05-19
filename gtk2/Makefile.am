@@ -23,7 +23,7 @@
 # $Id: $
 #
 INCLUDES =	\
-	-I$(top_srcdir)/src
+	-I$(top_srcdir)
 
 im_gik_sources =		\
 	gikim.c				\

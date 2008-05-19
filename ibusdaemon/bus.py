@@ -6,6 +6,7 @@ from ibus import keysyms
 from clientmanager import ClientManager
 from factorymanager import FactoryManager
 from connection import Connection
+from panel import panel
 
 class IBus (ibus.Object):
 	def __init__ (self):
@@ -13,6 +14,7 @@ class IBus (ibus.Object):
 		self._connections = {}
 		self._client_manager = ClientManager ()
 		self._factory_manager = FactoryManager ()
+		self._panel = None
 		
 		self._focused_client = None
 		self._last_focused_client = None
@@ -101,7 +103,7 @@ class IBus (ibus.Object):
 		return self._clients[dbusconn]
 
 	##########################################################
-	# methods for im client
+	# methods for im engines
 	##########################################################
 	def register_factories (self, object_paths, dbusconn):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
@@ -116,7 +118,14 @@ class IBus (ibus.Object):
 		return self._factory_manager.lookup_engine (ibusconn, path)
 			
 
-
+	##########################################################
+	# methods for panel
+	##########################################################
+	def register_panel (self, object_path, replace, dbusconn):
+		if self._panel and replace == False:
+			raise ibus.Exception ("has a panel!")
+		ibusconn = self._lookup_ibus_connection (dbusconn)
+		self._panel = Panel (object_path, ibusconn)
 
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
@@ -145,6 +154,9 @@ class IBusProxy (ibus.IIBus):
 
 	def UnregisterEngines (self, object_paths, dbusconn):
 		self._ibus.unregister_engines (object_paths, dbusconn)
+	
+	def RegisterPanel (self, object_path, replace, dbusconn):
+		self._ibus.register_panel (object_path, replace, dbusconn)
 	
 	def ProcessKeyEvent (self, keyval, is_press, state, \
 							dbusconn, reply_cb, error_cb):

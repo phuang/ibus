@@ -17,24 +17,28 @@ class Attribute:
 		self._end_index = end_index
 
 	def to_dbus_value (self):
-		values = (dbus.UInt32 (self._type),
+		values = [dbus.UInt32 (self._type),
 				dbus.UInt32 (self._value),
 				dbus.UInt32 (self._start_index),
-				dbus.UInt32 (self._end_index))
-		return dbus.Struct (values)
+				dbus.UInt32 (self._end_index)]
+		return dbus.Array (values)
 
 	def from_dbus_value (self, value):
-		if not isinstance (value, dbus.Struct):
-			raise dbus.Exception ("Attribute must be dbus.Struct (uuuu)")
+		if not isinstance (value, dbus.Array):
+			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
 		if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
-			raise dbus.Exception ("Attribute must be dbus.Struct (uuuu)")
+			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
 		self._type = value[0]
 		self._value = value[1]
 		self._start_index = value[2]
 		self._end_index = value[3]
-		
+
+def attribute_from_dbus_value (value):
+	attribute = Attribute (0, 0, 0, 0)
+	attribute.from_dbus_value (value)
+	return attribute
 		
 class AttributeDecoration (Attribute):
 	def __init__(self, value, start_index, end_index):
@@ -77,8 +81,12 @@ class AttrList:
 			raise IBusException ("AttrList must from dbus.Array (iiii)")
 
 		for v in value:
-			attr = Attribute (0, 0, 0, 0)
-			attr.from_dbus_value (v)
+			attr = attribute_from_dbus_value (v)
 			attrs.append (attr)
 
 		self._attrs = attrs
+
+def attr_list_from_dbus_value (value):
+	attrs = AttrList ()
+	attrs.from_dbus_value (value)
+	return attrs

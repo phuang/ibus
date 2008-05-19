@@ -19,6 +19,7 @@ class Engine (ibus.Object):
 		self._ibusconn = ibusconn
 		self._object_path = object_path
 		self._engine = ibusconn.get_object (self._object_path)
+		self._lookup_table = ibus.LookupTable ()
 		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
 
 	def handle_dbus_signal (self, message):

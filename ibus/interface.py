@@ -122,33 +122,27 @@ class IEngine (dbus.service.Object):
 	@method ()
 	def Destroy (self): pass
 
-	@signal (signature = "s")
+	@signal ()
 	def CommitString (self, text): pass
 
-	@signal (signature = "saaii")
-	def PreeditChanged (self, text, attrs, cursor_pos):
-		pass
+	@signal ()
+	def ForwardKeyEvent (self, keyval, is_press, state): pass
+
+	@signal ()
+	def PreeditStringChanged (self, text, attrs, cursor_pos): pass
 
 	# below signals are optional. The engine could create and maintain panel by self.
-	@signal (signature = "a(saai)i")
-	def LookupTableChanged (self, lookup_table, cursor_pos):
-		pass
+	@signal ()
+	def AuxStringChanged (self, text, attrs): pass
 
 	@signal ()
-	def LookupTablePageUp (self):
-		pass
+	def UpdateLookupTable (self, lookup_table): pass
 
 	@signal ()
-	def LookupTablePageDown (self):
-		pass
+	def ShowLookupTable (self): pass
 
 	@signal ()
-	def LookupTableCursorUp (self):
-		pass
-
-	@signal ()
-	def LookupTableCursorDown (self):
-		pass
+	def HideLookupTable (self): pass
 
 class IPanel (dbus.service.Object):
 	# define method decorator.
