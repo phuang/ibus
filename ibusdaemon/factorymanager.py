@@ -1,7 +1,7 @@
 import weakref
 import gobject
 import ibus
-from engine import EngineFactory
+from enginefactory import EngineFactory
 
 class FactoryManager (ibus.Object):
 	__gsignals__ = {

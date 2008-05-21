@@ -129,7 +129,7 @@ class IEngine (dbus.service.Object):
 	def ForwardKeyEvent (self, keyval, is_press, state): pass
 
 	@signal ()
-	def PreeditStringChanged (self, text, attrs, cursor_pos): pass
+	def PreeditChanged (self, text, attrs, cursor_pos): pass
 
 	# below signals are optional. The engine could create and maintain panel by self.
 	@signal ()

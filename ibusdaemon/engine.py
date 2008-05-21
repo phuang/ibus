@@ -5,13 +5,33 @@ import ibus
 class Engine (ibus.Object):
 	__gsignals__ = {
 		"commit-string" : (
-			gobject.SIGNAL_RUN_FIRST, 
+			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_STRING, )),
-		"preedit-changed" : (
-			gobject.SIGNAL_RUN_FIRST, 
+		"forward-key-event" : (
+			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_UINT))
+			(gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT )),
+		"preedit-changed" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_UINT)),
+		"aux-string-changed" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+		"update-lookup-table" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_PYOBJECT, )),
+		"show-lookup-table" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"hide-lookup-table" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			())
 	}
 
 	def __init__ (self, ibusconn, object_path):
@@ -27,9 +47,32 @@ class Engine (ibus.Object):
 			args = message.get_args_list ()
 			self.emit ("commit-string", args[0])
 			return True
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "ForwardKeyEvent"):
+			args = message.get_args_list ()
+			self.emit ("forward-key-event", args[0], arg[1], arg[2])
+			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "PreeditChanged"):
 			args = message.get_args_list ()
-			self.emit ("preedit-changed", args[0], args[1], args[2])
+			attrs = ibus.attr_list_from_dbus_value (args[1])
+			self.emit ("preedit-changed", args[0], attrs, args[2])
+			return True
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "AuxStringChanged"):
+			args = message.get_args_list ()
+			attrs = ibus.attr_list_from_dbus_value (args[1])
+			self.emit ("aux-string-changed", args[0], attrs)
+			return True
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
+			args = message.get_args_list ()
+			lookup_table = ibus.lookup_table_from_dbus_value (args[0])
+			self.emit ("update-lookup-table", lookup_table)
+			return True
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "ShowLookupTable"):
+			args = message.get_args_list ()
+			self.emit ("show-lookup-table")
+			return True
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "HideLookupTable"):
+			args = message.get_args_list ()
+			self.emit ("hide-lookup-table")
 			return True
 		else:
 			return False

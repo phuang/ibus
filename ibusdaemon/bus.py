@@ -6,7 +6,7 @@ from ibus import keysyms
 from clientmanager import ClientManager
 from factorymanager import FactoryManager
 from connection import Connection
-from panel import panel
+from panel import Panel, DummyPanel
 
 class IBus (ibus.Object):
 	def __init__ (self):
@@ -14,7 +14,7 @@ class IBus (ibus.Object):
 		self._connections = {}
 		self._client_manager = ClientManager ()
 		self._factory_manager = FactoryManager ()
-		self._panel = None
+		self._panel = DummyPanel ()
 		
 		self._focused_client = None
 		self._last_focused_client = None
@@ -122,10 +122,18 @@ class IBus (ibus.Object):
 	# methods for panel
 	##########################################################
 	def register_panel (self, object_path, replace, dbusconn):
-		if self._panel and replace == False:
-			raise ibus.Exception ("has a panel!")
+		if not isinstance (self._panel, DummyPanel) and replace == False:
+			raise ibus.Exception ("has have a panel!")
+		if not isinstance (self._panel, DummyPanel):
+			self._panel.destroy ()
 		ibusconn = self._lookup_ibus_connection (dbusconn)
-		self._panel = Panel (object_path, ibusconn)
+		self._panel = Panel (ibusconn, object_path)
+		self._panel.connect ("destroy", self._panel_destroy_cb)
+
+
+	def _panel_destroy_cb (self, panel):
+		if panel == self._panel:
+			self._panel = DummyPanel ()
 
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True

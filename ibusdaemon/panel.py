@@ -17,12 +17,12 @@ class Panel (ibus.Object):
 		self._lookup_table = lookup_table
 
 	def destroy (self):
-		ibus.Object.destroy (self)
 		if self._ibusconn != None:
 			self._panel.Destroy ()
 
 		self._ibusconn = None
 		self._panel = None
+		ibus.Object.destroy (self)
 
 	# signal callbacks
 	def _ibusconn_destroy_cb (self, ibusconn):
@@ -45,3 +45,5 @@ class Panel (ibus.Object):
 	#		if x[1] > y[1]: return True
 	#		if x[1] == y[1]: return x[0] > y[0]
 
+class DummyPanel:
+	pass
