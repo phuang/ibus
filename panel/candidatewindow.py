@@ -26,6 +26,7 @@ class CandidatePanel (gtk.VBox):
 
 	def __init__ (self):
 		gtk.VBox.__init__ (self)
+		self._tooltips = gtk.Tooltips ()
 		
 		self._orientation = gtk.ORIENTATION_HORIZONTAL
 		self._orientation = gtk.ORIENTATION_VERTICAL
@@ -51,6 +52,7 @@ class CandidatePanel (gtk.VBox):
 		self._aux_label = gtk.Label (self._aux_string)
 		self._aux_label.set_property ("xalign", 0.0)
 		self._aux_label.set_property ("xpad", 8)
+		self._tooltips.set_tip (self._aux_label, "Aux string")
 
 		# create candidates area
 		self._candidates_area = gtk.HBox ()
@@ -62,9 +64,11 @@ class CandidatePanel (gtk.VBox):
 		# create buttons
 		self._prev_button = gtk.Button ()
 		self._prev_button.set_relief (gtk.RELIEF_NONE)
+		self._tooltips.set_tip (self._prev_button, "Previous candidate")
 		
 		self._next_button = gtk.Button ()
 		self._next_button.set_relief (gtk.RELIEF_NONE)
+		self._tooltips.set_tip (self._next_button, "Next candidate")
 		
 		self.pack_all_widgets ()
 
@@ -78,6 +82,7 @@ class CandidatePanel (gtk.VBox):
 			image = gtk.Image ()
 			image.set_from_stock (gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
 			self._next_button.set_image (image)
+
 			self.pack_start (self._preedit_label, False, False, 4)
 			self.pack_start (self._aux_label, False, False, 4)
 			self.pack_start (HSeparator (), False, False)
@@ -181,8 +186,9 @@ class CandidateWindow (gtk.Window):
 			gdk.BUTTON_RELEASE_MASK | \
 			gdk.BUTTON1_MOTION_MASK)
 
-		self.set_property ("border-width", 2)
+		self.set_property ("border-width", 1)
 		self._candidate_panel = CandidatePanel ()
+		self._begin_move = False
 		self._candidate_panel.connect ("size-request", self._size_request_cb)
 		self.add (self._candidate_panel)
 		self.move (100, 100)
@@ -192,6 +198,7 @@ class CandidateWindow (gtk.Window):
 
 	def do_button_press_event (self, event):
 		if event.button == 1:
+			self._begin_move = True
 			self._press_pos = event.x_root, event.y_root
 			self.window.set_cursor (gdk.Cursor (gdk.FLEUR))
 			return True
@@ -207,11 +214,14 @@ class CandidateWindow (gtk.Window):
 	def do_button_release_event (self, event):
 		if event.button == 1:
 			del self._press_pos
+			self._begin_move = False
 			self.window.set_cursor (gdk.Cursor (gdk.LEFT_PTR))
 			return True
 		return False
 	
 	def do_motion_notify_event (self, event):
+		if self._begin_move != True:
+			return False
 		x, y = self.get_position ()
 		x  = int (x + event.x_root - self._press_pos[0])
 		y  = int (y + event.y_root - self._press_pos[1])
