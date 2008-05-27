@@ -52,14 +52,12 @@ class Engine (ibus.Object):
 			self.emit ("forward-key-event", args[0], arg[1], arg[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "PreeditChanged"):
-			args = message.get_args_list ()
 			attrs = ibus.attr_list_from_dbus_value (args[1])
-			self.emit ("preedit-changed", args[0], attrs, args[2])
+			self.emit ("preedit-changed", args[0], args[1], args[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "AuxStringChanged"):
-			args = message.get_args_list ()
 			attrs = ibus.attr_list_from_dbus_value (args[1])
-			self.emit ("aux-string-changed", args[0], attrs)
+			self.emit ("aux-string-changed", args[0], args[1])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
 			args = message.get_args_list ()

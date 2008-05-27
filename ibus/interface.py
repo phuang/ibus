@@ -119,6 +119,9 @@ class IEngine (dbus.service.Object):
 	@method (in_signature = "b")
 	def SetEnable (self, enable): pass
 
+	@method (in_signature = "s")
+	def TriggerProperty (self, property): pass
+
 	@method ()
 	def Destroy (self): pass
 
@@ -132,6 +135,9 @@ class IEngine (dbus.service.Object):
 	def PreeditChanged (self, text, attrs, cursor_pos): pass
 
 	# below signals are optional. The engine could create and maintain panel by self.
+	@signal ()
+	def UpdateProperties (self, properties): pass
+
 	@signal ()
 	def AuxStringChanged (self, text, attrs): pass
 

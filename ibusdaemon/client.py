@@ -93,6 +93,18 @@ class Client (ibus.Object):
 	def _preedit_changed_cb (self, engine, text, attrs, cursor):
 		self.preedit_changed (self, text, attrs, cursor)
 
+	def _aux_string_changed_cb (self, engine, text, attrs):
+		pass
+
+	def _update_lookup_table (self, engine, lookup_table):
+		pass
+	
+	def _show_lookup_table (self, engine):
+		pass
+	
+	def _hide_lookup_table (self, engine):
+		pass
+
 	def _remove_engine_handlers (self):
 		assert self._engine != None
 		for id in self._engine_handler_ids:
@@ -101,7 +113,17 @@ class Client (ibus.Object):
 
 	def _install_engine_handlers (self):
 		id = self._engine.connect ("destroy", self._engine_destroy_cb)
+		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("commit-string", self._commit_string_cb)
 		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("preedit-changed", self._preedit_changed_cb)
 		self._engine_handler_ids.append (id)
+		id = self._engine.connect ("aux-string-changed", self._aux_string_changed_cb)
+		self._engine_handler_ids.append (id)
+		id = self._engine.connect ("update-lookup-table", self._update_lookup_table_cb)
+		self._engine_handler_ids.append (id)
+		id = self._engine.connect ("show-lookup-table", self._show_lookup_table_cb)
+		self._engine_handler_ids.append (id)
+		id = self._engine.connect ("hide-lookup-table", self._hide_lookup_table_cb)
+		self._engine_handler_ids.append (id)
+
