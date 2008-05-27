@@ -42,6 +42,14 @@ class LookupTable:
 	def get_page_size (self):
 		return self._page_size
 
+	def get_current_page_size (self):
+		nr_candidate = len (self._candidates)
+		nr_page, last_page_size = divmod (nr_candidate, self._page_size)
+		if self._cursor_pos / self._page_size == nr_page:
+			return last_page_size
+		else:
+			return self._page_size
+
 	def set_labels (self, labels):
 		self._labels == labels
 
@@ -115,7 +123,7 @@ class LookupTable:
 	def get_canidates_in_current_page (self):
 		page = self._cursor_pos / self._page_size
 		start_index = page * self._page_size
-		end_index = min (page * (self._page_size + 1), len (self._candidates))
+		end_index = min ((page + 1) * self._page_size, len (self._candidates))
 		return self._candidates[start_index:end_index]
 
 	def get_current_candidate (self):
