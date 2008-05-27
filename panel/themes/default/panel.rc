@@ -47,4 +47,4 @@ stretch	= FALSE
 }
 }
 }
-class "*Panel*" style "panel-menubar"
+# class "*Panel*" style "panel-menubar"
