@@ -14,7 +14,7 @@ class VSeparator (gtk.VBox):
 		gtk.VBox.__init__ (self)
 		self.pack_start (gtk.VSeparator (), True, True, 4)
 
-class CandidatesArea (gtk.HBox):
+class CandidateArea (gtk.HBox):
 	def __init__ (self, orientation):
 		gtk.HBox.__init__ (self)
 		self._orientation = orientation
@@ -118,11 +118,11 @@ class CandidatePanel (gtk.VBox):
 		self._tooltips.set_tip (self._aux_label, "Aux string")
 
 		# create candidates area
-		self._candidates_area = CandidatesArea (self._orientation)
+		self._candidate_area = CandidateArea (self._orientation)
 		candidates = []
 		for i in xrange (0, 7):
 			candidates.append (("你好", pango.AttrList ()))
-		self._candidates_area.set_candidates (candidates)
+		self._candidate_area.set_candidates (candidates)
 
 		# create state label
 		self._state_label = gtk.Label ()
@@ -153,7 +153,7 @@ class CandidatePanel (gtk.VBox):
 			vbox.pack_start (self._aux_label, False, False, 0)
 			self.pack_start (vbox, False, False, 5)
 			self.pack_start (HSeparator (), False, False)
-			self.pack_start (self._candidates_area, False, False, 2)
+			self.pack_start (self._candidate_area, False, False, 2)
 			self.pack_start (HSeparator (), False, False)
 			hbox= gtk.HBox ()
 			hbox.pack_start (self._state_label, True, True)
@@ -177,7 +177,7 @@ class CandidatePanel (gtk.VBox):
 			self.pack_start (vbox, False, False, 5)
 			self.pack_start (HSeparator (), False, False)
 			hbox= gtk.HBox ()
-			hbox.pack_start (self._candidates_area, True, True, 2)
+			hbox.pack_start (self._candidate_area, True, True, 2)
 			hbox.pack_start (VSeparator (), False, False)
 			hbox.pack_start (self._prev_button, False, False, 2)
 			hbox.pack_start (self._next_button, False, False, 2)
