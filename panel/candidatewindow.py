@@ -34,7 +34,7 @@ class CandidateWindow (gtk.Window):
 		self._candidate_pabel.set_lookup_table (lookup_table)
 
 	def _size_request_cb (self, widget, size):
-		self.resize (max (size.width, 200), 1)
+		self.resize (1, 1)
 
 	def _change_orientation (self):
 		if self._candidate_panel.get_orientation () == gtk.ORIENTATION_HORIZONTAL:
