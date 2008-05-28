@@ -1,6 +1,9 @@
 PYTHON = env PYTHONPATH=../ python
 
-test-engine:
+test-candidatewindow:
+	$(PYTHON) ./candidatewindow.py
+
+test-panel:
 	$(PYTHON) ./main.py
 
 clean:
