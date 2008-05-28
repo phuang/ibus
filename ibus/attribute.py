@@ -1,13 +1,8 @@
 import dbus
 
-ATTR_TYPE_DECORATION = 1
+ATTR_TYPE_UNDERLINE = 1
 ATTR_TYPE_FOREGROUND = 2
 ATTR_TYPE_BACKGROUND = 3
-
-ATTR_DECORATION_NONE 		= 0
-ATTR_DECORATION_UNDERLINE 	= 1
-ATTR_DECORATION_HIGHLIGHT	= 2
-ATTR_DECORATION_REVERSE		= 4
 
 class Attribute:
 	def __init__ (self, type, value, start_index, end_index):
@@ -40,10 +35,9 @@ def attribute_from_dbus_value (value):
 	attribute.from_dbus_value (value)
 	return attribute
 		
-class AttributeDecoration (Attribute):
+class AttributeUnderline (Attribute):
 	def __init__(self, value, start_index, end_index):
-		Attribute.__init__ (self, ATTR_TYPE_DECORATION, value, start_index, end_index)
-
+		Attribute.__init__ (self, ATTR_TYPE_UNDERLINE, value, start_index, end_index)
 
 class AttributeForeground (Attribute):
 	def __init__(self, value, start_index, end_index):
@@ -85,6 +79,9 @@ class AttrList:
 			attrs.append (attr)
 
 		self._attrs = attrs
+
+	def __iter__ (self):
+		return self._attrs.__iter__ ()
 
 def attr_list_from_dbus_value (value):
 	attrs = AttrList ()
