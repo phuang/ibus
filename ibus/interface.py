@@ -125,23 +125,23 @@ class IEngine (dbus.service.Object):
 	@method ()
 	def Destroy (self): pass
 
-	@signal ()
+	@signal (signature="s")
 	def CommitString (self, text): pass
 
-	@signal ()
+	@signal (signature="ubu")
 	def ForwardKeyEvent (self, keyval, is_press, state): pass
 
-	@signal ()
+	@signal (signature="svu")
 	def PreeditChanged (self, text, attrs, cursor_pos): pass
 
 	# below signals are optional. The engine could create and maintain panel by self.
-	@signal ()
+	@signal (signature="v")
 	def UpdateProperties (self, properties): pass
 
-	@signal ()
+	@signal (signature="sv")
 	def AuxStringChanged (self, text, attrs): pass
 
-	@signal ()
+	@signal (signature="v")
 	def UpdateLookupTable (self, lookup_table): pass
 
 	@signal ()
@@ -166,10 +166,43 @@ class IPanel (dbus.service.Object):
 		dbus.service.method (dbus_interface = IBUS_PANE_IFACE, \
 							 async_callbacks = ("reply_cb", "error_cb"), \
 							 **args)
+	@method (in_signature="svu")
+	def SetPreeditString (self, text, attrs, cursor_pos): pass
+
+	@method ()
+	def ShowPreeditString (self): pass
+
+	@method ()
+	def HidePreeditString (self): pass
+
+	@method (in_signature="sv")
+	def SetAuxString (self, text, attrs): pass
+
+	@method ()
+	def ShowAuxString (self): pass
+
+	@method ()
+	def HideAuxString (self): pass
+
+	@method (in_signature="v")
+	def UpdateLookupTable (self, lookup_table): pass
+
+	@method ()
+	def ShowCandidateWindow (self): pass
+
+	@method ()
+	def HideCandidateWindow (self): pass
+
+	@method ()
+	def ShowLanguageBar (self): pass
+
+	@method ()
+	def HideLanguageBar (self): pass
 
 	@method ()
 	def Destroy (self): pass
 
+	#signals
 	@signal ()
 	def PageUp (self): pass
 
@@ -177,7 +210,8 @@ class IPanel (dbus.service.Object):
 	def PageDown (self): pass
 
 	@signal ()
-	def CursorUp (self): pass
+	def CursorBack (self): pass
 
 	@signal ()
-	def CursorDown (self): pass
+	def CursorForward (self): pass
+
