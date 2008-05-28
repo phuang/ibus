@@ -5,13 +5,12 @@ from ibus import keysyms
 from ibus import interface
 import panel
 
-
 class Engine (interface.IEngine):
 	def __init__ (self, dbusconn, object_path):
 		interface.IEngine.__init__ (self, dbusconn, object_path)
 		self._dbusconn = dbusconn
 		self._panel = panel.Panel ()
-	
+
 	# methods for dbus rpc
 	def ProcessKeyEvent (self, keyval, is_press, state):
 		if not is_press:
@@ -48,6 +47,6 @@ class DemoEngine (Engine):
 	pass
 
 
-		
+
 
 
