@@ -12,7 +12,7 @@ class PanelApplication:
 							dbus_interface = dbus.LOCAL_IFACE)
 
 		self._panel = panel.PanelProxy (self._dbusconn, "/org/freedesktop/IBus/Panel")
-					
+
 		self._ibus = self._dbusconn.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
 		self._ibus.RegisterPanel (self._panel, True)
 
