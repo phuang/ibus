@@ -45,8 +45,9 @@ class IBus (ibus.Object):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		client = self._client_manager.register_client (name, ibusconn)
 		factory = self._factory_manager.get_default_factory ()
-		engine = factory.create_engine ()
-		client.set_engine (engine)
+		if factory:
+			engine = factory.create_engine ()
+			client.set_engine (engine)
 
 	def focus_in (self, dbusconn):
 		client = self._lookup_client (dbusconn)
@@ -112,8 +113,9 @@ class IBus (ibus.Object):
 			client.set_enable (enable)
 			if client.get_engine () == None and enable:
 				factory = self._factory_manager.get_default_factory ()
-				engine = factory.create_engine ()
-				client.set_engine (engine)
+				if factory:
+					engine = factory.create_engine ()
+					client.set_engine (engine)
 			return True
 		return False
 

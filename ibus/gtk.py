@@ -21,7 +21,7 @@ class PangoAttrList (pango.AttrList):
 				pango_attr = pango.AttrBackground (r, g, b, 
 					attr._start_index, attr._end_index)
 			elif attr._type == ibus.ATTR_TYPE_UNDERLINE:
-				pango_attr = pango.AttrUnderline (attr._value,
+				pango_attr = pango.AttrUnderline (int (attr._value),
 										attr._start_index, attr._end_index)
 			if pango_attr != None:
 				self.insert (pango_attr)

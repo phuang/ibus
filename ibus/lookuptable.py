@@ -3,11 +3,11 @@ from attribute import *
 from exception import *
 
 class StringList (list):
-	def clear (self):
+	def clean (self):
 		del self[:]
 
 	def to_dbus_value (self):
-		value = dbus.Array ()
+		value = dbus.Array ([], signature="v")
 		for text, attrs in self:
 			value.append (dbus.Struct ((dbus.String (text), attrs.to_dbus_value ())))
 		return value
@@ -26,7 +26,7 @@ class StringList (list):
 			attrs = attr_list_from_dbus_value (candidate[1])
 			candidates.append ((text, attrs))
 
-		self.clear ()
+		self.clean ()
 		self[:] = candidates
 
 class LookupTable:
@@ -89,7 +89,7 @@ class LookupTable:
 
 		pos = self._cursor_pos + self._page_size
 		if pos >= nr_candidates:
-			pos = nr_canidates - 1
+			pos = nr_candidates - 1
 		self._cursor_pos = pos
 
 		return True
@@ -108,8 +108,8 @@ class LookupTable:
 		self._cursor_pos += 1
 		return True
 
-	def clear (self):
-		self._candidates.clear ()
+	def clean (self):
+		self._candidates.clean ()
 		self._cursor_pos = 0
 
 	def append_candidate (self, candidate, attrs = None):
@@ -129,9 +129,12 @@ class LookupTable:
 	def get_current_candidate (self):
 		return self._candidates [self._cursor_pos]
 
+	def get_number_of_candidates (self):
+		return len (self._candidates)
+
 	def to_dbus_value (self):
-		value = (dbus.UInt32 (self._page_size),
-				 dbus.UInt32 (self._cursor_pos),
+		value = (dbus.Int32 (self._page_size),
+				 dbus.Int32 (self._cursor_pos),
 				 dbus.Boolean (self._cursor_visible),
 				 self._candidates.to_dbus_value ())
 		return dbus.Struct (value)
@@ -140,9 +143,9 @@ class LookupTable:
 		if not isinstance (value, dbus.Struct):
 			raise dbus.Exception ("LookupTable must from dbus.Struct (uuba(...))")
 
-		if len (value) != 5 or \
-			not isinstance (value[0], dbus.UInt32) or \
-			not isinstance (value[1], dbus.UInt32) or \
+		if len (value) != 4 or \
+			not isinstance (value[0], dbus.Int32) or \
+			not isinstance (value[1], dbus.Int32) or \
 			not isinstance (value[2], dbus.Boolean):
 			raise dbus.Exception ("LookupTable must from dbus.Struct (uuba(...))")
 
@@ -158,10 +161,10 @@ def lookup_table_from_dbus_value (value):
 
 def unit_test ():
 	t = LookupTable ()
-	attrs = AttrList ()
-	attrs.append (AttributeBackground (RGB (233, 0,1), 0, 3))
-	attrs.append (AttributeDecoration (ATTR_DECORATION_HIGHLIGHT, 3, 5))
-	t.append_candidate ("Hello", attrs)
+	# attrs = AttrList ()
+	# attrs.append (AttributeBackground (RGB (233, 0,1), 0, 3))
+	# attrs.append (AttributeUnderline (1, 3, 5))
+	t.append_candidate ("Hello")
 	value = t.to_dbus_value ()
 	print value
 	t = lookup_table_from_dbus_value (value)

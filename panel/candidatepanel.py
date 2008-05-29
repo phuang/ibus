@@ -52,6 +52,9 @@ class CandidateArea (gtk.HBox):
 
 			self._labels.append ((label1, label2))
 
+		self._labels[0][0].show ()
+		self._labels[0][1].show ()
+
 	def set_candidates (self, candidates, focus_candidate = 0):
 		assert len (candidates) <= len (self._labels)
 		i = 0
@@ -69,9 +72,16 @@ class CandidateArea (gtk.HBox):
 
 			i += 1
 
-		for label1, label2 in self._labels[len(candidates):]:
+		for label1, label2 in self._labels[max (1, len(candidates)):]:
 			label1.hide ()
 			label2.hide ()
+
+		if len (candidates) == 0:
+			self._labels[0][0].set_text ("")
+			self._labels[0][1].set_text ("")
+		else:
+			self._labels[0][0].set_text ("1.")
+
 
 class CandidatePanel (gtk.VBox):
 	__gproperties__ = {

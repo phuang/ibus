@@ -80,7 +80,8 @@ class PanelProxy (interface.IPanel):
 		self._panel.hide_aux_string ()
 
 	def UpdateLookupTable (self, lookup_table):
-		self._panel.update_lookup_table ()
+		lookup_table = ibus.lookup_table_from_dbus_value (lookup_table)
+		self._panel.update_lookup_table (lookup_table)
 
 	def ShowCandidateWindow (self):
 		self._panel.show_candidate_window ()

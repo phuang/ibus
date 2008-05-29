@@ -22,6 +22,7 @@
 SHIFT_MASK    = 1 << 0
 LOCK_MASK	    = 1 << 1
 CONTROL_MASK  = 1 << 2
+ALT_MASK	    = 1 << 3
 MOD1_MASK	    = 1 << 3
 MOD2_MASK	    = 1 << 4
 MOD3_MASK	    = 1 << 5

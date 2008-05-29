@@ -12,17 +12,17 @@ class Attribute:
 		self._end_index = end_index
 
 	def to_dbus_value (self):
-		values = [dbus.Int32 (self._type),
-				dbus.Int32 (self._value),
-				dbus.Int32 (self._start_index),
-				dbus.Int32 (self._end_index)]
-		return dbus.Array (values)
+		values = [dbus.UInt32 (self._type),
+				dbus.UInt32 (self._value),
+				dbus.UInt32 (self._start_index),
+				dbus.UInt32 (self._end_index)]
+		return dbus.Array (values, signature="u")
 
 	def from_dbus_value (self, value):
 		if not isinstance (value, dbus.Array):
 			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
-		if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.Int32), value)):
+		if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
 			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
 		self._type = value[0]
@@ -64,7 +64,7 @@ class AttrList:
 		self._attrs.append (attr)
 
 	def to_dbus_value (self):
-		array = dbus.Array ()
+		array = dbus.Array (signature = "v")
 		for attr in self._attrs:
 			array.append (attr.to_dbus_value ())
 		return array
@@ -72,7 +72,7 @@ class AttrList:
 	def from_dbus_value (self, value):
 		attrs = []
 		if not isinstance (value, dbus.Array):
-			raise IBusException ("AttrList must from dbus.Array (iiii)")
+			raise IBusException ("AttrList must from dbus.Array (uuuu)")
 
 		for v in value:
 			attr = attribute_from_dbus_value (v)
