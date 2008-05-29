@@ -1,1 +1,7 @@
 *.pyc
+*.la
+*.lo
+Makefile
+Makefile.in
+.deps
+.libs
