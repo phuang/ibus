@@ -27,7 +27,7 @@ class EngineFactory (ibus.Object):
 
 	def create_engine (self):
 		object_path = self._factory.CreateEngine ()
-		engine = Engine (self._ibusconn, object_path)
+		engine = Engine (self, self._ibusconn, object_path)
 		self._engines[object_path] = engine
 		return engine
 

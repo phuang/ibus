@@ -11,7 +11,7 @@ class Engine (ibus.Object):
 		"forward-key-event" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT )),
+			(gobject.TYPE_UINT, gobject.TYPE_BOOLEAN, gobject.TYPE_UINT )),
 		"preedit-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
@@ -34,13 +34,17 @@ class Engine (ibus.Object):
 			())
 	}
 
-	def __init__ (self, ibusconn, object_path):
+	def __init__ (self, factory, ibusconn, object_path):
 		ibus.Object.__init__ (self)
+		self._factory = factory
 		self._ibusconn = ibusconn
 		self._object_path = object_path
 		self._engine = ibusconn.get_object (self._object_path)
 		self._lookup_table = ibus.LookupTable ()
 		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
+
+	def get_factory (self):
+		return self._factory
 
 	def handle_dbus_signal (self, message):
 		if message.is_signal (ibus.IBUS_ENGINE_IFACE, "CommitString"):
@@ -49,14 +53,12 @@ class Engine (ibus.Object):
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "ForwardKeyEvent"):
 			args = message.get_args_list ()
-			self.emit ("forward-key-event", args[0], arg[1], arg[2])
+			self.emit ("forward-key-event", args[0], bool (arg[1]), arg[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "PreeditChanged"):
-			attrs = ibus.attr_list_from_dbus_value (args[1])
 			self.emit ("preedit-changed", args[0], args[1], args[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "AuxStringChanged"):
-			attrs = ibus.attr_list_from_dbus_value (args[1])
 			self.emit ("aux-string-changed", args[0], args[1])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):

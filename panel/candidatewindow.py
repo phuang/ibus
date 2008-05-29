@@ -75,7 +75,8 @@ class CandidateWindow (gtk.Window):
 gobject.type_register (CandidateWindow, "IBusCandidateWindow")
 
 if __name__ == "__main__":
-	# gtk.rc_parse ("./themes/default/gtkrc")
+	# style_string = """"""
+	# gtk.rc_parse_string (style_string)
 	window = CandidateWindow ()
 	window.show_all ()
 	gtk.main ()
