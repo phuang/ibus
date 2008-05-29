@@ -6,7 +6,7 @@ class Client (ibus.Object):
 		"preedit-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_UINT)),
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_INT)),
 		"aux-string-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
@@ -134,7 +134,7 @@ class Client (ibus.Object):
 		self.commit_string (text)
 
 	def _preedit_changed_cb (self, engine, text, attrs, cursor_pos):
-		self.preedit_changed (self, text, attrs, cursor_pos)
+		self.preedit_changed (text, attrs, cursor_pos)
 
 	def _aux_string_changed_cb (self, engine, text, attrs):
 		self._aux_string = text

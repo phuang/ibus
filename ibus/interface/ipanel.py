@@ -18,6 +18,9 @@ class IPanel (dbus.service.Object):
 		dbus.service.method (dbus_interface = IBUS_PANE_IFACE, \
 							 async_callbacks = ("reply_cb", "error_cb"), \
 							 **args)
+	@method (in_signature="iiii")
+	def SetCursorLocation (self, x, y, w, h): pass
+
 	@method (in_signature="svu")
 	def SetPreeditString (self, text, attrs, cursor_pos): pass
 

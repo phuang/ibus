@@ -15,7 +15,7 @@ class Engine (ibus.Object):
 		"preedit-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_UINT)),
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_INT)),
 		"aux-string-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
@@ -56,22 +56,21 @@ class Engine (ibus.Object):
 			self.emit ("forward-key-event", args[0], bool (arg[1]), arg[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "PreeditChanged"):
+			args = message.get_args_list ()
 			self.emit ("preedit-changed", args[0], args[1], args[2])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "AuxStringChanged"):
+			args = message.get_args_list ()
 			self.emit ("aux-string-changed", args[0], args[1])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
 			args = message.get_args_list ()
-			lookup_table = ibus.lookup_table_from_dbus_value (args[0])
-			self.emit ("update-lookup-table", lookup_table)
+			self.emit ("update-lookup-table", args[0])
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "ShowLookupTable"):
-			args = message.get_args_list ()
 			self.emit ("show-lookup-table")
 			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "HideLookupTable"):
-			args = message.get_args_list ()
 			self.emit ("hide-lookup-table")
 			return True
 		else:
@@ -90,7 +89,7 @@ class Engine (ibus.Object):
 		self._engine.ProcessKeyEvent (keyval, is_press, state, 
 									reply_handler = reply_cb,
 									error_handler = error_cb)
-	
+
 	def set_cursor_location (self, x, y, w, h):
 		self._engine.SetCursorLocation (x, y, w, h)
 

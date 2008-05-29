@@ -493,7 +493,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
     }
     dbus_message_iter_recurse (&iter, &sub_iter);
     if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
-        dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_UINT32 ) {
+        dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_INT32 ) {
         g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
         return;
     }
@@ -513,8 +513,8 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
         }
 
         switch (values[0]) {
-        case 1: /* Decoration */
-            attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
+        case 1: /* Underline */
+            attr = pango_attr_underline_new (values[1]);
             attr->start_index = values[2];
             attr->end_index = values[3];
             pango_attr_list_insert (attrs, attr);
@@ -552,7 +552,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_INT32) {
-        g_warning ("The third argument of PreeditChanged signal must be an Int32");
+        g_warning ("The third argument of PreeditChanged signal must be an Int32 %c", type);
         pango_attr_list_unref (attrs);
         return;
     }

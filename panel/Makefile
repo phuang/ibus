@@ -1,5 +1,7 @@
 PYTHON = env PYTHONPATH=../ python
 
+all: test-panel
+
 test-candidatewindow:
 	$(PYTHON) ./candidatewindow.py
 

@@ -12,17 +12,17 @@ class Attribute:
 		self._end_index = end_index
 
 	def to_dbus_value (self):
-		values = [dbus.UInt32 (self._type),
-				dbus.UInt32 (self._value),
-				dbus.UInt32 (self._start_index),
-				dbus.UInt32 (self._end_index)]
+		values = [dbus.Int32 (self._type),
+				dbus.Int32 (self._value),
+				dbus.Int32 (self._start_index),
+				dbus.Int32 (self._end_index)]
 		return dbus.Array (values)
 
 	def from_dbus_value (self, value):
 		if not isinstance (value, dbus.Array):
 			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
-		if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
+		if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.Int32), value)):
 			raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
 		self._type = value[0]

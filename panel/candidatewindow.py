@@ -17,9 +17,10 @@ class CandidateWindow (gtk.Window):
 		self._candidate_panel.connect ("size-request", self._size_request_cb)
 		self.add (self._candidate_panel)
 		self.move (100, 100)
+		self.show_all ()
 
-	def set_preedit_string (self, text, attrs):
-		self._candidate_panel.set_preedit_string (text, attrs)
+	def set_preedit_string (self, text, attrs, cursor_pos):
+		self._candidate_panel.set_preedit_string (text, attrs, cursor_pos)
 
 	def show_preedit_string (self, text, attrs):
 		self._candidate_panel.show_preedit_string ()
@@ -31,7 +32,7 @@ class CandidateWindow (gtk.Window):
 		self._candidate_panel.set_aux_string (text, attrs)
 
 	def set_lookup_table (self, lookup_table):
-		self._candidate_pabel.set_lookup_table (lookup_table)
+		self._candidate_panel.set_lookup_table (lookup_table)
 
 	def _size_request_cb (self, widget, size):
 		self.resize (1, 1)

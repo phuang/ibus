@@ -2,80 +2,98 @@
 import gtk
 import gtk.gdk as gdk
 import gobject
+import ibus
 from ibus import interface
-from image import Image
-from handle import Handle
+from languagebar import LanguageBarWindow
+from candidatewindow import CandidateWindow
 
-class PanelBar (gtk.Toolbar):
-	def __init__ (self):
-		gtk.Toolbar.__init__ (self)
-		self.set_property ("icon-size", gtk.ICON_SIZE_MENU)
-		# self.set_orientation (gtk.ORIENTATION_VERTICAL)
-		self._create_items ()
+class Panel (gobject.GObject):
+	def __init__ (self, proxy):
+		gobject.GObject.__init__ (self)
+		self._proxy = proxy
+		self._language_bar = LanguageBarWindow ()
+		self._candidate_panel = CandidateWindow ()
+
+	def set_cursor_location (self, x, y, w, h):
+		self._candidate_panel.move (x + w, y + h)
 	
-	def insert (self, toolitem, pos):
-		gtk.Toolbar.insert (self, toolitem, pos)
-		self.check_resize ()
+	def set_preedit_string (self, text, attrs, cursor_pos):
+		self._candidate_panel.set_preedit_string (text, attrs, cursor_pos)
 
-	def _add_items (self):
-		btn = gtk.ToolButton (gtk.STOCK_NEW)
-		btn.connect ("clicked", lambda x: self._add_items ())
-		self.insert (btn, -1)
-		self.insert (gtk.ToolButton (gtk.STOCK_APPLY), -1)
-		self.insert (gtk.SeparatorToolItem (), -1)
-		self.show_all ()
-		
-	def _create_items (self):
-		handle = Handle ()
-		item = gtk.ToolItem ()
-		item.add (handle)
-		self.insert (item, -1)
+	def show_preedit_string (self):
+		self._candidate_panel.show_preedit_string ()
 
-		self._add_items ()
-		
-	def do_realize (self):
-		gtk.Toolbar.do_realize (self)
-		self.check_resize ()
+	def hide_preedit_string (self):
+		self._candidate_panel.hide_preedit_string ()
+
+	def set_aux_string (self, text, attrs):
+		self._candidate_panel.set_aux_string (text, attrs)
+
+	def show_aux_string (self):
+		self._candidate_panel.show_aux_string ()
+
+	def hide_aux_string (self):
+		self._candidate_panel.hide_aux_string ()
 	
-	def do_check_resize (self):
-		width = 0
-		for item in self:
-			w, h = item.size_request ()
-			width += w
-		self.set_size_request (width + 2, -1)
-		
-gobject.type_register (PanelBar, "IBusToolbar")
+	def update_lookup_table (self, lookup_table):
+		self._candidate_panel.set_lookup_table (lookup_table)
 
-class PanelWindow (gtk.Window):
-	def __init__ (self):
-		gtk.Window.__init__ (self, gtk.WINDOW_POPUP)
-		self._panel_bar = PanelBar ()
-		self._panel_bar.connect ("size-request", self._size_request_cb)
-		self.add (self._panel_bar)
-		self.show_all ()
+	def show_candidate_window (self):
+		self._candidate_panel.show ()
 
-	def _size_request_cb (self, widget, size):
-		self.resize (size.width, size.height)
+	def hide_candidate_window (self):
+		self._candidate_panel.hide ()
 
-	def do_size_allocate (self, allocation):
-		gtk.Window.do_size_allocate (self, allocation)
-		root = gdk.get_default_root_window ()
-		workarea = root.property_get ("_NET_WORKAREA")[2]
-		x, y = workarea[2] - allocation.width - 40, workarea[1] + workarea[3] - allocation.height
-		self.move (x, y)
-		
-	def do_destroy (self):
-		gtk.main_quit ()
-		gtk.Window.do_destroy (self)
+	def show_language_bar (self):
+		selk._language_bar.show ()
 
-gobject.type_register (PanelWindow, "IBusPanelWindow")
+	def hide_language_bar (self):
+		selk._language_bar.hide ()
 
 class PanelProxy (interface.IPanel):
 	def __init__ (self, dbusconn, object_path):
 		interface.IPanel.__init__ (self, dbusconn, object_path)
 		self._dbusconn = dbusconn
-		self._panel = PanelWindow ()
+		self._panel = Panel (self)
+
+	def SetCursorLocation (self, x, y, w, h):
+		self._panel.set_cursor_location (x, y, w, h)
+	
+	def SetPreeditString (self, text, attrs, cursor_pos):
+		attrs = ibus.attr_list_from_dbus_value (attrs)
+		self._panel.set_preedit_string (text, atrrs, cursor_pos)
+
+	def ShowPreeditString (self):
+		self._panel.show_preedit_string ()
+
+	def HidePreeditString (self):
+		self._panel.hide_preedit_string ()
+
+	def SetAuxString (self, text, attrs):
+		attrs = ibus.attr_list_from_dbus_value (attrs)
+		self._panel.set_aux_string (text, attrs)
+
+	def ShowAuxString (self):
+		self._panel.show_aux_string ()
+
+	def HideAuxString (self):
+		self._panel.hide_aux_string ()
+
+	def UpdateLookupTable (self, lookup_table):
+		self._panel.update_lookup_table ()
+
+	def ShowCandidateWindow (self):
+		self._panel.show_candidate_window ()
+
+	def HideCandidateWindow (self):
+		self._panel.hide_candidate_window ()
+
+	def ShowLanguageBar (self):
+		self._panel.show_language_bar ()
+
+	def HideLanguageBar (self):
+		self._panel.hide_language_bar ()
 
 	def Destroy (self):
-		self._panel.destroy ()
+		self._pabel.destroy ()
 

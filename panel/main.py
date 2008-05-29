@@ -26,7 +26,7 @@ class PanelApplication:
 
 def main ():
 	# gtk.settings_get_default ().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
-	gtk.rc_parse ("./themes/default/gtkrc")
+	# gtk.rc_parse ("./themes/default/gtkrc")
 	PanelApplication ().run ()
 
 if __name__ == "__main__":

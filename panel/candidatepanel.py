@@ -3,6 +3,7 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import pango
+from ibus.gtk import PangoAttrList
 
 class HSeparator (gtk.HBox):
 	def __init__ (self):
@@ -196,6 +197,7 @@ class CandidatePanel (gtk.VBox):
 		self._preedit_label.hide ()
 
 	def set_aux_string (self, text, attrs):
+		attrs = PangoAttrList (attrs)
 		self._aux_string = text
 		self._aux_label.set_text (text)
 		if attrs == None:
@@ -203,7 +205,8 @@ class CandidatePanel (gtk.VBox):
 		self._aux_attrs = attrs
 		self._aux_label.set_attributes (attrs)
 
-	def set_preedit_string (self, text, attrs):
+	def set_preedit_string (self, text, attrs, cursor_pos):
+		attrs = PangoAttrList (attrs)
 		self._preedit_string = text
 		self._preedit_label.set_text (text)
 		if attrs == None:
@@ -214,6 +217,8 @@ class CandidatePanel (gtk.VBox):
 	def set_lookup_table (self, lookup_table):
 		self._lookup_table = lookup_table
 		candidates = self._lookup_table.get_canidates_in_current_page ()
+		candidates = map (lambda x: (x[0], PangoAttrList (x[1])), candidates)
+		self._candidate_area.set_candidates (candidates)
 
 	def set_orientation (self, orientation):
 		if self._orientation == orientation:

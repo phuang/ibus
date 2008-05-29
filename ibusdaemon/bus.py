@@ -103,6 +103,7 @@ class IBus (ibus.Object):
 	def set_cursor_location (self, x, y, w, h, dbusconn):
 		client = self._lookup_client (dbusconn)
 		client.set_cursor_location (x, y, w, h)
+		self._panel.set_cursor_location (x, y, w, h)
 
 	def _filter_hotkeys (self, client, keyval, is_press, state):
 		if is_press and keyval == keysyms.space \
@@ -131,22 +132,22 @@ class IBus (ibus.Object):
 	def _aux_string_changed_cb (self, client, text, attrs):
 		assert self._focused_client == client
 
-		self._pabel.set_aux_string (text, attrs)
+		self._panel.set_aux_string (text, attrs)
 
 	def _update_lookup_table_cb (self, client, lookup_table):
 		assert self._focused_client == client
 
-		self._pabel.update_lookup_table (lookup_table)
+		self._panel.update_lookup_table (lookup_table)
 
 	def _show_lookup_table_cb (self, client, lookup_table):
 		assert self._focused_client == client
 
-		self._pabel.show_candidate_window ()
+		self._panel.show_candidate_window ()
 
 	def _hide_lookup_table_cb (self, client, lookup_table):
 		assert self._focused_client == client
 
-		self._pabel.hide_candidate_window ()
+		self._panel.hide_candidate_window ()
 
 	##########################################################
 	# methods for im engines

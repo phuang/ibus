@@ -13,6 +13,9 @@ class Panel (ibus.Object):
 		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
 		self._ibusconn.connect ("dbus-signal", self._dbus_signal_cb)
 
+	def set_cursor_location (self, x, y, w, h):
+		self._panel.SetCursorLocation (x, y, w, h)
+
 	def set_preedit_string (self, text, attrs, cursor_pos):
 		self._panel.SetPreeditString (text, attrs, cursor_pos)
 
