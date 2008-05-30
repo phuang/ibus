@@ -55,12 +55,17 @@ class Engine (interface.IEngine):
 				if self._lookup_table.page_down ():
 					self._update_lookup_table ()
 				return True
-		if (keyval >= keysyms.a and keyval <= keysyms.z) or \
-			(keyval >= keysyms.A and keyval <= keysyms.Z):
+		if keyval in xrange (keysyms.a, keysyms.z + 1) or \
+			keyval in xrange (keysyms.A, keysyms.Z + 1):
 			if state & (keysyms.CONTROL_MASK | keysyms.ALT_MASK) == 0:
 				self._preedit_string += chr (keyval)
 				self._update ()
 				return True
+		else:
+			if keyval < 128 and self._preedit_string:
+				self.CommitString (self._preedit_string)
+				self._preedit_string = ""
+				self._update ()
 
 		return False
 
@@ -74,9 +79,9 @@ class Engine (interface.IEngine):
 				for text in self._dict.suggest (self._preedit_string):
 					self._lookup_table.append_candidate (text)
 
+		self.AuxStringChanged (self._preedit_string, attrs.to_dbus_value ())
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, preedit_len))
 		self.PreeditChanged (self._preedit_string, attrs.to_dbus_value (), dbus.Int32 (preedit_len))
-		self.AuxStringChanged (self._preedit_string, attrs.to_dbus_value ())
 		self._update_lookup_table ()
 
 	def _update_lookup_table (self):
