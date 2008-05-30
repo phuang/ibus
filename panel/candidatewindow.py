@@ -5,6 +5,17 @@ import ibus
 from candidatepanel import CandidatePanel
 
 class CandidateWindow (gtk.Window):
+	__gsignals__ = {
+		"cursor-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+	}
+
 	def __init__ (self):
 		gtk.Window.__init__ (self, gtk.WINDOW_POPUP)
 		self.add_events (
@@ -15,6 +26,8 @@ class CandidateWindow (gtk.Window):
 		self._candidate_panel = CandidatePanel ()
 		self._begin_move = False
 		self._candidate_panel.connect ("size-request", self._size_request_cb)
+		self._candidate_panel.connect ("cursor-up", lambda x: self.emit ("cursor-up"))
+		self._candidate_panel.connect ("cursor-down", lambda x: self.emit ("cursor-down"))
 		self.add (self._candidate_panel)
 		self.move (100, 100)
 		self.show_all ()

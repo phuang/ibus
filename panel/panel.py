@@ -13,6 +13,8 @@ class Panel (gobject.GObject):
 		self._proxy = proxy
 		self._language_bar = LanguageBarWindow ()
 		self._candidate_panel = CandidateWindow ()
+		self._candidate_panel.connect ("cursor-up", lambda x: self._proxy.CursorUp ())
+		self._candidate_panel.connect ("cursor-down", lambda x: self._proxy.CursorDown ())
 
 	def set_cursor_location (self, x, y, w, h):
 		self._candidate_panel.move (x + w, y + h)

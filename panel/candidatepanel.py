@@ -92,6 +92,17 @@ class CandidatePanel (gtk.VBox):
 		gobject.PARAM_READWRITE)				# flags
 		}
 
+	__gsignals__ = {
+		"cursor-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+	}
+
 	def __init__ (self):
 		gtk.VBox.__init__ (self)
 		self._tooltips = gtk.Tooltips ()
@@ -130,20 +141,18 @@ class CandidatePanel (gtk.VBox):
 
 		# create candidates area
 		self._candidate_area = CandidateArea (self._orientation)
-		candidates = []
-		for i in xrange (0, 7):
-			candidates.append (("你好", pango.AttrList ()))
-		self._candidate_area.set_candidates (candidates)
 
 		# create state label
 		self._state_label = gtk.Label ()
 
 		# create buttons
 		self._prev_button = gtk.Button ()
+		self._prev_button.connect ("clicked", lambda x: self.emit ("cursor-up"))
 		self._prev_button.set_relief (gtk.RELIEF_NONE)
 		self._tooltips.set_tip (self._prev_button, "Previous candidate")
 
 		self._next_button = gtk.Button ()
+		self._next_button.connect ("clicked", lambda x: self.emit ("cursor-down"))
 		self._next_button.set_relief (gtk.RELIEF_NONE)
 		self._tooltips.set_tip (self._next_button, "Next candidate")
 
@@ -228,7 +237,7 @@ class CandidatePanel (gtk.VBox):
 		self._lookup_table = lookup_table
 		candidates = self._lookup_table.get_canidates_in_current_page ()
 		candidates = map (lambda x: (x[0], PangoAttrList (x[1])), candidates)
-		self._candidate_area.set_candidates (candidates)
+		self._candidate_area.set_candidates (candidates, self._lookup_table.get_cursor_pos_in_current_page ())
 
 	def set_orientation (self, orientation):
 		if self._orientation == orientation:

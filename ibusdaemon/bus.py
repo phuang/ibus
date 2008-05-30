@@ -44,6 +44,7 @@ class IBus (ibus.Object):
 	def register_client (self, name, dbusconn):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		client = self._client_manager.register_client (name, ibusconn)
+		client.connect ("destroy", self._client_destroy_cb)
 		factory = self._factory_manager.get_default_factory ()
 		if factory:
 			engine = factory.create_engine ()
@@ -151,6 +152,11 @@ class IBus (ibus.Object):
 
 		self._panel.hide_candidate_window ()
 
+	def _client_destroy_cb (self, client):
+		if client == self._focused_client:
+			del self._client_handlers[:]
+			self._focused_client = None
+
 	##########################################################
 	# methods for im engines
 	##########################################################
@@ -177,12 +183,35 @@ class IBus (ibus.Object):
 			self._panel.destroy ()
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		self._panel = Panel (ibusconn, object_path)
+		self._panel.connect ("page-up", self._panel_page_up_cb)
+		self._panel.connect ("page-down", self._panel_page_down_cb)
+		self._panel.connect ("cursor-up", self._panel_cursor_up_cb)
+		self._panel.connect ("cursor-down", self._panel_cursor_down_cb)
 		self._panel.connect ("destroy", self._panel_destroy_cb)
 
+	def _panel_page_up_cb (self, panel):
+		assert panel == self._panel
+		if self._focused_client:
+			self._focused_client.page_up ()
+	
+	def _panel_page_down_cb (self, panel):
+		assert panel == self._panel
+		if self._focused_client:
+			self._focused_client.page_down ()
+
+	def _panel_cursor_up_cb (self, panel):
+		assert panel == self._panel
+		if self._focused_client:
+			self._focused_client.cursor_up ()
+
+	def _panel_cursor_down_cb (self, panel):
+		assert panel == self._panel
+		if self._focused_client:
+			self._focused_client.cursor_down ()
 
 	def _panel_destroy_cb (self, panel):
-		if panel == self._panel:
-			self._panel = DummyPanel ()
+		assert panel == self._panel
+		self._panel = DummyPanel ()
 
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True

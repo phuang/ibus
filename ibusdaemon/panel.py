@@ -1,9 +1,27 @@
 import weakref
 import gobject
 import ibus
-from ibus import interface
 
 class Panel (ibus.Object):
+	__gsignals__ = {
+		"page-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"page-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+	}
+
 	def __init__ (self, ibusconn, object_path):
 		ibus.Object.__init__ (self)
 		self._ibusconn = ibusconn
@@ -63,14 +81,14 @@ class Panel (ibus.Object):
 		self.destroy ()
 
 	def _dbus_signal_cb (self, ibusconn, message):
-		if message.is_signal (interface.IBUS_PANEL_IFACE, "PageUp"):
-			pass
-		elif message.is_signal (interface.IBUS_PANEL_IFACE, "PageDown"):
-			pass
-		elif message.is_signal (interface.IBUS_PANEL_IFACE, "CursorBack"):
-			pass
-		elif message.is_signal (interface.IBUS_PANEL_IFACE, "CursorForward"):
-			pass
+		if message.is_signal (ibus.IBUS_PANEL_IFACE, "PageUp"):
+			self.emit ("page-up")
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PageDown"):
+			self.emit ("page-down")
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "CursorUp"):
+			self.emit ("cursor-up")
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "CursorDown"):
+			self.emit ("cursor-down")
 
 	# methods for cmp
 	# def __lt__ (self, other):
@@ -84,6 +102,8 @@ class Panel (ibus.Object):
 	#		y = other.get_info ()
 	#		if x[1] > y[1]: return True
 	#		if x[1] == y[1]: return x[0] > y[0]
+
+gobject.type_register (Panel)
 
 class DummyPanel:
 	pass

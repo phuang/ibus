@@ -34,7 +34,20 @@ class IEngine (dbus.service.Object):
 
 	@method ()
 	def Reset (self): pass
-
+	
+	# signals for lookup table
+	@method ()
+	def PageUp (self): pass
+	
+	@method ()
+	def PageDown (self): pass
+	
+	@method ()
+	def CursorUp (self): pass
+	
+	@method ()
+	def CursorDown (self): pass
+	
 	@method (in_signature = "b")
 	def SetEnable (self, enable): pass
 

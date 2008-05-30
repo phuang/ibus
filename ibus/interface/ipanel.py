@@ -65,8 +65,8 @@ class IPanel (dbus.service.Object):
 	def PageDown (self): pass
 
 	@signal ()
-	def CursorBack (self): pass
+	def CursorUp (self): pass
 
 	@signal ()
-	def CursorForward (self): pass
+	def CursorDown (self): pass
 

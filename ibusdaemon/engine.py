@@ -96,6 +96,20 @@ class Engine (ibus.Object):
 	def set_enable (self, enable):
 		self._engine.SetEnable (enable)
 
+	# cursor for lookup table
+
+	def page_up (self):
+		self._engine.PageUp ()
+
+	def page_down (self):
+		self._engine.PageDown ()
+	
+	def cursor_up (self):
+		self._engine.CursorUp ()
+	
+	def cursor_down (self):
+		self._engine.CursorDown ()
+
 	def destroy (self):
 		ibus.Object.destroy (self)
 		if self._engine:

@@ -81,6 +81,22 @@ class Client (ibus.Object):
 		if self._engine:
 			self._engine.reset ()
 
+	def page_up (self):
+		if self._engine:
+			self._engine.page_up ()
+	
+	def page_down (self):
+		if self._engine:
+			self._engine.page_down ()
+	
+	def cursor_up (self):
+		if self._engine:
+			self._engine.cursor_up ()
+	
+	def cursor_down (self):
+		if self._engine:
+			self._engine.cursor_down ()
+
 	def is_enabled (self):
 		return self._enable
 
