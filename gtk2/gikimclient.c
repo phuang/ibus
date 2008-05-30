@@ -45,7 +45,7 @@ struct _GikIMClientPrivate {
     gboolean         enable;
 
     GtkIMContext    *context;
-    
+
     /* preedit status */
     gchar           *preedit_string;
     PangoAttrList   *preedit_attrs;
@@ -67,32 +67,32 @@ static void     gik_im_client_preedit_changed
 
 static void     gik_im_client_sync_hotkeys (GikIMClient         *client);
 static gboolean _ibus_call_with_reply_and_block
-                                           (DBusConnection      *connection, 
-                                            const gchar         *method, 
-                                            int                 first_arg_type, 
+                                           (DBusConnection      *connection,
+                                            const gchar         *method,
+                                            int                 first_arg_type,
                                                                 ...);
-static gboolean _ibus_call_with_reply      (DBusConnection      *connection, 
+static gboolean _ibus_call_with_reply      (DBusConnection      *connection,
                                             const gchar         *method,
                                             DBusPendingCallNotifyFunction
                                                                 function,
                                             void                *data,
                                             DBusFreeFunction    free_function,
-                                            int                 first_arg_type, 
+                                            int                 first_arg_type,
                                                                 ...);
-static gboolean _dbus_call_with_reply_and_block 
+static gboolean _dbus_call_with_reply_and_block
                                            (DBusConnection      *connection,
                                             const gchar         *dest,
                                             const gchar         *path,
                                             const gchar         *iface,
                                             const char          *method,
-                                            gint                first_arg_type, 
+                                            gint                first_arg_type,
                                                                 ...);
 
 /* callback functions */
 static DBusHandlerResult
-                _gik_im_client_message_filter_cb 
+                _gik_im_client_message_filter_cb
                                             (DBusConnection      *connection,
-                                             DBusMessage         *message, 
+                                             DBusMessage         *message,
                                              void                *user_data);
 
 static void     _dbus_name_owner_changed_cb (DBusGProxy          *proxy,
@@ -114,7 +114,7 @@ gik_im_client_get_type (void)
     return gik_type_im_client;
 }
 
-void 
+void
 gik_im_client_register_type (GTypeModule *type_module)
 {
     static const GTypeInfo gik_im_client_info = {
@@ -128,9 +128,9 @@ gik_im_client_register_type (GTypeModule *type_module)
         0,
         (GInstanceInitFunc)    gik_im_client_init,
     };
-    
+
     if (! gik_type_im_client ) {
-        gik_type_im_client = 
+        gik_type_im_client =
             g_type_module_register_type (type_module,
                 GTK_TYPE_OBJECT,
                 "GikIMClient",
@@ -150,12 +150,12 @@ gik_im_client_get_client (void)
     else {
         g_object_ref (_client);
     }
-    
+
     return _client;
 }
 
 
-static void 
+static void
 gik_im_client_class_init     (GikIMClientClass *klass)
 {
     GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass);
@@ -186,15 +186,15 @@ _gik_im_client_reinit_imm (GikIMClient *client)
                                 GIK_DBUS_PATH,
                                 GIK_DBUS_INTERFACE,
                                 &error);
-    
+
     if (priv->imm == NULL) {
         g_warning (error->message);
         g_error_free (error);
         return;
     }
-    
+
     error = NULL;
-    if (!dbus_g_proxy_call (priv->imm, "register_client", &error, 
+    if (!dbus_g_proxy_call (priv->imm, "register_client", &error,
                             G_TYPE_INVALID, G_TYPE_INVALID)) {
         g_warning ("%s", error->message);
         g_error_free (error);
@@ -219,7 +219,7 @@ _gik_im_client_ibus_open (GikIMClient *client)
 
 #if USE_DBUS_SESSION_BUS
     dbus_connection_setup_with_g_main (priv->dbus, NULL);
-    if (!_dbus_call_with_reply_and_block (priv->dbus, 
+    if (!_dbus_call_with_reply_and_block (priv->dbus,
                         IBUS_NAME, IBUS_PATH, IBUS_IFACE,
                         "GetIBusAddress",
                         DBUS_TYPE_INVALID,
@@ -242,8 +242,8 @@ _gik_im_client_ibus_open (GikIMClient *client)
         return;
     }
 
-    if (!dbus_connection_add_filter (priv->ibus, 
-            _gik_im_client_message_filter_cb, 
+    if (!dbus_connection_add_filter (priv->ibus,
+            _gik_im_client_message_filter_cb,
             client, NULL)) {
         g_warning ("Out of memory");
         return;
@@ -252,7 +252,7 @@ _gik_im_client_ibus_open (GikIMClient *client)
     const gchar *app_name = g_get_application_name ();
     _ibus_call_with_reply_and_block (priv->ibus, "RegisterClient",
                 DBUS_TYPE_STRING, &app_name,
-                DBUS_TYPE_INVALID, 
+                DBUS_TYPE_INVALID,
                 DBUS_TYPE_INVALID);
 
 }
@@ -264,7 +264,7 @@ _gik_im_client_ibus_close (GikIMClient *client)
 
     GikIMClientPrivate *priv;
     priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
-    
+
     if (priv->ibus) {
         dbus_connection_close (priv->ibus);
         dbus_connection_unref (priv->ibus);
@@ -272,7 +272,7 @@ _gik_im_client_ibus_close (GikIMClient *client)
     }
 }
 
-static void 
+static void
 gik_im_client_init (GikIMClient *obj)
 {
     DEBUG_FUNCTION_IN;
@@ -280,7 +280,7 @@ gik_im_client_init (GikIMClient *obj)
     DBusError error;
     GikIMClient *client = GIK_IM_CLIENT (obj);
     GikIMClientPrivate *priv;
-    
+
     priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
     client->priv = priv;
 
@@ -291,9 +291,9 @@ gik_im_client_init (GikIMClient *obj)
     priv->preedit_cursor = 0;
     priv->enable = FALSE;
 
-#if USE_DBUS_SESSION_BUS    
+#if USE_DBUS_SESSION_BUS
     /*
-     * Init dbus 
+     * Init dbus
      */
     dbus_error_init (&error);
     priv->dbus = dbus_bus_get (DBUS_BUS_SESSION, &error);
@@ -307,14 +307,14 @@ gik_im_client_init (GikIMClient *obj)
     _gik_im_client_ibus_open (client);
 
 #if USE_DBUS_SESSION_BUS
-    if (!dbus_connection_add_filter (priv->dbus, 
-            _gik_im_client_message_filter_cb, 
+    if (!dbus_connection_add_filter (priv->dbus,
+            _gik_im_client_message_filter_cb,
             client, NULL)) {
         g_warning ("Out of memory");
         return;
     }
 
-    gchar *rule = 
+    gchar *rule =
             "type='signal',"
             "sender='" DBUS_SERVICE_DBUS "',"
             "interface='" DBUS_INTERFACE_DBUS "',"
@@ -322,7 +322,7 @@ gik_im_client_init (GikIMClient *obj)
             "path='" DBUS_PATH_DBUS "',"
             "arg0='" IBUS_NAME "'";
 
-    if (!_dbus_call_with_reply_and_block (priv->dbus, 
+    if (!_dbus_call_with_reply_and_block (priv->dbus,
                         DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS,
                         "AddMatch",
                         DBUS_TYPE_STRING, &rule,
@@ -333,14 +333,14 @@ gik_im_client_init (GikIMClient *obj)
         return;
     }
 #endif
-#if 0    
+#if 0
     /* get dbus proxy */
     priv->dbus = dbus_g_proxy_new_for_name (priv->ibus,
                                 DBUS_SERVICE_DBUS,
                                 DBUS_PATH_DBUS,
                                 DBUS_INTERFACE_DBUS);
     g_assert (priv->dbus != NULL);
-    
+
     /* connect NameOwnerChanged signal */
     dbus_g_proxy_add_signal (priv->dbus, "NameOwnerChanged",
                                 G_TYPE_STRING,
@@ -348,7 +348,7 @@ gik_im_client_init (GikIMClient *obj)
                                 G_TYPE_STRING,
                                 G_TYPE_INVALID);
 
-    dbus_g_proxy_connect_signal (priv->dbus, "NameOwnerChanged", 
+    dbus_g_proxy_connect_signal (priv->dbus, "NameOwnerChanged",
                                 G_CALLBACK (_dbus_name_owner_changed_cb),
                                 (gpointer)client, NULL);
     dbus_bus_add_match ((DBusConnection *)dbus_g_connection_get_connection (priv->ibus),
@@ -357,12 +357,12 @@ gik_im_client_init (GikIMClient *obj)
                         "',interface='" DBUS_INTERFACE_DBUS
                         "',path='" DBUS_PATH_DBUS
                         "',member='NameOwnerChanged',"
-                        "arg0='" GIK_DBUS_SERVICE "'", 
+                        "arg0='" GIK_DBUS_SERVICE "'",
                         &dbus_error);
-     
+
      _gik_im_client_reinit_imm (client);
 #endif
- 
+
 }
 
 
@@ -391,7 +391,7 @@ gik_im_client_finalize (GObject *obj)
     _gik_im_client_ibus_close (client);
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
-    
+
     _client = NULL;
 }
 
@@ -450,7 +450,7 @@ _gik_signal_commit_string_handler (DBusConnection *connection, DBusMessage *mess
     /* Handle CommitString signal */
     DBusError error = {0};
     gchar *string = NULL;
-    
+
     if (!dbus_message_get_args (message, &error,
             DBUS_TYPE_STRING, &string, DBUS_TYPE_INVALID)) {
         g_warning ("%s", error.message);
@@ -471,7 +471,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
     DBusMessageIter iter, sub_iter;
     gint type, sub_type;
     PangoAttrList *attrs = NULL;
-    
+
     if (!dbus_message_iter_init (message, &iter)) {
         g_warning ("The PreeditChanged signal does have args!");
         return;
@@ -485,68 +485,73 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
     dbus_message_iter_get_basic (&iter, &string);
     dbus_message_iter_next (&iter);
 
-    
+
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_ARRAY) {
         g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
         return;
     }
+
     dbus_message_iter_recurse (&iter, &sub_iter);
-    if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
-        dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_INT32 ) {
-        g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
-        return;
-    }
 
-    attrs = pango_attr_list_new ();
-    while ((sub_type = dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID)) {
-        PangoAttribute *attr;
-        DBusMessageIter sub_sub_iter;
-        guint *values = NULL;
-        gint length = 0;
-        dbus_message_iter_recurse (&sub_iter, &sub_sub_iter);
-        dbus_message_iter_get_fixed_array (&sub_sub_iter, &values, &length);
-        
-        if (length <= 0) {
-            g_warning ("The element of the second argument of PreeditChanged should not be a empty array");
-            continue;
+    if (dbus_message_iter_get_array_len (&sub_iter) > 0) {
+        if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
+            dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_INT32 ) {
+            g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
+            return;
         }
 
-        switch (values[0]) {
-        case 1: /* Underline */
-            attr = pango_attr_underline_new (values[1]);
-            attr->start_index = values[2];
-            attr->end_index = values[3];
-            pango_attr_list_insert (attrs, attr);
-            break;
+        attrs = pango_attr_list_new ();
 
-        case 2: /* Foreground Color */
-            attr = pango_attr_foreground_new (
-                            (values[1] & 0xff0000) >> 8, 
-                            (values[1] & 0x00ff00), 
-                            (values[1] & 0x0000ff) << 8 
-                            );
-            attr->start_index = values[2];
-            attr->end_index = values[3];
-            pango_attr_list_insert (attrs, attr);
-            break;
-        case 3: /* Background Color */
-            attr = pango_attr_background_new (
-                            (values[1] & 0xff0000) >> 8, 
-                            (values[1] & 0x00ff00), 
-                            (values[1] & 0x0000ff) << 8 
-                            );
-            attr->start_index = values[2];
-            attr->end_index = values[3];
-            pango_attr_list_insert (attrs, attr);
-            break;
-        default:
-            g_warning ("Unkown type attribute type = %d", values[0]);
+        while ((sub_type = dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID)) {
+            PangoAttribute *attr;
+            DBusMessageIter sub_sub_iter;
+            guint *values = NULL;
+            gint length = 0;
+            dbus_message_iter_recurse (&sub_iter, &sub_sub_iter);
+            dbus_message_iter_get_fixed_array (&sub_sub_iter, &values, &length);
+
+            if (length <= 0) {
+                g_warning ("The element of the second argument of PreeditChanged should not be a empty array");
+                continue;
+            }
+
+            switch (values[0]) {
+            case 1: /* Underline */
+                attr = pango_attr_underline_new (values[1]);
+                attr->start_index = values[2];
+                attr->end_index = values[3];
+                pango_attr_list_insert (attrs, attr);
+                break;
+
+            case 2: /* Foreground Color */
+                attr = pango_attr_foreground_new (
+                                (values[1] & 0xff0000) >> 8,
+                                (values[1] & 0x00ff00),
+                                (values[1] & 0x0000ff) << 8
+                                );
+                attr->start_index = values[2];
+                attr->end_index = values[3];
+                pango_attr_list_insert (attrs, attr);
+                break;
+            case 3: /* Background Color */
+                attr = pango_attr_background_new (
+                                (values[1] & 0xff0000) >> 8,
+                                (values[1] & 0x00ff00),
+                                (values[1] & 0x0000ff) << 8
+                                );
+                attr->start_index = values[2];
+                attr->end_index = values[3];
+                pango_attr_list_insert (attrs, attr);
+                break;
+            default:
+                g_warning ("Unkown type attribute type = %d", values[0]);
+
+            }
+
+            dbus_message_iter_next (&sub_iter);
 
         }
-
-        dbus_message_iter_next (&sub_iter);
-
     }
     dbus_message_iter_next (&iter);
 
@@ -568,14 +573,14 @@ static void
 _gik_signal_name_owner_changed_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
 {
     GikIMClientPrivate *priv = client->priv;
-    
+
     gchar *name = NULL;
     gchar *old_name = NULL;
     gchar *new_name = NULL;
     DBusError error = {0};
 
-    if (!dbus_message_get_args (message, &error, 
-            DBUS_TYPE_STRING, &name, 
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &name,
             DBUS_TYPE_STRING, &old_name,
             DBUS_TYPE_STRING, &new_name,
             DBUS_TYPE_INVALID)) {
@@ -613,7 +618,7 @@ static DBusHandlerResult
 _gik_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *message, void *user_data)
 {
     GikIMClient *client = (GikIMClient *) user_data;
-    
+
     static struct SIGNAL_HANDLER {
         const gchar *iface;
         const gchar *name;
@@ -631,16 +636,16 @@ _gik_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *messa
     for (i = 0; handlers[i].iface != NULL; i++) {
         if (dbus_message_is_signal (message, handlers[i].iface, handlers[i].name)) {
             handlers[i].handler (connection, message, client);
-            return DBUS_HANDLER_RESULT_HANDLED; 
+            return DBUS_HANDLER_RESULT_HANDLED;
         }
     }
-    
-    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; 
+
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 inline static gboolean
 _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
-    const gchar *dest, const gchar *path, const gchar* iface, const char *method, 
+    const gchar *dest, const gchar *path, const gchar* iface, const char *method,
     gint first_arg_type, va_list args)
 {
     DBusMessage *message, *reply;
@@ -648,21 +653,21 @@ _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
     int type;
 
     g_return_val_if_fail (connection != NULL, FALSE);
-    
-    message = dbus_message_new_method_call (dest, 
+
+    message = dbus_message_new_method_call (dest,
                                     path, iface, method);
     if (!message) {
         g_warning ("Out of memory!");
         return FALSE;
     }
-    
+
     if (!dbus_message_append_args_valist (message, first_arg_type, args)) {
         dbus_message_unref (message);
         g_warning ("Can not create call message");
         return FALSE;
     }
 
-    reply = dbus_connection_send_with_reply_and_block (connection, 
+    reply = dbus_connection_send_with_reply_and_block (connection,
                         message, -1, &error);
 
     dbus_message_unref (message);
@@ -694,21 +699,21 @@ _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
         return FALSE;
     }
     dbus_message_unref (reply);
-    
+
     return TRUE;
 
 }
 
 inline static gboolean
-_dbus_call_with_reply_and_block (DBusConnection *connection, 
-    const gchar *dest, const gchar *path, const gchar* iface, const char *method, 
+_dbus_call_with_reply_and_block (DBusConnection *connection,
+    const gchar *dest, const gchar *path, const gchar* iface, const char *method,
     gint first_arg_type, ...)
 {
     va_list args;
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = _dbus_call_with_reply_and_block_valist (connection, 
+    retval = _dbus_call_with_reply_and_block_valist (connection,
                     dest, path, iface, method, first_arg_type, args);
     va_end (args);
 
@@ -723,7 +728,7 @@ _ibus_call_with_reply_and_block (DBusConnection *connection, const gchar *method
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = _dbus_call_with_reply_and_block_valist (connection, 
+    retval = _dbus_call_with_reply_and_block_valist (connection,
                     IBUS_NAME, IBUS_PATH, IBUS_IFACE, method, first_arg_type, args);
     va_end (args);
 
@@ -735,7 +740,7 @@ _ibus_call_with_reply_and_block (DBusConnection *connection, const gchar *method
 inline static gboolean
 _dbus_call_with_reply_valist (DBusConnection *connection,
     const gchar *dest, const gchar *path, const gchar* iface, const char *method,
-    DBusPendingCallNotifyFunction notify_function, 
+    DBusPendingCallNotifyFunction notify_function,
     void *user_data, DBusFreeFunction free_function,
     gint first_arg_type, va_list args)
 {
@@ -747,22 +752,22 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
     if (connection == NULL) {
         g_warning ("connection != NULL failed");
         goto error;
-        
+
     }
-    
-    message = dbus_message_new_method_call (dest, 
+
+    message = dbus_message_new_method_call (dest,
                                     path, iface, method);
     if (!message) {
         g_warning ("Out of memory!");
         goto error;
     }
-    
+
     if (!dbus_message_append_args_valist (message, first_arg_type, args)) {
         g_warning ("Can not create call message");
         goto error;
     }
 
-    if (!dbus_connection_send_with_reply (connection, 
+    if (!dbus_connection_send_with_reply (connection,
                         message, &pendingcall, -1)) {
         g_warning ("Out of memory!");
         goto error;
@@ -776,7 +781,7 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
 
     dbus_message_unref (message);
     return TRUE;
-   
+
 error:
     if (message)
         dbus_message_unref (message);
@@ -788,9 +793,9 @@ error:
 }
 
 inline static gboolean
-_dbus_call_with_reply (DBusConnection *connection, 
+_dbus_call_with_reply (DBusConnection *connection,
     const gchar *dest, const gchar *path, const gchar* iface, const char *method,
-    DBusPendingCallNotifyFunction notify_function, 
+    DBusPendingCallNotifyFunction notify_function,
     void *user_data, DBusFreeFunction free_function,
     gint first_arg_type, ...)
 {
@@ -798,7 +803,7 @@ _dbus_call_with_reply (DBusConnection *connection,
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = _dbus_call_with_reply_valist (connection, 
+    retval = _dbus_call_with_reply_valist (connection,
                     dest, path, iface, method,
                     notify_function,
                     user_data, free_function,
@@ -813,7 +818,7 @@ _dbus_call_with_reply (DBusConnection *connection,
 
 static gboolean
 _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
-       DBusPendingCallNotifyFunction notify_function, 
+       DBusPendingCallNotifyFunction notify_function,
        void *user_data, DBusFreeFunction free_function,
        int first_arg_type, ...)
 {
@@ -821,10 +826,10 @@ _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = _dbus_call_with_reply_valist (connection, 
-                    IBUS_NAME, IBUS_PATH, IBUS_IFACE, 
-                    method, notify_function, 
-                    user_data, free_function, 
+    retval = _dbus_call_with_reply_valist (connection,
+                    IBUS_NAME, IBUS_PATH, IBUS_IFACE,
+                    method, notify_function,
+                    user_data, free_function,
                     first_arg_type, args);
     va_end (args);
 
@@ -840,7 +845,7 @@ _gik_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
     GdkEvent *event = (GdkEvent *) user_data;
     gboolean retval;
 
-    
+
     reply = dbus_pending_call_steal_reply (pending);
     dbus_pending_call_unref (pending);
 
@@ -850,7 +855,7 @@ _gik_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
         retval = FALSE;
     }
     else {
-        if (!dbus_message_get_args (reply, &error, 
+        if (!dbus_message_get_args (reply, &error,
                 DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID)) {
             g_warning ("%s", error.message);
             dbus_error_free (&error);
@@ -868,16 +873,16 @@ gboolean
 gik_im_client_filter_keypress (GikIMClient *client, GdkEventKey *event)
 {
     GikIMClientPrivate *priv = client->priv;
-    
+
     guint state = event->state & GDK_MODIFIER_MASK;
     gboolean is_press = event->type == GDK_KEY_PRESS;
-   
+
     if (event->send_event) {
         return FALSE;
     }
 
     /* Call IBus ProcessKeyEvent method */
-    if (!_ibus_call_with_reply (priv->ibus, 
+    if (!_ibus_call_with_reply (priv->ibus,
             "ProcessKeyEvent",
             _gik_filter_keypress_reply_cb,
             gdk_event_copy ((GdkEvent *)event),
@@ -887,7 +892,7 @@ gik_im_client_filter_keypress (GikIMClient *client, GdkEventKey *event)
             DBUS_TYPE_UINT32, &state,
             DBUS_TYPE_INVALID))
         return FALSE;
-   
+
     return TRUE;
 }
 
@@ -896,8 +901,8 @@ void
 gik_im_client_focus_in (GikIMClient *client)
 {
     /* Call IBus FocusIn method */
-     _ibus_call_with_reply_and_block (client->priv->ibus, 
-            "FocusIn", 
+     _ibus_call_with_reply_and_block (client->priv->ibus,
+            "FocusIn",
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 }
@@ -906,8 +911,8 @@ void
 gik_im_client_focus_out (GikIMClient *client)
 {
     /* Call IBus FocusOut method */
-    _ibus_call_with_reply_and_block (client->priv->ibus, 
-            "FocusOut", 
+    _ibus_call_with_reply_and_block (client->priv->ibus,
+            "FocusOut",
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 
@@ -917,15 +922,15 @@ void
 gik_im_client_reset (GikIMClient *client)
 {
     /* Call IBus Reset method */
-    _ibus_call_with_reply_and_block (client->priv->ibus, 
-            "Reset", 
+    _ibus_call_with_reply_and_block (client->priv->ibus,
+            "Reset",
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 
 }
 
 
-gboolean     
+gboolean
 gik_im_client_get_preedit_string (
     GikIMClient *client,
     gchar         **str,
@@ -967,7 +972,7 @@ gik_im_client_set_cursor_location (GikIMClient *client, GdkRectangle *area)
 {
     GikIMClientPrivate *priv = client->priv;
 
-    _ibus_call_with_reply_and_block (client->priv->ibus, 
+    _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCursorLocation",
             DBUS_TYPE_INT32, &area->x,
             DBUS_TYPE_INT32, &area->y,
@@ -992,13 +997,13 @@ gik_im_client_sync_hotkeys (GikIMClient *client)
     gint i;
 
     GikIMClientPrivate *priv = client->priv;
-#if 0    
+#if 0
     g_return_if_fail (priv->imm != NULL);
 
     error = NULL;
-    if (!dbus_g_proxy_call (priv->imm, "get_hotkeys", &error, 
-                            G_TYPE_INVALID, 
-                            G_TYPE_STRV, &hotkeys, 
+    if (!dbus_g_proxy_call (priv->imm, "get_hotkeys", &error,
+                            G_TYPE_INVALID,
+                            G_TYPE_STRV, &hotkeys,
                             G_TYPE_INVALID)) {
         if (error) {
             g_warning ("%s", error->message);
@@ -1006,21 +1011,21 @@ gik_im_client_sync_hotkeys (GikIMClient *client)
         }
         return;
     }
-    
+
     for (i = 0; i < g_strv_length (hotkeys); i++) {
         g_debug ("hotkeys[%d] = %s", i, hotkeys[i]);
     }
     g_strfreev (hotkeys);
 #endif
-    
+
 }
 
 /* Callback functions for slave context */
 #if 0
 static void
 _dbus_name_owner_changed_cb (
-    DBusGProxy *proxy, 
-    const gchar *name, 
+    DBusGProxy *proxy,
+    const gchar *name,
     const gchar *prev_owner,
     const gchar *new_owner,
     GikIMClient *client)
