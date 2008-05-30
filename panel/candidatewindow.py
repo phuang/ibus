@@ -28,12 +28,13 @@ class CandidateWindow (gtk.Window):
 		self._candidate_panel.connect ("size-request", self._size_request_cb)
 		self._candidate_panel.connect ("cursor-up", lambda x: self.emit ("cursor-up"))
 		self._candidate_panel.connect ("cursor-down", lambda x: self.emit ("cursor-down"))
+		self._candidate_panel.connect ("show", lambda x: self.show ())
+		self._candidate_panel.connect ("hide", lambda x: self.hide ())
 		self.add (self._candidate_panel)
 		self.move (100, 100)
-		self.show_all ()
 
-	def set_preedit_string (self, text, attrs, cursor_pos):
-		self._candidate_panel.set_preedit_string (text, attrs, cursor_pos)
+	def update_preedit (self, text, attrs, cursor_pos, show):
+		self._candidate_panel.update_preedit (text, attrs, cursor_pos, show)
 
 	def show_preedit_string (self, text, attrs):
 		self._candidate_panel.show_preedit_string ()
@@ -41,11 +42,15 @@ class CandidateWindow (gtk.Window):
 	def hide_preedit_string (self, text, attrs):
 		self._candidate_panel.hide_preedit_string ()
 
-	def set_aux_string (self, text, attrs):
-		self._candidate_panel.set_aux_string (text, attrs)
+	def update_aux_string (self, text, attrs, show):
+		self._candidate_panel.update_aux_string (text, attrs, show)
 
-	def set_lookup_table (self, lookup_table):
-		self._candidate_panel.set_lookup_table (lookup_table)
+	def update_lookup_table (self, lookup_table, show):
+		self._candidate_panel.update_lookup_table (lookup_table, show)
+
+	def reset (self):
+		self.hide ()
+		self._candidate_panel.reset ()
 
 	def _size_request_cb (self, widget, size):
 		self.resize (1, 1)

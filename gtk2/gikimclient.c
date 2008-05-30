@@ -50,6 +50,7 @@ struct _GikIMClientPrivate {
     gchar           *preedit_string;
     PangoAttrList   *preedit_attrs;
     gint             preedit_cursor;
+    gboolean         preedit_show;
 };
 
 /* functions prototype */
@@ -59,11 +60,12 @@ static void     gik_im_client_finalize     (GObject             *obj);
 
 static void     gik_im_client_commit_string(GikIMClient         *client,
                                             const gchar         *string);
-static void     gik_im_client_preedit_changed
+static void     gik_im_client_update_preedit
                                            (GikIMClient         *client,
                                             const gchar         *string,
                                             PangoAttrList       *attrs,
-                                            gint                cursor_pos);
+                                            gint                cursor_pos,
+                                            gboolean            show);
 
 static void     gik_im_client_sync_hotkeys (GikIMClient         *client);
 static gboolean _ibus_call_with_reply_and_block
@@ -421,7 +423,8 @@ gik_im_client_commit_string (GikIMClient *client, const gchar *string)
 }
 
 static void
-gik_im_client_preedit_changed (GikIMClient *client, const gchar *string, PangoAttrList *attrs, gint cursor_pos)
+gik_im_client_update_preedit (GikIMClient *client, const gchar *string,
+        PangoAttrList *attrs, gint cursor_pos, gboolean show)
 {
     GikIMClientPrivate *priv = client->priv;
     if (priv->preedit_string) {
@@ -439,6 +442,7 @@ gik_im_client_preedit_changed (GikIMClient *client, const gchar *string, PangoAt
     }
 
     priv->preedit_cursor = cursor_pos;
+    priv->preedit_show = show;
     if (priv->context) {
         g_signal_emit_by_name (priv->context, "preedit-changed");
     }
@@ -462,24 +466,26 @@ _gik_signal_commit_string_handler (DBusConnection *connection, DBusMessage *mess
 }
 
 static void
-_gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
+_gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
 {
-    /* Handle PreeditChanged signal */
+    /* Handle UpdatePreedit signal */
     DBusError error = {0};
-    gchar *string = NULL;
-    gint cursor = 0;
     DBusMessageIter iter, sub_iter;
     gint type, sub_type;
+
+    gchar *string = NULL;
     PangoAttrList *attrs = NULL;
+    gint cursor = 0;
+    gboolean show = False;
 
     if (!dbus_message_iter_init (message, &iter)) {
-        g_warning ("The PreeditChanged signal does have args!");
+        g_warning ("The UpdatePreedit signal does have args!");
         return;
     }
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_STRING) {
-        g_warning ("The frist argument of PreeditChanged signal must be a String");
+        g_warning ("The frist argument of UpdatePreedit signal must be a String");
         return;
     }
     dbus_message_iter_get_basic (&iter, &string);
@@ -488,7 +494,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_ARRAY) {
-        g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
+        g_warning ("The secode argument of UpdatePreedit signal must be a Struct Array");
         return;
     }
 
@@ -497,7 +503,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
     if (dbus_message_iter_get_array_len (&sub_iter) > 0) {
         if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
             dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_INT32 ) {
-            g_warning ("The secode argument of PreeditChanged signal must be a Struct Array");
+            g_warning ("The secode argument of UpdatePreedit signal must be a Struct Array");
             return;
         }
 
@@ -512,7 +518,7 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
             dbus_message_iter_get_fixed_array (&sub_sub_iter, &values, &length);
 
             if (length <= 0) {
-                g_warning ("The element of the second argument of PreeditChanged should not be a empty array");
+                g_warning ("The element of the second argument of UpdatePreedit should not be a empty array");
                 continue;
             }
 
@@ -557,14 +563,23 @@ _gik_signal_preedit_changed_handler (DBusConnection *connection, DBusMessage *me
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_INT32) {
-        g_warning ("The third argument of PreeditChanged signal must be an Int32 %c", type);
+        g_warning ("The third argument of UpdatePreedit signal must be an Int32 %c", type);
         pango_attr_list_unref (attrs);
         return;
     }
     dbus_message_iter_get_basic (&iter, &cursor);
     dbus_message_iter_next (&iter);
 
-    gik_im_client_preedit_changed (client, string, attrs, cursor);
+    type = dbus_message_iter_get_arg_type (&iter);
+    if (type != DBUS_TYPE_BOOLEAN) {
+        g_warning ("The third argument of UpdatePreedit signal must be an Int32 %c", type);
+        pango_attr_list_unref (attrs);
+        return;
+    }
+    dbus_message_iter_get_basic (&iter, &show);
+    dbus_message_iter_next (&iter);
+
+    gik_im_client_update_preedit (client, string, attrs, cursor, show);
     pango_attr_list_unref (attrs);
 
 }
@@ -626,7 +641,7 @@ _gik_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *messa
     } handlers[] = {
         { DBUS_INTERFACE_DBUS, "NameOwnerChanged", _gik_signal_name_owner_changed_handler },
         { IBUS_IFACE, "CommitString", _gik_signal_commit_string_handler },
-        { IBUS_IFACE, "PreeditChanged", _gik_signal_preedit_changed_handler },
+        { IBUS_IFACE, "UpdatePreedit", _gik_signal_update_preedit_handler },
         { IBUS_IFACE, "Enabled", _gik_signal_enabled_handler },
         { IBUS_IFACE, "Disabled", _gik_signal_disabled_handler },
         {0},
@@ -939,6 +954,13 @@ gik_im_client_get_preedit_string (
 )
 {
     GikIMClientPrivate *priv = client->priv;
+
+    if (priv->preedit_show) {
+        if (str) *str = g_strdup ("");
+        if (attrs) *attrs = pango_attr_list_new ();
+        if (cursor_pos) *cursor_pos = 0;
+        return True;
+    }
 
     if (str) {
         *str = g_strdup (priv->preedit_string ? priv->preedit_string: "");

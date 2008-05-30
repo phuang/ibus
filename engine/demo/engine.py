@@ -37,9 +37,10 @@ class Engine (interface.IEngine):
 				self._update ()
 				return True
 			elif keyval == keysyms.space:
-				self._commit_string (self._preedit_string)
-				self._preedit_string = ""
-				self._update ()
+				if self._lookup_table.get_number_of_candidates () > 0:
+					self._commit_string (self._lookup_table.get_current_candidate ()[0])
+				else:
+					self._commit_string (self._preedit_string)
 				return False
 			elif keyval >= keysyms._1 and keyval <= keysyms._9:
 				index = keyval - keysyms._1
@@ -103,14 +104,14 @@ class Engine (interface.IEngine):
 				attrs.append (ibus.AttributeForeground (0xff0000, 0, preedit_len))
 				for text in self._dict.suggest (self._preedit_string):
 					self._lookup_table.append_candidate (text)
-
-		self.AuxStringChanged (self._preedit_string, attrs.to_dbus_value ())
+		self.UpdateAuxString (self._preedit_string, attrs.to_dbus_value (), preedit_len > 0)
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, preedit_len))
-		self.PreeditChanged (self._preedit_string, attrs.to_dbus_value (), dbus.Int32 (preedit_len))
+		self.UpdatePreedit (self._preedit_string, attrs.to_dbus_value (), dbus.Int32 (preedit_len), preedit_len > 0)
 		self._update_lookup_table ()
 
 	def _update_lookup_table (self):
-		self.UpdateLookupTable (self._lookup_table.to_dbus_value ())
+		show = self._lookup_table.get_number_of_candidates () > 0
+		self.UpdateLookupTable (self._lookup_table.to_dbus_value (), show)
 
 
 	def FocusIn (self):

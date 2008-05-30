@@ -21,8 +21,8 @@ class IPanel (dbus.service.Object):
 	@method (in_signature="iiii")
 	def SetCursorLocation (self, x, y, w, h): pass
 
-	@method (in_signature="svu")
-	def SetPreeditString (self, text, attrs, cursor_pos): pass
+	@method (in_signature="svub")
+	def UpdatePreedit (self, text, attrs, cursor_pos, show): pass
 
 	@method ()
 	def ShowPreeditString (self): pass
@@ -30,8 +30,8 @@ class IPanel (dbus.service.Object):
 	@method ()
 	def HidePreeditString (self): pass
 
-	@method (in_signature="sv")
-	def SetAuxString (self, text, attrs): pass
+	@method (in_signature="svb")
+	def UpdateAuxString (self, text, attrs, show): pass
 
 	@method ()
 	def ShowAuxString (self): pass
@@ -39,8 +39,8 @@ class IPanel (dbus.service.Object):
 	@method ()
 	def HideAuxString (self): pass
 
-	@method (in_signature="v")
-	def UpdateLookupTable (self, lookup_table): pass
+	@method (in_signature="vb")
+	def UpdateLookupTable (self, lookup_table, show): pass
 
 	@method ()
 	def ShowCandidateWindow (self): pass
@@ -53,6 +53,9 @@ class IPanel (dbus.service.Object):
 
 	@method ()
 	def HideLanguageBar (self): pass
+
+	@method ()
+	def Reste (self): pass
 
 	@method ()
 	def Destroy (self): pass

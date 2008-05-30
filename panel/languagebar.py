@@ -55,6 +55,9 @@ class LanguageBarWindow (gtk.Window):
 	def _size_request_cb (self, widget, size):
 		self.resize (size.width, size.height)
 
+	def reset (self):
+		pass
+
 	def do_size_allocate (self, allocation):
 		gtk.Window.do_size_allocate (self, allocation)
 		root = gdk.get_default_root_window ()

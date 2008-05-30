@@ -3,26 +3,18 @@ import ibus
 
 class Client (ibus.Object):
 	__gsignals__ = {
-		"preedit-changed" : (
+		"update-preedit" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_INT)),
-		"aux-string-changed" : (
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
+		"update-aux-string" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
 		"update-lookup-table" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_PYOBJECT, )),
-		"show-lookup-table" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			()),
-		"hide-lookup-table" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			())
+			(gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
 	}
 
 	def __init__ (self, name, ibusconn):
@@ -113,12 +105,12 @@ class Client (ibus.Object):
 	def commit_string (self, text):
 		self._ibusconn.emit_dbus_signal ("CommitString", text)
 
-	def preedit_changed (self, text, attrs, cursor_pos):
+	def update_preedit (self, text, attrs, cursor_pos, show):
 		if self._use_preedit:
-			self._ibusconn.emit_dbus_signal ("PreeditChanged", text, attrs, cursor_pos)
+			self._ibusconn.emit_dbus_signal ("UpdatePreedit", text, attrs, cursor_pos, show)
 		else:
 			# show preedit on panel
-			self.emit ("preedit-changed", text, attrs, cursor_pos)
+			self.emit ("update-preedit", text, attrs, cursor_pos, show)
 
 	def set_engine (self, engine):
 		if self._engine == engine:
@@ -149,25 +141,17 @@ class Client (ibus.Object):
 	def _commit_string_cb (self, engine, text):
 		self.commit_string (text)
 
-	def _preedit_changed_cb (self, engine, text, attrs, cursor_pos):
-		self.preedit_changed (text, attrs, cursor_pos)
+	def _update_preedit_cb (self, engine, text, attrs, cursor_pos, show):
+		self.update_preedit (text, attrs, cursor_pos, show)
 
-	def _aux_string_changed_cb (self, engine, text, attrs):
+	def _update_aux_string_cb (self, engine, text, attrs, show):
 		self._aux_string = text
 		self._aux_attrs = attrs
-		self.emit ("aux-string-changed", text, attrs)
+		self.emit ("update-aux-string", text, attrs, show)
 
-	def _update_lookup_table_cb (self, engine, lookup_table):
+	def _update_lookup_table_cb (self, engine, lookup_table, show):
 		self._lookup_table = lookup_table
-		self.emit ("update-lookup-table", lookup_table)
-
-	def _show_lookup_table_cb (self, engine):
-		self._show_lookup_table = True
-		self.emit ("show-lookup-table")
-
-	def _hide_lookup_table_cb (self, engine):
-		self._show_lookup_table = False
-		self.emit ("hide-lookup-table")
+		self.emit ("update-lookup-table", lookup_table, show)
 
 	def _remove_engine_handlers (self):
 		assert self._engine != None
@@ -180,14 +164,10 @@ class Client (ibus.Object):
 		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("commit-string", self._commit_string_cb)
 		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("preedit-changed", self._preedit_changed_cb)
+		id = self._engine.connect ("update-preedit", self._update_preedit_cb)
 		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("aux-string-changed", self._aux_string_changed_cb)
+		id = self._engine.connect ("update-aux-string", self._update_aux_string_cb)
 		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("update-lookup-table", self._update_lookup_table_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("show-lookup-table", self._show_lookup_table_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("hide-lookup-table", self._hide_lookup_table_cb)
 		self._engine_handler_ids.append (id)
 gobject.type_register (Client)

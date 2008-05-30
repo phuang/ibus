@@ -34,20 +34,20 @@ class IEngine (dbus.service.Object):
 
 	@method ()
 	def Reset (self): pass
-	
+
 	# signals for lookup table
 	@method ()
 	def PageUp (self): pass
-	
+
 	@method ()
 	def PageDown (self): pass
-	
+
 	@method ()
 	def CursorUp (self): pass
-	
+
 	@method ()
 	def CursorDown (self): pass
-	
+
 	@method (in_signature = "b")
 	def SetEnable (self, enable): pass
 
@@ -63,18 +63,24 @@ class IEngine (dbus.service.Object):
 	@signal (signature="ubu")
 	def ForwardKeyEvent (self, keyval, is_press, state): pass
 
-	@signal (signature="saaii")
-	def PreeditChanged (self, text, attrs, cursor_pos): pass
+	@signal (signature="saaiib")
+	def UpdatePreedit (self, text, attrs, cursor_pos, show): pass
 
 	# below signals are optional. The engine could create and maintain panel by self.
 	@signal (signature="v")
 	def UpdateProperties (self, properties): pass
 
-	@signal (signature="sv")
-	def AuxStringChanged (self, text, attrs): pass
+	@signal (signature="svb")
+	def UpdateAuxString (self, text, attrs, show): pass
 
-	@signal (signature="v")
-	def UpdateLookupTable (self, lookup_table): pass
+	@signal ()
+	def ShowAuxStringChanged (self): pass
+
+	@signal ()
+	def HideAuxStringChanged (self): pass
+
+	@signal (signature="vb")
+	def UpdateLookupTable (self, lookup_table, show): pass
 
 	@signal ()
 	def ShowLookupTable (self): pass

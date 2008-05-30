@@ -34,8 +34,8 @@ class Panel (ibus.Object):
 	def set_cursor_location (self, x, y, w, h):
 		self._panel.SetCursorLocation (x, y, w, h)
 
-	def set_preedit_string (self, text, attrs, cursor_pos):
-		self._panel.SetPreeditString (text, attrs, cursor_pos)
+	def update_preedit (self, text, attrs, cursor_pos, show):
+		self._panel.UpdatePreedit (text, attrs, cursor_pos, show)
 
 	def show_preedit_string (self):
 		self._panel.ShowPreeditString ()
@@ -43,8 +43,8 @@ class Panel (ibus.Object):
 	def hide_preedit_string (self):
 		slef._panel.HidePreeditString ()
 
-	def set_aux_string (self, text, attrs):
-		self._panel.SetAuxString (text, attrs)
+	def update_aux_string (self, text, attrs, show):
+		self._panel.UpdateAuxString (text, attrs, show)
 
 	def show_aux_string (self):
 		self._panel.ShowAuxString ()
@@ -52,8 +52,8 @@ class Panel (ibus.Object):
 	def hide_aux_string (self):
 		slef._panel.HideAuxString ()
 
-	def update_lookup_table (self, lookup_table):
-		self._panel.UpdateLookupTable (lookup_table)
+	def update_lookup_table (self, lookup_table, show):
+		self._panel.UpdateLookupTable (lookup_table, show)
 
 	def show_candidate_window (self):
 		self._panel.ShowCandidateWindow ()
@@ -66,6 +66,9 @@ class Panel (ibus.Object):
 
 	def hide_language_bar (self):
 		self._panel.HideLanguageBar ()
+
+	def reset (self):
+		self._panel.Reste ()
 
 	def destroy (self):
 		if self._ibusconn != None:

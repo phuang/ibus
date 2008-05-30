@@ -18,9 +18,9 @@ class Panel (gobject.GObject):
 
 	def set_cursor_location (self, x, y, w, h):
 		self._candidate_panel.move (x + w, y + h)
-	
-	def set_preedit_string (self, text, attrs, cursor_pos):
-		self._candidate_panel.set_preedit_string (text, attrs, cursor_pos)
+
+	def update_preedit (self, text, attrs, cursor_pos, show):
+		self._candidate_panel.update_preedit (text, attrs, cursor_pos, show)
 
 	def show_preedit_string (self):
 		self._candidate_panel.show_preedit_string ()
@@ -28,17 +28,17 @@ class Panel (gobject.GObject):
 	def hide_preedit_string (self):
 		self._candidate_panel.hide_preedit_string ()
 
-	def set_aux_string (self, text, attrs):
-		self._candidate_panel.set_aux_string (text, attrs)
+	def update_aux_string (self, text, attrs, show):
+		self._candidate_panel.update_aux_string (text, attrs, show)
 
 	def show_aux_string (self):
 		self._candidate_panel.show_aux_string ()
 
 	def hide_aux_string (self):
 		self._candidate_panel.hide_aux_string ()
-	
-	def update_lookup_table (self, lookup_table):
-		self._candidate_panel.set_lookup_table (lookup_table)
+
+	def update_lookup_table (self, lookup_table, show):
+		self._candidate_panel.update_lookup_table (lookup_table, show)
 
 	def show_candidate_window (self):
 		self._candidate_panel.show ()
@@ -52,6 +52,10 @@ class Panel (gobject.GObject):
 	def hide_language_bar (self):
 		selk._language_bar.hide ()
 
+	def reset (self):
+		self._candidate_panel.reset ()
+		self._language_bar.reset ()
+
 class PanelProxy (interface.IPanel):
 	def __init__ (self, dbusconn, object_path):
 		interface.IPanel.__init__ (self, dbusconn, object_path)
@@ -60,10 +64,10 @@ class PanelProxy (interface.IPanel):
 
 	def SetCursorLocation (self, x, y, w, h):
 		self._panel.set_cursor_location (x, y, w, h)
-	
-	def SetPreeditString (self, text, attrs, cursor_pos):
+
+	def UpdatePreedit (self, text, attrs, cursor_pos, show):
 		attrs = ibus.attr_list_from_dbus_value (attrs)
-		self._panel.set_preedit_string (text, atrrs, cursor_pos)
+		self._panel.update_preedit (text, atrrs, cursor_pos, show)
 
 	def ShowPreeditString (self):
 		self._panel.show_preedit_string ()
@@ -71,9 +75,9 @@ class PanelProxy (interface.IPanel):
 	def HidePreeditString (self):
 		self._panel.hide_preedit_string ()
 
-	def SetAuxString (self, text, attrs):
+	def UpdateAuxString (self, text, attrs, show):
 		attrs = ibus.attr_list_from_dbus_value (attrs)
-		self._panel.set_aux_string (text, attrs)
+		self._panel.update_aux_string (text, attrs, show)
 
 	def ShowAuxString (self):
 		self._panel.show_aux_string ()
@@ -81,9 +85,9 @@ class PanelProxy (interface.IPanel):
 	def HideAuxString (self):
 		self._panel.hide_aux_string ()
 
-	def UpdateLookupTable (self, lookup_table):
+	def UpdateLookupTable (self, lookup_table, show):
 		lookup_table = ibus.lookup_table_from_dbus_value (lookup_table)
-		self._panel.update_lookup_table (lookup_table)
+		self._panel.update_lookup_table (lookup_table, show)
 
 	def ShowCandidateWindow (self):
 		self._panel.show_candidate_window ()
@@ -96,6 +100,9 @@ class PanelProxy (interface.IPanel):
 
 	def HideLanguageBar (self):
 		self._panel.hide_language_bar ()
+
+	def Reset (self):
+		self._panel.reset ()
 
 	def Destroy (self):
 		self._pabel.destroy ()

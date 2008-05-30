@@ -60,17 +60,14 @@ class IBus (ibus.Object):
 			self._focused_client.focus_out ()
 
 		# Install all callback functions
-		id = client.connect ("preedit-changed", self._preedit_changed_cb)
+		id = client.connect ("update-preedit", self._update_preedit_cb)
 		self._client_handlers.append (id)
-		id = client.connect ("aux-string-changed", self._aux_string_changed_cb)
+		id = client.connect ("update-aux-string", self._update_aux_string_cb)
 		self._client_handlers.append (id)
 		id = client.connect ("update-lookup-table", self._update_lookup_table_cb)
 		self._client_handlers.append (id)
-		id = client.connect ("show-lookup-table", self._show_lookup_table_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("hide-lookup-table", self._hide_lookup_table_cb)
-		self._client_handlers.append (id)
 
+		self._panel.reset ()
 		self._focused_client = client
 		self._last_focused_client = client
 		client.focus_in ()
@@ -83,9 +80,11 @@ class IBus (ibus.Object):
 			del self._client_handlers[:]
 			self._focused_client = None
 		client.focus_out ()
+		self._panel.reset ()
 
 	def reset (self, dbusconn):
 		client = self._lookup_client (dbusconn)
+		self._panel.reset ()
 		client.reset ()
 
 	def is_enabled (self, dbusconn):
@@ -127,20 +126,20 @@ class IBus (ibus.Object):
 			raise ibus.IBusException ("not register the client")
 		return self._clients[dbusconn]
 
-	def _preedit_changed_cb (self, client, text, attrs, cursor_pos):
+	def _update_preedit_cb (self, client, text, attrs, cursor_pos, show):
 		assert self._focused_client == client
 
-		self._panel.set_preedit_string (text, attrs, cursor_pos)
+		self._panel.update_preedit_string (text, attrs, cursor_pos, show)
 
-	def _aux_string_changed_cb (self, client, text, attrs):
+	def _update_aux_string_cb (self, client, text, attrs, show):
 		assert self._focused_client == client
 
-		self._panel.set_aux_string (text, attrs)
+		self._panel.update_aux_string (text, attrs, show)
 
-	def _update_lookup_table_cb (self, client, lookup_table):
+	def _update_lookup_table_cb (self, client, lookup_table, show):
 		assert self._focused_client == client
 
-		self._panel.update_lookup_table (lookup_table)
+		self._panel.update_lookup_table (lookup_table, show)
 
 	def _show_lookup_table_cb (self, client, lookup_table):
 		assert self._focused_client == client

@@ -82,7 +82,6 @@ class CandidateArea (gtk.HBox):
 		else:
 			self._labels[0][0].set_text ("1.")
 
-
 class CandidatePanel (gtk.VBox):
 	__gproperties__ = {
 		'orientation' : (gtk.Orientation,		# type
@@ -110,9 +109,11 @@ class CandidatePanel (gtk.VBox):
 		self._orientation = gtk.ORIENTATION_HORIZONTAL
 		self._orientation = gtk.ORIENTATION_VERTICAL
 		self._show_preedit_string = False
-		self._preedit_string = "preedit string"
+		self._show_aux_string = False
+		self._show_lookup_table = False
+		self._preedit_string = ""
 		self._preedit_attrs = pango.AttrList ()
-		self._aux_string = "aux string"
+		self._aux_string = ""
 		self._aux_attrs = pango.AttrList ()
 		self._lookup_table = None
 
@@ -138,9 +139,15 @@ class CandidatePanel (gtk.VBox):
 		self._aux_label.set_alignment (0.0, 0.5)
 		self._aux_label.set_padding (8, 0)
 		self._tooltips.set_tip (self._aux_label, "Aux string")
+		self._aux_label.set_no_show_all (True)
+		if self._show_aux_string:
+			self._aux_label.show ()
 
 		# create candidates area
 		self._candidate_area = CandidateArea (self._orientation)
+		self._candidate_area.set_no_show_all (True)
+		if self._show_lookup_table:
+			self._candidate_area.show_all ()
 
 		# create state label
 		self._state_label = gtk.Label ()
@@ -206,26 +213,22 @@ class CandidatePanel (gtk.VBox):
 		self.hide_all ()
 		self.show_all ()
 
-
 	def show_preedit_string (self):
 		self._show_preedit_string = True
 		self._preedit_label.show ()
+		self._check_show_states ()
 
 	def hide_preedit_string (self):
-		self._hide_preedit_string = False
+		self._show_preedit_string = False
 		self._preedit_label.hide ()
+		self._check_show_states ()
 
-	def set_aux_string (self, text, attrs):
+	def update_preedit (self, text, attrs, cursor_pos, show):
 		attrs = PangoAttrList (attrs)
-		self._aux_string = text
-		self._aux_label.set_text (text)
-		if attrs == None:
-			attrs = pango.AttrList ()
-		self._aux_attrs = attrs
-		self._aux_label.set_attributes (attrs)
-
-	def set_preedit_string (self, text, attrs, cursor_pos):
-		attrs = PangoAttrList (attrs)
+		if show:
+			self.show_preedit_string ()
+		else:
+			self.hide_preedit_string ()
 		self._preedit_string = text
 		self._preedit_label.set_text (text)
 		if attrs == None:
@@ -233,11 +236,75 @@ class CandidatePanel (gtk.VBox):
 		self._preedit_attrs = attrs
 		self._preedit_label.set_attributes (attrs)
 
-	def set_lookup_table (self, lookup_table):
+	def show_aux_string (self):
+		self._show_aux_string = True
+		self._aux_label.show ()
+		self._check_show_states ()
+
+	def hide_aux_string (self):
+		self._show_aux_string = False
+		self._aux_label.hide ()
+		self._check_show_states ()
+
+	def update_aux_string (self, text, attrs, show):
+		attrs = PangoAttrList (attrs)
+
+		if show:
+			self.show_aux_string ()
+		else:
+			self.hide_aux_string ()
+
+		self._aux_string = text
+		self._aux_label.set_text (text)
+		if attrs == None:
+			attrs = pango.AttrList ()
+		self._aux_attrs = attrs
+		self._aux_label.set_attributes (attrs)
+
+	def show_lookup_table (self):
+		self._show_lookup_table = True
+		self._candidate_area.set_no_show_all (False)
+		self._candidate_area.show_all ()
+		self._check_show_states ()
+
+	def hide_lookup_table (self):
+		self._show_lookup_table = False
+		self._candidate_area.hide_all ()
+		self._candidate_area.set_no_show_all (True)
+		self._check_show_states ()
+
+	def update_lookup_table (self, lookup_table, show):
+		if lookup_table == None:
+			lookup_table = ibus.LookupTable ()
+
+		if show:
+			self.show_lookup_table ()
+		else:
+			self.hide_lookup_table ()
+
 		self._lookup_table = lookup_table
 		candidates = self._lookup_table.get_canidates_in_current_page ()
 		candidates = map (lambda x: (x[0], PangoAttrList (x[1])), candidates)
 		self._candidate_area.set_candidates (candidates, self._lookup_table.get_cursor_pos_in_current_page ())
+
+	def _check_show_states (self):
+		if self._show_preedit_string or \
+			self._show_aux_string or \
+			self._show_lookup_table:
+			self.show_all ()
+			self.emit ("show")
+		else:
+			self.hide_all ()
+			self.emit ("hide")
+
+	def reset (self):
+		self.hide ()
+		self.hide_preedit_string ()
+		self.hide_aux_string ()
+		self.hide_lookup_table ()
+		self.set_preedit_string ("", None, 0)
+		self.set_aux_string ("", None)
+		self.set_lookup_table (None)
 
 	def set_orientation (self, orientation):
 		if self._orientation == orientation:
