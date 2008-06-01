@@ -54,8 +54,7 @@ class IBus (ibus.Object):
 		client = self._lookup_client (dbusconn)
 
 		if self._focused_client != client and self._focused_client != None:
-			for id in self._client_handlers:
-				client.disconnect (id)
+			map (self._focused_client.disconnect, self._client_handlers)
 			del self._client_handlers[:]
 			self._focused_client.focus_out ()
 
@@ -75,8 +74,7 @@ class IBus (ibus.Object):
 	def focus_out (self, dbusconn):
 		client = self._lookup_client (dbusconn)
 		if client == self._focused_client:
-			for id in self._client_handlers:
-				client.disconnect (id)
+			map (self._focused_client.disconnect, self._client_handlers)
 			del self._client_handlers[:]
 			self._focused_client = None
 		client.focus_out ()
