@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import os
 import sys
+import getpass
 import gobject
 import dbus.server
 import dbus.lowlevel
@@ -47,6 +49,10 @@ class IBusServer (dbus.server.Server):
 if __name__ == "__main__":
 	dbus.mainloop.glib.DBusGMainLoop (set_as_default = True)
 	loop = gobject.MainLoop ()
+	try:
+		os.mkdir ("/tmp/ibus-%s" % getpass.getuser ())
+	except:
+		pass
 	bus = IBusServer ()
 	print "IBUS_ADDRESS=\"%s\"" % bus.get_address ()
 	try:
