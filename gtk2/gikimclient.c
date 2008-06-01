@@ -17,17 +17,18 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
-#include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
+#include <sys/inotify.h>
 #include <string.h>
 #include <stdarg.h>
+#include <glib/gstdio.h>
+#include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
 #include "gikimclient.h"
 
 #define IBUS_NAME  "org.freedesktop.IBus"
@@ -41,6 +42,11 @@ struct _GikIMClientPrivate {
 #if USE_DBUS_SESSION_BUS
     DBusConnection  *dbus;
 #endif
+    /* inotify */
+    gint            inotify_wd;
+    GIOChannel      *inotify_channel;
+    guint           inotify_source;
+
     DBusConnection  *ibus;
     gboolean         enable;
 
@@ -213,11 +219,13 @@ _gik_im_client_reinit_imm (GikIMClient *client)
 static void
 _gik_im_client_ibus_open (GikIMClient *client)
 {
-    gchar *ibus_addr;
+    gchar *ibus_addr = NULL;
     DBusError error;
 
-    GikIMClientPrivate *priv;
-    priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
+    GikIMClientPrivate *priv = client->priv;
+
+    if (priv->ibus != NULL)
+        return;
 
 #if USE_DBUS_SESSION_BUS
     dbus_connection_setup_with_g_main (priv->dbus, NULL);
@@ -232,12 +240,15 @@ _gik_im_client_ibus_open (GikIMClient *client)
         return;
     }
 #endif
+    if (ibus_addr == NULL)
+        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus", g_get_user_name ());
 
     /*
      * Init ibus and proxy object
      */
     dbus_error_init (&error);
-    priv->ibus = dbus_connection_open_private (IBUS_ADDR, &error);
+    priv->ibus = dbus_connection_open_private (ibus_addr, &error);
+    g_free (ibus_addr);
     if (priv->ibus == NULL) {
         g_warning ("Error: %s", error.message);
         dbus_error_free (&error);
@@ -264,14 +275,37 @@ _gik_im_client_ibus_close (GikIMClient *client)
 {
     DBusError error;
 
-    GikIMClientPrivate *priv;
-    priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
+    GikIMClientPrivate *priv = client->priv;
 
     if (priv->ibus) {
         dbus_connection_close (priv->ibus);
         dbus_connection_unref (priv->ibus);
-        priv->ibus = None;
+        priv->ibus = NULL;
     }
+}
+
+static gboolean
+_gik_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, GikIMClient *client)
+{
+    struct inotify_event *p = NULL;
+    gsize n;
+
+    if (condition & G_IO_IN == 0)
+        return TRUE;
+
+    p = g_malloc0 (sizeof (struct inotify_event) + 1024);
+
+    g_io_channel_read_chars (source, (gchar *) p, sizeof (struct inotify_event),  &n, NULL);
+    g_io_channel_read_chars (source, ((gchar *)p) + sizeof (struct inotify_event), p->len,  &n, NULL);
+
+    if (g_strcmp0 (p->name, "ibus") == 0) {
+        if (p->mask & IN_CREATE) {
+            g_usleep (1000);
+            _gik_im_client_ibus_open (client);
+        }
+    }
+    g_free (p);
+
 }
 
 static void
@@ -282,6 +316,9 @@ gik_im_client_init (GikIMClient *obj)
     DBusError error;
     GikIMClient *client = GIK_IM_CLIENT (obj);
     GikIMClientPrivate *priv;
+    gint inotify_fd;
+    gchar *watch_path;
+    struct stat stat_buf;
 
     priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
     client->priv = priv;
@@ -292,6 +329,26 @@ gik_im_client_init (GikIMClient *obj)
     priv->preedit_attrs = NULL;
     priv->preedit_cursor = 0;
     priv->enable = FALSE;
+
+    /* init inotify */
+    watch_path = g_strdup_printf ("/tmp/ibus-%s", g_get_user_name ());
+
+    if (g_stat (watch_path, &stat_buf) != 0) {
+        g_mkdir (watch_path, 0750);
+    }
+
+    inotify_fd = inotify_init ();
+    priv->inotify_wd = inotify_add_watch (inotify_fd, watch_path, IN_CREATE | IN_DELETE);
+
+    priv->inotify_channel = g_io_channel_unix_new (inotify_fd);
+    g_io_channel_set_close_on_unref (priv->inotify_channel, TRUE);
+    priv->inotify_source = g_io_add_watch (priv->inotify_channel,
+                                    G_IO_IN,
+                                    (GIOFunc)_gik_im_client_inotify_cb,
+                                    (gpointer)client);
+    g_free (watch_path);
+
+
 
 #if USE_DBUS_SESSION_BUS
     /*
@@ -377,6 +434,9 @@ gik_im_client_finalize (GObject *obj)
     GikIMClientPrivate *priv = client->priv;
 
     g_assert (client == _client);
+
+    g_io_channel_unref (priv->inotify_channel);
+    g_source_remove (priv->inotify_source);
 
     if (priv->preedit_string) {
         g_free (priv->preedit_string);
@@ -584,6 +644,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
 }
 
+#ifdef USE_DBUS_SESSION_BUS
 static void
 _gik_signal_name_owner_changed_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
 {
@@ -605,7 +666,7 @@ _gik_signal_name_owner_changed_handler (DBusConnection *connection, DBusMessage 
 
     g_return_if_fail (strcmp (name, IBUS_NAME) == 0);
 
-    if (strcmp (new_name, "") == 0) {
+    if (g_strcmp0 (new_name, "") == 0) {
         _gik_im_client_ibus_close (client);
         priv->enable = FALSE;
     }
@@ -613,6 +674,13 @@ _gik_signal_name_owner_changed_handler (DBusConnection *connection, DBusMessage 
         _gik_im_client_ibus_open (client);
         priv->enable = TRUE;
     }
+}
+#endif
+
+static void
+_gik_signal_disconnected_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
+{
+    _gik_im_client_ibus_close (client);
 }
 
 static void
@@ -639,7 +707,10 @@ _gik_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *messa
         const gchar *name;
         void (* handler) (DBusConnection *, DBusMessage *, GikIMClient *);
     } handlers[] = {
+#ifdef USE_DBUS_SESSION_BUS
         { DBUS_INTERFACE_DBUS, "NameOwnerChanged", _gik_signal_name_owner_changed_handler },
+#endif
+        { DBUS_INTERFACE_LOCAL, "Disconnected", _gik_signal_disconnected_handler },
         { IBUS_IFACE, "CommitString", _gik_signal_commit_string_handler },
         { IBUS_IFACE, "UpdatePreedit", _gik_signal_update_preedit_handler },
         { IBUS_IFACE, "Enabled", _gik_signal_enabled_handler },
@@ -667,7 +738,8 @@ _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
     DBusError error = {0};
     int type;
 
-    g_return_val_if_fail (connection != NULL, FALSE);
+    if (connection == NULL)
+        return FALSE;
 
     message = dbus_message_new_method_call (dest,
                                     path, iface, method);
@@ -727,6 +799,9 @@ _dbus_call_with_reply_and_block (DBusConnection *connection,
     va_list args;
     gboolean retval;
 
+    if (connection == NULL)
+        return FALSE;
+
     va_start (args, first_arg_type);
     retval = _dbus_call_with_reply_and_block_valist (connection,
                     dest, path, iface, method, first_arg_type, args);
@@ -741,6 +816,9 @@ _ibus_call_with_reply_and_block (DBusConnection *connection, const gchar *method
 {
     va_list args;
     gboolean retval;
+
+    if (connection == NULL)
+        return FALSE;
 
     va_start (args, first_arg_type);
     retval = _dbus_call_with_reply_and_block_valist (connection,
@@ -765,9 +843,7 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
     int type;
 
     if (connection == NULL) {
-        g_warning ("connection != NULL failed");
         goto error;
-
     }
 
     message = dbus_message_new_method_call (dest,
@@ -817,6 +893,9 @@ _dbus_call_with_reply (DBusConnection *connection,
     va_list args;
     gboolean retval;
 
+    if (connection == NULL)
+        return FALSE;
+
     va_start (args, first_arg_type);
     retval = _dbus_call_with_reply_valist (connection,
                     dest, path, iface, method,
@@ -839,6 +918,9 @@ _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
 {
     va_list args;
     gboolean retval;
+
+    if (connection == NULL)
+        return FALSE;
 
     va_start (args, first_arg_type);
     retval = _dbus_call_with_reply_valist (connection,
@@ -955,11 +1037,11 @@ gik_im_client_get_preedit_string (
 {
     GikIMClientPrivate *priv = client->priv;
 
-    if (priv->preedit_show) {
+    if (!priv->preedit_show) {
         if (str) *str = g_strdup ("");
         if (attrs) *attrs = pango_attr_list_new ();
         if (cursor_pos) *cursor_pos = 0;
-        return True;
+        return TRUE;
     }
 
     if (str) {

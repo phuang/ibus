@@ -1,4 +1,6 @@
-IBUS_ADDR  = "unix:abstract=/tmp/ibus"
+import getpass
+
+IBUS_ADDR  = "unix:path=/tmp/ibus-%s/ibus" % getpass.getuser ()
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE = "org.freedesktop.IBus"

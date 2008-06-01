@@ -271,8 +271,8 @@ gik_im_context_get_preedit_string (GtkIMContext   *context,
     GikIMContextPrivate *priv = gik->priv;
    
     if (context == CURRENT_CONTEXT && 
-        gik_im_client_is_enabled (priv->client) &&
-        gik_im_client_get_preedit_string (priv->client, str, attrs, cursor_pos)) {
+        gik_im_client_is_enabled (priv->client)) {
+        gik_im_client_get_preedit_string (priv->client, str, attrs, cursor_pos);
         return;
     }
     gtk_im_context_get_preedit_string (gik->priv->slave, str, attrs, cursor_pos);
