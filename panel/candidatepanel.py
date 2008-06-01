@@ -151,6 +151,7 @@ class CandidatePanel (gtk.VBox):
 
 		# create state label
 		self._state_label = gtk.Label ()
+		self._state_label.set_size_request (20, -1)
 
 		# create buttons
 		self._prev_button = gtk.Button ()
