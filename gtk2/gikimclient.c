@@ -303,6 +303,8 @@ _gik_im_client_ibus_close (GikIMClient *client)
     if (priv->context) {
         g_signal_emit_by_name (priv->context, "preedit-changed");
     }
+
+    priv->enable = FALSE;
 }
 
 #ifdef HAVE_INOTIFY
