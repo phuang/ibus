@@ -282,6 +282,20 @@ _gik_im_client_ibus_close (GikIMClient *client)
         dbus_connection_unref (priv->ibus);
         priv->ibus = NULL;
     }
+
+    if (priv->preedit_string) {
+        g_free (priv->preedit_string);
+        priv->preedit_string = NULL;
+    }
+
+    if (priv->preedit_attrs) {
+        pango_attr_list_unref (priv->preedit_attrs);
+        priv->preedit_attrs = NULL;
+    }
+
+    if (priv->context) {
+        g_signal_emit_by_name (priv->context, "preedit-changed");
+    }
 }
 
 static gboolean
