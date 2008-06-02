@@ -574,7 +574,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
     dbus_message_iter_recurse (&iter, &sub_iter);
 
-    if (dbus_message_iter_get_array_len (&sub_iter) > 0) {
+    if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
         if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
             dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_INT32 ) {
             g_warning ("The secode argument of UpdatePreedit signal must be a Struct Array");
