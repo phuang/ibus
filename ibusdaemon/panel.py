@@ -108,5 +108,63 @@ class Panel (ibus.Object):
 
 gobject.type_register (Panel)
 
-class DummyPanel:
-	pass
+class DummyPanel (ibus.Object):
+	__gsignals__ = {
+		"page-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"page-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-up" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+		"cursor-down" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
+	}
+
+	def set_cursor_location (self, x, y, w, h):
+		pass
+
+	def update_preedit (self, text, attrs, cursor_pos, show):
+		pass
+
+	def show_preedit_string (self):
+		pass
+
+	def hide_preedit_string (self):
+		pass
+
+	def update_aux_string (self, text, attrs, show):
+		pass
+
+	def show_aux_string (self):
+		pass
+
+	def hide_aux_string (self):
+		pass
+
+	def update_lookup_table (self, lookup_table, show):
+		pass
+
+	def show_candidate_window (self):
+		pass
+
+	def hide_candidate_window (self):
+		pass
+
+	def show_language_bar (self):
+		pass
+
+	def hide_language_bar (self):
+		pass
+
+	def reset (self):
+		pass
+
+gobject.type_register (DummyPanel)
