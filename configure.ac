@@ -23,11 +23,11 @@
 # $Id: $
 #
 AC_INIT([ibus],[0.0.1],[https://bugs.launchpad.net/ibus],[ibus])
-  
 AM_INIT_AUTOMAKE([1.10])
+AC_GNU_SOURCE
+
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AC_GNU_SOURCE
 
 # define PACKAGE_VERSION_* variables
 AS_VERSION
@@ -42,7 +42,8 @@ AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
 
-
+# check inotify
+AC_CHECK_HEADERS([sys/inotify.h])
 
 # check glib2
 AM_PATH_GLIB_2_0

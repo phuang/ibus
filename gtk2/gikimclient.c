@@ -17,11 +17,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <config.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
-#include <sys/inotify.h>
 #include <string.h>
 #include <stdarg.h>
 #include <glib/gstdio.h>
@@ -29,6 +29,10 @@
 #include <gdk/gdkx.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
+#ifdef HAVE_SYS_INOTIFY_H
+#define HAVE_INOTIFY
+#  include <sys/inotify.h>
+#endif
 #include "gikimclient.h"
 
 #define IBUS_NAME  "org.freedesktop.IBus"
@@ -42,10 +46,13 @@ struct _GikIMClientPrivate {
 #if USE_DBUS_SESSION_BUS
     DBusConnection  *dbus;
 #endif
+
+#ifdef HAVE_INOTIFY
     /* inotify */
     gint            inotify_wd;
     GIOChannel      *inotify_channel;
     guint           inotify_source;
+#endif
 
     DBusConnection  *ibus;
     gboolean         enable;
@@ -298,6 +305,7 @@ _gik_im_client_ibus_close (GikIMClient *client)
     }
 }
 
+#ifdef HAVE_INOTIFY
 static gboolean
 _gik_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, GikIMClient *client)
 {
@@ -321,6 +329,7 @@ _gik_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, GikIMClie
     g_free (p);
 
 }
+#endif
 
 static void
 gik_im_client_init (GikIMClient *obj)
@@ -330,6 +339,8 @@ gik_im_client_init (GikIMClient *obj)
     DBusError error;
     GikIMClient *client = GIK_IM_CLIENT (obj);
     GikIMClientPrivate *priv;
+
+#ifdef HAVE_INOTIFY
     gint inotify_fd;
     gchar *watch_path;
     struct stat stat_buf;
@@ -361,8 +372,7 @@ gik_im_client_init (GikIMClient *obj)
                                     (GIOFunc)_gik_im_client_inotify_cb,
                                     (gpointer)client);
     g_free (watch_path);
-
-
+#endif
 
 #if USE_DBUS_SESSION_BUS
     /*
@@ -449,8 +459,10 @@ gik_im_client_finalize (GObject *obj)
 
     g_assert (client == _client);
 
+#ifdef HAVE_INOTIFY
     g_io_channel_unref (priv->inotify_channel);
     g_source_remove (priv->inotify_source);
+#endif
 
     if (priv->preedit_string) {
         g_free (priv->preedit_string);
