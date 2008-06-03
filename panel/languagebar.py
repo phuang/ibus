@@ -8,20 +8,23 @@ class LanguageBar (gtk.Toolbar):
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
 		self.set_property ("icon-size", gtk.ICON_SIZE_MENU)
+		icon_theme = gtk.icon_theme_get_default ()
+		icon_theme.prepend_search_path ("/home/phuang/sources/ibus/icons")
 		# self.set_orientation (gtk.ORIENTATION_VERTICAL)
 		self._create_items ()
 
-	def insert (self, toolitem, pos):
-		gtk.Toolbar.insert (self, toolitem, pos)
-		self.check_resize ()
-
 	def _add_items (self):
-		btn = gtk.ToolButton (gtk.STOCK_NEW)
+		img = gtk.image_new_from_icon_name ("engine-default", gtk.ICON_SIZE_MENU)
+		btn = gtk.ToolButton (img, "engine")
 		btn.connect ("clicked", lambda x: self._add_items ())
 		self.insert (btn, -1)
-		self.insert (gtk.ToolButton (gtk.STOCK_APPLY), -1)
+
+		img = gtk.image_new_from_icon_name ("ibus-keyboard", gtk.ICON_SIZE_MENU)
+		btn = gtk.ToolButton (img, "keyboard")
+		self.insert (btn, -1)
 		self.insert (gtk.SeparatorToolItem (), -1)
 		self.show_all ()
+		self.check_resize ()
 
 	def _create_items (self):
 		handle = Handle ()
@@ -40,7 +43,7 @@ class LanguageBar (gtk.Toolbar):
 		for item in self:
 			w, h = item.size_request ()
 			width += w
-		self.set_size_request (width + 2, -1)
+		self.set_size_request (width, -1)
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 

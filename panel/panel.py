@@ -105,5 +105,5 @@ class PanelProxy (interface.IPanel):
 		self._panel.reset ()
 
 	def Destroy (self):
-		self._pabel.destroy ()
+		self._panel.destroy ()
 
