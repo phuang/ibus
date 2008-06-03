@@ -462,17 +462,10 @@ gik_im_client_finalize (GObject *obj)
     g_assert (client == _client);
 
 #ifdef HAVE_INOTIFY
-    g_io_channel_unref (priv->inotify_channel);
     g_source_remove (priv->inotify_source);
+    g_io_channel_unref (priv->inotify_channel);
 #endif
 
-    if (priv->preedit_string) {
-        g_free (priv->preedit_string);
-    }
-
-    if (priv->preedit_attrs) {
-        pango_attr_list_unref (priv->preedit_attrs);
-    }
 #if USE_DBUS_SESSION_BUS
     if (priv->dbus) {
         dbus_connection_unref (priv->dbus);
