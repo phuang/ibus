@@ -83,7 +83,7 @@ class Engine (interface.IEngine):
 		if self._is_invalidate:
 			return
 		self._is_invalidate = True
-		gobject.idle_add (self._update)
+		gobject.idle_add (self._update, priority = gobject.PRIORITY_LOW)
 
 	def _cursor_up (self):
 		if self._lookup_table.cursor_up ():
