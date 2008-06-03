@@ -7,7 +7,7 @@ from ibus import interface
 from languagebar import LanguageBarWindow
 from candidatewindow import CandidateWindow
 
-class Panel (gobject.GObject):
+class Panel (ibus.Object):
 	def __init__ (self, proxy):
 		gobject.GObject.__init__ (self)
 		self._proxy = proxy
@@ -55,6 +55,11 @@ class Panel (gobject.GObject):
 	def reset (self):
 		self._candidate_panel.reset ()
 		self._language_bar.reset ()
+
+	def do_destroy (self):
+		gtk.main_quit ()
+
+gobject.type_register (Panel, "IBusPanel")
 
 class PanelProxy (interface.IPanel):
 	def __init__ (self, dbusconn, object_path):
