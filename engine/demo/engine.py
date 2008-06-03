@@ -13,6 +13,7 @@ class Engine (interface.IEngine):
 	def __init__ (self, dbusconn, object_path):
 		interface.IEngine.__init__ (self, dbusconn, object_path)
 		self._dbusconn = dbusconn
+		self._is_invalidate = False
 		self._preedit_string = ""
 		self._lookup_table = ibus.LookupTable ()
 
@@ -34,7 +35,7 @@ class Engine (interface.IEngine):
 				return True
 			elif keyval == keysyms.BackSpace:
 				self._preedit_string = self._preedit_string[:-1]
-				self._update ()
+				self._invalidate ()
 				return True
 			elif keyval == keysyms.space:
 				if self._lookup_table.get_number_of_candidates () > 0:
@@ -70,13 +71,19 @@ class Engine (interface.IEngine):
 			keyval in xrange (keysyms.A, keysyms.Z + 1):
 			if state & (keysyms.CONTROL_MASK | keysyms.ALT_MASK) == 0:
 				self._preedit_string += chr (keyval)
-				self._update ()
+				self._invalidate ()
 				return True
 		else:
 			if keyval < 128 and self._preedit_string:
 				self._commit_string (self._preedit_string)
 
 		return False
+
+	def _invalidate (self):
+		if self._is_invalidate:
+			return
+		self._is_invalidate = True
+		gobject.idle_add (self._update)
 
 	def _cursor_up (self):
 		if self._lookup_table.cursor_up ():
@@ -108,6 +115,7 @@ class Engine (interface.IEngine):
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, preedit_len))
 		self.UpdatePreedit (self._preedit_string, attrs.to_dbus_value (), dbus.Int32 (preedit_len), preedit_len > 0)
 		self._update_lookup_table ()
+		self._is_invalidate = False
 
 	def _update_lookup_table (self):
 		show = self._lookup_table.get_number_of_candidates () > 0
