@@ -13,22 +13,28 @@ class Handle (gtk.EventBox):
 			gdk.BUTTON_RELEASE_MASK | \
 			gdk.BUTTON1_MOTION_MASK)
 
+		self._move_begined = False
+
 	def do_button_press_event (self, event):
 		if event.button == 1:
+			self._move_begined = True
 			self._press_pos = event.x_root, event.y_root
 			self.window.set_cursor (gdk.Cursor (gdk.FLEUR))
 			return True	
-		return gtk.EventBox.do_button_press_event (self, event)
+		return False
 
 	def do_button_release_event (self, event):
 		if event.button == 1:
+			self._move_begined = False
 			del self._press_pos
 			self.window.set_cursor (gdk.Cursor (gdk.LEFT_PTR))
 			return True
 
-		return gtk.EventBox.do_button_release_event (self, event)
+		return False
 		
 	def do_motion_notify_event (self, event):
+		if not self._move_begined:
+			return
 		toplevel = self.get_toplevel ()
 		x, y = toplevel.get_position ()
 		x  = int (x + event.x_root - self._press_pos[0])
