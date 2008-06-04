@@ -207,8 +207,8 @@ class IBus (ibus.Object):
 			self._focused_client.cursor_down ()
 
 	def _panel_destroy_cb (self, panel):
-		assert panel == self._panel
-		self._panel = DummyPanel ()
+		if panel == self._panel:
+			self._panel = DummyPanel ()
 
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
