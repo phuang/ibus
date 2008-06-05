@@ -4,24 +4,31 @@ import gobject
 from image import Image
 from handle import Handle
 
+ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+
 class LanguageBar (gtk.Toolbar):
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
-		self.set_property ("icon-size", gtk.ICON_SIZE_MENU)
+		self.set_property ("icon-size", ICON_SIZE)
 		icon_theme = gtk.icon_theme_get_default ()
 		icon_theme.prepend_search_path ("/home/phuang/sources/ibus/icons")
 		# self.set_orientation (gtk.ORIENTATION_VERTICAL)
 		self._create_items ()
 
 	def _add_items (self):
-		img = gtk.image_new_from_icon_name ("engine-default", gtk.ICON_SIZE_MENU)
+		img = gtk.image_new_from_icon_name ("engine-default", ICON_SIZE)
 		btn = gtk.ToolButton (img, "engine")
 		btn.connect ("clicked", lambda x: self._add_items ())
 		self.insert (btn, -1)
 
-		img = gtk.image_new_from_icon_name ("ibus-keyboard", gtk.ICON_SIZE_MENU)
+		img = gtk.image_new_from_icon_name ("ibus-keyboard", ICON_SIZE)
 		btn = gtk.ToolButton (img, "keyboard")
 		self.insert (btn, -1)
+
+		img = gtk.image_new_from_icon_name ("ibus-zh", ICON_SIZE)
+		btn = gtk.ToolButton (img, "keyboard")
+		self.insert (btn, -1)
+
 		self.insert (gtk.SeparatorToolItem (), -1)
 		self.show_all ()
 		self.check_resize ()

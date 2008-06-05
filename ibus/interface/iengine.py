@@ -64,27 +64,14 @@ class IEngine (dbus.service.Object):
 	def ForwardKeyEvent (self, keyval, is_press, state): pass
 
 	@signal (signature="saaiib")
-	def UpdatePreedit (self, text, attrs, cursor_pos, show): pass
-
-	# below signals are optional. The engine could create and maintain panel by self.
-	@signal (signature="v")
-	def UpdateProperties (self, properties): pass
+	def UpdatePreedit (self, text, attrs, cursor_pos, visible): pass
 
 	@signal (signature="svb")
-	def UpdateAuxString (self, text, attrs, show): pass
-
-	@signal ()
-	def ShowAuxStringChanged (self): pass
-
-	@signal ()
-	def HideAuxStringChanged (self): pass
+	def UpdateAuxString (self, text, attrs, visible): pass
 
 	@signal (signature="vb")
-	def UpdateLookupTable (self, lookup_table, show): pass
+	def UpdateLookupTable (self, lookup_table, visible): pass
 
-	@signal ()
-	def ShowLookupTable (self): pass
-
-	@signal ()
-	def HideLookupTable (self): pass
+	@signal (signature="v")
+	def UpdateProperties (self, properties): pass
 

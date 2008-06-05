@@ -34,32 +34,17 @@ class Panel (ibus.Object):
 	def set_cursor_location (self, x, y, w, h):
 		self._panel.SetCursorLocation (x, y, w, h)
 
-	def update_preedit (self, text, attrs, cursor_pos, show):
-		self._panel.UpdatePreedit (text, attrs, cursor_pos, show)
+	def update_preedit (self, text, attrs, cursor_pos, visible):
+		self._panel.UpdatePreedit (text, attrs, cursor_pos, visible)
 
-	def show_preedit_string (self):
-		self._panel.ShowPreeditString ()
+	def update_aux_string (self, text, attrs, visible):
+		self._panel.UpdateAuxString (text, attrs, visible)
 
-	def hide_preedit_string (self):
-		slef._panel.HidePreeditString ()
+	def update_lookup_table (self, lookup_table, visible):
+		self._panel.UpdateLookupTable (lookup_table, visible)
 
-	def update_aux_string (self, text, attrs, show):
-		self._panel.UpdateAuxString (text, attrs, show)
-
-	def show_aux_string (self):
-		self._panel.ShowAuxString ()
-
-	def hide_aux_string (self):
-		slef._panel.HideAuxString ()
-
-	def update_lookup_table (self, lookup_table, show):
-		self._panel.UpdateLookupTable (lookup_table, show)
-
-	def show_candidate_window (self):
-		self._panel.ShowCandidateWindow ()
-
-	def hide_candidate_window (self):
-		self._panel.HideCandidateWindow ()
+	def update_properties (self, props):
+		self._panel.UpdateProperties (props)
 
 	def show_language_bar (self):
 		self._panel.ShowLanguageBar ()
@@ -131,31 +116,16 @@ class DummyPanel (ibus.Object):
 	def set_cursor_location (self, x, y, w, h):
 		pass
 
-	def update_preedit (self, text, attrs, cursor_pos, show):
+	def update_preedit (self, text, attrs, cursor_pos, visible):
 		pass
 
-	def show_preedit_string (self):
+	def update_aux_string (self, text, attrs, visible):
 		pass
 
-	def hide_preedit_string (self):
+	def update_lookup_table (self, lookup_table, visible):
 		pass
 
-	def update_aux_string (self, text, attrs, show):
-		pass
-
-	def show_aux_string (self):
-		pass
-
-	def hide_aux_string (self):
-		pass
-
-	def update_lookup_table (self, lookup_table, show):
-		pass
-
-	def show_candidate_window (self):
-		pass
-
-	def hide_candidate_window (self):
+	def update_properties (self, props):
 		pass
 
 	def show_language_bar (self):

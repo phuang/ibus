@@ -15,6 +15,10 @@ class Client (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+		"update-properties" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_PYOBJECT, )),
 	}
 
 	def __init__ (self, name, ibusconn):
@@ -105,12 +109,12 @@ class Client (ibus.Object):
 	def commit_string (self, text):
 		self._ibusconn.emit_dbus_signal ("CommitString", text)
 
-	def update_preedit (self, text, attrs, cursor_pos, show):
+	def update_preedit (self, text, attrs, cursor_pos, visible):
 		if self._use_preedit:
-			self._ibusconn.emit_dbus_signal ("UpdatePreedit", text, attrs, cursor_pos, show)
+			self._ibusconn.emit_dbus_signal ("UpdatePreedit", text, attrs, cursor_pos, visible)
 		else:
 			# show preedit on panel
-			self.emit ("update-preedit", text, attrs, cursor_pos, show)
+			self.emit ("update-preedit", text, attrs, cursor_pos, visible)
 
 	def set_engine (self, engine):
 		if self._engine == engine:
@@ -141,17 +145,20 @@ class Client (ibus.Object):
 	def _commit_string_cb (self, engine, text):
 		self.commit_string (text)
 
-	def _update_preedit_cb (self, engine, text, attrs, cursor_pos, show):
-		self.update_preedit (text, attrs, cursor_pos, show)
+	def _update_preedit_cb (self, engine, text, attrs, cursor_pos, visible):
+		self.update_preedit (text, attrs, cursor_pos, visible)
 
-	def _update_aux_string_cb (self, engine, text, attrs, show):
+	def _update_aux_string_cb (self, engine, text, attrs, visible):
 		self._aux_string = text
 		self._aux_attrs = attrs
-		self.emit ("update-aux-string", text, attrs, show)
+		self.emit ("update-aux-string", text, attrs, visible)
 
-	def _update_lookup_table_cb (self, engine, lookup_table, show):
+	def _update_lookup_table_cb (self, engine, lookup_table, visible):
 		self._lookup_table = lookup_table
-		self.emit ("update-lookup-table", lookup_table, show)
+		self.emit ("update-lookup-table", lookup_table, visible)
+
+	def _update_properties_cb (self, props):
+		self.emit ("update-properties", props)
 
 	def _remove_engine_handlers (self):
 		assert self._engine != None
@@ -170,4 +177,9 @@ class Client (ibus.Object):
 		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("update-lookup-table", self._update_lookup_table_cb)
 		self._engine_handler_ids.append (id)
+		# id = self._engine.connect ("register-properties", self._register_properties_cb)
+		# self._engine_handler_ids.append (id)
+		id = self._engine.connect ("update-properties", self._update_properties_cb)
+		self._engine_handler_ids.append (id)
+
 gobject.type_register (Client)

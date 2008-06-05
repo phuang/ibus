@@ -22,31 +22,16 @@ class IPanel (dbus.service.Object):
 	def SetCursorLocation (self, x, y, w, h): pass
 
 	@method (in_signature="svub")
-	def UpdatePreedit (self, text, attrs, cursor_pos, show): pass
-
-	@method ()
-	def ShowPreeditString (self): pass
-
-	@method ()
-	def HidePreeditString (self): pass
+	def UpdatePreedit (self, text, attrs, cursor_pos, visible): pass
 
 	@method (in_signature="svb")
-	def UpdateAuxString (self, text, attrs, show): pass
-
-	@method ()
-	def ShowAuxString (self): pass
-
-	@method ()
-	def HideAuxString (self): pass
+	def UpdateAuxString (self, text, attrs, visible): pass
 
 	@method (in_signature="vb")
-	def UpdateLookupTable (self, lookup_table, show): pass
+	def UpdateLookupTable (self, lookup_table, visible): pass
 
-	@method ()
-	def ShowCandidateWindow (self): pass
-
-	@method ()
-	def HideCandidateWindow (self): pass
+	@method (in_signature="v")
+	def UpdateProperties (self, props): pass
 
 	@method ()
 	def ShowLanguageBar (self): pass
