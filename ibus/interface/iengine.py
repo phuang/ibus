@@ -73,5 +73,5 @@ class IEngine (dbus.service.Object):
 	def UpdateLookupTable (self, lookup_table, visible): pass
 
 	@signal (signature="v")
-	def UpdateProperties (self, properties): pass
+	def UpdateProperties (self, props): pass
 

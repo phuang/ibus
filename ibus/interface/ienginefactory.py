@@ -13,7 +13,7 @@ class IEngineFactory (dbus.service.Object):
 		dbus.service.method (dbus_interface = IBUS_ENGINE_FACTORY_IFACE, \
 							 async_callbacks = ("reply_cb", "error_cb"), \
 							 **args)
-	# Return a array. [name, language, icon_path, authors, credits]
+	# Return a array. [name, default_language, icon_path, authors, credits]
 	@method (out_signature = "as")
 	def GetInfo (self): pass
 

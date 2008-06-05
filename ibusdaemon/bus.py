@@ -141,10 +141,10 @@ class IBus (ibus.Object):
 
 		self._panel.update_lookup_table (lookup_table, visible)
 
-	def _update_properties_cb (self, client, properties):
+	def _update_properties_cb (self, client, props):
 		assert self._focused_client == client
 
-		self._panel.update_properties (properties)
+		self._panel.update_properties (props)
 
 	def _client_destroy_cb (self, client):
 		if client == self._focused_client:

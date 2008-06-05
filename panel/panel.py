@@ -52,6 +52,9 @@ class Panel (ibus.Object):
 	def hide_language_bar (self):
 		selk._language_bar.hide ()
 
+	def update_properties (self, props):
+		pass
+
 	def reset (self):
 		self._candidate_panel.reset ()
 		self._language_bar.reset ()
@@ -105,6 +108,10 @@ class PanelProxy (interface.IPanel):
 
 	def HideLanguageBar (self):
 		self._panel.hide_language_bar ()
+
+	def UpdateProperties (self, props):
+		props = ibus.prop_list_from_dbus_value (props)
+		self._panel.update_properties (props)
 
 	def Reset (self):
 		self._panel.reset ()
