@@ -126,20 +126,20 @@ class IBus (ibus.Object):
 			raise ibus.IBusException ("not register the client")
 		return self._clients[dbusconn]
 
-	def _update_preedit_cb (self, client, text, attrs, cursor_pos, show):
+	def _update_preedit_cb (self, client, text, attrs, cursor_pos, visible):
 		assert self._focused_client == client
 
-		self._panel.update_preedit_string (text, attrs, cursor_pos, show)
+		self._panel.update_preedit_string (text, attrs, cursor_pos, visible)
 
-	def _update_aux_string_cb (self, client, text, attrs, show):
+	def _update_aux_string_cb (self, client, text, attrs, visible):
 		assert self._focused_client == client
 
-		self._panel.update_aux_string (text, attrs, show)
+		self._panel.update_aux_string (text, attrs, visible)
 
-	def _update_lookup_table_cb (self, client, lookup_table, show):
+	def _update_lookup_table_cb (self, client, lookup_table, visible):
 		assert self._focused_client == client
 
-		self._panel.update_lookup_table (lookup_table, show)
+		self._panel.update_lookup_table (lookup_table, visible)
 
 	def _update_properties_cb (self, client, properties):
 		assert self._focused_client == client

@@ -25,8 +25,11 @@ class LookupTable:
 	def get_page_size (self):
 		return self._page_size
 
-	def show_cursor (self, show = True):
-		self._cursor_visible = show
+	def show_cursor (self):
+		self._cursor_visible = True
+
+	def hide_cursor (self):
+		self._cursor_visible = False
 	
 	def is_cursor_visible (self):
 		return self._cursor_visible
