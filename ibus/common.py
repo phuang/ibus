@@ -1,6 +1,7 @@
 import getpass
+import os
 
-IBUS_ADDR  = "unix:path=/tmp/ibus-%s/ibus" % getpass.getuser ()
+IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (getpass.getuser (), os.environ["DISPLAY"].replace (":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE = "org.freedesktop.IBus"

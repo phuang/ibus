@@ -247,8 +247,25 @@ _gik_im_client_ibus_open (GikIMClient *client)
         return;
     }
 #endif
-    if (ibus_addr == NULL)
-        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus", g_get_user_name ());
+    if (ibus_addr == NULL) {
+        gchar *display, *host, *id;
+        display = g_strdup (g_getenv ("DISPLAY"));
+        if (display != NULL) {
+            id = host = display;
+            for (; *id != ':' && *id != '\0'; id++);
+            if (*id == '\0')
+                id = "";
+            else {
+                *id = '\0';
+                id ++;
+            }
+        }
+        else {
+            host = id = "";
+        }
+        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", g_get_user_name (), host, id);
+        g_free (display);
+    }
 
     /*
      * Init ibus and proxy object
@@ -312,6 +329,7 @@ static gboolean
 _gik_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, GikIMClient *client)
 {
     struct inotify_event *p = NULL;
+    gchar *name;
     gsize n;
 
     if (condition & G_IO_IN == 0)
@@ -322,12 +340,21 @@ _gik_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, GikIMClie
     g_io_channel_read_chars (source, (gchar *) p, sizeof (struct inotify_event),  &n, NULL);
     g_io_channel_read_chars (source, ((gchar *)p) + sizeof (struct inotify_event), p->len,  &n, NULL);
 
-    if (g_strcmp0 (p->name, "ibus") == 0) {
+    name = g_strdup_printf ("ibus-%s", g_getenv ("DISPLAY"));
+    for (n = 0; name[n] != 0; n++) {
+        if (name[n] != ':')
+            continue;
+        name[n] = '-';
+        break;
+    }
+
+    if (g_strcmp0 (p->name, name) == 0) {
         if (p->mask & IN_CREATE) {
             g_usleep (1000);
             _gik_im_client_ibus_open (client);
         }
     }
+    g_free (name);
     g_free (p);
 
 }
