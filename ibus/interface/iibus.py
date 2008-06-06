@@ -53,4 +53,4 @@ class IIBus (dbus.service.Object):
 	def IsEnabled (self, dbusconn): pass
 
 	@method (out_signature = "v")
-	def GetFactoryInfo (self): pass
+	def GetFactoryInfo (self, dbusconn): pass
