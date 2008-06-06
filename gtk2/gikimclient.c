@@ -342,10 +342,12 @@ gik_im_client_init (GikIMClient *obj)
     GikIMClient *client = GIK_IM_CLIENT (obj);
     GikIMClientPrivate *priv;
 
-#ifdef HAVE_INOTIFY
-    gint inotify_fd;
     gchar *watch_path;
     struct stat stat_buf;
+
+#ifdef HAVE_INOTIFY
+    gint inotify_fd = inotify_init ();
+#endif
 
     priv = G_TYPE_INSTANCE_GET_PRIVATE (client, GIK_TYPE_IM_CLIENT, GikIMClientPrivate);
     client->priv = priv;
@@ -357,24 +359,23 @@ gik_im_client_init (GikIMClient *obj)
     priv->preedit_cursor = 0;
     priv->enable = FALSE;
 
-    /* init inotify */
     watch_path = g_strdup_printf ("/tmp/ibus-%s", g_get_user_name ());
 
     if (g_stat (watch_path, &stat_buf) != 0) {
         g_mkdir (watch_path, 0750);
     }
 
-    inotify_fd = inotify_init ();
+#ifdef HAVE_INOTIFY
+    /* init inotify */
     priv->inotify_wd = inotify_add_watch (inotify_fd, watch_path, IN_CREATE | IN_DELETE);
-
     priv->inotify_channel = g_io_channel_unix_new (inotify_fd);
     g_io_channel_set_close_on_unref (priv->inotify_channel, TRUE);
     priv->inotify_source = g_io_add_watch (priv->inotify_channel,
                                     G_IO_IN,
                                     (GIOFunc)_gik_im_client_inotify_cb,
                                     (gpointer)client);
-    g_free (watch_path);
 #endif
+    g_free (watch_path);
 
 #if USE_DBUS_SESSION_BUS
     /*
