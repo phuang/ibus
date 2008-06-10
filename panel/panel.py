@@ -47,10 +47,10 @@ class Panel (ibus.Object):
 		self._candidate_panel.hide ()
 
 	def show_language_bar (self):
-		selk._language_bar.show ()
+		self._language_bar.show ()
 
 	def hide_language_bar (self):
-		selk._language_bar.hide ()
+		self._language_bar.hide ()
 
 	def register_properties (self, props):
 		pass
