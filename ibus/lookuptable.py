@@ -89,7 +89,7 @@ class LookupTable:
 
 		pos = self._cursor_pos + self._page_size
 		if pos >= nr_candidates:
-			pos = nr_candidates - 1
+			return False
 		self._cursor_pos = pos
 
 		return True
