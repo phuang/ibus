@@ -53,7 +53,7 @@ class Engine (interface.IEngine):
 				if index >= len (candidates):
 					return False
 				candidate = candidates[index][0]
-				self._commit_string (candidate + " ")
+				self._commit_string (candidate)
 				return True
 			elif keyval == keysyms.Page_Up or keyval == keysyms.KP_Page_Up:
 				if self._lookup_table.page_up ():
