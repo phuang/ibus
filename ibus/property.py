@@ -34,6 +34,21 @@ class Property:
 	def get_sub_props (self):
 		return self._sub_props
 
+	def is_same (self, prop, test_all = True):
+		if self._name != prop._name or self._type != prop._type:
+			return False
+		if not test_all:
+			return True
+		if self._label != prop._label or \
+			self._icon != prop._icon or \
+			self._tip != prop._tip or \
+			self._sensitive != prop._sensitive or \
+			self._visible != prop._visible or \
+			self._state != prop._state:
+			return False
+		return self._sub_props.is_same (prop._sub_props, test_all)
+
+
 	def to_dbus_value (self):
 		sub_props = self._sub_props.to_dbus_value ()
 		values = (dbus.String (self._name),
@@ -46,7 +61,7 @@ class Property:
 				dbus.Int32 (self._state),
 				sub_props)
 		return dbus.Struct (values)
-	
+
 	def from_dbus_value (self, value):
 		self._name, \
 		self._type, \
@@ -80,6 +95,15 @@ class PropList:
 
 	def get_properties (self):
 		return self._props[:]
+
+	def is_same (self, props, test_all = True):
+		if len (props.get_properties ()) != len (self.get_properties ()):
+			return False
+
+		for a, b in zip (self.get_properties(), props.get_properties ()):
+			if not a.is_same (b, test_all):
+				return False
+		return False
 
 	def to_dbus_value (self):
 		props = map (lambda p: p.to_dbus_value (), self._props)
