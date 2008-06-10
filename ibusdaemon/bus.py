@@ -143,7 +143,7 @@ class IBus (ibus.Object):
 
 		self._panel.update_lookup_table (lookup_table, visible)
 
-	def _register_property_cb (self, client, props):
+	def _register_properties_cb (self, client, props):
 		assert self._focused_client == client
 
 		self._panel.register_properties (props)

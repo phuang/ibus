@@ -15,7 +15,11 @@ class Client (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
-		"update-properties" : (
+		"register-properties" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_PYOBJECT, )),
+		"update-property" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, )),
@@ -157,8 +161,11 @@ class Client (ibus.Object):
 		self._lookup_table = lookup_table
 		self.emit ("update-lookup-table", lookup_table, visible)
 
-	def _update_properties_cb (self, props):
-		self.emit ("update-properties", props)
+	def _register_properties_cb (self, props):
+		self.emit ("register-properties", props)
+	
+	def _update_property_cb (self, prop):
+		self.emit ("update-property", prop)
 
 	def _remove_engine_handlers (self):
 		assert self._engine != None
@@ -177,9 +184,9 @@ class Client (ibus.Object):
 		self._engine_handler_ids.append (id)
 		id = self._engine.connect ("update-lookup-table", self._update_lookup_table_cb)
 		self._engine_handler_ids.append (id)
-		# id = self._engine.connect ("register-properties", self._register_properties_cb)
-		# self._engine_handler_ids.append (id)
-		id = self._engine.connect ("update-properties", self._update_properties_cb)
+		id = self._engine.connect ("register-properties", self._register_properties_cb)
+		self._engine_handler_ids.append (id)
+		id = self._engine.connect ("update-property", self._update_property_cb)
 		self._engine_handler_ids.append (id)
 
 gobject.type_register (Client)

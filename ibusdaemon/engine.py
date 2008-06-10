@@ -28,10 +28,6 @@ class Engine (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, )),
-		"register-properties" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_PYOBJECT, )),
 		"update-property" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
