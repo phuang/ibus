@@ -33,6 +33,10 @@ class Engine (interface.IEngine):
 			if keyval == keysyms.Return:
 				self._commit_string (self._preedit_string)
 				return True
+			elif keyval == keysyms.Escape:
+				self._preedit_string = ""
+				self._update ()
+				return True
 			elif keyval == keysyms.BackSpace:
 				self._preedit_string = self._preedit_string[:-1]
 				self._invalidate ()
