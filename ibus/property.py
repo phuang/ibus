@@ -115,6 +115,9 @@ class PropList:
 			props.append (property_from_dbus_value (p))
 		self._props = props
 
+	def __iter__ (self):
+		return self._props.__iter__ ()
+
 def prop_list_from_dbus_value (value):
 	props = PropList ()
 	props.from_dbus_value (value)
