@@ -20,6 +20,10 @@ class Panel (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			()),
+		"property-activate" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
 	}
 
 	def __init__ (self, ibusconn, object_path):
@@ -80,6 +84,12 @@ class Panel (ibus.Object):
 			self.emit ("cursor-up")
 		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "CursorDown"):
 			self.emit ("cursor-down")
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PropertyActivate"):
+			args = message.get_args_list ()
+			self.emit ("property-activate", args[0])
+		else:
+			return False
+		return True
 
 	# methods for cmp
 	# def __lt__ (self, other):
@@ -114,6 +124,10 @@ class DummyPanel (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			()),
+		"property-activate" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
 	}
 
 	def set_cursor_location (self, x, y, w, h):

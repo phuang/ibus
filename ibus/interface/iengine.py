@@ -52,7 +52,7 @@ class IEngine (dbus.service.Object):
 	def SetEnable (self, enable): pass
 
 	@method (in_signature = "s")
-	def TriggerProperty (self, property): pass
+	def PropertyActivate (self, prop_name): pass
 
 	@method ()
 	def Destroy (self): pass

@@ -53,10 +53,10 @@ class Panel (ibus.Object):
 		self._language_bar.hide ()
 
 	def register_properties (self, props):
-		pass
+		self._language_bar.register_properties (self, props)
 
 	def update_property (self, prop):
-		pass
+		self._language_bar.update_property (self, prop)
 
 	def reset (self):
 		self._candidate_panel.reset ()

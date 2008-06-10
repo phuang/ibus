@@ -50,33 +50,28 @@ class Engine (ibus.Object):
 		if message.is_signal (ibus.IBUS_ENGINE_IFACE, "CommitString"):
 			args = message.get_args_list ()
 			self.emit ("commit-string", args[0])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "ForwardKeyEvent"):
 			args = message.get_args_list ()
 			self.emit ("forward-key-event", args[0], bool (arg[1]), arg[2])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdatePreedit"):
 			args = message.get_args_list ()
 			self.emit ("update-preedit", args[0], args[1], args[2], args[3])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateAuxString"):
 			args = message.get_args_list ()
 			self.emit ("update-aux-string", args[0], args[1], args[2])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
 			args = message.get_args_list ()
 			self.emit ("update-lookup-table", args[0], args[1])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "RegisterProperties"):
 			args = message.get_args_list ()
 			self.emit ("register-properties", args[0])
-			return True
 		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateProperty"):
 			args = message.get_args_list ()
 			self.emit ("update-property", args[0])
-			return True
 		else:
 			return False
+
+		return True
 
 	def focus_in (self):
 		self._engine.FocusIn (**ibus.DEFAULT_ASYNC_HANDLERS)
@@ -111,6 +106,9 @@ class Engine (ibus.Object):
 	
 	def cursor_down (self):
 		self._engine.CursorDown ()
+
+	def property_activate (self, prop_name):
+		self._engine.PropertyActivate (prop_name)
 
 	def destroy (self):
 		ibus.Object.destroy (self)
