@@ -31,7 +31,10 @@ class IPanel (dbus.service.Object):
 	def UpdateLookupTable (self, lookup_table, visible): pass
 
 	@method (in_signature="v")
-	def UpdateProperties (self, props): pass
+	def RegisterProperties (self, props): pass
+
+	@method (in_signature="v")
+	def UpdateProperty (self, prop): pass
 
 	@method ()
 	def ShowLanguageBar (self): pass
@@ -58,3 +61,5 @@ class IPanel (dbus.service.Object):
 	@signal ()
 	def CursorDown (self): pass
 
+	@signal ()
+	def PropertyTrigger (self, name): pass

@@ -43,8 +43,11 @@ class Panel (ibus.Object):
 	def update_lookup_table (self, lookup_table, visible):
 		self._panel.UpdateLookupTable (lookup_table, visible)
 
-	def update_properties (self, props):
-		self._panel.UpdateProperties (props)
+	def register_properties (self, props):
+		self._panel.RegisterProperties (props)
+
+	def update_property (self, prop):
+		self._panel.UpdateProperties (prop)
 
 	def show_language_bar (self):
 		self._panel.ShowLanguageBar ()
@@ -125,7 +128,10 @@ class DummyPanel (ibus.Object):
 	def update_lookup_table (self, lookup_table, visible):
 		pass
 
-	def update_properties (self, props):
+	def register_properties (self, props):
+		pass
+
+	def update_property (self, prop):
 		pass
 
 	def show_language_bar (self):

@@ -28,7 +28,11 @@ class Engine (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, )),
-		"update-properties" : (
+		"register-properties" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_PYOBJECT, )),
+		"update-property" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, )),
@@ -71,9 +75,9 @@ class Engine (ibus.Object):
 			args = message.get_args_list ()
 			self.emit ("register-properties", args[0])
 			return True
-		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateProperties"):
+		elif message.is_signal (ibus.IBUS_ENGINE_IFACE, "UpdateProperty"):
 			args = message.get_args_list ()
-			self.emit ("update-properties", args[0])
+			self.emit ("update-property", args[0])
 			return True
 		else:
 			return False

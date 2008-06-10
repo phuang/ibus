@@ -65,7 +65,9 @@ class IBus (ibus.Object):
 		self._client_handlers.append (id)
 		id = client.connect ("update-lookup-table", self._update_lookup_table_cb)
 		self._client_handlers.append (id)
-		id = client.connect ("update-properties", self._update_properties_cb)
+		id = client.connect ("register-properties", self._register_properties_cb)
+		self._client_handlers.append (id)
+		id = client.connect ("update-property", self._update_property_cb)
 		self._client_handlers.append (id)
 
 		self._panel.reset ()
@@ -141,10 +143,16 @@ class IBus (ibus.Object):
 
 		self._panel.update_lookup_table (lookup_table, visible)
 
-	def _update_properties_cb (self, client, props):
+	def _register_property_cb (self, client, props):
 		assert self._focused_client == client
 
-		self._panel.update_properties (props)
+		self._panel.register_properties (props)
+
+
+	def _update_property_cb (self, client, prop):
+		assert self._focused_client == client
+
+		self._panel.update_property (prop)
 
 	def _client_destroy_cb (self, client):
 		if client == self._focused_client:
