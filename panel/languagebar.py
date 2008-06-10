@@ -1,12 +1,19 @@
 import gtk
 import gtk.gdk as gdk
 import gobject
+import ibus
 from image import Image
 from handle import Handle
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
 class LanguageBar (gtk.Toolbar):
+	__gsignals__ = {
+		"property-activate" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
+		}
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
 		self.set_property ("icon-size", ICON_SIZE)
@@ -60,7 +67,34 @@ class LanguageBar (gtk.Toolbar):
 		pass
 
 	def register_properties (self, props):
-		pass
+		# reset all properties
+		for name, prop in self._properties.items ():
+			prop[1].destroy ()
+		self._properties = {}
+
+		# create new properties
+		for prop in props:
+			if prop._type == ibus.PROP_TYPE_NORMAL:
+				widget = gtk.ToolButton ()
+				widget.set_icon_name (prop._icon)
+				widget.set_label (prop._label)
+				widget.connect ("clicked",
+						lambda widget, prop: self.emit ("property-activate", prop._name),
+						prop)
+			else:
+				widget = gtk.ToolItem ()
+
+			widget.set_sensitive (prop._sensitive)
+			if prop._visible:
+				widget.set_no_show_all (False)
+				widget.show ()
+			else:
+				widget.set_no_show_all (True)
+				widget.hide ()
+
+			self._properties [prop._name] = (prop, widget)
+			self.insert (widget, -1)
+		self.check_resize ()
 
 	def update_properties (self, props):
 		pass
@@ -68,9 +102,17 @@ class LanguageBar (gtk.Toolbar):
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 
 class LanguageBarWindow (gtk.Window):
+	__gsignals__ = {
+		"property-activate" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
+		}
 	def __init__ (self):
 		gtk.Window.__init__ (self, gtk.WINDOW_POPUP)
 		self._language_bar = LanguageBar ()
+		self._language_bar.connect ("property-activate",
+								lambda widget, prop_name: self.emit ("property-activate", prop_name))
 		self.add (self._language_bar)
 		self.show_all ()
 

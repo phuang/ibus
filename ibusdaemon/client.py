@@ -165,10 +165,10 @@ class Client (ibus.Object):
 		self._lookup_table = lookup_table
 		self.emit ("update-lookup-table", lookup_table, visible)
 
-	def _register_properties_cb (self, props):
+	def _register_properties_cb (self, engine, props):
 		self.emit ("register-properties", props)
 	
-	def _update_property_cb (self, prop):
+	def _update_property_cb (self, engine, prop):
 		self.emit ("update-property", prop)
 
 	def _remove_engine_handlers (self):

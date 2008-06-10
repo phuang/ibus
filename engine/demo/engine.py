@@ -16,14 +16,9 @@ class Engine (interface.IEngine):
 		self._is_invalidate = False
 		self._preedit_string = ""
 		self._lookup_table = ibus.LookupTable ()
+		self._prop_list = ibus.PropList ()
+		self._prop_list.append (ibus.Property ("test", icon = "ibus-locale"))
 
-	# methods for dbus rpc
-	def ProcessKeyEvent (self, keyval, is_press, state):
-		try:
-			return self._process_key_event (keyval, is_press, state)
-		except Exception, e:
-			print e
-		return False
 	def _process_key_event (self, keyval, is_press, state):
 		# ignore key release events
 		if not is_press:
@@ -94,7 +89,7 @@ class Engine (interface.IEngine):
 			self._update_lookup_table ()
 			return True
 		return False
-	
+
 	def _cursor_down (self):
 		if self._lookup_table.cursor_down ():
 			self._update_lookup_table ()
@@ -126,11 +121,23 @@ class Engine (interface.IEngine):
 		self.UpdateLookupTable (self._lookup_table.to_dbus_value (), show)
 
 
+	# methods for dbus rpc
+	def ProcessKeyEvent (self, keyval, is_press, state):
+		try:
+			return self._process_key_event (keyval, is_press, state)
+		except Exception, e:
+			print e
+		return False
+
 	def FocusIn (self):
+		self.RegisterProperties (self._prop_list.to_dbus_value ())
 		print "FocusIn"
 
 	def FocusOut (self):
 		print "FocusOut"
+
+	def SetCursorLocation (self, x, y, w, h):
+		pass
 
 	def Reset (self):
 		print "Reset"
@@ -140,23 +147,24 @@ class Engine (interface.IEngine):
 
 	def PageDown (self):
 		print "PageDown"
-	
+
 	def CursorUp (self):
-		print "CursorUp"
 		self._cursor_up ()
-	
+
 	def CursorDown (self):
 		self._cursor_down ()
-		print "CursorDown"
-	
+
 	def SetEnable (self, enable):
 		self._enable = enable
+		if self._enable:
+			self.RegisterProperties (self._prop_list.to_dbus_value ())
+
+
+	def PropertyActivate (self, prop_name):
+		print "PropertyActivate (%s)" % prop_name
 
 	def Destroy (self):
 		print "Destroy"
-
-	def SetCursorLocation (self, x, y, w, h):
-		pass
 
 class DemoEngine (Engine):
 	pass

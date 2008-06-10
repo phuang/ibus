@@ -12,9 +12,13 @@ class Panel (ibus.Object):
 		gobject.GObject.__init__ (self)
 		self._proxy = proxy
 		self._language_bar = LanguageBarWindow ()
+		self._language_bar.connect ("property-activate",
+						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
 		self._candidate_panel = CandidateWindow ()
-		self._candidate_panel.connect ("cursor-up", lambda x: self._proxy.CursorUp ())
-		self._candidate_panel.connect ("cursor-down", lambda x: self._proxy.CursorDown ())
+		self._candidate_panel.connect ("cursor-up",
+						lambda widget: self._proxy.CursorUp ())
+		self._candidate_panel.connect ("cursor-down",
+						lambda widget: self._proxy.CursorDown ())
 
 	def set_cursor_location (self, x, y, w, h):
 		self._candidate_panel.move (x + w, y + h)
@@ -53,7 +57,7 @@ class Panel (ibus.Object):
 		self._language_bar.hide ()
 
 	def register_properties (self, props):
-		self._language_bar.register_properties (self, props)
+		self._language_bar.register_properties (props)
 
 	def update_property (self, prop):
 		self._language_bar.update_property (self, prop)

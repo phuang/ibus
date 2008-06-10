@@ -215,7 +215,7 @@ class IBus (ibus.Object):
 	def _panel_property_active_cb (self, panel, prop_name):
 		assert panel == self._panel
 		if self._focused_client:
-			self._focused_client.property_activate (self, prop_name)
+			self._focused_client.property_activate (prop_name)
 
 	def _panel_destroy_cb (self, panel):
 		if panel == self._panel:
