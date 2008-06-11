@@ -13,17 +13,17 @@ class Engine (interface.IEngine):
 	def __init__ (self, dbusconn, object_path):
 		interface.IEngine.__init__ (self, dbusconn, object_path)
 		self._dbusconn = dbusconn
-		
+
 		# create anthy context
 		self._context = anthy.anthy_context ()
 		self._context._set_encoding (2)
 
 		self._lookup_table = ibus.LookupTable ()
 		self._prop_list = ibus.PropList ()
-		
+
 		# use reset to init values
 		self._reset ()
-	
+
 	# reset values of engine
 	def _reset (self):
 		self._input_chars = u""
@@ -44,13 +44,13 @@ class Engine (interface.IEngine):
 		self._context.set_string (self._input_chars.encode ("utf-8"))
 		conv_stat = anthy.anthy_conv_stat ()
 		self._context.get_stat (conv_stat)
-		
+
 		for i in xrange (0, conv_stat.nr_segment):
 			buf = " " * 100
 			l = self._context.get_segment (i, 0, buf, 100)
 			text = unicode (buf[:l], "utf-8")
 			self._segments.append ((0, text))
-		
+
 		self._cursor_pos = 0
 		self._fill_lookup_table ()
 		self._lookup_table_visible = False
@@ -59,7 +59,7 @@ class Engine (interface.IEngine):
 		# get segment stat
 		seg_stat = anthy.anthy_segment_stat ()
 		self._context.get_segment_stat (self._cursor_pos, seg_stat)
-		
+
 		# fill lookup_table
 		self._lookup_table.clean ()
 		for i in xrange (0, seg_stat.nr_candidate):
@@ -79,7 +79,7 @@ class Engine (interface.IEngine):
 		# only process cursor down in convert mode
 		if not self._convert_begined:
 			return False
-		
+
 		if not self._lookup_table.page_up ():
 			return False
 
@@ -88,12 +88,12 @@ class Engine (interface.IEngine):
 		self._segments[self._cursor_pos] = index, candidate
 		self._invalidate ()
 		return True
-	
+
 	def _page_down (self):
 		# only process cursor down in convert mode
 		if not self._convert_begined:
 			return False
-		
+
 		if not self._lookup_table.page_down ():
 			return False
 
@@ -107,7 +107,7 @@ class Engine (interface.IEngine):
 		# only process cursor down in convert mode
 		if not self._convert_begined:
 			return False
-		
+
 		if not self._lookup_table.cursor_up ():
 			return False
 
@@ -121,7 +121,7 @@ class Engine (interface.IEngine):
 		# only process cursor down in convert mode
 		if not self._convert_begined:
 			return False
-		
+
 		if not self._lookup_table.cursor_down ():
 			return False
 
@@ -138,7 +138,7 @@ class Engine (interface.IEngine):
 
 	def _update_input_chars (self):
 		begin, end  = max (self._cursor_pos - 4, 0), self._cursor_pos
-		
+
 		for i in range (begin, end):
 			text = self._input_chars[i:end]
 			romja = romaji_typing_rule.get (text, None)
@@ -149,7 +149,7 @@ class Engine (interface.IEngine):
 
 		attrs = ibus.AttrList ()
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._input_chars.encode ("utf-8"))))
-	
+
 		self.UpdatePreedit (dbus.String (self._input_chars), 
 				attrs.to_dbus_value (),
 				dbus.Int32 (self._cursor_pos),
@@ -167,10 +167,10 @@ class Engine (interface.IEngine):
 			if i <= self._cursor_pos:
 				pos += len (text)
 			i += 1
-		
+
 		attrs = ibus.AttrList ()
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars.encode ("utf-8"))))
-		
+
 		self.UpdatePreedit (dbus.String (self._convert_chars), 
 				attrs.to_dbus_value (),
 				dbus.Int32 (pos),
@@ -202,12 +202,22 @@ class Engine (interface.IEngine):
 		if not self._input_chars:
 			return False
 		self._reset ()
+		self._invalidate ()
 		return True
 
 	def _on_key_back_space (self):
 		if not self._input_chars:
 			return False
-		self._input_chars = self._input_chars[:self._cursor_pos - 1] + self._input_chars [self._cursor_pos:]
+
+		if self._convert_begined:
+			self._convert_begined = False
+			self._cursor_pos = len (self._input_chars)
+			self._lookup_table.clean ()
+			self._lookup_table_visible = False
+		elif self._cursor_pos > 0:
+			self._input_chars = self._input_chars[:self._cursor_pos - 1] + self._input_chars [self._cursor_pos:]
+			self._cursor_pos -= 1
+
 		self._invalidate ()
 		return True
 
@@ -228,7 +238,7 @@ class Engine (interface.IEngine):
 		self._lookup_table_visible = True
 		self._cursor_up ()
 		return True
-	
+
 	def _on_key_down (self):
 		if not self._input_chars:
 			return False
@@ -242,7 +252,7 @@ class Engine (interface.IEngine):
 		if self._lookup_table_visible == True:
 			self._page_up ()
 		return True
-	
+
 	def _on_key_page_down (self):
 		if not self._input_chars:
 			return False
@@ -260,7 +270,7 @@ class Engine (interface.IEngine):
 		self._fill_lookup_table ()
 		self._invalidate ()
 		return True
-	
+
 	def _on_key_right (self):
 		if not self._input_chars:
 			return False
@@ -275,7 +285,7 @@ class Engine (interface.IEngine):
 		self._lookup_table_visible = False
 		self._fill_lookup_table ()
 		self._invalidate ()
-		
+
 		return True
 
 	def _on_key_number (self, index):
@@ -299,7 +309,7 @@ class Engine (interface.IEngine):
 		self._cursor_pos += 1
 		self._invalidate ()
 		return True
-	
+
 	def _process_key_event (self, keyval, is_press, state):
 		# ignore key release events
 		if not is_press:
