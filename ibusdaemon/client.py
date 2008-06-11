@@ -64,7 +64,7 @@ class Client (ibus.Object):
 	def process_key_event (self, keyval, is_press, state,
 								reply_cb, error_cb):
 		if self._engine != None and self._enable:
-			self._engine.process_key_event (keyval, is_press, state, 
+			self._engine.process_key_event (keyval, is_press, state,
 								reply_cb, error_cb)
 		else:
 			reply_cb (False)
@@ -148,6 +148,12 @@ class Client (ibus.Object):
 			self._remove_engine_handlers ()
 		self._engine = None
 		self._enable = False
+		if self._use_preedit:
+			self._ibusconn.emit_dbus_signal ("UpdatePreedit",
+								u"",
+								ibus.AttrList ().to_dbus_value (),
+								0,
+								False)
 		self._ibusconn.emit_dbus_signal ("Disabled")
 		self.emit ("engine-lost")
 
