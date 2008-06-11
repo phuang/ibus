@@ -221,6 +221,21 @@ class Engine (interface.IEngine):
 		self._invalidate ()
 		return True
 
+	def _on_key_delete (self):
+		if not self._input_chars:
+			return False
+
+		if self._convert_begined:
+			self._convert_begined = False
+			self._cursor_pos = len (self._input_chars)
+			self._lookup_table.clean ()
+			self._lookup_table_visible = False
+		elif self._cursor_pos < len (self._input_chars):
+			self._input_chars = self._input_chars[:self._cursor_pos] + self._input_chars [self._cursor_pos + 1:]
+
+		self._invalidate ()
+		return True
+
 	def _on_key_space (self):
 		if not self._input_chars:
 			return False
@@ -321,6 +336,8 @@ class Engine (interface.IEngine):
 			return self._on_key_escape ()
 		elif keyval == keysyms.BackSpace:
 			return self._on_key_back_space ()
+		elif keyval == keysyms.Delete or keyval == keysyms.KP_Delete:
+			return self._on_key_delete ()
 		elif keyval == keysyms.space:
 			return self._on_key_space ()
 		elif keyval >= keysyms._1 and keyval <= keysyms._9:
