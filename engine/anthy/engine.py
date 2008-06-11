@@ -1,0 +1,257 @@
+#!/usr/bin/env python
+import gobject
+import gtk
+import pango
+import dbus
+import ibus
+import anthy
+from tables import *
+from ibus import keysyms
+from ibus import interface
+
+class Engine (interface.IEngine):
+	def __init__ (self, dbusconn, object_path):
+		interface.IEngine.__init__ (self, dbusconn, object_path)
+		self._dbusconn = dbusconn
+		
+		# create anthy context
+		self._context = anthy.anthy_context ()
+		self._context._set_encoding (2)
+
+		self._lookup_table = ibus.LookupTable ()
+		self._prop_list = ibus.PropList ()
+		
+		# use reset to init values
+		self._reset ()
+	
+	# reset values of engine
+	def _reset (self):
+		self._input_chars = u""
+		self._convert_chars = u""
+		self._cursor_pos = 0
+		self._need_update = False
+		self._convert_begined = False
+		self._segments = []
+		self._lookup_table.clean ()
+
+	# begine convert
+	def _begin_convert (self):
+		if self._convert_begined:
+			return
+		self._convert_begined = True
+
+		self._context.set_string (self._input_chars.encode ("utf-8"))
+		conv_stat = anthy.anthy_conv_stat ()
+		self._context.get_stat (conv_stat)
+		
+		for i in xrange (0, conv_stat.nr_segment):
+			buf = " " * 100
+			l = self._context.get_segment (i, 0, buf, 100)
+			text = unicode (buf[:l], "utf-8")
+			self._segments.append ((0, text))
+		
+		self._cursor_pos = 0
+
+		self._fill_lookup_table ()
+
+	def _fill_lookup_table ():
+		# get segment stat
+		seg_stat = anthy.anthy_segment_stat ()
+		self._context.get_segment_stat (self._current_pos, seg_stat)
+		
+		# fill lookup_table
+		self._lookup_table.clean ()
+		for i in xrange (0, seg_stat.nr_candidate):
+			buf = " " * 100
+			l = self._context.get_segment (self._cursor_pos, i, buf, 100)
+			candidate = unicode (buf[:l], "utf-8")
+			self._lookup_table.append_candidate (candidate)
+
+	def _process_key_event (self, keyval, is_press, state):
+		# ignore key release events
+		if not is_press:
+			return False
+
+		if self._input_chars:
+			if keyval == keysyms.Return:
+				self._commit_string (self._input_chars)
+				return True
+			elif keyval == keysyms.Escape:
+				self._reset ()
+				return True
+			elif keyval == keysyms.BackSpace:
+				self._input_chars = self._input_chars[:self._cursor_pos - 1] + self._input_chars [self._cursor_pos:]
+				self._invalidate ()
+				return True
+			elif keyval == keysyms.space:
+				if not self._convert_begined:
+					self._begine_convert ()
+					self._invalidate ()
+				else:
+					self._cursor_down ()
+				return True
+			elif keyval >= keysyms._1 and keyval <= keysyms._9:
+				index = keyval - keysyms._1
+				candidates = self._lookup_table.get_canidates_in_current_page ()
+				if index >= len (candidates):
+					return False
+				candidate = candidates[index][0]
+				self._commit_string (candidate)
+				return True
+			elif keyval == keysyms.Page_Up or keyval == keysyms.KP_Page_Up:
+				if self._lookup_table.page_up ():
+					self._update_lookup_table ()
+				return True
+			elif keyval == keysyms.Up:
+				self._cursor_up ()
+				return True
+			elif keyval == keysyms.Down:
+				self._cursor_down ()
+				return True
+			elif keyval == keysyms.Left or keyval == keysyms.Right:
+				return True
+			elif keyval == keysyms.Page_Down or keyval == keysyms.KP_Page_Down:
+				if self._lookup_table.page_down ():
+					self._update_lookup_table ()
+				return True
+		if keyval in xrange (keysyms.a, keysyms.z + 1) or \
+			keyval in xrange (keysyms.A, keysyms.Z + 1):
+			if state & (keysyms.CONTROL_MASK | keysyms.ALT_MASK) == 0:
+				self._input_chars += unichr (keyval)
+				self._cursor_pos += 1
+				self._invalidate ()
+				return True
+		else:
+			if keyval < 128 and self._input_chars:
+				self._commit_string (self._input_chars)
+
+		return False
+
+	def _invalidate (self):
+		if self._need_update:
+			return
+		self._need_update = True
+		gobject.idle_add (self._update, priority = gobject.PRIORITY_LOW)
+
+	def _cursor_up (self):
+		# only process cursor down in convert mode
+		if not self._convert_begined:
+			return False
+		
+		if not self._lookup_table.cursor_up ():
+			return False
+
+		candidate = self._lookup_table.get_current_candidate ()[0]
+		index = self._lookup_table.get_cursor_pos ()
+		self._segments[self._cursor_pos] = index, candidate
+		self._invalidate ()
+		return True
+
+	def _cursor_down (self):
+		# only process cursor down in convert mode
+		if not self._convert_begined:
+			return False
+		
+		if not self._lookup_table.cursor_down ():
+			return False
+
+		candidate = self._lookup_table.get_current_candidate ()[0]
+		index = self._lookup_table.get_cursor_pos ()
+		self._segments[self._cursor_pos] = index, candidate
+		self._invalidate ()
+		return True
+
+	def _commit_string (self, text):
+		self._reset ()
+		self.CommitString (text)
+		self._update ()
+
+	def _update_input_chars (self):
+		begin, end  = max (self._cursor_pos - 4, 0), self._cursor_pos
+		
+		for i in range (begin, end):
+			text = self._input_chars[i:end]
+			romja = romaji_typing_rule.get (text, None)
+			if romja != None:
+				self._input_chars = u"".join ((self._input_chars[:i], romja, self._input_chars[end:]))
+				self._cursor_pos -= len(text)
+				self._cursor_pos += len(romja)
+
+		attrs = ibus.AttrList ()
+		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._input_chars.encode ("utf-8"))))
+	
+		self.UpdatePreedit (dbus.String (self._input_chars), 
+				attrs.to_dbus_value (),
+				dbus.Int32 (self._cursor_pos),
+				len (self._input_chars) > 0)
+
+	def _update_convert_chars (self):
+		self._convert_chars = u""
+		buf = " " * 100
+		pos = 0
+		i = 0
+		for seg_index, text in self._segments:
+			self._convert_chars += text
+			if i < self._cursor_pos:
+				pos += len (text)
+			i += 1
+		
+		attrs = ibus.AttrList ()
+		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars.encode ("utf-8"))))
+		
+		self.UpdatePreedit (dbus.String (self._convert_chars), 
+				attrs.to_dbus_value (),
+				dbus.Int32 (pos),
+				True)
+
+	def _update (self):
+		self._need_update = False
+		if self._convert_begined:
+			self._update_input_chars ()
+		else:
+			self._update_convert_chars ()
+
+	# methods for dbus rpc
+	def ProcessKeyEvent (self, keyval, is_press, state):
+		try:
+			return self._process_key_event (keyval, is_press, state)
+		except Exception, e:
+			print e
+		return False
+
+	def FocusIn (self):
+		self.RegisterProperties (self._prop_list.to_dbus_value ())
+		print "FocusIn"
+
+	def FocusOut (self):
+		print "FocusOut"
+
+	def SetCursorLocation (self, x, y, w, h):
+		pass
+
+	def Reset (self):
+		print "Reset"
+
+	def PageUp (self):
+		print "PageUp"
+
+	def PageDown (self):
+		print "PageDown"
+
+	def CursorUp (self):
+		self._cursor_up ()
+
+	def CursorDown (self):
+		self._cursor_down ()
+
+	def SetEnable (self, enable):
+		self._enable = enable
+		if self._enable:
+			self.RegisterProperties (self._prop_list.to_dbus_value ())
+
+	def PropertyActivate (self, prop_name):
+		print "PropertyActivate (%s)" % prop_name
+
+	def Destroy (self):
+		print "Destroy"
+
