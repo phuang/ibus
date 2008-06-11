@@ -6,11 +6,11 @@ class Client (ibus.Object):
 		"update-preedit" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
+			(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
 		"update-aux-string" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+			(gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
 		"update-lookup-table" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
