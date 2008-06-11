@@ -63,7 +63,10 @@ class LookupTable:
 		return (self._cursor_pos / self._page_size) * self._page_size
 
 	def set_cursor_pos (self, pos):
+		if pos >= len (self._candidates) or pos < 0:
+			return False
 		self._cursor_pos = pos
+		return True
 
 	def get_cursor_pos (self):
 		return self._cursor_pos
@@ -71,6 +74,16 @@ class LookupTable:
 	def get_cursor_pos_in_current_page (self):
 		page, pos_in_page = divmod (self._cursor_pos, self._page_size)
 		return pos_in_page
+
+	def set_cursor_pos_in_current_page (self, pos):
+		if pos < 0 or pos >= self._page_size:
+			return False
+		pos += self.get_current_page_start ()
+		if pos >= len (self._candidates):
+			return False
+		self._cursor_pos = pos
+		return True
+
 
 	def page_up (self):
 		if self._cursor_pos < self._page_size:
