@@ -3,6 +3,7 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import pango
+import ibus
 from ibus.gtk import PangoAttrList
 
 class HSeparator (gtk.HBox):
@@ -303,9 +304,9 @@ class CandidatePanel (gtk.VBox):
 		self.hide_preedit_string ()
 		self.hide_aux_string ()
 		self.hide_lookup_table ()
-		self.set_preedit_string ("", None, 0)
-		self.set_aux_string ("", None)
-		self.set_lookup_table (None)
+		self.update_preedit ("", None, 0, False)
+		self.update_aux_string ("", None, False)
+		self.update_lookup_table (None, False)
 
 	def set_orientation (self, orientation):
 		if self._orientation == orientation:

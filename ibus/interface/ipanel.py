@@ -43,7 +43,7 @@ class IPanel (dbus.service.Object):
 	def HideLanguageBar (self): pass
 
 	@method ()
-	def Reste (self): pass
+	def Reset (self): pass
 
 	@method ()
 	def Destroy (self): pass

@@ -23,6 +23,10 @@ class Client (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_PYOBJECT, )),
+		"engine-lost" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			()),
 	}
 
 	def __init__ (self, name, ibusconn):
@@ -143,6 +147,9 @@ class Client (ibus.Object):
 		if self._engine == engine:
 			self._remove_engine_handlers ()
 		self._engine = None
+		self._enable = False
+		self._ibusconn.emit_dbus_signal ("Disabled")
+		self.emit ("engine-lost")
 
 	def _ibusconn_destroy_cb (self, ibusconn):
 		if self._engine != None:

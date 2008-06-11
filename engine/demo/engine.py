@@ -159,7 +159,6 @@ class Engine (interface.IEngine):
 		if self._enable:
 			self.RegisterProperties (self._prop_list.to_dbus_value ())
 
-
 	def PropertyActivate (self, prop_name):
 		print "PropertyActivate (%s)" % prop_name
 

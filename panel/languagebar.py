@@ -64,14 +64,10 @@ class LanguageBar (gtk.Toolbar):
 		self.set_size_request (width + 4, -1)
 
 	def reset (self):
-		pass
+		self._remove_properties ()
 
 	def register_properties (self, props):
-		# reset all properties
-		for name, prop in self._properties.items ():
-			prop[1].destroy ()
-		self._properties = {}
-
+		self._remove_properties ()
 		# create new properties
 		for prop in props:
 			if prop._type == ibus.PROP_TYPE_NORMAL:
@@ -91,13 +87,23 @@ class LanguageBar (gtk.Toolbar):
 			else:
 				widget.set_no_show_all (True)
 				widget.hide ()
-
-			self._properties [prop._name] = (prop, widget)
+			if not self._properties.has_key (prop._name):
+				self._properties [prop._name] = []
+			self._properties [prop._name].append ((prop, widget))
 			self.insert (widget, -1)
 		self.check_resize ()
 
 	def update_properties (self, props):
 		pass
+
+	def _remove_properties (self):
+		# reset all properties
+		for name, props in self._properties.items ():
+			for prop, widget in props:
+				widget.hide ()
+				widget.destroy ()
+		self._properties = {}
+		self.check_resize ()
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 
@@ -111,6 +117,7 @@ class LanguageBarWindow (gtk.Window):
 	def __init__ (self):
 		gtk.Window.__init__ (self, gtk.WINDOW_POPUP)
 		self._language_bar = LanguageBar ()
+		self._language_bar.connect ("size-request", self._size_request_cb)
 		self._language_bar.connect ("property-activate",
 								lambda widget, prop_name: self.emit ("property-activate", prop_name))
 		self.add (self._language_bar)
@@ -135,6 +142,9 @@ class LanguageBarWindow (gtk.Window):
 
 	def update_property (self, prop):
 		self._labguage_bar.update_property (prop)
+
+	def _size_request_cb (self, widget, requisition):
+		self.resize (1, 1)
 
 gobject.type_register (LanguageBarWindow, "IBusLanguageBarWindow")
 

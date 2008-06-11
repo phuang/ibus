@@ -60,7 +60,7 @@ class Panel (ibus.Object):
 		self._panel.HideLanguageBar ()
 
 	def reset (self):
-		self._panel.Reste ()
+		self._panel.Reset ()
 
 	def destroy (self):
 		if self._ibusconn != None:

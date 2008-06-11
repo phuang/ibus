@@ -44,7 +44,6 @@ class IBus (ibus.Object):
 	def register_client (self, name, dbusconn):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		client = self._client_manager.register_client (name, ibusconn)
-		client.connect ("destroy", self._client_destroy_cb)
 		factory = self._factory_manager.get_default_factory ()
 		if factory:
 			engine = factory.create_engine ()
@@ -55,7 +54,7 @@ class IBus (ibus.Object):
 
 		if self._focused_client != client and self._focused_client != None:
 			map (self._focused_client.disconnect, self._client_handlers)
-			del self._client_handlers[:]
+			self._client_handlers = []
 			self._focused_client.focus_out ()
 
 		# Install all callback functions
@@ -69,6 +68,10 @@ class IBus (ibus.Object):
 		self._client_handlers.append (id)
 		id = client.connect ("update-property", self._update_property_cb)
 		self._client_handlers.append (id)
+		id = client.connect ("engine-lost", self._engine_lost_cb)
+		self._client_handlers.append (id)
+		id = client.connect ("destroy", self._client_destroy_cb)
+		self._client_handlers.append (id)
 
 		self._panel.reset ()
 		self._focused_client = client
@@ -79,14 +82,13 @@ class IBus (ibus.Object):
 		client = self._lookup_client (dbusconn)
 		if client == self._focused_client:
 			map (self._focused_client.disconnect, self._client_handlers)
-			del self._client_handlers[:]
+			self._client_handlers = []
 			self._focused_client = None
 		client.focus_out ()
 		self._panel.reset ()
 
 	def reset (self, dbusconn):
 		client = self._lookup_client (dbusconn)
-		self._panel.reset ()
 		client.reset ()
 
 	def is_enabled (self, dbusconn):
@@ -154,10 +156,15 @@ class IBus (ibus.Object):
 
 		self._panel.update_property (prop)
 
+	def _engine_lost_cb (self, client):
+		assert self._focused_client == client
+
+		self._panel.reset ()
+
 	def _client_destroy_cb (self, client):
-		if client == self._focused_client:
-			del self._client_handlers[:]
-			self._focused_client = None
+		assert client == self._focused_client
+		self._client_handlers = []
+		self._focused_client = None
 
 	##########################################################
 	# methods for im engines
