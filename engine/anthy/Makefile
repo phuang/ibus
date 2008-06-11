@@ -7,4 +7,4 @@ _anthy.so: anthy_wrap.c
 test:
 	PYTHONPATH=../.. python main.py
 clean:
-	$(RM) anthy.py anthy_wrap.c _anthy.so
+	$(RM) anthy.py anthy_wrap.c _anthy.so *.pyc
