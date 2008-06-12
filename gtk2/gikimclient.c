@@ -634,8 +634,8 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
             switch (values[0]) {
             case 1: /* Underline */
                 attr = pango_attr_underline_new (values[1]);
-                attr->start_index = values[2];
-                attr->end_index = values[3];
+                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
+                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
                 pango_attr_list_insert (attrs, attr);
                 break;
 
@@ -645,8 +645,8 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
                                 (values[1] & 0x00ff00),
                                 (values[1] & 0x0000ff) << 8
                                 );
-                attr->start_index = values[2];
-                attr->end_index = values[3];
+                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
+                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
                 pango_attr_list_insert (attrs, attr);
                 break;
             case 3: /* Background Color */
@@ -655,8 +655,8 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
                                 (values[1] & 0x00ff00),
                                 (values[1] & 0x0000ff) << 8
                                 );
-                attr->start_index = values[2];
-                attr->end_index = values[3];
+                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
+                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
                 pango_attr_list_insert (attrs, attr);
                 break;
             default:
