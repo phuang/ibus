@@ -170,7 +170,7 @@ class Engine (interface.IEngine):
 
 		attrs = ibus.AttrList ()
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars)))
-		attrs.append (ibus.AttributeBackground (ibus.RGB (200, 200, 200),
+		attrs.append (ibus.AttributeBackground (ibus.RGB (200, 200, 240),
 				pos - len (self._segments[self._cursor_pos][1]),
 				pos))
 		self.UpdatePreedit (dbus.String (self._convert_chars),
@@ -322,6 +322,8 @@ class Engine (interface.IEngine):
 
 
 	def _on_key_common (self, keyval):
+		if self._convert_begined:
+			return True
 		self._input_chars += unichr (keyval)
 		self._cursor_pos += 1
 		self._invalidate ()

@@ -63,7 +63,7 @@ class IEngine (dbus.service.Object):
 	@signal (signature="ubu")
 	def ForwardKeyEvent (self, keyval, is_press, state): pass
 
-	@signal (signature="saaiib")
+	@signal (signature="saauib")
 	def UpdatePreedit (self, text, attrs, cursor_pos, visible): pass
 
 	@signal (signature="svb")
