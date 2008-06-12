@@ -134,7 +134,7 @@ class Engine (interface.IEngine):
 	def _commit_string (self, text):
 		self._reset ()
 		self.CommitString (text)
-		self._update ()
+		self._invalidate ()
 
 	def _update_input_chars (self):
 		begin, end  = max (self._cursor_pos - 4, 0), self._cursor_pos
@@ -323,7 +323,10 @@ class Engine (interface.IEngine):
 
 	def _on_key_common (self, keyval):
 		if self._convert_begined:
-			return True
+			i = 0
+			for seg_index, text in self._segments:
+				self._context.commit_segment (i, seg_index)
+			self._commit_string (self._convert_chars)
 		self._input_chars += unichr (keyval)
 		self._cursor_pos += 1
 		self._invalidate ()

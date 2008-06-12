@@ -11,10 +11,13 @@ class PangoAttrList (pango.AttrList):
 		for c in unistr:
 			offsets.append (offset)
 			offset += len (c.encode ("utf8"))
+		offsets.append (offset)
 		for attr in attrs:
 			pango_attr = None
-			start_index = offsets[attr._start_index]
-			end_index = offsets[attr._end_index]
+			start_index = attrs._start_index if attrs._start_index >= 0 else 0
+			end_index = attrs._end_index if attrs._end_index >= 0 else 0
+			start_index = offsets[_start_index] if attrstart_index < len (offsets) else offsets[-1]
+			end_index = offsets[_end_index] if end_index < len (offsets) else offsets[-1]
 			if attr._type == ibus.ATTR_TYPE_FOREGROUND:
 				r = (attr._value & 0x00ff0000) >> 8
 				g = (attr._value & 0x0000ff00)
