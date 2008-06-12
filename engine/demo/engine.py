@@ -14,7 +14,7 @@ class Engine (interface.IEngine):
 		interface.IEngine.__init__ (self, dbusconn, object_path)
 		self._dbusconn = dbusconn
 		self._is_invalidate = False
-		self._preedit_string = ""
+		self._preedit_string = u""
 		self._lookup_table = ibus.LookupTable ()
 		self._prop_list = ibus.PropList ()
 		self._prop_list.append (ibus.Property ("test", icon = "ibus-locale"))
@@ -29,7 +29,7 @@ class Engine (interface.IEngine):
 				self._commit_string (self._preedit_string)
 				return True
 			elif keyval == keysyms.Escape:
-				self._preedit_string = ""
+				self._preedit_string = u""
 				self._update ()
 				return True
 			elif keyval == keysyms.BackSpace:
@@ -69,7 +69,7 @@ class Engine (interface.IEngine):
 		if keyval in xrange (keysyms.a, keysyms.z + 1) or \
 			keyval in xrange (keysyms.A, keysyms.Z + 1):
 			if state & (keysyms.CONTROL_MASK | keysyms.ALT_MASK) == 0:
-				self._preedit_string += chr (keyval)
+				self._preedit_string += unichr (keyval)
 				self._invalidate ()
 				return True
 		else:
@@ -97,9 +97,9 @@ class Engine (interface.IEngine):
 		return False
 
 	def _commit_string (self, text):
-		self._preedit_string = ""
-		self._update ()
 		self.CommitString (text)
+		self._preedit_string = u""
+		self._update ()
 
 	def _update (self):
 		preedit_len = len (self._preedit_string)
