@@ -226,7 +226,7 @@ class CandidatePanel (gtk.VBox):
 		self._check_show_states ()
 
 	def update_preedit (self, text, attrs, cursor_pos, show):
-		attrs = PangoAttrList (attrs)
+		attrs = PangoAttrList (attrs, text)
 		if show:
 			self.show_preedit_string ()
 		else:
@@ -249,7 +249,7 @@ class CandidatePanel (gtk.VBox):
 		self._check_show_states ()
 
 	def update_aux_string (self, text, attrs, show):
-		attrs = PangoAttrList (attrs)
+		attrs = PangoAttrList (attrs, text)
 
 		if show:
 			self.show_aux_string ()
@@ -286,7 +286,7 @@ class CandidatePanel (gtk.VBox):
 
 		self._lookup_table = lookup_table
 		candidates = self._lookup_table.get_canidates_in_current_page ()
-		candidates = map (lambda x: (x[0], PangoAttrList (x[1])), candidates)
+		candidates = map (lambda x: (x[0], PangoAttrList (x[1], x[0])), candidates)
 		self._candidate_area.set_candidates (candidates, self._lookup_table.get_cursor_pos_in_current_page ())
 
 	def _check_show_states (self):
