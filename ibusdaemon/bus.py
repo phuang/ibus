@@ -228,6 +228,22 @@ class IBus (ibus.Object):
 		if panel == self._panel:
 			self._panel = DummyPanel ()
 
+	##########################################################
+	# general methods
+	##########################################################
+	def get_factories (self):
+		return self._factory_manager.get_factories ()
+
+	def get_factory_info (self, factory_path):
+		return self._factory_manager.get_factory_info (factory_path)
+
+	def set_factory (self, factory_path):
+		if self._focused_client == None:
+			return
+		factory = self._factory_manager.get_factory (factory_path)
+		engine = factory.create_engine ()
+		self._focused_client.set_engine (engine)
+
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
 
@@ -282,3 +298,11 @@ class IBusProxy (ibus.IIBus):
 	def IsEnabled (self, dbusconn):
 		return self._ibus.is_enabled (dbusconn)
 
+	def GetFactories (self, dbusconn):
+		return self._ibus.get_factories ()
+
+	def GetFactoryInfo (self, factory_path, dbusconn):
+		return self._ibus.get_factory_info (factory_path)
+
+	def SetFactory (self, factory_path, dbusconn):
+		return self._ibus.set_factory (factory_path)

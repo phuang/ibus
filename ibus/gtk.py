@@ -14,10 +14,10 @@ class PangoAttrList (pango.AttrList):
 		offsets.append (offset)
 		for attr in attrs:
 			pango_attr = None
-			start_index = attrs._start_index if attrs._start_index >= 0 else 0
-			end_index = attrs._end_index if attrs._end_index >= 0 else 0
-			start_index = offsets[_start_index] if attrstart_index < len (offsets) else offsets[-1]
-			end_index = offsets[_end_index] if end_index < len (offsets) else offsets[-1]
+			start_index = attr._start_index if attr._start_index >= 0 else 0
+			end_index = attr._end_index if attr._end_index >= 0 else 0
+			start_index = offsets[start_index] if start_index < len (offsets) else offsets[-1]
+			end_index = offsets[end_index] if end_index < len (offsets) else offsets[-1]
 			if attr._type == ibus.ATTR_TYPE_FOREGROUND:
 				r = (attr._value & 0x00ff0000) >> 8
 				g = (attr._value & 0x0000ff00)

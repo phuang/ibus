@@ -5,9 +5,9 @@ FACTORY_PATH = "/com/redhat/IBus/engines/Anthy/Factory"
 ENGINE_PATH = "/com/redhat/IBus/engines/Anthy/Engine/%d"
 
 class DemoEngineFactory (interface.IEngineFactory):
-	NAME = "AnthyEngine"
+	NAME = "Anthy"
 	LANG = "ja"
-	ICON = ""
+	ICON = "ibus-anthy"
 	AUTHORS = "Huang Peng <shawn.p.huang@gmail.com>"
 	CREDITS = "GPLv2"
 

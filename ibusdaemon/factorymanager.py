@@ -21,7 +21,7 @@ class FactoryManager (ibus.Object):
 	def register_factories (self, object_paths, ibusconn):
 		if ibusconn in self._factories:
 			raise ibus.IBusException ("this conn has registered factories!")
-		
+
 		self._ibusconn_factory_dict[ibusconn] = []
 
 		for object_path in object_paths:
@@ -53,7 +53,18 @@ class FactoryManager (ibus.Object):
 			i = 0
 
 		return factories[i]
-	
+
+	def get_factories (self):
+		return self._factories.keys ()
+
+	def get_factory_info (self, factory_path):
+		factory = self._factories[factory_path]
+		return factory.get_info ()
+
+	def get_factory (self, factory_path):
+		factory = self._factories[factory_path]
+		return factory
+
 	def _get_sorted_factories (self, resort = False):
 		if not self._sorted_factories or resort:
 			factories = self._factories.values ()
