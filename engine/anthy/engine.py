@@ -150,7 +150,7 @@ class Engine (interface.IEngine):
 		attrs = ibus.AttrList ()
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._input_chars.encode ("utf-8"))))
 
-		self.UpdatePreedit (dbus.String (self._input_chars), 
+		self.UpdatePreedit (dbus.String (self._input_chars),
 				attrs.to_dbus_value (),
 				dbus.Int32 (self._cursor_pos),
 				len (self._input_chars) > 0)
@@ -170,9 +170,10 @@ class Engine (interface.IEngine):
 
 		attrs = ibus.AttrList ()
 		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars)))
-		# attrs.append (ibus.AttributeBackground (ibus.RGB (256, 0, 0), )
-
-		self.UpdatePreedit (dbus.String (self._convert_chars), 
+		attrs.append (ibus.AttributeBackground (ibus.RGB (200, 200, 200),
+				pos - len (self._segments[self._cursor_pos][1]),
+				pos))
+		self.UpdatePreedit (dbus.String (self._convert_chars),
 				attrs.to_dbus_value (),
 				dbus.Int32 (pos),
 				True)
