@@ -16,7 +16,7 @@ class Engine (interface.IEngine):
 
 		# create anthy context
 		self._context = anthy.anthy_context ()
-		self._context._set_encoding (2)
+		self._context._set_encoding (anthy.ANTHY_UTF8_ENCODING)
 
 		self._lookup_table = ibus.LookupTable ()
 		self._prop_list = ibus.PropList ()
@@ -169,7 +169,8 @@ class Engine (interface.IEngine):
 			i += 1
 
 		attrs = ibus.AttrList ()
-		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars.encode ("utf-8"))))
+		attrs.append (ibus.AttributeUnderline (pango.UNDERLINE_SINGLE, 0, len (self._convert_chars)))
+		# attrs.append (ibus.AttributeBackground (ibus.RGB (256, 0, 0), )
 
 		self.UpdatePreedit (dbus.String (self._convert_chars), 
 				attrs.to_dbus_value (),
