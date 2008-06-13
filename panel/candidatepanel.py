@@ -322,6 +322,8 @@ class CandidatePanel (gtk.VBox):
 			return
 		self._orientation = orientation
 		self._recreate_ui ()
+		if self._toplevel.flags () & gtk.VISIBLE:
+			self.show_all ()
 
 	def get_orientation (self):
 		return self._orientation
