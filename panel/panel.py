@@ -119,7 +119,7 @@ class Panel (ibus.Object):
 		elif x - menu_width <= 0:
 			pass
 		else:
-			if x <= monitor_allocation.width / 2:
+			if x <= monitor_allocation.width * 3 / 4:
 				pass
 			else:
 				x -= menu_width - button.allocation.width
@@ -129,7 +129,7 @@ class Panel (ibus.Object):
 		elif y - menu_height <= 0:
 			y += button.allocation.height
 		else:
-			if y <= monitor_allocation.height / 2:
+			if y <= monitor_allocation.height * 3 / 4:
 				y += button.allocation.height
 			else:
 				y -= menu_height
