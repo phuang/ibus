@@ -5,7 +5,7 @@ FACTORY_PATH = "/com/redhat/IBus/engines/Demo/Factory"
 ENGINE_PATH = "/com/redhat/IBus/engines/Demo/Engine/%d"
 
 class DemoEngineFactory (interface.IEngineFactory):
-	NAME = "DemoEngine"
+	NAME = "Enchant"
 	LANG = "en"
 	ICON = ""
 	AUTHORS = "Huang Peng <shawn.p.huang@gmail.com>"
