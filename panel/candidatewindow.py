@@ -36,12 +36,6 @@ class CandidateWindow (gtk.Window):
 	def update_preedit (self, text, attrs, cursor_pos, show):
 		self._candidate_panel.update_preedit (text, attrs, cursor_pos, show)
 
-	def show_preedit_string (self, text, attrs):
-		self._candidate_panel.show_preedit_string ()
-
-	def hide_preedit_string (self, text, attrs):
-		self._candidate_panel.hide_preedit_string ()
-
 	def update_aux_string (self, text, attrs, show):
 		self._candidate_panel.update_aux_string (text, attrs, show)
 
