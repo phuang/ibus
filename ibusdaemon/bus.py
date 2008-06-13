@@ -240,6 +240,7 @@ class IBus (ibus.Object):
 	def set_factory (self, factory_path):
 		if self._focused_client == None:
 			return
+		self._panel.reset ()
 		factory = self._factory_manager.get_factory (factory_path)
 		engine = factory.create_engine ()
 		self._focused_client.set_engine (engine)
