@@ -114,15 +114,25 @@ class Panel (ibus.Object):
 
 		menu_width, menu_height = menu.size_request ()
 
+		if x + menu_width >= monitor_allocation.width:
+			x -= menu_width - button.allocation.width
+		elif x - menu_width <= 0:
+			pass
+		else:
+			if x <= monitor_allocation.width / 2:
+				pass
+			else:
+				x -= menu_width - button.allocation.width
+
 		if y + button.allocation.height + menu_height >= monitor_allocation.height:
 			y -= menu_height
 		elif y - menu_height <= 0:
 			y += button.allocation.height
 		else:
-			if y >= monitor_allocation.height / 2:
-				y -= menu_height
-			else:
+			if y <= monitor_allocation.height / 2:
 				y += button.allocation.height
+			else:
+				y -= menu_height
 
 		return (x, y, False)
 
