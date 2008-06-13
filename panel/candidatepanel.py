@@ -147,8 +147,7 @@ class CandidatePanel (gtk.VBox):
 		# create candidates area
 		self._candidate_area = CandidateArea (self._orientation)
 		self._candidate_area.set_no_show_all (True)
-		if self._show_lookup_table:
-			self._candidate_area.show_all ()
+		self.update_lookup_table (self._lookup_table, self._show_lookup_table)
 
 		# create state label
 		self._state_label = gtk.Label ()
