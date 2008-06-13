@@ -16,6 +16,8 @@ class Panel (ibus.Object):
 		self._language_bar = LanguageBar ()
 		self._language_bar.connect ("property-activate",
 						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
+		self._language_bar.connect ("im-menu-popup",
+						self._im_menu_popup_cb)
 		self._language_bar.show_all ()
 
 		self._candidate_panel = CandidatePanel ()
@@ -80,7 +82,7 @@ class Panel (ibus.Object):
 	def do_destroy (self):
 		gtk.main_quit ()
 
-	def _popup_factory_menu (self, button, active_time):
+	def _create_im_menu (self):
 		menu = gtk.Menu ()
 		factories = self._ibus.GetFactories ()
 		if not factories:
@@ -99,13 +101,54 @@ class Panel (ibus.Object):
 
 		menu.show_all ()
 		menu.set_take_focus (False)
-		menu.popup (None, None, gtk.status_icon_position_menu, button, active_time, self._status_icon)
+		return menu
+
+	def _menu_position_cb (self, menu, button):
+		screen = button.get_screen ()
+		monitor = screen.get_monitor_at_window (button.window)
+		monitor_allocation = screen.get_monitor_geometry (monitor)
+
+		x, y = button.window.get_origin ()
+		x += button.allocation.x
+		y += button.allocation.y
+
+		menu_width, menu_height = menu.size_request ()
+
+		if y + button.allocation.height + menu_height >= monitor_allocation.height:
+			y -= menu_height
+		elif y - menu_height <= 0:
+			y += button.allocation.height
+		else:
+			if y >= monitor_allocation.height / 2:
+				y -= menu_height
+			else:
+				y += button.allocation.height
+
+		return (x, y, False)
+
+	def _im_menu_popup_cb (self, languagebar, button):
+		menu = self._create_im_menu ()
+		menu.popup (None, None,
+				self._menu_position_cb,
+				0,
+				gtk.get_current_event_time (),
+				button)
 
 	def _status_icon_activate_cb (self, status_icon):
-		self._popup_factory_menu (0, gtk.get_current_event_time ())
-	def _status_icon_popup_menu_cb (self, status_icon, button, active_time):
-		self._popup_factory_menu (button, active_time)
+		menu = self._create_im_menu ()
+		menu.popup (None, None,
+				gtk.status_icon_position_menu,
+				0,
+				gtk.get_current_event_time (),
+				self._status_icon)
 
+	def _status_icon_popup_menu_cb (self, status_icon, button, active_time):
+		menu = self._create_im_menu ()
+		menu.popup (None, None,
+				gtk.status_icon_position_menu,
+				button,
+				active_time,
+				self._status_icon)
 
 	def _menu_item_activate_cb (self, item, factory):
 		self._ibus.SetFactory (factory)

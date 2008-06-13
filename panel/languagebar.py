@@ -13,6 +13,10 @@ class LanguageBar (gtk.Toolbar):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_STRING, )),
+		"im-menu-popup" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_PYOBJECT, )),
 		}
 
 	def __init__ (self):
@@ -52,7 +56,9 @@ class LanguageBar (gtk.Toolbar):
 		self.insert (self._handle, -1)
 
 		# create input methods menu
-		self._im_menu = gtk.ToolButton (icon_widget = gtk.image_new_from_icon_name ("ibus-keyboard", gtk.ICON_SIZE_MENU))
+		image = gtk.image_new_from_icon_name ("engine-default", gtk.ICON_SIZE_MENU)
+		self._im_menu = gtk.ToolButton (icon_widget = image)
+		self._im_menu.connect ("clicked", lambda w: self.emit ("im-menu-popup", self._im_menu))
 		self.insert (self._im_menu, -1)
 
 	def _remove_properties (self):
