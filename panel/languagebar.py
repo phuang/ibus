@@ -116,6 +116,9 @@ class LanguageBar (gtk.Toolbar):
 		self._toplevel.show_all ()
 		gtk.Toolbar.show_all (self)
 
+	def hide_all (self):
+		self._toplevel.hide_all ()
+		gtk.Toolbar.hide_all (self)
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 

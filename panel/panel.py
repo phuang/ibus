@@ -6,7 +6,7 @@ import ibus
 from lang import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
-from candidatewindow import CandidateWindow
+from candidatepanel import CandidatePanel
 
 class Panel (ibus.Object):
 	def __init__ (self, proxy, _ibus):
@@ -18,7 +18,7 @@ class Panel (ibus.Object):
 						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
 		self._language_bar.show_all ()
 
-		self._candidate_panel = CandidateWindow ()
+		self._candidate_panel = CandidatePanel ()
 		self._candidate_panel.connect ("cursor-up",
 						lambda widget: self._proxy.CursorUp ())
 		self._candidate_panel.connect ("cursor-down",

@@ -107,6 +107,17 @@ class CandidatePanel (gtk.VBox):
 		gtk.VBox.__init__ (self)
 		self._tooltips = gtk.Tooltips ()
 
+		self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
+		self._toplevel.add (self)
+		self._toplevel.add_events (
+			gdk.BUTTON_PRESS_MASK | \
+			gdk.BUTTON_RELEASE_MASK | \
+			gdk.BUTTON1_MOTION_MASK)
+		self._begin_move = False
+		self._toplevel.connect ("button-press-event", self._button_press_event_cb)
+		self._toplevel.connect ("button-release-event", self._button_release_event_cb)
+		self._toplevel.connect ("motion-notify-event", self._motion_notify_event_cb)
+
 		self._orientation = gtk.ORIENTATION_HORIZONTAL
 		self._orientation = gtk.ORIENTATION_VERTICAL
 		self._show_preedit_string = False
@@ -119,7 +130,6 @@ class CandidatePanel (gtk.VBox):
 		self._lookup_table = None
 
 		self._recreate_ui ()
-
 
 	def _recreate_ui (self):
 		for w in self:
@@ -211,8 +221,8 @@ class CandidatePanel (gtk.VBox):
 			hbox.pack_start (self._next_button, False, False, 2)
 			self.pack_start (hbox, False, False)
 
-		self.hide_all ()
-		self.show_all ()
+		# self.hide_all ()
+		# self.show_all ()
 
 	def show_preedit_string (self):
 		self._show_preedit_string = True
@@ -339,6 +349,55 @@ class CandidatePanel (gtk.VBox):
 					self.allocation.width, self.allocation.height) 
 
 		gtk.VBox.do_expose_event (self, event)
+
+	def do_size_request (self, requisition):
+		gtk.VBox.do_size_request (self, requisition)
+		self._toplevel.resize (1, 1)
+
+	def _button_press_event_cb (self, widget, event):
+		if event.button == 1:
+			self._begin_move = True
+			self._press_pos = event.x_root, event.y_root
+			self._toplevel.window.set_cursor (gdk.Cursor (gdk.FLEUR))
+			return True
+
+		if event.button == 3:
+			if self.get_orientation () == gtk.ORIENTATION_HORIZONTAL:
+				self.set_orientation (gtk.ORIENTATION_VERTICAL)
+			else:
+				
+				self.set_orientation (gtk.ORIENTATION_HORIZONTAL)
+			return True
+		return False
+
+	def _button_release_event_cb (self, widget, event):
+		if event.button == 1:
+			del self._press_pos
+			self._begin_move = False
+			self._toplevel.window.set_cursor (gdk.Cursor (gdk.LEFT_PTR))
+			return True
+		return False
+
+	def _motion_notify_event_cb (self, widget, event):
+		if self._begin_move != True:
+			return False
+		x, y = self._toplevel.get_position ()
+		x  = int (x + event.x_root - self._press_pos[0])
+		y  = int (y + event.y_root - self._press_pos[1])
+		self._toplevel.move (x, y)
+		self._press_pos = event.x_root, event.y_root
+		return True
+
+	def show_all (self):
+		gtk.VBox.show_all (self)
+		self._toplevel.show_all ()
+	
+	def hide_all (self):
+		gtk.VBox.hide_all (self)
+		self._toplevel.hide_all ()
+
+	def move (self, x, y):
+		self._toplevel.move (x, y)
 
 gobject.type_register (CandidatePanel, "IBusCandidate")
 
