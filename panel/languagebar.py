@@ -14,6 +14,7 @@ class LanguageBar (gtk.Toolbar):
 			gobject.TYPE_NONE,
 			(gobject.TYPE_STRING, )),
 		}
+
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
 		self.set_property ("icon-size", ICON_SIZE)
@@ -23,6 +24,8 @@ class LanguageBar (gtk.Toolbar):
 		self._create_ui ()
 
 		self._properties = {}
+		self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
+		self._toplevel.add (self)
 
 	def _add_items (self):
 		img = gtk.image_new_from_icon_name ("engine-default", ICON_SIZE)
@@ -52,6 +55,15 @@ class LanguageBar (gtk.Toolbar):
 		self._im_menu = gtk.ToolButton (icon_widget = gtk.image_new_from_icon_name ("ibus-keyboard", gtk.ICON_SIZE_MENU))
 		self.insert (self._im_menu, -1)
 
+	def _remove_properties (self):
+		# reset all properties
+		for name, props in self._properties.items ():
+			for prop, widget in props:
+				widget.hide ()
+				widget.destroy ()
+		self._properties = {}
+		self.check_resize ()
+
 	def do_show (self):
 		gtk.Toolbar.do_show (self)
 		self.check_resize ()
@@ -62,6 +74,10 @@ class LanguageBar (gtk.Toolbar):
 			w, h = item.size_request ()
 			width += w
 		self.set_size_request (width + 4, -1)
+
+	def do_size_request (self, requisition):
+		gtk.Toolbar.do_size_request (self, requisition)
+		self._toplevel.resize (1, 1)
 
 	def reset (self):
 		self._remove_properties ()
@@ -96,55 +112,10 @@ class LanguageBar (gtk.Toolbar):
 	def update_properties (self, props):
 		pass
 
-	def _remove_properties (self):
-		# reset all properties
-		for name, props in self._properties.items ():
-			for prop, widget in props:
-				widget.hide ()
-				widget.destroy ()
-		self._properties = {}
-		self.check_resize ()
+	def show_all (self):
+		self._toplevel.show_all ()
+		gtk.Toolbar.show_all (self)
+
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
-
-class LanguageBarWindow (gtk.Window):
-	__gsignals__ = {
-		"property-activate" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, )),
-		}
-	def __init__ (self):
-		gtk.Window.__init__ (self, gtk.WINDOW_POPUP)
-		self._language_bar = LanguageBar ()
-		self._language_bar.connect ("size-request", self._size_request_cb)
-		self._language_bar.connect ("property-activate",
-								lambda widget, prop_name: self.emit ("property-activate", prop_name))
-		self.add (self._language_bar)
-		self.show_all ()
-
-	def reset (self):
-		self._language_bar.reset ()
-
-	# def do_size_allocate (self, allocation):
-	#		gtk.Window.do_size_allocate (self, allocation)
-	#		root = gdk.get_default_root_window ()
-	#		workarea = root.property_get ("_NET_WORKAREA")[2]
-	#		x, y = workarea[2] - allocation.width - 40, workarea[1] + workarea[3] - allocation.height
-	#		self.move (x, y)
-
-	def do_destroy (self):
-		gtk.main_quit ()
-		gtk.Window.do_destroy (self)
-
-	def register_properties (self, props):
-		self._language_bar.register_properties (props)
-
-	def update_property (self, prop):
-		self._labguage_bar.update_property (prop)
-
-	def _size_request_cb (self, widget, requisition):
-		self.resize (1, 1)
-
-gobject.type_register (LanguageBarWindow, "IBusLanguageBarWindow")
 

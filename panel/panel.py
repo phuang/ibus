@@ -5,7 +5,7 @@ import gobject
 import ibus
 from lang import LANGUAGES
 from ibus import interface
-from languagebar import LanguageBarWindow
+from languagebar import LanguageBar
 from candidatewindow import CandidateWindow
 
 class Panel (ibus.Object):
@@ -13,9 +13,10 @@ class Panel (ibus.Object):
 		gobject.GObject.__init__ (self)
 		self._proxy = proxy
 		self._ibus = _ibus
-		self._language_bar = LanguageBarWindow ()
+		self._language_bar = LanguageBar ()
 		self._language_bar.connect ("property-activate",
 						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
+		self._language_bar.show_all ()
 
 		self._candidate_panel = CandidateWindow ()
 		self._candidate_panel.connect ("cursor-up",
@@ -27,7 +28,7 @@ class Panel (ibus.Object):
 		self._status_icon.connect ("popup-menu", self._status_icon_popup_menu_cb)
 		self._status_icon.connect ("activate", self._status_icon_activate_cb)
 		self._status_icon.set_from_icon_name ("engine-default")
-		self._status_icon.set_tooltip ("ibus - enabled")
+		self._status_icon.set_tooltip ("ibus - running")
 		self._status_icon.set_visible (True)
 
 	def set_cursor_location (self, x, y, w, h):
@@ -107,7 +108,7 @@ class Panel (ibus.Object):
 
 
 	def _menu_item_activate_cb (self, item, factory):
-		gobject.idle_add (self._ibus.SetFactory, factory, priority = gobject.PRIORITY_LOW)
+		self._ibus.SetFactory (factory)
 
 gobject.type_register (Panel, "IBusPanel")
 
