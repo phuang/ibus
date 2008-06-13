@@ -88,32 +88,36 @@ class Engine (ibus.Object):
 									error_handler = error_cb)
 
 	def set_cursor_location (self, x, y, w, h):
-		self._engine.SetCursorLocation (x, y, w, h)
+		self._engine.SetCursorLocation (x, y, w, h,
+				**ibus.DEFAULT_ASYNC_HANDLERS)
+
 
 	def set_enable (self, enable):
-		self._engine.SetEnable (enable)
+		self._engine.SetEnable (enable,
+				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	# cursor for lookup table
 
 	def page_up (self):
-		self._engine.PageUp ()
+		self._engine.PageUp (**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def page_down (self):
-		self._engine.PageDown ()
+		self._engine.PageDown (**ibus.DEFAULT_ASYNC_HANDLERS)
 	
 	def cursor_up (self):
-		self._engine.CursorUp ()
+		self._engine.CursorUp (**ibus.DEFAULT_ASYNC_HANDLERS)
 	
 	def cursor_down (self):
-		self._engine.CursorDown ()
+		self._engine.CursorDown (**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def property_activate (self, prop_name):
-		self._engine.PropertyActivate (prop_name)
+		self._engine.PropertyActivate (prop_name,
+				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def destroy (self):
 		ibus.Object.destroy (self)
 		if self._engine:
-			self._engine.Destroy ()
+			self._engine.Destroy (**ibus.DEFAULT_ASYNC_HANDLERS)
 			self._engine = None
 		self._ibusconn = None
 
