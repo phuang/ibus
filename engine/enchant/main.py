@@ -13,7 +13,7 @@ class IMApp:
 							dbus_interface = dbus.LOCAL_IFACE)
 		self._engine = factory.DemoEngineFactory (self._dbusconn)
 		self._ibus = self._dbusconn.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
-		self._ibus.RegisterFactories ([factory.FACTORY_PATH])
+		self._ibus.RegisterFactories ([factory.FACTORY_PATH], **ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def run (self):
 		gtk.main ()
