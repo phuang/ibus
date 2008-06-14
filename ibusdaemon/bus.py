@@ -312,3 +312,4 @@ class IBusProxy (ibus.IIBus):
 
 	def SetFactory (self, factory_path, dbusconn):
 		return self._ibus.set_factory (factory_path)
+
