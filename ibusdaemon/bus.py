@@ -3,7 +3,7 @@ import weakref
 import dbus
 import ibus
 from ibus import keysyms
-from clientmanager import ClientManager
+from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from connection import Connection
 from panel import Panel, DummyPanel
@@ -12,13 +12,13 @@ class IBus (ibus.Object):
 	def __init__ (self):
 		ibus.Object.__init__ (self)
 		self._connections = {}
-		self._client_manager = ClientManager ()
+		self._context_manager = ContextManager ()
 		self._factory_manager = FactoryManager ()
 		self._panel = DummyPanel ()
 
-		self._focused_client = None
-		self._last_focused_client = None
-		self._client_handlers = []
+		self._focused_context = None
+		self._last_focused_context = None
+		self._context_handlers = []
 
 		self._last_key = None
 
@@ -39,132 +39,134 @@ class IBus (ibus.Object):
 		return self._connections[dbusconn]
 
 	##########################################################
-	# methods for im client
+	# methods for im context
 	##########################################################
-	def register_client (self, name, dbusconn):
+	def create_input_context (self, name, dbusconn):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
-		client = self._client_manager.register_client (name, ibusconn)
+		context = self._context_manager.create_input_context (name, ibusconn)
 		factory = self._factory_manager.get_default_factory ()
 		if factory:
 			engine = factory.create_engine ()
-			client.set_engine (engine)
+			context.set_engine (engine)
+		return context.get_id ()
 
-	def focus_in (self, dbusconn):
-		client = self._lookup_client (dbusconn)
+	def release_input_context (self, ic, dbusconn):
+		ibusconn = self._lookup_ibus_connection (dbusconn)
+		self._context_manager.release_input_context (ic, ibusconn)
 
-		if self._focused_client != client and self._focused_client != None:
-			map (self._focused_client.disconnect, self._client_handlers)
-			self._client_handlers = []
-			self._focused_client.focus_out ()
+	def focus_in (self, ic, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+
+		if self._focused_context != context and self._focused_context != None:
+			map (self._focused_context.disconnect, self._context_handlers)
+			self._context_handlers = []
+			self._focused_context.focus_out ()
 
 		# Install all callback functions
-		id = client.connect ("update-preedit", self._update_preedit_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("update-aux-string", self._update_aux_string_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("update-lookup-table", self._update_lookup_table_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("register-properties", self._register_properties_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("update-property", self._update_property_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("engine-lost", self._engine_lost_cb)
-		self._client_handlers.append (id)
-		id = client.connect ("destroy", self._client_destroy_cb)
-		self._client_handlers.append (id)
+		id = context.connect ("update-preedit", self._update_preedit_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("update-aux-string", self._update_aux_string_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("update-lookup-table", self._update_lookup_table_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("register-properties", self._register_properties_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("update-property", self._update_property_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("engine-lost", self._engine_lost_cb)
+		self._context_handlers.append (id)
+		id = context.connect ("destroy", self._context_destroy_cb)
+		self._context_handlers.append (id)
 
 		self._panel.reset ()
-		self._focused_client = client
-		self._last_focused_client = client
-		client.focus_in ()
+		self._focused_context = context
+		self._last_focused_context = context
+		context.focus_in ()
 
-	def focus_out (self, dbusconn):
-		client = self._lookup_client (dbusconn)
-		if client == self._focused_client:
-			map (self._focused_client.disconnect, self._client_handlers)
-			self._client_handlers = []
-			self._focused_client = None
-		client.focus_out ()
+	def focus_out (self, ic, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+		if context == self._focused_context:
+			map (self._focused_context.disconnect, self._context_handlers)
+			self._context_handlers = []
+			self._focused_context = None
+		context.focus_out ()
 		self._panel.reset ()
 
-	def reset (self, dbusconn):
-		client = self._lookup_client (dbusconn)
-		client.reset ()
+	def reset (self, ic, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+		context.reset ()
 
-	def is_enabled (self, dbusconn):
-		client = self._lookup_client (dbusconn)
-		return client.is_enabled ()
+	def is_enabled (self, ic, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+		return context.is_enabled ()
 
-	def process_key_event (self, keyval, is_press, state, 
+	def process_key_event (self, ic, keyval, is_press, state,
 								dbusconn, reply_cb, error_cb):
-		client = self._lookup_client (dbusconn)
+		context = self._lookup_context (ic, dbusconn)
 
-		if self._filter_hotkeys (client, keyval, is_press, state):
+		if self._filter_hotkeys (context, keyval, is_press, state):
 			reply_cb (True)
 			return
 		else:
-			client.process_key_event (keyval, is_press, state, reply_cb, error_cb)
+			context.process_key_event (keyval, is_press, state, reply_cb, error_cb)
 
-	def set_cursor_location (self, x, y, w, h, dbusconn):
-		client = self._lookup_client (dbusconn)
-		client.set_cursor_location (x, y, w, h)
+	def set_cursor_location (self, ic, x, y, w, h, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+		context.set_cursor_location (x, y, w, h)
 		self._panel.set_cursor_location (x, y, w, h)
 
-	def _filter_hotkeys (self, client, keyval, is_press, state):
+	def _filter_hotkeys (self, context, keyval, is_press, state):
 		if is_press and keyval == keysyms.space \
 			and state == keysyms.CONTROL_MASK:
-			enable = not client.is_enabled ()
-			client.set_enable (enable)
-			if client.get_engine () == None and enable:
+			enable = not context.is_enabled ()
+			context.set_enable (enable)
+			if context.get_engine () == None and enable:
 				factory = self._factory_manager.get_default_factory ()
 				if factory:
 					engine = factory.create_engine ()
-					client.set_engine (engine)
+					context.set_engine (engine)
 			return True
 		return False
 
-	def _lookup_client (self, dbusconn):
+	def _lookup_context (self, ic, dbusconn):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
-		return self._client_manager.lookup_client (ibusconn)
-		if dbusconn not in self._clients:
-			raise ibus.IBusException ("not register the client")
-		return self._clients[dbusconn]
+		return self._context_manager.lookup_context (ic, ibusconn)
 
-	def _update_preedit_cb (self, client, text, attrs, cursor_pos, visible):
-		assert self._focused_client == client
+	def _update_preedit_cb (self, context, text, attrs, cursor_pos, visible):
+		assert self._focused_context == context
 
 		self._panel.update_preedit_string (text, attrs, cursor_pos, visible)
 
-	def _update_aux_string_cb (self, client, text, attrs, visible):
-		assert self._focused_client == client
+	def _update_aux_string_cb (self, context, text, attrs, visible):
+		assert self._focused_context == context
 
 		self._panel.update_aux_string (text, attrs, visible)
 
-	def _update_lookup_table_cb (self, client, lookup_table, visible):
-		assert self._focused_client == client
+	def _update_lookup_table_cb (self, context, lookup_table, visible):
+		assert self._focused_context == context
 
 		self._panel.update_lookup_table (lookup_table, visible)
 
-	def _register_properties_cb (self, client, props):
-		assert self._focused_client == client
+	def _register_properties_cb (self, context, props):
+		assert self._focused_context == context
 
 		self._panel.register_properties (props)
 
 
-	def _update_property_cb (self, client, prop):
-		assert self._focused_client == client
+	def _update_property_cb (self, context, prop):
+		assert self._focused_context == context
 
 		self._panel.update_property (prop)
 
-	def _engine_lost_cb (self, client):
-		assert self._focused_client == client
+	def _engine_lost_cb (self, context):
+		assert self._focused_context == context
 
 		self._panel.reset ()
 
-	def _client_destroy_cb (self, client):
-		assert client == self._focused_client
-		self._client_handlers = []
-		self._focused_client = None
+	def _context_destroy_cb (self, context):
+		assert context == self._focused_context
+		self._context_handlers = []
+		self._focused_context = None
 
 	##########################################################
 	# methods for im engines
@@ -201,28 +203,28 @@ class IBus (ibus.Object):
 
 	def _panel_page_up_cb (self, panel):
 		assert panel == self._panel
-		if self._focused_client:
-			self._focused_client.page_up ()
+		if self._focused_context:
+			self._focused_context.page_up ()
 
 	def _panel_page_down_cb (self, panel):
 		assert panel == self._panel
-		if self._focused_client:
-			self._focused_client.page_down ()
+		if self._focused_context:
+			self._focused_context.page_down ()
 
 	def _panel_cursor_up_cb (self, panel):
 		assert panel == self._panel
-		if self._focused_client:
-			self._focused_client.cursor_up ()
+		if self._focused_context:
+			self._focused_context.cursor_up ()
 
 	def _panel_cursor_down_cb (self, panel):
 		assert panel == self._panel
-		if self._focused_client:
-			self._focused_client.cursor_down ()
+		if self._focused_context:
+			self._focused_context.cursor_down ()
 
 	def _panel_property_active_cb (self, panel, prop_name):
 		assert panel == self._panel
-		if self._focused_client:
-			self._focused_client.property_activate (prop_name)
+		if self._focused_context:
+			self._focused_context.property_activate (prop_name)
 
 	def _panel_destroy_cb (self, panel):
 		if panel == self._panel:
@@ -238,12 +240,12 @@ class IBus (ibus.Object):
 		return self._factory_manager.get_factory_info (factory_path)
 
 	def set_factory (self, factory_path):
-		if self._focused_client == None:
+		if self._focused_context == None:
 			return
 		self._panel.reset ()
 		factory = self._factory_manager.get_factory (factory_path)
 		engine = factory.create_engine ()
-		self._focused_client.set_engine (engine)
+		self._focused_context.set_engine (engine)
 
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
@@ -264,8 +266,11 @@ class IBusProxy (ibus.IIBus):
 	def GetIBusAddress (self, dbusconn):
 		return self._ibus_addr
 
-	def RegisterClient (self, client_name, dbusconn):
-		self._ibus.register_client (client_name, dbusconn)
+	def CreateInputContext (self, context_name, dbusconn):
+		return self._ibus.create_input_context (context_name, dbusconn)
+
+	def ReleaseInputContext (self, ic, dbusconn):
+		self._ibus.release_input_context (ic, dbusconn)
 
 	def RegisterFactories (self, object_paths, dbusconn):
 		self._ibus.register_factories (object_paths, dbusconn)
@@ -276,28 +281,28 @@ class IBusProxy (ibus.IIBus):
 	def RegisterPanel (self, object_path, replace, dbusconn):
 		self._ibus.register_panel (object_path, replace, dbusconn)
 
-	def ProcessKeyEvent (self, keyval, is_press, state, \
+	def ProcessKeyEvent (self, ic, keyval, is_press, state, \
 							dbusconn, reply_cb, error_cb):
 		try:
-			self._ibus.process_key_event (keyval, is_press, state, 
+			self._ibus.process_key_event (ic, keyval, is_press, state,
 							dbusconn, reply_cb, error_cb)
 		except Exception, e:
 			error_cb (e)
 
-	def SetCursorLocation (self, x, y, w, h, dbusconn):
-		self._ibus.set_cursor_location (x, y, w, h, dbusconn)
+	def SetCursorLocation (self, ic, x, y, w, h, dbusconn):
+		self._ibus.set_cursor_location (ic, x, y, w, h, dbusconn)
 
-	def FocusIn (self, dbusconn):
-		self._ibus.focus_in (dbusconn)
+	def FocusIn (self, ic, dbusconn):
+		self._ibus.focus_in (ic, dbusconn)
 
-	def FocusOut (self, dbusconn):
-		self._ibus.focus_out (dbusconn)
+	def FocusOut (self, ic, dbusconn):
+		self._ibus.focus_out (ic, dbusconn)
 
-	def Reset (self, dbusconn):
-		self._ibus.reset (dbusconn)
+	def Reset (self, ic, dbusconn):
+		self._ibus.reset (ic, dbusconn)
 
-	def IsEnabled (self, dbusconn):
-		return self._ibus.is_enabled (dbusconn)
+	def IsEnabled (self, ic, dbusconn):
+		return self._ibus.is_enabled (ic, dbusconn)
 
 	def GetFactories (self, dbusconn):
 		return self._ibus.get_factories ()

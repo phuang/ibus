@@ -19,39 +19,43 @@ class IIBus (dbus.service.Object):
 	@method (out_signature = "s")
 	def GetIBusAddress (self, dbusconn): pass
 
+	# methods for ibus clients
+	@method (in_signature = "s", out_signature = "s")
+	def CreateInputContext (self, client_name, dbusconn): pass
+
 	@method (in_signature = "s")
-	def RegisterClient (self, client_name, dbusconn): pass
+	def ReleaseInputContext (self, ic, dbusconn): pass
 
-	@method ()
-	def UnregisterClient (self, dbusconn): pass
+	@async_method (in_signature = "subu", out_signature = "b")
+	def ProcessKeyEvent (self, ic, keyval, is_press, state, dbusconn, reply_cb, error_cb): pass
 
+	@method (in_signature = "siiii")
+	def SetCursorLocation (self, ic, x, y, w, h, dbusconn): pass
+
+	@method (in_signature = "s")
+	def FocusIn (self, ic, dbusconn): pass
+
+	@method (in_signature = "s")
+	def FocusOut (self, ic, dbusconn): pass
+
+	@method (in_signature = "s")
+	def Reset (self, ic, dbusconn): pass
+
+	@method (in_signature = "s", out_signature = "b")
+	def IsEnabled (self, ic, dbusconn): pass
+
+	# methods for ibus engine provide
 	@method (in_signature = "ao")
 	def RegisterFactories (self, object_paths, dbusconn): pass
 
 	@method (in_signature = "ao")
 	def UnregisterFactories (self, object_paths, dbusconn): pass
 
+	# methods for ibus panel
 	@method (in_signature = "ob")
 	def RegisterPanel (self, object_path, replace, dbusconn): pass
 
-	@async_method (in_signature = "ubu", out_signature = "b")
-	def ProcessKeyEvent (self, keyval, is_press, state, dbusconn, reply_cb, error_cb): pass
-
-	@method (in_signature = "iiii")
-	def SetCursorLocation (self, x, y, w, h, dbusconn): pass
-
-	@method ()
-	def FocusIn (self, dbusconn): pass
-
-	@method ()
-	def FocusOut (self, dbusconn): pass
-
-	@method ()
-	def Reset (self, dbusconn): pass
-
-	@method (out_signature = "b")
-	def IsEnabled (self, dbusconn): pass
-
+	# general methods
 	@method (out_signature = "av")
 	def GetFactories (self, dbusconn): pass
 

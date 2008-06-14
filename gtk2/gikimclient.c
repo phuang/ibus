@@ -58,6 +58,7 @@ struct _GikIMClientPrivate {
     gboolean         enable;
 
     GtkIMContext    *context;
+    gchar           *ic;
 
     /* preedit status */
     gchar           *preedit_string;
@@ -287,10 +288,13 @@ _gik_im_client_ibus_open (GikIMClient *client)
     }
     dbus_connection_setup_with_g_main (priv->ibus, NULL);
     const gchar *app_name = g_get_application_name ();
-    _ibus_call_with_reply_and_block (priv->ibus, "RegisterClient",
+    gchar *ic = NULL;
+    _ibus_call_with_reply_and_block (priv->ibus, "CreateInputContext",
                 DBUS_TYPE_STRING, &app_name,
                 DBUS_TYPE_INVALID,
+                DBUS_TYPE_STRING, &ic,
                 DBUS_TYPE_INVALID);
+    priv->ic = g_strdup (ic);
 
 }
 
@@ -561,15 +565,23 @@ static void
 _gik_signal_commit_string_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
 {
     /* Handle CommitString signal */
+    GikIMClientPrivate *priv = client->priv;
     DBusError error = {0};
+    gchar *ic = NULL;
     gchar *string = NULL;
 
     if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &string, DBUS_TYPE_INVALID)) {
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_STRING, &string,
+            DBUS_TYPE_INVALID)) {
         g_warning ("%s", error.message);
         dbus_error_free (&error);
     }
     else {
+        if (g_strcmp0 (priv->ic, ic) != 0) {
+            g_warning ("ic is wrong!");
+            return;
+        }
         gik_im_client_commit_string (client, string);
     }
 }
@@ -578,10 +590,12 @@ static void
 _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *message, GikIMClient *client)
 {
     /* Handle UpdatePreedit signal */
+    GikIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     DBusMessageIter iter, sub_iter;
     gint type, sub_type;
 
+    gchar *ic = NULL;
     gchar *string = NULL;
     PangoAttrList *attrs = NULL;
     gint cursor = 0;
@@ -594,7 +608,20 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_STRING) {
-        g_warning ("The frist argument of UpdatePreedit signal must be a String");
+        g_warning ("The 1st argument of UpdatePreedit signal must be a String");
+        return;
+    }
+    dbus_message_iter_get_basic (&iter, &ic);
+    dbus_message_iter_next (&iter);
+
+    if (g_strcmp0 (priv->ic, ic) != 0) {
+        g_warning ("ic is wrong!");
+        return;
+    }
+
+    type = dbus_message_iter_get_arg_type (&iter);
+    if (type != DBUS_TYPE_STRING) {
+        g_warning ("The 2nd argument of UpdatePreedit signal must be a String");
         return;
     }
     dbus_message_iter_get_basic (&iter, &string);
@@ -603,7 +630,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_ARRAY) {
-        g_warning ("The secode argument of UpdatePreedit signal must be a Struct Array");
+        g_warning ("The 3rd argument of UpdatePreedit signal must be a Struct Array");
         return;
     }
 
@@ -612,7 +639,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
     if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
         if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
             dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_UINT32 ) {
-            g_warning ("The secode argument of UpdatePreedit signal must be a Struct Array");
+            g_warning ("The 3rd argument of UpdatePreedit signal must be a Struct Array");
             return;
         }
 
@@ -627,7 +654,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
             dbus_message_iter_get_fixed_array (&sub_sub_iter, &values, &length);
 
             if (length <= 0) {
-                g_warning ("The element of the second argument of UpdatePreedit should not be a empty array");
+                g_warning ("The element of the 3rd argument of UpdatePreedit should not be a empty array");
                 continue;
             }
 
@@ -672,7 +699,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_INT32) {
-        g_warning ("The third argument of UpdatePreedit signal must be an Int32 %c", type);
+        g_warning ("The 4th argument of UpdatePreedit signal must be an Int32 %c", type);
         pango_attr_list_unref (attrs);
         return;
     }
@@ -681,7 +708,7 @@ _gik_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *mes
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_BOOLEAN) {
-        g_warning ("The third argument of UpdatePreedit signal must be an Int32 %c", type);
+        g_warning ("The 4th argument of UpdatePreedit signal must be an Int32 %c", type);
         pango_attr_list_unref (attrs);
         return;
     }
@@ -1033,6 +1060,7 @@ gik_im_client_filter_keypress (GikIMClient *client, GdkEventKey *event)
             _gik_filter_keypress_reply_cb,
             gdk_event_copy ((GdkEvent *)event),
             (DBusFreeFunction)gdk_event_free,
+            DBUS_TYPE_STRING, &priv->ic,
             DBUS_TYPE_UINT32, &event->keyval,
             DBUS_TYPE_BOOLEAN, &is_press,
             DBUS_TYPE_UINT32, &state,
@@ -1046,9 +1074,11 @@ gik_im_client_filter_keypress (GikIMClient *client, GdkEventKey *event)
 void
 gik_im_client_focus_in (GikIMClient *client)
 {
+    GikIMClientPrivate *priv = client->priv;
     /* Call IBus FocusIn method */
      _ibus_call_with_reply_and_block (client->priv->ibus,
             "FocusIn",
+            DBUS_TYPE_STRING, &priv->ic,
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 }
@@ -1056,9 +1086,11 @@ gik_im_client_focus_in (GikIMClient *client)
 void
 gik_im_client_focus_out (GikIMClient *client)
 {
+    GikIMClientPrivate *priv = client->priv;
     /* Call IBus FocusOut method */
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "FocusOut",
+            DBUS_TYPE_STRING, &priv->ic,
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 
@@ -1067,9 +1099,11 @@ gik_im_client_focus_out (GikIMClient *client)
 void
 gik_im_client_reset (GikIMClient *client)
 {
+    GikIMClientPrivate *priv = client->priv;
     /* Call IBus Reset method */
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "Reset",
+            DBUS_TYPE_STRING, &priv->ic,
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 
@@ -1127,6 +1161,7 @@ gik_im_client_set_cursor_location (GikIMClient *client, GdkRectangle *area)
 
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCursorLocation",
+            DBUS_TYPE_STRING, &priv->ic,
             DBUS_TYPE_INT32, &area->x,
             DBUS_TYPE_INT32, &area->y,
             DBUS_TYPE_INT32, &area->width,

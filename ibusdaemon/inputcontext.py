@@ -1,7 +1,8 @@
 import gobject
 import ibus
 
-class Client (ibus.Object):
+class InputContext (ibus.Object):
+	id = 1
 	__gsignals__ = {
 		"update-preedit" : (
 			gobject.SIGNAL_RUN_FIRST,
@@ -31,7 +32,8 @@ class Client (ibus.Object):
 
 	def __init__ (self, name, ibusconn):
 		ibus.Object.__init__ (self)
-
+		self._id = "%d" % InputContext.id
+		InputContext.id += 1
 		self._ibusconn = ibusconn
 		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
 
@@ -51,6 +53,9 @@ class Client (ibus.Object):
 
 		self._lookup_table = None
 		self._show_lookup_table = False
+
+	def get_id (self):
+		return self._id;
 
 	def get_preedit_string (self):
 		return self._preedit_string, self._preedit_attrs, self._cursor_pos
@@ -112,18 +117,18 @@ class Client (ibus.Object):
 		if self._enable != enable:
 			self._enable = enable
 			if self._enable:
-				self._ibusconn.emit_dbus_signal ("Enabled")
+				self._ibusconn.emit_dbus_signal ("Enabled", self._id)
 			else:
-				self._ibusconn.emit_dbus_signal ("Disabled")
+				self._ibusconn.emit_dbus_signal ("Disabled", self._id)
 			if self._engine:
 				self._engine.set_enable (self._enable)
 
 	def commit_string (self, text):
-		self._ibusconn.emit_dbus_signal ("CommitString", text)
+		self._ibusconn.emit_dbus_signal ("CommitString", self._id, text)
 
 	def update_preedit (self, text, attrs, cursor_pos, visible):
 		if self._use_preedit:
-			self._ibusconn.emit_dbus_signal ("UpdatePreedit", text, attrs, cursor_pos, visible)
+			self._ibusconn.emit_dbus_signal ("UpdatePreedit", self._id, text, attrs, cursor_pos, visible)
 		else:
 			# show preedit on panel
 			self.emit ("update-preedit", text, attrs, cursor_pos, visible)
@@ -150,11 +155,12 @@ class Client (ibus.Object):
 		self._enable = False
 		if self._use_preedit:
 			self._ibusconn.emit_dbus_signal ("UpdatePreedit",
+								self._id,
 								u"",
 								ibus.AttrList ().to_dbus_value (),
 								0,
 								False)
-		self._ibusconn.emit_dbus_signal ("Disabled")
+		self._ibusconn.emit_dbus_signal ("Disabled", self._id)
 		self.emit ("engine-lost")
 
 	def _ibusconn_destroy_cb (self, ibusconn):
@@ -206,4 +212,4 @@ class Client (ibus.Object):
 		id = self._engine.connect ("update-property", self._update_property_cb)
 		self._engine_handler_ids.append (id)
 
-gobject.type_register (Client)
+gobject.type_register (InputContext)

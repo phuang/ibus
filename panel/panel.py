@@ -30,7 +30,7 @@ class Panel (ibus.Object):
 		self._status_icon.connect ("popup-menu", self._status_icon_popup_menu_cb)
 		self._status_icon.connect ("activate", self._status_icon_activate_cb)
 		self._status_icon.set_from_icon_name ("engine-default")
-		self._status_icon.set_tooltip ("ibus - running")
+		self._status_icon.set_tooltip ("iBus - Running")
 		self._status_icon.set_visible (True)
 
 	def set_cursor_location (self, x, y, w, h):
