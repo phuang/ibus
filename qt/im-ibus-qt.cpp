@@ -119,7 +119,7 @@ IBusInputContextPlugin::create (const QString &key)
         return NULL;
     } else {
         if (client == NULL) client = new IBusClient ();
-        return new IBusInputContext ();
+        return new IBusInputContext (0);
     }
 }
 

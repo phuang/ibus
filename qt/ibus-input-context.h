@@ -5,6 +5,7 @@
 class IBusInputContext : public QInputContext  {
 public:
 	IBusInputContext (QObject * parent = 0);
+	~IBusInputContext ();
 public:
 	bool filterEvent (const QEvent *event);
 	QFont font () const;
