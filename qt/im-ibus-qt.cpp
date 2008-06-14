@@ -1,7 +1,7 @@
 /*
- * SCIM Bridge
+ * IBus
  *
- * Copyright (c) 2006 Ryo Dairiki <ryo-dairiki@users.sourceforge.net>
+ * Copyright (c) 2008 Huang Peng <shawn.p.huang@gmail.com>
  *
  *
  * This library is free software; you can redistribute it and/or
@@ -16,20 +16,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-
 #include <cassert>
-
-#ifdef QT4
 #include <Qt>
 #include <QInputContextPlugin>
+#include "ibus-client.h"
+#include "ibus-input-context.h"
 
 using namespace Qt;
-#else
-#include <qinputcontextplugin.h>
-#endif
+
+#define IBUS_IDENTIFIER_NAME "ibus"
 
 /* Static Variables */
-static IBusClientQt *client = NULL;
+static IBusClient *client = NULL;
 
 /* The class Definition */
 class IBusInputContextPlugin: public QInputContextPlugin
@@ -44,7 +42,7 @@ class IBusInputContextPlugin: public QInputContextPlugin
 
     public:
 
-        IBusInputContextPlugin ();
+		IBusInputContextPlugin (QObject *parent = 0);
 
         ~IBusInputContextPlugin ();
 
@@ -65,8 +63,10 @@ class IBusInputContextPlugin: public QInputContextPlugin
 QStringList IBusInputContextPlugin::ibus_languages;
 
 
-IBusInputContextPlugin::IBusInputContextPlugin ()
+IBusInputContextPlugin::IBusInputContextPlugin (QObject *parent)
+	:QInputContextPlugin (parent)
 {
+	fprintf (stderr, "Init\n");
 }
 
 
@@ -85,8 +85,12 @@ IBusInputContextPlugin::keys () const
 }
 
 
-QStringList ScimBridgeInputContextPlugin::languages (const QString &key)
+QStringList
+IBusInputContextPlugin::languages (const QString & key)
 {
+	if (key.toLower () != IBUS_IDENTIFIER_NAME)
+		return QStringList ();
+
     if (ibus_languages.empty ()) {
         ibus_languages.push_back ("zh_CN");
         ibus_languages.push_back ("zh_TW");
@@ -98,23 +102,24 @@ QStringList ScimBridgeInputContextPlugin::languages (const QString &key)
 }
 
 
-QString ScimBridgeInputContextPlugin::description (const QString &key)
+QString
+IBusInputContextPlugin::description (const QString &key)
 {
-    return QString::fromUtf8 ("Qt immodule plugin for IBus");
+	if (key.toLower () != IBUS_IDENTIFIER_NAME)
+		return QString ("");
+    
+	return QString::fromUtf8 ("Qt immodule plugin for IBus");
 }
 
 
-QInputContext *ScimBridgeInputContextPlugin::create (const QString &key)
+QInputContext *
+IBusInputContextPlugin::create (const QString &key)
 {
-#ifdef QT4
     if (key.toLower () != IBUS_IDENTIFIER_NAME) {
-#else
-    if (key.lower () != IBUS_IDENTIFIER_NAME) {
-#endif
         return NULL;
     } else {
-        if (client == NULL) client = new IBusClientQt ();
-        return IBusClientIMContext::alloc ();
+        if (client == NULL) client = new IBusClient ();
+        return new IBusInputContext ();
     }
 }
 
@@ -124,8 +129,4 @@ QString IBusInputContextPlugin::displayName (const QString &key)
     return key;
 }
 
-#ifdef QT4
 Q_EXPORT_PLUGIN2 (IBusInputContextPlugin, IBusInputContextPlugin)
-#else
-Q_EXPORT_PLUGIN (IBusInputContextPlugin)
-#endif
