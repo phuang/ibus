@@ -1,33 +1,14 @@
 #include <QtDebug>
 #include "ibus-input-context.h"
-#ifdef Q_WS_X11
-# include <QX11Info>
-# include <X11/Xlib.h>
-# include <X11/keysym.h>
-# include <X11/Xutil.h>
-#endif
+#include "ibus-client.h"
 
-IBusClient *IBusInputContext::client = (IBusClient *)0;
-int IBusInputContext::client_ref = 0;
-
-IBusInputContext::IBusInputContext (QObject *parent)
-	: QInputContext (parent)
+IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client)
+	: QInputContext (parent), client (client)
 {
-	if (client == 0) {
-		client = new IBusClient ();
-		client_ref = 0;
-	}
-	client_ref ++;
 }
 
 IBusInputContext::~IBusInputContext ()
 {
-	client_ref --;
-	if (client_ref <= 0) {
-		delete client;
-		client = (IBusClient *) 0;
-		client_ref = 0;
-	}
 }
 
 #ifndef Q_WS_X11
@@ -118,46 +99,13 @@ IBusInputContext::widgetDestroyed (QWidget *widget)
 	QInputContext::widgetDestroyed (widget);
 }
 
-#ifdef Q_WS_X11
-static bool
-translate_x_key_event (XEvent *event, quint32 *keyval, bool *is_press, quint32 *state)
-{
-	Q_ASSERT (event);
-	Q_ASSERT (keyval);
-	Q_ASSERT (is_press);
-	Q_ASSERT (state);
-
-	if (event->type == KeyPress) {
-		*is_press = true;
-	}
-	else if (event->type == KeyRelease) {
-		*is_press = false;
-	}
-	else {
-		return false;
-	}
-	char key_str[64];
-	if (XLookupString (&event->xkey, key_str, sizeof (key_str), (KeySym *)keyval, 0) <= 0) {
-		*keyval = XLookupKeysym (&event->xkey, 0);
-	}
-	*state = event->xkey.state;
-	return true;
-}
-#endif
 
 bool
 IBusInputContext::x11FilterEvent (QWidget *keywidget, XEvent *xevent)
 {
 #ifdef Q_WS_X11
-	quint32 keyval;
-	bool is_press;
-	quint32 state;
-
-	if (translate_x_key_event (xevent, &keyval, &is_press, &state)) {
-		qDebug ("%c %d %d\n", keyval, is_press, state);
-
-		return false;
-	}
+	if (client->x11FilterEvent (this, keywidget, xevent))
+		return true;
 	return QInputContext::x11FilterEvent (keywidget, xevent);
 #else
 	return QInputContext::x11FilterEvent (keywidget, xevent);

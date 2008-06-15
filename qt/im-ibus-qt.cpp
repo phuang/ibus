@@ -19,11 +19,13 @@
 #include <cassert>
 #include <Qt>
 #include <QInputContextPlugin>
-#include "ibus-input-context.h"
+#include "ibus-client.h"
 
 using namespace Qt;
 
 #define IBUS_IDENTIFIER_NAME "ibus"
+
+static IBusClient *client;
 
 /* The class Definition */
 class IBusInputContextPlugin: public QInputContextPlugin
@@ -68,6 +70,10 @@ IBusInputContextPlugin::IBusInputContextPlugin (QObject *parent)
 
 IBusInputContextPlugin::~IBusInputContextPlugin ()
 {
+	if (client != NULL) {
+		delete client;
+		client = NULL;
+	}
 }
 
 QStringList 
@@ -112,7 +118,10 @@ IBusInputContextPlugin::create (const QString &key)
     if (key.toLower () != IBUS_IDENTIFIER_NAME) {
         return NULL;
     } else {
-        return new IBusInputContext (0);
+		if (client == NULL) {
+			client = new IBusClient ();
+		}
+        return client->createInputContext ();
     }
 }
 
