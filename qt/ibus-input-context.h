@@ -1,11 +1,13 @@
 #ifndef __IBUS_INPUT_CONTEXT_H_
 #define __IBUS_INPUT_CONTEXT_H_
 #include <QInputContext>
+#include "ibus-client.h"
 
 class IBusInputContext : public QInputContext  {
 public:
 	IBusInputContext (QObject * parent = 0);
 	~IBusInputContext ();
+
 public:
 	bool filterEvent (const QEvent *event);
 	QFont font () const;
@@ -18,6 +20,9 @@ public:
 	void widgetDestroyed (QWidget *widget);
 	bool x11FilterEvent (QWidget *keywidget, XEvent *event);
 
+public:
+	static IBusClient *client;
+	static int client_ref;
 };
 
 #endif //__IBUS_INPUT_CONTEXT_H_
