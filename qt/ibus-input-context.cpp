@@ -2,54 +2,26 @@
 #include "ibus-input-context.h"
 #include "ibus-client.h"
 
-IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client)
-	: QInputContext (parent), client (client)
+IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client, QString &ic)
+	: QInputContext (parent), client (client), ic (ic)
 {
 }
 
 IBusInputContext::~IBusInputContext ()
 {
+	client->releaseInputContext (this);
 }
-
-#ifndef Q_WS_X11
-static void
-translate_key_event (const QKeyEvent *event, quint32 *keyval, bool *is_press, quint32 *state)
-{
-	Q_ASSERT (event);
-	Q_ASSERT (keyval);
-	Q_ASSERT (is_press);
-	Q_ASSERT (state);
-
-	*keyval = event->key ();
-	*is_press = (event->type() == QEvent::KeyPress);
-
-	Qt::KeyboardModifiers modifiers = event->modifiers ();
-	*state = 0;
-	if (modifiers & Qt::ShiftModifier) {
-		*state |= (1<< 0);
-	}
-	if (modifiers & Qt::ControlModifier) {
-		*state |= (1<< 2);
-	}
-	if (modifiers & Qt::AltModifier) {
-		*state |= (1<< 3);
-	}
-	if (modifiers & Qt::MetaModifier) {
-		*state |= (1<< 28);
-	}
-	if (modifiers & Qt::KeypadModifier) {
-		// *state |= (1<< 28);
-	}
-	if (modifiers & Qt::GroupSwitchModifier) {
-		// *state |= (1<< 28);
-	}
-}
-#endif
 
 bool
 IBusInputContext::filterEvent (const QEvent *event)
 {
+#ifndef Q_WS_X11
+	if (client->filterEvent (this, event))
+		return true;
 	return QInputContext::filterEvent (event);
+#else
+	return QInputContext::filterEvent (event);
+#endif
 }
 
 QFont
@@ -73,12 +45,14 @@ IBusInputContext::language()
 void
 IBusInputContext::mouseHandler (int x, QMouseEvent *event)
 {
+	client->mouseHandler (this, x, event);
 	QInputContext::mouseHandler (x, event);
 }
 
 void
 IBusInputContext::reset()
 {
+	client->reset (this);
 }
 
 void
@@ -90,12 +64,13 @@ IBusInputContext::update ()
 bool
 IBusInputContext::isComposing() const
 {
-	return false;
+	return client->isComposing (this);
 }
 
 void
 IBusInputContext::widgetDestroyed (QWidget *widget)
 {
+	client->widgetDestroyed (this, widget);
 	QInputContext::widgetDestroyed (widget);
 }
 
@@ -112,3 +87,14 @@ IBusInputContext::x11FilterEvent (QWidget *keywidget, XEvent *xevent)
 #endif
 }
 
+void
+IBusInputContext::setIC (QString ic)
+{
+	this->ic = ic;
+}
+
+QString
+IBusInputContext::getIC ()
+{
+	return ic;
+}

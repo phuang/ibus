@@ -71,7 +71,7 @@ class IBusServer (dbus.server.Server):
 			if self._ibus.dispatch_dbus_signal (dbusconn, message):
 				return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
-		# self._print_message (message)
+		self._print_message (message)
 
 		return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 

@@ -8,7 +8,7 @@ class IBusClient;
 class IBusInputContext : public QInputContext  {
 	Q_OBJECT
 public:
-	IBusInputContext (QObject *parent, IBusClient *client);
+	IBusInputContext (QObject *parent, IBusClient *client, QString &ic);
 	~IBusInputContext ();
 
 public:
@@ -22,6 +22,8 @@ public:
 	void update ();
 	void widgetDestroyed (QWidget *widget);
 	bool x11FilterEvent (QWidget *keywidget, XEvent *event);
+	void setIC (QString ic);
+	QString getIC ();
 
 signals:
 #if 1
