@@ -148,7 +148,7 @@ IBusClient::filterEvent (IBusInputContext *ctx, QEvent *event)
 
 #ifdef Q_WS_X11
 static inline bool
-translate_x_key_event (XEvent *xevent, quint32 *keyval, quint32 *state, bool *is_press)
+translate_x_key_event (XEvent *xevent, quint32 *keyval, bool *is_press, quint32 *state)
 {
 	Q_ASSERT (xevent);
 	Q_ASSERT (keyval);
@@ -164,7 +164,7 @@ translate_x_key_event (XEvent *xevent, quint32 *keyval, quint32 *state, bool *is
 	char key_str[64];
 
 	if (XLookupString (&xevent->xkey, key_str, sizeof (key_str), (KeySym *)keyval, 0) <= 0) {
-
+		*keyval = (quint32) XLookupKeysym (&xevent->xkey, 0);
 	}
 
 	return true;
@@ -174,21 +174,44 @@ translate_x_key_event (XEvent *xevent, quint32 *keyval, quint32 *state, bool *is
 bool
 IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget *keywidget, XEvent *xevent)
 {
+	Q_ASSERT (ctx);
+	Q_ASSERT (keywidget);
+	Q_ASSERT (xevent);
+
 	quint32 keyval;
 	quint32 state;
 	bool is_press;
 
-	if (ibus == NULL || !ibus->isConnected ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return false;
 
-	if (!translate_x_key_event (xevent, &keyval, &state, &is_press))
+	if (!translate_x_key_event (xevent, &keyval, &is_press, &state))
 		return false;
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"ProcessKeyEvent");
+	message << ctx->getIC ();
+	message << keyval;
+	message << is_press;
+	message << state;
 
-	qDebug ("ic = %p: %c 0x%08x %d", ctx, keyval, state, is_press);
+	message = ibus->call (message);
 
-	return true;
+	return message.arguments ()[0].toBool ();
 }
 #endif
+
+void
+IBusClient::reset (IBusInputContext *ctx)
+{
+}
+
+void
+IBusClient::widgetDestroyed (IBusInputContext *ctx, QWidget *widget)
+{
+}
 
 bool
 IBusClient::connectToBus ()
@@ -228,10 +251,11 @@ IBusClient::connectToBus ()
 
 	ibus = connection;
 
-	for (int i = 0; i < context_list.size (); i++ ) {
+	QList <IBusInputContext *>::iterator i;
+	for (i = context_list.begin (); i != context_list.end (); ++i ) {
 		QString ic = createInputContextRemote ();
-		context_list[i]->setIC (ic);
-		context_dict[ic] = context_list[i];
+		(*i)->setIC (ic);
+		context_dict[ic] = *i;
 	}
 
 	return true;
@@ -244,8 +268,9 @@ IBusClient::disconnectFromBus ()
 		delete ibus;
 		ibus = NULL;
 		QDBusConnection::disconnectFromBus ("ibus");
-		for (int i = 0; i < context_list.size (); i++) {
-			context_list[i]->setIC ("");
+		QList <IBusInputContext *>::iterator i;
+		for (i = context_list.begin (); i != context_list.end (); ++i ) {
+			(*i)->setIC ("");
 		}
 		context_dict.clear ();
 	}
