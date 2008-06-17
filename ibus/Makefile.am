@@ -22,22 +22,24 @@
 #
 # $Id: $
 #
-SUBDIRS = 	\
-	ibus 	\
-	gtk2 	\
-	m4		\
-	po		\
+SUBDIRS = \
+	interface \
 	$(NULL)
 
-ACLOCAL_AMFLAGS = -I m4
-
-EXTRA_DIST = 			\
+ibus_PYTHON = \
+	application.py \
+	attribute.py \
+	common.py \
+	exception.py \
+	gtk.py \
+	__init__.py \
+	keysyms.py \
+	lookuptable.py \
+	modifier.py \
+	object.py \
+	panel.py \
+	property.py \
 	$(NULL)
 
-noinst_DIST =           \
-	$(NULL)
-
-
-DISTCLEANFILES =		\
-	po/stamp-it
+ibusdir = @pkgpythondir@
 

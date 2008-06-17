@@ -22,22 +22,13 @@
 #
 # $Id: $
 #
-SUBDIRS = 	\
-	ibus 	\
-	gtk2 	\
-	m4		\
-	po		\
+ibus_interface_PYTHON = \
+	ienginefactory.py \
+	iengine.py \
+	iibus.py \
+	__init__.py \
+	ipanel.py \
 	$(NULL)
 
-ACLOCAL_AMFLAGS = -I m4
-
-EXTRA_DIST = 			\
-	$(NULL)
-
-noinst_DIST =           \
-	$(NULL)
-
-
-DISTCLEANFILES =		\
-	po/stamp-it
+ibus_interfacedir = @pkgpythondir@/interface
 

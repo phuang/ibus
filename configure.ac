@@ -110,6 +110,8 @@ AC_SUBST(DISTCHECK_CONFIGURE_FLAGS)
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
+ibus/Makefile
+ibus/interface/Makefile
 gtk2/Makefile
 m4/Makefile
 ])
