@@ -22,25 +22,10 @@
 #
 # $Id: $
 #
-SUBDIRS = \
-	ibus \
-	ibusdaemon \
-	panel \
-	engine \
-	gtk2 \
-	m4 \
-	po \
+engine_enchant_PYTHON = \
+	engine.py \
+	factory.py \
+	main.py \
 	$(NULL)
 
-ACLOCAL_AMFLAGS = -I m4
-
-EXTRA_DIST = 			\
-	$(NULL)
-
-noinst_DIST =           \
-	$(NULL)
-
-
-DISTCLEANFILES =		\
-	po/stamp-it
-
+engine_enchantdir = @pkgdatadir@/engine/echant

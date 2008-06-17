@@ -23,24 +23,6 @@
 # $Id: $
 #
 SUBDIRS = \
-	ibus \
-	ibusdaemon \
-	panel \
-	engine \
-	gtk2 \
-	m4 \
-	po \
+	anthy \
+	enchant \
 	$(NULL)
-
-ACLOCAL_AMFLAGS = -I m4
-
-EXTRA_DIST = 			\
-	$(NULL)
-
-noinst_DIST =           \
-	$(NULL)
-
-
-DISTCLEANFILES =		\
-	po/stamp-it
-

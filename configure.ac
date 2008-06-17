@@ -112,6 +112,11 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus/Makefile
 ibus/interface/Makefile
+ibusdaemon/Makefile
+panel/Makefile
+engine/Makefile
+engine/anthy/Makefile
+engine/enchant/Makefile
 gtk2/Makefile
 m4/Makefile
 ])
