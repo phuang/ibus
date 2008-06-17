@@ -33,13 +33,12 @@ EXTRA_DIST = \
 	$(NULL)
 
 Makefile.qmake: ibus.pro
-	$(QMAKE) -makefile -o Makefile.qmake ibus.pro
+	$(QMAKE) -makefile -o Makefile.qmake $(srcdir)/ibus.pro
 
 all-local: Makefile.qmake
 	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) all 
 
 check-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) test
 
 clean-local: Makefile.qmake
 	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) clean
