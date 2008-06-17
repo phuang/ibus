@@ -117,7 +117,7 @@ class IBus (ibus.Object):
 
 	def _filter_hotkeys (self, context, keyval, is_press, state):
 		if is_press and keyval == keysyms.space \
-			and state == keysyms.CONTROL_MASK:
+			and (state & ~keysyms.MOD2_MASK) == keysyms.CONTROL_MASK:
 			enable = not context.is_enabled ()
 			context.set_enable (enable)
 			if context.get_engine () == None and enable:

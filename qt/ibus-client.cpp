@@ -3,6 +3,7 @@
 #include <QDBusConnection>
 #include <QCoreApplication>
 #include <QDBusMessage>
+#include <QDBusArgument>
 
 #include "ibus-client.h"
 #include "ibus-input-context.h"
@@ -20,7 +21,7 @@
 
 
 IBusClient::IBusClient ()
-	: ibus (NULL)
+	: ibus (NULL), focused_context (NULL)
 {
 	connectToBus ();
 
@@ -172,7 +173,7 @@ translate_x_key_event (XEvent *xevent, quint32 *keyval, bool *is_press, quint32 
 }
 
 bool
-IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget *keywidget, XEvent *xevent)
+IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XEvent *xevent)
 {
 	Q_ASSERT (ctx);
 	Q_ASSERT (keywidget);
@@ -181,6 +182,10 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget *keywidget, XEvent *x
 	quint32 keyval;
 	quint32 state;
 	bool is_press;
+
+	if (focused_context != ctx) {
+		focusIn (ctx);
+	}
 
 	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return false;
@@ -204,12 +209,100 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget *keywidget, XEvent *x
 #endif
 
 void
-IBusClient::reset (IBusInputContext *ctx)
+IBusClient::mouseHandler (IBusInputContext * /*ctx */, int /* x */, QMouseEvent * /* event */)
 {
+	return;
 }
 
 void
-IBusClient::widgetDestroyed (IBusInputContext *ctx, QWidget *widget)
+IBusClient::setCursorLocation (IBusInputContext *ctx, QRect &rect)
+{
+	Q_ASSERT (ctx);
+
+	if (focused_context != ctx) {
+		focusIn (ctx);
+	}
+
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+		return;
+
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"SetCursorLocation");
+	message << ctx->getIC ();
+	message << rect.x ();
+	message << rect.y ();
+	message << rect.width ();
+	message << rect.height ();
+	message = ibus->call (message);
+	//qDebug () << message;
+}
+
+void
+IBusClient::reset (IBusInputContext *ctx)
+{
+	Q_ASSERT (ctx);
+
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+		return;
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"Reset");
+	message << ctx->getIC ();
+	message = ibus->call (message);
+	// if (focused_context == ctx)
+	// 	focusOut (ctx);
+}
+
+void
+IBusClient::focusIn (IBusInputContext *ctx)
+{
+	Q_ASSERT (ctx);
+	if (focused_context != ctx && focused_context != NULL)
+		focusOut (focused_context);
+	focused_context = ctx;
+
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+		return;
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"FocusIn");
+	message << ctx->getIC ();
+	message = ibus->call (message);
+	//qDebug () << message;
+
+}
+
+void
+IBusClient::focusOut (IBusInputContext *ctx)
+{
+	Q_ASSERT (ctx);
+
+	if (focused_context != ctx)
+		return;
+
+	focused_context = NULL;
+
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+		return;
+
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"FocusOut");
+	message << ctx->getIC ();
+	message = ibus->call (message);
+	//qDebug () << message;
+}
+void
+IBusClient::widgetDestroyed (IBusInputContext * /* ctx */, QWidget * /* widget */)
 {
 }
 
@@ -244,6 +337,28 @@ IBusClient::connectToBus ()
 			"Disconnected",
 			this, SLOT (slotIBusDisconnected()))) {
 		qWarning () << "Can not connect Disconnected signal";
+		delete connection;
+		QDBusConnection::disconnectFromBus ("ibus");
+		return false;
+	}
+
+	if (!connection->connect ("",
+			IBUS_PATH,
+			IBUS_INTERFACE,
+			"CommitString",
+			this, SLOT (slotCommitString(QString, QString)))) {
+		qWarning () << "Can not connect CommitString signal";
+		delete connection;
+		QDBusConnection::disconnectFromBus ("ibus");
+		return false;
+	}
+
+	if (!connection->connect ("",
+			IBUS_PATH,
+			IBUS_INTERFACE,
+			"UpdatePreedit",
+			this, SLOT (slotUpdatePreedit(QDBusMessage)))) {
+		qWarning () << "Can not connect UpdatePreedit signal";
 		delete connection;
 		QDBusConnection::disconnectFromBus ("ibus");
 		return false;
@@ -297,4 +412,50 @@ void
 IBusClient::slotIBusDisconnected ()
 {
 	disconnectFromBus ();
+}
+
+
+void
+IBusClient::slotCommitString (QString ic, QString text)
+{
+	IBusInputContext *ctx = context_dict[ic];
+	ctx->commitString (text);
+}
+
+void
+IBusClient::slotUpdatePreedit (QDBusMessage message)
+{
+	QString ic;
+	QString text;
+	QVariant attrs;
+	int cursor_pos;
+	bool show;
+
+	QList<QVariant> args = message.arguments ();
+
+	ic = args[0].toString ();
+	text = args[1].toString ();
+	attrs = args[2];
+	cursor_pos = args[3].toInt ();
+	show = args[4].toBool ();
+	QList <QList <quint32> > attr_list;
+	const QDBusArgument arg = attrs.value <QDBusArgument> ();
+	arg.beginArray ();
+	while ( !arg.atEnd ()) {
+		quint32 type, value, start_index, end_index;
+
+		arg.beginArray ();
+		arg >> type >> value >> start_index >> end_index;
+		arg.endArray ();
+		QList <quint32> attr;
+		attr.append (type);
+		attr.append (value);
+		attr.append (start_index);
+		attr.append (end_index);
+		attr_list.append (attr);
+	}
+	arg.endArray ();
+
+	IBusInputContext *ctx = context_dict[ic];
+	ctx->updatePreedit (text, attr_list, cursor_pos, show);
 }

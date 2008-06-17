@@ -1,6 +1,7 @@
 #ifndef __IBUS_INPUT_CONTEXT_H_
 #define __IBUS_INPUT_CONTEXT_H_
 #include <QInputContext>
+#include <QList>
 #include "ibus-client.h"
 
 class IBusClient;
@@ -20,24 +21,17 @@ public:
 	void mouseHandler (int x, QMouseEvent *event);
 	void reset();
 	void update ();
+	void setFocusWidget (QWidget *widget );
 	void widgetDestroyed (QWidget *widget);
+#ifdef Q_WS_X11
 	bool x11FilterEvent (QWidget *keywidget, XEvent *event);
+#endif
 	void setIC (QString ic);
 	QString getIC ();
 
-signals:
-#if 1
-	bool filterEvent (IBusInputContext *ctx, const QEvent *event);
-	QFont font (IBusInputContext *ctx) const;
-	QString identifierName (IBusInputContext *ctx);
-	bool isComposing(IBusInputContext *ctx) const;
-	QString language(IBusInputContext *ctx);
-	void mouseHandler (IBusInputContext *ctx, int x, QMouseEvent *event);
-	void reset(IBusInputContext *ctx);
-	void update (IBusInputContext *ctx);
-	void widgetDestroyed (IBusInputContext *ctx, QWidget *widget);
-	bool x11FilterEvent (IBusInputContext *ctx, QWidget *keywidget, XEvent *event);
-#endif
+	void commitString (QString text);
+	void updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool show);
+
 
 private:
 	IBusClient *client;

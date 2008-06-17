@@ -64,3 +64,12 @@ class IIBus (dbus.service.Object):
 
 	@method (in_signature = "o")
 	def SetFactory (self, factory_path, dbusconn): pass
+
+	#sigals
+	def CommitString (self, ic, text): pass
+
+	def UpdatePreedit (self, ic, text, attrs, cursor_pos, show): pass
+
+	def Enabled (self, ic): pass
+
+	def Disabled (self, ic): pass
