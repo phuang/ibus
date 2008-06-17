@@ -35,4 +35,4 @@ ibusdaemon_PYTHON = \
 	panel.py \
 	$(NULL)
 
-ibusdaemondir = @pkgdatadir@/ibusdaemon
+ibusdaemondir = $(pkgdatadir)/ibusdaemon

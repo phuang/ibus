@@ -29,6 +29,7 @@ SUBDIRS = \
 	engine \
 	gtk2 \
 	qt \
+	icons \
 	m4 \
 	po \
 	$(NULL)

@@ -30,7 +30,7 @@ engine_anthy_PYTHON = \
 	test.py \
 	$(NULL)
 
-engine_anthydir = @pkgdatadir@/engine/anthy
+engine_anthydir = $(pkgdatadir)/engine/anthy
 
 anthy_PYTHON = \
 	anthy.py \

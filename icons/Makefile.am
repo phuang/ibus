@@ -22,14 +22,22 @@
 #
 # $Id: $
 #
-panel_PYTHON = \
-	candidatepanel.py \
-	handle.py \
-	image.py \
-	lang.py \
-	languagebar.py \
-	main.py \
-	panel.py \
+icons_DATA = \
+	engine-default.svg \
+	ibus-anthy.png \
+	ibus-help.png \
+	ibus-keyboard.svg \
+	ibus-locale.svg \
+	ibus-zh.svg \
 	$(NULL)
 
-paneldir = $(pkgdatadir)/panel
+iconsdir = $(pkgdatadir)/icons
+
+EXTRA_DIST = \
+	engine-default.svg \
+	ibus-anthy.png \
+	ibus-help.png \
+	ibus-keyboard.svg \
+	ibus-locale.svg \
+	ibus-zh.svg \
+	$(NULL)

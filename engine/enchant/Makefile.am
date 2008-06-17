@@ -28,4 +28,4 @@ engine_enchant_PYTHON = \
 	main.py \
 	$(NULL)
 
-engine_enchantdir = @pkgdatadir@/engine/echant
+engine_enchantdir = $(pkgdatadir)/engine/echant
