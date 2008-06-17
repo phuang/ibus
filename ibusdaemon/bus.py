@@ -167,6 +167,7 @@ class IBus (ibus.Object):
 		assert context == self._focused_context
 		self._context_handlers = []
 		self._focused_context = None
+		self._panel.reset ()
 
 	##########################################################
 	# methods for im engines

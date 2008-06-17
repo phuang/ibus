@@ -12,11 +12,12 @@ class ContextManager (ibus.Object):
 		return context
 
 	def release_input_context (self, ic, ibusconn):
-		del self._contexts[ic]
+		context = self._contexts[ic]
+		context.destroy ()
 
 	def lookup_context (self, ic, ibusconn):
 		return self._contexts[ic]
 
 	def _context_destroy_cb (self, context):
-		del self._clients[context.get_id ()]
+		del self._contexts[context.get_id ()]
 

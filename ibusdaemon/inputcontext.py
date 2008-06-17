@@ -93,15 +93,15 @@ class InputContext (ibus.Object):
 	def page_up (self):
 		if self._engine:
 			self._engine.page_up ()
-	
+
 	def page_down (self):
 		if self._engine:
 			self._engine.page_down ()
-	
+
 	def cursor_up (self):
 		if self._engine:
 			self._engine.cursor_up ()
-	
+
 	def cursor_down (self):
 		if self._engine:
 			self._engine.cursor_down ()
@@ -186,7 +186,7 @@ class InputContext (ibus.Object):
 
 	def _register_properties_cb (self, engine, props):
 		self.emit ("register-properties", props)
-	
+
 	def _update_property_cb (self, engine, prop):
 		self.emit ("update-property", prop)
 
