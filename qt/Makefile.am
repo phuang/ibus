@@ -43,11 +43,13 @@ check-local: Makefile.qmake
 
 clean-local: Makefile.qmake
 	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) clean
-	rm -f Makefile.qmake
+
+distclean-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) distclean
 
 install-exec-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) install
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) INSTALL_ROOT=$(DESTDIR) install
 
 uninstall-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) uninstall
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) INSTALL_ROOT=$(DESTDIR) uninstall
 
