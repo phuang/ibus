@@ -72,12 +72,15 @@ PKG_CHECK_MODULES(DBUS, [
 	dbus-glib-1
 ])
 
-
 AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+
+
 # check anthy
 PKG_CHECK_MODULES(ANTHY, [
 	anthy
 ])
+AC_PATH_PROG(SWIG, swig)
+
 
 # check python
 AM_PATH_PYTHON([2.5])

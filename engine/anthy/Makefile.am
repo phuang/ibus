@@ -54,6 +54,10 @@ _anthy_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
+SWIG=@SWIG@
 anthy.py anthy_wrap.c: anthy.i
-	swig -python -I/usr/include $<
+	$(SWIG) -python -I/usr/include $<
 
+EXTRA_DIST = \
+	anthy.i \
+	$(NULL)
