@@ -43,3 +43,10 @@ ibus_PYTHON = \
 
 ibusdir = @pkgpythondir@
 
+TEST_PYTHON = env PYTHONPATH=../ python
+test-server:
+	$(TEST_PYTHON) ./ibusdaemon.py
+
+test-engine:
+	$(TEST_PYTHON) ./eng_demo.py
+
