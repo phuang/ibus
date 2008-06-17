@@ -27,8 +27,6 @@ class DBus (dbus.service.Object):
 
 	@method (in_signature = "s", out_signature = "s")
 	def GetNameOwner (self, name):
-		print "GetNameOwner (%s)" % name
-
 		if name == dbus.BUS_DAEMON_NAME:
 			return dbus.BUS_DAEMON_NAME
 		elif name == ibus.IBUS_NAME:
@@ -39,7 +37,6 @@ class DBus (dbus.service.Object):
 
 	@method (in_signature = "s")
 	def AddMatch (self, rule):
-		print "AddMatch"
 		pass
 
 	@signal (signature = "sss")
@@ -70,8 +67,6 @@ class IBusServer (dbus.server.Server):
 		if message.get_type () == 4: # is signal
 			if self._ibus.dispatch_dbus_signal (dbusconn, message):
 				return dbus.lowlevel.HANDLER_RESULT_HANDLED
-
-		self._print_message (message)
 
 		return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 

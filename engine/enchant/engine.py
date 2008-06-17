@@ -6,6 +6,7 @@ import dbus
 import ibus
 import enchant
 from ibus import keysyms
+from ibus import modifier
 from ibus import interface
 
 class Engine (interface.IEngine):
@@ -68,7 +69,7 @@ class Engine (interface.IEngine):
 				return True
 		if keyval in xrange (keysyms.a, keysyms.z + 1) or \
 			keyval in xrange (keysyms.A, keysyms.Z + 1):
-			if state & (keysyms.CONTROL_MASK | keysyms.ALT_MASK) == 0:
+			if state & (modifier.CONTROL_MASK | modifier.ALT_MASK) == 0:
 				self._preedit_string += unichr (keyval)
 				self._invalidate ()
 				return True

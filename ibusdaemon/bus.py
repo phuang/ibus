@@ -3,6 +3,7 @@ import weakref
 import dbus
 import ibus
 from ibus import keysyms
+from ibus import modifier
 from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from connection import Connection
@@ -117,7 +118,7 @@ class IBus (ibus.Object):
 
 	def _filter_hotkeys (self, context, keyval, is_press, state):
 		if is_press and keyval == keysyms.space \
-			and (state & ~keysyms.MOD2_MASK) == keysyms.CONTROL_MASK:
+			and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
 			enable = not context.is_enabled ()
 			context.set_enable (enable)
 			if context.get_engine () == None and enable:
