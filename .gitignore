@@ -1,6 +1,12 @@
 *.pyc
 *.la
 *.lo
+*.loT
+*.o
+*.so
+*~
+tags
+Makefile.qmake
 Makefile
 Makefile.in
 .deps
