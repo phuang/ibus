@@ -23,7 +23,6 @@
 # $Id: $
 #
 engine_anthy_PYTHON = \
-	anthy.py \
 	engine.py \
 	factory.py \
 	main.py \
@@ -32,3 +31,29 @@ engine_anthy_PYTHON = \
 	$(NULL)
 
 engine_anthydir = @pkgdatadir@/engine/anthy
+
+anthy_PYTHON = \
+	anthy.py \
+	$(NULL)
+anthy_LTLIBRARIES = _anthy.la
+anthydir = @pyexecdir@
+
+_anthy_la_SOURCES = \
+	anthy_wrap.c \
+	$(NULL)
+
+_anthy_la_CFLAGS = \
+	@ANTHY_CFLAGS@ \
+	@PYTHON_CFLAGS@ \
+	$(NULL)
+
+_anthy_la_LDFLAGS = \
+	@ANTHY_LIBS@ \
+	-rpath $(anthydir) \
+	-avoid-version \
+	-module \
+	$(NULL)
+
+anthy.py anthy_wrap.c: anthy.i
+	swig -python -I/usr/include $<
+

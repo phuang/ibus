@@ -74,6 +74,10 @@ PKG_CHECK_MODULES(DBUS, [
 
 
 AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+# check anthy
+PKG_CHECK_MODULES(ANTHY, [
+	anthy
+])
 
 # check python
 AM_PATH_PYTHON([2.5])
