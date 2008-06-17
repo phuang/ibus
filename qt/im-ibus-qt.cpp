@@ -64,7 +64,6 @@ QStringList IBusInputContextPlugin::ibus_languages;
 IBusInputContextPlugin::IBusInputContextPlugin (QObject *parent)
 	:QInputContextPlugin (parent)
 {
-	fprintf (stderr, "Init\n");
 }
 
 

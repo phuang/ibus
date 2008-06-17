@@ -3,10 +3,11 @@
 ######################################################################
 
 TEMPLATE = lib
-TARGET = 
+TARGET = ibus
 DEPENDPATH += . 
 INCLUDEPATH += .
-CONFIG += qdbus
+
+CONFIG += qt qdbus plugin
 
 # Input
 HEADERS += \
@@ -17,3 +18,6 @@ SOURCES += \
 	ibus-client.cpp \
 	ibus-input-context.cpp \
 	im-ibus-qt.cpp
+
+target.path += $$[QT_INSTALL_PLUGINS]/inputmethods
+INSTALLS    += target
