@@ -71,8 +71,15 @@ PKG_CHECK_MODULES(PYGTK2, [
 PKG_CHECK_MODULES(DBUS, [
 	dbus-glib-1
 ])
+QMAKE=`$PKG_CONFIG --variable=qmake Qt`
+AC_SUBST(QMAKE)
 
 AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+
+# Check for Qt4
+PKG_CHECK_MODULES(QT, [
+	Qt >= 4.3.5
+])
 
 
 # check anthy
@@ -80,7 +87,7 @@ PKG_CHECK_MODULES(ANTHY, [
 	anthy
 ])
 AC_PATH_PROG(SWIG, swig)
-
+AC_SUBST(SWIG)
 
 # check python
 AM_PATH_PYTHON([2.5])
@@ -94,6 +101,7 @@ else
 fi
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
+
 
 # Checks for gtk-doc
 GTK_DOC_CHECK([1.6])
@@ -125,6 +133,7 @@ engine/Makefile
 engine/anthy/Makefile
 engine/enchant/Makefile
 gtk2/Makefile
+qt/Makefile
 m4/Makefile
 ])
 

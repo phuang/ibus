@@ -22,26 +22,32 @@
 #
 # $Id: $
 #
-SUBDIRS = \
-	ibus \
-	ibusdaemon \
-	panel \
-	engine \
-	gtk2 \
-	qt \
-	m4 \
-	po \
+
+EXTRA_DIST = \
+	ibus-client.cpp \
+	ibus-client.h \
+	ibus-input-context.cpp \
+	ibus-input-context.h \
+	ibus.pro \
+	im-ibus-qt.cpp \
 	$(NULL)
 
-ACLOCAL_AMFLAGS = -I m4
+Makefile.qmake: ibus.pro
+	$(QMAKE) -makefile -o Makefile.qmake ibus.pro
 
-EXTRA_DIST = 			\
-	$(NULL)
+all-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) all 
 
-noinst_DIST =           \
-	$(NULL)
+check-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) test
 
+clean-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) clean
+	rm -f Makefile.qmake
 
-DISTCLEANFILES =		\
-	po/stamp-it
+install-exec-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) install
+
+uninstall-local: Makefile.qmake
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) uninstall
 
