@@ -62,30 +62,36 @@ IBusInputContext::reset()
 void
 IBusInputContext::update ()
 {
-	QWidget *widget = focusWidget ();
-
-	QInputContext::update ();
-
-	if (widget == NULL)
-		return;
+	QWidget *widget;
 	QVariant value;
+	QRect rect;
+	QPoint topleft;
+
+	if ((widget = focusWidget ()) == NULL)
+		return;
+	qDebug () << "update ()";
 	value = widget->inputMethodQuery(Qt::ImMicroFocus);
-	QRect rect = value.toRect ();
-	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
+	qDebug () << value;
+	rect = value.toRect ();
+
+	value = widget->inputMethodQuery(Qt::ImCursorPosition);
+	qDebug () << value;
+	rect.moveTo (value.toPoint ());
+
+	topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
 
 	client->setCursorLocation (this, rect);
-#if 0
-	qDebug () << value;
-	value = widget->inputMethodQuery(Qt::ImFont);
-	qDebug () << value;
-	value = widget->inputMethodQuery(Qt::ImCursorPosition);
-	qDebug () << value;
-	value = widget->inputMethodQuery(Qt::ImSurroundingText);
-	qDebug () << value;
-	value = widget->inputMethodQuery(Qt::ImCurrentSelection);
-	qDebug () << value;
-#endif
+	qDebug () << rect;
+
+	// value = widget->inputMethodQuery(Qt::ImFont);
+	// qDebug () << value;
+	// value = widget->inputMethodQuery(Qt::ImCursorPosition);
+	// qDebug () << value;
+	// value = widget->inputMethodQuery(Qt::ImSurroundingText);
+	// qDebug () << value;
+	// value = widget->inputMethodQuery(Qt::ImCurrentSelection);
+	// qDebug () << value;
 }
 
 bool
@@ -105,6 +111,7 @@ void
 IBusInputContext::widgetDestroyed (QWidget *widget)
 {
 	QInputContext::widgetDestroyed (widget);
+	update ();
 }
 
 #ifdef Q_WS_X11
@@ -140,11 +147,14 @@ IBusInputContext::commitString (QString text)
 void
 IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool show)
 {
-	if (show) {
-		QList <QAttribute> qattrs;
+	qDebug () << text << cursor_pos << show;
+	QList <QAttribute> qattrs;
 
+	if (show) {
+		// append cursor pos
 		qattrs.append (QAttribute (QInputMethodEvent::Cursor, cursor_pos, true, 0));
 
+		// append attributes
 		for (QList <QList <quint32> >::iterator it = attr_list.begin (); it != attr_list.end(); ++ it) {
 
 			QList <quint32> attr = *it;
@@ -166,17 +176,14 @@ IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_lis
 
 			QVariant value;
 			value.setValue <QTextFormat> (format);
-			qattrs.append (QAttribute (QInputMethodEvent::TextFormat, attr[2], attr[3], value)); 
+			qattrs.append (QAttribute (QInputMethodEvent::TextFormat, attr[2], attr[3] - attr[2], value));
 		}
-
-		QInputMethodEvent event (text, qattrs);
-		sendEvent (event);
-
 	}
 	else {
-		QList <QAttribute> qattrs;
-    	qattrs.append (QAttribute (QInputMethodEvent::Cursor, 0, true, 0));
-		QInputMethodEvent event ("", qattrs);
-		sendEvent (event);
+		qattrs.append (QAttribute (QInputMethodEvent::Cursor, 0, true, 0));
+		text = "";
 	}
+
+	QInputMethodEvent event (text, qattrs);
+	sendEvent (event);
 }
