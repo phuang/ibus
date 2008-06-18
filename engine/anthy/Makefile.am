@@ -32,13 +32,14 @@ engine_anthy_PYTHON = \
 
 engine_anthydir = $(pkgdatadir)/engine/anthy
 
-anthy_PYTHON = \
+anthy_DATA = \
 	anthy.py \
 	$(NULL)
 anthy_LTLIBRARIES = _anthy.la
 anthydir = @pyexecdir@
-
 _anthy_la_SOURCES = \
+	$(NULL)
+nodist__anthy_la_SOURCES = \
 	anthy_wrap.c \
 	$(NULL)
 
@@ -55,13 +56,16 @@ _anthy_la_LDFLAGS = \
 	$(NULL)
 
 anthy.py anthy_wrap.c: anthy.i
-	$(SWIG) -python -I/usr/include $<
+	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
 EXTRA_DIST = \
 	anthy.i \
 	$(NULL)
 
-DISTCLEANFILES = \
+CLEANFILES = \
 	anthy.py \
 	anthy_wrap.c \
+	$(MULL)
+
+DISTCLEANFILES = \
 	$(MULL)
