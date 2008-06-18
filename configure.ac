@@ -98,6 +98,9 @@ PKG_CHECK_MODULES(ANTHY, [
 	anthy
 ])
 AC_PATH_PROG(SWIG, swig)
+if test x"$SWIG" == x""; then
+	 AC_MSG_ERROR([can not find swig])
+fi
 AC_SUBST(SWIG)
 
 # check python
