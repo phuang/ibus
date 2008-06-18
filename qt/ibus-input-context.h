@@ -36,6 +36,8 @@ public:
 private:
 	IBusClient *client;
 	QString ic;
+	QString preedit_string;
+	bool preedit_visible;
 };
 
 #endif //__IBUS_INPUT_CONTEXT_H_

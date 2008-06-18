@@ -7,7 +7,7 @@
 typedef QInputMethodEvent::Attribute QAttribute;
 
 IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client, QString &ic)
-	: QInputContext (parent), client (client), ic (ic)
+	: QInputContext (parent), client (client), ic (ic), preedit_visible (false)
 {
 }
 
@@ -63,26 +63,14 @@ void
 IBusInputContext::update ()
 {
 	QWidget *widget;
-	QVariant value;
-	QRect rect;
-	QPoint topleft;
 
 	if ((widget = focusWidget ()) == NULL)
 		return;
-	qDebug () << "update ()";
-	value = widget->inputMethodQuery(Qt::ImMicroFocus);
-	qDebug () << value;
-	rect = value.toRect ();
 
-	value = widget->inputMethodQuery(Qt::ImCursorPosition);
-	qDebug () << value;
-	rect.moveTo (value.toPoint ());
-
-	topleft = widget->mapToGlobal(QPoint(0,0));
+	QRect rect = widget->inputMethodQuery(Qt::ImMicroFocus).toRect ();
+	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
-
 	client->setCursorLocation (this, rect);
-	qDebug () << rect;
 
 	// value = widget->inputMethodQuery(Qt::ImFont);
 	// qDebug () << value;
@@ -97,12 +85,13 @@ IBusInputContext::update ()
 bool
 IBusInputContext::isComposing() const
 {
-	return client->isComposing (this);
+	return (!preedit_string.isEmpty ()) && preedit_visible;
 }
 
 void
 IBusInputContext::setFocusWidget (QWidget *widget)
 {
+	// qDebug () << "setFocusWidget (" << widget << ")";
 	QInputContext::setFocusWidget (widget);
 	update ();
 }
@@ -147,7 +136,7 @@ IBusInputContext::commitString (QString text)
 void
 IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool show)
 {
-	qDebug () << text << cursor_pos << show;
+	// qDebug () << text << cursor_pos << show;
 	QList <QAttribute> qattrs;
 
 	if (show) {
@@ -174,9 +163,8 @@ IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_lis
 				break;
 			}
 
-			QVariant value;
-			value.setValue <QTextFormat> (format);
-			qattrs.append (QAttribute (QInputMethodEvent::TextFormat, attr[2], attr[3] - attr[2], value));
+			qattrs.append (QAttribute (QInputMethodEvent::TextFormat, attr[2], attr[3] - attr[2], QVariant (format)));
+			// qDebug () << attr[0] << attr[2] << attr[3] - attr[2];
 		}
 	}
 	else {
@@ -186,4 +174,7 @@ IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_lis
 
 	QInputMethodEvent event (text, qattrs);
 	sendEvent (event);
+
+	preedit_string = text;
+	preedit_visible = show;
 }
