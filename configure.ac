@@ -85,7 +85,6 @@ PKG_CHECK_MODULES(DBUS, [
 QMAKE=`$PKG_CONFIG --variable=qmake Qt`
 AC_SUBST(QMAKE)
 
-AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT, [
@@ -97,11 +96,18 @@ PKG_CHECK_MODULES(QT, [
 PKG_CHECK_MODULES(ANTHY, [
 	anthy
 ])
+
+
+# check swig
 AC_PATH_PROG(SWIG, swig)
 if test x"$SWIG" == x""; then
 	 AC_MSG_ERROR([can not find swig])
 fi
 AC_SUBST(SWIG)
+
+# check env
+AC_PATH_PROG(ENV, env)
+AC_SUBST(ENV)
 
 # check python
 AM_PATH_PYTHON([2.5])
