@@ -59,37 +59,23 @@ class IBus (ibus.Object):
 		context = self._lookup_context (ic, dbusconn)
 
 		if self._focused_context != context and self._focused_context != None:
-			map (self._focused_context.disconnect, self._context_handlers)
-			self._context_handlers = []
+			self._remove_focused_context_handlers ()
 			self._focused_context.focus_out ()
 
-		# Install all callback functions
-		id = context.connect ("update-preedit", self._update_preedit_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("update-aux-string", self._update_aux_string_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("update-lookup-table", self._update_lookup_table_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("register-properties", self._register_properties_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("update-property", self._update_property_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("engine-lost", self._engine_lost_cb)
-		self._context_handlers.append (id)
-		id = context.connect ("destroy", self._context_destroy_cb)
-		self._context_handlers.append (id)
+		self._focused_context = context
+		self._install_focused_context_handlers ()
 
 		self._panel.reset ()
-		self._focused_context = context
 		self._last_focused_context = context
 		context.focus_in ()
 
 	def focus_out (self, ic, dbusconn):
 		context = self._lookup_context (ic, dbusconn)
+
 		if context == self._focused_context:
-			map (self._focused_context.disconnect, self._context_handlers)
-			self._context_handlers = []
+			self._remove_focused_context_handlers ()
 			self._focused_context = None
+
 		context.focus_out ()
 		self._panel.reset ()
 
@@ -133,6 +119,29 @@ class IBus (ibus.Object):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		return self._context_manager.lookup_context (ic, ibusconn)
 
+	def _install_focused_context_handlers (self):
+		# Install all callback functions
+		if self._focused_context == None:
+			return
+		signals = (
+			("update-preedit", self._update_preedit_cb),
+			("update-aux-string", self._update_aux_string_cb),
+			("update-lookup-table", self._update_lookup_table_cb),
+			("register-properties", self._register_properties_cb),
+			("update-property", self._update_property_cb),
+			("engine-lost", self._engine_lost_cb),
+			("destroy", self._context_destroy_cb)
+		)
+		for name, handler in signals:
+			id = self._focused_context.connect (name, handler)
+			self._context_handlers.append (id)
+
+	def _remove_focused_context_handlers (self):
+		if self._focused_context == None:
+			return
+		map (self._focused_context.disconnect, self._context_handlers)
+		self._context_handlers = []
+
 	def _update_preedit_cb (self, context, text, attrs, cursor_pos, visible):
 		assert self._focused_context == context
 
@@ -166,7 +175,7 @@ class IBus (ibus.Object):
 
 	def _context_destroy_cb (self, context):
 		assert context == self._focused_context
-		self._context_handlers = []
+		self._remove_focused_context_handlers ()
 		self._focused_context = None
 		self._panel.reset ()
 
