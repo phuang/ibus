@@ -168,6 +168,7 @@ class InputContext (ibus.Object):
 			self._remove_engine_handlers ()
 			self._engine.destroy ()
 			self._engine = None
+		self.destroy ()
 
 	def _commit_string_cb (self, engine, text):
 		self.commit_string (text)
