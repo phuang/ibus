@@ -24,12 +24,15 @@ class LanguageBar (gtk.Toolbar):
 		self.set_property ("icon-size", ICON_SIZE)
 		icon_theme = gtk.icon_theme_get_default ()
 		icon_theme.prepend_search_path ("/home/phuang/sources/ibus/icons")
-		# self.set_orientation (gtk.ORIENTATION_VERTICAL)
 		self._create_ui ()
 
 		self._properties = {}
 		self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
 		self._toplevel.add (self)
+
+		root = gdk.get_default_root_window ()
+		workarea = root.property_get ("_NET_WORKAREA")[2]
+		self._toplevel.move (workarea[2] - 200, workarea[3] - 40)
 
 	def _add_items (self):
 		img = gtk.image_new_from_icon_name ("engine-default", ICON_SIZE)
