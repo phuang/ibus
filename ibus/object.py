@@ -8,7 +8,13 @@ class Object (gobject.GObject):
 			())
 	}
 
+	def __init__ (self):
+		gobject.GObject.__init__ (self)
+		self._destroyed = False
+
 	def destroy (self):
-		self.emit ("destroy")
+		if not self._destroyed:
+			self.emit ("destroy")
+			self._destroyed = True
 
 gobject.type_register (Object)
