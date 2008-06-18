@@ -33,3 +33,6 @@ panel_PYTHON = \
 	$(NULL)
 
 paneldir = $(pkgdatadir)/panel
+
+test:
+	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py

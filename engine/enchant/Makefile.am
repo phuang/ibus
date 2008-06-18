@@ -29,3 +29,7 @@ engine_enchant_PYTHON = \
 	$(NULL)
 
 engine_enchantdir = $(pkgdatadir)/engine/echant
+
+test:
+	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
+
