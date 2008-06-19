@@ -135,10 +135,14 @@ Makefile
 ibus/Makefile
 ibus/interface/Makefile
 ibusdaemon/Makefile
+ibusdaemon/ibus-daemon
 panel/Makefile
+panel/ibus-panel
 engine/Makefile
 engine/anthy/Makefile
+engine/anthy/ibus-engine-anthy
 engine/enchant/Makefile
+engine/enchant/ibus-engine-enchant
 gtk2/Makefile
 qt/Makefile
 icons/Makefile

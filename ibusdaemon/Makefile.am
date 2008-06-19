@@ -37,5 +37,9 @@ CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
+EXTRA_DIST = \
+	ibus-daemon.in \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/ibusdaemon.py

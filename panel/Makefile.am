@@ -35,5 +35,9 @@ CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
+EXTRA_DIST = \
+	ibus-panel.in \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py

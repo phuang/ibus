@@ -31,6 +31,10 @@ CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
+EXTRA_DIST = \
+	ibus-engine-enchant.in \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
 

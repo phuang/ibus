@@ -64,6 +64,7 @@ test:
 
 EXTRA_DIST = \
 	anthy.i \
+	ibus-engine-anthy.in \
 	$(NULL)
 
 CLEANFILES = \
