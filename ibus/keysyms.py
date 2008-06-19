@@ -19,7 +19,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-
 VoidSymbol = 0xFFFFFF
 BackSpace = 0xFF08
 Tab = 0xFF09
