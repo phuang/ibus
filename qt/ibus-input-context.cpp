@@ -139,6 +139,7 @@ IBusInputContext::commitString (QString text)
 	QInputMethodEvent event;
 	event.setCommitString (text);
 	sendEvent (event);
+	update ();
 }
 
 void
