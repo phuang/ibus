@@ -38,6 +38,7 @@ private:
 	QString ic;
 	QString preedit_string;
 	bool preedit_visible;
+	int preedit_cursor_pos;
 };
 
 #endif //__IBUS_INPUT_CONTEXT_H_

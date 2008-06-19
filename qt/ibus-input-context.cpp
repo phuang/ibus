@@ -68,6 +68,14 @@ IBusInputContext::update ()
 		return;
 
 	QRect rect = widget->inputMethodQuery(Qt::ImMicroFocus).toRect ();
+#if 0
+	QFont font = widget->inputMethodQuery(Qt::ImFont).value <QFont> ();
+	qDebug () << rect << preedit_string << preedit_cursor_pos;
+
+	QFontMetrics fm(font);
+	int textWidth = fm.width (preedit_string.left (preedit_cursor_pos));
+	rect.translate (textWidth, 0);
+#endif
 	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
 	client->setCursorLocation (this, rect);
@@ -170,11 +178,14 @@ IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_lis
 	else {
 		qattrs.append (QAttribute (QInputMethodEvent::Cursor, 0, true, 0));
 		text = "";
+		cursor_pos = 0;
 	}
-
-	QInputMethodEvent event (text, qattrs);
-	sendEvent (event);
 
 	preedit_string = text;
 	preedit_visible = show;
+	preedit_cursor_pos = cursor_pos;
+
+	QInputMethodEvent event (text, qattrs);
+	sendEvent (event);
+	update ();
 }
