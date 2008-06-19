@@ -43,8 +43,6 @@ class LanguageBar (gtk.Toolbar):
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
 		self.set_property ("icon-size", ICON_SIZE)
-		icon_theme = gtk.icon_theme_get_default ()
-		icon_theme.prepend_search_path ("/home/phuang/sources/ibus/icons")
 		self._create_ui ()
 
 		self._properties = {}

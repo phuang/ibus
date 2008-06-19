@@ -23,6 +23,7 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import ibus
+from os import path
 from lang import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
@@ -33,6 +34,13 @@ class Panel (ibus.Object):
 		gobject.GObject.__init__ (self)
 		self._proxy = proxy
 		self._ibus = _ibus
+
+		# add icon search path
+		icon_theme = gtk.icon_theme_get_default ()
+		dir = path.dirname (__file__)
+		icondir = path.join (dir, "..", "icons")
+		icon_theme.prepend_search_path (icondir)
+
 		self._language_bar = LanguageBar ()
 		self._language_bar.connect ("property-activate",
 						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
