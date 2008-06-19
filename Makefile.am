@@ -24,7 +24,7 @@ SUBDIRS = \
 	panel \
 	engine \
 	gtk2 \
-	qt \
+	qt4 \
 	icons \
 	m4 \
 	po \

@@ -144,7 +144,7 @@ engine/anthy/ibus-engine-anthy
 engine/enchant/Makefile
 engine/enchant/ibus-engine-enchant
 gtk2/Makefile
-qt/Makefile
+qt4/Makefile
 icons/Makefile
 m4/Makefile
 ])
