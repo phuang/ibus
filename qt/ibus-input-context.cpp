@@ -78,7 +78,10 @@ IBusInputContext::update ()
 #endif
 	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
-	client->setCursorLocation (this, rect);
+	if (cursor_location != rect ) {
+		client->setCursorLocation (this, rect);
+		cursor_location = rect;
+	}
 
 	// value = widget->inputMethodQuery(Qt::ImFont);
 	// qDebug () << value;

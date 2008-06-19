@@ -39,6 +39,7 @@ private:
 	QString preedit_string;
 	bool preedit_visible;
 	int preedit_cursor_pos;
+	QRect cursor_location;
 };
 
 #endif //__IBUS_INPUT_CONTEXT_H_
