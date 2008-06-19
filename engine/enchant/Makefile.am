@@ -27,6 +27,8 @@ engine_enchant_PYTHON = \
 
 engine_enchantdir = $(pkgdatadir)/engine/echant
 
+libexec_SCRIPTS = ibus-engine-enchant
+
 CLEANFILES = \
 	*.pyc \
 	$(NULL)

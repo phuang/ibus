@@ -33,6 +33,8 @@ ibusdaemon_PYTHON = \
 
 ibusdaemondir = $(pkgdatadir)/ibusdaemon
 
+libexec_SCRIPTS = ibus-daemon
+
 CLEANFILES = \
 	*.pyc \
 	$(NULL)

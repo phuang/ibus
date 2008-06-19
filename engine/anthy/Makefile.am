@@ -56,6 +56,8 @@ _anthy_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
+libexec_SCRIPTS = ibus-engine-anthy
+
 anthy.py anthy_wrap.c: anthy.i
 	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
