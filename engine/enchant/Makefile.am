@@ -27,6 +27,10 @@ engine_enchant_PYTHON = \
 
 engine_enchantdir = $(pkgdatadir)/engine/echant
 
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
 

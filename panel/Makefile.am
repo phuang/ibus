@@ -31,5 +31,9 @@ panel_PYTHON = \
 
 paneldir = $(pkgdatadir)/panel
 
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py

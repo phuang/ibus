@@ -39,3 +39,7 @@ ibus_PYTHON = \
 
 ibusdir = @pkgpythondir@
 
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
+

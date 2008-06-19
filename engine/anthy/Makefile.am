@@ -32,10 +32,14 @@ engine_anthydir = $(pkgdatadir)/engine/anthy
 anthy_DATA = \
 	anthy.py \
 	$(NULL)
+
 anthy_LTLIBRARIES = _anthy.la
+
 anthydir = @pyexecdir@
+
 _anthy_la_SOURCES = \
 	$(NULL)
+
 nodist__anthy_la_SOURCES = \
 	anthy_wrap.c \
 	$(NULL)
@@ -65,6 +69,7 @@ EXTRA_DIST = \
 CLEANFILES = \
 	anthy.py \
 	anthy_wrap.c \
+	*.pyc \
 	$(MULL)
 
 DISTCLEANFILES = \

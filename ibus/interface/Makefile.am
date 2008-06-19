@@ -29,3 +29,7 @@ ibus_interface_PYTHON = \
 
 ibus_interfacedir = @pkgpythondir@/interface
 
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
+

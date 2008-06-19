@@ -33,5 +33,9 @@ ibusdaemon_PYTHON = \
 
 ibusdaemondir = $(pkgdatadir)/ibusdaemon
 
+CLEANFILES = \
+	*.pyc \
+	$(NULL)
+
 test:
 	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/ibusdaemon.py
