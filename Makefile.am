@@ -34,6 +34,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
 	autogen.sh \
+	python-config.py \
 	$(NULL)
 
 noinst_DIST = \
