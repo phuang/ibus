@@ -32,10 +32,11 @@ SUBDIRS = \
 
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = 			\
+EXTRA_DIST = \
+	autogen.sh \
 	$(NULL)
 
-noinst_DIST =           \
+noinst_DIST = \
 	$(NULL)
 
 
