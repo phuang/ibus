@@ -1,6 +1,6 @@
 # vim:set noet ts=4:
 #
-# gik - The G Input Toolkit
+# ibus - The Input Bus
 #
 # Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 #
@@ -25,28 +25,32 @@
 INCLUDES =	\
 	-I$(top_srcdir)
 
-im_gik_sources =		\
-	gikim.c				\
-	gikimclient.c		\
-	gikimcontext.c		\
+im_ibus_sources = \
+	ibusim.c \
+	ibusimclient.c \
+	ibusimcontext.c \
 	$(NULL)
 
-im_gik_private_headers =	\
-	gikimcontext.h			\
-	gikimclient.h			\
+im_ibus_private_headers = \
+	ibusimcontext.h \
+	ibusimclient.h \
 	$(NULL)
 
 immoduledir = $(libdir)/gtk-2.0/immodules
-immodule_LTLIBRARIES = im-gik.la
+immodule_LTLIBRARIES = im-ibus.la
 
-im_gik_la_SOURCES = $(im_gik_sources) $(im_gik_private_headers)
-im_gik_la_CFLAGS = 			\
-	@GTK2_CFLAGS@ 			\
-	@DBUS_CFLAGS@ 			\
-	-DG_LOG_DOMAIN=\"GIK\"	\
+im_ibus_la_SOURCES = \
+	$(im_ibus_sources) \
+	$(im_ibus_private_headers) \
 	$(NULL)
 
-im_gik_la_LDFLAGS = \
+im_ibus_la_CFLAGS = 			\
+	@GTK2_CFLAGS@ 			\
+	@DBUS_CFLAGS@ 			\
+	-DG_LOG_DOMAIN=\"IBUS\"	\
+	$(NULL)
+
+im_ibus_la_LDFLAGS = \
 	@GTK2_LIBS@ 	\
 	@DBUS_LIBS@ 	\
 	-avoid-version	\
@@ -54,3 +58,4 @@ im_gik_la_LDFLAGS = \
 	$(NULL)
 
 EXTRA_DIST =
+

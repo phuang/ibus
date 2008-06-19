@@ -1,6 +1,6 @@
 /* vim:set et ts=4: */
-/* GIK - The G Input Toolkit
- * Copyright (C) 2008-2009 Huang Peng
+/* IBus - The Input Bus
+ * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,28 +21,28 @@
 #include <gtk/gtkimmodule.h>
 #include <string.h>
 #include <stdio.h>
-#include "gikimclient.h"
-#include "gikimcontext.h"
+#include "ibusimclient.h"
+#include "ibusimcontext.h"
 
-#define GIK_LOCALDIR ""
+#define IBUS_LOCALDIR ""
 
-static const GtkIMContextInfo gik_im_info = {
-	"gik",
-	"The G Input Toolkit",
-	"gik",
-	GIK_LOCALDIR,
+static const GtkIMContextInfo ibus_im_info = {
+	"ibus",
+	"The Input Bus",
+	"ibus",
+	IBUS_LOCALDIR,
 	""
 };
 
 static const GtkIMContextInfo * info_list[] = {
-	&gik_im_info
+	&ibus_im_info
 };
 
-void 
+void
 im_module_init (GTypeModule *type_module)
 {
-	gik_im_client_register_type(type_module);
-	gik_im_context_register_type(type_module);
+	ibus_im_client_register_type(type_module);
+	ibus_im_context_register_type(type_module);
 }
 
 void
@@ -53,8 +53,8 @@ im_module_exit (void)
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-	if (strcmp (context_id, "gik") == 0)
-		return gik_im_context_new ();
+	if (strcmp (context_id, "ibus") == 0)
+		return ibus_im_context_new ();
 	return NULL;
 }
 

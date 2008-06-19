@@ -1,6 +1,6 @@
 /* vim:set et ts=4: */
-/* GIK - The G Input Toolkit
- * Copyright (C) 2008-2009 Huang Peng
+/* IBus - The Input Bus
+ * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,8 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __GIK_IM_CONTEXT_H_
-#define __GIK_IM_CONTEXT_H_
+#ifndef __IBUS_IM_CONTEXT_H_
+#define __IBUS_IM_CONTEXT_H_
 
 #include <gtk/gtk.h>
 
@@ -27,24 +27,24 @@
  */
 
 G_BEGIN_DECLS
-typedef struct _GikIMContext GikIMContext;
-typedef struct _GikIMContextClass GikIMContextClass;
-typedef struct _GikIMContextPrivate GikIMContextPrivate;
+typedef struct _IBusIMContext IBusIMContext;
+typedef struct _IBusIMContextClass IBusIMContextClass;
+typedef struct _IBusIMContextPrivate IBusIMContextPrivate;
 
-struct _GikIMContext {
+struct _IBusIMContext {
   GtkIMContext parent;
   /* instance members */
-  GikIMContextPrivate *priv;
+  IBusIMContextPrivate *priv;
 };
 
-struct _GikIMContextClass {
+struct _IBusIMContextClass {
   GtkIMContextClass parent;
   /* class members */
 };
 
-GtkIMContext *gik_im_context_new (void);
-void gik_im_context_register_type (GTypeModule *type_module);
-void gik_im_context_shutdown (void);
+GtkIMContext *ibus_im_context_new (void);
+void ibus_im_context_register_type (GTypeModule *type_module);
+void ibus_im_context_shutdown (void);
 
 G_END_DECLS
 #endif
