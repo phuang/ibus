@@ -40,7 +40,7 @@ class InputContext (ibus.Object):
 		# init default values
 		self._enable = False
 		self._engine = None
-		self._engine_handler_ids = []
+		self._engine_handlers = []
 
 		# client state
 		self._aux_string = None
@@ -193,24 +193,23 @@ class InputContext (ibus.Object):
 
 	def _remove_engine_handlers (self):
 		assert self._engine != None
-		for id in self._engine_handler_ids:
-			self._engine.disconnect (id)
-		self._engine_handler_ids = []
+
+		map (self._engine.disconnect, self._engine_handlers)
+		del self._engine_handlers[:]
 
 	def _install_engine_handlers (self):
-		id = self._engine.connect ("destroy", self._engine_destroy_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("commit-string", self._commit_string_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("update-preedit", self._update_preedit_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("update-aux-string", self._update_aux_string_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("update-lookup-table", self._update_lookup_table_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("register-properties", self._register_properties_cb)
-		self._engine_handler_ids.append (id)
-		id = self._engine.connect ("update-property", self._update_property_cb)
-		self._engine_handler_ids.append (id)
+		signals = (
+			("destroy", self._engine_destroy_cb),
+			("commit-string", self._commit_string_cb),
+			("update-preedit", self._update_preedit_cb),
+			("update-aux-string", self._update_aux_string_cb),
+			("update-lookup-table", self._update_lookup_table_cb),
+			("register-properties", self._register_properties_cb),
+			("update-property", self._update_property_cb)
+		)
+
+		for signal, handler in signals:
+			id = self._engine.connect (signal, handler)
+			self._engine_handlers.append (id)
 
 gobject.type_register (InputContext)
