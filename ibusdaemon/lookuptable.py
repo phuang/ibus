@@ -51,7 +51,7 @@ class LookupTable:
 
 	def hide_cursor (self):
 		self._cursor_visible = False
-	
+
 	def is_cursor_visible (self):
 		return self._cursor_visible
 
@@ -91,5 +91,5 @@ class LookupTable:
 	def to_dbus_struct (self):
 		pass
 
-	def from_dbus_struct (self, value)
+	def from_dbus_struct (self, value):
 		pass
