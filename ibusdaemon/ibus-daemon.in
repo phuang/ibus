@@ -1,2 +1,2 @@
 #!/bin/sh
-python @prefix@/share/ibus/ibusdaemon/ibusdaemon.py
+python @prefix@/share/ibus/ibusdaemon/ibusdaemon.py $@
