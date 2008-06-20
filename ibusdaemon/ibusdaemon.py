@@ -131,7 +131,7 @@ def main ():
 	try:
 		opts, args = getopt.getopt (sys.argv[1:], shortopt, longopt)
 	except getopt.GetoptError, err:
-		print_help (sys.sdterr, 1)
+		print_help (sys.stderr, 1)
 
 	for o, a in opts:
 		if o in ("-h", "--help"):
@@ -140,7 +140,7 @@ def main ():
 			daemonize = True
 		else:
 			print >> sys.stderr, "Unknown argument: %s" % o
-			print_help (sys.sdterr, 1)
+			print_help (sys.stderr, 1)
 
 	if daemonize:
 		if os.fork ():
