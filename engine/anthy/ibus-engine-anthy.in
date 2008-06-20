@@ -1,2 +1,2 @@
 #!/bin/sh
-python @prefix@/share/ibus/engine/anthy/main.py
+python @prefix@/share/ibus/engine/anthy/main.py $@

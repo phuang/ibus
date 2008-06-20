@@ -19,6 +19,9 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import os
+import sys
+import getopt
 import dbus
 import dbus.connection
 import dbus.mainloop.glib
@@ -42,11 +45,40 @@ class IMApp:
 	def _disconnected_cb (self):
 		print "disconnected"
 		gtk.main_quit ()
-	
 
-def main ():
+
+def launch_engine ():
+	dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
 	IMApp ().run ()
 
+def print_help (out, v = 0):
+	print >> out, "-h, --help             show this message."
+	print >> out, "-d, --daemonize        daemonize ibus"
+	sys.exit (v)
+
+def main ():
+	daemonize = False
+	shortopt = "hd"
+	longopt = ["help", "daemonize"]
+	try:
+		opts, args = getopt.getopt (sys.argv[1:], shortopt, longopt)
+	except getopt.GetoptError, err:
+		print_help (sys.stderr, 1)
+
+	for o, a in opts:
+		if o in ("-h", "--help"):
+			print_help (sys.stdout)
+		elif o in ("-d", "--daemonize"):
+			daemonize = True
+		else:
+			print >> sys.stderr, "Unknown argument: %s" % o
+			print_help (sys.stderr, 1)
+
+	if daemonize:
+		if os.fork ():
+			sys.exit ()
+
+	launch_engine ()
+
 if __name__ == "__main__":
-	dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
 	main ()
