@@ -19,6 +19,20 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+		"PROP_TYPE_NORMAL",
+		"PROP_TYPE_TOGGLE",
+		"PROP_TYPE_RADIO",
+		"PROP_TYPE_SEPARATOR",
+		"PROP_STATE_UNCHECKED",
+		"PROP_STATE_CHECKED",
+		"PROP_STATE_INCONSISTENT",
+		"Property",
+		"PropList",
+		"property_from_dbus_value",
+		"prop_list_from_dbus_value",
+	)
+
 import dbus
 
 PROP_TYPE_NORMAL = 0

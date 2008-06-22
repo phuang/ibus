@@ -19,6 +19,19 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+		"IBUS_ADDR",
+		"IBUS_IFACE",
+		"IBUS_PATH",
+		"IBUS_NAME",
+		"IBUS_PANEL_IFACE",
+		"IBUS_ENGINE_FACTORY_IFACE",
+		"IBUS_ENGINE_IFACE",
+		"default_reply_handler",
+		"default_error_handler",
+		"DEFAULT_ASYNC_HANDLERS"
+	)
+
 import os
 import sys
 import getpass

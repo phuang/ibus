@@ -19,6 +19,11 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+		"LookupTable",
+		"lookup_table_from_dbus_value"
+	)
+
 import dbus
 from attribute import *
 from exception import *

@@ -19,6 +19,20 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+		"ATTR_TYPE_UNDERLINE",
+		"ATTR_TYPE_FOREGROUND",
+		"ATTR_TYPE_BACKGROUND",
+		"Attribute",
+		"AttributeUnderline",
+		"AttributeForeground",
+		"AttributeBackground",
+		"AttrList",
+		"attribute_from_dbus_value",
+		"attr_list_from_dbus_value",
+		"ARGB", "RGB"
+	)
+
 import dbus
 
 ATTR_TYPE_UNDERLINE = 1
