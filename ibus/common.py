@@ -53,7 +53,6 @@ def default_reply_handler ( *args):
 
 def default_error_handler (e):
 	print >> sys.stderr, e
-	sys.exit (1)
 
 DEFAULT_ASYNC_HANDLERS = {
 	"reply_handler" : default_reply_handler,
