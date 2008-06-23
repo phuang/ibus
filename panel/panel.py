@@ -28,6 +28,7 @@ from lang import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
+import menu
 
 class Panel (ibus.Object):
 	def __init__ (self, proxy, _ibus):
@@ -131,43 +132,10 @@ class Panel (ibus.Object):
 		menu.set_take_focus (False)
 		return menu
 
-	def _menu_position_cb (self, menu, button):
-		screen = button.get_screen ()
-		monitor = screen.get_monitor_at_window (button.window)
-		monitor_allocation = screen.get_monitor_geometry (monitor)
-
-		x, y = button.window.get_origin ()
-		x += button.allocation.x
-		y += button.allocation.y
-
-		menu_width, menu_height = menu.size_request ()
-
-		if x + menu_width >= monitor_allocation.width:
-			x -= menu_width - button.allocation.width
-		elif x - menu_width <= 0:
-			pass
-		else:
-			if x <= monitor_allocation.width * 3 / 4:
-				pass
-			else:
-				x -= menu_width - button.allocation.width
-
-		if y + button.allocation.height + menu_height >= monitor_allocation.height:
-			y -= menu_height
-		elif y - menu_height <= 0:
-			y += button.allocation.height
-		else:
-			if y <= monitor_allocation.height * 3 / 4:
-				y += button.allocation.height
-			else:
-				y -= menu_height
-
-		return (x, y, False)
-
 	def _im_menu_popup_cb (self, languagebar, button):
 		menu = self._create_im_menu ()
 		menu.popup (None, None,
-				self._menu_position_cb,
+				menu.menu_position,
 				0,
 				gtk.get_current_event_time (),
 				button)
