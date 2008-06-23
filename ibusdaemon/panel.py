@@ -44,7 +44,7 @@ class Panel (ibus.Object):
 		"property-activate" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, )),
+			(gobject.TYPE_STRING, gobject.TYPE_INT)),
 	}
 
 	def __init__ (self, ibusconn, object_path):
@@ -113,7 +113,7 @@ class Panel (ibus.Object):
 			self.emit ("cursor-down")
 		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PropertyActivate"):
 			args = message.get_args_list ()
-			self.emit ("property-activate", args[0])
+			self.emit ("property-activate", args[0], args[1])
 		else:
 			return False
 		return True

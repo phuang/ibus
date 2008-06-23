@@ -33,7 +33,7 @@ class LanguageBar (gtk.Toolbar):
 		"property-activate" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, )),
+			(gobject.TYPE_STRING, gobject.TYPE_INT)),
 		"im-menu-popup" : (
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
@@ -52,24 +52,6 @@ class LanguageBar (gtk.Toolbar):
 		root = gdk.get_default_root_window ()
 		workarea = root.property_get ("_NET_WORKAREA")[2]
 		self._toplevel.move (workarea[2] - 200, workarea[3] - 40)
-
-	def _add_items (self):
-		img = gtk.image_new_from_icon_name ("engine-default", ICON_SIZE)
-		btn = gtk.ToolButton (img, "engine")
-		btn.connect ("clicked", lambda x: self._add_items ())
-		self.insert (btn, -1)
-
-		img = gtk.image_new_from_icon_name ("ibus-keyboard", ICON_SIZE)
-		btn = gtk.ToolButton (img, "keyboard")
-		self.insert (btn, -1)
-
-		img = gtk.image_new_from_icon_name ("ibus-zh", ICON_SIZE)
-		btn = gtk.ToolButton (img, "keyboard")
-		self.insert (btn, -1)
-
-		self.insert (gtk.SeparatorToolItem (), -1)
-		self.show_all ()
-		self.check_resize ()
 
 	def _create_ui (self):
 		# create move handle
@@ -115,26 +97,48 @@ class LanguageBar (gtk.Toolbar):
 		# create new properties
 		for prop in props:
 			if prop._type == ibus.PROP_TYPE_NORMAL:
-				widget = gtk.ToolButton ()
+				widget = gtk.ToolButton (label = prop._label)
+				if prop._icon:
+					widget.set_icon_name (prop._icon)
+				else:
+					widget.set_is_important (True)
+				widget.connect ("clicked",
+						self._property_clicked, prop)
+			elif prop._type == ibus.PROP_TYPE_TOGGLE:
+				widget = gtk.ToggleToolButton ()
 				widget.set_icon_name (prop._icon)
 				widget.set_label (prop._label)
+				widget.set_active (prop._state == ibus.PROP_STATE_CHECKED)
 				widget.connect ("clicked",
-						lambda widget, prop: self.emit ("property-activate", prop._name),
-						prop)
+						self._property_clicked, prop)
+			elif prop._type == ibus.PROP_TYPE_MENU:
+				widget = gtk.ToolButton (label = prop._label)
+				if prop._icon:
+					widget.set_icon_name (prop._icon)
+				else:
+					widget.set_is_important (True)
+				menu = self._create_prop_menu (prop.get_sub_props ())
+				widget.connect ("clicked",
+						self._property_menu_clicked, prop, menu)
+			elif prop._type == PROP_TYPE_SEPARATOR:
+				widget = gtk.SeparatorToolItem ()
 			else:
 				widget = gtk.ToolItem ()
 
 			widget.set_sensitive (prop._sensitive)
+
+			widget.set_no_show_all (True)
 			if prop._visible:
-				widget.set_no_show_all (False)
 				widget.show ()
 			else:
-				widget.set_no_show_all (True)
 				widget.hide ()
+
 			if not self._properties.has_key (prop._name):
 				self._properties [prop._name] = []
+
 			self._properties [prop._name].append ((prop, widget))
 			self.insert (widget, -1)
+
 		self.check_resize ()
 
 	def update_properties (self, props):
@@ -147,6 +151,64 @@ class LanguageBar (gtk.Toolbar):
 	def hide_all (self):
 		self._toplevel.hide_all ()
 		gtk.Toolbar.hide_all (self)
+
+	def _create_prop_menu (self, props):
+		menu = gtk.Menu ()
+		menu.set_take_focus (False)
+
+		radio_group = None
+
+		for prop in props:
+			if prop._type == ibus.PROP_TYPE_NORMAL:
+				item = gtk.ImageMenuItem (prop._label)
+				if prop._icon:
+					item.set_image (gtk.image_new_from_icon_name  (prop._icon, gtk.ICON_SIZE_MENU))
+				item.connect ("activate", self._property_clicked, prop)
+			elif prop._type == ibus.PROP_TYPE_TOGGLE:
+				item = gtk.CheckMenuItem (label = prop._label)
+				item.set_active (prop._state == ibus.PROP_STATE_CHECKED)
+				item.connect ("toggled", self._property_clicked, prop)
+			elif prop._type == ibus.PROP_TYPE_RADIO:
+				item = gtk.RadioMenuItem (group = radio_group, label = prop._label)
+				item.set_active (prop._state == ibus.PROP_STATE_CHECKED)
+				if radio_group == None:
+					radio_group = item
+				item.connect ("toggled", self._property_clicked, prop)
+			elif prop._type == ibus.PROP_TYPE_SEPARATOR:
+				item = gtk.SeparatorMenuItem ()
+				radio_group = None
+			elif prop._type == ibus.PROP_TYPE_MENU:
+				item = gtk.ImageMenuItem (prop._label)
+				if prop._icon:
+					item.set_image (gtk.image_new_from_icon_name  (prop._icon, gtk.ICON_SIZE_MENU))
+				item.set_submenu (self._create_prop_menu (prop.get_sub_props ()))
+			else:
+				assert Fasle
+
+
+			item.set_sensitive (prop._sensitive)
+			item.set_no_show_all (True)
+			if prop._visible:
+				item.show ()
+			else:
+				item.hide ()
+
+			menu.append (item)
+
+		menu.show_all ()
+
+		return menu
+
+	def _property_clicked (self, widget, prop):
+		if prop._type in (ibus.PROP_TYPE_TOGGLE, ibus.PROP_TYPE_RADIO):
+			if widget.get_active ():
+				prop._state = ibus.PROP_STATE_CHECKED
+			else:
+				prop._state = ibus.PROP_STATE_UNCHECKED
+		self.emit ("property-activate", prop._name, prop._state)
+
+	def _property_menu_clicked (self, widget, prop, menu):
+		menu.popup (None, None, None, 0, 0)
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 

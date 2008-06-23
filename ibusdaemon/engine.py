@@ -131,8 +131,8 @@ class Engine (ibus.Object):
 	def cursor_down (self):
 		self._engine.CursorDown (**ibus.DEFAULT_ASYNC_HANDLERS)
 
-	def property_activate (self, prop_name):
-		self._engine.PropertyActivate (prop_name,
+	def property_activate (self, prop_name, prop_state):
+		self._engine.PropertyActivate (prop_name, prop_state,
 				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def destroy (self):

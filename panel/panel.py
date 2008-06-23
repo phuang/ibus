@@ -43,7 +43,7 @@ class Panel (ibus.Object):
 
 		self._language_bar = LanguageBar ()
 		self._language_bar.connect ("property-activate",
-						lambda widget, prop_name: self._proxy.PropertyActivate (prop_name))
+						lambda widget, prop_name, prop_state: self._proxy.PropertyActivate (prop_name, prop_state))
 		self._language_bar.connect ("im-menu-popup",
 						self._im_menu_popup_cb)
 		self._language_bar.show_all ()
@@ -114,7 +114,7 @@ class Panel (ibus.Object):
 		menu = gtk.Menu ()
 		factories = self._ibus.GetFactories ()
 		if not factories:
-			item = gtk.MenuItem (label = "no im")
+			item = gtk.MenuItem (label = "no engine")
 			item.set_sensitive (False)
 			menu.add (item)
 		else:

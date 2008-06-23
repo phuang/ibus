@@ -127,9 +127,9 @@ class InputContext (ibus.Object):
 		if self._engine:
 			self._engine.cursor_down ()
 
-	def property_activate (self, prop_name):
+	def property_activate (self, prop_name, prop_state):
 		if self._engine:
-			self._engine.property_activate (prop_name)
+			self._engine.property_activate (prop_name, prop_state)
 
 	def is_enabled (self):
 		return self._enable

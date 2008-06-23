@@ -252,10 +252,10 @@ class IBus (ibus.Object):
 		if self._focused_context:
 			self._focused_context.cursor_down ()
 
-	def _panel_property_active_cb (self, panel, prop_name):
+	def _panel_property_active_cb (self, panel, prop_name, prop_state):
 		assert panel == self._panel
 		if self._focused_context:
-			self._focused_context.property_activate (prop_name)
+			self._focused_context.property_activate (prop_name, prop_state)
 
 	def _panel_destroy_cb (self, panel):
 		if panel == self._panel:

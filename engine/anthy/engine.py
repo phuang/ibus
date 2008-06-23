@@ -1,4 +1,5 @@
 # vim:set noet ts=4:
+# -*- coding: utf-8 -*-
 #
 # ibus - The Input Bus
 #
@@ -39,10 +40,33 @@ class Engine (interface.IEngine):
 		self._context._set_encoding (anthy.ANTHY_UTF8_ENCODING)
 
 		self._lookup_table = ibus.LookupTable ()
-		self._prop_list = ibus.PropList ()
+		self._prop_list = self._init_props ()
 
 		# use reset to init values
 		self._reset ()
+
+	def _init_props (self):
+		props = ibus.PropList ()
+		mode_prop = ibus.Property (name = "InputMode", type = ibus.PROP_TYPE_MENU, label = u"あ")
+		props.append (mode_prop)
+		mode_props = ibus.PropList ()
+		mode_props.append (ibus.Property (name = "InputModeHiragana",
+										type = ibus.PROP_TYPE_RADIO,
+										label = u"Hiragana"))
+		mode_props.append (ibus.Property (name = "InputModeKatagana",
+										type = ibus.PROP_TYPE_RADIO,
+										label = u"Katagana"))
+		mode_props.append (ibus.Property (name = "InputModeHalfWidthHiragana",
+										type = ibus.PROP_TYPE_RADIO,
+										label = u"Half width hiragana"))
+		mode_props.append (ibus.Property (name = "InputModeHalfWidthKatagana",
+										type = ibus.PROP_TYPE_RADIO,
+										label = u"Half width katagana"))
+		mode_props.append (ibus.Property (name = "InputModeLatin",
+										type = ibus.PROP_TYPE_RADIO,
+										label = u"Direct input"))
+		mode_prop.set_sub_props (mode_props)
+		return props
 
 	# reset values of engine
 	def _reset (self):
@@ -428,8 +452,8 @@ class Engine (interface.IEngine):
 		if self._enable:
 			self.RegisterProperties (self._prop_list.to_dbus_value ())
 
-	def PropertyActivate (self, prop_name):
-		print "PropertyActivate (%s)" % prop_name
+	def PropertyActivate (self, prop_name, prop_state):
+		print "PropertyActivate (%s, %d)" % (prop_name, prop_state)
 
 	def Destroy (self):
 		print "Destroy"
