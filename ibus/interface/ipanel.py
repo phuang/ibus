@@ -85,4 +85,4 @@ class IPanel (dbus.service.Object):
 	def CursorDown (self): pass
 
 	@signal ()
-	def PropertyActivate (self, name): pass
+	def PropertyActivate (self, prop_name, prop_state): pass

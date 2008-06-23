@@ -24,6 +24,7 @@ __all__ = (
 		"PROP_TYPE_TOGGLE",
 		"PROP_TYPE_RADIO",
 		"PROP_TYPE_SEPARATOR",
+		"PROP_TYPE_MENU",
 		"PROP_STATE_UNCHECKED",
 		"PROP_STATE_CHECKED",
 		"PROP_STATE_INCONSISTENT",
@@ -38,7 +39,8 @@ import dbus
 PROP_TYPE_NORMAL = 0
 PROP_TYPE_TOGGLE = 1
 PROP_TYPE_RADIO  = 2
-PROP_TYPE_SEPARATOR = 3
+PROP_TYPE_MENU   = 3
+PROP_TYPE_SEPARATOR = 4
 
 PROP_STATE_UNCHECKED = 0
 PROP_STATE_CHECKED = 1
@@ -52,7 +54,7 @@ class Property:
 						tip = "",
 						sensitive = True,
 						visible = True,
-						state = PROP_STATE_CHECKED):
+						state = PROP_STATE_UNCHECKED):
 		self._name = name
 		self._type = type
 		self._label = label
