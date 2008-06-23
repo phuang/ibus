@@ -28,7 +28,7 @@ from lang import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
-import menu
+from menu import menu_position
 
 class Panel (ibus.Object):
 	def __init__ (self, proxy, _ibus):
@@ -135,7 +135,7 @@ class Panel (ibus.Object):
 	def _im_menu_popup_cb (self, languagebar, button):
 		menu = self._create_im_menu ()
 		menu.popup (None, None,
-				menu.menu_position,
+				menu_position,
 				0,
 				gtk.get_current_event_time (),
 				button)

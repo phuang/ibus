@@ -26,6 +26,7 @@ panel_PYTHON = \
 	lang.py \
 	languagebar.py \
 	main.py \
+	menu.py \
 	panel.py \
 	$(NULL)
 

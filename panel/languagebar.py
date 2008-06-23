@@ -25,7 +25,7 @@ import gobject
 import ibus
 from image import Image
 from handle import Handle
-import menu
+from menu import menu_position
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
@@ -209,7 +209,7 @@ class LanguageBar (gtk.Toolbar):
 		self.emit ("property-activate", prop._name, prop._state)
 
 	def _property_menu_clicked (self, widget, prop, menu):
-		menu.popup (None, None, menu.menu_position,
+		menu.popup (None, None, menu_position,
 					0, gtk.get_current_event_time (), widget)
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
