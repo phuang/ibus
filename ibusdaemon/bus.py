@@ -230,6 +230,8 @@ class IBus (ibus.Object):
 		self._panel.connect ("cursor-up", self._panel_cursor_up_cb)
 		self._panel.connect ("cursor-down", self._panel_cursor_down_cb)
 		self._panel.connect ("property-activate", self._panel_property_active_cb)
+		self._panel.connect ("property-show", self._panel_property_show_cb)
+		self._panel.connect ("property-hide", self._panel_property_hide_cb)
 		self._panel.connect ("destroy", self._panel_destroy_cb)
 
 	def _panel_page_up_cb (self, panel):
@@ -256,6 +258,16 @@ class IBus (ibus.Object):
 		assert panel == self._panel
 		if self._focused_context:
 			self._focused_context.property_activate (prop_name, prop_state)
+
+	def _panel_property_show_cb (self, panel, prop_name):
+		assert panel == self._panel
+		if self._focused_context:
+			self._focused_context.property_show (prop_name)
+
+	def _panel_property_hide_cb (self, panel, prop_name):
+		assert panel == self._panel
+		if self._focused_context:
+			self._focused_context.property_hide (prop_name)
 
 	def _panel_destroy_cb (self, panel):
 		if panel == self._panel:

@@ -131,6 +131,14 @@ class InputContext (ibus.Object):
 		if self._engine:
 			self._engine.property_activate (prop_name, prop_state)
 
+	def property_show (self, prop_name):
+		if self._engine:
+			self._engine.property_show (prop_name)
+
+	def property_hide (self, prop_name):
+		if self._engine:
+			self._engine.property_hide (prop_name)
+
 	def is_enabled (self):
 		return self._enable
 

@@ -86,3 +86,10 @@ class IPanel (dbus.service.Object):
 
 	@signal ()
 	def PropertyActivate (self, prop_name, prop_state): pass
+
+	@signal ()
+	def PropertyShow (self, prop_name): pass
+
+	@signal ()
+	def PropertyHide (self, prop_name): pass
+

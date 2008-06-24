@@ -124,15 +124,23 @@ class Engine (ibus.Object):
 
 	def page_down (self):
 		self._engine.PageDown (**ibus.DEFAULT_ASYNC_HANDLERS)
-	
+
 	def cursor_up (self):
 		self._engine.CursorUp (**ibus.DEFAULT_ASYNC_HANDLERS)
-	
+
 	def cursor_down (self):
 		self._engine.CursorDown (**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def property_activate (self, prop_name, prop_state):
 		self._engine.PropertyActivate (prop_name, prop_state,
+				**ibus.DEFAULT_ASYNC_HANDLERS)
+
+	def property_show (self, prop_name):
+		self._engine.PropertyShow (prop_name,
+				**ibus.DEFAULT_ASYNC_HANDLERS)
+
+	def property_hide (self, prop_name):
+		self._engine.PropertyHide (prop_name,
 				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def destroy (self):

@@ -45,6 +45,14 @@ class Panel (ibus.Object):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_STRING, gobject.TYPE_INT)),
+		"property-show" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
+		"property-hide" : (
+			gobject.SIGNAL_RUN_FIRST,
+			gobject.TYPE_NONE,
+			(gobject.TYPE_STRING, )),
 	}
 
 	def __init__ (self, ibusconn, object_path):
@@ -114,6 +122,12 @@ class Panel (ibus.Object):
 		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PropertyActivate"):
 			args = message.get_args_list ()
 			self.emit ("property-activate", args[0], args[1])
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PropertyShow"):
+			args = message.get_args_list ()
+			self.emit ("property-show", args[0])
+		elif message.is_signal (ibus.IBUS_PANEL_IFACE, "PropertyHide"):
+			args = message.get_args_list ()
+			self.emit ("property-hide", args[0])
 		else:
 			return False
 		return True

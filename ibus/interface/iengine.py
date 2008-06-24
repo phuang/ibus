@@ -77,6 +77,12 @@ class IEngine (dbus.service.Object):
 	@method (in_signature = "si")
 	def PropertyActivate (self, prop_name, prop_state): pass
 
+	@method (in_signature = "s")
+	def PropertyShow (self, prop_name): pass
+
+	@method (in_signature = "s")
+	def PropertyHide (self, prop_name): pass
+
 	@method ()
 	def Destroy (self): pass
 
