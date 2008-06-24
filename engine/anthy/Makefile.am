@@ -71,7 +71,7 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	anthy.py \
-	anthy_wrap.c \
+	anthy_wrap.* \
 	*.pyc \
 	$(MULL)
 
