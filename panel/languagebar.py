@@ -25,6 +25,7 @@ import gobject
 import ibus
 from image import Image
 from handle import Handle
+from menu import menu_position
 from toolitem import ToolButton,\
 	ToggleToolButton, \
 	MenuToolButton
@@ -37,10 +38,10 @@ class LanguageBar (gtk.Toolbar):
 			gobject.SIGNAL_RUN_FIRST,
 			gobject.TYPE_NONE,
 			(gobject.TYPE_STRING, gobject.TYPE_INT)),
-		"im-menu-popup" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_PYOBJECT, )),
+		"get-im-menu" : (
+			gobject.SIGNAL_RUN_LAST,
+			gobject.TYPE_PYOBJECT,
+			()),
 		}
 
 	def __init__ (self):
@@ -63,9 +64,21 @@ class LanguageBar (gtk.Toolbar):
 		self.insert (self._handle, -1)
 
 		# create input methods menu
-		self._im_menu = ToolButton (icon = "engine-default")
-		self._im_menu.connect ("clicked", lambda w: self.emit ("im-menu-popup", self._im_menu))
+		self._im_menu = ToggleToolButton (icon = "engine-default")
+		self._im_menu.connect ("toggled", self._im_menu_toggled_cb)
 		self.insert (self._im_menu, -1)
+
+	def _im_menu_toggled_cb (self, widget):
+		if self._im_menu.get_active ():
+			menu = self.emit ("get-im-menu")
+			menu.connect ("deactivate", self._im_menu_deactivate_cb)
+			menu.popup (None, None,
+				menu_position,
+				0,
+				gtk.get_current_event_time (),
+				widget)
+	def _im_menu_deactivate_cb (self, menu):
+		self._im_menu.set_active (False)
 
 	def _remove_properties (self):
 		# reset all properties

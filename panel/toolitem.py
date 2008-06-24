@@ -20,6 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 import gtk
+import gtk.gdk as gdk
 import gobject
 import ibus
 from menu import *
@@ -54,7 +55,6 @@ class ToolButton (gtk.ToolButton):
 	def do_clicked (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
-gobject.type_register (ToolButton, "ToolButton")
 
 class ToggleToolButton (gtk.ToggleToolButton):
 	__gsignals__ = {
@@ -99,16 +99,26 @@ class ToggleToolButton (gtk.ToggleToolButton):
 			self._prop._state = ibus.PROP_STATE_UNCHECKED
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
-gobject.type_register (ToggleToolButton, "IBusToggleToolButton")
 
-class MenuToolButton (ToolButton):
+class MenuToolButton (ToggleToolButton):
+	# __gsignals__ = {
+	#		"property-activate" : (
+	#			gobject.SIGNAL_RUN_FIRST,
+	#			gobject.TYPE_NONE,
+	#			(gobject.TYPE_STRING, gobject.TYPE_INT)),
+	#		}
+
 	def __init__ (self, label = None, icon = None, prop = None):
-		ToolButton.__init__ (self, label, icon, prop)
+		ToggleToolButton.__init__ (self, label = label, icon = icon, prop = prop)
 		self._menu = Menu (prop)
-		self._menu.connect ("property-activate", lambda w,n,s:self.emit ("property-activate", n, s))
+		self._menu.connect ("deactivate", lambda m: self.set_active (False))
+		self._menu.connect ("property-activate", lambda w,n,s: self.emit ("property-activate", n, s))
 
-	def do_clicked (self):
-		self._menu.popup (0, gtk.get_current_event_time (), self)
+	def do_toggled (self):
+		if self.get_active ():
+			self._menu.popup (0, gtk.get_current_event_time (), self)
 
+gobject.type_register (ToolButton, "ToolButton")
+gobject.type_register (ToggleToolButton, "IBusToggleToolButton")
 gobject.type_register (MenuToolButton, "MenuToolButton")
 
