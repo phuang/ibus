@@ -49,7 +49,10 @@ class Engine (interface.IEngine):
 		props = ibus.PropList ()
 
 		# init input mode properties
-		mode_prop = ibus.Property (name = "InputMode", type = ibus.PROP_TYPE_MENU, label = u"あ")
+		mode_prop = ibus.Property (name = "InputMode",
+							type = ibus.PROP_TYPE_MENU,
+							label = "あ",
+							tooltip = "Switch input mode")
 		mode_props = ibus.PropList ()
 		mode_props.append (ibus.Property (name = "InputModeHiragana",
 										type = ibus.PROP_TYPE_RADIO,
@@ -71,7 +74,10 @@ class Engine (interface.IEngine):
 
 
 		# init test property
-		test_prop = ibus.Property (name = "InputMode", type = ibus.PROP_TYPE_TOGGLE, label = u"あ")
+		test_prop = ibus.Property (name = "TestProp",
+							type = ibus.PROP_TYPE_TOGGLE,
+							label = "あ",
+							tooltip = "test property")
 		props.append (test_prop)
 
 		return props
