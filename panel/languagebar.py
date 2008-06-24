@@ -26,6 +26,7 @@ import ibus
 from image import Image
 from handle import Handle
 from menu import menu_position
+from toolitem import ToolButton, ToggleToolButton
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
@@ -61,8 +62,7 @@ class LanguageBar (gtk.Toolbar):
 		self.insert (self._handle, -1)
 
 		# create input methods menu
-		image = gtk.image_new_from_icon_name ("engine-default", gtk.ICON_SIZE_MENU)
-		self._im_menu = gtk.ToolButton (icon_widget = image)
+		self._im_menu = ToolButton (icon = "engine-default")
 		self._im_menu.connect ("clicked", lambda w: self.emit ("im-menu-popup", self._im_menu))
 		self.insert (self._im_menu, -1)
 
@@ -98,26 +98,15 @@ class LanguageBar (gtk.Toolbar):
 		# create new properties
 		for prop in props:
 			if prop._type == ibus.PROP_TYPE_NORMAL:
-				widget = gtk.ToolButton (label = prop._label)
-				if prop._icon:
-					widget.set_icon_name (prop._icon)
-				else:
-					widget.set_is_important (True)
-				widget.connect ("clicked",
-						self._property_clicked, prop)
+				widget = ToolButton (prop = prop)
+				widget.connect ("property-activate",
+						lambda w, n, s: self.emit ("property-activate", n, s))
 			elif prop._type == ibus.PROP_TYPE_TOGGLE:
-				widget = gtk.ToggleToolButton ()
-				widget.set_icon_name (prop._icon)
-				widget.set_label (prop._label)
-				widget.set_active (prop._state == ibus.PROP_STATE_CHECKED)
-				widget.connect ("clicked",
-						self._property_clicked, prop)
+				widget = ToggleToolButton (prop = prop)
+				widget.connect ("property-activate",
+						lambda w, n, s: self.emit ("property-activate", n, s))
 			elif prop._type == ibus.PROP_TYPE_MENU:
-				widget = gtk.ToolButton (label = prop._label)
-				if prop._icon:
-					widget.set_icon_name (prop._icon)
-				else:
-					widget.set_is_important (True)
+				widget = ToolButton (prop = prop)
 				menu = self._create_prop_menu (prop.get_sub_props ())
 				widget.connect ("clicked",
 						self._property_menu_clicked, prop, menu)

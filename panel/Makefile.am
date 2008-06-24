@@ -28,6 +28,7 @@ panel_PYTHON = \
 	main.py \
 	menu.py \
 	panel.py \
+	toolitem.py \
 	$(NULL)
 
 paneldir = $(pkgdatadir)/panel
