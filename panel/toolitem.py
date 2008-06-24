@@ -22,6 +22,7 @@
 import gtk
 import gobject
 import ibus
+from menu import *
 
 class ToolButton (gtk.ToolButton):
 	__gsignals__ = {
@@ -33,7 +34,8 @@ class ToolButton (gtk.ToolButton):
 
 	def __init__ (self, label = None, icon = None, prop = None):
 		if prop == None:
-			prop = ibus.Property (name= "", label = label, icon = icon)
+			prop = ibus.Property (name= "", type = ibus.PROP_TYPE_NORMAL,
+							label = label, icon = icon)
 		self._prop = prop
 
 		gtk.ToolButton.__init__ (self, label = prop._label)
@@ -64,7 +66,8 @@ class ToggleToolButton (gtk.ToggleToolButton):
 
 	def __init__ (self, label = None, icon = None, state = ibus.PROP_STATE_UNCHECKED, prop = None):
 		if prop == None:
-			prop = ibus.Property (name = "", label = label, icon = icon, state = state)
+			prop = ibus.Property (name = "", type = ibus.PROP_TYPE_TOGGLE,
+							label = label, icon = icon, state = state)
 		self._prop = prop
 
 		gtk.ToggleToolButton.__init__ (self)
@@ -98,34 +101,14 @@ class ToggleToolButton (gtk.ToggleToolButton):
 
 gobject.type_register (ToggleToolButton, "IBusToggleToolButton")
 
-class MenuToolButton (gtk.ToolButton):
-	__gsignals__ = {
-		"property-activate" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_INT)),
-		}
-
+class MenuToolButton (ToolButton):
 	def __init__ (self, label = None, icon = None, prop = None):
-		if prop == None:
-			prop = ibus.Property (name= "", label = label, icon = icon)
-		self._prop = prop
-
-		gtk.ToolButton.__init__ (self, label = prop._label)
-		self.set_icon_name (prop._icon)
-
-	def set_icon_name (self, icon_name):
-		if icon_name:
-			gtk.ToolButton.set_icon_name (self, icon_name)
-			self.set_is_important (False)
-		else:
-			gtk.ToolButton.set_icon_name (self, None)
-			self.set_is_important (True)
-
-		self._prop._icon = icon_name
+		ToolButton.__init__ (self, label, icon, prop)
+		self._menu = Menu (prop)
+		self._menu.connect ("property-activate", lambda w,n,s:self.emit ("property-activate", n, s))
 
 	def do_clicked (self):
-		self.emit ("property-activate", self._prop._name, self._prop._state)
+		self._menu.popup (0, gtk.get_current_event_time (), self)
 
 gobject.type_register (MenuToolButton, "MenuToolButton")
 
