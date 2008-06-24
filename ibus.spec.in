@@ -72,6 +72,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/immodules/im-ibus.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post gtk
+%{_bindir}/update-gtk-immodules %{_host} || :
+
 %files
 # -f %{name}.lang
 %defattr(-,root,root,-)
