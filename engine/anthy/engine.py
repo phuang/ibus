@@ -56,19 +56,20 @@ class Engine (interface.IEngine):
 		mode_props = ibus.PropList ()
 		mode_props.append (ibus.Property (name = "InputModeHiragana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = u"Hiragana"))
+										label = "Hiragana",
+										state = ibus.PROP_STATE_CHECKED))
 		mode_props.append (ibus.Property (name = "InputModeKatagana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = u"Katagana"))
+										label = "Katagana"))
 		mode_props.append (ibus.Property (name = "InputModeHalfWidthHiragana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = u"Half width hiragana"))
+										label = "Half width hiragana"))
 		mode_props.append (ibus.Property (name = "InputModeHalfWidthKatagana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = u"Half width katagana"))
+										label = "Half width katagana"))
 		mode_props.append (ibus.Property (name = "InputModeLatin",
 										type = ibus.PROP_TYPE_RADIO,
-										label = u"Direct input"))
+										label = "Direct input"))
 		mode_prop.set_sub_props (mode_props)
 		props.append (mode_prop)
 
