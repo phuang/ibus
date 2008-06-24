@@ -48,3 +48,5 @@ install-exec-local: Makefile.qmake
 uninstall-local: Makefile.qmake
 	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) INSTALL_ROOT=$(DESTDIR) uninstall
 
+test: all
+	QT_IM_MODULE=ibus kwrite
