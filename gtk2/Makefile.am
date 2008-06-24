@@ -20,7 +20,8 @@
 # Boston, MA  02111-1307  USA
 
 INCLUDES = \
-	-I$(top_srcdir)
+	-I$(top_srcdir) \
+	$(NULL)
 
 im_ibus_sources = \
 	ibusim.c \
@@ -54,7 +55,8 @@ im_ibus_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
-EXTRA_DIST =
+EXTRA_DIST = \
+	$(NULL)
 
 test: all
 	GTK_IM_MODULE=ibus gedit
