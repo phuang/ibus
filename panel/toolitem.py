@@ -33,14 +33,23 @@ class ToolButton (gtk.ToolButton):
 			(gobject.TYPE_STRING, gobject.TYPE_INT)),
 		}
 
-	def __init__ (self, label = None, icon = None, prop = None):
+	def __init__ (self, label = None, icon = None, tooltip = None, prop = None):
 		if prop == None:
 			prop = ibus.Property (name= "", type = ibus.PROP_TYPE_NORMAL,
-							label = label, icon = icon)
+							label = label, icon = icon, tooltip = tooltip)
 		self._prop = prop
 
 		gtk.ToolButton.__init__ (self, label = prop._label)
 		self.set_icon_name (prop._icon)
+		self.set_tooltip_text (prop._tooltip)
+		self.set_sensitive (prop._sensitive)
+		if prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
+
 
 	def set_icon_name (self, icon_name):
 		if icon_name:
@@ -51,6 +60,14 @@ class ToolButton (gtk.ToolButton):
 			self.set_is_important (True)
 
 		self._prop._icon = icon_name
+
+	def set_tooltip_text (self, text):
+		if text:
+			gtk.ToolButton.set_tooltip_text (self, text)
+		else:
+			gtk.ToolButton.set_tooltip_text (self, None)
+
+		self._prop._tooltip = text
 
 	def do_clicked (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
@@ -64,26 +81,42 @@ class ToggleToolButton (gtk.ToggleToolButton):
 			(gobject.TYPE_STRING, gobject.TYPE_INT)),
 		}
 
-	def __init__ (self, label = None, icon = None, state = ibus.PROP_STATE_UNCHECKED, prop = None):
+	def __init__ (self, label = None, icon = None, tooltip = None, state = ibus.PROP_STATE_UNCHECKED, prop = None):
 		if prop == None:
 			prop = ibus.Property (name = "", type = ibus.PROP_TYPE_TOGGLE,
-							label = label, icon = icon, state = state)
+							label = label, icon = icon, tooltip = tooltip, state = state)
 		self._prop = prop
 
 		gtk.ToggleToolButton.__init__ (self)
 		self.set_label (prop._label)
 		self.set_icon_name (prop._icon)
+		self.set_tooltip_text (prop._tooltip)
 		self.set_state (prop._state)
+		self.set_sensitive (prop._sensitive)
+		if prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 	def set_icon_name (self, icon_name):
 		if icon_name:
-			gtk.ToolButton.set_icon_name (self, icon_name)
+			gtk.ToggleToolButton.set_icon_name (self, icon_name)
 			self.set_is_important (False)
 		else:
-			gtk.ToolButton.set_icon_name (self, None)
+			gtk.ToggleToolButton.set_icon_name (self, None)
 			self.set_is_important (True)
 
 		self._prop._icon = icon_name
+
+	def set_tooltip_text (self, text):
+		if text:
+			gtk.ToggleToolButton.set_tooltip_text (self, text)
+		else:
+			gtk.ToggleToolButton.set_tooltip_text (self, None)
+
+		self._prop._tooltip = text
 
 	def set_state (self, state):
 		self.set_active (state == ibus.PROP_STATE_CHECKED)
@@ -108,8 +141,8 @@ class MenuToolButton (ToggleToolButton):
 	#			(gobject.TYPE_STRING, gobject.TYPE_INT)),
 	#		}
 
-	def __init__ (self, label = None, icon = None, prop = None):
-		ToggleToolButton.__init__ (self, label = label, icon = icon, prop = prop)
+	def __init__ (self, label = None, icon = None, toolip = None, prop = None):
+		ToggleToolButton.__init__ (self, label = label, icon = icon, tooltip = None, prop = prop)
 		self._menu = Menu (prop)
 		self._menu.connect ("deactivate", lambda m: self.set_active (False))
 		self._menu.connect ("property-activate", lambda w,n,s: self.emit ("property-activate", n, s))

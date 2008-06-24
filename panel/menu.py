@@ -38,6 +38,7 @@ class Menu (gtk.Menu):
 		self.set_take_focus (False)
 		self._create_items (self._prop.get_sub_props ())
 		self.show_all ()
+		self.set_sensitive (prop._sensitive)
 
 	def _create_items (self, props):
 		radio_group = None
@@ -60,10 +61,11 @@ class Menu (gtk.Menu):
 				assert Fasle
 
 			item.set_sensitive (prop._sensitive)
-			item.set_no_show_all (True)
 			if prop._visible:
+				item.set_no_show_all (False)
 				item.show ()
 			else:
+				item.set_no_show_all (True)
 				item.hide ()
 
 			item.connect ("property-activate", lambda w,n,s: self.emit ("property-activate", n, s))

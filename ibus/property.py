@@ -51,7 +51,7 @@ class Property:
 						type = PROP_TYPE_NORMAL,
 						label = "",
 						icon = "",
-						tip = "",
+						tooltip = "",
 						sensitive = True,
 						visible = True,
 						state = PROP_STATE_UNCHECKED):
@@ -59,7 +59,7 @@ class Property:
 		self._type = type
 		self._label = label
 		self._icon = icon
-		self._tip = tip
+		self._tooltip = tooltip
 		self._sensitive = sensitive
 		self._visible = visible
 		self._state = state

@@ -64,7 +64,7 @@ class LanguageBar (gtk.Toolbar):
 		self.insert (self._handle, -1)
 
 		# create input methods menu
-		self._im_menu = ToggleToolButton (icon = "engine-default")
+		self._im_menu = ToggleToolButton (icon = "engine-default", tooltip = "Swicth engine")
 		self._im_menu.connect ("toggled", self._im_menu_toggled_cb)
 		self.insert (self._im_menu, -1)
 
