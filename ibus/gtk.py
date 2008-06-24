@@ -61,6 +61,3 @@ class PangoAttrList (pango.AttrList):
 			if pango_attr != None:
 				self.insert (pango_attr)
 
-
-if __name__ == "__main__":
-	PangoAttrList (None)
