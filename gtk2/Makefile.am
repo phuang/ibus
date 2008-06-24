@@ -41,17 +41,17 @@ im_ibus_la_SOURCES = \
 	$(im_ibus_private_headers) \
 	$(NULL)
 
-im_ibus_la_CFLAGS = 			\
-	@GTK2_CFLAGS@ 			\
-	@DBUS_CFLAGS@ 			\
-	-DG_LOG_DOMAIN=\"IBUS\"	\
+im_ibus_la_CFLAGS = \
+	@GTK2_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
 
 im_ibus_la_LDFLAGS = \
-	@GTK2_LIBS@ 	\
-	@DBUS_LIBS@ 	\
-	-avoid-version	\
-	-module			\
+	@GTK2_LIBS@ \
+	@DBUS_LIBS@ \
+	-avoid-version \
+	-module \
 	$(NULL)
 
 EXTRA_DIST =
