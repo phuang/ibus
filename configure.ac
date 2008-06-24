@@ -132,6 +132,7 @@ AM_GNU_GETTEXT_VERSION(0.16.1)
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
+ibus.spec
 ibus/Makefile
 ibus/interface/Makefile
 ibusdaemon/Makefile

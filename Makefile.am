@@ -34,6 +34,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
 	autogen.sh \
+	ibus.spec.in \
 	python-config.py \
 	$(NULL)
 
@@ -43,4 +44,13 @@ noinst_DIST = \
 
 DISTCLEANFILES = \
 	po/stamp-it
+
+rpm: dist ibus.spec
+	rpmbuild -bb						\
+			--define "_sourcedir `pwd`" \
+			--define "_builddir `pwd`" 	\
+			--define "_srcrpmdir `pwd`" \
+			--define "_rpmdir `pwd`" 	\
+			--define "_specdir `pwd`" 	\
+			ibus.spec
 
