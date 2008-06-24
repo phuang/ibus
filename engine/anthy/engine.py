@@ -47,8 +47,9 @@ class Engine (interface.IEngine):
 
 	def _init_props (self):
 		props = ibus.PropList ()
+
+		# init input mode properties
 		mode_prop = ibus.Property (name = "InputMode", type = ibus.PROP_TYPE_MENU, label = u"あ")
-		props.append (mode_prop)
 		mode_props = ibus.PropList ()
 		mode_props.append (ibus.Property (name = "InputModeHiragana",
 										type = ibus.PROP_TYPE_RADIO,
@@ -66,6 +67,13 @@ class Engine (interface.IEngine):
 										type = ibus.PROP_TYPE_RADIO,
 										label = u"Direct input"))
 		mode_prop.set_sub_props (mode_props)
+		props.append (mode_prop)
+
+
+		# init test property
+		test_prop = ibus.Property (name = "InputMode", type = ibus.PROP_TYPE_TOGGLE, label = u"あ")
+		props.append (test_prop)
+
 		return props
 
 	# reset values of engine
