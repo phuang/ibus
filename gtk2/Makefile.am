@@ -56,3 +56,5 @@ im_ibus_la_LDFLAGS = \
 
 EXTRA_DIST =
 
+test:
+	GTK_IM_MODULE=ibus gedit
