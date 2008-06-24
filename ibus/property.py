@@ -78,7 +78,7 @@ class Property:
 			return True
 		if self._label != prop._label or \
 			self._icon != prop._icon or \
-			self._tip != prop._tip or \
+			self._tooltip != prop._tooltip or \
 			self._sensitive != prop._sensitive or \
 			self._visible != prop._visible or \
 			self._state != prop._state:
@@ -92,7 +92,7 @@ class Property:
 				dbus.Int32 (self._type),
 				dbus.String (self._label),
 				dbus.String (self._icon),
-				dbus.String (self._tip),
+				dbus.String (self._tooltip),
 				dbus.Boolean (self._sensitive),
 				dbus.Boolean (self._visible),
 				dbus.Int32 (self._state),
@@ -104,7 +104,7 @@ class Property:
 		self._type, \
 		self._label, \
 		self._icon, \
-		self._tip, \
+		self._tooltip, \
 		self._sensitive, \
 		self._visible, \
 		self._state, \
