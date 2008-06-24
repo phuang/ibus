@@ -41,6 +41,6 @@ noinst_DIST = \
 	$(NULL)
 
 
-DISTCLEANFILES =		\
+DISTCLEANFILES = \
 	po/stamp-it
 
