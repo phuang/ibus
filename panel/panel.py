@@ -47,6 +47,8 @@ class Panel (ibus.Object):
 						lambda widget, prop_name, prop_state: self._proxy.PropertyActivate (prop_name, prop_state))
 		self._language_bar.connect ("get-im-menu",
 						self._get_im_menu_cb)
+		self._language_bar.focus_out ()
+		self._language_bar.show_all ()
 
 		self._candidate_panel = CandidatePanel ()
 		self._candidate_panel.connect ("cursor-up",
@@ -116,13 +118,13 @@ class Panel (ibus.Object):
 		else:
 			name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
 			self._set_im_icon (icon)
-		self._language_bar.show_all ()
+		self._language_bar.focus_in ()
 
 	def focus_out (self, ic):
 		self.reset ()
 		if self._focus_ic == ic:
 			self._focus_ic = None
-			self._language_bar.hide_all ()
+			self._language_bar.focus_out ()
 			self._set_im_icon ("engine-default")
 
 	def states_changed (self):
