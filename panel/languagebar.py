@@ -104,6 +104,9 @@ class LanguageBar (gtk.Toolbar):
 		gtk.Toolbar.do_size_request (self, requisition)
 		self._toplevel.resize (1, 1)
 
+	def set_im_icon (self, icon_name):
+		self._im_menu.set_icon_name (icon_name)
+
 	def reset (self):
 		self._remove_properties ()
 

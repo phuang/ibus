@@ -85,7 +85,7 @@ class IBus (ibus.Object):
 		self._focused_context = context
 		self._install_focused_context_handlers ()
 
-		self._panel.reset ()
+		self._panel.focus_in (context.get_id ())
 		self._last_focused_context = context
 		context.focus_in ()
 
@@ -97,7 +97,7 @@ class IBus (ibus.Object):
 			self._focused_context = None
 
 		context.focus_out ()
-		self._panel.reset ()
+		self._panel.focus_out (context.get_id ())
 
 	def reset (self, ic, dbusconn):
 		context = self._lookup_context (ic, dbusconn)
@@ -132,6 +132,7 @@ class IBus (ibus.Object):
 				if factory:
 					engine = factory.create_engine ()
 					context.set_engine (engine)
+			self._panel.states_changed ()
 			return True
 		return False
 
@@ -290,6 +291,12 @@ class IBus (ibus.Object):
 		engine = factory.create_engine ()
 		self._focused_context.set_engine (engine)
 
+	def get_input_context_states (self, ic, dbusconn):
+		context = self._lookup_context (ic, dbusconn)
+		factory_path = "" if context.get_factory () == None else context.get_factory ().get_object_path ()
+		return factory_path, context.is_enabled ()
+
+
 class IBusProxy (ibus.IIBus):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
 
@@ -355,4 +362,7 @@ class IBusProxy (ibus.IIBus):
 
 	def SetFactory (self, factory_path, dbusconn):
 		return self._ibus.set_factory (factory_path)
+
+	def GetInputContextStates (self, ic, dbusconn):
+		return self._ibus.get_input_context_states (ic, dbusconn)
 

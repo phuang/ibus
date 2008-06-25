@@ -177,6 +177,11 @@ class InputContext (ibus.Object):
 	def get_engine (self):
 		return self._engine
 
+	def get_factory (self):
+		if self._engine:
+			return self._engine.get_factory ()
+		return None
+
 	def _engine_destroy_cb (self, engine):
 		if self._engine == engine:
 			self._remove_engine_handlers ()

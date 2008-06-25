@@ -67,6 +67,9 @@ class Engine (ibus.Object):
 	def get_factory (self):
 		return self._factory
 
+	def get_object_path (self):
+		return self._object_path
+
 	def handle_dbus_signal (self, message):
 		if message.is_signal (ibus.IBUS_ENGINE_IFACE, "CommitString"):
 			args = message.get_args_list ()

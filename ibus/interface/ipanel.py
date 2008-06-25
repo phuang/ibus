@@ -41,22 +41,22 @@ class IPanel (dbus.service.Object):
 		dbus.service.method (dbus_interface = IBUS_PANE_IFACE, \
 							async_callbacks = ("reply_cb", "error_cb"), \
 							**args)
-	@method (in_signature="iiii")
+	@method (in_signature = "iiii")
 	def SetCursorLocation (self, x, y, w, h): pass
 
-	@method (in_signature="svub")
+	@method (in_signature = "svub")
 	def UpdatePreedit (self, text, attrs, cursor_pos, visible): pass
 
-	@method (in_signature="svb")
+	@method (in_signature = "svb")
 	def UpdateAuxString (self, text, attrs, visible): pass
 
-	@method (in_signature="vb")
+	@method (in_signature = "vb")
 	def UpdateLookupTable (self, lookup_table, visible): pass
 
-	@method (in_signature="v")
+	@method (in_signature = "v")
 	def RegisterProperties (self, props): pass
 
-	@method (in_signature="v")
+	@method (in_signature = "v")
 	def UpdateProperty (self, prop): pass
 
 	@method ()
@@ -64,6 +64,15 @@ class IPanel (dbus.service.Object):
 
 	@method ()
 	def HideLanguageBar (self): pass
+
+	@method (in_signature = "s")
+	def FocusIn (self, ic): pass
+
+	@method (in_signature = "s")
+	def FocusOut (self, ic): pass
+
+	@method ()
+	def StatesChanged (self): pass
 
 	@method ()
 	def Reset (self): pass

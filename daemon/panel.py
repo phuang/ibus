@@ -94,6 +94,15 @@ class Panel (ibus.Object):
 	def hide_language_bar (self):
 		self._panel.HideLanguageBar (**ibus.DEFAULT_ASYNC_HANDLERS)
 
+	def focus_in (self, ic):
+		self._panel.FocusIn (ic, **ibus.DEFAULT_ASYNC_HANDLERS)
+
+	def focus_out (self, ic):
+		self._panel.FocusOut (ic, **ibus.DEFAULT_ASYNC_HANDLERS)
+
+	def states_changed (self):
+		self._panel.StatesChanged (**ibus.DEFAULT_ASYNC_HANDLERS)
+
 	def reset (self):
 		self._panel.Reset (**ibus.DEFAULT_ASYNC_HANDLERS)
 
@@ -193,6 +202,15 @@ class DummyPanel (ibus.Object):
 		pass
 
 	def hide_language_bar (self):
+		pass
+
+	def focus_in (self, ic):
+		pass
+
+	def focus_out (self, ic):
+		pass
+
+	def states_changed (self):
 		pass
 
 	def reset (self):

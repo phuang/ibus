@@ -34,6 +34,7 @@ class Panel (ibus.Object):
 		gobject.GObject.__init__ (self)
 		self._proxy = proxy
 		self._ibus = _ibus
+		self._focus_ic = None
 
 		# add icon search path
 		icon_theme = gtk.icon_theme_get_default ()
@@ -46,7 +47,6 @@ class Panel (ibus.Object):
 						lambda widget, prop_name, prop_state: self._proxy.PropertyActivate (prop_name, prop_state))
 		self._language_bar.connect ("get-im-menu",
 						self._get_im_menu_cb)
-		self._language_bar.show_all ()
 
 		self._candidate_panel = CandidatePanel ()
 		self._candidate_panel.connect ("cursor-up",
@@ -102,6 +102,38 @@ class Panel (ibus.Object):
 
 	def update_property (self, prop):
 		self._language_bar.update_property (self, prop)
+
+	def _set_im_icon (self, icon_name):
+		self._language_bar.set_im_icon (icon_name)
+		self._status_icon.set_from_icon_name (icon_name)
+
+	def focus_in (self, ic):
+		self.reset ()
+		self._focus_ic = ic
+		factory, enabled = self._ibus.GetInputContextStates (ic)
+		if not enabled:
+			self._set_im_icon ("engine-default")
+		else:
+			name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
+			self._set_im_icon (icon)
+		self._language_bar.show_all ()
+
+	def focus_out (self, ic):
+		self.reset ()
+		if self._focus_ic == ic:
+			self._focus_ic = None
+			self._language_bar.hide_all ()
+			self._set_im_icon ("engine-default")
+
+	def states_changed (self):
+		if not self._focus_ic:
+			return
+		factory, enabled = self._ibus.GetInputContextStates (self._focus_ic)
+		if not enabled:
+			self._set_im_icon ("engine-default")
+		else:
+			name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
+			self._set_im_icon (icon)
 
 	def reset (self):
 		self._candidate_panel.reset ()
@@ -208,6 +240,15 @@ class PanelProxy (interface.IPanel):
 	def UpdateProperty (self, prop):
 		prop = ibus.property_from_dbus_value (props)
 		self._panel.update_property (prop)
+
+	def FocusIn (self, ic):
+		self._panel.focus_in (ic)
+
+	def FocusOut (self, ic):
+		self._panel.focus_out (ic)
+
+	def StatesChanged (self):
+		self._panel.states_changed ()
 
 	def Reset (self):
 		self._panel.reset ()
