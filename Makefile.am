@@ -43,7 +43,8 @@ noinst_DIST = \
 
 
 DISTCLEANFILES = \
-	po/stamp-it
+	po/stamp-it \
+	$(NULL)
 
 rpm: dist ibus.spec
 	rpmbuild -bb						\
@@ -53,4 +54,7 @@ rpm: dist ibus.spec
 			--define "_rpmdir `pwd`" 	\
 			--define "_specdir `pwd`" 	\
 			ibus.spec
+clean-rpm:
+	$(RM) -r "`uname -i`"
 
+clean-local: clean-rpm
