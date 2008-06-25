@@ -170,6 +170,8 @@ class Panel (ibus.Object):
 		return menu
 
 	def _status_icon_activate_cb (self, status_icon):
+		if not self._focus_ic:
+			return
 		menu = self._create_im_menu ()
 		menu.popup (None, None,
 				gtk.status_icon_position_menu,
@@ -178,6 +180,8 @@ class Panel (ibus.Object):
 				self._status_icon)
 
 	def _status_icon_popup_menu_cb (self, status_icon, button, active_time):
+		if not self._focus_ic:
+			return
 		menu = self._create_im_menu ()
 		menu.popup (None, None,
 				gtk.status_icon_position_menu,
