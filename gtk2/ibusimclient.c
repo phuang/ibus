@@ -29,10 +29,12 @@
 #include <gdk/gdkx.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
+
 #ifdef HAVE_SYS_INOTIFY_H
 #define HAVE_INOTIFY
 #  include <sys/inotify.h>
 #endif
+
 #include "ibusimclient.h"
 
 #define IBUS_NAME  "org.freedesktop.IBus"
