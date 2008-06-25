@@ -32,7 +32,7 @@ class EngineFactory (ibus.Object):
 		self._factory = self._ibusconn.get_object (self._object_path)
 
 		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
-		
+
 		self._ibusconn.connect ("dbus-signal", self._dbus_signal_cb)
 		self._engines = weakref.WeakValueDictionary ()
 
