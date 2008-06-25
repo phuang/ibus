@@ -31,9 +31,9 @@ ibusdaemon_PYTHON = \
 	panel.py \
 	$(NULL)
 
-ibusdaemondir = $(pkgdatadir)/ibusdaemon
-
 libexec_SCRIPTS = ibus-daemon
+
+ibusdaemondir = $(pkgdatadir)/daemon
 
 CLEANFILES = \
 	*.pyc \

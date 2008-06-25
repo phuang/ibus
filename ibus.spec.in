@@ -82,11 +82,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{python_sitearch}/ibus
 %{python_sitearch}/ibus/*
 %dir %{_datadir}/ibus/
-%dir %{_datadir}/ibus/ibusdaemon/
+%dir %{_datadir}/ibus/daemon/
 %dir %{_datadir}/ibus/panel/
 %dir %{_datadir}/ibus/engine/
 %dir %{_datadir}/ibus/icons/
-%{_datadir}/ibus/ibusdaemon/*
+%{_datadir}/ibus/daemon/*
 %{_datadir}/ibus/panel/*
 %{_datadir}/ibus/engine/*
 %{_datadir}/ibus/icons/*

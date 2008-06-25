@@ -135,8 +135,8 @@ Makefile
 ibus.spec
 ibus/Makefile
 ibus/interface/Makefile
-ibusdaemon/Makefile
-ibusdaemon/ibus-daemon
+daemon/Makefile
+daemon/ibus-daemon
 panel/Makefile
 panel/ibus-panel
 engine/Makefile
