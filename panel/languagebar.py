@@ -28,6 +28,7 @@ from handle import Handle
 from menu import menu_position
 from toolitem import ToolButton,\
 	ToggleToolButton, \
+	SeparatorToolItem, \
 	MenuToolButton
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
@@ -49,7 +50,7 @@ class LanguageBar (gtk.Toolbar):
 		self.set_property ("icon-size", ICON_SIZE)
 		self._create_ui ()
 
-		self._properties = {}
+		self._properties = []
 		self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
 		self._toplevel.add (self)
 
@@ -64,7 +65,7 @@ class LanguageBar (gtk.Toolbar):
 		self.insert (self._handle, -1)
 
 		# create input methods menu
-		self._im_menu = ToggleToolButton (icon = "engine-default", tooltip = "Swicth engine")
+		self._im_menu = ToggleToolButton (ibus.Property (name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "engine-default", tooltip = "Swicth engine"))
 		self._im_menu.connect ("toggled", self._im_menu_toggled_cb)
 		self.insert (self._im_menu, -1)
 
@@ -82,11 +83,9 @@ class LanguageBar (gtk.Toolbar):
 
 	def _remove_properties (self):
 		# reset all properties
-		for name, props in self._properties.items ():
-			for prop, widget in props:
-				widget.hide ()
-				widget.destroy ()
-		self._properties = {}
+
+		map (lambda i: i.destroy (), self._properties)
+		self._properties = []
 		self.check_resize ()
 
 	def do_show (self):
@@ -115,40 +114,35 @@ class LanguageBar (gtk.Toolbar):
 		# create new properties
 		for prop in props:
 			if prop._type == ibus.PROP_TYPE_NORMAL:
-				widget = ToolButton (prop = prop)
-				widget.connect ("property-activate",
-						lambda w, n, s: self.emit ("property-activate", n, s))
+				item = ToolButton (prop = prop)
 			elif prop._type == ibus.PROP_TYPE_TOGGLE:
-				widget = ToggleToolButton (prop = prop)
-				widget.connect ("property-activate",
-						lambda w, n, s: self.emit ("property-activate", n, s))
+				item = ToggleToolButton (prop = prop)
 			elif prop._type == ibus.PROP_TYPE_MENU:
-				widget = MenuToolButton (prop = prop)
-				widget.connect ("property-activate",
-						lambda w, n, s: self.emit ("property-activate", n, s))
+				item = MenuToolButton (prop = prop)
 			elif prop._type == PROP_TYPE_SEPARATOR:
-				widget = gtk.SeparatorToolItem ()
+				item = SeparatorToolItem ()
 			else:
-				widget = gtk.ToolItem ()
+				raise IBusException ("Unknown property type = %d" % prop._type)
 
-			widget.set_sensitive (prop._sensitive)
+			item.connect ("property-activate",
+						lambda w, n, s: self.emit ("property-activate", n, s))
 
-			widget.set_no_show_all (True)
+			item.set_sensitive (prop._sensitive)
+
+			item.set_no_show_all (True)
+
 			if prop._visible:
-				widget.show ()
+				item.show ()
 			else:
-				widget.hide ()
+				item.hide ()
 
-			if not self._properties.has_key (prop._name):
-				self._properties [prop._name] = []
-
-			self._properties [prop._name].append ((prop, widget))
-			self.insert (widget, -1)
+			self._properties.append (item)
+			self.insert (item, -1)
 
 		self.check_resize ()
 
-	def update_properties (self, props):
-		pass
+	def update_property (self, prop):
+		map (lambda x: x.update_property (prop), self._properties)
 
 	def show_all (self):
 		self._toplevel.show_all ()

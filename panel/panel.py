@@ -112,8 +112,10 @@ class Panel (ibus.Object):
 	def focus_in (self, ic):
 		self.reset ()
 		self._focus_ic = ic
+
 		factory, enabled = self._ibus.GetInputContextStates (ic)
-		if not enabled:
+
+		if factory == "" or not enabled:
 			self._set_im_icon ("engine-default")
 		else:
 			name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
