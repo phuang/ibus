@@ -54,22 +54,22 @@ class Engine (interface.IEngine):
 							label = "あ",
 							tooltip = "Switch input mode")
 		mode_props = ibus.PropList ()
-		mode_props.append (ibus.Property (name = "InputModeHiragana",
+		mode_props.append (ibus.Property (name = "InputMode.Hiragana",
 										type = ibus.PROP_TYPE_RADIO,
 										label = "Hiragana",
 										state = ibus.PROP_STATE_CHECKED))
-		mode_props.append (ibus.Property (name = "InputModeKatagana",
+		mode_props.append (ibus.Property (name = "InputMode.Katagana",
 										type = ibus.PROP_TYPE_RADIO,
 										label = "Katagana"))
-		mode_props.append (ibus.Property (name = "InputModeHalfWidthHiragana",
-										type = ibus.PROP_TYPE_RADIO,
-										label = "Half width hiragana"))
-		mode_props.append (ibus.Property (name = "InputModeHalfWidthKatagana",
+		mode_props.append (ibus.Property (name = "InputMode.HalfWidthKatagana",
 										type = ibus.PROP_TYPE_RADIO,
 										label = "Half width katagana"))
-		mode_props.append (ibus.Property (name = "InputModeLatin",
+		mode_props.append (ibus.Property (name = "InputMode.Latin",
 										type = ibus.PROP_TYPE_RADIO,
-										label = "Direct input"))
+										label = "Latin"))
+		mode_props.append (ibus.Property (name = "InputMode.WideLatin",
+										type = ibus.PROP_TYPE_RADIO,
+										label = "Wide Latin"))
 		mode_prop.set_sub_props (mode_props)
 		props.append (mode_prop)
 
