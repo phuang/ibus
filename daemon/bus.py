@@ -126,12 +126,12 @@ class IBus (ibus.Object):
 		if is_press and keyval == keysyms.space \
 			and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
 			enable = not context.is_enabled ()
-			context.set_enable (enable)
 			if context.get_engine () == None and enable:
 				factory = self._factory_manager.get_default_factory ()
 				if factory:
 					engine = factory.create_engine ()
 					context.set_engine (engine)
+			context.set_enable (enable)
 			self._panel.states_changed ()
 			return True
 		return False
