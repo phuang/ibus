@@ -19,18 +19,26 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-ibus_interface_PYTHON = \
-	iconfig.py \
-	ienginefactory.py \
-	iengine.py \
-	iibus.py \
-	__init__.py \
-	ipanel.py \
-	$(NULL)
+__all__ = ("IConfig", )
 
-ibus_interfacedir = @pkgpythondir@/interface
+import dbus.service
+from ibus.common import \
+	IBUS_CONFIG_IFACE
 
-CLEANFILES = \
-	*.pyc \
-	$(NULL)
+class IConfig (dbus.service.Object):
+	# define method decorator.
+	method = lambda **args: \
+		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
+							**args)
+
+	# define signal decorator.
+	signal = lambda **args: \
+		dbus.service.signal (dbus_interface = IBUS_CONFIG_IFACE, \
+							**args)
+
+	# define async method decorator.
+	async_method = lambda **args: \
+		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
+							async_callbacks = ("reply_cb", "error_cb"), \
+							**args)
 

@@ -22,11 +22,12 @@
 __all__ = (
 		"IBUS_ADDR",
 		"IBUS_IFACE",
-		"IBUS_PATH",
 		"IBUS_NAME",
-		"IBUS_PANEL_IFACE",
+		"IBUS_PATH",
+		"IBUS_CONFIG_IFACE",
 		"IBUS_ENGINE_FACTORY_IFACE",
 		"IBUS_ENGINE_IFACE",
+		"IBUS_PANEL_IFACE",
 		"default_reply_handler",
 		"default_error_handler",
 		"DEFAULT_ASYNC_HANDLERS"
@@ -43,10 +44,10 @@ IBUS_IFACE = "org.freedesktop.IBus"
 IBUS_PATH  = "/org/freedesktop/IBus"
 IBUS_NAME  = "org.freedesktop.IBus"
 
-IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
-
+IBUS_CONFIG_IFACE = "org.freedesktop.IBus.Config"
 IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.IBus.EngineFactory"
 IBUS_ENGINE_IFACE = "org.freedesktop.IBus.Engine"
+IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
 
 def default_reply_handler ( *args):
 	pass
