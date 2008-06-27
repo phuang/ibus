@@ -85,7 +85,7 @@ class Panel (ibus.Object):
 				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def update_property (self, prop):
-		self._panel.UpdateProperties (prop,
+		self._panel.UpdateProperty (prop,
 				**ibus.DEFAULT_ASYNC_HANDLERS)
 
 	def show_language_bar (self):

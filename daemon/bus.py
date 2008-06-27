@@ -290,10 +290,13 @@ class IBus (ibus.Object):
 		factory = self._factory_manager.get_factory (factory_path)
 		engine = factory.create_engine ()
 		self._focused_context.set_engine (engine)
+		engine.focus_in ()
 
 	def get_input_context_states (self, ic, dbusconn):
 		context = self._lookup_context (ic, dbusconn)
-		factory_path = "" if context.get_factory () == None else context.get_factory ().get_object_path ()
+		factory_path = ""
+		if context.get_factory () != None:
+			factory_path = context.get_factory ().get_object_path ()
 		return factory_path, context.is_enabled ()
 
 

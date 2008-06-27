@@ -19,30 +19,44 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-panel_PYTHON = \
-	candidatepanel.py \
-	handle.py \
-	image.py \
-	lang.py \
-	languagebar.py \
-	main.py \
-	menu.py \
-	panel.py \
-	propitem.py \
-	toolitem.py \
-	$(NULL)
+class PropItem:
+	def __init__ (self, prop):
+		self._prop = prop
+		self._sub_items = []
 
-paneldir = $(pkgdatadir)/panel
+	def update_property (self, prop):
+		if self._prop == None:
+			return False
 
-libexec_SCRIPTS = ibus-panel
+		retval = False
 
-CLEANFILES = \
-	*.pyc \
-	$(NULL)
+		if self._prop._name == prop._name and self._prop._type == prop._type:
+			self._prop = prop
+			self.property_changed ()
+			retval =  True
 
-EXTRA_DIST = \
-	ibus-panel.in \
-	$(NULL)
+		if any (map (lambda i: i.update_property (prop), self._sub_items)):
+			retval = True
 
-test:
-	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
+		return retval
+
+	def set_prop_label (self, label):
+		self._prop._label = label
+		self.property_changed ()
+
+	def set_icon (self, icon):
+		self._prop._icon = icon
+		self.property_changed ()
+
+	def set_tooltip (self, tooltip):
+		self._prop._tooltip = tooltip
+		self.property_changed ()
+
+	def set_state (self, state):
+		self._prop._state = state
+		self.property_changed ()
+
+	def property_changed (self):
+		pass
+
+

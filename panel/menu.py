@@ -22,8 +22,9 @@
 import gtk
 import gobject
 import ibus
+from propitem import PropItem
 
-class Menu (gtk.Menu):
+class Menu (gtk.Menu, PropItem):
 	__gsignals__ = {
 	"property-activate" : (
 		gobject.SIGNAL_RUN_FIRST,
@@ -32,9 +33,9 @@ class Menu (gtk.Menu):
 	}
 
 	def __init__ (self, prop):
-		self._prop = prop
-		self._items = []
 		gtk.Menu.__init__ (self)
+		PropItem.__init__ (self, prop)
+
 		self.set_take_focus (False)
 		self._create_items (self._prop.get_sub_props ())
 		self.show_all ()
@@ -71,7 +72,7 @@ class Menu (gtk.Menu):
 			item.connect ("property-activate", lambda w,n,s: self.emit ("property-activate", n, s))
 
 			self.append (item)
-			self._items.append (item)
+			self._sub_items.append (item)
 
 	def popup (self, button, active_time, widget):
 		gtk.Menu.popup (self, None, None, menu_position,
@@ -81,7 +82,7 @@ class Menu (gtk.Menu):
 		pass
 
 
-class ImageMenuItem (gtk.ImageMenuItem):
+class ImageMenuItem (gtk.ImageMenuItem, PropItem):
 	__gsignals__ = {
 	"property-activate" : (
 		gobject.SIGNAL_RUN_FIRST,
@@ -90,16 +91,20 @@ class ImageMenuItem (gtk.ImageMenuItem):
 	}
 
 	def __init__ (self, prop):
-		self._prop = prop
 		gtk.ImageMenuItem.__init__ (self, label = prop._label)
-		if prop._icon:
+		PropItem.__init__ (self, prop)
+
+		if self._prop._icon:
 			self.set_image (gtk.image_new_from_icon_name  (prop._icon, gtk.ICON_SIZE_MENU))
 
 	def do_activate (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
+	def property_changed (self):
+		self.set_sensitive (self._prop._sensitive)
 
-class CheckMenuItem (gtk.CheckMenuItem):
+
+class CheckMenuItem (gtk.CheckMenuItem, PropItem):
 	__gsignals__ = {
 	"property-activate" : (
 		gobject.SIGNAL_RUN_FIRST,
@@ -108,9 +113,10 @@ class CheckMenuItem (gtk.CheckMenuItem):
 	}
 
 	def __init__ (self, prop):
-		self._prop = prop
 		gtk.CheckMenuItem.__init__ (self, label = prop._label)
-		self.set_active (prop._state == ibus.PROP_STATE_CHECKED)
+		PropItem.__init__ (self, prop)
+
+		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 
 	def do_toggled (self):
 		if self.get_active ():
@@ -119,8 +125,12 @@ class CheckMenuItem (gtk.CheckMenuItem):
 			self._prop._state = ibus.PROP_STATE_UNCHECKED
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
+	def property_changed (self):
+		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
+		self.set_sensitive (self._prop._sensitive)
 
-class RadioMenuItem (gtk.RadioMenuItem):
+
+class RadioMenuItem (gtk.RadioMenuItem, PropItem):
 	__gsignals__ = {
 	"property-activate" : (
 		gobject.SIGNAL_RUN_FIRST,
@@ -129,9 +139,14 @@ class RadioMenuItem (gtk.RadioMenuItem):
 	}
 
 	def __init__ (self, group, prop):
-		self._prop = prop
 		gtk.RadioMenuItem.__init__ (self, group, label = prop._label)
-		self.set_active (prop._state == ibus.PROP_STATE_CHECKED)
+		PropItem.__init__ (self, prop)
+
+		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
+
+	def property_changed (self):
+		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
+		self.set_sensitive (self._prop._sensitive)
 
 	def do_toggled (self):
 		if self.get_active ():
@@ -140,7 +155,7 @@ class RadioMenuItem (gtk.RadioMenuItem):
 			self._prop._state = ibus.PROP_STATE_UNCHECKED
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
-class SeparatorMenuItem (gtk.SeparatorMenuItem):
+class SeparatorMenuItem (gtk.SeparatorMenuItem, PropItem):
 	__gsignals__ = {
 	"property-activate" : (
 		gobject.SIGNAL_RUN_FIRST,

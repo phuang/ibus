@@ -126,6 +126,7 @@ class LanguageBar (gtk.Toolbar):
 
 			item.connect ("property-activate",
 						lambda w, n, s: self.emit ("property-activate", n, s))
+			item.connect ("size-request", lambda w, s: self.check_resize ())
 
 			item.set_sensitive (prop._sensitive)
 

@@ -88,7 +88,7 @@ class IIBus (dbus.service.Object):
 	@method (in_signature = "o")
 	def SetFactory (self, factory_path, dbusconn): pass
 
-	@method (in_signature = "s", out_signature = "ob")
+	@method (in_signature = "s", out_signature = "sb")
 	def GetInputContextStates (self, ic, dbusconn): pass
 
 	#sigals

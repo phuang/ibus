@@ -71,6 +71,42 @@ class Property:
 	def get_sub_props (self):
 		return self._sub_props
 
+	def get_name (self):
+		return self._name
+
+	def get_type (self):
+		return self._type
+
+	def set_label (self, label):
+		self._label = label
+
+	def get_label (self):
+		return self._label
+
+	def set_tooltip (self, tooltip):
+		self._tooltip = tooltip
+
+	def get_tooltip (self):
+		return self._tooltip
+
+	def set_state (self, state):
+		self._state = state
+
+	def get_state (self):
+		return self._state
+
+	def set_sensitive (self, sensitive):
+		self._sensitive = sensitive
+
+	def get_sensitive (self):
+		return self._sensitive
+
+	def set_visible (self, visible):
+		self._visible = visible
+
+	def get_visible (self):
+		return self._visible
+
 	def is_same (self, prop, test_all = True):
 		if self._name != prop._name or self._type != prop._type:
 			return False
@@ -154,6 +190,9 @@ class PropList:
 
 	def __iter__ (self):
 		return self._props.__iter__ ()
+
+	def __getitem__ (self, i):
+		return self._props.__getitem__ (i)
 
 def prop_list_from_dbus_value (value):
 	props = PropList ()

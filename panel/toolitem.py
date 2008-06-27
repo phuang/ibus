@@ -23,50 +23,11 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import ibus
+from propitem import PropItem
 from menu import *
 
-class ToolItem:
-	def __init__ (self, prop):
-		self._prop = prop
-		self._sub_itmes = []
 
-	def update_property (self, prop):
-		if self._prop == None:
-			return False
-
-		retval = False
-
-		if self._prop._name == prop._name and self._prop._type == prop._type:
-			self._prop = prop
-			self.property_changed ()
-			retval =  True
-
-		if any (map (lambda i: i.update_property (prop), self._sub_itmes)):
-			retval = True
-
-		return retval
-
-	def set_prop_label (self, label):
-		self._prop._label = label
-		self.property_changed ()
-
-	def set_icon (self, icon):
-		self._prop._icon = icon
-		self.property_changed ()
-
-	def set_tooltip (self, tooltip):
-		self._prop._tooltip = tooltip
-		self.property_changed ()
-
-	def set_state (self, state):
-		self._prop._state = state
-		self.property_changed ()
-
-	def property_changed (self):
-		pass
-
-
-class ToolButton (gtk.ToolButton, ToolItem):
+class ToolButton (gtk.ToolButton, PropItem):
 	__gsignals__ = {
 		"property-activate" : (
 			gobject.SIGNAL_RUN_FIRST,
@@ -76,7 +37,7 @@ class ToolButton (gtk.ToolButton, ToolItem):
 
 	def __init__ (self, prop):
 		gtk.ToolButton.__init__ (self, label = prop._label)
-		ToolItem.__init__ (self, prop)
+		PropItem.__init__ (self, prop)
 
 		self.set_icon_name (prop._icon)
 		self.set_tooltip_text (prop._tooltip)
@@ -112,12 +73,13 @@ class ToolButton (gtk.ToolButton, ToolItem):
 		self.set_icon_name (self._prop._icon)
 		self.set_tooltip_text (self._prop._tooltip)
 		self.set_label (self._prop._label)
+		self.set_sensitive (self._prop._sensitive)
 
 	def do_clicked (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
 
-class ToggleToolButton (gtk.ToggleToolButton, ToolItem):
+class ToggleToolButton (gtk.ToggleToolButton, PropItem):
 	__gsignals__ = {
 		"property-activate" : (
 			gobject.SIGNAL_RUN_FIRST,
@@ -127,12 +89,12 @@ class ToggleToolButton (gtk.ToggleToolButton, ToolItem):
 
 	def __init__ (self, prop):
 		gtk.ToggleToolButton.__init__ (self)
-		ToolItem.__init__ (self, prop)
+		PropItem.__init__ (self, prop)
 
 		self.set_label (prop._label)
 		self.set_icon_name (prop._icon)
 		self.set_tooltip_text (prop._tooltip)
-		self.set_state (prop._state)
+		self.set_active (prop._state == ibus.PROP_STATE_CHECKED)
 		self.set_sensitive (prop._sensitive)
 		if prop._visible:
 			self.set_no_show_all (False)
@@ -164,6 +126,7 @@ class ToggleToolButton (gtk.ToggleToolButton, ToolItem):
 		self.set_tooltip_text (self._prop._tooltip)
 		self.set_label (self._prop._label)
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
+		self.set_sensitive (self._prop._sensitive)
 
 	def do_toggled (self):
 		if self.get_active ():
@@ -172,10 +135,10 @@ class ToggleToolButton (gtk.ToggleToolButton, ToolItem):
 			self._prop._state = ibus.PROP_STATE_UNCHECKED
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
-class SeparatorToolItem (gtk.SeparatorToolItem, ToolItem):
+class SeparatorToolItem (gtk.SeparatorToolItem, PropItem):
 	def __init__ (self, prop):
 		gtk.SeparatorToolItem.__init__ (self)
-		ToolItem.__init__ (self, prop)
+		PropItem.__init__ (self, prop)
 
 class MenuToolButton (ToggleToolButton):
 	# __gsignals__ = {
@@ -190,6 +153,10 @@ class MenuToolButton (ToggleToolButton):
 		self._menu = Menu (prop)
 		self._menu.connect ("deactivate", lambda m: self.set_active (False))
 		self._menu.connect ("property-activate", lambda w,n,s: self.emit ("property-activate", n, s))
+
+	def update_property (self, prop):
+		PropItem.update_property (self, prop)
+		self._menu.update_property (prop)
 
 	def do_toggled (self):
 		if self.get_active ():

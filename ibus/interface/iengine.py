@@ -105,5 +105,5 @@ class IEngine (dbus.service.Object):
 	def RegisterProperties (self, props): pass
 
 	@signal (signature="v")
-	def UpdateProperties (self, prop): pass
+	def UpdateProperty (self, prop): pass
 

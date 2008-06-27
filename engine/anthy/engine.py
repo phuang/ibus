@@ -29,6 +29,13 @@ import anthy
 from tables import *
 from ibus import keysyms
 from ibus import interface
+MODE_HIRAGANA, \
+MODE_KATAKANA, \
+MODE_HALF_WIDTH_KATAKANA, \
+MODE_LATIN, \
+MODE_WIDE_LATIN = range (0, 5)
+
+_ = lambda a: a
 
 class Engine (interface.IEngine):
 	def __init__ (self, dbusconn, object_path):
@@ -38,6 +45,10 @@ class Engine (interface.IEngine):
 		# create anthy context
 		self._context = anthy.anthy_context ()
 		self._context._set_encoding (anthy.ANTHY_UTF8_ENCODING)
+
+		# init state
+		self._input_mode = MODE_HIRAGANA
+		self._prop_dict = {}
 
 		self._lookup_table = ibus.LookupTable ()
 		self._prop_list = self._init_props ()
@@ -53,23 +64,30 @@ class Engine (interface.IEngine):
 							type = ibus.PROP_TYPE_MENU,
 							label = "あ",
 							tooltip = "Switch input mode")
+		self._prop_dict["InputMode"] = mode_prop
+
 		mode_props = ibus.PropList ()
 		mode_props.append (ibus.Property (name = "InputMode.Hiragana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = "Hiragana",
-										state = ibus.PROP_STATE_CHECKED))
-		mode_props.append (ibus.Property (name = "InputMode.Katagana",
+										label = "Hiragana"))
+		mode_props.append (ibus.Property (name = "InputMode.Katakana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = "Katagana"))
-		mode_props.append (ibus.Property (name = "InputMode.HalfWidthKatagana",
+										label = "Katakana"))
+		mode_props.append (ibus.Property (name = "InputMode.HalfWidthKatakana",
 										type = ibus.PROP_TYPE_RADIO,
-										label = "Half width katagana"))
+										label = "Half width katakana"))
 		mode_props.append (ibus.Property (name = "InputMode.Latin",
 										type = ibus.PROP_TYPE_RADIO,
 										label = "Latin"))
 		mode_props.append (ibus.Property (name = "InputMode.WideLatin",
 										type = ibus.PROP_TYPE_RADIO,
 										label = "Wide Latin"))
+
+		mode_props[self._input_mode].set_state (ibus.PROP_STATE_CHECKED)
+
+		for prop in mode_props:
+			self._prop_dict[prop.get_name ()] = prop
+
 		mode_prop.set_sub_props (mode_props)
 		props.append (mode_prop)
 
@@ -79,7 +97,9 @@ class Engine (interface.IEngine):
 							type = ibus.PROP_TYPE_TOGGLE,
 							label = "あ",
 							tooltip = "test property")
+		self._prop_dict["TestProp"] = test_prop
 		props.append (test_prop)
+
 
 		return props
 
@@ -429,6 +449,40 @@ class Engine (interface.IEngine):
 
 		return False
 
+	def _property_activate (self, prop_name, state):
+		prop = self._prop_dict[prop_name]
+		prop.set_state (state)
+
+		if state == ibus.PROP_STATE_CHECKED:
+			if prop_name == "InputMode.Hiragana":
+				prop = self._prop_dict["InputMode"]
+				prop.set_label (_("あ"))
+				self._input_mode = MODE_HIRAGANA
+				self._update_property (prop)
+			elif prop_name == "InputMode.Katakana":
+				prop = self._prop_dict["InputMode"]
+				prop.set_label (_("ア"))
+				self._input_mode = MODE_KATAKANA
+				self._update_property (prop)
+			elif prop_name == "InputMode.HalfWidthKatakana":
+				prop = self._prop_dict["InputMode"]
+				prop.set_label (_("ｱ"))
+				self._input_mode = MODE_HALF_WIDTH_KATAKANA
+				self._update_property (prop)
+			elif prop_name == "InputMode.Latin":
+				prop = self._prop_dict["InputMode"]
+				self._input_mode = MODE_LATIN
+				prop.set_label (_("A"))
+				self._update_property (prop)
+			elif prop_name == "InputMode.WideLatin":
+				prop = self._prop_dict["InputMode"]
+				prop.set_label (_("Ａ"))
+				self._input_mode = MODE_WIDE_LATIN
+				self._update_property (prop)
+
+	def _update_property (self, prop):
+		self.UpdateProperty (prop.to_dbus_value ())
+
 	# methods for dbus rpc
 	def ProcessKeyEvent (self, keyval, is_press, state):
 		try:
@@ -468,7 +522,7 @@ class Engine (interface.IEngine):
 			self.RegisterProperties (self._prop_list.to_dbus_value ())
 
 	def PropertyActivate (self, prop_name, prop_state):
-		print "PropertyActivate (%s, %d)" % (prop_name, prop_state)
+		self._property_activate (prop_name, prop_state)
 
 	def Destroy (self):
 		print "Destroy"

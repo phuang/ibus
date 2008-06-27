@@ -103,7 +103,7 @@ class Panel (ibus.Object):
 		self._language_bar.register_properties (props)
 
 	def update_property (self, prop):
-		self._language_bar.update_property (self, prop)
+		self._language_bar.update_property (prop)
 
 	def _set_im_icon (self, icon_name):
 		self._language_bar.set_im_icon (icon_name)
@@ -246,7 +246,7 @@ class PanelProxy (interface.IPanel):
 		self._panel.register_properties (props)
 
 	def UpdateProperty (self, prop):
-		prop = ibus.property_from_dbus_value (props)
+		prop = ibus.property_from_dbus_value (prop)
 		self._panel.update_property (prop)
 
 	def FocusIn (self, ic):
