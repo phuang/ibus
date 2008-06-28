@@ -29,16 +29,40 @@ class IConfig (dbus.service.Object):
 	# define method decorator.
 	method = lambda **args: \
 		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
-							**args)
+			**args)
 
 	# define signal decorator.
 	signal = lambda **args: \
 		dbus.service.signal (dbus_interface = IBUS_CONFIG_IFACE, \
-							**args)
+			**args)
 
 	# define async method decorator.
 	async_method = lambda **args: \
 		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
-							async_callbacks = ("reply_cb", "error_cb"), \
-							**args)
+			async_callbacks = ("reply_cb", "error_cb"), \
+			**args)
+
+	@method (in_signature = "ss", out_signature = "s")
+	def ReadString (self, key, default_value):
+		pass
+
+	@method (in_signature = "si", out_signature = "i")
+	def ReadInt (self, key, default_value):
+		pass
+
+	@method (in_signature = "sb", out_signature = "b")
+	def ReadBool (self, key, default_value):
+		pass
+
+	@method (in_signature = "ss")
+	def WriteString (self, key, value):
+		pass
+
+	@method (in_signature = "si", value)
+	def WriteInt (self, key):
+		pass
+
+	@method (in_signature = "sb", value)
+	def WriteBool (self, key):
+		pass
 
