@@ -1,9 +1,8 @@
 # vim:set noet ts=4:
 #
-# gik - The G Input Toolkit
+# ibus - The Input Bus
 #
 # Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
-#
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,9 +18,7 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-#
-# $Id: $
-#
-EXTRA_DIST = 			\
-    as-version.m4   	\
+
+EXTRA_DIST = \
+    as-version.m4 \
     $(NULL)
