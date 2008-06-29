@@ -1,4 +1,4 @@
-/* vim:set noet ts=4: */
+/* vim:set et ts=4: */
 /*
  * ibus - The Input Bus
  *
@@ -57,8 +57,15 @@ struct anthy_context {};
         return anthy_get_segment_stat (self, a1, a2);
     }
 
-    int get_segment (int a1, int a2, char *a3, int a4) {
-        return anthy_get_segment (self, a1, a2, a3, a4);
+    char *get_segment (int a1, int a2) {
+        int len;
+        static char temp[512];
+
+        len = anthy_get_segment (self, a1, a2, temp, sizeof (temp));
+        if (len >= 0)
+            return temp;
+        else
+            return NULL;
     }
 
     int commit_segment (int a1, int a2) {
@@ -68,13 +75,21 @@ struct anthy_context {};
     int set_prediction_string (const char *a1) {
         return anthy_set_prediction_string (self, a1);
     }
-   
+
     int get_prediction_stat (struct anthy_prediction_stat *a1) {
         return anthy_get_prediction_stat (self, a1);
     }
-    
-    int get_prediction (int a1, char *a2, int a3) {
-        return anthy_get_prediction (self, a1, a2, a3);
+
+    char *get_prediction (int a1) {
+        int len;
+        static char temp[512];
+
+        len = anthy_get_prediction (self, a1, temp, sizeof (temp));
+
+        if (len >= 0)
+            return temp;
+        else
+            return NULL;
     }
 
     int commit_prediction (int a1) {
@@ -84,7 +99,7 @@ struct anthy_context {};
     void _print () {
         anthy_print_context (self);
     }
-    
+
     int _set_encoding (int encoding) {
         return anthy_context_set_encoding (self, encoding);
     }

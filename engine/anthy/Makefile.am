@@ -62,7 +62,7 @@ anthy.py anthy_wrap.c: anthy.i
 	$(SWIG) -python -I/usr/include -o anthy_wrap.c $(srcdir)/anthy.i
 
 test:
-	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
+	$(ENV) PYTHONPATH=$(top_srcdir):$(builddir)/.libs $(PYTHON) $(srcdir)/main.py
 
 EXTRA_DIST = \
 	anthy.i \

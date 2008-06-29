@@ -125,9 +125,8 @@ class Engine (interface.IEngine):
 		self._context.get_stat (conv_stat)
 
 		for i in xrange (0, conv_stat.nr_segment):
-			buf = " " * 100
-			l = self._context.get_segment (i, 0, buf, 100)
-			text = unicode (buf[:l], "utf-8")
+			buf = self._context.get_segment (i, 0)
+			text = unicode (buf, "utf-8")
 			self._segments.append ((0, text))
 
 		self._cursor_pos = 0
@@ -142,9 +141,8 @@ class Engine (interface.IEngine):
 		# fill lookup_table
 		self._lookup_table.clean ()
 		for i in xrange (0, seg_stat.nr_candidate):
-			buf = " " * 100
-			l = self._context.get_segment (self._cursor_pos, i, buf, 100)
-			candidate = unicode (buf[:l], "utf-8")
+			buf = self._context.get_segment (self._cursor_pos, i)
+			candidate = unicode (buf, "utf-8")
 			self._lookup_table.append_candidate (candidate)
 
 
@@ -238,7 +236,6 @@ class Engine (interface.IEngine):
 
 	def _update_convert_chars (self):
 		self._convert_chars = u""
-		buf = " " * 100
 		pos = 0
 		i = 0
 		for seg_index, text in self._segments:
