@@ -133,7 +133,7 @@ class Panel (ibus.Object):
 		if not self._focus_ic:
 			return
 		factory, enabled = self._ibus.GetInputContextStates (self._focus_ic)
-		if not enabled:
+		if enabled == False or not factory:
 			self._set_im_icon ("engine-default")
 		else:
 			name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
