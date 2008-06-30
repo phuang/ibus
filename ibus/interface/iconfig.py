@@ -58,11 +58,11 @@ class IConfig (dbus.service.Object):
 	def WriteString (self, key, value):
 		pass
 
-	@method (in_signature = "si", value)
-	def WriteInt (self, key):
+	@method (in_signature = "si")
+	def WriteInt (self, key, value):
 		pass
 
-	@method (in_signature = "sb", value)
-	def WriteBool (self, key):
+	@method (in_signature = "sb")
+	def WriteBool (self, key, value):
 		pass
 
