@@ -20,6 +20,8 @@
 # Boston, MA  02111-1307  USA
 
 SUBDIRS = \
-	anthy \
-	enchant \
 	$(NULL)
+
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)$(pkgdatadir)/engine
+

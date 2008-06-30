@@ -33,26 +33,6 @@ Requires:   %{name} = %{version}-%{release}
 %description qt
 This package contains ibus im module for qt4
 
-%package enchant
-Summary:    IBus enchant engine
-Group:      System Environment/Libraries
-BuildRequires:  python-enchant
-Requires:   %{name} = %{version}-%{release} python-enchant
-
-%description enchant
-This package contains an enchant IM engine.
-
-%package anthy
-Summary:    Anthy japanese IM engine
-Group:      System Environment/Libraries
-Requires:   %{name} = %{version}-%{release} anthy
-
-%description anthy
-This package contains the anthy IM engine
-
-
-Requires:   %{name}-xingma = %{version}-%{release}
-
 %prep
 %setup -q
 
@@ -88,7 +68,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ibus/icons/
 %{_datadir}/ibus/daemon/*
 %{_datadir}/ibus/panel/*
-%{_datadir}/ibus/engine/*
 %{_datadir}/ibus/icons/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-panel
@@ -98,18 +77,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files qt
 %{_libdir}/qt4/plugins/inputmethods/libibus.so
-
-%files enchant
-%dir %{_datadir}/ibus/engine/enchant
-%{_datadir}/ibus/engine/enchant/*
-%{_libexecdir}/ibus-engine-enchant
-
-%files anthy
-%{python_sitearch}/_anthy.so
-%{python_sitearch}/anthy.*
-%dir %{_datadir}/ibus/engine/anthy
-%{_datadir}/ibus/engine/anthy/*
-%{_libexecdir}/ibus-engine-anthy
 
 %changelog
 * Wed Jun 25 2008 Huang Peng <shawn.p.huang@gmail.com> - 0.1.0-1

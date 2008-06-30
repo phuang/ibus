@@ -21,7 +21,6 @@
 
 icons_DATA = \
 	engine-default.svg \
-	ibus-anthy.png \
 	ibus-help.png \
 	ibus-keyboard.svg \
 	ibus-locale.svg \
@@ -32,7 +31,6 @@ iconsdir = $(pkgdatadir)/icons
 
 EXTRA_DIST = \
 	engine-default.svg \
-	ibus-anthy.png \
 	ibus-help.png \
 	ibus-keyboard.svg \
 	ibus-locale.svg \

@@ -88,37 +88,12 @@ PKG_CHECK_MODULES(QT, [
 	Qt >= 4.3.5
 ])
 
-
-# check anthy
-PKG_CHECK_MODULES(ANTHY, [
-	anthy
-])
-
-
-# check swig
-AC_PATH_PROG(SWIG, swig)
-if test x"$SWIG" == x""; then
-	 AC_MSG_ERROR([can not find swig])
-fi
-AC_SUBST(SWIG)
-
 # check env
 AC_PATH_PROG(ENV, env)
 AC_SUBST(ENV)
 
 # check python
 AM_PATH_PYTHON([2.5])
-PYTHON_CONFIG=`type -p python$PYTHON_VERSION-config`
-if test "$PYTHON_CONFIG" != ""; then
-    PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
-    PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-else
-    PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
-    PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
-fi
-AC_SUBST(PYTHON_CFLAGS)
-AC_SUBST(PYTHON_LIBS)
-
 
 # define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus
@@ -140,10 +115,6 @@ daemon/ibus-daemon
 panel/Makefile
 panel/ibus-panel
 engine/Makefile
-engine/anthy/Makefile
-engine/anthy/ibus-engine-anthy
-engine/enchant/Makefile
-engine/enchant/ibus-engine-enchant
 gtk2/Makefile
 qt4/Makefile
 icons/Makefile
