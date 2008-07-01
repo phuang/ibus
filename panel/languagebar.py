@@ -47,6 +47,7 @@ class LanguageBar (gtk.Toolbar):
 
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
+		self.set_style (gtk.TOOLBAR_ICONS)
 		self.set_property ("icon-size", ICON_SIZE)
 		self._create_ui ()
 
@@ -97,7 +98,7 @@ class LanguageBar (gtk.Toolbar):
 		for item in self:
 			w, h = item.size_request ()
 			width += w
-		self.set_size_request (width + 4, -1)
+		self.set_size_request (width + 32, -1)
 
 	def do_size_request (self, requisition):
 		gtk.Toolbar.do_size_request (self, requisition)
