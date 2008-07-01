@@ -171,6 +171,9 @@ class LookupTable:
 	def get_number_of_candidates (self):
 		return len (self._candidates)
 
+	def __len__ (self):
+		return self.get_number_of_candidates ()
+
 	def to_dbus_value (self):
 		value = (dbus.Int32 (self._page_size),
 				 dbus.Int32 (self._cursor_pos),
