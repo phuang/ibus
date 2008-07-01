@@ -51,8 +51,8 @@ class CandidateArea (gtk.HBox):
 			self.pack_start (VSeparator(), False, False, 0)
 			self.pack_start (self._vbox2, True, True, 4)
 
-		for i in xrange (1, 10):
-			label1 = gtk.Label ("%d." % i)
+		for i in xrange (1, 11):
+			label1 = gtk.Label ("%d." % (i % 10))
 			label1.set_alignment (0.0, 0.5)
 			label1.set_no_show_all (True)
 
