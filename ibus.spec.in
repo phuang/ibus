@@ -55,12 +55,15 @@ rm -rf $RPM_BUILD_ROOT
 %post gtk
 %{_bindir}/update-gtk-immodules %{_host} || :
 
+%postun gtk
+%{_bindir}/update-gtk-immodules %{_host} || :
+
 %files
 # -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
-%dir %{python_sitearch}/ibus
-%{python_sitearch}/ibus/*
+%dir %{python_sitelib}/ibus
+%{python_sitelib}/ibus/*
 %dir %{_datadir}/ibus/
 %dir %{_datadir}/ibus/daemon/
 %dir %{_datadir}/ibus/panel/
