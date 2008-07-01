@@ -63,7 +63,6 @@ class IBus (ibus.Object):
 	# methods for im context
 	##########################################################
 	def create_input_context (self, name, dbusconn):
-		print name
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		context = self._context_manager.create_input_context (name, ibusconn)
 		factory = self._factory_manager.get_default_factory ()
