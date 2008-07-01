@@ -48,6 +48,7 @@ class LanguageBar (gtk.Toolbar):
 	def __init__ (self):
 		gtk.Toolbar.__init__ (self)
 		self.set_style (gtk.TOOLBAR_ICONS)
+		self.set_show_arrow (False)
 		self.set_property ("icon-size", ICON_SIZE)
 		self._create_ui ()
 
@@ -87,18 +88,9 @@ class LanguageBar (gtk.Toolbar):
 
 		map (lambda i: i.destroy (), self._properties)
 		self._properties = []
-		self.check_resize ()
 
 	def do_show (self):
 		gtk.Toolbar.do_show (self)
-		self.check_resize ()
-
-	def do_check_resize (self):
-		width = 0
-		for item in self:
-			w, h = item.size_request ()
-			width += w
-		self.set_size_request (width + 32, -1)
 
 	def do_size_request (self, requisition):
 		gtk.Toolbar.do_size_request (self, requisition)
@@ -127,7 +119,6 @@ class LanguageBar (gtk.Toolbar):
 
 			item.connect ("property-activate",
 						lambda w, n, s: self.emit ("property-activate", n, s))
-			item.connect ("size-request", lambda w, s: self.check_resize ())
 
 			item.set_sensitive (prop._sensitive)
 
@@ -140,8 +131,6 @@ class LanguageBar (gtk.Toolbar):
 
 			self._properties.append (item)
 			self.insert (item, -1)
-
-		self.check_resize ()
 
 	def update_property (self, prop):
 		map (lambda x: x.update_property (prop), self._properties)
