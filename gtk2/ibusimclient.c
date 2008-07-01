@@ -103,7 +103,7 @@ static gboolean _dbus_call_with_reply_and_block
                                             const gchar         *path,
                                             const gchar         *iface,
                                             const char          *method,
-                                            gint                first_arg_type,
+                                            int                first_arg_type,
                                                                 ...);
 
 /* callback functions */
@@ -595,12 +595,12 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     DBusMessageIter iter, sub_iter;
-    gint type, sub_type;
+    int type, sub_type;
 
     gchar *ic = NULL;
     gchar *string = NULL;
     PangoAttrList *attrs = NULL;
-    gint cursor = 0;
+    int cursor = 0;
     gboolean show = False;
 
     if (!dbus_message_iter_init (message, &iter)) {
@@ -810,11 +810,13 @@ _ibus_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *mess
 inline static gboolean
 _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
     const gchar *dest, const gchar *path, const gchar* iface, const char *method,
-    gint first_arg_type, va_list args)
+    int first_arg_type, va_list args)
 {
+
     DBusMessage *message, *reply;
     DBusError error = {0};
     int type;
+    va_list tmp;
 
     if (connection == NULL)
         return FALSE;
@@ -826,7 +828,8 @@ _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
         return FALSE;
     }
 
-    if (!dbus_message_append_args_valist (message, first_arg_type, args)) {
+    va_copy (tmp, args);
+    if (!dbus_message_append_args_valist (message, first_arg_type, tmp)) {
         dbus_message_unref (message);
         g_warning ("Can not create call message");
         return FALSE;
@@ -851,7 +854,7 @@ _dbus_call_with_reply_and_block_valist (DBusConnection *connection,
             va_arg (args, int);
         }
         else {
-            va_arg (args, int);
+            va_arg (args, void *);
         }
         type = va_arg (args, int);
     }
