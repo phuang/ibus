@@ -53,3 +53,8 @@ class IEngineFactory (dbus.service.Object):
 	@method (out_signature = "o")
 	def CreateEngine (self): pass
 
+	# Destroy the engine
+	@method ()
+	def Destroy (self): pass
+
+
