@@ -158,7 +158,7 @@ class Panel (ibus.Object):
 			tmp = {}
 			for factory in factories:
 				name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
-				lang = LANGUAGES.get (lang, lang)
+				lang = LANGUAGES.get (lang, "other")
 				if not icon:
 					icon = "engine-default"
 				if lang not in tmp:
@@ -169,6 +169,7 @@ class Panel (ibus.Object):
 			langs.sort ()
 			for lang in langs:
 				if len (tmp[lang]) == 1:
+					name, lang, icon, authors, credits, factory = tmp[lang][0]
 					item = gtk.ImageMenuItem ("%s - %s" % (lang, name))
 					item.set_image (gtk.image_new_from_icon_name (icon, gtk.ICON_SIZE_MENU))
 					item.connect ("activate", self._menu_item_activate_cb, factory)
