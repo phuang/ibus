@@ -149,19 +149,41 @@ class Panel (ibus.Object):
 	def _create_im_menu (self):
 		menu = gtk.Menu ()
 		factories = self._ibus.GetFactories ()
+		
 		if not factories:
 			item = gtk.MenuItem (label = "no engine")
 			item.set_sensitive (False)
 			menu.add (item)
 		else:
+			tmp = {}
 			for factory in factories:
 				name, lang, icon, authors, credits = self._ibus.GetFactoryInfo (factory)
-				item = gtk.ImageMenuItem ("%s - %s" % (LANGUAGES.get (lang, lang), name))
+				lang = LANGUAGES.get (lang, lang)
 				if not icon:
 					icon = "engine-default"
-				item.set_image (gtk.image_new_from_icon_name (icon, gtk.ICON_SIZE_MENU))
-				item.connect ("activate", self._menu_item_activate_cb, factory)
-				menu.add (item)
+				if lang not in tmp:
+					tmp[lang] = []
+				tmp[lang].append ((name, lang, icon, authors, credits, factory))
+
+			langs = tmp.keys ()
+			langs.sort ()
+			for lang in langs:
+				if len (tmp[lang]) == 1:
+					item = gtk.ImageMenuItem ("%s - %s" % (lang, name))
+					item.set_image (gtk.image_new_from_icon_name (icon, gtk.ICON_SIZE_MENU))
+					item.connect ("activate", self._menu_item_activate_cb, factory)
+					menu.add (item)
+				else:
+					item = gtk.MenuItem (lang)
+					menu.add (item)
+					submenu = gtk.Menu ()
+					item.set_submenu (submenu)
+					for name, _lang, icon, authors, credits, factory in tmp[lang]:
+						item = gtk.ImageMenuItem (name)
+						item.set_image (gtk.image_new_from_icon_name (icon, gtk.ICON_SIZE_MENU))
+						item.connect ("activate", self._menu_item_activate_cb, factory)
+						submenu.add (item)
+					
 
 		menu.show_all ()
 		menu.set_take_focus (False)
