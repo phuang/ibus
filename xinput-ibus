@@ -1,0 +1,7 @@
+XIM=IBus
+XIM_PROGRAM=/usr/libexec/ibus-daemon
+XIM_ARGS=""
+PREFERENCE_PROGRAM=/usr/bin/ibus-setup
+SHORT_DESC="IBus"
+GTK_IM_MODULE=ibus
+QT_IM_MODULE=ibus

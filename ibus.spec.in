@@ -9,6 +9,7 @@ License:    LGPLv2+
 Group:      System Environment/Libraries
 URL:        http://code.google.com/p/ibus/
 Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
+Source1:    xinput-ibus
 
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gettext-devel, libtool, python-devel, pygtk2-devel, perl(XML::Parser) gtk2-devel qt-devel
@@ -33,6 +34,8 @@ Requires:   %{name} = %{version}-%{release}
 %description qt
 This package contains ibus im module for qt4
 
+%define _xinputconf %{_sysconfdir}/X11/xinit/xinput.d/ibus.conf
+
 %prep
 %setup -q
 
@@ -46,6 +49,10 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
 rm -f $RPM_BUILD_ROOT%{python_sitearch}/_anthy.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/immodules/im-ibus.la
+
+# install xinput config file
+mkdir -pm 755 ${RPM_BUILD_ROOT}/%{_sysconfdir}/X11/xinit/xinput.d
+install -pm 644 %{SOURCE1} ${RPM_BUILD_ROOT}/%{_xinputconf}
 
 # %find_lang %{name}
 
@@ -74,6 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ibus/icons/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-panel
+%config(noreplace) %{_xinputconf}
 
 %files gtk
 %{_libdir}/gtk-2.0/immodules/im-ibus.so
