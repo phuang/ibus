@@ -81,7 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ibus/icons/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-panel
-%config(noreplace) %{_xinputconf}
+%config %{_xinputconf}
 
 %files gtk
 %{_libdir}/gtk-2.0/immodules/im-ibus.so
