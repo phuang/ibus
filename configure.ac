@@ -148,8 +148,6 @@ panel/ibus-panel
 engine/Makefile
 gtk2/Makefile
 qt4/Makefile
-x11/Makefile
-x11/IMdkit/Makefile
 icons/Makefile
 m4/Makefile
 ])
