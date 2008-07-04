@@ -26,6 +26,7 @@ SUBDIRS = \
 	engine \
 	gtk2 \
 	qt4 \
+	x11 \
 	icons \
 	m4 \
 	po \
