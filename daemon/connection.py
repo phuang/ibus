@@ -34,6 +34,7 @@ class Connection (ibus.Object):
 	def __init__ (self, dbusconn):
 		ibus.Object.__init__ (self)
 		self._dbusconn = dbusconn
+		self._watch_dirs = set ()
 
 	def get_object (self, path):
 		return self._dbusconn.get_object ("no.name", path)
@@ -49,5 +50,20 @@ class Connection (ibus.Object):
 
 	def dispatch_dbus_signal (self, message):
 		self.emit ("dbus-signal", message)
+
+	def add_watch_dir (self, dir):
+		if dir in self._watch_dirs:
+			return False
+		self._watch_dirs.add (dir)
+		return True
+
+	def remove_watch_dir (self, dir):
+		if dir not in self._watch_dirs:
+			return False
+		self._watch_dirs.remove (dir)
+		return True
+
+	def get_dbusconn (self):
+		return self._dbusconn
 
 gobject.type_register (Connection)

@@ -288,6 +288,7 @@ class IBus (ibus.Object):
 		ibusconn = self._lookup_ibus_connection (dbusconn)
 		self._config = Config (ibusconn, object_path)
 		self._config.connect ("value-changed", self._config_value_changed_cb)
+		self._config.connect ("destroy", self._config_destroy_cb)
 
 	def config_set_string (self, key, value, dbusconn, **kargs):
 		self._config.set_string (key, value, **kargs)
@@ -308,13 +309,33 @@ class IBus (ibus.Object):
 		self._config.get_bool (key, value, **kargs)
 
 	def config_add_watch_dir (self, dir, dbusconn, **kargs):
-		pass
+		if not dir.endswith ("/"):
+			dir += "/"
+
+		ibusconn = self._lookup_ibus_connection (dbusconn)
+		if ibusconn.add_watch_dir (dir):
+			if dir not in self._config_watch:
+				self._config_watch[dir] = set ()
+			self._config_watch[dir].add (ibusconn)
 
 	def config_remove_watch_dir (self, dir, dbusconn, **kargs):
-		pass
+		if not dir.endswith ("/"):
+			dir += "/"
+
+		ibusconn = self._lookup_ibus_connection (dbusconn)
+		if ibusconn.remove_watch_dir (dir):
+			if dir in self._config_watch:
+				self._config_watch[dir].remove (ibusconn)
 
 	def _config_value_changed_cb (self, config, key, value):
-		pass
+		for dir in self._config_watch.keys ():
+			if dir.startswith (key):
+				for ibusconn in self._config[dir]:
+					ibusconn.emit_dbus_signal ("ConfigValueChanged", key, value)
+
+	def _config_destroy_cb (self, config, key, value):
+		if config == self._config:
+			self._config = DummyConfig ()
 
 	##########################################################
 	# general methods
