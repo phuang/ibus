@@ -19,7 +19,8 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-from iibus import IIBus
-from iengine import IEngine
-from ienginefactory import IEngineFactory
-from ipanel import IPanel
+from iibus import *
+from iengine import *
+from ienginefactory import *
+from ipanel import *
+from iconfig import *

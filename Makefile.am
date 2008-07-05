@@ -21,6 +21,7 @@
 
 SUBDIRS = \
 	daemon \
+	gconf \
 	ibus \
 	panel \
 	engine \

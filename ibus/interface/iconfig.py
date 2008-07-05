@@ -43,26 +43,30 @@ class IConfig (dbus.service.Object):
 			**args)
 
 	@method (in_signature = "ss", out_signature = "s")
-	def ReadString (self, key, default_value):
+	def GetString (self, key, default_value):
 		pass
 
 	@method (in_signature = "si", out_signature = "i")
-	def ReadInt (self, key, default_value):
+	def GetInt (self, key, default_value):
 		pass
 
 	@method (in_signature = "sb", out_signature = "b")
-	def ReadBool (self, key, default_value):
+	def GetBool (self, key, default_value):
 		pass
 
 	@method (in_signature = "ss")
-	def WriteString (self, key, value):
+	def SetString (self, key, value):
 		pass
 
 	@method (in_signature = "si")
-	def WriteInt (self, key, value):
+	def SetInt (self, key, value):
 		pass
 
 	@method (in_signature = "sb")
-	def WriteBool (self, key, value):
+	def SetBool (self, key, value):
+		pass
+
+	@signal (signature = "sv")
+	def ValueChanged (self, key, value):
 		pass
 

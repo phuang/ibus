@@ -145,6 +145,8 @@ daemon/Makefile
 daemon/ibus-daemon
 panel/Makefile
 panel/ibus-panel
+gconf/Makefile
+gconf/ibus-gconf
 engine/Makefile
 gtk2/Makefile
 qt4/Makefile

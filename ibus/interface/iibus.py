@@ -78,6 +78,10 @@ class IIBus (dbus.service.Object):
 	@method (in_signature = "ob")
 	def RegisterPanel (self, object_path, replace, dbusconn): pass
 
+	# methods for ibus config
+	@method (in_signature = "ob")
+	def RegisterConfig (self, object_path, replace, dbusconn): pass
+
 	# general methods
 	@method (out_signature = "av")
 	def GetFactories (self, dbusconn): pass
@@ -91,6 +95,24 @@ class IIBus (dbus.service.Object):
 	@method (in_signature = "s", out_signature = "sb")
 	def GetInputContextStates (self, ic, dbusconn): pass
 
+	@async_method (in_signature = "ss")
+	def ConfigSetString (self, key, value, dbusconn, reply_cb, error_cb): pass
+
+	@async_method (in_signature = "si")
+	def ConfigSetInt (self, key, value, dbusconn, reply_cb, error_cb): pass
+
+	@async_method (in_signature = "sb")
+	def ConfigSetBool (self, key, value, dbusconn, reply_cb, error_cb): pass
+
+	@async_method (in_signature = "s", out_signature = "s")
+	def ConfigGetString (self, key, dbusconn, reply_cb, error_cb): pass
+
+	@async_method (in_signature = "s", out_signature = "i")
+	def ConfigGetInt (self, key, dbusconn, reply_cb, error_cb): pass
+
+	@async_method (in_signature = "s", out_signature = "b")
+	def ConfigGetBool (self, key, dbusconn, reply_cb, error_cb): pass
+
 	#sigals
 	def CommitString (self, ic, text): pass
 
@@ -99,3 +121,5 @@ class IIBus (dbus.service.Object):
 	def Enabled (self, ic): pass
 
 	def Disabled (self, ic): pass
+
+	def ConfigValueChanged (self, key, value): pass
