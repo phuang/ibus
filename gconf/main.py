@@ -38,7 +38,7 @@ class GconfApplication:
 		self._ibus = self._dbusconn.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
 		self._config = config.ConfigProxy (self._dbusconn, "/org/freedesktop/IBus/Config", self._ibus)
 
-		self._ibus.RegisterPanel (self._config, True)
+		self._ibus.RegisterConfig (self._config, True)
 
 	def run (self):
 		gtk.main ()
