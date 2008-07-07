@@ -20,16 +20,8 @@
 # Boston, MA  02111-1307  USA
 
 gconf_PYTHON = \
-	candidategconf.py \
-	handle.py \
-	image.py \
-	lang.py \
-	languagebar.py \
+	config.py \
 	main.py \
-	menu.py \
-	gconf.py \
-	propitem.py \
-	toolitem.py \
 	$(NULL)
 
 gconfdir = $(pkgdatadir)/gconf
