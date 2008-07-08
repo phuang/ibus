@@ -143,6 +143,8 @@ ibus/Makefile
 ibus/interface/Makefile
 daemon/Makefile
 daemon/ibus-daemon
+launcher/ibus
+launcher/Makefile
 panel/Makefile
 panel/ibus-panel
 gconf/Makefile

@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+#
+# ibus - The Input Bus
+#
+# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+# Boston, MA  02111-1307  USA
+import os
+import sys
+import time
+
+daemon = "@prefix@/libexec/ibus-daemon"
+panel = "@prefix@/libexec/ibus-panel"
+
+pid = os.fork ()
+if pid > 0: # parent
+	print "start ibus-daemon"
+	os.execv (daemon, [daemon])
+	print >> sys.stderr, "start ibus-daemon failed"
+	sys.exit (1)
+elif pid == 0:
+	time.sleep (1)
+	print "start ibus-panel"
+	os.execv (panel, [panel])
+	print >> sys.stderr, "start ibus-panel failed"
+	sys.exit (1)
+else:
+	print >> sys.stderr, "can not start ibus"
+	sys.exit (1)

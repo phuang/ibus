@@ -19,56 +19,12 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-SUBDIRS = \
-	daemon \
-	gconf \
-	ibus \
-	launcher \
-	panel \
-	engine \
-	gtk2 \
-	qt4 \
-	icons \
-	m4 \
-	po \
+bin_SCRIPTS = ibus
+
+CLEANFILES = \
 	$(NULL)
-
-ACLOCAL_AMFLAGS = -I m4
-
 
 EXTRA_DIST = \
-	autogen.sh \
-	ibus.spec.in \
-	python-config.py \
+	ibus.in \
 	$(NULL)
 
-noinst_DIST = \
-	$(NULL)
-
-
-DISTCLEANFILES = \
-	po/stamp-it \
-	$(NULL)
-
-rpm: dist @PACKAGE_NAME@.spec
-	rpmbuild -bb \
-			--define "_sourcedir `pwd`" \
-			--define "_builddir `pwd`" \
-			--define "_srcrpmdir `pwd`" \
-			--define "_rpmdir `pwd`" \
-			--define "_specdir `pwd`" \
-			@PACKAGE_NAME@.spec
-
-srpm: dist @PACKAGE_NAME@.spec
-	rpmbuild -bs \
-			--define "_sourcedir `pwd`" \
-			--define "_builddir `pwd`" \
-			--define "_srcrpmdir `pwd`" \
-			--define "_rpmdir `pwd`" \
-			--define "_specdir `pwd`" \
-			@PACKAGE_NAME@.spec
-
-clean-rpm:
-	$(RM) -r "`uname -i`"
-
-clean-local: clean-rpm
