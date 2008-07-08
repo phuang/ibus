@@ -46,7 +46,9 @@ class CandidateArea (gtk.HBox):
 	def _create_ui (self):
 		if self._orientation == gtk.ORIENTATION_VERTICAL:
 			self._vbox1 = gtk.VBox ()
+			self._vbox1.set_homogeneous (True)
 			self._vbox2 = gtk.VBox ()
+			self._vbox2.set_homogeneous (True)
 			self.pack_start (self._vbox1, False, False, 4)
 			self.pack_start (VSeparator(), False, False, 0)
 			self.pack_start (self._vbox2, True, True, 4)
