@@ -77,9 +77,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ibus/engine/
 %dir %{_datadir}/ibus/icons/
 %{_datadir}/ibus/daemon/*
+%{_datadir}/ibus/gconf/*
 %{_datadir}/ibus/panel/*
 %{_datadir}/ibus/icons/*
 %{_libexecdir}/ibus-daemon
+%{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-panel
 %config %{_xinputconf}
 
