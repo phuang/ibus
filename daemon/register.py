@@ -62,6 +62,8 @@ class Engine (ibus.Object):
 	def engine_exit (self, pid):
 		if self._pid == pid:
 			self._pid = 0
+			return True
+		return False
 
 	def __eq__ (self, o):
 		# We don't test icon author & credits
@@ -80,24 +82,7 @@ class Register (ibus.Object):
 		ibus.Object.__init__ (self)
 		self._engines = {}
 		self._load ()
-
-	def _load (self):
-		_file = path.abspath (__file__)
-		_dir = path.dirname (_file) + "./../engine"
-		_dir = path.abspath (_dir)
-		_dir = "/usr/share/ibus/engine"
-		for _file in glob.glob (_dir + "/*.engine"):
-			engine = self._load_engine (_file)
-			if (engine._lang, engine._name) in self._engines:
-				old_engine = self._engines[(engine._lang, engine._name)]
-				if old_engine == engine:
-					engine._pid = old_engine._pid
-					self._engines[(engine._lang, engine._name)] = engine
-				else:
-					self._engines[(engine._lang, engine._name + " (old)")] = old_engine
-					self._engines[(engine._lang, engine._name)] = engine
-			else:
-				self._engines[(engine._lang, engine._name)] = engine
+		signal.signal (signal.SIGCHLD, self._sigchld_cb)
 
 	def start_engine (self, lang, name):
 		key = (lang, name)
@@ -129,6 +114,31 @@ class Register (ibus.Object):
 		for key, e in self._engines.items ():
 			engines.append ((e._name, e._lang, e._icon, e._author, e._credits, e._exec, e._pid != 0))
 		return engines
+
+	def _sigchld_cb (self, sig, f):
+		pid, state = os.wait ()
+		for key, engine in self._engines.items ():
+			if engine.engine_exit (pid):
+				break
+
+	def _load (self):
+		_file = path.abspath (__file__)
+		_dir = path.dirname (_file) + "./../engine"
+		_dir = path.abspath (_dir)
+		_dir = "/usr/share/ibus/engine"
+		for _file in glob.glob (_dir + "/*.engine"):
+			engine = self._load_engine (_file)
+			if (engine._lang, engine._name) in self._engines:
+				old_engine = self._engines[(engine._lang, engine._name)]
+				if old_engine == engine:
+					engine._pid = old_engine._pid
+					self._engines[(engine._lang, engine._name)] = engine
+				else:
+					self._engines[(engine._lang, engine._name + " (old)")] = old_engine
+					self._engines[(engine._lang, engine._name)] = engine
+			else:
+				self._engines[(engine._lang, engine._name)] = engine
+
 
 
 	def _load_engine (self, _file):
