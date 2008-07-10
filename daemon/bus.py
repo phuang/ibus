@@ -370,7 +370,9 @@ class IBus (ibus.Object):
 		factory = self._factory_manager.get_factory (factory_path)
 		engine = factory.create_engine ()
 		self._focused_context.set_engine (engine)
+		self._focused_context.set_enable (True)
 		engine.focus_in ()
+		self._panel.states_changed ()
 
 	def get_input_context_states (self, ic, dbusconn):
 		context = self._lookup_context (ic, dbusconn)
