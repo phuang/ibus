@@ -56,7 +56,7 @@ class Setup:
 		column.set_title ("Name")
 
 		renderer = gtk.CellRendererPixbuf()
-		renderer.set_property("xalign", 0.0)
+		renderer.set_property("xalign", 0.5)
 
 		column.pack_start (renderer)
 		column.set_attributes (renderer, icon_name = ICON_COLUMN, visible = VISIBLE_COLUMN)
@@ -73,12 +73,14 @@ class Setup:
 		# column for holiday names
 		renderer = gtk.CellRendererToggle()
 		renderer.set_data ('column', ENABLE_COLUMN)
-		renderer.set_property("xalign", 0.0)
+		renderer.set_property("xalign", 0.5)
 		renderer.connect("toggled", self.__item_toggled_cb, model)
 
 		#col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME_COLUMN)
 		column = gtk.TreeViewColumn("Started", renderer, active = ENABLE_COLUMN, visible = VISIBLE_COLUMN)
-		column.set_clickable(True)
+		column.set_clickable (True)
+		column.set_resizable (False)
+		column.set_fixed_width (50)
 		self._tree.append_column(column)
 
 
