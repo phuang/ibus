@@ -24,19 +24,38 @@ import time
 
 daemon = "@prefix@/libexec/ibus-daemon"
 panel = "@prefix@/libexec/ibus-panel"
+conf = "@prefix@/libexec/ibus-gconf"
 
-pid = os.fork ()
-if pid > 0: # parent
+daemon_pid = 0
+
+try:
 	print "start ibus-daemon"
-	os.execv (daemon, [daemon])
+	daemon_pid = os.spawnv (os.P_NOWAIT, daemon, [daemon])
+except:
 	print >> sys.stderr, "start ibus-daemon failed"
 	sys.exit (1)
-elif pid == 0:
-	time.sleep (1)
+
+time.sleep (1)
+
+try:
 	print "start ibus-panel"
-	os.execv (panel, [panel])
+	os.spawnv (os.P_NOWAIT, panel, [panel])
+except:
 	print >> sys.stderr, "start ibus-panel failed"
 	sys.exit (1)
-else:
-	print >> sys.stderr, "can not start ibus"
+
+try:
+	print "start ibus-conf"
+	os.spawnv (os.P_NOWAIT, conf, [conf])
+except:
+	print >> sys.stderr, "start ibus-conf failed"
 	sys.exit (1)
+
+try:
+	os.kill (daemon_pid, 0)
+except:
+	sys.exit (1)
+
+os.waitpid (daemon_pid, 0)
+
+os.wait (daemon_pid)
