@@ -74,6 +74,12 @@ class ToolButton (gtk.ToolButton, PropItem):
 		self.set_tooltip_text (self._prop._tooltip)
 		self.set_label (self._prop._label)
 		self.set_sensitive (self._prop._sensitive)
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 	def do_clicked (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
@@ -127,6 +133,12 @@ class ToggleToolButton (gtk.ToggleToolButton, PropItem):
 		self.set_label (self._prop._label)
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 		self.set_sensitive (self._prop._sensitive)
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 	def do_toggled (self):
 		if self.get_active ():

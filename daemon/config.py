@@ -72,7 +72,7 @@ class Config (ibus.Object):
 		self.destroy ()
 
 	def _dbus_signal_cb (self, ibusconn, message):
-		if message.is_signal (ibus.IBUS_PANEL_ICONFIG, "ValueChanged"):
+		if message.is_signal (ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
 			args = message.get_args_list ()
 			self.emit ("value-changed", args[0], args[1])
 		else:

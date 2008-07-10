@@ -97,11 +97,24 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
 		if self._prop._icon:
 			self.set_image (gtk.image_new_from_icon_name  (prop._icon, gtk.ICON_SIZE_MENU))
 
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
+
 	def do_activate (self):
 		self.emit ("property-activate", self._prop._name, self._prop._state)
 
 	def property_changed (self):
 		self.set_sensitive (self._prop._sensitive)
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 
 class CheckMenuItem (gtk.CheckMenuItem, PropItem):
@@ -118,6 +131,13 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
 
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 
+		if prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
+
 	def do_toggled (self):
 		if self.get_active ():
 			self._prop._state = ibus.PROP_STATE_CHECKED
@@ -128,6 +148,12 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
 	def property_changed (self):
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 		self.set_sensitive (self._prop._sensitive)
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 
 class RadioMenuItem (gtk.RadioMenuItem, PropItem):
@@ -144,9 +170,22 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
 
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 
+		if prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
+
 	def property_changed (self):
 		self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 		self.set_sensitive (self._prop._sensitive)
+		if self._prop._visible:
+			self.set_no_show_all (False)
+			self.show_all ()
+		else:
+			self.set_no_show_all (True)
+			self.hide_all ()
 
 	def do_toggled (self):
 		if self.get_active ():
