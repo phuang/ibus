@@ -113,6 +113,18 @@ class IIBus (dbus.service.Object):
 	@async_method (in_signature = "s", out_signature = "b")
 	def ConfigGetBool (self, key, dbusconn, reply_cb, error_cb): pass
 
+	@method (out_signature = "a(ssssssb)")
+	def RegisterListEngines (self, dbusconn): pass
+
+	@method (in_signature = "ss")
+	def RegisterStartEngine (self, lang, name, dbusconn): pass
+
+	@method (in_signature = "ss")
+	def RegisterRestartEngine (self, lang, name, dbusconn): pass
+
+	@method (in_signature = "ss")
+	def RegisterStopEngine (self, lang, name, dbusconn): pass
+
 	#sigals
 	def CommitString (self, ic, text): pass
 

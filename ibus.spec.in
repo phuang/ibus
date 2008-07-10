@@ -73,13 +73,17 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/ibus/*
 %dir %{_datadir}/ibus/
 %dir %{_datadir}/ibus/daemon/
+%dir %{_datadir}/ibus/gconf/
 %dir %{_datadir}/ibus/panel/
+%dir %{_datadir}/ibus/setup/
 %dir %{_datadir}/ibus/engine/
 %dir %{_datadir}/ibus/icons/
 %{_bindir}/ibus
+%{_bindir}/ibus-setup
 %{_datadir}/ibus/daemon/*
 %{_datadir}/ibus/gconf/*
 %{_datadir}/ibus/panel/*
+%{_datadir}/ibus/setup/*
 %{_datadir}/ibus/icons/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-gconf

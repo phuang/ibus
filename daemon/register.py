@@ -19,12 +19,15 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import os
 from os import path
+import signal
 import glob
 import ibus
 
-class Engine:
+class Engine (ibus.Object):
 	def __init__ (self, name, lang = "other", icon = "", author = "", credits = "", _exec = "", pid = 0):
+		ibus.Object.__init__ (self)
 		self._name = name
 		self._lang = lang
 		self._icon = icon
@@ -32,6 +35,33 @@ class Engine:
 		self._credits = credits
 		self._exec = _exec
 		self._pid = pid
+
+	def start (self):
+		if self._pid != 0:
+			return
+		pid = os.fork ()
+		if pid > 0: # parent
+			self._pid = pid
+		elif pid == 0: # child
+			os.setpgrp ()
+			args = self._exec.split ()
+			os.execv (args[0], args)
+			sys.exit (1)
+
+	def stop (self, force = False):
+		if self._pid == 0:
+			return
+		try:
+			if force:
+				os.kill (-self._pid, signal.SIGKILL)
+			else:
+				os.kill (-self._pid, signal.SIGTERM)
+		except:
+			pass
+
+	def engine_exit (self, pid):
+		if self._pid == pid:
+			self._pid = 0
 
 	def __eq__ (self, o):
 		# We don't test icon author & credits
@@ -49,8 +79,9 @@ class Register (ibus.Object):
 	def __init__ (self):
 		ibus.Object.__init__ (self)
 		self._engines = {}
+		self._load ()
 
-	def load (self):
+	def _load (self):
 		_file = path.abspath (__file__)
 		_dir = path.dirname (_file) + "./../engine"
 		_dir = path.abspath (_dir)
@@ -67,6 +98,38 @@ class Register (ibus.Object):
 					self._engines[(engine._lang, engine._name)] = engine
 			else:
 				self._engines[(engine._lang, engine._name)] = engine
+
+	def start_engine (self, lang, name):
+		key = (lang, name)
+		if key not in self._engines:
+			raise ibus.IBusException ("Can not find engine (%s, %s)" % (lang, name))
+
+		engine = self._engines[(lang, name)]
+		engine.start ()
+
+	def stop_engine (self, lang, name):
+		key = (lang, name)
+		if key not in self._engines:
+			raise ibus.IBusException ("Can not find engine (%s, %s)" % (lang, name))
+
+		engine = self._engines[(lang, name)]
+		engine.stop ()
+
+	def restart_engine (self, lang, name):
+		key = (lang, name)
+		if key not in self._engines:
+			raise ibus.IBusException ("Can not find engine (%s, %s)" % (lang, name))
+
+		engine = self._engines[(lang, name)]
+		engine.stop ()
+		engine.start ()
+
+	def list_engines (self):
+		engines = []
+		for key, e in self._engines.items ():
+			engines.append ((e._name, e._lang, e._icon, e._author, e._credits, e._exec, e._pid != 0))
+		return engines
+
 
 	def _load_engine (self, _file):
 		f = file (_file)
@@ -106,5 +169,9 @@ class Register (ibus.Object):
 		return Engine (name, lang, icon, author, credits, _exec)
 
 if __name__ == "__main__":
-	Register ().load ()
+	import time
+	reg = Register ()
+	reg.start_engine ("zh", "py")
+	time.sleep (3)
+	reg.stop_engine ("zh", "py")
 

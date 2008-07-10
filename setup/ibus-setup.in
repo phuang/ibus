@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+#!/bin/sh
 #
 # ibus - The Input Bus
 #
@@ -19,12 +19,5 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-from object import *
-from attribute import *
-from property import *
-from common import *
-from interface import *
-from exception import *
-from lookuptable import *
-from connection import *
-from lang import *
+exec python @prefix@/share/ibus/setup/main.py $@
+

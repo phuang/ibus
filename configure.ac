@@ -152,6 +152,8 @@ gconf/ibus-gconf
 engine/Makefile
 gtk2/Makefile
 qt4/Makefile
+setup/Makefile
+setup/ibus-setup
 icons/Makefile
 m4/Makefile
 ])

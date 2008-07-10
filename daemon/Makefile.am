@@ -30,6 +30,7 @@ ibusdaemon_PYTHON = \
 	inputcontext.py \
 	lookuptable.py \
 	panel.py \
+	register.py \
 	$(NULL)
 
 libexec_SCRIPTS = ibus-daemon

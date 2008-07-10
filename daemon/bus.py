@@ -29,6 +29,7 @@ from factorymanager import FactoryManager
 from connection import Connection
 from panel import Panel, DummyPanel
 from config import Config, DummyConfig
+from register import Register
 
 class IBus (ibus.Object):
 	def __init__ (self):
@@ -38,6 +39,7 @@ class IBus (ibus.Object):
 		self._factory_manager = FactoryManager ()
 		self._panel = DummyPanel ()
 		self._config = DummyConfig ()
+		self._register = Register ()
 		self._config_watch = {}
 
 		self._focused_context = None
@@ -338,6 +340,21 @@ class IBus (ibus.Object):
 			self._config = DummyConfig ()
 
 	##########################################################
+	# engine register methods
+	##########################################################
+	def register_list_engines (self, dbusconn):
+		return self._register.list_engines ()
+
+	def register_start_engine (self, lang, name, dbusconn):
+		return self._register.start_engine (lang, name)
+
+	def register_restart_engine (self, lang, name, dbusconn):
+		return self._register.restart_engine (lang, name)
+
+	def register_stop_engine (self, lang, name, dbusconn):
+		return self._register.stop_engine (lang, name)
+
+	##########################################################
 	# general methods
 	##########################################################
 	def get_factories (self):
@@ -464,4 +481,16 @@ class IBusProxy (ibus.IIBus):
 		self._ibus.config_get_bool (key, dbusconn,
 				reply_handler = reply_cb,
 				error_handler = error_cb)
+
+	def RegisterListEngines (self, dbusconn):
+		return self._ibus.register_list_engines (dbusconn)
+
+	def RegisterStartEngine (self, lang, name, dbusconn):
+		return self._ibus.register_start_engine (lang, name, dbusconn)
+
+	def RegisterRestartEngine (self, lang, name, dbusconn):
+		return self._ibus.register_restart_engine (lang, name, dbusconn)
+
+	def RegisterStopEngine (self, lang, name, dbusconn):
+		return self._ibus.register_stop_engine (lang, name, dbusconn)
 

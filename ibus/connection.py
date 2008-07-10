@@ -26,6 +26,9 @@ import dbus.connection
 import ibus
 
 class Connection (dbus.connection.Connection):
-	def __init__ (self):
-		dbus.connection.Connection.__init__ (ibus.IBUS_ADDR)
+	def __new__ (self):
+		return dbus.connection.Connection.__new__ (self, ibus.IBUS_ADDR)
+
+	def get_ibus (self):
+		return self.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
 

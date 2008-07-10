@@ -31,6 +31,7 @@ ibus_PYTHON = \
 	gtk.py \
 	__init__.py \
 	keysyms.py \
+	lang.py \
 	lookuptable.py \
 	modifier.py \
 	object.py \

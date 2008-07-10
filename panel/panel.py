@@ -24,14 +24,14 @@ import gtk.gdk as gdk
 import gobject
 import ibus
 from os import path
-from lang import LANGUAGES
+from ibus import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 
 class Panel (ibus.Object):
 	def __init__ (self, proxy, _ibus):
-		gobject.GObject.__init__ (self)
+		ibus.Object.__init__ (self)
 		self._proxy = proxy
 		self._ibus = _ibus
 		self._focus_ic = None

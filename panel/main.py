@@ -30,13 +30,13 @@ import panel
 
 class PanelApplication:
 	def __init__ (self):
-		self._dbusconn = dbus.connection.Connection (ibus.IBUS_ADDR)
-		self._dbusconn.add_signal_receiver (self._disconnected_cb,
+		self._conn = ibus.Connection ()
+		self._conn.add_signal_receiver (self._disconnected_cb,
 							"Disconnected",
 							dbus_interface = dbus.LOCAL_IFACE)
 
-		self._ibus = self._dbusconn.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
-		self._panel = panel.PanelProxy (self._dbusconn, "/org/freedesktop/IBus/Panel", self._ibus)
+		self._ibus = self._conn.get_ibus ()
+		self._panel = panel.PanelProxy (self._conn, "/org/freedesktop/IBus/Panel", self._ibus)
 
 		self._ibus.RegisterPanel (self._panel, True)
 
