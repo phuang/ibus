@@ -18,29 +18,14 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-SUBDIRS = \
-	interface \
-	$(NULL)
 
-ibus_PYTHON = \
-	application.py \
-	attribute.py \
-	common.py \
-	connection.py \
-	exception.py \
-	gtk.py \
-	__init__.py \
-	keysyms.py \
-	lookuptable.py \
-	modifier.py \
-	object.py \
-	panel.py \
-	property.py \
-	$(NULL)
+__all__ = (
+		"Connection",
+	)
+import dbus.connection
+import ibus
 
-ibusdir = @pkgpythondir@
-
-CLEANFILES = \
-	*.pyc \
-	$(NULL)
+class Connection (dbus.connection.Connection):
+	def __init__ (self):
+		dbus.connection.Connection.__init__ (ibus.IBUS_ADDR)
 

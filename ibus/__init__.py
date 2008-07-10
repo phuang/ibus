@@ -26,3 +26,4 @@ from common import *
 from interface import *
 from exception import *
 from lookuptable import *
+from connection import *
