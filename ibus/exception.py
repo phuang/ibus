@@ -21,5 +21,5 @@
 
 __all__ = ("IBusException", )
 
-class IBusException (Exception):
+class IBusException(Exception):
 	pass
