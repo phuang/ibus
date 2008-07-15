@@ -156,7 +156,7 @@ def property_from_dbus_value(value):
 
 class PropList(object):
 	def __init__(self):
-		super(PropLis, self).__init__()
+		super(PropList, self).__init__()
 		self._props = []
 
 	def append(self, prop):

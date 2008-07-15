@@ -27,7 +27,7 @@ import ibus
 
 class Connection(dbus.connection.Connection):
 	def __new__(cls):
-		return super(Connection, cls).__new__(ibus.IBUS_ADDR)
+		return super(Connection, cls).__new__(cls, ibus.IBUS_ADDR)
 
 	def get_ibus(self):
 		return self.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
