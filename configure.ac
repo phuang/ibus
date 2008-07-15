@@ -154,6 +154,7 @@ gtk2/Makefile
 qt4/Makefile
 setup/Makefile
 setup/ibus-setup
+setup/ibus-setup.desktop
 icons/Makefile
 m4/Makefile
 ])

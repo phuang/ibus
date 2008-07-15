@@ -25,9 +25,16 @@ icons_DATA = \
 	ibus-keyboard.svg \
 	ibus-locale.svg \
 	ibus-zh.svg \
+	ibus.svg \
 	$(NULL)
 
 iconsdir = $(pkgdatadir)/icons
+
+sysicons_DATA = \
+	ibus.svg \
+	$(NULL)
+
+sysiconsdir = $(datadir)/icons
 
 EXTRA_DIST = \
 	engine-default.svg \
@@ -35,4 +42,5 @@ EXTRA_DIST = \
 	ibus-keyboard.svg \
 	ibus-locale.svg \
 	ibus-zh.svg \
+	ibus.svg \
 	$(NULL)

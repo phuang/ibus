@@ -28,15 +28,20 @@ ibussetup_DATA = \
 	$(NULL)
 
 bin_SCRIPTS = ibus-setup
-
 ibussetupdir = $(pkgdatadir)/setup
+
+desktop_DATA = ibus-setup.desktop
+desktopdir = $(datadir)/applications
 
 CLEANFILES = \
 	*.pyc \
+	ibus-setup \
+	ibus-setup.desktop \
 	$(NULL)
 
 EXTRA_DIST = \
 	ibus-setup.in \
+	ibus-setup.desktop.in \
 	setup.glade \
 	$(NULL)
 

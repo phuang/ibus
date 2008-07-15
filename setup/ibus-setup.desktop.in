@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=IBus Setup
+Comment=Setup utility for IBus
+Exec=ibus-setup
+Icon=ibus-setup
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Settings;
