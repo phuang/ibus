@@ -41,7 +41,7 @@ display = os.environ["DISPLAY"]
 if "." not in display:
 	display += ".0" 
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (getpass.getuser (), display.replace (":", "-"))
+IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (getpass.getuser(), display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE = "org.freedesktop.IBus"
@@ -53,10 +53,10 @@ IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.IBus.EngineFactory"
 IBUS_ENGINE_IFACE = "org.freedesktop.IBus.Engine"
 IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
 
-def default_reply_handler ( *args):
+def default_reply_handler( *args):
 	pass
 
-def default_error_handler (e):
+def default_error_handler(e):
 	print >> sys.stderr, e
 
 DEFAULT_ASYNC_HANDLERS = {
