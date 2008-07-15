@@ -42,8 +42,8 @@ class DBus(dbus.service.Object):
 		dbus.service.signal(dbus_interface = dbus.BUS_DAEMON_IFACE, \
 		**args)
 
-	def __init__(self):
-		super(DBus, self).__init__()
+	def __init__(self, *args, **kargs):
+		super(DBus, self).__init__(*args, **kargs)
 
 	@method(in_signature = "s", out_signature = "s")
 	def GetNameOwner(self, name):
@@ -69,13 +69,9 @@ class IBusServer(dbus.server.Server):
 
 		self._ibus = IBus()
 
-		# self.register_object(self._ibus, ibus.IBUS_PATH)
-		#
-		# self._dbus = DBus()
-		# self.register_object(self._dbus, dbus.BUS_DAEMON_PATH)
-
 	def _on_new_connection(self, dbusconn):
 		IBusProxy(self._ibus, dbusconn)
+		DBus(dbusconn, dbus.BUS_DAEMON_PATH)
 
 def launch_ibus():
 	dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
