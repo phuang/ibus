@@ -29,12 +29,12 @@ __all__ = (
 class PanelItem:
 	pass
 
-class PanelButton (PanelItem):
+class PanelButton(PanelItem):
 	pass
 
-class PanelToggleButton (PanelButton):
+class PanelToggleButton(PanelButton):
 	pass
 
-class PanelMenu (PanelItem):
+class PanelMenu(PanelItem):
 	pass
 
