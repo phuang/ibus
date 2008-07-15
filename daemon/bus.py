@@ -115,6 +115,7 @@ class IBus(ibus.Object):
 				factory = self._factory_manager.get_default_factory()
 				if factory:
 					engine = factory.create_engine()
+					engine.focus_in()
 					context.set_engine(engine)
 			context.set_enable(enable)
 			self._panel.states_changed()
