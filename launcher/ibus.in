@@ -29,32 +29,32 @@ conf = "@prefix@/libexec/ibus-gconf"
 daemon_pid = 0
 
 try:
-	print "start ibus-daemon"
-	daemon_pid = os.spawnv (os.P_NOWAIT, daemon, [daemon])
+    print "start ibus-daemon"
+    daemon_pid = os.spawnv (os.P_NOWAIT, daemon, [daemon])
 except:
-	print >> sys.stderr, "start ibus-daemon failed"
-	sys.exit (1)
+    print >> sys.stderr, "start ibus-daemon failed"
+    sys.exit (1)
 
 time.sleep (1)
 
 try:
-	print "start ibus-panel"
-	os.spawnv (os.P_NOWAIT, panel, [panel])
+    print "start ibus-panel"
+    os.spawnv (os.P_NOWAIT, panel, [panel])
 except:
-	print >> sys.stderr, "start ibus-panel failed"
-	sys.exit (1)
+    print >> sys.stderr, "start ibus-panel failed"
+    sys.exit (1)
 
 try:
-	print "start ibus-conf"
-	os.spawnv (os.P_NOWAIT, conf, [conf])
+    print "start ibus-conf"
+    os.spawnv (os.P_NOWAIT, conf, [conf])
 except:
-	print >> sys.stderr, "start ibus-conf failed"
-	sys.exit (1)
+    print >> sys.stderr, "start ibus-conf failed"
+    sys.exit (1)
 
 try:
-	os.kill (daemon_pid, 0)
+    os.kill (daemon_pid, 0)
 except:
-	sys.exit (1)
+    sys.exit (1)
 
 os.waitpid (daemon_pid, 0)
 
