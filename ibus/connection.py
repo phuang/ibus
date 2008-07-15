@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -20,15 +20,15 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-		"Connection",
-	)
+        "Connection",
+    )
 import dbus.connection
 import ibus
 
 class Connection(dbus.connection.Connection):
-	def __new__(cls):
-		return super(Connection, cls).__new__(cls, ibus.IBUS_ADDR)
+    def __new__(cls):
+        return super(Connection, cls).__new__(cls, ibus.IBUS_ADDR)
 
-	def get_ibus(self):
-		return self.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
+    def get_ibus(self):
+        return self.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
 

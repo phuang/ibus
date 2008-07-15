@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -27,127 +27,127 @@ from image import Image
 from handle import Handle
 from menu import menu_position
 from toolitem import ToolButton,\
-	ToggleToolButton, \
-	SeparatorToolItem, \
-	MenuToolButton
+    ToggleToolButton, \
+    SeparatorToolItem, \
+    MenuToolButton
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
 class LanguageBar (gtk.Toolbar):
-	__gsignals__ = {
-		"property-activate" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_INT)),
-		"get-im-menu" : (
-			gobject.SIGNAL_RUN_LAST,
-			gobject.TYPE_PYOBJECT,
-			()),
-		}
+    __gsignals__ = {
+        "property-activate" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_INT)),
+        "get-im-menu" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_PYOBJECT,
+            ()),
+        }
 
-	def __init__ (self):
-		gtk.Toolbar.__init__ (self)
-		self.set_style (gtk.TOOLBAR_ICONS)
-		self.set_show_arrow (False)
-		self.set_property ("icon-size", ICON_SIZE)
-		self._create_ui ()
+    def __init__ (self):
+        gtk.Toolbar.__init__ (self)
+        self.set_style (gtk.TOOLBAR_ICONS)
+        self.set_show_arrow (False)
+        self.set_property ("icon-size", ICON_SIZE)
+        self._create_ui ()
 
-		self._properties = []
-		self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
-		self._toplevel.add (self)
+        self._properties = []
+        self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
+        self._toplevel.add (self)
 
-		root = gdk.get_default_root_window ()
-		workarea = root.property_get ("_NET_WORKAREA")[2]
-		self._toplevel.move (workarea[2] - 200, workarea[3] - 40)
+        root = gdk.get_default_root_window ()
+        workarea = root.property_get ("_NET_WORKAREA")[2]
+        self._toplevel.move (workarea[2] - 200, workarea[3] - 40)
 
-	def _create_ui (self):
-		# create move handle
-		self._handle = gtk.ToolItem ()
-		self._handle.add (Handle ())
-		self.insert (self._handle, -1)
+    def _create_ui (self):
+        # create move handle
+        self._handle = gtk.ToolItem ()
+        self._handle.add (Handle ())
+        self.insert (self._handle, -1)
 
-		# create input methods menu
-		self._im_menu = ToggleToolButton (ibus.Property (name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "engine-default", tooltip = "Swicth engine"))
-		self._im_menu.connect ("toggled", self._im_menu_toggled_cb)
-		self.insert (self._im_menu, -1)
+        # create input methods menu
+        self._im_menu = ToggleToolButton (ibus.Property (name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "engine-default", tooltip = "Swicth engine"))
+        self._im_menu.connect ("toggled", self._im_menu_toggled_cb)
+        self.insert (self._im_menu, -1)
 
-	def _im_menu_toggled_cb (self, widget):
-		if self._im_menu.get_active ():
-			menu = self.emit ("get-im-menu")
-			menu.connect ("deactivate", self._im_menu_deactivate_cb)
-			menu.popup (None, None,
-				menu_position,
-				0,
-				gtk.get_current_event_time (),
-				widget)
-	def _im_menu_deactivate_cb (self, menu):
-		self._im_menu.set_active (False)
+    def _im_menu_toggled_cb (self, widget):
+        if self._im_menu.get_active ():
+            menu = self.emit ("get-im-menu")
+            menu.connect ("deactivate", self._im_menu_deactivate_cb)
+            menu.popup (None, None,
+                menu_position,
+                0,
+                gtk.get_current_event_time (),
+                widget)
+    def _im_menu_deactivate_cb (self, menu):
+        self._im_menu.set_active (False)
 
-	def _remove_properties (self):
-		# reset all properties
+    def _remove_properties (self):
+        # reset all properties
 
-		map (lambda i: i.destroy (), self._properties)
-		self._properties = []
+        map (lambda i: i.destroy (), self._properties)
+        self._properties = []
 
-	def do_show (self):
-		gtk.Toolbar.do_show (self)
+    def do_show (self):
+        gtk.Toolbar.do_show (self)
 
-	def do_size_request (self, requisition):
-		gtk.Toolbar.do_size_request (self, requisition)
-		self._toplevel.resize (1, 1)
+    def do_size_request (self, requisition):
+        gtk.Toolbar.do_size_request (self, requisition)
+        self._toplevel.resize (1, 1)
 
-	def set_im_icon (self, icon_name):
-		self._im_menu.set_icon_name (icon_name)
+    def set_im_icon (self, icon_name):
+        self._im_menu.set_icon_name (icon_name)
 
-	def reset (self):
-		self._remove_properties ()
+    def reset (self):
+        self._remove_properties ()
 
-	def register_properties (self, props):
-		self._remove_properties ()
-		# create new properties
-		for prop in props:
-			if prop._type == ibus.PROP_TYPE_NORMAL:
-				item = ToolButton (prop = prop)
-			elif prop._type == ibus.PROP_TYPE_TOGGLE:
-				item = ToggleToolButton (prop = prop)
-			elif prop._type == ibus.PROP_TYPE_MENU:
-				item = MenuToolButton (prop = prop)
-			elif prop._type == PROP_TYPE_SEPARATOR:
-				item = SeparatorToolItem ()
-			else:
-				raise IBusException ("Unknown property type = %d" % prop._type)
+    def register_properties (self, props):
+        self._remove_properties ()
+        # create new properties
+        for prop in props:
+            if prop._type == ibus.PROP_TYPE_NORMAL:
+                item = ToolButton (prop = prop)
+            elif prop._type == ibus.PROP_TYPE_TOGGLE:
+                item = ToggleToolButton (prop = prop)
+            elif prop._type == ibus.PROP_TYPE_MENU:
+                item = MenuToolButton (prop = prop)
+            elif prop._type == PROP_TYPE_SEPARATOR:
+                item = SeparatorToolItem ()
+            else:
+                raise IBusException ("Unknown property type = %d" % prop._type)
 
-			item.connect ("property-activate",
-						lambda w, n, s: self.emit ("property-activate", n, s))
+            item.connect ("property-activate",
+                        lambda w, n, s: self.emit ("property-activate", n, s))
 
-			item.set_sensitive (prop._sensitive)
+            item.set_sensitive (prop._sensitive)
 
-			item.set_no_show_all (True)
+            item.set_no_show_all (True)
 
-			if prop._visible:
-				item.show ()
-			else:
-				item.hide ()
+            if prop._visible:
+                item.show ()
+            else:
+                item.hide ()
 
-			self._properties.append (item)
-			self.insert (item, -1)
+            self._properties.append (item)
+            self.insert (item, -1)
 
-	def update_property (self, prop):
-		map (lambda x: x.update_property (prop), self._properties)
+    def update_property (self, prop):
+        map (lambda x: x.update_property (prop), self._properties)
 
-	def show_all (self):
-		self._toplevel.show_all ()
-		gtk.Toolbar.show_all (self)
+    def show_all (self):
+        self._toplevel.show_all ()
+        gtk.Toolbar.show_all (self)
 
-	def hide_all (self):
-		self._toplevel.hide_all ()
-		gtk.Toolbar.hide_all (self)
+    def hide_all (self):
+        self._toplevel.hide_all ()
+        gtk.Toolbar.hide_all (self)
 
-	def focus_in (self):
-		self._im_menu.set_sensitive (True)
+    def focus_in (self):
+        self._im_menu.set_sensitive (True)
 
-	def focus_out (self):
-		self._im_menu.set_sensitive (False)
+    def focus_out (self):
+        self._im_menu.set_sensitive (False)
 
 gobject.type_register (LanguageBar, "IBusLanguageBar")
 

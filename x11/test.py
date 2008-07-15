@@ -1,7 +1,7 @@
 import IMdkit
 
 def func ():
-	pass
+    pass
 
 xim = IMdkit.XIM ("a", "zh", func)
 print xim

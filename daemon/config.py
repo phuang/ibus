@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -24,88 +24,88 @@ import gobject
 import ibus
 
 class Config(ibus.Object):
-	__gsignals__ = {
-		"value-changed" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
-	}
+    __gsignals__ = {
+        "value-changed" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+    }
 
-	def __init__(self, ibusconn, object_path):
-		super(Config, self).__init__()
-		self._ibusconn = ibusconn
-		self._object_path = object_path
-		self._config = self._ibusconn.get_object(self._object_path)
+    def __init__(self, ibusconn, object_path):
+        super(Config, self).__init__()
+        self._ibusconn = ibusconn
+        self._object_path = object_path
+        self._config = self._ibusconn.get_object(self._object_path)
 
-		self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
-		self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
+        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
+        self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
 
-	def get_string(self, key, **kargs):
-		self._config.GetString(key, **kargs)
-	
-	def get_int(self, key, **kargs):
-		self._config.GetInt(key, **kargs)
-	
-	def get_bool(self, key, **kargs):
-		self._config.GetBool(key, **kargs)
-	
-	def set_string(self, key, value, **kargs):
-		self._config.SetString(key, value, **kargs)
-	
-	def set_int(self, key, value, **kargs):
-		self._config.SetInt(key, value, **kargs)
-	
-	def set_bool(self, key, value, **kargs):
-		self._config.SetBool(key, value, **kargs)
+    def get_string(self, key, **kargs):
+        self._config.GetString(key, **kargs)
 
-	def destroy(self):
-		if self._ibusconn != None:
-			self._config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
+    def get_int(self, key, **kargs):
+        self._config.GetInt(key, **kargs)
 
-		self._ibusconn = None
-		self._config = None
-		ibus.Object.destroy(self)
+    def get_bool(self, key, **kargs):
+        self._config.GetBool(key, **kargs)
 
-	# signal callbacks
-	def _ibusconn_destroy_cb(self, ibusconn):
-		self._ibusconn = None
-		self.destroy()
+    def set_string(self, key, value, **kargs):
+        self._config.SetString(key, value, **kargs)
 
-	def _dbus_signal_cb(self, ibusconn, message):
-		if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
-			args = message.get_args_list()
-			self.emit("value-changed", args[0], args[1])
-		else:
-			return False
-		return True
+    def set_int(self, key, value, **kargs):
+        self._config.SetInt(key, value, **kargs)
+
+    def set_bool(self, key, value, **kargs):
+        self._config.SetBool(key, value, **kargs)
+
+    def destroy(self):
+        if self._ibusconn != None:
+            self._config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+        self._ibusconn = None
+        self._config = None
+        ibus.Object.destroy(self)
+
+    # signal callbacks
+    def _ibusconn_destroy_cb(self, ibusconn):
+        self._ibusconn = None
+        self.destroy()
+
+    def _dbus_signal_cb(self, ibusconn, message):
+        if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
+            args = message.get_args_list()
+            self.emit("value-changed", args[0], args[1])
+        else:
+            return False
+        return True
 
 gobject.type_register(Config)
 
 class DummyConfig(ibus.Object):
-	__gsignals__ = {
-		"value-changed" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
-	}
-	
-	def get_string(self, key, **kargs):
-		kargs["reply_handler"]("")
-	
-	def get_int(self, key, **kargs):
-		kargs["reply_handler"](0)
-	
-	def get_bool(self, key, **kargs):
-		kargs["reply_handler"](True)
-	
-	def set_string(self, key, value, **kargs):
-		kargs["reply_handler"]()
-	
-	def set_int(self, key, value, **kargs):
-		kargs["reply_handler"]()
-	
-	def set_bool(self, key, value, **kargs):
-		kargs["reply_handler"]()
+    __gsignals__ = {
+        "value-changed" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+    }
+
+    def get_string(self, key, **kargs):
+        kargs["reply_handler"]("")
+
+    def get_int(self, key, **kargs):
+        kargs["reply_handler"](0)
+
+    def get_bool(self, key, **kargs):
+        kargs["reply_handler"](True)
+
+    def set_string(self, key, value, **kargs):
+        kargs["reply_handler"]()
+
+    def set_int(self, key, value, **kargs):
+        kargs["reply_handler"]()
+
+    def set_bool(self, key, value, **kargs):
+        kargs["reply_handler"]()
 
 
 gobject.type_register(DummyConfig)

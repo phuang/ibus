@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -20,21 +20,21 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-		"PanelItem",
-		"PanelButton",
-		"PanelToggleButton",
-		"PanelMenu",
-	)
+        "PanelItem",
+        "PanelButton",
+        "PanelToggleButton",
+        "PanelMenu",
+    )
 
 class PanelItem:
-	pass
+    pass
 
 class PanelButton(PanelItem):
-	pass
+    pass
 
 class PanelToggleButton(PanelButton):
-	pass
+    pass
 
 class PanelMenu(PanelItem):
-	pass
+    pass
 

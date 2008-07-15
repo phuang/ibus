@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -34,89 +34,89 @@ from bus import IBus, IBusProxy
 
 class DBus(dbus.service.Object):
 
-	method = lambda **args: \
-		dbus.service.method(dbus_interface = dbus.BUS_DAEMON_IFACE, \
-		**args)
+    method = lambda **args: \
+        dbus.service.method(dbus_interface = dbus.BUS_DAEMON_IFACE, \
+        **args)
 
-	signal = lambda **args: \
-		dbus.service.signal(dbus_interface = dbus.BUS_DAEMON_IFACE, \
-		**args)
+    signal = lambda **args: \
+        dbus.service.signal(dbus_interface = dbus.BUS_DAEMON_IFACE, \
+        **args)
 
-	def __init__(self, *args, **kargs):
-		super(DBus, self).__init__(*args, **kargs)
+    def __init__(self, *args, **kargs):
+        super(DBus, self).__init__(*args, **kargs)
 
-	@method(in_signature = "s", out_signature = "s")
-	def GetNameOwner(self, name):
-		if name == dbus.BUS_DAEMON_NAME:
-			return dbus.BUS_DAEMON_NAME
-		elif name == ibus.IBUS_NAME:
-			return ibus.IBUS_NAME
+    @method(in_signature = "s", out_signature = "s")
+    def GetNameOwner(self, name):
+        if name == dbus.BUS_DAEMON_NAME:
+            return dbus.BUS_DAEMON_NAME
+        elif name == ibus.IBUS_NAME:
+            return ibus.IBUS_NAME
 
-		raise dbus.DBusException(
-				"org.freedesktop.DBus.Error.NameHasNoOwner: Could not get owner of name '%s': no such name" % name)
+        raise dbus.DBusException(
+                "org.freedesktop.DBus.Error.NameHasNoOwner: Could not get owner of name '%s': no such name" % name)
 
-	@method(in_signature = "s")
-	def AddMatch(self, rule):
-		pass
+    @method(in_signature = "s")
+    def AddMatch(self, rule):
+        pass
 
-	@signal(signature = "sss")
-	def NameOwnerChanged(self, name, old_owner, new_owner):
-		pass
+    @signal(signature = "sss")
+    def NameOwnerChanged(self, name, old_owner, new_owner):
+        pass
 
 class IBusServer(dbus.server.Server):
-	def __init__(self, *args, **kargs):
-		super(IBusServer, self).__init__()
+    def __init__(self, *args, **kargs):
+        super(IBusServer, self).__init__()
 
-		self._ibus = IBus()
+        self._ibus = IBus()
 
-	def _on_new_connection(self, dbusconn):
-		IBusProxy(self._ibus, dbusconn)
-		DBus(dbusconn, dbus.BUS_DAEMON_PATH)
+    def _on_new_connection(self, dbusconn):
+        IBusProxy(self._ibus, dbusconn)
+        DBus(dbusconn, dbus.BUS_DAEMON_PATH)
 
 def launch_ibus():
-	dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
-	loop = gobject.MainLoop()
-	try:
-		os.mkdir("/tmp/ibus-%s" % getpass.getuser())
-	except:
-		pass
-	bus = IBusServer(ibus.IBUS_ADDR)
-	try:
-		loop.run()
-	except KeyboardInterrupt, e:
-		print "daemon exits"
-		sys.exit()
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
+    loop = gobject.MainLoop()
+    try:
+        os.mkdir("/tmp/ibus-%s" % getpass.getuser())
+    except:
+        pass
+    bus = IBusServer(ibus.IBUS_ADDR)
+    try:
+        loop.run()
+    except KeyboardInterrupt, e:
+        print "daemon exits"
+        sys.exit()
 
 
 def print_help(out, v = 0):
-	print >> out, "-h, --help             show this message."
-	print >> out, "-d, --daemonize        daemonize ibus"
-	sys.exit(v)
+    print >> out, "-h, --help             show this message."
+    print >> out, "-d, --daemonize        daemonize ibus"
+    sys.exit(v)
 
 def main():
-	daemonize = False
-	shortopt = "hd"
-	longopt = ["help", "daemonize"]
-	try:
-		opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
-	except getopt.GetoptError, err:
-		print_help(sys.stderr, 1)
+    daemonize = False
+    shortopt = "hd"
+    longopt = ["help", "daemonize"]
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
+    except getopt.GetoptError, err:
+        print_help(sys.stderr, 1)
 
-	for o, a in opts:
-		if o in ("-h", "--help"):
-			print_help(sys.stdout)
-		elif o in ("-d", "--daemonize"):
-			daemonize = True
-		else:
-			print >> sys.stderr, "Unknown argument: %s" % o
-			print_help(sys.stderr, 1)
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            print_help(sys.stdout)
+        elif o in ("-d", "--daemonize"):
+            daemonize = True
+        else:
+            print >> sys.stderr, "Unknown argument: %s" % o
+            print_help(sys.stderr, 1)
 
-	if daemonize:
-		if os.fork():
-			sys.exit()
+    if daemonize:
+        if os.fork():
+            sys.exit()
 
-	launch_ibus()
+    launch_ibus()
 
 
 if __name__ == "__main__":
-	main()
+    main()

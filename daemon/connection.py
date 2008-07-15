@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -24,58 +24,58 @@ import ibus
 import gobject
 
 class Connection(ibus.Object):
-	__gsignals__ = {
-		"dbus-signal" : (
-			gobject.SIGNAL_RUN_FIRST,
-			gobject.TYPE_NONE,
-			(gobject.TYPE_PYOBJECT, )
-		)
-	}
-	def __init__(self, dbusconn):
-		super(Connection, self).__init__()
-		self._dbusconn = dbusconn
-		self._watch_dirs = set()
-		dbusconn.add_message_filter(self.message_filter_cb)
+    __gsignals__ = {
+        "dbus-signal" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_PYOBJECT, )
+        )
+    }
+    def __init__(self, dbusconn):
+        super(Connection, self).__init__()
+        self._dbusconn = dbusconn
+        self._watch_dirs = set()
+        dbusconn.add_message_filter(self.message_filter_cb)
 
-	def message_filter_cb(self, dbusconn, message):
-		if message.is_signal(dbus.LOCAL_IFACE, "Disconnected"):
-			self.destroy()
-			return dbus.lowlevel.HANDLER_RESULT_HANDLED
+    def message_filter_cb(self, dbusconn, message):
+        if message.is_signal(dbus.LOCAL_IFACE, "Disconnected"):
+            self.destroy()
+            return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
-		if message.get_type() == 4: # is signal
-			if self.dispatch_dbus_signal(message):
-				return dbus.lowlevel.HANDLER_RESULT_HANDLED
+        if message.get_type() == 4: # is signal
+            if self.dispatch_dbus_signal(message):
+                return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
-		return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
+        return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 
-	def get_object(self, path):
-		return self._dbusconn.get_object("no.name", path)
+    def get_object(self, path):
+        return self._dbusconn.get_object("no.name", path)
 
-	def emit_dbus_signal(self, name, *args):
-		message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH, ibus.IBUS_IFACE, name)
-		message.append(*args)
-		self._dbusconn.send_message(message)
-		self._dbusconn.flush()
+    def emit_dbus_signal(self, name, *args):
+        message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH, ibus.IBUS_IFACE, name)
+        message.append(*args)
+        self._dbusconn.send_message(message)
+        self._dbusconn.flush()
 
-	def do_destroy(self):
-		self._dbusconn = None
+    def do_destroy(self):
+        self._dbusconn = None
 
-	def dispatch_dbus_signal(self, message):
-		self.emit("dbus-signal", message)
+    def dispatch_dbus_signal(self, message):
+        self.emit("dbus-signal", message)
 
-	def add_watch_dir(self, dir):
-		if dir in self._watch_dirs:
-			return False
-		self._watch_dirs.add(dir)
-		return True
+    def add_watch_dir(self, dir):
+        if dir in self._watch_dirs:
+            return False
+        self._watch_dirs.add(dir)
+        return True
 
-	def remove_watch_dir(self, dir):
-		if dir not in self._watch_dirs:
-			return False
-		self._watch_dirs.remove(dir)
-		return True
+    def remove_watch_dir(self, dir):
+        if dir not in self._watch_dirs:
+            return False
+        self._watch_dirs.remove(dir)
+        return True
 
-	def get_dbusconn(self):
-		return self._dbusconn
+    def get_dbusconn(self):
+        return self._dbusconn
 
 gobject.type_register(Connection)

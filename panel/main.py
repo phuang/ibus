@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -29,60 +29,60 @@ import dbus.mainloop.glib
 import panel
 
 class PanelApplication:
-	def __init__ (self):
-		self._conn = ibus.Connection ()
-		self._conn.add_signal_receiver (self._disconnected_cb,
-							"Disconnected",
-							dbus_interface = dbus.LOCAL_IFACE)
+    def __init__ (self):
+        self._conn = ibus.Connection ()
+        self._conn.add_signal_receiver (self._disconnected_cb,
+                            "Disconnected",
+                            dbus_interface = dbus.LOCAL_IFACE)
 
-		self._ibus = self._conn.get_ibus ()
-		self._panel = panel.PanelProxy (self._conn, "/org/freedesktop/IBus/Panel", self._ibus)
+        self._ibus = self._conn.get_ibus ()
+        self._panel = panel.PanelProxy (self._conn, "/org/freedesktop/IBus/Panel", self._ibus)
 
-		self._ibus.RegisterPanel (self._panel, True)
+        self._ibus.RegisterPanel (self._panel, True)
 
-	def run (self):
-		gtk.main ()
+    def run (self):
+        gtk.main ()
 
-	def _disconnected_cb (self):
-		print "disconnected"
-		gtk.main_quit ()
+    def _disconnected_cb (self):
+        print "disconnected"
+        gtk.main_quit ()
 
 
 
 def launch_panel ():
-	dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
-	# gtk.settings_get_default ().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
-	# gtk.rc_parse ("./themes/default/gtkrc")
-	PanelApplication ().run ()
+    dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
+    # gtk.settings_get_default ().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
+    # gtk.rc_parse ("./themes/default/gtkrc")
+    PanelApplication ().run ()
 
 def print_help (out, v = 0):
-	print >> out, "-h, --help             show this message."
-	print >> out, "-d, --daemonize        daemonize ibus"
-	sys.exit (v)
+    print >> out, "-h, --help             show this message."
+    print >> out, "-d, --daemonize        daemonize ibus"
+    sys.exit (v)
 
 def main ():
-	daemonize = False
-	shortopt = "hd"
-	longopt = ["help", "daemonize"]
-	try:
-		opts, args = getopt.getopt (sys.argv[1:], shortopt, longopt)
-	except getopt.GetoptError, err:
-		print_help (sys.stderr, 1)
+    daemonize = False
+    shortopt = "hd"
+    longopt = ["help", "daemonize"]
+    try:
+        opts, args = getopt.getopt (sys.argv[1:], shortopt, longopt)
+    except getopt.GetoptError, err:
+        print_help (sys.stderr, 1)
 
-	for o, a in opts:
-		if o in ("-h", "--help"):
-			print_help (sys.stdout)
-		elif o in ("-d", "--daemonize"):
-			daemonize = True
-		else:
-			print >> sys.stderr, "Unknown argument: %s" % o
-			print_help (sys.stderr, 1)
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            print_help (sys.stdout)
+        elif o in ("-d", "--daemonize"):
+            daemonize = True
+        else:
+            print >> sys.stderr, "Unknown argument: %s" % o
+            print_help (sys.stderr, 1)
 
-	if daemonize:
-		if os.fork ():
-			sys.exit ()
+    if daemonize:
+        if os.fork ():
+            sys.exit ()
 
-	launch_panel ()
+    launch_panel ()
 
 if __name__ == "__main__":
-	main ()
+    main ()

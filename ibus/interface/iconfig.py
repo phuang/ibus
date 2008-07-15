@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -23,50 +23,50 @@ __all__ = ("IConfig", )
 
 import dbus.service
 from ibus.common import \
-	IBUS_CONFIG_IFACE
+    IBUS_CONFIG_IFACE
 
 class IConfig (dbus.service.Object):
-	# define method decorator.
-	method = lambda **args: \
-		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
-			**args)
+    # define method decorator.
+    method = lambda **args: \
+        dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
+            **args)
 
-	# define signal decorator.
-	signal = lambda **args: \
-		dbus.service.signal (dbus_interface = IBUS_CONFIG_IFACE, \
-			**args)
+    # define signal decorator.
+    signal = lambda **args: \
+        dbus.service.signal (dbus_interface = IBUS_CONFIG_IFACE, \
+            **args)
 
-	# define async method decorator.
-	async_method = lambda **args: \
-		dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
-			async_callbacks = ("reply_cb", "error_cb"), \
-			**args)
+    # define async method decorator.
+    async_method = lambda **args: \
+        dbus.service.method (dbus_interface = IBUS_CONFIG_IFACE, \
+            async_callbacks = ("reply_cb", "error_cb"), \
+            **args)
 
-	@method (in_signature = "ss", out_signature = "s")
-	def GetString (self, key, default_value):
-		pass
+    @method (in_signature = "ss", out_signature = "s")
+    def GetString (self, key, default_value):
+        pass
 
-	@method (in_signature = "si", out_signature = "i")
-	def GetInt (self, key, default_value):
-		pass
+    @method (in_signature = "si", out_signature = "i")
+    def GetInt (self, key, default_value):
+        pass
 
-	@method (in_signature = "sb", out_signature = "b")
-	def GetBool (self, key, default_value):
-		pass
+    @method (in_signature = "sb", out_signature = "b")
+    def GetBool (self, key, default_value):
+        pass
 
-	@method (in_signature = "ss")
-	def SetString (self, key, value):
-		pass
+    @method (in_signature = "ss")
+    def SetString (self, key, value):
+        pass
 
-	@method (in_signature = "si")
-	def SetInt (self, key, value):
-		pass
+    @method (in_signature = "si")
+    def SetInt (self, key, value):
+        pass
 
-	@method (in_signature = "sb")
-	def SetBool (self, key, value):
-		pass
+    @method (in_signature = "sb")
+    def SetBool (self, key, value):
+        pass
 
-	@signal (signature = "sv")
-	def ValueChanged (self, key, value):
-		pass
+    @signal (signature = "sv")
+    def ValueChanged (self, key, value):
+        pass
 

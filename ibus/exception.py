@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -22,4 +22,4 @@
 __all__ = ("IBusException", )
 
 class IBusException(Exception):
-	pass
+    pass

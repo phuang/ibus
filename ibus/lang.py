@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -20,13 +20,13 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-		"LANGUAGES",
-	)
+        "LANGUAGES",
+    )
 
 N_ = lambda a: a
 
 LANGUAGES = {
-	"C"  : N_("English/Keyboard"),
+    "C"  : N_("English/Keyboard"),
     "am_ET"  : N_("Amharic"),
     "ar"  : N_("Arabic"),
     "ar_EG"  : N_("Arabic (Egypt)"),
@@ -130,9 +130,9 @@ LANGUAGES = {
 }
 
 for k in LANGUAGES.keys():
-	try:
-		lang, local = k.split("_")
-		if lang not in LANGUAGES:
-			LANGUAGES[lang] = LANGUAGES[k]
-	except:
-		pass
+    try:
+        lang, local = k.split("_")
+        if lang not in LANGUAGES:
+            LANGUAGES[lang] = LANGUAGES[k]
+    except:
+        pass

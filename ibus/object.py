@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -20,26 +20,26 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-		"Object",
-	)
+        "Object",
+    )
 
 import gobject
 
 class Object(gobject.GObject):
-	__gsignals__ = {
-		'destroy' : (
-			gobject.SIGNAL_RUN_FIRST, 
-			gobject.TYPE_NONE,
-			())
-	}
+    __gsignals__ = {
+        'destroy' : (
+            gobject.SIGNAL_RUN_FIRST, 
+            gobject.TYPE_NONE,
+            ())
+    }
 
-	def __init__(self):
-		super(Object, self).__init__()
-		self._destroyed = False
+    def __init__(self):
+        super(Object, self).__init__()
+        self._destroyed = False
 
-	def destroy(self):
-		if not self._destroyed:
-			self.emit("destroy")
-			self._destroyed = True
+    def destroy(self):
+        if not self._destroyed:
+            self.emit("destroy")
+            self._destroyed = True
 
 gobject.type_register(Object)

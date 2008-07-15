@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -20,18 +20,18 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-		"IBUS_ADDR",
-		"IBUS_IFACE",
-		"IBUS_NAME",
-		"IBUS_PATH",
-		"IBUS_CONFIG_IFACE",
-		"IBUS_ENGINE_FACTORY_IFACE",
-		"IBUS_ENGINE_IFACE",
-		"IBUS_PANEL_IFACE",
-		"default_reply_handler",
-		"default_error_handler",
-		"DEFAULT_ASYNC_HANDLERS"
-	)
+        "IBUS_ADDR",
+        "IBUS_IFACE",
+        "IBUS_NAME",
+        "IBUS_PATH",
+        "IBUS_CONFIG_IFACE",
+        "IBUS_ENGINE_FACTORY_IFACE",
+        "IBUS_ENGINE_IFACE",
+        "IBUS_PANEL_IFACE",
+        "default_reply_handler",
+        "default_error_handler",
+        "DEFAULT_ASYNC_HANDLERS"
+    )
 
 import os
 import sys
@@ -39,7 +39,7 @@ import getpass
 
 display = os.environ["DISPLAY"]
 if "." not in display:
-	display += ".0" 
+    display += ".0" 
 
 IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (getpass.getuser(), display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
@@ -54,12 +54,12 @@ IBUS_ENGINE_IFACE = "org.freedesktop.IBus.Engine"
 IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
 
 def default_reply_handler( *args):
-	pass
+    pass
 
 def default_error_handler(e):
-	print >> sys.stderr, e
+    print >> sys.stderr, e
 
 DEFAULT_ASYNC_HANDLERS = {
-	"reply_handler" : default_reply_handler,
-	"error_handler" : default_error_handler
+    "reply_handler" : default_reply_handler,
+    "error_handler" : default_error_handler
 }
