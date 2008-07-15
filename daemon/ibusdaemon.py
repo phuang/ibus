@@ -30,7 +30,7 @@ import dbus.service
 import dbus.lowlevel
 import dbus.mainloop.glib
 import ibus
-from bus import IBusProxy
+from bus import IBus, IBusProxy
 
 class DBus (dbus.service.Object):
 	SUPPORTS_MULTIPLE_CONNECTIONS = True
@@ -64,15 +64,19 @@ class DBus (dbus.service.Object):
 	def NameOwnerChanged (self, name, old_owner, new_owner):
 		pass
 
-class IBusServer (dbus.server.Server):
-	def __init__ (self):
-		dbus.server.Server.__init__ (self, ibus.IBUS_ADDR)
+class IBusServer(dbus.server.Server):
+	def __init__(self, *args, **kargs):
+		super(IBusServer, self).__init__ ()
 
-		self._ibus = IBusProxy ()
-		self.register_object (self._ibus, ibus.IBUS_PATH)
+		self._ibus = IBus()
 
-		self._dbus = DBus ()
-		self.register_object (self._dbus, dbus.BUS_DAEMON_PATH)
+		# self.register_object(self._ibus, ibus.IBUS_PATH)
+		#
+		# self._dbus = DBus()
+		# self.register_object(self._dbus, dbus.BUS_DAEMON_PATH)
+
+	def _on_new_connection (self, dbusconn):
+		IBusProxy (self._ibus, dbusconn)
 
 	def new_connection (self, server, dbusconn):
 		dbusconn.add_message_filter (self.message_filter_cb)
@@ -111,7 +115,7 @@ def launch_ibus ():
 		os.mkdir ("/tmp/ibus-%s" % getpass.getuser ())
 	except:
 		pass
-	bus = IBusServer ()
+	bus = IBusServer (ibus.IBUS_ADDR)
 	try:
 		loop.run ()
 	except KeyboardInterrupt, e:
