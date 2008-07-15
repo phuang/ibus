@@ -129,10 +129,10 @@ LANGUAGES = {
     "zh_TW"  : N_("Chinese (traditional)"),
 }
 
-for k in LANGUAGES.keys ():
+for k in LANGUAGES.keys():
 	try:
-		lang, local = k.split ("_")
+		lang, local = k.split("_")
 		if lang not in LANGUAGES:
-			LANGUAGES[lang] = LANGUAGES [k]
+			LANGUAGES[lang] = LANGUAGES[k]
 	except:
 		pass
