@@ -23,7 +23,7 @@ import weakref
 import gobject
 import ibus
 
-class Config (ibus.Object):
+class Config(ibus.Object):
 	__gsignals__ = {
 		"value-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
@@ -31,57 +31,57 @@ class Config (ibus.Object):
 			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
 	}
 
-	def __init__ (self, ibusconn, object_path):
-		ibus.Object.__init__ (self)
+	def __init__(self, ibusconn, object_path):
+		super(Config, self).__init__()
 		self._ibusconn = ibusconn
 		self._object_path = object_path
-		self._config = self._ibusconn.get_object (self._object_path)
+		self._config = self._ibusconn.get_object(self._object_path)
 
-		self._ibusconn.connect ("destroy", self._ibusconn_destroy_cb)
-		self._ibusconn.connect ("dbus-signal", self._dbus_signal_cb)
+		self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
+		self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
 
-	def get_string (self, key, **kargs):
-		self._config.GetString (key, **kargs)
+	def get_string(self, key, **kargs):
+		self._config.GetString(key, **kargs)
 	
-	def get_int (self, key, **kargs):
-		self._config.GetInt (key, **kargs)
+	def get_int(self, key, **kargs):
+		self._config.GetInt(key, **kargs)
 	
-	def get_bool (self, key, **kargs):
-		self._config.GetBool (key, **kargs)
+	def get_bool(self, key, **kargs):
+		self._config.GetBool(key, **kargs)
 	
-	def set_string (self, key, value, **kargs):
-		self._config.SetString (key, value, **kargs)
+	def set_string(self, key, value, **kargs):
+		self._config.SetString(key, value, **kargs)
 	
-	def set_int (self, key, value, **kargs):
-		self._config.SetInt (key, value, **kargs)
+	def set_int(self, key, value, **kargs):
+		self._config.SetInt(key, value, **kargs)
 	
-	def set_bool (self, key, value, **kargs):
-		self._config.SetBool (key, value, **kargs)
+	def set_bool(self, key, value, **kargs):
+		self._config.SetBool(key, value, **kargs)
 
-	def destroy (self):
+	def destroy(self):
 		if self._ibusconn != None:
-			self._config.Destroy (**ibus.DEFAULT_ASYNC_HANDLERS)
+			self._config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
 
 		self._ibusconn = None
 		self._config = None
-		ibus.Object.destroy (self)
+		ibus.Object.destroy(self)
 
 	# signal callbacks
-	def _ibusconn_destroy_cb (self, ibusconn):
+	def _ibusconn_destroy_cb(self, ibusconn):
 		self._ibusconn = None
-		self.destroy ()
+		self.destroy()
 
-	def _dbus_signal_cb (self, ibusconn, message):
-		if message.is_signal (ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
-			args = message.get_args_list ()
-			self.emit ("value-changed", args[0], args[1])
+	def _dbus_signal_cb(self, ibusconn, message):
+		if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
+			args = message.get_args_list()
+			self.emit("value-changed", args[0], args[1])
 		else:
 			return False
 		return True
 
-gobject.type_register (Config)
+gobject.type_register(Config)
 
-class DummyConfig (ibus.Object):
+class DummyConfig(ibus.Object):
 	__gsignals__ = {
 		"value-changed" : (
 			gobject.SIGNAL_RUN_FIRST,
@@ -89,23 +89,23 @@ class DummyConfig (ibus.Object):
 			(gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
 	}
 	
-	def get_string (self, key, **kargs):
-		kargs["reply_handler"] ("")
+	def get_string(self, key, **kargs):
+		kargs["reply_handler"]("")
 	
-	def get_int (self, key, **kargs):
-		kargs["reply_handler"] (0)
+	def get_int(self, key, **kargs):
+		kargs["reply_handler"](0)
 	
-	def get_bool (self, key, **kargs):
-		kargs["reply_handler"] (True)
+	def get_bool(self, key, **kargs):
+		kargs["reply_handler"](True)
 	
-	def set_string (self, key, value, **kargs):
-		kargs["reply_handler"] ()
+	def set_string(self, key, value, **kargs):
+		kargs["reply_handler"]()
 	
-	def set_int (self, key, value, **kargs):
-		kargs["reply_handler"] ()
+	def set_int(self, key, value, **kargs):
+		kargs["reply_handler"]()
 	
-	def set_bool (self, key, value, **kargs):
-		kargs["reply_handler"] ()
+	def set_bool(self, key, value, **kargs):
+		kargs["reply_handler"]()
 
 
-gobject.type_register (DummyConfig)
+gobject.type_register(DummyConfig)
