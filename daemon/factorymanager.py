@@ -35,7 +35,6 @@ class FactoryManager(ibus.Object):
 
 	def __init__(self):
 		super(FactoryManager, self).__init__()
-		ibus.Object.__init__(self)
 		self._factories = {}
 		self._ibusconn_factory_dict = {}
 		self._default_factory = None
