@@ -25,7 +25,7 @@ __all__ = (
 
 import gobject
 
-class Object (gobject.GObject):
+class Object(gobject.GObject):
 	__gsignals__ = {
 		'destroy' : (
 			gobject.SIGNAL_RUN_FIRST, 
@@ -33,13 +33,13 @@ class Object (gobject.GObject):
 			())
 	}
 
-	def __init__ (self):
-		gobject.GObject.__init__ (self)
+	def __init__(self):
+		super(Object, self).__init__()
 		self._destroyed = False
 
-	def destroy (self):
+	def destroy(self):
 		if not self._destroyed:
-			self.emit ("destroy")
+			self.emit("destroy")
 			self._destroyed = True
 
-gobject.type_register (Object)
+gobject.type_register(Object)
