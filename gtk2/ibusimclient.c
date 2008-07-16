@@ -1044,7 +1044,9 @@ ibus_im_client_filter_keypress (IBusIMClient *client, IBusIMContext *context, Gd
 {
     IBusIMClientPrivate *priv = client->priv;
     gchar *ic = ibus_im_context_get_ic (context);
-    g_return_val_if_fail (ic != NULL, FALSE);
+
+    if (ic == NULL)
+        return FALSE;
 
     guint state = event->state & GDK_MODIFIER_MASK;
     gboolean is_press = event->type == GDK_KEY_PRESS;
@@ -1075,7 +1077,9 @@ ibus_im_client_focus_in (IBusIMClient *client, IBusIMContext *context)
 {
     IBusIMClientPrivate *priv = client->priv;
     gchar *ic = ibus_im_context_get_ic (context);
-    g_return_if_fail (ic != NULL);
+
+    if (ic == NULL)
+        return;
 
     /* Call IBus FocusIn method */
      _ibus_call_with_reply_and_block (priv->ibus,
@@ -1090,7 +1094,9 @@ ibus_im_client_focus_out (IBusIMClient *client, IBusIMContext *context)
 {
     IBusIMClientPrivate *priv = client->priv;
     gchar *ic = ibus_im_context_get_ic (context);
-    g_return_if_fail (ic != NULL);
+
+    if (ic == NULL)
+        return;
 
     /* Call IBus FocusOut method */
     _ibus_call_with_reply_and_block (priv->ibus,
@@ -1106,7 +1112,9 @@ ibus_im_client_reset (IBusIMClient *client, IBusIMContext *context)
 {
     IBusIMClientPrivate *priv = client->priv;
     gchar *ic = ibus_im_context_get_ic (context);
-    g_return_if_fail (ic != NULL);
+
+    if (ic == NULL)
+        return;
 
     /* Call IBus Reset method */
     _ibus_call_with_reply_and_block (priv->ibus,
@@ -1122,7 +1130,9 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context
 {
     IBusIMClientPrivate *priv = client->priv;
     gchar *ic = ibus_im_context_get_ic (context);
-    g_return_if_fail (ic != NULL);
+
+    if (ic == NULL)
+        return;
 
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCursorLocation",
