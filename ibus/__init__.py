@@ -28,3 +28,4 @@ from exception import *
 from lookuptable import *
 from connection import *
 from lang import *
+from utility import *

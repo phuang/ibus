@@ -38,6 +38,7 @@ ibus_PYTHON = \
 	object.py \
 	panel.py \
 	property.py \
+	utility.py \
 	$(NULL)
 
 ibusdir = @pkgpythondir@
