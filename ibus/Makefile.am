@@ -23,6 +23,7 @@ SUBDIRS = \
 	$(NULL)
 
 ibus_PYTHON = \
+	ascii.py \
 	application.py \
 	attribute.py \
 	common.py \
