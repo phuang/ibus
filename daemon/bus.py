@@ -358,15 +358,6 @@ class IBusProxy(ibus.IIBus):
         self._ibus = bus
         self._conn = Connection(dbusconn)
 
-    def new_connection(self, dbusconn):
-        self._ibus.new_connection(dbusconn)
-
-    def remove_connection(self, dbusconn):
-        self._ibus.remove_connection(dbusconn)
-
-    def dispatch_dbus_signal(self, dbusconn, message):
-        return self._conn.dispatch_dbus_signal(dbusconn, message)
-
     def GetIBusAddress(self, dbusconn):
         return self._ibus_addr
 

@@ -69,9 +69,10 @@ class IBusServer(dbus.server.Server):
 
         self._ibus = IBus()
 
-    def _on_new_connection(self, dbusconn):
+    def connection_added(self, dbusconn):
         IBusProxy(self._ibus, dbusconn)
         DBus(dbusconn, dbus.BUS_DAEMON_PATH)
+
 
 def launch_ibus():
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
