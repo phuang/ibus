@@ -407,7 +407,12 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 {
     IBusIMContextPrivate *priv = context->priv;
     if (priv->ic) g_free (priv->ic);
+
     priv->ic = g_strdup (ic);
+
+    if (priv->ic == NULL) {
+        priv->enable = FALSE;
+    }
 }
 
 void

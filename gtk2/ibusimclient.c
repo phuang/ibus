@@ -275,9 +275,10 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
 
     GList *p;
     for (p = priv->contexts; p != NULL; p = g_list_next (p)) {
-        IBusIMContext *ctx = IBUS_IM_CONTEXT (p->data);
+        IBusIMContext *context = IBUS_IM_CONTEXT (p->data);
         const gchar *ic = _ibus_im_client_create_input_context (client);
-        ibus_im_context_set_ic (ctx, ic);
+        g_hash_table_insert (priv->ic_table, g_strdup (ic), context);
+        ibus_im_context_set_ic (context, ic);
     }
 
 }
