@@ -40,8 +40,6 @@
 #define IBUS_NAME  "org.freedesktop.IBus"
 #define IBUS_IFACE "org.freedesktop.IBus"
 #define IBUS_PATH  "/org/freedesktop/IBus"
-#define IBUS_ADDR "unix:abstract=/tmp/ibus"
-//#define IBUS_ADDR "tcp:host=localhost,port=7799"
 
 /* IBusIMClientPriv */
 struct _IBusIMClientPrivate {
@@ -110,9 +108,8 @@ static void     _dbus_name_owner_changed_cb
                                             const gchar         *new_name,
                                             IBusIMClient        *client);
 
-static GType                ibus_type_im_client = 0;
-static GtkObjectClass       *parent_class = NULL;
-static gboolean             has_focus = FALSE;
+static GType ibus_type_im_client = 0;
+static GtkObjectClass *parent_class = NULL;
 
 
 GType
@@ -170,45 +167,9 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
     gobject_class->finalize = &ibus_im_client_finalize;
 }
 
-#if 0
-static void
-_ibus_im_client_reinit_imm (IBusIMClient *client)
-{
-    GError *error;
-    IBusIMClientPrivate *priv = client->priv;
-
-    if (priv->imm != NULL) {
-        g_object_unref (priv->imm);
-    }
-
-    /* get ibus proxy */
-    error = NULL;
-    priv->imm = dbus_g_proxy_new_for_name_owner (priv->ibus,
-                                IBUS_DBUS_SERVICE,
-                                IBUS_DBUS_PATH,
-                                IBUS_DBUS_INTERFACE,
-                                &error);
-
-    if (priv->imm == NULL) {
-        g_warning (error->message);
-        g_error_free (error);
-        return;
-    }
-
-    error = NULL;
-    if (!dbus_g_proxy_call (priv->imm, "register_client", &error,
-                            G_TYPE_INVALID, G_TYPE_INVALID)) {
-        g_warning ("%s", error->message);
-        g_error_free (error);
-        g_object_unref (priv->imm);
-        priv->imm = NULL;
-        return;
-    }
-
-    g_debug ("new imm %s", dbus_g_proxy_get_bus_name (priv->imm));
-}
-#endif
-
+/*
+ * open ibus connection
+ */
 static void
 _ibus_im_client_ibus_open (IBusIMClient *client)
 {
@@ -283,6 +244,9 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
 
 }
 
+/*
+ * close ibus connection
+ */
 static void
 _ibus_im_client_ibus_close (IBusIMClient *client)
 {
@@ -303,6 +267,9 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
     }
 }
 
+/*
+ * create an im context
+ */
 IBusIMContext *
 ibus_im_client_create_im_context (IBusIMClient *client)
 {
@@ -320,6 +287,9 @@ ibus_im_client_create_im_context (IBusIMClient *client)
     return context;
 }
 
+/*
+ * create a ibus input context
+ */
 static const gchar *
 _ibus_im_client_create_input_context (IBusIMClient *client)
 {
@@ -1182,35 +1152,4 @@ ibus_im_client_release_im_context (IBusIMClient *client, IBusIMContext *context)
     }
 
 }
-/* Callback functions for slave context */
-#if 0
-static void
-_dbus_name_owner_changed_cb (
-    DBusGProxy *proxy,
-    const gchar *name,
-    const gchar *prev_owner,
-    const gchar *new_owner,
-    IBusIMClient *client)
-{
-    IBusIMClientPrivate *priv = client->priv;
 
-    if (strcmp (name, IBUS_DBUS_SERVICE) == 0) {
-        if (strcmp (new_owner, "") == 0) {
-            /* IBus service exited */
-            if (priv->imm) {
-                g_object_unref (priv->imm);
-                priv->imm = NULL;
-            }
-            if (priv->ime) {
-                g_object_unref (priv->ime);
-                priv->ime = NULL;
-            }
-        }
-        else {
-            /* IBus service avaliable or owner changed */
-            _ibus_im_client_reinit_imm (client);
-        }
-    }
-}
-
-#endif

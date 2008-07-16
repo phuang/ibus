@@ -25,6 +25,7 @@
 
 #define IBUS_LOCALDIR ""
 
+IBusIMClient *_client = NULL;
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
     "The Input Bus",
@@ -37,7 +38,6 @@ static const GtkIMContextInfo * info_list[] = {
     &ibus_im_info
 };
 
-IBusIMClient *_client = NULL;
 
 void
 im_module_init (GTypeModule *type_module)
