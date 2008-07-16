@@ -9,7 +9,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.     See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -22,47 +22,51 @@
 #include <string.h>
 #include <stdio.h>
 #include "ibusimclient.h"
-#include "ibusimcontext.h"
 
 #define IBUS_LOCALDIR ""
 
 static const GtkIMContextInfo ibus_im_info = {
-	"ibus",
-	"The Input Bus",
-	"ibus",
-	IBUS_LOCALDIR,
-	""
+    "ibus",
+    "The Input Bus",
+    "ibus",
+    IBUS_LOCALDIR,
+    ""
 };
 
 static const GtkIMContextInfo * info_list[] = {
-	&ibus_im_info
+    &ibus_im_info
 };
+
+IBusIMClient *_client = NULL;
 
 void
 im_module_init (GTypeModule *type_module)
 {
-	ibus_im_client_register_type(type_module);
-	ibus_im_context_register_type(type_module);
+    ibus_im_client_register_type(type_module);
+    ibus_im_context_register_type(type_module);
+
+    _client = ibus_im_client_new ();
 }
 
 void
 im_module_exit (void)
 {
+    g_object_unref (_client);
 }
 
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-	if (strcmp (context_id, "ibus") == 0)
-		return ibus_im_context_new ();
-	return NULL;
+    if (strcmp (context_id, "ibus") == 0)
+        return ibus_im_client_create_im_context (_client);
+    return NULL;
 }
 
 void
 im_module_list (const GtkIMContextInfo ***contexts,
                 int                      *n_contexts)
 {
-	*contexts = info_list;
-	*n_contexts = G_N_ELEMENTS (info_list);
+    *contexts = info_list;
+    *n_contexts = G_N_ELEMENTS (info_list);
 }
 

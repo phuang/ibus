@@ -21,7 +21,7 @@
 #define __IBUS_IM_CLIENT_H_
 
 #include <gtk/gtk.h>
-
+#include "ibusimcontext.h"
 /*
  * Type macros.
  */
@@ -42,7 +42,7 @@
 
 #if 0
 #define DEBUG_FUNCTION_IN   g_debug("%s IN", __FUNCTION__);
-#define DEBUG_FUNCTION_OUT   g_debug("%s OUT", __FUNCTION__);
+#define DEBUG_FUNCTION_OUT  g_debug("%s OUT", __FUNCTION__);
 #else
 #define DEBUG_FUNCTION_IN
 #define DEBUG_FUNCTION_OUT
@@ -70,27 +70,29 @@ struct _IBusIMClientClass {
   /* class members */
 };
 
+extern IBusIMClient                *_client;
+
 GType           ibus_im_client_get_type          (void);
-IBusIMClient     *ibus_im_client_get_client       (void);
-void            ibus_im_client_register_type     (GTypeModule    *type_module);
+void            ibus_im_client_register_type     (GTypeModule     *type_module);
+IBusIMClient   *ibus_im_client_new               (void);
+IBusIMContext  *ibus_im_client_create_im_context (IBusIMClient    *client);
 void            ibus_im_client_shutdown          (void);
-void            ibus_im_client_focus_in          (IBusIMClient    *client);
-void            ibus_im_client_focus_out         (IBusIMClient    *client);
-void            ibus_im_client_set_im_context    (IBusIMClient    *client,
-                                                 GtkIMContext   *context);
-GtkIMContext   *ibus_im_client_get_im_context    (IBusIMClient    *client);
-void            ibus_im_client_reset             (IBusIMClient    *client);
+void            ibus_im_client_focus_in          (IBusIMClient    *client,
+                                                  IBusIMContext   *context);
+void            ibus_im_client_focus_out         (IBusIMClient    *client,
+                                                  IBusIMContext   *context);
+void            ibus_im_client_reset             (IBusIMClient    *client,
+                                                  IBusIMContext   *context);
 gboolean        ibus_im_client_filter_keypress   (IBusIMClient    *client,
-                                                 GdkEventKey    *key);
-gboolean        ibus_im_client_get_preedit_string
-                                                (IBusIMClient    *client,
-                                                 gchar          **str,
-                                                 PangoAttrList  **attrs,
-                                                 gint           *cursor_pos);
+                                                  IBusIMContext   *context,
+                                                  GdkEventKey     *key);
 void            ibus_im_client_set_cursor_location
-                                                (IBusIMClient    *client,
-                                                 GdkRectangle   *area);
+                                                 (IBusIMClient    *client,
+                                                  IBusIMContext   *context,
+                                                  GdkRectangle    *area);
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
+void            ibus_im_client_release_im_context(IBusIMClient    *client,
+                                                  IBusIMContext   *context);
 
 
 G_END_DECLS
