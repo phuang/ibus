@@ -94,7 +94,7 @@ def unichar_half_to_full (c):
             return unichr (full + code - half)
     return c
 
-def unichar_full_to_falf (c):
+def unichar_full_to_half (c):
     code = ord (c)
     for half, full, size in __half_full_table:
         if code >= full and code < full + size:
