@@ -30,6 +30,7 @@ ibus_PYTHON = \
 	connection.py \
 	engine.py \
 	exception.py \
+	factory.py \
 	gtk.py \
 	__init__.py \
 	keysyms.py \
