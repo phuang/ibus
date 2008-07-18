@@ -135,10 +135,10 @@ class EngineProxy(interface.IEngine):
     def CursorDown(self):
         return self.__engine.cursor_down()
 
-    def Enable(self, enable):
+    def Enable(self):
         return self.__engine.enable()
     
-    def Enable(self, enable):
+    def Enable(self):
         return self.__engine.disable()
 
     def PropertyActivate(self, prop_name, prop_state):

@@ -147,10 +147,12 @@ class InputContext(ibus.Object):
             self._enable = enable
             if self._enable:
                 self._ibusconn.emit_dbus_signal("Enabled", self._id)
+                if self._engine:
+                    self._engine.enable()
             else:
                 self._ibusconn.emit_dbus_signal("Disabled", self._id)
-            if self._engine:
-                self._engine.set_enable(self._enable)
+                if self._engine:
+                    self._engine.disable()
 
     def commit_string(self, text):
         self._ibusconn.emit_dbus_signal("CommitString", self._id, text)
