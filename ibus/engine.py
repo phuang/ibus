@@ -99,8 +99,6 @@ class EngineBase(ibus.Object):
         super(EngineBase,self).do_destroy()
 
 
-gobject.type_register(EngineBase)
-
 class EngineProxy(interface.IEngine):
     def __init__(self, engine, conn, object_path):
         super(EngineProxy, self).__init__(dbusconn, object_path)

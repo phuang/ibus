@@ -58,7 +58,6 @@ class EngineFactoryBase(ibus.Object):
         self.__engine_path = None
         super(EngineBase,self).do_destroy()
 
-gobject.type_register(EngineFactoryBase)
 
 class EngineFactoryProxy(interface.IEngineFactory):
     def __init__(self, factory, conn, object_path):
