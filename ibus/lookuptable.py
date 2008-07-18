@@ -58,128 +58,128 @@ class StringList(list):
 class LookupTable(object):
     def __init__(self, page_size = 5, labels = None):
         super(LookupTable, self).__init__()
-        self._cursor_visible = False
-        self._cursor_pos = 0
-        self._candidates = StringList()
+        self.__cursor_visible = False
+        self.__cursor_pos = 0
+        self.__candidates = StringList()
         self.set_page_size(page_size)
 
     def set_page_size(self, page_size):
-        self._page_size = page_size
+        self.__page_size = page_size
 
     def get_page_size(self):
-        return self._page_size
+        return self.__page_size
 
     def get_current_page_size(self):
-        nr_candidate = len(self._candidates)
-        nr_page, last_page_size = divmod(nr_candidate, self._page_size)
-        if self._cursor_pos / self._page_size == nr_page:
+        nr_candidate = len(self.__candidates)
+        nr_page, last_page_size = divmod(nr_candidate, self.__page_size)
+        if self.__cursor_pos / self.__page_size == nr_page:
             return last_page_size
         else:
-            return self._page_size
+            return self.__page_size
 
     def set_labels(self, labels):
-        self._labels == labels
+        self.__labels == labels
 
     def show_cursor(self, show = True):
-        self._cursor_visible = show
+        self.__cursor_visible = show
 
     def is_cursor_visible(self):
-        return self._cursor_visible
+        return self.__cursor_visible
 
     def get_current_page_start(self):
-        return (self._cursor_pos / self._page_size) * self._page_size
+        return (self.__cursor_pos / self.__page_size) * self.__page_size
 
     def set_cursor_pos(self, pos):
-        if pos >= len(self._candidates) or pos < 0:
+        if pos >= len(self.__candidates) or pos < 0:
             return False
-        self._cursor_pos = pos
+        self.__cursor_pos = pos
         return True
 
     def get_cursor_pos(self):
-        return self._cursor_pos
+        return self.__cursor_pos
 
     def get_cursor_pos_in_current_page(self):
-        page, pos_in_page = divmod(self._cursor_pos, self._page_size)
+        page, pos_in_page = divmod(self.__cursor_pos, self.__page_size)
         return pos_in_page
 
     def set_cursor_pos_in_current_page(self, pos):
-        if pos < 0 or pos >= self._page_size:
+        if pos < 0 or pos >= self.__page_size:
             return False
         pos += self.get_current_page_start()
-        if pos >= len(self._candidates):
+        if pos >= len(self.__candidates):
             return False
-        self._cursor_pos = pos
+        self.__cursor_pos = pos
         return True
 
 
     def page_up(self):
-        if self._cursor_pos < self._page_size:
+        if self.__cursor_pos < self.__page_size:
             return False
 
-        self._cursor_pos -= self._page_size
+        self.__cursor_pos -= self.__page_size
         return True
 
     def page_down(self):
-        current_page = self._cursor_pos / self._page_size
-        nr_candidates = len(self._candidates)
-        max_page = nr_candidates / self._page_size
+        current_page = self.__cursor_pos / self.__page_size
+        nr_candidates = len(self.__candidates)
+        max_page = nr_candidates / self.__page_size
 
         if current_page >= max_page:
             return False
 
-        pos = self._cursor_pos + self._page_size
+        pos = self.__cursor_pos + self.__page_size
         if pos >= nr_candidates:
             return False
-        self._cursor_pos = pos
+        self.__cursor_pos = pos
 
         return True
 
     def cursor_up(self):
-        if self._cursor_pos == 0:
+        if self.__cursor_pos == 0:
             return False
 
-        self._cursor_pos -= 1
+        self.__cursor_pos -= 1
         return True
 
     def cursor_down(self):
-        if self._cursor_pos == len(self._candidates) - 1:
+        if self.__cursor_pos == len(self.__candidates) - 1:
             return False
 
-        self._cursor_pos += 1
+        self.__cursor_pos += 1
         return True
 
     def clean(self):
-        self._candidates.clean()
-        self._cursor_pos = 0
+        self.__candidates.clean()
+        self.__cursor_pos = 0
 
     def append_candidate(self, candidate, attrs = None):
         if attrs == None:
             attrs = AttrList()
-        self._candidates.append((candidate, attrs))
+        self.__candidates.append((candidate, attrs))
 
     def get_candidate(self, index):
-        return self._candidates[index]
+        return self.__candidates[index]
 
     def get_canidates_in_current_page(self):
-        page = self._cursor_pos / self._page_size
-        start_index = page * self._page_size
-        end_index = min((page + 1) * self._page_size, len(self._candidates))
-        return self._candidates[start_index:end_index]
+        page = self.__cursor_pos / self.__page_size
+        start_index = page * self.__page_size
+        end_index = min((page + 1) * self.__page_size, len(self.__candidates))
+        return self.__candidates[start_index:end_index]
 
     def get_current_candidate(self):
-        return self._candidates [self._cursor_pos]
+        return self.__candidates [self.__cursor_pos]
 
     def get_number_of_candidates(self):
-        return len(self._candidates)
+        return len(self.__candidates)
 
     def __len__(self):
         return self.get_number_of_candidates()
 
     def to_dbus_value(self):
-        value = (dbus.Int32(self._page_size),
-                 dbus.Int32(self._cursor_pos),
-                 dbus.Boolean(self._cursor_visible),
-                 self._candidates.to_dbus_value())
+        value = (dbus.Int32(self.__page_size),
+                 dbus.Int32(self.__cursor_pos),
+                 dbus.Boolean(self.__cursor_visible),
+                 self.__candidates.to_dbus_value())
         return dbus.Struct(value)
 
     def from_dbus_value(self, value):
@@ -192,10 +192,10 @@ class LookupTable(object):
             not isinstance(value[2], dbus.Boolean):
             raise dbus.Exception("LookupTable must from dbus.Struct(uuba(...))")
 
-        self._candidates.from_dbus_value(value[3])
-        self._page_size = value[0]
-        self._cursor_pos = value[1]
-        self._cursor_visible = value[2]
+        self.__candidates.from_dbus_value(value[3])
+        self.__page_size = value[0]
+        self.__cursor_pos = value[1]
+        self.__cursor_visible = value[2]
 
 def lookup_table_from_dbus_value(value):
     lookup_table = LookupTable()
