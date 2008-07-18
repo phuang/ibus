@@ -80,9 +80,13 @@ class EngineBase(ibus.Object):
         return self.__proxy.ForwardKeyEvent(keyval, is_press, state)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
+        if attrs == None:
+            attrs = ibus.AttrList()
         return self.__proxy.UpdatePreedit(text, attrs.to_dbus_value(), cursor_pos, visible)
 
     def update_aux_string(self, text, attrs, visible):
+        if attrs == None:
+            attrs = ibus.AttrList()
         return self.__proxy.UpdateAuxString(text, attrs.to_dbus_value(), visible)
 
     def update_lookup_table(self, lookup_table, visible):
