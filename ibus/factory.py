@@ -46,9 +46,9 @@ class EngineFactoryBase(ibus.Object):
         pass
 
     def create_engine(self):
-        engine = engine_class(conn, engine_path + str(self.__engine_id))
+        engine = self.__engine_class(self.__conn, self.__engine_path + str(self.__engine_id))
         self.__engine_id += 1
-        return engine
+        return engine.get_dbus_object()
 
     def do_destroy(self):
         self.__proxy = None
@@ -61,7 +61,7 @@ class EngineFactoryBase(ibus.Object):
 
 class EngineFactoryProxy(interface.IEngineFactory):
     def __init__(self, factory, conn, object_path):
-        super(EngineFactoryProxy, self).__init__(dbusconn, object_path)
+        super(EngineFactoryProxy, self).__init__(conn, object_path)
         self.__conn = conn
         self.__factory = factory
 
@@ -75,7 +75,7 @@ class EngineFactoryProxy(interface.IEngineFactory):
         return self.__factory.uninitialize()
 
     def CreateEngine(self):
-        return self.__factory.create_factory()
+        return self.__factory.create_engine()
 
     def Destroy(self):
         self.__factory.destroy()

@@ -94,6 +94,9 @@ class EngineBase(ibus.Object):
     def update_property(self, prop):
         return self.__proxy.UpdateProperty(prop.to_dbus_value())
 
+    def get_dbus_object(self):
+        return self.__proxy
+
     def do_destroy(self):
         self.__proxy = None
         super(EngineBase,self).do_destroy()
@@ -101,7 +104,7 @@ class EngineBase(ibus.Object):
 
 class EngineProxy(interface.IEngine):
     def __init__(self, engine, conn, object_path):
-        super(EngineProxy, self).__init__(dbusconn, object_path)
+        super(EngineProxy, self).__init__(conn, object_path)
         self.__conn = conn
         self.__engine = engine
 

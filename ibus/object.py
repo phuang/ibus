@@ -42,4 +42,7 @@ class Object(gobject.GObject):
             self.emit("destroy")
             self._destroyed = True
 
+    def do_destroy(self):
+        pass
+
 gobject.type_register(Object)
