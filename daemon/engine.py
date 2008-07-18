@@ -115,10 +115,11 @@ class Engine(ibus.Object):
         self._engine.SetCursorLocation(x, y, w, h,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
+    def enable(self):
+        self._engine.Enable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
-    def set_enable(self, enable):
-        self._engine.SetEnable(enable,
-                **ibus.DEFAULT_ASYNC_HANDLERS)
+    def disable(self):
+        self._engine.Disable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     # cursor for lookup table
 
