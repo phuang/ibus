@@ -89,7 +89,7 @@ class EngineBase(ibus.Object):
         return self.__proxy.UpdateLookupTable(lookup_table.to_dbus_value(), visible)
 
     def register_properties(self, props):
-        return self.__proxy.RegisterProperties(self, props.to_dbus_value())
+        return self.__proxy.RegisterProperties(props.to_dbus_value())
 
     def update_property(self, prop):
         return self.__proxy.UpdateProperty(prop.to_dbus_value())
