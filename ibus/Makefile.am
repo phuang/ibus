@@ -28,6 +28,7 @@ ibus_PYTHON = \
 	attribute.py \
 	common.py \
 	connection.py \
+	engine.py \
 	exception.py \
 	gtk.py \
 	__init__.py \
