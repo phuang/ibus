@@ -502,7 +502,7 @@ ibus_im_client_commit_string (IBusIMClient *client, const gchar *ic, const gchar
 
 static void
 ibus_im_client_update_preedit (IBusIMClient *client, const gchar *ic, const gchar *string,
-        PangoAttrList *attrs, gint cursor_pos, gboolean show)
+        PangoAttrList *attrs, gint cursor_pos, gboolean visible)
 {
     IBusIMClientPrivate *priv = client->priv;
     IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
@@ -511,7 +511,7 @@ ibus_im_client_update_preedit (IBusIMClient *client, const gchar *ic, const gcha
         g_debug ("Can not find context assocate with ic(%s)", ic);
         return;
     }
-    ibus_im_context_update_preedit (context, string, attrs, cursor_pos, show);
+    ibus_im_context_update_preedit (context, string, attrs, cursor_pos, visible);
 }
 
 static void
@@ -553,7 +553,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     gchar *string = NULL;
     PangoAttrList *attrs = NULL;
     int cursor = 0;
-    gboolean show = False;
+    gboolean visible = False;
 
     if (!dbus_message_iter_init (message, &iter)) {
         g_warning ("The UpdatePreedit signal does have args!");
@@ -661,7 +661,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
         pango_attr_list_unref (attrs);
         return;
     }
-    dbus_message_iter_get_basic (&iter, &show);
+    dbus_message_iter_get_basic (&iter, &visible);
     dbus_message_iter_next (&iter);
 
     {
@@ -670,10 +670,58 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
             g_debug ("Can not find context assocate with ic(%s)", ic);
             return;
         }
-        ibus_im_context_update_preedit (context, string, attrs, cursor, show);
+        ibus_im_context_update_preedit (context, string, attrs, cursor, visible);
     }
     pango_attr_list_unref (attrs);
 
+}
+
+static void
+_ibus_signal_show_preedit_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
+{
+    /* Handle CommitString signal */
+    IBusIMClientPrivate *priv = client->priv;
+    DBusError error = {0};
+    gchar *ic = NULL;
+
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INVALID)) {
+        g_warning ("%s", error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
+        if (context == NULL) {
+            g_debug ("Can not find context assocate with ic(%s)", ic);
+            return;
+        }
+        ibus_im_context_show_preedit (context);
+    }
+}
+
+static void
+_ibus_signal_hide_preedit_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
+{
+    /* Handle CommitString signal */
+    IBusIMClientPrivate *priv = client->priv;
+    DBusError error = {0};
+    gchar *ic = NULL;
+
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INVALID)) {
+        g_warning ("%s", error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
+        if (context == NULL) {
+            g_debug ("Can not find context assocate with ic(%s)", ic);
+            return;
+        }
+        ibus_im_context_hide_preedit (context);
+    }
 }
 
 #ifdef USE_DBUS_SESSION_BUS
@@ -783,6 +831,8 @@ _ibus_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *mess
         { DBUS_INTERFACE_LOCAL, "Disconnected", _ibus_signal_disconnected_handler },
         { IBUS_IFACE, "CommitString", _ibus_signal_commit_string_handler },
         { IBUS_IFACE, "UpdatePreedit", _ibus_signal_update_preedit_handler },
+        { IBUS_IFACE, "ShowPreedit", _ibus_signal_show_preedit_handler },
+        { IBUS_IFACE, "HidePreedit", _ibus_signal_hide_preedit_handler },
         { IBUS_IFACE, "Enabled", _ibus_signal_enabled_handler },
         { IBUS_IFACE, "Disabled", _ibus_signal_disabled_handler },
         {0},
@@ -795,7 +845,7 @@ _ibus_im_client_message_filter_cb (DBusConnection *connection, DBusMessage *mess
             return DBUS_HANDLER_RESULT_HANDLED;
         }
     }
-
+    g_debug ("Unknown message %s", dbus_message_get_member (message));
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 

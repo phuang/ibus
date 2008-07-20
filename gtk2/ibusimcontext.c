@@ -438,14 +438,39 @@ ibus_im_context_commit_string (IBusIMContext  *context, const gchar *string)
 
 void
 ibus_im_context_update_preedit (IBusIMContext *context, const gchar *string,
-        PangoAttrList *attrs, gint cursor_pos, gboolean show)
+        PangoAttrList *attrs, gint cursor_pos, gboolean visible)
 {
     IBusIMContextPrivate *priv = context->priv;
 
     priv->preedit_string = g_strdup (string);
     priv->preedit_attrs = pango_attr_list_ref (attrs);
     priv->preedit_cursor_pos = cursor_pos;
-    priv->preedit_visible = show;
+    priv->preedit_visible = visible;
+
+    g_signal_emit_by_name (context, "preedit-changed");
+}
+
+void
+ibus_im_context_show_preedit (IBusIMContext *context)
+{
+    IBusIMContextPrivate *priv = context->priv;
+    if (priv->preedit_visible)
+        return;
+
+    priv->preedit_visible = TRUE;
+
+    g_signal_emit_by_name (context, "preedit-changed");
+}
+
+void
+ibus_im_context_hide_preedit (IBusIMContext *context)
+{
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (!priv->preedit_visible)
+        return;
+
+    priv->preedit_visible = FALSE;
 
     g_signal_emit_by_name (context, "preedit-changed");
 }

@@ -75,7 +75,11 @@ void    ibus_im_context_update_preedit
                                 const gchar     *string,
                                 PangoAttrList   *attrs,
                                 gint            cursor_pos,
-                                gboolean        show);
+                                gboolean        visible);
+void    ibus_im_context_show_preedit
+                                (IBusIMContext  *context);
+void    ibus_im_context_hide_preedit
+                                (IBusIMContext  *context);
 G_END_DECLS
 #endif
 

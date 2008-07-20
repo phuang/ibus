@@ -213,7 +213,7 @@ class InputContext(ibus.Object):
     def show_preedit(self):
         self._preedit_visible = True
         if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("ShowPreedit")
+            self._ibusconn.emit_dbus_signal("ShowPreedit", self._id)
         else:
             # show preedit on panel
             self.emit("show-preedit")
@@ -221,7 +221,7 @@ class InputContext(ibus.Object):
     def hide_preedit(self):
         self._preedit_visible = False
         if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("HidePreedit")
+            self._ibusconn.emit_dbus_signal("HidePreedit", self._id)
         else:
             # show preedit on panel
             self.emit("hide-preedit")
