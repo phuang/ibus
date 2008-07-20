@@ -2,12 +2,12 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright(c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2 of the License, or(at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,86 +26,86 @@ import pango
 import ibus
 from ibus.gtk import PangoAttrList
 
-class HSeparator (gtk.HBox):
+class HSeparator(gtk.HBox):
     def __init__ (self):
         gtk.HBox.__init__ (self)
-        self.pack_start (gtk.HSeparator (), True, True, 4)
+        self.pack_start(gtk.HSeparator(), True, True, 4)
 
-class VSeparator (gtk.VBox):
+class VSeparator(gtk.VBox):
     def __init__ (self):
         gtk.VBox.__init__ (self)
-        self.pack_start (gtk.VSeparator (), True, True, 4)
+        self.pack_start(gtk.VSeparator(), True, True, 4)
 
-class CandidateArea (gtk.HBox):
+class CandidateArea(gtk.HBox):
     def __init__ (self, orientation):
         gtk.HBox.__init__ (self)
-        self._orientation = orientation
-        self._labels = []
-        self._create_ui ()
+        self.__orientation = orientation
+        self.__labels = []
+        self.__create_ui()
 
-    def _create_ui (self):
-        if self._orientation == gtk.ORIENTATION_VERTICAL:
-            self._vbox1 = gtk.VBox ()
-            self._vbox1.set_homogeneous (True)
-            self._vbox2 = gtk.VBox ()
-            self._vbox2.set_homogeneous (True)
-            self.pack_start (self._vbox1, False, False, 4)
-            self.pack_start (VSeparator(), False, False, 0)
-            self.pack_start (self._vbox2, True, True, 4)
+    def __create_ui(self):
+        if self.__orientation == gtk.ORIENTATION_VERTICAL:
+            self.__vbox1 = gtk.VBox()
+            self.__vbox1.set_homogeneous(True)
+            self.__vbox2 = gtk.VBox()
+            self.__vbox2.set_homogeneous(True)
+            self.pack_start(self.__vbox1, False, False, 4)
+            self.pack_start(VSeparator(), False, False, 0)
+            self.pack_start(self.__vbox2, True, True, 4)
 
-        for i in xrange (1, 11):
-            label1 = gtk.Label ("%d." % (i % 10))
-            label1.set_alignment (0.0, 0.5)
-            label1.set_no_show_all (True)
+        for i in xrange(1, 11):
+            label1 = gtk.Label("%d." % (i % 10))
+            label1.set_alignment(0.0, 0.5)
+            label1.set_no_show_all(True)
 
-            label2 = gtk.Label ()
-            label2.set_alignment (0.0, 0.5)
-            label2.set_no_show_all (True)
+            label2 = gtk.Label()
+            label2.set_alignment(0.0, 0.5)
+            label2.set_no_show_all(True)
 
-            if self._orientation == gtk.ORIENTATION_VERTICAL:
-                label1.set_property ("xpad", 8)
-                label2.set_property ("xpad", 8)
-                self._vbox1.pack_start (label1, False, False, 2)
-                self._vbox2.pack_start (label2, False, False, 2)
+            if self.__orientation == gtk.ORIENTATION_VERTICAL:
+                label1.set_property("xpad", 8)
+                label2.set_property("xpad", 8)
+                self.__vbox1.pack_start(label1, False, False, 2)
+                self.__vbox2.pack_start(label2, False, False, 2)
             else:
-                hbox = gtk.HBox ()
-                hbox.pack_start (label1, False, False, 1)
-                hbox.pack_start (label2, False, False, 1)
-                self.pack_start (hbox, False, False, 4)
+                hbox = gtk.HBox()
+                hbox.pack_start(label1, False, False, 1)
+                hbox.pack_start(label2, False, False, 1)
+                self.pack_start(hbox, False, False, 4)
 
-            self._labels.append ((label1, label2))
+            self.__labels.append((label1, label2))
 
-        self._labels[0][0].show ()
-        self._labels[0][1].show ()
+        self.__labels[0][0].show()
+        self.__labels[0][1].show()
 
-    def set_candidates (self, candidates, focus_candidate = 0):
-        assert len (candidates) <= len (self._labels)
+    def set_candidates(self, candidates, focus_candidate = 0):
+        assert len(candidates) <= len(self.__labels)
         i = 0
         for text, attrs in candidates:
-            self._labels[i][1].set_text (text)
-            self._labels[i][1].set_attributes (attrs)
-            self._labels[i][0].show ()
-            self._labels[i][1].show ()
             if i == focus_candidate:
-                self._labels[i][0].set_state (gtk.STATE_SELECTED)
-                self._labels[i][1].set_state (gtk.STATE_SELECTED)
-            else:
-                self._labels[i][0].set_state (gtk.STATE_NORMAL)
-                self._labels[i][1].set_state (gtk.STATE_NORMAL)
+                color = self.__labels[i][1].style.base[gtk.STATE_SELECTED]
+                end_index = len(text.encode("utf8"))
+                attr = pango.AttrBackground(color.red, color.green, color.blue, 0, end_index)
+                attrs.change(attr)
+
+            self.__labels[i][1].set_text(text)
+            self.__labels[i][1].set_attributes(attrs)
+            self.__labels[i][0].show()
+            self.__labels[i][1].show()
 
             i += 1
 
-        for label1, label2 in self._labels[max (1, len(candidates)):]:
-            label1.hide ()
-            label2.hide ()
+        for label1, label2 in self.__labels[max(1, len(candidates)):]:
+            label1.hide()
+            label2.hide()
 
-        if len (candidates) == 0:
-            self._labels[0][0].set_text ("")
-            self._labels[0][1].set_text ("")
+        if len(candidates) == 0:
+            self.__labels[0][0].set_text("")
+            self.__labels[0][1].set_text("")
         else:
-            self._labels[0][0].set_text ("1.")
+            self.__labels[0][0].set_text("1.")
 
-class CandidatePanel (gtk.VBox):
+class CandidatePanel(gtk.VBox):
     __gproperties__ = {
         'orientation' : (gtk.Orientation,        # type
         'orientation of candidates',            # nick name
@@ -127,301 +127,301 @@ class CandidatePanel (gtk.VBox):
 
     def __init__ (self):
         gtk.VBox.__init__ (self)
-        self._tooltips = gtk.Tooltips ()
+        self.__tooltips = gtk.Tooltips()
 
-        self._toplevel = gtk.Window (gtk.WINDOW_POPUP)
-        self._toplevel.add (self)
-        self._toplevel.add_events (
+        self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
+        self.__toplevel.add(self)
+        self.__toplevel.add_events(
             gdk.BUTTON_PRESS_MASK | \
             gdk.BUTTON_RELEASE_MASK | \
             gdk.BUTTON1_MOTION_MASK)
-        self._begin_move = False
-        self._toplevel.connect ("button-press-event", self._button_press_event_cb)
-        self._toplevel.connect ("button-release-event", self._button_release_event_cb)
-        self._toplevel.connect ("motion-notify-event", self._motion_notify_event_cb)
+        self.__begin_move = False
+        self.__toplevel.connect("button-press-event", self.__button_press_event_cb)
+        self.__toplevel.connect("button-release-event", self.__button_release_event_cb)
+        self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
 
-        self._orientation = gtk.ORIENTATION_HORIZONTAL
-        self._orientation = gtk.ORIENTATION_VERTICAL
-        self._show_preedit_string = False
-        self._show_aux_string = False
-        self._show_lookup_table = False
-        self._preedit_string = ""
-        self._preedit_attrs = pango.AttrList ()
-        self._aux_string = ""
-        self._aux_attrs = pango.AttrList ()
-        self._lookup_table = None
+        self.__orientation = gtk.ORIENTATION_HORIZONTAL
+        self.__orientation = gtk.ORIENTATION_VERTICAL
+        self.__show_preedit_string = False
+        self.__show_aux_string = False
+        self.__show_lookup_table = False
+        self.__preedit_string = ""
+        self.__preedit_attrs = pango.AttrList()
+        self.__aux_string = ""
+        self.__aux_attrs = pango.AttrList()
+        self.__lookup_table = None
 
-        self._recreate_ui ()
+        self.__recreate_ui()
 
-    def _recreate_ui (self):
+    def __recreate_ui(self):
         for w in self:
-            self.remove (w)
-            w.destroy ()
+            self.remove(w)
+            w.destroy()
         # create preedit label
-        self._preedit_label = gtk.Label (self._preedit_string)
-        self._preedit_label.set_attributes (self._preedit_attrs)
-        self._preedit_label.set_alignment (0.0, 0.5)
-        self._preedit_label.set_padding (8, 0)
-        self._preedit_label.set_no_show_all (True)
-        if self._show_preedit_string:
-            self._preedit_label.show ()
+        self.__preedit_label = gtk.Label(self.__preedit_string)
+        self.__preedit_label.set_attributes(self.__preedit_attrs)
+        self.__preedit_label.set_alignment(0.0, 0.5)
+        self.__preedit_label.set_padding(8, 0)
+        self.__preedit_label.set_no_show_all(True)
+        if self.__show_preedit_string:
+            self.__preedit_label.show()
 
         # create aux label
-        self._aux_label = gtk.Label (self._aux_string)
-        self._aux_label.set_attributes (self._aux_attrs)
-        self._aux_label.set_alignment (0.0, 0.5)
-        self._aux_label.set_padding (8, 0)
-        self._tooltips.set_tip (self._aux_label, "Aux string")
-        self._aux_label.set_no_show_all (True)
-        if self._show_aux_string:
-            self._aux_label.show ()
+        self.__aux_label = gtk.Label(self.__aux_string)
+        self.__aux_label.set_attributes(self.__aux_attrs)
+        self.__aux_label.set_alignment(0.0, 0.5)
+        self.__aux_label.set_padding(8, 0)
+        self.__tooltips.set_tip(self.__aux_label, "Aux string")
+        self.__aux_label.set_no_show_all(True)
+        if self.__show_aux_string:
+            self.__aux_label.show()
 
         # create candidates area
-        self._candidate_area = CandidateArea (self._orientation)
-        self._candidate_area.set_no_show_all (True)
-        self.update_lookup_table (self._lookup_table, self._show_lookup_table)
+        self.__candidate_area = CandidateArea(self.__orientation)
+        self.__candidate_area.set_no_show_all(True)
+        self.update_lookup_table(self.__lookup_table, self.__show_lookup_table)
 
         # create state label
-        self._state_label = gtk.Label ()
-        self._state_label.set_size_request (20, -1)
+        self.__state_label = gtk.Label()
+        self.__state_label.set_size_request(20, -1)
 
         # create buttons
-        self._prev_button = gtk.Button ()
-        self._prev_button.connect ("clicked", lambda x: self.emit ("cursor-up"))
-        self._prev_button.set_relief (gtk.RELIEF_NONE)
-        self._tooltips.set_tip (self._prev_button, "Previous candidate")
+        self.__prev_button = gtk.Button()
+        self.__prev_button.connect("clicked", lambda x: self.emit("cursor-up"))
+        self.__prev_button.set_relief(gtk.RELIEF_NONE)
+        self.__tooltips.set_tip(self.__prev_button, "Previous candidate")
 
-        self._next_button = gtk.Button ()
-        self._next_button.connect ("clicked", lambda x: self.emit ("cursor-down"))
-        self._next_button.set_relief (gtk.RELIEF_NONE)
-        self._tooltips.set_tip (self._next_button, "Next candidate")
+        self.__next_button = gtk.Button()
+        self.__next_button.connect("clicked", lambda x: self.emit("cursor-down"))
+        self.__next_button.set_relief(gtk.RELIEF_NONE)
+        self.__tooltips.set_tip(self.__next_button, "Next candidate")
 
-        self._pack_all_widgets ()
+        self.__pack_all_widgets()
 
-    def _pack_all_widgets (self):
-        if self._orientation == gtk.ORIENTATION_VERTICAL:
+    def __pack_all_widgets(self):
+        if self.__orientation == gtk.ORIENTATION_VERTICAL:
             # package all widgets in vertical mode
-            image = gtk.Image ()
-            image.set_from_stock (gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
-            self._prev_button.set_image (image)
+            image = gtk.Image()
+            image.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
+            self.__prev_button.set_image(image)
 
-            image = gtk.Image ()
-            image.set_from_stock (gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
-            self._next_button.set_image (image)
-            vbox = gtk.VBox ()
-            vbox.pack_start (self._preedit_label, False, False, 0)
-            vbox.pack_start (self._aux_label, False, False, 0)
-            self.pack_start (vbox, False, False, 5)
-            self.pack_start (HSeparator (), False, False)
-            self.pack_start (self._candidate_area, False, False, 2)
-            self.pack_start (HSeparator (), False, False)
-            hbox= gtk.HBox ()
-            hbox.pack_start (self._state_label, True, True)
-            hbox.pack_start (VSeparator (), False, False)
-            hbox.pack_start (self._prev_button, False, False, 2)
-            hbox.pack_start (self._next_button, False, False, 2)
-            self.pack_start (hbox, False, False)
+            image = gtk.Image()
+            image.set_from_stock(gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
+            self.__next_button.set_image(image)
+            vbox = gtk.VBox()
+            vbox.pack_start(self.__preedit_label, False, False, 0)
+            vbox.pack_start(self.__aux_label, False, False, 0)
+            self.pack_start(vbox, False, False, 5)
+            self.pack_start(HSeparator(), False, False)
+            self.pack_start(self.__candidate_area, False, False, 2)
+            self.pack_start(HSeparator(), False, False)
+            hbox= gtk.HBox()
+            hbox.pack_start(self.__state_label, True, True)
+            hbox.pack_start(VSeparator(), False, False)
+            hbox.pack_start(self.__prev_button, False, False, 2)
+            hbox.pack_start(self.__next_button, False, False, 2)
+            self.pack_start(hbox, False, False)
         else:
             # package all widgets in HORIZONTAL mode
-            image = gtk.Image ()
-            image.set_from_stock (gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
-            self._prev_button.set_image (image)
+            image = gtk.Image()
+            image.set_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
+            self.__prev_button.set_image(image)
 
-            image = gtk.Image ()
-            image.set_from_stock (gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_MENU)
-            self._next_button.set_image (image)
+            image = gtk.Image()
+            image.set_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_MENU)
+            self.__next_button.set_image(image)
 
-            vbox = gtk.VBox ()
-            vbox.pack_start (self._preedit_label, False, False, 0)
-            vbox.pack_start (self._aux_label, False, False, 0)
-            self.pack_start (vbox, False, False, 5)
-            self.pack_start (HSeparator (), False, False)
-            hbox= gtk.HBox ()
-            hbox.pack_start (self._candidate_area, True, True, 2)
-            hbox.pack_start (VSeparator (), False, False)
-            hbox.pack_start (self._prev_button, False, False, 2)
-            hbox.pack_start (self._next_button, False, False, 2)
-            self.pack_start (hbox, False, False)
+            vbox = gtk.VBox()
+            vbox.pack_start(self.__preedit_label, False, False, 0)
+            vbox.pack_start(self.__aux_label, False, False, 0)
+            self.pack_start(vbox, False, False, 5)
+            self.pack_start(HSeparator(), False, False)
+            hbox= gtk.HBox()
+            hbox.pack_start(self.__candidate_area, True, True, 2)
+            hbox.pack_start(VSeparator(), False, False)
+            hbox.pack_start(self.__prev_button, False, False, 2)
+            hbox.pack_start(self.__next_button, False, False, 2)
+            self.pack_start(hbox, False, False)
 
-        # self.hide_all ()
-        # self.show_all ()
+        # self.hide_all()
+        # self.show_all()
 
-    def show_preedit_string (self):
-        self._show_preedit_string = True
-        self._preedit_label.show ()
-        self._check_show_states ()
+    def show_preedit_string(self):
+        self.__show_preedit_string = True
+        self.__preedit_label.show()
+        self.__check_show_states()
 
-    def hide_preedit_string (self):
-        self._show_preedit_string = False
-        self._preedit_label.hide ()
-        self._check_show_states ()
+    def hide_preedit_string(self):
+        self.__show_preedit_string = False
+        self.__preedit_label.hide()
+        self.__check_show_states()
 
-    def update_preedit (self, text, attrs, cursor_pos, show):
-        attrs = PangoAttrList (attrs, text)
+    def update_preedit(self, text, attrs, cursor_pos, show):
+        attrs = PangoAttrList(attrs, text)
         if show:
-            self.show_preedit_string ()
+            self.show_preedit_string()
         else:
-            self.hide_preedit_string ()
-        self._preedit_string = text
-        self._preedit_label.set_text (text)
+            self.hide_preedit_string()
+        self.__preedit_string = text
+        self.__preedit_label.set_text(text)
         if attrs == None:
-            attrs = pango.AttrList ()
-        self._preedit_attrs = attrs
-        self._preedit_label.set_attributes (attrs)
+            attrs = pango.AttrList()
+        self.__preedit_attrs = attrs
+        self.__preedit_label.set_attributes(attrs)
 
-    def show_aux_string (self):
-        self._show_aux_string = True
-        self._aux_label.show ()
-        self._check_show_states ()
+    def show_aux_string(self):
+        self.__show_aux_string = True
+        self.__aux_label.show()
+        self.__check_show_states()
 
-    def hide_aux_string (self):
-        self._show_aux_string = False
-        self._aux_label.hide ()
-        self._check_show_states ()
+    def hide_aux_string(self):
+        self.__show_aux_string = False
+        self.__aux_label.hide()
+        self.__check_show_states()
 
-    def update_aux_string (self, text, attrs, show):
-        attrs = PangoAttrList (attrs, text)
+    def update_aux_string(self, text, attrs, show):
+        attrs = PangoAttrList(attrs, text)
 
         if show:
-            self.show_aux_string ()
+            self.show_aux_string()
         else:
-            self.hide_aux_string ()
+            self.hide_aux_string()
 
-        self._aux_string = text
-        self._aux_label.set_text (text)
+        self.__aux_string = text
+        self.__aux_label.set_text(text)
         if attrs == None:
-            attrs = pango.AttrList ()
-        self._aux_attrs = attrs
-        self._aux_label.set_attributes (attrs)
+            attrs = pango.AttrList()
+        self.__aux_attrs = attrs
+        self.__aux_label.set_attributes(attrs)
 
-    def show_lookup_table (self):
-        self._show_lookup_table = True
-        self._candidate_area.set_no_show_all (False)
-        self._candidate_area.show_all ()
-        self._check_show_states ()
+    def show_lookup_table(self):
+        self.__show_lookup_table = True
+        self.__candidate_area.set_no_show_all(False)
+        self.__candidate_area.show_all()
+        self.__check_show_states()
 
-    def hide_lookup_table (self):
-        self._show_lookup_table = False
-        self._candidate_area.hide_all ()
-        self._candidate_area.set_no_show_all (True)
-        self._check_show_states ()
+    def hide_lookup_table(self):
+        self.__show_lookup_table = False
+        self.__candidate_area.hide_all()
+        self.__candidate_area.set_no_show_all(True)
+        self.__check_show_states()
 
-    def update_lookup_table (self, lookup_table, show):
+    def update_lookup_table(self, lookup_table, show):
         if lookup_table == None:
-            lookup_table = ibus.LookupTable ()
+            lookup_table = ibus.LookupTable()
 
         if show:
-            self.show_lookup_table ()
+            self.show_lookup_table()
         else:
-            self.hide_lookup_table ()
+            self.hide_lookup_table()
 
-        self._lookup_table = lookup_table
-        candidates = self._lookup_table.get_canidates_in_current_page ()
-        candidates = map (lambda x: (x[0], PangoAttrList (x[1], x[0])), candidates)
-        self._candidate_area.set_candidates (candidates, self._lookup_table.get_cursor_pos_in_current_page ())
+        self.__lookup_table = lookup_table
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
 
-    def _check_show_states (self):
-        if self._show_preedit_string or \
-            self._show_aux_string or \
-            self._show_lookup_table:
-            self.show_all ()
-            self.emit ("show")
+    def __check_show_states(self):
+        if self.__show_preedit_string or \
+            self.__show_aux_string or \
+            self.__show_lookup_table:
+            self.show_all()
+            self.emit("show")
         else:
-            self.hide_all ()
-            self.emit ("hide")
+            self.hide_all()
+            self.emit("hide")
 
-    def reset (self):
-        self.hide ()
-        self.hide_preedit_string ()
-        self.hide_aux_string ()
-        self.hide_lookup_table ()
-        self.update_preedit ("", None, 0, False)
-        self.update_aux_string ("", None, False)
-        self.update_lookup_table (None, False)
+    def reset(self):
+        self.hide()
+        self.hide_preedit_string()
+        self.hide_aux_string()
+        self.hide_lookup_table()
+        self.update_preedit("", None, 0, False)
+        self.update_aux_string("", None, False)
+        self.update_lookup_table(None, False)
 
-    def set_orientation (self, orientation):
-        if self._orientation == orientation:
+    def set_orientation(self, orientation):
+        if self.__orientation == orientation:
             return
-        self._orientation = orientation
-        self._recreate_ui ()
-        if self._toplevel.flags () & gtk.VISIBLE:
-            self.show_all ()
+        self.__orientation = orientation
+        self.__recreate_ui()
+        if self.__toplevel.flags() & gtk.VISIBLE:
+            self.show_all()
 
-    def get_orientation (self):
-        return self._orientation
+    def get_orientation(self):
+        return self.__orientation
 
-    def do_set_property (self, property, value):
+    def do_set_property(self, property, value):
         if property == 'orientation':
-            self.set_orientation (value)
+            self.set_orientation(value)
         else:
-            return gtk.DrawingArea.do_set_property (property, value)
+            return gtk.DrawingArea.do_set_property(property, value)
 
-    def do_get_property (self, property):
+    def do_get_property(self, property):
         if property == 'orientation':
-            return self._orientation
+            return self.__orientation
         else:
-            return gtk.DrawingArea.do_get_property (property)
+            return gtk.DrawingArea.do_get_property(property)
 
-    def do_expose_event (self, event):
-        self.style.paint_box (self.window,
+    def do_expose_event(self, event):
+        self.style.paint_box(self.window,
                     gtk.STATE_NORMAL,
                     gtk.SHADOW_IN,
                     event.area,
                     self,
                     "menu",
-                    self.allocation.x, self.allocation.y, 
-                    self.allocation.width, self.allocation.height) 
+                    self.allocation.x, self.allocation.y,
+                    self.allocation.width, self.allocation.height)
 
-        gtk.VBox.do_expose_event (self, event)
+        gtk.VBox.do_expose_event(self, event)
 
-    def do_size_request (self, requisition):
-        gtk.VBox.do_size_request (self, requisition)
-        self._toplevel.resize (1, 1)
+    def do_size_request(self, requisition):
+        gtk.VBox.do_size_request(self, requisition)
+        self.__toplevel.resize(1, 1)
 
-    def _button_press_event_cb (self, widget, event):
+    def __button_press_event_cb(self, widget, event):
         if event.button == 1:
-            self._begin_move = True
-            self._press_pos = event.x_root, event.y_root
-            self._toplevel.window.set_cursor (gdk.Cursor (gdk.FLEUR))
+            self.__begin_move = True
+            self.__press_pos = event.x_root, event.y_root
+            self.__toplevel.window.set_cursor(gdk.Cursor(gdk.FLEUR))
             return True
 
         if event.button == 3:
-            if self.get_orientation () == gtk.ORIENTATION_HORIZONTAL:
-                self.set_orientation (gtk.ORIENTATION_VERTICAL)
+            if self.get_orientation() == gtk.ORIENTATION_HORIZONTAL:
+                self.set_orientation(gtk.ORIENTATION_VERTICAL)
             else:
-                
-                self.set_orientation (gtk.ORIENTATION_HORIZONTAL)
+
+                self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
             return True
         return False
 
-    def _button_release_event_cb (self, widget, event):
+    def __button_release_event_cb(self, widget, event):
         if event.button == 1:
-            del self._press_pos
-            self._begin_move = False
-            self._toplevel.window.set_cursor (gdk.Cursor (gdk.LEFT_PTR))
+            del self.__press_pos
+            self.__begin_move = False
+            self.__toplevel.window.set_cursor(gdk.Cursor(gdk.LEFT_PTR))
             return True
         return False
 
-    def _motion_notify_event_cb (self, widget, event):
-        if self._begin_move != True:
+    def __motion_notify_event_cb(self, widget, event):
+        if self.__begin_move != True:
             return False
-        x, y = self._toplevel.get_position ()
-        x  = int (x + event.x_root - self._press_pos[0])
-        y  = int (y + event.y_root - self._press_pos[1])
-        self._toplevel.move (x, y)
-        self._press_pos = event.x_root, event.y_root
+        x, y = self.__toplevel.get_position()
+        x  = int(x + event.x_root - self.__press_pos[0])
+        y  = int(y + event.y_root - self.__press_pos[1])
+        self.__toplevel.move(x, y)
+        self.__press_pos = event.x_root, event.y_root
         return True
 
-    def show_all (self):
-        gtk.VBox.show_all (self)
-        self._toplevel.show_all ()
-    
-    def hide_all (self):
-        gtk.VBox.hide_all (self)
-        self._toplevel.hide_all ()
+    def show_all(self):
+        gtk.VBox.show_all(self)
+        self.__toplevel.show_all()
 
-    def move (self, x, y):
-        self._toplevel.move (x, y)
+    def hide_all(self):
+        gtk.VBox.hide_all(self)
+        self.__toplevel.hide_all()
 
-gobject.type_register (CandidatePanel, "IBusCandidate")
+    def move(self, x, y):
+        self.__toplevel.move(x, y)
+
+gobject.type_register(CandidatePanel, "IBusCandidate")
 
