@@ -31,3 +31,4 @@ from lang import *
 from utility import *
 from engine import *
 from factory import *
+from panel import *

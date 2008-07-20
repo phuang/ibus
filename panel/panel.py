@@ -29,10 +29,9 @@ from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 
-class Panel(ibus.Object):
+class Panel(ibus.PanelBase):
     def __init__ (self, dbusconn, object_path, __ibus):
-        super(Panel, self).__init__()
-        self.__proxy = PanelProxy(self, dbusconn, object_path)
+        super(Panel, self).__init__(dbusconn, object_path)
         self.__ibus = __ibus
         self.__focus_ic = None
 
@@ -44,7 +43,7 @@ class Panel(ibus.Object):
 
         self.__language_bar = LanguageBar()
         self.__language_bar.connect("property-activate",
-                        lambda widget, prop_name, prop_state: self.__proxy.PropertyActivate(prop_name, prop_state))
+                        lambda widget, prop_name, prop_state: self.property_activate(prop_name, prop_state))
         self.__language_bar.connect("get-im-menu",
                         self.__get_im_menu_cb)
         self.__language_bar.focus_out()
@@ -52,9 +51,9 @@ class Panel(ibus.Object):
 
         self.__candidate_panel = CandidatePanel()
         self.__candidate_panel.connect("cursor-up",
-                        lambda widget: self.__proxy.CursorUp())
+                        lambda widget: self.cursor_up())
         self.__candidate_panel.connect("cursor-down",
-                        lambda widget: self.__proxy.CursorDown())
+                        lambda widget: self.cursor_down())
 
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)

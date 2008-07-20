@@ -20,11 +20,15 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
+        "PanelBase",
         "PanelItem",
         "PanelButton",
         "PanelToggleButton",
         "PanelMenu",
     )
+
+import ibus
+from ibus import interface
 
 class PanelItem:
     pass
@@ -37,4 +41,141 @@ class PanelToggleButton(PanelButton):
 
 class PanelMenu(PanelItem):
     pass
+
+class PanelBase(ibus.Object):
+    def __init__(self, dbusconn, object_path):
+        super(PanelBase, self).__init__()
+        self.__proxy = PanelProxy(self, dbusconn, object_path)
+
+    def set_cursor_location(self, x, y, w, h):
+        pass
+
+    def update_preedit(self, text, attrs, cursor_pos, visible):
+        pass
+
+    def update_aux_string(self, text, attrs, visible):
+        pass
+
+    def update_lookup_table(self, lookup_table, visible):
+        pass
+
+    def show_candidate_window(self):
+        pass
+
+    def hide_candidate_window(self):
+        pass
+
+    def show_language_bar(self):
+        pass
+
+    def hide_language_bar(self):
+        pass
+
+    def register_properties(self, props):
+        pass
+
+    def update_property(self, prop):
+        pass
+
+    def focus_in(self, ic):
+        pass
+
+    def focus_out(self, ic):
+        pass
+
+    def states_changed(self):
+        pass
+
+    def reset(self):
+        pass
+
+    def page_up(self):
+        self.__proxy.PageUp()
+
+    def page_down(self):
+        self.__proxy.PageDown()
+
+    def cursor_up(self):
+        self.__proxy.CursorUp()
+
+    def cursor_down(self):
+        self.__proxy.CursorDown()
+
+    def property_activate(self, prop_name, prop_state):
+        self.__proxy.PropertyActivate(prop_name, prop_state)
+
+    def property_show(self, prop_name):
+        self.__proxy.PropertyShow(prop_name)
+
+    def property_hide(self, prop_name):
+        self.__proxy.PropertyHide(prop_name)
+
+
+class PanelProxy(interface.IPanel):
+    def __init__ (self, panel, dbusconn, object_path):
+        super(PanelProxy, self).__init__(dbusconn, object_path)
+        self.__dbusconn = dbusconn
+        self.__panel = panel
+
+    def SetCursorLocation(self, x, y, w, h):
+        self.__panel.set_cursor_location(x, y, w, h)
+
+    def UpdatePreedit(self, text, attrs, cursor_pos, show):
+        attrs = ibus.attr_list_from_dbus_value(attrs)
+        self.__panel.update_preedit(text, atrrs, cursor_pos, show)
+
+    def ShowPreeditString(self):
+        self.__panel.show_preedit_string()
+
+    def HidePreeditString(self):
+        self.__panel.hide_preedit_string()
+
+    def UpdateAuxString(self, text, attrs, show):
+        attrs = ibus.attr_list_from_dbus_value(attrs)
+        self.__panel.update_aux_string(text, attrs, show)
+
+    def ShowAuxString(self):
+        self.__panel.show_aux_string()
+
+    def HideAuxString(self):
+        self.__panel.hide_aux_string()
+
+    def UpdateLookupTable(self, lookup_table, show):
+        lookup_table = ibus.lookup_table_from_dbus_value(lookup_table)
+        self.__panel.update_lookup_table(lookup_table, show)
+
+    def ShowCandidateWindow(self):
+        self.__panel.show_candidate_window()
+
+    def HideCandidateWindow(self):
+        self.__panel.hide_candidate_window()
+
+    def ShowLanguageBar(self):
+        self.__panel.show_language_bar()
+
+    def HideLanguageBar(self):
+        self.__panel.hide_language_bar()
+
+    def RegisterProperties(self, props):
+        props = ibus.prop_list_from_dbus_value(props)
+        self.__panel.register_properties(props)
+
+    def UpdateProperty(self, prop):
+        prop = ibus.property_from_dbus_value(prop)
+        self.__panel.update_property(prop)
+
+    def FocusIn(self, ic):
+        self.__panel.focus_in(ic)
+
+    def FocusOut(self, ic):
+        self.__panel.focus_out(ic)
+
+    def StatesChanged(self):
+        self.__panel.states_changed()
+
+    def Reset(self):
+        self.__panel.reset()
+
+    def Destroy(self):
+        self.__panel.destroy()
 

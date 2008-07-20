@@ -87,6 +87,9 @@ class CandidateArea(gtk.HBox):
                 end_index = len(text.encode("utf8"))
                 attr = pango.AttrBackground(color.red, color.green, color.blue, 0, end_index)
                 attrs.change(attr)
+                color = self.__labels[i][1].style.text[gtk.STATE_SELECTED]
+                attr = pango.AttrForeground(color.red, color.green, color.blue, 0, end_index)
+                attrs.insert(attr)
 
             self.__labels[i][1].set_text(text)
             self.__labels[i][1].set_attributes(attrs)
