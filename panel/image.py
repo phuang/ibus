@@ -22,10 +22,10 @@
 import gtk
 import gtk.gdk as gdk
 
-class Image (gtk.Image):
-    def __init__ (self, filename, width, height):
-        gtk.Image.__init__ (self)
+class Image(gtk.Image):
+    def __init__(self, filename, width, height):
+        super(Image, self).__init__()
         icon = gtk.IconSource
-        pixbuf = gdk.pixbuf_new_from_file_at_scale (filename, width, height, True)
-        self.set_from_pixbuf (pixbuf)
+        pixbuf = gdk.pixbuf_new_from_file_at_scale(filename, width, height, True)
+        self.set_from_pixbuf(pixbuf)
 
