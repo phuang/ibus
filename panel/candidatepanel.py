@@ -318,7 +318,7 @@ class CandidatePanel(gtk.VBox):
         self.__check_show_states()
 
     def hide_lookup_table(self):
-        self.__lookup_table_visble = False
+        self.__lookup_table_visible = False
         self.__candidate_area.hide_all()
         self.__candidate_area.set_no_show_all(True)
         self.__check_show_states()
@@ -354,6 +354,7 @@ class CandidatePanel(gtk.VBox):
             self.show_all()
             self.emit("show")
         else:
+            self.show_all()
             self.hide_all()
             self.emit("hide")
 
