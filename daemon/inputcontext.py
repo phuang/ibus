@@ -29,14 +29,54 @@ class InputContext(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
+        "show-preedit" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-preedit" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "update-aux-string" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+        "show-aux-string" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-aux-string" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "update-lookup-table" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+        "show-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "page-up-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "page-down-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "cursor-up-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "cursor-down-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "register-properties" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
@@ -66,14 +106,16 @@ class InputContext(ibus.Object):
         # client state
         self._aux_string = None
         self._aux_attrs = None
+        self._aux_visible = False
 
         self._use_preedit = True
         self._preedit_string = None
         self._preedit_attrs = None
         self._cursor_pos = 0
+        self._preedit_visible = False
 
         self._lookup_table = None
-        self._show_lookup_table = False
+        self._lookup_table_visible = False
 
     def get_id(self):
         return self._id;
@@ -158,11 +200,31 @@ class InputContext(ibus.Object):
         self._ibusconn.emit_dbus_signal("CommitString", self._id, text)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
+        self._preedit_string = text
+        self._preedit_attrs = attrs
+        self._cursor_pos = cursor_pos
+        self._preedit_visible = visible
         if self._use_preedit:
             self._ibusconn.emit_dbus_signal("UpdatePreedit", self._id, text, attrs, cursor_pos, visible)
         else:
             # show preedit on panel
             self.emit("update-preedit", text, attrs, cursor_pos, visible)
+
+    def show_preedit(self):
+        self._preedit_visible = True
+        if self._use_preedit:
+            self._ibusconn.emit_dbus_signal("ShowPreedit")
+        else:
+            # show preedit on panel
+            self.emit("show-preedit")
+
+    def hide_preedit(self):
+        self._preedit_visible = False
+        if self._use_preedit:
+            self._ibusconn.emit_dbus_signal("HidePreedit")
+        else:
+            # show preedit on panel
+            self.emit("hide-preedit")
 
     def set_engine(self, engine):
         if self._engine == engine:
@@ -212,14 +274,50 @@ class InputContext(ibus.Object):
     def _update_preedit_cb(self, engine, text, attrs, cursor_pos, visible):
         self.update_preedit(text, attrs, cursor_pos, visible)
 
+    def _show_preedit_cb(self, engine):
+        self.show_preedit()
+
+    def _hide_preedit_cb(self, engine):
+        self.hide_preedit()
+
     def _update_aux_string_cb(self, engine, text, attrs, visible):
         self._aux_string = text
         self._aux_attrs = attrs
+        self._aux_visible = visible
         self.emit("update-aux-string", text, attrs, visible)
+
+    def _show_aux_string_cb(self, engine):
+        self._aux_visible = True
+        self.emit("show-aux-string", text, attrs, visible)
+
+    def _hide_aux_string_cb(self, engine):
+        self._aux_visible = False
+        self.emit("hide-aux-string", text, attrs, visible)
 
     def _update_lookup_table_cb(self, engine, lookup_table, visible):
         self._lookup_table = lookup_table
+        self._lookup_table_visible = visible
         self.emit("update-lookup-table", lookup_table, visible)
+
+    def _show_lookup_table_cb(self, engine):
+        self._lookup_table_visible = True
+        self.emit("show-lookup-table")
+
+    def _hide_lookup_table_cb(self, engine):
+        self._lookup_table_visible = False
+        self.emit("hide-lookup-table")
+
+    def _page_up_lookup_table_cb(self, engine):
+        self.emit("page-up-lookup-table")
+
+    def _page_down_lookup_table_cb(self, engine):
+        self.emit("page-down-lookup-table")
+
+    def _cursor_up_lookup_table_cb(self, engine):
+        self.emit("cursor-up-lookup-table")
+
+    def _cursor_down_lookup_table_cb(self, engine):
+        self.emit("cursor-down-lookup-table")
 
     def _register_properties_cb(self, engine, props):
         self.emit("register-properties", props)
@@ -238,8 +336,18 @@ class InputContext(ibus.Object):
             ("destroy", self._engine_destroy_cb),
             ("commit-string", self._commit_string_cb),
             ("update-preedit", self._update_preedit_cb),
+            ("show-preedit", self._show_preedit_cb),
+            ("hide-preedit", self._hide_preedit_cb),
             ("update-aux-string", self._update_aux_string_cb),
+            ("show-aux-string", self._show_aux_string_cb),
+            ("hide-aux-string", self._hide_aux_string_cb),
             ("update-lookup-table", self._update_lookup_table_cb),
+            ("show-lookup-table", self._show_lookup_table_cb),
+            ("hide-lookup-table", self._hide_lookup_table_cb),
+            ("page-up-lookup-table", self._page_up_lookup_table_cb),
+            ("page-down-lookup-table", self._page_down_lookup_table_cb),
+            ("cursor-up-lookup-table", self._cursor_up_lookup_table_cb),
+            ("cursor-down-lookup-table", self._cursor_down_lookup_table_cb),
             ("register-properties", self._register_properties_cb),
             ("update-property", self._update_property_cb)
         )

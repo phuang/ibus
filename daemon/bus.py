@@ -162,11 +162,11 @@ class IBus(ibus.Object):
         assert self._focused_context == context
         self._panel.update_preedit(text, attrs, cursor_pos, visible)
 
-    def _show_preedit_cb(self):
+    def _show_preedit_cb(self, context):
         assert self._focused_context == context
         self._panel.show_preedit()
 
-    def _hide_preedit_cb(self):
+    def _hide_preedit_cb(self, context):
         assert self._focused_context == context
         self._panel.hide_preedit()
 
@@ -174,11 +174,11 @@ class IBus(ibus.Object):
         assert self._focused_context == context
         self._panel.update_aux_string(text, attrs, visible)
 
-    def _show_aux_string_cb(self):
+    def _show_aux_string_cb(self, context):
         assert self._focused_context == context
         self._panel.show_aux_string()
 
-    def _hide_aux_string_cb(self):
+    def _hide_aux_string_cb(self, context):
         assert self._focused_context == context
         self._panel.hide_aux_string()
 
@@ -186,27 +186,27 @@ class IBus(ibus.Object):
         assert self._focused_context == context
         self._panel.update_lookup_table(lookup_table, visible)
 
-    def _show_lookup_table_cb(self):
+    def _show_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.show_lookup_table()
 
-    def _hide_lookup_table_cb(self):
+    def _hide_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.hide_lookup_table()
 
-    def _page_up_lookup_table_cb(self):
+    def _page_up_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.page_up_lookup_table()
 
-    def _page_down_lookup_table_cb(self):
+    def _page_down_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.page_down_lookup_table()
 
-    def _cursor_up_lookup_table_cb(self):
+    def _cursor_up_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.cursor_up_lookup_table()
 
-    def _cursor_down_lookup_table_cb(self):
+    def _cursor_down_lookup_table_cb(self, context):
         assert self._focused_context == context
         self._panel.cursor_down_lookup_table()
 
