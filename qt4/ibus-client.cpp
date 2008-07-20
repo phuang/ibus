@@ -385,6 +385,28 @@ IBusClient::connectToBus ()
 		return false;
 	}
 
+	if (!connection->connect ("",
+			IBUS_PATH,
+			IBUS_INTERFACE,
+			"ShowPreedit",
+			this, SLOT (slotShowPreedit(QDBusMessage)))) {
+		qWarning () << "Can not connect ShowPreedit signal";
+		delete connection;
+		QDBusConnection::disconnectFromBus ("ibus");
+		return false;
+	}
+
+	if (!connection->connect ("",
+			IBUS_PATH,
+			IBUS_INTERFACE,
+			"HidePreedit",
+			this, SLOT (slotHidePreedit(QDBusMessage)))) {
+		qWarning () << "Can not connect ShowPreedit signal";
+		delete connection;
+		QDBusConnection::disconnectFromBus ("ibus");
+		return false;
+	}
+
 	ibus = connection;
 
 	QList <IBusInputContext *>::iterator i;
@@ -450,7 +472,7 @@ IBusClient::slotUpdatePreedit (QDBusMessage message)
 	QString text;
 	QVariant attrs;
 	int cursor_pos;
-	bool show;
+	bool visible;
 
 	QList<QVariant> args = message.arguments ();
 
@@ -458,7 +480,7 @@ IBusClient::slotUpdatePreedit (QDBusMessage message)
 	text = args[1].toString ();
 	attrs = args[2];
 	cursor_pos = args[3].toInt ();
-	show = args[4].toBool ();
+	visible = args[4].toBool ();
 	QList <QList <quint32> > attr_list;
 	const QDBusArgument arg = attrs.value <QDBusArgument> ();
 	arg.beginArray ();
@@ -478,5 +500,30 @@ IBusClient::slotUpdatePreedit (QDBusMessage message)
 	arg.endArray ();
 
 	IBusInputContext *ctx = context_dict[ic];
-	ctx->updatePreedit (text, attr_list, cursor_pos, show);
+	ctx->updatePreedit (text, attr_list, cursor_pos, visible);
 }
+
+void
+IBusClient::slotShowPreedit (QDBusMessage message)
+{
+	QString ic;
+
+	QList<QVariant> args = message.arguments ();
+
+	ic = args[0].toString ();
+	IBusInputContext *ctx = context_dict[ic];
+	ctx->showPreedit ();
+}
+
+void
+IBusClient::slotHidePreedit (QDBusMessage message)
+{
+	QString ic;
+
+	QList<QVariant> args = message.arguments ();
+
+	ic = args[0].toString ();
+	IBusInputContext *ctx = context_dict[ic];
+	ctx->hidePreedit ();
+}
+

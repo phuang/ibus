@@ -66,6 +66,8 @@ private slots:
 	void slotCommitString (QString ic, QString text);
 	//void slotUpdatePreedit (QString ic, QString text, QVariant attrs, int cursor_pos, bool show);
 	void slotUpdatePreedit (QDBusMessage message);
+	void slotShowPreedit (QDBusMessage message);
+	void slotHidePreedit (QDBusMessage message);
 
 private:
 	bool connectToBus ();

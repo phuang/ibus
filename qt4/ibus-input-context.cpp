@@ -174,12 +174,12 @@ IBusInputContext::commitString (QString text)
 }
 
 void
-IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool show)
+IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool visible)
 {
 	// qDebug () << text << cursor_pos << show;
 	QList <QAttribute> qattrs;
 
-	if (show) {
+	if (visible) {
 		// append cursor pos
 		qattrs.append (QAttribute (QInputMethodEvent::Cursor, cursor_pos, true, 0));
 
@@ -214,10 +214,30 @@ IBusInputContext::updatePreedit (QString text, QList <QList <quint32> > attr_lis
 	}
 
 	preedit_string = text;
-	preedit_visible = show;
+	preedit_visible = visible;
+	preedit_attrs = attr_list;
 	preedit_cursor_pos = cursor_pos;
 
 	QInputMethodEvent event (text, qattrs);
 	sendEvent (event);
 	update ();
 }
+
+void
+IBusInputContext::showPreedit ()
+{
+	if (preedit_visible)
+		return;
+
+	updatePreedit (preedit_string, preedit_attrs, preedit_cursor_pos, TRUE);
+}
+
+void
+IBusInputContext::hidePreedit ()
+{
+	if (!preedit_visible)
+		return;
+
+	updatePreedit (preedit_string, preedit_attrs, preedit_cursor_pos, FALSE);
+}
+

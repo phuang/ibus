@@ -51,7 +51,9 @@ public:
 	QString getIC ();
 
 	void commitString (QString text);
-	void updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool show);
+	void updatePreedit (QString text, QList <QList <quint32> > attr_list, int cursor_pos, bool visible);
+	void showPreedit ();
+	void hidePreedit ();
 
 
 private:
@@ -60,6 +62,7 @@ private:
 	QString preedit_string;
 	bool preedit_visible;
 	int preedit_cursor_pos;
+	QList <QList <quint32> > preedit_attrs;
 	QRect cursor_location;
 };
 
