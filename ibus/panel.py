@@ -53,13 +53,43 @@ class PanelBase(ibus.Object):
     def update_preedit(self, text, attrs, cursor_pos, visible):
         pass
 
+    def show_preedit(self):
+        pass
+
+    def hide_preedit(self):
+        pass
+
     def update_aux_string(self, text, attrs, visible):
+        pass
+
+    def show_aux_string(self):
+        pass
+
+    def hide_aux_string(self):
         pass
 
     def update_lookup_table(self, lookup_table, visible):
         pass
 
+    def show_lookup_table(self):
+        pass
+
+    def hide_lookup_table(self):
+        pass
+
     def show_candidate_window(self):
+        pass
+
+    def page_up_lookup_table(self):
+        pass
+
+    def page_down_lookup_table(self):
+        pass
+
+    def cursor_up_lookup_table(self):
+        pass
+
+    def cursor_down_lookup_table(self):
         pass
 
     def hide_candidate_window(self):
@@ -143,6 +173,24 @@ class PanelProxy(interface.IPanel):
     def UpdateLookupTable(self, lookup_table, show):
         lookup_table = ibus.lookup_table_from_dbus_value(lookup_table)
         self.__panel.update_lookup_table(lookup_table, show)
+
+    def ShowLookupTable(self):
+        self.__panel.show_lookup_table()
+
+    def HideLookupTable(self):
+        self.__panel.hide_lookup_table()
+
+    def PageUpLookupTable(self):
+        self.__panel.page_up_lookup_table()
+
+    def PageDownLookupTable(self):
+        self.__panel.page_down_lookup_table()
+
+    def CursorUpLookupTable(self):
+        self.__panel.cursor_up_lookup_table()
+
+    def CursorDownLookupTable(self):
+        self.__panel.cursor_down_lookup_table()
 
     def ShowCandidateWindow(self):
         self.__panel.show_candidate_window()

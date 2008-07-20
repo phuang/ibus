@@ -73,7 +73,7 @@ class IEngine(dbus.service.Object):
 
     @method()
     def Enable(self): pass
-    
+
     @method()
     def Disable(self): pass
 
@@ -98,11 +98,41 @@ class IEngine(dbus.service.Object):
     @signal(signature="saauib")
     def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
 
+    @signal()
+    def ShowPreedit(): pass
+
+    @signal()
+    def HidePreedit(): pass
+
     @signal(signature="svb")
     def UpdateAuxString(self, text, attrs, visible): pass
 
+    @signal()
+    def ShowAuxString(): pass
+
+    @signal()
+    def HideAuxString(): pass
+
     @signal(signature="vb")
     def UpdateLookupTable(self, lookup_table, visible): pass
+
+    @signal()
+    def ShowLookupTable(): pass
+
+    @signal()
+    def HideLookupTable(): pass
+
+    @signal()
+    def PageUpLookupTable(): pass
+
+    @signal()
+    def PageDownLookupTable(): pass
+
+    @signal()
+    def CursorUpLookupTable(): pass
+
+    @signal()
+    def CursorDownLookupTable(): pass
 
     @signal(signature="v")
     def RegisterProperties(self, props): pass

@@ -47,11 +47,41 @@ class IPanel(dbus.service.Object):
     @method(in_signature = "svub")
     def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
 
+    @method()
+    def ShowPreedit(self): pass
+
+    @method()
+    def HidePreedit(self): pass
+
     @method(in_signature = "svb")
     def UpdateAuxString(self, text, attrs, visible): pass
 
+    @method()
+    def ShowAuxString(self): pass
+
+    @method()
+    def HideAuxString(self): pass
+
     @method(in_signature = "vb")
     def UpdateLookupTable(self, lookup_table, visible): pass
+
+    @method()
+    def ShowLookupTable(self): pass
+
+    @method()
+    def HideLookupTable(self): pass
+
+    @method()
+    def PageUpLookupTable(self): pass
+
+    @method()
+    def PageDownLookupTable(self): pass
+
+    @method()
+    def CursorUpLookupTable(self): pass
+
+    @method()
+    def CursorDownLookupTable(self): pass
 
     @method(in_signature = "v")
     def RegisterProperties(self, props): pass
