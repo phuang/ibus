@@ -65,17 +65,17 @@ class Panel(ibus.PanelBase):
     def set_cursor_location(self, x, y, w, h):
         self.__candidate_panel.move(x + w, y + h)
 
-    def update_preedit(self, text, attrs, cursor_pos, show):
-        self.__candidate_panel.update_preedit(text, attrs, cursor_pos, show)
+    def update_preedit(self, text, attrs, cursor_pos, visible):
+        self.__candidate_panel.update_preedit(text, attrs, cursor_pos, visible)
 
     def show_preedit_string(self):
-        self.__candidate_panel.show_preedit_string()
+        self.__candidate_panel.show_preedit()
 
     def hide_preedit_string(self):
-        self.__candidate_panel.hide_preedit_string()
+        self.__candidate_panel.hide_preedit()
 
-    def update_aux_string(self, text, attrs, show):
-        self.__candidate_panel.update_aux_string(text, attrs, show)
+    def update_aux_string(self, text, attrs, visible):
+        self.__candidate_panel.update_aux_string(text, attrs, visible)
 
     def show_aux_string(self):
         self.__candidate_panel.show_aux_string()
@@ -83,8 +83,26 @@ class Panel(ibus.PanelBase):
     def hide_aux_string(self):
         self.__candidate_panel.hide_aux_string()
 
-    def update_lookup_table(self, lookup_table, show):
-        self.__candidate_panel.update_lookup_table(lookup_table, show)
+    def update_lookup_table(self, lookup_table, visible):
+        self.__candidate_panel.update_lookup_table(lookup_table, visible)
+
+    def show_lookup_table(self):
+        self.__candidate_panel.show_lookup_table()
+
+    def hide_lookup_table(self):
+        self.__candidate_panel.hide_lookup_table()
+
+    def page_up_lookup_table(self):
+        self.__candidate_panel.page_up_lookup_table()
+
+    def page_down_lookup_table(self):
+        self.__candidate_panel.page_down_lookup_table()
+
+    def cursor_up_lookup_table(self):
+        self.__candidate_panel.cursor_up_lookup_table()
+
+    def cursor_down_lookup_table(self):
+        self.__candidate_panel.cursor_down_lookup_table()
 
     def show_candidate_window(self):
         self.__candidate_panel.show()
@@ -148,7 +166,7 @@ class Panel(ibus.PanelBase):
     def __create_im_menu(self):
         menu = gtk.Menu()
         factories = self.__ibus.GetFactories()
-        
+
         if not factories:
             item = gtk.MenuItem(label = "no engine")
             item.set_sensitive(False)
@@ -183,7 +201,7 @@ class Panel(ibus.PanelBase):
                         item.set_image(gtk.image_new_from_icon_name(icon, gtk.ICON_SIZE_MENU))
                         item.connect("activate", self.__menu_item_activate_cb, factory)
                         submenu.add(item)
-                    
+
 
         menu.show_all()
         menu.set_take_focus(False)

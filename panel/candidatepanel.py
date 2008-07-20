@@ -145,9 +145,9 @@ class CandidatePanel(gtk.VBox):
 
         self.__orientation = gtk.ORIENTATION_HORIZONTAL
         self.__orientation = gtk.ORIENTATION_VERTICAL
-        self.__show_preedit_string = False
-        self.__show_aux_string = False
-        self.__show_lookup_table = False
+        self.__preedit_visible = False
+        self.__aux_string_visible = False
+        self.__lookup_table_visible = False
         self.__preedit_string = ""
         self.__preedit_attrs = pango.AttrList()
         self.__aux_string = ""
@@ -166,7 +166,7 @@ class CandidatePanel(gtk.VBox):
         self.__preedit_label.set_alignment(0.0, 0.5)
         self.__preedit_label.set_padding(8, 0)
         self.__preedit_label.set_no_show_all(True)
-        if self.__show_preedit_string:
+        if self.__preedit_visible:
             self.__preedit_label.show()
 
         # create aux label
@@ -176,13 +176,13 @@ class CandidatePanel(gtk.VBox):
         self.__aux_label.set_padding(8, 0)
         self.__tooltips.set_tip(self.__aux_label, "Aux string")
         self.__aux_label.set_no_show_all(True)
-        if self.__show_aux_string:
+        if self.__aux_string_visible:
             self.__aux_label.show()
 
         # create candidates area
         self.__candidate_area = CandidateArea(self.__orientation)
         self.__candidate_area.set_no_show_all(True)
-        self.update_lookup_table(self.__lookup_table, self.__show_lookup_table)
+        self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
 
         # create state label
         self.__state_label = gtk.Label()
@@ -249,22 +249,22 @@ class CandidatePanel(gtk.VBox):
         # self.hide_all()
         # self.show_all()
 
-    def show_preedit_string(self):
-        self.__show_preedit_string = True
+    def show_preedit(self):
+        self.__preedit_visible = True
         self.__preedit_label.show()
         self.__check_show_states()
 
-    def hide_preedit_string(self):
-        self.__show_preedit_string = False
+    def hide_preedit(self):
+        self.__preedit_visible = False
         self.__preedit_label.hide()
         self.__check_show_states()
 
-    def update_preedit(self, text, attrs, cursor_pos, show):
+    def update_preedit(self, text, attrs, cursor_pos, visible):
         attrs = PangoAttrList(attrs, text)
-        if show:
-            self.show_preedit_string()
+        if visible:
+            self.show_preedit()
         else:
-            self.hide_preedit_string()
+            self.hide_preedit()
         self.__preedit_string = text
         self.__preedit_label.set_text(text)
         if attrs == None:
@@ -273,12 +273,12 @@ class CandidatePanel(gtk.VBox):
         self.__preedit_label.set_attributes(attrs)
 
     def show_aux_string(self):
-        self.__show_aux_string = True
+        self.__aux_string_visible = True
         self.__aux_label.show()
         self.__check_show_states()
 
     def hide_aux_string(self):
-        self.__show_aux_string = False
+        self.__aux_string_visible = False
         self.__aux_label.hide()
         self.__check_show_states()
 
@@ -297,23 +297,11 @@ class CandidatePanel(gtk.VBox):
         self.__aux_attrs = attrs
         self.__aux_label.set_attributes(attrs)
 
-    def show_lookup_table(self):
-        self.__show_lookup_table = True
-        self.__candidate_area.set_no_show_all(False)
-        self.__candidate_area.show_all()
-        self.__check_show_states()
-
-    def hide_lookup_table(self):
-        self.__show_lookup_table = False
-        self.__candidate_area.hide_all()
-        self.__candidate_area.set_no_show_all(True)
-        self.__check_show_states()
-
-    def update_lookup_table(self, lookup_table, show):
+    def update_lookup_table(self, lookup_table, visible):
         if lookup_table == None:
             lookup_table = ibus.LookupTable()
 
-        if show:
+        if visible:
             self.show_lookup_table()
         else:
             self.hide_lookup_table()
@@ -322,11 +310,47 @@ class CandidatePanel(gtk.VBox):
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+    
+    def show_lookup_table(self):
+        self.__lookup_table_visible = True
+        self.__candidate_area.set_no_show_all(False)
+        self.__candidate_area.show_all()
+        self.__check_show_states()
+
+    def hide_lookup_table(self):
+        self.__lookup_table_visble = False
+        self.__candidate_area.hide_all()
+        self.__candidate_area.set_no_show_all(True)
+        self.__check_show_states()
+    
+    def page_up_lookup_table(self):
+        self.__lookup_table.page_up()
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+    
+    def page_down_lookup_table(self):
+        self.__lookup_table.page_down()
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+    
+    def cursor_up_lookup_table(self):
+        self.__lookup_table.cursor_up()
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+    
+    def cursor_down_lookup_table(self):
+        self.__lookup_table.cursor_down()
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
 
     def __check_show_states(self):
-        if self.__show_preedit_string or \
-            self.__show_aux_string or \
-            self.__show_lookup_table:
+        if self.__preedit_visible or \
+            self.__aux_string_visible or \
+            self.__lookup_table_visible:
             self.show_all()
             self.emit("show")
         else:
@@ -335,7 +359,7 @@ class CandidatePanel(gtk.VBox):
 
     def reset(self):
         self.hide()
-        self.hide_preedit_string()
+        self.hide_preedit()
         self.hide_aux_string()
         self.hide_lookup_table()
         self.update_preedit("", None, 0, False)

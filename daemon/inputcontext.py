@@ -288,11 +288,11 @@ class InputContext(ibus.Object):
 
     def _show_aux_string_cb(self, engine):
         self._aux_visible = True
-        self.emit("show-aux-string", text, attrs, visible)
+        self.emit("show-aux-string")
 
     def _hide_aux_string_cb(self, engine):
         self._aux_visible = False
-        self.emit("hide-aux-string", text, attrs, visible)
+        self.emit("hide-aux-string")
 
     def _update_lookup_table_cb(self, engine, lookup_table, visible):
         self._lookup_table = lookup_table

@@ -154,11 +154,11 @@ class PanelProxy(interface.IPanel):
         attrs = ibus.attr_list_from_dbus_value(attrs)
         self.__panel.update_preedit(text, atrrs, cursor_pos, show)
 
-    def ShowPreeditString(self):
-        self.__panel.show_preedit_string()
+    def ShowPreedit(self):
+        self.__panel.show_preedit()
 
-    def HidePreeditString(self):
-        self.__panel.hide_preedit_string()
+    def HidePreedit(self):
+        self.__panel.hide_preedit()
 
     def UpdateAuxString(self, text, attrs, show):
         attrs = ibus.attr_list_from_dbus_value(attrs)
