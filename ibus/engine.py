@@ -85,10 +85,10 @@ class EngineBase(ibus.Object):
         return self.__proxy.UpdatePreedit(text, attrs.to_dbus_value(), cursor_pos, visible)
 
     def show_preedit(self):
-        retrun self.__proxy.ShowPreedit()
+        return self.__proxy.ShowPreedit()
 
     def hide_preedit(self):
-        retrun self.__proxy.HidePreedit()
+        return self.__proxy.HidePreedit()
 
     def update_aux_string(self, text, attrs, visible):
         if attrs == None:
@@ -96,31 +96,31 @@ class EngineBase(ibus.Object):
         return self.__proxy.UpdateAuxString(text, attrs.to_dbus_value(), visible)
 
     def show_aux_string(self):
-        retrun self.__proxy.ShowAuxString()
+        return self.__proxy.ShowAuxString()
 
     def hide_aux_string(self):
-        retrun self.__proxy.HideAuxString()
+        return self.__proxy.HideAuxString()
 
     def update_lookup_table(self, lookup_table, visible):
         return self.__proxy.UpdateLookupTable(lookup_table.to_dbus_value(), visible)
 
     def show_lookup_table(self):
-        retrun self.__proxy.ShowLookupTable()
+        return self.__proxy.ShowLookupTable()
 
     def hide_lookup_table(self):
-        retrun self.__proxy.HideLookupTable()
+        return self.__proxy.HideLookupTable()
 
     def page_up_lookup_table(self):
-        retrun self.__proxy.PageUpLookupTable()
+        return self.__proxy.PageUpLookupTable()
 
     def page_down_lookup_table(self):
-        retrun self.__proxy.PageDownLookupTable()
+        return self.__proxy.PageDownLookupTable()
 
     def cursor_up_lookup_table(self):
-        retrun self.__proxy.CursorUpLookupTable()
+        return self.__proxy.CursorUpLookupTable()
 
     def cursor_down_lookup_table(self):
-        retrun self.__proxy.CursorDownLookupTable()
+        return self.__proxy.CursorDownLookupTable()
 
     def register_properties(self, props):
         return self.__proxy.RegisterProperties(props.to_dbus_value())

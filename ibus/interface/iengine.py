@@ -99,40 +99,40 @@ class IEngine(dbus.service.Object):
     def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
 
     @signal()
-    def ShowPreedit(): pass
+    def ShowPreedit(self): pass
 
     @signal()
-    def HidePreedit(): pass
+    def HidePreedit(self): pass
 
     @signal(signature="svb")
     def UpdateAuxString(self, text, attrs, visible): pass
 
     @signal()
-    def ShowAuxString(): pass
+    def ShowAuxString(self): pass
 
     @signal()
-    def HideAuxString(): pass
+    def HideAuxString(self): pass
 
     @signal(signature="vb")
     def UpdateLookupTable(self, lookup_table, visible): pass
 
     @signal()
-    def ShowLookupTable(): pass
+    def ShowLookupTable(self): pass
 
     @signal()
-    def HideLookupTable(): pass
+    def HideLookupTable(self): pass
 
     @signal()
-    def PageUpLookupTable(): pass
+    def PageUpLookupTable(self): pass
 
     @signal()
-    def PageDownLookupTable(): pass
+    def PageDownLookupTable(self): pass
 
     @signal()
-    def CursorUpLookupTable(): pass
+    def CursorUpLookupTable(self): pass
 
     @signal()
-    def CursorDownLookupTable(): pass
+    def CursorDownLookupTable(self): pass
 
     @signal(signature="v")
     def RegisterProperties(self, props): pass
