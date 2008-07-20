@@ -72,13 +72,43 @@ class Panel(ibus.Object):
         self._panel.UpdatePreedit(text, attrs, cursor_pos, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
+    def show_preedit(self):
+        self._panel.ShowPreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def hide_preedit(self):
+        self._panel.HidePreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
+
     def update_aux_string(self, text, attrs, visible):
         self._panel.UpdateAuxString(text, attrs, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
+    def show_aux_string(self):
+        self._panel.ShowAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def hide_aux_string(self):
+        self._panel.HideAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
+
     def update_lookup_table(self, lookup_table, visible):
         self._panel.UpdateLookupTable(lookup_table, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def show_lookup_table(self):
+        self._panel.ShowLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def hide_lookup_table(self):
+        self._panel.HideLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def page_up_lookup_table(self):
+        self._panel.PageUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def page_down_lookup_table(self):
+        self._panel.PageDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def cursor_up_lookup_table(self):
+        self._panel.CursorUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+
+    def cursor_down_lookup_table(self):
+        self._panel.CursorDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def register_properties(self, props):
         self._panel.RegisterProperties(props,

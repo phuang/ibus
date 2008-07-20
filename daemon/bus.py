@@ -131,8 +131,18 @@ class IBus(ibus.Object):
             return
         signals = (
             ("update-preedit", self._update_preedit_cb),
+            ("show-preedit", self._show_preedit_cb),
+            ("hide-preedit", self._hide_preedit_cb),
             ("update-aux-string", self._update_aux_string_cb),
+            ("show-aux-string", self._show_aux_string_cb),
+            ("hide-aux-string", self._hide_aux_string_cb),
             ("update-lookup-table", self._update_lookup_table_cb),
+            ("show-lookup-table", self._show_lookup_table_cb),
+            ("hide-lookup-table", self._hide_lookup_table_cb),
+            ("page-up-lookup-table", self._page_up_lookup_table_cb),
+            ("page-down-lookup-table", self._page_down_lookup_table_cb),
+            ("cursor-up-lookup-table", self._cursor_up_lookup_table_cb),
+            ("cursor-down-lookup-table", self._cursor_down_lookup_table_cb),
             ("register-properties", self._register_properties_cb),
             ("update-property", self._update_property_cb),
             ("engine-lost", self._engine_lost_cb),
@@ -150,33 +160,67 @@ class IBus(ibus.Object):
 
     def _update_preedit_cb(self, context, text, attrs, cursor_pos, visible):
         assert self._focused_context == context
+        self._panel.update_preedit(text, attrs, cursor_pos, visible)
 
-        self._panel.update_preedit_string(text, attrs, cursor_pos, visible)
+    def _show_preedit_cb(self):
+        assert self._focused_context == context
+        self._panel.show_preedit()
+
+    def _hide_preedit_cb(self):
+        assert self._focused_context == context
+        self._panel.hide_preedit()
 
     def _update_aux_string_cb(self, context, text, attrs, visible):
         assert self._focused_context == context
-
         self._panel.update_aux_string(text, attrs, visible)
+
+    def _show_aux_string_cb(self):
+        assert self._focused_context == context
+        self._panel.show_aux_string()
+
+    def _hide_aux_string_cb(self):
+        assert self._focused_context == context
+        self._panel.hide_aux_string()
 
     def _update_lookup_table_cb(self, context, lookup_table, visible):
         assert self._focused_context == context
-
         self._panel.update_lookup_table(lookup_table, visible)
+
+    def _show_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.show_lookup_table()
+
+    def _hide_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.hide_lookup_table()
+
+    def _page_up_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.page_up_lookup_table()
+
+    def _page_down_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.page_down_lookup_table()
+
+    def _cursor_up_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.cursor_up_lookup_table()
+
+    def _cursor_down_lookup_table_cb(self):
+        assert self._focused_context == context
+        self._panel.cursor_down_lookup_table()
 
     def _register_properties_cb(self, context, props):
         assert self._focused_context == context
-
         self._panel.register_properties(props)
 
 
     def _update_property_cb(self, context, prop):
         assert self._focused_context == context
-
         self._panel.update_property(prop)
 
     def _engine_lost_cb(self, context):
         assert self._focused_context == context
-
         self._panel.reset()
 
     def _context_destroy_cb(self, context):

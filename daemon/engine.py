@@ -37,14 +37,54 @@ class Engine(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_BOOLEAN)),
+        "show-preedit" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-preedit" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "update-aux-string" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+        "show-aux-string" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-aux-string" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "update-lookup-table" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)),
+        "show-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "hide-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "page-up-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "page-down-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "cursor-up-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "cursor-down-lookup-table" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "register-properties" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
@@ -80,12 +120,32 @@ class Engine(ibus.Object):
         elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdatePreedit"):
             args = message.get_args_list()
             self.emit("update-preedit", args[0], args[1], args[2], args[3])
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowPreedit"):
+            self.emit("show-preedit")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HidePreedit"):
+            self.emit("hide-preedit")
         elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdateAuxString"):
             args = message.get_args_list()
             self.emit("update-aux-string", args[0], args[1], args[2])
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowAuxString"):
+            self.emit("show-aux-string")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HideAuxString"):
+            self.emit("hide-aux-string")
         elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
             args = message.get_args_list()
             self.emit("update-lookup-table", args[0], args[1])
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowLookupTable"):
+            self.emit("show-lookup-table")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HideLookupTable"):
+            self.emit("hide-lookup-table")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "PageUpLookupTable"):
+            self.emit("page-up-lookup-table")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "PageDownLookupTable"):
+            self.emit("page-down-lookup-table")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "CursorUpLookupTable"):
+            self.emit("cursor-up-lookup-table")
+        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "CursorDownLookupTable"):
+            self.emit("cursor-down-lookup-table")
         elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "RegisterProperties"):
             args = message.get_args_list()
             self.emit("register-properties", args[0])
