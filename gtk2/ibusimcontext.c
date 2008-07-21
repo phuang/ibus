@@ -40,6 +40,8 @@ struct _IBusIMContextPrivate {
     PangoAttrList   *preedit_attrs;
     gint             preedit_cursor_pos;
     gboolean         preedit_visible;
+
+    GdkRectangle     cursor_area;
 };
 
 
@@ -226,6 +228,8 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     ibus_im_client_focus_in (_client, ibus);
     gtk_im_context_focus_in (priv->slave);
+
+    ibus_im_context_set_cursor_location(context, &priv->cursor_area);
 }
 
 static void
@@ -311,6 +315,8 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
+
+    priv->cursor_area = *area;
 
     if (priv->enable) {
         /* It is the focused context */
