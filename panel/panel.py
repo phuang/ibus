@@ -63,7 +63,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon.set_visible(True)
 
     def set_cursor_location(self, x, y, w, h):
-        self.__candidate_panel.move(x + w, y + h)
+        self.__candidate_panel.set_cursor_location(x + w, y + h)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
         self.__candidate_panel.update_preedit(text, attrs, cursor_pos, visible)

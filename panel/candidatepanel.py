@@ -154,6 +154,8 @@ class CandidatePanel(gtk.VBox):
         self.__aux_attrs = pango.AttrList()
         self.__lookup_table = None
 
+        self.__cursor_location = (0, 0)
+
         self.__recreate_ui()
 
     def __recreate_ui(self):
@@ -310,7 +312,7 @@ class CandidatePanel(gtk.VBox):
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
-    
+
     def show_lookup_table(self):
         self.__lookup_table_visible = True
         self.__candidate_area.set_no_show_all(False)
@@ -322,30 +324,34 @@ class CandidatePanel(gtk.VBox):
         self.__candidate_area.hide_all()
         self.__candidate_area.set_no_show_all(True)
         self.__check_show_states()
-    
+
     def page_up_lookup_table(self):
         self.__lookup_table.page_up()
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
-    
+
     def page_down_lookup_table(self):
         self.__lookup_table.page_down()
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
-    
+
     def cursor_up_lookup_table(self):
         self.__lookup_table.cursor_up()
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
-    
+
     def cursor_down_lookup_table(self):
         self.__lookup_table.cursor_down()
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
         self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+
+    def set_cursor_location(self, x, y):
+        self.__cursor_location = (x, y)
+        self.__check_position()
 
     def __check_show_states(self):
         if self.__preedit_visible or \
@@ -406,6 +412,27 @@ class CandidatePanel(gtk.VBox):
         gtk.VBox.do_size_request(self, requisition)
         self.__toplevel.resize(1, 1)
 
+        self.__check_position()
+
+    def __check_position(self):
+        bx = self.__cursor_location[0] + self.__toplevel.allocation.width
+        by = self.__cursor_location[1] + self.__toplevel.allocation.height
+
+        root_window = gdk.get_default_root_window()
+        sx, sy = root_window.get_size()
+
+        if bx > sx:
+            x = sx - self.__toplevel.allocation.width
+        else:
+            x = self.__cursor_location[0]
+
+        if by > sy:
+            y = sy - self.__toplevel.allocation.height
+        else:
+            y = self.__cursor_location[1]
+
+        self.move(x, y)
+
     def __button_press_event_cb(self, widget, event):
         if event.button == 1:
             self.__begin_move = True
@@ -436,7 +463,7 @@ class CandidatePanel(gtk.VBox):
         x, y = self.__toplevel.get_position()
         x  = int(x + event.x_root - self.__press_pos[0])
         y  = int(y + event.y_root - self.__press_pos[1])
-        self.__toplevel.move(x, y)
+        self.move(x, y)
         self.__press_pos = event.x_root, event.y_root
         return True
 
