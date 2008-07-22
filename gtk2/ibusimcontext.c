@@ -167,6 +167,12 @@ ibus_im_context_init     (IBusIMContext *obj)
     priv->preedit_cursor_pos = 0;
     priv->preedit_visible = FALSE;
 
+    // Init cursor area
+    priv->cursor_area.x = 0;
+    priv->cursor_area.y = 0;
+    priv->cursor_area.width = 0;
+    priv->cursor_area.height = 0;
+
 
     // Create slave im context
     ibus->priv->slave = gtk_im_context_simple_new ();
