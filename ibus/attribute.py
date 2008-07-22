@@ -23,6 +23,10 @@ __all__ = (
         "ATTR_TYPE_UNDERLINE",
         "ATTR_TYPE_FOREGROUND",
         "ATTR_TYPE_BACKGROUND",
+        "ATTR_UNDERLINE_NONE",
+        "ATTR_UNDERLINE_SINGLE",
+        "ATTR_UNDERLINE_DOUBLE",
+        "ATTR_UNDERLINE_LOW",
         "Attribute",
         "AttributeUnderline",
         "AttributeForeground",
@@ -38,6 +42,11 @@ import dbus
 ATTR_TYPE_UNDERLINE = 1
 ATTR_TYPE_FOREGROUND = 2
 ATTR_TYPE_BACKGROUND = 3
+
+ATTR_UNDERLINE_NONE = 0
+ATTR_UNDERLINE_SINGLE = 1
+ATTR_UNDERLINE_DOUBLE = 2
+ATTR_UNDERLINE_LOW = 3
 
 class Attribute:
     def __init__ (self, type, value, start_index, end_index):
