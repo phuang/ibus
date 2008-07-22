@@ -22,10 +22,30 @@
 import gtk
 import gtk.gdk as gdk
 
-class Image(gtk.Image):
-    def __init__(self, filename, width, height):
-        super(Image, self).__init__()
-        icon = gtk.IconSource
-        pixbuf = gdk.pixbuf_new_from_file_at_scale(filename, width, height, True)
+class IconWidget(gtk.Image):
+    def __init__(self, icon, size):
+        super(IconWidget, self).__init__()
+        pixbuf = None
+        try:
+            if icon.startswith("/"):
+                pixbuf = gdk.pixbuf_new_from_file(icon)
+            else:
+                theme = gtk.icon_theme_get_default()
+                pixbuf = theme.load_icon(icon, size, 0)
+        except:
+            pass
+
+        if pixbuf == None:
+            theme = gtk.icon_theme_get_default()
+            pixbuf = theme.load_icon(gtk.STOCK_MISSING_IMAGE, size, 0)
+
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+        scale = float(size) / float(max(width, height))
+        width = int(scale * width)
+        height = int(scale * height)
+        pixbuf = pixbuf.scale_simple(width, height, gdk.INTERP_BILINEAR)
+
         self.set_from_pixbuf(pixbuf)
+        self.show()
 

@@ -22,7 +22,7 @@
 panel_PYTHON = \
 	candidatepanel.py \
 	handle.py \
-	image.py \
+	icon.py \
 	languagebar.py \
 	main.py \
 	menu.py \

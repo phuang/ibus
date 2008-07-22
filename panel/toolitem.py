@@ -24,8 +24,8 @@ import gtk.gdk as gdk
 import gobject
 import ibus
 from propitem import PropItem
+import icon
 from menu import *
-
 
 class ToolButton(gtk.ToolButton, PropItem):
     __gsignals__ = {
@@ -53,10 +53,11 @@ class ToolButton(gtk.ToolButton, PropItem):
 
     def set_icon_name(self, icon_name):
         if icon_name:
-            gtk.ToolButton.set_icon_name(self, icon_name)
+            widget = icon.IconWidget(icon_name, 18)
+            gtk.ToolButton.set_icon_widget(self, widget)
             self.set_is_important(False)
         else:
-            gtk.ToolButton.set_icon_name(self, None)
+            gtk.ToolButton.set_icon_widget(self, None)
             self.set_is_important(True)
 
         self._prop._icon = icon_name
@@ -111,10 +112,11 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
 
     def set_icon_name(self, icon_name):
         if icon_name:
-            gtk.ToggleToolButton.set_icon_name(self, icon_name)
+            widget = icon.IconWidget(icon_name, 18)
+            gtk.ToggleToolButton.set_icon_widget(self, widget)
             self.set_is_important(False)
         else:
-            gtk.ToggleToolButton.set_icon_name(self, None)
+            gtk.ToggleToolButton.set_icon_widget(self, None)
             self.set_is_important(True)
 
         self._prop._icon = icon_name
