@@ -23,7 +23,6 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import ibus
-from image import Image
 from handle import Handle
 from menu import menu_position
 from toolitem import ToolButton,\
