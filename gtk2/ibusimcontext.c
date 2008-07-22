@@ -136,14 +136,14 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusIMContextPrivate));
 
-    im_context_class->reset = &ibus_im_context_reset;
-    im_context_class->focus_in = &ibus_im_context_focus_in;
-    im_context_class->focus_out = &ibus_im_context_focus_out;
-    im_context_class->filter_keypress = &ibus_im_context_filter_keypress;
-    im_context_class->get_preedit_string = &ibus_im_context_get_preedit_string;
-    im_context_class->set_client_window = &ibus_im_context_set_client_window;
-    im_context_class->set_cursor_location = &ibus_im_context_set_cursor_location;
-    gobject_class->finalize = &ibus_im_context_finalize;
+    im_context_class->reset = ibus_im_context_reset;
+    im_context_class->focus_in = ibus_im_context_focus_in;
+    im_context_class->focus_out = ibus_im_context_focus_out;
+    im_context_class->filter_keypress = ibus_im_context_filter_keypress;
+    im_context_class->get_preedit_string = ibus_im_context_get_preedit_string;
+    im_context_class->set_client_window = ibus_im_context_set_client_window;
+    im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
+    gobject_class->finalize = ibus_im_context_finalize;
 }
 
 static void

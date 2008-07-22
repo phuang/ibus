@@ -164,7 +164,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusIMClientPrivate));
 
-    gobject_class->finalize = &ibus_im_client_finalize;
+    gobject_class->finalize = ibus_im_client_finalize;
 }
 
 /*
