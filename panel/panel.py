@@ -68,11 +68,10 @@ class Panel(ibus.PanelBase):
     def update_preedit(self, text, attrs, cursor_pos, visible):
         self.__candidate_panel.update_preedit(text, attrs, cursor_pos, visible)
 
-    def show_preedit_string(self):
+    def show_preedit(self):
         self.__candidate_panel.show_preedit()
 
-    def hide_preedit_string(self):
-        print "hide preedit"
+    def hide_preedit(self):
         self.__candidate_panel.hide_preedit()
 
     def update_aux_string(self, text, attrs, visible):
