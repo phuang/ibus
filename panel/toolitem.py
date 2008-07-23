@@ -38,27 +38,20 @@ class ToolButton(gtk.ToolButton, PropItem):
     def __init__(self, prop):
         gtk.ToolButton.__init__ (self, label = prop._label)
         PropItem.__init__ (self, prop)
-
-        self.set_icon_name(prop._icon)
-        self.set_tooltip_text(prop._tooltip)
-        self.set_sensitive(prop._sensitive)
-
-        if prop._visible:
-            self.set_no_show_all(False)
-            self.show_all()
-        else:
-            self.set_no_show_all(True)
-            self.hide_all()
-
+        self.property_changed()
 
     def set_icon_name(self, icon_name):
         if icon_name:
             widget = icon.IconWidget(icon_name, 18)
             gtk.ToolButton.set_icon_widget(self, widget)
             self.set_is_important(False)
-        else:
+        elif self._prop._label:
             gtk.ToolButton.set_icon_widget(self, None)
             self.set_is_important(True)
+        else:
+            widget = icon.IconWidget("ibus", 18)
+            gtk.ToolButton.set_icon_widget(self, widget)
+            self.set_is_important(False)
 
         self._prop._icon = icon_name
 
@@ -71,10 +64,11 @@ class ToolButton(gtk.ToolButton, PropItem):
         self._prop._tooltip = text
 
     def property_changed(self):
-        self.set_icon_name(self._prop._icon)
-        self.set_tooltip_text(self._prop._tooltip)
         self.set_label(self._prop._label)
+        self.set_tooltip_text(self._prop._tooltip)
         self.set_sensitive(self._prop._sensitive)
+        self.set_icon_name(self._prop._icon)
+
         if self._prop._visible:
             self.set_no_show_all(False)
             self.show_all()
@@ -97,27 +91,20 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
     def __init__ (self, prop):
         gtk.ToggleToolButton.__init__ (self)
         PropItem.__init__ (self, prop)
-
-        self.set_label(prop._label)
-        self.set_icon_name(prop._icon)
-        self.set_tooltip_text(prop._tooltip)
-        self.set_active(prop._state == ibus.PROP_STATE_CHECKED)
-        self.set_sensitive(prop._sensitive)
-        if prop._visible:
-            self.set_no_show_all(False)
-            self.show_all()
-        else:
-            self.set_no_show_all(True)
-            self.hide_all()
+        self.property_changed()
 
     def set_icon_name(self, icon_name):
         if icon_name:
             widget = icon.IconWidget(icon_name, 18)
             gtk.ToggleToolButton.set_icon_widget(self, widget)
             self.set_is_important(False)
-        else:
+        elif self._prop._label:
             gtk.ToggleToolButton.set_icon_widget(self, None)
             self.set_is_important(True)
+        else:
+            widget = icon.IconWidget("ibus", 18)
+            gtk.ToggleToolButton.set_icon_widget(self, widget)
+            self.set_is_important(False)
 
         self._prop._icon = icon_name
 
@@ -130,9 +117,9 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
         self._prop._tooltip = text
 
     def property_changed(self):
-        self.set_icon_name(self._prop._icon)
         self.set_tooltip_text(self._prop._tooltip)
         self.set_label(self._prop._label)
+        self.set_icon_name(self._prop._icon)
         self.set_active(self._prop._state == ibus.PROP_STATE_CHECKED)
         self.set_sensitive(self._prop._sensitive)
         if self._prop._visible:
