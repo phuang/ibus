@@ -67,6 +67,9 @@ class IIBus (dbus.service.Object):
     @method (in_signature = "s", out_signature = "b")
     def IsEnabled (self, ic, dbusconn): pass
 
+    @method(in_signature = "si")
+    def SetCapabilities(self, ic, caps, dbusconn): pass
+
     # methods for ibus engine provide
     @method (in_signature = "ao")
     def RegisterFactories (self, object_paths, dbusconn): pass

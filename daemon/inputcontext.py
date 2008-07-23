@@ -108,7 +108,7 @@ class InputContext(ibus.Object):
         self._aux_attrs = None
         self._aux_visible = False
 
-        self._use_preedit = False
+        self._use_preedit = True
         self._preedit_string = None
         self._preedit_attrs = None
         self._cursor_pos = 0
@@ -183,6 +183,12 @@ class InputContext(ibus.Object):
 
     def is_enabled(self):
         return self._enable
+
+    def set_capabilities(self, caps):
+        if caps == 0:
+            self._use_preedit = False
+        else:
+            self._use_preedit = True
 
     def set_enable(self, enable):
         if self._enable != enable:

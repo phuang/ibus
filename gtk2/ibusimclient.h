@@ -90,6 +90,9 @@ void            ibus_im_client_set_cursor_location
                                                  (IBusIMClient    *client,
                                                   IBusIMContext   *context,
                                                   GdkRectangle    *area);
+void            ibus_im_client_set_use_preedit   (IBusIMClient    *client,
+                                                  IBusIMContext   *context,
+                                                  gboolean         use_preedit);
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
 void            ibus_im_client_release_im_context(IBusIMClient    *client,
                                                   IBusIMContext   *context);

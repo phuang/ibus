@@ -92,6 +92,10 @@ class IBus(ibus.Object):
         context = self._lookup_context(ic, conn)
         return context.is_enabled()
 
+    def set_capabilities(self, ic, caps, conn):
+        context = self._lookup_context(ic, conn)
+        return context.set_capabilities(caps)
+
     def process_key_event(self, ic, keyval, is_press, state,
                                 conn, reply_cb, error_cb):
         context = self._lookup_context(ic, conn)
@@ -445,6 +449,9 @@ class IBusProxy(ibus.IIBus):
 
     def IsEnabled(self, ic, dbusconn):
         return self._ibus.is_enabled(ic, self._conn)
+
+    def SetCapabilities(self, ic, caps, dbusconn):
+        return self._ibus.set_capabilities(ic, caps, self._conn)
 
     def GetFactories(self, dbusconn):
         return self._ibus.get_factories()

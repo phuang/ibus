@@ -1204,6 +1204,22 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context
             DBUS_TYPE_INVALID);
 }
 
+void
+ibus_im_client_set_use_preedit (IBusIMClient *client, IBusIMContext *context, gboolean use_preedit)
+{
+    IBusIMClientPrivate *priv = client->priv;
+    gchar *ic = ibus_im_context_get_ic (context);
+
+    if (ic == NULL)
+        return;
+
+    _ibus_call_with_reply_and_block (client->priv->ibus,
+            "SetCapabilities",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INT32, &use_preedit,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+}
 
 void
 ibus_im_client_release_im_context (IBusIMClient *client, IBusIMContext *context)

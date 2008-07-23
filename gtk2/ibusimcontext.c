@@ -66,6 +66,9 @@ static void     ibus_im_context_set_client_window
 static void     ibus_im_context_set_cursor_location
                                             (GtkIMContext       *context,
                                              GdkRectangle       *area);
+static void     ibus_im_context_set_use_preedit
+                                            (GtkIMContext       *context,
+                                             gboolean           use_preedit);
 
 /* callback functions for slave context */
 static void     _slave_commit_cb            (GtkIMContext       *slave,
@@ -152,6 +155,7 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     im_context_class->get_preedit_string = ibus_im_context_get_preedit_string;
     im_context_class->set_client_window = ibus_im_context_set_client_window;
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
+    im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
     gobject_class->finalize = ibus_im_context_finalize;
 }
 
@@ -345,6 +349,19 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
     }
     gtk_im_context_set_cursor_location (priv->slave, area);
 }
+
+static void
+ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
+{
+    DEBUG_FUNCTION_IN;
+
+    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
+    IBusIMContextPrivate *priv = ibus->priv;
+
+    ibus_im_client_set_use_preedit (_client, ibus, use_preedit);
+    gtk_im_context_set_use_preedit (priv->slave, use_preedit);
+}
+
 
 /* Callback functions for slave context */
 static void
