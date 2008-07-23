@@ -23,34 +23,37 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
-im_ibus_sources = \
-	ibusim.c \
-	ibusimclient.c \
+lib_LTLIBRARIES = libibus-gtk.la
+libibus_gtk_la_SOURCES = \
 	ibusimcontext.c \
-	$(NULL)
-
-im_ibus_private_headers = \
 	ibusimcontext.h \
+	ibusimclient.c \
 	ibusimclient.h \
+	$(NULL)
+libibus_gtk_la_CFLAGS = \
+	@GTK2_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	$(NULL)
+libibus_gtk_la_LDFLAGS = \
+	@GTK2_LIBS@ \
+	@DBUS_LIBS@ \
 	$(NULL)
 
 immoduledir = $(libdir)/gtk-2.0/immodules
 immodule_LTLIBRARIES = im-ibus.la
-
 im_ibus_la_SOURCES = \
-	$(im_ibus_sources) \
-	$(im_ibus_private_headers) \
+	ibusim.c \
 	$(NULL)
-
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
-
 im_ibus_la_LDFLAGS = \
 	@GTK2_LIBS@ \
 	@DBUS_LIBS@ \
+	$(builddir)/libibus-gtk.la \
 	-avoid-version \
 	-module \
 	$(NULL)
