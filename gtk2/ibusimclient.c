@@ -135,12 +135,21 @@ ibus_im_client_register_type (GTypeModule *type_module)
     };
 
     if (! ibus_type_im_client ) {
-        ibus_type_im_client =
-            g_type_module_register_type (type_module,
-                GTK_TYPE_OBJECT,
-                "IBusIMClient",
-                &ibus_im_client_info,
-                (GTypeFlags)0);
+        if (type_module) {
+            ibus_type_im_client =
+                g_type_module_register_type (type_module,
+                    GTK_TYPE_OBJECT,
+                    "IBusIMClient",
+                    &ibus_im_client_info,
+                    (GTypeFlags)0);
+        }
+        else {
+            ibus_type_im_client =
+                g_type_register_static (GTK_TYPE_OBJECT,
+                    "IBusIMClient",
+                    &ibus_im_client_info,
+                    (GTypeFlags)0);
+        }
     }
 }
 

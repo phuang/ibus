@@ -107,12 +107,21 @@ ibus_im_context_register_type (GTypeModule *type_module)
     };
 
     if (! _ibus_type_im_context ) {
-        _ibus_type_im_context =
-            g_type_module_register_type (type_module,
-                GTK_TYPE_IM_CONTEXT,
-                "IBusIMContext",
-                &ibus_im_context_info,
-                (GTypeFlags)0);
+        if (type_module) {
+            _ibus_type_im_context =
+                g_type_module_register_type (type_module,
+                    GTK_TYPE_IM_CONTEXT,
+                    "IBusIMContext",
+                    &ibus_im_context_info,
+                    (GTypeFlags)0);
+        }
+        else {
+            _ibus_type_im_context =
+                g_type_register_static (GTK_TYPE_IM_CONTEXT,
+                    "IBusIMContext",
+                    &ibus_im_context_info,
+                    (GTypeFlags)0);
+        }
     }
 }
 
