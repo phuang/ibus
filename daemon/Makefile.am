@@ -46,4 +46,4 @@ EXTRA_DIST = \
 	$(NULL)
 
 test:
-	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/ibusdaemon.py
+	$(ENV) DBUS_DEBUG=true PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/ibusdaemon.py

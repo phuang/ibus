@@ -29,6 +29,7 @@ SUBDIRS = \
 	gtk2 \
 	qt4 \
 	setup \
+	x11 \
 	icons \
 	m4 \
 	po \

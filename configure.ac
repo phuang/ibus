@@ -152,6 +152,8 @@ gconf/ibus-gconf
 engine/Makefile
 gtk2/Makefile
 qt4/Makefile
+x11/Makefile
+x11/IMdkit/Makefile
 setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop
