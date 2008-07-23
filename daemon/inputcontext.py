@@ -108,7 +108,7 @@ class InputContext(ibus.Object):
         self._aux_attrs = None
         self._aux_visible = False
 
-        self._use_preedit = True
+        self._use_preedit = False
         self._preedit_string = None
         self._preedit_attrs = None
         self._cursor_pos = 0

@@ -152,7 +152,7 @@ class PanelProxy(interface.IPanel):
 
     def UpdatePreedit(self, text, attrs, cursor_pos, show):
         attrs = ibus.attr_list_from_dbus_value(attrs)
-        self.__panel.update_preedit(text, atrrs, cursor_pos, show)
+        self.__panel.update_preedit(text, attrs, cursor_pos, show)
 
     def ShowPreedit(self):
         self.__panel.show_preedit()
