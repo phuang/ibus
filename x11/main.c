@@ -1,5 +1,5 @@
 /* xim-on-gtkim
- * Copyright (C) 2007 Huang Peng <phuang@redhat.com>
+ * Copyright (C) 2007-2008 Huang Peng <phuang@redhat.com>
  *
  * main.c:
  *
@@ -66,11 +66,11 @@ typedef struct _X11IC	X11IC;
 
 static void _xim_commit_cb (GtkIMContext *context, gchar *arg, gpointer data);
 
-static GHashTable 	*g_clients = NULL;
-static GHashTable 	*g_connections = NULL;
-static XIMS		g_xims = NULL;
-static gchar		g_server_name[128] = "ibus";
-static gchar		g_locale[1024] =
+static GHashTable 	*_clients = NULL;
+static GHashTable 	*_connections = NULL;
+static XIMS _xims = NULL;
+static gchar _server_name[128] = "ibus";
+static gchar _locale[1024] =
 	"aa,af,am,an,ar,as,az,be,bg,bn,br,bs,"
 	"ca,cs,cy,da,de,dz,el,en,es,et,eu,"
 	"fa,fi,fo,fr,fy,ga,gd,gl,gu,gv,"
@@ -192,7 +192,7 @@ _xim_commit_cb (GtkIMContext *context, gchar *arg, gpointer data)
 	cms.connect_id = ic->connect_id;
 	cms.flag = XimLookupChars;
 	cms.commit_string = (char *)tp.value;
-	IMCommitString (g_xims, (XPointer) & cms);
+	IMCommitString (_xims, (XPointer) & cms);
 
 	XFree (tp.value);
 
@@ -213,7 +213,7 @@ _xim_preedit_start (X11IC *ic)
 	pcb.connect_id        = ic->connect_id;
 	pcb.icid              = ic->icid;
 	pcb.todo.return_value = 0;
-	IMCallCallback (g_xims, (XPointer) & pcb);
+	IMCallCallback (_xims, (XPointer) & pcb);
 }
 
 static void
@@ -230,7 +230,7 @@ _xim_preedit_start (X11IC *ic)
 	pcb.connect_id        = ic->connect_id;
 	pcb.icid              = ic->icid;
 	pcb.todo.return_value = 0;
-	IMCallCallback (g_xims, (XPointer) & pcb);
+	IMCallCallback (_xims, (XPointer) & pcb);
 }
 
 static void
@@ -270,7 +270,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 	ic = g_malloc0 (sizeof (X11IC));
 	ic->icid = call_data->icid;
 	ic->connect_id = call_data->connect_id;
-	ic->conn = (X11ICONN *)g_hash_table_lookup (g_connections,
+	ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
 						(gconstpointer)(unsigned long)call_data->connect_id);
 
 
@@ -290,7 +290,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 			(gpointer)ic);
 #endif
 
-	g_hash_table_insert (g_clients, (gpointer)ic->icid, (gpointer) ic);
+	g_hash_table_insert (_clients, (gpointer)ic->icid, (gpointer) ic);
 	ic->conn->clients = g_list_append (ic->conn->clients, (gpointer) ic);
 
 	return 1;
@@ -304,11 +304,11 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 
 	LOG (1, "XIM_DESTROY_IC ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 	g_object_unref (ic->context);
 	ic->conn->clients = g_list_remove (ic->conn->clients, (gconstpointer)ic);
-	g_hash_table_remove (g_clients,
+	g_hash_table_remove (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 
 	g_free (ic);
@@ -323,7 +323,7 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
 	LOG (1, "XIM_SET_IC_FOCUS ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 
 	gtk_im_context_focus_in (ic->context);
@@ -339,7 +339,7 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
 	LOG (1, "XIM_UNSET_IC_FOCUS ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 			(gconstpointer)(unsigned long)call_data->icid);
 
 	gtk_im_context_focus_out (ic->context);
@@ -357,7 +357,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 	GdkEventKey event;
 	GdkWindow *window;
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 
 	g_return_val_if_fail (ic != NULL, 1);
@@ -387,7 +387,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 		fe.sync_bit = 0;
 		fe.serial_number = 0L;
 		fe.event = call_data->event;
-		IMForwardEvent (g_xims, (XPointer) & fe);
+		IMForwardEvent (_xims, (XPointer) & fe);
 		return 1;
 	}
 }
@@ -401,7 +401,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 
 	LOG (1, "XIM_OPEN connect_id=%d\n", call_data->connect_id);
 
-	conn = (X11ICONN *)g_hash_table_lookup (g_connections,
+	conn = (X11ICONN *)g_hash_table_lookup (_connections,
 				(gconstpointer)(unsigned long)call_data->connect_id);
 
 	g_return_val_if_fail (conn == NULL, 1);
@@ -409,7 +409,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 	conn = (X11ICONN *) g_malloc0(sizeof (X11ICONN));
 	// conn->context = GTK_IM_CONTEXT (gtk_im_multicontext_new ());
 
-	g_hash_table_insert (g_connections,
+	g_hash_table_insert (_connections,
 		(gpointer)(unsigned long)call_data->connect_id,
 		(gpointer) conn);
 
@@ -431,7 +431,7 @@ _free_ic (gpointer data, gpointer user_data)
 	g_object_unref (ic->context);
 
 	/* Remove the IC from g_client dictionary */
-	g_hash_table_remove (g_clients,
+	g_hash_table_remove (_clients,
 				(gconstpointer)(unsigned long)ic->icid);
 
 	g_free (ic);
@@ -444,7 +444,7 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 
 	LOG (1, "XIM_CLOSE connect_id=%d\n", call_data->connect_id);
 
-	conn = (X11ICONN *)g_hash_table_lookup (g_connections,
+	conn = (X11ICONN *)g_hash_table_lookup (_connections,
 				(gconstpointer)(unsigned long)call_data->connect_id);
 
 	g_return_val_if_fail (conn != NULL, 1);
@@ -455,7 +455,7 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 
 	// g_object_unref (conn->context);
 
-	g_hash_table_remove (g_connections, (gconstpointer)(unsigned long)call_data->connect_id);
+	g_hash_table_remove (_connections, (gconstpointer)(unsigned long)call_data->connect_id);
 
 	g_free (conn);
 
@@ -472,7 +472,7 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
 	LOG (1, "XIM_SET_IC_VALUES ic=%d connect_id=%d\n", call_data->icid, call_data->connect_id);
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 
 	g_return_val_if_fail (ic != NULL, 1);
@@ -494,7 +494,7 @@ xim_reset_ic (XIMS xims, IMResetICStruct *call_data)
 
 	LOG (1, "XIM_RESET_IC ic=%d connect_id=%d\n", call_data->icid, call_data->connect_id);
 
-	ic = (X11IC *)g_hash_table_lookup (g_clients,
+	ic = (X11IC *)g_hash_table_lookup (_clients,
 				(gconstpointer)(unsigned long)call_data->icid);
 
 	g_return_val_if_fail (ic != NULL, 1);
@@ -571,7 +571,7 @@ _xim_forward_gdk_event (GdkEventKey *event)
 	fe.sync_bit = 0;
 	fe.serial_number = 0L;
 	fe.event = xkp;
-	IMForwardEvent (g_xims, (XPointer) & fe);
+	IMForwardEvent (_xims, (XPointer) & fe);
 
 }
 
@@ -643,11 +643,11 @@ _xim_init_IMdkit ()
 		sizeof (ims_encodings)/sizeof (XIMEncoding) - 1;
 	encodings.supported_encodings = ims_encodings;
 
-	g_xims = IMOpenIM(GDK_DISPLAY(),
+	_xims = IMOpenIM(GDK_DISPLAY(),
 		IMModifiers, "Xi18n",
 		IMServerWindow, GDK_WINDOW_XWINDOW(win),
-		IMServerName, g_server_name,
-		IMLocale, g_locale,
+		IMServerName, _server_name,
+		IMLocale, _locale,
 		IMServerTransport, "X/",
 		IMInputStyles, &styles,
 		IMEncodingList, &encodings,
@@ -705,10 +705,10 @@ int main (int argc, char **argv)
 				g_debug_level = atoi (optarg);
 			}
 			else if (strcmp (long_options[option_index].name, "server-name") == 0) {
-				strncpy (g_server_name, optarg, sizeof (g_server_name));
+				strncpy (_server_name, optarg, sizeof (_server_name));
 			}
 			else if (strcmp (long_options[option_index].name, "locale") == 0) {
-				strncpy (g_locale, optarg, sizeof (g_locale));
+				strncpy (_locale, optarg, sizeof (_locale));
 			}
 			else if (strcmp (long_options[option_index].name, "help") == 0) {
 				print_usage (stdout, argv[0]);
@@ -719,10 +719,10 @@ int main (int argc, char **argv)
 			g_debug_level = atoi (optarg);
 			break;
 		case 'n':
-			strncpy (g_server_name, optarg, sizeof (g_server_name));
+			strncpy (_server_name, optarg, sizeof (_server_name));
 			break;
 		case 'l':
-			strncpy (g_locale, optarg, sizeof (g_locale));
+			strncpy (_locale, optarg, sizeof (_locale));
 			break;
 		case '?':
 		default:
@@ -733,10 +733,10 @@ int main (int argc, char **argv)
 
 	}
 
-	g_clients = g_hash_table_new (g_direct_hash, g_direct_equal);
-	g_connections = g_hash_table_new (g_direct_hash, g_direct_equal);
+	_clients = g_hash_table_new (g_direct_hash, g_direct_equal);
+	_connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	// printf ("server-name = %s\n", g_server_name);
+	// printf ("server-name = %s\n", _server_name);
 	// printf ("locale      = %s\n", g_locale);
 
 	_xim_init_IMdkit ();
