@@ -736,8 +736,8 @@ int main (int argc, char **argv)
 	g_clients = g_hash_table_new (g_direct_hash, g_direct_equal);
 	g_connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	printf ("server-name = %s\n", g_server_name);
-	printf ("locale      = %s\n", g_locale);
+	// printf ("server-name = %s\n", g_server_name);
+	// printf ("locale      = %s\n", g_locale);
 
 	_xim_init_IMdkit ();
 
