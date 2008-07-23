@@ -198,64 +198,6 @@ _xim_commit_cb (GtkIMContext *context, gchar *arg, gpointer data)
 
 }
 
-#if 0
-static void
-_xim_preedit_start (X11IC *ic)
-{
-	if (ic->preedit_start)
-		return;
-	ic->preedit_start = TRUE;
-
-	IMPreeditCBStruct pcb;
-
-	pcb.major_code        = XIM_PREEDIT_START;
-	pcb.minor_code        = 0;
-	pcb.connect_id        = ic->connect_id;
-	pcb.icid              = ic->icid;
-	pcb.todo.return_value = 0;
-	IMCallCallback (_xims, (XPointer) & pcb);
-}
-
-static void
-_xim_preedit_start (X11IC *ic)
-{
-	if (!ic->preedit_start)
-		return;
-	ic->preedit_start = FALSE;
-
-	IMPreeditCBStruct pcb;
-
-	pcb.major_code        = XIM_PREEDIT_DONE;
-	pcb.minor_code        = 0;
-	pcb.connect_id        = ic->connect_id;
-	pcb.icid              = ic->icid;
-	pcb.todo.return_value = 0;
-	IMCallCallback (_xims, (XPointer) & pcb);
-}
-
-static void
-_xim_preedit_changed_cb (GtkIMContext *context, gpointer data)
-{
-	char *clist[1];
-	XTextProperty tp;
-	IMCommitStruct cms;
-
-	X11IC *ic = (X11IC *)data;
-
-	gchar *preedit_string = NULL;
-	gint cursor_pos = 0;
-
-	gtk_im_context_get_preedit_string (ic->context, &preedit_string, NULL, &cursor_pos);
-
-	if (preedit_string != NULL && preedit_string[0] != 0) {
-		_xim_preedit_start (ic);
-	}
-	else {
-	}
-
-}
-#endif
-
 int
 xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 {
