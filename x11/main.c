@@ -136,6 +136,7 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
 			
 			w =  *(Window *) call_data->ic_attr[i].value;
 			ic->client_window = gdk_window_foreign_new (w);
+			g_object_set_data (G_OBJECT (ic->client_window), "IC", ic);
 		}
 		else if (_is_attr (XNFocusWindow, ic_attr)) {
 			Window w;
@@ -480,10 +481,11 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
 }
 
 
-#if 0
 static void
 _xim_forward_gdk_event (GdkEventKey *event)
 {
+	X11IC *ic;
+	ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IC");
 	IMForwardEventStruct fe;
 	XEvent xkp;
 	memset (&xkp, 0, sizeof (xkp));
@@ -502,15 +504,14 @@ _xim_forward_gdk_event (GdkEventKey *event)
 	xkp.xkey.keycode = event->hardware_keycode;
 
 	fe.major_code = XIM_FORWARD_EVENT;
-	fe.icid = g_focus_ic->icid;
-	fe.connect_id = g_focus_ic->connect_id;
+	fe.icid = ic->icid;
+	fe.connect_id = ic->connect_id;
 	fe.sync_bit = 0;
 	fe.serial_number = 0L;
 	fe.event = xkp;
 	IMForwardEvent (g_xims, (XPointer) & fe);
 
 }
-#endif
 
 static void
 _xim_event_cb (GdkEvent *event, gpointer data)
@@ -518,7 +519,7 @@ _xim_event_cb (GdkEvent *event, gpointer data)
 	switch (event->type) {
 	case GDK_KEY_PRESS:
 	case GDK_KEY_RELEASE:
-		//_xim_forward_gdk_event ((GdkEventKey *)event);
+		_xim_forward_gdk_event ((GdkEventKey *)event);
 		break;
 	default:
 		gtk_main_do_event (event);
