@@ -22,6 +22,7 @@
 import gtk
 import gobject
 import ibus
+import icon
 from propitem import PropItem
 
 class Menu (gtk.Menu, PropItem):
@@ -95,7 +96,8 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
         PropItem.__init__ (self, prop)
 
         if self._prop._icon:
-            self.set_image (gtk.image_new_from_icon_name  (prop._icon, gtk.ICON_SIZE_MENU))
+            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+            self.set_image (icon.IconWidget(prop._icon, size[0]))
 
         if self._prop._visible:
             self.set_no_show_all (False)

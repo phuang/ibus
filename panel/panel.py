@@ -23,6 +23,7 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import ibus
+import icon as _icon
 from os import path
 from ibus import LANGUAGES
 from ibus import interface
@@ -191,7 +192,8 @@ class Panel(ibus.PanelBase):
                 if len(tmp[lang]) == 1:
                     name, lang, icon, authors, credits, factory = tmp[lang][0]
                     item = gtk.ImageMenuItem("%s - %s" % (lang, name))
-                    item.set_image(gtk.image_new_from_icon_name(icon, gtk.ICON_SIZE_MENU))
+                    size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+                    item.set_image (_icon.IconWidget(icon, size[0]))
                     item.connect("activate", self.__menu_item_activate_cb, factory)
                     menu.add(item)
                 else:
@@ -201,7 +203,8 @@ class Panel(ibus.PanelBase):
                     item.set_submenu(submenu)
                     for name, __lang, icon, authors, credits, factory in tmp[lang]:
                         item = gtk.ImageMenuItem(name)
-                        item.set_image(gtk.image_new_from_icon_name(icon, gtk.ICON_SIZE_MENU))
+                        size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+                        item.set_image (_icon.IconWidget(icon, size[0]))
                         item.connect("activate", self.__menu_item_activate_cb, factory)
                         submenu.add(item)
 
