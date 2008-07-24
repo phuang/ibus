@@ -124,7 +124,10 @@ class Panel(ibus.PanelBase):
 
     def __set_im_icon(self, icon_name):
         self.__language_bar.set_im_icon(icon_name)
-        self.__status_icon.set_from_icon_name(icon_name)
+        if icon_name.startswith("/"):
+            self.__status_icon.set_from_file(icon_name)
+        else:
+            self.__status_icon.set_from_icon_name(icon_name)
 
     def focus_in(self, ic):
         self.reset()
