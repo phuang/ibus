@@ -93,273 +93,305 @@ class InputContext(ibus.Object):
 
     def __init__(self, name, ibusconn):
         super(InputContext, self).__init__()
-        self._id = "%d" % InputContext.id
+        self.__id = "%d" % InputContext.id
         InputContext.id += 1
-        self._ibusconn = ibusconn
-        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
+        self.__ibusconn = ibusconn
+        self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
 
         # init default values
-        self._enable = False
-        self._engine = None
-        self._engine_handlers = []
+        self.__enable = False
+        self.__engine = None
+        self.__engine_handlers = []
 
         # client state
-        self._aux_string = None
-        self._aux_attrs = None
-        self._aux_visible = False
+        self.__aux_string = None
+        self.__aux_attrs = None
+        self.__aux_visible = False
 
-        self._use_preedit = True
-        self._preedit_string = None
-        self._preedit_attrs = None
-        self._cursor_pos = 0
-        self._preedit_visible = False
+        self.__use_preedit = True
+        self.__preedit_string = None
+        self.__preedit_attrs = None
+        self.__cursor_pos = 0
+        self.__preedit_visible = False
 
-        self._lookup_table = None
-        self._lookup_table_visible = False
+        self.__lookup_table = None
+        self.__lookup_table_visible = False
 
     def get_id(self):
-        return self._id;
+        return self.__id;
 
     def get_preedit_string(self):
-        return self._preedit_string, self._preedit_attrs, self._cursor_pos
+        return self.__preedit_string, self.__preedit_attrs, self.__cursor_pos
 
     def get_use_preedit(self):
-        return self._use_preedit
+        return self.__use_preedit
 
     def get_aux_string(self):
-        return self._aux_string, self._aux_attrs
+        return self.__aux_string, self.__aux_attrs
 
     def process_key_event(self, keyval, is_press, state,
                                 reply_cb, error_cb):
-        if self._engine != None and self._enable:
-            self._engine.process_key_event(keyval, is_press, state,
+        if self.__engine != None and self.__enable:
+            self.__engine.process_key_event(keyval, is_press, state,
                                 reply_cb, error_cb)
         else:
             reply_cb(False)
 
     def set_cursor_location(self, x, y, w, h):
-        if self._engine:
-            self._engine.set_cursor_location(x, y, w, h)
+        if self.__engine:
+            self.__engine.set_cursor_location(x, y, w, h)
 
     def focus_in(self):
-        if self._engine:
-            self._engine.focus_in()
+        if self.__engine and self.__enable:
+            self.__engine.focus_in()
 
     def focus_out(self):
-        if self._engine:
-            self._engine.focus_out()
+        if self.__engine and self.__enable:
+            self.__engine.focus_out()
 
     def reset(self):
-        if self._engine:
-            self._engine.reset()
+        if self.__engine and self.__enable:
+            self.__engine.reset()
 
     def page_up(self):
-        if self._engine:
-            self._engine.page_up()
+        if self.__engine and self.__enable:
+            self.__engine.page_up()
 
     def page_down(self):
-        if self._engine:
-            self._engine.page_down()
+        if self.__engine and self.__enable:
+            self.__engine.page_down()
 
     def cursor_up(self):
-        if self._engine:
-            self._engine.cursor_up()
+        if self.__engine and self.__enable:
+            self.__engine.cursor_up()
 
     def cursor_down(self):
-        if self._engine:
-            self._engine.cursor_down()
+        if self.__engine and self.__enable:
+            self.__engine.cursor_down()
 
     def property_activate(self, prop_name, prop_state):
-        if self._engine:
-            self._engine.property_activate(prop_name, prop_state)
+        if self.__engine and self.__enable:
+            self.__engine.property_activate(prop_name, prop_state)
 
     def property_show(self, prop_name):
-        if self._engine:
-            self._engine.property_show(prop_name)
+        if self.__engine and self.__enable:
+            self.__engine.property_show(prop_name)
 
     def property_hide(self, prop_name):
-        if self._engine:
-            self._engine.property_hide(prop_name)
+        if self.__engine and self.__enable:
+            self.__engine.property_hide(prop_name)
 
     def is_enabled(self):
-        return self._enable
+        return self.__enable
 
     def set_capabilities(self, caps):
         if caps == 0:
-            self._use_preedit = False
+            self.__use_preedit = False
         else:
-            self._use_preedit = True
+            self.__use_preedit = True
 
     def set_enable(self, enable):
-        if self._enable != enable:
-            self._enable = enable
-            if self._enable:
-                self._ibusconn.emit_dbus_signal("Enabled", self._id)
-                if self._engine:
-                    self._engine.enable()
+        if self.__enable != enable:
+            self.__enable = enable
+            if self.__enable:
+                self.__ibusconn.emit_dbus_signal("Enabled", self.__id)
+                if self.__engine:
+                    self.__engine.enable()
             else:
-                self._ibusconn.emit_dbus_signal("Disabled", self._id)
-                if self._engine:
-                    self._engine.disable()
+                self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
+                if self.__engine:
+                    self.__engine.disable()
 
     def commit_string(self, text):
-        self._ibusconn.emit_dbus_signal("CommitString", self._id, text)
+        self.__ibusconn.emit_dbus_signal("CommitString", self.__id, text)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
-        self._preedit_string = text
-        self._preedit_attrs = attrs
-        self._cursor_pos = cursor_pos
-        self._preedit_visible = visible
-        if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("UpdatePreedit", self._id, text, attrs, cursor_pos, visible)
+        self.__preedit_string = text
+        self.__preedit_attrs = attrs
+        self.__cursor_pos = cursor_pos
+        self.__preedit_visible = visible
+        if self.__use_preedit:
+            self.__ibusconn.emit_dbus_signal("UpdatePreedit", self.__id, text, attrs, cursor_pos, visible)
         else:
             # show preedit on panel
             self.emit("update-preedit", text, attrs, cursor_pos, visible)
 
     def show_preedit(self):
-        self._preedit_visible = True
-        if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("ShowPreedit", self._id)
+        self.__preedit_visible = True
+        if self.__use_preedit:
+            self.__ibusconn.emit_dbus_signal("ShowPreedit", self.__id)
         else:
             # show preedit on panel
             self.emit("show-preedit")
 
     def hide_preedit(self):
-        self._preedit_visible = False
-        if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("HidePreedit", self._id)
+        self.__preedit_visible = False
+        if self.__use_preedit:
+            self.__ibusconn.emit_dbus_signal("HidePreedit", self.__id)
         else:
             # show preedit on panel
             self.emit("hide-preedit")
 
     def set_engine(self, engine):
-        if self._engine == engine:
+        if self.__engine == engine:
             return
 
-        if self._engine != None:
-            self._remove_engine_handlers()
-            self._engine.destroy()
-            self._engine = None
+        if self.__engine != None:
+            self.__remove_engine_handlers()
+            self.__engine.destroy()
+            self.__engine = None
 
-        self._engine = engine
-        self._install_engine_handlers()
+        self.__engine = engine
+        self.__install_engine_handlers()
 
     def get_engine(self):
-        return self._engine
+        return self.__engine
 
     def get_factory(self):
-        if self._engine:
-            return self._engine.get_factory()
+        if self.__engine:
+            return self.__engine.get_factory()
         return None
 
-    def _engine_destroy_cb(self, engine):
-        if self._engine == engine:
-            self._remove_engine_handlers()
-        self._engine = None
-        self._enable = False
-        if self._use_preedit:
-            self._ibusconn.emit_dbus_signal("UpdatePreedit",
-                                self._id,
+    def __engine_destroy_cb(self, engine):
+        if self.__engine == engine:
+            self.__remove_engine_handlers()
+        self.__engine = None
+        self.__enable = False
+        if self.__use_preedit:
+            self.__ibusconn.emit_dbus_signal("UpdatePreedit",
+                                self.__id,
                                 u"",
                                 ibus.AttrList().to_dbus_value(),
                                 0,
                                 False)
-        self._ibusconn.emit_dbus_signal("Disabled", self._id)
+        self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
         self.emit("engine-lost")
 
-    def _ibusconn_destroy_cb(self, ibusconn):
-        if self._engine != None:
-            self._remove_engine_handlers()
-            self._engine.destroy()
-            self._engine = None
+    def __ibusconn_destroy_cb(self, ibusconn):
+        if self.__engine != None:
+            self.__remove_engine_handlers()
+            self.__engine.destroy()
+            self.__engine = None
         self.destroy()
 
-    def _commit_string_cb(self, engine, text):
+    def __commit_string_cb(self, engine, text):
+        if not self.__enable:
+            return
         self.commit_string(text)
 
-    def _update_preedit_cb(self, engine, text, attrs, cursor_pos, visible):
+    def __update_preedit_cb(self, engine, text, attrs, cursor_pos, visible):
+        if not self.__enable:
+            return
         self.update_preedit(text, attrs, cursor_pos, visible)
 
-    def _show_preedit_cb(self, engine):
+    def __show_preedit_cb(self, engine):
+        if not self.__enable:
+            return
         self.show_preedit()
 
-    def _hide_preedit_cb(self, engine):
+    def __hide_preedit_cb(self, engine):
+        if not self.__enable:
+            return
         self.hide_preedit()
 
-    def _update_aux_string_cb(self, engine, text, attrs, visible):
-        self._aux_string = text
-        self._aux_attrs = attrs
-        self._aux_visible = visible
+    def __update_aux_string_cb(self, engine, text, attrs, visible):
+        if not self.__enable:
+            return
+        self.__aux_string = text
+        self.__aux_attrs = attrs
+        self.__aux_visible = visible
         self.emit("update-aux-string", text, attrs, visible)
 
-    def _show_aux_string_cb(self, engine):
-        self._aux_visible = True
+    def __show_aux_string_cb(self, engine):
+        if not self.__enable:
+            return
+        self.__aux_visible = True
         self.emit("show-aux-string")
 
-    def _hide_aux_string_cb(self, engine):
-        self._aux_visible = False
+    def __hide_aux_string_cb(self, engine):
+        if not self.__enable:
+            return
+        self.__aux_visible = False
         self.emit("hide-aux-string")
 
-    def _update_lookup_table_cb(self, engine, lookup_table, visible):
-        self._lookup_table = lookup_table
-        self._lookup_table_visible = visible
+    def __update_lookup_table_cb(self, engine, lookup_table, visible):
+        if not self.__enable:
+            return
+        self.__lookup_table = lookup_table
+        self.__lookup_table_visible = visible
         self.emit("update-lookup-table", lookup_table, visible)
 
-    def _show_lookup_table_cb(self, engine):
-        self._lookup_table_visible = True
+    def __show_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
+        self.__lookup_table_visible = True
         self.emit("show-lookup-table")
 
-    def _hide_lookup_table_cb(self, engine):
-        self._lookup_table_visible = False
+    def __hide_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
+        self.__lookup_table_visible = False
         self.emit("hide-lookup-table")
 
-    def _page_up_lookup_table_cb(self, engine):
+    def __page_up_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
         self.emit("page-up-lookup-table")
 
-    def _page_down_lookup_table_cb(self, engine):
+    def __page_down_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
         self.emit("page-down-lookup-table")
 
-    def _cursor_up_lookup_table_cb(self, engine):
+    def __cursor_up_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
         self.emit("cursor-up-lookup-table")
 
-    def _cursor_down_lookup_table_cb(self, engine):
+    def __cursor_down_lookup_table_cb(self, engine):
+        if not self.__enable:
+            return
         self.emit("cursor-down-lookup-table")
 
-    def _register_properties_cb(self, engine, props):
+    def __register_properties_cb(self, engine, props):
+        if not self.__enable:
+            return
         self.emit("register-properties", props)
 
-    def _update_property_cb(self, engine, prop):
+    def __update_property_cb(self, engine, prop):
+        if not self.__enable:
+            return
         self.emit("update-property", prop)
 
-    def _remove_engine_handlers(self):
-        assert self._engine != None
+    def __remove_engine_handlers(self):
+        assert self.__engine != None
 
-        map(self._engine.disconnect, self._engine_handlers)
-        del self._engine_handlers[:]
+        map(self.__engine.disconnect, self.__engine_handlers)
+        del self.__engine_handlers[:]
 
-    def _install_engine_handlers(self):
+    def __install_engine_handlers(self):
         signals = (
-            ("destroy", self._engine_destroy_cb),
-            ("commit-string", self._commit_string_cb),
-            ("update-preedit", self._update_preedit_cb),
-            ("show-preedit", self._show_preedit_cb),
-            ("hide-preedit", self._hide_preedit_cb),
-            ("update-aux-string", self._update_aux_string_cb),
-            ("show-aux-string", self._show_aux_string_cb),
-            ("hide-aux-string", self._hide_aux_string_cb),
-            ("update-lookup-table", self._update_lookup_table_cb),
-            ("show-lookup-table", self._show_lookup_table_cb),
-            ("hide-lookup-table", self._hide_lookup_table_cb),
-            ("page-up-lookup-table", self._page_up_lookup_table_cb),
-            ("page-down-lookup-table", self._page_down_lookup_table_cb),
-            ("cursor-up-lookup-table", self._cursor_up_lookup_table_cb),
-            ("cursor-down-lookup-table", self._cursor_down_lookup_table_cb),
-            ("register-properties", self._register_properties_cb),
-            ("update-property", self._update_property_cb)
+            ("destroy", self.__engine_destroy_cb),
+            ("commit-string", self.__commit_string_cb),
+            ("update-preedit", self.__update_preedit_cb),
+            ("show-preedit", self.__show_preedit_cb),
+            ("hide-preedit", self.__hide_preedit_cb),
+            ("update-aux-string", self.__update_aux_string_cb),
+            ("show-aux-string", self.__show_aux_string_cb),
+            ("hide-aux-string", self.__hide_aux_string_cb),
+            ("update-lookup-table", self.__update_lookup_table_cb),
+            ("show-lookup-table", self.__show_lookup_table_cb),
+            ("hide-lookup-table", self.__hide_lookup_table_cb),
+            ("page-up-lookup-table", self.__page_up_lookup_table_cb),
+            ("page-down-lookup-table", self.__page_down_lookup_table_cb),
+            ("cursor-up-lookup-table", self.__cursor_up_lookup_table_cb),
+            ("cursor-down-lookup-table", self.__cursor_down_lookup_table_cb),
+            ("register-properties", self.__register_properties_cb),
+            ("update-property", self.__update_property_cb)
         )
 
         for signal, handler in signals:
-            id = self._engine.connect(signal, handler)
-            self._engine_handlers.append(id)
+            id = self.__engine.connect(signal, handler)
+            self.__engine_handlers.append(id)
 
 gobject.type_register(InputContext)
