@@ -35,6 +35,7 @@ class EngineFactoryBase(ibus.Object):
         self.__engine_class = engine_class
         self.__engine_path = engine_path
         self.__engine_id = 1
+        self.__object_path = object_path
 
     def get_info(self):
         return self.__info
@@ -44,6 +45,10 @@ class EngineFactoryBase(ibus.Object):
 
     def uninitialize(self):
         pass
+
+    def register(self):
+        _ibus = self.__conn.get_ibus ()
+        _ibus.RegisterFactories([self.__object_path], **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def create_engine(self):
         engine = self.__engine_class(self.__conn, self.__engine_path + str(self.__engine_id))
