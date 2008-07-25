@@ -28,20 +28,20 @@ import ibus
 class Engine(ibus.Object):
     def __init__(self, name, lang = "other", icon = "", author = "", credits = "", _exec = "", pid = 0):
         super(Engine, self).__init__()
-        self._name = name
-        self._lang = lang
-        self._icon = icon
-        self._author = author
-        self._credits = credits
+        self.name = name
+        self.lang = lang
+        self.icon = icon
+        self.author = author
+        self.credits = credits
         self._exec = _exec
-        self._pid = pid
+        self.pid = pid
 
     def start(self):
-        if self._pid != 0:
+        if self.pid != 0:
             return
         pid = os.fork()
         if pid > 0: # parent
-            self._pid = pid
+            self.pid = pid
         elif pid == 0: # child
             os.setpgrp()
             args = self._exec.split()
@@ -49,99 +49,99 @@ class Engine(ibus.Object):
             sys.exit(1)
 
     def stop(self, force = False):
-        if self._pid == 0:
+        if self.pid == 0:
             return
         try:
             if force:
-                os.kill(-self._pid, signal.SIGKILL)
+                os.kill(-self.pid, signal.SIGKILL)
             else:
-                os.kill(-self._pid, signal.SIGTERM)
+                os.kill(-self.pid, signal.SIGTERM)
         except:
             pass
 
     def engine_exit(self, pid):
-        if self._pid == pid:
-            self._pid = 0
+        if self.pid == pid:
+            self.pid = 0
             return True
         return False
 
     def __eq__(self, o):
         # We don't test icon author & credits
-        return self._name == o._name and \
-            self._lang == o._lang and \
+        return self.name == o.name and \
+            self.lang == o.lang and \
             self._exec == o._exec
 
     def __str__(self):
-        return "Engine('%s', '%s', '%s', '%s', '%s', '%s', %d" % (self._name, self._lang, \
-            self._icon, self._author, \
-            self._credits, self._exec, \
-            self._pid)
+        return "Engine('%s', '%s', '%s', '%s', '%s', '%s', %d" % (self.name, self.lang, \
+            self.icon, self.author, \
+            self.credits, self._exec, \
+            self.pid)
 
 class Register(ibus.Object):
     def __init__(self):
         super(Register, self).__init__()
-        self._engines = dict()
-        self._load()
-        signal.signal(signal.SIGCHLD, self._sigchld_cb)
+        self.__engines = dict()
+        self.__load()
+        signal.signal(signal.SIGCHLD, self.__sigchld_cb)
 
     def start_engine(self, lang, name):
         key = (lang, name)
-        if key not in self._engines:
+        if key not in self.__engines:
             raise ibus.IBusException("Can not find engine(%s, %s)" % (lang, name))
 
-        engine = self._engines[(lang, name)]
+        engine = self.__engines[(lang, name)]
         engine.start()
 
     def stop_engine(self, lang, name):
         key = (lang, name)
-        if key not in self._engines:
+        if key not in self.__engines:
             raise ibus.IBusException("Can not find engine(%s, %s)" % (lang, name))
 
-        engine = self._engines[(lang, name)]
+        engine = self.__engines[(lang, name)]
         engine.stop()
 
     def restart_engine(self, lang, name):
         key = (lang, name)
-        if key not in self._engines:
+        if key not in self.__engines:
             raise ibus.IBusException("Can not find engine (%s, %s)" % (lang, name))
 
-        engine = self._engines[(lang, name)]
+        engine = self.__engines[(lang, name)]
         engine.stop()
         engine.start()
 
     def list_engines(self):
         engines = []
-        for key, e in self._engines.items():
-            engines.append((e._name, e._lang, e._icon, e._author, e._credits, e._exec, e._pid != 0))
+        for key, e in self.__engines.items():
+            engines.append((e.name, e.lang, e.icon, e.author, e.credits, e._exec, e.pid != 0))
         return engines
 
-    def _sigchld_cb(self, sig, f):
+    def __sigchld_cb(self, sig, f):
         pid, state = os.wait()
-        for key, engine in self._engines.items():
+        for key, engine in self.__engines.items():
             if engine.engine_exit(pid):
                 break
 
-    def _load(self):
+    def __load(self):
         _file = path.abspath(__file__)
         _dir = path.dirname(_file) + "./../engine"
         _dir = path.abspath(_dir)
         _dir = "/usr/share/ibus/engine"
         for _file in glob.glob(_dir + "/*.engine"):
-            engine = self._load_engine(_file)
-            if (engine._lang, engine._name) in self._engines:
-                old_engine = self._engines[(engine._lang, engine._name)]
+            engine = self.__load_engine(_file)
+            if (engine.lang, engine.name) in self.__engines:
+                old_engine = self.__engines[(engine.lang, engine.name)]
                 if old_engine == engine:
-                    engine._pid = old_engine._pid
-                    self._engines[(engine._lang, engine._name)] = engine
+                    engine.pid = old_engine.pid
+                    self.__engines[(engine.lang, engine.name)] = engine
                 else:
-                    self._engines[(engine._lang, engine._name + " (old)")] = old_engine
-                    self._engines[(engine._lang, engine._name)] = engine
+                    self.__engines[(engine.lang, engine.name + " (old)")] = old_engine
+                    self.__engines[(engine.lang, engine.name)] = engine
             else:
-                self._engines[(engine._lang, engine._name)] = engine
+                self.__engines[(engine.lang, engine.name)] = engine
 
 
 
-    def _load_engine(self, _file):
+    def __load_engine(self, _file):
         f = file(_file)
         name = None
         lang = "other"

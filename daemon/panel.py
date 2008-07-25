@@ -57,99 +57,99 @@ class Panel(ibus.Object):
 
     def __init__(self, ibusconn, object_path):
         super(Panel, self).__init__()
-        self._ibusconn = ibusconn
-        self._object_path = object_path
-        self._panel = self._ibusconn.get_object(self._object_path)
+        self.__ibusconn = ibusconn
+        self.__object_path = object_path
+        self.__panel = self.__ibusconn.get_object(self.__object_path)
 
-        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
-        self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
+        self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
+        self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
 
     def set_cursor_location(self, x, y, w, h):
-        self._panel.SetCursorLocation(x, y, w, h,
+        self.__panel.SetCursorLocation(x, y, w, h,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
-        self._panel.UpdatePreedit(text, attrs, cursor_pos, visible,
+        self.__panel.UpdatePreedit(text, attrs, cursor_pos, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def show_preedit(self):
-        self._panel.ShowPreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.ShowPreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def hide_preedit(self):
-        self._panel.HidePreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.HidePreedit(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def update_aux_string(self, text, attrs, visible):
-        self._panel.UpdateAuxString(text, attrs, visible,
+        self.__panel.UpdateAuxString(text, attrs, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def show_aux_string(self):
-        self._panel.ShowAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.ShowAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def hide_aux_string(self):
-        self._panel.HideAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.HideAuxString(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def update_lookup_table(self, lookup_table, visible):
-        self._panel.UpdateLookupTable(lookup_table, visible,
+        self.__panel.UpdateLookupTable(lookup_table, visible,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def show_lookup_table(self):
-        self._panel.ShowLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.ShowLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def hide_lookup_table(self):
-        self._panel.HideLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.HideLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def page_up_lookup_table(self):
-        self._panel.PageUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.PageUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def page_down_lookup_table(self):
-        self._panel.PageDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.PageDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def cursor_up_lookup_table(self):
-        self._panel.CursorUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.CursorUpLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def cursor_down_lookup_table(self):
-        self._panel.CursorDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.CursorDownLookupTable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def register_properties(self, props):
-        self._panel.RegisterProperties(props,
+        self.__panel.RegisterProperties(props,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def update_property(self, prop):
-        self._panel.UpdateProperty(prop,
+        self.__panel.UpdateProperty(prop,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def show_language_bar(self):
-        self._panel.ShowLanguageBar(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.ShowLanguageBar(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def hide_language_bar(self):
-        self._panel.HideLanguageBar(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.HideLanguageBar(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def focus_in(self, ic):
-        self._panel.FocusIn(ic, **ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.FocusIn(ic, **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def focus_out(self, ic):
-        self._panel.FocusOut(ic, **ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.FocusOut(ic, **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def states_changed(self):
-        self._panel.StatesChanged(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.StatesChanged(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def reset(self):
-        self._panel.Reset(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__panel.Reset(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def destroy(self):
-        if self._ibusconn != None:
-            self._panel.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
+        if self.__ibusconn != None:
+            self.__panel.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
 
-        self._ibusconn = None
-        self._panel = None
+        self.__ibusconn = None
+        self.__panel = None
         ibus.Object.destroy(self)
 
     # signal callbacks
-    def _ibusconn_destroy_cb(self, ibusconn):
-        self._ibusconn = None
+    def __ibusconn_destroy_cb(self, ibusconn):
+        self.__ibusconn = None
         self.destroy()
 
-    def _dbus_signal_cb(self, ibusconn, message):
+    def __dbus_signal_cb(self, ibusconn, message):
         if message.is_signal(ibus.IBUS_PANEL_IFACE, "PageUp"):
             self.emit("page-up")
         elif message.is_signal(ibus.IBUS_PANEL_IFACE, "PageDown"):

@@ -33,8 +33,8 @@ class Connection(ibus.Object):
     }
     def __init__(self, dbusconn):
         super(Connection, self).__init__()
-        self._dbusconn = dbusconn
-        self._watch_dirs = set()
+        self.__dbusconn = dbusconn
+        self.__watch_dirs = set()
         dbusconn.add_message_filter(self.message_filter_cb)
 
     def message_filter_cb(self, dbusconn, message):
@@ -49,33 +49,33 @@ class Connection(ibus.Object):
         return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 
     def get_object(self, path):
-        return self._dbusconn.get_object("no.name", path)
+        return self.__dbusconn.get_object("no.name", path)
 
     def emit_dbus_signal(self, name, *args):
         message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH, ibus.IBUS_IFACE, name)
         message.append(*args)
-        self._dbusconn.send_message(message)
-        self._dbusconn.flush()
+        self.__dbusconn.send_message(message)
+        self.__dbusconn.flush()
 
     def do_destroy(self):
-        self._dbusconn = None
+        self.__dbusconn = None
 
     def dispatch_dbus_signal(self, message):
         self.emit("dbus-signal", message)
 
     def add_watch_dir(self, dir):
-        if dir in self._watch_dirs:
+        if dir in self.__watch_dirs:
             return False
-        self._watch_dirs.add(dir)
+        self.__watch_dirs.add(dir)
         return True
 
     def remove_watch_dir(self, dir):
-        if dir not in self._watch_dirs:
+        if dir not in self.__watch_dirs:
             return False
-        self._watch_dirs.remove(dir)
+        self.__watch_dirs.remove(dir)
         return True
 
     def get_dbusconn(self):
-        return self._dbusconn
+        return self.__dbusconn
 
 gobject.type_register(Connection)

@@ -67,10 +67,10 @@ class IBusServer(dbus.server.Server):
     def __init__(self, *args, **kargs):
         super(IBusServer, self).__init__()
 
-        self._ibus = IBus()
+        self.__ibus = IBus()
 
     def connection_added(self, dbusconn):
-        IBusProxy(self._ibus, dbusconn)
+        IBusProxy(self.__ibus, dbusconn)
         DBus(dbusconn, dbus.BUS_DAEMON_PATH)
 
 

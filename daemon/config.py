@@ -33,45 +33,45 @@ class Config(ibus.Object):
 
     def __init__(self, ibusconn, object_path):
         super(Config, self).__init__()
-        self._ibusconn = ibusconn
-        self._object_path = object_path
-        self._config = self._ibusconn.get_object(self._object_path)
+        self.__ibusconn = ibusconn
+        self.__object_path = object_path
+        self.__config = self.__ibusconn.get_object(self.__object_path)
 
-        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
-        self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
+        self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
+        self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
 
     def get_string(self, key, **kargs):
-        self._config.GetString(key, **kargs)
+        self.__config.GetString(key, **kargs)
 
     def get_int(self, key, **kargs):
-        self._config.GetInt(key, **kargs)
+        self.__config.GetInt(key, **kargs)
 
     def get_bool(self, key, **kargs):
-        self._config.GetBool(key, **kargs)
+        self.__config.GetBool(key, **kargs)
 
     def set_string(self, key, value, **kargs):
-        self._config.SetString(key, value, **kargs)
+        self.__config.SetString(key, value, **kargs)
 
     def set_int(self, key, value, **kargs):
-        self._config.SetInt(key, value, **kargs)
+        self.__config.SetInt(key, value, **kargs)
 
     def set_bool(self, key, value, **kargs):
-        self._config.SetBool(key, value, **kargs)
+        self.__config.SetBool(key, value, **kargs)
 
     def destroy(self):
-        if self._ibusconn != None:
-            self._config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
+        if self.__ibusconn != None:
+            self.__config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
 
-        self._ibusconn = None
-        self._config = None
+        self.__ibusconn = None
+        self.__config = None
         ibus.Object.destroy(self)
 
     # signal callbacks
-    def _ibusconn_destroy_cb(self, ibusconn):
-        self._ibusconn = None
+    def __ibusconn_destroy_cb(self, ibusconn):
+        self.__ibusconn = None
         self.destroy()
 
-    def _dbus_signal_cb(self, ibusconn, message):
+    def __dbus_signal_cb(self, ibusconn, message):
         if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
             args = message.get_args_list()
             self.emit("value-changed", args[0], args[1])

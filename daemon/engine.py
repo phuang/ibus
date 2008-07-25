@@ -97,18 +97,18 @@ class Engine(ibus.Object):
 
     def __init__(self, factory, ibusconn, object_path):
         super(Engine, self).__init__()
-        self._factory = factory
-        self._ibusconn = ibusconn
-        self._object_path = object_path
-        self._engine = ibusconn.get_object(self._object_path)
-        self._lookup_table = ibus.LookupTable()
-        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
+        self.__factory = factory
+        self.__ibusconn = ibusconn
+        self.__object_path = object_path
+        self.__engine = ibusconn.get_object(self.__object_path)
+        self.__lookup_table = ibus.LookupTable()
+        self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
 
     def get_factory(self):
-        return self._factory
+        return self.__factory
 
     def get_object_path(self):
-        return self._object_path
+        return self.__object_path
 
     def handle_dbus_signal(self, message):
         if message.is_signal(ibus.IBUS_ENGINE_IFACE, "CommitString"):
@@ -158,64 +158,64 @@ class Engine(ibus.Object):
         return True
 
     def focus_in(self):
-        self._engine.FocusIn(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.FocusIn(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def focus_out(self):
-        self._engine.FocusOut(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.FocusOut(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def reset(self):
-        self._engine.Reset(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.Reset(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def process_key_event(self, keyval, is_press, state, reply_cb, error_cb):
-        self._engine.ProcessKeyEvent(keyval, is_press, state,
+        self.__engine.ProcessKeyEvent(keyval, is_press, state,
                                     reply_handler = reply_cb,
                                     error_handler = error_cb)
 
     def set_cursor_location(self, x, y, w, h):
-        self._engine.SetCursorLocation(x, y, w, h,
+        self.__engine.SetCursorLocation(x, y, w, h,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def enable(self):
-        self._engine.Enable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.Enable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def disable(self):
-        self._engine.Disable(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.Disable(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     # cursor for lookup table
 
     def page_up(self):
-        self._engine.PageUp(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.PageUp(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def page_down(self):
-        self._engine.PageDown(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.PageDown(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def cursor_up(self):
-        self._engine.CursorUp(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.CursorUp(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def cursor_down(self):
-        self._engine.CursorDown(**ibus.DEFAULT_ASYNC_HANDLERS)
+        self.__engine.CursorDown(**ibus.DEFAULT_ASYNC_HANDLERS)
 
     def property_activate(self, prop_name, prop_state):
-        self._engine.PropertyActivate(prop_name, prop_state,
+        self.__engine.PropertyActivate(prop_name, prop_state,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def property_show(self, prop_name):
-        self._engine.PropertyShow(prop_name,
+        self.__engine.PropertyShow(prop_name,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def property_hide(self, prop_name):
-        self._engine.PropertyHide(prop_name,
+        self.__engine.PropertyHide(prop_name,
                 **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def destroy(self):
         ibus.Object.destroy(self)
-        if self._engine:
-            self._engine.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
-            self._engine = None
-        self._ibusconn = None
+        if self.__engine:
+            self.__engine.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
+            self.__engine = None
+        self.__ibusconn = None
 
-    def _ibusconn_destroy_cb(self, ibusconn):
-        self._engine = None
+    def __ibusconn_destroy_cb(self, ibusconn):
+        self.__engine = None
         self.destroy()
 
 gobject.type_register(Engine)
