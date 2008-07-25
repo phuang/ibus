@@ -172,7 +172,7 @@ class EngineProxy(interface.IEngine):
     def Enable(self):
         return self.__engine.enable()
 
-    def Enable(self):
+    def Disable(self):
         return self.__engine.disable()
 
     def PropertyActivate(self, prop_name, prop_state):
