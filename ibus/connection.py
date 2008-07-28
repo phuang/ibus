@@ -24,6 +24,9 @@ __all__ = (
     )
 import dbus.connection
 import ibus
+import dbus.mainloop.glib
+
+dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
 
 class Connection(dbus.connection.Connection):
     def __new__(cls):
