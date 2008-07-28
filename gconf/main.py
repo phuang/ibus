@@ -23,34 +23,29 @@ import os
 import sys
 import getopt
 import ibus
-import dbus
-import dbus.mainloop.glib
 import config
 import gtk
 
 class GconfApplication:
     def __init__ (self):
-        self._dbusconn = dbus.connection.Connection (ibus.IBUS_ADDR)
-        self._dbusconn.add_signal_receiver (self._disconnected_cb,
-                            "Disconnected",
-                            dbus_interface = dbus.LOCAL_IFACE)
+        self.__conn = ibus.Connection()
+        self.__conn.call_on_disconnection(self.__disconnected_cb)
 
-        self._ibus = self._dbusconn.get_object (ibus.IBUS_NAME, ibus.IBUS_PATH)
-        self._config = config.ConfigProxy (self._dbusconn, "/org/freedesktop/IBus/Config", self._ibus)
+        self.__ibus = self.__conn.get_ibus ()
+        self.__config = config.ConfigProxy (self.__conn, "/org/freedesktop/IBus/Config", self.__ibus)
 
-        self._ibus.RegisterConfig (self._config, True)
+        self.__ibus.RegisterConfig (self.__config, True)
 
     def run (self):
         gtk.main ()
 
-    def _disconnected_cb (self):
+    def __disconnected_cb (self, conn):
         print "disconnected"
         gtk.main_quit ()
 
 
 
 def launch_gconf ():
-    dbus.mainloop.glib.DBusGMainLoop (set_as_default=True)
     # gtk.settings_get_default ().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
     # gtk.rc_parse ("./themes/default/gtkrc")
     GconfApplication ().run ()
