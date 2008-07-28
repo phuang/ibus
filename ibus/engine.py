@@ -139,7 +139,6 @@ class EngineBase(ibus.Object):
 class EngineProxy(interface.IEngine):
     def __init__(self, engine, conn, object_path):
         super(EngineProxy, self).__init__(conn, object_path)
-        self.__conn = conn
         self.__engine = engine
 
     def ProcessKeyEvent(self, keyval, is_press, state):
@@ -188,5 +187,4 @@ class EngineProxy(interface.IEngine):
         self.__engine.destroy()
         self.__engine = None
         self.remove_from_connection ()
-        self.__conn = None
 

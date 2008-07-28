@@ -20,7 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-        "Connection",
+        "IBus",
     )
 import dbus.connection
 import ibus
@@ -30,7 +30,7 @@ dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
 
 class IBus(dbus.connection.Connection):
     def __new__(cls):
-        self = super(Connection, cls).__new__(cls, ibus.IBUS_ADDR)
+        self = super(IBus, cls).__new__(cls, ibus.IBUS_ADDR)
         self.__ibus = self.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
         return self
 
@@ -65,13 +65,13 @@ class IBus(dbus.connection.Connection):
         return self.__ibus.set_capabilities(ic, caps)
 
     def register_factories(self, object_paths):
-        return self.__ibus.RegisterFactories(object_paths)
+        return self.__ibus.RegisterFactories(object_paths, **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def unregister_factories(self, object_paths):
         return self.__ibus.UnregisterFactories(object_paths)
 
     def register_panel(self, object_path, replace = False):
-        return self.__ibus.RegisterPanle(object_path, replace)
+        return self.__ibus.RegisterPanel(object_path, replace)
 
     def register_config(self, object_path, replace = False):
         return self.__ibus.RegisterConfig(object_path, replace)
@@ -82,7 +82,7 @@ class IBus(dbus.connection.Connection):
     def get_factory_info(self, factory_path):
         return self.__ibus.GetFactoryInfo(factory_path)
 
-    def set_factroy(self, factory_path):
+    def set_factory(self, factory_path):
         return self.__ibus.SetFactory(factory_path)
 
     def get_input_context_states(self, ic):
