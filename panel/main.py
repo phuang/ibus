@@ -24,8 +24,6 @@ import sys
 import getopt
 import ibus
 import gtk
-import dbus
-import dbus.mainloop.glib
 import panel
 
 PANEL_PATH = "/org/freedesktop/IBus/Panel"
@@ -33,9 +31,7 @@ PANEL_PATH = "/org/freedesktop/IBus/Panel"
 class PanelApplication:
     def __init__ (self):
         self.__conn = ibus.Connection()
-        self.__conn.add_signal_receiver(self.__disconnected_cb,
-                            "Disconnected",
-                            dbus_interface = dbus.LOCAL_IFACE)
+        self.__conn.call_on_disconnection(self.__disconnected_cb)
 
         self.__ibus = self.__conn.get_ibus()
         self.__panel = panel.Panel(self.__conn, PANEL_PATH, self.__ibus)
@@ -45,14 +41,12 @@ class PanelApplication:
     def run(self):
         gtk.main()
 
-    def __disconnected_cb(self):
+    def __disconnected_cb(self, conn):
         print "disconnected"
         gtk.main_quit()
 
 
-
 def launch_panel():
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
     # gtk.rc_parse("./themes/default/gtkrc")
     PanelApplication().run()
