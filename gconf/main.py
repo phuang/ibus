@@ -25,16 +25,15 @@ import getopt
 import ibus
 import config
 import gtk
-
+CONFIG_PATH = "/org/freedesktop/IBus/GConf"
 class GconfApplication:
     def __init__(self):
         self.__conn = ibus.Connection()
         self.__conn.call_on_disconnection(self.__disconnected_cb)
 
-        self.__ibus = self.__conn.get_ibus()
-        self.__config = config.ConfigProxy(self.__conn, "/org/freedesktop/IBus/GConf", self.__ibus)
+        self.__config = config.Config(self.__conn, CONFIG_PATH)
 
-        self.__ibus.RegisterConfig(self.__config, True)
+        self.__conn.get_ibus().RegisterConfig(CONFIG_PATH, True)
 
     def run(self):
         gtk.main()
