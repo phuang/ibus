@@ -32,7 +32,7 @@ class GconfApplication:
         self.__conn.call_on_disconnection(self.__disconnected_cb)
 
         self.__ibus = self.__conn.get_ibus()
-        self.__config = config.ConfigProxy(self.__conn, "/org/freedesktop/IBus/Config", self.__ibus)
+        self.__config = config.ConfigProxy(self.__conn, "/org/freedesktop/IBus/GConf", self.__ibus)
 
         self.__ibus.RegisterConfig(self.__config, True)
 
