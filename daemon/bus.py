@@ -355,7 +355,7 @@ class IBus(ibus.Object):
                 for conn in self.__config[dir]:
                     conn.emit_dbus_signal("ConfigValueChanged", key, value)
 
-    def __config_destroy_cb(self, config, key, value):
+    def __config_destroy_cb(self, config):
         if config == self.__config:
             self.__config = DummyConfig()
 
