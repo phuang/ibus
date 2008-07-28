@@ -30,13 +30,12 @@ PANEL_PATH = "/org/freedesktop/IBus/Panel"
 
 class PanelApplication:
     def __init__ (self):
-        self.__conn = ibus.Connection()
-        self.__conn.call_on_disconnection(self.__disconnected_cb)
+        self.__ibus = ibus.IBus()
+        self.__ibus.call_on_disconnection(self.__disconnected_cb)
 
-        self.__ibus = self.__conn.get_ibus()
-        self.__panel = panel.Panel(self.__conn, PANEL_PATH, self.__ibus)
+        self.__panel = panel.Panel(self.__ibus, PANEL_PATH)
 
-        self.__ibus.RegisterPanel(PANEL_PATH, True)
+        self.__ibus.register_panel(PANEL_PATH, True)
 
     def run(self):
         gtk.main()
