@@ -24,29 +24,30 @@ import sys
 import getopt
 import ibus
 import config
-import gtk
+import gobject
+
 CONFIG_PATH = "/org/freedesktop/IBus/GConf"
+
 class GconfApplication:
     def __init__(self):
-        self.__conn = ibus.Connection()
-        self.__conn.call_on_disconnection(self.__disconnected_cb)
+        self.__mainloop = gobject.MainLoop()
+        self.__ibus = ibus.IBus()
+        self.__ibus.call_on_disconnection(self.__disconnected_cb)
 
-        self.__config = config.Config(self.__conn, CONFIG_PATH)
+        self.__config = config.Config(self.__ibus, CONFIG_PATH)
 
-        self.__conn.get_ibus().RegisterConfig(CONFIG_PATH, True)
+        self.__ibus.register_config(CONFIG_PATH, True)
 
     def run(self):
-        gtk.main()
+        self.__mainloop.run()
 
     def __disconnected_cb(self, conn):
         print "disconnected"
-        gtk.main_quit()
+        self.__mainloop.quit()
 
 
 
 def launch_gconf():
-    # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
-    # gtk.rc_parse("./themes/default/gtkrc")
     GconfApplication().run()
 
 def print_help(out, v = 0):
