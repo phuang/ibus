@@ -26,7 +26,7 @@ from common import *
 from interface import *
 from exception import *
 from lookuptable import *
-from connection import *
+from bus import *
 from lang import *
 from utility import *
 from engine import *
