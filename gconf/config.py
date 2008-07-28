@@ -45,6 +45,9 @@ class Config(ibus.Object):
     def set_bool(self, key, value):
         pass
 
+    def do_destroy(self):
+        self.__proxy = None
+
     def __value_changed_cb(self, gconf, key, value):
         value = self.__client.get_value(key)
         print key, type(value), value
@@ -68,3 +71,7 @@ class ConfigProxy(interface.IConfig):
         self.__config.set_int(key, value)
     def SetBool(self, key, value):
         self.__config.set_bool(key, value)
+    def Destroy(self):
+        self.remove_from_connection()
+        self.__config.destroy()
+        self.__config = None

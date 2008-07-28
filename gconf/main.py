@@ -35,11 +35,15 @@ class GconfApplication:
         self.__ibus.call_on_disconnection(self.__disconnected_cb)
 
         self.__config = config.Config(self.__ibus, CONFIG_PATH)
+        self.__config.connect("destroy", self.__config_destroy_cb)
 
         self.__ibus.register_config(CONFIG_PATH, True)
 
     def run(self):
         self.__mainloop.run()
+
+    def __config_destroy_cb(self, config):
+        self.__mainloop.quit()
 
     def __disconnected_cb(self, conn):
         print "disconnected"

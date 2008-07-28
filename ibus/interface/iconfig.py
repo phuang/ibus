@@ -65,6 +65,10 @@ class IConfig (dbus.service.Object):
     @method (in_signature = "sb")
     def SetBool (self, key, value):
         pass
+    
+    @method ()
+    def Destroy (self):
+        pass
 
     @signal (signature = "sv")
     def ValueChanged (self, key, value):
