@@ -1,10 +1,31 @@
+# vim:set et sts=4 sw=4:
+#
+# ibus - The Input Bus
+#
+# Copyright(c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or(at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+# Boston, MA  02111-1307  USA
+
 import gconf
 import ibus
 from ibus import interface
 
 class Config(ibus.Object):
     def __init__ (self, conn, path):
-		super(Config, self).__init__()
+        super(Config, self).__init__()
         self.__proxy = ConfigProxy(self, conn, path)
         self.__client = gconf.Client()
         self.__client.connect("value-changed", self.__value_changed_cb)
@@ -31,7 +52,7 @@ class Config(ibus.Object):
 
 class ConfigProxy(interface.IConfig):
     def __init__ (self, config, conn, object_path):
-		super(ConfigProxy, self).__init__(conn, object_path)
+        super(ConfigProxy, self).__init__(conn, object_path)
         self.__config = config
 
     def GetString(self, key):
