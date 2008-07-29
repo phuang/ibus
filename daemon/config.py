@@ -41,22 +41,22 @@ class Config(ibus.Object):
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
 
     def get_string(self, key, **kargs):
-        self.__config.GetString(key, **kargs)
+        return self.__config.GetString(key, **kargs)
 
     def get_int(self, key, **kargs):
-        self.__config.GetInt(key, **kargs)
+        return self.__config.GetInt(key, **kargs)
 
     def get_bool(self, key, **kargs):
-        self.__config.GetBool(key, **kargs)
+        return self.__config.GetBool(key, **kargs)
 
     def set_string(self, key, value, **kargs):
-        self.__config.SetString(key, value, **kargs)
+        return self.__config.SetString(key, value, **kargs)
 
     def set_int(self, key, value, **kargs):
-        self.__config.SetInt(key, value, **kargs)
+        return self.__config.SetInt(key, value, **kargs)
 
     def set_bool(self, key, value, **kargs):
-        self.__config.SetBool(key, value, **kargs)
+        return self.__config.SetBool(key, value, **kargs)
 
     def destroy(self):
         if self.__ibusconn != None:
@@ -90,22 +90,33 @@ class DummyConfig(ibus.Object):
     }
 
     def get_string(self, key, **kargs):
-        kargs["reply_handler"]("")
+        if "reply_handler" in kargs:
+            kargs["reply_handler"]("")
+        else:
+            return ""
 
     def get_int(self, key, **kargs):
-        kargs["reply_handler"](0)
+        if "reply_handler" in kargs:
+            kargs["reply_handler"](0)
+        else:
+            return 0
 
     def get_bool(self, key, **kargs):
-        kargs["reply_handler"](True)
+        if "reply_handler" in kargs:
+            kargs["reply_handler"](True)
+        else:
+            return True
 
     def set_string(self, key, value, **kargs):
-        kargs["reply_handler"]()
+        if "reply_handler" in kargs:
+            kargs["reply_handler"]()
 
     def set_int(self, key, value, **kargs):
-        kargs["reply_handler"]()
+        if "reply_handler" in kargs:
+            kargs["reply_handler"]()
 
     def set_bool(self, key, value, **kargs):
-        kargs["reply_handler"]()
-
+        if "reply_handler" in kargs:
+            kargs["reply_handler"]()
 
 gobject.type_register(DummyConfig)
