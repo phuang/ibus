@@ -65,6 +65,7 @@ class Config(ibus.Object):
             return (self.__to_py_value(value.get_car()), self.__to_py_value(value.get_cdr()))
         if value.type == gconf.VALUE_LIST:
             return map(self.__to_py_value, value.get_list())
+        raise ibus.IBusException("Do not support type == %s" % str(value.type))
 
     def __to_gconf_value(self, value):
         if isinstance(value, str):
@@ -94,6 +95,8 @@ class Config(ibus.Object):
                     raise ibus.IBusException("Items of a list must be in same type")
                 ret.set_list_type(_type)
                 ret.set_list(value)
+        else:
+            raise ibus.IBusException("Do not support type of %s." % type(value))
         return ret
 
     def __value_changed_cb(self, gconf, key, value):
