@@ -24,7 +24,6 @@ import gtk
 import gobject
 import ibus
 from gtk import gdk, glade
-import dbus.mainloop.glib
 
 (
     NAME_COLUMN,
@@ -37,14 +36,17 @@ import dbus.mainloop.glib
 class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
-        self._conn = ibus.Connection()
-        self._ibus = self._conn.get_ibus()
+        try:
+            self.__ibus = ibus.IBus()
+        except:
+            self.__ibus = None
+
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
-        self._xml = glade.XML(glade_file)
-        self._dialog = self._xml.get_widget("dialog_setup")
-        self._tree = self._xml.get_widget("treeview_engines")
+        self.__xml = glade.XML(glade_file)
+        self.__dialog = self.__xml.get_widget("dialog_setup")
+        self.__tree = self.__xml.get_widget("treeview_engines")
         model = self.__create_model()
-        self._tree.set_model(model)
+        self.__tree.set_model(model)
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
@@ -69,7 +71,7 @@ class Setup(object):
         column.pack_start(renderer)
         column.set_attributes(renderer, text = NAME_COLUMN)
 
-        self._tree.append_column(column)
+        self.__tree.append_column(column)
 
         # column for holiday names
         renderer = gtk.CellRendererToggle()
@@ -82,11 +84,8 @@ class Setup(object):
         column.set_clickable(True)
         column.set_resizable(False)
         column.set_fixed_width(50)
-        self._tree.append_column(column)
+        self.__tree.append_column(column)
 
-
-    def _init_ui(self):
-        model = self.__create_model()
 
     def __item_toggled_cb(self, cell, path_str, model):
 
@@ -97,7 +96,7 @@ class Setup(object):
         # do something with the value
         if data[6] == False:
             try:
-                self._ibus.RegisterStartEngine(data[1], data[0])
+                self.__ibus.register_start_engine(data[1], data[0])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -106,7 +105,7 @@ class Setup(object):
                 return
         else:
             try:
-                self._ibus.RegisterStopEngine(data[1], data[0])
+                self.__ibus.register_stop_engine(data[1], data[0])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -130,10 +129,10 @@ class Setup(object):
 
         langs = dict()
 
-        for name, lang, icon, author, credits, _exec, started in self._ibus.RegisterListEngines():
+        for name, lang, icon, author, credits, _exec, started in self.__ibus.register_list_engines():
             _lang = ibus.LANGUAGES.get(lang, "other")
             if _lang not in langs:
-                langs[_lang] = []
+                langs[_lang] = list()
             langs[_lang].append([name, lang, icon, author, credits, _exec, started])
 
         keys = langs.keys()
@@ -161,8 +160,7 @@ class Setup(object):
 
 
     def run(self):
-        return self._dialog.run()
+        return self.__dialog.run()
 
 if __name__ == "__main__":
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     Setup().run()

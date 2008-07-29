@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Thu Jul 10 15:52:05 2008 -->
+<!--Generated with glade3 3.4.4 on Mon Jul 28 13:34:26 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
@@ -19,14 +19,37 @@
             <child>
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
+                <property name="homogeneous">True</property>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkCheckButton" id="checkbutton1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="label" translatable="yes">Enable IBus</property>
+                    <property name="response_id">0</property>
+                    <property name="draw_indicator">True</property>
+                  </widget>
                 </child>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkAlignment" id="alignment1">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkAlignment" id="alignment2">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
                 </child>
               </widget>
             </child>
@@ -55,7 +78,6 @@
                       <widget class="GtkTreeView" id="treeview_engines">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="headers_clickable">True</property>
                         <property name="reorderable">True</property>
                       </widget>
                     </child>
