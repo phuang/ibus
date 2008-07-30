@@ -86,15 +86,15 @@ class Config(ibus.Object):
         if isinstance(value, str) or isinstance(value, unicode):
             ret = gconf.Value(gconf.VALUE_STRING)
             ret.set_string(value)
+        elif isinstance(value, bool):
+            ret = gconf.Value(gconf.VALUE_BOOL)
+            ret.set_bool(value)
         elif isinstance(value, int):
             ret = gconf.Value(gconf.VALUE_INT)
             ret.set_int(value)
         elif isinstance(value, float):
             ret = gconf.Value(gconf.VALUE_FLOAT)
             ret.set_float(value)
-        elif isinstance(value, bool):
-            ret = gconf.Value(gconf.VALUE_BOOL)
-            ret.set_bool(value)
         elif isinstance(value, tuple):
             if len(value) != 2:
                 raise ibus.IBusException("Pair must have two value")
