@@ -68,9 +68,12 @@ class IBusServer(dbus.server.Server):
         super(IBusServer, self).__init__()
 
         self.__ibus = IBus()
+        self.__launch_auto_load_engines()
+
+    def __launch_auto_load_engines(self):
         engines = []
         try:
-            engines = self.__ibus.config_get_value("auto_enable_engine", None)
+            engines = self.__ibus.config_get_value("preload_engines", None)
             if not engines:
                 engines = []
         except:
@@ -89,6 +92,7 @@ class IBusServer(dbus.server.Server):
         DBus(dbusconn, dbus.BUS_DAEMON_PATH)
 
     def connection_removed(self, dbusconn):
+        # do nothing.
         pass
 
 def launch_ibus():
