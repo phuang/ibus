@@ -71,7 +71,8 @@ class IBusServer(dbus.server.Server):
         engines = []
         try:
             engines = self.__ibus.config_get_value("auto_enable_engine", None)
-            print engines
+            if not engines:
+                engines = []
         except:
             import traceback
             traceback.print_exc()
