@@ -89,28 +89,32 @@ class DefaultConfig(ibus.Object):
         self.__handler_id = self.__config.connect("value-changed", self.__value_changed_cb)
 
     def get_value(self, key, **kargs):
+        reply_handler = kargs.get("reply_handler", None)
+        error_handler = kargs.get("reply_handler", None)
         try:
             value = self.__config.get_value(key)
-            if "reply_handler" in kargs:
-                kargs["reply_handler"](value)
+            if reply_handler:
+                reply_handler(value)
             else:
                 return value
         except Exception, e:
-            if "error_handler" in kargs:
-                kargs["error_handler"](e)
+            if error_handler:
+                error_handler(e)
             else:
                 raise e
 
     def set_value(self, key, value, **kargs):
+        reply_handler = kargs.get("reply_handler", None)
+        error_handler = kargs.get("reply_handler", None)
         try:
             self.__config.set_value(key, value)
-            if "reply_handler" in kargs:
-                kargs["reply_handler"]()
+            if reply_handler:
+                reply_handler()
             else:
                 return
         except Exception, e:
-            if "error_handler" in kargs:
-                kargs["error_handler"](e)
+            if error_handler:
+                error_handler(e)
             else:
                 raise e
 
