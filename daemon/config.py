@@ -40,6 +40,12 @@ class Config(ibus.Object):
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
 
+    def get_value(self, key, **kargs):
+        return self.__config.GetValue(key, **kargs)
+
+    def set_value(self, key, value, **kargs):
+        return self.__config.GetValue(key, value, **kargs)
+
     def get_string(self, key, **kargs):
         return self.__config.GetString(key, **kargs)
 
@@ -88,6 +94,16 @@ class DummyConfig(ibus.Object):
             gobject.TYPE_NONE,
             (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
+
+    def get_value(self, key, **kargs):
+        if "reply_handler" in kargs:
+            kargs["reply_handler"](0)
+        else:
+            return 0
+
+    def set_value(self, key, **kargs):
+        if "reply_handler" in kargs:
+            kargs["reply_handler"]()
 
     def get_string(self, key, **kargs):
         if "reply_handler" in kargs:
