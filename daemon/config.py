@@ -90,7 +90,7 @@ class DefaultConfig(ibus.Object):
 
     def get_value(self, key, **kargs):
         reply_handler = kargs.get("reply_handler", None)
-        error_handler = kargs.get("reply_handler", None)
+        error_handler = kargs.get("error_handler", None)
         try:
             value = self.__config.get_value(key)
             if reply_handler:
@@ -105,7 +105,7 @@ class DefaultConfig(ibus.Object):
 
     def set_value(self, key, value, **kargs):
         reply_handler = kargs.get("reply_handler", None)
-        error_handler = kargs.get("reply_handler", None)
+        error_handler = kargs.get("error_handler", None)
         try:
             self.__config.set_value(key, value)
             if reply_handler:
