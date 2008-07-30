@@ -46,24 +46,6 @@ class Config(ibus.Object):
     def set_value(self, key, value, **kargs):
         return self.__config.GetValue(key, value, **kargs)
 
-    def get_string(self, key, **kargs):
-        return self.__config.GetString(key, **kargs)
-
-    def get_int(self, key, **kargs):
-        return self.__config.GetInt(key, **kargs)
-
-    def get_bool(self, key, **kargs):
-        return self.__config.GetBool(key, **kargs)
-
-    def set_string(self, key, value, **kargs):
-        return self.__config.SetString(key, value, **kargs)
-
-    def set_int(self, key, value, **kargs):
-        return self.__config.SetInt(key, value, **kargs)
-
-    def set_bool(self, key, value, **kargs):
-        return self.__config.SetBool(key, value, **kargs)
-
     def destroy(self):
         if self.__ibusconn != None:
             self.__config.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)

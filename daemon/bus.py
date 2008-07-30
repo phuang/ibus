@@ -317,26 +317,8 @@ class IBus(ibus.Object):
     def config_set_value(self, key, value, dbusconn, **kargs):
         self.__config.set_value(key, value, **kargs)
 
-    def config_set_string(self, key, value, dbusconn, **kargs):
-        self.__config.set_string(key, value, **kargs)
-
-    def config_set_int(self, key, value, dbusconn, **kargs):
-        self.__config.set_int(key, value, **kargs)
-
-    def config_set_bool(self, key, value, dbusconn, **kargs):
-        self.__config.set_bool(key, value, **kargs)
-
     def config_get_value(self, key, dbusconn, **kargs):
         self.__config.get_value(key, **kargs)
-
-    def config_get_string(self, key, dbusconn, **kargs):
-        self.__config.get_string(key, **kargs)
-
-    def config_get_int(self, key, dbusconn, **kargs):
-        self.__config.get_int(key, **kargs)
-
-    def config_get_bool(self, key, dbusconn, **kargs):
-        self.__config.get_bool(key, **kargs)
 
     def config_add_watch_dir(self, dir, conn, **kargs):
         if not dir.endswith("/"):
@@ -478,38 +460,8 @@ class IBusProxy(ibus.IIBus):
                 reply_handler = reply_cb,
                 error_handler = error_cb)
 
-    def ConfigSetString(self, key, value, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_set_string(key, value, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigSetInt(self, key, value, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_set_int(key, value, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigSetBool(self, key, value, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_set_bool(key, value, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
     def ConfigGetValue(self, key, dbusconn, reply_cb, error_cb):
         self.__ibus.config_get_value(key, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigGetString(self, key, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_get_string(key, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigGetInt(self, key, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_get_int(key, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigGetBool(self, key, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_get_bool(key, self.__conn,
                 reply_handler = reply_cb,
                 error_handler = error_cb)
 
