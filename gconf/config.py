@@ -33,19 +33,19 @@ class Config(ibus.Object):
         self.__handler_id = self.__client.connect("value-changed", self.__value_changed_cb)
         self.__client.add_dir(GCONF_IBUS_PATH, gconf.CLIENT_PRELOAD_NONE)
 
-    def get_string(self, key):
-        pass
-    def get_int(self, key):
-        pass
-    def get_bool(self, key):
-        pass
+    def get_value(self, key):
+        if not key.startswith("/"):
+            key = "/" + key
+        key = GCONF_IBUS_PATH + key
+        value = self.__client.get(key)
+        return self.__to_py_value(value)
 
-    def set_string(self, key, value):
-        pass
-    def set_int(self, key, value):
-        pass
-    def set_bool(self, key, value):
-        pass
+    def set_value(self, key, value):
+        if not key.startswith("/"):
+            key = "/" + key
+        key = GCONF_IBUS_PATH + key
+        value = self.__to_gconf_value(value)
+        self.__client.set(key, value)
 
     def do_destroy(self):
         self.__proxy = None
@@ -112,19 +112,10 @@ class ConfigProxy(interface.IConfig):
         super(ConfigProxy, self).__init__(conn, object_path)
         self.__config = config
 
-    def GetString(self, key):
-        return self.__config.get_string(key)
-    def GetInt(self, key):
-        return self.__config.get_int(key)
-    def GetBool(self, key):
-        return self.__config.get_bool(key)
-
-    def SetString(self, key, value):
-        self.__config.set_string(key, value)
-    def SetInt(self, key, value):
-        self.__config.set_int(key, value)
-    def SetBool(self, key, value):
-        self.__config.set_bool(key, value)
+    def GetValue(self, key):
+        return self.__config.get_value(key)
+    def SetValue(self, key, value):
+        self.__config.set_value(key, value)
 
     def Destroy(self):
         self.remove_from_connection()

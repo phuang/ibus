@@ -48,37 +48,6 @@ class IConfig(dbus.service.Object):
     @method(in_signature = "sv")
     def SetValue(self, key, value): pass
 
-
-    @method(in_signature = "s", out_signature = "s")
-    def GetString(self, key): pass
-
-    @method(in_signature = "s", out_signature = "i")
-    def GetInt(self, key): pass
-
-    @method(in_signature = "s", out_signature = "b")
-    def GetBool(self, key): pass
-
-    @method(in_signature = "s", out_signature = "f")
-    def GetFloat(self, key): pass
-
-    @method(in_signature = "s", out_signature = "av")
-    def GetList(self, key): pass
-
-    @method(in_signature = "ss")
-    def SetString(self, key, value): pass
-
-    @method(in_signature = "si")
-    def SetInt(self, key, value): pass
-
-    @method(in_signature = "sb")
-    def SetBool(self, key, value): pass
-
-    @method(in_signature = "sf")
-    def SetFloat(self, key, value): pass
-
-    @method(in_signature = "sav")
-    def SetList(self, key, value): pass
-
     @method()
     def Destroy(self): pass
 

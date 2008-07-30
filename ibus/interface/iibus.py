@@ -101,26 +101,8 @@ class IIBus(dbus.service.Object):
     @async_method(in_signature = "sv")
     def ConfigSetValue(self, key, value, dbusconn, reply_cb, error_cb): pass
 
-    @async_method(in_signature = "ss")
-    def ConfigSetString(self, key, value, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "si")
-    def ConfigSetInt(self, key, value, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "sb")
-    def ConfigSetBool(self, key, value, dbusconn, reply_cb, error_cb): pass
-
     @async_method(in_signature = "s", out_signature = "v")
     def ConfigGetValue(self, key, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "s", out_signature = "s")
-    def ConfigGetString(self, key, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "s", out_signature = "i")
-    def ConfigGetInt(self, key, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "s", out_signature = "b")
-    def ConfigGetBool(self, key, dbusconn, reply_cb, error_cb): pass
 
     @method(out_signature = "a(ssssssb)")
     def RegisterListEngines(self, dbusconn): pass

@@ -91,26 +91,8 @@ class IBus(dbus.connection.Connection):
     def config_set_value(self, key, valuse):
         return self.__ibus.ConfigSetValue(key, value)
 
-    def config_set_string(self, key, valuse):
-        return self.__ibus.ConfigSetString(key, value)
-
-    def config_set_int(self, key, valuse):
-        return self.__ibus.ConfigSetInt(key, value)
-
-    def config_set_bool(self, key, valuse):
-        return self.__ibus.ConfigSetBool(key, value)
-
     def config_get_value(self, key):
         return self.__ibus.ConfigGetValue(key)
-
-    def config_get_string(self, key):
-        return self.__ibus.ConfigGetString(key)
-
-    def config_get_int(self, key, valuse):
-        return self.__ibus.ConfigGetInt(key)
-
-    def config_get_bool(self, key, valuse):
-        return self.__ibus.ConfigGetBool(key)
 
     def register_list_engines(self):
         return self.__ibus.RegisterListEngines()
