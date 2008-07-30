@@ -73,7 +73,7 @@ class IBusServer(dbus.server.Server):
     def __launch_auto_load_engines(self):
         engines = []
         try:
-            engines = self.__ibus.config_get_value("preload_engines", None)
+            engines = self.__ibus.config_get_value("general/preload_engines", None)
             if not engines:
                 engines = []
         except:
