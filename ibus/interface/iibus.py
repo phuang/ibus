@@ -126,3 +126,5 @@ class IIBus(dbus.service.Object):
     def Disabled(self, ic): pass
 
     def ConfigValueChanged(self, key, value): pass
+
+    def ConfigReload(self): pass

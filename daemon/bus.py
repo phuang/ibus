@@ -319,6 +319,8 @@ class IBus(ibus.Object):
         self.__config = Config(conn, object_path)
         self.__config.connect("value-changed", self.__config_value_changed_cb)
         self.__config.connect("destroy", self.__config_destroy_cb)
+        for conn in self.__connections:
+            conn.emit_dbus_signal("ConfigReload")
 
     def config_set_value(self, key, value, conn, **kargs):
         self.__config.set_value(key, value, **kargs)
