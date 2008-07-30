@@ -68,6 +68,8 @@ class Config(ibus.Object):
             self.__client = None
 
     def __to_py_value(self, value):
+        if value == None:
+            return value
         if value.type == gconf.VALUE_STRING:
             return value.get_string()
         if value.type == gconf.VALUE_INT:
