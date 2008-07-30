@@ -88,7 +88,7 @@ class IBus(dbus.connection.Connection):
     def get_input_context_states(self, ic):
         return self.__ibus.GetInputContextStates(ic)
 
-    def config_set_value(self, key, valuse):
+    def config_set_value(self, key, value):
         return self.__ibus.ConfigSetValue(key, value)
 
     def config_get_value(self, key):
