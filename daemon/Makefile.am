@@ -20,6 +20,7 @@
 # Boston, MA  02111-1307  USA
 ibusdaemon_PYTHON = \
 	bus.py \
+	defaultconfig.py \
 	config.py \
 	connection.py \
 	contextmanager.py \

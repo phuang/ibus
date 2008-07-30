@@ -19,6 +19,11 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+    "Config",
+)
+
+import gobject
 import gconf
 import ibus
 from ibus import interface
@@ -26,6 +31,13 @@ from ibus import interface
 GCONF_IBUS_PATH = "/desktop/ibus"
 
 class Config(ibus.Object):
+    __gsignals__ = {
+        "value-changed" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+    }
+
     def __init__ (self, conn = None, path = None):
         super(Config, self).__init__()
         self.__proxy = ConfigProxy(self, conn, path)
@@ -108,12 +120,15 @@ class Config(ibus.Object):
 
         print key, type(value), value
         print key, type(value), self.__to_gconf_value(value)
-        self.__proxy.ValueChanged(key, value)
+        self.emit("value-changed", key, value)
+
+gobject.type_register(Config)
 
 class ConfigProxy(interface.IConfig):
     def __init__ (self, config, conn, object_path):
         super(ConfigProxy, self).__init__(conn, object_path)
         self.__config = config
+        self.__config.connect("value-changed", lambda c, k, v: self.ValueChanged(k, v))
 
     def GetValue(self, key):
         return self.__config.get_value(key)

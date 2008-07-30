@@ -27,7 +27,7 @@ from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from connection import Connection
 from panel import Panel, DummyPanel
-from config import Config, DummyConfig
+from config import Config, DefaultConfig
 from register import Register
 
 class IBus(ibus.Object):
@@ -36,7 +36,7 @@ class IBus(ibus.Object):
         self.__context_manager = ContextManager()
         self.__factory_manager = FactoryManager()
         self.__panel = DummyPanel()
-        self.__config = DummyConfig()
+        self.__config = DefaultConfig()
         self.__register = Register()
         self.__config_watch = dict()
 
@@ -306,9 +306,9 @@ class IBus(ibus.Object):
     # methods for panel
     ##########################################################
     def register_config(self, object_path, replace, conn):
-        if not isinstance(self.__config, DummyConfig) and replace == False:
+        if not isinstance(self.__config, DefaultConfig) and replace == False:
             raise ibus.Exception("has have a config!")
-        if not isinstance(self.__config, DummyConfig):
+        if not isinstance(self.__config, DefaultConfig):
             self.__config.destroy()
         self.__config = Config(conn, object_path)
         self.__config.connect("value-changed", self.__config_value_changed_cb)
@@ -345,7 +345,7 @@ class IBus(ibus.Object):
 
     def __config_destroy_cb(self, config):
         if config == self.__config:
-            self.__config = DummyConfig()
+            self.__config = DefaultConfig()
 
     ##########################################################
     # engine register methods

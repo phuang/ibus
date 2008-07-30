@@ -19,9 +19,15 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+__all__ = (
+    "Config",
+    "DefaultConfig"
+)
+
 import weakref
 import gobject
 import ibus
+import defaultconfig
 
 class Config(ibus.Object):
     __gsignals__ = {
@@ -69,7 +75,7 @@ class Config(ibus.Object):
 
 gobject.type_register(Config)
 
-class DummyConfig(ibus.Object):
+class DefaultConfig(ibus.Object):
     __gsignals__ = {
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -77,44 +83,44 @@ class DummyConfig(ibus.Object):
             (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
+    def __init__(self):
+        super(DefaultConfig, self).__init__()
+        self.__config = defaultconfig.Config()
+        self.__handler_id = self.__config.connect("value-changed", self.__value_changed_cb)
+
     def get_value(self, key, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"](0)
-        else:
-            return 0
+        try:
+            value = self.__config.get_value(key)
+            if "reply_handler" in kargs:
+                kargs["reply_handler"](value)
+            else:
+                return value
+        except Exception, e:
+            if "error_handler" in kargs:
+                kargs["error_handler"](e)
+            else:
+                raise e
 
-    def set_value(self, key, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"]()
+    def set_value(self, key, value, **kargs):
+        try:
+            self.__config.set_value(key, value)
+            if "reply_handler" in kargs:
+                kargs["reply_handler"]()
+            else:
+                return
+        except Exception, e:
+            if "error_handler" in kargs:
+                kargs["error_handler"](e)
+            else:
+                raise e
 
-    def get_string(self, key, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"]("")
-        else:
-            return ""
+    def __value_changed_cb(self, config, key, value):
+        self.emit("value-changed", key, value)
 
-    def get_int(self, key, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"](0)
-        else:
-            return 0
+    def do_destroy(self):
+        if self.__config:
+            self.__config.disconnect(self.__handler_id)
+            self.__config.destroy()
+            self.__config = None
 
-    def get_bool(self, key, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"](True)
-        else:
-            return True
-
-    def set_string(self, key, value, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"]()
-
-    def set_int(self, key, value, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"]()
-
-    def set_bool(self, key, value, **kargs):
-        if "reply_handler" in kargs:
-            kargs["reply_handler"]()
-
-gobject.type_register(DummyConfig)
+gobject.type_register(DefaultConfig)
