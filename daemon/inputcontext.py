@@ -197,6 +197,7 @@ class InputContext(ibus.Object):
                 self.__ibusconn.emit_dbus_signal("Enabled", self.__id)
                 if self.__engine:
                     self.__engine.enable()
+                    self.__engine.focus_in()
             else:
                 self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
                 if self.__engine:
