@@ -323,10 +323,10 @@ class IBus(ibus.Object):
             conn.emit_dbus_signal("ConfigReload")
 
     def config_set_value(self, key, value, conn, **kargs):
-        self.__config.set_value(key, value, **kargs)
+        return self.__config.set_value(key, value, **kargs)
 
     def config_get_value(self, key, conn, **kargs):
-        self.__config.get_value(key, **kargs)
+        return self.__config.get_value(key, **kargs)
 
     def config_add_watch_dir(self, dir, conn, **kargs):
         if not dir.endswith("/"):

@@ -70,14 +70,16 @@ class IBusServer(dbus.server.Server):
         self.__ibus = IBus()
         engines = []
         try:
-            engines = self.__ibus.config_get_value("auto_enable_engine")
+            engines = self.__ibus.config_get_value("auto_enable_engine", None)
+            print engines
         except:
-            pass
+            import traceback
+            traceback.print_exc()
         for e in engines:
             try:
                 lang, name = e.split(":")
-                self.__ibus.register_start_engine(lang, name)
-            except Eceptione, e:
+                self.__ibus.register_start_engine(lang, name, None)
+            except:
                 import traceback
                 traceback.print_exc()
 
