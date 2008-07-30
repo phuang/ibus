@@ -88,6 +88,9 @@ class IBusServer(dbus.server.Server):
         self.__ibus.new_connection(dbusconn)
         DBus(dbusconn, dbus.BUS_DAEMON_PATH)
 
+    def connection_removed(self, dbusconn):
+        pass
+
 def launch_ibus():
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     loop = gobject.MainLoop()
