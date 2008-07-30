@@ -23,9 +23,9 @@ import dbus
 import ibus
 from ibus import keysyms
 from ibus import modifier
+from connection import Connection
 from contextmanager import ContextManager
 from factorymanager import FactoryManager
-from connection import Connection
 from panel import Panel, DummyPanel
 from config import Config, DefaultConfig
 from register import Register
@@ -44,7 +44,16 @@ class IBus(ibus.Object):
         self.__last_focused_context = None
         self.__context_handlers = list()
 
-        self.__last_key = None
+        self.__connections = list()
+
+    def new_connection(self, dbusconn):
+        conn = Connection(dbusconn)
+        IBusProxy(self, conn)
+        conn.connect("destroy", self.__conn_destroy_cb)
+        self.__connections.append(conn)
+
+    def __conn_destroy_cb(self, conn):
+        self.__connections.remove(conn)
 
     ##########################################################
     # methods for im context
@@ -241,9 +250,6 @@ class IBus(ibus.Object):
     def register_factories(self, object_paths, conn):
         self.__factory_manager.register_factories(object_paths, conn)
 
-    def __lookup_engine(self, dbusconn, path):
-        return self.__factory_manager.lookup_engine(conn, path)
-
 
     ##########################################################
     # methods for panel
@@ -314,10 +320,10 @@ class IBus(ibus.Object):
         self.__config.connect("value-changed", self.__config_value_changed_cb)
         self.__config.connect("destroy", self.__config_destroy_cb)
 
-    def config_set_value(self, key, value, dbusconn, **kargs):
+    def config_set_value(self, key, value, conn, **kargs):
         self.__config.set_value(key, value, **kargs)
 
-    def config_get_value(self, key, dbusconn, **kargs):
+    def config_get_value(self, key, conn, **kargs):
         self.__config.get_value(key, **kargs)
 
     def config_add_watch_dir(self, dir, conn, **kargs):
@@ -391,10 +397,15 @@ class IBus(ibus.Object):
 
 
 class IBusProxy(ibus.IIBus):
-    def __init__(self, bus, dbusconn):
+    def __init__(self, bus, conn):
         super(IBusProxy, self).__init__(dbusconn, ibus.IBUS_PATH)
         self.__ibus = bus
-        self.__conn = Connection(dbusconn)
+        self.__conn = conn
+        self.__conn.connect("destroy", self.__conn_destroy_cb)
+
+    def __conn_destroy_cb(self, conn):
+        self.__conn = None
+        self.__ibus = None
 
     def GetIBusAddress(self, dbusconn):
         return self.__ibus_addr

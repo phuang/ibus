@@ -30,7 +30,7 @@ import dbus.service
 import dbus.lowlevel
 import dbus.mainloop.glib
 import ibus
-from bus import IBus, IBusProxy
+from bus import IBus
 
 class DBus(dbus.service.Object):
 
@@ -70,9 +70,8 @@ class IBusServer(dbus.server.Server):
         self.__ibus = IBus()
 
     def connection_added(self, dbusconn):
-        IBusProxy(self.__ibus, dbusconn)
+        self.__ibus.new_connection(dbusconn)
         DBus(dbusconn, dbus.BUS_DAEMON_PATH)
-
 
 def launch_ibus():
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
