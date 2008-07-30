@@ -100,7 +100,7 @@ class Config(ibus.Object):
                 raise ibus.IBusException("Pair must have two value")
             ret = gconf.Value(gconf.VALUE_PAIR)
             ret.set_car(self.__to_gconf_value(value[0]))
-            ret.set_crd(self.__to_gconf_value(value[1]))
+            ret.set_cdr(self.__to_gconf_value(value[1]))
         elif isinstance(value, list):
             ret = gconf.Value(gconf.VALUE_LIST)
             if len(value) > 0:
