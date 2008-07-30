@@ -42,35 +42,46 @@ class IConfig (dbus.service.Object):
             async_callbacks = ("reply_cb", "error_cb"), \
             **args)
 
-    @method (in_signature = "ss", out_signature = "s")
-    def GetString (self, key, default_value):
-        pass
+    @method(in_signature = "s", out_signature = "v")
+    def GetValue(self, key): pass
 
-    @method (in_signature = "si", out_signature = "i")
-    def GetInt (self, key, default_value):
-        pass
+    @method(in_signature = "sv")
+    def SetValue(self, key, value): pass
 
-    @method (in_signature = "sb", out_signature = "b")
-    def GetBool (self, key, default_value):
-        pass
+
+    @method (in_signature = "s", out_signature = "s")
+    def GetString (self, key): pass
+
+    @method (in_signature = "s", out_signature = "i")
+    def GetInt (self, key): pass
+
+    @method (in_signature = "s", out_signature = "b")
+    def GetBool (self, key): pass
+
+    @method (in_signature = "s", out_signature = "f")
+    def GetFloat (self, key): pass
+
+    @method (in_signature = "s", out_signature = "av")
+    def GetList (self, key): pass
 
     @method (in_signature = "ss")
-    def SetString (self, key, value):
-        pass
+    def SetString (self, key, value): pass
 
     @method (in_signature = "si")
-    def SetInt (self, key, value):
-        pass
+    def SetInt (self, key, value): pass
 
     @method (in_signature = "sb")
-    def SetBool (self, key, value):
-        pass
-    
+    def SetBool (self, key, value): pass
+
+    @method (in_signature = "sf")
+    def SetFloat (self, key, value): pass
+
+    @method (in_signature = "sav")
+    def SetList (self, key, value): pass
+
     @method ()
-    def Destroy (self):
-        pass
+    def Destroy (self): pass
 
     @signal (signature = "sv")
-    def ValueChanged (self, key, value):
-        pass
+    def ValueChanged (self, key, value): pass
 
