@@ -52,12 +52,12 @@ except:
     print >> sys.stderr, "start ibus-panel failed"
     sys.exit (1)
 
-try:
-    print "start ibus-conf"
-    os.spawnv (os.P_NOWAIT, conf, [conf])
-except:
-    print >> sys.stderr, "start ibus-conf failed"
-    sys.exit (1)
+# try:
+#     print "start ibus-conf"
+#     os.spawnv (os.P_NOWAIT, conf, [conf])
+# except:
+#     print >> sys.stderr, "start ibus-conf failed"
+#     sys.exit (1)
 
 try:
     os.kill (daemon_pid, 0)
