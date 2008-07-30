@@ -119,9 +119,6 @@ class Config(ibus.Object):
     def __value_changed_cb(self, gconf, key, value):
         value = self.__client.get(key)
         value = self.__to_py_value(value)
-
-        print key, type(value), value
-        print key, type(value), self.__to_gconf_value(value)
         self.emit("value-changed", key, value)
 
 gobject.type_register(Config)
