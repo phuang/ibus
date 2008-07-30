@@ -26,7 +26,7 @@ from ibus import interface
 GCONF_IBUS_PATH = "/desktop/ibus"
 
 class Config(ibus.Object):
-    def __init__ (self, conn, path):
+    def __init__ (self, conn = None, path = None):
         super(Config, self).__init__()
         self.__proxy = ConfigProxy(self, conn, path)
         self.__client = gconf.Client()
@@ -48,9 +48,12 @@ class Config(ibus.Object):
         self.__client.set(key, value)
 
     def do_destroy(self):
-        self.__proxy = None
-        self.__client.disconnect(self.__handler_id)
-        self.__client = None
+        if self.__proxy:
+            self.__proxy.Destriy()
+            self.__proxy = None
+        if self.__client:
+            self.__client.disconnect(self.__handler_id)
+            self.__client = None
 
     def __to_py_value(self, value):
         if value.type == gconf.VALUE_STRING:
@@ -119,5 +122,6 @@ class ConfigProxy(interface.IConfig):
 
     def Destroy(self):
         self.remove_from_connection()
-        self.__config.destroy()
-        self.__config = None
+        if self.__config:
+            self.__config.destroy()
+            self.__config = None
