@@ -83,7 +83,7 @@ class Config(ibus.Object):
         raise ibus.IBusException("Do not support type == %s" % str(value.type))
 
     def __to_gconf_value(self, value):
-        if isinstance(value, str):
+        if isinstance(value, str) or isinstance(value, unicode):
             ret = gconf.Value(gconf.VALUE_STRING)
             ret.set_string(value)
         elif isinstance(value, int):
