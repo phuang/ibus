@@ -27,11 +27,11 @@ import ibus
 from ibus import interface
 
 class EngineFactoryBase(ibus.Object):
-    def __init__(self, info, engine_class, engine_path, _ibus, object_path):
+    def __init__(self, info, engine_class, engine_path, bus, object_path):
         super(EngineFactoryBase, self).__init__()
-        self.__proxy = EngineFactoryProxy (self, _ibus.get_conn(), object_path)
+        self.__proxy = EngineFactoryProxy (self, bus.get_conn(), object_path)
         self.__info = info
-        self.__ibus = _ibus
+        self.__bus = bus
         self.__engine_class = engine_class
         self.__engine_path = engine_path
         self.__engine_id = 1
@@ -47,16 +47,16 @@ class EngineFactoryBase(ibus.Object):
         pass
 
     def register(self):
-        self.__ibus.register_factories([self.__object_path])
+        self.__bus.register_factories([self.__object_path])
 
     def create_engine(self):
-        engine = self.__engine_class(self.__ibus, self.__engine_path + str(self.__engine_id))
+        engine = self.__engine_class(self.__bus, self.__engine_path + str(self.__engine_id))
         self.__engine_id += 1
         return engine.get_dbus_object()
 
     def do_destroy(self):
         self.__proxy = None
-        self.__ibus = None
+        self.__bus = None
         self.__info = None
         self.__engine_class = None
         self.__engine_path = None

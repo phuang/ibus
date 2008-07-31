@@ -43,9 +43,9 @@ class PanelMenu(PanelItem):
     pass
 
 class PanelBase(ibus.Object):
-    def __init__(self, _ibus, object_path):
+    def __init__(self, bus, object_path):
         super(PanelBase, self).__init__()
-        self.__proxy = PanelProxy(self, _ibus.get_conn(), object_path)
+        self.__proxy = PanelProxy(self, bus.get_conn(), object_path)
 
     def set_cursor_location(self, x, y, w, h):
         pass

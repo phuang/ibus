@@ -31,9 +31,9 @@ from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 
 class Panel(ibus.PanelBase):
-    def __init__ (self, _ibus, object_path):
-        super(Panel, self).__init__(_ibus, object_path)
-        self.__ibus = _ibus
+    def __init__ (self, bus, object_path):
+        super(Panel, self).__init__(bus, object_path)
+        self.__bus = bus
         self.__focus_ic = None
 
         # add icon search path
@@ -134,12 +134,12 @@ class Panel(ibus.PanelBase):
         self.reset()
         self.__focus_ic = ic
 
-        factory, enabled = self.__ibus.get_input_context_states(ic)
+        factory, enabled = self.__bus.get_input_context_states(ic)
 
         if factory == "" or not enabled:
             self.__set_im_icon("engine-default")
         else:
-            name, lang, icon, authors, credits = self.__ibus.get_factory_info(factory)
+            name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)
         self.__language_bar.focus_in()
 
@@ -153,11 +153,11 @@ class Panel(ibus.PanelBase):
     def states_changed(self):
         if not self.__focus_ic:
             return
-        factory, enabled = self.__ibus.get_input_context_states(self.__focus_ic)
+        factory, enabled = self.__bus.get_input_context_states(self.__focus_ic)
         if enabled == False or not factory:
             self.__set_im_icon("engine-default")
         else:
-            name, lang, icon, authors, credits = self.__ibus.get_factory_info(factory)
+            name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)
 
     def reset(self):
@@ -169,7 +169,7 @@ class Panel(ibus.PanelBase):
 
     def __create_im_menu(self):
         menu = gtk.Menu()
-        factories = self.__ibus.get_factories()
+        factories = self.__bus.get_factories()
 
         if not factories:
             item = gtk.MenuItem(label = "no engine")
@@ -178,7 +178,7 @@ class Panel(ibus.PanelBase):
         else:
             tmp = {}
             for factory in factories:
-                name, lang, icon, authors, credits = self.__ibus.get_factory_info(factory)
+                name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
                 lang = LANGUAGES.get(lang, "other")
                 if not icon:
                     icon = "engine-default"
@@ -238,6 +238,6 @@ class Panel(ibus.PanelBase):
                 self.__status_icon)
 
     def __menu_item_activate_cb(self, item, factory):
-        self.__ibus.set_factory(factory)
+        self.__bus.set_factory(factory)
 
 gobject.type_register(Panel, "IBusPanel")

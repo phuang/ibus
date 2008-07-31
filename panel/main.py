@@ -30,17 +30,17 @@ PANEL_PATH = "/org/freedesktop/IBus/Panel"
 
 class PanelApplication:
     def __init__ (self):
-        self.__ibus = ibus.IBus()
-        self.__ibus.connect("destroy", self.__ibus_destroy_cb)
+        self.__bus = ibus.Bus()
+        self.__bus.connect("destroy", self.__bus_destroy_cb)
 
-        self.__panel = panel.Panel(self.__ibus, PANEL_PATH)
+        self.__panel = panel.Panel(self.__bus, PANEL_PATH)
 
-        self.__ibus.register_panel(PANEL_PATH, True)
+        self.__bus.register_panel(PANEL_PATH, True)
 
     def run(self):
         gtk.main()
 
-    def __ibus_destroy_cb(self, _ibus):
+    def __bus_destroy_cb(self, _ibus):
         gtk.main_quit()
 
 

@@ -27,9 +27,9 @@ import ibus
 from ibus import interface
 
 class EngineBase(ibus.Object):
-    def __init__(self, _ibus, object_path):
+    def __init__(self, bus, object_path):
         super(EngineBase, self).__init__()
-        self.__proxy = EngineProxy (self, _ibus.get_conn(), object_path)
+        self.__proxy = EngineProxy (self, bus.get_conn(), object_path)
 
     def process_key_event(self, keyval, is_press, state):
         return False

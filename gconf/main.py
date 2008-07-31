@@ -31,13 +31,13 @@ CONFIG_PATH = "/org/freedesktop/IBus/GConf"
 class GconfApplication:
     def __init__(self):
         self.__mainloop = gobject.MainLoop()
-        self.__ibus = ibus.IBus()
-        self.__ibus.connect("destroy", self.__ibus_destroy_cb)
+        self.__bus = ibus.Bus()
+        self.__bus.connect("destroy", self.__bus_destroy_cb)
 
-        self.__config = config.Config(self.__ibus, CONFIG_PATH)
+        self.__config = config.Config(self.__bus, CONFIG_PATH)
         self.__config.connect("destroy", self.__config_destroy_cb)
 
-        self.__ibus.register_config(CONFIG_PATH, True)
+        self.__bus.register_config(CONFIG_PATH, True)
 
     def run(self):
         self.__mainloop.run()
@@ -45,7 +45,7 @@ class GconfApplication:
     def __config_destroy_cb(self, config):
         self.__mainloop.quit()
 
-    def __ibus_destroy_cb(self, _ibus):
+    def __bus_destroy_cb(self, _ibus):
         print "disconnected"
         self.__mainloop.quit()
 
