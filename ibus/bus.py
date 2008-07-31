@@ -47,9 +47,9 @@ class Bus(ibus.Object):
 
     def __init__(self):
         super(Bus, self).__init__()
-        self.__conn = dbus.connection.Connection(ibus.IBUS_ADDR)
-        self.__bus = self.__conn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
-        self.__conn.add_message_filter(self.__dbus_message_cb)
+        self.__dbusconn = dbus.connection.Connection(ibus.IBUS_ADDR)
+        self.__bus = self.__dbusconn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
+        self.__dbusconn.add_message_filter(self.__dbus_message_cb)
 
     def __dbus_message_cb(self, conn, message):
         if message.is_signal(ibus.IBUS_IFACE, "ConfigValueChanged"):
@@ -68,8 +68,8 @@ class Bus(ibus.Object):
 
         return retval
 
-    def get_conn(self):
-        return self.__conn
+    def get_dbusconn(self):
+        return self.__dbusconn
 
     def get_address(self):
         return ibus.IBUS_ADDR
