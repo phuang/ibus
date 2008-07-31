@@ -38,9 +38,9 @@ class Config(ibus.Object):
             (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
-    def __init__ (self, _ibus = None, path = None):
+    def __init__ (self, bus = None, path = None):
         super(Config, self).__init__()
-        conn = _ibus.get_conn() if _ibus != None else None
+        conn = bus.get_dbusconn() if bus != None else None
         self.__proxy = ConfigProxy(self, conn, path)
         self.__client = gconf.Client()
         self.__handler_id = self.__client.connect("value-changed", self.__value_changed_cb)
