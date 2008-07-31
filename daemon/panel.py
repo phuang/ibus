@@ -208,6 +208,14 @@ class DummyPanel(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_STRING, )),
+        "property-show" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, )),
+        "property-hide" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, )),
     }
 
     def set_cursor_location(self, x, y, w, h):

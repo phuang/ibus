@@ -38,7 +38,7 @@ class Bus(ibus.Object):
             gobject.TYPE_NONE,
             (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
         ),
-        "config-relaoded" : (
+        "config-reloaded" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             ()
@@ -125,11 +125,20 @@ class Bus(ibus.Object):
     def get_input_context_states(self, ic):
         return self.__bus.GetInputContextStates(ic)
 
+    def config_add_watch(self, key):
+        return self.__bus.ConfigAddWatch(key)
+
+    def config_remove_watch(self, key):
+        return self.__bus.ConfigRemoveWatch(key)
+
     def config_set_value(self, key, value):
         return self.__bus.ConfigSetValue(key, value)
 
-    def config_get_value(self, key):
-        return self.__bus.ConfigGetValue(key)
+    def config_get_value(self, key, default_value = None):
+        try:
+            return self.__bus.ConfigGetValue(key)
+        except Exception, e:
+            return default_value
 
     def register_list_engines(self):
         return self.__bus.RegisterListEngines()

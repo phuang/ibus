@@ -98,6 +98,12 @@ class IIBus(dbus.service.Object):
     @method(in_signature = "s", out_signature = "sb")
     def GetInputContextStates(self, ic, dbusconn): pass
 
+    @method(in_signature = "s")
+    def ConfigAddWatch(self, key, dbusconn): pass
+
+    @method(in_signature = "s")
+    def ConfigRemoveWatch(self, key, dbusconn): pass
+
     @async_method(in_signature = "sv")
     def ConfigSetValue(self, key, value, dbusconn, reply_cb, error_cb): pass
 

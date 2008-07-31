@@ -51,6 +51,8 @@ class Config(ibus.Object):
             key = "/" + key
         key = GCONF_IBUS_PATH + key
         value = self.__client.get(key)
+        if value == None:
+            raise ibus.IBusException("key = \"%s\" does not exist" % key)
         return self.__to_py_value(value)
 
     def set_value(self, key, value):
@@ -69,8 +71,6 @@ class Config(ibus.Object):
             self.__client = None
 
     def __to_py_value(self, value):
-        if value == None:
-            return value
         if value.type == gconf.VALUE_STRING:
             return value.get_string()
         if value.type == gconf.VALUE_INT:
@@ -120,7 +120,7 @@ class Config(ibus.Object):
     def __value_changed_cb(self, gconf, key, value):
         value = self.__client.get(key)
         value = self.__to_py_value(value)
-        self.emit("value-changed", key, value)
+        self.emit("value-changed", key.replace(GCONF_IBUS_PATH, ""), value)
 
 gobject.type_register(Config)
 

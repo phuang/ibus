@@ -35,9 +35,17 @@ class IBus(ibus.Object):
         super(IBus, self).__init__()
         self.__context_manager = ContextManager()
         self.__factory_manager = FactoryManager()
+
         self.__panel = DummyPanel()
+        self.__panel_handlers = list()
+        self.__install_panel_handlers()
+
         self.__config = DefaultConfig()
+        self.__config_handlers = list()
+        self.__install_config_handlers()
+
         self.__register = Register()
+
         self.__config_watch = dict()
 
         self.__focused_context = None
@@ -257,17 +265,32 @@ class IBus(ibus.Object):
     def register_panel(self, object_path, replace, conn):
         if not isinstance(self.__panel, DummyPanel) and replace == False:
             raise ibus.Exception("has have a panel!")
-        if not isinstance(self.__panel, DummyPanel):
-            self.__panel.destroy()
+        self.__uninstall_panel_handlers()
+        self.__panel.destroy()
+
         self.__panel = Panel(conn, object_path)
-        self.__panel.connect("page-up", self.__panel_page_up_cb)
-        self.__panel.connect("page-down", self.__panel_page_down_cb)
-        self.__panel.connect("cursor-up", self.__panel_cursor_up_cb)
-        self.__panel.connect("cursor-down", self.__panel_cursor_down_cb)
-        self.__panel.connect("property-activate", self.__panel_property_active_cb)
-        self.__panel.connect("property-show", self.__panel_property_show_cb)
-        self.__panel.connect("property-hide", self.__panel_property_hide_cb)
-        self.__panel.connect("destroy", self.__panel_destroy_cb)
+        self.__install_panel_handlers()
+
+    def __install_panel_handlers(self):
+        signals = (
+            ("page-up", self.__panel_page_up_cb),
+            ("page-down", self.__panel_page_down_cb),
+            ("cursor-up", self.__panel_cursor_up_cb),
+            ("cursor-down", self.__panel_cursor_down_cb),
+            ("property-activate", self.__panel_property_active_cb),
+            ("property-show", self.__panel_property_show_cb),
+            ("property-hide", self.__panel_property_hide_cb),
+            ("destroy", self.__panel_destroy_cb)
+        )
+
+        for signal, handler in signals:
+            id = self.__panel.connect(signal, handler)
+            self.__panel_handlers.append(id)
+
+    def __uninstall_panel_handlers(self):
+        map(lambda id:self.__panel.disconnect(id), self.__panel_handlers)
+        self.__panel_handlers = list()
+
 
     def __panel_page_up_cb(self, panel):
         assert panel == self.__panel
@@ -314,13 +337,25 @@ class IBus(ibus.Object):
     def register_config(self, object_path, replace, conn):
         if not isinstance(self.__config, DefaultConfig) and replace == False:
             raise ibus.Exception("has have a config!")
-        if not isinstance(self.__config, DefaultConfig):
-            self.__config.destroy()
+        self.__uninstall_config_handlers()
+        self.__config.destroy()
         self.__config = Config(conn, object_path)
-        self.__config.connect("value-changed", self.__config_value_changed_cb)
-        self.__config.connect("destroy", self.__config_destroy_cb)
+        self.__install_config_handlers()
         for conn in self.__connections:
             conn.emit_dbus_signal("ConfigReload")
+
+    def __install_config_handlers(self):
+        signals = (
+            ("value-changed", self.__config_value_changed_cb),
+            ("destroy", self.__config_destroy_cb)
+        )
+        for signal, handler in signals:
+            id = self.__config.connect(signal, handler)
+            self.__config_handlers.append(id)
+
+    def __uninstall_config_handlers(self):
+        map(lambda id:self.__config.disconnect(id), self.__config_handlers)
+        self.__config_handlers = list()
 
     def config_set_value(self, key, value, conn, **kargs):
         return self.__config.set_value(key, value, **kargs)
@@ -328,7 +363,7 @@ class IBus(ibus.Object):
     def config_get_value(self, key, conn, **kargs):
         return self.__config.get_value(key, **kargs)
 
-    def config_add_watch_dir(self, dir, conn, **kargs):
+    def config_add_watch(self, dir, conn):
         if not dir.endswith("/"):
             dir += "/"
 
@@ -337,7 +372,7 @@ class IBus(ibus.Object):
                 self.__config_watch[dir] = set()
             self.__config_watch[dir].add(conn)
 
-    def config_remove_watch_dir(self, dir, conn, **kargs):
+    def config_remove_watch(self, dir, conn):
         if not dir.endswith("/"):
             dir += "/"
 
@@ -347,8 +382,8 @@ class IBus(ibus.Object):
 
     def __config_value_changed_cb(self, config, key, value):
         for dir in self.__config_watch.keys():
-            if dir.startswith(key):
-                for conn in self.__config[dir]:
+            if key.startswith(dir):
+                for conn in self.__config_watch[dir]:
                     conn.emit_dbus_signal("ConfigValueChanged", key, value)
 
     def __config_destroy_cb(self, config):
@@ -467,6 +502,12 @@ class IBusProxy(ibus.IIBus):
 
     def GetInputContextStates(self, ic, dbusconn):
         return self.__ibus.get_input_context_states(ic, self.__conn)
+
+    def ConfigAddWatch(self, key, dbusconn):
+        return self.__ibus.config_add_watch(key, self.__conn)
+
+    def ConfigRemoveWatch(self, key, dbusconn):
+        return self.__ibus.config_remove_watch(key, self.__conn)
 
     def ConfigSetValue(self, key, value, dbusconn, reply_cb, error_cb):
         self.__ibus.config_set_value(key, value, self.__conn,
