@@ -22,17 +22,54 @@
 __all__ = (
         "IBus",
     )
+
+import gobject
+import dbus.lowlevel
 import dbus.connection
-import ibus
 import dbus.mainloop.glib
+import ibus
 
 dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
 
-class IBus(dbus.connection.Connection):
-    def __new__(cls):
-        self = super(IBus, cls).__new__(cls, ibus.IBUS_ADDR)
-        self.__ibus = self.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
-        return self
+class IBus(ibus.Object):
+    __gsignals__ = {
+        "config-value-changed" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
+        ),
+        "config-relaoded" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()
+        ),
+    }
+
+    def __init__(self):
+        super(IBus, self).__init__()
+        self.__conn = dbus.connection.Connection(ibus.IBUS_ADDR)
+        self.__ibus = self.__conn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
+        self.__conn.add_message_filter(self.__dbus_message_cb)
+
+    def __dbus_message_cb(self, conn, message):
+        if message.is_signal(ibus.IBUS_IFACE, "ConfigValueChanged"):
+            args = message.get_args_list()
+            key, value = args[0], args[1]
+            self.emit("config-value-changed", key, value)
+            retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
+        elif message.is_signal(ibus.IBUS_IFACE, "ConfigReloaded"):
+            self.emit("config-reloaded", key, value)
+            retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
+        elif message.is_signal(dbus.LOCAL_IFACE, "Disconnected"):
+            self.destroy()
+            retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
+        else:
+            retval = dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
+
+        return retval
+
+    def get_conn(self):
+        return self.__conn
 
     def get_address(self):
         return ibus.IBUS_ADDR

@@ -32,7 +32,7 @@ class GconfApplication:
     def __init__(self):
         self.__mainloop = gobject.MainLoop()
         self.__ibus = ibus.IBus()
-        self.__ibus.call_on_disconnection(self.__disconnected_cb)
+        self.__ibus.connect("destroy", self.__ibus_destroy_cb)
 
         self.__config = config.Config(self.__ibus, CONFIG_PATH)
         self.__config.connect("destroy", self.__config_destroy_cb)
@@ -45,7 +45,7 @@ class GconfApplication:
     def __config_destroy_cb(self, config):
         self.__mainloop.quit()
 
-    def __disconnected_cb(self, conn):
+    def __ibus_destroy_cb(self, _ibus):
         print "disconnected"
         self.__mainloop.quit()
 

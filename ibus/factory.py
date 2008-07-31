@@ -29,7 +29,7 @@ from ibus import interface
 class EngineFactoryBase(ibus.Object):
     def __init__(self, info, engine_class, engine_path, _ibus, object_path):
         super(EngineFactoryBase, self).__init__()
-        self.__proxy = EngineFactoryProxy (self, _ibus, object_path)
+        self.__proxy = EngineFactoryProxy (self, _ibus.get_conn(), object_path)
         self.__info = info
         self.__ibus = _ibus
         self.__engine_class = engine_class

@@ -31,7 +31,7 @@ PANEL_PATH = "/org/freedesktop/IBus/Panel"
 class PanelApplication:
     def __init__ (self):
         self.__ibus = ibus.IBus()
-        self.__ibus.call_on_disconnection(self.__disconnected_cb)
+        self.__ibus.connect("destroy", self.__ibus_destroy_cb)
 
         self.__panel = panel.Panel(self.__ibus, PANEL_PATH)
 
@@ -40,8 +40,7 @@ class PanelApplication:
     def run(self):
         gtk.main()
 
-    def __disconnected_cb(self, conn):
-        print "disconnected"
+    def __ibus_destroy_cb(self, _ibus):
         gtk.main_quit()
 
 
