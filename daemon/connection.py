@@ -34,7 +34,7 @@ class Connection(ibus.Object):
     def __init__(self, dbusconn):
         super(Connection, self).__init__()
         self.__dbusconn = dbusconn
-        self.__watch_dirs = set()
+        self.__config_watch = set()
         dbusconn.add_message_filter(self.message_filter_cb)
 
     def message_filter_cb(self, dbusconn, message):
@@ -63,17 +63,20 @@ class Connection(ibus.Object):
     def dispatch_dbus_signal(self, message):
         self.emit("dbus-signal", message)
 
-    def add_watch_dir(self, dir):
-        if dir in self.__watch_dirs:
+    def config_add_watch(self, key):
+        if key in self.__config_watch:
             return False
-        self.__watch_dirs.add(dir)
+        self.__config_watch.add(key)
         return True
 
-    def remove_watch_dir(self, dir):
-        if dir not in self.__watch_dirs:
+    def config_remove_watch(self, key):
+        if key not in self.__config_watch:
             return False
-        self.__watch_dirs.remove(dir)
+        self.__config_watch.remove(key)
         return True
+
+    def config_get_watch(self):
+        return self.__config_watch.copy()
 
     def get_dbusconn(self):
         return self.__dbusconn

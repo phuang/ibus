@@ -61,6 +61,8 @@ class IBus(ibus.Object):
         self.__connections.append(conn)
 
     def __conn_destroy_cb(self, conn):
+        for key in conn.config_get_watch():
+            self.config_remove_watch(key, conn)
         self.__connections.remove(conn)
 
     ##########################################################
@@ -363,27 +365,27 @@ class IBus(ibus.Object):
     def config_get_value(self, key, conn, **kargs):
         return self.__config.get_value(key, **kargs)
 
-    def config_add_watch(self, dir, conn):
-        if not dir.endswith("/"):
-            dir += "/"
+    def config_add_watch(self, key, conn):
+        if not key.endswith("/"):
+            key += "/"
 
-        if conn.add_watch_dir(dir):
-            if dir not in self.__config_watch:
-                self.__config_watch[dir] = set()
-            self.__config_watch[dir].add(conn)
+        if conn.config_add_watch(key):
+            if key not in self.__config_watch:
+                self.__config_watch[key] = set()
+            self.__config_watch[key].add(conn)
 
-    def config_remove_watch(self, dir, conn):
-        if not dir.endswith("/"):
-            dir += "/"
+    def config_remove_watch(self, key, conn):
+        if not key.endswith("/"):
+            key += "/"
 
-        if conn.remove_watch_dir(dir):
-            if dir in self.__config_watch:
-                self.__config_watch[dir].remove(conn)
+        if conn.config_remove_watch(key):
+            if key in self.__config_watch:
+                self.__config_watch[key].remove(conn)
 
     def __config_value_changed_cb(self, config, key, value):
-        for dir in self.__config_watch.keys():
-            if key.startswith(dir):
-                for conn in self.__config_watch[dir]:
+        for _dir in self.__config_watch.keys():
+            if key.startswith(_dir):
+                for conn in self.__config_watch[_dir]:
                     conn.emit_dbus_signal("ConfigValueChanged", key, value)
 
     def __config_destroy_cb(self, config):
