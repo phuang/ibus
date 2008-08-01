@@ -99,17 +99,17 @@ class Setup(object):
         #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME)
         column = gtk.TreeViewColumn("Started", renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
-        
+
         # column for preload names
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', COLUMN_PRELOAD)
         renderer.set_property("xalign", 0.5)
         renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
-       
+
         column = gtk.TreeViewColumn("Preload", renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
-        
-        
+
+
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
@@ -207,7 +207,7 @@ class Setup(object):
                     COLUMN_PRELOAD, is_preload,
                     COLUMN_VISIBLE, True,
                     COLUMN_ICON, icon,
-                    COLUMN_DATA, 
+                    COLUMN_DATA,
                     [name, lang, icon, author, credits, _exec, started, is_preload])
 
         return model
