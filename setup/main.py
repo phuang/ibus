@@ -28,18 +28,21 @@ from gtk import gdk, glade
 (
     NAME_COLUMN,
     ENABLE_COLUMN,
+    PRELOAD_COLUMN,
     VISIBLE_COLUMN,
     ICON_COLUMN,
     DATA_COLUMN,
-) = range(5)
+) = range(6)
 
 class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
         try:
-            self.__ibus = ibus.IBus()
+            self.__bus = ibus.Bus()
         except:
-            self.__ibus = None
+            import traceback
+            traceback.print_exc()
+            self.__bus = None
 
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
@@ -73,7 +76,7 @@ class Setup(object):
 
         self.__tree.append_column(column)
 
-        # column for holiday names
+        # column for started names
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', ENABLE_COLUMN)
         renderer.set_property("xalign", 0.5)
@@ -81,10 +84,30 @@ class Setup(object):
 
         #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME_COLUMN)
         column = gtk.TreeViewColumn("Started", renderer, active = ENABLE_COLUMN, visible = VISIBLE_COLUMN)
-        column.set_clickable(True)
-        column.set_resizable(False)
-        column.set_fixed_width(50)
+        # column.set_clickable(True)
+        # column.set_resizable(False)
+        # column.set_fixed_width(30)
+        # column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.__tree.append_column(column)
+        
+        # column for preload names
+        renderer = gtk.CellRendererToggle()
+        renderer.set_data('column', PRELOAD_COLUMN)
+        renderer.set_property("xalign", 0.5)
+        renderer.connect("toggled", self.__item_toggled_cb, model)
+       
+        column = gtk.TreeViewColumn("Preload", renderer, active = PRELOAD_COLUMN, visible = VISIBLE_COLUMN)
+        # column.set_clickable(True)
+        # column.set_resizable(False)
+        # column.set_fixed_width(30)
+        # column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.__tree.append_column(column)
+        
+        
+        renderer = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("", renderer, active = PRELOAD_COLUMN, visible = VISIBLE_COLUMN)
+        self.__tree.append_column(column)
+
 
 
     def __item_toggled_cb(self, cell, path_str, model):
@@ -96,7 +119,7 @@ class Setup(object):
         # do something with the value
         if data[6] == False:
             try:
-                self.__ibus.register_start_engine(data[1], data[0])
+                self.__bus.register_start_engine(data[1], data[0])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -105,7 +128,7 @@ class Setup(object):
                 return
         else:
             try:
-                self.__ibus.register_stop_engine(data[1], data[0])
+                self.__bus.register_stop_engine(data[1], data[0])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -124,12 +147,13 @@ class Setup(object):
             gobject.TYPE_STRING,
             gobject.TYPE_BOOLEAN,
             gobject.TYPE_BOOLEAN,
+            gobject.TYPE_BOOLEAN,
             gobject.TYPE_STRING,
             gobject.TYPE_PYOBJECT)
 
         langs = dict()
 
-        for name, lang, icon, author, credits, _exec, started in self.__ibus.register_list_engines():
+        for name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
             _lang = ibus.LANGUAGES.get(lang, "other")
             if _lang not in langs:
                 langs[_lang] = list()
@@ -142,6 +166,7 @@ class Setup(object):
             model.set(iter,
                 NAME_COLUMN, key,
                 ENABLE_COLUMN, False,
+                PRELOAD_COLUMN, False,
                 VISIBLE_COLUMN, False,
                 ICON_COLUMN, None,
                 DATA_COLUMN, None)
@@ -151,6 +176,7 @@ class Setup(object):
                 model.set(child_iter,
                     NAME_COLUMN, name,
                     ENABLE_COLUMN, started,
+                    PRELOAD_COLUMN, False,
                     VISIBLE_COLUMN, True,
                     ICON_COLUMN, icon,
                     DATA_COLUMN, 
