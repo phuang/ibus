@@ -26,12 +26,12 @@ import ibus
 from gtk import gdk, glade
 
 (
-    NAME_COLUMN,
-    ENABLE_COLUMN,
-    PRELOAD_COLUMN,
-    VISIBLE_COLUMN,
-    ICON_COLUMN,
-    DATA_COLUMN,
+    COLUMN_NAME,
+    COLUMN_ENABLE,
+    COLUMN_PRELOAD,
+    COLUMN_VISIBLE,
+    COLUMN_ICON,
+    COLUMN_DATA,
 ) = range(6)
 
 (
@@ -79,34 +79,34 @@ class Setup(object):
         renderer.set_property("xalign", 0.5)
 
         column.pack_start(renderer)
-        column.set_attributes(renderer, icon_name = ICON_COLUMN, visible = VISIBLE_COLUMN)
+        column.set_attributes(renderer, icon_name = COLUMN_ICON, visible = COLUMN_VISIBLE)
 
         renderer = gtk.CellRendererText()
         renderer.set_property("xalign", 0.0)
 
         # column.set_clickable(True)
         column.pack_start(renderer)
-        column.set_attributes(renderer, text = NAME_COLUMN)
+        column.set_attributes(renderer, text = COLUMN_NAME)
 
         self.__tree.append_column(column)
 
         # column for started names
         renderer = gtk.CellRendererToggle()
-        renderer.set_data('column', ENABLE_COLUMN)
+        renderer.set_data('column', COLUMN_ENABLE)
         renderer.set_property("xalign", 0.5)
         renderer.connect("toggled", self.__item_started_column_toggled_cb, model)
 
-        #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME_COLUMN)
-        column = gtk.TreeViewColumn("Started", renderer, active = ENABLE_COLUMN, visible = VISIBLE_COLUMN)
+        #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME)
+        column = gtk.TreeViewColumn("Started", renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
         
         # column for preload names
         renderer = gtk.CellRendererToggle()
-        renderer.set_data('column', PRELOAD_COLUMN)
+        renderer.set_data('column', COLUMN_PRELOAD)
         renderer.set_property("xalign", 0.5)
         renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
        
-        column = gtk.TreeViewColumn("Preload", renderer, active = PRELOAD_COLUMN, visible = VISIBLE_COLUMN)
+        column = gtk.TreeViewColumn("Preload", renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
         
         
@@ -120,7 +120,7 @@ class Setup(object):
 
         # get toggled iter
         iter = model.get_iter_from_string(path_str)
-        data = model.get_value(iter, DATA_COLUMN)
+        data = model.get_value(iter, COLUMN_DATA)
 
         # do something with the value
         if data[DATA_STARTED] == False:
@@ -144,13 +144,13 @@ class Setup(object):
         data[DATA_STARTED] = not data[DATA_STARTED]
 
         # set new value
-        model.set(iter, ENABLE_COLUMN, data[DATA_STARTED])
+        model.set(iter, COLUMN_ENABLE, data[DATA_STARTED])
 
     def __item_preload_column_toggled_cb(self, cell, path_str, model):
 
         # get toggled iter
         iter = model.get_iter_from_string(path_str)
-        data = model.get_value(iter, DATA_COLUMN)
+        data = model.get_value(iter, COLUMN_DATA)
 
         data[DATA_PRELOAD] = not data[DATA_PRELOAD]
         engine = "%s:%s" % (data[DATA_LANG], data[DATA_NAME])
@@ -166,7 +166,7 @@ class Setup(object):
 
 
         # set new value
-        model.set(iter, PRELOAD_COLUMN, data[DATA_PRELOAD])
+        model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
 
     def __create_model(self):
         # create tree store
@@ -191,23 +191,23 @@ class Setup(object):
         for key in keys:
             iter = model.append(None)
             model.set(iter,
-                NAME_COLUMN, key,
-                ENABLE_COLUMN, False,
-                PRELOAD_COLUMN, False,
-                VISIBLE_COLUMN, False,
-                ICON_COLUMN, None,
-                DATA_COLUMN, None)
+                COLUMN_NAME, key,
+                COLUMN_ENABLE, False,
+                COLUMN_PRELOAD, False,
+                COLUMN_VISIBLE, False,
+                COLUMN_ICON, None,
+                COLUMN_DATA, None)
             langs[key].sort()
             for name, lang, icon, author, credits, _exec, started in langs[key]:
                 child_iter = model.append(iter)
                 is_preload = "%s:%s" % (lang, name) in self.__preload_engines
                 model.set(child_iter,
-                    NAME_COLUMN, name,
-                    ENABLE_COLUMN, started,
-                    PRELOAD_COLUMN, is_preload,
-                    VISIBLE_COLUMN, True,
-                    ICON_COLUMN, icon,
-                    DATA_COLUMN, 
+                    COLUMN_NAME, name,
+                    COLUMN_ENABLE, started,
+                    COLUMN_PRELOAD, is_preload,
+                    COLUMN_VISIBLE, True,
+                    COLUMN_ICON, icon,
+                    COLUMN_DATA, 
                     [name, lang, icon, author, credits, _exec, started, is_preload])
 
         return model
