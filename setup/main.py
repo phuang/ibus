@@ -125,7 +125,7 @@ class Setup(object):
         # do something with the value
         if data[DATA_STARTED] == False:
             try:
-                self.__bus.register_start_engine(data[DATA_NAME], data[DATA_LANG])
+                self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -134,7 +134,7 @@ class Setup(object):
                 return
         else:
             try:
-                self.__bus.register_stop_engine(data[DATA_NAME], data[DATA_LANG])
+                self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
