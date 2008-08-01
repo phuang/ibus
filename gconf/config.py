@@ -120,6 +120,8 @@ class Config(ibus.Object):
     def __value_changed_cb(self, gconf, key, value):
         value = self.__client.get(key)
         value = self.__to_py_value(value)
+        if value == None:
+            value = 0
         self.emit("value-changed", key.replace(GCONF_IBUS_PATH, ""), value)
 
 gobject.type_register(Config)
