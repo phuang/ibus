@@ -34,6 +34,19 @@ from gtk import gdk, glade
     DATA_COLUMN,
 ) = range(6)
 
+(
+    DATA_NAME,
+    DATA_LANG,
+    DATA_ICON,
+    DATA_AUTHOR,
+    DATA_CREDITS,
+    DATA_EXEC,
+    DATA_STARTED,
+    DATA_PRELOAD
+) = range(8)
+
+CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
+
 class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
@@ -48,6 +61,7 @@ class Setup(object):
         self.__xml = glade.XML(glade_file)
         self.__dialog = self.__xml.get_widget("dialog_setup")
         self.__tree = self.__xml.get_widget("treeview_engines")
+        self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
         model = self.__create_model()
         self.__tree.set_model(model)
 
@@ -80,46 +94,38 @@ class Setup(object):
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', ENABLE_COLUMN)
         renderer.set_property("xalign", 0.5)
-        renderer.connect("toggled", self.__item_toggled_cb, model)
+        renderer.connect("toggled", self.__item_started_column_toggled_cb, model)
 
         #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME_COLUMN)
         column = gtk.TreeViewColumn("Started", renderer, active = ENABLE_COLUMN, visible = VISIBLE_COLUMN)
-        # column.set_clickable(True)
-        # column.set_resizable(False)
-        # column.set_fixed_width(30)
-        # column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.__tree.append_column(column)
         
         # column for preload names
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', PRELOAD_COLUMN)
         renderer.set_property("xalign", 0.5)
-        renderer.connect("toggled", self.__item_toggled_cb, model)
+        renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
        
         column = gtk.TreeViewColumn("Preload", renderer, active = PRELOAD_COLUMN, visible = VISIBLE_COLUMN)
-        # column.set_clickable(True)
-        # column.set_resizable(False)
-        # column.set_fixed_width(30)
-        # column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.__tree.append_column(column)
         
         
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("", renderer, active = PRELOAD_COLUMN, visible = VISIBLE_COLUMN)
+        column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
 
 
 
-    def __item_toggled_cb(self, cell, path_str, model):
+    def __item_started_column_toggled_cb(self, cell, path_str, model):
 
         # get toggled iter
         iter = model.get_iter_from_string(path_str)
         data = model.get_value(iter, DATA_COLUMN)
 
         # do something with the value
-        if data[6] == False:
+        if data[DATA_STARTED] == False:
             try:
-                self.__bus.register_start_engine(data[1], data[0])
+                self.__bus.register_start_engine(data[DATA_NAME], data[DATA_LANG])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
@@ -128,18 +134,39 @@ class Setup(object):
                 return
         else:
             try:
-                self.__bus.register_stop_engine(data[1], data[0])
+                self.__bus.register_stop_engine(data[DATA_NAME], data[DATA_LANG])
             except Exception, e:
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_ERROR,
                         buttons = gtk.BUTTONS_CLOSE,
                         message_format = str(e))
                 dlg.run()
                 return
-        data[6] = not data[6]
+        data[DATA_STARTED] = not data[DATA_STARTED]
 
         # set new value
-        model.set(iter, ENABLE_COLUMN, data[6])
+        model.set(iter, ENABLE_COLUMN, data[DATA_STARTED])
 
+    def __item_preload_column_toggled_cb(self, cell, path_str, model):
+
+        # get toggled iter
+        iter = model.get_iter_from_string(path_str)
+        data = model.get_value(iter, DATA_COLUMN)
+
+        data[DATA_PRELOAD] = not data[DATA_PRELOAD]
+        engine = "%s:%s" % (data[DATA_LANG], data[DATA_NAME])
+
+        if data[DATA_PRELOAD]:
+            if engine not in self.__preload_engines:
+                self.__preload_engines.add(engine)
+                self.__bus.config_set_value(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines))
+        else:
+            if engine in self.__preload_engines:
+                self.__preload_engines.remove(engine)
+                self.__bus.config_set_value(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines))
+
+
+        # set new value
+        model.set(iter, PRELOAD_COLUMN, data[DATA_PRELOAD])
 
     def __create_model(self):
         # create tree store
@@ -173,14 +200,15 @@ class Setup(object):
             langs[key].sort()
             for name, lang, icon, author, credits, _exec, started in langs[key]:
                 child_iter = model.append(iter)
+                is_preload = "%s:%s" % (lang, name) in self.__preload_engines
                 model.set(child_iter,
                     NAME_COLUMN, name,
                     ENABLE_COLUMN, started,
-                    PRELOAD_COLUMN, False,
+                    PRELOAD_COLUMN, is_preload,
                     VISIBLE_COLUMN, True,
                     ICON_COLUMN, icon,
                     DATA_COLUMN, 
-                    [name, lang, icon, author, credits, _exec, started])
+                    [name, lang, icon, author, credits, _exec, started, is_preload])
 
         return model
 
