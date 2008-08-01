@@ -158,11 +158,11 @@ class Setup(object):
         if data[DATA_PRELOAD]:
             if engine not in self.__preload_engines:
                 self.__preload_engines.add(engine)
-                self.__bus.config_set_value(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines))
+                self.__bus.config_set_list(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines), "s")
         else:
             if engine in self.__preload_engines:
                 self.__preload_engines.remove(engine)
-                self.__bus.config_set_value(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines))
+                self.__bus.config_set_list(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines), "s")
 
 
         # set new value

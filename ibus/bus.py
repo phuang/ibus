@@ -134,6 +134,10 @@ class Bus(ibus.Object):
     def config_set_value(self, key, value):
         return self.__bus.ConfigSetValue(key, value)
 
+    def config_set_list(self, key, value, list_type):
+        value = dbus.Array(value, signature = list_type)
+        return self.__bus.ConfigSetValue(key, value)
+
     def config_get_value(self, key, default_value = None):
         try:
             return self.__bus.ConfigGetValue(key)
