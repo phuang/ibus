@@ -25,6 +25,7 @@ __all__ = (
 
 import gobject
 import gconf
+import dbus
 import ibus
 from ibus import interface
 
@@ -113,6 +114,17 @@ class Config(ibus.Object):
                     raise ibus.IBusException("Items of a list must be in same type")
                 ret.set_list_type(_type)
                 ret.set_list(value)
+            elif len(value) == 0 and isinstance(value, dbus.Array):
+                if value.signature == "i":
+                    ret.set_list_type(gconf.VALUE_INT)
+                elif value.signature == "s":
+                    ret.set_list_type(gconf.VALUE_STRING)
+                elif value.signature == "d":
+                    ret.set_list_type(gconf.VALUE_FLOAT)
+                elif value.signature == "b":
+                    ret.set_list_type(gconf.VALUE_BOOL)
+                else:
+                    pass
         else:
             raise ibus.IBusException("Do not support type of %s." % type(value))
         return ret
