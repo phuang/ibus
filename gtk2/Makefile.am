@@ -42,6 +42,7 @@ libibus_gtk_la_LDFLAGS = \
 
 immoduledir = $(libdir)/gtk-2.0/immodules
 immodule_LTLIBRARIES = im-ibus.la
+im-ibus.la: libibus-gtk.la
 im_ibus_la_SOURCES = \
 	ibusim.c \
 	$(NULL)
