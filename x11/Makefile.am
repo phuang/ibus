@@ -26,6 +26,9 @@ ibus_x11_SOURCES = \
 	gdk-private.c \
 	$(NULL)
 
+ibus_x11_DEPENDENCIES = \
+	$(top_builddir)/gtk2/libibus-gtk.la
+
 noinst_HEADERS = \
 	gdk-private.h \
 	$(NULL)
@@ -43,4 +46,6 @@ ibus_x11_CFLAGS = \
 	-I$(top_srcdir)/gtk2 \
 	$(NULL)
 
+$(top_builddir)/gtk2/libibus-gtk.la:
+	(cd $(top_builddir)/gtk2/; make libibus-gtk.la)
 SUBDIRS = IMdkit 
