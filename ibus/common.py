@@ -35,13 +35,12 @@ __all__ = (
 
 import os
 import sys
-import getpass
 
 display = os.environ["DISPLAY"]
 if "." not in display:
     display += ".0" 
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (getpass.getuser(), display.replace(":", "-"))
+IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (os.getlogin(), display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE = "org.freedesktop.IBus"
