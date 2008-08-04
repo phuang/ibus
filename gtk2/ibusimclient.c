@@ -219,7 +219,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         else {
             host = id = "";
         }
-        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", g_get_user_name (), host, id);
+        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", getlogin (), host, id);
         g_free (display);
     }
 

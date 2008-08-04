@@ -339,8 +339,7 @@ IBusClient::connectToBus ()
 
 	session = getenv ("DISPLAY");
 	session.replace (":", "-");
-	address = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (getenv ("USER"), session);
-
+	address = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (getlogin(), session);
 	connection = new QDBusConnection (
 		QDBusConnection::connectToBus (
 			address,
