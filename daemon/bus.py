@@ -251,8 +251,8 @@ class IBus(ibus.Object):
     def __context_destroy_cb(self, context):
         assert context == self.__focused_context
         self.__remove_focused_context_handlers()
+        self.__panel.focus_out(context.get_id())
         self.__focused_context = None
-        self.__panel.reset()
 
     ##########################################################
     # methods for im engines

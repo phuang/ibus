@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Mon Jul 28 13:34:26 2008 -->
+<!--Generated with glade3 3.4.4 on Mon Aug  4 11:37:47 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
@@ -22,7 +22,6 @@
                 <property name="homogeneous">True</property>
                 <child>
                   <widget class="GtkCheckButton" id="checkbutton1">
-                    <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="label" translatable="yes">Enable IBus</property>
                     <property name="response_id">0</property>
