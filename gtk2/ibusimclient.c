@@ -204,7 +204,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
     }
 #endif
     if (ibus_addr == NULL) {
-        gchar *display, *host, *id;
+        gchar *display, *host, *id, *username;
         display = g_strdup (g_getenv ("DISPLAY"));
         if (display != NULL) {
             id = host = display;
@@ -219,7 +219,18 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         else {
             host = id = "";
         }
-        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", getlogin (), host, id);
+        
+        username = getlogin();
+        if (username == NULL)
+            username = getenv("LOGNAME");
+        if (username == NULL)
+            username = getenv("USER");
+        if (username == NULL)
+            username = getenv("LNAME");
+        if (username == NULL)
+            username = getenv("USERNAME");
+
+        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", username, host, id);
         g_free (display);
     }
 

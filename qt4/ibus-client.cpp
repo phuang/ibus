@@ -332,6 +332,7 @@ IBusClient::connectToBus ()
 {
 	QString address;
 	QString session;
+	QString username;
 	QDBusConnection *connection = NULL;
 
 	if (ibus != NULL)
@@ -339,7 +340,18 @@ IBusClient::connectToBus ()
 
 	session = getenv ("DISPLAY");
 	session.replace (":", "-");
-	address = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (getlogin(), session);
+	
+	username = getlogin ();
+	if (username.isNull ())
+		username = getenv ("LOGNAME");
+	if (username.isNull ())
+		username = getenv ("USER");
+	if (username.isNull ())
+		username = getenv ("LNAME");
+	if (username.isNull ())
+		username = getenv ("USERNAME");
+
+	address = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (username, session);
 	connection = new QDBusConnection (
 		QDBusConnection::connectToBus (
 			address,
