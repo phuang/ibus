@@ -30,11 +30,11 @@ icons_DATA = \
 
 iconsdir = $(pkgdatadir)/icons
 
-sysicons_DATA = \
-	ibus.svg \
-	$(NULL)
-
-sysiconsdir = $(datadir)/icons
+# sysicons_DATA = \
+# 	ibus.svg \
+# 	$(NULL)
+# 
+# sysiconsdir = $(datadir)/icons
 
 EXTRA_DIST = \
 	engine-default.svg \

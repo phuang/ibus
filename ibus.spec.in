@@ -47,7 +47,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
-rm -f $RPM_BUILD_ROOT%{python_sitearch}/_anthy.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/immodules/im-ibus.la
 
 # install xinput config file
@@ -80,14 +80,17 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ibus/icons/
 %{_bindir}/ibus
 %{_bindir}/ibus-setup
+%{_libdir}/libibus-gtk.so*
 %{_datadir}/ibus/daemon/*
 %{_datadir}/ibus/gconf/*
 %{_datadir}/ibus/panel/*
 %{_datadir}/ibus/setup/*
 %{_datadir}/ibus/icons/*
+%{_datadir}/applications/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-panel
+%{_libexecdir}/ibus-x11
 %config %{_xinputconf}
 
 %files gtk
