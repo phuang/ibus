@@ -83,15 +83,19 @@ PKG_CHECK_MODULES(PYGTK2, [
 PKG_CHECK_MODULES(DBUS, [
 	dbus-glib-1
 ])
-QMAKE=`$PKG_CONFIG --variable=qmake Qt`
-AC_SUBST(QMAKE)
 
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT, [
-	Qt >= 4.3.5
+	QtCore >= 4.3.5
+	QtDBus >= 4.3.5
 ])
 
+QMAKE=`$PKG_CONFIG --variable=qmake Qt`
+if test x"$QMAKE" == x""; then
+	QMAKE=qmake-qt4
+fi
+AC_SUBST(QMAKE)
 
 # Check for x11
 PKG_CHECK_MODULES(X11, [
