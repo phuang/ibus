@@ -40,7 +40,11 @@ display = os.environ["DISPLAY"]
 if "." not in display:
     display += ".0" 
 
-__username = os.getlogin()
+__username = None
+try:
+    __username = os.getlogin()
+except:
+    pass
 if not __username:
     __username = os.getenv ("LOGNAME")
 if not __username:
@@ -49,6 +53,7 @@ if not __username:
     __username = os.getenv ("LNAME")
 if not __username:
     __username = os.getenv ("USERNAME")
+
 IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (__username, display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
