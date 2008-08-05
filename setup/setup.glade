@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Mon Aug  4 11:37:47 2008 -->
+<!--Generated with glade3 3.4.4 on Tue Aug  5 18:27:24 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">IBus - Setup</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="icon_name">gtk-preferences</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
