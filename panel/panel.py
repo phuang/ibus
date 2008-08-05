@@ -106,16 +106,16 @@ class Panel(ibus.PanelBase):
         self.__candidate_panel.cursor_down_lookup_table()
 
     def show_candidate_window(self):
-        self.__candidate_panel.show()
+        self.__candidate_panel.show_all()
 
     def hide_candidate_window(self):
-        self.__candidate_panel.hide()
+        self.__candidate_panel.hide_all()
 
     def show_language_bar(self):
-        self.__language_bar.show()
+        self.__language_bar.show_all()
 
     def hide_language_bar(self):
-        self.__language_bar.hide()
+        self.__language_bar.hide_all()
 
     def register_properties(self, props):
         self.__language_bar.register_properties(props)
