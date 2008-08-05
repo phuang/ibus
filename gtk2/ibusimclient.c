@@ -204,22 +204,37 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
     }
 #endif
     if (ibus_addr == NULL) {
-        gchar *display, *host, *id, *username;
+        gchar *display;
+        gchar *hostname = "";
+        gchar *displaynumber = "0";
+        gchar *screennumber = "0";
+        gchar *username = NULL;
+        gchar *p;
+
         display = g_strdup (g_getenv ("DISPLAY"));
-        if (display != NULL) {
-            id = host = display;
-            for (; *id != ':' && *id != '\0'; id++);
-            if (*id == '\0')
-                id = "";
-            else {
-                *id = '\0';
-                id ++;
-            }
+        if (display == NULL) {
+            g_warning ("DISPLAY is empty! We use default DISPLAY (:0.0)");
         }
         else {
-            host = id = "";
+            p = display;
+            hostname = display;
+            for (; *p != ':' && *p != '\0'; p++);
+
+            if (*p == ':') {
+                *p = '\0';
+                p++;
+                displaynumber = p;
+            }
+
+            for (; *p != '.' && *p != '\0'; p++);
+
+            if (*p == '.') {
+                *p = '\0';
+                p++;
+                screennumber = p;
+            }
         }
-        
+
         username = getlogin();
         if (username == NULL)
             username = getenv("LOGNAME");
@@ -230,7 +245,10 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         if (username == NULL)
             username = getenv("USERNAME");
 
-        ibus_addr = g_strdup_printf ("unix:path=/tmp/ibus-%s/ibus-%s-%s", username, host, id);
+        ibus_addr = g_strdup_printf (
+            "unix:path=/tmp/ibus-%s/ibus-%s-%s.%s",
+            username, hostname, displaynumber, screennumber);
+
         g_free (display);
     }
 

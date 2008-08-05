@@ -44,6 +44,20 @@
 IBusClient::IBusClient ()
 	: ibus (NULL), focused_context (NULL)
 {
+	username = getlogin ();
+	if (username.isNull ())
+		username = getenv ("LOGNAME");
+	if (username.isNull ())
+		username = getenv ("USER");
+	if (username.isNull ())
+		username = getenv ("LNAME");
+	if (username.isNull ())
+		username = getenv ("USERNAME");
+
+	session = getenv ("DISPLAY");
+	session.replace (":", "-");
+
+	ibus_addr = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (username, session);
 	connectToBus ();
 
 	QObject::connect (
@@ -51,8 +65,10 @@ IBusClient::IBusClient ()
 		SIGNAL(directoryChanged(const QString &)),
 		this,
 		SLOT(slotDirectoryChanged(const QString &)));
+
 	QString ibus_dir;
-	ibus_dir = QString ("/tmp/ibus-%1/").arg (getenv ("USER"));
+
+	ibus_dir = QString ("/tmp/ibus-%1/").arg (username);
 	watcher.addPath (ibus_dir);
 }
 
@@ -342,31 +358,14 @@ IBusClient::widgetDestroyed (IBusInputContext * /* ctx */, QWidget * /* widget *
 bool
 IBusClient::connectToBus ()
 {
-	QString address;
-	QString session;
-	QString username;
 	QDBusConnection *connection = NULL;
 
 	if (ibus != NULL)
 		return false;
 
-	session = getenv ("DISPLAY");
-	session.replace (":", "-");
-	
-	username = getlogin ();
-	if (username.isNull ())
-		username = getenv ("LOGNAME");
-	if (username.isNull ())
-		username = getenv ("USER");
-	if (username.isNull ())
-		username = getenv ("LNAME");
-	if (username.isNull ())
-		username = getenv ("USERNAME");
-
-	address = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (username, session);
 	connection = new QDBusConnection (
 		QDBusConnection::connectToBus (
-			address,
+			ibus_addr,
 			QString ("ibus")));
 
 	if (!connection->isConnected ()) {
@@ -464,10 +463,7 @@ IBusClient::slotDirectoryChanged (const QString & /*path*/)
 		disconnectFromBus ();
 
 	if (ibus == NULL ) {
-		QString session = getenv ("DISPLAY");
-		session.replace (":", "-");
-		QString path = QString("/tmp/ibus-%1/ibus-%2").arg (getenv ("USER"), session);
-		if (QFile::exists (path)) {
+		if (QFile::exists (ibus_addr)) {
 			usleep (500);
 			connectToBus ();
 		}

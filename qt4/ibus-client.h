@@ -79,6 +79,9 @@ private:
 	QList <IBusInputContext *> context_list;
 	QHash <QString, IBusInputContext *>context_dict;
 	IBusInputContext *focused_context;
+	QString username;
+	QString session;
+	QString ibus_addr;
 };
 
 #endif // __IBUS_CLIENT_H_
