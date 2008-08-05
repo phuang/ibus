@@ -167,7 +167,6 @@ if test x"$IBUS_HAS_QT4" != x"yes"; then
 	enable_qt4=no
 fi
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
-AC_SUBST(IBUS_BUILD_QT4)
 
 
 # OUTPUT files
