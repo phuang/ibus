@@ -28,6 +28,7 @@ EXTRA_DIST = \
 	im-ibus-qt.cpp \
 	$(NULL)
 
+if IBUS_BUILD_QT4
 Makefile.qmake: ibus.pro
 	$(QMAKE) -makefile -o Makefile.qmake $(srcdir)/ibus.pro
 
@@ -50,3 +51,5 @@ uninstall-local: Makefile.qmake
 
 test: all
 	QT_IM_MODULE=ibus kwrite
+endif
+

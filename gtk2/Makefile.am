@@ -40,7 +40,8 @@ libibus_gtk_la_LDFLAGS = \
 	@DBUS_LIBS@ \
 	$(NULL)
 
-immoduledir = $(libdir)/gtk-2.0/immodules
+immoduledir = @GTK_IM_MODULEDIR@
+# $(libdir)/gtk-2.0/immodules
 immodule_LTLIBRARIES = im-ibus.la
 im_ibus_la_DEPENDENCIES = libibus-gtk.la
 im_ibus_la_SOURCES = \

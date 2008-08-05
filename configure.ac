@@ -71,6 +71,13 @@ PKG_CHECK_MODULES(GTK2, [
 	gtk+-2.0
 ])
 
+GTK_BINARY_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
+GTK_LIBDIR=`$PKG_CONFIG --variable=libdir gtk+-2.0`
+if test -z "$GTK_LIBDIR)"; then
+	GTK_LIBDIR="$libdir"
+fi
+GTK_IM_MODULEDIR=$GTK_LIBDIR/gtk-2.0/immodules
+
 PKG_CHECK_MODULES(GDK2, [
 	gdk-2.0
 ])
@@ -86,16 +93,19 @@ PKG_CHECK_MODULES(DBUS, [
 
 
 # Check for Qt4
-PKG_CHECK_MODULES(QT, [
-	QtCore >= 4.3.5
-	QtDBus >= 4.3.5
-])
+PKG_CHECK_MODULES(QT,
+[QtCore >= 4.3.5 QtDBus >= 4.3.5],
+[IBUS_HAS_QT4=yes],
+[IBUS_HAS_QT4=no]
+)
 
-QMAKE=`$PKG_CONFIG --variable=qmake Qt`
-if test x"$QMAKE" == x""; then
-	QMAKE=qmake-qt4
+if test x"$HAS_QT4" == x"yes"; then
+	QMAKE=`$PKG_CONFIG --variable=qmake Qt`
+	if test x"$QMAKE" == x""; then
+		QMAKE=qmake-qt4
+	fi
+	AC_SUBST(QMAKE)
 fi
-AC_SUBST(QMAKE)
 
 # Check for x11
 PKG_CHECK_MODULES(X11, [
@@ -139,6 +149,27 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.16.1)
 
 
+# define configure arguments
+AC_ARG_WITH(gtk-im-module-dir,
+	AS_HELP_STRING([--with-gtk-im-module-dir[=DIR]],
+		[Select gtk immodule dir]),
+	GTK_IM_MODULEDIR=$with_gtk_im_module_dir
+)
+AC_SUBST(GTK_IM_MODULEDIR)
+
+AC_ARG_ENABLE(qt4-immodule,
+	AS_HELP_STRING([--disable-qt4-immodule],
+		[do not build qt4 immodule]),
+	[enable_qt4=$enableval],
+	[enable_qt4=yes],
+)
+if test x"$IBUS_HAS_QT4" != x"yes"; then
+	enable_qt4=no
+fi
+AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
+AC_SUBST(IBUS_BUILD_QT4)
+
+
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
@@ -166,3 +197,14 @@ m4/Makefile
 ])
 
 AC_OUTPUT
+
+AC_MSG_RESULT([
+Build options:
+  Version                  $VERSION
+  Install prefix           $prefix
+  Build shared libs        $enable_shared
+  Build static libs        $enable_static
+  Gtk immodule dir         $GTK_IM_MODULEDIR
+  Enable Qt4 IM module     $enable_qt4
+])
+
