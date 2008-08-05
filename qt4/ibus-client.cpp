@@ -225,7 +225,12 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XE
 
 	message = ibus->call (message);
 
-	return message.arguments ()[0].toBool ();
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+		return false;
+	}
+	else
+		return message.arguments ()[0].toBool ();
 }
 #endif
 
@@ -258,7 +263,9 @@ IBusClient::setCursorLocation (IBusInputContext *ctx, QRect &rect)
 	message << rect.width ();
 	message << rect.height ();
 	message = ibus->call (message);
-	//qDebug () << message;
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+	}
 }
 
 void
@@ -275,8 +282,9 @@ IBusClient::reset (IBusInputContext *ctx)
 							"Reset");
 	message << ctx->getIC ();
 	message = ibus->call (message);
-	// if (focused_context == ctx)
-	// 	focusOut (ctx);
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+	}
 }
 
 void
@@ -296,7 +304,9 @@ IBusClient::focusIn (IBusInputContext *ctx)
 							"FocusIn");
 	message << ctx->getIC ();
 	message = ibus->call (message);
-	//qDebug () << message;
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+	}
 
 }
 
@@ -320,7 +330,9 @@ IBusClient::focusOut (IBusInputContext *ctx)
 							"FocusOut");
 	message << ctx->getIC ();
 	message = ibus->call (message);
-	//qDebug () << message;
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+	}
 }
 void
 IBusClient::widgetDestroyed (IBusInputContext * /* ctx */, QWidget * /* widget */)
