@@ -40,7 +40,16 @@ display = os.environ["DISPLAY"]
 if "." not in display:
     display += ".0" 
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (os.getlogin(), display.replace(":", "-"))
+__username = os.getlogin()
+if not __username:
+    __username = os.getenv ("LOGNAME")
+if not __username:
+    __username = os.getenv ("USER")
+if not __username:
+    __username = os.getenv ("LNAME")
+if not __username:
+    __username = os.getenv ("USERNAME")
+IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (__username, display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE = "org.freedesktop.IBus"
