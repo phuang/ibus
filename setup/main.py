@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import sys
 from os import path
 import gtk
 import gobject
@@ -53,9 +54,8 @@ class Setup(object):
         try:
             self.__bus = ibus.Bus()
         except:
-            import traceback
-            traceback.print_exc()
-            self.__bus = None
+            print >> sys.stderr, "Can not connect to ibus-daemon!"
+            sys.exit(1)
 
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
