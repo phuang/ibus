@@ -122,6 +122,9 @@ class IIBus(dbus.service.Object):
     @method(in_signature = "ss")
     def RegisterStopEngine(self, lang, name, dbusconn): pass
 
+    @method()
+    def Destroy(self, dbusconn): pass
+
     #sigals
     def CommitString(self, ic, text): pass
 
