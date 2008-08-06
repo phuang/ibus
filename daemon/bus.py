@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import sys
 import dbus
 import ibus
 from ibus import keysyms
@@ -433,6 +434,10 @@ class IBus(ibus.Object):
         if context.get_factory() != None:
             factory_path = context.get_factory().get_object_path()
         return factory_path, context.is_enabled()
+    
+    def kill(self, conn):
+        print "be killed"
+        sys.exit(0)
 
 
 class IBusProxy(ibus.IIBus):
@@ -532,4 +537,7 @@ class IBusProxy(ibus.IIBus):
 
     def RegisterStopEngine(self, lang, name, dbusconn):
         return self.__ibus.register_stop_engine(lang, name, self.__conn)
+
+    def Kill(self, dbusconn):
+        return self.__ibus.kill(self.__conn)
 
