@@ -99,10 +99,17 @@ PKG_CHECK_MODULES(QT,
 [IBUS_HAS_QT4=no]
 )
 
-if test x"$HAS_QT4" == x"yes"; then
+if test x"$IBUS_HAS_QT4" == x"yes"; then
 	QMAKE=`$PKG_CONFIG --variable=qmake Qt`
 	if test x"$QMAKE" == x""; then
-		QMAKE=qmake-qt4
+		AC_PATH_PROG(QMAKE, qmake-qt4)
+	fi
+	if test x"$QMAKE" == x""; then
+		AC_PATH_PROG(QMAKE, qmake)
+	fi
+	if test x"$QMAKE" == x""; then
+		IBUS_HAS_QT4=no
+		AC_MSG_WARN([Can not find qmake.])
 	fi
 	AC_SUBST(QMAKE)
 fi
