@@ -167,6 +167,17 @@ class Panel(ibus.PanelBase):
     def do_destroy(self):
         gtk.main_quit()
 
+    def __create_sys_menu(self):
+        menu = gtk.Menu()
+        item = gtk.MenuItem("_Preferences...")
+        menu.add(item)
+        item = gtk.MenuItem("_Quit")
+        menu.add(item)
+        
+        menu.show_all()
+        menu.set_take_focus(False)
+        return menu
+
     def __create_im_menu(self):
         menu = gtk.Menu()
         factories = self.__bus.get_factories()
@@ -217,17 +228,15 @@ class Panel(ibus.PanelBase):
         menu = self.__create_im_menu()
         return menu
 
-    def __status_icon_activate_cb(self, status_icon):
-        if not self.__focus_ic:
-            return
-        menu = self.__create_im_menu()
+    def __status_icon_popup_menu_cb(self, status_icon, button, active_time):
+        menu = self.__create_sys_menu()
         menu.popup(None, None,
                 gtk.status_icon_position_menu,
                 0,
                 gtk.get_current_event_time(),
                 self.__status_icon)
 
-    def __status_icon_popup_menu_cb(self, status_icon, button, active_time):
+    def __status_icon_activate_cb(self, status_icon):
         if not self.__focus_ic:
             return
         menu = self.__create_im_menu()
