@@ -621,11 +621,11 @@ print_usage (FILE *fp, gchar *name)
 
 int main (int argc, char **argv)
 {
-	GMainLoop *loop;
 	gint option_index = 0;
 	gint c;
 
-	gdk_init (&argc, &argv);
+	
+	gtk_init (&argc, &argv);
 
 	while (1) {
 		static struct option long_options [] = {
@@ -682,16 +682,8 @@ int main (int argc, char **argv)
 	// printf ("locale      = %s\n", g_locale);
 
 	_xim_init_IMdkit ();
-
-
-	loop = g_main_loop_new (NULL, TRUE);
-
-	if (g_main_loop_is_running (loop)) {
-		GDK_THREADS_LEAVE ();
-		g_main_loop_run (loop);
-		GDK_THREADS_ENTER ();
-		gdk_flush ();
-	}
+	
+	gtk_main();
 
 	return 0;
 
