@@ -72,11 +72,7 @@ PKG_CHECK_MODULES(GTK2, [
 ])
 
 GTK_BINARY_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-GTK_LIBDIR=`$PKG_CONFIG --variable=libdir gtk+-2.0`
-if test -z "$GTK_LIBDIR)"; then
-	GTK_LIBDIR="$libdir"
-fi
-GTK_IM_MODULEDIR=$GTK_LIBDIR/gtk-2.0/immodules
+GTK_IM_MODULEDIR="$libdir"/gtk-2.0/immodules
 
 PKG_CHECK_MODULES(GDK2, [
 	gdk-2.0
