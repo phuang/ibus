@@ -1,4 +1,4 @@
-XIM=IBus
+XIM=ibus
 XIM_PROGRAM=/usr/bin/ibus
 XIM_ARGS=""
 PREFERENCE_PROGRAM=/usr/bin/ibus-setup
