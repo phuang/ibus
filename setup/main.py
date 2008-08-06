@@ -19,8 +19,11 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import os
 import sys
 from os import path
+import time
+from xdg import BaseDirectory
 import gtk
 import gobject
 import ibus
@@ -58,17 +61,29 @@ class Setup(object):
         glade.textdomain("ibus")
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
+        self.__bus = None
         try:
             self.__bus = ibus.Bus()
         except:
-            message = _("Can not connect to ibus-daemon! Please start ibus-daemon.")
-            print >> sys.stderr, message
-            dlg = gtk.MessageDialog(type=gtk.MESSAGE_WARNING,
-                        buttons=gtk.BUTTONS_OK,
+            while self.__bus == None:
+                message = _("IBus daemon is not started.\nDo you want to start it now?")
+                print >> sys.stderr, message
+                dlg = gtk.MessageDialog(type = gtk.MESSAGE_QUESTION,
+                        buttons = gtk.BUTTONS_YES_NO,
                         message_format = message)
-            dlg.run()
-            dlg.destroy()
-            sys.exit(1)
+                id = dlg.run()
+                dlg.destroy()
+                while gtk.events_pending():
+                    gtk.main_iteration()
+                if id != gtk.RESPONSE_YES:
+                    sys.exit(0)
+                pid = os.spawnlp(os.P_NOWAIT, "ibus", "ibus")
+                print pid
+                time.sleep(1)
+                try:
+                    self.__bus = ibus.Bus()
+                except:
+                    continue
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
