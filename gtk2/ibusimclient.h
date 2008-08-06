@@ -68,6 +68,8 @@ struct _IBusIMClient {
 struct _IBusIMClientClass {
   GtkObjectClass parent;
   /* class members */
+  void (* connected)        (IBusIMClient *client);
+  void (* disconnected)     (IBusIMClient *client);
 };
 
 extern IBusIMClient                *_client;

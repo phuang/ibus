@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <config.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -37,9 +38,17 @@
 
 #include "ibusimclient.h"
 
+enum {
+    CONNECTED,
+    DISCONNECTED,
+    LAST_SIGNAL,
+};
+
 #define IBUS_NAME  "org.freedesktop.IBus"
 #define IBUS_IFACE "org.freedesktop.IBus"
 #define IBUS_PATH  "/org/freedesktop/IBus"
+
+#define I_(string) g_intern_static_string (string)
 
 /* IBusIMClientPriv */
 struct _IBusIMClientPrivate {
@@ -60,10 +69,17 @@ struct _IBusIMClientPrivate {
     GList          *contexts;
 };
 
+/* variables */
+static guint            client_signals[LAST_SIGNAL] = { 0 };
+
 /* functions prototype */
 static void     ibus_im_client_class_init   (IBusIMClientClass  *klass);
 static void     ibus_im_client_init         (IBusIMClient       *client);
 static void     ibus_im_client_finalize     (GObject            *obj);
+
+
+static void     ibus_im_client_connected    (IBusIMClient       *client);
+static void     ibus_im_client_disconnected (IBusIMClient       *client);
 
 static const gchar *
                 _ibus_im_client_create_input_context
@@ -174,8 +190,35 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
     g_type_class_add_private (klass, sizeof (IBusIMClientPrivate));
 
     gobject_class->finalize = ibus_im_client_finalize;
+
+    klass->connected = ibus_im_client_connected;
+    klass->disconnected = ibus_im_client_disconnected;
+
+    client_signals[CONNECTED] =
+        g_signal_new (I_("connected"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, connected),
+            NULL, NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    client_signals[DISCONNECTED] =
+        g_signal_new (I_("disconnected"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, disconnected),
+            NULL, NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
 }
 
+void ibus_im_client_connected (IBusIMClient *client)
+{
+}
+void ibus_im_client_disconnected (IBusIMClient *client)
+{
+}
 /*
  * open ibus connection
  */
@@ -235,21 +278,22 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
             }
         }
 
-        username = getlogin();
+        username = g_strdup (getlogin());
         if (username == NULL)
-            username = getenv("LOGNAME");
+            username = g_strdup (g_getenv("LOGNAME"));
         if (username == NULL)
-            username = getenv("USER");
+            username = g_strdup (g_getenv("USER"));
         if (username == NULL)
-            username = getenv("LNAME");
+            username = g_strdup (g_getenv("LNAME"));
         if (username == NULL)
-            username = getenv("USERNAME");
+            username = g_strdup (g_getenv("USERNAME"));
 
         ibus_addr = g_strdup_printf (
             "unix:path=/tmp/ibus-%s/ibus-%s-%s.%s",
             username, hostname, displaynumber, screennumber);
 
         g_free (display);
+        g_free (username);
     }
 
     /*
@@ -280,6 +324,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         ibus_im_context_set_ic (context, ic);
     }
 
+    g_signal_emit (client, client_signals[CONNECTED], 0);
 }
 
 /*
@@ -799,6 +844,7 @@ static void
 _ibus_signal_disconnected_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     _ibus_im_client_ibus_close (client);
+    g_signal_emit (client, client_signals[DISCONNECTED], 0);
 }
 
 static void
