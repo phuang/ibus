@@ -56,6 +56,10 @@ N_ = lambda a : a
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
 
 class Setup(object):
+    def __flush_gtk_events(self):
+        while gtk.events_pending():
+            gtk.main_iteration()
+        
     def __init__(self):
         super(Setup, self).__init__()
         glade.textdomain("ibus")
@@ -73,17 +77,28 @@ class Setup(object):
                         message_format = message)
                 id = dlg.run()
                 dlg.destroy()
-                while gtk.events_pending():
-                    gtk.main_iteration()
+                self.__flush_gtk_events()
                 if id != gtk.RESPONSE_YES:
                     sys.exit(0)
                 pid = os.spawnlp(os.P_NOWAIT, "ibus", "ibus")
-                print pid
                 time.sleep(1)
                 try:
                     self.__bus = ibus.Bus()
                 except:
                     continue
+                message = _("IBus has been started!\n" + \
+                    "If you can not use IBus, please add below lines in $HOME/.bashrc!\n" + \
+                    "  export GTK_IM_MODULE=ibus\n" + \
+                    "  export XMODIFIERS=@im=ibus\n"
+                    "  export QT_IM_MODULE=ibus"
+                    )
+                dlg = gtk.MessageDialog(type = gtk.MESSAGE_INFO,
+                                        buttons = gtk.BUTTONS_OK,
+                                        message_format = message)
+                id = dlg.run()
+                dlg.destroy()
+                self.__flush_gtk_events()
+
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
