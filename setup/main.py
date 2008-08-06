@@ -70,17 +70,18 @@ class Setup(object):
             dlg.destroy()
             sys.exit(1)
 
-        self.__dialog = self.__xml.get_widget("dialog_setup")
-        self.__tree = self.__xml.get_widget("treeview_engines")
-        self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
-        model = self.__create_model()
-        self.__tree.set_model(model)
-
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
         dir = path.dirname(__file__)
         icondir = path.join(dir, "..", "icons")
         icon_theme.prepend_search_path(icondir)
+
+
+        self.__dialog = self.__xml.get_widget("dialog_setup")
+        self.__tree = self.__xml.get_widget("treeview_engines")
+        self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
+        model = self.__create_model()
+        self.__tree.set_model(model)
 
         # column for holiday names
         column = gtk.TreeViewColumn()
@@ -90,7 +91,7 @@ class Setup(object):
         renderer.set_property("xalign", 0.5)
 
         column.pack_start(renderer)
-        column.set_attributes(renderer, icon_name = COLUMN_ICON, visible = COLUMN_VISIBLE)
+        column.set_attributes(renderer, pixbuf = COLUMN_ICON, visible = COLUMN_VISIBLE)
 
         renderer = gtk.CellRendererText()
         renderer.set_property("xalign", 0.0)
@@ -186,7 +187,7 @@ class Setup(object):
             gobject.TYPE_BOOLEAN,
             gobject.TYPE_BOOLEAN,
             gobject.TYPE_BOOLEAN,
-            gobject.TYPE_STRING,
+            gdk.Pixbuf,
             gobject.TYPE_PYOBJECT)
 
         langs = dict()
@@ -209,15 +210,43 @@ class Setup(object):
                 COLUMN_ICON, None,
                 COLUMN_DATA, None)
             langs[key].sort()
+
+            icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
+            theme = gtk.icon_theme_get_default()
+            pixbuf_missing = None
+            try:
+                pixbuf_missing = theme.load_icon("engine-default", icon_size, 0)
+            except:
+                pass
+            try:
+                if pixbuf_missing == None:
+                    pixbuf_missing = theme.load_icon("gtk-missing-image", icon_size, 0)
+            except:
+                pass
+
             for name, lang, icon, author, credits, _exec, started in langs[key]:
                 child_iter = model.append(iter)
                 is_preload = "%s:%s" % (lang, name) in self.__preload_engines
+
+                pixbuf = None
+                try:
+                    pixbuf = gdk.pixbuf_new_from_file(icon)
+                except:
+                    pass
+                try:
+                    if pixbuf == None:
+                        pixbuf = theme.load_icon(icon, icon_size, 0)
+                except:
+                    pass
+                if pixbuf == None:
+                    pixbuf = pixbuf_missing
+
                 model.set(child_iter,
                     COLUMN_NAME, name,
                     COLUMN_ENABLE, started,
                     COLUMN_PRELOAD, is_preload,
                     COLUMN_VISIBLE, True,
-                    COLUMN_ICON, icon,
+                    COLUMN_ICON, pixbuf,
                     COLUMN_DATA,
                     [name, lang, icon, author, credits, _exec, started, is_preload])
 
