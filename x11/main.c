@@ -537,6 +537,12 @@ _xim_event_destroy_cb (gpointer data)
 }
 
 static void
+_xim_client_disconnected_cb (IBusIMClient *client, gpointer data)
+{
+	gtk_main_quit ();
+}
+
+static void
 _xim_init_IMdkit ()
 {
 	XIMStyle ims_styles_overspot [] = {
@@ -604,7 +610,14 @@ _xim_init_IMdkit ()
 	ibus_im_context_register_type (NULL);
 	_client = ibus_im_client_new ();
 
+	g_signal_connect (G_OBJECT (_client),
+		"disconnected",
+		G_CALLBACK (_xim_client_disconnected_cb),
+		NULL);
+
 }
+
+
 
 static void
 print_usage (FILE *fp, gchar *name)
