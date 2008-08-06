@@ -87,6 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ibus/setup/*
 %{_datadir}/ibus/icons/*
 %{_datadir}/applications/*
+%{_datadir}/pixmaps/*
 %{_libexecdir}/ibus-daemon
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-panel
