@@ -70,7 +70,7 @@ class Setup(object):
             self.__bus = ibus.Bus()
         except:
             while self.__bus == None:
-                message = _("IBus daemon is not started.\nDo you want to start it now?")
+                message = _("IBus daemon is not started. Do you want to start it now?")
                 print >> sys.stderr, message
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_QUESTION,
                         buttons = gtk.BUTTONS_YES_NO,
@@ -86,8 +86,8 @@ class Setup(object):
                     self.__bus = ibus.Bus()
                 except:
                     continue
-                message = _("IBus has been started!\n" + \
-                    "If you can not use IBus, please add below lines in $HOME/.bashrc!\n" + \
+                message = _("IBus has been started! " + \
+                    "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n" + \
                     "  export GTK_IM_MODULE=ibus\n" + \
                     "  export XMODIFIERS=@im=ibus\n"
                     "  export QT_IM_MODULE=ibus"
@@ -98,7 +98,6 @@ class Setup(object):
                 id = dlg.run()
                 dlg.destroy()
                 self.__flush_gtk_events()
-
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
