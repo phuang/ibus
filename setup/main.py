@@ -180,6 +180,25 @@ class Setup(object):
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
 
+    def __load_icon(self, icon, icon_size):
+        pixbuf = None
+        try:
+            pixbuf = gdk.pixbuf_new_from_file(icon)
+            w, h = pixbuf.get_width(), pixbuf.get_height()
+            rate = max(w, h) / float(icon_size)
+            w = int(w / rate)
+            h = int(h / rate)
+            pixbuf = pixbuf.scale_simple(w, h, gdk.INTERP_BILINEAR)
+        except:
+            pass
+        if pixbuf == None:
+            try:
+                theme = gtk.icon_theme_get_default()
+                pixbuf = theme.load_icon(icon, icon_size, 0)
+            except:
+                pass
+        return pixbuf
+
     def __create_model(self):
         # create tree store
         model = gtk.TreeStore(
@@ -200,6 +219,12 @@ class Setup(object):
 
         keys = langs.keys()
         keys.sort()
+
+        icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
+        pixbuf_missing = self.__load_icon("engine-default", icon_size)
+        if pixbuf_missing == None:
+            pixbuf_missing = self.__load_icon("gtk-missing-image", icon_size)
+
         for key in keys:
             iter = model.append(None)
             model.set(iter,
@@ -211,33 +236,11 @@ class Setup(object):
                 COLUMN_DATA, None)
             langs[key].sort()
 
-            icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
-            theme = gtk.icon_theme_get_default()
-            pixbuf_missing = None
-            try:
-                pixbuf_missing = theme.load_icon("engine-default", icon_size, 0)
-            except:
-                pass
-            try:
-                if pixbuf_missing == None:
-                    pixbuf_missing = theme.load_icon("gtk-missing-image", icon_size, 0)
-            except:
-                pass
-
             for name, lang, icon, author, credits, _exec, started in langs[key]:
                 child_iter = model.append(iter)
                 is_preload = "%s:%s" % (lang, name) in self.__preload_engines
 
-                pixbuf = None
-                try:
-                    pixbuf = gdk.pixbuf_new_from_file(icon)
-                except:
-                    pass
-                try:
-                    if pixbuf == None:
-                        pixbuf = theme.load_icon(icon, icon_size, 0)
-                except:
-                    pass
+                pixbuf = self.__load_icon(icon, icon_size)
                 if pixbuf == None:
                     pixbuf = pixbuf_missing
 
