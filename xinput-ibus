@@ -1,5 +1,5 @@
 XIM=ibus
-XIM_PROGRAM=/usr/bin/ibus
+XIM_PROGRAM=""
 XIM_ARGS=""
 PREFERENCE_PROGRAM=/usr/bin/ibus-setup
 SHORT_DESC="IBus"
