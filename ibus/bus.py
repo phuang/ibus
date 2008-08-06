@@ -156,3 +156,5 @@ class Bus(ibus.Object):
     def register_stop_engine(self, lang, name):
         return self.__bus.RegisterStopEngine(lang, name)
 
+    def kill(self):
+        return self.__bus.Kill()
