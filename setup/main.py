@@ -26,6 +26,10 @@ import gobject
 import ibus
 from gtk import gdk, glade
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 (
     COLUMN_NAME,
     COLUMN_ENABLE,
@@ -51,14 +55,21 @@ CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
 class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
+        glade.textdomain("ibus")
+        glade_file = path.join(path.dirname(__file__), "./setup.glade")
+        self.__xml = glade.XML(glade_file)
         try:
             self.__bus = ibus.Bus()
         except:
-            print >> sys.stderr, "Can not connect to ibus-daemon!"
+            message = _("Can not connect to ibus-daemon! Please start ibus-daemon.")
+            print >> sys.stderr, message
+            dlg = gtk.MessageDialog(type=gtk.MESSAGE_WARNING,
+                        buttons=gtk.BUTTONS_OK,
+                        message_format = message)
+            dlg.run()
+            dlg.destroy()
             sys.exit(1)
 
-        glade_file = path.join(path.dirname(__file__), "./setup.glade")
-        self.__xml = glade.XML(glade_file)
         self.__dialog = self.__xml.get_widget("dialog_setup")
         self.__tree = self.__xml.get_widget("treeview_engines")
         self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
