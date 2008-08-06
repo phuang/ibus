@@ -31,6 +31,7 @@ icons_DATA = \
 iconsdir = $(pkgdatadir)/icons
 
 sysicons_DATA = \
+	ibus.svg \
 	ibus-setup.svg \
 	$(NULL)
 

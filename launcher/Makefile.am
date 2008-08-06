@@ -21,10 +21,13 @@
 
 bin_SCRIPTS = ibus
 
-CLEANFILES = \
-	$(NULL)
+desktop_DATA = ibus.desktop
+desktopdir = $(datadir)/applications
 
 EXTRA_DIST = \
 	ibus.in \
+	ibus.desktop.in \
 	$(NULL)
 
+CLEANFILES = \
+	$(NULL)

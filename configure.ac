@@ -181,6 +181,7 @@ ibus/interface/Makefile
 daemon/Makefile
 daemon/ibus-daemon
 launcher/ibus
+launcher/ibus.desktop
 launcher/Makefile
 panel/Makefile
 panel/ibus-panel

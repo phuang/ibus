@@ -37,13 +37,15 @@ class Handle(gtk.EventBox):
         self.__move_begined = False
 
         root = gdk.get_default_root_window()
-        workarea = root.property_get("_NET_WORKAREA")[2]
 
     def do_button_press_event(self, event):
         if event.button == 1:
             root = gdk.get_default_root_window()
-            desktop = root.property_get("_NET_CURRENT_DESKTOP")[2][0]
-            self.__workarea = root.property_get("_NET_WORKAREA")[2][desktop * 4: (desktop + 1) * 4]
+            try:
+                desktop = root.property_get("_NET_CURRENT_DESKTOP")[2][0]
+                self.__workarea = root.property_get("_NET_WORKAREA")[2][desktop * 4: (desktop + 1) * 4]
+            except:
+                self.__workarea = None
             self.__move_begined = True
             toplevel = self.get_toplevel()
             x, y = toplevel.get_position()
@@ -69,6 +71,10 @@ class Handle(gtk.EventBox):
         x, y = toplevel.get_position()
         x  = int(event.x_root - self.__press_pos[0])
         y  = int(event.y_root - self.__press_pos[1])
+
+        if self.__workarea == None:
+            toplevel.move(x, y)
+            return
 
         if x < self.__workarea[0] and x > self.__workarea[0] - 16:
             x = self.__workarea[0]

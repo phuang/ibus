@@ -18,7 +18,9 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
+
 import os
+import os.path
 import sys
 import time
 
@@ -29,6 +31,17 @@ conf = "@prefix@/libexec/ibus-gconf"
 
 daemon_pid = 0
 
+logname = os.path.expanduser("~/.ibus-error")
+os.close(0)
+os.close(1)
+os.close(2)
+try:
+	os.unlink(logname)
+except:
+	pass
+fd = os.open(logname, os.O_CREAT | os.O_WRONLY)
+os.dup2(fd, 1)
+os.dup2(fd, 2)
 try:
     print "start ibus-daemon"
     daemon_pid = os.spawnv (os.P_NOWAIT, daemon, [daemon])

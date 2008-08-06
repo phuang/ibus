@@ -56,8 +56,13 @@ class LanguageBar(gtk.Toolbar):
         self.__toplevel.add(self)
 
         root = gdk.get_default_root_window()
-        workarea = root.property_get("_NET_WORKAREA")[2]
-        self.__toplevel.move(workarea[2] - 200, workarea[3] - 40)
+        try:
+            workarea = root.property_get("_NET_WORKAREA")[2]
+            right, bottom = workarea[2], workarea[3]
+        except:
+            right, bottom = 640, 480
+
+        self.__toplevel.move(right - 200, bottom - 40)
 
     def __create_ui(self):
         # create move handle
@@ -144,6 +149,7 @@ class LanguageBar(gtk.Toolbar):
 
     def focus_in(self):
         self.__im_menu.set_sensitive(True)
+        self.__toplevel.window.raise_()
 
     def focus_out(self):
         self.__im_menu.set_sensitive(False)
