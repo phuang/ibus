@@ -538,6 +538,7 @@ class IBusProxy(ibus.IIBus):
     def RegisterStopEngine(self, lang, name, dbusconn):
         return self.__ibus.register_stop_engine(lang, name, self.__conn)
 
-    def Kill(self, dbusconn):
-        return self.__ibus.kill(self.__conn)
+    def Kill(self, dbusconn, reply_cb, error_cb):
+        reply_cb()
+        self.__ibus.kill(self.__conn)
 
