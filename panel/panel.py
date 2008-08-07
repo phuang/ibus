@@ -212,7 +212,7 @@ class Panel(ibus.PanelBase):
                     item = gtk.ImageMenuItem("%s - %s" % (lang, name))
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                     item.set_image (_icon.IconWidget(icon, size[0]))
-                    item.connect("activate", self.__menu_item_activate_cb, factory)
+                    item.connect("activate", self.__im_menu_item_activate_cb, factory)
                     menu.add(item)
                 else:
                     item = gtk.MenuItem(lang)
@@ -239,8 +239,8 @@ class Panel(ibus.PanelBase):
         menu = self.__create_sys_menu()
         menu.popup(None, None,
                 gtk.status_icon_position_menu,
-                0,
-                gtk.get_current_event_time(),
+                button,
+                active_time,
                 self.__status_icon)
 
     def __status_icon_activate_cb(self, status_icon):
@@ -249,8 +249,8 @@ class Panel(ibus.PanelBase):
         menu = self.__create_im_menu()
         menu.popup(None, None,
                 gtk.status_icon_position_menu,
-                button,
-                active_time,
+                0,
+                gtk.get_current_event_time(),
                 self.__status_icon)
 
     def __im_menu_item_activate_cb(self, item, factory):
