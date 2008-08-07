@@ -13,7 +13,7 @@ Source1:    xinput-ibus
 
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gettext-devel, libtool, python-devel, pygtk2-devel, perl(XML::Parser), gtk2-devel, qt-devel, dbus-glib-devel, swig
-Requires:   pygtk2, dbus-python
+Requires:   pygtk2, dbus-python >= 0.83.0, pyxdg
 
 %description
 Input bus for Linux OS
@@ -48,6 +48,7 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
 rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.so
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/immodules/im-ibus.la
 
 # install xinput config file
@@ -59,11 +60,15 @@ install -pm 644 %{SOURCE1} ${RPM_BUILD_ROOT}/%{_xinputconf}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post -p /sbin/ldconfig
+
 %post gtk
 %{_bindir}/update-gtk-immodules %{_host} || :
 
 %postun gtk
 %{_bindir}/update-gtk-immodules %{_host} || :
+
+%postun -p /sbin/ldconfig
 
 %files
 # -f %{name}.lang
@@ -95,11 +100,15 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_xinputconf}
 
 %files gtk
+%defattr(-,root,root,-)
+%doc
 %{_libdir}/gtk-2.0/immodules/im-ibus.so
 
 %files qt
+%defattr(-,root,root,-)
+%doc
 %{_libdir}/qt4/plugins/inputmethods/libibus.so
 
 %changelog
-* Wed Jun 25 2008 Huang Peng <shawn.p.huang@gmail.com> - 0.1.0-1
+* Thu Aug 07 2008 Huang Peng <shawn.p.huang@gmail.com> - @VERSION@-1
 - The first version.
