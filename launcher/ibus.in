@@ -23,6 +23,7 @@ import os
 import os.path
 import sys
 import time
+import ibus
 
 daemon = "@prefix@/libexec/ibus-daemon"
 x11 = "@prefix@/libexec/ibus-x11"
@@ -31,17 +32,27 @@ conf = "@prefix@/libexec/ibus-gconf"
 
 daemon_pid = 0
 
-logname = os.path.expanduser("~/.ibus-error")
-os.close(0)
-os.close(1)
-os.close(2)
+# logname = os.path.expanduser("~/.ibus-error")
+# os.close(0)
+# os.close(1)
+# os.close(2)
+# try:
+# 	os.unlink(logname)
+# except:
+# 	pass
+# fd = os.open(logname, os.O_CREAT | os.O_WRONLY)
+# os.dup2(fd, 1)
+# os.dup2(fd, 2)
+bus = None
+
 try:
-	os.unlink(logname)
+	bus = ibus.Bus()
 except:
 	pass
-fd = os.open(logname, os.O_CREAT | os.O_WRONLY)
-os.dup2(fd, 1)
-os.dup2(fd, 2)
+if bus:
+	print >> sys.stderr, "Found an ibus-daemon has been started!"
+	sys.exit(1)
+
 try:
     print "start ibus-daemon"
     daemon_pid = os.spawnv (os.P_NOWAIT, daemon, [daemon])
