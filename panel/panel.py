@@ -24,6 +24,7 @@ import gtk.gdk as gdk
 import gobject
 import ibus
 import icon as _icon
+import os
 from os import path
 from ibus import LANGUAGES
 from ibus import interface
@@ -35,6 +36,8 @@ class Panel(ibus.PanelBase):
         super(Panel, self).__init__(bus, object_path)
         self.__bus = bus
         self.__focus_ic = None
+        self.__setup_pid = 0
+        self.__setup_cmd = path.join(os.getenv("IBUS_PREFIX"), "bin/ibus-setup")
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
@@ -169,11 +172,15 @@ class Panel(ibus.PanelBase):
 
     def __create_sys_menu(self):
         menu = gtk.Menu()
-        item = gtk.MenuItem("_Preferences...")
+        item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+        item.connect("activate",
+            self.__sys_menu_item_activate_cb, gtk.STOCK_PREFERENCES)
         menu.add(item)
-        item = gtk.MenuItem("_Quit")
+        item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        item.connect("activate",
+            self.__sys_menu_item_activate_cb, gtk.STOCK_QUIT)
         menu.add(item)
-        
+
         menu.show_all()
         menu.set_take_focus(False)
         return menu
@@ -216,7 +223,7 @@ class Panel(ibus.PanelBase):
                         item = gtk.ImageMenuItem(name)
                         size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                         item.set_image (_icon.IconWidget(icon, size[0]))
-                        item.connect("activate", self.__menu_item_activate_cb, factory)
+                        item.connect("activate", self.__im_menu_item_activate_cb, factory)
                         submenu.add(item)
 
 
@@ -246,7 +253,23 @@ class Panel(ibus.PanelBase):
                 active_time,
                 self.__status_icon)
 
-    def __menu_item_activate_cb(self, item, factory):
+    def __im_menu_item_activate_cb(self, item, factory):
         self.__bus.set_factory(factory)
+
+    def __sys_menu_item_activate_cb(self, item, command):
+        if command == gtk.STOCK_PREFERENCES:
+            self.__start_setup()
+        elif command == gtk.STOCK_QUIT:
+            self.__bus.kill()
+        else:
+            print >> sys.stderr, "Unknown command %s" % command
+
+    def __start_setup(self):
+        if self.__setup_pid != 0:
+            pid, state = os.waitpid(self.__setup_pid, os.P_NOWAIT)
+            if pid != self.__setup_pid:
+                return
+            self.__setup_pid = 0
+        self.__setup_pid = os.spawnl(os.P_NOWAIT, self.__setup_cmd, "ibus-setup")
 
 gobject.type_register(Panel, "IBusPanel")
