@@ -59,7 +59,7 @@ class Setup(object):
     def __flush_gtk_events(self):
         while gtk.events_pending():
             gtk.main_iteration()
-        
+
     def __init__(self):
         super(Setup, self).__init__()
         glade.textdomain("ibus")
@@ -107,6 +107,9 @@ class Setup(object):
 
 
         self.__dialog = self.__xml.get_widget("dialog_setup")
+        self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
+        self.__checkbutton_auto_start.set_active(self.__is_auto_start())
+        self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
         self.__tree = self.__xml.get_widget("treeview_engines")
         self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
         model = self.__create_model()
@@ -284,6 +287,28 @@ class Setup(object):
 
         return model
 
+    def __is_auto_start(self):
+        link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/ibus.desktop")
+
+        if not path.exists(link_file):
+            return False
+        if not path.islink(link_file):
+            return False
+        if path.realpath(link_file) != ibus_desktop:
+            return False
+        return True
+
+    def __checkbutton_auto_start_toggled_cb(self, button):
+        link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/ibus.desktop")
+        # unlink file
+        try:
+            os.unlink(link_file)
+        except:
+            pass
+        if self.__checkbutton_auto_start.get_active():
+            os.symlink(ibus_desktop, link_file)
 
     def run(self):
         return self.__dialog.run()
