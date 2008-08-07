@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=IBus Setup
+Name=IBus Preferences
 Comment=Setup utility for IBus
 Exec=ibus-setup
 Icon=ibus-setup

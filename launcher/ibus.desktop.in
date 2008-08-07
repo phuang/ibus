@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=IBus
-Comment=Setup utility for IBus
+Comment=The daemon of IBus
 Exec=ibus
 Icon=ibus
 Terminal=false
