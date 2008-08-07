@@ -90,4 +90,4 @@ except:
 
 os.waitpid (daemon_pid, 0)
 
-os.wait (daemon_pid)
+os.wait ()

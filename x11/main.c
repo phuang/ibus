@@ -32,6 +32,8 @@
 #include <langinfo.h>
 #include <locale.h>
 #include <iconv.h>
+#include <signal.h>
+#include <stdlib.h>
 
 #define _GNU_SOURCES
 #include <getopt.h>
@@ -82,6 +84,7 @@ static gchar _locale[1024] =
 	"ta,te,tg,th,ti,tl,tn,tr,ts,tt,"
 	"uk,ur,uz,ve,vi,wa,xh,yi,zh,zu";
 
+static gboolean _kill_daemon = FALSE;
 static gint		g_debug_level = 0;
 
 IBusIMClient *_client = NULL;
@@ -610,6 +613,11 @@ _xim_init_IMdkit ()
 	ibus_im_context_register_type (NULL);
 	_client = ibus_im_client_new ();
 
+	if (!ibus_im_client_get_connected (_client)) {
+		g_warning ("Can not connect to ibus daemon");
+		exit (1);
+	}
+
 	g_signal_connect (G_OBJECT (_client),
 		"disconnected",
 		G_CALLBACK (_xim_client_disconnected_cb),
@@ -617,7 +625,11 @@ _xim_init_IMdkit ()
 
 }
 
-
+static void
+_xim_sighandler (int sig)
+{
+	gtk_main_quit();
+}
 
 static void
 print_usage (FILE *fp, gchar *name)
@@ -627,6 +639,7 @@ print_usage (FILE *fp, gchar *name)
 		" %s --help               Show this message\n"
 		"    --server-name= -n    Setup xim sevrer name\n"
 		"    --locale= -l         Setup support locale\n"
+		"    --kill-daemon -k     Kill ibus daemon when exit\n"
 		"    --debug= -v          Setup debug level\n",
 		name);
 }
@@ -646,10 +659,11 @@ int main (int argc, char **argv)
 			{"server-name", 1, 0, 0},
 			{"locale", 1, 0, 0},
 			{"help", 0, 0, 0},
+			{"kill-daemon", 0, 0, 0},
 			{0, 0, 0, 0},
 		};
 
-		c = getopt_long (argc, argv, "v:n:l:",
+		c = getopt_long (argc, argv, "v:n:l:k",
 			long_options, &option_index);
 
 		if (c == -1) break;
@@ -669,6 +683,9 @@ int main (int argc, char **argv)
 				print_usage (stdout, argv[0]);
 				exit (EXIT_SUCCESS);
 			}
+			else if (strcmp (long_options[option_index].name, "kill-daemon") == 0) {
+				_kill_daemon = TRUE;
+			}
 			break;
 		case 'v':
 			g_debug_level = atoi (optarg);
@@ -678,6 +695,9 @@ int main (int argc, char **argv)
 			break;
 		case 'l':
 			strncpy (_locale, optarg, sizeof (_locale));
+			break;
+		case 'k':
+			_kill_daemon = TRUE;
 			break;
 		case '?':
 		default:
@@ -693,11 +713,17 @@ int main (int argc, char **argv)
 
 	// printf ("server-name = %s\n", _server_name);
 	// printf ("locale      = %s\n", g_locale);
+	signal (SIGTERM, _xim_sighandler);
+	signal (SIGINT, _xim_sighandler);
 
 	_xim_init_IMdkit ();
 	
 	gtk_main();
+	if (_kill_daemon)
+		ibus_im_client_kill_daemon(_client);
 
 	return 0;
 
 }
+
+

@@ -1313,3 +1313,21 @@ ibus_im_client_release_im_context (IBusIMClient *client, IBusIMContext *context)
 
 }
 
+void
+ibus_im_client_kill_daemon (IBusIMClient *client)
+{
+    IBusIMClientPrivate *priv = client->priv;
+    _ibus_call_with_reply_and_block (priv->ibus, "Kill",
+                DBUS_TYPE_INVALID,
+                DBUS_TYPE_INVALID);
+}
+
+
+gboolean
+ibus_im_client_get_connected (IBusIMClient *client)
+{
+    IBusIMClientPrivate *priv = client->priv;
+    if (priv->ibus == NULL)
+        return FALSE;
+    return dbus_connection_get_is_connected (priv->ibus);
+}

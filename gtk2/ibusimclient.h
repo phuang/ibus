@@ -98,6 +98,8 @@ void            ibus_im_client_set_use_preedit   (IBusIMClient    *client,
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
 void            ibus_im_client_release_im_context(IBusIMClient    *client,
                                                   IBusIMContext   *context);
+void            ibus_im_client_kill_daemon       (IBusIMClient    *client);
+gboolean        ibus_im_client_get_connected     (IBusIMClient    *client);
 
 
 G_END_DECLS
