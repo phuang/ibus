@@ -631,6 +631,15 @@ _xim_sighandler (int sig)
 	gtk_main_quit();
 }
 
+static int
+x_io_error_handler (Display *xdisplay)
+{
+	if (_kill_daemon)
+		ibus_im_client_kill_daemon(_client);
+	exit (0);
+	return 0;
+}
+
 static void
 print_usage (FILE *fp, gchar *name)
 {
@@ -650,8 +659,9 @@ int main (int argc, char **argv)
 	gint option_index = 0;
 	gint c;
 
-	
+
 	gtk_init (&argc, &argv);
+	XSetIOErrorHandler (x_io_error_handler);
 
 	while (1) {
 		static struct option long_options [] = {
@@ -717,13 +727,15 @@ int main (int argc, char **argv)
 	signal (SIGINT, _xim_sighandler);
 
 	_xim_init_IMdkit ();
-	
 	gtk_main();
-	if (_kill_daemon)
+	if (_kill_daemon) {
+		g_debug ("Kill ibus-daemon");
 		ibus_im_client_kill_daemon(_client);
+	}
 
 	return 0;
 
 }
+
 
 
