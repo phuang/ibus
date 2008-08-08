@@ -3,7 +3,7 @@
 Name:       ibus
 Version:    @PACKAGE_VERSION@
 Release:    1%{?dist}
-Summary:    Input bus for Linux OS
+Summary:    Input Bus for Linux OS
 License:    LGPLv2+
 Group:      System Environment/Libraries
 URL:        http://code.google.com/p/ibus/
