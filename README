@@ -11,6 +11,12 @@ developers to develop input method easily.
 How to build & test IBus
 ===
 
+ibus-setup:
+It is a gtk program to enable and configure ibus.
+
+ibus:
+It is ibus daemon.
+
 For more detail please refer to http://code.google.com/p/ibus/wiki/ReadMe .
 
 
