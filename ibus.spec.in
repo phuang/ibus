@@ -11,8 +11,17 @@ Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
 Source1:    xinput-ibus
 
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: gettext-devel, libtool, python-devel, pygtk2-devel, perl(XML::Parser), gtk2-devel, qt-devel, dbus-glib-devel, swig
-Requires:   pygtk2, dbus-python >= 0.83.0, pyxdg
+
+BuildRequires:  gettext-devel
+BuildRequires:  libtool
+BuildRequires:  python
+BuildRequires:  gtk2-devel
+BuildRequires:  qt-devel
+BuildRequires:  dbus-glib-devel
+
+Requires:   pygtk2
+Requires:   dbus-python >= 0.83.0
+Requires:   pyxdg
 
 %description
 IBus means the Input Bus. It is a new input framework for Linux OS. It provides

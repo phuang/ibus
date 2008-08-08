@@ -61,9 +61,6 @@ PKG_CHECK_MODULES(GLIB2, [
 PKG_CHECK_MODULES(GOBJECT2, [
 	gobject-2.0
 ])
-PKG_CHECK_MODULES(PYGOBJECT2, [
-	pygobject-2.0
-])
 
 
 # check gtk, gdk & pygtk
@@ -76,10 +73,6 @@ GTK_IM_MODULEDIR="$libdir"/gtk-2.0/immodules
 
 PKG_CHECK_MODULES(GDK2, [
 	gdk-2.0
-])
-
-PKG_CHECK_MODULES(PYGTK2, [
-	pygtk-2.0
 ])
 
 # check dbus-glib
@@ -114,15 +107,6 @@ fi
 PKG_CHECK_MODULES(X11, [
 	x11
 ])
-
-
-# check swig
-AC_PATH_PROG(SWIG, swig)
-if test x"$SWIG" == x""; then
-	 AC_MSG_ERROR([can not find swig])
-fi
-AC_SUBST(SWIG)
-
 
 # check env
 AC_PATH_PROG(ENV, env)
