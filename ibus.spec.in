@@ -15,7 +15,9 @@ BuildRequires: gettext-devel, libtool, python-devel, pygtk2-devel, perl(XML::Par
 Requires:   pygtk2, dbus-python >= 0.83.0, pyxdg
 
 %description
-Input bus for Linux OS
+IBus means the Input Bus. It is a new input framework for Linux OS. It provides
+full featured and user friendly input method user interface. It also may help
+developers to develop input method easily.
 
 %package gtk
 Summary:    IBus im module for gtk2
