@@ -360,18 +360,14 @@ class CandidatePanel(gtk.VBox):
             self.show_all()
             self.emit("show")
         else:
-            self.show_all()
             self.hide_all()
             self.emit("hide")
 
     def reset(self):
-        self.hide()
-        self.hide_preedit()
-        self.hide_aux_string()
-        self.hide_lookup_table()
         self.update_preedit("", None, 0, False)
         self.update_aux_string("", None, False)
         self.update_lookup_table(None, False)
+        self.hide()
 
     def set_orientation(self, orientation):
         if self.__orientation == orientation:
