@@ -42,6 +42,7 @@ struct _IBusIMContextPrivate {
     gboolean         preedit_visible;
 
     GdkRectangle     cursor_area;
+    gboolean         has_focus;
 };
 
 
@@ -91,7 +92,7 @@ static void     _slave_delete_surrounding_cb
 
 
 
-GType                _ibus_type_im_context = 0;
+static GType                _ibus_type_im_context = 0;
 static GtkIMContextClass    *parent_class = NULL;
 
 void
@@ -126,6 +127,17 @@ ibus_im_context_register_type (GTypeModule *type_module)
                     (GTypeFlags)0);
         }
     }
+}
+
+int
+ibus_im_context_get_type (void)
+{
+    if (_ibus_type_im_context == 0) {
+        ibus_im_context_register_type (NULL);
+    }
+
+    g_assert (_ibus_type_im_context != 0);
+    return _ibus_type_im_context;
 }
 
 GtkIMContext *
@@ -245,6 +257,7 @@ ibus_im_context_focus_in (GtkIMContext *context)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
+    priv->has_focus = TRUE;
     ibus_im_client_focus_in (_client, ibus);
     gtk_im_context_focus_in (priv->slave);
 
@@ -259,6 +272,7 @@ ibus_im_context_focus_out (GtkIMContext *context)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
+    priv->has_focus = FALSE;
     ibus_im_client_focus_out (_client, ibus);
     gtk_im_context_focus_out (priv->slave);
 }
@@ -447,6 +461,9 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 
     if (priv->ic == NULL) {
         priv->enable = FALSE;
+    }
+    else if (priv->has_focus){
+        ibus_im_context_set_cursor_location(context, &priv->cursor_area);
     }
 }
 

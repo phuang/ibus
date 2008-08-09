@@ -26,7 +26,7 @@
  * Type macros.
  */
 #define IBUS_TYPE_IM_CONTEXT             \
-    (_ibus_type_im_context)
+    (ibus_im_context_get_type ())
 #define IBUS_IM_CONTEXT(obj)             \
     (GTK_CHECK_CAST ((obj), IBUS_TYPE_IM_CONTEXT, IBusIMContext))
 #define IBUS_IM_CONTEXT_CLASS(klass)     \
@@ -54,8 +54,7 @@ struct _IBusIMContextClass {
   /* class members */
 };
 
-extern GType                _ibus_type_im_context;
-
+int     ibus_im_context_get_type(void);
 GtkIMContext
         *ibus_im_context_new    (void);
 void    ibus_im_context_register_type
