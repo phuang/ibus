@@ -334,19 +334,16 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
+    gint x, y;
 
     priv->cursor_area = *area;
 
-    if (priv->enable) {
-        /* It is the focused context */
-        gint x, y;
-        if(priv->client_window) {
-            gdk_window_get_origin (priv->client_window, &x, &y);
-            area->x += x;
-            area->y += y;
-        }
-        ibus_im_client_set_cursor_location (_client, ibus, area);
+    if(priv->client_window) {
+        gdk_window_get_origin (priv->client_window, &x, &y);
+        area->x += x;
+        area->y += y;
     }
+    ibus_im_client_set_cursor_location (_client, ibus, area);
     gtk_im_context_set_cursor_location (priv->slave, area);
 }
 
