@@ -21,6 +21,7 @@
 
 import os
 import os.path
+import atexit
 import sys
 import time
 import ibus
@@ -37,21 +38,21 @@ daemon_pid = 0
 # os.close(1)
 # os.close(2)
 # try:
-# 	os.unlink(logname)
+#     os.unlink(logname)
 # except:
-# 	pass
+#     pass
 # fd = os.open(logname, os.O_CREAT | os.O_WRONLY)
 # os.dup2(fd, 1)
 # os.dup2(fd, 2)
 bus = None
 
 try:
-	bus = ibus.Bus()
+    bus = ibus.Bus()
 except:
-	pass
+    pass
 if bus:
-	print >> sys.stderr, "Found an ibus-daemon has been started!"
-	sys.exit(1)
+    print >> sys.stderr, "Found an ibus-daemon has been started!"
+    sys.exit(1)
 
 try:
     print "start ibus-daemon"
@@ -64,30 +65,17 @@ time.sleep (1)
 
 try:
     print "start ibus-x11"
-    os.spawnv (os.P_NOWAIT, x11, [x11, "--kill-daemon"])
+    x11_pid = os.spawnv (os.P_NOWAIT, x11, [x11, "--kill-daemon"])
 except:
     print >> sys.stderr, "start ibus-x11 failed"
     sys.exit (1)
 
 try:
     print "start ibus-panel"
-    os.spawnv (os.P_NOWAIT, panel, [panel])
+    panel_pid = os.spawnv (os.P_NOWAIT, panel, [panel])
 except:
     print >> sys.stderr, "start ibus-panel failed"
     sys.exit (1)
 
-# try:
-#     print "start ibus-conf"
-#     os.spawnv (os.P_NOWAIT, conf, [conf])
-# except:
-#     print >> sys.stderr, "start ibus-conf failed"
-#     sys.exit (1)
-
-try:
-    os.kill (daemon_pid, 0)
-except:
-    sys.exit (1)
-
 os.waitpid (daemon_pid, 0)
-
 os.wait ()
