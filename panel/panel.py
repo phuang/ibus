@@ -164,7 +164,6 @@ class Panel(ibus.PanelBase):
             self.__set_im_icon(icon)
 
     def reset(self):
-        print "reset"
         self.__candidate_panel.reset()
         self.__language_bar.reset()
 
