@@ -84,6 +84,8 @@ static void     ibus_im_client_disconnected (IBusIMClient       *client);
 static const gchar *
                 _ibus_im_client_create_input_context
                                             (IBusIMClient       *client);
+static void     _ibus_im_client_ibus_open   (IBusIMClient       *client);
+static void     _ibus_im_client_ibus_close  (IBusIMClient       *client);
 
 static gboolean _ibus_call_with_reply_and_block
                                            (DBusConnection      *connection,
@@ -131,6 +133,10 @@ static GtkObjectClass *parent_class = NULL;
 GType
 ibus_im_client_get_type (void)
 {
+    if (ibus_type_im_client == 0) {
+        ibus_im_client_register_type (NULL);
+    }
+    
     g_assert (ibus_type_im_client != 0);
     return ibus_type_im_client;
 }
@@ -140,14 +146,14 @@ ibus_im_client_register_type (GTypeModule *type_module)
 {
     static const GTypeInfo ibus_im_client_info = {
         sizeof (IBusIMClientClass),
-        (GBaseInitFunc)        NULL,
-        (GBaseFinalizeFunc)     NULL,
-        (GClassInitFunc)     ibus_im_client_class_init,
-        NULL,            /* class finialize */
-        NULL,            /* class data */
+        (GBaseInitFunc)     NULL,
+        (GBaseFinalizeFunc) NULL,
+        (GClassInitFunc)    ibus_im_client_class_init,
+        NULL,               /* class finialize */
+        NULL,               /* class data */
         sizeof (IBusIMClient),
         0,
-        (GInstanceInitFunc)    ibus_im_client_init,
+        (GInstanceInitFunc) ibus_im_client_init,
     };
 
     if (! ibus_type_im_client ) {
@@ -215,10 +221,14 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
 
 void ibus_im_client_connected (IBusIMClient *client)
 {
+    /* do nothing */
 }
+
 void ibus_im_client_disconnected (IBusIMClient *client)
 {
+    /* do nothing */
 }
+
 /*
  * open ibus connection
  */
@@ -316,15 +326,21 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
     }
     dbus_connection_setup_with_g_main (priv->ibus, NULL);
 
+    g_signal_emit (client, client_signals[CONNECTED], 0);
+    
     GList *p;
     for (p = priv->contexts; p != NULL; p = g_list_next (p)) {
         IBusIMContext *context = IBUS_IM_CONTEXT (p->data);
         const gchar *ic = _ibus_im_client_create_input_context (client);
+
+        if (ic == NULL) {
+            _ibus_im_client_ibus_close (client);
+            return;
+        }
         g_hash_table_insert (priv->ic_table, g_strdup (ic), context);
         ibus_im_context_set_ic (context, ic);
     }
 
-    g_signal_emit (client, client_signals[CONNECTED], 0);
 }
 
 /*
@@ -347,6 +363,7 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
         dbus_connection_close (priv->ibus);
         dbus_connection_unref (priv->ibus);
         priv->ibus = NULL;
+        g_signal_emit (client, client_signals[DISCONNECTED], 0);
     }
 }
 
@@ -844,7 +861,6 @@ static void
 _ibus_signal_disconnected_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     _ibus_im_client_ibus_close (client);
-    g_signal_emit (client, client_signals[DISCONNECTED], 0);
 }
 
 static void

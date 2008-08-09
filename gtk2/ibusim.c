@@ -57,8 +57,11 @@ im_module_exit (void)
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-    if (strcmp (context_id, "ibus") == 0)
-        return ibus_im_client_create_im_context (_client);
+    if (strcmp (context_id, "ibus") == 0) {
+        IBusIMContext *context;
+        context = ibus_im_client_create_im_context (_client);
+        return GTK_IM_CONTEXT(context);
+    }
     return NULL;
 }
 
