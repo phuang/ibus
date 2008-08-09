@@ -317,24 +317,22 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = window;
 
-    if (gtk_im_context_filter_keypress (ic->context, &event)) {
+    if (gtk_im_context_filter_keypress (ic->context, &event))
         return 1;
-    }
-    else {
-        IMForwardEventStruct fe;
-        XEvent xkp;
-        XKeyEvent *event = (XKeyEvent*) (&xkp);
 
-        memset (&fe, 0, sizeof (fe));
-        fe.major_code = XIM_FORWARD_EVENT;
-        fe.icid = ic->icid;
-        fe.connect_id = ic->connect_id;
-        fe.sync_bit = 0;
-        fe.serial_number = 0L;
-        fe.event = call_data->event;
-        IMForwardEvent (_xims, (XPointer) & fe);
-        return 1;
-    }
+    IMForwardEventStruct fe;
+    memset (&fe, 0, sizeof (fe));
+
+    fe.major_code = XIM_FORWARD_EVENT;
+    fe.icid = ic->icid;
+    fe.connect_id = ic->connect_id;
+    fe.sync_bit = 0;
+    fe.serial_number = 0L;
+    fe.event = call_data->event;
+
+    IMForwardEvent (_xims, (XPointer) & fe);
+
+    return 1;
 }
 
 
