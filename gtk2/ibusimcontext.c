@@ -198,6 +198,8 @@ ibus_im_context_init     (IBusIMContext *obj)
     priv->cursor_area.width = 0;
     priv->cursor_area.height = 0;
 
+    priv->has_focus = FALSE;
+
 
     // Create slave im context
     ibus->priv->slave = gtk_im_context_simple_new ();
@@ -455,15 +457,15 @@ void
 ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 {
     IBusIMContextPrivate *priv = context->priv;
-    if (priv->ic) g_free (priv->ic);
+    g_free (priv->ic);
 
     priv->ic = g_strdup (ic);
 
     if (priv->ic == NULL) {
         priv->enable = FALSE;
     }
-    else if (priv->has_focus){
-        ibus_im_context_set_cursor_location(context, &priv->cursor_area);
+    else if (priv->has_focus) {
+        ibus_im_context_focus_in (context);
     }
 }
 
