@@ -131,21 +131,46 @@ class IBus(ibus.Object):
         context.set_cursor_location(x, y, w, h)
         self.__panel.set_cursor_location(x, y, w, h)
 
+    def __context_enable(self, context):
+        if context.get_engine() == None:
+            factory = self.__factory_manager.get_default_factory()
+            if factory:
+                engine = factory.create_engine()
+                engine.focus_in()
+                context.set_engine(engine)
+        context.set_enable(True)
+        self.__panel.states_changed()
+
+    def __context_disable(self, context):
+        context.set_enable(False)
+        self.__panel.reset()
+        self.__panel.states_changed()
+
+    def __context_next_factory(self, context):
+        old_factory = context.get_factory()
+        new_factory = self.__factory_manager.get_next_factory(old_factory)
+        engine = new_factory.create_engine()
+        engine.focus_in()
+        context.set_engine(engine)
+        self.__panel.states_changed()
+
     def __filter_hotkeys(self, context, keyval, is_press, state):
         if is_press and keyval == keysyms.space \
             and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
-            enable = not context.is_enabled()
-            if context.get_engine() == None and enable:
-                factory = self.__factory_manager.get_default_factory()
-                if factory:
-                    engine = factory.create_engine()
-                    engine.focus_in()
-                    context.set_engine(engine)
-            context.set_enable(enable)
-            if not enable:
-                self.__panel.reset()
-            self.__panel.states_changed()
+            if context.is_enabled():
+                self.__context_disable(context)
+            else:
+                self.__context_enable(context)
             return True
+        elif is_press and keyval in (keysyms.Shift_L, keysyms.Shift_R) \
+            and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
+            if not context.is_enabled():
+                self.__context_enable(context)
+            else:
+                self.__context_next_factory(context)
+
+            return True
+
         return False
 
     def __lookup_context(self, ic, conn):
@@ -434,7 +459,7 @@ class IBus(ibus.Object):
         if context.get_factory() != None:
             factory_path = context.get_factory().get_object_path()
         return factory_path, context.is_enabled()
-    
+
     def kill(self, conn):
         print "be killed"
         sys.exit(0)
