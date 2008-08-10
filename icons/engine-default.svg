@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    version="1.0"
-   sodipodi:docname="engine-default.svg"
+   sodipodi:docname="ibus.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/andreas/project/gnome-icon-theme/32x32/apps/accessories-character-map.png"
    inkscape:export-xdpi="90"
@@ -81,7 +81,7 @@
     <linearGradient
        id="linearGradient5582">
       <stop
-         style="stop-color:#4855ff;stop-opacity:1;"
+         style="stop-color:#9dbaff;stop-opacity:1;"
          offset="0"
          id="stop5584" />
       <stop
@@ -168,7 +168,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.313708"
-     inkscape:cx="17.662596"
+     inkscape:cx="4.4581722"
      inkscape:cy="26.661546"
      inkscape:current-layer="layer1"
      showgrid="true"
