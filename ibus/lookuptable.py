@@ -29,6 +29,9 @@ from attribute import *
 from exception import *
 
 class StringList(list):
+    def __init__(self, items = []):
+        super(StringList, self).__init__(items)
+
     def clean(self):
         del self[:]
 
@@ -180,6 +183,15 @@ class LookupTable(object):
                  dbus.Int32(self.__cursor_pos),
                  dbus.Boolean(self.__cursor_visible),
                  self.__candidates.to_dbus_value())
+        return dbus.Struct(value)
+
+    def current_page_to_dbus_value(self):
+        candidates = self.get_canidates_in_current_page()
+        candidates = StringList(candidates)
+        value = (dbus.Int32(self.__page_size),
+                 dbus.Int32(self.__cursor_pos % self.__page_size),
+                 dbus.Boolean(self.__cursor_visible),
+                 candidates.to_dbus_value())
         return dbus.Struct(value)
 
     def from_dbus_value(self, value):

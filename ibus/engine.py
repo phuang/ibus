@@ -101,8 +101,12 @@ class EngineBase(ibus.Object):
     def hide_aux_string(self):
         return self.__proxy.HideAuxString()
 
-    def update_lookup_table(self, lookup_table, visible):
-        return self.__proxy.UpdateLookupTable(lookup_table.to_dbus_value(), visible)
+    def update_lookup_table(self, lookup_table, visible, just_current_page = False):
+        if just_current_page:
+            dbus_values = lookup_table.current_page_to_dbus_value()
+        else:
+            dbus_values = lookup_table.to_dbus_value()
+        return self.__proxy.UpdateLookupTable(dbus_values, visible)
 
     def show_lookup_table(self):
         return self.__proxy.ShowLookupTable()
