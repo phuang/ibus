@@ -129,7 +129,8 @@ class IBus(ibus.Object):
     def set_cursor_location(self, ic, x, y, w, h, conn):
         context = self.__lookup_context(ic, conn)
         context.set_cursor_location(x, y, w, h)
-        self.__panel.set_cursor_location(x, y, w, h)
+        if context == self.__focused_context:
+            self.__panel.set_cursor_location(x, y, w, h)
 
     def __context_enable(self, context):
         if context.get_engine() == None:
