@@ -715,8 +715,8 @@ int main (int argc, char **argv)
     _clients = g_hash_table_new (g_direct_hash, g_direct_equal);
     _connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-    signal (SIGTERM, _xim_sighandler);
     signal (SIGINT, _xim_sighandler);
+    signal (SIGTERM, _xim_sighandler);
 
     if (_kill_daemon)
         atexit (_xim_kill_daemon);
