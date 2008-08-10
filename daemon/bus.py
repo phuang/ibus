@@ -298,6 +298,8 @@ class IBus(ibus.Object):
 
         self.__panel = Panel(conn, object_path)
         self.__install_panel_handlers()
+        if self.__focused_context:
+            self.__panel.focus_in(self.__focused_context.get_id())
 
     def __install_panel_handlers(self):
         signals = (
