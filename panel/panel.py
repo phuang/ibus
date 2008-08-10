@@ -62,7 +62,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
-        self.__status_icon.set_from_icon_name("engine-default")
+        self.__status_icon.set_from_icon_name("ibus")
         self.__status_icon.set_tooltip("iBus - Running")
         self.__status_icon.set_visible(True)
 
@@ -140,7 +140,7 @@ class Panel(ibus.PanelBase):
         factory, enabled = self.__bus.get_input_context_states(ic)
 
         if factory == "" or not enabled:
-            self.__set_im_icon("engine-default")
+            self.__set_im_icon("ibus")
         else:
             name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)
@@ -151,14 +151,14 @@ class Panel(ibus.PanelBase):
         if self.__focus_ic == ic:
             self.__focus_ic = None
             self.__language_bar.focus_out()
-            self.__set_im_icon("engine-default")
+            self.__set_im_icon("ibus")
 
     def states_changed(self):
         if not self.__focus_ic:
             return
         factory, enabled = self.__bus.get_input_context_states(self.__focus_ic)
         if enabled == False or not factory:
-            self.__set_im_icon("engine-default")
+            self.__set_im_icon("ibus")
         else:
             name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)

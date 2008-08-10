@@ -71,7 +71,7 @@ class LanguageBar(gtk.Toolbar):
         self.insert(self.__handle, -1)
 
         # create input methods menu
-        self.__im_menu = ToggleToolButton(ibus.Property(name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "engine-default", tooltip = "Swicth engine"))
+        self.__im_menu = ToggleToolButton(ibus.Property(name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = "Swicth engine"))
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
         self.insert(self.__im_menu, -1)
 
