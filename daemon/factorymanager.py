@@ -54,6 +54,7 @@ class FactoryManager(ibus.Object):
             factory = EngineFactory(ibusconn, object_path)
             self.__factories[object_path] = factory
             self.__ibusconn_factory_dict[ibusconn].append(object_path)
+        self.__sorted_factories = None
 
         ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
 
