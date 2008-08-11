@@ -199,6 +199,7 @@ class InputContext(ibus.Object):
                     self.__engine.enable()
                     self.__engine.focus_in()
             else:
+                self.hide_preedit()
                 self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
                 if self.__engine:
                     self.__engine.disable()
