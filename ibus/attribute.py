@@ -128,6 +128,8 @@ class AttrList:
         return self._attrs.__iter__ ()
 
 def attr_list_from_dbus_value (value):
+    if len(value) == 0:
+        return None
     attrs = AttrList ()
     attrs.from_dbus_value (value)
     return attrs

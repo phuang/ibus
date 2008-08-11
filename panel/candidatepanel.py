@@ -83,6 +83,8 @@ class CandidateArea(gtk.HBox):
         i = 0
         for text, attrs in candidates:
             if i == focus_candidate:
+                if attrs == None:
+                    attrs = pango.AttrList()
                 color = self.__labels[i][1].style.base[gtk.STATE_SELECTED]
                 end_index = len(text.encode("utf8"))
                 attr = pango.AttrBackground(color.red, color.green, color.blue, 0, end_index)
@@ -92,7 +94,7 @@ class CandidateArea(gtk.HBox):
                 attrs.insert(attr)
 
             self.__labels[i][1].set_text(text)
-            self.__labels[i][1].set_attributes(attrs)
+            self.__labels[i][1].set_property("attributes", attrs)
             self.__labels[i][0].show()
             self.__labels[i][1].show()
 
@@ -265,7 +267,8 @@ class CandidatePanel(gtk.VBox):
         self.__check_show_states()
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
-        attrs = PangoAttrList(attrs, text)
+        if attrs:
+            attrs = PangoAttrList(attrs, text)
         if visible:
             self.show_preedit()
         else:
@@ -302,6 +305,11 @@ class CandidatePanel(gtk.VBox):
         self.__aux_attrs = attrs
         self.__aux_label.set_attributes(attrs)
 
+    def __refresh_candidates(self):
+        candidates = self.__lookup_table.get_canidates_in_current_page()
+        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0]) if x[1] else None), candidates)
+        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+
     def update_lookup_table(self, lookup_table, visible):
         if lookup_table == None:
             lookup_table = ibus.LookupTable()
@@ -312,9 +320,7 @@ class CandidatePanel(gtk.VBox):
             self.hide_lookup_table()
 
         self.__lookup_table = lookup_table
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__refresh_candidates()
 
     def show_lookup_table(self):
         self.__lookup_table_visible = True
@@ -330,27 +336,19 @@ class CandidatePanel(gtk.VBox):
 
     def page_up_lookup_table(self):
         self.__lookup_table.page_up()
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__refresh_candidates()
 
     def page_down_lookup_table(self):
         self.__lookup_table.page_down()
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__refresh_candidates()
 
     def cursor_up_lookup_table(self):
         self.__lookup_table.cursor_up()
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__refresh_candidates()
 
     def cursor_down_lookup_table(self):
         self.__lookup_table.cursor_down()
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0])), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__refresh_candidates()
 
     def set_cursor_location(self, x, y):
         self.__cursor_location = (x, y)
