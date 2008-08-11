@@ -17,6 +17,10 @@ It is a gtk program to enable and configure ibus.
 ibus:
 It is ibus daemon.
 
+hotkeys:
+Ctrl + Space: Enable or Disable input method
+Ctrl + Shift: Change input method.
+
 For more detail please refer to http://code.google.com/p/ibus/wiki/ReadMe .
 
 
