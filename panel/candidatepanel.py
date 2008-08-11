@@ -133,7 +133,10 @@ class CandidatePanel(gtk.VBox):
         self.__tooltips = gtk.Tooltips()
 
         self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
-        self.__toplevel.add(self)
+        self.__viewport = gtk.Viewport()
+        self.__viewport.set_shadow_type(gtk.SHADOW_IN)
+        self.__toplevel.add(self.__viewport)
+        self.__viewport.add(self)
         self.__toplevel.add_events(
             gdk.BUTTON_PRESS_MASK | \
             gdk.BUTTON_RELEASE_MASK | \
@@ -392,17 +395,17 @@ class CandidatePanel(gtk.VBox):
         else:
             return gtk.DrawingArea.do_get_property(property)
 
-    def do_expose_event(self, event):
-        self.style.paint_box(self.window,
-                    gtk.STATE_NORMAL,
-                    gtk.SHADOW_IN,
-                    event.area,
-                    self,
-                    "menu",
-                    self.allocation.x, self.allocation.y,
-                    self.allocation.width, self.allocation.height)
+    # def do_expose_event(self, event):
+    #     self.style.paint_box(self.window,
+    #                 gtk.STATE_NORMAL,
+    #                 gtk.SHADOW_IN,
+    #                 event.area,
+    #                 self,
+    #                 "panel",
+    #                 self.allocation.x, self.allocation.y,
+    #                 self.allocation.width, self.allocation.height)
 
-        gtk.VBox.do_expose_event(self, event)
+    #     gtk.VBox.do_expose_event(self, event)
 
     def do_size_request(self, requisition):
         gtk.VBox.do_size_request(self, requisition)
