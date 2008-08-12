@@ -144,9 +144,9 @@ class CandidatePanel(gtk.VBox):
             gdk.BUTTON_RELEASE_MASK | \
             gdk.BUTTON1_MOTION_MASK)
         self.__begin_move = False
-        self.__toplevel.connect("button-press-event", self.__button_press_event_cb)
-        self.__toplevel.connect("button-release-event", self.__button_release_event_cb)
-        self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
+        # self.__toplevel.connect("button-press-event", self.__button_press_event_cb)
+        # self.__toplevel.connect("button-release-event", self.__button_release_event_cb)
+        # self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
 
         self.__orientation = gtk.ORIENTATION_HORIZONTAL
         self.__orientation = gtk.ORIENTATION_VERTICAL
