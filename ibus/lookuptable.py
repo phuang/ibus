@@ -28,15 +28,15 @@ import dbus
 from attribute import *
 from exception import *
 
-class StringList(list):
+class CandidateList(list):
     def __init__(self, items = []):
-        super(StringList, self).__init__(items)
+        super(CandidateList, self).__init__(items)
 
     def clean(self):
         del self[:]
     def __getslice__(self, i, j):
-        items = super(StringList, self).__getslice__(i, j)
-        return StringList(items)
+        items = super(CandidateList, self).__getslice__(i, j)
+        return CandidateList(items)
 
     def to_dbus_value(self):
         value = dbus.Array([], signature="v")
@@ -66,7 +66,7 @@ class LookupTable(object):
         super(LookupTable, self).__init__()
         self.__cursor_visible = False
         self.__cursor_pos = 0
-        self.__candidates = StringList()
+        self.__candidates = CandidateList()
         self.set_page_size(page_size)
 
     def set_page_size(self, page_size):
