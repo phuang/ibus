@@ -22,6 +22,7 @@ BuildRequires:  dbus-glib-devel
 Requires:   pygtk2
 Requires:   dbus-python >= 0.83.0
 Requires:   pyxdg
+Requires:   gnome-python2-gconf
 
 %description
 IBus means the Input Bus. It is a new input framework for Linux OS. It provides
