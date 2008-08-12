@@ -34,6 +34,9 @@ class StringList(list):
 
     def clean(self):
         del self[:]
+    def __getslice__(self, i, j):
+        items = super(StringList, self).__getslice__(i, j)
+        return StringList(items)
 
     def to_dbus_value(self):
         value = dbus.Array([], signature="v")
@@ -187,7 +190,6 @@ class LookupTable(object):
 
     def current_page_to_dbus_value(self):
         candidates = self.get_canidates_in_current_page()
-        candidates = StringList(candidates)
         value = (dbus.Int32(self.__page_size),
                  dbus.Int32(self.__cursor_pos % self.__page_size),
                  dbus.Boolean(self.__cursor_visible),
