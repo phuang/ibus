@@ -465,7 +465,7 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
         priv->enable = FALSE;
     }
     else if (priv->has_focus) {
-        ibus_im_context_focus_in (context);
+        ibus_im_context_focus_in (GTK_IM_CONTEXT (context));
     }
 }
 

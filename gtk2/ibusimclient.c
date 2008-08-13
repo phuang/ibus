@@ -136,7 +136,7 @@ ibus_im_client_get_type (void)
     if (ibus_type_im_client == 0) {
         ibus_im_client_register_type (NULL);
     }
-    
+
     g_assert (ibus_type_im_client != 0);
     return ibus_type_im_client;
 }
@@ -208,7 +208,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             g_cclosure_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     client_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -327,7 +327,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
     dbus_connection_setup_with_g_main (priv->ibus, NULL);
 
     g_signal_emit (client, client_signals[CONNECTED], 0);
-    
+
     GList *p;
     for (p = priv->contexts; p != NULL; p = g_list_next (p)) {
         IBusIMContext *context = IBUS_IM_CONTEXT (p->data);
@@ -441,6 +441,7 @@ _ibus_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, IBusIMCl
     g_free (name);
     g_free (p);
 
+    return TRUE;
 }
 #endif
 
