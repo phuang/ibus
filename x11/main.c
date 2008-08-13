@@ -1,5 +1,6 @@
-/* xim-on-gtkim
- * Copyright (C) 2007-2008 Huang Peng <phuang@redhat.com>
+/* vim:set et ts=4: */
+/* ibus
+ * Copyright (C) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
  *
  * main.c:
  *
