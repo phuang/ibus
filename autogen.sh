@@ -8,4 +8,4 @@ aclocal -I m4
 autoheader
 automake --add-missing --copy
 autoconf
-./configure --enable-maintainer-mode $*
+CFLAGS=-Wall CXXFLAGS=-Wall ./configure --enable-maintainer-mode $*

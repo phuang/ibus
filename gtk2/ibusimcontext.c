@@ -176,7 +176,6 @@ ibus_im_context_init     (IBusIMContext *obj)
 {
     DEBUG_FUNCTION_IN;
 
-    GError *error;
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
     IBusIMContextPrivate *priv = ibus->priv =
         G_TYPE_INSTANCE_GET_PRIVATE (ibus, IBUS_TYPE_IM_CONTEXT, IBusIMContextPrivate);
@@ -382,7 +381,7 @@ _slave_commit_cb (GtkIMContext *slave, gchar *string, IBusIMContext *context)
 {
     DEBUG_FUNCTION_IN;
 
-    IBusIMContextPrivate *priv = context->priv;
+    /* IBusIMContextPrivate *priv = context->priv; */
 #if 0
     if ((GtkIMContext *)context == CURRENT_CONTEXT && ibus_im_client_is_enabled (_client))
         return;

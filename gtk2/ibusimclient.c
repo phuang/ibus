@@ -30,6 +30,7 @@
 #include <gdk/gdkx.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
 
 #ifdef HAVE_SYS_INOTIFY_H
 #define HAVE_INOTIFY
@@ -108,9 +109,6 @@ static gboolean _dbus_call_with_reply_and_block
                                             const char          *method,
                                             int                 first_arg_type,
                                                                 ...);
-static GtkIMContext *
-                _ibus_client_ic_to_context (IBusIMClient        *client,
-                                            const gchar         *ic);
 
 /* callback functions */
 static DBusHandlerResult
@@ -118,13 +116,6 @@ static DBusHandlerResult
                                            (DBusConnection      *connection,
                                             DBusMessage         *message,
                                             void                *user_data);
-
-static void     _dbus_name_owner_changed_cb
-                                           (DBusGProxy          *proxy,
-                                            const gchar         *name,
-                                            const gchar         *old_name,
-                                            const gchar         *new_name,
-                                            IBusIMClient        *client);
 
 static GType ibus_type_im_client = 0;
 static GtkObjectClass *parent_class = NULL;
@@ -188,7 +179,7 @@ ibus_im_client_new (void)
 static void
 ibus_im_client_class_init     (IBusIMClientClass *klass)
 {
-    GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass);
+    /* GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass); */
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     parent_class = (GtkObjectClass *) g_type_class_peek_parent (klass);
@@ -324,6 +315,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         g_warning ("Out of memory");
         return;
     }
+
     dbus_connection_setup_with_g_main (priv->ibus, NULL);
 
     g_signal_emit (client, client_signals[CONNECTED], 0);
@@ -416,7 +408,7 @@ _ibus_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, IBusIMCl
     gchar *name;
     gsize n;
 
-    if (condition & G_IO_IN == 0)
+    if ((condition & G_IO_IN) == 0)
         return TRUE;
 
     p = g_malloc0 (sizeof (struct inotify_event) + 1024);
@@ -450,7 +442,6 @@ ibus_im_client_init (IBusIMClient *obj)
 {
     DEBUG_FUNCTION_IN;
 
-    DBusError error;
     IBusIMClient *client = IBUS_IM_CLIENT (obj);
     IBusIMClientPrivate *priv;
 
@@ -587,34 +578,6 @@ ibus_im_client_finalize (GObject *obj)
     _client = NULL;
 }
 
-
-static void
-ibus_im_client_commit_string (IBusIMClient *client, const gchar *ic, const gchar *string)
-{
-    IBusIMClientPrivate *priv = client->priv;
-    IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-
-    if (context == NULL) {
-        g_debug ("Can not find context assocate with ic(%s)", ic);
-        return;
-    }
-    g_signal_emit_by_name (G_OBJECT (context), "commit", string);
-}
-
-static void
-ibus_im_client_update_preedit (IBusIMClient *client, const gchar *ic, const gchar *string,
-        PangoAttrList *attrs, gint cursor_pos, gboolean visible)
-{
-    IBusIMClientPrivate *priv = client->priv;
-    IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-
-    if (context == NULL) {
-        g_debug ("Can not find context assocate with ic(%s)", ic);
-        return;
-    }
-    ibus_im_context_update_preedit (context, string, attrs, cursor_pos, visible);
-}
-
 static void
 _ibus_signal_commit_string_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
@@ -646,7 +609,6 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
 {
     /* Handle UpdatePreedit signal */
     IBusIMClientPrivate *priv = client->priv;
-    DBusError error = {0};
     DBusMessageIter iter, sub_iter;
     int type, sub_type;
 
@@ -1063,8 +1025,6 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
 {
     DBusMessage *message = NULL;
     DBusPendingCall *pendingcall = NULL;
-    DBusError error = {0};
-    int type;
 
     if (connection == NULL) {
         goto error;
@@ -1279,7 +1239,7 @@ ibus_im_client_reset (IBusIMClient *client, IBusIMContext *context)
 void
 ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context, GdkRectangle *area)
 {
-    IBusIMClientPrivate *priv = client->priv;
+    /* IBusIMClientPrivate *priv = client->priv; */
     gchar *ic = ibus_im_context_get_ic (context);
 
     if (ic == NULL)
@@ -1299,7 +1259,7 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context
 void
 ibus_im_client_set_use_preedit (IBusIMClient *client, IBusIMContext *context, gboolean use_preedit)
 {
-    IBusIMClientPrivate *priv = client->priv;
+    /* IBusIMClientPrivate *priv = client->priv; */
     gchar *ic = ibus_im_context_get_ic (context);
 
     if (ic == NULL)
