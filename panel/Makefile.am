@@ -33,7 +33,7 @@ panel_PYTHON = \
 
 paneldir = $(pkgdatadir)/panel
 
-libexec_SCRIPTS = ibus-panel
+bin_SCRIPTS = ibus-panel
 
 CLEANFILES = \
 	*.pyc \

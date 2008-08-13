@@ -26,7 +26,7 @@ gconf_PYTHON = \
 
 gconfdir = $(pkgdatadir)/gconf
 
-libexec_SCRIPTS = ibus-gconf
+bin_SCRIPTS = ibus-gconf
 
 CLEANFILES = \
 	*.pyc \

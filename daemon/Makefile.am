@@ -34,7 +34,7 @@ ibusdaemon_PYTHON = \
 	register.py \
 	$(NULL)
 
-libexec_SCRIPTS = ibus-daemon
+bin_SCRIPTS = ibus-daemon
 
 ibusdaemondir = $(pkgdatadir)/daemon
 

@@ -104,10 +104,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/ibus/icons/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
-%{_libexecdir}/ibus-daemon
-%{_libexecdir}/ibus-gconf
-%{_libexecdir}/ibus-panel
-%{_libexecdir}/ibus-x11
+%{_bindir}/ibus-daemon
+%{_bindir}/ibus-gconf
+%{_bindir}/ibus-panel
+%{_bindir}/ibus-x11
 %config %{_xinputconf}
 
 %files gtk
