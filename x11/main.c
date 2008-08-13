@@ -719,7 +719,7 @@ int main (int argc, char **argv)
     signal (SIGTERM, _xim_sighandler);
 
     if (_kill_daemon)
-        atexit (_xim_kill_daemon);
+        g_atexit (_xim_kill_daemon);
 
     _xim_init_IMdkit ();
 
