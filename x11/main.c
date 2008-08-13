@@ -213,7 +213,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 
     call_data->icid = base_icid ++;
 
-    ic = g_malloc0 (sizeof (X11IC));
+    ic = g_new0 (X11IC, 1);
     ic->icid = call_data->icid;
     ic->connect_id = call_data->connect_id;
     ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
@@ -350,7 +350,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 
     g_return_val_if_fail (conn == NULL, 1);
 
-    conn = (X11ICONN *) g_malloc0(sizeof (X11ICONN));
+    conn = g_new0(X11ICONN, 1);
     // conn->context = GTK_IM_CONTEXT (gtk_im_multicontext_new ());
 
     g_hash_table_insert (_connections,
