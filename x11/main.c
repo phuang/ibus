@@ -90,7 +90,7 @@ static gint        g_debug_level = 0;
 
 IBusIMClient *_client = NULL;
 
-
+#if 0
 static void
 _xim_preedit_start (XIMS xims, int icid, int connect_id)
 {
@@ -112,6 +112,7 @@ _xim_preedit_end (XIMS xims, int icid, int connect_id)
     ips.connect_id = connect_id;
     IMPreeditEnd (xims, (XPointer)&ips);
 }
+#endif
 
 int
 _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
@@ -341,7 +342,6 @@ int
 xim_open (XIMS xims, IMOpenStruct *call_data)
 {
     X11ICONN *conn;
-    gchar *last;
 
     LOG (1, "XIM_OPEN connect_id=%d\n", call_data->connect_id);
 
@@ -547,6 +547,7 @@ _xim_client_disconnected_cb (IBusIMClient *client, gpointer data)
 static void
 _xim_init_IMdkit ()
 {
+#if 0
     XIMStyle ims_styles_overspot [] = {
         XIMPreeditPosition  | XIMStatusNothing,
         XIMPreeditNothing   | XIMStatusNothing,
@@ -554,6 +555,7 @@ _xim_init_IMdkit ()
         XIMPreeditNothing   | XIMStatusCallbacks,
         0
     };
+#endif
 
     XIMStyle ims_styles_onspot [] = {
         XIMPreeditPosition  | XIMStatusNothing,
