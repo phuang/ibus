@@ -1,5 +1,5 @@
 /* ibus
- * Copyright (C) 2007 Huang Peng <phuang@redhat.com>
+ * Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
  *
  * gdk-private.h:
  *
