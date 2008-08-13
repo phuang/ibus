@@ -29,14 +29,10 @@ import ibus
 import dbus
 import signal
 
-prefix = "@prefix@"
-exec_prefix = "@exec_prefix@".replace("${prefix}", prefix)
-libexecdir = "@libexecdir@".replace("${exec_prefix}", exec_prefix)
-
-daemon = "%s/ibus-daemon" % libexecdir
-x11 = "%s/ibus-x11" % libexecdir
-panel = "%s/ibus-panel" % libexecdir
-conf = "%s/ibus-gconf" % libexecdir
+daemon = "@prefix@/bin/ibus-daemon"
+x11 = "@prefix@/bin/ibus-x11"
+panel = "@prefix@/bin/ibus-panel"
+conf = "@prefix@/bin/ibus-gconf"
 
 class Launcher(object):
     def __init__(self):
