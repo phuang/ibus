@@ -29,15 +29,18 @@ import ibus
 import dbus
 import signal
 
-daemon = "@prefix@/libexec/ibus-daemon"
-x11 = "@prefix@/libexec/ibus-x11"
-panel = "@prefix@/libexec/ibus-panel"
-conf = "@prefix@/libexec/ibus-gconf"
+prefix = "@prefix@"
+exec_prefix = "@exec_prefix@".replace("${prefix}", prefix)
+libexecdir = "@libexecdir@".replace("${exec_prefix}", exec_prefix)
 
+daemon = "%s/ibus-daemon" % libexecdir
+x11 = "%s/ibus-x11" % libexecdir
+panel = "%s/ibus-panel" % libexecdir
+conf = "%s/ibus-gconf" % libexecdir
 
-class IBusLauncher(object):
+class Launcher(object):
     def __init__(self):
-        super(IBusLauncher, self).__init__()
+        super(Launcher, self).__init__()
         self.__daemon_pid = 0
         self.__panel_pid = 0
         self.__x11_pid = 0
@@ -120,4 +123,4 @@ class IBusLauncher(object):
         ibus.main()
 
 if __name__ == "__main__":
-    IBusLauncher().run()
+    Launcher().run()
