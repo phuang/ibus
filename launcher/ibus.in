@@ -27,7 +27,6 @@ import sys
 import time
 import ibus
 import dbus
-import gtk
 import signal
 
 daemon = "@prefix@/libexec/ibus-daemon"
@@ -56,21 +55,27 @@ class IBusLauncher(object):
 
     def __bus_destroy_cb(self, bus):
         self.__bus = None
-        gtk.main_quit()
+        ibus.main_quit()
 
     def __signal_cb(self, sig, stack):
         if sig == signal.SIGCHLD:
             pid, status = os.wait()
             if pid == self.__daemon_pid:
                 self.__daemon_pid = 0
+                self.__bus = None
             elif pid == self.__x11_pid:
                 self.__x11_pid = 0
             elif pid == self.__panel_pid:
                 self.__panel_pid = 0
+        elif sig == signal.SIGTERM or sig == signal.SIGINT:
+            sys.exit(1)
 
     def __atexit_cb(self):
         if self.__bus:
-            self.__bus.kill()
+            try:
+                self.__bus.kill()
+            except:
+                pass
         os.kill(-os.getpid(), signal.SIGTERM)
 
     def run(self):
@@ -86,6 +91,9 @@ class IBusLauncher(object):
             os.setpgid(0, 0)
 
         signal.signal(signal.SIGCHLD, self.__signal_cb)
+        signal.signal(signal.SIGINT, self.__signal_cb)
+        signal.signal(signal.SIGTERM, self.__signal_cb)
+        atexit.register(self.__atexit_cb)
 
         # start ibus-daemon
         self.__daemon_pid = self.__start_process(daemon, [daemon], "ibus-daemon")
@@ -106,10 +114,10 @@ class IBusLauncher(object):
 
         self.__bus.connect("destroy", self.__bus_destroy_cb)
 
-        self.__x11_pid = self.__start_process(x11, [x11], "ibus-x11")
+        self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
         self.__panel_pid = self.__start_process(panel, [panel], "ibus-panel")
-
-        gtk.main()
+        
+        ibus.main()
 
 if __name__ == "__main__":
     IBusLauncher().run()

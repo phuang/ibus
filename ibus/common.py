@@ -30,7 +30,9 @@ __all__ = (
         "IBUS_PANEL_IFACE",
         "default_reply_handler",
         "default_error_handler",
-        "DEFAULT_ASYNC_HANDLERS"
+        "DEFAULT_ASYNC_HANDLERS",
+        "main",
+        "main_quit"
     )
 
 import os
@@ -76,3 +78,19 @@ DEFAULT_ASYNC_HANDLERS = {
     "reply_handler" : default_reply_handler,
     "error_handler" : default_error_handler
 }
+
+__mainloop = None
+
+def main():
+    global __mainloop
+    if __mainloop == None:
+        import gobject
+        __mainloop = gobject.MainLoop()
+
+    __mainloop.run()
+
+def main_quit():
+    global __mainloop
+    if __mainloop:
+        __mainloop.quit()
+    
