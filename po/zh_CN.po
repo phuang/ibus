@@ -385,28 +385,25 @@ msgstr "繁体中文"
 
 #: setup/main.py:73
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr ""
+msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
 #: setup/main.py:89
 msgid "IBus has been started! "
-msgstr ""
+msgstr "IBus已经启动了！"
 
 #: setup/setup.glade:7
-#, fuzzy
 msgid "IBus - Setup"
 msgstr "IBus - 设置"
 
 #: setup/setup.glade:27
 msgid "Auto start IBus on session login"
-msgstr ""
+msgstr "启动桌面时自动启动IBus"
 
 #: setup/setup.glade:47
-#, fuzzy
 msgid "General"
 msgstr "通用"
 
 #: setup/setup.glade:82
-#, fuzzy
 msgid "Engine"
 msgstr "输入法引擎"
 
@@ -417,4 +414,3 @@ msgstr "关于"
 #: setup/setup.glade:132
 msgid "gtk-close"
 msgstr ""
-
