@@ -289,7 +289,7 @@ class Setup(object):
 
     def __is_auto_start(self):
         link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_LIBEXECDIR"), "share/applications/ibus.desktop")
 
         if not path.exists(link_file):
             return False

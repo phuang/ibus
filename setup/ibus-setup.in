@@ -19,6 +19,9 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
 export IBUS_PREFIX=@prefix@
+export IBUS_LIBEXECDIR=@libexecdir@
 exec python @prefix@/share/ibus/setup/main.py $@
 
