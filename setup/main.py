@@ -117,7 +117,7 @@ class Setup(object):
 
         # column for holiday names
         column = gtk.TreeViewColumn()
-        column.set_title("Name")
+        column.set_title(_("Engine"))
 
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0.5)
@@ -141,7 +141,7 @@ class Setup(object):
         renderer.connect("toggled", self.__item_started_column_toggled_cb, model)
 
         #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME)
-        column = gtk.TreeViewColumn("Started", renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
+        column = gtk.TreeViewColumn(_("Started"), renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
 
         # column for preload names
@@ -150,7 +150,7 @@ class Setup(object):
         renderer.set_property("xalign", 0.5)
         renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
 
-        column = gtk.TreeViewColumn("Preload", renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
+        column = gtk.TreeViewColumn(_("Preload"), renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
 
 
@@ -245,6 +245,7 @@ class Setup(object):
 
         for name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
             _lang = ibus.LANGUAGES.get(lang, "other")
+            _lang = _(_lang)
             if _lang not in langs:
                 langs[_lang] = list()
             langs[_lang].append([name, lang, icon, author, credits, _exec, started])
