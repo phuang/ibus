@@ -1,4 +1,4 @@
-/* xim-on-gtkim
+/* ibus
  * Copyright (C) 2007 Huang Peng <phuang@redhat.com>
  *
  * gdk-private.c: Copied some code from gtk2
