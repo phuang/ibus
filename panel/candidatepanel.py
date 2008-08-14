@@ -78,11 +78,11 @@ class CandidateArea(gtk.HBox):
         self.__labels[0][0].show()
         self.__labels[0][1].show()
 
-    def set_candidates(self, candidates, focus_candidate = 0):
+    def set_candidates(self, candidates, focus_candidate = 0, show_cursor = True):
         assert len(candidates) <= len(self.__labels)
         i = 0
         for text, attrs in candidates:
-            if i == focus_candidate:
+            if i == focus_candidate and show_cursor:
                 if attrs == None:
                     attrs = pango.AttrList()
                 color = self.__labels[i][1].style.base[gtk.STATE_SELECTED]
@@ -308,7 +308,10 @@ class CandidatePanel(gtk.VBox):
     def __refresh_candidates(self):
         candidates = self.__lookup_table.get_canidates_in_current_page()
         candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0]) if x[1] else None), candidates)
-        self.__candidate_area.set_candidates(candidates, self.__lookup_table.get_cursor_pos_in_current_page())
+        self.__candidate_area.set_candidates(candidates,
+                self.__lookup_table.get_cursor_pos_in_current_page(),
+                self.__lookup_table.is_cursor_visible()
+                )
 
     def update_lookup_table(self, lookup_table, visible):
         if lookup_table == None:

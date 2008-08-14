@@ -37,6 +37,7 @@ class ToolButton(gtk.ToolButton, PropItem):
 
     def __init__(self, prop):
         gtk.ToolButton.__init__ (self, label = prop._label)
+        self.set_homogeneous(False)
         PropItem.__init__ (self, prop)
         self.property_changed()
 
@@ -90,6 +91,7 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
 
     def __init__ (self, prop):
         gtk.ToggleToolButton.__init__ (self)
+        self.set_homogeneous(False)
         PropItem.__init__ (self, prop)
         self.property_changed()
 
@@ -139,6 +141,7 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
 class SeparatorToolItem(gtk.SeparatorToolItem, PropItem):
     def __init__ (self, prop):
         gtk.SeparatorToolItem.__init__ (self)
+        self.set_homogeneous(False)
         PropItem.__init__ (self, prop)
 
 class MenuToolButton(ToggleToolButton):
