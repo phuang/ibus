@@ -152,6 +152,7 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
 
             w =  *(Window *) call_data->ic_attr[i].value;
             ic->focus_window = gdk_window_foreign_new (w);
+            g_object_set_data (G_OBJECT (ic->focus_window), "IC", ic);
         }
         else {
             // fprintf (stderr, "Unknown attr: %s\n", ic_attr->name);
