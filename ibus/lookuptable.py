@@ -64,7 +64,7 @@ class CandidateList(list):
 class LookupTable(object):
     def __init__(self, page_size = 5, labels = None):
         super(LookupTable, self).__init__()
-        self.__cursor_visible = False
+        self.__cursor_visible = True
         self.__cursor_pos = 0
         self.__candidates = CandidateList()
         self.set_page_size(page_size)
