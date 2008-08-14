@@ -137,22 +137,30 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
 
             if (ic->client_window != NULL) {
                 g_object_unref (ic->client_window);
+                ic->client_window = NULL;
             }
 
             w =  *(Window *) call_data->ic_attr[i].value;
-            ic->client_window = gdk_window_foreign_new (w);
-            g_object_set_data (G_OBJECT (ic->client_window), "IC", ic);
+            if (w) {
+                ic->client_window = gdk_window_foreign_new (w);
+                if (ic->client_window)
+                    g_object_set_data (G_OBJECT (ic->client_window), "IBUS_IC", ic);
+            }
         }
         else if (_is_attr (XNFocusWindow, ic_attr)) {
             Window w;
 
             if (ic->focus_window != NULL) {
                 g_object_unref (ic->focus_window);
+                ic->focus_window = NULL;
             }
 
             w =  *(Window *) call_data->ic_attr[i].value;
-            ic->focus_window = gdk_window_foreign_new (w);
-            g_object_set_data (G_OBJECT (ic->focus_window), "IC", ic);
+            if (w) {
+                ic->focus_window = gdk_window_foreign_new (w);
+                if (ic->focus_window)
+                    g_object_set_data (G_OBJECT (ic->focus_window), "IBUS_IC", ic);
+            }
         }
         else {
             // fprintf (stderr, "Unknown attr: %s\n", ic_attr->name);
@@ -259,6 +267,11 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
     g_hash_table_remove (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
 
+    if (ic->client_window)
+        g_object_unref (ic->client_window);
+    if (ic->focus_window)
+        g_object_unref (ic->focus_window);
+
     g_free (ic);
 
     return 1;
@@ -310,9 +323,8 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 
     g_return_val_if_fail (ic != NULL, 1);
 
-    window = ic->focus_window != NULL ? ic->focus_window : ic->client_window;
-
     xevent = (XKeyEvent*) &(call_data->event);
+    window = gdk_window_foreign_new (xevent->window);
 
     translate_key_event (gdk_drawable_get_display (window),
         (GdkEvent *)&event, (XEvent *)xevent);
@@ -320,8 +332,11 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = window;
 
-    if (gtk_im_context_filter_keypress (ic->context, &event))
+    if (gtk_im_context_filter_keypress (ic->context, &event)) {
+        g_object_unref (window);
         return 1;
+    }
+    g_object_unref (window);
 
     IMForwardEventStruct fe;
     memset (&fe, 0, sizeof (fe));
@@ -352,16 +367,10 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
     g_return_val_if_fail (conn == NULL, 1);
 
     conn = g_new0(X11ICONN, 1);
-    // conn->context = GTK_IM_CONTEXT (gtk_im_multicontext_new ());
 
     g_hash_table_insert (_connections,
         (gpointer)(unsigned long)call_data->connect_id,
         (gpointer) conn);
-
-    // g_signal_connect_after (conn->context,
-    //         "commit",
-    //         G_CALLBACK (_xim_commit_cb),
-    //         (gpointer)(unsigned long)call_data->connect_id);
 
     return 1;
 }
@@ -492,7 +501,9 @@ static void
 _xim_forward_gdk_event (GdkEventKey *event)
 {
     X11IC *ic;
-    ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IC");
+    ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IBUS_IC");
+    if (ic == NULL)
+        return;
     IMForwardEventStruct fe;
     XEvent xkp;
     memset (&xkp, 0, sizeof (xkp));
@@ -661,6 +672,7 @@ int main (int argc, char **argv)
 
     gtk_init (&argc, &argv);
 
+
     while (1) {
         static struct option long_options [] = {
             {"debug", 1, 0, 0},
@@ -712,8 +724,6 @@ int main (int argc, char **argv)
             print_usage (stderr, argv[0]);
             exit (EXIT_FAILURE);
         }
-
-
     }
 
     _clients = g_hash_table_new (g_direct_hash, g_direct_equal);
