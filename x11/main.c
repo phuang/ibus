@@ -39,9 +39,9 @@
 #define _GNU_SOURCES
 #include <getopt.h>
 
-#define LOG(level, fmt, args...)    \
-    if (g_debug_level >= (level)) {    \
-    fprintf (stderr, fmt, args);    \
+#define LOG(level, fmt, args...) \
+    if (g_debug_level >= (level)) { \
+        g_debug (fmt, args); \
     }
 
 #include <ibusimclient.h>
@@ -219,7 +219,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
     X11IC *ic;
     int i;
 
-    LOG (1, "XIM_CREATE_IC ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_CREATE_IC ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
     call_data->icid = base_icid ++;
 
@@ -229,11 +229,15 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
     ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
                         (gconstpointer)(unsigned long)call_data->connect_id);
 
-
     i = _xim_store_ic_values (ic, call_data);
 
     ic->context = (GtkIMContext *)ibus_im_client_create_im_context (_client);
-    gtk_im_context_set_client_window (ic->context, ic->client_window);
+
+    if (ic->focus_window)
+        gtk_im_context_set_client_window (ic->context, ic->focus_window);
+    else
+        gtk_im_context_set_client_window (ic->context, ic->client_window);
+
     gtk_im_context_set_use_preedit (ic->context, FALSE);
     g_signal_connect (ic->context,
             "commit",
@@ -258,7 +262,7 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 {
     X11IC *ic;
 
-    LOG (1, "XIM_DESTROY_IC ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_DESTROY_IC ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
     ic = (X11IC *)g_hash_table_lookup (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
@@ -282,7 +286,7 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 {
     X11IC *ic;
 
-    LOG (1, "XIM_SET_IC_FOCUS ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_SET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
     ic = (X11IC *)g_hash_table_lookup (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
@@ -298,7 +302,7 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 {
     X11IC *ic;
 
-    LOG (1, "XIM_UNSET_IC_FOCUS ic=%d, connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_UNSET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
     ic = (X11IC *)g_hash_table_lookup (_clients,
             (gconstpointer)(unsigned long)call_data->icid);
@@ -318,6 +322,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     GdkEventKey event;
     GdkWindow *window;
 
+    LOG (1, "XIM_FORWARD_EVENT ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
     ic = (X11IC *)g_hash_table_lookup (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
 
@@ -359,7 +364,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 {
     X11ICONN *conn;
 
-    LOG (1, "XIM_OPEN connect_id=%d\n", call_data->connect_id);
+    LOG (1, "XIM_OPEN connect_id=%d", call_data->connect_id);
 
     conn = (X11ICONN *)g_hash_table_lookup (_connections,
                 (gconstpointer)(unsigned long)call_data->connect_id);
@@ -396,7 +401,7 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 {
     X11ICONN *conn;
 
-    LOG (1, "XIM_CLOSE connect_id=%d\n", call_data->connect_id);
+    LOG (1, "XIM_CLOSE connect_id=%d", call_data->connect_id);
 
     conn = (X11ICONN *)g_hash_table_lookup (_connections,
                 (gconstpointer)(unsigned long)call_data->connect_id);
@@ -424,7 +429,7 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
     X11IC *ic;
     gint i;
 
-    LOG (1, "XIM_SET_IC_VALUES ic=%d connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_SET_IC_VALUES ic=%d connect_id=%d", call_data->icid, call_data->connect_id);
 
     ic = (X11IC *)g_hash_table_lookup (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
@@ -446,7 +451,7 @@ xim_reset_ic (XIMS xims, IMResetICStruct *call_data)
 {
     X11IC *ic;
 
-    LOG (1, "XIM_RESET_IC ic=%d connect_id=%d\n", call_data->icid, call_data->connect_id);
+    LOG (1, "XIM_RESET_IC ic=%d connect_id=%d", call_data->icid, call_data->connect_id);
 
     ic = (X11IC *)g_hash_table_lookup (_clients,
                 (gconstpointer)(unsigned long)call_data->icid);
@@ -534,6 +539,7 @@ _xim_forward_gdk_event (GdkEventKey *event)
 static void
 _xim_event_cb (GdkEvent *event, gpointer data)
 {
+    g_debug ("xim event");
     switch (event->type) {
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
@@ -585,7 +591,7 @@ _xim_init_IMdkit ()
     };
 
     GdkWindowAttr window_attr = {
-        title :     "xim2gtkim",
+        title :     "ibus-xim",
         event_mask :     GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
         wclass:        GDK_INPUT_OUTPUT,
         window_type:    GDK_WINDOW_TOPLEVEL,
@@ -663,6 +669,14 @@ print_usage (FILE *fp, gchar *name)
         name);
 }
 
+int error_handler (Display *dpy, XErrorEvent *e)
+{
+    g_debug (
+        "XError: "
+        "serial=%d error_code=%d request_code=%d minor_code=%d resourceid=%d",
+        e->serial, e->error_code, e->request_code, e->minor_code, e->resourceid);
+    return 1;
+}
 
 int main (int argc, char **argv)
 {
@@ -671,7 +685,7 @@ int main (int argc, char **argv)
 
 
     gtk_init (&argc, &argv);
-
+    XSetErrorHandler (error_handler);
 
     while (1) {
         static struct option long_options [] = {
@@ -736,7 +750,6 @@ int main (int argc, char **argv)
         g_atexit (_xim_kill_daemon);
 
     _xim_init_IMdkit ();
-
     gtk_main();
 
     exit (EXIT_SUCCESS);

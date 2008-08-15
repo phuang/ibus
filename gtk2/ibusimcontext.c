@@ -228,6 +228,7 @@ ibus_im_context_finalize (GObject *obj)
 
     g_object_unref (priv->slave);
 
+    if (priv->client_window) g_object_unref (priv->client_window);
     // release preedit
     if (priv->preedit_string) g_free (priv->preedit_string);
     if (priv->preedit_attrs) pango_attr_list_unref (priv->preedit_attrs);
@@ -338,6 +339,10 @@ ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
+    if (priv->client_window)
+        g_object_unref (priv->client_window);
+    if (client)
+        g_object_ref (client);
     priv->client_window = client;
     gtk_im_context_set_client_window (priv->slave, client);
 }
