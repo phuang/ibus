@@ -91,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ibus/gconf/
 %dir %{_datadir}/ibus/panel/
 %dir %{_datadir}/ibus/setup/
-%dir %{_datadir}/ibus/engine/
+# %dir %{_datadir}/ibus/engine/
 %dir %{_datadir}/ibus/icons/
 %{_bindir}/ibus
 %{_bindir}/ibus-setup
