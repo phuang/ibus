@@ -1110,7 +1110,8 @@ _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event
     p->client = g_object_ref (client);
     p->ic = g_strdup (ic);
     p->event = *event;
-    g_object_ref (p->event.any.window);
+    if (p->event.any.window)
+        g_object_ref (p->event.any.window);
     return p;
 }
 
@@ -1120,7 +1121,8 @@ _key_press_call_data_free (KeyPressCallData *p)
     if (p) {
         g_object_unref (p->client);
         g_free (p->ic);
-        g_object_unref (p->event.any.window);
+        if (p->event.any.window)
+            g_object_unref (p->event.any.window);
     }
     g_free (p);
 }

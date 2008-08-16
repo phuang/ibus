@@ -66,7 +66,7 @@ struct _X11IC {
 typedef struct _X11IC    X11IC;
 
 
-
+static int _focus_ic = 0;
 static GHashTable     *_x11_ic_table = NULL;
 static GHashTable     *_ibus_ic_table = NULL;
 static GHashTable     *_connections = NULL;
@@ -199,8 +199,12 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 
     LOG (1, "XIM_DESTROY_IC ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
+    if (call_data->icid == _focus_ic)
+        _focus_ic = 0;
+
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
+
     ibus_im_client_release_input_context (_client, x11ic->ibus_ic);
     g_hash_table_remove (_ibus_ic_table, x11ic->ibus_ic);
     g_free (x11ic->ibus_ic);
@@ -221,14 +225,15 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
     X11IC *x11ic;
 
     LOG (1, "XIM_SET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
+    g_return_val_if_fail (_focus_ic != call_data->icid, 1);
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
     ibus_im_client_focus_in (_client, x11ic->ibus_ic);
+    _focus_ic = x11ic->icid;
 
     return 1;
-
 }
 
 int
@@ -238,10 +243,13 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
     LOG (1, "XIM_UNSET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
+    g_return_val_if_fail (_focus_ic == call_data->icid, 1);
+
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
             (gconstpointer)(unsigned long)call_data->icid);
-
     ibus_im_client_focus_out (_client, x11ic->ibus_ic);
+
+    _focus_ic = 0;
 
     return 1;
 
@@ -256,26 +264,25 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     GdkWindow *window;
 
     LOG (1, "XIM_FORWARD_EVENT ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
+    g_return_val_if_fail (_focus_ic == call_data->icid, 1);
+
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
     g_return_val_if_fail (x11ic != NULL, 1);
 
     xevent = (XKeyEvent*) &(call_data->event);
-    window = gdk_window_foreign_new (xevent->window);
 
-    translate_key_event (gdk_drawable_get_display (window),
+    translate_key_event (gdk_display_get_default (),
         (GdkEvent *)&event, (XEvent *)xevent);
 
     event.send_event = xevent->send_event;
-    event.window = window;
+    event.window = NULL;
 
     if (ibus_im_client_filter_keypress (_client, x11ic->ibus_ic, &event)) {
-        g_object_unref (window);
         return 1;
     }
 
-    g_object_unref (window);
 
     IMForwardEventStruct fe;
     memset (&fe, 0, sizeof (fe));
@@ -374,7 +381,7 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
     i = _xim_store_ic_values (x11ic, call_data);
 
-    if (i) {
+    if (i && call_data->icid == _focus_ic) {
         GdkRectangle preedit_area = x11ic->preedit_area;
         Window w = x11ic->focus_window ?
             x11ic->focus_window :x11ic->client_window;
@@ -473,11 +480,13 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
     xkp.xkey.same_screen = False;
-    xkp.xkey.display = GDK_WINDOW_XDISPLAY (event->window);
-    xkp.xkey.window = GDK_WINDOW_XWINDOW (event->window);
+    xkp.xkey.display = GDK_DISPLAY();
+    xkp.xkey.window = x11ic->focus_window ? x11ic->focus_window : x11ic->client_window;
     xkp.xkey.subwindow = None;
-    xkp.xkey.root = DefaultRootWindow (GDK_WINDOW_XDISPLAY (event->window));
-    xkp.xkey.time = event->time;
+    xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
+    GTimeVal time;
+    g_get_current_time (&time);
+    xkp.xkey.time = time.tv_sec * 1000 + time.tv_usec / 1000;
     xkp.xkey.state = event->state;
     xkp.xkey.keycode = event->hardware_keycode;
 
