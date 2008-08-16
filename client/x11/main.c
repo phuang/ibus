@@ -375,7 +375,25 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
     i = _xim_store_ic_values (x11ic, call_data);
 
     if (i) {
-        ibus_im_client_set_cursor_location (_client, x11ic->ibus_ic, &x11ic->preedit_area);
+        GdkRectangle preedit_area = x11ic->preedit_area;
+        Window w = x11ic->focus_window ?
+            x11ic->focus_window :x11ic->client_window;
+        if (w) {
+            XWindowAttributes xwa;
+            Window child;
+
+            XGetWindowAttributes (GDK_DISPLAY(), w, &xwa);
+            XTranslateCoordinates (GDK_DISPLAY(), w,
+                    xwa.root,
+                    preedit_area.x,
+                    preedit_area.y,
+                    &preedit_area.x,
+                    &preedit_area.y,
+                    &child
+                    );
+        }
+        ibus_im_client_set_cursor_location (_client,
+                x11ic->ibus_ic, &preedit_area);
     }
 
     return i;
