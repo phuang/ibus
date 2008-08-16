@@ -249,8 +249,11 @@ ibus_im_context_finalize (GObject *obj)
         }
     }
 
-    if (priv->ic)
+    if (priv->ic) {
         ibus_im_client_release_input_context (_client, priv->ic);
+        g_hash_table_remove (_ic_table, priv->ic);
+        g_free (priv->ic);
+    }
 
     g_object_unref (priv->slave);
 
