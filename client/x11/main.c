@@ -61,10 +61,12 @@ struct _X11IC {
     gint        icid;
     gint        connect_id;
     gchar       *lang;
+    gboolean        has_preedit_area;
     GdkRectangle    preedit_area;
 };
 typedef struct _X11IC    X11IC;
 
+static void _xim_set_cursor_location (X11IC *x11ic);
 
 static int _focus_ic = 0;
 static GHashTable     *_x11_ic_table = NULL;
@@ -124,7 +126,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     guint32 attrs = 1;
 
     g_return_val_if_fail (x11ic != NULL, 0);
-#define _is_attr(a, b)    (strcmp(a, b->name) == 0)
+#define _is_attr(a, b)    (g_strcmp0(a, b->name) == 0)
     for (i=0; i< (int) call_data->ic_attr_num; ++i, ++ic_attr) {
         if (_is_attr (XNInputStyle, ic_attr)) {
             x11ic->input_style = *(gint32 *) ic_attr->value;
@@ -142,6 +144,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
 
     for (i=0; i< (int) call_data->preedit_attr_num; ++i, ++pre_attr) {
         if (_is_attr (XNSpotLocation, pre_attr)) {
+            x11ic->has_preedit_area = TRUE;
             x11ic->preedit_area.x = ((XPoint *)pre_attr->value)->x;
             x11ic->preedit_area.y = ((XPoint *)pre_attr->value)->y;
         }
@@ -232,7 +235,7 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
     ibus_im_client_focus_in (_client, x11ic->ibus_ic);
     _focus_ic = x11ic->icid;
-
+    _xim_set_cursor_location (x11ic);
     return 1;
 }
 
@@ -261,7 +264,6 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     X11IC *x11ic;
     XKeyEvent *xevent;
     GdkEventKey event;
-    GdkWindow *window;
 
     LOG (1, "XIM_FORWARD_EVENT ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
     g_return_val_if_fail (_focus_ic == call_data->icid, 1);
@@ -280,6 +282,8 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.window = NULL;
 
     if (ibus_im_client_filter_keypress (_client, x11ic->ibus_ic, &event)) {
+        if (! x11ic->has_preedit_area)
+            _xim_set_cursor_location (x11ic);
         return 1;
     }
 
@@ -365,6 +369,46 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 }
 
 
+static void
+_xim_set_cursor_location (X11IC *x11ic)
+{
+    g_return_if_fail (x11ic != NULL);
+    g_return_if_fail (x11ic->icid == _focus_ic);
+
+    GdkRectangle preedit_area = x11ic->preedit_area;
+
+    Window w = x11ic->focus_window ?
+        x11ic->focus_window :x11ic->client_window;
+
+    if (w) {
+        XWindowAttributes xwa;
+        Window child;
+
+        XGetWindowAttributes (GDK_DISPLAY(), w, &xwa);
+        if (preedit_area.x <= 0 && preedit_area.y <= 0) {
+             XTranslateCoordinates (GDK_DISPLAY(), w,
+                xwa.root,
+                0,
+                xwa.height,
+                &preedit_area.x,
+                &preedit_area.y,
+                &child);
+        }
+        else {
+            XTranslateCoordinates (GDK_DISPLAY(), w,
+                xwa.root,
+                preedit_area.x,
+                preedit_area.y,
+                &preedit_area.x,
+                &preedit_area.y,
+                &child);
+        }
+    }
+
+    ibus_im_client_set_cursor_location (_client,
+            x11ic->ibus_ic, &preedit_area);
+}
+
 
 int
 xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
@@ -381,26 +425,8 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
     i = _xim_store_ic_values (x11ic, call_data);
 
-    if (i && call_data->icid == _focus_ic) {
-        GdkRectangle preedit_area = x11ic->preedit_area;
-        Window w = x11ic->focus_window ?
-            x11ic->focus_window :x11ic->client_window;
-        if (w) {
-            XWindowAttributes xwa;
-            Window child;
-
-            XGetWindowAttributes (GDK_DISPLAY(), w, &xwa);
-            XTranslateCoordinates (GDK_DISPLAY(), w,
-                    xwa.root,
-                    preedit_area.x,
-                    preedit_area.y,
-                    &preedit_area.x,
-                    &preedit_area.y,
-                    &child
-                    );
-        }
-        ibus_im_client_set_cursor_location (_client,
-                x11ic->ibus_ic, &preedit_area);
+    if (i && x11ic->icid == _focus_ic) {
+        _xim_set_cursor_location (x11ic);
     }
 
     return i;
@@ -466,25 +492,21 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
 static void
 _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 {
-    if (x11ic == NULL)
-        x11ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IBUS_IC");
-
     g_return_if_fail (x11ic != NULL);
 
-    IMForwardEventStruct fe;
-    XEvent xkp;
-    memset (&xkp, 0, sizeof (xkp));
-    memset (&fe, 0, sizeof (fe));
+    GTimeVal time;
+    IMForwardEventStruct fe = {0};
+    XEvent xkp = {0};
 
     xkp.xkey.type = (event->type == GDK_KEY_PRESS) ? KeyPress : KeyRelease;
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
     xkp.xkey.same_screen = False;
     xkp.xkey.display = GDK_DISPLAY();
-    xkp.xkey.window = x11ic->focus_window ? x11ic->focus_window : x11ic->client_window;
+    xkp.xkey.window = (x11ic->focus_window != 0) ? x11ic->focus_window : x11ic->client_window;
     xkp.xkey.subwindow = None;
     xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
-    GTimeVal time;
+
     g_get_current_time (&time);
     xkp.xkey.time = time.tv_sec * 1000 + time.tv_usec / 1000;
     xkp.xkey.state = event->state;
@@ -496,36 +518,9 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     fe.sync_bit = 0;
     fe.serial_number = 0L;
     fe.event = xkp;
+
     IMForwardEvent (_xims, (XPointer) & fe);
 
-}
-
-#if 0
-static void
-_xim_event_cb (GdkEvent *event, gpointer data)
-{
-    g_debug ("xim event");
-    switch (event->type) {
-    case GDK_KEY_PRESS:
-    case GDK_KEY_RELEASE:
-        _xim_forward_gdk_event ((GdkEventKey *)event, NULL);
-        break;
-    default:
-        gtk_main_do_event (event);
-        break;
-    }
-}
-#endif
-
-static void
-_xim_event_destroy_cb (gpointer data)
-{
-}
-
-static void
-_xim_client_disconnected_cb (IBusIMClient *client, gpointer data)
-{
-    gtk_main_quit ();
 }
 
 #if 0
@@ -539,7 +534,7 @@ static void
 _client_disconnected_cb (IBusIMClient *client, gpointer user_data)
 {
     g_warning ("Connection closed by ibus-daemon");
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 static void
@@ -550,12 +545,11 @@ _client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *st
 
     char *clist[1];
     XTextProperty tp;
-    IMCommitStruct cms;
+    IMCommitStruct cms = {0};
 
     clist[0] = (gchar *)string;
     Xutf8TextListToTextProperty (GDK_DISPLAY (), clist, 1, XCompoundTextStyle, &tp);
 
-    memset (&cms, 0, sizeof (cms));
     cms.major_code = XIM_COMMIT;
     cms.icid = x11ic->icid;
     cms.connect_id = x11ic->connect_id;
@@ -573,7 +567,7 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
     g_return_if_fail (x11ic != NULL);
 
-    _xim_forward_gdk_event (event, x11ic);
+    _xim_forward_gdk_event (&(event->key), x11ic);
 }
 
 #if 0
@@ -611,8 +605,6 @@ _init_ibus_client (void)
         return;
 
     ibus_im_client_register_type (NULL);
-
-    _ibus_ic_table = g_hash_table_new (g_str_hash, g_str_equal);
 
     _client = ibus_im_client_new ();
 
@@ -675,11 +667,11 @@ _xim_init_IMdkit ()
     };
 
     GdkWindowAttr window_attr = {
-        title :     "ibus-xim",
-        event_mask :     GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
-        wclass:        GDK_INPUT_OUTPUT,
-        window_type:    GDK_WINDOW_TOPLEVEL,
-        override_redirect: 1,
+        title : "ibus-xim",
+        event_mask : GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
+        wclass : GDK_INPUT_OUTPUT,
+        window_type : GDK_WINDOW_TOPLEVEL,
+        override_redirect : 1,
     };
 
     XIMStyles styles;
@@ -708,35 +700,29 @@ _xim_init_IMdkit ()
         IMProtocolHandler, ims_protocol_handler,
         IMFilterEventMask, KeyPressMask | KeyReleaseMask,
         NULL);
-    /*
-    gdk_event_handler_set (_xim_event_cb, NULL,
-        _xim_event_destroy_cb);
-    */
+
     _init_ibus_client ();
 
     if (!ibus_im_client_get_connected (_client)) {
         g_warning ("Can not connect to ibus daemon");
         exit (1);
     }
-
 }
 
-
-
 static void
-_xim_kill_daemon ()
+_atexit_cb ()
 {
     ibus_im_client_kill_daemon(_client);
 }
 
 static void
-_xim_sighandler (int sig)
+_sighandler (int sig)
 {
     exit(EXIT_FAILURE);
 }
 
 static void
-print_usage (FILE *fp, gchar *name)
+_print_usage (FILE *fp, gchar *name)
 {
     fprintf (fp,
         "Usage:\n"
@@ -748,7 +734,8 @@ print_usage (FILE *fp, gchar *name)
         name);
 }
 
-int error_handler (Display *dpy, XErrorEvent *e)
+static int
+_xerror_handler (Display *dpy, XErrorEvent *e)
 {
     g_debug (
         "XError: "
@@ -757,14 +744,14 @@ int error_handler (Display *dpy, XErrorEvent *e)
     return 1;
 }
 
-int main (int argc, char **argv)
+int
+main (int argc, char **argv)
 {
     gint option_index = 0;
     gint c;
 
-
     gtk_init (&argc, &argv);
-    XSetErrorHandler (error_handler);
+    XSetErrorHandler (_xerror_handler);
 
     while (1) {
         static struct option long_options [] = {
@@ -783,20 +770,20 @@ int main (int argc, char **argv)
 
         switch (c) {
         case 0:
-            if (strcmp (long_options[option_index].name, "debug") == 0) {
+            if (g_strcmp0 (long_options[option_index].name, "debug") == 0) {
                 g_debug_level = atoi (optarg);
             }
-            else if (strcmp (long_options[option_index].name, "server-name") == 0) {
+            else if (g_strcmp0 (long_options[option_index].name, "server-name") == 0) {
                 strncpy (_server_name, optarg, sizeof (_server_name));
             }
-            else if (strcmp (long_options[option_index].name, "locale") == 0) {
+            else if (g_strcmp0 (long_options[option_index].name, "locale") == 0) {
                 strncpy (_locale, optarg, sizeof (_locale));
             }
-            else if (strcmp (long_options[option_index].name, "help") == 0) {
-                print_usage (stdout, argv[0]);
+            else if (g_strcmp0 (long_options[option_index].name, "help") == 0) {
+                _print_usage (stdout, argv[0]);
                 exit (EXIT_SUCCESS);
             }
-            else if (strcmp (long_options[option_index].name, "kill-daemon") == 0) {
+            else if (g_strcmp0 (long_options[option_index].name, "kill-daemon") == 0) {
                 _kill_daemon = TRUE;
             }
             break;
@@ -814,19 +801,20 @@ int main (int argc, char **argv)
             break;
         case '?':
         default:
-            print_usage (stderr, argv[0]);
+            _print_usage (stderr, argv[0]);
             exit (EXIT_FAILURE);
         }
     }
 
     _x11_ic_table = g_hash_table_new (g_direct_hash, g_direct_equal);
+    _ibus_ic_table = g_hash_table_new (g_str_hash, g_str_equal);
     _connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-    signal (SIGINT, _xim_sighandler);
-    signal (SIGTERM, _xim_sighandler);
+    signal (SIGINT, _sighandler);
+    signal (SIGTERM, _sighandler);
 
     if (_kill_daemon)
-        g_atexit (_xim_kill_daemon);
+        g_atexit (_atexit_cb);
 
     _xim_init_IMdkit ();
     gtk_main();
