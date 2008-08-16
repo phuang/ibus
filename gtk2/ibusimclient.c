@@ -42,6 +42,7 @@
 enum {
     CONNECTED,
     DISCONNECTED,
+    FORWARD_EVENT,
     COMMIT_STRING,
     UPDATE_PREEDIT,
     SHOW_PREEDIT,
@@ -72,8 +73,6 @@ struct _IBusIMClientPrivate {
 
     DBusConnection *ibus;
 
-    GHashTable     *ic_table;
-    GList          *contexts;
 };
 
 /* variables */
@@ -194,9 +193,6 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
 
     gobject_class->finalize = ibus_im_client_finalize;
 
-    klass->connected = ibus_im_client_connected;
-    klass->disconnected = ibus_im_client_disconnected;
-
     client_signals[CONNECTED] =
         g_signal_new (I_("connected"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -214,6 +210,18 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+
+    client_signals[FORWARD_EVENT] =
+        g_signal_new (I_("forward-event"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, commit_string),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_POINTER,
+            G_TYPE_NONE, 2,
+            G_TYPE_STRING,
+            G_TYPE_POINTER);
+
 
     client_signals[COMMIT_STRING] =
         g_signal_new (I_("commit-string"),
@@ -281,20 +289,6 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_TYPE_NONE, 1,
             G_TYPE_STRING);
 
-
-
-
-
-}
-
-void ibus_im_client_connected (IBusIMClient *client)
-{
-    /* do nothing */
-}
-
-void ibus_im_client_disconnected (IBusIMClient *client)
-{
-    /* do nothing */
 }
 
 /*
@@ -397,19 +391,6 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
 
     g_signal_emit (client, client_signals[CONNECTED], 0);
 
-    GList *p;
-    for (p = priv->contexts; p != NULL; p = g_list_next (p)) {
-        IBusIMContext *context = IBUS_IM_CONTEXT (p->data);
-        const gchar *ic = _ibus_im_client_create_input_context (client);
-
-        if (ic == NULL) {
-            _ibus_im_client_ibus_close (client);
-            return;
-        }
-        g_hash_table_insert (priv->ic_table, g_strdup (ic), context);
-        ibus_im_context_set_ic (context, ic);
-    }
-
 }
 
 /*
@@ -419,14 +400,6 @@ static void
 _ibus_im_client_ibus_close (IBusIMClient *client)
 {
     IBusIMClientPrivate *priv = client->priv;
-
-    GList *p;
-    for (p = priv->contexts; p != NULL; p = g_list_next (p)) {
-        IBusIMContext *ctx = IBUS_IM_CONTEXT (p->data);
-        ibus_im_context_set_ic (ctx, NULL);
-    }
-
-    g_hash_table_remove_all (priv->ic_table);
 
     if (priv->ibus) {
         dbus_connection_close (priv->ibus);
@@ -439,21 +412,10 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
 /*
  * create an im context
  */
-IBusIMContext *
+const char *
 ibus_im_client_create_im_context (IBusIMClient *client)
 {
-    IBusIMContext *context;
-    IBusIMClientPrivate *priv = client->priv;
-
-    context = IBUS_IM_CONTEXT (ibus_im_context_new ());
-    priv->contexts = g_list_append (priv->contexts, context);
-
-    const gchar *ic = _ibus_im_client_create_input_context (client);
-    ibus_im_context_set_ic (context, ic);
-    if (ic) {
-        g_hash_table_insert (priv->ic_table, (gpointer)g_strdup (ic), context);
-    }
-    return context;
+    return _ibus_im_client_create_input_context (client);
 }
 
 /*
@@ -531,9 +493,6 @@ ibus_im_client_init (IBusIMClient *obj)
 
     priv = G_TYPE_INSTANCE_GET_PRIVATE (client, IBUS_TYPE_IM_CLIENT, IBusIMClientPrivate);
     client->priv = priv;
-
-    priv->ic_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-    priv->contexts = NULL;
 
     watch_path = g_strdup_printf ("/tmp/ibus-%s", g_get_user_name ());
 
@@ -659,7 +618,6 @@ static void
 _ibus_signal_commit_string_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     /* Handle CommitString signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     gchar *ic = NULL;
     gchar *string = NULL;
@@ -672,12 +630,7 @@ _ibus_signal_commit_string_handler (DBusConnection *connection, DBusMessage *mes
         dbus_error_free (&error);
     }
     else {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_commit_string (context, string);
+        g_signal_emit (client, client_signals[COMMIT_STRING], 0, ic, string);
     }
 }
 
@@ -685,7 +638,6 @@ static void
 _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     /* Handle UpdatePreedit signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusMessageIter iter, sub_iter;
     int type, sub_type;
 
@@ -805,12 +757,8 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     dbus_message_iter_next (&iter);
 
     {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_update_preedit (context, string, attrs, cursor, visible);
+        g_signal_emit (client, client_signals[UPDATE_PREEDIT], 0,
+                ic, string, attrs, cursor, visible);
     }
     pango_attr_list_unref (attrs);
 
@@ -820,7 +768,6 @@ static void
 _ibus_signal_show_preedit_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     /* Handle CommitString signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     gchar *ic = NULL;
 
@@ -831,12 +778,7 @@ _ibus_signal_show_preedit_handler (DBusConnection *connection, DBusMessage *mess
         dbus_error_free (&error);
     }
     else {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_show_preedit (context);
+        g_signal_emit (client, client_signals[SHOW_PREEDIT], 0, ic);
     }
 }
 
@@ -844,7 +786,6 @@ static void
 _ibus_signal_hide_preedit_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
     /* Handle CommitString signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     gchar *ic = NULL;
 
@@ -855,12 +796,7 @@ _ibus_signal_hide_preedit_handler (DBusConnection *connection, DBusMessage *mess
         dbus_error_free (&error);
     }
     else {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_hide_preedit (context);
+        g_signal_emit (client, client_signals[HIDE_PREEDIT], 0, ic);
     }
 }
 
@@ -868,8 +804,6 @@ _ibus_signal_hide_preedit_handler (DBusConnection *connection, DBusMessage *mess
 static void
 _ibus_signal_name_owner_changed_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
 {
-    IBusIMClientPrivate *priv = client->priv;
-
     gchar *name = NULL;
     gchar *old_name = NULL;
     gchar *new_name = NULL;
@@ -908,7 +842,6 @@ _ibus_signal_enabled_handler (DBusConnection *connection, DBusMessage *message, 
 {
     DEBUG_FUNCTION_IN;
     /* Handle CommitString signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     gchar *ic = NULL;
 
@@ -919,12 +852,7 @@ _ibus_signal_enabled_handler (DBusConnection *connection, DBusMessage *message, 
         dbus_error_free (&error);
     }
     else {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_enable (context);
+        g_signal_emit (client, client_signals[ENABLED], 0, ic);
     }
 }
 
@@ -934,7 +862,6 @@ _ibus_signal_disabled_handler (DBusConnection *connection, DBusMessage *message,
 {
     DEBUG_FUNCTION_IN;
     /* Handle CommitString signal */
-    IBusIMClientPrivate *priv = client->priv;
     DBusError error = {0};
     gchar *ic = NULL;
 
@@ -945,12 +872,7 @@ _ibus_signal_disabled_handler (DBusConnection *connection, DBusMessage *message,
         dbus_error_free (&error);
     }
     else {
-        IBusIMContext *context = g_hash_table_lookup (priv->ic_table, (gpointer)ic);
-        if (context == NULL) {
-            g_debug ("Can not find context assocate with ic(%s)", ic);
-            return;
-        }
-        ibus_im_context_disable (context);
+        g_signal_emit (client, client_signals[DISABLED], 0, ic);
     }
 }
 
@@ -1194,13 +1116,38 @@ _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
     return retval;
 }
 
+typedef struct {
+    IBusIMClient *client;
+    gchar *ic;
+    GdkEvent event;
+}KeyPressCallData;
+
+static KeyPressCallData *
+_key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event)
+{
+    KeyPressCallData *p = g_new (KeyPressCallData, 1);
+    p->client = g_object_ref (client);
+    p->ic = g_strdup (ic);
+    p->event = *event;
+    return p;
+}
+
+static void
+_key_press_call_data_free (KeyPressCallData *p)
+{
+    if (p) {
+        g_object_unref (p->client);
+        g_free (p->ic);
+    }
+    g_free (p);
+}
 
 static void
 _ibus_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
 {
     DBusMessage *reply;
     DBusError error = {0};
-    GdkEvent *event = (GdkEvent *) user_data;
+    KeyPressCallData *call_data = (KeyPressCallData *) user_data;
     gboolean retval;
 
 
@@ -1222,19 +1169,19 @@ _ibus_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
     }
 
     if (!retval) {
-        event->any.send_event = TRUE;
-        gdk_event_put (event);
+        g_signal_emit (call_data->client, client_signals[FORWARD_EVENT], 0,
+                call_data->ic, &(call_data->event));
     }
 }
 
 gboolean
-ibus_im_client_filter_keypress (IBusIMClient *client, IBusIMContext *context, GdkEventKey *event)
+ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventKey *event)
 {
-    IBusIMClientPrivate *priv = client->priv;
-    gchar *ic = ibus_im_context_get_ic (context);
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT(client), FALSE);
+    g_return_val_if_fail (ic != NULL, FALSE);
+    g_return_val_if_fail (event != NULL, FALSE);
 
-    if (ic == NULL)
-        return FALSE;
+    IBusIMClientPrivate *priv = client->priv;
 
     guint state = event->state & GDK_MODIFIER_MASK;
     gboolean is_press = event->type == GDK_KEY_PRESS;
@@ -1247,8 +1194,8 @@ ibus_im_client_filter_keypress (IBusIMClient *client, IBusIMContext *context, Gd
     if (!_ibus_call_with_reply (priv->ibus,
             "ProcessKeyEvent",
             _ibus_filter_keypress_reply_cb,
-            gdk_event_copy ((GdkEvent *)event),
-            (DBusFreeFunction)gdk_event_free,
+            _key_press_call_data_new (client, ic, (GdkEvent *)event),
+            (DBusFreeFunction)_key_press_call_data_free,
             DBUS_TYPE_STRING, &ic,
             DBUS_TYPE_UINT32, &event->keyval,
             DBUS_TYPE_BOOLEAN, &is_press,
@@ -1261,13 +1208,12 @@ ibus_im_client_filter_keypress (IBusIMClient *client, IBusIMContext *context, Gd
 
 
 void
-ibus_im_client_focus_in (IBusIMClient *client, IBusIMContext *context)
+ibus_im_client_focus_in (IBusIMClient *client, const gchar *ic)
 {
-    IBusIMClientPrivate *priv = client->priv;
-    gchar *ic = ibus_im_context_get_ic (context);
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
 
-    if (ic == NULL)
-        return;
+    IBusIMClientPrivate *priv = client->priv;
 
     /* Call IBus FocusIn method */
      _ibus_call_with_reply_and_block (priv->ibus,
@@ -1278,13 +1224,12 @@ ibus_im_client_focus_in (IBusIMClient *client, IBusIMContext *context)
 }
 
 void
-ibus_im_client_focus_out (IBusIMClient *client, IBusIMContext *context)
+ibus_im_client_focus_out (IBusIMClient *client, const gchar *ic)
 {
-    IBusIMClientPrivate *priv = client->priv;
-    gchar *ic = ibus_im_context_get_ic (context);
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
 
-    if (ic == NULL)
-        return;
+    IBusIMClientPrivate *priv = client->priv;
 
     /* Call IBus FocusOut method */
     _ibus_call_with_reply_and_block (priv->ibus,
@@ -1296,13 +1241,12 @@ ibus_im_client_focus_out (IBusIMClient *client, IBusIMContext *context)
 }
 
 void
-ibus_im_client_reset (IBusIMClient *client, IBusIMContext *context)
+ibus_im_client_reset (IBusIMClient *client, const gchar *ic)
 {
-    IBusIMClientPrivate *priv = client->priv;
-    gchar *ic = ibus_im_context_get_ic (context);
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
 
-    if (ic == NULL)
-        return;
+    IBusIMClientPrivate *priv = client->priv;
 
     /* Call IBus Reset method */
     _ibus_call_with_reply_and_block (priv->ibus,
@@ -1314,13 +1258,11 @@ ibus_im_client_reset (IBusIMClient *client, IBusIMContext *context)
 }
 
 void
-ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context, GdkRectangle *area)
+ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRectangle *area)
 {
-    /* IBusIMClientPrivate *priv = client->priv; */
-    gchar *ic = ibus_im_context_get_ic (context);
-
-    if (ic == NULL)
-        return;
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
+    g_return_if_fail (area != NULL);
 
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCursorLocation",
@@ -1334,13 +1276,10 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, IBusIMContext *context
 }
 
 void
-ibus_im_client_set_use_preedit (IBusIMClient *client, IBusIMContext *context, gboolean use_preedit)
+ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean use_preedit)
 {
-    /* IBusIMClientPrivate *priv = client->priv; */
-    gchar *ic = ibus_im_context_get_ic (context);
-
-    if (ic == NULL)
-        return;
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
 
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCapabilities",
@@ -1351,19 +1290,17 @@ ibus_im_client_set_use_preedit (IBusIMClient *client, IBusIMContext *context, gb
 }
 
 void
-ibus_im_client_release_im_context (IBusIMClient *client, IBusIMContext *context)
+ibus_im_client_release_im_context (IBusIMClient *client, const gchar *ic)
 {
+    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (ic != NULL);
+
     IBusIMClientPrivate *priv = client->priv;
-    gchar *ic = ibus_im_context_get_ic (context);
-    priv->contexts = g_list_remove (priv->contexts, context);
-    if (ic) {
-        g_hash_table_remove (priv->ic_table, ic);
-        _ibus_call_with_reply_and_block (priv->ibus, "ReleaseInputContext",
+
+    _ibus_call_with_reply_and_block (priv->ibus, "ReleaseInputContext",
                 DBUS_TYPE_STRING, &ic,
                 DBUS_TYPE_INVALID,
                 DBUS_TYPE_INVALID);
-
-    }
 
 }
 

@@ -21,7 +21,6 @@
 #define __IBUS_IM_CLIENT_H_
 
 #include <gtk/gtk.h>
-#include "ibusimcontext.h"
 /*
  * Type macros.
  */
@@ -94,27 +93,27 @@ extern IBusIMClient                *_client;
 GType           ibus_im_client_get_type          (void);
 void            ibus_im_client_register_type     (GTypeModule     *type_module);
 IBusIMClient   *ibus_im_client_new               (void);
-IBusIMContext  *ibus_im_client_create_im_context (IBusIMClient    *client);
+const gchar    *ibus_im_client_create_im_context (IBusIMClient    *client);
 void            ibus_im_client_shutdown          (void);
 void            ibus_im_client_focus_in          (IBusIMClient    *client,
-                                                  IBusIMContext   *context);
+                                                  const gchar     *ic);
 void            ibus_im_client_focus_out         (IBusIMClient    *client,
-                                                  IBusIMContext   *context);
+                                                  const gchar     *ic);
 void            ibus_im_client_reset             (IBusIMClient    *client,
-                                                  IBusIMContext   *context);
+                                                  const gchar     *ic);
 gboolean        ibus_im_client_filter_keypress   (IBusIMClient    *client,
-                                                  IBusIMContext   *context,
+                                                  const gchar     *ic,
                                                   GdkEventKey     *key);
 void            ibus_im_client_set_cursor_location
                                                  (IBusIMClient    *client,
-                                                  IBusIMContext   *context,
+                                                  const gchar     *ic,
                                                   GdkRectangle    *area);
 void            ibus_im_client_set_use_preedit   (IBusIMClient    *client,
-                                                  IBusIMContext   *context,
+                                                  const gchar     *ic,
                                                   gboolean         use_preedit);
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
 void            ibus_im_client_release_im_context(IBusIMClient    *client,
-                                                  IBusIMContext   *context);
+                                                  const gchar     *ic);
 void            ibus_im_client_kill_daemon       (IBusIMClient    *client);
 gboolean        ibus_im_client_get_connected     (IBusIMClient    *client);
 
