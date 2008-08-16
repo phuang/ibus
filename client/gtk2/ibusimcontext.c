@@ -223,7 +223,14 @@ ibus_im_context_init     (IBusIMContext *obj)
                 "retrieve-surrounding", G_CALLBACK (_slave_retrieve_surrounding_cb), obj);
     g_signal_connect (ibus->priv->slave,
                 "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
+
     g_array_append_val (_im_context_array, obj);
+
+    if (ibus_im_client_get_connected (_client)) {
+        const gchar *ic = ibus_im_client_create_input_context (_client);
+        ibus_im_context_set_ic (ibus, ic);
+        g_hash_table_insert (_ic_table, ibus_im_context_get_ic (ibus), ibus);
+    }
 }
 
 static void
@@ -443,6 +450,16 @@ _client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *st
 }
 
 static void
+_client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    event->any.send_event = TRUE;
+    gdk_event_put (event);
+}
+
+static void
 _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
     PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
 {
@@ -535,6 +552,8 @@ _init_ibus_client (void)
                         G_CALLBACK (_client_disconnected_cb), NULL);
     g_signal_connect (_client, "commit-string",
                         G_CALLBACK (_client_commit_string_cb), NULL);
+    g_signal_connect (_client, "forward-event",
+                        G_CALLBACK (_client_forward_event_cb), NULL);
     g_signal_connect (_client, "update-preedit",
                         G_CALLBACK (_client_update_preedit_cb), NULL);
     g_signal_connect (_client, "show-preedit",
@@ -629,8 +648,8 @@ void
 ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 {
     IBusIMContextPrivate *priv = context->priv;
-    g_free (priv->ic);
 
+    g_free (priv->ic);
     priv->ic = g_strdup (ic);
 
     if (priv->ic == NULL) {
