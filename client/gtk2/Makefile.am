@@ -31,6 +31,7 @@ im_ibus_la_DEPENDENCIES = $(libibus_gtk)
 im_ibus_la_SOURCES = \
 	ibusim.c \
 	ibusimcontext.c \
+	ibusimcontext.h \
 	$(NULL)
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \
