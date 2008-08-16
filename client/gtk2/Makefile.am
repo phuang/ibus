@@ -29,6 +29,7 @@ immodule_LTLIBRARIES = im-ibus.la
 im_ibus_la_DEPENDENCIES = $(top_builddir)/lib/gtk2/libibus-gtk.la
 im_ibus_la_SOURCES = \
 	ibusim.c \
+	ibusimcontext.c \
 	$(NULL)
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \

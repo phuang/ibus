@@ -183,7 +183,7 @@ ibus_im_context_init     (IBusIMContext *obj)
 {
     DEBUG_FUNCTION_IN;
 
-    _ibus_client_init ();
+    _init_ibus_client ();
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
     IBusIMContextPrivate *priv = ibus->priv =
@@ -223,7 +223,7 @@ ibus_im_context_init     (IBusIMContext *obj)
                 "retrieve-surrounding", G_CALLBACK (_slave_retrieve_surrounding_cb), obj);
     g_signal_connect (ibus->priv->slave,
                 "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
-    g_array_append (_im_context_array, obj);
+    g_array_append_val (_im_context_array, obj);
 }
 
 static void
@@ -236,13 +236,14 @@ ibus_im_context_finalize (GObject *obj)
 
     gint i;
     for (i = 0; i < _im_context_array->len; i++) {
-        if (obj == g_array_index (_im_context_array, GObject, i)) {
+        if (obj == g_array_index (_im_context_array, GObject *, i)) {
             g_array_remove_index_fast (_im_context_array, i);
             break;
         }
     }
 
-    ibus_im_client_release_im_context (_client, ibus);
+    if (priv->ic)
+        ibus_im_client_release_input_context (_client, priv->ic);
 
     g_object_unref (priv->slave);
 
@@ -263,7 +264,7 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (ibus_im_client_filter_keypress (_client, ibus, event))
+    if (priv->ic && ibus_im_client_filter_keypress (_client, priv->ic, event))
         return TRUE;
     else
         return gtk_im_context_filter_keypress (priv->slave, event);
@@ -278,7 +279,8 @@ ibus_im_context_focus_in (GtkIMContext *context)
     IBusIMContextPrivate *priv = ibus->priv;
 
     priv->has_focus = TRUE;
-    ibus_im_client_focus_in (_client, ibus);
+    if (priv->ic)
+        ibus_im_client_focus_in (_client, priv->ic);
     gtk_im_context_focus_in (priv->slave);
 
     ibus_im_context_set_cursor_location(context, &priv->cursor_area);
@@ -293,7 +295,8 @@ ibus_im_context_focus_out (GtkIMContext *context)
     IBusIMContextPrivate *priv = ibus->priv;
 
     priv->has_focus = FALSE;
-    ibus_im_client_focus_out (_client, ibus);
+    if (priv->ic)
+        ibus_im_client_focus_out (_client, priv->ic);
     gtk_im_context_focus_out (priv->slave);
 }
 
@@ -305,7 +308,8 @@ ibus_im_context_reset (GtkIMContext *context)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    ibus_im_client_reset (_client, ibus);
+    if (priv->ic)
+        ibus_im_client_reset (_client, priv->ic);
     gtk_im_context_reset (priv->slave);
 }
 
@@ -381,7 +385,8 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
         area->x += x;
         area->y += y;
     }
-    ibus_im_client_set_cursor_location (_client, ibus, area);
+    if (priv->ic)
+        ibus_im_client_set_cursor_location (_client, priv->ic, area);
     gtk_im_context_set_cursor_location (priv->slave, area);
 }
 
@@ -393,27 +398,128 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    ibus_im_client_set_use_preedit (_client, ibus, use_preedit);
+    if(priv->ic)
+        ibus_im_client_set_use_preedit (_client, priv->ic, use_preedit);
     gtk_im_context_set_use_preedit (priv->slave, use_preedit);
 }
 
 static void
 _client_connected_cb (IBusIMClient *client, gpointer user_data)
 {
+    gint i;
+    const gchar *ic;
+    IBusIMContext *context;
+
+    for (i = 0; i <= _im_context_array->len; i++) {
+        context = g_array_index (_im_context_array, IBusIMContext *, i);
+        ic = ibus_im_client_create_input_context (client);
+        ibus_im_context_set_ic (context, ic);
+        g_hash_table_insert (_ic_table, ibus_im_context_get_ic (context), context);
+    }
 }
 
 static void
 _client_disconnected_cb (IBusIMClient *client, gpointer user_data)
 {
+    gint i;
+    IBusIMContext *context;
+
+    g_hash_table_remove_all (_ic_table);
+    for (i = 0; i <= _im_context_array->len; i++) {
+        context = g_array_index (_im_context_array, IBusIMContext *, i);
+        ibus_im_context_set_ic (context, NULL);
+    }
+
 }
 
 static void
-_client_commit_string_cb (IBusIMClient *client, const gchar *gpointer user_data)
+_client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *string, gpointer user_data)
 {
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    g_signal_emit_by_name (context, "commit", string);
+
 }
 
 static void
-_ibus_client_init (void)
+_client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
+    PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (priv->preedit_string)
+        g_free (priv->preedit_string);
+    if (priv->preedit_attrs)
+        pango_attr_list_unref (priv->preedit_attrs);
+
+    priv->preedit_string = g_strdup (string);
+    priv->preedit_attrs = pango_attr_list_ref (attrs);
+    priv->preedit_cursor_pos = cursor_pos;
+    priv->preedit_visible = visible;
+
+    g_signal_emit_by_name (context, "preedit-changed");
+}
+
+static void
+_client_show_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (priv->preedit_visible == FALSE) {
+        priv->preedit_visible = TRUE;
+        g_signal_emit_by_name (context, "preedit-changed");
+    }
+}
+
+static void
+_client_hide_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (priv->preedit_visible == TRUE) {
+        priv->preedit_visible = FALSE;
+        g_signal_emit_by_name (context, "preedit-changed");
+    }
+}
+
+static void
+_client_enabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (priv->enable == FALSE) {
+        priv->enable = TRUE;
+    }
+}
+
+static void
+_client_disabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+    IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
+    g_return_if_fail (context != NULL);
+
+    IBusIMContextPrivate *priv = context->priv;
+
+    if (priv->enable == TRUE) {
+        priv->enable = FALSE;
+    }
+}
+
+static void
+_init_ibus_client (void)
 {
     if (_client != NULL)
         return;
@@ -533,41 +639,6 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
     else if (priv->has_focus) {
         ibus_im_context_focus_in (GTK_IM_CONTEXT (context));
     }
-}
-
-void
-ibus_im_context_enable (IBusIMContext *context)
-{
-    IBusIMContextPrivate *priv = context->priv;
-    priv->enable = TRUE;
-}
-
-void
-ibus_im_context_disable (IBusIMContext *context)
-{
-    IBusIMContextPrivate *priv = context->priv;
-    priv->enable = FALSE;
-}
-
-
-void
-ibus_im_context_commit_string (IBusIMContext  *context, const gchar *string)
-{
-    g_signal_emit_by_name (context, "commit", string);
-}
-
-void
-ibus_im_context_update_preedit (IBusIMContext *context, const gchar *string,
-        PangoAttrList *attrs, gint cursor_pos, gboolean visible)
-{
-    IBusIMContextPrivate *priv = context->priv;
-
-    priv->preedit_string = g_strdup (string);
-    priv->preedit_attrs = pango_attr_list_ref (attrs);
-    priv->preedit_cursor_pos = cursor_pos;
-    priv->preedit_visible = visible;
-
-    g_signal_emit_by_name (context, "preedit-changed");
 }
 
 void
