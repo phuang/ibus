@@ -53,14 +53,14 @@ struct _X11ICONN {
 typedef struct _X11ICONN    X11ICONN;
 
 struct _X11IC {
-    gchar         *ibus_ic;
-    GdkWindow     *client_window;
-    GdkWindow     *focus_window;
-    gint32        input_style;
+    gchar       *ibus_ic;
+    Window      client_window;
+    Window      focus_window;
+    gint32      input_style;
     X11ICONN    *conn;
     gint        icid;
     gint        connect_id;
-    gchar        *lang;
+    gchar       *lang;
     GdkRectangle    preedit_area;
 };
 typedef struct _X11IC    X11IC;
@@ -114,7 +114,7 @@ _xim_preedit_end (XIMS xims, int icid, int connect_id)
 #endif
 
 int
-_xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
+_xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
 {
     XICAttribute *ic_attr = call_data->ic_attr;
     XICAttribute *pre_attr = call_data->preedit_attr;
@@ -123,43 +123,17 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
     gint i;
     guint32 attrs = 1;
 
-    if (ic == NULL) {
-        return 0;
-    }
+    g_return_val_if_fail (x11ic != NULL, 0);
 #define _is_attr(a, b)    (strcmp(a, b->name) == 0)
     for (i=0; i< (int) call_data->ic_attr_num; ++i, ++ic_attr) {
         if (_is_attr (XNInputStyle, ic_attr)) {
-            ic->input_style = *(gint32 *) ic_attr->value;
+            x11ic->input_style = *(gint32 *) ic_attr->value;
         }
         else if (_is_attr (XNClientWindow, ic_attr)) {
-            Window w;
-
-            if (ic->client_window != NULL) {
-                g_object_unref (ic->client_window);
-                ic->client_window = NULL;
-            }
-
-            w =  *(Window *) call_data->ic_attr[i].value;
-            if (w) {
-                ic->client_window = gdk_window_foreign_new (w);
-                if (ic->client_window)
-                    g_object_set_data (G_OBJECT (ic->client_window), "IBUS_IC", ic);
-            }
+            x11ic->client_window =  *(Window *) call_data->ic_attr[i].value;
         }
         else if (_is_attr (XNFocusWindow, ic_attr)) {
-            Window w;
-
-            if (ic->focus_window != NULL) {
-                g_object_unref (ic->focus_window);
-                ic->focus_window = NULL;
-            }
-
-            w =  *(Window *) call_data->ic_attr[i].value;
-            if (w) {
-                ic->focus_window = gdk_window_foreign_new (w);
-                if (ic->focus_window)
-                    g_object_set_data (G_OBJECT (ic->focus_window), "IBUS_IC", ic);
-            }
+            x11ic->focus_window =  *(Window *) call_data->ic_attr[i].value;
         }
         else {
             // fprintf (stderr, "Unknown attr: %s\n", ic_attr->name);
@@ -168,8 +142,8 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
 
     for (i=0; i< (int) call_data->preedit_attr_num; ++i, ++pre_attr) {
         if (_is_attr (XNSpotLocation, pre_attr)) {
-            ic->preedit_area.x = ((XPoint *)pre_attr->value)->x;
-            ic->preedit_area.y = ((XPoint *)pre_attr->value)->y;
+            x11ic->preedit_area.x = ((XPoint *)pre_attr->value)->x;
+            x11ic->preedit_area.y = ((XPoint *)pre_attr->value)->y;
         }
         else {
             // fprintf (stderr, "Unknown attr: %s\n", pre_attr->name);
@@ -236,11 +210,6 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
     g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    if (x11ic->client_window)
-        g_object_unref (x11ic->client_window);
-    if (x11ic->focus_window)
-        g_object_unref (x11ic->focus_window);
-
     g_free (x11ic);
 
     return 1;
@@ -281,7 +250,6 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 int
 xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 {
-
     X11IC *x11ic;
     XKeyEvent *xevent;
     GdkEventKey event;
@@ -306,6 +274,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
         g_object_unref (window);
         return 1;
     }
+
     g_object_unref (window);
 
     IMForwardEventStruct fe;
@@ -470,12 +439,13 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
 
 
 static void
-_xim_forward_gdk_event (GdkEventKey *event)
+_xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 {
-    X11IC *ic;
-    ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IBUS_IC");
-    if (ic == NULL)
-        return;
+    if (x11ic == NULL)
+        x11ic = (X11IC *)g_object_get_data (G_OBJECT (event->window), "IBUS_IC");
+
+    g_return_if_fail (x11ic != NULL);
+
     IMForwardEventStruct fe;
     XEvent xkp;
     memset (&xkp, 0, sizeof (xkp));
@@ -494,8 +464,8 @@ _xim_forward_gdk_event (GdkEventKey *event)
     xkp.xkey.keycode = event->hardware_keycode;
 
     fe.major_code = XIM_FORWARD_EVENT;
-    fe.icid = ic->icid;
-    fe.connect_id = ic->connect_id;
+    fe.icid = x11ic->icid;
+    fe.connect_id = x11ic->connect_id;
     fe.sync_bit = 0;
     fe.serial_number = 0L;
     fe.event = xkp;
@@ -503,6 +473,7 @@ _xim_forward_gdk_event (GdkEventKey *event)
 
 }
 
+#if 0
 static void
 _xim_event_cb (GdkEvent *event, gpointer data)
 {
@@ -510,13 +481,14 @@ _xim_event_cb (GdkEvent *event, gpointer data)
     switch (event->type) {
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
-        _xim_forward_gdk_event ((GdkEventKey *)event);
+        _xim_forward_gdk_event ((GdkEventKey *)event, NULL);
         break;
     default:
         gtk_main_do_event (event);
         break;
     }
 }
+#endif
 
 static void
 _xim_event_destroy_cb (gpointer data)
@@ -574,7 +546,7 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
     g_return_if_fail (x11ic != NULL);
 
-    _xim_forward_gdk_event (event);
+    _xim_forward_gdk_event (event, x11ic);
 }
 
 #if 0
@@ -709,10 +681,10 @@ _xim_init_IMdkit ()
         IMProtocolHandler, ims_protocol_handler,
         IMFilterEventMask, KeyPressMask | KeyReleaseMask,
         NULL);
-
+    /*
     gdk_event_handler_set (_xim_event_cb, NULL,
         _xim_event_destroy_cb);
-
+    */
     _init_ibus_client ();
 
     if (!ibus_im_client_get_connected (_client)) {

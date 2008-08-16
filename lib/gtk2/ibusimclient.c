@@ -210,10 +210,10 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_SIGNAL_RUN_FIRST,
             G_STRUCT_OFFSET (IBusIMClientClass, commit_string),
             NULL, NULL,
-            ibus_marshal_VOID__STRING_POINTER,
+            ibus_marshal_VOID__STRING_BOXED,
             G_TYPE_NONE, 2,
             G_TYPE_STRING,
-            G_TYPE_POINTER);
+            GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
 
 
     client_signals[COMMIT_STRING] =
@@ -1110,6 +1110,7 @@ _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event
     p->client = g_object_ref (client);
     p->ic = g_strdup (ic);
     p->event = *event;
+    g_object_ref (p->event.any.window);
     return p;
 }
 
@@ -1119,6 +1120,7 @@ _key_press_call_data_free (KeyPressCallData *p)
     if (p) {
         g_object_unref (p->client);
         g_free (p->ic);
+        g_object_unref (p->event.any.window);
     }
     g_free (p);
 }
