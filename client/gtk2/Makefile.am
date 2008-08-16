@@ -20,26 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 INCLUDES = \
-	-I$(top_srcdir) \
-	$(NULL)
-
-lib_LTLIBRARIES = libibus-gtk.la
-libibus_gtk_la_SOURCES = \
-	ibusimcontext.c \
-	ibusimcontext.h \
-	ibusimclient.c \
-	ibusimclient.h \
-	ibusmarshalers.c \
-	ibusmarshalers.h \
-	$(NULL)
-libibus_gtk_la_CFLAGS = \
-	@GTK2_CFLAGS@ \
-	@DBUS_CFLAGS@ \
-	-DG_LOG_DOMAIN=\"IBUS\" \
-	$(NULL)
-libibus_gtk_la_LDFLAGS = \
-	@GTK2_LIBS@ \
-	@DBUS_LIBS@ \
+	-I$(top_srcdir)/lib/gtk2 \
 	$(NULL)
 
 immoduledir = @GTK_IM_MODULEDIR@
@@ -62,24 +43,7 @@ im_ibus_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
-
-# gen marshal
-ibusmarshalers.h: stamp-ibusmarshalers.h
-	@true
-stamp-ibusmarshalers.h: ibusmarshalers.list
-	$(GLIB_GENMARSHAL) --prefix=ibus_marshal $(srcdir)/ibusmarshalers.list --header >> xgen-gmh \
-	&& (cmp -s xgen-gmh ibusmarshalers.h || cp xgen-gmh ibusmarshalers.h) \
-	&& rm -f xgen-gmh \
-	&& echo timestamp > $(@F)
-ibusmarshalers.c: ibusmarshalers.list
-	(echo "#include \"ibusmarshalers.h\""; \
-	 $(GLIB_GENMARSHAL) --prefix=ibus_marshal $(srcdir)/ibusmarshalers.list --body; \
-	 echo ) >> xgen-gmc \
-	&& cp xgen-gmc ibusmarshalers.c \
-	&& rm -f xgen-gmc
-
 EXTRA_DIST = \
-	ibusmarshalers.list \
 	$(NULL)
 
 test: all

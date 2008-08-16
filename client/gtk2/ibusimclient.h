@@ -93,7 +93,8 @@ extern IBusIMClient                *_client;
 GType           ibus_im_client_get_type          (void);
 void            ibus_im_client_register_type     (GTypeModule     *type_module);
 IBusIMClient   *ibus_im_client_new               (void);
-const gchar    *ibus_im_client_create_im_context (IBusIMClient    *client);
+const gchar    *ibus_im_client_create_input_context
+                                                 (IBusIMClient    *client);
 void            ibus_im_client_shutdown          (void);
 void            ibus_im_client_focus_in          (IBusIMClient    *client,
                                                   const gchar     *ic);
@@ -112,7 +113,8 @@ void            ibus_im_client_set_use_preedit   (IBusIMClient    *client,
                                                   const gchar     *ic,
                                                   gboolean         use_preedit);
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
-void            ibus_im_client_release_im_context(IBusIMClient    *client,
+void            ibus_im_client_release_input_context
+                                                 (IBusIMClient    *client,
                                                   const gchar     *ic);
 void            ibus_im_client_kill_daemon       (IBusIMClient    *client);
 gboolean        ibus_im_client_get_connected     (IBusIMClient    *client);

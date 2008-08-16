@@ -175,10 +175,13 @@ panel/ibus-panel
 gconf/Makefile
 gconf/ibus-gconf
 engine/Makefile
-gtk2/Makefile
-qt4/Makefile
-x11/Makefile
-x11/IMdkit/Makefile
+lib/Makefile
+lib/gtk2/Makefile
+client/Makefile
+client/gtk2/Makefile
+client/qt4/Makefile
+client/x11/Makefile
+client/x11/IMdkit/Makefile
 setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop

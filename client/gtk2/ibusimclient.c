@@ -83,13 +83,6 @@ static void     ibus_im_client_class_init   (IBusIMClientClass  *klass);
 static void     ibus_im_client_init         (IBusIMClient       *client);
 static void     ibus_im_client_finalize     (GObject            *obj);
 
-
-static void     ibus_im_client_connected    (IBusIMClient       *client);
-static void     ibus_im_client_disconnected (IBusIMClient       *client);
-
-static const gchar *
-                _ibus_im_client_create_input_context
-                                            (IBusIMClient       *client);
 static void     _ibus_im_client_ibus_open   (IBusIMClient       *client);
 static void     _ibus_im_client_ibus_close  (IBusIMClient       *client);
 
@@ -410,19 +403,10 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
 }
 
 /*
- * create an im context
- */
-const char *
-ibus_im_client_create_im_context (IBusIMClient *client)
-{
-    return _ibus_im_client_create_input_context (client);
-}
-
-/*
  * create a ibus input context
  */
-static const gchar *
-_ibus_im_client_create_input_context (IBusIMClient *client)
+const gchar *
+ibus_im_client_create_input_context (IBusIMClient *client)
 {
     IBusIMClientPrivate *priv = client->priv;
 
@@ -1290,7 +1274,7 @@ ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean 
 }
 
 void
-ibus_im_client_release_im_context (IBusIMClient *client, const gchar *ic)
+ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
 {
     g_return_if_fail (IBUS_IS_IM_CLIENT(client));
     g_return_if_fail (ic != NULL);
