@@ -174,7 +174,6 @@ panel/Makefile
 panel/ibus-panel
 gconf/Makefile
 gconf/ibus-gconf
-engine/Makefile
 lib/Makefile
 lib/gtk2/Makefile
 client/Makefile
