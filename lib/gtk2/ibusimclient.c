@@ -579,8 +579,6 @@ ibus_im_client_finalize (GObject *obj)
     IBusIMClient *client = IBUS_IM_CLIENT (obj);
     IBusIMClientPrivate *priv = client->priv;
 
-    g_assert (client == _client);
-
 #ifdef HAVE_INOTIFY
     g_source_remove (priv->inotify_source);
     g_io_channel_unref (priv->inotify_channel);
@@ -595,7 +593,6 @@ ibus_im_client_finalize (GObject *obj)
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 
-    _client = NULL;
 }
 
 static void

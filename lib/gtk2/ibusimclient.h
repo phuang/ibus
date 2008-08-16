@@ -88,8 +88,6 @@ struct _IBusIMClientClass {
                              const gchar    *ic);
 };
 
-extern IBusIMClient                *_client;
-
 GType           ibus_im_client_get_type          (void);
 void            ibus_im_client_register_type     (GTypeModule     *type_module);
 IBusIMClient   *ibus_im_client_new               (void);

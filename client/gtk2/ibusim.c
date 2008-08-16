@@ -26,7 +26,6 @@
 
 #define IBUS_LOCALDIR ""
 
-IBusIMClient *_client = NULL;
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
     "The Input Bus",
@@ -45,23 +44,19 @@ im_module_init (GTypeModule *type_module)
 {
     ibus_im_client_register_type(type_module);
     ibus_im_context_register_type(type_module);
-
-    _client = ibus_im_client_new ();
 }
 
 void
 im_module_exit (void)
 {
-    g_object_unref (_client);
 }
 
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
     if (strcmp (context_id, "ibus") == 0) {
-        const gchar *ic;
         IBusIMContext *context;
-        ic = ibus_im_client_create_input_context (_client);
+        context = ibus_im_context_new ();
         return GTK_IM_CONTEXT(context);
     }
     return NULL;

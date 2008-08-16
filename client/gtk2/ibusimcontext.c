@@ -71,6 +71,9 @@ static void     ibus_im_context_set_use_preedit
                                             (GtkIMContext       *context,
                                              gboolean           use_preedit);
 
+/* static methods*/
+static void    _init_ibus_client            (void);
+
 /* callback functions for slave context */
 static void     _slave_commit_cb            (GtkIMContext       *slave,
                                              gchar              *string,
@@ -94,6 +97,10 @@ static void     _slave_delete_surrounding_cb
 
 static GType                _ibus_type_im_context = 0;
 static GtkIMContextClass    *parent_class = NULL;
+
+static IBusIMClient         *_client = NULL;
+static GHashTable           *_ic_table = NULL;
+static GArray               *_im_context_array = NULL;
 
 void
 ibus_im_context_register_type (GTypeModule *type_module)
@@ -176,6 +183,8 @@ ibus_im_context_init     (IBusIMContext *obj)
 {
     DEBUG_FUNCTION_IN;
 
+    _ibus_client_init ();
+
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
     IBusIMContextPrivate *priv = ibus->priv =
         G_TYPE_INSTANCE_GET_PRIVATE (ibus, IBUS_TYPE_IM_CONTEXT, IBusIMContextPrivate);
@@ -214,6 +223,7 @@ ibus_im_context_init     (IBusIMContext *obj)
                 "retrieve-surrounding", G_CALLBACK (_slave_retrieve_surrounding_cb), obj);
     g_signal_connect (ibus->priv->slave,
                 "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
+    g_array_append (_im_context_array, obj);
 }
 
 static void
@@ -223,6 +233,14 @@ ibus_im_context_finalize (GObject *obj)
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
     IBusIMContextPrivate *priv = ibus->priv;
+
+    gint i;
+    for (i = 0; i < _im_context_array->len; i++) {
+        if (obj == g_array_index (_im_context_array, GObject, i)) {
+            g_array_remove_index_fast (_im_context_array, i);
+            break;
+        }
+    }
 
     ibus_im_client_release_im_context (_client, ibus);
 
@@ -379,6 +397,50 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
     gtk_im_context_set_use_preedit (priv->slave, use_preedit);
 }
 
+static void
+_client_connected_cb (IBusIMClient *client, gpointer user_data)
+{
+}
+
+static void
+_client_disconnected_cb (IBusIMClient *client, gpointer user_data)
+{
+}
+
+static void
+_client_commit_string_cb (IBusIMClient *client, const gchar *gpointer user_data)
+{
+}
+
+static void
+_ibus_client_init (void)
+{
+    if (_client != NULL)
+        return;
+
+    _im_context_array = g_array_new (TRUE, TRUE, sizeof (IBusIMContext *));
+    _ic_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+    _client = ibus_im_client_new ();
+
+    g_signal_connect (_client, "connected",
+                        G_CALLBACK (_client_connected_cb), NULL);
+    g_signal_connect (_client, "disconnected",
+                        G_CALLBACK (_client_disconnected_cb), NULL);
+    g_signal_connect (_client, "commit-string",
+                        G_CALLBACK (_client_commit_string_cb), NULL);
+    g_signal_connect (_client, "update-preedit",
+                        G_CALLBACK (_client_update_preedit_cb), NULL);
+    g_signal_connect (_client, "show-preedit",
+                        G_CALLBACK (_client_show_preedit_cb), NULL);
+    g_signal_connect (_client, "hide-preedit",
+                        G_CALLBACK (_client_hide_preedit_cb), NULL);
+    g_signal_connect (_client, "enabled",
+                        G_CALLBACK (_client_enabled_cb), NULL);
+    g_signal_connect (_client, "disabled",
+                        G_CALLBACK (_client_disabled_cb), NULL);
+
+}
 
 /* Callback functions for slave context */
 static void
