@@ -19,41 +19,6 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-
-libIMdkit = $(top_builddir)/util/IMdkit/libIMdkit.la
-libibus_gtk = $(top_builddir)/lib/gtk2/libibus-gtk.la
-
-bin_PROGRAMS = ibus-x11
-
-ibus_x11_SOURCES = \
-	main.c \
-	gdk-private.c \
+SUBDIRS = \
+	IMdkit \
 	$(NULL)
-
-ibus_x11_DEPENDENCIES = \
-	$(libIMdkit) \
-	$(libibus_gtk) \
-	$(NULL)
-
-ibus_x11_LDADD = \
-	@GTK2_LIBS@ \
-	$(libIMdkit) \
-	$(libibus_gtk) \
-	$(NULL)
-
-ibus_x11_CFLAGS = \
-	@GTK2_CFLAGS@ \
-	-I$(top_srcdir)/util/IMdkit \
-	-I$(top_srcdir)/lib/gtk2 \
-	$(NULL)
-
-noinst_HEADERS = \
-	gdk-private.h \
-	$(NULL)
-
-$(IMdkit):
-	(cd $(top_builddir)/util/IMdkit; make)
-
-$(libibus_gtk):
-	(cd $(top_builddir)/lib/gtk2; make)
-

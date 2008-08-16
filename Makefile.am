@@ -26,6 +26,7 @@ SUBDIRS = \
 	launcher \
 	panel \
 	lib \
+	util \
 	client \
 	setup \
 	icons \

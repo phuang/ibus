@@ -53,7 +53,7 @@ struct _X11ICONN {
 typedef struct _X11ICONN    X11ICONN;
 
 struct _X11IC {
-    GtkIMContext *context;
+    gchar         *ibus_ic;
     GdkWindow     *client_window;
     GdkWindow     *focus_window;
     gint32        input_style;
@@ -67,9 +67,8 @@ typedef struct _X11IC    X11IC;
 
 
 
-static void _xim_commit_cb (GtkIMContext *context, gchar *arg, gpointer data);
-
-static GHashTable     *_clients = NULL;
+static GHashTable     *_x11_ic_table = NULL;
+static GHashTable     *_ibus_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
 static gchar _server_name[128] = "ibus";
@@ -88,7 +87,7 @@ static gchar _locale[1024] =
 static gboolean _kill_daemon = FALSE;
 static gint        g_debug_level = 0;
 
-IBusIMClient *_client = NULL;
+static IBusIMClient *_client = NULL;
 
 #if 0
 static void
@@ -188,70 +187,32 @@ _xim_store_ic_values (X11IC *ic, IMChangeICStruct *call_data)
 }
 
 
-static void
-_xim_commit_cb (GtkIMContext *context, gchar *arg, gpointer data)
-{
-    char *clist[1];
-    XTextProperty tp;
-    IMCommitStruct cms;
-
-    X11IC *ic = (X11IC *)data;
-
-    clist[0] = arg;
-    Xutf8TextListToTextProperty (GDK_DISPLAY (), clist, 1, XCompoundTextStyle, &tp);
-
-    memset (&cms, 0, sizeof (cms));
-    cms.major_code = XIM_COMMIT;
-    cms.icid = ic->icid;
-    cms.connect_id = ic->connect_id;
-    cms.flag = XimLookupChars;
-    cms.commit_string = (char *)tp.value;
-    IMCommitString (_xims, (XPointer) & cms);
-
-    XFree (tp.value);
-
-}
-
 int
 xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 {
     static int base_icid = 1;
-    X11IC *ic;
+    X11IC *x11ic;
     int i;
 
     LOG (1, "XIM_CREATE_IC ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
     call_data->icid = base_icid ++;
 
-    ic = g_new0 (X11IC, 1);
-    ic->icid = call_data->icid;
-    ic->connect_id = call_data->connect_id;
-    ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
+    x11ic = g_new0 (X11IC, 1);
+    x11ic->icid = call_data->icid;
+    x11ic->connect_id = call_data->connect_id;
+    x11ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
                         (gconstpointer)(unsigned long)call_data->connect_id);
 
-    i = _xim_store_ic_values (ic, call_data);
+    i = _xim_store_ic_values (x11ic, call_data);
 
-    ic->context = (GtkIMContext *)ibus_im_client_create_im_context (_client);
+    x11ic->ibus_ic = g_strdup (ibus_im_client_create_input_context (_client));
+    g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
 
-    if (ic->focus_window)
-        gtk_im_context_set_client_window (ic->context, ic->focus_window);
-    else
-        gtk_im_context_set_client_window (ic->context, ic->client_window);
+    ibus_im_client_set_use_preedit (_client, x11ic->ibus_ic, FALSE);
 
-    gtk_im_context_set_use_preedit (ic->context, FALSE);
-    g_signal_connect (ic->context,
-            "commit",
-            G_CALLBACK (_xim_commit_cb),
-            (gpointer)ic);
-#if 0
-    g_signal_connect (ic->context,
-            "preedit-changed",
-            G_CALLBACK (_xim_preedit_changed_cb),
-            (gpointer)ic);
-#endif
-
-    g_hash_table_insert (_clients, (gpointer)ic->icid, (gpointer) ic);
-    ic->conn->clients = g_list_append (ic->conn->clients, (gpointer) ic);
+    g_hash_table_insert (_x11_ic_table, (gpointer)x11ic->icid, (gpointer)x11ic);
+    x11ic->conn->clients = g_list_append (x11ic->conn->clients, (gpointer)x11ic);
 
     return 1;
 }
@@ -260,23 +221,27 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 int
 xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 {
-    X11IC *ic;
+    X11IC *x11ic;
 
     LOG (1, "XIM_DESTROY_IC ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
-    g_object_unref (ic->context);
-    ic->conn->clients = g_list_remove (ic->conn->clients, (gconstpointer)ic);
-    g_hash_table_remove (_clients,
+    ibus_im_client_release_input_context (_client, x11ic->ibus_ic);
+    g_hash_table_remove (_ibus_ic_table, x11ic->ibus_ic);
+    g_free (x11ic->ibus_ic);
+
+    x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
+
+    g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    if (ic->client_window)
-        g_object_unref (ic->client_window);
-    if (ic->focus_window)
-        g_object_unref (ic->focus_window);
+    if (x11ic->client_window)
+        g_object_unref (x11ic->client_window);
+    if (x11ic->focus_window)
+        g_object_unref (x11ic->focus_window);
 
-    g_free (ic);
+    g_free (x11ic);
 
     return 1;
 }
@@ -284,14 +249,14 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 int
 xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 {
-    X11IC *ic;
+    X11IC *x11ic;
 
     LOG (1, "XIM_SET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    gtk_im_context_focus_in (ic->context);
+    ibus_im_client_focus_in (_client, x11ic->ibus_ic);
 
     return 1;
 
@@ -300,14 +265,14 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 int
 xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 {
-    X11IC *ic;
+    X11IC *x11ic;
 
     LOG (1, "XIM_UNSET_IC_FOCUS ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
 
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
             (gconstpointer)(unsigned long)call_data->icid);
 
-    gtk_im_context_focus_out (ic->context);
+    ibus_im_client_focus_out (_client, x11ic->ibus_ic);
 
     return 1;
 
@@ -317,16 +282,16 @@ int
 xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 {
 
-    X11IC *ic;
+    X11IC *x11ic;
     XKeyEvent *xevent;
     GdkEventKey event;
     GdkWindow *window;
 
     LOG (1, "XIM_FORWARD_EVENT ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    g_return_val_if_fail (ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 1);
 
     xevent = (XKeyEvent*) &(call_data->event);
     window = gdk_window_foreign_new (xevent->window);
@@ -337,9 +302,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = window;
 
-    g_debug ("send_event = %d", event.send_event);
-
-    if (gtk_im_context_filter_keypress (ic->context, &event)) {
+    if (ibus_im_client_filter_keypress (_client, x11ic->ibus_ic, &event)) {
         g_object_unref (window);
         return 1;
     }
@@ -349,8 +312,8 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     memset (&fe, 0, sizeof (fe));
 
     fe.major_code = XIM_FORWARD_EVENT;
-    fe.icid = ic->icid;
-    fe.connect_id = ic->connect_id;
+    fe.icid = x11ic->icid;
+    fe.connect_id = x11ic->connect_id;
     fe.sync_bit = 0;
     fe.serial_number = 0L;
     fe.event = call_data->event;
@@ -385,17 +348,19 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 static void
 _free_ic (gpointer data, gpointer user_data)
 {
-    X11IC *ic = (X11IC *) data;
+    X11IC *x11ic = (X11IC *) data;
 
-    g_return_if_fail (ic != NULL);
+    g_return_if_fail (x11ic != NULL);
 
-    g_object_unref (ic->context);
+    g_free (x11ic->ibus_ic);
 
     /* Remove the IC from g_client dictionary */
-    g_hash_table_remove (_clients,
-                (gconstpointer)(unsigned long)ic->icid);
+    g_hash_table_remove (_ibus_ic_table,
+                (gconstpointer)(unsigned long)x11ic->ibus_ic);
+    g_hash_table_remove (_x11_ic_table,
+                (gconstpointer)(unsigned long)x11ic->icid);
 
-    g_free (ic);
+    g_free (x11ic);
 }
 
 int
@@ -428,20 +393,20 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 int
 xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 {
-    X11IC *ic;
+    X11IC *x11ic;
     gint i;
 
     LOG (1, "XIM_SET_IC_VALUES ic=%d connect_id=%d", call_data->icid, call_data->connect_id);
 
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    g_return_val_if_fail (ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 1);
 
-    i = _xim_store_ic_values (ic, call_data);
+    i = _xim_store_ic_values (x11ic, call_data);
 
     if (i) {
-        gtk_im_context_set_cursor_location (ic->context, &ic->preedit_area);
+        ibus_im_client_set_cursor_location (_client, x11ic->ibus_ic, &x11ic->preedit_area);
     }
 
     return i;
@@ -451,16 +416,16 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 int
 xim_reset_ic (XIMS xims, IMResetICStruct *call_data)
 {
-    X11IC *ic;
+    X11IC *x11ic;
 
     LOG (1, "XIM_RESET_IC ic=%d connect_id=%d", call_data->icid, call_data->connect_id);
 
-    ic = (X11IC *)g_hash_table_lookup (_clients,
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
-    g_return_val_if_fail (ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 1);
 
-    gtk_im_context_reset (ic->context);
+    ibus_im_client_reset (_client, x11ic->ibus_ic);
 
     return 1;
 }
@@ -564,6 +529,124 @@ _xim_client_disconnected_cb (IBusIMClient *client, gpointer data)
     gtk_main_quit ();
 }
 
+#if 0
+static void
+_client_connected_cb (IBusIMClient *client, gpointer user_data)
+{
+}
+#endif
+
+static void
+_client_disconnected_cb (IBusIMClient *client, gpointer user_data)
+{
+    g_warning ("Connection closed by ibus-daemon");
+    exit(0);
+}
+
+static void
+_client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *string, gpointer user_data)
+{
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    char *clist[1];
+    XTextProperty tp;
+    IMCommitStruct cms;
+
+    clist[0] = (gchar *)string;
+    Xutf8TextListToTextProperty (GDK_DISPLAY (), clist, 1, XCompoundTextStyle, &tp);
+
+    memset (&cms, 0, sizeof (cms));
+    cms.major_code = XIM_COMMIT;
+    cms.icid = x11ic->icid;
+    cms.connect_id = x11ic->connect_id;
+    cms.flag = XimLookupChars;
+    cms.commit_string = (char *)tp.value;
+    IMCommitString (_xims, (XPointer) & cms);
+
+    XFree (tp.value);
+
+}
+
+static void
+_client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event, gpointer user_data)
+{
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    _xim_forward_gdk_event (event);
+}
+
+#if 0
+static void
+_client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
+    PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
+{
+}
+
+static void
+_client_show_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+}
+
+static void
+_client_hide_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+}
+
+static void
+_client_enabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+}
+
+static void
+_client_disabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+{
+}
+#endif
+
+static void
+_init_ibus_client (void)
+{
+    if (_client != NULL)
+        return;
+
+    ibus_im_client_register_type (NULL);
+
+    _ibus_ic_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+    _client = ibus_im_client_new ();
+
+    if (!ibus_im_client_get_connected (_client)) {
+        g_error ("Can not connect to ibus-daemon!");
+    }
+
+#if 0
+    g_signal_connect (_client, "connected",
+                        G_CALLBACK (_client_connected_cb), NULL);
+#endif
+
+g_signal_connect (_client, "disconnected",
+                        G_CALLBACK (_client_disconnected_cb), NULL);
+    g_signal_connect (_client, "commit-string",
+                        G_CALLBACK (_client_commit_string_cb), NULL);
+    g_signal_connect (_client, "forward-event",
+                        G_CALLBACK (_client_forward_event_cb), NULL);
+
+#if 0
+    g_signal_connect (_client, "update-preedit",
+                        G_CALLBACK (_client_update_preedit_cb), NULL);
+    g_signal_connect (_client, "show-preedit",
+                        G_CALLBACK (_client_show_preedit_cb), NULL);
+    g_signal_connect (_client, "hide-preedit",
+                        G_CALLBACK (_client_hide_preedit_cb), NULL);
+    g_signal_connect (_client, "enabled",
+                        G_CALLBACK (_client_enabled_cb), NULL);
+    g_signal_connect (_client, "disabled",
+                        G_CALLBACK (_client_disabled_cb), NULL);
+#endif
+}
+
 static void
 _xim_init_IMdkit ()
 {
@@ -630,21 +713,16 @@ _xim_init_IMdkit ()
     gdk_event_handler_set (_xim_event_cb, NULL,
         _xim_event_destroy_cb);
 
-    ibus_im_client_register_type (NULL);
-    ibus_im_context_register_type (NULL);
-    _client = ibus_im_client_new ();
+    _init_ibus_client ();
 
     if (!ibus_im_client_get_connected (_client)) {
         g_warning ("Can not connect to ibus daemon");
         exit (1);
     }
 
-    g_signal_connect (G_OBJECT (_client),
-        "disconnected",
-        G_CALLBACK (_xim_client_disconnected_cb),
-        NULL);
-
 }
+
+
 
 static void
 _xim_kill_daemon ()
@@ -675,7 +753,7 @@ int error_handler (Display *dpy, XErrorEvent *e)
 {
     g_debug (
         "XError: "
-        "serial=%d error_code=%d request_code=%d minor_code=%d resourceid=%d",
+        "serial=%lu error_code=%d request_code=%d minor_code=%d resourceid=%lu",
         e->serial, e->error_code, e->request_code, e->minor_code, e->resourceid);
     return 1;
 }
@@ -742,7 +820,7 @@ int main (int argc, char **argv)
         }
     }
 
-    _clients = g_hash_table_new (g_direct_hash, g_direct_equal);
+    _x11_ic_table = g_hash_table_new (g_direct_hash, g_direct_equal);
     _connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
     signal (SIGINT, _xim_sighandler);

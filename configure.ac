@@ -180,10 +180,11 @@ client/Makefile
 client/gtk2/Makefile
 client/qt4/Makefile
 client/x11/Makefile
-client/x11/IMdkit/Makefile
 setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop
+util/Makefile
+util/IMdkit/Makefile
 icons/Makefile
 m4/Makefile
 ])
