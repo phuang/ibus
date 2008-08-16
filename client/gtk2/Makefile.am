@@ -26,7 +26,7 @@ INCLUDES = \
 immoduledir = @GTK_IM_MODULEDIR@
 # $(libdir)/gtk-2.0/immodules
 immodule_LTLIBRARIES = im-ibus.la
-im_ibus_la_DEPENDENCIES = libibus-gtk.la
+im_ibus_la_DEPENDENCIES = $(top_builddir)/lib/gtk2/libibus-gtk.la
 im_ibus_la_SOURCES = \
 	ibusim.c \
 	$(NULL)
@@ -38,7 +38,7 @@ im_ibus_la_CFLAGS = \
 im_ibus_la_LDFLAGS = \
 	@GTK2_LIBS@ \
 	@DBUS_LIBS@ \
-	$(builddir)/libibus-gtk.la \
+	$(top_builddir)/lib/gtk2/libibus-gtk.la \
 	-avoid-version \
 	-module \
 	$(NULL)
