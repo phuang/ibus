@@ -68,8 +68,25 @@ struct _IBusIMClient {
 struct _IBusIMClientClass {
   GtkObjectClass parent;
   /* class members */
-  void (* connected)        (IBusIMClient *client);
-  void (* disconnected)     (IBusIMClient *client);
+  void (* connected)        (IBusIMClient   *client);
+  void (* disconnected)     (IBusIMClient   *client);
+  void (* commit_string)    (IBusIMClient   *client,
+                             const gchar    *ic,
+                             const gchar    *text);
+  void (* update_preedit)   (IBusIMClient   *client,
+                             const gchar    *ic,
+                             const gchar    *text,
+                             gpointer       *attrs,
+                             gint            cursor_pos,
+                             gboolean        visible);
+  void (* show_preedit)     (IBusIMClient   *client,
+                             const gchar    *ic);
+  void (* hide_preedit)     (IBusIMClient   *client,
+                             const gchar    *ic);
+  void (* enabled)          (IBusIMClient   *client,
+                             const gchar    *ic);
+  void (* disabled)         (IBusIMClient   *client,
+                             const gchar    *ic);
 };
 
 extern IBusIMClient                *_client;

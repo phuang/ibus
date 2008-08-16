@@ -36,12 +36,18 @@
 #define HAVE_INOTIFY
 #  include <sys/inotify.h>
 #endif
-
+#include "ibusmarshalers.h"
 #include "ibusimclient.h"
 
 enum {
     CONNECTED,
     DISCONNECTED,
+    COMMIT_STRING,
+    UPDATE_PREEDIT,
+    SHOW_PREEDIT,
+    HIDE_PREEDIT,
+    ENABLED,
+    DISABLED,
     LAST_SIGNAL,
 };
 
@@ -197,7 +203,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_SIGNAL_RUN_FIRST,
             G_STRUCT_OFFSET (IBusIMClientClass, connected),
             NULL, NULL,
-            g_cclosure_marshal_VOID__VOID,
+            ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
     client_signals[DISCONNECTED] =
@@ -206,8 +212,79 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_SIGNAL_RUN_FIRST,
             G_STRUCT_OFFSET (IBusIMClientClass, disconnected),
             NULL, NULL,
-            g_cclosure_marshal_VOID__VOID,
+            ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+
+    client_signals[COMMIT_STRING] =
+        g_signal_new (I_("commit-string"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, commit_string),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_STRING,
+            G_TYPE_NONE, 2,
+            G_TYPE_STRING,
+            G_TYPE_STRING);
+
+    client_signals[UPDATE_PREEDIT] =
+        g_signal_new (I_("update-preedit"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, update_preedit),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_STRING_POINTER_INT_BOOLEAN,
+            G_TYPE_NONE, 5,
+            G_TYPE_STRING,
+            G_TYPE_STRING,
+            G_TYPE_POINTER,
+            G_TYPE_INT,
+            G_TYPE_BOOLEAN
+            );
+
+    client_signals[SHOW_PREEDIT] =
+        g_signal_new (I_("show-preedit"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, show_preedit),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 1,
+            G_TYPE_STRING);
+
+    client_signals[HIDE_PREEDIT] =
+        g_signal_new (I_("hide-preedit"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, hide_preedit),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 1,
+            G_TYPE_STRING);
+
+    client_signals[ENABLED] =
+        g_signal_new (I_("enabled"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, enabled),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 1,
+            G_TYPE_STRING);
+
+    client_signals[DISABLED] =
+        g_signal_new (I_("disabled"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_FIRST,
+            G_STRUCT_OFFSET (IBusIMClientClass, disabled),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 1,
+            G_TYPE_STRING);
+
+
+
+
+
 }
 
 void ibus_im_client_connected (IBusIMClient *client)

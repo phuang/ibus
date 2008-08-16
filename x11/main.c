@@ -337,6 +337,8 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = window;
 
+    g_debug ("send_event = %d", event.send_event);
+
     if (gtk_im_context_filter_keypress (ic->context, &event)) {
         g_object_unref (window);
         return 1;
