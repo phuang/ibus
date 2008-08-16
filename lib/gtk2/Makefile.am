@@ -23,6 +23,11 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
+BUILT_SOURCES = \
+	ibusmarshalers.h \
+	ibusmarshalers.c \
+	$(NULL)
+
 lib_LTLIBRARIES = libibus-gtk.la
 libibus_gtk_la_SOURCES = \
 	ibusmarshalers.h \
@@ -59,3 +64,4 @@ EXTRA_DIST = \
 	ibusmarshalers.list \
 	$(NULL)
 
+CLEANFILES = $(BUILT_SOURCES) stamp-ibusmarshalers.h
