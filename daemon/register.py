@@ -25,6 +25,8 @@ import signal
 import glob
 import ibus
 
+IBUS_DATAROOTDIR = os.getenv("IBUS_DATAROOTDIR")
+
 class Engine(ibus.Object):
     def __init__(self, name, lang = "other", icon = "", author = "", credits = "", _exec = "", pid = 0):
         super(Engine, self).__init__()
@@ -122,10 +124,7 @@ class Register(ibus.Object):
                 break
 
     def __load(self):
-        _file = path.abspath(__file__)
-        _dir = path.dirname(_file) + "./../engine"
-        _dir = path.abspath(_dir)
-        _dir = "/usr/share/ibus/engine"
+        _dir = path.join(IBUS_DATAROOTDIR, "ibus/engine")
         for _file in glob.glob(_dir + "/*.engine"):
             engine = self.__load_engine(_file)
             if (engine.lang, engine.name) in self.__engines:
