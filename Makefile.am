@@ -25,7 +25,6 @@ SUBDIRS = \
 	ibus \
 	launcher \
 	panel \
-	engine \
 	lib \
 	client \
 	setup \

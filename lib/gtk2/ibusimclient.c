@@ -169,7 +169,7 @@ ibus_im_client_new (void)
 {
     IBusIMClient *client;
 
-    client = IBUS_IM_CLIENT(g_object_new (IBUS_TYPE_IM_CLIENT, NULL));
+    client = IBUS_IM_CLIENT (g_object_new (IBUS_TYPE_IM_CLIENT, NULL));
 
     return client;
 }
