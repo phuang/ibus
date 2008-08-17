@@ -232,11 +232,11 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_SIGNAL_RUN_FIRST,
             G_STRUCT_OFFSET (IBusIMClientClass, update_preedit),
             NULL, NULL,
-            ibus_marshal_VOID__STRING_STRING_POINTER_INT_BOOLEAN,
+            ibus_marshal_VOID__STRING_STRING_BOXED_INT_BOOLEAN,
             G_TYPE_NONE, 5,
             G_TYPE_STRING,
             G_TYPE_STRING,
-            G_TYPE_POINTER,
+            PANGO_TYPE_ATTR_LIST,
             G_TYPE_INT,
             G_TYPE_BOOLEAN
             );
