@@ -116,7 +116,7 @@ static DBusHandlerResult
                                             void                *user_data);
 
 static GType ibus_type_im_client = 0;
-static GtkObjectClass *parent_class = NULL;
+static GObjectClass *parent_class = NULL;
 
 
 GType
@@ -149,14 +149,14 @@ ibus_im_client_register_type (GTypeModule *type_module)
         if (type_module) {
             ibus_type_im_client =
                 g_type_module_register_type (type_module,
-                    GTK_TYPE_OBJECT,
+                    G_TYPE_OBJECT,
                     "IBusIMClient",
                     &ibus_im_client_info,
                     (GTypeFlags)0);
         }
         else {
             ibus_type_im_client =
-                g_type_register_static (GTK_TYPE_OBJECT,
+                g_type_register_static (G_TYPE_OBJECT,
                     "IBusIMClient",
                     &ibus_im_client_info,
                     (GTypeFlags)0);
@@ -177,10 +177,9 @@ ibus_im_client_new (void)
 static void
 ibus_im_client_class_init     (IBusIMClientClass *klass)
 {
-    /* GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass); */
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-    parent_class = (GtkObjectClass *) g_type_class_peek_parent (klass);
+    parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusIMClientPrivate));
 
@@ -626,7 +625,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     gchar *string = NULL;
     PangoAttrList *attrs = NULL;
     int cursor = 0;
-    gboolean visible = False;
+    gboolean visible = FALSE;
 
     if (!dbus_message_iter_init (message, &iter)) {
         g_warning ("The UpdatePreedit signal does have args!");
@@ -1044,7 +1043,7 @@ error:
         dbus_pending_call_cancel (pendingcall);
     if (user_data && free_function)
         free_function (user_data);
-    return False;
+    return FALSE;
 }
 
 inline static gboolean

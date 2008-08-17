@@ -36,12 +36,12 @@ libibus_gtk_la_SOURCES = \
 	ibusimclient.c \
 	$(NULL)
 libibus_gtk_la_CFLAGS = \
-	@GTK2_CFLAGS@ \
+	@GDK2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
 libibus_gtk_la_LDFLAGS = \
-	@GTK2_LIBS@ \
+	@GDK2_LIBS@ \
 	@DBUS_LIBS@ \
 	$(NULL)
 

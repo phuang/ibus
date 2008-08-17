@@ -20,7 +20,7 @@
 #ifndef __IBUS_IM_CLIENT_H_
 #define __IBUS_IM_CLIENT_H_
 
-#include <gtk/gtk.h>
+#include <glib-object.h>
 /*
  * Type macros.
  */
@@ -29,15 +29,15 @@
 #define IBUS_TYPE_IM_CLIENT             \
     (ibus_im_client_get_type ())
 #define IBUS_IM_CLIENT(obj)             \
-    (GTK_CHECK_CAST ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClient))
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClient))
 #define IBUS_IM_CLIENT_CLASS(klass)     \
-    (GTK_CHECK_CLASS_CAST ((klass), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
+    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
 #define IBUS_IS_IM_CLIENT(obj)          \
-    (GTK_CHECK_TYPE ((obj), IBUS_TYPE_IM_CLIENT))
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_IM_CLIENT))
 #define IBUS_IS_IM_CLIENT_CLASS(klass)  \
-    (GTK_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_IM_CLIENT))
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_IM_CLIENT))
 #define IBUS_IM_CLIENT_GET_CLASS(obj)   \
-    (GTK_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
+    (G_TYPE_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
 
 #if 0
 #define DEBUG_FUNCTION_IN   g_debug("%s IN", __FUNCTION__);
@@ -59,13 +59,13 @@ typedef struct _IBusIMClientClass IBusIMClientClass;
 typedef struct _IBusIMClientPrivate IBusIMClientPrivate;
 
 struct _IBusIMClient {
-  GtkObject parent;
+  GObject parent;
   /* instance members */
   IBusIMClientPrivate *priv;
 };
 
 struct _IBusIMClientClass {
-  GtkObjectClass parent;
+  GObjectClass parent;
   /* class members */
   void (* connected)        (IBusIMClient   *client);
   void (* disconnected)     (IBusIMClient   *client);
