@@ -69,6 +69,10 @@ class Setup(object):
         self.__bus = None
         try:
             self.__bus = ibus.Bus()
+            self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
+            self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
+            self.__bus.config_add_watch("/general")
+            self.__bus.config_add_watch("/panel")
         except:
             while self.__bus == None:
                 message = _("IBus daemon is not started. Do you want to start it now?")
@@ -325,6 +329,16 @@ class Setup(object):
         self.__bus.config_set_value(
             CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION,
             self.__combobox_lookup_table_orientation.get_active())
+
+    def __config_value_changed_cb(self, bus, key, value):
+        if key == CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION:
+            item = self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0)
+            if item != 0 and item != 1:
+                item = 0
+            self.__combobox_lookup_table_orientation.set_active(item)
+
+    def __config_reloaded_cb(self, bus):
+        pass
 
     def run(self):
         return self.__dialog.run()
