@@ -61,7 +61,8 @@ void    ibus_im_context_register_type
                                 (GTypeModule    *type_module);
 void    ibus_im_context_shutdown
                                 (void);
-gchar   *ibus_im_context_get_ic (IBusIMContext  *context);
+const gchar
+        *ibus_im_context_get_ic (IBusIMContext  *context);
 void    ibus_im_context_set_ic  (IBusIMContext  *context,
                                  const gchar    *ic);
 void    ibus_im_context_enable  (IBusIMContext  *context);

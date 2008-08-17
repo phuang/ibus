@@ -181,8 +181,6 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
 static void
 ibus_im_context_init     (IBusIMContext *obj)
 {
-    DEBUG_FUNCTION_IN;
-
     _init_ibus_client ();
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
@@ -206,6 +204,7 @@ ibus_im_context_init     (IBusIMContext *obj)
     priv->cursor_area.width = 0;
     priv->cursor_area.height = 0;
 
+    priv->ic = NULL;
     priv->has_focus = FALSE;
 
 
@@ -236,7 +235,8 @@ ibus_im_context_init     (IBusIMContext *obj)
 static void
 ibus_im_context_finalize (GObject *obj)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (obj != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (obj));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (obj);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -269,7 +269,8 @@ static gboolean
 ibus_im_context_filter_keypress (GtkIMContext *context,
                 GdkEventKey  *event)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_val_if_fail (context != NULL, FALSE);
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (context), FALSE);
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -283,7 +284,8 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 static void
 ibus_im_context_focus_in (GtkIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -299,7 +301,8 @@ ibus_im_context_focus_in (GtkIMContext *context)
 static void
 ibus_im_context_focus_out (GtkIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -313,7 +316,8 @@ ibus_im_context_focus_out (GtkIMContext *context)
 static void
 ibus_im_context_reset (GtkIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -330,7 +334,8 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
                    PangoAttrList **attrs,
                    gint           *cursor_pos)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -366,7 +371,8 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 static void
 ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -382,7 +388,8 @@ ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
 static void
 ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -403,7 +410,8 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 static void
 ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
@@ -420,7 +428,7 @@ _client_connected_cb (IBusIMClient *client, gpointer user_data)
     const gchar *ic;
     IBusIMContext *context;
 
-    for (i = 0; i <= _im_context_array->len; i++) {
+    for (i = 0; i < _im_context_array->len; i++) {
         context = g_array_index (_im_context_array, IBusIMContext *, i);
         ic = ibus_im_client_create_input_context (client);
         ibus_im_context_set_ic (context, ic);
@@ -435,7 +443,7 @@ _client_disconnected_cb (IBusIMClient *client, gpointer user_data)
     IBusIMContext *context;
 
     g_hash_table_remove_all (_ic_table);
-    for (i = 0; i <= _im_context_array->len; i++) {
+    for (i = 0; i < _im_context_array->len; i++) {
         context = g_array_index (_im_context_array, IBusIMContext *, i);
         ibus_im_context_set_ic (context, NULL);
     }
@@ -574,7 +582,8 @@ _init_ibus_client (void)
 static void
 _slave_commit_cb (GtkIMContext *slave, gchar *string, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     /* IBusIMContextPrivate *priv = context->priv; */
 #if 0
@@ -587,7 +596,9 @@ _slave_commit_cb (GtkIMContext *slave, gchar *string, IBusIMContext *context)
 static void
 _slave_preedit_changed_cb (GtkIMContext *slave, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (priv->enable && priv->ic)
@@ -599,7 +610,9 @@ _slave_preedit_changed_cb (GtkIMContext *slave, IBusIMContext *context)
 static void
 _slave_preedit_start_cb (GtkIMContext *slave, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (priv->enable && priv->ic)
@@ -610,7 +623,9 @@ _slave_preedit_start_cb (GtkIMContext *slave, IBusIMContext *context)
 static void
 _slave_preedit_end_cb (GtkIMContext *slave, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (priv->enable && priv->ic)
@@ -621,7 +636,9 @@ _slave_preedit_end_cb (GtkIMContext *slave, IBusIMContext *context)
 static void
 _slave_retrieve_surrounding_cb (GtkIMContext *slave, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (priv->enable && priv->ic)
@@ -632,7 +649,9 @@ _slave_retrieve_surrounding_cb (GtkIMContext *slave, IBusIMContext *context)
 static void
 _slave_delete_surrounding_cb (GtkIMContext *slave, gint a1, gint a2, IBusIMContext *context)
 {
-    DEBUG_FUNCTION_IN;
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (priv->enable && priv->ic)
@@ -640,9 +659,12 @@ _slave_delete_surrounding_cb (GtkIMContext *slave, gint a1, gint a2, IBusIMConte
     g_signal_emit_by_name (context, "delete-surrounding", a1, a2);
 }
 
-gchar *
+const gchar *
 ibus_im_context_get_ic (IBusIMContext *context)
 {
+    g_return_val_if_fail (context != NULL, NULL);
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (context), NULL);
+
     IBusIMContextPrivate *priv = context->priv;
     return priv->ic;
 }
@@ -650,6 +672,9 @@ ibus_im_context_get_ic (IBusIMContext *context)
 void
 ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 {
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     g_free (priv->ic);
@@ -666,6 +691,9 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
 void
 ibus_im_context_show_preedit (IBusIMContext *context)
 {
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
     if (priv->preedit_visible)
         return;
@@ -678,6 +706,9 @@ ibus_im_context_show_preedit (IBusIMContext *context)
 void
 ibus_im_context_hide_preedit (IBusIMContext *context)
 {
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
     IBusIMContextPrivate *priv = context->priv;
 
     if (!priv->preedit_visible)
