@@ -475,7 +475,13 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
         g_get_current_time (&time);
         event->key.time = time.tv_sec * 1000 + time.tv_usec / 1000;
     }
-    gdk_event_put (event);
+    if (event->any.window == NULL) {
+        event->any.window = context->priv->client_window;
+        gdk_event_put (event);
+        event->any.window = NULL;
+    }
+    else
+        gdk_event_put (event);
 }
 
 static void
