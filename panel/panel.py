@@ -198,6 +198,7 @@ class Panel(ibus.PanelBase):
         item.connect("activate",
             self.__sys_menu_item_activate_cb, gtk.STOCK_PREFERENCES)
         menu.add(item)
+        menu.add(gtk.SeparatorMenuItem())
         item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         item.connect("activate",
             self.__sys_menu_item_activate_cb, gtk.STOCK_QUIT)
