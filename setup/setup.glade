@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Thu Aug  7 09:58:25 2008 -->
+<!--Generated with glade3 3.4.4 on Sun Aug 17 22:06:34 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
@@ -52,6 +52,94 @@
               </packing>
             </child>
             <child>
+              <widget class="GtkTable" id="table1">
+                <property name="visible">True</property>
+                <property name="n_rows">9</property>
+                <property name="n_columns">2</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <widget class="GtkComboBox" id="combobox_lookup_table_orientation">
+                    <property name="visible">True</property>
+                    <property name="active">0</property>
+                    <property name="items" translatable="yes">Horizontal
+Vertical</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label6">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Lookup table orientation</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label4">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Panel</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+                <property name="position">1</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
                 <child>
@@ -70,10 +158,13 @@
                       </widget>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -83,25 +174,25 @@
               </widget>
               <packing>
                 <property name="type">tab</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox3">
+              <widget class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
+                <property name="label" translatable="yes">IBus
+
+Homepage: http://code.google.com/p/ibus
+Author: Huang Peng &lt;shawn.p.huang@gmail.com&gt;
+
+
+
+</property>
+                <property name="justify">GTK_JUSTIFY_CENTER</property>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -111,7 +202,7 @@
               </widget>
               <packing>
                 <property name="type">tab</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>

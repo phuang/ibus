@@ -46,4 +46,8 @@ EXTRA_DIST = \
 	$(NULL)
 
 test:
-	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
+	$(ENV) \
+		PYTHONPATH=$(top_srcdir) \
+		IBUS_PREFIX="/usr" \
+		$(PYTHON) \
+		$(srcdir)/main.py

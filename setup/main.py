@@ -54,6 +54,7 @@ N_ = lambda a : a
 ) = range(8)
 
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
+CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
 
 class Setup(object):
     def __flush_gtk_events(self):
@@ -107,15 +108,26 @@ class Setup(object):
 
 
         self.__dialog = self.__xml.get_widget("dialog_setup")
+
+        # auto start ibus
         self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
         self.__checkbutton_auto_start.set_active(self.__is_auto_start())
         self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
+
+        # lookup table orientation
+        self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
+        self.__combobox_lookup_table_orientation.set_active(
+            self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0))
+        self.__combobox_lookup_table_orientation.connect("changed",
+            self.__combobox_lookup_table_orientation_changed_cb)
+        
+        # engines tree
         self.__tree = self.__xml.get_widget("treeview_engines")
         self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
         model = self.__create_model()
         self.__tree.set_model(model)
 
-        # column for holiday names
+        # column for engine
         column = gtk.TreeViewColumn()
         column.set_title(_("Engine"))
 
@@ -134,7 +146,7 @@ class Setup(object):
 
         self.__tree.append_column(column)
 
-        # column for started names
+        # column for started
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', COLUMN_ENABLE)
         renderer.set_property("xalign", 0.5)
@@ -144,7 +156,7 @@ class Setup(object):
         column = gtk.TreeViewColumn(_("Started"), renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
 
-        # column for preload names
+        # column for preload
         renderer = gtk.CellRendererToggle()
         renderer.set_data('column', COLUMN_PRELOAD)
         renderer.set_property("xalign", 0.5)
@@ -153,11 +165,9 @@ class Setup(object):
         column = gtk.TreeViewColumn(_("Preload"), renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
         self.__tree.append_column(column)
 
-
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
-
 
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):
@@ -290,7 +300,7 @@ class Setup(object):
 
     def __is_auto_start(self):
         link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_LIBEXECDIR"), "share/applications/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/ibus.desktop")
 
         if not path.exists(link_file):
             return False
@@ -310,6 +320,11 @@ class Setup(object):
             pass
         if self.__checkbutton_auto_start.get_active():
             os.symlink(ibus_desktop, link_file)
+
+    def __combobox_lookup_table_orientation_changed_cb(self, combobox):
+        self.__bus.config_set_value(
+            CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION,
+            self.__combobox_lookup_table_orientation.get_active())
 
     def run(self):
         return self.__dialog.run()
