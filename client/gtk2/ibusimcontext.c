@@ -228,7 +228,8 @@ ibus_im_context_init     (IBusIMContext *obj)
     if (ibus_im_client_get_connected (_client)) {
         const gchar *ic = ibus_im_client_create_input_context (_client);
         ibus_im_context_set_ic (ibus, ic);
-        g_hash_table_insert (_ic_table, ibus_im_context_get_ic (ibus), ibus);
+        g_hash_table_insert (_ic_table,
+            (gpointer) ibus_im_context_get_ic (ibus), (gpointer) ibus);
     }
 }
 
@@ -432,7 +433,8 @@ _client_connected_cb (IBusIMClient *client, gpointer user_data)
         context = g_array_index (_im_context_array, IBusIMContext *, i);
         ic = ibus_im_client_create_input_context (client);
         ibus_im_context_set_ic (context, ic);
-        g_hash_table_insert (_ic_table, ibus_im_context_get_ic (context), context);
+        g_hash_table_insert (_ic_table,
+            (gpointer) ibus_im_context_get_ic (context), (gpointer) context);
     }
 }
 
@@ -467,6 +469,12 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     g_return_if_fail (context != NULL);
 
     event->any.send_event = TRUE;
+    if (event->type == GDK_KEY_PRESS ||
+        event->type == GDK_KEY_RELEASE) {
+        GTimeVal time;
+        g_get_current_time (&time);
+        event->key.time = time.tv_sec * 1000 + time.tv_usec / 1000;
+    }
     gdk_event_put (event);
 }
 
