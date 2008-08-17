@@ -147,6 +147,9 @@ class Bus(ibus.Object):
     def register_list_engines(self):
         return self.__bus.RegisterListEngines()
 
+    def register_reload_engines(self):
+        return self.__bus.RegisterReloadEngines()
+
     def register_start_engine(self, lang, name):
         return self.__bus.RegisterStartEngine(lang, name)
 

@@ -117,6 +117,9 @@ class Register(ibus.Object):
             engines.append((e.name, e.lang, e.icon, e.author, e.credits, e._exec, e.pid != 0))
         return engines
 
+    def reload_engines(self):
+        self.__load()
+
     def __sigchld_cb(self, sig, f):
         pid, state = os.wait()
         for key, engine in self.__engines.items():

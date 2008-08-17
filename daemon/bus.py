@@ -427,6 +427,9 @@ class IBus(ibus.Object):
     def register_list_engines(self, conn):
         return self.__register.list_engines()
 
+    def register_reload_engines(self, conn):
+        return self.__register.reload_engines()
+
     def register_start_engine(self, lang, name, conn):
         return self.__register.start_engine(lang, name)
 
@@ -556,6 +559,9 @@ class IBusProxy(ibus.IIBus):
 
     def RegisterListEngines(self, dbusconn):
         return self.__ibus.register_list_engines(self.__conn)
+
+    def RegisterReloadEngines(self, dbusconn):
+        return self.__ibus.register_reload_engines(self.__conn)
 
     def RegisterStartEngine(self, lang, name, dbusconn):
         return self.__ibus.register_start_engine(lang, name, self.__conn)

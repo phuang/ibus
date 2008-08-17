@@ -113,6 +113,9 @@ class IIBus(dbus.service.Object):
     @method(out_signature = "a(ssssssb)")
     def RegisterListEngines(self, dbusconn): pass
 
+    @method()
+    def RegisterReloadEngines(self, dbusconn): pass
+
     @method(in_signature = "ss")
     def RegisterStartEngine(self, lang, name, dbusconn): pass
 
