@@ -736,10 +736,8 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     dbus_message_iter_get_basic (&iter, &visible);
     dbus_message_iter_next (&iter);
 
-    {
-        g_signal_emit (client, client_signals[UPDATE_PREEDIT], 0,
+    g_signal_emit (client, client_signals[UPDATE_PREEDIT], 0,
                 ic, string, attrs, cursor, visible);
-    }
     pango_attr_list_unref (attrs);
 
 }
