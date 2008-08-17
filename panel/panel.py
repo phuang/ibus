@@ -39,6 +39,11 @@ class Panel(ibus.PanelBase):
         self.__setup_pid = 0
         self.__setup_cmd = path.join(os.getenv("IBUS_PREFIX"), "bin/ibus-setup")
 
+        # connect bus signal
+        self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
+        self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
+        self.__bus.config_add_watch("/panel")
+
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
         dir = path.dirname(__file__)
@@ -54,6 +59,7 @@ class Panel(ibus.PanelBase):
         self.__language_bar.show_all()
 
         self.__candidate_panel = CandidatePanel()
+        self.__config_load_lookup_table_orientation()
         self.__candidate_panel.connect("cursor-up",
                         lambda widget: self.cursor_up())
         self.__candidate_panel.connect("cursor-down",
@@ -169,6 +175,22 @@ class Panel(ibus.PanelBase):
 
     def do_destroy(self):
         gtk.main_quit()
+
+    def __config_load_lookup_table_orientation(self):
+        value = self.__bus.config_get_value("/panel/lookup_table_orientation", 0)
+        if value != 0 and value != 1:
+            value = 0
+        if value == 0:
+            self.__candidate_panel.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+        else:
+            self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
+
+    def __config_value_changed_cb(self, bus, key, value):
+        if key == "/panel/lookup_table_orientation":
+            self.__config_load_lookup_table_orientation()
+
+    def __config_reloaded_cb(self, bus):
+        pass
 
     def __create_sys_menu(self):
         menu = gtk.Menu()
