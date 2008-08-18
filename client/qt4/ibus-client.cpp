@@ -42,7 +42,7 @@
 
 
 IBusClient::IBusClient ()
-	: ibus (NULL), focused_context (NULL)
+	: ibus (NULL)
 {
 	username = getlogin ();
 	if (username.isNull ())
@@ -220,10 +220,6 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XE
 	quint32 state;
 	bool is_press;
 
-	if (focused_context != ctx) {
-		focusIn (ctx);
-	}
-
 	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return false;
 
@@ -260,10 +256,6 @@ void
 IBusClient::setCursorLocation (IBusInputContext *ctx, QRect &rect)
 {
 	Q_ASSERT (ctx);
-
-	if (focused_context != ctx) {
-		focusIn (ctx);
-	}
 
 	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return;
@@ -307,9 +299,6 @@ void
 IBusClient::focusIn (IBusInputContext *ctx)
 {
 	Q_ASSERT (ctx);
-	if (focused_context != ctx && focused_context != NULL)
-		focusOut (focused_context);
-	focused_context = ctx;
 
 	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return;
@@ -331,11 +320,6 @@ IBusClient::focusOut (IBusInputContext *ctx)
 {
 	Q_ASSERT (ctx);
 
-	if (focused_context != ctx)
-		return;
-
-	focused_context = NULL;
-
 	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
 		return;
 
@@ -350,6 +334,28 @@ IBusClient::focusOut (IBusInputContext *ctx)
 		qWarning() << message.errorMessage ();
 	}
 }
+
+void
+IBusClient::setCapabilities (IBusInputContext *ctx, int caps)
+{
+	Q_ASSERT (ctx);
+
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+		return;
+
+	QDBusMessage message = QDBusMessage::createMethodCall (
+							IBUS_NAME,
+							IBUS_PATH,
+							IBUS_INTERFACE,
+							"SetCapabilities");
+	message << ctx->getIC ();
+	message << caps;
+	message = ibus->call (message);
+	if (message.type() == QDBusMessage::ErrorMessage) {
+		qWarning() << message.errorMessage ();
+	}
+}
+
 void
 IBusClient::widgetDestroyed (IBusInputContext * /* ctx */, QWidget * /* widget */)
 {

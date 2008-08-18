@@ -28,7 +28,11 @@
 typedef QInputMethodEvent::Attribute QAttribute;
 
 IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client, QString &ic)
-	: QInputContext (parent), client (client), ic (ic), preedit_visible (false)
+	: QInputContext (parent),
+	  client (client),
+	  ic (ic),
+	  preedit_visible (false),
+	  has_focus (false)
 {
 }
 
@@ -132,9 +136,15 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 {
 	QInputContext::setFocusWidget (widget);
 	if (widget == NULL) {
+		has_focus = false;
 		client->focusOut (this);
 	}
 	else {
+		if (widget->inherits("KateViewInternal"))
+			client->setCapabilities (this, 0);
+		else
+			client->setCapabilities (this, 1);
+		has_focus = true;
 		client->focusIn (this);
 		update ();
 	}
@@ -151,8 +161,8 @@ IBusInputContext::widgetDestroyed (QWidget *widget)
 bool
 IBusInputContext::x11FilterEvent (QWidget *keywidget, XEvent *xevent)
 {
-	if (client->x11FilterEvent (this, keywidget, xevent))
-		return true;
+	if (has_focus && client->x11FilterEvent (this, keywidget, xevent))
+			return true;
 	return QInputContext::x11FilterEvent (keywidget, xevent);
 }
 #endif

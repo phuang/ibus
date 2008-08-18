@@ -58,6 +58,7 @@ public:
 	void focusIn (IBusInputContext *ctx);
 	void focusOut (IBusInputContext *ctx);
 	void reset (IBusInputContext *ctx);
+	void setCapabilities (IBusInputContext *ctx, int caps);
 
 private slots:
 	void slotDirectoryChanged (const QString &path);
@@ -78,7 +79,6 @@ private:
 	QFileSystemWatcher watcher;
 	QList <IBusInputContext *> context_list;
 	QHash <QString, IBusInputContext *>context_dict;
-	IBusInputContext *focused_context;
 	QString username;
 	QString session;
 	QString ibus_addr;

@@ -62,6 +62,7 @@ private:
 	QString preedit_string;
 	bool preedit_visible;
 	int preedit_cursor_pos;
+	bool has_focus;
 	QList <QList <quint32> > preedit_attrs;
 	QRect cursor_location;
 };
