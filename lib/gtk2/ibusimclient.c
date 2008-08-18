@@ -75,6 +75,9 @@ struct _IBusIMClientPrivate {
 
 };
 
+typedef struct _KeyPressCallData KeyPressCallData;
+
+
 /* variables */
 static guint            client_signals[LAST_SIGNAL] = { 0 };
 
@@ -114,6 +117,15 @@ static DBusHandlerResult
                                            (DBusConnection      *connection,
                                             DBusMessage         *message,
                                             void                *user_data);
+static void     _ibus_filter_keypress_reply_cb
+                                           (DBusPendingCall     *pending,
+                                            void                *user_data);
+static KeyPressCallData *
+                _key_press_call_data_new   (IBusIMClient        *client,
+                                            const gchar         *ic,
+                                            GdkEvent            *event);
+static void     _key_press_call_data_free  (KeyPressCallData    *call_data);
+
 
 static GType _ibus_type_im_client = 0;
 static GObjectClass *_parent_class = NULL;
@@ -401,28 +413,7 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
     }
 }
 
-/*
- * create a ibus input context
- */
-const gchar *
-ibus_im_client_create_input_context (IBusIMClient *client)
-{
-    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), NULL);
 
-    IBusIMClientPrivate *priv = client->priv;
-
-    if (priv->ibus == NULL)
-        return NULL;
-
-    const gchar *app_name = g_get_application_name ();
-    gchar *ic = NULL;
-    _ibus_call_with_reply_and_block (priv->ibus, "CreateInputContext",
-                DBUS_TYPE_STRING, &app_name,
-                DBUS_TYPE_INVALID,
-                DBUS_TYPE_STRING, &ic,
-                DBUS_TYPE_INVALID);
-    return ic;
-}
 
 #ifdef HAVE_INOTIFY
 static gboolean
@@ -460,6 +451,7 @@ _ibus_im_client_inotify_cb (GIOChannel *source, GIOCondition condition, IBusIMCl
     return TRUE;
 }
 #endif
+
 
 static void
 ibus_im_client_init (IBusIMClient *obj)
@@ -595,6 +587,188 @@ ibus_im_client_finalize (GObject *obj)
     G_OBJECT_CLASS(_parent_class)->finalize (obj);
 
 }
+
+/*
+ * create an input context
+ */
+const gchar *
+ibus_im_client_create_input_context (IBusIMClient *client)
+{
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), NULL);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    if (priv->ibus == NULL)
+        return NULL;
+
+    const gchar *app_name = g_get_application_name ();
+    gchar *ic = NULL;
+    _ibus_call_with_reply_and_block (priv->ibus, "CreateInputContext",
+                DBUS_TYPE_STRING, &app_name,
+                DBUS_TYPE_INVALID,
+                DBUS_TYPE_STRING, &ic,
+                DBUS_TYPE_INVALID);
+    return ic;
+}
+
+/*
+ * release an input context
+ */
+void
+ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    _ibus_call_with_reply_and_block (priv->ibus, "ReleaseInputContext",
+                DBUS_TYPE_STRING, &ic,
+                DBUS_TYPE_INVALID,
+                DBUS_TYPE_INVALID);
+
+}
+
+
+gboolean
+ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventKey *event)
+{
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT(client), FALSE);
+    g_return_val_if_fail (ic != NULL, FALSE);
+    g_return_val_if_fail (event != NULL, FALSE);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    guint state = event->state & GDK_MODIFIER_MASK;
+    gboolean is_press = event->type == GDK_KEY_PRESS;
+
+    if (event->send_event) {
+        return FALSE;
+    }
+
+    /* Call IBus ProcessKeyEvent method */
+    if (!_ibus_call_with_reply (priv->ibus,
+            "ProcessKeyEvent",
+            _ibus_filter_keypress_reply_cb,
+            _key_press_call_data_new (client, ic, (GdkEvent *)event),
+            (DBusFreeFunction)_key_press_call_data_free,
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_UINT32, &event->keyval,
+            DBUS_TYPE_BOOLEAN, &is_press,
+            DBUS_TYPE_UINT32, &state,
+            DBUS_TYPE_INVALID))
+        return FALSE;
+
+    return TRUE;
+}
+
+
+void
+ibus_im_client_focus_in (IBusIMClient *client, const gchar *ic)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    /* Call IBus FocusIn method */
+     _ibus_call_with_reply_and_block (priv->ibus,
+            "FocusIn",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+}
+
+void
+ibus_im_client_focus_out (IBusIMClient *client, const gchar *ic)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    /* Call IBus FocusOut method */
+    _ibus_call_with_reply_and_block (priv->ibus,
+            "FocusOut",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+
+}
+
+void
+ibus_im_client_reset (IBusIMClient *client, const gchar *ic)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    /* Call IBus Reset method */
+    _ibus_call_with_reply_and_block (priv->ibus,
+            "Reset",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+
+}
+
+void
+ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRectangle *area)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+    g_return_if_fail (area != NULL);
+
+    _ibus_call_with_reply_and_block (client->priv->ibus,
+            "SetCursorLocation",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INT32, &area->x,
+            DBUS_TYPE_INT32, &area->y,
+            DBUS_TYPE_INT32, &area->width,
+            DBUS_TYPE_INT32, &area->height,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+}
+
+void
+ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean use_preedit)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+    g_return_if_fail (ic != NULL);
+
+    _ibus_call_with_reply_and_block (client->priv->ibus,
+            "SetCapabilities",
+            DBUS_TYPE_STRING, &ic,
+            DBUS_TYPE_INT32, &use_preedit,
+            DBUS_TYPE_INVALID,
+            DBUS_TYPE_INVALID);
+}
+
+void
+ibus_im_client_kill_daemon (IBusIMClient *client)
+{
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+
+    IBusIMClientPrivate *priv = client->priv;
+    _ibus_call_with_reply_and_block (priv->ibus, "Kill",
+                DBUS_TYPE_INVALID,
+                DBUS_TYPE_INVALID);
+}
+
+
+gboolean
+ibus_im_client_get_connected (IBusIMClient *client)
+{
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), FALSE);
+
+    IBusIMClientPrivate *priv = client->priv;
+    if (priv->ibus == NULL)
+        return FALSE;
+    return dbus_connection_get_is_connected (priv->ibus);
+}
+
+
 
 static void
 _ibus_signal_commit_string_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
@@ -1096,11 +1270,11 @@ _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
     return retval;
 }
 
-typedef struct {
+struct _KeyPressCallData {
     IBusIMClient *client;
     gchar *ic;
     GdkEvent event;
-}KeyPressCallData;
+};
 
 static KeyPressCallData *
 _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event)
@@ -1158,155 +1332,4 @@ _ibus_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
     }
 }
 
-gboolean
-ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventKey *event)
-{
-    g_return_val_if_fail (IBUS_IS_IM_CLIENT(client), FALSE);
-    g_return_val_if_fail (ic != NULL, FALSE);
-    g_return_val_if_fail (event != NULL, FALSE);
 
-    IBusIMClientPrivate *priv = client->priv;
-
-    guint state = event->state & GDK_MODIFIER_MASK;
-    gboolean is_press = event->type == GDK_KEY_PRESS;
-
-    if (event->send_event) {
-        return FALSE;
-    }
-
-    /* Call IBus ProcessKeyEvent method */
-    if (!_ibus_call_with_reply (priv->ibus,
-            "ProcessKeyEvent",
-            _ibus_filter_keypress_reply_cb,
-            _key_press_call_data_new (client, ic, (GdkEvent *)event),
-            (DBusFreeFunction)_key_press_call_data_free,
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_UINT32, &event->keyval,
-            DBUS_TYPE_BOOLEAN, &is_press,
-            DBUS_TYPE_UINT32, &state,
-            DBUS_TYPE_INVALID))
-        return FALSE;
-
-    return TRUE;
-}
-
-
-void
-ibus_im_client_focus_in (IBusIMClient *client, const gchar *ic)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-
-    IBusIMClientPrivate *priv = client->priv;
-
-    /* Call IBus FocusIn method */
-     _ibus_call_with_reply_and_block (priv->ibus,
-            "FocusIn",
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INVALID,
-            DBUS_TYPE_INVALID);
-}
-
-void
-ibus_im_client_focus_out (IBusIMClient *client, const gchar *ic)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-
-    IBusIMClientPrivate *priv = client->priv;
-
-    /* Call IBus FocusOut method */
-    _ibus_call_with_reply_and_block (priv->ibus,
-            "FocusOut",
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INVALID,
-            DBUS_TYPE_INVALID);
-
-}
-
-void
-ibus_im_client_reset (IBusIMClient *client, const gchar *ic)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-
-    IBusIMClientPrivate *priv = client->priv;
-
-    /* Call IBus Reset method */
-    _ibus_call_with_reply_and_block (priv->ibus,
-            "Reset",
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INVALID,
-            DBUS_TYPE_INVALID);
-
-}
-
-void
-ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRectangle *area)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-    g_return_if_fail (area != NULL);
-
-    _ibus_call_with_reply_and_block (client->priv->ibus,
-            "SetCursorLocation",
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INT32, &area->x,
-            DBUS_TYPE_INT32, &area->y,
-            DBUS_TYPE_INT32, &area->width,
-            DBUS_TYPE_INT32, &area->height,
-            DBUS_TYPE_INVALID,
-            DBUS_TYPE_INVALID);
-}
-
-void
-ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean use_preedit)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-
-    _ibus_call_with_reply_and_block (client->priv->ibus,
-            "SetCapabilities",
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INT32, &use_preedit,
-            DBUS_TYPE_INVALID,
-            DBUS_TYPE_INVALID);
-}
-
-void
-ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-    g_return_if_fail (ic != NULL);
-
-    IBusIMClientPrivate *priv = client->priv;
-
-    _ibus_call_with_reply_and_block (priv->ibus, "ReleaseInputContext",
-                DBUS_TYPE_STRING, &ic,
-                DBUS_TYPE_INVALID,
-                DBUS_TYPE_INVALID);
-
-}
-
-void
-ibus_im_client_kill_daemon (IBusIMClient *client)
-{
-    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
-
-    IBusIMClientPrivate *priv = client->priv;
-    _ibus_call_with_reply_and_block (priv->ibus, "Kill",
-                DBUS_TYPE_INVALID,
-                DBUS_TYPE_INVALID);
-}
-
-
-gboolean
-ibus_im_client_get_connected (IBusIMClient *client)
-{
-    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), FALSE);
-
-    IBusIMClientPrivate *priv = client->priv;
-    if (priv->ibus == NULL)
-        return FALSE;
-    return dbus_connection_get_is_connected (priv->ibus);
-}
