@@ -64,7 +64,6 @@ private:
 	int preedit_cursor_pos;
 	bool has_focus;
 	QList <QList <quint32> > preedit_attrs;
-	QRect cursor_location;
 };
 
 #endif //__IBUS_INPUT_CONTEXT_H_

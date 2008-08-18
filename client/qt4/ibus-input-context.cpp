@@ -105,10 +105,8 @@ IBusInputContext::update ()
 
 	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
-	if (cursor_location != rect ) {
-		client->setCursorLocation (this, rect);
-		cursor_location = rect;
-	}
+
+	client->setCursorLocation (this, rect);
 
 #if 0
 	QVariant value;
@@ -135,15 +133,18 @@ void
 IBusInputContext::setFocusWidget (QWidget *widget)
 {
 	QInputContext::setFocusWidget (widget);
+
 	if (widget == NULL) {
 		has_focus = false;
 		client->focusOut (this);
 	}
 	else {
+		/* KateView can not support preedit well. */
 		if (widget->inherits("KateViewInternal"))
 			client->setCapabilities (this, 0);
 		else
 			client->setCapabilities (this, 1);
+
 		has_focus = true;
 		client->focusIn (this);
 		update ();
