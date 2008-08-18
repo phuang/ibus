@@ -130,9 +130,14 @@ IBusInputContext::isComposing() const
 void
 IBusInputContext::setFocusWidget (QWidget *widget)
 {
-	// qDebug () << "setFocusWidget (" << widget << ")";
 	QInputContext::setFocusWidget (widget);
-	update ();
+	if (widget == NULL) {
+		client->focusOut (this);
+	}
+	else {
+		client->focusIn (this);
+		update ();
+	}
 }
 
 void
