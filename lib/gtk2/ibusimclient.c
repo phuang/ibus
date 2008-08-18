@@ -115,19 +115,19 @@ static DBusHandlerResult
                                             DBusMessage         *message,
                                             void                *user_data);
 
-static GType ibus_type_im_client = 0;
-static GObjectClass *parent_class = NULL;
+static GType _ibus_type_im_client = 0;
+static GObjectClass *_parent_class = NULL;
 
 
 GType
 ibus_im_client_get_type (void)
 {
-    if (ibus_type_im_client == 0) {
+    if (_ibus_type_im_client == 0) {
         ibus_im_client_register_type (NULL);
     }
 
-    g_assert (ibus_type_im_client != 0);
-    return ibus_type_im_client;
+    g_assert (_ibus_type_im_client != 0);
+    return _ibus_type_im_client;
 }
 
 void
@@ -145,9 +145,9 @@ ibus_im_client_register_type (GTypeModule *type_module)
         (GInstanceInitFunc) ibus_im_client_init,
     };
 
-    if (! ibus_type_im_client ) {
+    if (_ibus_type_im_client == 0) {
         if (type_module) {
-            ibus_type_im_client =
+            _ibus_type_im_client =
                 g_type_module_register_type (type_module,
                     G_TYPE_OBJECT,
                     "IBusIMClient",
@@ -155,7 +155,7 @@ ibus_im_client_register_type (GTypeModule *type_module)
                     (GTypeFlags)0);
         }
         else {
-            ibus_type_im_client =
+            _ibus_type_im_client =
                 g_type_register_static (G_TYPE_OBJECT,
                     "IBusIMClient",
                     &ibus_im_client_info,
@@ -179,7 +179,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-    parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
+    _parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusIMClientPrivate));
 
@@ -407,6 +407,8 @@ _ibus_im_client_ibus_close (IBusIMClient *client)
 const gchar *
 ibus_im_client_create_input_context (IBusIMClient *client)
 {
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), NULL);
+
     IBusIMClientPrivate *priv = client->priv;
 
     if (priv->ibus == NULL)
@@ -590,7 +592,7 @@ ibus_im_client_finalize (GObject *obj)
 #endif
     _ibus_im_client_ibus_close (client);
 
-    G_OBJECT_CLASS(parent_class)->finalize (obj);
+    G_OBJECT_CLASS(_parent_class)->finalize (obj);
 
 }
 
@@ -1192,7 +1194,7 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
 void
 ibus_im_client_focus_in (IBusIMClient *client, const gchar *ic)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
 
     IBusIMClientPrivate *priv = client->priv;
@@ -1208,7 +1210,7 @@ ibus_im_client_focus_in (IBusIMClient *client, const gchar *ic)
 void
 ibus_im_client_focus_out (IBusIMClient *client, const gchar *ic)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
 
     IBusIMClientPrivate *priv = client->priv;
@@ -1225,7 +1227,7 @@ ibus_im_client_focus_out (IBusIMClient *client, const gchar *ic)
 void
 ibus_im_client_reset (IBusIMClient *client, const gchar *ic)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
 
     IBusIMClientPrivate *priv = client->priv;
@@ -1242,7 +1244,7 @@ ibus_im_client_reset (IBusIMClient *client, const gchar *ic)
 void
 ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRectangle *area)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
     g_return_if_fail (area != NULL);
 
@@ -1260,7 +1262,7 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRe
 void
 ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean use_preedit)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
 
     _ibus_call_with_reply_and_block (client->priv->ibus,
@@ -1274,7 +1276,7 @@ ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean 
 void
 ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
 {
-    g_return_if_fail (IBUS_IS_IM_CLIENT(client));
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
 
     IBusIMClientPrivate *priv = client->priv;
@@ -1289,6 +1291,8 @@ ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
 void
 ibus_im_client_kill_daemon (IBusIMClient *client)
 {
+    g_return_if_fail (IBUS_IS_IM_CLIENT (client));
+
     IBusIMClientPrivate *priv = client->priv;
     _ibus_call_with_reply_and_block (priv->ibus, "Kill",
                 DBUS_TYPE_INVALID,
@@ -1299,6 +1303,8 @@ ibus_im_client_kill_daemon (IBusIMClient *client)
 gboolean
 ibus_im_client_get_connected (IBusIMClient *client)
 {
+    g_return_val_if_fail (IBUS_IS_IM_CLIENT (client), FALSE);
+
     IBusIMClientPrivate *priv = client->priv;
     if (priv->ibus == NULL)
         return FALSE;
