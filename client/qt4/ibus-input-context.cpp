@@ -94,15 +94,6 @@ IBusInputContext::update ()
 
 	QRect rect = widget->inputMethodQuery(Qt::ImMicroFocus).toRect ();
 
-#if 0
-	QFont font = widget->inputMethodQuery(Qt::ImFont).value <QFont> ();
-	qDebug () << rect << preedit_string << preedit_cursor_pos;
-
-	QFontMetrics fm(font);
-	int textWidth = fm.width (preedit_string.left (preedit_cursor_pos));
-	rect.translate (textWidth, 0);
-#endif
-
 	QPoint topleft = widget->mapToGlobal(QPoint(0,0));
 	rect.translate (topleft);
 
@@ -110,16 +101,17 @@ IBusInputContext::update ()
 
 #if 0
 	QVariant value;
+	qDebug () << "== update == ";
 	value = widget->inputMethodQuery(Qt::ImMicroFocus);
-	qDebug () << value;
+	qDebug () << "Qt::ImMicroFocus " << value;
 	value = widget->inputMethodQuery(Qt::ImFont);
-	qDebug () << value;
+	qDebug () << "Qt::ImFont " <<value;
 	value = widget->inputMethodQuery(Qt::ImCursorPosition);
-	qDebug () << value;
+	qDebug () << "Qt::ImCursorPosition " << value;
 	value = widget->inputMethodQuery(Qt::ImSurroundingText);
-	qDebug () << value;
+	qDebug () << "Qt::ImSurroundingText " << value;
 	value = widget->inputMethodQuery(Qt::ImCurrentSelection);
-	qDebug () << value;
+	qDebug () << "Qt::ImCurrentSelection " << value;
 #endif
 }
 
