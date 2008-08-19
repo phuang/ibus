@@ -38,32 +38,32 @@ class Menu (gtk.Menu, PropItem):
         PropItem.__init__ (self, prop)
 
         self.set_take_focus (False)
-        self._create_items (self._prop.get_sub_props ())
+        self.__create_items (self._prop.sub_props)
         self.show_all ()
-        self.set_sensitive (prop._sensitive)
+        self.set_sensitive (prop.sensitive)
 
-    def _create_items (self, props):
+    def __create_items (self, props):
         radio_group = None
 
         for prop in props:
-            if prop._type == ibus.PROP_TYPE_NORMAL:
+            if prop.type == ibus.PROP_TYPE_NORMAL:
                 item = gtk.ImageMenuItem (prop)
-            elif prop._type == ibus.PROP_TYPE_TOGGLE:
+            elif prop.type == ibus.PROP_TYPE_TOGGLE:
                 item = CheckMenuItem (prop)
-            elif prop._type == ibus.PROP_TYPE_RADIO:
+            elif prop.type == ibus.PROP_TYPE_RADIO:
                 item = RadioMenuItem (radio_group, prop)
                 radio_group = item
-            elif prop._type == ibus.PROP_TYPE_SEPARATOR:
+            elif prop.type == ibus.PROP_TYPE_SEPARATOR:
                 item = SeparatorMenuItem ()
                 radio_group = None
-            elif prop._type == ibus.PROP_TYPE_MENU:
+            elif prop.type == ibus.PROP_TYPE_MENU:
                 item = gtk.ImageMenuItem (prop)
                 item.set_submenu (Menu (prop))
             else:
                 assert Fasle
 
-            item.set_sensitive (prop._sensitive)
-            if prop._visible:
+            item.set_sensitive (prop.sensitive)
+            if prop.visible:
                 item.set_no_show_all (False)
                 item.show ()
             else:
@@ -92,14 +92,14 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
     }
 
     def __init__ (self, prop):
-        gtk.ImageMenuItem.__init__ (self, label = prop._label)
+        gtk.ImageMenuItem.__init__ (self, label = prop.label)
         PropItem.__init__ (self, prop)
 
-        if self._prop._icon:
+        if self._prop.icon:
             size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-            self.set_image (icon.IconWidget(prop._icon, size[0]))
+            self.set_image (icon.IconWidget(prop.icon, size[0]))
 
-        if self._prop._visible:
+        if self._prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -107,11 +107,11 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
             self.hide_all ()
 
     def do_activate (self):
-        self.emit ("property-activate", self._prop._name, self._prop._state)
+        self.emit ("property-activate", self._prop.name, self._prop.state)
 
     def property_changed (self):
-        self.set_sensitive (self._prop._sensitive)
-        if self._prop._visible:
+        self.set_sensitive (self._prop.sensitive)
+        if self._prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -128,12 +128,12 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
     }
 
     def __init__ (self, prop):
-        gtk.CheckMenuItem.__init__ (self, label = prop._label)
+        gtk.CheckMenuItem.__init__ (self, label = prop.label)
         PropItem.__init__ (self, prop)
 
         self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
 
-        if prop._visible:
+        if prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -142,15 +142,15 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
 
     def do_toggled (self):
         if self.get_active ():
-            self._prop._state = ibus.PROP_STATE_CHECKED
+            self._prop.state = ibus.PROP_STATE_CHECKED
         else:
-            self._prop._state = ibus.PROP_STATE_UNCHECKED
-        self.emit ("property-activate", self._prop._name, self._prop._state)
+            self._prop.state = ibus.PROP_STATE_UNCHECKED
+        self.emit ("property-activate", self._prop.name, self._prop.state)
 
     def property_changed (self):
-        self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
-        self.set_sensitive (self._prop._sensitive)
-        if self._prop._visible:
+        self.set_active (self._prop.state == ibus.PROP_STATE_CHECKED)
+        self.set_sensitive (self._prop.sensitive)
+        if self._prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -167,12 +167,12 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
     }
 
     def __init__ (self, group, prop):
-        gtk.RadioMenuItem.__init__ (self, group, label = prop._label)
+        gtk.RadioMenuItem.__init__ (self, group, label = prop.label)
         PropItem.__init__ (self, prop)
 
-        self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
+        self.set_active (self._prop.state == ibus.PROP_STATE_CHECKED)
 
-        if prop._visible:
+        if prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -180,9 +180,9 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
             self.hide_all ()
 
     def property_changed (self):
-        self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
-        self.set_sensitive (self._prop._sensitive)
-        if self._prop._visible:
+        self.set_active (self._prop.state == ibus.PROP_STATE_CHECKED)
+        self.set_sensitive (self._prop.sensitive)
+        if self._prop.visible:
             self.set_no_show_all (False)
             self.show_all ()
         else:
@@ -191,10 +191,10 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
 
     def do_toggled (self):
         if self.get_active ():
-            self._prop._state = ibus.PROP_STATE_CHECKED
+            self._prop.state = ibus.PROP_STATE_CHECKED
         else:
-            self._prop._state = ibus.PROP_STATE_UNCHECKED
-        self.emit ("property-activate", self._prop._name, self._prop._state)
+            self._prop.state = ibus.PROP_STATE_UNCHECKED
+        self.emit ("property-activate", self._prop.name, self._prop.state)
 
 class SeparatorMenuItem (gtk.SeparatorMenuItem, PropItem):
     __gsignals__ = {
