@@ -51,6 +51,7 @@ def _to_unicode(text):
         return text
     if isinstance(text, str):
         return unicode(text, "utf8")
+    raise TypeError("text must be instance of unicode or str")
 
 class Property(object):
     def __init__(self, name,
@@ -238,6 +239,9 @@ def test():
     props.append(p)
     value = props.to_dbus_value()
     print prop_list_from_dbus_value(value)
+    p.label = u"a"
+    p.label = "a"
+    p.label = 1
 
 if __name__ == "__main__":
     test()
