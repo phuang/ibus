@@ -55,6 +55,8 @@ class IBus(ibus.Object):
 
         self.__connections = list()
 
+        self.__prev_key = None
+
     def new_connection(self, dbusconn):
         conn = Connection(dbusconn)
         IBusProxy(self, conn)
@@ -93,6 +95,7 @@ class IBus(ibus.Object):
         self.__panel.focus_in(context.get_id())
         self.__last_focused_context = context
         context.focus_in()
+        self.__prev_key = None
 
     def focus_out(self, ic, conn):
         context = self.__lookup_context(ic, conn)
@@ -156,23 +159,31 @@ class IBus(ibus.Object):
         self.__panel.states_changed()
 
     def __filter_hotkeys(self, context, keyval, is_press, state):
+        retval = False
+        state = state & (modifier.MOD1_MASK | modifier.SHIFT_MASK | modifier.CONTROL_MASK)
+
         if is_press and keyval == keysyms.space \
-            and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
+            and state == modifier.CONTROL_MASK:
             if context.is_enabled():
                 self.__context_disable(context)
             else:
                 self.__context_enable(context)
-            return True
-        elif is_press and keyval in (keysyms.Shift_L, keysyms.Shift_R) \
-            and (state & ~modifier.MOD2_MASK) == modifier.CONTROL_MASK:
+            retval = True
+        elif self.__prev_key != None  and \
+            self.__prev_key[0] == keyval and \
+            self.__prev_key[1] == True and \
+            self.__prev_key[2] == modifier.CONTROL_MASK and \
+            is_press == False and \
+            keyval in (keysyms.Shift_L, keysyms.Shift_R) and \
+            state  == modifier.CONTROL_MASK | modifier.SHIFT_MASK:
             if not context.is_enabled():
                 self.__context_enable(context)
             else:
                 self.__context_next_factory(context)
 
-            return True
-
-        return False
+            retval = True
+        self.__prev_key = (keyval, is_press, state)
+        return retval
 
     def __lookup_context(self, ic, conn):
         return self.__context_manager.lookup_context(ic, conn)
