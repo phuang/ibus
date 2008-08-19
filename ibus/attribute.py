@@ -50,16 +50,33 @@ ATTR_UNDERLINE_LOW = 3
 
 class Attribute:
     def __init__ (self, type, value, start_index, end_index):
-        self._type = type
-        self._value = value
-        self._start_index = start_index
-        self._end_index = end_index
+        self.__type = type
+        self.__value = value
+        self.__start_index = start_index
+        self.__end_index = end_index
+
+    def get_type(self):
+        return self.__type
+
+    def get_value(self):
+        return self.__value
+
+    def get_start_index(self):
+        return self.__start_index
+
+    def get_end_index(self):
+        return self.__end_index
+
+    type        = property(get_type)
+    value       = property(get_value)
+    start_index = property(get_start_index)
+    end_index   = property(get_end_index)
 
     def to_dbus_value (self):
-        values = [dbus.UInt32 (self._type),
-                dbus.UInt32 (self._value),
-                dbus.UInt32 (self._start_index),
-                dbus.UInt32 (self._end_index)]
+        values = [dbus.UInt32 (self.__type),
+                dbus.UInt32 (self.__value),
+                dbus.UInt32 (self.__start_index),
+                dbus.UInt32 (self.__end_index)]
         return dbus.Array (values, signature="u")
 
     def from_dbus_value (self, value):
@@ -69,10 +86,10 @@ class Attribute:
         if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
             raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
 
-        self._type = value[0]
-        self._value = value[1]
-        self._start_index = value[2]
-        self._end_index = value[3]
+        self.__type = value[0]
+        self.__value = value[1]
+        self.__start_index = value[2]
+        self.__end_index = value[3]
 
 def attribute_from_dbus_value (value):
     attribute = Attribute (0, 0, 0, 0)
