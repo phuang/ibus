@@ -102,7 +102,8 @@ void            ibus_im_client_reset             (IBusIMClient    *client,
                                                   const gchar     *ic);
 gboolean        ibus_im_client_filter_keypress   (IBusIMClient    *client,
                                                   const gchar     *ic,
-                                                  GdkEventKey     *key);
+                                                  GdkEventKey     *key,
+                                                  gboolean         block);
 void            ibus_im_client_set_cursor_location
                                                  (IBusIMClient    *client,
                                                   const gchar     *ic,

@@ -281,7 +281,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = NULL;
 
-    if (ibus_im_client_filter_keypress (_client, x11ic->ibus_ic, &event)) {
+    if (ibus_im_client_filter_keypress (_client, x11ic->ibus_ic, &event, False)) {
         if (! x11ic->has_preedit_area)
             _xim_set_cursor_location (x11ic);
         return 1;

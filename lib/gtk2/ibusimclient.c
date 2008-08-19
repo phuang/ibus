@@ -631,7 +631,7 @@ ibus_im_client_release_input_context (IBusIMClient *client, const gchar *ic)
 
 
 gboolean
-ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventKey *event)
+ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventKey *event, gboolean block)
 {
     g_return_val_if_fail (IBUS_IS_IM_CLIENT(client), FALSE);
     g_return_val_if_fail (ic != NULL, FALSE);
@@ -647,19 +647,36 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
     }
 
     /* Call IBus ProcessKeyEvent method */
-    if (!_ibus_call_with_reply (priv->ibus,
-            "ProcessKeyEvent",
-            _ibus_filter_keypress_reply_cb,
-            _key_press_call_data_new (client, ic, (GdkEvent *)event),
-            (DBusFreeFunction)_key_press_call_data_free,
-            DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_UINT32, &event->keyval,
-            DBUS_TYPE_BOOLEAN, &is_press,
-            DBUS_TYPE_UINT32, &state,
-            DBUS_TYPE_INVALID))
-        return FALSE;
+    if (!block) {
+        if (!_ibus_call_with_reply (priv->ibus,
+                "ProcessKeyEvent",
+                _ibus_filter_keypress_reply_cb,
+                _key_press_call_data_new (client, ic, (GdkEvent *)event),
+                (DBusFreeFunction)_key_press_call_data_free,
+                DBUS_TYPE_STRING, &ic,
+                DBUS_TYPE_UINT32, &event->keyval,
+                DBUS_TYPE_BOOLEAN, &is_press,
+                DBUS_TYPE_UINT32, &state,
+                DBUS_TYPE_INVALID))
+            return FALSE;
+        else
+            return TRUE;
+    }
+    else {
+        gboolean result = FALSE;
+        if (!_ibus_call_with_reply_and_block (priv->ibus,
+                "ProcessKeyEvent",
+                DBUS_TYPE_STRING, &ic,
+                DBUS_TYPE_UINT32, &event->keyval,
+                DBUS_TYPE_BOOLEAN, &is_press,
+                DBUS_TYPE_UINT32, &state,
+                DBUS_TYPE_INVALID,
+                DBUS_TYPE_BOOLEAN, &result,
+                DBUS_TYPE_INVALID))
+            return FALSE;
 
-    return TRUE;
+        return result;
+    }
 }
 
 

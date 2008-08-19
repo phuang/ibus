@@ -25,7 +25,6 @@
 #include <sys/un.h>
 #include "ibusimcontext.h"
 #include "ibusimclient.h"
-
 /* IBusIMContextPriv */
 struct _IBusIMContextPrivate {
     GtkIMContext *slave;
@@ -101,6 +100,7 @@ static GtkIMContextClass    *parent_class = NULL;
 static IBusIMClient         *_client = NULL;
 static GHashTable           *_ic_table = NULL;
 static GArray               *_im_context_array = NULL;
+static gboolean             _block_filter_key_event = FALSE;
 
 void
 ibus_im_context_register_type (GTypeModule *type_module)
@@ -116,6 +116,11 @@ ibus_im_context_register_type (GTypeModule *type_module)
         0,
         (GInstanceInitFunc)    ibus_im_context_init,
     };
+
+    /* work around for nautilus */
+    if (g_strcmp0(g_get_application_name (), "File Manager") == 0) {
+        _block_filter_key_event = TRUE;
+    }
 
     if (! _ibus_type_im_context ) {
         if (type_module) {
@@ -151,7 +156,6 @@ GtkIMContext *
 ibus_im_context_new (void)
 {
     IBusIMContext *obj;
-
     obj = IBUS_IM_CONTEXT(g_object_new (IBUS_TYPE_IM_CONTEXT, NULL));
 
     return GTK_IM_CONTEXT(obj);
@@ -276,7 +280,8 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (priv->ic && ibus_im_client_filter_keypress (_client, priv->ic, event))
+
+    if (priv->ic && ibus_im_client_filter_keypress (_client, priv->ic, event, _block_filter_key_event))
         return TRUE;
     else
         return gtk_im_context_filter_keypress (priv->slave, event);
@@ -475,10 +480,10 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
         g_get_current_time (&time);
         event->key.time = time.tv_sec * 1000 + time.tv_usec / 1000;
     }
-    if (event->any.window == NULL) {
-        event->any.window = context->priv->client_window;
-        gdk_event_put (event);
-        event->any.window = NULL;
+    if (event->any.window != context->priv->client_window) {
+        GdkEvent _event = *event;
+        _event.any.window = context->priv->client_window;
+        gdk_event_put (&_event);
     }
     else
         gdk_event_put (event);
