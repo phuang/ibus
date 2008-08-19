@@ -30,7 +30,7 @@ class PropItem:
 
         retval = False
 
-        if self._prop._name == prop._name and self._prop._type == prop._type:
+        if self._prop.name == prop.name and self._prop.type == prop.type:
             self._prop = prop
             self.property_changed ()
             retval =  True
@@ -41,19 +41,19 @@ class PropItem:
         return retval
 
     def set_prop_label (self, label):
-        self._prop._label = label
+        self._prop.label = label
         self.property_changed ()
 
     def set_icon (self, icon):
-        self._prop._icon = icon
+        self._prop.icon = icon
         self.property_changed ()
 
     def set_tooltip (self, tooltip):
-        self._prop._tooltip = tooltip
+        self._prop.tooltip = tooltip
         self.property_changed ()
 
     def set_state (self, state):
-        self._prop._state = state
+        self._prop.state = state
         self.property_changed ()
 
     def property_changed (self):

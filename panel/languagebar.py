@@ -111,25 +111,25 @@ class LanguageBar(gtk.Toolbar):
         self.__remove_properties()
         # create new properties
         for prop in props:
-            if prop._type == ibus.PROP_TYPE_NORMAL:
+            if prop.type == ibus.PROP_TYPE_NORMAL:
                 item = ToolButton(prop = prop)
-            elif prop._type == ibus.PROP_TYPE_TOGGLE:
+            elif prop.type == ibus.PROP_TYPE_TOGGLE:
                 item = ToggleToolButton(prop = prop)
-            elif prop._type == ibus.PROP_TYPE_MENU:
+            elif prop.type == ibus.PROP_TYPE_MENU:
                 item = MenuToolButton(prop = prop)
-            elif prop._type == PROP_TYPE_SEPARATOR:
+            elif prop.type == PROP_TYPE_SEPARATOR:
                 item = SeparatorToolItem()
             else:
-                raise IBusException("Unknown property type = %d" % prop._type)
+                raise IBusException("Unknown property type = %d" % prop.type)
 
             item.connect("property-activate",
                         lambda w, n, s: self.emit("property-activate", n, s))
 
-            item.set_sensitive(prop._sensitive)
+            item.set_sensitive(prop.sensitive)
 
             item.set_no_show_all(True)
 
-            if prop._visible:
+            if prop.visible:
                 item.show()
             else:
                 item.hide()
