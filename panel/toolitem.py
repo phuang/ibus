@@ -78,7 +78,7 @@ class ToolButton(gtk.ToolButton, PropItem):
             self.hide_all()
 
     def do_clicked(self):
-        self.emit("property-activate", self._prop.name, self._prop._state)
+        self.emit("property-activate", self._prop.name, self._prop.state)
 
 
 class ToggleToolButton(gtk.ToggleToolButton, PropItem):
