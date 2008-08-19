@@ -46,6 +46,12 @@ PROP_STATE_UNCHECKED = 0
 PROP_STATE_CHECKED = 1
 PROP_STATE_INCONSISTENT = 2
 
+def _to_unicode(text):
+    if isinstance(text, unicode):
+        return text
+    if isinstance(text, str):
+        return unicode(text, "utf8")
+
 class Property(object):
     def __init__(self, name,
                         type = PROP_TYPE_NORMAL,
@@ -56,7 +62,7 @@ class Property(object):
                         visible = True,
                         state = PROP_STATE_UNCHECKED):
         super(Property, self).__init__()
-        self.__name = name
+        self.__name = _to_unicode(name)
         self.__type = type
         self.label = label
         self.icon = icon
@@ -79,19 +85,19 @@ class Property(object):
         return self.__type
 
     def set_label(self, label):
-        self.__label = label
+        self.__label = _to_unicode(label)
 
     def get_label(self):
         return self.__label
 
     def set_icon(self, icon):
-        self.__icon = icon
+        self.__icon = _to_unicode(icon)
 
     def get_icon(self):
         return self.__icon
 
     def set_tooltip(self, tooltip):
-        self.__tooltip = tooltip
+        self.__tooltip = _to_unicode(tooltip)
 
     def get_tooltip(self):
         return self.__tooltip
