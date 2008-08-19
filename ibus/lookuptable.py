@@ -86,6 +86,9 @@ class LookupTable(object):
     def set_labels(self, labels):
         self.__labels == labels
 
+    def get_labels(self):
+        return self.__labels
+
     def show_cursor(self, show = True):
         self.__cursor_visible = show
 
