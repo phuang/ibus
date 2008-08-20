@@ -179,6 +179,10 @@ class KeyboardShortcutSelection(gtk.VBox):
     def __shortcut_view_cursor_changed_cb(self, treeview):
         shortcut = self.__get_selected_shortcut()
         self.__set_shortcut_to_buttons(shortcut)
+        if shortcut != None:
+            self.__delete_button.set_sensitive(True)
+        else:
+            self.__delete_button.set_sensitive(False)
 
     def __modifier_button_toggled_cb(self, button, name):
         shortcut = self.__get_shortcut_from_buttons()
