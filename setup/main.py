@@ -67,6 +67,34 @@ class Setup(object):
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
         self.__bus = None
+        self.__init_bus()
+        self.__init_ui()
+
+    def __init_ui(self):
+        # add icon search path
+        icon_theme = gtk.icon_theme_get_default()
+        dir = path.dirname(__file__)
+        icondir = path.join(dir, "..", "icons")
+        icon_theme.prepend_search_path(icondir)
+
+
+        self.__dialog = self.__xml.get_widget("dialog_setup")
+
+        # auto start ibus
+        self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
+        self.__checkbutton_auto_start.set_active(self.__is_auto_start())
+        self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
+
+        # lookup table orientation
+        self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
+        self.__combobox_lookup_table_orientation.set_active(
+            self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0))
+        self.__combobox_lookup_table_orientation.connect("changed",
+            self.__combobox_lookup_table_orientation_changed_cb)
+
+        self.__init_engine_view()
+
+    def __init_bus(self):
         try:
             self.__bus = ibus.Bus()
             self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
@@ -104,27 +132,7 @@ class Setup(object):
                 dlg.destroy()
                 self.__flush_gtk_events()
 
-        # add icon search path
-        icon_theme = gtk.icon_theme_get_default()
-        dir = path.dirname(__file__)
-        icondir = path.join(dir, "..", "icons")
-        icon_theme.prepend_search_path(icondir)
-
-
-        self.__dialog = self.__xml.get_widget("dialog_setup")
-
-        # auto start ibus
-        self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
-        self.__checkbutton_auto_start.set_active(self.__is_auto_start())
-        self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
-
-        # lookup table orientation
-        self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
-        self.__combobox_lookup_table_orientation.set_active(
-            self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0))
-        self.__combobox_lookup_table_orientation.connect("changed",
-            self.__combobox_lookup_table_orientation_changed_cb)
-        
+    def __init_engine_view(self):
         # engines tree
         self.__tree = self.__xml.get_widget("treeview_engines")
         self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
