@@ -177,7 +177,6 @@ class KeyboardShortcutSelection(gtk.VBox):
         del model[path[0]]
 
     def __shortcut_view_cursor_changed_cb(self, treeview):
-        print "cursor changed"
         shortcut = self.__get_selected_shortcut()
         self.__set_shortcut_to_buttons(shortcut)
 
@@ -240,6 +239,9 @@ class KeyboardShortcutSelectionDialog(gtk.Dialog):
     def set_shortcuts(self, shotrcuts = None):
         self.__selection_view.set_shortcuts(shotrcuts)
 
+    def add_shortcut(self, shotrcut):
+        self.__selection_view.add_shortcut(shotrcut)
+
     def get_shortcuts(self):
         return self.__selection_view.get_shortcuts()
 
@@ -249,7 +251,7 @@ if __name__ == "__main__":
     dlg = KeyboardShortcutSelectionDialog(
         title = "Select test",
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK))
-    dlg.set_shortcuts(["Ctrl+Shift+space"])
+    dlg.add_shortcut("Ctrl+Shift+space")
     print dlg.run()
     print dlg.get_shortcuts()
 
