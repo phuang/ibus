@@ -39,9 +39,12 @@ class KeyboardShortcutSelection(gtk.VBox):
         self.pack_start(label, False, True, 4)
 
         # shortcuts view
+        viewport =  gtk.Viewport()
+        viewport.set_shadow_type(gtk.SHADOW_IN)
         self.__shortcut_view = gtk.TreeView()
         self.__shortcut_view.set_size_request(-1, 100)
-        self.pack_start(self.__shortcut_view, True, True, 4)
+        viewport.add(self.__shortcut_view)
+        self.pack_start(viewport, True, True, 4)
 
         # key code
         hbox = gtk.HBox()
