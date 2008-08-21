@@ -441,6 +441,8 @@ IBusClient::connectToBus ()
 	for (i = context_list.begin (); i != context_list.end (); ++i ) {
 		QString ic = createInputContextRemote ();
 		(*i)->setIC (ic);
+		if (ic.isEmpty ())
+			continue;
 		context_dict[ic] = *i;
 	}
 
