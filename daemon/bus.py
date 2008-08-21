@@ -196,6 +196,12 @@ class IBus(ibus.Object):
         return False
 
     def __filter_keyboard_shortcuts(self, context, keyval, is_press, state):
+        state = state & (modifier.CONTROL_MASK | \
+            modifier.SHIFT_MASK | \
+            modifier.MOD1_MASK | \
+            modifier.SUPER_MASK | \
+            modifier.HYPER_MASK | \
+            modifier.META_MASK)
         if not is_press:
             state = state | modifier.RELEASE_MASK
 
