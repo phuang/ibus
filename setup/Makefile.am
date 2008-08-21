@@ -21,6 +21,7 @@
 
 ibussetup_PYTHON = \
 	main.py \
+	keyboardshortcut.py \
 	$(NULL)
 
 ibussetup_DATA = \
