@@ -438,6 +438,8 @@ _client_connected_cb (IBusIMClient *client, gpointer user_data)
         context = g_array_index (_im_context_array, IBusIMContext *, i);
         ic = ibus_im_client_create_input_context (client);
         ibus_im_context_set_ic (context, ic);
+        if (ic == NULL)
+            continue;
         g_hash_table_insert (_ic_table,
             (gpointer) ibus_im_context_get_ic (context), (gpointer) context);
     }
