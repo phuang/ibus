@@ -184,6 +184,8 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
     i = _xim_store_ic_values (x11ic, call_data);
 
     x11ic->ibus_ic = g_strdup (ibus_im_client_create_input_context (_client));
+    g_assert (x11ic->ibus_ic != NULL);
+
     g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
 
     ibus_im_client_set_use_preedit (_client, x11ic->ibus_ic, FALSE);
