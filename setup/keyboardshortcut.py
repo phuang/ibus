@@ -124,7 +124,7 @@ class KeyboardShortcutSelection(gtk.VBox):
         model.clear()
         for shortcut in shortcuts:
             model.insert(0, (shortcut,))
-        self.__shortcut_view.set_model(model)
+        # self.__shortcut_view.set_model(model)
 
     def get_shortcuts(self):
         model = self.__shortcut_view.get_model()
@@ -188,13 +188,15 @@ class KeyboardShortcutSelection(gtk.VBox):
         shortcut = self.__get_shortcut_from_buttons()
         selected_shortcut = self.__get_selected_shortcut()
         self.__add_button.set_sensitive(shortcut != None)
-        self.__apply_button.set_sensitive(shortcut != selected_shortcut and shortcut != None and selected_shortcut != None)
+        can_apply = shortcut != selected_shortcut and shortcut != None and selected_shortcut != None
+        self.__apply_button.set_sensitive(can_apply)
 
     def __keycode_entry_notify_cb(self, entry, arg):
         shortcut = self.__get_shortcut_from_buttons()
         selected_shortcut = self.__get_selected_shortcut()
         self.__add_button.set_sensitive(shortcut != None)
-        self.__apply_button.set_sensitive(shortcut != selected_shortcut and shortcut != None and selected_shortcut != None)
+        can_apply = shortcut != selected_shortcut and shortcut != None and selected_shortcut != None
+        self.__apply_button.set_sensitive(can_apply)
 
     def __keycode_button_clicked_cb(self, button):
         out = []
@@ -256,6 +258,7 @@ if __name__ == "__main__":
         title = "Select test",
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK))
     dlg.add_shortcut("Ctrl+Shift+space")
+    dlg.set_shortcuts(None)
     print dlg.run()
     print dlg.get_shortcuts()
 

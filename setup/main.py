@@ -28,6 +28,7 @@ import gtk
 import gobject
 import ibus
 from gtk import gdk, glade
+import keyboardshortcut
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
@@ -53,6 +54,7 @@ N_ = lambda a : a
     DATA_PRELOAD
 ) = range(8)
 
+CONFIG_GENERAL_SHORTCUT = "/general/keyboard_shortcut_%s"
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
 CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
 
@@ -84,6 +86,14 @@ class Setup(object):
         self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
         self.__checkbutton_auto_start.set_active(self.__is_auto_start())
         self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
+
+        # keyboard shortcut
+        for name in (N_("trigger"), N_("next_engine"), N_("prev_engine")):
+            shortcuts = self.__bus.config_get_value(CONFIG_GENERAL_SHORTCUT % name, [])
+            button = self.__xml.get_widget("button_%s" % name)
+            entry = self.__xml.get_widget("entry_%s" % name)
+            entry.set_text(";".join(shortcuts))
+            button.connect("clicked", self.__shortcut_button_clicked_cb, name, entry)
 
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
@@ -180,6 +190,24 @@ class Setup(object):
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
+
+    def __shortcut_button_clicked_cb(self, button, name, entry):
+        buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK)
+        title = _("Select keyboart shortcut for %s") %  _(name)
+        dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
+        text = entry.get_text()
+        if text:
+            shortcuts = text.split(';')
+        else:
+            shortcuts = None
+        dialog.set_shortcuts(shortcuts)
+        id = dialog.run()
+        shortcuts = dialog.get_shortcuts()
+        dialog.destroy()
+        if id != gtk.RESPONSE_OK:
+            return
+        self.__bus.config_set_value(CONFIG_GENERAL_SHORTCUT % name, shortcuts)
+        entry.set_text(";".join(shortcuts))
 
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):
