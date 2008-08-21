@@ -42,3 +42,13 @@ RELEASE_MASK = 1 << 30
 
 MODIFIER_MASK = 0x5c001fff
 
+MODIFIER_NAME_TABLE = (
+    ("Shift", SHIFT_MASK),
+    ("CapsLock", LOCK_MASK),
+    ("Ctrl", CONTROL_MASK),
+    ("Alt", MOD1_MASK),
+    ("SUPER", SUPER_MASK),
+    ("Hyper", HYPER_MASK),
+    ("Meta", META_MASK),
+    ("Release", RELEASE_MASK),
+)

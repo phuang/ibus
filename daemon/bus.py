@@ -60,9 +60,29 @@ class IBus(ibus.Object):
         self.__connections = list()
 
         self.__prev_key = None
-        self.__shortcut_trigger = [(keysyms.space, modifier.CONTROL_MASK)]
-        m = modifier.CONTROL_MASK | modifier.SHIFT_MASK | modifier.RELEASE_MASK
-        self.__shortcut_next_engine = [(keysyms.Shift_L, m), (keysyms.Shift_R, m)]
+
+        self.__shortcut_trigger = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_TRIGGER, ["Ctrl+space"])
+        self.__shortcut_next_engine = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ["Ctrl+Shift+Release+Shift_L", "Ctrl+Shift+Release+Shift_R"])
+        self.__shortcut_prev_engine = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, [])
+
+    def __load_config_shortcut(self, config_key, default_value):
+
+        # load trigger
+        shortcut_strings = default_value
+        try:
+            shortcut_strings = self.__config.get_value(config_key)
+        except:
+            pass
+        shortcuts = []
+        for s in shortcut_strings:
+            keyval, keymask = self.__parse_shortcut_string(s)
+            if keyval != 0:
+                shortcuts.append((keyval, keymask))
+        return shortcuts
 
     def new_connection(self, dbusconn):
         conn = Connection(dbusconn)
@@ -436,6 +456,19 @@ class IBus(ibus.Object):
             if key in self.__config_watch:
                 self.__config_watch[key].remove(conn)
 
+    def __parse_shortcut_string(self, string):
+        keys = string.split("+")
+        keymask = 0
+        for name, mask in modifier.MODIFIER_NAME_TABLE:
+            if name in keys[:-1]:
+                keymask |= mask
+            keyname = keys[-1]
+            if keyname[0] in "1234567890":
+                keyname = "_" + keyname
+            keyval = keysyms.__dict__.get(keyname, 0)
+
+        return keyval, keymask
+
     def __config_value_changed_cb(self, config, key, value):
         for _dir in self.__config_watch.keys():
             if key.startswith(_dir):
@@ -444,11 +477,15 @@ class IBus(ibus.Object):
 
         # check daemon configure
         if key == CONFIG_GENERAL_SHORTCUT_TRIGGER:
-            print value
+            self.__shortcut_trigger = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_TRIGGER, ["Ctrl+space"])
         elif key == CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE:
-            print value
+            self.__shortcut_next_engine = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ["Ctrl+Shift+Release+Shift_L", "Ctrl+Shift+Release+Shift_R"])
         elif key == CONFIG_GENERAL_SHORTCUT_PREV_ENGINE:
-            print value
+            self.__shortcut_prev_engine = self.__load_config_shortcut(
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, [])
 
     def __config_destroy_cb(self, config):
         if config == self.__config:

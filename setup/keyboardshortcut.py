@@ -82,11 +82,11 @@ class KeyboardShortcutSelection(gtk.VBox):
         self.__modifier_buttons.append(("Ctrl",     gtk.CheckButton("_Ctrl"),       gdk.CONTROL_MASK))
         self.__modifier_buttons.append(("Alt",      gtk.CheckButton("A_lt"),        gdk.MOD1_MASK))
         self.__modifier_buttons.append(("Shift",    gtk.CheckButton("_Shift"),      gdk.SHIFT_MASK))
-        self.__modifier_buttons.append(("Release",  gtk.CheckButton("_Release"),    gdk.RELEASE_MASK))
         self.__modifier_buttons.append(("Meta",     gtk.CheckButton("_Meta"),       gdk.META_MASK))
         self.__modifier_buttons.append(("Super",    gtk.CheckButton("S_uper"),      gdk.SUPER_MASK))
         self.__modifier_buttons.append(("Hyper",    gtk.CheckButton("_Hyper"),      gdk.HYPER_MASK))
         self.__modifier_buttons.append(("Capslock", gtk.CheckButton("Capsloc_k"),   gdk.LOCK_MASK))
+        self.__modifier_buttons.append(("Release",  gtk.CheckButton("_Release"),    gdk.RELEASE_MASK))
         for name, button, mask in self.__modifier_buttons:
             button.connect("toggled", self.__modifier_button_toggled_cb, name)
 
