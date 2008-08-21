@@ -280,8 +280,9 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-
-    if (priv->ic && ibus_im_client_filter_keypress (_client, priv->ic, event, _block_filter_key_event))
+    if (priv->ic &&
+        ibus_im_client_filter_keypress (_client,
+                priv->ic, event, _block_filter_key_event))
         return TRUE;
     else
         return gtk_im_context_filter_keypress (priv->slave, event);

@@ -639,7 +639,7 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
 
     IBusIMClientPrivate *priv = client->priv;
 
-    guint state = event->state & GDK_MODIFIER_MASK;
+    guint state = event->state;
     gboolean is_press = event->type == GDK_KEY_PRESS;
 
     if (event->send_event) {

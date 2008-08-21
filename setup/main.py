@@ -202,7 +202,7 @@ class Setup(object):
             shortcuts = None
         dialog.set_shortcuts(shortcuts)
         id = dialog.run()
-        shortcuts = dialog.get_shortcuts()
+        shortcuts = list(set(dialog.get_shortcuts()))
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return

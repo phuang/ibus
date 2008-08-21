@@ -31,6 +31,10 @@ from panel import Panel, DummyPanel
 from config import Config, DefaultConfig
 from register import Register
 
+CONFIG_GENERAL_SHORTCUT_TRIGGER     =  "/general/keyboard_shortcut_trigger"
+CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE =  "/general/keyboard_shortcut_next_engine"
+CONFIG_GENERAL_SHORTCUT_PREV_ENGINE =  "/general/keyboard_shortcut_prev_engine"
+
 class IBus(ibus.Object):
     def __init__(self):
         super(IBus, self).__init__()
@@ -56,6 +60,9 @@ class IBus(ibus.Object):
         self.__connections = list()
 
         self.__prev_key = None
+        self.__shortcut_trigger = [(keysyms.space, modifier.CONTROL_MASK)]
+        m = modifier.CONTROL_MASK | modifier.SHIFT_MASK | modifier.RELEASE_MASK
+        self.__shortcut_next_engine = [(keysyms.Shift_L, m), (keysyms.Shift_R, m)]
 
     def new_connection(self, dbusconn):
         conn = Connection(dbusconn)
@@ -123,7 +130,7 @@ class IBus(ibus.Object):
                                 conn, reply_cb, error_cb):
         context = self.__lookup_context(ic, conn)
 
-        if self.__filter_hotkeys(context, keyval, is_press, state):
+        if self.__filter_keyboard_shortcuts(context, keyval, is_press, state):
             reply_cb(True)
             return
         else:
@@ -158,30 +165,37 @@ class IBus(ibus.Object):
         context.set_engine(engine)
         self.__panel.states_changed()
 
-    def __filter_hotkeys(self, context, keyval, is_press, state):
-        retval = False
-        state = state & (modifier.MOD1_MASK | modifier.SHIFT_MASK | modifier.CONTROL_MASK)
+    def __match_keyboard_shortcuts(self, keyval, is_press, state, shortcuts):
+        for sc in shortcuts:
+            if state == sc[1] and keyval == sc[0]:
+                if state & modifier.RELEASE_MASK == 0:
+                    return True
+                if self.__prev_key[0] == keyval and \
+                    self.__prev_key[1] == True:
+                    return True
+        return False
 
-        if is_press and keyval == keysyms.space \
-            and state == modifier.CONTROL_MASK:
+    def __filter_keyboard_shortcuts(self, context, keyval, is_press, state):
+        if not is_press:
+            state = state | modifier.RELEASE_MASK
+
+        retval = True
+        if self.__match_keyboard_shortcuts(keyval,
+            is_press, state, self.__shortcut_trigger):
             if context.is_enabled():
                 self.__context_disable(context)
             else:
                 self.__context_enable(context)
             retval = True
-        elif self.__prev_key != None  and \
-            self.__prev_key[0] == keyval and \
-            self.__prev_key[1] == True and \
-            self.__prev_key[2] == modifier.CONTROL_MASK and \
-            is_press == False and \
-            keyval in (keysyms.Shift_L, keysyms.Shift_R) and \
-            state  == modifier.CONTROL_MASK | modifier.SHIFT_MASK:
+        elif self.__match_keyboard_shortcuts(keyval,
+            is_press, state, self.__shortcut_next_engine):
             if not context.is_enabled():
                 self.__context_enable(context)
             else:
                 self.__context_next_factory(context)
+        else:
+            retval = False
 
-            retval = True
         self.__prev_key = (keyval, is_press, state)
         return retval
 
@@ -427,6 +441,14 @@ class IBus(ibus.Object):
             if key.startswith(_dir):
                 for conn in self.__config_watch[_dir]:
                     conn.emit_dbus_signal("ConfigValueChanged", key, value)
+
+        # check daemon configure
+        if key == CONFIG_GENERAL_SHORTCUT_TRIGGER:
+            print value
+        elif key == CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE:
+            print value
+        elif key == CONFIG_GENERAL_SHORTCUT_PREV_ENGINE:
+            print value
 
     def __config_destroy_cb(self, config):
         if config == self.__config:
