@@ -45,13 +45,13 @@ IBusClient::IBusClient ()
 	: ibus (NULL)
 {
 	username = getlogin ();
-	if (username.isNull ())
+	if (username.isEmpty ())
 		username = getenv ("LOGNAME");
-	if (username.isNull ())
+	if (username.isEmpty ())
 		username = getenv ("USER");
-	if (username.isNull ())
+	if (username.isEmpty ())
 		username = getenv ("LNAME");
-	if (username.isNull ())
+	if (username.isEmpty ())
 		username = getenv ("USERNAME");
 
 	session = getenv ("DISPLAY");
