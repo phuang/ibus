@@ -29,7 +29,9 @@ import gtk
 from gtk import gdk
 from gtk import keysyms
 
-_ = lambda a: a
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
 
 class KeyboardShortcutSelection(gtk.VBox):
     def __init__(self, shortcuts = None):
