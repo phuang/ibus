@@ -193,7 +193,7 @@ class Setup(object):
 
     def __shortcut_button_clicked_cb(self, button, name, entry):
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK)
-        title = _("Select keyboart shortcut for %s") %  _(name)
+        title = _("Select keyboard shortcut for %s") %  _(name)
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
         if text:

@@ -35,6 +35,7 @@
 ./gconf/main.py
 ./gconf/config.py
 ./setup/main.py
+./setup/keyboardshortcut.py
 ./daemon/bus.py
 ./daemon/register.py
 ./daemon/contextmanager.py
