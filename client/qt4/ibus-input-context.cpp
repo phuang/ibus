@@ -164,6 +164,9 @@ void
 IBusInputContext::setIC (QString ic)
 {
 	this->ic = ic;
+	if (has_focus && !ic.isEmpty ()) {
+		client->focusIn (this);
+	}
 }
 
 QString

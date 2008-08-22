@@ -81,6 +81,7 @@ private:
 	QHash <QString, IBusInputContext *>context_dict;
 	QString username;
 	QString session;
+	QString ibus_path;
 	QString ibus_addr;
 };
 

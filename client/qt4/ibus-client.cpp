@@ -57,6 +57,7 @@ IBusClient::IBusClient ()
 	session = getenv ("DISPLAY");
 	session.replace (":", "-");
 
+	ibus_path = QString("/tmp/ibus-%1/ibus-%2").arg (username, session);
 	ibus_addr = QString("unix:path=/tmp/ibus-%1/ibus-%2").arg (username, session);
 	connectToBus ();
 
@@ -471,7 +472,7 @@ IBusClient::slotDirectoryChanged (const QString & /*path*/)
 		disconnectFromBus ();
 
 	if (ibus == NULL ) {
-		if (QFile::exists (ibus_addr)) {
+		if (QFile::exists (ibus_path)) {
 			usleep (500);
 			connectToBus ();
 		}
