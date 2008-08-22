@@ -25,27 +25,31 @@ INCLUDES = \
 	-I$(top_srcdir)/lib/gtk2 \
 	$(NULL)
 
-
 immoduledir = @GTK_IM_MODULEDIR@
 immodule_LTLIBRARIES = im-ibus.la
-im_ibus_la_DEPENDENCIES = $(libibus_gtk)
+
 im_ibus_la_SOURCES = \
 	ibusim.c \
 	ibusimcontext.c \
 	ibusimcontext.h \
 	$(NULL)
+
+im_ibus_la_DEPENDENCIES = $(libibus_gtk)
+im_ibus_la_LIBADD = $(libibus_gtk)
+
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
+
 im_ibus_la_LDFLAGS = \
 	@GTK2_LIBS@ \
 	@DBUS_LIBS@ \
-	$(libibus_gtk) \
 	-avoid-version \
 	-module \
 	$(NULL)
+
 $(libibus_gtk):
 	(cd $(top_builddir)/lib/gtk2; make )
 
