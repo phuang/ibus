@@ -24,13 +24,18 @@ from os import path
 import signal
 import glob
 import ibus
+import locale
+
+locale.setlocale(locale.LC_ALL, "")
+LANG = locale.getlocale()[0], locale.getlocale()[0].split("_")[0]
 
 IBUS_DATAROOTDIR = os.getenv("IBUS_DATAROOTDIR")
 
 class Engine(ibus.Object):
-    def __init__(self, name, lang = "other", icon = "", author = "", credits = "", _exec = "", pid = 0):
+    def __init__(self, name, local_name, lang = "other", icon = "", author = "", credits = "", _exec = "", pid = 0):
         super(Engine, self).__init__()
         self.name = name
+        self.local_name = local_name
         self.lang = lang
         self.icon = icon
         self.author = author
@@ -74,7 +79,7 @@ class Engine(ibus.Object):
             self._exec == o._exec
 
     def __str__(self):
-        return "Engine('%s', '%s', '%s', '%s', '%s', '%s', %d" % (self.name, self.lang, \
+        return "Engine('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d" % (self.name, self.local_name, self.lang, \
             self.icon, self.author, \
             self.credits, self._exec, \
             self.pid)
@@ -114,7 +119,7 @@ class Register(ibus.Object):
     def list_engines(self):
         engines = []
         for key, e in self.__engines.items():
-            engines.append((e.name, e.lang, e.icon, e.author, e.credits, e._exec, e.pid != 0))
+            engines.append((e.name, e.local_name, e.lang, e.icon, e.author, e.credits, e._exec, e.pid != 0))
         return engines
 
     def reload_engines(self):
@@ -146,6 +151,7 @@ class Register(ibus.Object):
     def __load_engine(self, _file):
         f = file(_file)
         name = None
+        local_name = None
         lang = "other"
         icon = ""
         author = ""
@@ -160,6 +166,11 @@ class Register(ibus.Object):
             n, v = l.split("=")
             if n == "Name":
                 name = v
+                if local_name == None:
+                    local_name = name
+            elif n.startswith("Name."):
+                if n[5:] in LANG:
+                    local_name = v
             elif n == "Lang":
                 lang = v
             elif n == "Icon":
@@ -178,7 +189,7 @@ class Register(ibus.Object):
         if _exec == None:
             raise Exception("%s: no exec" % _file)
 
-        return Engine(name, lang, icon, author, credits, _exec)
+        return Engine(name, local_name, lang, icon, author, credits, _exec)
 
 if __name__ == "__main__":
     import time

@@ -110,7 +110,7 @@ class IIBus(dbus.service.Object):
     @async_method(in_signature = "s", out_signature = "v")
     def ConfigGetValue(self, key, dbusconn, reply_cb, error_cb): pass
 
-    @method(out_signature = "a(ssssssb)")
+    @method(out_signature = "a(sssssssb)")
     def RegisterListEngines(self, dbusconn): pass
 
     @method()

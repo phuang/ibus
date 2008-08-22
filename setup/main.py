@@ -45,6 +45,7 @@ N_ = lambda a : a
 
 (
     DATA_NAME,
+    DATA_LOCAL_NAME,
     DATA_LANG,
     DATA_ICON,
     DATA_AUTHOR,
@@ -52,7 +53,7 @@ N_ = lambda a : a
     DATA_EXEC,
     DATA_STARTED,
     DATA_PRELOAD
-) = range(8)
+) = range(9)
 
 CONFIG_GENERAL_SHORTCUT = "/general/keyboard_shortcut_%s"
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
@@ -225,6 +226,8 @@ class Setup(object):
                         buttons = gtk.BUTTONS_CLOSE,
                         message_format = str(e))
                 dlg.run()
+                dlg.destroy()
+                self.__flush_gtk_events()
                 return
         else:
             try:
@@ -234,6 +237,8 @@ class Setup(object):
                         buttons = gtk.BUTTONS_CLOSE,
                         message_format = str(e))
                 dlg.run()
+                dlg.destroy()
+                self.__flush_gtk_events()
                 return
         data[DATA_STARTED] = not data[DATA_STARTED]
 
@@ -293,12 +298,12 @@ class Setup(object):
 
         langs = dict()
 
-        for name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
+        for name, local_name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
             _lang = ibus.LANGUAGES.get(lang, "other")
             _lang = _(_lang)
             if _lang not in langs:
                 langs[_lang] = list()
-            langs[_lang].append([name, lang, icon, author, credits, _exec, started])
+            langs[_lang].append([name, local_name, lang, icon, author, credits, _exec, started])
 
         keys = langs.keys()
         keys.sort()
@@ -319,7 +324,7 @@ class Setup(object):
                 COLUMN_DATA, None)
             langs[key].sort()
 
-            for name, lang, icon, author, credits, _exec, started in langs[key]:
+            for name, local_name, lang, icon, author, credits, _exec, started in langs[key]:
                 child_iter = model.append(iter)
                 is_preload = "%s:%s" % (lang, name) in self.__preload_engines
 
@@ -328,13 +333,13 @@ class Setup(object):
                     pixbuf = pixbuf_missing
 
                 model.set(child_iter,
-                    COLUMN_NAME, name,
+                    COLUMN_NAME, local_name,
                     COLUMN_ENABLE, started,
                     COLUMN_PRELOAD, is_preload,
                     COLUMN_VISIBLE, True,
                     COLUMN_ICON, pixbuf,
                     COLUMN_DATA,
-                    [name, lang, icon, author, credits, _exec, started, is_preload])
+                    [name, local_name, lang, icon, author, credits, _exec, started, is_preload])
 
         return model
 
