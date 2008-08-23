@@ -83,7 +83,7 @@ PKG_CHECK_MODULES(DBUS, [
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT,
-[QtCore >= 4.3.5 QtDBus >= 4.3.5],
+[QtCore >= 4.4.0 QtDBus >= 4.4.0],
 [IBUS_HAS_QT4=yes],
 [IBUS_HAS_QT4=no]
 )
