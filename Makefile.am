@@ -36,7 +36,6 @@ SUBDIRS = \
 
 ACLOCAL_AMFLAGS = -I m4
 
-
 EXTRA_DIST = \
 	autogen.sh \
 	ibus.spec.in \
@@ -50,6 +49,9 @@ noinst_DIST = \
 DISTCLEANFILES = \
 	po/stamp-it \
 	$(NULL)
+
+install-data-hook:
+	$(MKDIR_P) $(DESTDIR)${pkgdatadir}/engine
 
 rpm: dist @PACKAGE_NAME@.spec
 	rpmbuild -bb \
