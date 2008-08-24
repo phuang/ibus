@@ -31,6 +31,10 @@ from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
 CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
 CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
@@ -73,7 +77,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
         self.__status_icon.set_from_icon_name("ibus")
-        self.__status_icon.set_tooltip("iBus - Running")
+        self.__status_icon.set_tooltip(_("iBus - Running"))
         self.__status_icon.set_visible(True)
 
         self.__config_load_lookup_table_orientation()

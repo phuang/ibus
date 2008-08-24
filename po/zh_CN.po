@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-22 16:07+0800\n"
+"POT-Creation-Date: 2008-08-24 11:45+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -383,39 +383,43 @@ msgstr "简体中文"
 msgid "Chinese (traditional)"
 msgstr "繁体中文"
 
-#: setup/main.py:92
+#: panel/panel.py:80
+msgid "iBus - Running"
+msgstr "iBus - 运行"
+
+#: setup/main.py:95
 msgid "trigger"
 msgstr "开关"
 
-#: setup/main.py:92
+#: setup/main.py:95
 msgid "next_engine"
 msgstr "下一个引擎"
 
-#: setup/main.py:92
+#: setup/main.py:95
 msgid "prev_engine"
 msgstr "上一个引擎"
 
-#: setup/main.py:117
+#: setup/main.py:142
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: setup/main.py:133
+#: setup/main.py:158
 msgid "IBus has been started! "
 msgstr "IBus已经启动了！"
 
-#: setup/main.py:155 setup/setup.glade:321
+#: setup/main.py:180 setup/setup.glade:364
 msgid "Engine"
 msgstr "输入法引擎"
 
-#: setup/main.py:179
+#: setup/main.py:204
 msgid "Started"
 msgstr "启动"
 
-#: setup/main.py:188
+#: setup/main.py:213
 msgid "Preload"
 msgstr "预加载"
 
-#: setup/main.py:197
+#: setup/main.py:222
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
@@ -448,31 +452,31 @@ msgstr "IBus - 设置"
 msgid "Auto start IBus on session login"
 msgstr "启动桌面时自动启动IBus"
 
-#: setup/setup.glade:56
-msgid "Trigger:"
-msgstr "开关:"
-
-#: setup/setup.glade:84
-msgid "Next engine:"
-msgstr "下一个引擎:"
-
-#: setup/setup.glade:100
-msgid "Previous engine:"
-msgstr "上一个引擎:"
-
-#: setup/setup.glade:117 setup/setup.glade:166 setup/setup.glade:186
+#: setup/setup.glade:59 setup/setup.glade:78 setup/setup.glade:129
 msgid "..."
 msgstr ""
 
-#: setup/setup.glade:207
+#: setup/setup.glade:145
+msgid "Previous engine:"
+msgstr "上一个引擎:"
+
+#: setup/setup.glade:161
+msgid "Next engine:"
+msgstr "下一个引擎:"
+
+#: setup/setup.glade:191
+msgid "Trigger:"
+msgstr "开关:"
+
+#: setup/setup.glade:208
 msgid "Keyboard shortcuts"
 msgstr "快捷键"
 
-#: setup/setup.glade:236
+#: setup/setup.glade:242
 msgid "Lookup table orientation:"
 msgstr "候选词表方向:"
 
-#: setup/setup.glade:248
+#: setup/setup.glade:254
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -480,15 +484,23 @@ msgstr ""
 "水平\n"
 "竖直"
 
-#: setup/setup.glade:262
-msgid "Panel"
-msgstr "界面"
+#: setup/setup.glade:267
+msgid "Auto hide language bar"
+msgstr "自动隐藏语言栏"
 
-#: setup/setup.glade:283
+#: setup/setup.glade:279
+msgid "Use custom font"
+msgstr "使用自定义字体"
+
+#: setup/setup.glade:305
+msgid "UI"
+msgstr "用户界面"
+
+#: setup/setup.glade:326
 msgid "General"
 msgstr "通用"
 
-#: setup/setup.glade:332
+#: setup/setup.glade:375
 msgid ""
 "IBus\n"
 "\n"
@@ -499,10 +511,10 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:349
+#: setup/setup.glade:392
 msgid "About"
 msgstr "关于"
 
-#: setup/setup.glade:371
+#: setup/setup.glade:414
 msgid "gtk-close"
 msgstr ""
