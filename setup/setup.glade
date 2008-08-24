@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.4 on Sun Aug 24 08:30:51 2008 -->
+<!--Generated with glade3 3.4.4 on Sun Aug 24 16:23:28 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
@@ -341,6 +341,7 @@ Vertical</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="shadow_type">GTK_SHADOW_IN</property>
                     <child>
                       <widget class="GtkTreeView" id="treeview_engines">
                         <property name="visible">True</property>
@@ -370,9 +371,15 @@ Vertical</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label5">
+              <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">IBus
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label5">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">IBus
 
 Homepage: http://code.google.com/p/ibus
 Author: Huang Peng &lt;shawn.p.huang@gmail.com&gt;
@@ -380,7 +387,16 @@ Author: Huang Peng &lt;shawn.p.huang@gmail.com&gt;
 
 
 </property>
-                <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="use_markup">True</property>
+                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
               </widget>
               <packing>
                 <property name="position">2</property>
