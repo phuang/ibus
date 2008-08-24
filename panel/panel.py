@@ -59,7 +59,6 @@ class Panel(ibus.PanelBase):
         self.__language_bar.show_all()
 
         self.__candidate_panel = CandidatePanel()
-        self.__config_load_lookup_table_orientation()
         self.__candidate_panel.connect("cursor-up",
                         lambda widget: self.cursor_up())
         self.__candidate_panel.connect("cursor-down",
@@ -71,6 +70,10 @@ class Panel(ibus.PanelBase):
         self.__status_icon.set_from_icon_name("ibus")
         self.__status_icon.set_tooltip("iBus - Running")
         self.__status_icon.set_visible(True)
+
+        self.__config_load_lookup_table_orientation()
+        self.__config_load_auto_hide()
+        self.__config_load_custom_font()
 
     def set_cursor_location(self, x, y, w, h):
         self.__candidate_panel.set_cursor_location(x + w, y + h)
@@ -185,9 +188,31 @@ class Panel(ibus.PanelBase):
         else:
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
+    def __config_load_auto_hide(self):
+        self.__auto_hide = self.__bus.config_get_value("/panel/auto_hide", False)
+
+    def __config_load_custom_font(self):
+        self.__use_custom_font = self.__bus.config_get_value("/panel/use_custom_font", False)
+        font_name = gtk.settings_get_default().get_property("gtk-font-name")
+        self.__custom_font =  self.__bus.config_get_value("/panel/custom_font", font_name)
+        style_string = 'style "custom-font" { font_name="%s" }\nclass "IBusPanelLabel" style "custom-font"\n'
+        if self.__use_custom_font:
+            style_string = style_string % self.__custom_font
+            gtk.rc_parse_string(style_string)
+        else:
+            style_string = style_string % ""
+            gtk.rc_parse_string(style_string)
+
+        settings = gtk.settings_get_default()
+        gtk.rc_reset_styles(settings)
+
     def __config_value_changed_cb(self, bus, key, value):
         if key == "/panel/lookup_table_orientation":
             self.__config_load_lookup_table_orientation()
+        elif key == "/panel/auto_hide":
+            self.__config_load_auto_hide()
+        elif key == "/panel/use_custom_font" or key == "/panel/custom_font":
+            self.__config_load_custom_font()
 
     def __config_reloaded_cb(self, bus):
         pass

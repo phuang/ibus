@@ -26,6 +26,9 @@ import pango
 import ibus
 from ibus.gtk import PangoAttrList
 
+class Label(gtk.Label): pass
+gobject.type_register(Label, "IBusPanelLabel")
+
 class HSeparator(gtk.HBox):
     def __init__ (self):
         gtk.HBox.__init__ (self)
@@ -54,11 +57,11 @@ class CandidateArea(gtk.HBox):
             self.pack_start(self.__vbox2, True, True, 4)
 
         for i in xrange(1, 11):
-            label1 = gtk.Label("%d." % (i % 10))
+            label1 = Label("%d." % (i % 10))
             label1.set_alignment(0.0, 0.5)
             label1.set_no_show_all(True)
 
-            label2 = gtk.Label()
+            label2 = Label()
             label2.set_alignment(0.0, 0.5)
             label2.set_no_show_all(True)
 
@@ -168,7 +171,7 @@ class CandidatePanel(gtk.VBox):
             self.remove(w)
             w.destroy()
         # create preedit label
-        self.__preedit_label = gtk.Label(self.__preedit_string)
+        self.__preedit_label = Label(self.__preedit_string)
         self.__preedit_label.set_attributes(self.__preedit_attrs)
         self.__preedit_label.set_alignment(0.0, 0.5)
         self.__preedit_label.set_padding(8, 0)
@@ -177,7 +180,7 @@ class CandidatePanel(gtk.VBox):
             self.__preedit_label.show()
 
         # create aux label
-        self.__aux_label = gtk.Label(self.__aux_string)
+        self.__aux_label = Label(self.__aux_string)
         self.__aux_label.set_attributes(self.__aux_attrs)
         self.__aux_label.set_alignment(0.0, 0.5)
         self.__aux_label.set_padding(8, 0)
@@ -192,7 +195,7 @@ class CandidatePanel(gtk.VBox):
         self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
 
         # create state label
-        self.__state_label = gtk.Label()
+        self.__state_label = Label()
         self.__state_label.set_size_request(20, -1)
 
         # create buttons
