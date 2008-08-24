@@ -46,6 +46,8 @@ class LanguageBar(gtk.Toolbar):
 
     def __init__ (self):
         super(LanguageBar, self).__init__()
+        self.__auto_hide = False
+        self.__has_focus = False
         self.set_style(gtk.TOOLBAR_ICONS)
         self.set_show_arrow(False)
         self.set_property("icon-size", ICON_SIZE)
@@ -107,6 +109,16 @@ class LanguageBar(gtk.Toolbar):
     def reset(self):
         self.__remove_properties()
 
+    def set_auto_hide(self, auto_hide):
+        self.__auto_hide = auto_hide
+        if self.__has_focus:
+            self.focus_in()
+        else:
+            self.focus_out()
+
+    def get_auto_hide(self):
+        return self.__auto_hide
+
     def register_properties(self, props):
         self.__remove_properties()
         # create new properties
@@ -149,11 +161,16 @@ class LanguageBar(gtk.Toolbar):
         gtk.Toolbar.hide_all(self)
 
     def focus_in(self):
+        self.__has_focus = True
         self.__im_menu.set_sensitive(True)
+        self.__toplevel.show_all()
         self.__toplevel.window.raise_()
 
     def focus_out(self):
+        self.__has_focus = False
         self.__im_menu.set_sensitive(False)
+        if self.__auto_hide:
+            self.__toplevel.hide_all()
 
 gobject.type_register(LanguageBar, "IBusLanguageBar")
 

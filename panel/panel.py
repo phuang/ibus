@@ -189,15 +189,16 @@ class Panel(ibus.PanelBase):
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
     def __config_load_auto_hide(self):
-        self.__auto_hide = self.__bus.config_get_value("/panel/auto_hide", False)
+        auto_hide = self.__bus.config_get_value("/panel/auto_hide", False)
+        self.__language_bar.set_auto_hide(auto_hide)
 
     def __config_load_custom_font(self):
-        self.__use_custom_font = self.__bus.config_get_value("/panel/use_custom_font", False)
+        use_custom_font = self.__bus.config_get_value("/panel/use_custom_font", False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
-        self.__custom_font =  self.__bus.config_get_value("/panel/custom_font", font_name)
+        custom_font =  self.__bus.config_get_value("/panel/custom_font", font_name)
         style_string = 'style "custom-font" { font_name="%s" }\nclass "IBusPanelLabel" style "custom-font"\n'
-        if self.__use_custom_font:
-            style_string = style_string % self.__custom_font
+        if use_custom_font:
+            style_string = style_string % custom_font
             gtk.rc_parse_string(style_string)
         else:
             style_string = style_string % ""
