@@ -31,6 +31,11 @@ from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 
+CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
+CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
+CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
+CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
+
 class Panel(ibus.PanelBase):
     def __init__ (self, bus, object_path):
         super(Panel, self).__init__(bus, object_path)
@@ -180,7 +185,7 @@ class Panel(ibus.PanelBase):
         gtk.main_quit()
 
     def __config_load_lookup_table_orientation(self):
-        value = self.__bus.config_get_value("/panel/lookup_table_orientation", 0)
+        value = self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0)
         if value != 0 and value != 1:
             value = 0
         if value == 0:
@@ -189,13 +194,13 @@ class Panel(ibus.PanelBase):
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
     def __config_load_auto_hide(self):
-        auto_hide = self.__bus.config_get_value("/panel/auto_hide", False)
+        auto_hide = self.__bus.config_get_value(CONFIG_PANEL_AUTO_HIDE, False)
         self.__language_bar.set_auto_hide(auto_hide)
 
     def __config_load_custom_font(self):
-        use_custom_font = self.__bus.config_get_value("/panel/use_custom_font", False)
+        use_custom_font = self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
-        custom_font =  self.__bus.config_get_value("/panel/custom_font", font_name)
+        custom_font =  self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
         style_string = 'style "custom-font" { font_name="%s" }\nclass "IBusPanelLabel" style "custom-font"\n'
         if use_custom_font:
             style_string = style_string % custom_font
@@ -208,11 +213,11 @@ class Panel(ibus.PanelBase):
         gtk.rc_reset_styles(settings)
 
     def __config_value_changed_cb(self, bus, key, value):
-        if key == "/panel/lookup_table_orientation":
+        if key == CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION:
             self.__config_load_lookup_table_orientation()
-        elif key == "/panel/auto_hide":
+        elif key == CONFIG_PANEL_AUTO_HIDE:
             self.__config_load_auto_hide()
-        elif key == "/panel/use_custom_font" or key == "/panel/custom_font":
+        elif key == CONFIG_PANEL_USE_CUSTOM_FONT or key == CONFIG_PANEL_CUSTOM_FONT:
             self.__config_load_custom_font()
 
     def __config_reloaded_cb(self, bus):
