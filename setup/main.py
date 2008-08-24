@@ -58,6 +58,9 @@ N_ = lambda a : a
 CONFIG_GENERAL_SHORTCUT = "/general/keyboard_shortcut_%s"
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
 CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
+CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
+CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
+CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
 
 class Setup(object):
     def __flush_gtk_events(self):
@@ -102,6 +105,28 @@ class Setup(object):
             self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0))
         self.__combobox_lookup_table_orientation.connect("changed",
             self.__combobox_lookup_table_orientation_changed_cb)
+
+        # auto hide
+        self.__checkbutton_auto_hide = self.__xml.get_widget("checkbutton_auto_hide")
+        self.__checkbutton_auto_hide.set_active(
+            self.__bus.config_get_value(CONFIG_PANEL_AUTO_HIDE, False))
+        self.__checkbutton_auto_hide.connect("toggled", self.__checkbutton_auto_hide_toggled_cb)
+
+        # custom font
+        self.__checkbutton_custom_font = self.__xml.get_widget("checkbutton_custom_font")
+        self.__checkbutton_custom_font.set_active(
+            self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False))
+        self.__checkbutton_custom_font.connect("toggled", self.__checkbutton_custom_font_toggled_cb)
+
+        self.__fontbutton_custom_font = self.__xml.get_widget("fontbutton_custom_font")
+        if self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False):
+            self.__fontbutton_custom_font.set_sensitive(True)
+        else:
+            self.__fontbutton_custom_font.set_sensitive(False)
+        font_name = gtk.settings_get_default().get_property("gtk-font-name")
+        font_name = self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
+        self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
+        self.__fontbutton_custom_font.set_font_name(font_name)
 
         self.__init_engine_view()
 
@@ -370,6 +395,23 @@ class Setup(object):
         self.__bus.config_set_value(
             CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION,
             self.__combobox_lookup_table_orientation.get_active())
+
+    def __checkbutton_auto_hide_toggled_cb(self, button):
+        self.__bus.config_set_value(
+            CONFIG_PANEL_AUTO_HIDE,
+            self.__checkbutton_auto_hide.get_active())
+
+    def __checkbutton_custom_font_toggled_cb(self, button):
+        if self.__checkbutton_custom_font.get_active():
+            self.__fontbutton_custom_font.set_sensitive(True)
+            self.__bus.config_set_value(CONFIG_PANEL_USE_CUSTOM_FONT, True)
+        else:
+            self.__fontbutton_custom_font.set_sensitive(False)
+            self.__bus.config_set_value(CONFIG_PANEL_USE_CUSTOM_FONT, False)
+
+    def __fontbutton_custom_font_notify_cb(self, button, arg):
+        font_name = self.__fontbutton_custom_font.get_font_name()
+        self.__bus.config_set_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
 
     def __config_value_changed_cb(self, bus, key, value):
         if key == CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION:
