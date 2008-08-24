@@ -60,7 +60,7 @@ class EngineFactoryBase(ibus.Object):
         self.__info = None
         self.__engine_class = None
         self.__engine_path = None
-        super(EngineBase,self).do_destroy()
+        super(EngineFactoryBase,self).do_destroy()
 
 
 class EngineFactoryProxy(interface.IEngineFactory):
