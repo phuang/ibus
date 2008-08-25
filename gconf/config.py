@@ -73,7 +73,7 @@ class Config(ibus.Object):
 
     def __to_py_value(self, value):
         if value.type == gconf.VALUE_STRING:
-            return value.get_string()
+            return unicode(value.get_string(), "utf-8")
         if value.type == gconf.VALUE_INT:
             return value.get_int()
         if value.type == gconf.VALUE_FLOAT:
@@ -89,7 +89,7 @@ class Config(ibus.Object):
     def __to_gconf_value(self, value):
         if isinstance(value, str) or isinstance(value, unicode):
             ret = gconf.Value(gconf.VALUE_STRING)
-            ret.set_string(value)
+            ret.set_string(value.encode("utf-8"))
         elif isinstance(value, bool):
             ret = gconf.Value(gconf.VALUE_BOOL)
             ret.set_bool(value)
