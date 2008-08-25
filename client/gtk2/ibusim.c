@@ -1,5 +1,5 @@
 /* vim:set et ts=4: */
-/* IBus - The Input Bus
+/* ibus - The Input Bus
  * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
 
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
-    "The Input Bus",
+    "iBus",
     "ibus",
     IBUS_LOCALDIR,
     ""
