@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-24 11:45+0800\n"
+"POT-Creation-Date: 2008-08-25 11:00+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -399,27 +399,27 @@ msgstr "下一个引擎"
 msgid "prev_engine"
 msgstr "上一个引擎"
 
-#: setup/main.py:142
+#: setup/main.py:143
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: setup/main.py:158
+#: setup/main.py:159
 msgid "IBus has been started! "
 msgstr "IBus已经启动了！"
 
-#: setup/main.py:180 setup/setup.glade:364
+#: setup/main.py:181 setup/setup.glade:365
 msgid "Engine"
 msgstr "输入法引擎"
 
-#: setup/main.py:204
+#: setup/main.py:205
 msgid "Started"
 msgstr "启动"
 
-#: setup/main.py:213
+#: setup/main.py:214
 msgid "Preload"
 msgstr "预加载"
 
-#: setup/main.py:222
+#: setup/main.py:223
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
@@ -452,21 +452,21 @@ msgstr "IBus - 设置"
 msgid "Auto start IBus on session login"
 msgstr "启动桌面时自动启动IBus"
 
-#: setup/setup.glade:59 setup/setup.glade:78 setup/setup.glade:129
-msgid "..."
-msgstr ""
+#: setup/setup.glade:57
+msgid "Trigger:"
+msgstr "开关:"
 
-#: setup/setup.glade:145
-msgid "Previous engine:"
-msgstr "上一个引擎:"
-
-#: setup/setup.glade:161
+#: setup/setup.glade:85
 msgid "Next engine:"
 msgstr "下一个引擎:"
 
-#: setup/setup.glade:191
-msgid "Trigger:"
-msgstr "开关:"
+#: setup/setup.glade:101
+msgid "Previous engine:"
+msgstr "上一个引擎:"
+
+#: setup/setup.glade:118 setup/setup.glade:167 setup/setup.glade:187
+msgid "..."
+msgstr ""
 
 #: setup/setup.glade:208
 msgid "Keyboard shortcuts"
@@ -500,7 +500,7 @@ msgstr "用户界面"
 msgid "General"
 msgstr "通用"
 
-#: setup/setup.glade:375
+#: setup/setup.glade:382
 msgid ""
 "IBus\n"
 "\n"
@@ -511,10 +511,10 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:392
+#: setup/setup.glade:407
 msgid "About"
 msgstr "关于"
 
-#: setup/setup.glade:414
+#: setup/setup.glade:429
 msgid "gtk-close"
 msgstr ""
