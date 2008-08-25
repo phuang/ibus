@@ -28,7 +28,7 @@
 
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
-    "iBus",
+    "iBus (Intelligent Input Bus)",
     "ibus",
     IBUS_LOCALDIR,
     ""
