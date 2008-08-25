@@ -55,6 +55,9 @@ IBusClient::IBusClient ()
 		username = getenv ("USERNAME");
 
 	session = getenv ("DISPLAY");
+	if (session.indexOf (".") == -1) {
+		session += ".0";
+	}
 	session.replace (":", "-");
 
 	ibus_path = QString("/tmp/ibus-%1/ibus-%2").arg (username, session);
