@@ -382,6 +382,10 @@ class Setup(object):
         return True
 
     def __checkbutton_auto_start_toggled_cb(self, button):
+        auto_start_dir = path.join(BaseDirectory.xdg_config_home, "autostart")
+        if not path.isdir(auto_start_dir):
+            os.makedirs(auto_start_dir)
+
         link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
         ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/ibus.desktop")
         # unlink file
