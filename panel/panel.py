@@ -204,6 +204,7 @@ class Panel(ibus.PanelBase):
     def __config_load_custom_font(self):
         use_custom_font = self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
+        font_name = unicode(font_name, "utf-8")
         custom_font =  self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
         style_string = 'style "custom-font" { font_name="%s" }\nclass "IBusPanelLabel" style "custom-font"\n'
         if use_custom_font:

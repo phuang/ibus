@@ -124,6 +124,7 @@ class Setup(object):
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
+        font_name = unicode(font_name, "utf-8")
         font_name = self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
@@ -411,6 +412,7 @@ class Setup(object):
 
     def __fontbutton_custom_font_notify_cb(self, button, arg):
         font_name = self.__fontbutton_custom_font.get_font_name()
+        font_name = unicode(font_name, "utf-8")
         self.__bus.config_set_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
 
     def __config_value_changed_cb(self, bus, key, value):
