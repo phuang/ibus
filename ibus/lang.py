@@ -45,7 +45,7 @@ LANGUAGES = {
     "cy_GB"  : N_("Welsh"),
     "da_DK"  : N_("Danish"),
     "de_DE"  : N_("German"),
-    "dv_MV"  : N_("Divehi"),
+    "dv_MV"  : N_("Dhivehi"),
     "el_GR"  : N_("Greek"),
     "en"     : N_("English"),
     "en_AU"  : N_("English (Australian)"),
