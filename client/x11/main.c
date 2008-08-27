@@ -509,8 +509,11 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     xkp.xkey.subwindow = None;
     xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
 
+    /*
     g_get_current_time (&time);
     xkp.xkey.time = time.tv_sec * 1000 + time.tv_usec / 1000;
+    */
+    xkp.xkey.time = 0;
     xkp.xkey.state = event->state;
     xkp.xkey.keycode = event->hardware_keycode;
 
