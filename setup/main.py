@@ -324,6 +324,7 @@ class Setup(object):
 
         langs = dict()
 
+        self.__bus.register_reload_engines()
         for name, local_name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
             _lang = ibus.LANGUAGES.get(lang, "other")
             _lang = _(_lang)
