@@ -156,6 +156,7 @@ class Panel(ibus.PanelBase):
         self.__focus_ic = ic
 
         factory, enabled = self.__bus.get_input_context_states(ic)
+        self.__language_bar.set_enabled(enabled)
 
         if factory == "" or not enabled:
             self.__set_im_icon("ibus")
@@ -175,6 +176,7 @@ class Panel(ibus.PanelBase):
         if not self.__focus_ic:
             return
         factory, enabled = self.__bus.get_input_context_states(self.__focus_ic)
+        self.__language_bar.set_enabled(enabled)
         if enabled == False or not factory:
             self.__set_im_icon("ibus")
         else:
