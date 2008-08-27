@@ -156,9 +156,9 @@ class Setup(object):
                     self.__bus = ibus.Bus()
                 except:
                     continue
-                message = _("IBus has been started! " + \
-                    "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n" + \
-                    "  export GTK_IM_MODULE=ibus\n" + \
+                message = _("IBus has been started! "
+                    "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+                    "  export GTK_IM_MODULE=ibus\n"
                     "  export XMODIFIERS=@im=ibus\n"
                     "  export QT_IM_MODULE=ibus"
                     )
