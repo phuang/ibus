@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-27 17:24+0800\n"
+"POT-Creation-Date: 2008-08-27 17:45+0800\n"
 "PO-Revision-Date: 2008-08-27 17:11+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -414,19 +414,19 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 
-#: setup/main.py:181 setup/setup.glade:365
+#: setup/main.py:182 setup/setup.glade:365
 msgid "Engine"
 msgstr "エンジン"
 
-#: setup/main.py:205
+#: setup/main.py:206
 msgid "Started"
 msgstr "開始"
 
-#: setup/main.py:214
+#: setup/main.py:215
 msgid "Preload"
 msgstr "プリロード"
 
-#: setup/main.py:223
+#: setup/main.py:224
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"

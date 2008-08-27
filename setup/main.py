@@ -141,7 +141,6 @@ class Setup(object):
         except:
             while self.__bus == None:
                 message = _("IBus daemon is not started. Do you want to start it now?")
-                print >> sys.stderr, message
                 dlg = gtk.MessageDialog(type = gtk.MESSAGE_QUESTION,
                         buttons = gtk.BUTTONS_YES_NO,
                         message_format = message)
