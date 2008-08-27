@@ -77,8 +77,7 @@ class IBusServer(dbus.server.Server):
             if not engines:
                 engines = []
         except:
-            import traceback
-            traceback.print_exc()
+            pass
         for e in engines:
             try:
                 lang, name = e.split(":")
