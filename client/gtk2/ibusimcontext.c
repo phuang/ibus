@@ -479,9 +479,11 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     event->any.send_event = TRUE;
     if (event->type == GDK_KEY_PRESS ||
         event->type == GDK_KEY_RELEASE) {
+    /*
         GTimeVal time;
-        g_get_current_time (&time);
         event->key.time = time.tv_sec * 1000 + time.tv_usec / 1000;
+     */
+        event->key.time = GDK_CURRENT_TIME;
     }
     if (event->any.window != context->priv->client_window) {
         GdkEvent _event = *event;
