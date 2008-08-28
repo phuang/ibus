@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2008-08-28 19:00+0800\n"
-"PO-Revision-Date: 2008-08-27 17:11+0900\n"
+"PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgstr "アルメニア語"
 
 #: ibus/lang.py:72
 msgid "Interlingua"
-msgstr ""
+msgstr "インターリンガ"
 
 #: ibus/lang.py:73
 msgid "Indonesian"
@@ -222,7 +222,7 @@ msgstr "韓国語"
 
 #: ibus/lang.py:83
 msgid "Laothian"
-msgstr ""
+msgstr "ラオス語"
 
 #: ibus/lang.py:84
 msgid "Lithuanian"
@@ -394,11 +394,11 @@ msgstr "トリガー"
 
 #: setup/main.py:113
 msgid "next engine"
-msgstr "次のエンジン(_E)"
+msgstr "次のエンジン"
 
 #: setup/main.py:122
 msgid "prev engine"
-msgstr "前のエンジン(_E)"
+msgstr "前のエンジン"
 
 #: setup/main.py:167
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -412,6 +412,11 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
+"IBus を開始しました。IBus を使えない場合は次の行を$HOME/.bashrc に書き加えて"
+"再ログインしてください。\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
 
 #: setup/main.py:204 setup/setup.glade:365
 msgid "Engine"
