@@ -92,12 +92,36 @@ class Setup(object):
         self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
 
         # keyboard shortcut
-        for name in (N_("trigger"), N_("next_engine"), N_("prev_engine")):
-            shortcuts = self.__bus.config_get_value(CONFIG_GENERAL_SHORTCUT % name, [])
-            button = self.__xml.get_widget("button_%s" % name)
-            entry = self.__xml.get_widget("entry_%s" % name)
-            entry.set_text(";".join(shortcuts))
-            button.connect("clicked", self.__shortcut_button_clicked_cb, name, entry)
+        # trigger
+        shortcuts = self.__bus.config_get_value(
+                        ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
+                        ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
+        button = self.__xml.get_widget("button_trigger")
+        entry = self.__xml.get_widget("entry_trigger")
+        entry.set_text("; ".join(shortcuts))
+        button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    N_("trigger"), ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER, entry)
+
+        # next engine
+        shortcuts = self.__bus.config_get_value(
+                        ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                        ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
+        button = self.__xml.get_widget("button_next_engine")
+        entry = self.__xml.get_widget("entry_next_engine")
+        entry.set_text("; ".join(shortcuts))
+        button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    N_("next engine"), ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, entry)
+        # prev engine
+        shortcuts = self.__bus.config_get_value(
+                        ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE,
+                        ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
+        button = self.__xml.get_widget("button_prev_engine")
+        entry = self.__xml.get_widget("entry_prev_engine")
+        entry.set_text("; ".join(shortcuts))
+        button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    N_("prev engine"), ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE, entry)
+
+
 
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
@@ -217,13 +241,13 @@ class Setup(object):
         column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
 
-    def __shortcut_button_clicked_cb(self, button, name, entry):
+    def __shortcut_button_clicked_cb(self, button, name, key, entry):
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK)
         title = _("Select keyboard shortcut for %s") %  _(name)
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
         if text:
-            shortcuts = text.split(';')
+            shortcuts = text.split("; ")
         else:
             shortcuts = None
         dialog.set_shortcuts(shortcuts)
@@ -232,8 +256,8 @@ class Setup(object):
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return
-        self.__bus.config_set_value(CONFIG_GENERAL_SHORTCUT % name, shortcuts)
-        entry.set_text(";".join(shortcuts))
+        self.__bus.config_set_value(key, shortcuts)
+        entry.set_text("; ".join(shortcuts))
 
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):

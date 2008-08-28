@@ -31,9 +31,18 @@ from panel import Panel, DummyPanel
 from config import Config, DefaultConfig
 from register import Register
 
-CONFIG_GENERAL_SHORTCUT_TRIGGER     =  "/general/keyboard_shortcut_trigger"
-CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE =  "/general/keyboard_shortcut_next_engine"
-CONFIG_GENERAL_SHORTCUT_PREV_ENGINE =  "/general/keyboard_shortcut_prev_engine"
+CONFIG_GENERAL_SHORTCUT_TRIGGER     = "/general/keyboard_shortcut_trigger"
+CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT = [
+    "Ctrl+space",
+    "Zenkaku_Hankaku",
+    "Hangul"]
+CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE = "/general/keyboard_shortcut_next_engine"
+CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT = [
+    "Ctrl+Shift+Release+Shift_L",
+    "Ctrl+Shift+Release+Shift_R",
+    ]
+CONFIG_GENERAL_SHORTCUT_PREV_ENGINE = "/general/keyboard_shortcut_prev_engine"
+CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT = []
 
 class IBus(ibus.Object):
     def __init__(self):
@@ -62,12 +71,14 @@ class IBus(ibus.Object):
         self.__prev_key = None
 
         self.__shortcut_trigger = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_TRIGGER, ["Ctrl+space"])
+                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
+                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
         self.__shortcut_next_engine = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
-                ["Ctrl+Shift+Release+Shift_L", "Ctrl+Shift+Release+Shift_R"])
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         self.__shortcut_prev_engine = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, [])
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
 
     def __load_config_shortcut(self, config_key, default_value):
 
@@ -482,16 +493,18 @@ class IBus(ibus.Object):
                     conn.emit_dbus_signal("ConfigValueChanged", key, value)
 
         # check daemon configure
-        if key == CONFIG_GENERAL_SHORTCUT_TRIGGER:
+        if key == ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER:
             self.__shortcut_trigger = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_TRIGGER, ["Ctrl+space"])
-        elif key == CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE:
+                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
+                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
+        elif key == ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE:
             self.__shortcut_next_engine = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
-                ["Ctrl+Shift+Release+Shift_L", "Ctrl+Shift+Release+Shift_R"])
-        elif key == CONFIG_GENERAL_SHORTCUT_PREV_ENGINE:
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
+        elif key == ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE:
             self.__shortcut_prev_engine = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, [])
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
 
     def __config_destroy_cb(self, config):
         if config == self.__config:
