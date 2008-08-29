@@ -30,6 +30,10 @@ from toolitem import ToolButton,\
     SeparatorToolItem, \
     MenuToolButton
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
 class LanguageBar(gtk.Toolbar):
@@ -74,7 +78,8 @@ class LanguageBar(gtk.Toolbar):
         self.insert(self.__handle, -1)
 
         # create input methods menu
-        self.__im_menu = ToggleToolButton(ibus.Property(name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = "Swicth engine"))
+        prop = ibus.Property(name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch engine"))
+        self.__im_menu = ToggleToolButton(prop)
         self.__im_menu.set_homogeneous(False)
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
         self.insert(self.__im_menu, -1)

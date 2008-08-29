@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-28 19:00+0800\n"
+"POT-Creation-Date: 2008-08-29 20:32+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -387,6 +387,10 @@ msgstr "中国語 (繁体)"
 #: panel/panel.py:80
 msgid "iBus - Running"
 msgstr "iBus - 実行中"
+
+#: panel/languagebar.py:81
+msgid "Switch engine"
+msgstr ""
 
 #: setup/main.py:103
 msgid "trigger"

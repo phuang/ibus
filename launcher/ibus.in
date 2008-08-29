@@ -115,7 +115,7 @@ class Launcher(object):
 
         self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
         self.__panel_pid = self.__start_process(panel, [panel], "ibus-panel")
-        
+
         ibus.main()
 
 if __name__ == "__main__":
