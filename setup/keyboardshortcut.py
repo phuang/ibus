@@ -51,7 +51,7 @@ class KeyboardShortcutSelection(gtk.VBox):
         self.__shortcut_view = gtk.TreeView(gtk.ListStore(gobject.TYPE_STRING))
         self.__shortcut_view.set_size_request(-1, 100)
         renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Keyboard shortcuts", renderer, text = 0)
+        column = gtk.TreeViewColumn(_("Keyboard shortcuts"), renderer, text = 0)
         self.__shortcut_view.append_column(column)
         self.__shortcut_view.connect("cursor-changed", self.__shortcut_view_cursor_changed_cb)
         viewport.add(self.__shortcut_view)
