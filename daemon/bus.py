@@ -192,6 +192,7 @@ class IBus(ibus.Object):
         old_factory = context.get_factory()
         new_factory = self.__factory_manager.get_next_factory(old_factory)
         engine = new_factory.create_engine()
+        self.__panel.reset()
         engine.focus_in()
         context.set_engine(engine)
         self.__panel.states_changed()
