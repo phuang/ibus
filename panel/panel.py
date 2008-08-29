@@ -270,13 +270,13 @@ class Panel(ibus.PanelBase):
             for lang in langs:
                 if len(tmp[lang]) == 1:
                     name, lang, icon, authors, credits, factory = tmp[lang][0]
-                    item = gtk.ImageMenuItem("%s - %s" % (lang, name))
+                    item = gtk.ImageMenuItem("%s - %s" % (_(lang), name))
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                     item.set_image (_icon.IconWidget(icon, size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, factory)
                     menu.add(item)
                 else:
-                    item = gtk.MenuItem(lang)
+                    item = gtk.MenuItem(_(lang))
                     menu.add(item)
                     submenu = gtk.Menu()
                     item.set_submenu(submenu)
@@ -286,7 +286,6 @@ class Panel(ibus.PanelBase):
                         item.set_image (_icon.IconWidget(icon, size[0]))
                         item.connect("activate", self.__im_menu_item_activate_cb, factory)
                         submenu.add(item)
-
 
         menu.show_all()
         menu.set_take_focus(False)
