@@ -41,6 +41,15 @@ CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
 CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
 CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
 
+def uri_hook(about, link, user_data):
+    try:
+        gtk.show_uri(about.get_screen(), link, 0, None)
+    except:
+        print >> sys.stderr, "pygtk do not support show_uri"
+
+gtk.about_dialog_set_url_hook(uri_hook, None)
+gtk.about_dialog_set_email_hook(uri_hook, None)
+
 class Panel(ibus.PanelBase):
     def __init__ (self, bus, object_path):
         super(Panel, self).__init__(bus, object_path)
@@ -326,11 +335,11 @@ class Panel(ibus.PanelBase):
             self.__start_setup()
         elif command == gtk.STOCK_ABOUT:
             about_dialog = gtk.AboutDialog()
-            about_dialog.set_name("iBus")
+            about_dialog.set_program_name("iBus")
             about_dialog.set_version(ibus.get_version())
             about_dialog.set_copyright(ibus.get_copyright())
             about_dialog.set_license(ibus.get_license())
-            about_dialog.set_comments(_("The intelligent input bus for Linux/Unix."))
+            about_dialog.set_comments(_("IBus is an intelligent input bus for Linux/Unix."))
             about_dialog.set_website("http://code.google.com/p/ibus")
             about_dialog.set_authors(["Huang Peng <shawn.p.huang@gmail.com>"])
             about_dialog.set_documenters(["Huang Peng <shawn.p.huang@gmail.com>"])
