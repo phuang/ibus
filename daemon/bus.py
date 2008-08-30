@@ -37,6 +37,8 @@ class IBus(ibus.Object):
         super(IBus, self).__init__()
         self.__context_manager = ContextManager()
         self.__factory_manager = FactoryManager()
+        self.__factory_manager.connect("default-factory-changed",
+                self.__factory_manager_default_factory_changed_cb)
 
         self.__panel = DummyPanel()
         self.__panel_handlers = list()
@@ -67,6 +69,14 @@ class IBus(ibus.Object):
         self.__shortcut_prev_engine = self.__load_config_shortcut(
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
+        self.__default_factory = None
+
+    def __factory_manager_default_factory_changed_cb(self, manager, factory):
+        if self.__default_factory != factory:
+            self.__default_factory = factory
+        if factory == None:
+            return
+        self.__config.set_value("/general/default_engine", factory.get_object_path())
 
     def __load_config_shortcut(self, config_key, default_value):
 
@@ -97,11 +107,22 @@ class IBus(ibus.Object):
     ##########################################################
     # methods for im context
     ##########################################################
+    def __load_default_factory(self):
+        if self.__default_factory != None:
+            return
+        try:
+            factory_path = self.__config.get_value("/general/default_engine")
+            self.__default_factory = self.__factory_manager.get_factory(factory_path)
+        except:
+            pass
+        if self.__default_factory != None:
+            return
+
     def create_input_context(self, name, conn):
         context = self.__context_manager.create_input_context(name, conn)
-        factory = self.__factory_manager.get_default_factory()
-        if factory:
-            engine = factory.create_engine()
+        self.__load_default_factory()
+        if self.__default_factory != None:
+            engine = self.__default_factory.create_engine()
             context.set_engine(engine)
         return context.get_id()
 
@@ -163,9 +184,11 @@ class IBus(ibus.Object):
 
     def __context_enable(self, context):
         if context.get_engine() == None:
-            factory = self.__factory_manager.get_default_factory()
-            if factory:
-                engine = factory.create_engine()
+            self.__load_default_factory()
+            if self.__default_factory == None:
+                self.__default_factory = self.__factory_manager.get_default_factory()
+            if self.__default_factory:
+                engine = self.__default_factory.create_engine()
                 engine.focus_in()
                 context.set_engine(engine)
         context.set_enable(True)

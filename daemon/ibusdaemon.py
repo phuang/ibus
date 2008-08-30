@@ -83,8 +83,7 @@ class IBusServer(dbus.server.Server):
                 lang, name = e.split(":")
                 self.__ibus.register_start_engine(lang, name, None)
             except:
-                import traceback
-                traceback.print_exc()
+                pass
 
     def connection_added(self, dbusconn):
         self.__ibus.new_connection(dbusconn)

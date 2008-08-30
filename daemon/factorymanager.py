@@ -30,6 +30,11 @@ class FactoryManager(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, )
+        ),
+        'default-factory-changed' : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_PYOBJECT, )
         )
     }
 
@@ -65,13 +70,15 @@ class FactoryManager(ibus.Object):
         if self.__default_factory == None:
             factories = self.__get_sorted_factories()
             if factories:
-                self.__default_factory = factories[0]
+                self.set_default_factory(factories[0])
 
         return self.__default_factory
 
     def set_default_factory(self, factory):
-        if factory in self.__get_sorted_factories():
-            self.__default_factory = factory
+        if factory in self.__get_sorted_factories() or factory == None:
+            if self.__default_factory != factory:
+                self.__default_factory = factory
+                self.emit("default-factory-changed", self.__default_factory)
         else:
             print "unknown factory"
 
@@ -91,7 +98,7 @@ class FactoryManager(ibus.Object):
         return factory.get_info()
 
     def get_factory(self, factory_path):
-        factory = self.__factories[factory_path]
+        factory = self.__factories.get(factory_path, None)
         return factory
 
     def __get_sorted_factories(self, resort = False):
@@ -107,7 +114,7 @@ class FactoryManager(ibus.Object):
         for object_path in self.__ibusconn_factory_dict[ibusconn]:
             factory = self.__factories[object_path]
             if factory == self.__default_factory:
-                self.__default_factory = None
+                self.set_default_factory(None)
             del self.__factories[object_path]
 
         del self.__ibusconn_factory_dict[ibusconn]
