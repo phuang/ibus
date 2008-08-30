@@ -1208,13 +1208,22 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
     }
 
     if (!dbus_message_append_args_valist (message, first_arg_type, args)) {
-        g_warning ("Can not create call message");
+        g_warning ("Can not create call message!");
         goto error;
     }
 
     if (!dbus_connection_send_with_reply (connection,
                         message, &pendingcall, -1)) {
         g_warning ("Out of memory!");
+        goto error;
+    }
+
+    /* If we got a NULL pending, that means the connection was disconnected,
+     * and we need to aboout this call
+     *  https://bugs.freedesktop.org/show_bug.cgi?id=12675
+     */
+    if (pendingcall == 0) {
+        g_warning ("Connection is breaken!");
         goto error;
     }
 
