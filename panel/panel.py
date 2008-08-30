@@ -330,7 +330,7 @@ class Panel(ibus.PanelBase):
             about_dialog.set_version(ibus.get_version())
             about_dialog.set_copyright(ibus.get_copyright())
             about_dialog.set_license(ibus.get_license())
-            about_dialog.set_comments(_("The intelligent input bus."))
+            about_dialog.set_comments(_("The intelligent input bus for Linux/Unix."))
             about_dialog.set_website("http://code.google.com/p/ibus")
             about_dialog.set_authors(["Huang Peng <shawn.p.huang@gmail.com>"])
             about_dialog.set_documenters(["Huang Peng <shawn.p.huang@gmail.com>"])

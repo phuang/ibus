@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-30 21:34+0800\n"
+"POT-Creation-Date: 2008-08-30 22:01+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -389,7 +389,7 @@ msgid "iBus - Running"
 msgstr "iBus - 実行中"
 
 #: panel/panel.py:333
-msgid "The intelligent input bus."
+msgid "The intelligent input bus for Linux/Unix."
 msgstr ""
 
 #: panel/panel.py:337
@@ -479,21 +479,21 @@ msgstr "IBus - セットアップ"
 msgid "Auto start IBus on session login"
 msgstr "セッションログイン時に IBus を自動的に起動"
 
-#: setup/setup.glade:57
-msgid "Trigger:"
-msgstr "トリガー:"
+#: setup/setup.glade:59 setup/setup.glade:78 setup/setup.glade:129
+msgid "..."
+msgstr "..."
 
-#: setup/setup.glade:85
-msgid "Next engine:"
-msgstr "次のエンジン:"
-
-#: setup/setup.glade:101
+#: setup/setup.glade:145
 msgid "Previous engine:"
 msgstr "前のエンジン:"
 
-#: setup/setup.glade:118 setup/setup.glade:167 setup/setup.glade:187
-msgid "..."
-msgstr "..."
+#: setup/setup.glade:161
+msgid "Next engine:"
+msgstr "次のエンジン:"
+
+#: setup/setup.glade:191
+msgid "Trigger:"
+msgstr "トリガー:"
 
 #: setup/setup.glade:242
 msgid "Lookup table orientation:"
@@ -525,21 +525,13 @@ msgstr "一般"
 
 #: setup/setup.glade:382
 msgid ""
-"IBus\n"
-"\n"
+"<big><b>iBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
 "Homepage: http://code.google.com/p/ibus\n"
-"Author: Huang Peng <shawn.p.huang@gmail.com>\n"
 "\n"
 "\n"
 "\n"
 msgstr ""
-"IBus\n"
-"\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"Author: Huang Peng <shawn.p.huang@gmail.com>\n"
-"\n"
-"\n"
-"\n"
 
 #: setup/setup.glade:407
 msgid "About"
@@ -548,6 +540,23 @@ msgstr "About"
 #: setup/setup.glade:429
 msgid "gtk-close"
 msgstr "gtk-close"
+
+#~ msgid ""
+#~ "IBus\n"
+#~ "\n"
+#~ "Homepage: http://code.google.com/p/ibus\n"
+#~ "Author: Huang Peng <shawn.p.huang@gmail.com>\n"
+#~ "\n"
+#~ "\n"
+#~ "\n"
+#~ msgstr ""
+#~ "IBus\n"
+#~ "\n"
+#~ "Homepage: http://code.google.com/p/ibus\n"
+#~ "Author: Huang Peng <shawn.p.huang@gmail.com>\n"
+#~ "\n"
+#~ "\n"
+#~ "\n"
 
 #~ msgid "IBus has been started! "
 #~ msgstr "IBus が起動しました"
