@@ -31,18 +31,6 @@ from panel import Panel, DummyPanel
 from config import Config, DefaultConfig
 from register import Register
 
-CONFIG_GENERAL_SHORTCUT_TRIGGER     = "/general/keyboard_shortcut_trigger"
-CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT = [
-    "Ctrl+space",
-    "Zenkaku_Hankaku",
-    "Hangul"]
-CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE = "/general/keyboard_shortcut_next_engine"
-CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT = [
-    "Ctrl+Shift+Release+Shift_L",
-    "Ctrl+Shift+Release+Shift_R",
-    ]
-CONFIG_GENERAL_SHORTCUT_PREV_ENGINE = "/general/keyboard_shortcut_prev_engine"
-CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT = []
 
 class IBus(ibus.Object):
     def __init__(self):
@@ -77,8 +65,8 @@ class IBus(ibus.Object):
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         self.__shortcut_prev_engine = self.__load_config_shortcut(
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
-                CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
 
     def __load_config_shortcut(self, config_key, default_value):
 
