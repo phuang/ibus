@@ -55,7 +55,6 @@ N_ = lambda a : a
     DATA_PRELOAD
 ) = range(9)
 
-CONFIG_GENERAL_SHORTCUT = "/general/keyboard_shortcut_%s"
 CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
 CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
 CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
