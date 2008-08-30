@@ -1219,7 +1219,7 @@ _dbus_call_with_reply_valist (DBusConnection *connection,
     }
 
     /* If we got a NULL pending, that means the connection was disconnected,
-     * and we need to aboout this call
+     * and we need to abort this call
      *  https://bugs.freedesktop.org/show_bug.cgi?id=12675
      */
     if (pendingcall == 0) {
