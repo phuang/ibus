@@ -25,6 +25,7 @@ import gobject
 import ibus
 import icon as _icon
 import os
+import sys
 from os import path
 from ibus import LANGUAGES
 from ibus import interface
@@ -236,6 +237,10 @@ class Panel(ibus.PanelBase):
         item.connect("activate",
             self.__sys_menu_item_activate_cb, gtk.STOCK_PREFERENCES)
         menu.add(item)
+        item = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+        item.connect("activate",
+            self.__sys_menu_item_activate_cb, gtk.STOCK_ABOUT)
+        menu.add(item)
         menu.add(gtk.SeparatorMenuItem())
         item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         item.connect("activate",
@@ -319,6 +324,20 @@ class Panel(ibus.PanelBase):
     def __sys_menu_item_activate_cb(self, item, command):
         if command == gtk.STOCK_PREFERENCES:
             self.__start_setup()
+        elif command == gtk.STOCK_ABOUT:
+            about_dialog = gtk.AboutDialog()
+            about_dialog.set_name("iBus")
+            about_dialog.set_version(ibus.get_version())
+            about_dialog.set_copyright(ibus.get_copyright())
+            about_dialog.set_license(ibus.get_license())
+            about_dialog.set_comments(_("The intelligent input bus."))
+            about_dialog.set_website("http://code.google.com/p/ibus")
+            about_dialog.set_authors(["Huang Peng <shawn.p.huang@gmail.com>"])
+            about_dialog.set_documenters(["Huang Peng <shawn.p.huang@gmail.com>"])
+            about_dialog.set_translator_credits(_("translator-credits"))
+            about_dialog.set_logo_icon_name("ibus")
+            about_dialog.run()
+            about_dialog.destroy()
         elif command == gtk.STOCK_QUIT:
             self.__bus.kill()
         else:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-29 20:32+0800\n"
+"POT-Creation-Date: 2008-08-30 21:34+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -384,31 +384,39 @@ msgstr "中国語 (簡体)"
 msgid "Chinese (traditional)"
 msgstr "中国語 (繁体)"
 
-#: panel/panel.py:80
+#: panel/panel.py:81
 msgid "iBus - Running"
 msgstr "iBus - 実行中"
+
+#: panel/panel.py:333
+msgid "The intelligent input bus."
+msgstr ""
+
+#: panel/panel.py:337
+msgid "translator-credits"
+msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
 
 #: panel/languagebar.py:81
 msgid "Switch engine"
 msgstr ""
 
-#: setup/main.py:103
+#: setup/main.py:102
 msgid "trigger"
 msgstr "トリガー"
 
-#: setup/main.py:113
+#: setup/main.py:112
 msgid "next engine"
 msgstr "次のエンジン"
 
-#: setup/main.py:122
+#: setup/main.py:121
 msgid "prev engine"
 msgstr "前のエンジン"
 
-#: setup/main.py:167
+#: setup/main.py:166
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus デーモンが動いていません。起動しますか？"
 
-#: setup/main.py:182
+#: setup/main.py:181
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -422,22 +430,26 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:204 setup/setup.glade:365
+#: setup/main.py:203 setup/setup.glade:365
 msgid "Engine"
 msgstr "エンジン"
 
-#: setup/main.py:228
+#: setup/main.py:227
 msgid "Started"
 msgstr "開始"
 
-#: setup/main.py:237
+#: setup/main.py:236
 msgid "Preload"
 msgstr "プリロード"
 
-#: setup/main.py:246
+#: setup/main.py:245
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
+
+#: setup/keyboardshortcut.py:54 setup/setup.glade:208
+msgid "Keyboard shortcuts"
+msgstr "キーボードショートカット"
 
 #: setup/keyboardshortcut.py:62
 msgid "Key code:"
@@ -482,10 +494,6 @@ msgstr "前のエンジン:"
 #: setup/setup.glade:118 setup/setup.glade:167 setup/setup.glade:187
 msgid "..."
 msgstr "..."
-
-#: setup/setup.glade:208
-msgid "Keyboard shortcuts"
-msgstr "キーボードショートカット"
 
 #: setup/setup.glade:242
 msgid "Lookup table orientation:"

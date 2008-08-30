@@ -41,11 +41,19 @@ ibus_PYTHON = \
 	panel.py \
 	property.py \
 	utility.py \
+	config.py \
 	$(NULL)
 
 ibusdir = @pkgpythondir@
+
+EXTRA_DIST = \
+	config.py.in \
+	$(NULL)
 
 CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
+DISTCLEANFILES = \
+	config.py \
+	$(NULL)

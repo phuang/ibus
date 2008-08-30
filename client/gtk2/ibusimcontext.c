@@ -25,6 +25,7 @@
 #include <sys/un.h>
 #include "ibusimcontext.h"
 #include "ibusimclient.h"
+
 /* IBusIMContextPriv */
 struct _IBusIMContextPrivate {
     GtkIMContext *slave;

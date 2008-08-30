@@ -162,6 +162,7 @@ AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus.spec
+ibus/config.py
 ibus/Makefile
 ibus/interface/Makefile
 daemon/Makefile
