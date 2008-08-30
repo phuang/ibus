@@ -69,6 +69,12 @@ class FactoryManager(ibus.Object):
 
         return self.__default_factory
 
+    def set_default_factory(self, factory):
+        if factory in self.__get_sorted_factories():
+            self.__default_factory = factory
+        else:
+            print "unknown factory"
+
     def get_next_factory(self, factory):
         factories = self.__get_sorted_factories()
         i = factories.index(factory) + 1

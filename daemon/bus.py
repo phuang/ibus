@@ -531,6 +531,7 @@ class IBus(ibus.Object):
             return
         self.__panel.reset()
         factory = self.__factory_manager.get_factory(factory_path)
+        self.__factory_manager.set_default_factory(factory)
         engine = factory.create_engine()
         self.__focused_context.set_engine(engine)
         self.__focused_context.set_enable(True)
