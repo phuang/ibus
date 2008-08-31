@@ -85,7 +85,7 @@ class LookupTable(object):
             return self.__page_size
 
     def set_labels(self, labels):
-        self.__labels == labels
+        self.__labels = labels
 
     def get_labels(self):
         return self.__labels
