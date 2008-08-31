@@ -27,7 +27,6 @@ __all__ = (
 import gobject
 import gtk
 from gtk import gdk
-from gtk import keysyms
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)

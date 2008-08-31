@@ -493,9 +493,9 @@ class IBus(ibus.Object):
             if name in keys[:-1]:
                 keymask |= mask
             keyname = keys[-1]
-            if keyname[0] in "1234567890":
-                keyname = "_" + keyname
-            keyval = keysyms.__dict__.get(keyname, 0)
+            keyval = keysyms.name_to_keycode(keyname)
+            if keyval == None:
+                keyval = 0
 
         return keyval, keymask
 
