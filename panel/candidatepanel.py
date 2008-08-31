@@ -150,6 +150,7 @@ class CandidatePanel(gtk.VBox):
         # self.__toplevel.connect("button-press-event", self.__button_press_event_cb)
         # self.__toplevel.connect("button-release-event", self.__button_release_event_cb)
         # self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
+        self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
         self.__orientation = gtk.ORIENTATION_HORIZONTAL
         self.__orientation = gtk.ORIENTATION_VERTICAL
@@ -414,8 +415,6 @@ class CandidatePanel(gtk.VBox):
     def do_size_request(self, requisition):
         gtk.VBox.do_size_request(self, requisition)
         self.__toplevel.resize(1, 1)
-
-        self.__check_position()
 
     def __check_position(self):
         bx = self.__cursor_location[0] + self.__toplevel.allocation.width
