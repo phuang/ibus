@@ -5480,5 +5480,4 @@ def keycode_to_name (code):
         return "0x%04x" % code
     else:
         return "0x%06x" % code
-        
-    
+
