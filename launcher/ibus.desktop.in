@@ -5,5 +5,5 @@ Exec=ibus
 Icon=ibus
 Terminal=false
 Type=Application
-StartupNotify=true
-Categories=Settings;
+StartupNotify=false
+Categories=Applications;Utility;
