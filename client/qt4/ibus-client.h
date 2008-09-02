@@ -62,10 +62,10 @@ public:
 
 private slots:
 	void slotDirectoryChanged (const QString &path);
-	void slotFileChanged (const QString &path);
+	// void slotFileChanged (const QString &path);
 	void slotIBusDisconnected ();
 	void slotCommitString (QString ic, QString text);
-	//void slotUpdatePreedit (QString ic, QString text, QVariant attrs, int cursor_pos, bool show);
+	// void slotUpdatePreedit (QString ic, QString text, QVariant attrs, int cursor_pos, bool show);
 	void slotUpdatePreedit (QDBusMessage message);
 	void slotShowPreedit (QDBusMessage message);
 	void slotHidePreedit (QDBusMessage message);
