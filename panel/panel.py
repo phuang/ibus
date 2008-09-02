@@ -41,14 +41,20 @@ CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
 CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
 CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
 
-def uri_hook(about, link, user_data):
+def show_uri(screen, link):
     try:
-        gtk.show_uri(about.get_screen(), link, 0, None)
+        gtk.show_uri(screen, link, 0)
     except:
         print >> sys.stderr, "pygtk do not support show_uri"
 
-gtk.about_dialog_set_url_hook(uri_hook, None)
-gtk.about_dialog_set_email_hook(uri_hook, None)
+def url_hook(about, link, user_data):
+    show_uri(about.get_screen(), link)
+
+def email_hook(about, email, user_data):
+    show_uri(about.get_screen(), "mailto:%s" % email)
+
+gtk.about_dialog_set_url_hook(url_hook, None)
+gtk.about_dialog_set_email_hook(email_hook, None)
 
 class Panel(ibus.PanelBase):
     def __init__ (self, bus, object_path):
