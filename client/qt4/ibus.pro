@@ -24,7 +24,7 @@ TARGET = ibus
 DEPENDPATH += . 
 INCLUDEPATH += .
 
-CONFIG += qt qdbus plugin
+CONFIG += qt qdbus plugin x11
 
 # Input
 HEADERS += \
