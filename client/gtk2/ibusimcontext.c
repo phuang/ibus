@@ -119,8 +119,12 @@ ibus_im_context_register_type (GTypeModule *type_module)
     };
 
     /* work around for nautilus */
-    if (g_strcmp0(g_get_application_name (),
-        g_dgettext("nautilus", "File Manager")) == 0) {
+#if GLIB_CHECK_VERSION (2, 18, 0)
+    gchar *nautilus_name = g_dgettext("nautilus", "File Manager");
+#else
+    gchar *nautilus_name = dgettext("nautilus", "File Manager");
+#endif
+    if (g_strcmp0(g_get_application_name (), nautilus_name) == 0) {
         _block_filter_key_event = TRUE;
     }
 
