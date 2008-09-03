@@ -119,7 +119,8 @@ ibus_im_context_register_type (GTypeModule *type_module)
     };
 
     /* work around for nautilus */
-    if (g_strcmp0(g_get_application_name (), "File Manager") == 0) {
+    if (g_strcmp0(g_get_application_name (),
+        g_dgettext("nautilus", "File Manager")) == 0) {
         _block_filter_key_event = TRUE;
     }
 
