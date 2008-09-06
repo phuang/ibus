@@ -375,7 +375,7 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
 
         username = g_strdup (getlogin());
         if (username == NULL)
-            username = g_strdup (g_getenv("SODO_USER"));
+            username = g_strdup (g_getenv("SUDO_USER"));
         if (username == NULL)
             username = g_strdup (g_getenv("USERNAME"));
         if (username == NULL)
