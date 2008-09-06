@@ -374,13 +374,15 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
 
         username = g_strdup (getlogin());
         if (username == NULL)
+            username = g_strdup (g_getenv("SODO_USER"));
+        if (username == NULL)
+            username = g_strdup (g_getenv("USERNAME"));
+        if (username == NULL)
             username = g_strdup (g_getenv("LOGNAME"));
         if (username == NULL)
             username = g_strdup (g_getenv("USER"));
         if (username == NULL)
             username = g_strdup (g_getenv("LNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("USERNAME"));
 
         ibus_addr = g_strdup_printf (
             "unix:path=/tmp/ibus-%s/ibus-%s-%s.%s",

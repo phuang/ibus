@@ -46,13 +46,15 @@ IBusClient::IBusClient ()
 {
 	username = getlogin ();
 	if (username.isEmpty ())
+		username = getenv ("SUDO_USER");
+	if (username.isEmpty ())
+		username = getenv ("USERNAME");
+	if (username.isEmpty ())
 		username = getenv ("LOGNAME");
 	if (username.isEmpty ())
 		username = getenv ("USER");
 	if (username.isEmpty ())
 		username = getenv ("LNAME");
-	if (username.isEmpty ())
-		username = getenv ("USERNAME");
 
 	session = getenv ("DISPLAY");
 	if (session.indexOf (".") == -1) {
