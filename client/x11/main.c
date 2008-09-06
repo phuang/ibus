@@ -28,8 +28,8 @@
 #include <Xi18n.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
 #include <langinfo.h>
 #include <locale.h>
 #include <iconv.h>
