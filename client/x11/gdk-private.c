@@ -22,6 +22,11 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
+#ifdef HAVE_X11_XKBLIB_H
+#  define HAVE_XKB
+#  include <X11/XKBlib.h>
+#endif
+
 void
 translate_key_event (GdkDisplay *display,
 		     GdkEvent   *event,
@@ -35,8 +40,11 @@ translate_key_event (GdkDisplay *display,
   event->key.time = xevent->xkey.time;
 
   event->key.state = (GdkModifierType) xevent->xkey.state;
-  //event->key.group = _gdk_x11_get_group_for_state (display, xevent->xkey.state);
+#ifdef HAVE_XKB
+  event->key.group = XkbGroupForCoreState (xevent->xkey.state);
+#else
   event->key.group = 0;
+#endif
   event->key.hardware_keycode = xevent->xkey.keycode;
 
   event->key.keyval = GDK_VoidSymbol;
@@ -49,7 +57,7 @@ translate_key_event (GdkDisplay *display,
 				       NULL, NULL, NULL);
 
   //_gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
-  event->key.is_modifier = 
+  event->key.is_modifier =
   	(event->key.state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 //  event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
 
@@ -57,7 +65,7 @@ translate_key_event (GdkDisplay *display,
    * depend on it.
    */
   event->key.string = NULL;
-  
+
   if (event->key.keyval != GDK_VoidSymbol)
     c = gdk_keyval_to_unicode (event->key.keyval);
 
@@ -82,10 +90,10 @@ translate_key_event (GdkDisplay *display,
 	  else if (c == '8') c = '\177';
 	  else if (c == '/') c = '_' & 0x1F;
 	}
-      
+
       len = g_unichar_to_utf8 (c, buf);
       buf[len] = '\0';
-      
+
       event->key.string = g_locale_from_utf8 (buf, len,
 					      NULL, &bytes_written,
 					      NULL);
@@ -109,7 +117,7 @@ translate_key_event (GdkDisplay *display,
       event->key.length = 0;
       event->key.string = g_strdup ("");
     }
-  
+
  out:
   return;
 }

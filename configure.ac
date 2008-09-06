@@ -107,6 +107,8 @@ PKG_CHECK_MODULES(X11, [
     x11
 ])
 
+AC_CHECK_HEADERS([X11/XKBlib.h])
+
 # check env
 AC_PATH_PROG(ENV, env)
 AC_SUBST(ENV)

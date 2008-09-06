@@ -32,6 +32,11 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#ifdef HAVE_X11_XKBLIB_H
+#  define HAVE_XKB
+#  include <X11/XKBlib.h>
+#endif
+
 #ifdef HAVE_SYS_INOTIFY_H
 #define HAVE_INOTIFY
 #  include <sys/inotify.h>
@@ -71,6 +76,13 @@ struct _IBusIMClientPrivate {
     guint           inotify_source;
 #endif
 
+    GdkKeymap      *keymap;
+    gulong          keymap_handler_id;
+    /* hack japanese [yen bar] & [backslash underbar] key */
+
+    gulong          japan_groups;
+    GArray         *japan_yen_bar_keys;
+
     DBusConnection *ibus;
 
 };
@@ -85,6 +97,11 @@ static guint            client_signals[LAST_SIGNAL] = { 0 };
 static void     ibus_im_client_class_init   (IBusIMClientClass  *klass);
 static void     ibus_im_client_init         (IBusIMClient       *client);
 static void     ibus_im_client_finalize     (GObject            *obj);
+
+static void     _keymap_find_japan_group    (IBusIMClient       *client);
+static void     _keymap_find_yen_bar_keys   (IBusIMClient       *client);
+static void     _keymap_keys_changed_cb     (GdkKeymap          *keymap,
+                                             IBusIMClient       *client);
 
 static void     _ibus_im_client_ibus_open   (IBusIMClient       *client);
 static void     _ibus_im_client_ibus_close  (IBusIMClient       *client);
@@ -531,6 +548,21 @@ ibus_im_client_init (IBusIMClient *obj)
         return;
     }
 #endif
+
+    if ((priv->keymap = gdk_keymap_get_default ()) != NULL) {
+        g_object_ref (priv->keymap);
+        _keymap_find_japan_group (client);
+        _keymap_find_yen_bar_keys (client);
+
+        int i;
+        for (i = 0; i < client->priv->japan_yen_bar_keys->len; i++) {
+            GdkKeymapKey *key = &g_array_index (client->priv->japan_yen_bar_keys, GdkKeymapKey, i);
+        }
+
+        priv->keymap_handler_id =
+            g_signal_connect (priv->keymap, "keys-changed",
+                G_CALLBACK (_keymap_keys_changed_cb), client);
+    }
 #if 0
     /* get dbus proxy */
     priv->dbus = dbus_g_proxy_new_for_name (priv->ibus,
@@ -571,6 +603,11 @@ ibus_im_client_finalize (GObject *obj)
 
     IBusIMClient *client = IBUS_IM_CLIENT (obj);
     IBusIMClientPrivate *priv = client->priv;
+
+    if (priv->keymap) {
+        g_signal_handler_disconnect (priv->keymap, priv->keymap_handler_id);
+        g_object_unref (priv->keymap);
+    }
 
 #ifdef HAVE_INOTIFY
     g_source_remove (priv->inotify_source);
@@ -646,6 +683,22 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
         return FALSE;
     }
 
+    /* hack for [yen bar] and [backslash underscore] keys in Japan keyboard */
+    guint keyval = event->keyval;
+    if (event->keyval == GDK_backslash &&
+        priv->japan_yen_bar_keys != NULL &&
+        (1L << event->group) & priv->japan_groups)
+    {
+        int i;
+        for (i = 0; i < priv->japan_yen_bar_keys->len; i++) {
+            GdkKeymapKey *key = &g_array_index (priv->japan_yen_bar_keys, GdkKeymapKey, i);
+            if (event->hardware_keycode == key->keycode && event->group == key->group) {
+                keyval = GDK_yen;
+                break;
+            }
+        }
+    }
+
     /* Call IBus ProcessKeyEvent method */
     if (!block) {
         if (!_ibus_call_with_reply (priv->ibus,
@@ -654,7 +707,7 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
                 _key_press_call_data_new (client, ic, (GdkEvent *)event),
                 (DBusFreeFunction)_key_press_call_data_free,
                 DBUS_TYPE_STRING, &ic,
-                DBUS_TYPE_UINT32, &event->keyval,
+                DBUS_TYPE_UINT32, &keyval,
                 DBUS_TYPE_BOOLEAN, &is_press,
                 DBUS_TYPE_UINT32, &state,
                 DBUS_TYPE_INVALID))
@@ -667,7 +720,7 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
         if (!_ibus_call_with_reply_and_block (priv->ibus,
                 "ProcessKeyEvent",
                 DBUS_TYPE_STRING, &ic,
-                DBUS_TYPE_UINT32, &event->keyval,
+                DBUS_TYPE_UINT32, &keyval,
                 DBUS_TYPE_BOOLEAN, &is_press,
                 DBUS_TYPE_UINT32, &state,
                 DBUS_TYPE_INVALID,
@@ -785,7 +838,144 @@ ibus_im_client_get_connected (IBusIMClient *client)
     return dbus_connection_get_is_connected (priv->ibus);
 }
 
+static void
+_keymap_find_japan_group (IBusIMClient *client)
+{
 
+#ifdef HAVE_XKB
+    /* If have XKB, we will find Japan groups by groups' names */
+    gboolean retval = FALSE;
+    Status status;
+    XkbDescPtr desc;
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    priv->japan_groups = 0L;
+
+    desc = XkbGetMap (GDK_DISPLAY (), 0, XkbUseCoreKbd);
+    if (desc == NULL) {
+        g_warning ("Can not allocate XkbDescRec!");
+        return;
+    }
+
+    retval =
+        Success == (status = XkbGetControls (GDK_DISPLAY (),
+                                XkbSlowKeysMask,
+                                desc)) &&
+        Success == (status = XkbGetNames (GDK_DISPLAY (),
+                                XkbGroupNamesMask | XkbIndicatorNamesMask,
+                                desc)) &&
+        Success == (status = XkbGetIndicatorMap (GDK_DISPLAY (),
+                                XkbAllIndicatorsMask,
+                                desc));
+    if (retval) {
+        Atom *pa = desc->names->groups;
+        int i;
+        for (i = 0; i < desc->ctrls->num_groups; pa++, i++) {
+            gchar *group_name = NULL;
+            if (*pa == None)
+                continue;
+            group_name = XGetAtomName (GDK_DISPLAY (), *pa);
+            if (g_strcmp0(group_name, "Japan") == 0) {
+                priv->japan_groups |= (1L << i);
+            }
+        }
+    }
+    else {
+        g_warning ("Can not get groups' names from Xkb");
+    }
+
+    XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+#else
+    /* if not have XKB, we assume only Japan group has key [backslash, underbar] */
+    priv->japan_groups = 0L;
+    gint backslash_num, underbar_num;
+    GdkKeymapKey *backslash_keys, *underbar_keys;
+    gboolean retval;
+
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_backslash, &backslash_keys, &backslash_num);
+    if (!retval) {
+        g_warning ("Can not get keycode for backslash key!");
+        return;
+    }
+
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_underbar, &underbar_keys, &underbar_num);
+    if (!retval) {
+        g_warning ("Can not get keycode for underbar key!");
+        g_free (backslash_keys);
+        return;
+    }
+
+
+    int i, j;
+    for (i = 0; i < backslash_num; i++) {
+        for (j = 0; j < underbar_num; j++) {
+            if (backslash_keys[i].keycode != underbar_keys[j].keycode ||
+                backslash_keys[i].group != underbar_keys[j].group)
+                continue;
+            priv->japan_groups |= (1L << backslash_keys[i].group);
+        }
+    }
+    g_free (backslash_keys);
+    g_free (bar_keys);
+#endif
+}
+
+
+static void
+_keymap_find_yen_bar_keys (IBusIMClient *client)
+{
+    IBusIMClientPrivate *priv = client->priv;
+    gint backslash_num, bar_num;
+    GdkKeymapKey *backslash_keys, *bar_keys;
+    gboolean retval;
+
+    if (priv->japan_yen_bar_keys == NULL) {
+        priv->japan_yen_bar_keys = g_array_new (TRUE, TRUE, sizeof(GdkKeymapKey));
+    }
+    else if (priv->japan_yen_bar_keys->len > 0) {
+        g_array_remove_range (priv->japan_yen_bar_keys, 0, priv->japan_yen_bar_keys->len);
+    }
+
+    if (priv->japan_groups == 0)
+        return;
+
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_backslash, &backslash_keys, &backslash_num);
+    if (!retval) {
+        g_warning ("Can not get keycode for backslash key!");
+        return;
+    }
+
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_bar, &bar_keys, &bar_num);
+    if (!retval) {
+        g_warning ("Can not get keycode for bar key!");
+        g_free (backslash_keys);
+        return;
+    }
+
+    int i, j;
+    for (i = 0; i < backslash_num; i++) {
+        for (j = 0; j < bar_num; j++) {
+            if (backslash_keys[i].keycode != bar_keys[j].keycode ||
+                backslash_keys[i].group != bar_keys[j].group)
+                continue;
+
+            if (0 == (priv->japan_groups & (1L << backslash_keys[i].group)))
+                continue;
+            g_array_append_val (priv->japan_yen_bar_keys, backslash_keys[i]);
+        }
+    }
+
+    g_free (backslash_keys);
+    g_free (bar_keys);
+}
+
+static void
+_keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
+{
+    _keymap_find_japan_group (client);
+    _keymap_find_yen_bar_keys (client);
+}
 
 static void
 _ibus_signal_commit_string_handler (DBusConnection *connection, DBusMessage *message, IBusIMClient *client)
