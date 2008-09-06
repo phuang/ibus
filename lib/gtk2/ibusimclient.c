@@ -98,7 +98,7 @@ static void     ibus_im_client_class_init   (IBusIMClientClass  *klass);
 static void     ibus_im_client_init         (IBusIMClient       *client);
 static void     ibus_im_client_finalize     (GObject            *obj);
 
-static void     _keymap_find_japan_group    (IBusIMClient       *client);
+static void     _keymap_find_japan_groups   (IBusIMClient       *client);
 static void     _keymap_find_yen_bar_keys   (IBusIMClient       *client);
 static void     _keymap_keys_changed_cb     (GdkKeymap          *keymap,
                                              IBusIMClient       *client);
@@ -551,13 +551,8 @@ ibus_im_client_init (IBusIMClient *obj)
 
     if ((priv->keymap = gdk_keymap_get_default ()) != NULL) {
         g_object_ref (priv->keymap);
-        _keymap_find_japan_group (client);
+        _keymap_find_japan_groups (client);
         _keymap_find_yen_bar_keys (client);
-
-        int i;
-        for (i = 0; i < client->priv->japan_yen_bar_keys->len; i++) {
-            GdkKeymapKey *key = &g_array_index (client->priv->japan_yen_bar_keys, GdkKeymapKey, i);
-        }
 
         priv->keymap_handler_id =
             g_signal_connect (priv->keymap, "keys-changed",
@@ -839,7 +834,7 @@ ibus_im_client_get_connected (IBusIMClient *client)
 }
 
 static void
-_keymap_find_japan_group (IBusIMClient *client)
+_keymap_find_japan_groups (IBusIMClient *client)
 {
 
 #ifdef HAVE_XKB
@@ -973,7 +968,7 @@ _keymap_find_yen_bar_keys (IBusIMClient *client)
 static void
 _keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
 {
-    _keymap_find_japan_group (client);
+    _keymap_find_japan_groups (client);
     _keymap_find_yen_bar_keys (client);
 }
 
