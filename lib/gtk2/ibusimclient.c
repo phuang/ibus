@@ -41,6 +41,7 @@
 #define HAVE_INOTIFY
 #  include <sys/inotify.h>
 #endif
+
 #include "ibusmarshalers.h"
 #include "ibusimclient.h"
 
@@ -553,6 +554,7 @@ ibus_im_client_init (IBusIMClient *obj)
         g_object_ref (priv->keymap);
         _keymap_find_japan_groups (client);
         _keymap_find_yen_bar_keys (client);
+        g_debug ("japan_groups = 0x%x", priv->japan_groups);
 
         priv->keymap_handler_id =
             g_signal_connect (priv->keymap, "keys-changed",
@@ -882,11 +884,16 @@ _keymap_find_japan_groups (IBusIMClient *client)
 
     XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
 #else
-    /* if not have XKB, we assume only Japan group has key [backslash, underbar] */
-    priv->japan_groups = 0L;
-    gint backslash_num, underbar_num;
-    GdkKeymapKey *backslash_keys, *underbar_keys;
+    /* if not have XKB, we assume only Japan group has key [backslash, underscore]
+     * and [backslash bar].
+     * */
+    gint backslash_num, bar_num, underscore_num;
+    GdkKeymapKey *backslash_keys, *bar_keys, *underscore_keys;
     gboolean retval;
+
+    IBusIMClientPrivate *priv = client->priv;
+
+    priv->japan_groups = 0L;
 
     retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_backslash, &backslash_keys, &backslash_num);
     if (!retval) {
@@ -894,25 +901,47 @@ _keymap_find_japan_groups (IBusIMClient *client)
         return;
     }
 
-    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_underbar, &underbar_keys, &underbar_num);
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_bar, &bar_keys, &bar_num);
     if (!retval) {
-        g_warning ("Can not get keycode for underbar key!");
+        g_warning ("Can not get keycode for bar key!");
         g_free (backslash_keys);
         return;
     }
 
+    retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_underscore, &underscore_keys, &underscore_num);
+    if (!retval) {
+        g_warning ("Can not get keycode for underscore key!");
+        g_free (backslash_keys);
+        g_free (bar_keys);
+        return;
+    }
 
     int i, j;
+    gulong groups_have_backslash_and_bar = 0L;
+    gulong groups_have_backslash_and_underscore = 0L;
+
     for (i = 0; i < backslash_num; i++) {
-        for (j = 0; j < underbar_num; j++) {
-            if (backslash_keys[i].keycode != underbar_keys[j].keycode ||
-                backslash_keys[i].group != underbar_keys[j].group)
+        for (j = 0; j < bar_num; j++) {
+            if (backslash_keys[i].keycode != bar_keys[j].keycode ||
+                backslash_keys[i].group != bar_keys[j].group)
                 continue;
-            priv->japan_groups |= (1L << backslash_keys[i].group);
+            groups_have_backslash_and_bar |= (1L << backslash_keys[i].group);
         }
     }
+
+    for (i = 0; i < backslash_num; i++) {
+        for (j = 0; j < underscore_num; j++) {
+            if (backslash_keys[i].keycode != underscore_keys[j].keycode ||
+                backslash_keys[i].group != underscore_keys[j].group)
+                continue;
+            groups_have_backslash_and_underscore |= (1L << backslash_keys[i].group);
+        }
+    }
+    priv->japan_groups = groups_have_backslash_and_bar & groups_have_backslash_and_underscore;
+
     g_free (backslash_keys);
     g_free (bar_keys);
+    g_free (underscore_keys);
 #endif
 }
 
@@ -970,6 +999,8 @@ _keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
 {
     _keymap_find_japan_groups (client);
     _keymap_find_yen_bar_keys (client);
+    g_debug ("keymap changed japan_groups = 0x%x",
+                    client->priv->japan_groups);
 }
 
 static void
