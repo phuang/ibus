@@ -26,8 +26,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <glib/gstdio.h>
-#include <gdk/gdkkeysyms.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
