@@ -20,9 +20,15 @@ class DemoTerm:
 		self.__ic = self.__bus.create_input_context("DemoTerm")
 		self.__bus.set_capabilities(self.__ic, 7)
 		self.__bus.connect("commit-string", self.__commit_string_cb)
+		
 		self.__bus.connect("update-preedit", self.__update_preedit_cb)
 		self.__bus.connect("show-preedit", self.__show_preedit_cb)
 		self.__bus.connect("hide-preedit", self.__hide_preedit_cb)
+		
+		self.__bus.connect("update-aux-string", self.__update_aux_string_cb)
+		self.__bus.connect("show-aux-string", self.__show_aux_string_cb)
+		self.__bus.connect("hide-aux-string", self.__hide_aux_string_cb)
+		
 		self.__bus.connect("update-lookup-table", self.__update_lookup_table_cb)
 		self.__bus.connect("show-lookup-table", self.__show_lookup_table_cb)
 		self.__bus.connect("hide-lookup-table", self.__hide_lookup_table_cb)
@@ -64,6 +70,19 @@ class DemoTerm:
 	
 	def __hide_preedit_cb(self, bus, ic):
 		print "preedit hide\r"
+	
+	def __update_aux_string_cb(self, bus, ic, text, attrs, visible):
+		if visible:
+			print "aux string: %s\r" % text
+		else:
+			print "aux string:\r"
+	
+	def __show_aux_string_cb(self, bus, ic):
+		print "aux string show\r"
+	
+	def __hide_aux_string_cb(self, bus, ic):
+		print "aux string hide\r"
+
 
 	def __update_lookup_table_cb(self, bus, ic, lookup_table, visible):
 		if visible:
