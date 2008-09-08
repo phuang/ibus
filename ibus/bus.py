@@ -23,6 +23,7 @@ __all__ = (
         "Bus",
     )
 
+import sys
 import gobject
 import dbus.lowlevel
 import dbus.connection
@@ -56,7 +57,7 @@ class Bus(ibus.Object):
         "update-aux-string" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
-            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT, gobject.TYPE_BOOLEAN)
         ),
         "show-aux-string" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -151,7 +152,7 @@ class Bus(ibus.Object):
         # aux string signals
         elif message.is_signal(ibus.IBUS_IFACE, "UpdateAuxString"):
             args = message.get_args_list()
-            ic, aux_string, attrs, visible = args[0], args[1]
+            ic, aux_string, attrs, visible = args[0:4]
             attrs = ibus.attr_list_from_dbus_value(attrs)
             self.emit("update-aux-string", ic, aux_string.encode("utf-8"),
                         attrs, visible)

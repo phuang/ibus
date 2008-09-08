@@ -186,7 +186,7 @@ class InputContext(ibus.Object):
         return self.__enable
 
     def set_capabilities(self, caps):
-        self.__support_preedit = (caps & (1 << 1)) != 0
+        self.__support_preedit = (caps & (1 << 0)) != 0
         self.__support_aux_string = (caps & (1 << 1)) != 0
         self.__support_lookup_table = (caps & (1 << 2)) != 0
 
