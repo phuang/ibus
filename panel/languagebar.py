@@ -170,6 +170,7 @@ class LanguageBar(gtk.Toolbar):
 
     def show_all(self):
         self.__toplevel.show_all()
+        self.__toplevel.window.raise_()
         gtk.Toolbar.show_all(self)
 
     def hide_all(self):
@@ -184,14 +185,13 @@ class LanguageBar(gtk.Toolbar):
         self.__has_focus = True
         self.__im_menu.set_sensitive(True)
         if self.__enabled:
-            self.__toplevel.show_all()
-            self.__toplevel.window.raise_()
+            self.show_all()
 
     def focus_out(self):
         self.__has_focus = False
         self.__im_menu.set_sensitive(False)
         if self.__auto_hide:
-            self.__toplevel.hide_all()
+            self.hide_all()
 
 gobject.type_register(LanguageBar, "IBusLanguageBar")
 
