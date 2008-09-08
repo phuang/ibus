@@ -1,21 +1,22 @@
 #! /usr/bin/python
 # Test program for client APIs.
-import time
+
 import os
 import sys
-import select
 import glib
 import termios
 import tty
+import locale
+import curses
 import ibus
 from ibus import keysyms
 from ibus import modifier
 
 class DemoTerm:
 	def __init__(self):
-		self.__term_old = termios.tcgetattr(0)
-		tty.setraw(0)
-
+		# self.__term_old = termios.tcgetattr(0)
+		# tty.setraw(0)
+		self.__init_curses()
 		self.__bus = ibus.Bus()
 		self.__ic = self.__bus.create_input_context("DemoTerm")
 		self.__bus.set_capabilities(self.__ic, 7)
@@ -24,83 +25,158 @@ class DemoTerm:
 		self.__bus.connect("update-preedit", self.__update_preedit_cb)
 		self.__bus.connect("show-preedit", self.__show_preedit_cb)
 		self.__bus.connect("hide-preedit", self.__hide_preedit_cb)
-		
+
 		self.__bus.connect("update-aux-string", self.__update_aux_string_cb)
 		self.__bus.connect("show-aux-string", self.__show_aux_string_cb)
 		self.__bus.connect("hide-aux-string", self.__hide_aux_string_cb)
-		
+
 		self.__bus.connect("update-lookup-table", self.__update_lookup_table_cb)
 		self.__bus.connect("show-lookup-table", self.__show_lookup_table_cb)
 		self.__bus.connect("hide-lookup-table", self.__hide_lookup_table_cb)
 		glib.io_add_watch(0, glib.IO_IN, self.__stdin_cb)
 		# self.__master_fd, self.__slave_fd = os.openpty()
 		# self.__run_shell()
+		
+		self.__is_invalidate = False
+		self.__preedit = ""
+		self.__preedit_visible = False
+		self.__aux_string = ""
+		self.__aux_string_visible = False
+		self.__lookup_table = None
+		self.__lookup_table_visible = False
+
+	def __init_curses(self):
+		self.__screen = curses.initscr()
+		curses.noecho()
+		curses.raw()
+		self.__screen.keypad(1)
+		self.__screen.refresh()
+		self.__max_y, self.__max_x = self.__screen.getmaxyx()
+		self.__state_pad = curses.newpad(2, self.__max_x)
+		self.__state_pad.bkgd(' ', curses.A_REVERSE)
+		self.__state_pad.refresh(0, 0, self.__max_y - 2, 0, self.__max_y, self.__max_x)
+	
+	def __fini_curses(self):
+		curses.noraw()
+		curses.echo()
+		curses.endwin()
 	
 	def __stdin_cb(self, fd, condition):
-		c = ord(os.read(0, 1))
+		c = self.__screen.getch()
+		
 		if c == 3:
 			self.__loop.quit()
 		try:
 			if c == 22: # Ctrl + V => Ctrl + space
 				retval = self.__bus.process_key_event(self.__ic,
 					keysyms.space, True, modifier.CONTROL_MASK)
-			elif c == 127: # BackSpace
+			elif c == 127 or c == 263: # BackSpace
 				self.__bus.process_key_event(self.__ic,
 					keysyms.BackSpace, True, 0)
 				retval = True
 			else:
 				retval = self.__bus.process_key_event(self.__ic, c, True, 0)
 		except:
+			import backtrace
+			backtrace.print_exc()
 			retval = False
 		if retval == False:
-			os.write(1, chr(c))
+			self.__screen.addstr(unichr(c).encode("utf-8"))
+			self.__screen.refresh()
 		return True
 
 	def __commit_string_cb(self, bus, ic, text):
-		print "commit: %s\r" % text
+		self.__screen.addstr(text)
+		self.__screen.refresh()
 
 	def __update_preedit_cb(self, bus, ic, text, attrs, cursor_pos, visible):
-		if visible:
-			print "preedit: %s\r" % text
-		else:
-			print "preedit:\r"
-	
+		self.__preedit = text
+		self.__preedit_visible = visible
+		self.__invalidate()
+
 	def __show_preedit_cb(self, bus, ic):
-		print "preedit show\r"
-	
+		if self.__preedit_visible:
+			return
+		self.__preedit_visible = True
+		self.__invalidate()
+
 	def __hide_preedit_cb(self, bus, ic):
-		print "preedit hide\r"
+		if not self.__preedit_visible:
+			return
+		self.__preedit_visible = False
+		self.__invalidate()
 	
 	def __update_aux_string_cb(self, bus, ic, text, attrs, visible):
-		if visible:
-			print "aux string: %s\r" % text
-		else:
-			print "aux string:\r"
+		self.__aux_string = text
+		self.__aux_string_visible = visible
+		self.__invalidate()
 	
 	def __show_aux_string_cb(self, bus, ic):
-		print "aux string show\r"
-	
+		if self.__aux_string_visible:
+			return
+		self.__aux_string_visible = True
+		self.__invalidate()
+		
 	def __hide_aux_string_cb(self, bus, ic):
-		print "aux string hide\r"
+		if not self.__aux_string_visible:
+			return
+		self.__aux_string_visible = False
+		self.__invalidate()
 
 
 	def __update_lookup_table_cb(self, bus, ic, lookup_table, visible):
-		if visible:
-		    candidates = lookup_table.get_canidates_in_current_page()
-		    i = 1
-		    line = u"lookup table:"
-		    for c in candidates:
-		    	line += " %d.%s" % (i, c[0])
-		    	i += 1
-		    print line, "\r"
-		else:
-			print "lookup table:\r"
+		self.__lookup_table = lookup_table
+		self.__lookup_table_visible = visible
+		self.__invalidate()
 	
 	def __show_lookup_table_cb(self, bus, ic):
-		print "lookup table show\r"
+		if self.__lookup_table_visible:
+			return
+		self.__lookup_table_visible = True
+		self.__invalidate()
 	
 	def __hide_lookup_table_cb(self, bus, ic):
-		print "lookup table hide\r"
+		if not self.__lookup_table_visible:
+			return
+		self.__lookup_table_visible = False
+		self.__invalidate()
+	
+	def __invalidate(self):
+		if self.__is_invalidate:
+			return
+		self.__is_invalidate = True
+		glib.idle_add(self.__update)
+
+	def __update(self):
+		if not self.__is_invalidate:
+			return False
+		self.__is_invalidate = False
+		
+		self.__state_pad.clear()
+
+		# update preedit
+		if self.__preedit_visible:
+			self.__state_pad.addstr(0,0, self.__preedit, curses.A_REVERSE)
+		
+		# update aux string
+		if self.__aux_string_visible:
+			self.__state_pad.addstr("  ", curses.A_REVERSE)
+			self.__state_pad.addstr(self.__aux_string, curses.A_REVERSE)
+			self.__state_pad.addstr(1, 0, "", curses.A_REVERSE)
+	
+		# update lookup table
+		if self.__lookup_table_visible:
+			candidates = self.__lookup_table.get_canidates_in_current_page()
+			i = 1
+			for c in candidates:
+				text = u"%d.%s " % (i, c[0])
+				self.__state_pad.addstr(text.encode("utf-8"), curses.A_REVERSE)
+				i += 1
+		
+		self.__state_pad.refresh(0, 0, self.__max_y - 2, 0, self.__max_y, self.__max_x)
+		self.__screen.refresh()
+		
+		return False
 
 	def __run_shell(self):
 		pid = os.fork()
@@ -123,16 +199,24 @@ class DemoTerm:
 		self.__loop.run()
 
 	def close(self):
-		termios.tcsetattr(0, termios.TCSAFLUSH, self.__term_old)
+		self.__fini_curses()
+		pass
 
 def main():
+	locale.setlocale(locale.LC_ALL, "")
+	old = termios.tcgetattr(0)
 	term = DemoTerm()
 	try:
 		term.run()
 	except:
+		term.close()
+		termios.tcsetattr(0, termios.TCSAFLUSH, old)
 		import traceback
 		traceback.print_exc()
-	term.close()
+	finally:
+		term.close()
+		termios.tcsetattr(0, termios.TCSAFLUSH, old)
 
 if __name__ == "__main__":
 	main()
+		
