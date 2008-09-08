@@ -54,6 +54,7 @@ class DemoTerm:
 		self.__max_y, self.__max_x = self.__screen.getmaxyx()
 		self.__state_pad = curses.newpad(2, self.__max_x)
 		self.__state_pad.bkgd(' ', curses.A_REVERSE)
+		self.__state_pad.addstr(0, 0, "Press Ctrl + v to enable or disable input method")
 		self.__state_pad.refresh(0, 0, self.__max_y - 2, 0, self.__max_y, self.__max_x)
 	
 	def __fini_curses(self):
@@ -172,6 +173,9 @@ class DemoTerm:
 				text = u"%d.%s " % (i, c[0])
 				self.__state_pad.addstr(text.encode("utf-8"), curses.A_REVERSE)
 				i += 1
+
+		if self.__preedit_visible == False and self.__aux_string_visible == False and self.__lookup_table_visible == False:
+			self.__state_pad.addstr(0, 0, "Press Ctrl + v to enable or disable input method")
 		
 		self.__state_pad.refresh(0, 0, self.__max_y - 2, 0, self.__max_y, self.__max_x)
 		self.__screen.refresh()
