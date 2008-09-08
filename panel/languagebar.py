@@ -68,8 +68,8 @@ class LanguageBar(gtk.Toolbar):
             right, bottom = workarea[2], workarea[3]
         except:
             right, bottom = 640, 480
-
-        self.__toplevel.move(right - 200, bottom - 40)
+        self.__position = right - 200, bottom - 40
+        self.__toplevel.move(*self.__position)
 
     def __create_ui(self):
         # create move handle
@@ -118,10 +118,9 @@ class LanguageBar(gtk.Toolbar):
     def set_enabled(self, enabled):
         self.__enabled = enabled
         if self.__enabled and self.__has_focus:
-            self.__toplevel.show_all()
-            self.__toplevel.window.raise_()
+            self.show_all()
         if not self.__enabled and self.__auto_hide:
-            self.__toplevel.hide_all()
+            self.hide_all()
 
     def is_enabled(self):
         return self.__enabled
@@ -174,8 +173,12 @@ class LanguageBar(gtk.Toolbar):
         gtk.Toolbar.show_all(self)
 
     def hide_all(self):
+        x, y = self.__toplevel.get_position()
         self.__toplevel.hide_all()
         gtk.Toolbar.hide_all(self)
+
+        # save bar position
+        self.__toplevel.move(x, y)
 
     def focus_in(self):
         self.__has_focus = True
