@@ -126,14 +126,16 @@ class Bus(ibus.Object):
         if message.is_signal(ibus.IBUS_IFACE, "CommitString"):
             args = message.get_args_list()
             ic, string = args[0:2]
-            self.emit("commit-string", ic, string)
+            self.emit("commit-string", ic, string.encode("utf-8"))
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # preedit signals
         elif message.is_signal(ibus.IBUS_IFACE, "UpdatePreedit"):
             args = message.get_args_list()
             ic, preedit, attrs, cursor_pos, visible = args[0:5]
-            self.emit("update-preedit", ic, preedit, attrs, cursor_pos, visible)
+            attrs = ibus.attr_list_from_dbus_value(attrs)
+            self.emit("update-preedit", ic, preedit.encode("utf-8"),
+                        attrs, cursor_pos, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         elif message.is_signal(ibus.IBUS_IFACE, "ShowPreedit"):
             args = message.get_args_list()
@@ -150,7 +152,9 @@ class Bus(ibus.Object):
         elif message.is_signal(ibus.IBUS_IFACE, "UpdateAuxString"):
             args = message.get_args_list()
             ic, aux_string, attrs, visible = args[0], args[1]
-            self.emit("update-aux-string", ic, aux_string, attrs, visible)
+            attrs = ibus.attr_list_from_dbus_value(attrs)
+            self.emit("update-aux-string", ic, aux_string.encode("utf-8"),
+                        attrs, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         elif message.is_signal(ibus.IBUS_IFACE, "ShowAuxString"):
             args = message.get_args_list()
@@ -167,6 +171,7 @@ class Bus(ibus.Object):
         elif message.is_signal(ibus.IBUS_IFACE, "UpdateLookupTable"):
             args = message.get_args_list()
             ic, lookup_table, visible = args[0:3]
+            lookup_table = ibus.lookup_table_from_dbus_value(lookup_table)
             self.emit("update-lookup-table", ic, lookup_table, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         elif message.is_signal(ibus.IBUS_IFACE, "ShowLookupTable"):
@@ -250,7 +255,7 @@ class Bus(ibus.Object):
         return self.__bus.IsEnabled(ic)
 
     def set_capabilities(self, ic, caps):
-        return self.__bus.set_capabilities(ic, caps)
+        return self.__bus.SetCapabilities(ic, caps)
 
     def register_factories(self, object_paths):
         return self.__bus.RegisterFactories(object_paths, **ibus.DEFAULT_ASYNC_HANDLERS)

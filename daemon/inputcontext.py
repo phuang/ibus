@@ -304,7 +304,7 @@ class InputContext(ibus.Object):
         self.__aux_visible = visible
 
         if self.__support_aux_string:
-            self.__ibusconn.emit_dbus_signal("UpdateAuxString", self.__id, text, attrs. visible)
+            self.__ibusconn.emit_dbus_signal("UpdateAuxString", self.__id, text, attrs, visible)
         else:
             self.emit("update-aux-string", text, attrs, visible)
 
