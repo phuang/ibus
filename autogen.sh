@@ -2,12 +2,12 @@
 set -e
 set -x
 
-autopoint
-libtoolize --automake --copy
-aclocal -I m4
-autoheader
-automake --add-missing --copy
-autoconf
+autopoint  --force
+libtoolize --automake --copy --force
+aclocal -I m4 --force
+autoheader --force
+automake --add-missing --copy --force
+autoconf --force
 export CFLAGS="-Wall -g -O0 -Wl,--no-undefined"
 export CXXFLAGS="$CFLAGS"
 ./configure --enable-maintainer-mode $*
