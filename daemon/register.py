@@ -27,7 +27,12 @@ import ibus
 import locale
 
 locale.setlocale(locale.LC_ALL, "")
-LANG = locale.getlocale()[0], locale.getlocale()[0].split("_")[0]
+
+LANG = tuple()
+try:
+    LANG = locale.getlocale()[0], locale.getlocale()[0].split("_")[0]
+except:
+    pass
 
 IBUS_DATAROOTDIR = os.getenv("IBUS_DATAROOTDIR")
 
