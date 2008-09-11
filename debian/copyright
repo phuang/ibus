@@ -1,0 +1,22 @@
+This package was debianized by oneleaf <oneleaf@gmail.com> on
+Thu, 11 Sep 2008 09:58:03 +0800.
+
+It was downloaded from <http://code.google.com/p/ibus/>
+
+Upstream Author(s): 
+
+    Shawn.P.Huang <Shawn.P.Huang@gmail.com>
+
+Copyright: 
+
+    <Copyright (C) Shawn.P.Huang>
+
+License:
+
+    GNU Lesser General Public License
+
+The Debian packaging is (C) 2008, oneleaf <oneleaf@gmail.com> and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.

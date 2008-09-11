@@ -1,0 +1,6 @@
+ibus (0.1.1.20080908-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- oneleaf <oneleaf@gmail.com>  Thu, 11 Sep 2008 09:58:03 +0800
+
