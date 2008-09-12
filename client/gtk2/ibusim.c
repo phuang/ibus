@@ -25,7 +25,6 @@
 #include "ibusimcontext.h"
 
 #define IBUS_LOCALDIR ""
-
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
     "iBus (Intelligent Input Bus)",
@@ -44,6 +43,14 @@ im_module_init (GTypeModule *type_module)
 {
     ibus_im_client_register_type(type_module);
     ibus_im_context_register_type(type_module);
+#if 0
+    gchar **p = environ;
+    extern gchar **environ;
+    while (*p != NULL) {
+        g_fprintf (stderr, "%s\n", *p);
+        p ++;
+    }
+#endif
 }
 
 void
