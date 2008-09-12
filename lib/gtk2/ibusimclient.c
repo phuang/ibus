@@ -25,6 +25,8 @@
 #include <sys/un.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <pwd.h>
 #include <glib/gstdio.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -376,6 +378,19 @@ _ibus_im_client_ibus_open (IBusIMClient *client)
         username = g_strdup (getlogin());
         if (username == NULL)
             username = g_strdup (g_getenv("SUDO_USER"));
+        if (username == NULL) {
+            const gchar *uid = g_getenv ("USERHELPER_UID");
+            if (uid != NULL) {
+                gchar *end;
+                uid_t id = (uid_t)strtol(uid, &end, 10);
+                if (uid != end) {
+                    struct passwd *pw = getpwuid (id);
+                    if (pw != NULL) {
+                        username = g_strdup (pw->pw_name);
+                    }
+                }
+            }
+        }
         if (username == NULL)
             username = g_strdup (g_getenv("USERNAME"));
         if (username == NULL)
@@ -557,7 +572,7 @@ ibus_im_client_init (IBusIMClient *obj)
         g_object_ref (priv->keymap);
         _keymap_find_japan_groups (client);
         _keymap_find_yen_bar_keys (client);
-        g_debug ("japan_groups = 0x%x", priv->japan_groups);
+        g_debug ("japan_groups = 0x%lx", priv->japan_groups);
 
         priv->keymap_handler_id =
             g_signal_connect (priv->keymap, "keys-changed",
@@ -1002,7 +1017,7 @@ _keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
 {
     _keymap_find_japan_groups (client);
     _keymap_find_yen_bar_keys (client);
-    g_debug ("keymap changed japan_groups = 0x%x",
+    g_debug ("keymap changed japan_groups = 0x%lx",
                     client->priv->japan_groups);
 }
 

@@ -26,6 +26,8 @@
 #include <QDBusMessage>
 #include <QDBusArgument>
 
+#include <pwd.h>
+
 #include "ibus-client.h"
 #include "ibus-input-context.h"
 
@@ -47,6 +49,19 @@ IBusClient::IBusClient ()
 	username = getlogin ();
 	if (username.isEmpty ())
 		username = getenv ("SUDO_USER");
+	if (username.isEmpty ()) {
+		QString uid = getenv ("USERHELPER_UID");
+		if (!uid.isEmpty ()) {
+			bool ok;
+			uid_t id = uid.toInt (&ok);
+			if (ok) {
+				struct passwd *pw = getpwuid (id);
+				if ( pw != NULL)
+					username = pw->pw_name;
+			}
+		}
+	}
+
 	if (username.isEmpty ())
 		username = getenv ("USERNAME");
 	if (username.isEmpty ())
