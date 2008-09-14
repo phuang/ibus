@@ -244,7 +244,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING_BOXED,
             G_TYPE_NONE, 2,
-            G_TYPE_STRING,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
             GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
 
 
@@ -256,8 +256,8 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING_STRING,
             G_TYPE_NONE, 2,
-            G_TYPE_STRING,
-            G_TYPE_STRING);
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
     client_signals[UPDATE_PREEDIT] =
         g_signal_new (I_("update-preedit"),
@@ -267,11 +267,11 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING_STRING_BOXED_INT_BOOLEAN,
             G_TYPE_NONE, 5,
-            G_TYPE_STRING,
-            G_TYPE_STRING,
-            PANGO_TYPE_ATTR_LIST,
-            G_TYPE_INT,
-            G_TYPE_BOOLEAN
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+            PANGO_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_INT | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_BOOLEAN | G_SIGNAL_TYPE_STATIC_SCOPE
             );
 
     client_signals[SHOW_PREEDIT] =
@@ -282,7 +282,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 1,
-            G_TYPE_STRING);
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
     client_signals[HIDE_PREEDIT] =
         g_signal_new (I_("hide-preedit"),
@@ -292,7 +292,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 1,
-            G_TYPE_STRING);
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
     client_signals[ENABLED] =
         g_signal_new (I_("enabled"),
@@ -302,7 +302,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 1,
-            G_TYPE_STRING);
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
     client_signals[DISABLED] =
         g_signal_new (I_("disabled"),
@@ -312,7 +312,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 1,
-            G_TYPE_STRING);
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
 
 }
 
@@ -1163,7 +1163,6 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     }
     dbus_message_iter_get_basic (&iter, &visible);
     dbus_message_iter_next (&iter);
-
     g_signal_emit (client, client_signals[UPDATE_PREEDIT], 0,
                 ic, string, attrs, cursor, visible);
     pango_attr_list_unref (attrs);
