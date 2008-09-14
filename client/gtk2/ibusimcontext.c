@@ -45,6 +45,13 @@ struct _IBusIMContextPrivate {
     gboolean         has_focus;
 };
 
+static guint    _signal_commit_id = 0;
+static guint    _signal_preedit_changed_id = 0;
+static guint    _signal_preedit_start_id = 0;
+static guint    _signal_preedit_end_id = 0;
+static guint    _signal_delete_surrounding_id = 0;
+static guint    _signal_retrieve_surrounding_id = 0;
+
 
 /* functions prototype */
 static void     ibus_im_context_class_init   (IBusIMContextClass  *klass);
@@ -186,6 +193,30 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
     gobject_class->finalize = ibus_im_context_finalize;
+
+    _signal_commit_id =
+        g_signal_lookup ("commit", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_commit_id != 0);
+
+    _signal_preedit_changed_id =
+        g_signal_lookup ("preedit-changed", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_preedit_changed_id != 0);
+
+    _signal_preedit_start_id =
+        g_signal_lookup ("preedit-start", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_preedit_start_id != 0);
+
+    _signal_preedit_end_id =
+        g_signal_lookup ("preedit-end", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_preedit_end_id != 0);
+
+    _signal_delete_surrounding_id =
+        g_signal_lookup ("delete-surrounding", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_delete_surrounding_id != 0);
+
+    _signal_retrieve_surrounding_id =
+        g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
+    g_assert (_signal_retrieve_surrounding_id != 0);
 }
 
 static void
@@ -472,7 +503,7 @@ _client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *st
     IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
     g_return_if_fail (context != NULL);
 
-    g_signal_emit_by_name (context, "commit", string);
+    g_signal_emit (context, _signal_commit_id, 0, string);
 
 }
 
@@ -523,7 +554,7 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
     priv->preedit_cursor_pos = cursor_pos;
     priv->preedit_visible = visible;
 
-    g_signal_emit_by_name (context, "preedit-changed");
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 static void
@@ -536,7 +567,7 @@ _client_show_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_da
 
     if (priv->preedit_visible == FALSE) {
         priv->preedit_visible = TRUE;
-        g_signal_emit_by_name (context, "preedit-changed");
+        g_signal_emit (context, _signal_preedit_changed_id, 0);
     }
 }
 
@@ -550,7 +581,7 @@ _client_hide_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_da
 
     if (priv->preedit_visible == TRUE) {
         priv->preedit_visible = FALSE;
-        g_signal_emit_by_name (context, "preedit-changed");
+        g_signal_emit (context, _signal_preedit_changed_id, 0);
     }
 }
 
@@ -624,7 +655,7 @@ _slave_commit_cb (GtkIMContext *slave, gchar *string, IBusIMContext *context)
     if ((GtkIMContext *)context == CURRENT_CONTEXT && ibus_im_client_is_enabled (_client))
         return;
 #endif
-    g_signal_emit_by_name (context, "commit", string);
+    g_signal_emit (context, _signal_commit_id, 0, string);
 }
 
 static void
@@ -638,7 +669,7 @@ _slave_preedit_changed_cb (GtkIMContext *slave, IBusIMContext *context)
     if (priv->enable && priv->ic)
         return;
 
-    g_signal_emit_by_name (context, "preedit-changed");
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 static void
@@ -651,7 +682,7 @@ _slave_preedit_start_cb (GtkIMContext *slave, IBusIMContext *context)
 
     if (priv->enable && priv->ic)
         return;
-    g_signal_emit_by_name (context, "preedit-start");
+    g_signal_emit (context, _signal_preedit_start_id, 0);
 }
 
 static void
@@ -664,7 +695,7 @@ _slave_preedit_end_cb (GtkIMContext *slave, IBusIMContext *context)
 
     if (priv->enable && priv->ic)
         return;
-    g_signal_emit_by_name (context, "preedit-end");
+    g_signal_emit (context, _signal_preedit_end_id, 0);
 }
 
 static void
@@ -677,7 +708,7 @@ _slave_retrieve_surrounding_cb (GtkIMContext *slave, IBusIMContext *context)
 
     if (priv->enable && priv->ic)
         return;
-    g_signal_emit_by_name (context, "retrieve-surrounding");
+    g_signal_emit (context, _signal_retrieve_surrounding_id, 0);
 }
 
 static void
@@ -690,7 +721,7 @@ _slave_delete_surrounding_cb (GtkIMContext *slave, gint a1, gint a2, IBusIMConte
 
     if (priv->enable && priv->ic)
         return;
-    g_signal_emit_by_name (context, "delete-surrounding", a1, a2);
+    g_signal_emit (context, _signal_delete_surrounding_id, 0, a1, a2);
 }
 
 const gchar *
@@ -734,7 +765,7 @@ ibus_im_context_show_preedit (IBusIMContext *context)
 
     priv->preedit_visible = TRUE;
 
-    g_signal_emit_by_name (context, "preedit-changed");
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 void
@@ -750,5 +781,5 @@ ibus_im_context_hide_preedit (IBusIMContext *context)
 
     priv->preedit_visible = FALSE;
 
-    g_signal_emit_by_name (context, "preedit-changed");
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
