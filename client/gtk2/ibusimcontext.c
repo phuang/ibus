@@ -491,13 +491,17 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
      */
         event->key.time = GDK_CURRENT_TIME;
     }
+
+#if 0
     if (event->any.window != context->priv->client_window) {
-        GdkEvent _event = *event;
-        _event.any.window = context->priv->client_window;
-        gdk_event_put (&_event);
+        GdkWindow *old_window = event->any.window;
+        event->any.window = context->priv->client_window;
+        gdk_event_put (event);
+        event->any.window = old_window;
     }
     else
-        gdk_event_put (event);
+#endif
+    gdk_event_put (event);
 }
 
 static void
