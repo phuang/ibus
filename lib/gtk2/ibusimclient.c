@@ -578,7 +578,8 @@ ibus_im_client_init (IBusIMClient *obj)
             g_signal_connect (priv->keymap, "keys-changed",
                 G_CALLBACK (_keymap_keys_changed_cb), client);
     }
-#if 0
+
+#if USE_DBUS_SESSION_BUS
     /* get dbus proxy */
     priv->dbus = dbus_g_proxy_new_for_name (priv->ibus,
                                 DBUS_SERVICE_DBUS,
