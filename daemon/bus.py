@@ -116,6 +116,7 @@ class IBus(ibus.Object):
         except:
             pass
         if self.__default_factory != None:
+            self.__factory_manager.set_default_factory(self.__default_factory)
             return
 
     def create_input_context(self, name, conn):
