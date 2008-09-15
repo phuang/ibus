@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-30 22:01+0800\n"
+"POT-Creation-Date: 2008-09-06 14:49+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -383,15 +383,15 @@ msgstr "简体中文"
 msgid "Chinese (traditional)"
 msgstr "繁体中文"
 
-#: panel/panel.py:81
+#: panel/panel.py:96
 msgid "iBus - Running"
 msgstr "iBus - 运行"
 
-#: panel/panel.py:333
-msgid "The intelligent input bus for Linux/Unix."
+#: panel/panel.py:348
+msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: panel/panel.py:337
+#: panel/panel.py:352
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -445,19 +445,19 @@ msgstr "预加载"
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
 
-#: setup/keyboardshortcut.py:54 setup/setup.glade:208
+#: setup/keyboardshortcut.py:53 setup/setup.glade:208
 msgid "Keyboard shortcuts"
 msgstr "快捷键"
 
-#: setup/keyboardshortcut.py:62
+#: setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "按键:"
 
-#: setup/keyboardshortcut.py:77
+#: setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "修饰符:"
 
-#: setup/keyboardshortcut.py:206
+#: setup/keyboardshortcut.py:205
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -465,7 +465,7 @@ msgstr ""
 "请按一个键盘按键（或者一个组合按键）\n"
 "当您松开任意按键时，对话框会自动关闭。"
 
-#: setup/keyboardshortcut.py:208
+#: setup/keyboardshortcut.py:207
 msgid "Please press a key (or a key combination)"
 msgstr "请按一个键盘按键（或者一个组合按键）"
 

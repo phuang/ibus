@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-08-30 22:01+0800\n"
+"POT-Creation-Date: 2008-09-06 14:49+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -384,15 +384,15 @@ msgstr "中国語 (簡体)"
 msgid "Chinese (traditional)"
 msgstr "中国語 (繁体)"
 
-#: panel/panel.py:81
+#: panel/panel.py:96
 msgid "iBus - Running"
 msgstr "iBus - 実行中"
 
-#: panel/panel.py:333
-msgid "The intelligent input bus for Linux/Unix."
+#: panel/panel.py:348
+msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: panel/panel.py:337
+#: panel/panel.py:352
 msgid "translator-credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
 
@@ -447,19 +447,19 @@ msgstr "プリロード"
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
 
-#: setup/keyboardshortcut.py:54 setup/setup.glade:208
+#: setup/keyboardshortcut.py:53 setup/setup.glade:208
 msgid "Keyboard shortcuts"
 msgstr "キーボードショートカット"
 
-#: setup/keyboardshortcut.py:62
+#: setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "キーコード:"
 
-#: setup/keyboardshortcut.py:77
+#: setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "モディファイア:"
 
-#: setup/keyboardshortcut.py:206
+#: setup/keyboardshortcut.py:205
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -467,7 +467,7 @@ msgstr ""
 "キーもしくはキーの組み合わせを入力してください。\n"
 "キーを離すとダイアログを閉じます"
 
-#: setup/keyboardshortcut.py:208
+#: setup/keyboardshortcut.py:207
 msgid "Please press a key (or a key combination)"
 msgstr "キーもしくはキーの組み合わせを入力してください"
 
