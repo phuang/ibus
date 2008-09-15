@@ -22,7 +22,7 @@
 TEMPLATE = lib
 TARGET = ibus
 DEPENDPATH += . 
-INCLUDEPATH += .
+INCLUDEPATH += . $(top_builddir)
 
 CONFIG += qt qdbus plugin x11
 

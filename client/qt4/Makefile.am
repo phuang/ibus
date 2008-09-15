@@ -33,21 +33,21 @@ Makefile.qmake: ibus.pro
 	$(QMAKE) -makefile -o Makefile.qmake $(srcdir)/ibus.pro
 
 all-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) all 
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) all
 
 check-local: Makefile.qmake
 
 clean-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) clean
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) clean
 
 distclean-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) distclean
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) distclean
 
 install-exec-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) INSTALL_ROOT=$(DESTDIR) install
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) INSTALL_ROOT=$(DESTDIR) install
 
 uninstall-local: Makefile.qmake
-	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) INSTALL_ROOT=$(DESTDIR) uninstall
+	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) INSTALL_ROOT=$(DESTDIR) uninstall
 
 test: all
 	QT_IM_MODULE=ibus kwrite

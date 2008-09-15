@@ -19,6 +19,7 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA  02111-1307  USA
  */
+#include <config.h>
 #include <QtDebug>
 #include <QFile>
 #include <QDBusConnection>
@@ -38,14 +39,21 @@
 # include <X11/Xutil.h>
 #endif
 
+#ifdef HAVE_X11_XKBLIB_H
+#  define HAVE_XKB
+#  include <X11/XKBlib.h>
+#endif
+
+
 #define IBUS_NAME	"org.freedesktop.IBus"
 #define IBUS_PATH	"/org/freedesktop/IBus"
 #define IBUS_INTERFACE	"org.freedesktop.IBus"
 
 
 IBusClient::IBusClient ()
-	: ibus (NULL)
+	: ibus (NULL), japan_groups (0)
 {
+	findYenBarKeys ();
 	username = getlogin ();
 	if (username.isEmpty ())
 		username = getenv ("SUDO_USER");
@@ -120,6 +128,76 @@ IBusClient::createInputContextRemote ()
 		}
 	}
 	return ic;
+}
+
+void
+IBusClient::findYenBarKeys ()
+{
+#ifdef HAVE_XKB
+	bool retval;
+	Status status;
+	XkbDescPtr desc;
+
+	japan_groups = 0;
+	japan_yen_bar_keys.clear ();
+
+	desc = XkbGetMap (QX11Info::display (), 0, XkbUseCoreKbd);
+    if (desc == NULL) {
+        qWarning ("Can not allocate XkbDescRec!");
+        return;
+    }
+
+    retval =
+        Success == (status = XkbGetControls (QX11Info::display (),
+                                XkbSlowKeysMask,
+                                desc)) &&
+        Success == (status = XkbGetNames (QX11Info::display (),
+                                XkbGroupNamesMask | XkbIndicatorNamesMask,
+                                desc)) &&
+        Success == (status = XkbGetIndicatorMap (QX11Info::display (),
+                                XkbAllIndicatorsMask,
+                                desc));
+    if (retval) {
+        Atom *pa = desc->names->groups;
+        int i;
+        for (i = 0; i < desc->ctrls->num_groups; pa++, i++) {
+            QString group_name;
+            if (*pa == None)
+                continue;
+            group_name = XGetAtomName (QX11Info::display (), *pa);
+            if (group_name == "Japan") {
+                japan_groups |= (1 << i);
+            }
+        }
+    }
+    else {
+        qWarning ("Can not get groups' names from Xkb");
+    }
+
+	int min_keycode, max_keycode;
+	int keycode_count;
+	int keysyms_per_keycode;
+	int keycode;
+	KeySym *map, *syms;
+
+	XDisplayKeycodes (QX11Info::display (), &min_keycode, &max_keycode);
+	keycode_count = max_keycode - min_keycode + 1;
+	map = XGetKeyboardMapping (QX11Info::display (),
+				min_keycode, keycode_count, &keysyms_per_keycode);
+	int group;
+	for (group = 0; group < desc->ctrls->num_groups; group ++) {
+		if (((group << 1) & japan_groups) == 0)
+			continue;
+		for (syms = map, keycode = min_keycode; keycode <= max_keycode;
+				keycode++, syms += keysyms_per_keycode) {
+			if (syms[group * 2] != XK_backslash || syms[group * 2 + 1] != XK_bar)
+				continue;
+			japan_yen_bar_keys.append (keycode);
+		}
+	}
+
+    XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+#endif
 }
 
 QInputContext *
@@ -246,6 +324,15 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XE
 
 	if (!translate_x_key_event (xevent, &keyval, &is_press, &state))
 		return false;
+
+#ifdef HAVE_XKB
+	int group = XkbGroupForCoreState (state);
+	if (keyval == XK_backslash && japan_groups & (1 << group)) {
+		if (japan_yen_bar_keys.indexOf (xevent->xkey.keycode) != -1)
+			keyval = XK_yen;
+	}
+#endif
+
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
 							IBUS_PATH,

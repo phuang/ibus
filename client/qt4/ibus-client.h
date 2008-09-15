@@ -74,6 +74,7 @@ private:
 	bool connectToBus ();
 	void disconnectFromBus ();
 	QString createInputContextRemote ();
+	void findYenBarKeys ();
 
 	QDBusConnection *ibus;
 	QFileSystemWatcher watcher;
@@ -83,6 +84,11 @@ private:
 	QString session;
 	QString ibus_path;
 	QString ibus_addr;
+
+	/* hack japan keyboard */
+	unsigned int japan_groups;
+	QVector <unsigned int> japan_yen_bar_keys;
+
 };
 
 #endif // __IBUS_CLIENT_H_
