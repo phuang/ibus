@@ -82,9 +82,9 @@ struct _IBusIMClientPrivate {
 
     GdkKeymap      *keymap;
     gulong          keymap_handler_id;
-    /* hack japanese [yen bar] & [backslash underbar] key */
 
-    gulong          japan_groups;
+    /* hack japanese [yen bar] & [backslash underbar] key */
+    guint           japan_groups;
     GArray         *japan_yen_bar_keys;
 
     DBusConnection *ibus;
@@ -866,7 +866,7 @@ _keymap_find_japan_groups (IBusIMClient *client)
 
     IBusIMClientPrivate *priv = client->priv;
 
-    priv->japan_groups = 0L;
+    priv->japan_groups = 0;
 
     desc = XkbGetMap (GDK_DISPLAY (), 0, XkbUseCoreKbd);
     if (desc == NULL) {
@@ -893,7 +893,7 @@ _keymap_find_japan_groups (IBusIMClient *client)
                 continue;
             group_name = XGetAtomName (GDK_DISPLAY (), *pa);
             if (g_strcmp0(group_name, "Japan") == 0) {
-                priv->japan_groups |= (1L << i);
+                priv->japan_groups |= (1 << i);
             }
         }
     }
@@ -912,7 +912,7 @@ _keymap_find_japan_groups (IBusIMClient *client)
 
     IBusIMClientPrivate *priv = client->priv;
 
-    priv->japan_groups = 0L;
+    priv->japan_groups = 0;
 
     retval = gdk_keymap_get_entries_for_keyval (priv->keymap, GDK_backslash, &backslash_keys, &backslash_num);
     if (!retval) {
@@ -936,8 +936,8 @@ _keymap_find_japan_groups (IBusIMClient *client)
     }
 
     int i, j;
-    gulong groups_have_backslash_and_bar = 0L;
-    gulong groups_have_backslash_and_underscore = 0L;
+    guint groups_have_backslash_and_bar = 0;
+    guint groups_have_backslash_and_underscore = 0;
 
     for (i = 0; i < backslash_num; i++) {
         for (j = 0; j < bar_num; j++) {
@@ -953,7 +953,7 @@ _keymap_find_japan_groups (IBusIMClient *client)
             if (backslash_keys[i].keycode != underscore_keys[j].keycode ||
                 backslash_keys[i].group != underscore_keys[j].group)
                 continue;
-            groups_have_backslash_and_underscore |= (1L << backslash_keys[i].group);
+            groups_have_backslash_and_underscore |= (1 << backslash_keys[i].group);
         }
     }
     priv->japan_groups = groups_have_backslash_and_bar & groups_have_backslash_and_underscore;
@@ -1003,7 +1003,7 @@ _keymap_find_yen_bar_keys (IBusIMClient *client)
                 backslash_keys[i].group != bar_keys[j].group)
                 continue;
 
-            if (0 == (priv->japan_groups & (1L << backslash_keys[i].group)))
+            if (0 == (priv->japan_groups & (1 << backslash_keys[i].group)))
                 continue;
             g_array_append_val (priv->japan_yen_bar_keys, backslash_keys[i]);
         }
@@ -1018,7 +1018,7 @@ _keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
 {
     _keymap_find_japan_groups (client);
     _keymap_find_yen_bar_keys (client);
-    g_debug ("keymap changed japan_groups = 0x%lx",
+    g_debug ("keymap changed japan_groups = 0x%x",
                     client->priv->japan_groups);
 }
 
