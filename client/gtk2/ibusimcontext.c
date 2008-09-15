@@ -306,13 +306,12 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (priv->ic) {
+    if (priv->ic && priv->has_focus) {
         /* If context does not have focus, ibus will process key event in sync mode.
          * It is a workaround for increase search in treeview.
          */
         gboolean retval = ibus_im_client_filter_keypress (_client,
-                            priv->ic, event,
-                            priv->has_focus == FALSE);
+                            priv->ic, event, FALSE);
         if (retval)
             return TRUE;
         return gtk_im_context_filter_keypress (priv->slave, event);
