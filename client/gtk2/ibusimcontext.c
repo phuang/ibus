@@ -108,7 +108,6 @@ static GtkIMContextClass    *parent_class = NULL;
 static IBusIMClient         *_client = NULL;
 static GHashTable           *_ic_table = NULL;
 static GArray               *_im_context_array = NULL;
-static gboolean             _block_filter_key_event = FALSE;
 
 void
 ibus_im_context_register_type (GTypeModule *type_module)
@@ -124,16 +123,6 @@ ibus_im_context_register_type (GTypeModule *type_module)
         0,
         (GInstanceInitFunc)    ibus_im_context_init,
     };
-
-    /* work around for nautilus */
-#if GLIB_CHECK_VERSION (2, 18, 0)
-    gchar *nautilus_name = g_dgettext("nautilus", "File Manager");
-#else
-    gchar *nautilus_name = dgettext("nautilus", "File Manager");
-#endif
-    if (g_strcmp0(g_get_application_name (), nautilus_name) == 0) {
-        _block_filter_key_event = TRUE;
-    }
 
     if (! _ibus_type_im_context ) {
         if (type_module) {
@@ -317,10 +306,17 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (priv->ic &&
-        ibus_im_client_filter_keypress (_client,
-                priv->ic, event, _block_filter_key_event))
-        return TRUE;
+    if (priv->ic) {
+        /* If context does not have focus, ibus will process key event in sync mode.
+         * It is a workaround for increase search in treeview.
+         */
+        gboolean retval = ibus_im_client_filter_keypress (_client,
+                            priv->ic, event,
+                            priv->has_focus == FALSE);
+        if (retval)
+            return TRUE;
+        return gtk_im_context_filter_keypress (priv->slave, event);
+    }
     else
         return gtk_im_context_filter_keypress (priv->slave, event);
 }
