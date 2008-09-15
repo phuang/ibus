@@ -80,6 +80,8 @@ static void     ibus_im_context_set_use_preedit
 
 /* static methods*/
 static void    _init_ibus_client            (void);
+static void    _set_cursor_location_internal
+                                            (GtkIMContext       *context);
 
 /* callback functions for slave context */
 static void     _slave_commit_cb            (GtkIMContext       *slave,
@@ -229,8 +231,8 @@ ibus_im_context_init     (IBusIMContext *obj)
     priv->preedit_visible = FALSE;
 
     // Init cursor area
-    priv->cursor_area.x = 0;
-    priv->cursor_area.y = 0;
+    priv->cursor_area.x = -1;
+    priv->cursor_area.y = -1;
     priv->cursor_area.width = 0;
     priv->cursor_area.height = 0;
 
@@ -334,7 +336,7 @@ ibus_im_context_focus_in (GtkIMContext *context)
         ibus_im_client_focus_in (_client, priv->ic);
     gtk_im_context_focus_in (priv->slave);
 
-    ibus_im_context_set_cursor_location(context, &priv->cursor_area);
+    _set_cursor_location_internal (context);
 }
 
 static void
@@ -418,10 +420,37 @@ ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
 
     if (priv->client_window)
         g_object_unref (priv->client_window);
-    if (client)
+
+    if (client) {
         g_object_ref (client);
+    }
+
     priv->client_window = client;
     gtk_im_context_set_client_window (priv->slave, client);
+}
+
+static void
+_set_cursor_location_internal (GtkIMContext *context)
+{
+    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
+    IBusIMContextPrivate *priv = ibus->priv;
+    GdkRectangle area;
+    gint x, y;
+    if(priv->client_window == NULL || priv->ic == NULL)
+        return;
+
+    area = priv->cursor_area;
+    if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
+        gint w, h;
+        gdk_drawable_get_size (priv->client_window, &w, &h);
+        area.y += h;
+        area.x = 0;
+    }
+
+    gdk_window_get_origin (priv->client_window, &x, &y);
+    area.x += x;
+    area.y += y;
+    ibus_im_client_set_cursor_location (_client, priv->ic, &area);
 }
 
 static void
@@ -432,17 +461,9 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
-    gint x, y;
 
     priv->cursor_area = *area;
-
-    if(priv->client_window) {
-        gdk_window_get_origin (priv->client_window, &x, &y);
-        area->x += x;
-        area->y += y;
-    }
-    if (priv->ic)
-        ibus_im_client_set_cursor_location (_client, priv->ic, area);
+    _set_cursor_location_internal (context);
     gtk_im_context_set_cursor_location (priv->slave, area);
 }
 
