@@ -178,14 +178,15 @@ IBusClient::findYenBarKeys ()
 	int keycode_count;
 	int keysyms_per_keycode;
 	int keycode;
+	int group;
 	KeySym *map, *syms;
 
 	XDisplayKeycodes (QX11Info::display (), &min_keycode, &max_keycode);
 	keycode_count = max_keycode - min_keycode + 1;
 	map = XGetKeyboardMapping (QX11Info::display (),
 				min_keycode, keycode_count, &keysyms_per_keycode);
-	int group;
-	for (group = 0; group < desc->ctrls->num_groups; group ++) {
+
+	for (group = 0; group < desc->ctrls->num_groups && map != NULL; group ++) {
 		if (((group << 1) & japan_groups) == 0)
 			continue;
 		for (syms = map, keycode = min_keycode; keycode <= max_keycode;
@@ -196,7 +197,9 @@ IBusClient::findYenBarKeys ()
 		}
 	}
 
-    XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+	if (map != NULL)
+		XFree (map);
+    XkbFreeKeyboard (desc, XkbAllComponentsMask, True);
 #endif
 }
 
