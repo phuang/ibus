@@ -147,6 +147,10 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 void
 IBusInputContext::widgetDestroyed (QWidget *widget)
 {
+	if (has_focus) {
+		client->focusOut (this);
+		has_focus = false;
+	}
 	QInputContext::widgetDestroyed (widget);
 	update ();
 }
