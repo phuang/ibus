@@ -40,11 +40,13 @@ translate_key_event (GdkDisplay *display,
   event->key.time = xevent->xkey.time;
 
   event->key.state = (GdkModifierType) xevent->xkey.state;
+
 #ifdef HAVE_XKB
   event->key.group = XkbGroupForCoreState (xevent->xkey.state);
 #else
   event->key.group = 0;
 #endif
+
   event->key.hardware_keycode = xevent->xkey.keycode;
 
   event->key.keyval = GDK_VoidSymbol;
@@ -56,16 +58,19 @@ translate_key_event (GdkDisplay *display,
 				       &event->key.keyval,
 				       NULL, NULL, NULL);
 
-  //_gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
-  event->key.is_modifier =
-  	(event->key.state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
-//  event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
+  // _gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
+  // event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
+  event->key.is_modifier = 0;
 
   /* Fill in event->string crudely, since various programs
    * depend on it.
    */
   event->key.string = NULL;
+  event->key.length = 0;
 
+  /* Don't need event->string.
+   */
+#if 0
   if (event->key.keyval != GDK_VoidSymbol)
     c = gdk_keyval_to_unicode (event->key.keyval);
 
@@ -117,7 +122,7 @@ translate_key_event (GdkDisplay *display,
       event->key.length = 0;
       event->key.string = g_strdup ("");
     }
-
+#endif
  out:
   return;
 }
