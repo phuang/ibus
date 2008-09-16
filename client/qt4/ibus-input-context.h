@@ -56,7 +56,6 @@ public:
 	void hidePreedit ();
 
 private slots:
-	void setFocus ();
 
 private:
 	IBusClient *client;

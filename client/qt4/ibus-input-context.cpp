@@ -141,11 +141,6 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 		has_focus = true;
 		client->focusIn (this);
 		update ();
-		QObject::connect (
-			widget,
-			SLOT(setFocus()),
-			this,
-			SLOT(setFocus()));
 	}
 }
 
@@ -258,8 +253,3 @@ IBusInputContext::hidePreedit ()
 	updatePreedit (preedit_string, preedit_attrs, preedit_cursor_pos, FALSE);
 }
 
-void
-IBusInputContext::setFocus ()
-{
-	qDebug() << "setFocus";
-}
