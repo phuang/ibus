@@ -52,7 +52,6 @@ static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
-
 /* functions prototype */
 static void     ibus_im_context_class_init   (IBusIMContextClass  *klass);
 static void     ibus_im_context_init         (IBusIMContext       *obj);
@@ -156,13 +155,13 @@ ibus_im_context_get_type (void)
     return _ibus_type_im_context;
 }
 
-GtkIMContext *
+IBusIMContext *
 ibus_im_context_new (void)
 {
     IBusIMContext *obj;
     obj = IBUS_IM_CONTEXT(g_object_new (IBUS_TYPE_IM_CONTEXT, NULL));
 
-    return GTK_IM_CONTEXT(obj);
+    return obj;
 }
 
 static void
@@ -529,7 +528,6 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
     g_return_if_fail (context != NULL);
 
-    event->any.send_event = TRUE;
     if (event->type == GDK_KEY_PRESS ||
         event->type == GDK_KEY_RELEASE) {
     /*

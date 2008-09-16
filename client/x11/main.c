@@ -496,7 +496,6 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 {
     g_return_if_fail (x11ic != NULL);
 
-    GTimeVal time;
     IMForwardEventStruct fe = {0};
     XEvent xkp = {0};
 
@@ -510,6 +509,7 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
 
     /*
+    GTimeVal time;
     g_get_current_time (&time);
     xkp.xkey.time = time.tv_sec * 1000 + time.tv_usec / 1000;
     */

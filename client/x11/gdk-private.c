@@ -33,8 +33,10 @@ translate_key_event (GdkDisplay *display,
 		     XEvent     *xevent)
 {
   GdkKeymap *keymap = gdk_keymap_get_for_display (display);
+#if 0
   gunichar c = 0;
   gchar buf[7];
+#endif
 
   event->key.type = xevent->xany.type == KeyPress ? GDK_KEY_PRESS : GDK_KEY_RELEASE;
   event->key.time = xevent->xkey.time;
@@ -122,8 +124,8 @@ translate_key_event (GdkDisplay *display,
       event->key.length = 0;
       event->key.string = g_strdup ("");
     }
-#endif
  out:
+#endif
   return;
 }
 

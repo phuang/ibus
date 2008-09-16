@@ -55,7 +55,7 @@ struct _IBusIMContextClass {
 };
 
 int     ibus_im_context_get_type(void);
-GtkIMContext
+IBusIMContext
         *ibus_im_context_new    (void);
 void    ibus_im_context_register_type
                                 (GTypeModule    *type_module);

@@ -47,6 +47,12 @@
 
 #include "ibusmarshalers.h"
 #include "ibusimclient.h"
+#define IBUS_NAME  "org.freedesktop.IBus"
+#define IBUS_IFACE "org.freedesktop.IBus"
+#define IBUS_PATH  "/org/freedesktop/IBus"
+
+#define IBUS_FORWARD_MASK (1<<25)
+#define I_(string) g_intern_static_string (string)
 
 enum {
     CONNECTED,
@@ -61,11 +67,6 @@ enum {
     LAST_SIGNAL,
 };
 
-#define IBUS_NAME  "org.freedesktop.IBus"
-#define IBUS_IFACE "org.freedesktop.IBus"
-#define IBUS_PATH  "/org/freedesktop/IBus"
-
-#define I_(string) g_intern_static_string (string)
 
 /* IBusIMClientPriv */
 struct _IBusIMClientPrivate {
@@ -572,7 +573,7 @@ ibus_im_client_init (IBusIMClient *obj)
         g_object_ref (priv->keymap);
         _keymap_find_japan_groups (client);
         _keymap_find_yen_bar_keys (client);
-        g_debug ("japan_groups = 0x%lx", priv->japan_groups);
+        g_debug ("japan_groups = 0x%x", priv->japan_groups);
 
         priv->keymap_handler_id =
             g_signal_connect (priv->keymap, "keys-changed",
@@ -695,7 +696,7 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
     guint state = event->state;
     gboolean is_press = event->type == GDK_KEY_PRESS;
 
-    if (event->send_event) {
+    if ((event->state & IBUS_FORWARD_MASK) != 0) {
         return FALSE;
     }
 
@@ -1533,7 +1534,7 @@ _ibus_call_with_reply (DBusConnection *connection, const gchar *method,
 struct _KeyPressCallData {
     IBusIMClient *client;
     gchar *ic;
-    GdkEvent event;
+    GdkEvent *event;
 };
 
 static KeyPressCallData *
@@ -1542,9 +1543,8 @@ _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event
     KeyPressCallData *p = g_new (KeyPressCallData, 1);
     p->client = g_object_ref (client);
     p->ic = g_strdup (ic);
-    p->event = *event;
-    if (p->event.any.window)
-        g_object_ref (p->event.any.window);
+    p->event = gdk_event_copy (event);
+    p->event->key.state |= IBUS_FORWARD_MASK;
     return p;
 }
 
@@ -1554,8 +1554,7 @@ _key_press_call_data_free (KeyPressCallData *p)
     if (p) {
         g_object_unref (p->client);
         g_free (p->ic);
-        if (p->event.any.window)
-            g_object_unref (p->event.any.window);
+        gdk_event_free (p->event);
     }
     g_free (p);
 }
@@ -1588,7 +1587,7 @@ _ibus_filter_keypress_reply_cb (DBusPendingCall *pending, void *user_data)
 
     if (!retval) {
         g_signal_emit (call_data->client, client_signals[FORWARD_EVENT], 0,
-                call_data->ic, &(call_data->event));
+                call_data->ic, call_data->event);
     }
 }
 
