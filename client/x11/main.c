@@ -175,7 +175,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 
     call_data->icid = base_icid ++;
 
-    x11ic = g_new0 (X11IC, 1);
+    x11ic = g_slice_new0 (X11IC);
     x11ic->icid = call_data->icid;
     x11ic->connect_id = call_data->connect_id;
     x11ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
@@ -211,15 +211,14 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
                 (gconstpointer)(unsigned long)call_data->icid);
 
     ibus_im_client_release_input_context (_client, x11ic->ibus_ic);
+
     g_hash_table_remove (_ibus_ic_table, x11ic->ibus_ic);
-    g_free (x11ic->ibus_ic);
-
-    x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
-
     g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
+    x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
 
-    g_free (x11ic);
+    g_free (x11ic->ibus_ic);
+    g_slice_free (X11IC, x11ic);
 
     return 1;
 }
@@ -318,7 +317,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 
     g_return_val_if_fail (conn == NULL, 1);
 
-    conn = g_new0(X11ICONN, 1);
+    conn = g_slice_new0 (X11ICONN);
 
     g_hash_table_insert (_connections,
         (gpointer)(unsigned long)call_data->connect_id,
@@ -342,7 +341,7 @@ _free_ic (gpointer data, gpointer user_data)
     g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)x11ic->icid);
 
-    g_free (x11ic);
+    g_slice_free (X11IC, x11ic);
 }
 
 int
@@ -365,7 +364,7 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 
     g_hash_table_remove (_connections, (gconstpointer)(unsigned long)call_data->connect_id);
 
-    g_free (conn);
+    g_slice_free (X11ICONN, conn);
 
     return 1;
 }

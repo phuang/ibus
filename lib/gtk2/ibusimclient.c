@@ -1540,7 +1540,7 @@ struct _KeyPressCallData {
 static KeyPressCallData *
 _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event)
 {
-    KeyPressCallData *p = g_new (KeyPressCallData, 1);
+    KeyPressCallData *p = g_slice_new (KeyPressCallData);
     p->client = g_object_ref (client);
     p->ic = g_strdup (ic);
     p->event = gdk_event_copy (event);
@@ -1556,7 +1556,7 @@ _key_press_call_data_free (KeyPressCallData *p)
         g_free (p->ic);
         gdk_event_free (p->event);
     }
-    g_free (p);
+    g_slice_free (KeyPressCallData, p);
 }
 
 static void
