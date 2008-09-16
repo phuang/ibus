@@ -88,9 +88,9 @@ IBusInputContext::reset()
 void
 IBusInputContext::update ()
 {
-	QWidget *widget;
+	QWidget *widget = focusWidget ();
 
-	if ((widget = focusWidget ()) == NULL)
+	if (widget == NULL)
 		return;
 
 	QRect rect = widget->inputMethodQuery(Qt::ImMicroFocus).toRect ();
@@ -147,11 +147,11 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 void
 IBusInputContext::widgetDestroyed (QWidget *widget)
 {
-	if (has_focus) {
-		client->focusOut (this);
-		has_focus = false;
-	}
 	QInputContext::widgetDestroyed (widget);
+
+	if (has_focus)
+		setFocusWidget (NULL);
+
 	update ();
 }
 
