@@ -127,7 +127,9 @@ else
     PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
     PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
 fi
+PYTHON_INCLUDES="$PYTHON_CFLAGS"
 AC_SUBST(PYTHON_CFLAGS)
+AC_SUBST(PYTHON_INCLUDES)
 AC_SUBST(PYTHON_LIBS)
 
 
@@ -159,6 +161,16 @@ if test x"$IBUS_HAS_QT4" != x"yes"; then
 fi
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
+PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3)
+AC_SUBST(PYGTK_CFLAGS)
+AC_SUBST(PYGTK_LIBS)
+AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+if test "x$PYGTK_CODEGEN" = xno; then
+  AC_MSG_ERROR(could not find pygtk-codegen-2.0 script)
+fi
+PKG_CHECK_MODULES(GCONF, gconf-2.0 >= 2.11.1)
+AC_SUBST(GCONF_CFLAGS)
+AC_SUBST(GCONF_LIBS)
 
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
@@ -187,6 +199,7 @@ setup/ibus-setup
 setup/ibus-setup.desktop
 util/Makefile
 util/IMdkit/Makefile
+util/gconf/Makefile
 icons/Makefile
 m4/Makefile
 ])

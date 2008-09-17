@@ -59,9 +59,10 @@ translate_key_event (GdkDisplay *display,
 				       event->key.group,
 				       &event->key.keyval,
 				       NULL, NULL, NULL);
-
-  // _gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
-  // event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
+#if 0
+  _gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
+  event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
+#endif
   event->key.is_modifier = 0;
 
   /* Fill in event->string crudely, since various programs
