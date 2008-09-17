@@ -51,7 +51,8 @@
 #define IBUS_IFACE "org.freedesktop.IBus"
 #define IBUS_PATH  "/org/freedesktop/IBus"
 
-#define IBUS_FORWARD_MASK (1<<25)
+#define IBUS_FORWARD_MASK (1 << 25)
+
 #define I_(string) g_intern_static_string (string)
 
 enum {
