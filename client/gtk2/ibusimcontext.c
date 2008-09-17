@@ -289,10 +289,17 @@ ibus_im_context_finalize (GObject *obj)
 
     g_object_unref (priv->slave);
 
-    if (priv->client_window) g_object_unref (priv->client_window);
+    if (priv->client_window) {
+        g_object_unref (priv->client_window);
+    }
+
     // release preedit
-    if (priv->preedit_string) g_free (priv->preedit_string);
-    if (priv->preedit_attrs) pango_attr_list_unref (priv->preedit_attrs);
+    if (priv->preedit_string) {
+        g_free (priv->preedit_string);
+    }
+    if (priv->preedit_attrs) {
+        pango_attr_list_unref (priv->preedit_attrs);
+    }
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 }
@@ -313,12 +320,14 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
          */
         gboolean retval = ibus_im_client_filter_keypress (_client,
                             priv->ic, event, FALSE);
-        if (retval)
+        if (retval) {
             return TRUE;
+        }
         return gtk_im_context_filter_keypress (priv->slave, event);
     }
-    else
+    else {
         return gtk_im_context_filter_keypress (priv->slave, event);
+    }
 }
 
 static void
@@ -331,8 +340,10 @@ ibus_im_context_focus_in (GtkIMContext *context)
     IBusIMContextPrivate *priv = ibus->priv;
 
     priv->has_focus = TRUE;
-    if (priv->ic)
+    if (priv->ic) {
         ibus_im_client_focus_in (_client, priv->ic);
+    }
+
     gtk_im_context_focus_in (priv->slave);
 
     _set_cursor_location_internal (context);
@@ -348,8 +359,9 @@ ibus_im_context_focus_out (GtkIMContext *context)
     IBusIMContextPrivate *priv = ibus->priv;
 
     priv->has_focus = FALSE;
-    if (priv->ic)
+    if (priv->ic) {
         ibus_im_client_focus_out (_client, priv->ic);
+    }
     gtk_im_context_focus_out (priv->slave);
 }
 
@@ -362,8 +374,9 @@ ibus_im_context_reset (GtkIMContext *context)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (priv->ic)
+    if (priv->ic) {
         ibus_im_client_reset (_client, priv->ic);
+    }
     gtk_im_context_reset (priv->slave);
 }
 
@@ -397,9 +410,15 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
             }
         }
         else {
-            if (str) *str = g_strdup ("");
-            if (attrs) *attrs = pango_attr_list_new ();
-            if (cursor_pos) *cursor_pos = 0;
+            if (str) {
+                *str = g_strdup ("");
+            }
+            if (attrs) {
+                *attrs = pango_attr_list_new ();
+            }
+            if (cursor_pos) {
+                *cursor_pos = 0;
+            }
         }
     }
     else {
@@ -417,8 +436,9 @@ ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if (priv->client_window)
+    if (priv->client_window) {
         g_object_unref (priv->client_window);
+    }
 
     if (client) {
         g_object_ref (client);
@@ -435,8 +455,10 @@ _set_cursor_location_internal (GtkIMContext *context)
     IBusIMContextPrivate *priv = ibus->priv;
     GdkRectangle area;
     gint x, y;
-    if(priv->client_window == NULL || priv->ic == NULL)
+
+    if(priv->client_window == NULL || priv->ic == NULL) {
         return;
+    }
 
     area = priv->cursor_area;
     if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
@@ -475,8 +497,9 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
     IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
     IBusIMContextPrivate *priv = ibus->priv;
 
-    if(priv->ic)
+    if(priv->ic) {
         ibus_im_client_set_use_preedit (_client, priv->ic, use_preedit);
+    }
     gtk_im_context_set_use_preedit (priv->slave, use_preedit);
 }
 
@@ -491,8 +514,9 @@ _client_connected_cb (IBusIMClient *client, gpointer user_data)
         context = g_array_index (_im_context_array, IBusIMContext *, i);
         ic = ibus_im_client_create_input_context (client);
         ibus_im_context_set_ic (context, ic);
-        if (ic == NULL)
+        if (ic == NULL) {
             continue;
+        }
         g_hash_table_insert (_ic_table,
             (gpointer) ibus_im_context_get_ic (context), (gpointer) context);
     }
@@ -558,10 +582,12 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->preedit_string)
+    if (priv->preedit_string) {
         g_free (priv->preedit_string);
-    if (priv->preedit_attrs)
+    }
+    if (priv->preedit_attrs) {
         pango_attr_list_unref (priv->preedit_attrs);
+    }
 
     priv->preedit_string = g_strdup (string);
     priv->preedit_attrs = pango_attr_list_ref (attrs);
@@ -628,8 +654,9 @@ _client_disabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
 static void
 _init_ibus_client (void)
 {
-    if (_client != NULL)
+    if (_client != NULL) {
         return;
+    }
 
     _im_context_array = g_array_new (TRUE, TRUE, sizeof (IBusIMContext *));
     _ic_table = g_hash_table_new (g_str_hash, g_str_equal);
@@ -680,8 +707,9 @@ _slave_preedit_changed_cb (GtkIMContext *slave, IBusIMContext *context)
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->enable && priv->ic)
+    if (priv->enable && priv->ic) {
         return;
+    }
 
     g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
@@ -694,8 +722,9 @@ _slave_preedit_start_cb (GtkIMContext *slave, IBusIMContext *context)
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->enable && priv->ic)
+    if (priv->enable && priv->ic) {
         return;
+    }
     g_signal_emit (context, _signal_preedit_start_id, 0);
 }
 
@@ -707,8 +736,9 @@ _slave_preedit_end_cb (GtkIMContext *slave, IBusIMContext *context)
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->enable && priv->ic)
+    if (priv->enable && priv->ic) {
         return;
+    }
     g_signal_emit (context, _signal_preedit_end_id, 0);
 }
 
@@ -720,8 +750,9 @@ _slave_retrieve_surrounding_cb (GtkIMContext *slave, IBusIMContext *context)
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->enable && priv->ic)
+    if (priv->enable && priv->ic) {
         return;
+    }
     g_signal_emit (context, _signal_retrieve_surrounding_id, 0);
 }
 
@@ -733,8 +764,9 @@ _slave_delete_surrounding_cb (GtkIMContext *slave, gint a1, gint a2, IBusIMConte
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (priv->enable && priv->ic)
+    if (priv->enable && priv->ic) {
         return;
+    }
     g_signal_emit (context, _signal_delete_surrounding_id, 0, a1, a2);
 }
 
@@ -774,8 +806,9 @@ ibus_im_context_show_preedit (IBusIMContext *context)
     g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContextPrivate *priv = context->priv;
-    if (priv->preedit_visible)
+    if (priv->preedit_visible) {
         return;
+    }
 
     priv->preedit_visible = TRUE;
 
@@ -790,8 +823,9 @@ ibus_im_context_hide_preedit (IBusIMContext *context)
 
     IBusIMContextPrivate *priv = context->priv;
 
-    if (!priv->preedit_visible)
+    if (!priv->preedit_visible) {
         return;
+    }
 
     priv->preedit_visible = FALSE;
 
