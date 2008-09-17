@@ -37,13 +37,11 @@
 # include <X11/Xlib.h>
 # include <X11/keysym.h>
 # include <X11/Xutil.h>
-#endif
-
-#ifdef HAVE_X11_XKBLIB_H
+# ifdef HAVE_X11_XKBLIB_H
 #  define HAVE_XKB
 #  include <X11/XKBlib.h>
+# endif
 #endif
-
 
 #define IBUS_NAME	"org.freedesktop.IBus"
 #define IBUS_PATH	"/org/freedesktop/IBus"
@@ -55,6 +53,7 @@ IBusClient::IBusClient ()
 {
 	findYenBarKeys ();
 	username = getlogin ();
+
 	if (username.isEmpty ())
 		username = getenv ("SUDO_USER");
 	if (username.isEmpty ()) {
@@ -64,12 +63,12 @@ IBusClient::IBusClient ()
 			uid_t id = uid.toInt (&ok);
 			if (ok) {
 				struct passwd *pw = getpwuid (id);
-				if ( pw != NULL)
+				if ( pw != NULL) {
 					username = pw->pw_name;
+				}
 			}
 		}
 	}
-
 	if (username.isEmpty ())
 		username = getenv ("USERNAME");
 	if (username.isEmpty ())
@@ -137,56 +136,60 @@ IBusClient::findYenBarKeys ()
 	bool retval;
 	Status status;
 	XkbDescPtr desc;
-
-	japan_groups = 0;
-	japan_yen_bar_keys.clear ();
-
-	desc = XkbGetMap (QX11Info::display (), 0, XkbUseCoreKbd);
-    if (desc == NULL) {
-        qWarning ("Can not allocate XkbDescRec!");
-        return;
-    }
-
-    retval =
-        Success == (status = XkbGetControls (QX11Info::display (),
-                                XkbSlowKeysMask,
-                                desc)) &&
-        Success == (status = XkbGetNames (QX11Info::display (),
-                                XkbGroupNamesMask | XkbIndicatorNamesMask,
-                                desc)) &&
-        Success == (status = XkbGetIndicatorMap (QX11Info::display (),
-                                XkbAllIndicatorsMask,
-                                desc));
-    if (retval) {
-        Atom *pa = desc->names->groups;
-        int i;
-        for (i = 0; i < desc->ctrls->num_groups; pa++, i++) {
-            QString group_name;
-            if (*pa == None)
-                continue;
-            group_name = XGetAtomName (QX11Info::display (), *pa);
-            if (group_name == "Japan") {
-                japan_groups |= (1 << i);
-            }
-        }
-    }
-    else {
-        qWarning ("Can not get groups' names from Xkb");
-    }
-
 	int min_keycode, max_keycode;
 	int keycode_count;
 	int keysyms_per_keycode;
 	int keycode;
 	int group;
-	KeySym *map, *syms;
+	KeySym *map = NULL, *syms;
+
+	japan_groups = 0;
+	japan_yen_bar_keys.clear ();
+
+	desc = XkbGetMap (QX11Info::display (), 0, XkbUseCoreKbd);
+	if (desc == NULL) {
+		qWarning ("Can not allocate XkbDescRec!");
+		goto _out;
+	}
+
+	retval =
+		Success == (status = XkbGetControls (QX11Info::display (),
+								XkbSlowKeysMask,
+								desc)) &&
+		Success == (status = XkbGetNames (QX11Info::display (),
+								XkbGroupNamesMask | XkbIndicatorNamesMask,
+								desc)) &&
+		Success == (status = XkbGetIndicatorMap (QX11Info::display (),
+								XkbAllIndicatorsMask,
+								desc));
+	if (retval) {
+		Atom *pa = desc->names->groups;
+		int i;
+		for (i = 0; i < desc->ctrls->num_groups; pa++, i++) {
+			QString group_name;
+			if (*pa == None)
+				continue;
+			group_name = XGetAtomName (QX11Info::display (), *pa);
+			if (group_name == "Japan") {
+				japan_groups |= (1 << i);
+			}
+		}
+	}
+	else {
+		qWarning ("Can not get groups' names from Xkb");
+		goto _out;
+	}
+
 
 	XDisplayKeycodes (QX11Info::display (), &min_keycode, &max_keycode);
 	keycode_count = max_keycode - min_keycode + 1;
 	map = XGetKeyboardMapping (QX11Info::display (),
 				min_keycode, keycode_count, &keysyms_per_keycode);
+	if (map == NULL) {
+		goto _out;
+	}
 
-	for (group = 0; group < desc->ctrls->num_groups && map != NULL; group ++) {
+	for (group = 0; group < desc->ctrls->num_groups; group ++) {
 		if (((group << 1) & japan_groups) == 0)
 			continue;
 		for (syms = map, keycode = min_keycode; keycode <= max_keycode;
@@ -197,9 +200,14 @@ IBusClient::findYenBarKeys ()
 		}
 	}
 
-	if (map != NULL)
+_out:
+	if (map != NULL) {
 		XFree (map);
-    XkbFreeKeyboard (desc, XkbAllComponentsMask, True);
+	}
+
+	if (desc != NULL) {
+		XkbFreeKeyboard (desc, XkbAllComponentsMask, True);
+	}
 #endif
 }
 
