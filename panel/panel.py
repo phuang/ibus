@@ -62,7 +62,11 @@ class Panel(ibus.PanelBase):
         self.__bus = bus
         self.__focus_ic = None
         self.__setup_pid = 0
-        self.__setup_cmd = path.join(os.getenv("IBUS_PREFIX"), "bin/ibus-setup")
+        self.__prefix = os.getenv("IBUS_PREFIX")
+        self.__data_dir = path.join(self.__prefix, "share", "ibus")
+        self.__icons_dir = path.join(self.__data_dir, "icons")
+        self.__ibus_icon = path.join(self.__icons_dir, "ibus.svg")
+        self.__setup_cmd = path.join(self.__prefix, "bin", "ibus-setup")
 
         # connect bus signal
         self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
@@ -92,7 +96,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
-        self.__status_icon.set_from_icon_name("ibus")
+        self.__status_icon.set_from_file(self.__ibus_icon)
         self.__status_icon.set_tooltip(_("iBus - Running"))
         self.__status_icon.set_visible(True)
 
@@ -175,7 +179,7 @@ class Panel(ibus.PanelBase):
         self.__language_bar.set_enabled(enabled)
 
         if factory == "" or not enabled:
-            self.__set_im_icon("ibus")
+            self.__set_im_icon(self.__ibus_icon)
         else:
             name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)
@@ -186,7 +190,7 @@ class Panel(ibus.PanelBase):
         if self.__focus_ic == ic:
             self.__focus_ic = None
             self.__language_bar.focus_out()
-            self.__set_im_icon("ibus")
+            self.__set_im_icon(self.__ibus_icon)
 
     def states_changed(self):
         if not self.__focus_ic:
@@ -194,7 +198,7 @@ class Panel(ibus.PanelBase):
         factory, enabled = self.__bus.get_input_context_states(self.__focus_ic)
         self.__language_bar.set_enabled(enabled)
         if enabled == False or not factory:
-            self.__set_im_icon("ibus")
+            self.__set_im_icon(self.__ibus_icon)
         else:
             name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
             self.__set_im_icon(icon)
@@ -224,7 +228,8 @@ class Panel(ibus.PanelBase):
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
         font_name = unicode(font_name, "utf-8")
         custom_font =  self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
-        style_string = 'style "custom-font" { font_name="%s" }\nclass "IBusPanelLabel" style "custom-font"\n'
+        style_string = 'style "custom-font" { font_name="%s" }\n' \
+            'class "IBusPanelLabel" style "custom-font"\n'
         if use_custom_font:
             style_string = style_string % custom_font
             gtk.rc_parse_string(style_string)
