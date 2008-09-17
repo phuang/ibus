@@ -2,7 +2,9 @@ INCLUDES = $(PYTHON_INCLUDES) $(PYGTK_CFLAGS)
 
 defsdir = $(datadir)/pygtk/2.0/defs
 
+if IBUS_BUILD_PYGCONF
 defs_DATA = gconf.defs
+endif
 
 common_ldflags = -module -avoid-version $(PYTHON_LDFLAGS)
 
@@ -29,7 +31,10 @@ EXTRA_DIST = gconf.defs gconf.override
 gconf.c: gconf.defs gconf.override gconf-arg-types.py
 
 argtypesdir = $(datadir)/pygtk/2.0/argtypes
+
+if IBUS_BUILD_PYGCONF
 argtypes_PYTHON = gconf-arg-types.py
+endif
 
 .defs.c:
 	(cd $(srcdir) \
