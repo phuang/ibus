@@ -82,9 +82,9 @@ PKG_CHECK_MODULES(DBUS, [
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT,
-[QtCore >= 4.4.0 QtDBus >= 4.4.0],
-[IBUS_HAS_QT4=yes],
-[IBUS_HAS_QT4=no]
+    [QtCore >= 4.4.0 QtDBus >= 4.4.0],
+    [IBUS_HAS_QT4=yes],
+    [IBUS_HAS_QT4=no]
 )
 
 if test x"$IBUS_HAS_QT4" == x"yes"; then
@@ -161,16 +161,42 @@ if test x"$IBUS_HAS_QT4" != x"yes"; then
 fi
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
-PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3)
+# check pygtk gconf for pygconf
+AC_ARG_ENABLE(pygconf,
+    AS_HELP_STRING([--enable-pygconf],
+        [Build python gconf binding, with it ibus will not depend on gnome-python]),
+    [enable_pygconf=$enableval],
+    [enable_pygconf=no],
+)
+
+PKG_CHECK_MODULES(PYGTK,
+    pygtk-2.0 >= 2.10.3,
+    [IBUS_HAS_PYGTK=yes],
+    [IBUS_HAS_PYGTK=no]
+)
 AC_SUBST(PYGTK_CFLAGS)
 AC_SUBST(PYGTK_LIBS)
-AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
-if test "x$PYGTK_CODEGEN" = xno; then
-  AC_MSG_ERROR(could not find pygtk-codegen-2.0 script)
+if test x"$IBUS_HAS_PYGTK" != x"yes" -a x"$enable_pygconf" = x"yes"; then
+  AC_MSG_ERROR(could not build python gconf binding without pygtk-2.0)
 fi
-PKG_CHECK_MODULES(GCONF, gconf-2.0 >= 2.11.1)
+
+AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
+if test "x$PYGTK_CODEGEN" = x"no"; then
+  AC_MSG_ERROR(could not build python gconf binding without pygtk-codegen-2.0)
+fi
+
+PKG_CHECK_MODULES(GCONF,
+    [gconf-2.0 >= 2.11.1],
+    [IBUS_HAS_GCONF=yes],
+    [IBUS_HAS_GCONF=no]
+)
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
+if test x"$IBUS_HAS_GCONF" != x"yes" -a x"$enable_pygconf" = x"yes"; then
+  AC_MSG_ERROR(could not build python gconf binding without gconf-2.0)
+fi
+
+AM_CONDITIONAL(IBUS_BUILD_PYGCONF, [test x"$enable_pygconf" = x"yes" ])
 
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
@@ -213,5 +239,6 @@ Build options:
   Build static libs        $enable_static
   Gtk immodule dir         $GTK_IM_MODULEDIR
   Enable Qt4 IM module     $enable_qt4
+  Build pygconf            $enable_pygconf
 ])
 

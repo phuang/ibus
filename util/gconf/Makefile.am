@@ -11,7 +11,9 @@ pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
 # gconf binding
 
+if IBUS_BUILD_PYGCONF
 pkgpyexec_LTLIBRARIES = gconf.la
+endif
 gconf_la_CFLAGS = $(GCONF_CFLAGS)
 gconf_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgconf
 gconf_la_LIBADD = $(PYGTK_LIBS) $(GCONF_LIBS) $(PYTHON_LIBS)
