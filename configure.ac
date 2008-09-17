@@ -181,7 +181,7 @@ if test x"$IBUS_HAS_PYGTK" != x"yes" -a x"$enable_pygconf" = x"yes"; then
 fi
 
 AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
-if test "x$PYGTK_CODEGEN" = x"no"; then
+if test x"$PYGTK_CODEGEN" = x"no" -a x"$enable_pygconf" = x"yes"; then
   AC_MSG_ERROR(could not build python gconf binding without pygtk-codegen-2.0)
 fi
 
