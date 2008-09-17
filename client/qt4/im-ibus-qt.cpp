@@ -34,28 +34,27 @@ static IBusClient *client;
 class IBusInputContextPlugin: public QInputContextPlugin
 {
 
-    private:
+private:
+	/**
+	 * The language list for SCIM.
+	 */
+	static QStringList ibus_languages;
 
-        /**
-         * The language list for SCIM.
-         */
-        static QStringList ibus_languages;
+public:
 
-    public:
+	IBusInputContextPlugin (QObject *parent = 0);
 
-		IBusInputContextPlugin (QObject *parent = 0);
+	~IBusInputContextPlugin ();
 
-        ~IBusInputContextPlugin ();
+	QStringList keys () const;
 
-        QStringList keys () const;
+	QStringList languages (const QString &key);
 
-        QStringList languages (const QString &key);
+	QString description (const QString &key);
+	
+	QInputContext *create (const QString &key);
 
-        QString description (const QString &key);
-        
-        QInputContext *create (const QString &key);
-
-        QString displayName (const QString &key);
+	QString displayName (const QString &key);
 
 };
 
@@ -81,35 +80,37 @@ IBusInputContextPlugin::~IBusInputContextPlugin ()
 QStringList 
 IBusInputContextPlugin::keys () const 
 {
-    QStringList identifiers;
-    identifiers.push_back (IBUS_IDENTIFIER_NAME);
-    return identifiers;
+	QStringList identifiers;
+	identifiers.push_back (IBUS_IDENTIFIER_NAME);
+	return identifiers;
 }
 
 
 QStringList
 IBusInputContextPlugin::languages (const QString & key)
 {
-	if (key.toLower () != IBUS_IDENTIFIER_NAME)
+	if (key.toLower () != IBUS_IDENTIFIER_NAME) {
 		return QStringList ();
+	}
 
-    if (ibus_languages.empty ()) {
-        ibus_languages.push_back ("zh_CN");
-        ibus_languages.push_back ("zh_TW");
-        ibus_languages.push_back ("zh_HK");
-        ibus_languages.push_back ("ja");
-        ibus_languages.push_back ("ko");
-    }
-    return ibus_languages;
+	if (ibus_languages.empty ()) {
+		ibus_languages.push_back ("zh_CN");
+		ibus_languages.push_back ("zh_TW");
+		ibus_languages.push_back ("zh_HK");
+		ibus_languages.push_back ("ja");
+		ibus_languages.push_back ("ko");
+	}
+	return ibus_languages;
 }
 
 
 QString
 IBusInputContextPlugin::description (const QString &key)
 {
-	if (key.toLower () != IBUS_IDENTIFIER_NAME)
+	if (key.toLower () != IBUS_IDENTIFIER_NAME) {
 		return QString ("");
-    
+	}
+
 	return QString::fromUtf8 ("Qt immodule plugin for IBus");
 }
 
@@ -117,20 +118,20 @@ IBusInputContextPlugin::description (const QString &key)
 QInputContext *
 IBusInputContextPlugin::create (const QString &key)
 {
-    if (key.toLower () != IBUS_IDENTIFIER_NAME) {
-        return NULL;
-    } else {
+	if (key.toLower () != IBUS_IDENTIFIER_NAME) {
+		return NULL;
+	} else {
 		if (client == NULL) {
 			client = new IBusClient ();
 		}
-        return client->createInputContext ();
-    }
+		return client->createInputContext ();
+	}
 }
 
 
 QString IBusInputContextPlugin::displayName (const QString &key)
 {
-    return key;
+	return key;
 }
 
 Q_EXPORT_PLUGIN2 (IBusInputContextPlugin, IBusInputContextPlugin)
