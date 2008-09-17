@@ -53,6 +53,10 @@ DISTCLEANFILES = \
 install-data-hook:
 	$(MKDIR_P) $(DESTDIR)${pkgdatadir}/engine
 
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-pygconf \
+	$(NULL)
+
 rpm: dist @PACKAGE_NAME@.spec
 	rpmbuild -bb \
 			--define "_sourcedir `pwd`" \
