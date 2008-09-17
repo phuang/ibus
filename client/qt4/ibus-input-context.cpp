@@ -119,7 +119,7 @@ IBusInputContext::update ()
 bool
 IBusInputContext::isComposing() const
 {
-	return (!preedit_string.isEmpty ()) && preedit_visible;
+	return preedit_visible && !preedit_string.isEmpty ();
 }
 
 void
@@ -159,7 +159,7 @@ IBusInputContext::widgetDestroyed (QWidget *widget)
 bool
 IBusInputContext::x11FilterEvent (QWidget *keywidget, XEvent *xevent)
 {
-	if (has_focus && client->x11FilterEvent (this, keywidget, xevent))
+	if (client->x11FilterEvent (this, keywidget, xevent))
 			return true;
 	return QInputContext::x11FilterEvent (keywidget, xevent);
 }

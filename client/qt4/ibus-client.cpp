@@ -323,24 +323,27 @@ bool
 IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XEvent *xevent)
 {
 	Q_ASSERT (ctx);
-	Q_ASSERT (keywidget);
+	// Q_ASSERT (keywidget);
 	Q_ASSERT (xevent);
 
 	quint32 keyval;
 	quint32 state;
 	bool is_press;
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return false;
+	}
 
-	if (!translate_x_key_event (xevent, &keyval, &is_press, &state))
+	if (!translate_x_key_event (xevent, &keyval, &is_press, &state)) {
 		return false;
+	}
 
 #ifdef HAVE_XKB
 	int group = XkbGroupForCoreState (state);
 	if (keyval == XK_backslash && japan_groups & (1 << group)) {
-		if (japan_yen_bar_keys.indexOf (xevent->xkey.keycode) != -1)
+		if (japan_yen_bar_keys.indexOf (xevent->xkey.keycode) != -1) {
 			keyval = XK_yen;
+		}
 	}
 #endif
 
@@ -360,15 +363,15 @@ IBusClient::x11FilterEvent (IBusInputContext *ctx, QWidget * /* keywidget */, XE
 		qWarning() << message.errorMessage ();
 		return false;
 	}
-	else
+	else {
 		return message.arguments ()[0].toBool ();
+	}
 }
 #endif
 
 void
 IBusClient::mouseHandler (IBusInputContext * /*ctx */, int /* x */, QMouseEvent * /* event */)
 {
-	return;
 }
 
 void
@@ -376,8 +379,9 @@ IBusClient::setCursorLocation (IBusInputContext *ctx, QRect &rect)
 {
 	Q_ASSERT (ctx);
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return;
+	}
 
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
@@ -400,8 +404,10 @@ IBusClient::reset (IBusInputContext *ctx)
 {
 	Q_ASSERT (ctx);
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return;
+	}
+
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
 							IBUS_PATH,
@@ -409,6 +415,7 @@ IBusClient::reset (IBusInputContext *ctx)
 							"Reset");
 	message << ctx->getIC ();
 	message = ibus->call (message);
+
 	if (message.type() == QDBusMessage::ErrorMessage) {
 		qWarning() << message.errorMessage ();
 	}
@@ -419,8 +426,10 @@ IBusClient::focusIn (IBusInputContext *ctx)
 {
 	Q_ASSERT (ctx);
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return;
+	}
+
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
 							IBUS_PATH,
@@ -428,6 +437,7 @@ IBusClient::focusIn (IBusInputContext *ctx)
 							"FocusIn");
 	message << ctx->getIC ();
 	message = ibus->call (message);
+
 	if (message.type() == QDBusMessage::ErrorMessage) {
 		qWarning() << message.errorMessage ();
 	}
@@ -439,8 +449,9 @@ IBusClient::focusOut (IBusInputContext *ctx)
 {
 	Q_ASSERT (ctx);
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return;
+	}
 
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
@@ -449,6 +460,7 @@ IBusClient::focusOut (IBusInputContext *ctx)
 							"FocusOut");
 	message << ctx->getIC ();
 	message = ibus->call (message);
+
 	if (message.type() == QDBusMessage::ErrorMessage) {
 		qWarning() << message.errorMessage ();
 	}
@@ -459,8 +471,9 @@ IBusClient::setCapabilities (IBusInputContext *ctx, int caps)
 {
 	Q_ASSERT (ctx);
 
-	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ())
+	if (ibus == NULL || !ibus->isConnected () || ctx->getIC().isEmpty ()) {
 		return;
+	}
 
 	QDBusMessage message = QDBusMessage::createMethodCall (
 							IBUS_NAME,
@@ -470,6 +483,7 @@ IBusClient::setCapabilities (IBusInputContext *ctx, int caps)
 	message << ctx->getIC ();
 	message << caps;
 	message = ibus->call (message);
+
 	if (message.type() == QDBusMessage::ErrorMessage) {
 		qWarning() << message.errorMessage ();
 	}
@@ -485,8 +499,9 @@ IBusClient::connectToBus ()
 {
 	QDBusConnection *connection = NULL;
 
-	if (ibus != NULL)
+	if (ibus != NULL) {
 		return false;
+	}
 
 	connection = new QDBusConnection (
 		QDBusConnection::connectToBus (
@@ -586,8 +601,9 @@ IBusClient::disconnectFromBus ()
 void
 IBusClient::slotDirectoryChanged (const QString & /*path*/)
 {
-	if (ibus && !ibus->isConnected ())
+	if (ibus && !ibus->isConnected ()) {
 		disconnectFromBus ();
+	}
 
 	if (ibus == NULL ) {
 		if (QFile::exists (ibus_path)) {
@@ -630,7 +646,7 @@ IBusClient::slotUpdatePreedit (QDBusMessage message)
 	QList <QList <quint32> > attr_list;
 	const QDBusArgument arg = attrs.value <QDBusArgument> ();
 	arg.beginArray ();
-	while ( !arg.atEnd ()) {
+	while (!arg.atEnd ()) {
 		quint32 type, value, start_index, end_index;
 
 		arg.beginArray ();
