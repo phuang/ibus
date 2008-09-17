@@ -39,6 +39,8 @@
 #define IBUS_IM_CLIENT_GET_CLASS(obj)   \
     (G_TYPE_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
 
+#define IBUS_FORWARD_MASK (1 << 25)
+
 #if 0
 #define DEBUG_FUNCTION_IN   g_debug("%s IN", __FUNCTION__);
 #define DEBUG_FUNCTION_OUT  g_debug("%s OUT", __FUNCTION__);
