@@ -701,6 +701,9 @@ ibus_im_client_filter_keypress (IBusIMClient *client, const gchar *ic, GdkEventK
         return FALSE;
     }
 
+    /* add forward mask, and will not process this event again */
+    event->state |= IBUS_FORWARD_MASK;
+
     /* hack for [yen bar] and [backslash underscore] keys in Japan keyboard */
     guint keyval = event->keyval;
     if (event->keyval == GDK_backslash &&
@@ -1545,7 +1548,6 @@ _key_press_call_data_new (IBusIMClient *client, const gchar *ic, GdkEvent *event
     p->client = g_object_ref (client);
     p->ic = g_strdup (ic);
     p->event = gdk_event_copy (event);
-    p->event->key.state |= IBUS_FORWARD_MASK;
     return p;
 }
 
