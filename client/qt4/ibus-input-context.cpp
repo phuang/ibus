@@ -46,8 +46,9 @@ bool
 IBusInputContext::filterEvent (const QEvent *event)
 {
 #ifndef Q_WS_X11
-	if (client->filterEvent (this, event))
+	if (client->filterEvent (this, event)) {
 		return true;
+	}
 	return QInputContext::filterEvent (event);
 #else
 	return QInputContext::filterEvent (event);
@@ -90,8 +91,9 @@ IBusInputContext::update ()
 {
 	QWidget *widget = focusWidget ();
 
-	if (widget == NULL)
+	if (widget == NULL) {
 		return;
+	}
 
 	QRect rect = widget->inputMethodQuery(Qt::ImMicroFocus).toRect ();
 
@@ -133,10 +135,12 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 	}
 	else {
 		/* KateView can not support preedit well. */
-		if (widget->inherits("KateViewInternal"))
+		if (widget->inherits("KateViewInternal")) {
 			client->setCapabilities (this, 0);
-		else
+		}
+		else {
 			client->setCapabilities (this, 1);
+		}
 
 		has_focus = true;
 		client->focusIn (this);
@@ -149,8 +153,9 @@ IBusInputContext::widgetDestroyed (QWidget *widget)
 {
 	QInputContext::widgetDestroyed (widget);
 
-	if (has_focus)
+	if (has_focus) {
 		setFocusWidget (NULL);
+	}
 
 	update ();
 }
@@ -159,8 +164,9 @@ IBusInputContext::widgetDestroyed (QWidget *widget)
 bool
 IBusInputContext::x11FilterEvent (QWidget *keywidget, XEvent *xevent)
 {
-	if (client->x11FilterEvent (this, keywidget, xevent))
+	if (client->x11FilterEvent (this, keywidget, xevent)) {
 			return true;
+	}
 	return QInputContext::x11FilterEvent (keywidget, xevent);
 }
 #endif
