@@ -20,119 +20,45 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-        "LANGUAGES",
+        "get_language_name",
     )
 
-N_ = lambda a: a
+import locale
+import xml.parsers.expat
 
-LANGUAGES = {
-    "C"  : N_("English/Keyboard"),
-    "am_ET"  : N_("Amharic"),
-    "ar"  : N_("Arabic"),
-    "ar_EG"  : N_("Arabic (Egypt)"),
-    "ar_LB"  : N_("Arabic (Lebanon)"),
-    "as_IN"  : N_("Assamese"),
-    "az_AZ"  : N_("Azerbaijani"),
-    "be_BY"  : N_("Belarusian"),
-    "bg_BG"  : N_("Bulgarian"),
-    "bn"  : N_("Bengali"),
-    "bn_BD"  : N_("Bengali"),
-    "bn_IN"  : N_("Bengali (India)"),
-    "bo"  : N_("Tibetan"),
-    "bs_BA"  : N_("Bosnian"),
-    "ca_ES"  : N_("Catalan"),
-    "cs_CZ"  : N_("Czech"),
-    "cy_GB"  : N_("Welsh"),
-    "da_DK"  : N_("Danish"),
-    "de_DE"  : N_("German"),
-    "dv_MV"  : N_("Dhivehi"),
-    "el_GR"  : N_("Greek"),
-    "en"     : N_("English"),
-    "en_AU"  : N_("English (Australian)"),
-    "en_CA"  : N_("English (Canadian)"),
-    "en_GB"  : N_("English (British)"),
-    "en_IE"  : N_("English (Ireland)"),
-    "en_US"  : N_("English (American)"),
-    "es"  : N_("Spanish"),
-    "es_ES"  : N_("Spanish"),
-    "es_MX"  : N_("Spanish (Mexico)"),
-    "et_EE"  : N_("Estonian"),
-    "eu_ES"  : N_("Basque"),
-    "fa_IR"  : N_("Persian"),
-    "fi_FI"  : N_("Finnish"),
-    "fr_FR"  : N_("French"),
-    "ga_IE"  : N_("Irish"),
-    "gl_ES"  : N_("Galician"),
-    "gu_IN"  : N_("Gujarati"),
-    "he_IL"  : N_("Hebrew"),
-    "hi_IN"  : N_("Hindi"),
-    "hr_HR"  : N_("Croatian"),
-    "hu_HU"  : N_("Hungarian"),
-    "hy_AM"  : N_("Armenian"),
-    "ia"     : N_("Interlingua"),
-    "id_ID"  : N_("Indonesian"),
-    "is_IS"  : N_("Icelandic"),
-    "it_IT"  : N_("Italian"),
-    "iw_IL"  : N_("Hebrew"),
-    "ja_JP"  : N_("Japanese"),
-    "ka_GE"  : N_("Georgian"),
-    "kk_KZ"  : N_("Kazakh"),
-    "km"  : N_("Cambodian"),
-    "kn_IN"  : N_("Kannada"),
-    "ko_KR"  : N_("Korean"),
-    "lo_LA"  : N_("Laothian"),
-    "lt_LT"  : N_("Lithuanian"),
-    "lv_LV"  : N_("Latvian"),
-    "mk_MK"  : N_("Macedonian"),
-    "ml_IN"  : N_("Malayalam"),
-    "mn_MN"  : N_("Mongolian"),
-    "mr_IN"  : N_("Marathi"),
-    "ms_MY"  : N_("Malay"),
-    "my_MM"  : N_("Burmese"),
-    "ne_NP"  : N_("Nepali"),
-    "nl_NL"  : N_("Dutch"),
-    "nn_NO"  : N_("Norwegian (nynorsk)"),
-    "no_NO"  : N_("Norwegian (bokmal)"),
-    "or_IN"  : N_("Oriya"),
-    "pa_IN"  : N_("Punjabi"),
-    "pl_PL"  : N_("Polish"),
-    "pt"  : N_("Portuguese"),
-    "pt_BR"  : N_("Portuguese (Brazil)"),
-    "pt_PT"  : N_("Portuguese"),
-    "ro_RO"  : N_("Romanian"),
-    "ru_RU"  : N_("Russian"),
-    "si_LK"  : N_("Sinhala"),
-    "sk_SK"  : N_("Slovak"),
-    "sl_SI"  : N_("Slovenian"),
-    "sq_AL"  : N_("Albanian"),
-    "sr"  : N_("Serbian"),
-    "sr_CS"  : N_("Serbian"),
-    "sr_YU"  : N_("Serbian"),
-    "sv"  : N_("Swedish"),
-    "sv_FI"  : N_("Swedish (Finland)"),
-    "sv_SE"  : N_("Swedish"),
-    "ta_IN"  : N_("Tamil"),
-    "te_IN"  : N_("Telugu"),
-    "th_TH"  : N_("Thai"),
-    "tr_TR"  : N_("Turkish"),
-    "ug"  : N_("Uighur"),
-    "uk_UA"  : N_("Ukrainian"),
-    "ur_PK"  : N_("Urdu"),
-    "uz_UZ"  : N_("Uzbek"),
-    "vi_VN"  : N_("Vietnamese"),
-    "wa_BE"  : N_("Walloon"),
-    "yi"     : N_("Yiddish"),
-    "yi_US"  : N_("Yiddish"),
-    "zh"  : N_("Chinese"),
-    "zh_CN"  : N_("Chinese (simplified)"),
-    "zh_HK"  : N_("Chinese (traditional)"),
-    "zh_TW"  : N_("Chinese (traditional)"),
-}
+_ = lambda a: locale.dgettext("ibus", a)
+__languages_dict = {}
+locale.setlocale(locale.LC_ALL, "")
 
-for k in LANGUAGES.keys():
+def get_language_name(_locale):
+    lang = _locale.split("_")[0]
+    lang = lang.lower()
+    if lang in __languages_dict:
+        lang = __languages_dict[lang]
+        lang = locale.dgettext("iso_639", lang)
+    else:
+        lang = _(u"Other")
+        lang = locale.dgettext("ibus", lang)
+    return lang
+
+def __start_element(name, attrs):
+    global __languages_dict
     try:
-        lang, local = k.split("_")
-        if lang not in LANGUAGES:
-            LANGUAGES[lang] = LANGUAGES[k]
+        iso_639_1_code = attrs["iso_639_1_code"].decode("utf-8")
+        name = attrs["name"].decode("utf-8")
+        __languages_dict[iso_639_1_code] = name
     except:
         pass
+
+def __end_element(name):
+    pass
+
+def __char_data(data):
+    pass
+
+iso_639_xml = "/usr/share/xml/iso-codes/iso_639.xml"
+p = xml.parsers.expat.ParserCreate()
+p.StartElementHandler = __start_element
+p.EndElementHandler = __end_element
+p.CharacterDataHandler = __char_data
+p.ParseFile(file(iso_639_xml))

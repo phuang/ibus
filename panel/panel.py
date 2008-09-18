@@ -27,7 +27,6 @@ import icon as _icon
 import os
 import sys
 from os import path
-from ibus import LANGUAGES
 from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
@@ -283,25 +282,27 @@ class Panel(ibus.PanelBase):
             tmp = {}
             for factory in factories:
                 name, lang, icon, authors, credits = self.__bus.get_factory_info(factory)
-                lang = LANGUAGES.get(lang, "other")
+                lang = ibus.get_language_name(lang)
                 if not icon:
                     icon = "engine-default"
                 if lang not in tmp:
                     tmp[lang] = []
                 tmp[lang].append((name, lang, icon, authors, credits, factory))
-
             langs = tmp.keys()
-            langs.sort()
+            other = tmp.get(_("Other"), [])
+            if _("Other") in tmp:
+                langs.remove(_("Other"))
+                langs.append(_("Other"))
             for lang in langs:
                 if len(tmp[lang]) == 1:
                     name, lang, icon, authors, credits, factory = tmp[lang][0]
-                    item = gtk.ImageMenuItem("%s - %s" % (_(lang), name))
+                    item = gtk.ImageMenuItem("%s - %s" % (lang, name))
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                     item.set_image (_icon.IconWidget(icon, size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, factory)
                     menu.add(item)
                 else:
-                    item = gtk.MenuItem(_(lang))
+                    item = gtk.MenuItem(lang)
                     menu.add(item)
                     submenu = gtk.Menu()
                     item.set_submenu(submenu)

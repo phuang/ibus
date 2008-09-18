@@ -23,6 +23,7 @@ Requires:   pygtk2
 Requires:   dbus-python >= 0.83.0
 Requires:   pyxdg
 Requires:   gnome-python2-gconf
+Requires:	iso-codes
 
 %description
 IBus means the Input Bus. It is a new input framework for Linux OS. It provides
@@ -41,6 +42,7 @@ This package contains ibus im module for gtk2
 Summary:    IBus im module for qt4
 Group:      System Environment/Libraries
 Requires:   %{name} = %{version}-%{release}
+Requires:   qt >= 4.4.1
 
 %description qt
 This package contains ibus im module for qt4

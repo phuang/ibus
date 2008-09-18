@@ -348,14 +348,16 @@ class Setup(object):
 
         self.__bus.register_reload_engines()
         for name, local_name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
-            _lang = ibus.LANGUAGES.get(lang, "other")
-            _lang = _(_lang)
+            _lang = ibus.get_language_name(lang)
             if _lang not in langs:
                 langs[_lang] = list()
             langs[_lang].append([name, local_name, lang, icon, author, credits, _exec, started])
 
         keys = langs.keys()
         keys.sort()
+        if _("Other") in keys:
+            keys.remove(_("Other"))
+            keys.append(_("Other"))
 
         icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
         pixbuf_missing = self.__load_icon("engine-default", icon_size)
