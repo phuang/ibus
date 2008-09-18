@@ -53,7 +53,7 @@ This package contains ibus im module for qt4
 %setup -q
 
 %build
-%configure --disable-static
+%configure --disable-static --disable-iso-codes-check
 # make -C po update-gmo
 make %{?_smp_mflags}
 
