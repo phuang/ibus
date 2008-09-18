@@ -177,12 +177,12 @@ PKG_CHECK_MODULES(PYGTK,
 AC_SUBST(PYGTK_CFLAGS)
 AC_SUBST(PYGTK_LIBS)
 if test x"$IBUS_HAS_PYGTK" != x"yes" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(could not build python gconf binding without pygtk-2.0)
+  AC_MSG_ERROR(can not build python gconf binding without pygtk-2.0)
 fi
 
 AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
 if test x"$PYGTK_CODEGEN" = x"no" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(could not build python gconf binding without pygtk-codegen-2.0)
+  AC_MSG_ERROR(can not build python gconf binding without pygtk-codegen-2.0)
 fi
 
 PKG_CHECK_MODULES(GCONF,
@@ -193,10 +193,26 @@ PKG_CHECK_MODULES(GCONF,
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
 if test x"$IBUS_HAS_GCONF" != x"yes" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(could not build python gconf binding without gconf-2.0)
+  AC_MSG_ERROR(can not build python gconf binding without gconf-2.0)
 fi
 
 AM_CONDITIONAL(IBUS_BUILD_PYGCONF, [test x"$enable_pygconf" = x"yes" ])
+
+# check iso-codes
+AC_ARG_ENABLE(iso-codes-check,
+    AS_HELP_STRING([--disable-iso-codes-check],
+        [Do not check iso-codes]),
+    [enable_iso_codes_check=$enableval],
+    [enable_iso_codes_check=yes],
+)
+PKG_CHECK_MODULES(ISOCODES,
+    iso-codes,
+    [IBUS_HAS_ISOCODES=yes],
+    [IBUS_HAS_ISOCODES=no],
+)
+if test x"$IBUS_HAS_ISOCODES" != x"yes" -a x"$enable_iso_codes_check" != x"no"; then
+    AC_MSG_ERROR(can not find iso-codes)
+fi
 
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
