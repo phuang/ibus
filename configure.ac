@@ -211,7 +211,7 @@ PKG_CHECK_MODULES(ISOCODES,
     [IBUS_HAS_ISOCODES=no],
 )
 if test x"$IBUS_HAS_ISOCODES" != x"yes" -a x"$enable_iso_codes_check" != x"no"; then
-    AC_MSG_ERROR(can not find iso-codes)
+    AC_MSG_ERROR([can not find iso-codes. Please install iso-codes or configure with --disable-iso-codes-check])
 fi
 
 # OUTPUT files
