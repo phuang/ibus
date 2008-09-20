@@ -22,6 +22,11 @@
 import gobject
 import ibus
 
+IBUS_CAP_PREEDIT = 1
+IBUS_CAP_AUX_STRING = 1 << 1
+IBUS_CAP_LOOKUP_TABLE = 1 << 2
+IBUS_CAP_FOCUS = 1 << 3
+
 class InputContext(ibus.Object):
     id = 1
     __gsignals__ = {
@@ -187,10 +192,10 @@ class InputContext(ibus.Object):
         return self.__enable
 
     def set_capabilities(self, caps):
-        self.__support_preedit = (caps & (1 << 0)) != 0
-        self.__support_aux_string = (caps & (1 << 1)) != 0
-        self.__support_lookup_table = (caps & (1 << 2)) != 0
-        self.__support_focus = (caps & (1 << 3)) != 0
+        self.__support_preedit = bool(caps & IBUS_CAP_PREEDIT)
+        self.__support_aux_string = bool(caps & IBUS_CAP_AUX_STRING)
+        self.__support_lookup_table = bool(caps & IBUS_CAP_LOOKUP_TABLE)
+        self.__support_focus = bool(caps & IBUS_CAP_FOCUS)
 
     def get_support_focus(self):
         return self.__support_focus
