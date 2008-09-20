@@ -1,4 +1,4 @@
-/* vim:set et ts=4: */
+/* vim:set et sts=4: */
 /* ibus
  * Copyright (C) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
  *
@@ -267,12 +267,18 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     GdkEventKey event;
 
     LOG (1, "XIM_FORWARD_EVENT ic=%d, connect_id=%d", call_data->icid, call_data->connect_id);
-    g_return_val_if_fail (_focus_ic == call_data->icid, 1);
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
 
     g_return_val_if_fail (x11ic != NULL, 1);
+
+    /* call focus in if the ic without focus */
+    if (_focus_ic != call_data->icid) {
+        ibus_im_client_focus_in (_client, x11ic->ibus_ic);
+        _focus_ic = x11ic->icid;
+        _xim_set_cursor_location (x11ic);
+    }
 
     xevent = (XKeyEvent*) &(call_data->event);
 
@@ -621,7 +627,7 @@ _init_ibus_client (void)
                         G_CALLBACK (_client_connected_cb), NULL);
 #endif
 
-g_signal_connect (_client, "disconnected",
+    g_signal_connect (_client, "disconnected",
                         G_CALLBACK (_client_disconnected_cb), NULL);
     g_signal_connect (_client, "commit-string",
                         G_CALLBACK (_client_commit_string_cb), NULL);
