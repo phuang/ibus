@@ -64,6 +64,7 @@ private:
 	bool preedit_visible;
 	int preedit_cursor_pos;
 	bool has_focus;
+	int caps;
 	QList <QList <quint32> > preedit_attrs;
 };
 

@@ -33,7 +33,8 @@ IBusInputContext::IBusInputContext (QObject *parent, IBusClient *client, QString
 	  client (client),
 	  ic (ic),
 	  preedit_visible (false),
-	  has_focus (false)
+	  has_focus (false),
+	  caps (IBUS_CAP_PREEDIT | IBUS_CAP_FOCUS)
 {
 }
 
@@ -136,11 +137,12 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 	else {
 		/* KateView can not support preedit well. */
 		if (widget->inherits("KateViewInternal")) {
-			client->setCapabilities (this, IBUS_CAP_FOCUS);
+			caps &= ~IBUS_CAP_PREEDIT;
 		}
 		else {
-			client->setCapabilities (this, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
+			caps |= IBUS_CAP_PREEDIT;
 		}
+		client->setCapabilities (this, caps);
 
 		has_focus = true;
 		client->focusIn (this);
@@ -175,7 +177,11 @@ void
 IBusInputContext::setIC (QString ic)
 {
 	this->ic = ic;
-	if (has_focus && !ic.isEmpty ()) {
+	if (ic.isEmpty ())
+		return;
+
+	client->setCapabilities (this, caps);
+	if (has_focus) {
 		client->focusIn (this);
 	}
 }

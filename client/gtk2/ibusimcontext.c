@@ -1,4 +1,4 @@
-/* vim:set et ts=4: */
+/* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
  *
@@ -43,6 +43,8 @@ struct _IBusIMContextPrivate {
 
     GdkRectangle     cursor_area;
     gboolean         has_focus;
+
+    gint             caps;
 };
 
 static guint    _signal_commit_id = 0;
@@ -237,6 +239,7 @@ ibus_im_context_init     (IBusIMContext *obj)
 
     priv->ic = NULL;
     priv->has_focus = FALSE;
+    priv->caps = IBUS_CAP_PREEDIT | IBUS_CAP_FOCUS;
 
 
     // Create slave im context
@@ -499,11 +502,12 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
 
     if(priv->ic) {
         if (use_preedit) {
-            ibus_im_client_set_capabilities (_client, priv->ic, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
+            priv->caps |= IBUS_CAP_PREEDIT;
         }
         else {
-            ibus_im_client_set_capabilities (_client, priv->ic, IBUS_CAP_FOCUS);
+            priv->caps &= ~IBUS_CAP_PREEDIT;
         }
+        ibus_im_client_set_capabilities (_client, priv->ic, priv->caps);
     }
     gtk_im_context_set_use_preedit (priv->slave, use_preedit);
 }
@@ -799,8 +803,11 @@ ibus_im_context_set_ic (IBusIMContext *context, const gchar *ic)
     if (priv->ic == NULL) {
         priv->enable = FALSE;
     }
-    else if (priv->has_focus) {
-        ibus_im_context_focus_in (GTK_IM_CONTEXT (context));
+    else {
+        ibus_im_client_set_capabilities (_client, priv->ic, priv->caps);
+        if (priv->has_focus) {
+            ibus_im_context_focus_in (GTK_IM_CONTEXT (context));
+        }
     }
 }
 
