@@ -188,7 +188,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 
     g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
 
-    ibus_im_client_set_use_preedit (_client, x11ic->ibus_ic, FALSE);
+    ibus_im_client_set_capabilities (_client, x11ic->ibus_ic, IBUS_CAP_FOCUS);
 
     g_hash_table_insert (_x11_ic_table, (gpointer)x11ic->icid, (gpointer)x11ic);
     x11ic->conn->clients = g_list_append (x11ic->conn->clients, (gpointer)x11ic);

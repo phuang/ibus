@@ -136,10 +136,10 @@ IBusInputContext::setFocusWidget (QWidget *widget)
 	else {
 		/* KateView can not support preedit well. */
 		if (widget->inherits("KateViewInternal")) {
-			client->setCapabilities (this, 0);
+			client->setCapabilities (this, IBUS_CAP_FOCUS);
 		}
 		else {
-			client->setCapabilities (this, 1);
+			client->setCapabilities (this, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
 		}
 
 		has_focus = true;

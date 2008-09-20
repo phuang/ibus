@@ -821,7 +821,7 @@ ibus_im_client_set_cursor_location (IBusIMClient *client, const gchar *ic, GdkRe
 }
 
 void
-ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean use_preedit)
+ibus_im_client_set_capabilities (IBusIMClient *client, const gchar *ic, gint caps)
 {
     g_return_if_fail (IBUS_IS_IM_CLIENT (client));
     g_return_if_fail (ic != NULL);
@@ -829,7 +829,7 @@ ibus_im_client_set_use_preedit (IBusIMClient *client, const gchar *ic, gboolean 
     _ibus_call_with_reply_and_block (client->priv->ibus,
             "SetCapabilities",
             DBUS_TYPE_STRING, &ic,
-            DBUS_TYPE_INT32, &use_preedit,
+            DBUS_TYPE_INT32, &caps,
             DBUS_TYPE_INVALID,
             DBUS_TYPE_INVALID);
 }

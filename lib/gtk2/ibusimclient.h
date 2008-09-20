@@ -56,6 +56,13 @@
 #define IBUS_DBUS_PATH       "/org/freedesktop/ibus/Manager"
 
 G_BEGIN_DECLS
+enum IBusCap {
+    IBUS_CAP_PREEDIT = (1),
+    IBUS_CAP_AUX_STRING = (1 << 1),
+    IBUS_CAP_LOOKUP_TABLE = (1 << 2),
+    IBUS_CAP_FOCUS = (1 << 3),
+};
+
 typedef struct _IBusIMClient IBusIMClient;
 typedef struct _IBusIMClientClass IBusIMClientClass;
 typedef struct _IBusIMClientPrivate IBusIMClientPrivate;
@@ -110,9 +117,9 @@ void            ibus_im_client_set_cursor_location
                                                  (IBusIMClient    *client,
                                                   const gchar     *ic,
                                                   GdkRectangle    *area);
-void            ibus_im_client_set_use_preedit   (IBusIMClient    *client,
+void            ibus_im_client_set_capabilities  (IBusIMClient    *client,
                                                   const gchar     *ic,
-                                                  gboolean         use_preedit);
+                                                  gint             caps);
 gboolean        ibus_im_client_is_enabled        (IBusIMClient    *client);
 void            ibus_im_client_release_input_context
                                                  (IBusIMClient    *client,

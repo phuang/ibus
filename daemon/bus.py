@@ -132,7 +132,8 @@ class IBus(ibus.Object):
 
     def focus_in(self, ic, conn):
         context = self.__lookup_context(ic, conn)
-
+        if not context.get_support_focus():
+            return
         if self.__focused_context != context and self.__focused_context != None:
             self.__remove_focused_context_handlers()
             self.__focused_context.focus_out()
@@ -170,6 +171,10 @@ class IBus(ibus.Object):
     def process_key_event(self, ic, keyval, is_press, state,
                                 conn, reply_cb, error_cb):
         context = self.__lookup_context(ic, conn)
+
+        # focus in the context, if context supports focus
+        if context != self.__focused_context and context.get_support_focus():
+            self.focus_in(ic, conn)
 
         if self.__filter_keyboard_shortcuts(context, keyval, is_press, state):
             reply_cb(True)

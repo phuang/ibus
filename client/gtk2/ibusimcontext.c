@@ -498,7 +498,12 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
     IBusIMContextPrivate *priv = ibus->priv;
 
     if(priv->ic) {
-        ibus_im_client_set_use_preedit (_client, priv->ic, use_preedit);
+        if (use_preedit) {
+            ibus_im_client_set_capabilities (_client, priv->ic, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
+        }
+        else {
+            ibus_im_client_set_capabilities (_client, priv->ic, IBUS_CAP_FOCUS);
+        }
     }
     gtk_im_context_set_use_preedit (priv->slave, use_preedit);
 }

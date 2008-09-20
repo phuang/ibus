@@ -112,6 +112,7 @@ class InputContext(ibus.Object):
         self.__support_preedit = True
         self.__support_aux_string = False
         self.__support_lookup_table = False
+        self.__support_focus = True
 
         self.__preedit_string = None
         self.__preedit_attrs = None
@@ -189,6 +190,10 @@ class InputContext(ibus.Object):
         self.__support_preedit = (caps & (1 << 0)) != 0
         self.__support_aux_string = (caps & (1 << 1)) != 0
         self.__support_lookup_table = (caps & (1 << 2)) != 0
+        self.__support_focus = (caps & (1 << 3)) != 0
+
+    def get_support_focus(self):
+        return self.__support_focus
 
     def set_enable(self, enable):
         if self.__enable != enable:
