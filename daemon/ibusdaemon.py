@@ -29,6 +29,7 @@ import dbus.mainloop.glib
 import ibus
 from _dbus import DBus
 from bus import IBus
+from connection import Connection
 
 
 class IBusServer(dbus.server.Server):
@@ -54,8 +55,9 @@ class IBusServer(dbus.server.Server):
                 pass
 
     def connection_added(self, dbusconn):
-        self.__ibus.new_connection(dbusconn)
-        DBus(dbusconn)
+        conn = Connection(dbusconn)
+        self.__ibus.new_connection(conn)
+        DBus(conn)
 
     def connection_removed(self, dbusconn):
         # do nothing.

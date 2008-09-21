@@ -24,7 +24,6 @@ import dbus
 import ibus
 from ibus import keysyms
 from ibus import modifier
-from connection import Connection
 from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from panel import Panel, DummyPanel
@@ -93,8 +92,7 @@ class IBus(ibus.Object):
                 shortcuts.append((keyval, keymask))
         return shortcuts
 
-    def new_connection(self, dbusconn):
-        conn = Connection(dbusconn)
+    def new_connection(self, conn):
         IBusProxy(self, conn)
         conn.connect("destroy", self.__conn_destroy_cb)
         self.__connections.append(conn)
