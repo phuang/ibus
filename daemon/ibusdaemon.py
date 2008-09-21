@@ -41,11 +41,33 @@ class DBus(dbus.service.Object):
     signal = lambda **args: \
         dbus.service.signal(dbus_interface = dbus.BUS_DAEMON_IFACE, \
         **args)
+    __id = 0
 
     def __init__(self, *args, **kargs):
         super(DBus, self).__init__(*args, **kargs)
 
-    @method(in_signature = "s", out_signature = "s")
+    @method(out_signature="s")
+    def Hello(self):
+        DBus.__id += 1
+        return "%d" % DBus.__id
+
+    @method(out_signature="as")
+    def ListNames(self):
+        return []
+
+    @method(out_signature="as")
+    def ListActivatableNames(self):
+        return []
+
+    @method(in_signature="s", out_signature="as")
+    def NameHasOwner(self, name):
+        return []
+
+    @method(in_signature="si", out_signature="i")
+    def StartServiceByName(self, name, flags):
+        pass
+
+    @method(in_signature="s", out_signature="s")
     def GetNameOwner(self, name):
         if name == dbus.BUS_DAEMON_NAME:
             return dbus.BUS_DAEMON_NAME
@@ -54,13 +76,32 @@ class DBus(dbus.service.Object):
 
         raise dbus.DBusException(
                 "org.freedesktop.DBus.Error.NameHasNoOwner: Could not get owner of name '%s': no such name" % name)
+    @method(in_signature="s", out_signature="i")
+    def GetConnectionUnixUser(self, connection_name):
+        pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def AddMatch(self, rule):
         pass
 
-    @signal(signature = "sss")
+    @method(in_signature="s")
+    def RemoveMatch(self, rule):
+        pass
+
+    @method(out_signature="s")
+    def GetId(self):
+        pass
+
+    @signal(signature="sss")
     def NameOwnerChanged(self, name, old_owner, new_owner):
+        pass
+
+    @signal(signature="s")
+    def NameLost(self, name):
+        pass
+
+    @signal(signature="s")
+    def NameAcquired(self, name):
         pass
 
 class IBusServer(dbus.server.Server):
