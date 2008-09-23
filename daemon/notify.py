@@ -1,4 +1,4 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
@@ -18,35 +18,29 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-ibusdaemon_PYTHON = \
-	bus.py \
-	_dbus.py \
-	defaultconfig.py \
-	config.py \
-	connection.py \
-	contextmanager.py \
-	enginefactory.py \
-	engine.py \
-	factorymanager.py \
-	ibusdaemon.py \
-	inputcontext.py \
-	lookuptable.py \
-	notify.py \
-	panel.py \
-	register.py \
-	$(NULL)
 
-bin_SCRIPTS = ibus-daemon
+import dbus
 
-ibusdaemondir = $(pkgdatadir)/daemon
+try:
+    __bus = dbus.SessionBus()
+    __notify = __bus.get_object("org.freedesktop.Notifications", "/org/freedesktop/Notifications")
+except:
+    import traceback
+    traceback.print_exc()
+    __notify = None
 
-CLEANFILES = \
-	*.pyc \
-	$(NULL)
+__ignore_ids = set([])
 
-EXTRA_DIST = \
-	ibus-daemon.in \
-	$(NULL)
+def Notify(id, summary, body, icon):
+    if id in __ignore_ids:
+        return
+    if __notify == None:
+        return
+    if icon == None:
+        icon = "ibus"
+    __notify.Notify("ibus", dbus.UInt32(id), icon, summary, body, \
+        ["Do not show it again", "Do not show it again"], \
+        dbus.Dictionary({"x" :100, "y" : 100}, signature="sv"), 5000)
 
-test:
-	$(ENV) DBUS_DEBUG=true PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/ibusdaemon.py
+if __name__ == "__main__":
+    Notify(1, "A", "B", None)

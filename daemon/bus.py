@@ -20,7 +20,6 @@
 # Boston, MA  02111-1307  USA
 
 import sys
-import dbus
 import ibus
 from ibus import keysyms
 from ibus import modifier
@@ -195,6 +194,8 @@ class IBus(ibus.Object):
                 engine = self.__default_factory.create_engine()
                 engine.focus_in()
                 context.set_engine(engine)
+            else:
+                pynotify
         context.set_enable(True)
         self.__panel.states_changed()
 
