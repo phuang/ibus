@@ -175,15 +175,23 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
     call_data->icid = base_icid ++;
 
     x11ic = g_slice_new0 (X11IC);
+    g_return_val_if_fail (x11ic != NULL, 0);
     x11ic->icid = call_data->icid;
     x11ic->connect_id = call_data->connect_id;
     x11ic->conn = (X11ICONN *)g_hash_table_lookup (_connections,
                         (gconstpointer)(unsigned long)call_data->connect_id);
+    if (x11ic->conn == NULL) {
+        g_slice_free (X11IC, x11ic);
+        g_return_val_if_reached (0);
+    }
 
     i = _xim_store_ic_values (x11ic, call_data);
 
     x11ic->ibus_ic = g_strdup (ibus_im_client_create_input_context (_client));
-    g_assert (x11ic->ibus_ic != NULL);
+    if (x11ic->ibus_ic == NULL) {
+        g_slice_free (X11IC, x11ic);
+        g_return_val_if_reached (0);
+    }
 
     g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
 
@@ -205,6 +213,7 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
+    g_return_val_if_fail (x11ic != NULL, 0);
 
     ibus_im_client_release_input_context (_client, x11ic->ibus_ic);
 
@@ -228,6 +237,7 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
+    g_return_val_if_fail (x11ic != NULL, 0);
 
     ibus_im_client_focus_in (_client, x11ic->ibus_ic);
     _xim_set_cursor_location (x11ic);
@@ -244,6 +254,8 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
             (gconstpointer)(unsigned long)call_data->icid);
+    g_return_val_if_fail (x11ic != NULL, 0);
+
     ibus_im_client_focus_out (_client, x11ic->ibus_ic);
 
     return 1;
@@ -261,8 +273,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
-
-    g_return_val_if_fail (x11ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 0);
 
     xevent = (XKeyEvent*) &(call_data->event);
 
@@ -303,8 +314,7 @@ xim_open (XIMS xims, IMOpenStruct *call_data)
 
     conn = (X11ICONN *)g_hash_table_lookup (_connections,
                 (gconstpointer)(unsigned long)call_data->connect_id);
-
-    g_return_val_if_fail (conn == NULL, 1);
+    g_return_val_if_fail (conn == NULL, 0);
 
     conn = g_slice_new0 (X11ICONN);
 
@@ -342,8 +352,7 @@ xim_close (XIMS ims, IMCloseStruct *call_data)
 
     conn = (X11ICONN *)g_hash_table_lookup (_connections,
                 (gconstpointer)(unsigned long)call_data->connect_id);
-
-    g_return_val_if_fail (conn != NULL, 1);
+    g_return_val_if_fail (conn != NULL, 0);
 
     g_list_foreach (conn->clients, _free_ic, NULL);
 
@@ -409,8 +418,7 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
-
-    g_return_val_if_fail (x11ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 0);
 
     i = _xim_store_ic_values (x11ic, call_data);
 
@@ -431,8 +439,7 @@ xim_reset_ic (XIMS xims, IMResetICStruct *call_data)
 
     x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
-
-    g_return_val_if_fail (x11ic != NULL, 1);
+    g_return_val_if_fail (x11ic != NULL, 0);
 
     ibus_im_client_reset (_client, x11ic->ibus_ic);
 
