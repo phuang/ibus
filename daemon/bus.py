@@ -150,9 +150,9 @@ class IBus(ibus.Object):
         if context == self.__focused_context:
             self.__remove_focused_context_handlers()
             self.__focused_context = None
+            self.__panel.focus_out(context.get_id())
 
         context.focus_out()
-        self.__panel.focus_out(context.get_id())
 
     def reset(self, ic, conn):
         context = self.__lookup_context(ic, conn)
