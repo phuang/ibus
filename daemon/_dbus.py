@@ -127,8 +127,7 @@ class DBus(dbus.service.Object):
 
     @method(out_signature="s")
     def Hello(self):
-        if self.__name == None:
-            self.__name = DBus.__bus.register_connection(self.__ibusconn)
+        self.__name = DBus.__bus.register_connection(self.__ibusconn)
         return self.__name
 
     @method(out_signature="as")
@@ -169,11 +168,11 @@ class DBus(dbus.service.Object):
 
     @method(in_signature="su", out_signature="u")
     def RequestName(self, name, flags):
-        return self.__bus.request_name(ibusconn, name, flags)
+        return self.__bus.request_name(self.__ibusconn, name, flags)
 
     @method(in_signature="s", out_signature="u")
     def ReleaseName(self, name):
-        return self.__bus.release_name(ibusconn, name)
+        return self.__bus.release_name(self.__ibusconn, name)
 
     @signal(signature="sss")
     def NameOwnerChanged(self, name, old_owner, new_owner):
