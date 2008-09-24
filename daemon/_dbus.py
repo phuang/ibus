@@ -26,36 +26,44 @@ import ibus
 class DBusReal(ibus.Object):
     def __init__(self):
         super(DBusReal, self).__init__()
+        self.__unique_name_dict = dict()
         self.__name_dict = dict()
-        self.__conn_dict = dict()
         self.__id = 0
 
     def register_connection(self, ibusconn):
-        if ibusconn in self.__conn_dict:
-            return self.__conn_dict[ibusconn]
+        name = ibusconn.get_unique_name()
+        if name:
+            raise ibus.IBusException("Already handled an Hello message")
         self.__id += 1
-        id = "%d" % self.__id
-        self.__name_dict[id] = ibusconn
-        self.__conn_dict[ibusconn] = id
-        ibusconn.connect("destroy", self.__ibusconn_destroy_cb, id)
-        return id
+        name = ":1.%d" % self.__id
+        self.__unique_name_dict[name] = ibusconn
+        ibusconn.set_unique_name(name)
+        ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
+        return name
 
     def list_names(self):
-        return self.__name_dict.keys()
+        return self.__name_dict.keys() + self.__unique_name_dict.keys()
 
     def list_activatable_names(self):
-        return self.__name_dict.keys()
+        return self.__name_dict.keys() + self.__unique_name_dict.keys()
 
     def name_has_owner(self, name):
+        if name.startswith(":"):
+            return name in self.__unique_name_dict
         return name in self.__name_dict
 
     def get_name_owner(self, name):
-        if name == dbus.BUS_DAEMON_NAME:
-            return "0"
-        elif name == ibus.IBUS_NAME:
-            return "0"
+        if name == dbus.BUS_DAEMON_NAME or \
+            name == ibus.IBUS_NAME:
+            return ":1.0"
+        if name.startswith(":"):
+            if name in self.__unique_name_dict:
+                return name
+        elif name in self.__name_dict:
+            ibusconn = self.__name_dict[name]
+            return ibusconn.get_unique_name()
 
-        raise dbus.DBusException(
+        raise ibus.IBusException(
                 "org.freedesktop.DBus.Error.NameHasNoOwner:\n"
                 "\tCould not get owner of name '%s': no such name" % name)
 
@@ -71,9 +79,34 @@ class DBusReal(ibus.Object):
     def remove_match(self, rule):
         pass
 
-    def __ibusconn_destroy_cb(self, ibusconn, id):
-        del self.__name_dict[id]
-        del self.__conn_dict[ibusconn]
+    def request_name(self, ibusconn, name, flags):
+        if name.startswith(":"):
+            raise ibus.IBusException("Only unique name can start with ':'")
+        if not ibusconn.get_unique_name():
+            raise ibus.IBusException("Can not call any method before Hello.")
+        if name in ibusconn.get_names():
+            return 0
+        if name in self.__name_dict:
+            raise ibus.IBusException("Name has been registered")
+        self.__name_dict[name] = ibusconn
+        ibusconn.add_name(name)
+        return 1
+
+    def release_name(self, ibusconn, name):
+        if name.startswith(":"):
+            raise ibus.IBusException("Only unique name can start with ':'")
+        if name not in ibusconn.get_names():
+            return 2
+        del self.__name_dict[name]
+        ibusconn.remove_name(name)
+        return 1
+
+    def __ibusconn_destroy_cb(self, ibusconn):
+        name = ibusconn.get_unique_name()
+        if name:
+            del self.__unique_name_dict[name]
+        for name in ibusconn.get_names():
+            del self.__name_dict[name]
 
 class DBus(dbus.service.Object):
 
@@ -133,6 +166,14 @@ class DBus(dbus.service.Object):
     @method(out_signature="s")
     def GetId(self):
         return self.__name
+
+    @method(in_signature="su", out_signature="u")
+    def RequestName(self, name, flags):
+        return self.__bus.request_name(ibusconn, name, flags)
+
+    @method(in_signature="s", out_signature="u")
+    def ReleaseName(self, name):
+        return self.__bus.release_name(ibusconn, name)
 
     @signal(signature="sss")
     def NameOwnerChanged(self, name, old_owner, new_owner):

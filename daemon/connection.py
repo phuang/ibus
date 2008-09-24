@@ -34,6 +34,8 @@ class Connection(ibus.Object):
     def __init__(self, dbusconn):
         super(Connection, self).__init__()
         self.__dbusconn = dbusconn
+        self.__unique_name = ""
+        self.__names = set()
         self.__config_watch = set()
         dbusconn.add_message_filter(self.message_filter_cb)
 
@@ -80,5 +82,24 @@ class Connection(ibus.Object):
 
     def get_dbusconn(self):
         return self.__dbusconn
+
+    def get_unique_name(self):
+        return self.__unique_name
+
+    def set_unique_name(self, name):
+        assert name
+        assert not self.__unique_name
+        self.__unique_name = name
+
+    def get_names(self):
+        return self.__names
+
+    def add_name(self, name):
+        if name not in self.__names:
+            self.__names.add(name)
+
+    def remove_name(self, name):
+        if name in self.__names:
+            self.__names.remove(name)
 
 gobject.type_register(Connection)
