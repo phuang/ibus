@@ -33,7 +33,6 @@ endif
 				CFLAGS="$(CFLAGS)" \
 				LDFLAGS="-Wl,-z,defs" \
 				$(NULL)
-	#--with-gtk-im-module-dir=/usr/lib/gtk-2.0/$(GTKVER)/immodules/ \
 
 build: build-stamp
 
