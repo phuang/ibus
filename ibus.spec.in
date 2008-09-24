@@ -1,4 +1,5 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?gtk_binary_version: %define gtk_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-2.0)}
 %define mod_path ibus-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@
 Name:       ibus
 Version:    @PACKAGE_VERSION@
@@ -62,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
 rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.so
-rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/immodules/im-ibus.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk_binary_version}/immodules/im-ibus.la
 
 # install xinput config file
 mkdir -pm 755 ${RPM_BUILD_ROOT}/%{_sysconfdir}/X11/xinit/xinput.d
@@ -114,7 +115,7 @@ rm -rf $RPM_BUILD_ROOT
 %files gtk
 %defattr(-,root,root,-)
 %doc
-%{_libdir}/gtk-2.0/immodules/im-ibus.so
+%{_libdir}/gtk-2.0/%{gtk_binary_version}/immodules/im-ibus.so
 
 %files qt
 %defattr(-,root,root,-)
