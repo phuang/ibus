@@ -26,7 +26,7 @@ import ibus
 class DBusReal(ibus.Object):
     def __init__(self):
         super(DBusReal, self).__init__()
-        self.__id_dict = dict()
+        self.__name_dict = dict()
         self.__conn_dict = dict()
         self.__id = 0
 
@@ -35,34 +35,35 @@ class DBusReal(ibus.Object):
             return self.__conn_dict[ibusconn]
         self.__id += 1
         id = "%d" % self.__id
-        self.__id_dict[id] = ibusconn
+        self.__name_dict[id] = ibusconn
         self.__conn_dict[ibusconn] = id
         ibusconn.connect("destroy", self.__ibusconn_destroy_cb, id)
         return id
 
     def list_names(self):
-        return self.__id_dict.keys()
+        return self.__name_dict.keys()
 
     def list_activatable_names(self):
-        return self.__id_dict.keys()
+        return self.__name_dict.keys()
 
     def name_has_owner(self, name):
-        return name in self.__id_dict
+        return name in self.__name_dict
 
     def get_name_owner(self, name):
         if name == dbus.BUS_DAEMON_NAME:
-            return dbus.BUS_DAEMON_NAME
+            return "0"
         elif name == ibus.IBUS_NAME:
-            return ibus.IBUS_NAME
+            return "0"
 
         raise dbus.DBusException(
-                "org.freedesktop.DBus.Error.NameHasNoOwner: Could not get owner of name '%s': no such name" % name)
+                "org.freedesktop.DBus.Error.NameHasNoOwner:\n"
+                "\tCould not get owner of name '%s': no such name" % name)
 
     def start_service_by_name(self, name, flags):
         return 0
 
     def get_connection_unix_user(self, connection_name):
-        return 1
+        return 0
 
     def add_match(self, rule):
         pass
@@ -71,7 +72,7 @@ class DBusReal(ibus.Object):
         pass
 
     def __ibusconn_destroy_cb(self, ibusconn, id):
-        del self.__id_dict[id]
+        del self.__name_dict[id]
         del self.__conn_dict[ibusconn]
 
 class DBus(dbus.service.Object):
