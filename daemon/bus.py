@@ -195,7 +195,7 @@ class IBus(ibus.Object):
                 engine.focus_in()
                 context.set_engine(engine)
             else:
-                pynotify
+                pass
         context.set_enable(True)
         self.__panel.states_changed()
 
