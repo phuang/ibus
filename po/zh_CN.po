@@ -7,13 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-09-18 17:49+0800\n"
+"POT-Creation-Date: 2008-09-22 17:17+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ibus/lang.py:40 panel/panel.py:292 panel/panel.py:293 panel/panel.py:294
 #: panel/panel.py:295 setup/main.py:358 setup/main.py:359 setup/main.py:360
@@ -65,7 +66,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:203 setup/setup.glade:365
+#: setup/main.py:203 setup/setup.glade:364
 msgid "Engine"
 msgstr "输入法引擎"
 
@@ -114,27 +115,27 @@ msgstr "IBus - 设置"
 msgid "Auto start IBus on session login"
 msgstr "启动桌面时自动启动IBus"
 
-#: setup/setup.glade:59 setup/setup.glade:78 setup/setup.glade:129
-msgid "..."
-msgstr ""
+#: setup/setup.glade:57
+msgid "Trigger:"
+msgstr "开关:"
 
-#: setup/setup.glade:145
-msgid "Previous engine:"
-msgstr "上一个引擎:"
-
-#: setup/setup.glade:161
+#: setup/setup.glade:85
 msgid "Next engine:"
 msgstr "下一个引擎:"
 
-#: setup/setup.glade:191
-msgid "Trigger:"
-msgstr "开关:"
+#: setup/setup.glade:101
+msgid "Previous engine:"
+msgstr "上一个引擎:"
+
+#: setup/setup.glade:118 setup/setup.glade:167 setup/setup.glade:187
+msgid "..."
+msgstr ""
 
 #: setup/setup.glade:242
 msgid "Lookup table orientation:"
 msgstr "候选词表方向:"
 
-#: setup/setup.glade:254
+#: setup/setup.glade:253
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -142,23 +143,23 @@ msgstr ""
 "水平\n"
 "竖直"
 
-#: setup/setup.glade:267
+#: setup/setup.glade:266
 msgid "Auto hide language bar"
 msgstr "自动隐藏语言栏"
 
-#: setup/setup.glade:279
+#: setup/setup.glade:278
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: setup/setup.glade:305
+#: setup/setup.glade:304
 msgid "UI"
 msgstr "用户界面"
 
-#: setup/setup.glade:326
+#: setup/setup.glade:325
 msgid "General"
 msgstr "通用"
 
-#: setup/setup.glade:382
+#: setup/setup.glade:381
 msgid ""
 "<big><b>iBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -168,11 +169,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:407
+#: setup/setup.glade:406
 msgid "About"
 msgstr "关于"
 
-#: setup/setup.glade:429
+#: setup/setup.glade:428
 msgid "gtk-close"
 msgstr ""
 
