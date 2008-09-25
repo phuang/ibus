@@ -496,7 +496,7 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     xkp.xkey.type = (event->type == GDK_KEY_PRESS) ? KeyPress : KeyRelease;
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
-    xkp.xkey.same_screen = False;
+    xkp.xkey.same_screen = True;
     xkp.xkey.display = GDK_DISPLAY();
     xkp.xkey.window = x11ic->focus_window ? x11ic->focus_window : x11ic->client_window;
     xkp.xkey.subwindow = None;
