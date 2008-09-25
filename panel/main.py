@@ -24,6 +24,7 @@ import sys
 import getopt
 import ibus
 import gtk
+import locale
 import panel
 
 PANEL_PATH = "/org/freedesktop/IBus/Panel"
@@ -79,4 +80,5 @@ def main():
     launch_panel()
 
 if __name__ == "__main__":
+    locale.bind_textdomain_codeset("ibus", "UTF-8")
     main()

@@ -23,29 +23,29 @@ __all__ = (
         "get_language_name",
     )
 
-import locale
 import xml.parsers.expat
+import locale
+import gettext
 
-_ = lambda a: locale.dgettext("ibus", a)
+_ = lambda a: gettext.dgettext("ibus", a)
 __languages_dict = {}
-locale.setlocale(locale.LC_ALL, "")
 
 def get_language_name(_locale):
     lang = _locale.split("_")[0]
     lang = lang.lower()
     if lang in __languages_dict:
         lang = __languages_dict[lang]
-        lang = locale.dgettext("iso_639", lang)
+        lang = gettext.dgettext("iso_639", lang)
     else:
         lang = _(u"Other")
-        lang = locale.dgettext("ibus", lang)
+        lang = gettext.dgettext("ibus", lang)
     return lang
 
 def __start_element(name, attrs):
     global __languages_dict
     try:
-        iso_639_1_code = attrs["iso_639_1_code"].decode("utf-8")
-        name = attrs["name"].decode("utf-8")
+        iso_639_1_code = attrs[u"iso_639_1_code"]
+        name = attrs[u"name"]
         __languages_dict[iso_639_1_code] = name
     except:
         pass
@@ -56,9 +56,15 @@ def __end_element(name):
 def __char_data(data):
     pass
 
-iso_639_xml = "/usr/share/xml/iso-codes/iso_639.xml"
-p = xml.parsers.expat.ParserCreate()
-p.StartElementHandler = __start_element
-p.EndElementHandler = __end_element
-p.CharacterDataHandler = __char_data
-p.ParseFile(file(iso_639_xml))
+def __load_lang():
+    iso_639_xml = "/usr/share/xml/iso-codes/iso_639.xml"
+    p = xml.parsers.expat.ParserCreate()
+    p.StartElementHandler = __start_element
+    p.EndElementHandler = __end_element
+    p.CharacterDataHandler = __char_data
+    p.ParseFile(file(iso_639_xml))
+
+__load_lang()
+
+if __name__ == "__main__":
+    print get_language_name("zh_CN")

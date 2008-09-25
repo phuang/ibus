@@ -19,19 +19,21 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import locale
+import gettext
 import os
 import sys
-from os import path
 import time
-from xdg import BaseDirectory
 import gtk
 import gobject
 import ibus
-from gtk import gdk, glade
 import keyboardshortcut
+from os import path
+from xdg import BaseDirectory
+from gtk import gdk
+from gtk import glade
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
+_  = lambda a : gettext.dgettext("ibus", a)
 N_ = lambda a : a
 
 (
@@ -68,6 +70,7 @@ class Setup(object):
 
     def __init__(self):
         super(Setup, self).__init__()
+        locale.bind_textdomain_codeset("ibus", "UTF-8")
         glade.textdomain("ibus")
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
