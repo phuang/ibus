@@ -24,11 +24,9 @@ __all__ = (
     )
 
 import xml.parsers.expat
-
 import locale
 import gettext
 
-locale.setlocale(locale.LC_ALL, "")
 _ = lambda a: gettext.dgettext("ibus", a)
 __languages_dict = {}
 
