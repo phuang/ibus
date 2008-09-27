@@ -24,7 +24,10 @@ __all__ = (
 )
 
 import gobject
-import gconf
+try:
+    import gconf
+except:
+    from ibus import gconf
 import dbus
 import ibus
 from ibus import interface
