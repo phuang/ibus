@@ -23,14 +23,79 @@ import dbus
 import dbus.service
 import ibus
 
+class MatchRule:
+    def __init__(self, rule):
+        m = self.__eval_rule(rule)
+        self.__type = m.get('type', None)
+        self.__sender = m.get('sender', None)
+        self.__interface = m.get('interface', None)
+        self.__member = m.get('member', None)
+        self.__path = m.get('path', None)
+        self.__destination = m.get('destination', None)
+        self.__args = []
+        for i in range(64):
+            arg = m.get('arg%d'%i, None)
+            if arg == None:
+                continue
+            self.__args.append((i, arg))
+
+    def __eval_rule(self, rule):
+        _fn = lambda **kargs: kargs
+        try:
+            return eval("_fn(%s)" % rule)
+        except:
+            raise ibus.IBusException("Parse match rule failed")
+
+    def match_message(self, dbusobj, message):
+        if self.__type == 'signale' and message.get_type() != 4:
+            return False
+        if self.__sender:
+            if self.__sender.startswith(":"):
+                sender = self.__sender
+            else:
+                try:
+                    sender = dbusobj.get_name_owner(self.__sender).get_unique_name()
+                except:
+                    return False
+            if sender != message.get_sender():
+                return False
+        if self.__interface and self.__interface != message.get_interface():
+            return False
+
+        if self.__member and self.__member != message.get_member():
+            return False
+
+        if self.__path and self.__path != message.get_path():
+            return False
+
+        if self.__destination:
+            if self.__destination.startswith(":"):
+                dest = self.__destination
+            else:
+                try:
+                    dest = dbusobj.get_name_owner(self.__destination).get_unique_name()
+                except:
+                    return False
+            if dest != message.get_destination():
+                return False
+        args = message.get_args_list()
+        for i, arg in self.__args:
+            if i >= len(args):
+                return False
+            if arg != args[i]:
+                return False
+        return True
+
 class DBusReal(ibus.Object):
     def __init__(self):
         super(DBusReal, self).__init__()
+        self.__connections = dict()
         self.__unique_name_dict = dict()
         self.__name_dict = dict()
         self.__id = 0
 
     def add_connection(self, ibusconn):
+        self.__connections[ibusconn] = list()
         ibusconn.connect("dbus-message", self.__dbus_message_cb)
         ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
 
@@ -76,10 +141,10 @@ class DBusReal(ibus.Object):
     def get_connection_unix_user(self, connection_name):
         return 0
 
-    def add_match(self, rule):
-        pass
+    def add_match(self, ibusconn, rule):
+        self.__connections[ibusconn].append(MatchRule(rule))
 
-    def remove_match(self, rule):
+    def remove_match(self, ibusconn, rule):
         pass
 
     def request_name(self, ibusconn, name, flags):
@@ -104,14 +169,26 @@ class DBusReal(ibus.Object):
         ibusconn.remove_name(name)
         return 1
 
+    def dispatch_dbus_signal(self, message):
+        for conn, rules in self.__connections.items():
+            for rule in rules:
+                if rule.match_message(self, message):
+                    conn.send_message(message)
+                    break
+
     def __dbus_message_cb(self, ibusconn, message):
         dest = message.get_destination()
         message.set_sender(ibusconn.get_unique_name())
-        if dest.startswith(":"):
-            destconn = self.__unique_name_dict.get(dest, None)
-        else:
-            destconn = self.__name_dict.get(dest, None)
+        if (not dest):
+            if message.get_type() != 4: # Is not signal
+                raise ibus.IBusException("Message without destination")
+            self.dispatch_dbus_signal(message)
+            return Trye
 
+        if not dest.startswith(":"):
+            raise ibus.IBusException("Destination of message must be an unique name")
+
+        destconn = self.__unique_name_dict.get(dest, None)
         if destconn == None:
             raise ibus.IBusException("Can not find the destination(%s)" % dest)
 
@@ -124,6 +201,7 @@ class DBusReal(ibus.Object):
             del self.__unique_name_dict[name]
         for name in ibusconn.get_names():
             del self.__name_dict[name]
+        del self.__connections[ibusconn]
 
 class DBus(dbus.service.Object):
 
@@ -177,11 +255,11 @@ class DBus(dbus.service.Object):
 
     @method(in_signature="s")
     def AddMatch(self, rule):
-        return  DBus.__bus.add_match(rule)
+        return  DBus.__bus.add_match(self.__ibusconn, rule)
 
     @method(in_signature="s")
     def RemoveMatch(self, rule):
-        return  DBus.__bus.remove_match(rule)
+        return  DBus.__bus.remove_match(self.__ibusconn, rule)
 
     @method(out_signature="s")
     def GetId(self):
