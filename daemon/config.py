@@ -71,6 +71,7 @@ class Config(ibus.Object):
             self.emit("value-changed", args[0], args[1])
         else:
             return False
+        ibusconn.stop_emission("dbus-signal")
         return True
 
 gobject.type_register(Config)

@@ -31,9 +31,9 @@ class EngineFactory(ibus.Object):
         self._object_path = object_path
         self._factory = self._ibusconn.get_object(self._object_path)
 
-        self._ibusconn.connect("destroy", self._ibusconn_destroy_cb)
+        self._ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
 
-        self._ibusconn.connect("dbus-signal", self._dbus_signal_cb)
+        self._ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
         self._engines = weakref.WeakValueDictionary()
 
         self._info = None
@@ -57,13 +57,16 @@ class EngineFactory(ibus.Object):
         self._ibusconn = None
         self._factory = None
 
-    def _ibusconn_destroy_cb(self, ibusconn):
+    def __ibusconn_destroy_cb(self, ibusconn):
         self.destroy()
 
-    def _dbus_signal_cb(self, ibusconn, message):
+    def __dbus_signal_cb(self, ibusconn, message):
         object_path = message.get_path()
         if object_path in self._engines:
-            self._engines[object_path].handle_dbus_signal(message)
+            if self._engines[object_path].handle_dbus_signal(message):
+                ibusconn.stop_emission("dbus-signal")
+                return True
+        return False
 
     # methods for cmp
     def __lt__(self, other):
