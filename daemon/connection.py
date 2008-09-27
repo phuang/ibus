@@ -44,11 +44,14 @@ class Connection(ibus.Object):
             self.destroy()
             return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
+        if message.get_destination() in set(["org.freedesktop.IBus", "org.freedesktop.DBus"]):
+            return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
+
         if message.get_type() == 4: # is signal
             if self.dispatch_dbus_signal(message):
                 return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
-        return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
+        return dbus.lowlevel.HANDLER_RESULT_HANDLED
 
     def get_object(self, path):
         return self.__dbusconn.get_object("no.name", path)
