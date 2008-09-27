@@ -3,13 +3,13 @@ INCLUDES = $(PYTHON_INCLUDES) $(PYGTK_CFLAGS)
 defsdir = $(datadir)/pygtk/2.0/defs
 
 if IBUS_BUILD_PYGCONF
-defs_DATA = gconf.defs
+# defs_DATA = gconf.defs
 endif
 
 common_ldflags = -module -avoid-version $(PYTHON_LDFLAGS)
 
-pkgpythondir = $(pyexecdir)/gtk-2.0
-pkgpyexecdir = $(pyexecdir)/gtk-2.0
+# pkgpythondir = $(pyexecdir)/gtk-2.0
+# pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
 # gconf binding
 
@@ -33,7 +33,7 @@ gconf.c: gconf.defs gconf.override gconf-arg-types.py
 argtypesdir = $(datadir)/pygtk/2.0/argtypes
 
 if IBUS_BUILD_PYGCONF
-argtypes_PYTHON = gconf-arg-types.py
+# argtypes_PYTHON = gconf-arg-types.py
 endif
 
 .defs.c:
