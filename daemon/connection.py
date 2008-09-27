@@ -29,8 +29,13 @@ class Connection(ibus.Object):
             gobject.SIGNAL_RUN_LAST,
             gobject.TYPE_BOOLEAN,
             (gobject.TYPE_PYOBJECT, )
+        ),
+         "dbus-message" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_BOOLEAN,
+            (gobject.TYPE_PYOBJECT, )
         )
-    }
+   }
     def __init__(self, dbusconn):
         super(Connection, self).__init__()
         self.__dbusconn = dbusconn
@@ -48,10 +53,11 @@ class Connection(ibus.Object):
             return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 
         if message.get_type() == 4: # is signal
-            if self.dispatch_dbus_signal(message):
+            if self.emit("dbus-signal", message):
                 return dbus.lowlevel.HANDLER_RESULT_HANDLED
-
-        return dbus.lowlevel.HANDLER_RESULT_HANDLED
+        if self.emit("dbus-message", message):
+            return dbus.lowlevel.HANDLER_RESULT_HANDLED
+        return dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
 
     def get_object(self, path):
         return self.__dbusconn.get_object("no.name", path)
@@ -59,14 +65,14 @@ class Connection(ibus.Object):
     def emit_dbus_signal(self, name, *args):
         message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH, ibus.IBUS_IFACE, name)
         message.append(*args)
+        self.send_message(message)
+
+    def send_message(self, message):
         self.__dbusconn.send_message(message)
         self.__dbusconn.flush()
 
     def do_destroy(self):
         self.__dbusconn = None
-
-    def dispatch_dbus_signal(self, message):
-        return self.emit("dbus-signal", message)
 
     def config_add_watch(self, key):
         if key in self.__config_watch:

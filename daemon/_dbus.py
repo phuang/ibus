@@ -30,6 +30,10 @@ class DBusReal(ibus.Object):
         self.__name_dict = dict()
         self.__id = 0
 
+    def add_connection(self, ibusconn):
+        ibusconn.connect("dbus-message", self.__dbus_message_cb)
+        ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
+
     def register_connection(self, ibusconn):
         name = ibusconn.get_unique_name()
         if name:
@@ -38,7 +42,6 @@ class DBusReal(ibus.Object):
         name = ":1.%d" % self.__id
         self.__unique_name_dict[name] = ibusconn
         ibusconn.set_unique_name(name)
-        ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         return name
 
     def list_names(self):
@@ -101,6 +104,20 @@ class DBusReal(ibus.Object):
         ibusconn.remove_name(name)
         return 1
 
+    def __dbus_message_cb(self, ibusconn, message):
+        dest = message.get_destination()
+        message.set_sender(ibusconn.get_unique_name())
+        if dest.startswith(":"):
+            destconn = self.__unique_name_dict.get(dest, None)
+        else:
+            destconn = self.__name_dict.get(dest, None)
+
+        if destconn == None:
+            raise ibus.IBusException("Can not find the destination(%s)" % dest)
+
+        destconn.send_message(message)
+        return True
+
     def __ibusconn_destroy_cb(self, ibusconn):
         name = ibusconn.get_unique_name()
         if name:
@@ -123,12 +140,16 @@ class DBus(dbus.service.Object):
     def __init__(self, ibusconn):
         super(DBus, self).__init__(ibusconn.get_dbusconn(), dbus.BUS_DAEMON_PATH)
         self.__ibusconn = ibusconn
-        self.__name = ""
+        self.__name = DBus.__bus.register_connection(self.__ibusconn)
+        self.__active = False
+        self.__bus.add_connection(ibusconn)
 
     @method(out_signature="s")
     def Hello(self):
-        self.__name = DBus.__bus.register_connection(self.__ibusconn)
-        return self.__name
+        if not self.__active:
+            self.__active = True
+            return self.__name
+        raise ibus.IBusException("Already handled an Hello message")
 
     @method(out_signature="as")
     def ListNames(self):
