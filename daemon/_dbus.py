@@ -44,7 +44,7 @@ class MatchRule:
         try:
             return eval("_fn(%s)" % rule)
         except:
-            raise ibus.IBusException("Parse match rule failed")
+            raise ibus.IBusException("Parse match rule failed\n%s" % rule)
 
     def match_message(self, dbusobj, message):
         if self.__type == 'signale' and message.get_type() != 4:
