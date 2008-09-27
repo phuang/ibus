@@ -87,6 +87,13 @@ class MatchRule:
         return True
 
 class DBusReal(ibus.Object):
+    __gsignals__ = {
+        "name-owner-changed" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)),
+    }
+
     def __init__(self):
         super(DBusReal, self).__init__()
         self.__connections = dict()
@@ -157,6 +164,7 @@ class DBusReal(ibus.Object):
         if name in self.__name_dict:
             raise ibus.IBusException("Name has been registered")
         self.__name_dict[name] = ibusconn
+        self.emit("name-owner-changed", name, "", ibusconn.get_unique_name())
         ibusconn.add_name(name)
         return 1
 
@@ -166,6 +174,7 @@ class DBusReal(ibus.Object):
         if name not in ibusconn.get_names():
             return 2
         del self.__name_dict[name]
+        self.emit("name-owner-changed", name, ibusconn.get_unique_name(), "")
         ibusconn.remove_name(name)
         return 1
 
@@ -175,6 +184,15 @@ class DBusReal(ibus.Object):
                 if rule.match_message(self, message):
                     conn.send_message(message)
                     break
+
+    def do_name_owner_changed(self, name, old_name, new_name):
+        message = dbus.lowlevel.SignalMessage(dbus.BUS_DAEMON_PATH,
+                        dbus.BUS_DAEMON_IFACE, "NameOwnerChanged")
+        message.set_sender(dbus.BUS_DAEMON_NAME)
+        message.append(name)
+        message.append(old_name)
+        message.append(new_name)
+        self.dispatch_dbus_signal(message)
 
     def __dbus_message_cb(self, ibusconn, message):
         dest = message.get_destination()
@@ -197,11 +215,16 @@ class DBusReal(ibus.Object):
 
     def __ibusconn_destroy_cb(self, ibusconn):
         name = ibusconn.get_unique_name()
-        if name:
-            del self.__unique_name_dict[name]
         for name in ibusconn.get_names():
             del self.__name_dict[name]
+            self.emit("name-owner-changed", name, ibusconn.get_unique_name(), "")
+        if name:
+            del self.__unique_name_dict[name]
+            self.emit("name-owner-changed", name, name, "")
+
         del self.__connections[ibusconn]
+
+bus = DBusReal()
 
 class DBus(dbus.service.Object):
 
@@ -213,7 +236,7 @@ class DBus(dbus.service.Object):
         dbus.service.signal(dbus_interface = dbus.BUS_DAEMON_IFACE, \
         **args)
 
-    __bus = DBusReal()
+    __bus = bus
 
     def __init__(self, ibusconn):
         super(DBus, self).__init__(ibusconn.get_dbusconn(), dbus.BUS_DAEMON_PATH)

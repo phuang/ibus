@@ -25,7 +25,12 @@ __all__ = (
         "PanelButton",
         "PanelToggleButton",
         "PanelMenu",
+        "IBUS_PANEL_NAME",
+        "IBUS_PANEL_PATH"
     )
+
+IBUS_PANEL_NAME = "org.freedesktop.ibus.Panel"
+IBUS_PANEL_PATH = "/org/freedesktop/ibus/Panel"
 
 import ibus
 from ibus import interface
@@ -43,9 +48,10 @@ class PanelMenu(PanelItem):
     pass
 
 class PanelBase(ibus.Object):
-    def __init__(self, bus, object_path):
+    def __init__(self, bus):
         super(PanelBase, self).__init__()
-        self.__proxy = PanelProxy(self, bus.get_dbusconn(), object_path)
+        bus.request_name(IBUS_PANEL_NAME)
+        self.__proxy = PanelProxy(self, bus.get_dbusconn())
 
     def set_cursor_location(self, x, y, w, h):
         pass
@@ -142,8 +148,8 @@ class PanelBase(ibus.Object):
 
 
 class PanelProxy(interface.IPanel):
-    def __init__ (self, panel, dbusconn, object_path):
-        super(PanelProxy, self).__init__(dbusconn, object_path)
+    def __init__ (self, panel, dbusconn):
+        super(PanelProxy, self).__init__(dbusconn, IBUS_PANEL_PATH)
         self.__dbusconn = dbusconn
         self.__panel = panel
 
