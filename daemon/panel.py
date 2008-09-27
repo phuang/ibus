@@ -169,6 +169,7 @@ class Panel(ibus.Object):
             self.emit("property-hide", args[0])
         else:
             return False
+        ibusconn.stop_emission("dbus-signal")
         return True
 
     # methods for cmp

@@ -26,8 +26,8 @@ import gobject
 class Connection(ibus.Object):
     __gsignals__ = {
         "dbus-signal" : (
-            gobject.SIGNAL_RUN_FIRST,
-            gobject.TYPE_NONE,
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_BOOLEAN,
             (gobject.TYPE_PYOBJECT, )
         )
     }
@@ -61,7 +61,7 @@ class Connection(ibus.Object):
         self.__dbusconn = None
 
     def dispatch_dbus_signal(self, message):
-        self.emit("dbus-signal", message)
+        return self.emit("dbus-signal", message)
 
     def config_add_watch(self, key):
         if key in self.__config_watch:
