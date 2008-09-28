@@ -50,7 +50,6 @@ class PanelMenu(PanelItem):
 class PanelBase(ibus.Object):
     def __init__(self, bus):
         super(PanelBase, self).__init__()
-        bus.request_name(IBUS_PANEL_NAME)
         self.__proxy = PanelProxy(self, bus.get_dbusconn())
 
     def set_cursor_location(self, x, y, w, h):

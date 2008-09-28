@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import gobject
 import dbus
 import dbus.service
 import ibus
@@ -184,11 +185,15 @@ class DBusReal(ibus.Object):
                 if rule.match_message(self, message):
                     conn.send_message(message)
                     break
+    def get_connection_by_name(self, name):
+        if not name.startswith(":"):
+            return None
+        return self.__unique_name_dict.get(name, None)
 
     def do_name_owner_changed(self, name, old_name, new_name):
         message = dbus.lowlevel.SignalMessage(dbus.BUS_DAEMON_PATH,
                         dbus.BUS_DAEMON_IFACE, "NameOwnerChanged")
-        message.set_sender(dbus.BUS_DAEMON_NAME)
+        # message.set_sender(dbus.BUS_DAEMON_NAME)
         message.append(name)
         message.append(old_name)
         message.append(new_name)

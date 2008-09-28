@@ -56,8 +56,8 @@ gtk.about_dialog_set_url_hook(url_hook, None)
 gtk.about_dialog_set_email_hook(email_hook, None)
 
 class Panel(ibus.PanelBase):
-    def __init__ (self, bus, object_path):
-        super(Panel, self).__init__(bus, object_path)
+    def __init__ (self, bus):
+        super(Panel, self).__init__(bus)
         self.__bus = bus
         self.__focus_ic = None
         self.__setup_pid = 0
@@ -102,6 +102,7 @@ class Panel(ibus.PanelBase):
         self.__config_load_lookup_table_orientation()
         self.__config_load_auto_hide()
         self.__config_load_custom_font()
+        self.__bus.request_name(ibus.panel.IBUS_PANEL_NAME, 0)
 
     def set_cursor_location(self, x, y, w, h):
         self.__candidate_panel.set_cursor_location(x + w, y + h)

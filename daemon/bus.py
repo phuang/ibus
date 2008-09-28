@@ -28,11 +28,12 @@ from factorymanager import FactoryManager
 from panel import Panel, DummyPanel
 from config import Config, DefaultConfig
 from register import Register
-
+import _dbus
 
 class IBus(ibus.Object):
     def __init__(self):
         super(IBus, self).__init__()
+        _dbus.bus.connect("name-owner-changed", self.__dbus_name_owner_changed_cb)
         self.__context_manager = ContextManager()
         self.__factory_manager = FactoryManager()
         self.__factory_manager.connect("default-factory-changed",
@@ -68,6 +69,10 @@ class IBus(ibus.Object):
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         self.__default_factory = None
+
+    def __dbus_name_owner_changed_cb(self, bus, name, old_name, new_name):
+        if name == ibus.panel.IBUS_PANEL_NAME:
+            self.__panel_changed(new_name)
 
     def __factory_manager_default_factory_changed_cb(self, manager, factory):
         if self.__default_factory != factory:
@@ -371,13 +376,15 @@ class IBus(ibus.Object):
     ##########################################################
     # methods for panel
     ##########################################################
-    def register_panel(self, object_path, replace, conn):
-        if not isinstance(self.__panel, DummyPanel) and replace == False:
-            raise ibus.Exception("has have a panel!")
-        self.__uninstall_panel_handlers()
-        self.__panel.destroy()
+    def __panel_changed(self, bus_name):
+        if not isinstance(self.__panel, DummyPanel):
+            self.__uninstall_panel_handlers()
+            self.__panel.destroy()
+        ibusconn = _dbus.bus.get_connection_by_name(bus_name)
+        if ibusconn == None:
+            self.__panel = DummyPanel()
 
-        self.__panel = Panel(conn, object_path)
+        self.__panel = Panel(ibusconn, ibus.panel.IBUS_PANEL_PATH)
         self.__install_panel_handlers()
         if self.__focused_context:
             self.__panel.focus_in(self.__focused_context.get_id())
@@ -440,6 +447,7 @@ class IBus(ibus.Object):
 
     def __panel_destroy_cb(self, panel):
         if panel == self.__panel:
+            self.__uninstall_panel_handlers()
             self.__panel = DummyPanel()
 
     ##########################################################

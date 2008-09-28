@@ -27,16 +27,12 @@ import gtk
 import locale
 import panel
 
-PANEL_PATH = "/org/freedesktop/IBus/Panel"
-
 class PanelApplication:
     def __init__ (self):
         self.__bus = ibus.Bus()
         self.__bus.connect("destroy", self.__bus_destroy_cb)
 
-        self.__panel = panel.Panel(self.__bus, PANEL_PATH)
-
-        self.__bus.register_panel(PANEL_PATH, True)
+        self.__panel = panel.Panel(self.__bus)
 
     def run(self):
         gtk.main()
