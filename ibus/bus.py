@@ -179,8 +179,8 @@ class Bus(ibus.Object):
     def unregister_factories(self, object_paths):
         return self.__ibus.UnregisterFactories(object_paths)
 
-    def register_panel(self, object_path, replace = False):
-        return self.__ibus.RegisterPanel(object_path, replace)
+    # def register_panel(self, object_path, replace = False):
+    #     return self.__ibus.RegisterPanel(object_path, replace)
 
     def register_config(self, object_path, replace = False):
         return self.__ibus.RegisterConfig(object_path, replace)
