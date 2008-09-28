@@ -78,8 +78,8 @@ class IIBus(dbus.service.Object):
     def UnregisterFactories(self, object_paths, dbusconn): pass
 
     # methods for ibus panel
-    @method(in_signature = "ob")
-    def RegisterPanel(self, object_path, replace, dbusconn): pass
+    # @method(in_signature = "ob")
+    # def RegisterPanel(self, object_path, replace, dbusconn): pass
 
     # methods for ibus config
     @method(in_signature = "ob")
