@@ -24,7 +24,6 @@ __all__ = (
     "DefaultConfig"
 )
 
-import weakref
 import gobject
 import ibus
 import defaultconfig
