@@ -27,7 +27,7 @@ gconf_la_SOURCES = \
 	gconf-types.h
 nodist_gconf_la_SOURCES = gconf.c
 CLEANFILES = gconf.c
-EXTRA_DIST = gconf.defs gconf.override  
+EXTRA_DIST = gconf.defs gconf.override gconf-arg-types.py
 gconf.c: gconf.defs gconf.override gconf-arg-types.py
 
 argtypesdir = $(datadir)/pygtk/2.0/argtypes
