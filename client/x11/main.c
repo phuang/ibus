@@ -63,7 +63,15 @@ struct _X11IC {
     gchar       *lang;
     gboolean        has_preedit_area;
     GdkRectangle    preedit_area;
+
+    gchar           *preedit_string;
+    PangoAttrList   *preedit_attrs;
+    gint            preedit_cursor;
+    gboolean        preedit_visible;
+    gboolean        preedit_started;
+    gint            onspot_preedit_length;
 };
+
 typedef struct _X11IC    X11IC;
 
 static void _xim_set_cursor_location (X11IC *x11ic);
@@ -90,29 +98,138 @@ static gint        g_debug_level = 0;
 
 static IBusIMClient *_client = NULL;
 
-#if 0
 static void
-_xim_preedit_start (XIMS xims, int icid, int connect_id)
+_xim_preedit_start (XIMS xims, const X11IC *x11ic)
 {
     IMPreeditStateStruct ips;
     ips.major_code = 0;
     ips.minor_code = 0;
-    ips.icid = icid;
-    ips.connect_id = connect_id;
+    ips.icid = x11ic->icid;
+    ips.connect_id = x11ic->connect_id;
     IMPreeditStart (xims, (XPointer)&ips);
 }
 
 static void
-_xim_preedit_end (XIMS xims, int icid, int connect_id)
+_xim_preedit_end (XIMS xims, const X11IC *x11ic)
 {
     IMPreeditStateStruct ips;
     ips.major_code = 0;
     ips.minor_code = 0;
-    ips.icid = icid;
-    ips.connect_id = connect_id;
+    ips.icid = x11ic->icid;
+    ips.connect_id = x11ic->connect_id;
     IMPreeditEnd (xims, (XPointer)&ips);
 }
+
+
+static void
+_xim_preedit_callback_start (XIMS xims, const X11IC *x11ic)
+{
+    IMPreeditCBStruct pcb;
+
+    pcb.major_code        = XIM_PREEDIT_START;
+    pcb.minor_code        = 0;
+    pcb.connect_id        = x11ic->connect_id;
+    pcb.icid              = x11ic->icid;
+    pcb.todo.return_value = 0;
+    IMCallCallback (xims, (XPointer) & pcb);
+}
+
+
+static void
+_xim_preedit_callback_done (XIMS xims, const X11IC *x11ic)
+{
+    IMPreeditCBStruct pcb;
+
+    pcb.major_code        = XIM_PREEDIT_DONE;
+    pcb.minor_code        = 0;
+    pcb.connect_id        = x11ic->connect_id;
+    pcb.icid              = x11ic->icid;
+    pcb.todo.return_value = 0;
+    IMCallCallback (xims, (XPointer) & pcb);
+}
+
+
+static void
+_xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string)
+{
+    IMPreeditCBStruct pcb;
+    XIMText text;
+    XTextProperty tp;
+
+    static XIMFeedback *feedback = NULL;
+    static guint feedback_len = 0;
+
+    guint i, len;
+
+    if (preedit_string == NULL)
+        return;
+
+    len = g_utf8_strlen (preedit_string, -1);
+    len = strlen (preedit_string);
+
+    g_debug ("len=%d, onspot_len=%d", len, x11ic->onspot_preedit_length);
+
+    if (len + 1 > feedback_len) {
+        feedback_len = (len  + 1 + 63) & ~63;
+        // feedback_len = len + 1;
+        if (feedback == NULL) {
+            feedback = (XIMFeedback *)g_alloca (sizeof (XIMFeedback) * feedback_len);
+        }
+        else {
+            feedback = (XIMFeedback *)g_realloc (feedback, sizeof (XIMFeedback) * feedback_len);
+        }
+    }
+
+    for (i = 0; i < feedback_len; i++) {
+        feedback[i] = XIMUnderline;
+    }
+    feedback[feedback_len] = 0;
+
+#if 0
+    for (i = 0; i < attrs.size (); ++i) {
+        attr = 0;
+        if (attrs [i].get_type () == SCIM_ATTR_DECORATE) {
+            if (attrs [i].get_value () == SCIM_ATTR_DECORATE_REVERSE)
+                attr = XIMReverse;
+            else if (attrs [i].get_value () == SCIM_ATTR_DECORATE_HIGHLIGHT)
+                attr = XIMHighlight;
+        }
+        for (j = attrs [i].get_start (); j < attrs [i].get_end () && j < len; ++j)
+            feedback [j] |= attr;
+    }
+
+    for (i = 0; i < len; ++i)
+        if (!feedback [i])
+            feedback [i] = XIMUnderline;
 #endif
+
+    pcb.major_code = XIM_PREEDIT_DRAW;
+    pcb.connect_id = x11ic->connect_id;
+    pcb.icid = x11ic->icid;
+
+    pcb.todo.draw.caret = len;
+    pcb.todo.draw.chg_first = 0;
+    pcb.todo.draw.chg_length = x11ic->onspot_preedit_length;
+    pcb.todo.draw.text = &text;
+
+    text.feedback = feedback;
+
+    if (len > 0) {
+        Xutf8TextListToTextProperty (GDK_DISPLAY (), (char **)&preedit_string, 1, XCompoundTextStyle, &tp);
+        text.encoding_is_wchar = 0;
+        text.length = strlen ((char*)tp.value);
+        text.string.multi_byte = (char*)tp.value;
+        IMCallCallback (xims, (XPointer) & pcb);
+        XFree (tp.value);
+    } else {
+        text.encoding_is_wchar = 0;
+        text.length = 0;
+        text.string.multi_byte = "";
+        IMCallCallback (xims, (XPointer) & pcb);
+        len = 0;
+    }
+    x11ic->onspot_preedit_length = len;
+}
 
 int
 _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
@@ -195,7 +312,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 
     g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
 
-    ibus_im_client_set_capabilities (_client, x11ic->ibus_ic, IBUS_CAP_FOCUS);
+    ibus_im_client_set_capabilities (_client, x11ic->ibus_ic, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
 
     g_hash_table_insert (_x11_ic_table, (gpointer)x11ic->icid, (gpointer)x11ic);
     x11ic->conn->clients = g_list_append (x11ic->conn->clients, (gpointer)x11ic);
@@ -542,12 +659,10 @@ _client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *st
     X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
     g_return_if_fail (x11ic != NULL);
 
-    char *clist[1];
     XTextProperty tp;
     IMCommitStruct cms = {0};
 
-    clist[0] = (gchar *)string;
-    Xutf8TextListToTextProperty (GDK_DISPLAY (), clist, 1, XCompoundTextStyle, &tp);
+    Xutf8TextListToTextProperty (GDK_DISPLAY (), (char **)&string, 1, XCompoundTextStyle, &tp);
 
     cms.major_code = XIM_COMMIT;
     cms.icid = x11ic->icid;
@@ -569,33 +684,84 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
     _xim_forward_gdk_event (&(event->key), x11ic);
 }
 
-#if 0
+static void
+_update_preedit (X11IC *x11ic)
+{
+    if (x11ic->preedit_visible == FALSE && x11ic->preedit_started == TRUE) {
+        _xim_preedit_callback_draw (_xims, x11ic, "");
+        _xim_preedit_callback_done (_xims, x11ic);
+        x11ic->preedit_started = FALSE;
+    }
+
+    if (x11ic->preedit_visible == TRUE && x11ic->preedit_started == FALSE) {
+        _xim_preedit_callback_start (_xims, x11ic);
+        x11ic->preedit_started = TRUE;
+    }
+    if (x11ic->preedit_visible == TRUE) {
+        _xim_preedit_callback_draw (_xims, x11ic, x11ic->preedit_string);
+    }
+}
+
 static void
 _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
     PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
 {
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    if (x11ic->preedit_string) {
+        g_free(x11ic->preedit_string);
+    }
+    x11ic->preedit_string = g_strdup(string);
+
+    if (x11ic->preedit_attrs) {
+        pango_attr_list_unref (x11ic->preedit_attrs);
+    }
+    x11ic->preedit_attrs = pango_attr_list_ref(attrs);
+
+    x11ic->preedit_cursor = cursor_pos;
+    x11ic->preedit_visible = visible;
+
+    _update_preedit (x11ic);
 }
 
 static void
 _client_show_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
 {
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    x11ic->preedit_visible = TRUE;
+    _update_preedit (x11ic);
 }
 
 static void
 _client_hide_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
 {
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    x11ic->preedit_visible = FALSE;
+    _update_preedit (x11ic);
 }
 
 static void
 _client_enabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
 {
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    _xim_preedit_start (_xims, x11ic);
 }
 
 static void
 _client_disabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
 {
+    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
+    g_return_if_fail (x11ic != NULL);
+
+    _xim_preedit_end (_xims, x11ic);
 }
-#endif
 
 static void
 _init_ibus_client (void)
@@ -623,7 +789,6 @@ _init_ibus_client (void)
     g_signal_connect (_client, "forward-event",
                         G_CALLBACK (_client_forward_event_cb), NULL);
 
-#if 0
     g_signal_connect (_client, "update-preedit",
                         G_CALLBACK (_client_update_preedit_cb), NULL);
     g_signal_connect (_client, "show-preedit",
@@ -634,7 +799,6 @@ _init_ibus_client (void)
                         G_CALLBACK (_client_enabled_cb), NULL);
     g_signal_connect (_client, "disabled",
                         G_CALLBACK (_client_disabled_cb), NULL);
-#endif
 }
 
 static void
