@@ -321,7 +321,10 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
                 (gconstpointer)(unsigned long)call_data->icid);
     x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
 
+    g_free (x11ic->preedit_string);
+    pango_attr_list_unref (x11ic->preedit_attrs);
     g_free (x11ic->ibus_ic);
+
     g_slice_free (X11IC, x11ic);
 
     return 1;
@@ -431,6 +434,8 @@ _free_ic (gpointer data, gpointer user_data)
 
     g_return_if_fail (x11ic != NULL);
 
+    g_free (x11ic->preedit_string);
+    pango_attr_list_unref (x11ic->preedit_attrs);
     g_free (x11ic->ibus_ic);
 
     /* Remove the IC from g_client dictionary */
