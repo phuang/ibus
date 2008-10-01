@@ -156,52 +156,29 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
     XIMText text;
     XTextProperty tp;
 
-    static XIMFeedback *feedback = NULL;
-    static guint feedback_len = 0;
-
+    static XIMFeedback *feedback;
+    static gint feedback_len = 0;
     guint i, len;
 
     if (preedit_string == NULL)
         return;
 
     len = g_utf8_strlen (preedit_string, -1);
-    len = strlen (preedit_string);
-
-    g_debug ("len=%d, onspot_len=%d", len, x11ic->onspot_preedit_length);
 
     if (len + 1 > feedback_len) {
-        feedback_len = (len  + 1 + 63) & ~63;
-        // feedback_len = len + 1;
-        if (feedback == NULL) {
-            feedback = (XIMFeedback *)g_alloca (sizeof (XIMFeedback) * feedback_len);
+        feedback_len = (len + 1 + 63) & ~63;
+        if (feedback) {
+            feedback = g_renew (XIMFeedback, feedback, feedback_len);
         }
         else {
-            feedback = (XIMFeedback *)g_realloc (feedback, sizeof (XIMFeedback) * feedback_len);
+            feedback = g_new (XIMFeedback, feedback_len);
         }
     }
 
-    for (i = 0; i < feedback_len; i++) {
+    for (i = 0; i < len; i++) {
         feedback[i] = XIMUnderline;
     }
-    feedback[feedback_len] = 0;
-
-#if 0
-    for (i = 0; i < attrs.size (); ++i) {
-        attr = 0;
-        if (attrs [i].get_type () == SCIM_ATTR_DECORATE) {
-            if (attrs [i].get_value () == SCIM_ATTR_DECORATE_REVERSE)
-                attr = XIMReverse;
-            else if (attrs [i].get_value () == SCIM_ATTR_DECORATE_HIGHLIGHT)
-                attr = XIMHighlight;
-        }
-        for (j = attrs [i].get_start (); j < attrs [i].get_end () && j < len; ++j)
-            feedback [j] |= attr;
-    }
-
-    for (i = 0; i < len; ++i)
-        if (!feedback [i])
-            feedback [i] = XIMUnderline;
-#endif
+    feedback[len] = 0;
 
     pcb.major_code = XIM_PREEDIT_DRAW;
     pcb.connect_id = x11ic->connect_id;
