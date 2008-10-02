@@ -46,6 +46,7 @@
 #endif
 
 #include "ibusmarshalers.h"
+#include "ibusattribute.h"
 #include "ibusimclient.h"
 #define IBUS_NAME  "org.freedesktop.IBus"
 #define IBUS_IFACE "org.freedesktop.IBus"
@@ -269,7 +270,7 @@ ibus_im_client_class_init     (IBusIMClientClass *klass)
             G_TYPE_NONE, 5,
             G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
-            PANGO_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_INT | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN | G_SIGNAL_TYPE_STATIC_SCOPE
             );
@@ -1054,7 +1055,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
 
     gchar *ic = NULL;
     gchar *string = NULL;
-    PangoAttrList *attrs = NULL;
+    IBusAttrList *attrs = NULL;
     int cursor = 0;
     gboolean visible = FALSE;
 
@@ -1095,10 +1096,10 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
             return;
         }
 
-        attrs = pango_attr_list_new ();
+        attrs = ibus_attr_list_new ();
 
         while ((sub_type = dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID)) {
-            PangoAttribute *attr;
+            IBusAttribute *attr;
             DBusMessageIter sub_sub_iter;
             guint *values = NULL;
             gint length = 0;
@@ -1112,31 +1113,17 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
 
             switch (values[0]) {
             case 1: /* Underline */
-                attr = pango_attr_underline_new (values[1]);
-                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
-                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
-                pango_attr_list_insert (attrs, attr);
+                attr = ibus_attr_underline_new (values[1], values[2], values[3]);
+                ibus_attr_list_append (attrs, attr);
                 break;
 
             case 2: /* Foreground Color */
-                attr = pango_attr_foreground_new (
-                                (values[1] & 0xff0000) >> 8,
-                                (values[1] & 0x00ff00),
-                                (values[1] & 0x0000ff) << 8
-                                );
-                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
-                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
-                pango_attr_list_insert (attrs, attr);
+                attr = ibus_attr_foreground_new (values[1], values[2], values[3]);
+                ibus_attr_list_append (attrs, attr);
                 break;
             case 3: /* Background Color */
-                attr = pango_attr_background_new (
-                                (values[1] & 0xff0000) >> 8,
-                                (values[1] & 0x00ff00),
-                                (values[1] & 0x0000ff) << 8
-                                );
-                attr->start_index = g_utf8_offset_to_pointer (string, values[2]) - string;
-                attr->end_index = g_utf8_offset_to_pointer (string, values[3]) - string;
-                pango_attr_list_insert (attrs, attr);
+                attr = ibus_attr_background_new (values[1], values[2], values[3]);
+                ibus_attr_list_append (attrs, attr);
                 break;
             default:
                 g_warning ("Unkown type attribute type = %d", values[0]);
@@ -1152,7 +1139,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_INT32) {
         g_warning ("The 4th argument of UpdatePreedit signal must be an Int32 %c", type);
-        pango_attr_list_unref (attrs);
+        ibus_attr_list_unref (attrs);
         return;
     }
     dbus_message_iter_get_basic (&iter, &cursor);
@@ -1161,15 +1148,14 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_BOOLEAN) {
         g_warning ("The 4th argument of UpdatePreedit signal must be an Int32 %c", type);
-        pango_attr_list_unref (attrs);
+        ibus_attr_list_unref (attrs);
         return;
     }
     dbus_message_iter_get_basic (&iter, &visible);
     dbus_message_iter_next (&iter);
     g_signal_emit (client, client_signals[UPDATE_PREEDIT], 0,
                 ic, string, attrs, cursor, visible);
-    pango_attr_list_unref (attrs);
-
+    ibus_attr_list_unref (attrs);
 }
 
 static void

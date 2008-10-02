@@ -24,6 +24,7 @@
 #include <sys/time.h>
 #include <sys/un.h>
 #include "ibusimcontext.h"
+#include "ibusattribute.h"
 #include "ibusimclient.h"
 
 /* IBusIMContextPriv */
@@ -584,7 +585,7 @@ _client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event
 
 static void
 _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
-    PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
+    IBusAttrList *attr_list, gint cursor_pos, gboolean visible, gpointer user_data)
 {
     IBusIMContext *context = g_hash_table_lookup (_ic_table, ic);
     g_return_if_fail (context != NULL);
@@ -596,13 +597,40 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
     }
     if (priv->preedit_attrs) {
         pango_attr_list_unref (priv->preedit_attrs);
+        priv->preedit_attrs = NULL;
     }
 
     priv->preedit_string = g_strdup (string);
-    priv->preedit_attrs = pango_attr_list_ref (attrs);
+    if (attr_list) {
+        guint i;
+        priv->preedit_attrs = pango_attr_list_new ();
+        for (i = 0; ; i++) {
+            IBusAttribute *attr = ibus_attr_list_get (attr_list, i);
+            if (attr == NULL) {
+                break;
+            }
+
+            PangoAttribute *pango_attr;
+            switch (attr->type) {
+            case IBUS_ATTR_TYPE_UNDERLINE:
+                pango_attr = pango_attr_underline_new (attr->value);
+                break;
+            case IBUS_ATTR_TYPE_FOREGROUND:
+                pango_attr = pango_attr_foreground_new ((attr->value & 0xff0000) >> 8,
+                                        (attr->value & 0x00ff00), (attr->value & 0x0000ff) << 8);
+            case IBUS_ATTR_TYPE_BACKGROUND:
+                pango_attr = pango_attr_background_new ((attr->value & 0xff0000) >> 8,
+                                        (attr->value & 0x00ff00), (attr->value & 0x0000ff) << 8);
+            default:
+                continue;
+            }
+            pango_attr->start_index = g_utf8_offset_to_pointer (string, attr->start_index) - string;
+            pango_attr->end_index = g_utf8_offset_to_pointer (string, attr->end_index) - string;
+            pango_attr_list_insert (priv->preedit_attrs, pango_attr);
+        }
+    }
     priv->preedit_cursor_pos = cursor_pos;
     priv->preedit_visible = visible;
-
     g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
