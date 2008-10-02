@@ -616,11 +616,17 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
                 pango_attr = pango_attr_underline_new (attr->value);
                 break;
             case IBUS_ATTR_TYPE_FOREGROUND:
-                pango_attr = pango_attr_foreground_new ((attr->value & 0xff0000) >> 8,
-                                        (attr->value & 0x00ff00), (attr->value & 0x0000ff) << 8);
+                pango_attr = pango_attr_foreground_new (
+                                        ((attr->value & 0xff0000) >> 8) | 0xff,
+                                        ((attr->value & 0x00ff00)) | 0xff,
+                                        ((attr->value & 0x0000ff) << 8) | 0xff);
+                break;
             case IBUS_ATTR_TYPE_BACKGROUND:
-                pango_attr = pango_attr_background_new ((attr->value & 0xff0000) >> 8,
-                                        (attr->value & 0x00ff00), (attr->value & 0x0000ff) << 8);
+                pango_attr = pango_attr_background_new (
+                                        ((attr->value & 0xff0000) >> 8) | 0xff,
+                                        ((attr->value & 0x00ff00)) | 0xff,
+                                        ((attr->value & 0x0000ff) << 8) | 0xff);
+                break;
             default:
                 continue;
             }
