@@ -1115,7 +1115,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
             case IBUS_ATTR_TYPE_UNDERLINE:  /* Underline */
             case IBUS_ATTR_TYPE_FOREGROUND: /* Foreground Color */
             case IBUS_ATTR_TYPE_BACKGROUND: /* Background Color */
-                attr = ibus_attr_new (values[0], values[1], values[2], values[3]);
+                attr = ibus_attribute_new (values[0], values[1], values[2], values[3]);
                 ibus_attr_list_append (attrs, attr);
                 break;
             default:
