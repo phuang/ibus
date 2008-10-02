@@ -203,7 +203,7 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
             default:
                 continue;
             }
-            for (j = ibus_attr->start_index; j <= ibus_attr->end_index; j++) {
+            for (j = ibus_attr->start_index; j < ibus_attr->end_index; j++) {
                 feedback[j] |= attr;
             }
         }
