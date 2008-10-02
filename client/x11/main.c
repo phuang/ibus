@@ -44,6 +44,7 @@
         g_debug (fmt, args); \
     }
 
+#include <ibusattribute.h>
 #include <ibusimclient.h>
 #include "gdk-private.h"
 
@@ -65,7 +66,7 @@ struct _X11IC {
     GdkRectangle    preedit_area;
 
     gchar           *preedit_string;
-    PangoAttrList   *preedit_attrs;
+    IBusAttrList    *preedit_attrs;
     gint            preedit_cursor;
     gboolean        preedit_visible;
     gboolean        preedit_started;
@@ -150,7 +151,7 @@ _xim_preedit_callback_done (XIMS xims, const X11IC *x11ic)
 
 
 static void
-_xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string)
+_xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string, IBusAttrList *attr_list)
 {
     IMPreeditCBStruct pcb;
     XIMText text;
@@ -158,7 +159,7 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
 
     static XIMFeedback *feedback;
     static gint feedback_len = 0;
-    guint i, len;
+    guint j, i, len;
 
     if (preedit_string == NULL)
         return;
@@ -176,7 +177,42 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
     }
 
     for (i = 0; i < len; i++) {
-        feedback[i] = XIMUnderline;
+        feedback[i] = 0;
+    }
+
+    if (attr_list != NULL) {
+        for (i = 0;; i++) {
+            XIMFeedback attr = 0;
+            IBusAttribute *ibus_attr = ibus_attr_list_get (attr_list, i);
+            if (ibus_attr == NULL) {
+                break;
+            }
+            switch (ibus_attr->type) {
+            case IBUS_ATTR_TYPE_UNDERLINE:
+                if (ibus_attr->value == IBUS_ATTR_UNDERLINE_SINGLE) {
+                    attr = XIMUnderline;
+                }
+                break;
+            case IBUS_ATTR_TYPE_BACKGROUND:
+                {
+                    if (ibus_attr->value != 0xffffff) {
+                        attr = XIMReverse;
+                    }
+                    break;
+                }
+            default:
+                continue;
+            }
+            for (j = ibus_attr->start_index; j <= ibus_attr->end_index; j++) {
+                feedback[j] |= attr;
+            }
+        }
+    }
+
+    for (i = 0; i < len; i++) {
+        if (feedback[i] == 0) {
+            feedback[i] = XIMUnderline;
+        }
     }
     feedback[len] = 0;
 
@@ -322,7 +358,7 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
     x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
 
     g_free (x11ic->preedit_string);
-    pango_attr_list_unref (x11ic->preedit_attrs);
+    ibus_attr_list_unref (x11ic->preedit_attrs);
     g_free (x11ic->ibus_ic);
 
     g_slice_free (X11IC, x11ic);
@@ -435,7 +471,7 @@ _free_ic (gpointer data, gpointer user_data)
     g_return_if_fail (x11ic != NULL);
 
     g_free (x11ic->preedit_string);
-    pango_attr_list_unref (x11ic->preedit_attrs);
+    ibus_attr_list_unref (x11ic->preedit_attrs);
     g_free (x11ic->ibus_ic);
 
     /* Remove the IC from g_client dictionary */
@@ -675,7 +711,7 @@ static void
 _update_preedit (X11IC *x11ic)
 {
     if (x11ic->preedit_visible == FALSE && x11ic->preedit_started == TRUE) {
-        _xim_preedit_callback_draw (_xims, x11ic, "");
+        _xim_preedit_callback_draw (_xims, x11ic, "", NULL);
         _xim_preedit_callback_done (_xims, x11ic);
         x11ic->preedit_started = FALSE;
     }
@@ -685,13 +721,13 @@ _update_preedit (X11IC *x11ic)
         x11ic->preedit_started = TRUE;
     }
     if (x11ic->preedit_visible == TRUE) {
-        _xim_preedit_callback_draw (_xims, x11ic, x11ic->preedit_string);
+        _xim_preedit_callback_draw (_xims, x11ic, x11ic->preedit_string, x11ic->preedit_attrs);
     }
 }
 
 static void
 _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
-    PangoAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
+    IBusAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
 {
     X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
     g_return_if_fail (x11ic != NULL);
@@ -702,9 +738,9 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
     x11ic->preedit_string = g_strdup(string);
 
     if (x11ic->preedit_attrs) {
-        pango_attr_list_unref (x11ic->preedit_attrs);
+        ibus_attr_list_unref (x11ic->preedit_attrs);
     }
-    x11ic->preedit_attrs = pango_attr_list_ref(attrs);
+    x11ic->preedit_attrs = ibus_attr_list_ref(attrs);
 
     x11ic->preedit_cursor = cursor_pos;
     x11ic->preedit_visible = visible;
