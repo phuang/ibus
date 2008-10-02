@@ -131,7 +131,6 @@ ibus_attr_list_ref (IBusAttrList *attr_list)
 void
 ibus_attr_list_unref (IBusAttrList *attr_list)
 {
-    g_debug ("%s", __FUNCTION__);
     if (attr_list == NULL) {
         return;
     }
