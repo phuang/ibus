@@ -20,25 +20,15 @@
 #ifndef __IBUS_ATTRIBUTE_H_
 #define __IBUS_ATTRIBUTE_H_
 
-#include <gtk/gtk.h>
+#include <glib-object.h>
+
 /*
  * Type macros.
  */
+#define IBUS_TYPE_ATTRIBUTE         (ibus_attribute_get_type ())
+#define IBUS_TYPE_ATTR_LIST         (ibus_attr_list_get_type ())
 
 /* define GOBJECT macros */
-#define IBUS_TYPE_IM_CLIENT             \
-    (ibus_im_client_get_type ())
-#define IBUS_IM_CLIENT(obj)             \
-    (GTK_CHECK_CAST ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClient))
-#define IBUS_IM_CLIENT_CLASS(klass)     \
-    (GTK_CHECK_CLASS_CAST ((klass), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
-#define IBUS_IS_IM_CLIENT(obj)          \
-    (GTK_CHECK_TYPE ((obj), IBUS_TYPE_IM_CLIENT))
-#define IBUS_IS_IM_CLIENT_CLASS(klass)  \
-    (GTK_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_IM_CLIENT))
-#define IBUS_IM_CLIENT_GET_CLASS(obj)   \
-    (GTK_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CLIENT, IBusIMClientClass))
-
 
 #define IBUS_ATTR_TYPE_UNDERLINE    1
 #define IBUS_ATTR_TYPE_FOREGROUND   2
@@ -60,16 +50,19 @@ struct _IBusAttribute {
     guint end_index;
 };
 
-struct _IBusAttribute {
-    
+struct _IBusAttrList {
+    gint   refcount; 
     GArray *attributes;
 };
 
+GType            ibus_attribute_get_type   ();
 IBusAttribute   *ibus_attribute_new        (guint       type,
                                             guint       value,
                                             guint       start_index,
                                             guint       end_index);
-void            *ibus_attribute_free       (IBusAttribute
+IBusAttribute   *ibus_attribute_copy       (IBusAttribute
+                                                       *attr);
+void             ibus_attribute_free       (IBusAttribute
                                                        *attr);
 IBusAttribute   *ibus_attr_underline_new   (guint       underline_type,
                                             guint       start_index,
@@ -80,6 +73,16 @@ IBusAttribute   *ibus_attr_foreground_new  (guint       color,
 IBusAttribute   *ibus_attr_background_new  (guint       color,
                                             guint       start_index,
                                             guint       end_index);
+
+GType            ibus_attr_list_get_type   ();
+IBusAttrList    *ibus_attr_list_new        ();
+IBusAttrList    *ibus_attr_list_copy       (IBusAttrList    *attr_list);
+IBusAttrList    *ibus_attr_list_ref        (IBusAttrList    *attr_list);
+void             ibus_attr_list_unref      (IBusAttrList    *attr_list);
+void             ibus_attr_list_append     (IBusAttrList    *attr_list,
+                                            IBusAttribute   *attr);
+IBusAttribute   *ibus_attr_list_get        (IBusAttrList    *attr_list,
+                                            guint           index);
 
 
 G_END_DECLS

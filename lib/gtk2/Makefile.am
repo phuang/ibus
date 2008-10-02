@@ -34,6 +34,8 @@ libibus_gtk_la_SOURCES = \
 	ibusmarshalers.c \
 	ibusimclient.h \
 	ibusimclient.c \
+	ibusattribute.h \
+	ibusattribute.c \
 	$(NULL)
 libibus_gtk_la_CFLAGS = \
 	@X11_CFLAGS@ \
