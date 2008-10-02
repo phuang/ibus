@@ -1112,26 +1112,17 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
             }
 
             switch (values[0]) {
-            case 1: /* Underline */
-                attr = ibus_attr_underline_new (values[1], values[2], values[3]);
-                ibus_attr_list_append (attrs, attr);
-                break;
-
-            case 2: /* Foreground Color */
-                attr = ibus_attr_foreground_new (values[1], values[2], values[3]);
-                ibus_attr_list_append (attrs, attr);
-                break;
-            case 3: /* Background Color */
-                attr = ibus_attr_background_new (values[1], values[2], values[3]);
+            case IBUS_ATTR_TYPE_UNDERLINE:  /* Underline */
+            case IBUS_ATTR_TYPE_FOREGROUND: /* Foreground Color */
+            case IBUS_ATTR_TYPE_BACKGROUND: /* Background Color */
+                attr = ibus_attr_new (values[0], values[1], values[2], values[3]);
                 ibus_attr_list_append (attrs, attr);
                 break;
             default:
                 g_warning ("Unkown type attribute type = %d", values[0]);
-
             }
 
             dbus_message_iter_next (&sub_iter);
-
         }
     }
     dbus_message_iter_next (&iter);
