@@ -35,9 +35,11 @@ ibus_attribute_get_type ()
 IBusAttribute *
 ibus_attribute_new (guint type, guint value, guint start_index, guint end_index)
 {
-    g_return_val_if_fail (type == IBUS_ATTR_TYPE_UNDERLINE ||
+    g_return_val_if_fail (
+        type == IBUS_ATTR_TYPE_UNDERLINE  ||
         type == IBUS_ATTR_TYPE_FOREGROUND ||
         type == IBUS_ATTR_TYPE_BACKGROUND, NULL);
+
     IBusAttribute *attr = g_slice_new (IBusAttribute);
     attr->type = type;
     attr->value = value;
@@ -63,10 +65,12 @@ ibus_attribute_free (IBusAttribute *attr)
 IBusAttribute *
 ibus_attr_underline_new (guint underline_type, guint start_index, guint end_index)
 {
-    g_return_val_if_fail (underline_type == IBUS_ATTR_UNDERLINE_NONE ||
+    g_return_val_if_fail (
+        underline_type == IBUS_ATTR_UNDERLINE_NONE   ||
         underline_type == IBUS_ATTR_UNDERLINE_SINGLE ||
         underline_type == IBUS_ATTR_UNDERLINE_DOUBLE ||
         underline_type == IBUS_ATTR_UNDERLINE_LOW, NULL);
+
     return ibus_attribute_new (IBUS_ATTR_TYPE_UNDERLINE, underline_type, start_index, end_index);
 }
 
