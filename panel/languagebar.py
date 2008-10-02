@@ -67,7 +67,7 @@ class LanguageBar(gtk.Toolbar):
             workarea = root.property_get("_NET_WORKAREA")[2]
             right, bottom = workarea[2], workarea[3]
         except:
-            right, bottom = 640, 480
+            right, bottom = root.get_size()
         self.__position = right - 200, bottom - 40
         self.__toplevel.move(*self.__position)
 
