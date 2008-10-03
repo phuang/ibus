@@ -613,11 +613,9 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
     case XIM_PREEDIT_START_REPLY:
     case XIM_PREEDIT_CARET_REPLY:
     case XIM_SYNC_REPLY:
-        return 1;
     default:
-        break;
+        return 0;
     }
-    return 1;
 }
 
 
