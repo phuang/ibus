@@ -41,6 +41,7 @@ ibus_attribute_new (guint type, guint value, guint start_index, guint end_index)
         type == IBUS_ATTR_TYPE_BACKGROUND, NULL);
 
     IBusAttribute *attr = g_slice_new (IBusAttribute);
+
     attr->type = type;
     attr->value = value;
     attr->start_index = start_index;
@@ -117,7 +118,7 @@ ibus_attr_list_copy (IBusAttrList *attr_list)
         if (attr == NULL) {
             break;
         }
-        ibus_attr_list_append (new_list, attr);
+        ibus_attr_list_append (new_list, ibus_attribute_copy (attr));
     }
     return new_list;
 }
@@ -138,6 +139,7 @@ ibus_attr_list_unref (IBusAttrList *attr_list)
     if (attr_list == NULL) {
         return;
     }
+
     attr_list->refcount --;
     if (attr_list->refcount <= 0) {
         guint i;
