@@ -255,15 +255,14 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     guint32 attrs = 1;
 
     g_return_val_if_fail (x11ic != NULL, 0);
-#define _is_attr(a, b)    (g_strcmp0(a, b->name) == 0)
     for (i=0; i< (int) call_data->ic_attr_num; ++i, ++ic_attr) {
-        if (_is_attr (XNInputStyle, ic_attr)) {
+        if (g_strcmp0 (XNInputStyle, ic_attr->name) == 0) {
             x11ic->input_style = *(gint32 *) ic_attr->value;
         }
-        else if (_is_attr (XNClientWindow, ic_attr)) {
+        else if (g_strcmp0 (XNClientWindow, ic_attr->name) == 0) {
             x11ic->client_window =  *(Window *) call_data->ic_attr[i].value;
         }
-        else if (_is_attr (XNFocusWindow, ic_attr)) {
+        else if (g_strcmp0 (XNFocusWindow, ic_attr) == 0) {
             x11ic->focus_window =  *(Window *) call_data->ic_attr[i].value;
         }
         else {
@@ -272,7 +271,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     }
 
     for (i=0; i< (int) call_data->preedit_attr_num; ++i, ++pre_attr) {
-        if (_is_attr (XNSpotLocation, pre_attr)) {
+        if (g_strcmp0 (XNSpotLocation, pre_attr->name) == 0) {
             x11ic->has_preedit_area = TRUE;
             x11ic->preedit_area.x = ((XPoint *)pre_attr->value)->x;
             x11ic->preedit_area.y = ((XPoint *)pre_attr->value)->y;
@@ -286,10 +285,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
         // g_debug ("Unkown status attribute: %s", sts_attr->name);
     }
 
-#undef _is_attr
-
     return attrs;
-
 }
 
 
