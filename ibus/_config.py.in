@@ -19,18 +19,17 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-from object import *
-from attribute import *
-from property import *
-from common import *
-from interface import *
-from exception import *
-from lookuptable import *
-from bus import *
-from lang import *
-from utility import *
-from engine import *
-from factory import *
-from panel import *
-from _config import *
+__all__ = (
+    "get_version",
+    "get_copyright",
+    "get_license"
+)
 
+def get_version():
+	return "@PACKAGE_VERSION@"
+
+def get_copyright():
+    return "Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>"
+
+def get_license():
+    return "LGPL"

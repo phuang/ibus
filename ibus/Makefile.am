@@ -42,12 +42,13 @@ ibus_PYTHON = \
 	property.py \
 	utility.py \
 	config.py \
+	_config.py \
 	$(NULL)
 
 ibusdir = @pkgpythondir@
 
 EXTRA_DIST = \
-	config.py.in \
+	_config.py.in \
 	$(NULL)
 
 CLEANFILES = \

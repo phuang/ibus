@@ -222,7 +222,7 @@ fi
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus.spec
-ibus/config.py
+ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
 daemon/Makefile
