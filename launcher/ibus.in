@@ -39,6 +39,7 @@ class Launcher(object):
         super(Launcher, self).__init__()
         self.__daemon_pid = 0
         self.__panel_pid = 0
+        self.__conf_pid = 0
         self.__x11_pid = 0
         self.__bus = None
 
@@ -66,6 +67,8 @@ class Launcher(object):
                 self.__x11_pid = 0
             elif pid == self.__panel_pid:
                 self.__panel_pid = 0
+            elif pid == self.__conf_pid:
+                self.__conf_pid = 0
         elif sig == signal.SIGTERM or sig == signal.SIGINT:
             sys.exit(1)
 
@@ -113,10 +116,32 @@ class Launcher(object):
 
         self.__bus.connect("destroy", self.__bus_destroy_cb)
 
-        self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
+        self.__conf_pid = self.__start_process(conf, [conf], "ibus-conf")
         self.__panel_pid = self.__start_process(panel, [panel], "ibus-panel")
-
+        self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
+        time.sleep(1)
+        while ibus.main_iteration(False):
+            pass
+        self.__launch_auto_load_engines()
         ibus.main()
+
+    def __launch_auto_load_engines(self):
+        engines = []
+        try:
+            engines = self.__bus.config_get_value("general", "preload_engines", None)
+            if not engines:
+                engines = []
+        except:
+            pass
+        for e in engines:
+            try:
+                lang, name = e.split(":")
+                self.__bus.register_start_engine(lang, name)
+            except:
+                import traceback
+                traceback.print_exc()
+
+
 
 if __name__ == "__main__":
     Launcher().run()

@@ -38,7 +38,8 @@ __all__ = (
         "CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT",
         "CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT",
         "main",
-        "main_quit"
+        "main_quit",
+        "main_iteration"
     )
 
 import os
@@ -100,12 +101,14 @@ CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT = []
 
 __mainloop = None
 
-def main():
+def __init_main_loop():
     global __mainloop
     if __mainloop == None:
         import gobject
         __mainloop = gobject.MainLoop()
 
+def main():
+    __init_main_loop()
     __mainloop.run()
 
 def main_quit():
@@ -113,3 +116,6 @@ def main_quit():
     if __mainloop:
         __mainloop.quit()
     
+def main_iteration(may_block=False):
+    __init_main_loop()
+    return __mainloop.get_context().iteration(may_block)

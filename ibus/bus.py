@@ -123,11 +123,16 @@ class Bus(ibus.Object):
         self.__ibus = self.__dbusconn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
         self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME, dbus.BUS_DAEMON_PATH)
         try:
-            unique_name = self.__dbus.get_name_owner(ibus.IBUS_CONFIG_NAME)
+            unique_name = self.get_name_owner(ibus.IBUS_CONFIG_NAME)
             self.__config = self.__dbusconn.get_object(unique_name, ibus.IBUS_CONFIG_PATH)
         except:
             self.__config = None
         self.__dbusconn.add_message_filter(self.__dbus_message_cb)
+        self.add_match(
+            "type='signal',"
+            "interface='" + dbus.BUS_DAEMON_IFACE + "',"
+            "member='NameOwnerChanged',"
+            "arg0='" + ibus.IBUS_CONFIG_NAME + "'")
 
     # define dbus methods
     def get_dbus(self):
@@ -144,6 +149,12 @@ class Bus(ibus.Object):
 
     def get_name_owner(self, name):
         return self.__dbus.GetNameOwner(name)
+
+    def add_match(self, rule):
+        return self.__dbus.AddMatch(rule)
+
+    def remove_match(self, rule):
+        return self.__dbus.RemoveMatch(rule)
 
     def get_dbusconn(self):
         return self.__dbusconn
@@ -200,7 +211,7 @@ class Bus(ibus.Object):
         return self.__ibus.GetInputContextStates(ic)
 
     def config_add_watch(self, section):
-        return self.__dbus.AddMatch(
+        return self.add_match(
                     "type='signal',"
                     "interface='" + ibus.IBUS_CONFIG_NAME + "',"
                     "member='ValueChanged',"
@@ -208,7 +219,7 @@ class Bus(ibus.Object):
                     )
 
     def config_remove_watch(self, section):
-        return self.__dbus.RemoveMatch(
+        return self.remove_match(
                     "type='signal',"
                     "interface='" + ibus.IBUS_CONFIG_NAME + "',"
                     "member='ValueChanged',"
@@ -252,10 +263,10 @@ class Bus(ibus.Object):
             args = message.get_args_list()
             if args[0] == ibus.IBUS_CONFIG_NAME:
                 if args[2] != "":
-                    self.__config = self.__dbusconn.get_object(ibus.IBUS_CONFIG_NAME, ibus.IBUS_CONFIG_PATH)
+                    self.__config = self.__dbusconn.get_object(args[2], ibus.IBUS_CONFIG_PATH)
                 else:
                     self.__config = None
-            
+            retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         # commit string signal
         elif message.is_signal(ibus.IBUS_IFACE, "CommitString"):
             args = message.get_args_list()
