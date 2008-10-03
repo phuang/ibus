@@ -90,33 +90,33 @@ class Setup(object):
         # keyboard shortcut
         # trigger
         shortcuts = self.__bus.config_get_value(
-                        ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
+                        "general", "keyboard_shortcut_trigger",
                         ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
         button = self.__xml.get_widget("button_trigger")
         entry = self.__xml.get_widget("entry_trigger")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("trigger"), ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER, entry)
+                    N_("trigger"), "general", "keyboard_shortcut_trigger", entry)
 
         # next engine
         shortcuts = self.__bus.config_get_value(
-                        ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                        "general", "keyboard_shortcut_next_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_next_engine")
         entry = self.__xml.get_widget("entry_next_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("next engine"), ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, entry)
+                    N_("next engine"), "general", "keyboard_shortcut_next_engine", entry)
 
         # prev engine
         shortcuts = self.__bus.config_get_value(
-                        ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE,
+                        "general", "keyboard_shortcut_prev_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_prev_engine")
         entry = self.__xml.get_widget("entry_prev_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("prev engine"), ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE, entry)
+                    N_("prev engine"), "general", "keyboard_shortcut_prev_engine", entry)
 
 
 
@@ -238,7 +238,7 @@ class Setup(object):
         column = gtk.TreeViewColumn("", renderer)
         self.__tree.append_column(column)
 
-    def __shortcut_button_clicked_cb(self, button, name, key, entry):
+    def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK)
         title = _("Select keyboard shortcut for %s") %  _(name)
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
@@ -253,7 +253,7 @@ class Setup(object):
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return
-        self.__bus.config_set_value(key, shortcuts)
+        self.__bus.config_set_value(section, name, shortcuts)
         entry.set_text("; ".join(shortcuts))
 
 
