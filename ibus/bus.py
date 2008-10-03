@@ -266,6 +266,7 @@ class Bus(ibus.Object):
                     self.__config = self.__dbusconn.get_object(args[2], ibus.IBUS_CONFIG_PATH)
                 else:
                     self.__config = None
+                self.emit("config-reloaded")
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         # commit string signal
         elif message.is_signal(ibus.IBUS_IFACE, "CommitString"):

@@ -42,6 +42,7 @@ class Launcher(object):
         self.__conf_pid = 0
         self.__x11_pid = 0
         self.__bus = None
+        self.__preload_engine_completed = False
 
     def __start_process(self, path, args, cmd):
         pid = 0
@@ -56,6 +57,9 @@ class Launcher(object):
     def __bus_destroy_cb(self, bus):
         self.__bus = None
         ibus.main_quit()
+
+    def __bus_config_reloaded_cb(self, bus):
+        self.__launch_auto_load_engines()
 
     def __signal_cb(self, sig, stack):
         if sig == signal.SIGCHLD:
@@ -115,22 +119,23 @@ class Launcher(object):
             sys.exit(1)
 
         self.__bus.connect("destroy", self.__bus_destroy_cb)
+        self.__bus.connect("config-reloaded", self.__bus_config_reloaded_cb)
 
         self.__conf_pid = self.__start_process(conf, [conf], "ibus-conf")
         self.__panel_pid = self.__start_process(panel, [panel], "ibus-panel")
         self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
-        time.sleep(1)
-        while ibus.main_iteration(False):
-            pass
-        self.__launch_auto_load_engines()
         ibus.main()
 
     def __launch_auto_load_engines(self):
+        if self.__preload_engine_completed:
+            return
         engines = []
         try:
             engines = self.__bus.config_get_value("general", "preload_engines", None)
             if not engines:
                 engines = []
+            else:
+                self.__preload_engine_completed = True
         except:
             pass
         for e in engines:
