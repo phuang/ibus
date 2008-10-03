@@ -31,7 +31,7 @@ IBUS_CONFIG_PATH = "/org/freedesktop/ibus/Config"
 import ibus
 from ibus import interface
 
-class PanelConfig(ibus.Object):
+class ConfigBase(ibus.Object):
     def __init__(self, bus):
         super(ConfigBase, self).__init__()
         self.__proxy = ConfigProxy(self, bus.get_dbusconn())
