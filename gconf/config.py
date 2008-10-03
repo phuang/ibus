@@ -30,11 +30,10 @@ except:
     from ibus import gconf
 import dbus
 import ibus
-from ibus import interface
 
 GCONF_IBUS_PATH = "/desktop/ibus"
 
-class Config(ibus.Object):
+class Config(ibus.ConfigBase):
     __gsignals__ = {
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -42,10 +41,8 @@ class Config(ibus.Object):
             (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
-    def __init__ (self, bus = None, path = None):
-        super(Config, self).__init__()
-        conn = bus.get_dbusconn() if bus != None else None
-        self.__proxy = ConfigProxy(self, conn, path)
+    def __init__ (self, bus):
+        super(Config, self).__init__(bus)
         self.__client = gconf.Client()
         self.__handler_id = self.__client.connect("value-changed", self.__value_changed_cb)
         self.__client.add_dir(GCONF_IBUS_PATH, gconf.CLIENT_PRELOAD_NONE)
@@ -63,12 +60,10 @@ class Config(ibus.Object):
         self.__client.set(key, value)
 
     def do_destroy(self):
-        if self.__proxy:
-            self.__proxy.Destriy()
-            self.__proxy = None
         if self.__client:
             self.__client.disconnect(self.__handler_id)
             self.__client = None
+        super(Config, self).do_destroy()
 
     def __to_py_value(self, value):
         if value.type == gconf.VALUE_STRING:
@@ -139,28 +134,8 @@ class Config(ibus.Object):
         section_name = key.replace(GCONF_IBUS_PATH + "/", "")
         section_name = section_name.rsplit("/", 1)
         if len(section_name) == 1:
-            self.emit("value-changed", "", section_name[0], value)
+            self.value_changed("", section_name[0], value)
         elif len(section_name) == 2:
-            self.emit("value-changed", section_name[0], section_name[1], value)
+            self.value_changed(section_name[0], section_name[1], value)
         else:
             print "Can not process %s" % key
-
-gobject.type_register(Config)
-
-class ConfigProxy(interface.IConfig):
-    def __init__ (self, config, conn, object_path):
-        super(ConfigProxy, self).__init__(conn, object_path)
-        self.__config = config
-        self.__config.connect("value-changed", lambda c, s, n, v: self.ValueChanged(s, n, v))
-
-    def GetValue(self, section, name):
-        return self.__config.get_value(section, name)
-
-    def SetValue(self, section, name, value):
-        self.__config.set_value(section, name, value)
-
-    def Destroy(self):
-        self.remove_from_connection()
-        if self.__config:
-            self.__config.destroy()
-            self.__config = None

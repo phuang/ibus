@@ -26,7 +26,6 @@ __all__ = (
 
 import gobject
 import ibus
-import defaultconfig
 
 class Config(ibus.Object):
     __gsignals__ = {
@@ -48,7 +47,7 @@ class Config(ibus.Object):
     def get_value(self, section, name, **kargs):
         return self.__config.GetValue(section, name, **kargs)
 
-    def set_value(self, key, value, **kargs):
+    def set_value(self, section, name, value, **kargs):
         return self.__config.GetValue(section, name, **kargs)
 
     def destroy(self):
@@ -75,7 +74,7 @@ class Config(ibus.Object):
 
 gobject.type_register(Config)
 
-class DefaultConfig(ibus.Object):
+class DummyConfig(ibus.Object):
     __gsignals__ = {
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -84,47 +83,23 @@ class DefaultConfig(ibus.Object):
     }
 
     def __init__(self):
-        super(DefaultConfig, self).__init__()
-        self.__config = defaultconfig.Config()
-        self.__handler_id = self.__config.connect("value-changed", self.__value_changed_cb)
+        super(DummyConfig, self).__init__()
+        self.__values = dict()
 
     def get_value(self, section, name, **kargs):
-        reply_handler = kargs.get("reply_handler", None)
-        error_handler = kargs.get("error_handler", None)
-        try:
-            value = self.__config.get_value(section, name)
-            if reply_handler:
-                reply_handler(value)
-            else:
-                return value
-        except Exception, e:
-            if error_handler:
-                error_handler(e)
-            else:
-                raise e
+        value = self.__values.get((section, name), None)
+        if value == None:
+            raise ibus.IBusException("Can not get config section=%s name=%s" % (section, name))
+        return value
 
     def set_value(self, section, name, value, **kargs):
-        reply_handler = kargs.get("reply_handler", None)
-        error_handler = kargs.get("error_handler", None)
-        try:
-            self.__config.set_value(section, name, value)
-            if reply_handler:
-                reply_handler()
-            else:
-                return
-        except Exception, e:
-            if error_handler:
-                error_handler(e)
-            else:
-                raise e
-
-    def __value_changed_cb(self, config, section, name, value):
+        old_value = self.__values.get((section, name), None)
+        if value == old_value:
+            return
+        if value == None:
+            del self.__values[(section, name)]
+        else:
+            self.__values[(section, name)] = value
         self.emit("value-changed", section, name, value)
 
-    def do_destroy(self):
-        if self.__config:
-            self.__config.disconnect(self.__handler_id)
-            self.__config.destroy()
-            self.__config = None
-
-gobject.type_register(DefaultConfig)
+gobject.type_register(DummyConfig)

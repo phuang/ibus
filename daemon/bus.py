@@ -26,7 +26,7 @@ from ibus import modifier
 from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from panel import Panel, DummyPanel
-from config import Config, DefaultConfig
+from config import Config, DummyConfig
 from register import Register
 import _dbus
 
@@ -43,13 +43,11 @@ class IBus(ibus.Object):
         self.__panel_handlers = list()
         self.__install_panel_handlers()
 
-        self.__config = DefaultConfig()
+        self.__config = DummyConfig()
         self.__config_handlers = list()
         self.__install_config_handlers()
 
         self.__register = Register()
-
-        self.__config_watch = dict()
 
         self.__focused_context = None
         self.__last_focused_context = None
@@ -71,8 +69,10 @@ class IBus(ibus.Object):
         self.__default_factory = None
 
     def __dbus_name_owner_changed_cb(self, bus, name, old_name, new_name):
-        if name == ibus.panel.IBUS_PANEL_NAME:
+        if name == ibus.IBUS_PANEL_NAME:
             self.__panel_changed(new_name)
+        elif name == ibus.IBUS_CONFIG_NAME:
+            self.__config_changed(new_name)
 
     def __factory_manager_default_factory_changed_cb(self, manager, factory):
         if self.__default_factory != factory:
@@ -102,8 +102,6 @@ class IBus(ibus.Object):
         self.__connections.append(conn)
 
     def __conn_destroy_cb(self, conn):
-        for key in conn.config_get_watch():
-            self.config_remove_watch(key, conn)
         self.__connections.remove(conn)
 
     ##########################################################
@@ -453,20 +451,16 @@ class IBus(ibus.Object):
     ##########################################################
     # methods for panel
     ##########################################################
-    def register_config(self, object_path, replace, conn):
-        if not isinstance(self.__config, DefaultConfig) and replace == False:
-            raise ibus.Exception("has have a config!")
+    def __config_changed(self, bus_name):
+        ibusconn = _dbus.bus.get_connection_by_name(bus_name)
         self.__uninstall_config_handlers()
         self.__config.destroy()
-        self.__config = Config(conn, object_path)
+        self.__config = Config(ibusconn, ibus.IBUS_CONFIG_PATH)
         self.__install_config_handlers()
-        for conn in self.__connections:
-            conn.emit_dbus_signal("ConfigReload")
 
     def __install_config_handlers(self):
         signals = (
-            ("value-changed", self.__config_value_changed_cb),
-            ("destroy", self.__config_destroy_cb)
+            ("destroy", self.__config_destroy_cb),
         )
         for signal, handler in signals:
             id = self.__config.connect(signal, handler)
@@ -475,29 +469,6 @@ class IBus(ibus.Object):
     def __uninstall_config_handlers(self):
         map(lambda id:self.__config.disconnect(id), self.__config_handlers)
         self.__config_handlers = list()
-
-    def config_set_value(self, section, name, value, conn, **kargs):
-        return self.__config.set_value(section, name, value, **kargs)
-
-    def config_get_value(self, section, name, conn, **kargs):
-        return self.__config.get_value(section, name, **kargs)
-
-    def config_add_watch(self, key, conn):
-        if not key.endswith("/"):
-            key += "/"
-
-        if conn.config_add_watch(key):
-            if key not in self.__config_watch:
-                self.__config_watch[key] = set()
-            self.__config_watch[key].add(conn)
-
-    def config_remove_watch(self, key, conn):
-        if not key.endswith("/"):
-            key += "/"
-
-        if conn.config_remove_watch(key):
-            if key in self.__config_watch:
-                self.__config_watch[key].remove(conn)
 
     def __parse_shortcut_string(self, string):
         keys = string.split("+")
@@ -511,26 +482,6 @@ class IBus(ibus.Object):
                 keyval = 0
 
         return keyval, keymask
-
-    def __config_value_changed_cb(self, config, section, name, value):
-        for _dir in self.__config_watch.keys():
-            if key.startswith(_dir):
-                for conn in self.__config_watch[_dir]:
-                    conn.emit_dbus_signal("ConfigValueChanged", key, value)
-
-        # check daemon configure
-        if key == ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER:
-            self.__shortcut_trigger = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
-                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
-        elif key == ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE:
-            self.__shortcut_next_engine = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
-        elif key == ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE:
-            self.__shortcut_prev_engine = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
 
     def __config_destroy_cb(self, config):
         if config == self.__config:
@@ -656,22 +607,6 @@ class IBusProxy(ibus.IIBus):
 
     def GetInputContextStates(self, ic, dbusconn):
         return self.__ibus.get_input_context_states(ic, self.__conn)
-
-    def ConfigAddWatch(self, section, dbusconn):
-        return self.__ibus.config_add_watch(section, self.__conn)
-
-    def ConfigRemoveWatch(self, section, dbusconn):
-        return self.__ibus.config_remove_watch(section, self.__conn)
-
-    def ConfigSetValue(self, section, name, value, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_set_value(section, name, value, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
-
-    def ConfigGetValue(self, section, name, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_get_value(section, name, self.__conn,
-                reply_handler = reply_cb,
-                error_handler = error_cb)
 
     def RegisterListEngines(self, dbusconn):
         return self.__ibus.register_list_engines(self.__conn)

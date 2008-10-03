@@ -37,22 +37,22 @@ class IBusServer(dbus.server.Server):
         super(IBusServer, self).__init__()
 
         self.__ibus = IBus()
-        self.__launch_auto_load_engines()
+    #    self.__launch_auto_load_engines()
 
-    def __launch_auto_load_engines(self):
-        engines = []
-        try:
-            engines = self.__ibus.config_get_value("general", "preload_engines", None)
-            if not engines:
-                engines = []
-        except:
-            pass
-        for e in engines:
-            try:
-                lang, name = e.split(":")
-                self.__ibus.register_start_engine(lang, name, None)
-            except:
-                pass
+    # def __launch_auto_load_engines(self):
+    #     engines = []
+    #     try:
+    #         engines = self.__ibus.config_get_value("general", "preload_engines", None)
+    #         if not engines:
+    #             engines = []
+    #     except:
+    #         pass
+    #     for e in engines:
+    #         try:
+    #             lang, name = e.split(":")
+    #             self.__ibus.register_start_engine(lang, name, None)
+    #         except:
+    #             pass
 
     def connection_added(self, dbusconn):
         conn = Connection(dbusconn)

@@ -41,7 +41,6 @@ class Connection(ibus.Object):
         self.__dbusconn = dbusconn
         self.__unique_name = ""
         self.__names = set()
-        self.__config_watch = set()
         dbusconn.add_message_filter(self.message_filter_cb)
 
     def message_filter_cb(self, dbusconn, message):
@@ -73,21 +72,6 @@ class Connection(ibus.Object):
 
     def do_destroy(self):
         self.__dbusconn = None
-
-    def config_add_watch(self, key):
-        if key in self.__config_watch:
-            return False
-        self.__config_watch.add(key)
-        return True
-
-    def config_remove_watch(self, key):
-        if key not in self.__config_watch:
-            return False
-        self.__config_watch.remove(key)
-        return True
-
-    def config_get_watch(self):
-        return self.__config_watch.copy()
 
     def get_dbusconn(self):
         return self.__dbusconn

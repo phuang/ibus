@@ -1,1 +1,0 @@
-../gconf/config.py

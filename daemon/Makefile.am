@@ -21,7 +21,6 @@
 ibusdaemon_PYTHON = \
 	bus.py \
 	_dbus.py \
-	defaultconfig.py \
 	config.py \
 	connection.py \
 	contextmanager.py \

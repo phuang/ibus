@@ -77,10 +77,6 @@ class IIBus(dbus.service.Object):
     @method(in_signature = "ao")
     def UnregisterFactories(self, object_paths, dbusconn): pass
 
-    # methods for ibus config
-    @method(in_signature = "ob")
-    def RegisterConfig(self, object_path, replace, dbusconn): pass
-
     # general methods
     @method(out_signature = "av")
     def GetFactories(self, dbusconn): pass
@@ -93,18 +89,6 @@ class IIBus(dbus.service.Object):
 
     @method(in_signature = "s", out_signature = "sb")
     def GetInputContextStates(self, ic, dbusconn): pass
-
-    @method(in_signature = "s")
-    def ConfigAddWatch(self, section, dbusconn): pass
-
-    @method(in_signature = "s")
-    def ConfigRemoveWatch(self, section, dbusconn): pass
-
-    @async_method(in_signature = "ssv")
-    def ConfigSetValue(self, section, name, value, dbusconn, reply_cb, error_cb): pass
-
-    @async_method(in_signature = "ss", out_signature = "v")
-    def ConfigGetValue(self, section, name, dbusconn, reply_cb, error_cb): pass
 
     @method(out_signature = "a(sssssssb)")
     def RegisterListEngines(self, dbusconn): pass

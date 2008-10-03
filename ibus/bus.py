@@ -122,6 +122,11 @@ class Bus(ibus.Object):
         self.__dbusconn = dbus.connection.Connection(ibus.IBUS_ADDR)
         self.__ibus = self.__dbusconn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
         self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME, dbus.BUS_DAEMON_PATH)
+        try:
+            unique_name = self.__dbus.get_name_owner(ibus.IBUS_CONFIG_NAME)
+            self.__config = self.__dbusconn.get_object(unique_name, ibus.IBUS_CONFIG_PATH)
+        except:
+            self.__config = None
         self.__dbusconn.add_message_filter(self.__dbus_message_cb)
 
     # define dbus methods
@@ -195,21 +200,31 @@ class Bus(ibus.Object):
         return self.__ibus.GetInputContextStates(ic)
 
     def config_add_watch(self, section):
-        return self.__ibus.ConfigAddWatch(section)
+        return self.__dbus.AddMatch(
+                    "type='signal',"
+                    "interface='" + ibus.IBUS_CONFIG_NAME + "',"
+                    "member='ValueChanged',"
+                    "arg0='" + section + "'"
+                    )
 
     def config_remove_watch(self, section):
-        return self.__ibus.ConfigRemoveWatch(section)
+        return self.__dbus.RemoveMatch(
+                    "type='signal',"
+                    "interface='" + ibus.IBUS_CONFIG_NAME + "',"
+                    "member='ValueChanged',"
+                    "arg0='" + section + "'"
+                    )
 
     def config_set_value(self, section, name, value):
-        return self.__ibus.ConfigSetValue(section, name, value)
+        return self.__config.SetValue(section, name, value)
 
     def config_set_list(self, section, name, value, list_type):
         value = dbus.Array(value, signature = list_type)
-        return self.__ibus.ConfigSetValue(section, name, value)
+        return self.__config.SetValue(section, name, value)
 
     def config_get_value(self, section, name, default_value = None):
         try:
-            return self.__ibus.ConfigGetValue(section, name)
+            return self.__config.GetValue(section, name)
         except Exception, e:
             return default_value
 
@@ -232,8 +247,17 @@ class Bus(ibus.Object):
         return self.__ibus.Kill()
 
     def __dbus_message_cb(self, conn, message):
+        # name owner changed signal
+        if message.is_signal(dbus.BUS_DAEMON_IFACE, "NameOwnerChanged"):
+            args = message.get_args_list()
+            if args[0] == ibus.IBUS_CONFIG_NAME:
+                if args[2] != "":
+                    self.__config = self.__dbusconn.get_object(ibus.IBUS_CONFIG_NAME, ibus.IBUS_CONFIG_PATH)
+                else:
+                    self.__config = None
+            
         # commit string signal
-        if message.is_signal(ibus.IBUS_IFACE, "CommitString"):
+        elif message.is_signal(ibus.IBUS_IFACE, "CommitString"):
             args = message.get_args_list()
             ic, string = args[0:2]
             self.emit("commit-string", ic, string.encode("utf-8"))
@@ -331,6 +355,4 @@ class Bus(ibus.Object):
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         else:
             retval = dbus.lowlevel.HANDLER_RESULT_NOT_YET_HANDLED
-
         return retval
-
