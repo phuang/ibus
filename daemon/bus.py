@@ -60,13 +60,13 @@ class IBus(ibus.Object):
         self.__prev_key = None
 
         self.__shortcut_trigger = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER,
+                "general", "keyboard_shortcut_trigger",
                 ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
         self.__shortcut_next_engine = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                "general", "keyboard_shortcut_next_engine",
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         self.__shortcut_prev_engine = self.__load_config_shortcut(
-                ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE,
+                "general", "keyboard_shortcut_next_engine",
                 ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         self.__default_factory = None
 
@@ -79,14 +79,14 @@ class IBus(ibus.Object):
             self.__default_factory = factory
         if factory == None:
             return
-        self.__config.set_value("/general/default_engine", factory.get_object_path())
+        self.__config.set_value("general", "default_engine", factory.get_object_path())
 
-    def __load_config_shortcut(self, config_key, default_value):
+    def __load_config_shortcut(self, section, name, default_value):
 
         # load trigger
         shortcut_strings = default_value
         try:
-            shortcut_strings = self.__config.get_value(config_key)
+            shortcut_strings = self.__config.get_value(section, name)
         except:
             pass
         shortcuts = []
@@ -113,7 +113,7 @@ class IBus(ibus.Object):
         if self.__default_factory != None:
             return
         try:
-            factory_path = self.__config.get_value("/general/default_engine")
+            factory_path = self.__config.get_value("general", "default_engine")
             self.__default_factory = self.__factory_manager.get_factory(factory_path)
         except:
             pass
@@ -476,11 +476,11 @@ class IBus(ibus.Object):
         map(lambda id:self.__config.disconnect(id), self.__config_handlers)
         self.__config_handlers = list()
 
-    def config_set_value(self, key, value, conn, **kargs):
-        return self.__config.set_value(key, value, **kargs)
+    def config_set_value(self, section, name, value, conn, **kargs):
+        return self.__config.set_value(section, name, value, **kargs)
 
-    def config_get_value(self, key, conn, **kargs):
-        return self.__config.get_value(key, **kargs)
+    def config_get_value(self, section, name, conn, **kargs):
+        return self.__config.get_value(section, name, **kargs)
 
     def config_add_watch(self, key, conn):
         if not key.endswith("/"):
@@ -512,7 +512,7 @@ class IBus(ibus.Object):
 
         return keyval, keymask
 
-    def __config_value_changed_cb(self, config, key, value):
+    def __config_value_changed_cb(self, config, section, name, value):
         for _dir in self.__config_watch.keys():
             if key.startswith(_dir):
                 for conn in self.__config_watch[_dir]:

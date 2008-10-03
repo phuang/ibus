@@ -57,12 +57,6 @@ N_ = lambda a : a
     DATA_PRELOAD
 ) = range(9)
 
-CONFIG_PRELOAD_ENGINES = "/general/preload_engines"
-CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
-CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
-CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
-CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
-
 class Setup(object):
     def __flush_gtk_events(self):
         while gtk.events_pending():
@@ -113,6 +107,7 @@ class Setup(object):
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("next engine"), ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE, entry)
+
         # prev engine
         shortcuts = self.__bus.config_get_value(
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE,
@@ -128,30 +123,30 @@ class Setup(object):
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
         self.__combobox_lookup_table_orientation.set_active(
-            self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0))
+            self.__bus.config_get_value("panel", "lookup_table_orientation", 0))
         self.__combobox_lookup_table_orientation.connect("changed",
             self.__combobox_lookup_table_orientation_changed_cb)
 
         # auto hide
         self.__checkbutton_auto_hide = self.__xml.get_widget("checkbutton_auto_hide")
         self.__checkbutton_auto_hide.set_active(
-            self.__bus.config_get_value(CONFIG_PANEL_AUTO_HIDE, False))
+            self.__bus.config_get_value("panel", "auto_hide", False))
         self.__checkbutton_auto_hide.connect("toggled", self.__checkbutton_auto_hide_toggled_cb)
 
         # custom font
         self.__checkbutton_custom_font = self.__xml.get_widget("checkbutton_custom_font")
         self.__checkbutton_custom_font.set_active(
-            self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False))
+            self.__bus.config_get_value("panel", "use_custom_font", False))
         self.__checkbutton_custom_font.connect("toggled", self.__checkbutton_custom_font_toggled_cb)
 
         self.__fontbutton_custom_font = self.__xml.get_widget("fontbutton_custom_font")
-        if self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False):
+        if self.__bus.config_get_value("panel", "use_custom_font", False):
             self.__fontbutton_custom_font.set_sensitive(True)
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
         font_name = unicode(font_name, "utf-8")
-        font_name = self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
+        font_name = self.__bus.config_get_value("panel", "custom_font", font_name)
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
 
@@ -160,7 +155,7 @@ class Setup(object):
     def __init_bus(self):
         try:
             self.__bus = ibus.Bus()
-            self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
+            # self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
             self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
             self.__bus.config_add_watch("/general")
             self.__bus.config_add_watch("/panel")
@@ -197,7 +192,7 @@ class Setup(object):
     def __init_engine_view(self):
         # engines tree
         self.__tree = self.__xml.get_widget("treeview_engines")
-        self.__preload_engines = set(self.__bus.config_get_value(CONFIG_PRELOAD_ENGINES, []))
+        self.__preload_engines = set(self.__bus.config_get_value("general", "preload_engines", []))
         model = self.__create_model()
         self.__tree.set_model(model)
 
@@ -308,12 +303,11 @@ class Setup(object):
         if data[DATA_PRELOAD]:
             if engine not in self.__preload_engines:
                 self.__preload_engines.add(engine)
-                self.__bus.config_set_list(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines), "s")
+                self.__bus.config_set_list("general", "preload_engines", list(self.__preload_engines), "s")
         else:
             if engine in self.__preload_engines:
                 self.__preload_engines.remove(engine)
-                self.__bus.config_set_list(CONFIG_PRELOAD_ENGINES, list(self.__preload_engines), "s")
-
+                self.__bus.config_set_list("general", "preload_engines", list(self.__preload_engines), "s")
 
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
@@ -426,33 +420,29 @@ class Setup(object):
 
     def __combobox_lookup_table_orientation_changed_cb(self, combobox):
         self.__bus.config_set_value(
-            CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION,
+            "panel", "lookup_table_orientation",
             self.__combobox_lookup_table_orientation.get_active())
 
     def __checkbutton_auto_hide_toggled_cb(self, button):
         self.__bus.config_set_value(
-            CONFIG_PANEL_AUTO_HIDE,
+            "panel", "auto_hide",
             self.__checkbutton_auto_hide.get_active())
 
     def __checkbutton_custom_font_toggled_cb(self, button):
         if self.__checkbutton_custom_font.get_active():
             self.__fontbutton_custom_font.set_sensitive(True)
-            self.__bus.config_set_value(CONFIG_PANEL_USE_CUSTOM_FONT, True)
+            self.__bus.config_set_value("panel", "use_custom_font", True)
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
-            self.__bus.config_set_value(CONFIG_PANEL_USE_CUSTOM_FONT, False)
+            self.__bus.config_set_value("panel", "use_custom_font", False)
 
     def __fontbutton_custom_font_notify_cb(self, button, arg):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
-        self.__bus.config_set_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
+        self.__bus.config_set_value("panel", "custom_font", font_name)
 
-    def __config_value_changed_cb(self, bus, key, value):
-        if key == CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION:
-            item = self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0)
-            if item != 0 and item != 1:
-                item = 0
-            self.__combobox_lookup_table_orientation.set_active(item)
+    def __config_value_changed_cb(self, bus, section, name, value):
+        pass
 
     def __config_reloaded_cb(self, bus):
         pass

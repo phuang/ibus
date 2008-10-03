@@ -50,19 +50,15 @@ class Config(ibus.Object):
         self.__handler_id = self.__client.connect("value-changed", self.__value_changed_cb)
         self.__client.add_dir(GCONF_IBUS_PATH, gconf.CLIENT_PRELOAD_NONE)
 
-    def get_value(self, key):
-        if not key.startswith("/"):
-            key = "/" + key
-        key = GCONF_IBUS_PATH + key
+    def get_value(self, section, name):
+        key = "/".join([GCONF_IBUS_PATH, section, name])
         value = self.__client.get(key)
         if value == None:
             raise ibus.IBusException("key = \"%s\" does not exist" % key)
         return self.__to_py_value(value)
 
-    def set_value(self, key, value):
-        if not key.startswith("/"):
-            key = "/" + key
-        key = GCONF_IBUS_PATH + key
+    def set_value(self, section, name, value):
+        key = "/".join([GCONF_IBUS_PATH, section, name])
         value = self.__to_gconf_value(value)
         self.__client.set(key, value)
 
@@ -140,7 +136,14 @@ class Config(ibus.Object):
         value = self.__to_py_value(value)
         if value == None:
             value = 0
-        self.emit("value-changed", key.replace(GCONF_IBUS_PATH, ""), value)
+        section_name = key.replace(GCONF_IBUS_PATH + "/", "")
+        section_name  = section_name.split("/", 1)
+        if len(section_name) == 1:
+            self.emit("value-changed", "", section_name[0], value)
+        elif len(section_name) == 2:
+            self.emit("value-changed", section_name[0], section_name[1], value)
+        else:
+            print "Can not process %s" % key
 
 gobject.type_register(Config)
 
@@ -148,12 +151,13 @@ class ConfigProxy(interface.IConfig):
     def __init__ (self, config, conn, object_path):
         super(ConfigProxy, self).__init__(conn, object_path)
         self.__config = config
-        self.__config.connect("value-changed", lambda c, k, v: self.ValueChanged(k, v))
+        self.__config.connect("value-changed", lambda c, s, n, v: self.ValueChanged(s, n, v))
 
-    def GetValue(self, key):
-        return self.__config.get_value(key)
-    def SetValue(self, key, value):
-        self.__config.set_value(key, value)
+    def GetValue(self, section, name):
+        return self.__config.get_value(section, name)
+
+    def SetValue(self, section, name, value):
+        self.__config.set_value(section, name, value)
 
     def Destroy(self):
         self.remove_from_connection()

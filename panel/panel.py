@@ -35,11 +35,6 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
-CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION = "/panel/lookup_table_orientation"
-CONFIG_PANEL_AUTO_HIDE = "/panel/auto_hide"
-CONFIG_PANEL_USE_CUSTOM_FONT = "/panel/use_custom_font"
-CONFIG_PANEL_CUSTOM_FONT = "/panel/custom_font"
-
 def show_uri(screen, link):
     try:
         gtk.show_uri(screen, link, 0)
@@ -70,7 +65,7 @@ class Panel(ibus.PanelBase):
         # connect bus signal
         self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
         self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
-        self.__bus.config_add_watch("/panel")
+        self.__bus.config_add_watch("panel")
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
@@ -211,7 +206,7 @@ class Panel(ibus.PanelBase):
         gtk.main_quit()
 
     def __config_load_lookup_table_orientation(self):
-        value = self.__bus.config_get_value(CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION, 0)
+        value = self.__bus.config_get_value("panel", "lookup_table_orientation", 0)
         if value != 0 and value != 1:
             value = 0
         if value == 0:
@@ -220,14 +215,14 @@ class Panel(ibus.PanelBase):
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
     def __config_load_auto_hide(self):
-        auto_hide = self.__bus.config_get_value(CONFIG_PANEL_AUTO_HIDE, False)
+        auto_hide = self.__bus.config_get_value("panel", "auto_hide", False)
         self.__language_bar.set_auto_hide(auto_hide)
 
     def __config_load_custom_font(self):
-        use_custom_font = self.__bus.config_get_value(CONFIG_PANEL_USE_CUSTOM_FONT, False)
+        use_custom_font = self.__bus.config_get_value("panel", "use_custom_font", False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
         font_name = unicode(font_name, "utf-8")
-        custom_font =  self.__bus.config_get_value(CONFIG_PANEL_CUSTOM_FONT, font_name)
+        custom_font =  self.__bus.config_get_value("panel", "custom_font", font_name)
         style_string = 'style "custom-font" { font_name="%s" }\n' \
             'class "IBusPanelLabel" style "custom-font"\n'
         if use_custom_font:
@@ -240,12 +235,12 @@ class Panel(ibus.PanelBase):
         settings = gtk.settings_get_default()
         gtk.rc_reset_styles(settings)
 
-    def __config_value_changed_cb(self, bus, key, value):
-        if key == CONFIG_PANEL_LOOKUP_TABLE_ORIENTATION:
+    def __config_value_changed_cb(self, bus, section, name, value):
+        if name == "lookup_table_orientation":
             self.__config_load_lookup_table_orientation()
-        elif key == CONFIG_PANEL_AUTO_HIDE:
+        elif name == "auto_hide":
             self.__config_load_auto_hide()
-        elif key == CONFIG_PANEL_USE_CUSTOM_FONT or key == CONFIG_PANEL_CUSTOM_FONT:
+        elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
 
     def __config_reloaded_cb(self, bus):

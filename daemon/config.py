@@ -33,7 +33,7 @@ class Config(ibus.Object):
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
-            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
     def __init__(self, ibusconn, object_path):
@@ -45,11 +45,11 @@ class Config(ibus.Object):
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
 
-    def get_value(self, key, **kargs):
-        return self.__config.GetValue(key, **kargs)
+    def get_value(self, section, name, **kargs):
+        return self.__config.GetValue(section, name, **kargs)
 
     def set_value(self, key, value, **kargs):
-        return self.__config.GetValue(key, value, **kargs)
+        return self.__config.GetValue(section, name, **kargs)
 
     def destroy(self):
         if self.__ibusconn != None:
@@ -67,7 +67,7 @@ class Config(ibus.Object):
     def __dbus_signal_cb(self, ibusconn, message):
         if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
             args = message.get_args_list()
-            self.emit("value-changed", args[0], args[1])
+            self.emit("value-changed", args[0], args[1], args[2])
         else:
             return False
         ibusconn.stop_emission("dbus-signal")
@@ -80,7 +80,7 @@ class DefaultConfig(ibus.Object):
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
-            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
     def __init__(self):
@@ -88,11 +88,11 @@ class DefaultConfig(ibus.Object):
         self.__config = defaultconfig.Config()
         self.__handler_id = self.__config.connect("value-changed", self.__value_changed_cb)
 
-    def get_value(self, key, **kargs):
+    def get_value(self, section, name, **kargs):
         reply_handler = kargs.get("reply_handler", None)
         error_handler = kargs.get("error_handler", None)
         try:
-            value = self.__config.get_value(key)
+            value = self.__config.get_value(section, name)
             if reply_handler:
                 reply_handler(value)
             else:
@@ -103,11 +103,11 @@ class DefaultConfig(ibus.Object):
             else:
                 raise e
 
-    def set_value(self, key, value, **kargs):
+    def set_value(self, section, name, value, **kargs):
         reply_handler = kargs.get("reply_handler", None)
         error_handler = kargs.get("error_handler", None)
         try:
-            self.__config.set_value(key, value)
+            self.__config.set_value(section, name, value)
             if reply_handler:
                 reply_handler()
             else:
@@ -118,8 +118,8 @@ class DefaultConfig(ibus.Object):
             else:
                 raise e
 
-    def __value_changed_cb(self, config, key, value):
-        self.emit("value-changed", key, value)
+    def __value_changed_cb(self, config, section, name, value):
+        self.emit("value-changed", section, name, value)
 
     def do_destroy(self):
         if self.__config:

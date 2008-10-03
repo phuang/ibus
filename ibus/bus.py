@@ -194,22 +194,22 @@ class Bus(ibus.Object):
     def get_input_context_states(self, ic):
         return self.__ibus.GetInputContextStates(ic)
 
-    def config_add_watch(self, key):
-        return self.__ibus.ConfigAddWatch(key)
+    def config_add_watch(self, section):
+        return self.__ibus.ConfigAddWatch(section)
 
-    def config_remove_watch(self, key):
-        return self.__ibus.ConfigRemoveWatch(key)
+    def config_remove_watch(self, section):
+        return self.__ibus.ConfigRemoveWatch(section)
 
-    def config_set_value(self, key, value):
-        return self.__ibus.ConfigSetValue(key, value)
+    def config_set_value(self, section, name, value):
+        return self.__ibus.ConfigSetValue(section, name, value)
 
-    def config_set_list(self, key, value, list_type):
+    def config_set_list(self, section, name, value, list_type):
         value = dbus.Array(value, signature = list_type)
-        return self.__ibus.ConfigSetValue(key, value)
+        return self.__ibus.ConfigSetValue(section, name, value)
 
-    def config_get_value(self, key, default_value = None):
+    def config_get_value(self, section, name, default_value = None):
         try:
-            return self.__ibus.ConfigGetValue(key)
+            return self.__ibus.ConfigGetValue(section, name)
         except Exception, e:
             return default_value
 

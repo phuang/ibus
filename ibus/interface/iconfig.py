@@ -42,15 +42,15 @@ class IConfig(dbus.service.Object):
             async_callbacks = ("reply_cb", "error_cb"), \
             **args)
 
-    @method(in_signature = "s", out_signature = "v")
-    def GetValue(self, key): pass
+    @method(in_signature = "ss", out_signature = "v")
+    def GetValue(self, section, name): pass
 
-    @method(in_signature = "sv")
-    def SetValue(self, key, value): pass
+    @method(in_signature = "ssv")
+    def SetValue(self, section, name, value): pass
 
     @method()
     def Destroy(self): pass
 
-    @signal(signature = "sv")
-    def ValueChanged(self, key, value): pass
+    @signal(signature = "ssv")
+    def ValueChanged(self, section, name, value): pass
 
