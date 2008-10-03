@@ -600,7 +600,7 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
     case XIM_SET_IC_VALUES:
         return xim_set_ic_values (xims, (IMChangeICStruct *)call_data);
     case XIM_GET_IC_VALUES:
-        return 1;
+        return 0;
     case XIM_FORWARD_EVENT:
         return xim_forward_event (xims, (IMForwardEventStruct *)call_data);
     case XIM_SET_IC_FOCUS:
