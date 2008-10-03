@@ -657,19 +657,19 @@ class IBusProxy(ibus.IIBus):
     def GetInputContextStates(self, ic, dbusconn):
         return self.__ibus.get_input_context_states(ic, self.__conn)
 
-    def ConfigAddWatch(self, key, dbusconn):
-        return self.__ibus.config_add_watch(key, self.__conn)
+    def ConfigAddWatch(self, section, dbusconn):
+        return self.__ibus.config_add_watch(section, self.__conn)
 
-    def ConfigRemoveWatch(self, key, dbusconn):
-        return self.__ibus.config_remove_watch(key, self.__conn)
+    def ConfigRemoveWatch(self, section, dbusconn):
+        return self.__ibus.config_remove_watch(section, self.__conn)
 
-    def ConfigSetValue(self, key, value, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_set_value(key, value, self.__conn,
+    def ConfigSetValue(self, section, name, value, dbusconn, reply_cb, error_cb):
+        self.__ibus.config_set_value(section, name, value, self.__conn,
                 reply_handler = reply_cb,
                 error_handler = error_cb)
 
-    def ConfigGetValue(self, key, dbusconn, reply_cb, error_cb):
-        self.__ibus.config_get_value(key, self.__conn,
+    def ConfigGetValue(self, section, name, dbusconn, reply_cb, error_cb):
+        self.__ibus.config_get_value(section, name, self.__conn,
                 reply_handler = reply_cb,
                 error_handler = error_cb)
 

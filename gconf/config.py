@@ -39,7 +39,7 @@ class Config(ibus.Object):
         "value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
-            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
     def __init__ (self, bus = None, path = None):
@@ -137,7 +137,7 @@ class Config(ibus.Object):
         if value == None:
             value = 0
         section_name = key.replace(GCONF_IBUS_PATH + "/", "")
-        section_name  = section_name.split("/", 1)
+        section_name = section_name.rsplit("/", 1)
         if len(section_name) == 1:
             self.emit("value-changed", "", section_name[0], value)
         elif len(section_name) == 2:
