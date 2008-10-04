@@ -67,10 +67,7 @@ class Config(ibus.Object):
         if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
             args = message.get_args_list()
             self.emit("value-changed", args[0], args[1], args[2])
-        else:
-            return False
-        ibusconn.stop_emission("dbus-signal")
-        return True
+        return False
 
 gobject.type_register(Config)
 

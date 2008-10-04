@@ -66,6 +66,8 @@ class Config(ibus.ConfigBase):
         super(Config, self).do_destroy()
 
     def __to_py_value(self, value):
+        if value == None:
+            return None
         if value.type == gconf.VALUE_STRING:
             return unicode(value.get_string(), "utf-8")
         if value.type == gconf.VALUE_INT:

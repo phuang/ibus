@@ -70,10 +70,10 @@ IBUS_IFACE = "org.freedesktop.IBus"
 IBUS_PATH  = "/org/freedesktop/IBus"
 IBUS_NAME  = "org.freedesktop.IBus"
 
-IBUS_CONFIG_IFACE = "org.freedesktop.IBus.Config"
-IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.IBus.EngineFactory"
-IBUS_ENGINE_IFACE = "org.freedesktop.IBus.Engine"
-IBUS_PANEL_IFACE = "org.freedesktop.IBus.Panel"
+IBUS_CONFIG_IFACE = "org.freedesktop.ibus.Config"
+IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.ibus.EngineFactory"
+IBUS_ENGINE_IFACE = "org.freedesktop.ibus.Engine"
+IBUS_PANEL_IFACE = "org.freedesktop.ibus.Panel"
 
 def default_reply_handler( *args):
     pass

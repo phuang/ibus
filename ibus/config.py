@@ -56,7 +56,7 @@ class ConfigProxy(interface.IConfig):
         return self.__config.get_value(section, name)
 
     def SetValue(self, section, name, value):
-        return self.__config.set_value(section, name, name)
+        return self.__config.set_value(section, name, value)
 
     def Destroy(self):
         self.__config.destroy()

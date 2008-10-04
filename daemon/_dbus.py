@@ -47,19 +47,31 @@ class MatchRule:
         except:
             raise ibus.IBusException("Parse match rule failed\n%s" % rule)
 
-    def match_message(self, dbusobj, message):
-        if self.__type == 'signale' and message.get_type() != 4:
-            return False
-        if self.__sender:
-            if self.__sender.startswith(":"):
-                sender = self.__sender
-            else:
-                try:
-                    sender = dbusobj.get_name_owner(self.__sender).get_unique_name()
-                except:
-                    return False
-            if sender != message.get_sender():
+    def __cmp_bus_name(self, dbusobj, a, b):
+        if a == None or b == None:
+            return a == b
+        a_is_unique = a.startswith(":")
+        b_is_unique = b.startswith(":")
+        if a_is_unique == b_is_unique:
+            return a == b
+        else:
+            try:
+                if not a_is_unique:
+                    a = dbusobj.get_name_owner(a).get_unique_name()
+                if not b_is_unique:
+                    b = dbusobj.get_name_owner(b).get_unique_name()
+                return a == b
+            except:
                 return False
+
+    def match_message(self, dbusobj, message):
+        if self.__type == 'signal' and message.get_type() != 4:
+            return False
+
+        if self.__sender:
+            if not self.__cmp_bus_name(dbusobj, self.__sender, message.get_sender()):
+                return False
+
         if self.__interface and self.__interface != message.get_interface():
             return False
 
@@ -70,14 +82,7 @@ class MatchRule:
             return False
 
         if self.__destination:
-            if self.__destination.startswith(":"):
-                dest = self.__destination
-            else:
-                try:
-                    dest = dbusobj.get_name_owner(self.__destination).get_unique_name()
-                except:
-                    return False
-            if dest != message.get_destination():
+            if not self.__cmp_bus_name(dbusobj, self.__destination, message.get_destination()):
                 return False
         args = message.get_args_list()
         for i, arg in self.__args:
@@ -206,7 +211,7 @@ class DBusReal(ibus.Object):
             if message.get_type() != 4: # Is not signal
                 raise ibus.IBusException("Message without destination")
             self.dispatch_dbus_signal(message)
-            return Trye
+            return True
 
         if not dest.startswith(":"):
             raise ibus.IBusException("Destination of message must be an unique name")

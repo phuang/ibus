@@ -108,7 +108,7 @@ class Bus(ibus.Object):
         "config-value-changed" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
-            (gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
+            (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)
         ),
         "config-reloaded" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -352,13 +352,10 @@ class Bus(ibus.Object):
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # Config signals
-        elif message.is_signal(ibus.IBUS_IFACE, "ConfigValueChanged"):
+        elif message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
             args = message.get_args_list()
-            key, value = args[0:2]
-            self.emit("config-value-changed", key, value)
-            retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "ConfigReloaded"):
-            self.emit("config-reloaded")
+            section, name, value = args[0:3]
+            self.emit("config-value-changed", section, name, value)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # DBUS Disconnected signal
