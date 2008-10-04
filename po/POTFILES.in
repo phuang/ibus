@@ -22,7 +22,6 @@
 ./ibus/gtk.py
 ./ibus/ascii.py
 ./ibus/factory.py
-./python-config.py
 ./panel/menu.py
 ./panel/handle.py
 ./panel/icon.py
@@ -42,7 +41,6 @@
 ./daemon/ibusdaemon.py
 ./daemon/factorymanager.py
 ./daemon/engine.py
-./daemon/defaultconfig.py
 ./daemon/panel.py
 ./daemon/config.py
 ./daemon/inputcontext.py

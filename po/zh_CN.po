@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-09-30 08:09+0800\n"
+"POT-Creation-Date: 2008-10-04 10:28+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,20 +16,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ibus/lang.py:40 panel/panel.py:293 panel/panel.py:294 panel/panel.py:295
-#: panel/panel.py:296 setup/main.py:361 setup/main.py:362 setup/main.py:363
+#: ibus/lang.py:40 panel/panel.py:288 panel/panel.py:289 panel/panel.py:290
+#: panel/panel.py:291 setup/main.py:355 setup/main.py:356 setup/main.py:357
 msgid "Other"
 msgstr "其他"
 
-#: panel/panel.py:99
+#: panel/panel.py:94
 msgid "iBus - Running"
 msgstr "iBus - 运行"
 
-#: panel/panel.py:355
+#: panel/panel.py:350
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: panel/panel.py:359
+#: panel/panel.py:354
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -37,23 +37,23 @@ msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 msgid "Switch engine"
 msgstr "切换引擎"
 
-#: setup/main.py:105
+#: setup/main.py:99
 msgid "trigger"
 msgstr "开关"
 
-#: setup/main.py:115
+#: setup/main.py:109
 msgid "next engine"
 msgstr "下一个引擎"
 
-#: setup/main.py:124
+#: setup/main.py:119
 msgid "prev engine"
 msgstr "上一个引擎"
 
-#: setup/main.py:169
+#: setup/main.py:164
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: setup/main.py:184
+#: setup/main.py:179
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -66,19 +66,19 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:206 setup/setup.glade:364
+#: setup/main.py:201 setup/setup.glade:364
 msgid "Engine"
 msgstr "输入法引擎"
 
-#: setup/main.py:230
+#: setup/main.py:225
 msgid "Started"
 msgstr "启动"
 
-#: setup/main.py:239
+#: setup/main.py:234
 msgid "Preload"
 msgstr "预加载"
 
-#: setup/main.py:248
+#: setup/main.py:243
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
