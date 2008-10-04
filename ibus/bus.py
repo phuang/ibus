@@ -120,14 +120,18 @@ class Bus(ibus.Object):
     def __init__(self):
         super(Bus, self).__init__()
         self.__dbusconn = dbus.connection.Connection(ibus.IBUS_ADDR)
-        self.__ibus = self.__dbusconn.get_object(ibus.IBUS_NAME, ibus.IBUS_PATH)
-        self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME, dbus.BUS_DAEMON_PATH)
+        self.__ibus = self.__dbusconn.get_object(ibus.IBUS_NAME,
+                                            ibus.IBUS_PATH)
+        self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
+                                            dbus.BUS_DAEMON_PATH)
+        self.__dbusconn.add_message_filter(self.__dbus_message_cb)
+
         try:
             unique_name = self.get_name_owner(ibus.IBUS_CONFIG_NAME)
-            self.__config = self.__dbusconn.get_object(unique_name, ibus.IBUS_CONFIG_PATH)
+            self.__config = self.__dbusconn.get_object(unique_name,
+                                            ibus.IBUS_CONFIG_PATH)
         except:
             self.__config = None
-        self.__dbusconn.add_message_filter(self.__dbus_message_cb)
         self.add_match(
             "type='signal',"
             "interface='" + dbus.BUS_DAEMON_IFACE + "',"
