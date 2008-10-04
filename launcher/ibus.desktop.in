@@ -6,4 +6,4 @@ Icon=ibus
 Terminal=false
 Type=Application
 StartupNotify=false
-Categories=Applications;Utility;
+Categories=Utility;

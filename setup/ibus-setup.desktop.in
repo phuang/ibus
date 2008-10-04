@@ -6,4 +6,4 @@ Icon=ibus-setup
 Terminal=false
 Type=Application
 StartupNotify=true
-Categories=Applications;Settings;
+Categories=Settings;
