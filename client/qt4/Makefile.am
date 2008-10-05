@@ -30,7 +30,7 @@ EXTRA_DIST = \
 
 if IBUS_BUILD_QT4
 Makefile.qmake: ibus.pro
-	$(QMAKE) -makefile -o Makefile.qmake $(srcdir)/ibus.pro
+	$(QMAKE) -makefile -o Makefile.qmake $(srcdir)/ibus.pro QMAKE_CFLAGS="$(CFLAGS)" QMAKE_CXXFLAGS="$(CXXFLAGS)" QMAKE_LFLAGS="$(LDFLAGS)"
 
 all-local: Makefile.qmake
 	$(MAKE) -f Makefile.qmake $(AM_MAKEFLAGS) top_builddir=$(top_builddir) all
