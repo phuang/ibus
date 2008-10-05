@@ -575,8 +575,35 @@ xim_set_ic_values (XIMS xims, IMChangeICStruct *call_data)
         _xim_set_cursor_location (x11ic);
     }
 
-    return i;
+    return 1;
 }
+
+static int
+xim_get_ic_values (XIMS xims, IMChangeICStruct *call_data)
+{
+    X11IC *x11ic;
+    gint i;
+
+    LOG (1, "XIM_GET_IC_VALUES ic=%d connect_id=%d",
+                call_data->icid, call_data->connect_id);
+
+    x11ic = (X11IC *)g_hash_table_lookup (_x11_ic_table,
+                (gconstpointer)(unsigned long)call_data->icid);
+    g_return_val_if_fail (x11ic != NULL, 0);
+
+    XICAttribute *ic_attr = call_data->ic_attr;
+
+    for (i = 0; i < (int) call_data->ic_attr_num; ++i, ++ic_attr) {
+        if (g_strcmp0 (XNFilterEvents, ic_attr->name) == 0) {
+            ic_attr->value = (void *) malloc (sizeof (CARD32));
+            *(CARD32 *) ic_attr->value = KeyPressMask | KeyReleaseMask;
+            ic_attr->value_length = sizeof (CARD32);
+        }
+    }
+
+    return 1;
+}
+
 
 
 static int
@@ -614,8 +641,7 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
     case XIM_SET_IC_VALUES:
         return xim_set_ic_values (xims, (IMChangeICStruct *)call_data);
     case XIM_GET_IC_VALUES:
-        LOG (1, "XIM_GET_IC_VALUES");
-        return 1;
+        return xim_get_ic_values (xims, (IMChangeICStruct *)call_data);
     case XIM_FORWARD_EVENT:
         return xim_forward_event (xims, (IMForwardEventStruct *)call_data);
     case XIM_SET_IC_FOCUS:
