@@ -30,7 +30,6 @@ ibusdaemon_PYTHON = \
 	ibusdaemon.py \
 	inputcontext.py \
 	lookuptable.py \
-	notify.py \
 	panel.py \
 	register.py \
 	$(NULL)
