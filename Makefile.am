@@ -24,7 +24,7 @@ SUBDIRS = \
 	gconf \
 	ibus \
 	launcher \
-	panel \
+	ui \
 	lib \
 	util \
 	client \

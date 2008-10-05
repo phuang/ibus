@@ -79,7 +79,6 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-glib-1
 ])
 
-
 # Check for Qt4
 PKG_CHECK_MODULES(QT,
     [QtCore >= 4.4.0 QtDBus >= 4.4.0],
@@ -230,8 +229,9 @@ daemon/ibus-daemon
 launcher/ibus
 launcher/ibus.desktop
 launcher/Makefile
-panel/Makefile
-panel/ibus-panel
+ui/Makefile
+ui/gtk/Makefile
+ui/gtk/ibus-ui-gtk
 gconf/Makefile
 gconf/ibus-gconf
 lib/Makefile

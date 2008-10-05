@@ -31,14 +31,14 @@ import signal
 
 daemon = "@prefix@/bin/ibus-daemon"
 x11 = "@prefix@/bin/ibus-x11"
-panel = "@prefix@/bin/ibus-panel"
+ui = "@prefix@/bin/ibus-ui-gtk"
 conf = "@prefix@/bin/ibus-gconf"
 
 class Launcher(object):
     def __init__(self):
         super(Launcher, self).__init__()
         self.__daemon_pid = 0
-        self.__panel_pid = 0
+        self.__ui_pid = 0
         self.__conf_pid = 0
         self.__x11_pid = 0
         self.__bus = None
@@ -69,8 +69,8 @@ class Launcher(object):
                 self.__bus = None
             elif pid == self.__x11_pid:
                 self.__x11_pid = 0
-            elif pid == self.__panel_pid:
-                self.__panel_pid = 0
+            elif pid == self.__ui_pid:
+                self.__ui_pid = 0
             elif pid == self.__conf_pid:
                 self.__conf_pid = 0
         elif sig == signal.SIGTERM or sig == signal.SIGINT:
@@ -122,7 +122,7 @@ class Launcher(object):
         self.__bus.connect("config-reloaded", self.__bus_config_reloaded_cb)
 
         self.__conf_pid = self.__start_process(conf, [conf], "ibus-conf")
-        self.__panel_pid = self.__start_process(panel, [panel], "ibus-panel")
+        self.__ui_pid = self.__start_process(ui, [ui], "ibus-ui-gtk")
         self.__x11_pid = self.__start_process(x11, [x11, "--kill-daemon"], "ibus-x11")
         ibus.main()
 

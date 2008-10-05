@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-panel_PYTHON = \
+ui_gtk_PYTHON = \
 	candidatepanel.py \
 	handle.py \
 	icon.py \
@@ -31,16 +31,16 @@ panel_PYTHON = \
 	toolitem.py \
 	$(NULL)
 
-paneldir = $(pkgdatadir)/panel
+ui_gtkdir = $(pkgdatadir)/ui/gtk
 
-bin_SCRIPTS = ibus-panel
+bin_SCRIPTS = ibus-ui-gtk
 
 CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
-	ibus-panel.in \
+	ibus-ui-gtk.in \
 	$(NULL)
 
 test:
