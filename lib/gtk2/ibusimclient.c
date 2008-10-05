@@ -573,7 +573,7 @@ ibus_im_client_init (IBusIMClient *obj)
         g_object_ref (priv->keymap);
         _keymap_find_japan_groups (client);
         _keymap_find_yen_bar_keys (client);
-        g_debug ("japan_groups = 0x%x", priv->japan_groups);
+        // g_debug ("japan_groups = 0x%x", priv->japan_groups);
 
         priv->keymap_handler_id =
             g_signal_connect (priv->keymap, "keys-changed",
@@ -1022,8 +1022,10 @@ _keymap_keys_changed_cb (GdkKeymap *keymap, IBusIMClient *client)
 {
     _keymap_find_japan_groups (client);
     _keymap_find_yen_bar_keys (client);
+    /*
     g_debug ("keymap changed japan_groups = 0x%x",
                     client->priv->japan_groups);
+    */
 }
 
 static void
