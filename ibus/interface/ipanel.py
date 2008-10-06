@@ -108,6 +108,9 @@ class IPanel(dbus.service.Object):
     def Reset(self): pass
 
     @method()
+    def StartSetup(self): pass
+
+    @method()
     def Destroy(self): pass
 
     #signals

@@ -215,9 +215,9 @@ class IBus(ibus.Object):
                 if self.__no_engine_notification_show:
                     self.__no_engine_notification_id = self.__notifications.notify(
                             self.__no_engine_notification_id,
-                            "ibus", _("No engine is available"),
-                            _("IBus does not load any input engines!\nYou could use ibus-setup to load some input engines."),
-                            ["NoAgain", _("Do not show this message again")],
+                            "ibus", _("No input engine is available"),
+                            _("IBus does not load any input engines!\nPlease use ibus-setup program to load some input engines."),
+                            ["Setup", _("Setup"), "NoAgain", _("Do not show this message again")],
                             15000)
 
         if context.get_engine() != None:
@@ -503,8 +503,12 @@ class IBus(ibus.Object):
         pass
 
     def __notifications_action_invoked_cb(self, notifications, id, action_key):
-        if id == self.__no_engine_notification_id and action_key == "NoAgain":
-             self.__no_engine_notification_show = False
+        if id == self.__no_engine_notification_id:
+            if action_key == "NoAgain":
+                self.__no_engine_notification_show = False
+            elif action_key == "Setup":
+                self.__panel.start_setup()
+
 
     def __notifications_destroy_cb(self, notifications):
         if notifications == self.__notifications:

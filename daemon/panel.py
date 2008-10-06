@@ -134,6 +134,9 @@ class Panel(ibus.Object):
     def reset(self):
         self.__panel.Reset(**ibus.DEFAULT_ASYNC_HANDLERS)
 
+    def start_setup(self):
+        self.__panel.StartSetup(**ibus.DEFAULT_ASYNC_HANDLERS)
+
     def destroy(self):
         if self.__ibusconn != None:
             self.__panel.Destroy(**ibus.DEFAULT_ASYNC_HANDLERS)
@@ -251,6 +254,9 @@ class DummyPanel(ibus.Object):
         pass
 
     def reset(self):
+        pass
+
+    def start_setup(self):
         pass
 
 gobject.type_register(DummyPanel)

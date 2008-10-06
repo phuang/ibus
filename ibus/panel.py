@@ -124,6 +124,9 @@ class PanelBase(ibus.Object):
     def reset(self):
         pass
 
+    def start_setup(self):
+        pass
+
     def page_up(self):
         self.__proxy.PageUp()
 
@@ -228,6 +231,9 @@ class PanelProxy(interface.IPanel):
 
     def Reset(self):
         self.__panel.reset()
+
+    def StartSetup(self):
+        self.__panel.start_setup()
 
     def Destroy(self):
         self.__panel.destroy()

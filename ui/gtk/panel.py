@@ -205,6 +205,9 @@ class Panel(ibus.PanelBase):
         self.__candidate_panel.reset()
         self.__language_bar.reset()
 
+    def start_setup(self):
+        self.__start_setup()
+
     def do_destroy(self):
         gtk.main_quit()
 
