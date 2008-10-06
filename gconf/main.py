@@ -26,8 +26,6 @@ import ibus
 import config
 import gobject
 
-CONFIG_PATH = "/org/freedesktop/IBus/GConf"
-
 class GconfApplication:
     def __init__(self):
         self.__mainloop = gobject.MainLoop()
