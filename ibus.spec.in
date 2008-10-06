@@ -92,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ibus/
 %dir %{_datadir}/ibus/daemon/
 %dir %{_datadir}/ibus/gconf/
-%dir %{_datadir}/ibus/panel/
+%dir %{_datadir}/ibus/ui
 %dir %{_datadir}/ibus/setup/
 %dir %{_datadir}/ibus/engine/
 %dir %{_datadir}/ibus/icons/
@@ -101,14 +101,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libibus-gtk.so*
 %{_datadir}/ibus/daemon/*
 %{_datadir}/ibus/gconf/*
-%{_datadir}/ibus/panel/*
+%{_datadir}/ibus/ui/*
 %{_datadir}/ibus/setup/*
 %{_datadir}/ibus/icons/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
 %{_bindir}/ibus-daemon
 %{_bindir}/ibus-gconf
-%{_bindir}/ibus-panel
+%{_bindir}/ibus-ui-gtk
 %{_bindir}/ibus-x11
 %config %{_xinputconf}
 
