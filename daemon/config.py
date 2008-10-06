@@ -35,11 +35,10 @@ class Config(ibus.Object):
             (gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT)),
     }
 
-    def __init__(self, ibusconn, object_path):
+    def __init__(self, ibusconn):
         super(Config, self).__init__()
         self.__ibusconn = ibusconn
-        self.__object_path = object_path
-        self.__config = self.__ibusconn.get_object(self.__object_path)
+        self.__config = self.__ibusconn.get_object(ibus.IBUS_CONFIG_PATH)
 
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)

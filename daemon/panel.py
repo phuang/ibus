@@ -54,11 +54,10 @@ class Panel(ibus.Object):
             (gobject.TYPE_STRING, )),
     }
 
-    def __init__(self, ibusconn, object_path):
+    def __init__(self, ibusconn):
         super(Panel, self).__init__()
         self.__ibusconn = ibusconn
-        self.__object_path = object_path
-        self.__panel = self.__ibusconn.get_object(self.__object_path)
+        self.__panel = self.__ibusconn.get_object(ibus.IBUS_PANEL_PATH)
 
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)

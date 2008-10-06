@@ -26,6 +26,7 @@ from ibus import modifier
 from contextmanager import ContextManager
 from factorymanager import FactoryManager
 from panel import Panel, DummyPanel
+from notifications import Notifications, DummyNotifications
 from config import Config, DummyConfig
 from register import Register
 import _dbus
@@ -42,6 +43,10 @@ class IBus(ibus.Object):
         self.__panel = DummyPanel()
         self.__panel_handlers = list()
         self.__install_panel_handlers()
+
+        self.__notifications = DummyNotifications()
+        self.__notifications_handlers = list()
+        self.__install_notifications_handlers()
 
         self.__config = DummyConfig()
         self.__config_handlers = list()
@@ -73,6 +78,8 @@ class IBus(ibus.Object):
             self.__panel_changed(new_name)
         elif name == ibus.IBUS_CONFIG_NAME:
             self.__config_changed(new_name)
+        elif name == ibus.IBUS_NOTIFICATIONS_NAME:
+            self.__notifications_changed(new_name)
 
     def __factory_manager_default_factory_changed_cb(self, manager, factory):
         if self.__default_factory != factory:
@@ -381,8 +388,8 @@ class IBus(ibus.Object):
         ibusconn = _dbus.bus.get_connection_by_name(bus_name)
         if ibusconn == None:
             self.__panel = DummyPanel()
-
-        self.__panel = Panel(ibusconn, ibus.panel.IBUS_PANEL_PATH)
+        else:
+            self.__panel = Panel(ibusconn)
         self.__install_panel_handlers()
         if self.__focused_context:
             self.__panel.focus_in(self.__focused_context.get_id())
@@ -447,15 +454,56 @@ class IBus(ibus.Object):
         if panel == self.__panel:
             self.__uninstall_panel_handlers()
             self.__panel = DummyPanel()
+    
+    ##########################################################
+    # methods for notifications
+    ##########################################################
+    def __notifications_changed(self, bus_name):
+        if not isinstance(self.__notifications, DummyNotifications):
+            self.__uninstall_notifications_handlers()
+            self.__notifications.destroy()
+        ibusconn = _dbus.bus.get_connection_by_name(bus_name)
+        if ibusconn == None:
+            self.__notifications = DummyNotifications()
+        else:
+            self.__notifications = Notifications(ibusconn)
+        self.__install_notifications_handlers()
+
+    def __install_notifications_handlers(self):
+        signals = (
+            ("notification-closed", self.__notifications_notification_closed_cb),
+            ("action-invoked", self.__notifications_action_invoked_cb),
+            ("destroy", self.__notifications_destroy_cb)
+        )
+
+        for signal, handler in signals:
+            id = self.__notifications.connect(signal, handler)
+            self.__notifications_handlers.append(id)
+
+    def __uninstall_notifications_handlers(self):
+        map(lambda id:self.__notifications.disconnect(id), self.__notifications_handlers)
+        self.__notifications_handlers = list()
+
+    def __notifications_notification_closed_cb(self, notifications, id, reason):
+        pass
+
+    def __notifications_action_invoked_cb(self, notifications, id, action_key):
+        pass
+
+    def __notifications_destroy_cb(self, notifications):
+        if notifications == self.__notifications:
+            self.__uninstall_notifications_handlers()
+            self.__notifications = DummyNotifications()
+
 
     ##########################################################
-    # methods for panel
+    # methods for config
     ##########################################################
     def __config_changed(self, bus_name):
         ibusconn = _dbus.bus.get_connection_by_name(bus_name)
         self.__uninstall_config_handlers()
         self.__config.destroy()
-        self.__config = Config(ibusconn, ibus.IBUS_CONFIG_PATH)
+        self.__config = Config(ibusconn)
         self.__install_config_handlers()
 
     def __install_config_handlers(self):
