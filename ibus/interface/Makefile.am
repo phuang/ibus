@@ -24,8 +24,9 @@ ibus_interface_PYTHON = \
 	ienginefactory.py \
 	iengine.py \
 	iibus.py \
-	__init__.py \
 	ipanel.py \
+	inotifications.py \
+	__init__.py \
 	$(NULL)
 
 ibus_interfacedir = @pkgpythondir@/interface
