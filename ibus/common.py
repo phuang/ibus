@@ -28,6 +28,7 @@ __all__ = (
         "IBUS_ENGINE_FACTORY_IFACE",
         "IBUS_ENGINE_IFACE",
         "IBUS_PANEL_IFACE",
+        "IBUS_NOTIFICATIONS_IFACE",
         "default_reply_handler",
         "default_error_handler",
         "DEFAULT_ASYNC_HANDLERS",
@@ -74,6 +75,7 @@ IBUS_CONFIG_IFACE = "org.freedesktop.ibus.Config"
 IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.ibus.EngineFactory"
 IBUS_ENGINE_IFACE = "org.freedesktop.ibus.Engine"
 IBUS_PANEL_IFACE = "org.freedesktop.ibus.Panel"
+IBUS_NOTIFICATIONS_IFACE = "org.freedesktop.ibus.Notifications"
 
 def default_reply_handler( *args):
     pass

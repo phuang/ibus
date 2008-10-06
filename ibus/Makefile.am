@@ -39,6 +39,7 @@ ibus_PYTHON = \
 	modifier.py \
 	object.py \
 	panel.py \
+	notifications.py \
 	property.py \
 	utility.py \
 	config.py \

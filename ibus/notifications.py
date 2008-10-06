@@ -1,0 +1,61 @@
+# vim:set et sts=4 sw=4:
+#
+# ibus - The Input Bus
+#
+# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+# Boston, MA  02111-1307  USA
+
+__all__ = (
+        "NotificationsBase",
+        "IBUS_NOTIFICATIONS_NAME",
+        "IBUS_NOTIFICATIONS_PATH"
+    )
+
+IBUS_NOTIFICATIONS_NAME = "org.freedesktop.ibus.Notifications"
+IBUS_NOTIFICATIONS_PATH = "/org/freedesktop/ibus/Notifications"
+
+import ibus
+from ibus import interface
+
+class NotificationsBase(ibus.Object):
+    def __init__(self, bus):
+        super(NotificationsBase, self).__init__()
+        self.__proxy = NotificationsProxy(self, bus.get_dbusconn())
+
+    def notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
+        pass
+
+    def close_notification(self, id):
+        pass
+
+    def notification_closed(self, id, reason):
+        self.__proxy.NotificationClosed(id, reason)
+
+    def action_invoked(self, id, action_key):
+        self.__proxy.ActionInvoked(id, action_key)
+
+class NotificationsProxy(interface.INotifications):
+    def __init__ (self, notify, dbusconn):
+        super(NotificationsProxy, self).__init__(dbusconn, IBUS_NOTIFICATIONS_PATH)
+        self.__dbusconn = dbusconn
+        self.__notify = notify
+    
+    def Notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
+        return self.__notify.notify(replaces_id, app_icon, summary, body, actions, expire_timout)
+    
+    def CloseNotification(self, id):
+        return self.__notify.close_notification(id)
