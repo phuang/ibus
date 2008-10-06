@@ -26,6 +26,7 @@ import sys
 import time
 import gtk
 import gobject
+import pango
 import ibus
 import keyboardshortcut
 from os import path
@@ -199,6 +200,8 @@ class Setup(object):
         # column for engine
         column = gtk.TreeViewColumn()
         column.set_title(_("Engine"))
+        column.set_resizable(True)
+        column.set_min_width(120)
 
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0.5)
@@ -208,6 +211,7 @@ class Setup(object):
 
         renderer = gtk.CellRendererText()
         renderer.set_property("xalign", 0.0)
+        renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
 
         # column.set_clickable(True)
         column.pack_start(renderer)
@@ -223,6 +227,7 @@ class Setup(object):
 
         #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME)
         column = gtk.TreeViewColumn(_("Started"), renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
+        column.set_resizable(True)
         self.__tree.append_column(column)
 
         # column for preload
@@ -232,6 +237,7 @@ class Setup(object):
         renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
 
         column = gtk.TreeViewColumn(_("Preload"), renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
+        column.set_resizable(True)
         self.__tree.append_column(column)
 
         renderer = gtk.CellRendererText()
