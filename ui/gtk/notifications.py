@@ -41,25 +41,41 @@ class Notifications(ibus.NotificationsBase):
         self.__dbus = dbus.SessionBus()
         self.__notifications = self.__dbus.get_object(
                 "org.freedesktop.Notifications", "/org/freedesktop/Notifications")
+        self.__notifications.connect_to_signal("NotificationClosed",
+                self.__notification_closed_cb,
+                dbus_interface="org.freedesktop.Notifications")
+        self.__notifications.connect_to_signal("ActionInvoked",
+                self.__action_invoked_cb,
+                dbus_interface="org.freedesktop.Notifications")
+        self.__ids = set([])
+
     def notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
+        if app_icon == "":
+            app_icon = "ibus"
         hints = dbus.Dictionary(signature="sv")
-        hints["desktop-entry"] = "ibus"
-        hints["x"] = 0
-        hints["y"] = 0
-        return self.__notifications.Notify("ibus",
-                        replaces_id,
+        id = self.__notifications.Notify("ibus",
+                        dbus.UInt32(replaces_id),
                         app_icon,
                         summary,
                         body,
                         actions,
                         hints,
                         expire_timeout)
+        self.__ids.add(id)
+        return id
 
     def close_notification(self, id):
         return self.__notifications.CloseNotifications(id)
 
-    def notification_closed(self, id, reason):
-        self.__proxy.NotificationClosed(id, reason)
+    def __notification_closed_cb(self, id, reason):
+        if id in self.__ids:
+            self.notification_closed(id, reason)
 
-    def action_invoked(self, id, action_key):
-        self.__proxy.ActionInvoked(id, action_key)
+    def __action_invoked_cb(self, id, action_key):
+        if id in self.__ids:
+            self.action_invoked(id, action_key)
+
+if __name__ == "__main__":
+    notify = Notifications(ibus.Bus())
+    notify.notify(0, "", "Hello Summary", "Hello Body", ["NoAgain", "Do not show me again"], 5000)
+    ibus.main()
