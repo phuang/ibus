@@ -38,6 +38,7 @@ class Notifications(ibus.NotificationsBase):
     def __init__ (self, bus):
         super(Notifications, self).__init__(bus)
         self.__bus = bus
+        self.__bus.request_name(ibus.IBUS_NOTIFICATIONS_NAME, 0)
         self.__dbus = dbus.SessionBus()
         self.__notifications = self.__dbus.get_object(
                 "org.freedesktop.Notifications", "/org/freedesktop/Notifications")
@@ -48,11 +49,19 @@ class Notifications(ibus.NotificationsBase):
                 self.__action_invoked_cb,
                 dbus_interface="org.freedesktop.Notifications")
         self.__ids = set([])
+        self.__status_icons = None
+
+    def set_status_icon(self, status_icon):
+        self.__status_icon = status_icon
 
     def notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
         if app_icon == "":
             app_icon = "ibus"
         hints = dbus.Dictionary(signature="sv")
+        if self.__status_icon != None:
+            rect = self.__status_icon.get_geometry()[1]
+            hints["x"] = rect.x + rect.width / 2
+            hints["y"] = rect.y + rect.height / 2
         id = self.__notifications.Notify("ibus",
                         dbus.UInt32(replaces_id),
                         app_icon,
@@ -76,6 +85,11 @@ class Notifications(ibus.NotificationsBase):
             self.action_invoked(id, action_key)
 
 if __name__ == "__main__":
+    import gtk
+    icon = gtk.StatusIcon()
+    icon.set_visible(True)
     notify = Notifications(ibus.Bus())
+    notify.set_status_icon(icon)
+    while ibus.main_iteration(): pass
     notify.notify(0, "", "Hello Summary", "Hello Body", ["NoAgain", "Do not show me again"], 5000)
     ibus.main()

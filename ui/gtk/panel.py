@@ -159,6 +159,9 @@ class Panel(ibus.PanelBase):
     def update_property(self, prop):
         self.__language_bar.update_property(prop)
 
+    def get_status_icon(self):
+        return self.__status_icon
+
     def __set_im_icon(self, icon_name):
         self.__language_bar.set_im_icon(icon_name)
         if icon_name.startswith("/"):

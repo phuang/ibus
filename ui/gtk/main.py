@@ -26,13 +26,16 @@ import ibus
 import gtk
 import locale
 import panel
+import notifications
 
-class PanelApplication:
+class UIApplication:
     def __init__ (self):
         self.__bus = ibus.Bus()
         self.__bus.connect("destroy", self.__bus_destroy_cb)
 
         self.__panel = panel.Panel(self.__bus)
+        self.__notify = notifications.Notifications(self.__bus)
+        self.__notify.set_status_icon(self.__panel.get_status_icon())
 
     def run(self):
         gtk.main()
@@ -44,7 +47,7 @@ class PanelApplication:
 def launch_panel():
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
     # gtk.rc_parse("./themes/default/gtkrc")
-    PanelApplication().run()
+    UIApplication().run()
 
 def print_help(out, v = 0):
     print >> out, "-h, --help             show this message."
