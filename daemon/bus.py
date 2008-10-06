@@ -31,6 +31,10 @@ from config import Config, DummyConfig
 from register import Register
 import _dbus
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 class IBus(ibus.Object):
     def __init__(self):
         super(IBus, self).__init__()
@@ -47,6 +51,9 @@ class IBus(ibus.Object):
         self.__notifications = DummyNotifications()
         self.__notifications_handlers = list()
         self.__install_notifications_handlers()
+
+        self.__no_engine_notification_id = 0
+        self.__no_engine_notification_show = True
 
         self.__config = DummyConfig()
         self.__config_handlers = list()
@@ -205,8 +212,16 @@ class IBus(ibus.Object):
                 engine.focus_in()
                 context.set_engine(engine)
             else:
-                pass
-        context.set_enable(True)
+                if self.__no_engine_notification_show:
+                    self.__no_engine_notification_id = self.__notifications.notify(
+                            self.__no_engine_notification_id,
+                            "ibus", _("No engine is available"),
+                            _("IBus does not load any input engines!\nYou could use ibus-setup to load some input engines."),
+                            ["NoAgain", _("Do not show this message again")],
+                            15000)
+
+        if context.get_engine() != None:
+            context.set_enable(True)
         self.__panel.states_changed()
 
     def __context_disable(self, context):
@@ -488,7 +503,8 @@ class IBus(ibus.Object):
         pass
 
     def __notifications_action_invoked_cb(self, notifications, id, action_key):
-        pass
+        if id == self.__no_engine_notification_id and action_key == "NoAgain":
+             self.__no_engine_notification_show = False
 
     def __notifications_destroy_cb(self, notifications):
         if notifications == self.__notifications:
