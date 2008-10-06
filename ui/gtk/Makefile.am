@@ -26,7 +26,7 @@ ui_gtk_PYTHON = \
 	languagebar.py \
 	main.py \
 	menu.py \
-	notify.py \
+	notifications.py \
 	panel.py \
 	propitem.py \
 	toolitem.py \

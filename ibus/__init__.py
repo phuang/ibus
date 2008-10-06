@@ -32,5 +32,6 @@ from utility import *
 from engine import *
 from factory import *
 from panel import *
+from notifications import *
 from config import *
 from _config import *
