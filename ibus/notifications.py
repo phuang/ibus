@@ -55,7 +55,7 @@ class NotificationsProxy(interface.INotifications):
         self.__notify = notify
     
     def Notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
-        return self.__notify.notify(replaces_id, app_icon, summary, body, actions, expire_timout)
+        return self.__notify.notify(replaces_id, app_icon, summary, body, actions, expire_timeout)
     
     def CloseNotification(self, id):
         return self.__notify.close_notification(id)

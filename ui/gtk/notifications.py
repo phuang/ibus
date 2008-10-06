@@ -38,7 +38,6 @@ class Notifications(ibus.NotificationsBase):
     def __init__ (self, bus):
         super(Notifications, self).__init__(bus)
         self.__bus = bus
-        self.__bus.request_name(ibus.IBUS_NOTIFICATIONS_NAME, 0)
         self.__dbus = dbus.SessionBus()
         self.__notifications = self.__dbus.get_object(
                 "org.freedesktop.Notifications", "/org/freedesktop/Notifications")
@@ -50,6 +49,7 @@ class Notifications(ibus.NotificationsBase):
                 dbus_interface="org.freedesktop.Notifications")
         self.__ids = set([])
         self.__status_icons = None
+        self.__bus.request_name(ibus.IBUS_NOTIFICATIONS_NAME, 0)
 
     def set_status_icon(self, status_icon):
         self.__status_icon = status_icon

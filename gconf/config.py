@@ -79,7 +79,13 @@ class Config(ibus.ConfigBase):
         if value.type == gconf.VALUE_PAIR:
             return (self.__to_py_value(value.get_car()), self.__to_py_value(value.get_cdr()))
         if value.type == gconf.VALUE_LIST:
-            return map(self.__to_py_value, value.get_list())
+            signatures = {
+                gconf.VALUE_STRING: "s",
+                gconf.VALUE_INT: "i",
+                gconf.VALUE_FLOAT: "d",
+                gconf.VALUE_BOOL: "b",
+            }
+            return dbus.Array(map(self.__to_py_value, value.get_list()), signature=signatures.get(value.get_list_type(), "v"))
         raise ibus.IBusException("Do not support type == %s" % str(value.type))
 
     def __to_gconf_value(self, value):
@@ -133,6 +139,8 @@ class Config(ibus.ConfigBase):
         value = self.__to_py_value(value)
         if value == None:
             value = 0
+        elif isinstance(value, list) and len(value) == 0:
+            value = dbus.Array(signature="v")
         section_name = key.replace(GCONF_IBUS_PATH + "/", "")
         section_name = section_name.rsplit("/", 1)
         if len(section_name) == 1:
