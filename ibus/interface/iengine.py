@@ -28,25 +28,25 @@ from ibus.common import \
 class IEngine(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_ENGINE_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_ENGINE_IFACE, \
                             **args)
 
     # define signal decorator.
     signal = lambda **args: \
-        dbus.service.signal(dbus_interface = IBUS_ENGINE_IFACE, \
+        dbus.service.signal(dbus_interface=IBUS_ENGINE_IFACE, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_ENGINE_IFACE, \
-                            async_callbacks = ("reply_cb", "error_cb"), \
+        dbus.service.method(dbus_interface=IBUS_ENGINE_IFACE, \
+                            async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
-    @method(in_signature = "ubu", out_signature = "b")
+    @method(in_signature="ubu", out_signature="b")
     def ProcessKeyEvent(self, keyval, is_press, state):
         pass
 
-    @method(in_signature = "iiii")
+    @method(in_signature="iiii")
     def SetCursorLocation(self, x, y, w, h): pass
 
     @method()
@@ -77,13 +77,13 @@ class IEngine(dbus.service.Object):
     @method()
     def Disable(self): pass
 
-    @method(in_signature = "si")
+    @method(in_signature="si")
     def PropertyActivate(self, prop_name, prop_state): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def PropertyShow(self, prop_name): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def PropertyHide(self, prop_name): pass
 
     @method()

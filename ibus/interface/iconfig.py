@@ -28,29 +28,29 @@ from ibus.common import \
 class IConfig(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_CONFIG_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_CONFIG_IFACE, \
             **args)
 
     # define signal decorator.
     signal = lambda **args: \
-        dbus.service.signal(dbus_interface = IBUS_CONFIG_IFACE, \
+        dbus.service.signal(dbus_interface=IBUS_CONFIG_IFACE, \
             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_CONFIG_IFACE, \
-            async_callbacks = ("reply_cb", "error_cb"), \
+        dbus.service.method(dbus_interface=IBUS_CONFIG_IFACE, \
+            async_callbacks=("reply_cb", "error_cb"), \
             **args)
 
-    @method(in_signature = "ss", out_signature = "v")
+    @method(in_signature="ss", out_signature="v")
     def GetValue(self, section, name): pass
 
-    @method(in_signature = "ssv")
+    @method(in_signature="ssv")
     def SetValue(self, section, name, value): pass
 
     @method()
     def Destroy(self): pass
 
-    @signal(signature = "ssv")
+    @signal(signature="ssv")
     def ValueChanged(self, section, name, value): pass
 

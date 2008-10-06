@@ -25,36 +25,35 @@ import dbus.service
 from ibus.common import \
     IBUS_ENGINE_FACTORY_IFACE
 
-class IEngineFactory (dbus.service.Object):
+class IEngineFactory(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method (dbus_interface = IBUS_ENGINE_FACTORY_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_ENGINE_FACTORY_IFACE, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method (dbus_interface = IBUS_ENGINE_FACTORY_IFACE, \
-                            async_callbacks = ("reply_cb", "error_cb"), \
+        dbus.service.method(dbus_interface=IBUS_ENGINE_FACTORY_IFACE, \
+                            async_callbacks=("reply_cb", "error_cb"), \
                             **args)
+
     # Return a array. [name, default_language, icon_path, authors, credits]
-    @method (out_signature = "as")
-    def GetInfo (self): pass
+    @method(out_signature="as")
+    def GetInfo(self): pass
 
     # Factory should allocate all resources in this method
-    @method ()
-    def Initialize (self): pass
+    @method()
+    def Initialize(self): pass
 
     # Factory should free all allocated resources in this method
-    @method ()
-    def Uninitialize (self): pass
+    @method()
+    def Uninitialize(self): pass
 
     # Create an input context and return the id of the context.
     # If failed, it will return "" or None.
-    @method (out_signature = "o")
-    def CreateEngine (self): pass
+    @method(out_signature="o")
+    def CreateEngine(self): pass
 
     # Destroy the engine
-    @method ()
-    def Destroy (self): pass
-
-
+    @method()
+    def Destroy(self): pass

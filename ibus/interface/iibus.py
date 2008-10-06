@@ -28,81 +28,81 @@ from ibus.common import \
 class IIBus(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_IFACE, \
-                            connection_keyword = "dbusconn", \
+        dbus.service.method(dbus_interface=IBUS_IFACE, \
+                            connection_keyword="dbusconn", \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface = IBUS_IFACE, \
-                            connection_keyword = "dbusconn", \
-                            async_callbacks = ("reply_cb", "error_cb"), \
+        dbus.service.method(dbus_interface=IBUS_IFACE, \
+                            connection_keyword="dbusconn", \
+                            async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
-    @method(out_signature = "s")
+    @method(out_signature="s")
     def GetIBusAddress(self, dbusconn): pass
 
     # methods for ibus clients
-    @method(in_signature = "s", out_signature = "s")
+    @method(in_signature="s", out_signature="s")
     def CreateInputContext(self, client_name, dbusconn): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def ReleaseInputContext(self, ic, dbusconn): pass
 
-    @async_method(in_signature = "subu", out_signature = "b")
+    @async_method(in_signature="subu", out_signature="b")
     def ProcessKeyEvent(self, ic, keyval, is_press, state, dbusconn, reply_cb, error_cb): pass
 
-    @method(in_signature = "siiii")
+    @method(in_signature="siiii")
     def SetCursorLocation(self, ic, x, y, w, h, dbusconn): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def FocusIn(self, ic, dbusconn): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def FocusOut(self, ic, dbusconn): pass
 
-    @method(in_signature = "s")
+    @method(in_signature="s")
     def Reset(self, ic, dbusconn): pass
 
-    @method(in_signature = "s", out_signature = "b")
+    @method(in_signature="s", out_signature="b")
     def IsEnabled(self, ic, dbusconn): pass
 
-    @method(in_signature = "si")
+    @method(in_signature="si")
     def SetCapabilities(self, ic, caps, dbusconn): pass
 
     # methods for ibus engine provide
-    @method(in_signature = "ao")
+    @method(in_signature="ao")
     def RegisterFactories(self, object_paths, dbusconn): pass
 
-    @method(in_signature = "ao")
+    @method(in_signature="ao")
     def UnregisterFactories(self, object_paths, dbusconn): pass
 
     # general methods
-    @method(out_signature = "av")
+    @method(out_signature="av")
     def GetFactories(self, dbusconn): pass
 
-    @method(in_signature = "o", out_signature = "av")
+    @method(in_signature="o", out_signature="av")
     def GetFactoryInfo(self, factory_path, dbusconn): pass
 
-    @method(in_signature = "o")
+    @method(in_signature="o")
     def SetFactory(self, factory_path, dbusconn): pass
 
-    @method(in_signature = "s", out_signature = "sb")
+    @method(in_signature="s", out_signature="sb")
     def GetInputContextStates(self, ic, dbusconn): pass
 
-    @method(out_signature = "a(sssssssb)")
+    @method(out_signature="a(sssssssb)")
     def RegisterListEngines(self, dbusconn): pass
 
     @method()
     def RegisterReloadEngines(self, dbusconn): pass
 
-    @method(in_signature = "ss")
+    @method(in_signature="ss")
     def RegisterStartEngine(self, lang, name, dbusconn): pass
 
-    @method(in_signature = "ss")
+    @method(in_signature="ss")
     def RegisterRestartEngine(self, lang, name, dbusconn): pass
 
-    @method(in_signature = "ss")
+    @method(in_signature="ss")
     def RegisterStopEngine(self, lang, name, dbusconn): pass
 
     @async_method()
