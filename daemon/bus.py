@@ -215,9 +215,10 @@ class IBus(ibus.Object):
                 if self.__no_engine_notification_show:
                     self.__no_engine_notification_id = self.__notifications.notify(
                             self.__no_engine_notification_id,
-                            "ibus", _("No input engine is available"),
-                            _("IBus does not load any input engines!\nPlease use ibus-setup program to load some input engines."),
-                            ["Setup", _("Setup"), "NoAgain", _("Do not show this message again")],
+                            "ibus", _("Cannot enable input engine"),
+                            _("IBus can not enable input engine, because IBus does not load any input engines!\n"
+                                "Please use ibus-setup program to load some input engines."),
+                            ["Setup", _("Setup"), "NoAgain", _("Don't show this again")],
                             15000)
 
         if context.get_engine() != None:

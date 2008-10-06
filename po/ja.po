@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-10-06 16:13+0800\n"
+"POT-Creation-Date: 2008-10-06 18:12+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -109,21 +109,22 @@ msgid "Please press a key (or a key combination)"
 msgstr "キーもしくはキーの組み合わせを入力してください"
 
 #: daemon/bus.py:218
-msgid "No input engine is available"
+msgid "Cannot enable input engine"
 msgstr ""
 
 #: daemon/bus.py:219
 msgid ""
-"IBus does not load any input engines!\n"
+"IBus can not enable input engine, because IBus does not load any input "
+"engines!\n"
 "Please use ibus-setup program to load some input engines."
 msgstr ""
 
-#: daemon/bus.py:220
+#: daemon/bus.py:221
 msgid "Setup"
 msgstr ""
 
-#: daemon/bus.py:220
-msgid "Do not show this message again"
+#: daemon/bus.py:221
+msgid "Don't show this again"
 msgstr ""
 
 #: setup/setup.glade:7
