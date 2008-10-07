@@ -1,6 +1,8 @@
 [Desktop Entry]
-Name=IBus
-Comment=The daemon of IBus
+Encoding=UTF-8
+Name=iBus
+GenericName=Intelligent Input Bus
+Comment=Intellignent Input Bus
 Exec=ibus
 Icon=ibus
 Terminal=false
