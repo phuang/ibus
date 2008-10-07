@@ -47,7 +47,7 @@ class Config(ibus.Object):
         return self.__config.GetValue(section, name, **kargs)
 
     def set_value(self, section, name, value, **kargs):
-        return self.__config.GetValue(section, name, **kargs)
+        return self.__config.SetValue(section, name, value, **kargs)
 
     def destroy(self):
         if self.__ibusconn != None:
