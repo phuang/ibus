@@ -34,27 +34,55 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
+BUS_NOTIFICATIONS_NAME = "org.freedesktop.Notifications"
+BUS_NOTIFICATIONS_PATH = "/org/freedesktop/Notifications"
+BUS_NOTIFICATIONS_IFACE = "org.freedesktop.Notifications"
+
 class Notifications(ibus.NotificationsBase):
     def __init__ (self, bus):
         super(Notifications, self).__init__(bus)
         self.__bus = bus
-        self.__dbus = dbus.SessionBus()
-        self.__notifications = self.__dbus.get_object(
-                "org.freedesktop.Notifications", "/org/freedesktop/Notifications")
-        self.__notifications.connect_to_signal("NotificationClosed",
-                self.__notification_closed_cb,
-                dbus_interface="org.freedesktop.Notifications")
-        self.__notifications.connect_to_signal("ActionInvoked",
-                self.__action_invoked_cb,
-                dbus_interface="org.freedesktop.Notifications")
+        try:
+            self.__dbus = dbus.SessionBus()
+            self.__dbus.watch_name_owner(BUS_NOTIFICATIONS_NAME,
+                    self.__notifications_name_owner_changed_cb)
+        except:
+            self.__dbus = None
+        self.__notifications = None
         self.__ids = set([])
+        self.__init_notifications()
         self.__status_icons = None
         self.__bus.request_name(ibus.IBUS_NOTIFICATIONS_NAME, 0)
+
+    def __notifications_name_owner_changed_cb(self, unique_name):
+        if unique_name:
+            self.__init_notifications()
+        else:
+            self.__notifications = None
+
+    def __init_notifications(self):
+        if self.__dbus == None:
+            return
+
+        try:
+            self.__notifications = self.__dbus.get_object(
+                    BUS_NOTIFICATIONS_NAME, BUS_NOTIFICATIONS_PATH)
+            self.__notifications.connect_to_signal("NotificationClosed",
+                    self.__notification_closed_cb,
+                    dbus_interface=BUS_NOTIFICATIONS_IFACE)
+            self.__notifications.connect_to_signal("ActionInvoked",
+                    self.__action_invoked_cb,
+                    dbus_interface=BUS_NOTIFICATIONS_IFACE)
+            self.__ids = set([])
+        except:
+            self.__notifications = None
 
     def set_status_icon(self, status_icon):
         self.__status_icon = status_icon
 
     def notify(self, replaces_id, app_icon, summary, body, actions, expire_timeout):
+        if self.__notifications == None:
+            return 0
         if app_icon == "":
             app_icon = "ibus"
         hints = dbus.Dictionary(signature="sv")
@@ -74,13 +102,19 @@ class Notifications(ibus.NotificationsBase):
         return id
 
     def close_notification(self, id):
+        if self.__notifications == None:
+            return
         return self.__notifications.CloseNotifications(id)
 
     def __notification_closed_cb(self, id, reason):
+        if self.__notifications == None:
+            return
         if id in self.__ids:
             self.notification_closed(id, reason)
 
     def __action_invoked_cb(self, id, action_key):
+        if self.__notifications == None:
+            return
         if id in self.__ids:
             self.action_invoked(id, action_key)
 
