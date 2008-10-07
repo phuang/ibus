@@ -93,7 +93,7 @@ class IBus(ibus.Object):
             self.__default_factory = factory
         if factory == None:
             return
-        self.__config.set_value("general", "default_engine", factory.get_object_path())
+        self.__config.set_value("general", "default_factory", factory.get_object_path())
 
     def __load_config_shortcut(self, section, name, default_value):
 
@@ -125,7 +125,7 @@ class IBus(ibus.Object):
         if self.__default_factory != None:
             return
         try:
-            factory_path = self.__config.get_value("general", "default_engine")
+            factory_path = self.__config.get_value("general", "default_factory")
             self.__default_factory = self.__factory_manager.get_factory(factory_path)
         except:
             pass
