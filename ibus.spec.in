@@ -28,8 +28,9 @@ Requires(postun):  %{_sbindir}/alternatives
 
 Requires:   pygtk2
 Requires:   dbus-python >= 0.83.0
-Requires:   pyxdg
 Requires:   gnome-python2-gconf
+Requires:   notification-daemon
+Requires:   pyxdg
 Requires:   iso-codes
 
 %description
