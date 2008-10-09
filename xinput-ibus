@@ -1,8 +1,8 @@
 XIM=ibus
-# define a fake XIM program
-XIM_PROGRAM="/bin/sleep"
-XIM_ARGS="0xffffffff"
+XIM_PROGRAM="/usr/bin/ibus"
+ICON="/usr/share/ibus/icons/ibus.svg"
+# XIM_ARGS="0xffffffff"
 PREFERENCE_PROGRAM=/usr/bin/ibus-setup
-SHORT_DESC="IBus"
+SHORT_DESC="iBus"
 GTK_IM_MODULE=ibus
 QT_IM_MODULE=ibus
