@@ -22,32 +22,32 @@
 
 typedef enum
 {
-    GDK_SHIFT_MASK    = 1 << 0,
-    GDK_LOCK_MASK     = 1 << 1,
-    GDK_CONTROL_MASK  = 1 << 2,
-    GDK_MOD1_MASK     = 1 << 3,
-    GDK_MOD2_MASK     = 1 << 4,
-    GDK_MOD3_MASK     = 1 << 5,
-    GDK_MOD4_MASK     = 1 << 6,
-    GDK_MOD5_MASK     = 1 << 7,
-    GDK_BUTTON1_MASK  = 1 << 8,
-    GDK_BUTTON2_MASK  = 1 << 9,
-    GDK_BUTTON3_MASK  = 1 << 10,
-    GDK_BUTTON4_MASK  = 1 << 11,
-    GDK_BUTTON5_MASK  = 1 << 12,
+    IBUS_SHIFT_MASK    = 1 << 0,
+    IBUS_LOCK_MASK     = 1 << 1,
+    IBUS_CONTROL_MASK  = 1 << 2,
+    IBUS_MOD1_MASK     = 1 << 3,
+    IBUS_MOD2_MASK     = 1 << 4,
+    IBUS_MOD3_MASK     = 1 << 5,
+    IBUS_MOD4_MASK     = 1 << 6,
+    IBUS_MOD5_MASK     = 1 << 7,
+    IBUS_BUTTON1_MASK  = 1 << 8,
+    IBUS_BUTTON2_MASK  = 1 << 9,
+    IBUS_BUTTON3_MASK  = 1 << 10,
+    IBUS_BUTTON4_MASK  = 1 << 11,
+    IBUS_BUTTON5_MASK  = 1 << 12,
   
     /* The next few modifiers are used by XKB, so we skip to the end.
      * Bits 15 - 25 are currently unused. Bit 29 is used internally.
      */
     
-    GDK_SUPER_MASK    = 1 << 26,
-    GDK_HYPER_MASK    = 1 << 27,
-    GDK_META_MASK     = 1 << 28,
+    IBUS_SUPER_MASK    = 1 << 26,
+    IBUS_HYPER_MASK    = 1 << 27,
+    IBUS_META_MASK     = 1 << 28,
     
-    GDK_RELEASE_MASK  = 1 << 30,
+    IBUS_RELEASE_MASK  = 1 << 30,
   
-    GDK_MODIFIER_MASK = 0x5c001fff
-} GdkModifierType;
+    IBUS_MODIFIER_MASK = 0x5c001fff
+} IBusModifierType;
 
 #endif
 
