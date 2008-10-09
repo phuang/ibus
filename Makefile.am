@@ -29,6 +29,7 @@ SUBDIRS = \
 	util \
 	client \
 	setup \
+	src \
 	icons \
 	m4 \
 	po \

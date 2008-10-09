@@ -243,6 +243,7 @@ client/x11/Makefile
 setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop
+src/Makefile
 util/Makefile
 util/IMdkit/Makefile
 util/gconf/Makefile
