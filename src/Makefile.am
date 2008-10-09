@@ -34,6 +34,8 @@ libibus_la_SOURCES = \
 	ibusinternel.h \
 	ibusobject.c \
 	ibusobject.h \
+	ibusattribute.c \
+	ibusattribute.h \
 	$(NULL)
 libibus_la_CFLAGS = \
 	@X11_CFLAGS@ \
