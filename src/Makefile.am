@@ -37,6 +37,7 @@ libibus_la_SOURCES = \
 	ibusattribute.c \
 	ibusattribute.h \
 	ibuskeysyms.h \
+	ibustypes.h \
 	$(NULL)
 libibus_la_CFLAGS = \
 	@X11_CFLAGS@ \
