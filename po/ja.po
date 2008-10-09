@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-10-06 18:12+0800\n"
+"POT-Creation-Date: 2008-10-09 11:39+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -67,7 +67,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:202 setup/setup.glade:364
+#: setup/main.py:202 setup/setup.glade:368
 msgid "Engine"
 msgstr "エンジン"
 
@@ -84,7 +84,7 @@ msgstr "プリロード"
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
 
-#: setup/keyboardshortcut.py:53 setup/setup.glade:208
+#: setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "キーボードショートカット"
 
@@ -131,31 +131,35 @@ msgstr ""
 msgid "IBus - Setup"
 msgstr "IBus - セットアップ"
 
-#: setup/setup.glade:28
+#: setup/setup.glade:32
 msgid "Auto start IBus on session login"
 msgstr "セッションログイン時に IBus を自動的に起動"
 
-#: setup/setup.glade:57
+#: setup/setup.glade:60
 msgid "Trigger:"
 msgstr "トリガー:"
 
-#: setup/setup.glade:85
+#: setup/setup.glade:74
 msgid "Next engine:"
 msgstr "次のエンジン:"
 
-#: setup/setup.glade:101
+#: setup/setup.glade:90
 msgid "Previous engine:"
 msgstr "前のエンジン:"
 
-#: setup/setup.glade:118 setup/setup.glade:167 setup/setup.glade:187
+#: setup/setup.glade:153 setup/setup.glade:170 setup/setup.glade:190
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:242
+#: setup/setup.glade:211
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>キーボードショートカット</b>"
+
+#: setup/setup.glade:243
 msgid "Lookup table orientation:"
 msgstr "候補ウィンドウの向き:"
 
-#: setup/setup.glade:253
+#: setup/setup.glade:254
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -163,23 +167,23 @@ msgstr ""
 "横\n"
 "縦"
 
-#: setup/setup.glade:266
+#: setup/setup.glade:267
 msgid "Auto hide language bar"
 msgstr "言語バーを自動で隠す"
 
-#: setup/setup.glade:278
+#: setup/setup.glade:279
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
-#: setup/setup.glade:304
-msgid "UI"
-msgstr "UI"
+#: setup/setup.glade:305
+msgid "<b>UI</b>"
+msgstr ""
 
-#: setup/setup.glade:325
+#: setup/setup.glade:328
 msgid "General"
 msgstr "一般"
 
-#: setup/setup.glade:381
+#: setup/setup.glade:385
 msgid ""
 "<big><b>iBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -189,30 +193,10 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:406
+#: setup/setup.glade:410
 msgid "About"
 msgstr "About"
 
-#: setup/setup.glade:428
+#: setup/setup.glade:432
 msgid "gtk-close"
 msgstr "gtk-close"
-
-#~ msgid ""
-#~ "IBus\n"
-#~ "\n"
-#~ "Homepage: http://code.google.com/p/ibus\n"
-#~ "Author: Huang Peng <shawn.p.huang@gmail.com>\n"
-#~ "\n"
-#~ "\n"
-#~ "\n"
-#~ msgstr ""
-#~ "IBus\n"
-#~ "\n"
-#~ "Homepage: http://code.google.com/p/ibus\n"
-#~ "Author: Huang Peng <shawn.p.huang@gmail.com>\n"
-#~ "\n"
-#~ "\n"
-#~ "\n"
-
-#~ msgid "IBus has been started! "
-#~ msgstr "IBus が起動しました"
