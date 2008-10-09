@@ -19,7 +19,9 @@
  */
 #ifndef __IBUS_H_
 #define __IBUS_H_
+
 #include "ibusobject.h"
+#include "ibusattribute.h"
 
 #endif
 
