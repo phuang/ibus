@@ -26,11 +26,6 @@ enum {
     LAST_SIGNAL,
 };
 
-
-/* IBusObjectPriv */
-struct _IBusObjectPrivate {
-};
-
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
@@ -80,8 +75,6 @@ ibus_object_class_init     (IBusObjectClass *klass)
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     _parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
-
-    g_type_class_add_private (klass, sizeof (IBusObjectPrivate));
 
     gobject_class->finalize = ibus_object_finalize;
 

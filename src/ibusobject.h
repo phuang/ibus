@@ -51,21 +51,12 @@
 
 G_BEGIN_DECLS
 
-enum IBusCap {
-    IBUS_CAP_PREEDIT = (1),
-    IBUS_CAP_AUX_STRING = (1 << 1),
-    IBUS_CAP_LOOKUP_TABLE = (1 << 2),
-    IBUS_CAP_FOCUS = (1 << 3),
-};
-
 typedef struct _IBusObject IBusObject;
 typedef struct _IBusObjectClass IBusObjectClass;
-typedef struct _IBusObjectPrivate IBusObjectPrivate;
 
 struct _IBusObject {
   GObject parent;
   /* instance members */
-  IBusObjectPrivate *priv;
 };
 
 struct _IBusObjectClass {
