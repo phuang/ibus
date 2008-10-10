@@ -22,6 +22,7 @@
 
 #include <dbus/dbus.h>
 #include "ibusobject.h"
+#include "ibusconnection.h"
 
 /*
  * Type macros.
@@ -59,10 +60,11 @@ struct _IBusServiceClass {
                                  DBusMessage      *message);
 };
 
-GType        ibus_service_get_type        (void);
-IBusService   *ibus_service_new             (void);
-gboolean     ibus_service_handle_message  (IBusService      *service,
-                                         DBusMessage    *message);
+GType        ibus_service_get_type          (void);
+IBusService *ibus_service_new               (void);
+gboolean     ibus_service_handle_message    (IBusService    *service,
+                                             IBusConnection *connection,
+                                             DBusMessage    *message);
 
 G_END_DECLS
 #endif

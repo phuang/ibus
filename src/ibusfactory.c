@@ -18,11 +18,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "ibusservice.h"
+#include "ibusfactory.h"
 #include "ibusinternel.h"
 
-#define IBUS_SERVICE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
+#define IBUS_FACTORY_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))
 
 enum {
     DBUS_MESSAGE,
@@ -30,104 +30,105 @@ enum {
 };
 
 
-/* IBusServicePriv */
-struct _IBusServicePrivate {
+/* IBusFactoryPriv */
+struct _IBusFactoryPrivate {
 };
-typedef struct _IBusServicePrivate IBusServicePrivate;
+typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_service_class_init     (IBusServiceClass   *klass);
-static void     ibus_service_init           (IBusService        *service);
-static void     ibus_service_finalize       (IBusService        *service);
-static gboolean ibus_service_dbus_message   (IBusService        *service,
+static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
+static void     ibus_factory_init           (IBusFactory        *factory);
+static void     ibus_factory_finalize       (IBusFactory        *factory);
+static gboolean ibus_factory_dbus_message   (IBusFactory        *factory,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
 GType
-ibus_service_get_type (void)
+ibus_factory_get_type (void)
 {
     static GType type = 0;
 
     static const GTypeInfo type_info = {
-        sizeof (IBusServiceClass),
+        sizeof (IBusFactoryClass),
         (GBaseInitFunc)     NULL,
         (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_service_class_init,
+        (GClassInitFunc)    ibus_factory_class_init,
         NULL,               /* class finalize */
         NULL,               /* class data */
-        sizeof (IBusService),
+        sizeof (IBusFactory),
         0,
-        (GInstanceInitFunc) ibus_service_init,
+        (GInstanceInitFunc) ibus_factory_init,
     };
 
     if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusService",
+        type = g_type_register_static (IBUS_TYPE_SERVICE,
+                    "IBusFactory",
                     &type_info,
                     (GTypeFlags) 0);
     }
     return type;
 }
 
-IBusService *
-ibus_service_new (void)
+IBusFactory *
+ibus_factory_new (void)
 {
-    return IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, NULL));
+    return IBUS_FACTORY (g_object_new (IBUS_TYPE_FACTORY, NULL));
 }
 
 static void
-ibus_service_class_init (IBusServiceClass *klass)
+ibus_factory_class_init (IBusFactoryClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (IBusServicePrivate));
+    g_type_class_add_private (klass, sizeof (IBusFactoryPrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_service_finalize;
+    gobject_class->finalize = (GObjectFinalizeFunc) ibus_factory_finalize;
 
-    klass->dbus_message = ibus_service_dbus_message;
+#if 0
+    klass->dbus_message = ibus_factory_dbus_message;
 
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_FIRST,
-            G_STRUCT_OFFSET (IBusServiceClass, dbus_message),
+            G_STRUCT_OFFSET (IBusFactoryClass, dbus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
             G_TYPE_BOOLEAN,
             2, G_TYPE_POINTER, G_TYPE_POINTER);
-
+#endif
 }
 
 static void
-ibus_service_init (IBusService *service)
+ibus_factory_init (IBusFactory *factory)
 {
-    // IBusServicePrivate *priv = IBUS_SERVICE_GET_PRIVATE (service);
+    // IBusFactoryPrivate *priv = IBUS_FACTORY_GET_PRIVATE (factory);
 }
 
 static void
-ibus_service_finalize (IBusService *service)
+ibus_factory_finalize (IBusFactory *factory)
 {
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (service));
+    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (factory));
 }
 
 gboolean
-ibus_service_handle_message (IBusService *service, IBusConnection *connection, DBusMessage *message)
+ibus_factory_handle_message (IBusFactory *factory, IBusConnection *connection, DBusMessage *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
     
-    g_signal_emit (service, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
+    g_signal_emit (factory, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
-ibus_service_dbus_message (IBusService *service, IBusConnection *connection, DBusMessage *message)
+ibus_factory_dbus_message (IBusFactory *factory, IBusConnection *connection, DBusMessage *message)
 {
     return FALSE;
 }
