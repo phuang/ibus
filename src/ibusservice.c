@@ -100,7 +100,7 @@ ibus_service_class_init (IBusServiceClass *klass)
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
-            G_TYPE_POINTER, 0);
+            1, G_TYPE_POINTER);
 
 }
 

@@ -22,6 +22,9 @@
 
 #include "ibusobject.h"
 #include "ibusattribute.h"
+#include "ibusconnection.h"
+#include "ibusproxy.h"
+#include "ibusservice.h"
 
 #endif
 

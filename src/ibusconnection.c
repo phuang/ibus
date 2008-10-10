@@ -106,7 +106,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     _signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusConnectionClass, dbus_signal),
             NULL, NULL,
             ibus_marshal_VOID__VOID,
@@ -115,12 +115,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusConnectionClass, dbus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
-            G_TYPE_POINTER, 0);
+            1, G_TYPE_POINTER);
 
     _signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
