@@ -22,6 +22,7 @@
 
 #include <glib-object.h>
 #include "ibusmarshalers.h"
+#include "ibusdebug.h"
 
 /*
  * Type macros.

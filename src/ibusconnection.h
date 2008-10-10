@@ -52,24 +52,26 @@ G_BEGIN_DECLS
 
 typedef struct _IBusConnection IBusConnection;
 typedef struct _IBusConnectionClass IBusConnectionClass;
-typedef struct _IBusConnectionPrivate IBusConnectionPrivate;
 
 struct _IBusConnection {
   IBusObject parent;
   /* instance members */
-  IBusConnectionPrivate *priv;
 };
 
 struct _IBusConnectionClass {
   IBusObjectClass parent;
 
   /* class members */
-  void (* dbus_message)     (IBusConnection   *client);
-  void (* dbus_signal)      (IBusConnection   *client);
+  void (* dbus_message)     (IBusConnection   *connection);
+  void (* dbus_signal)      (IBusConnection   *connection);
+  void (* disconnected)     (IBusConnection   *connection);
 };
 
 GType            ibus_connection_get_type           (void);
 IBusConnection  *ibus_connection_new                (void);
+IBusConnection  *ibus_connection_open               (const gchar        *address);
+IBusConnection  *ibus_connection_open_private       (const gchar        *address);
+gboolean         ibus_connection_get_is_connected   (IBusConnection     *connection);
 
 G_END_DECLS
 #endif
