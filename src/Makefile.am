@@ -37,6 +37,8 @@ libibus_la_SOURCES = \
 	ibusobject.h \
 	ibusconnection.c \
 	ibusconnection.h \
+	ibusproxy.c \
+	ibusproxy.h \
 	ibusattribute.c \
 	ibusattribute.h \
 	ibuskeysyms.h \
