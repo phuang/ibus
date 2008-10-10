@@ -28,7 +28,9 @@ BUILT_SOURCES = \
 	ibusmarshalers.c \
 	$(NULL)
 
+# ibus library
 lib_LTLIBRARIES = libibus.la
+
 libibus_la_SOURCES = \
 	ibus.h \
 	ibusdebug.h \
@@ -59,6 +61,22 @@ libibus_la_LDFLAGS = \
 	@GLIB2_LIBS@ \
 	@DBUS_LIBS@ \
 	$(NULL)
+
+# ibus programs
+bin_PROGRAMS = ibus-test
+ibus_test_SOURCES = \
+	test.c \
+	$(NULL)
+ibus_test_CFLAGS = \
+	@X11_CFLAGS@ \
+	@GLIB2_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	$(NULL)
+ibus_test_LDFLAGS = \
+	libibus.la \
+	$(NULL)
+
 
 # gen marshal
 ibusmarshalers.h: stamp-ibusmarshalers.h
