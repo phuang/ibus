@@ -109,8 +109,9 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_SIGNAL_RUN_FIRST,
             G_STRUCT_OFFSET (IBusConnectionClass, dbus_message),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            ibus_marshal_BOOLEAN__POINTER,
+            G_TYPE_BOOLEAN,
+            G_TYPE_POINTER, 0);
     
     _signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
@@ -169,7 +170,7 @@ _watch_event_cb (GIOChannel *channel, GIOCondition condition, DBusWatch *watch)
         flags |= DBUS_WATCH_HANGUP;
     
     if (!dbus_watch_handle (watch, flags))
-        ibus_warning ("Out of memory!");
+        g_warning ("Out of memory!");
     
     return TRUE;
 }
@@ -232,7 +233,7 @@ static gboolean
 _timeout_event_cb (DBusTimeout *timeout)
 {
     if (!dbus_timeout_handle (timeout))
-        ibus_warning ("Out of memory!");
+        g_warning ("Out of memory!");
     return TRUE;
 }
 
@@ -274,24 +275,52 @@ _connection_timeout_toggled_cb (DBusTimeout *timeout, IBusConnection *connection
         _connection_remove_timeout_cb (timeout, connection);
 }
 
+static DBusHandlerResult
+_connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
+{
+    gboolean retval = FALSE;
+    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+        dbus_connection_unref (priv->connection);
+        priv->connection = NULL;
+        priv->shared = FALSE;
+        g_signal_emit (connection, _signals[DISCONNECTED], 0);
+        return DBUS_HANDLER_RESULT_HANDLED;
+    }
+
+    g_signal_emit (connection, _signals[DBUS_MESSAGE], 0, message, &retval);
+    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
 static void
 _setup_connection (IBusConnection *connection)
 {
+    gboolean result;
     IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    
     g_assert (priv->connection != NULL);
     g_assert (dbus_connection_get_is_connected (priv->connection));
 
-    dbus_connection_set_watch_functions (priv->connection,
-                (DBusAddWatchFunction) _connection_add_watch_cb,
-                (DBusRemoveWatchFunction) _connection_remove_watch_cb,
-                (DBusWatchToggledFunction) _connection_watch_toggled_cb,
-                connection, NULL);
+    result = dbus_connection_set_watch_functions (priv->connection,
+                    (DBusAddWatchFunction) _connection_add_watch_cb,
+                    (DBusRemoveWatchFunction) _connection_remove_watch_cb,
+                    (DBusWatchToggledFunction) _connection_watch_toggled_cb,
+                    connection, NULL);
+    g_warn_if_fail (result);
 
-    dbus_connection_set_timeout_functions (priv->connection,
-                (DBusAddTimeoutFunction) _connection_add_timeout_cb,
-                (DBusRemoveTimeoutFunction) _connection_remove_timeout_cb,
-                (DBusTimeoutToggledFunction) _connection_timeout_toggled_cb,
-                connection, NULL);
+
+    result = dbus_connection_set_timeout_functions (priv->connection,
+                    (DBusAddTimeoutFunction) _connection_add_timeout_cb,
+                    (DBusRemoveTimeoutFunction) _connection_remove_timeout_cb,
+                    (DBusTimeoutToggledFunction) _connection_timeout_toggled_cb,
+                    connection, NULL);
+    g_warn_if_fail (result);
+
+    result = dbus_connection_add_filter (priv->connection,
+                    (DBusHandleMessageFunction) _connection_handle_message_cb,
+                    connection, NULL);
+    g_warn_if_fail (result);
 }
 
 IBusConnection *
@@ -309,7 +338,7 @@ ibus_connection_open (const gchar *address)
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open (address, &error);
     if (dbus_connection == NULL) {
-        ibus_warning ("Connect to %s failed. %s.", address, error.message);
+        g_warning ("Connect to %s failed. %s.", address, error.message);
         dbus_error_free (&error);
         return NULL;
     }
@@ -345,7 +374,7 @@ ibus_connection_open_private (const gchar *address)
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open_private (address, &error);
     if (dbus_connection == NULL) {
-        ibus_warning ("Connect to %s failed. %s.", address, error.message);
+        g_warning ("Connect to %s failed. %s.", address, error.message);
         dbus_error_free (&error);
         return NULL;
     }
