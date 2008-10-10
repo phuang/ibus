@@ -18,11 +18,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "ibusproxy.h"
+#include "ibusservice.h"
 #include "ibusinternel.h"
 
-#define IBUS_PROXY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_PROXY, IBusProxyPrivate))
+#define IBUS_SERVICE_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
 
 enum {
     DBUS_MESSAGE,
@@ -30,73 +30,73 @@ enum {
 };
 
 
-/* IBusProxyPriv */
-struct _IBusProxyPrivate {
+/* IBusServicePriv */
+struct _IBusServicePrivate {
 };
-typedef struct _IBusProxyPrivate IBusProxyPrivate;
+typedef struct _IBusServicePrivate IBusServicePrivate;
 
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_proxy_class_init  (IBusProxyClass    *klass);
-static void     ibus_proxy_init        (IBusProxy         *proxy);
-static void     ibus_proxy_finalize    (IBusProxy         *proxy);
+static void     ibus_service_class_init  (IBusServiceClass    *klass);
+static void     ibus_service_init        (IBusService         *service);
+static void     ibus_service_finalize    (IBusService         *service);
 
-static gboolean ibus_proxy_dbus_message(IBusProxy         *proxy,
+static gboolean ibus_service_dbus_message(IBusService         *service,
                                         DBusMessage            *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
 GType
-ibus_proxy_get_type (void)
+ibus_service_get_type (void)
 {
     static GType type = 0;
 
     static const GTypeInfo type_info = {
-        sizeof (IBusProxyClass),
+        sizeof (IBusServiceClass),
         (GBaseInitFunc)     NULL,
         (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_proxy_class_init,
+        (GClassInitFunc)    ibus_service_class_init,
         NULL,               /* class finalize */
         NULL,               /* class data */
-        sizeof (IBusProxy),
+        sizeof (IBusService),
         0,
-        (GInstanceInitFunc) ibus_proxy_init,
+        (GInstanceInitFunc) ibus_service_init,
     };
 
     if (type == 0) {
         type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusProxy",
+                    "IBusService",
                     &type_info,
                     (GTypeFlags)0);
     }
     return type;
 }
 
-IBusProxy *
-ibus_proxy_new (void)
+IBusService *
+ibus_service_new (void)
 {
-    return IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY, NULL));
+    return IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, NULL));
 }
 
 static void
-ibus_proxy_class_init (IBusProxyClass *klass)
+ibus_service_class_init (IBusServiceClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (IBusProxyPrivate));
+    g_type_class_add_private (klass, sizeof (IBusServicePrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_proxy_finalize;
+    gobject_class->finalize = (GObjectFinalizeFunc) ibus_service_finalize;
 
-    klass->dbus_message = ibus_proxy_dbus_message;
+    klass->dbus_message = ibus_service_dbus_message;
 
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_FIRST,
-            G_STRUCT_OFFSET (IBusProxyClass, dbus_message),
+            G_STRUCT_OFFSET (IBusServiceClass, dbus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
@@ -105,29 +105,29 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 }
 
 static void
-ibus_proxy_init (IBusProxy *proxy)
+ibus_service_init (IBusService *service)
 {
-    // IBusProxyPrivate *priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    // IBusServicePrivate *priv = IBUS_SERVICE_GET_PRIVATE (service);
 }
 
 static void
-ibus_proxy_finalize (IBusProxy *proxy)
+ibus_service_finalize (IBusService *service)
 {
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (proxy));
+    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (service));
 }
 
 gboolean
-ibus_proxy_handle_message (IBusProxy *proxy, DBusMessage *message)
+ibus_service_handle_message (IBusService *service, DBusMessage *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
     
-    g_signal_emit (proxy, _signals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (service, _signals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
-ibus_proxy_dbus_message (IBusProxy *proxy, DBusMessage *message)
+ibus_service_dbus_message (IBusService *service, DBusMessage *message)
 {
     return FALSE;
 }
