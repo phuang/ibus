@@ -31,6 +31,7 @@ BUILT_SOURCES = \
 lib_LTLIBRARIES = libibus.la
 libibus_la_SOURCES = \
 	ibus.h \
+	ibusdebug.h \
 	ibusinternel.h \
 	ibusobject.c \
 	ibusobject.h \
