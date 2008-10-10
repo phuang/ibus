@@ -150,7 +150,7 @@ ibus_connection_finalize (IBusConnection *connection)
         dbus_connection_close (priv->connection);
         dbus_connection_unref (priv->connection);
         priv->connection = NULL;
-        return;
+        goto _out;
     }
 
     if (priv->shared && priv->connection) {
@@ -160,8 +160,10 @@ ibus_connection_finalize (IBusConnection *connection)
         }
         dbus_connection_unref (priv->connection);
         priv->connection = NULL;
-        return;
+        goto _out;
     }
+_out:
+    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (connection));
 }
 
 static gboolean
