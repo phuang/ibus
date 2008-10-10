@@ -20,6 +20,7 @@
 #ifndef __IBUS_CONNECTION_H_
 #define __IBUS_CONNECTION_H_
 
+#include <dbus/dbus.h>
 #include "ibusobject.h"
 
 /*
@@ -40,14 +41,6 @@
 #define IBUS_CONNECTION_GET_CLASS(obj)   \
     (G_TYPE_CHECK_GET_CLASS ((obj), IBUS_TYPE_CONNECTION, IBusConnectionClass))
 
-#if 0
-#define DEBUG_FUNCTION_IN   g_debug("%s IN", __FUNCTION__);
-#define DEBUG_FUNCTION_OUT  g_debug("%s OUT", __FUNCTION__);
-#else
-#define DEBUG_FUNCTION_IN
-#define DEBUG_FUNCTION_OUT
-#endif
-
 G_BEGIN_DECLS
 
 typedef struct _IBusConnection IBusConnection;
@@ -62,9 +55,11 @@ struct _IBusConnectionClass {
   IBusObjectClass parent;
 
   /* class members */
-  void (* dbus_message)     (IBusConnection   *connection);
-  void (* dbus_signal)      (IBusConnection   *connection);
-  void (* disconnected)     (IBusConnection   *connection);
+  gboolean  (* dbus_message)    (IBusConnection   *connection,
+                                 DBusMessage      *message);
+  gboolean  (* dbus_signal)     (IBusConnection   *connection,
+                                 DBusMessage      *message);
+  void      (* disconnected)    (IBusConnection   *connection);
 };
 
 GType            ibus_connection_get_type           (void);
@@ -72,6 +67,7 @@ IBusConnection  *ibus_connection_new                (void);
 IBusConnection  *ibus_connection_open               (const gchar        *address);
 IBusConnection  *ibus_connection_open_private       (const gchar        *address);
 gboolean         ibus_connection_get_is_connected   (IBusConnection     *connection);
+DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
 
 G_END_DECLS
 #endif

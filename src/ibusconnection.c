@@ -18,7 +18,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <dbus/dbus.h>
 #include "ibusconnection.h"
 #include "ibusinternel.h"
 
@@ -47,6 +46,12 @@ static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
 static void     ibus_connection_init        (IBusConnection         *connection);
 static void     ibus_connection_finalize    (IBusConnection         *connection);
 
+static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
+                                             DBusMessage            *message);
+static gboolean ibus_connection_dbus_signal (IBusConnection         *connection,
+                                             DBusMessage            *message);
+static void     ibus_connection_disconnected(IBusConnection         *connection);
+
 static IBusObjectClass  *_parent_class = NULL;
 static GHashTable       *_connections = NULL;
 
@@ -54,7 +59,7 @@ GType
 ibus_connection_get_type (void)
 {
     static GType type = 0;
-    
+
     static const GTypeInfo type_info = {
         sizeof (IBusConnectionClass),
         (GBaseInitFunc)     NULL,
@@ -73,7 +78,7 @@ ibus_connection_get_type (void)
                     &type_info,
                     (GTypeFlags)0);
     }
-    
+
     return type;
 }
 
@@ -94,6 +99,10 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_connection_finalize;
 
+    klass->dbus_message = ibus_connection_dbus_message;
+    klass->dbus_signal  = ibus_connection_dbus_signal;
+    klass->disconnected = ibus_connection_disconnected;
+
     _signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
@@ -102,7 +111,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
@@ -112,7 +121,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
             G_TYPE_POINTER, 0);
-    
+
     _signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
@@ -156,6 +165,24 @@ ibus_connection_finalize (IBusConnection *connection)
 }
 
 static gboolean
+ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
+{
+    return FALSE;
+}
+
+static gboolean
+ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
+{
+    return FALSE;
+}
+
+static void
+ibus_connection_disconnected (IBusConnection *connection)
+{
+}
+
+
+static gboolean
 _watch_event_cb (GIOChannel *channel, GIOCondition condition, DBusWatch *watch)
 {
     guint flags = 0;
@@ -168,10 +195,10 @@ _watch_event_cb (GIOChannel *channel, GIOCondition condition, DBusWatch *watch)
         flags |= DBUS_WATCH_ERROR;
     if (condition & G_IO_HUP)
         flags |= DBUS_WATCH_HANGUP;
-    
+
     if (!dbus_watch_handle (watch, flags))
         g_warning ("Out of memory!");
-    
+
     return TRUE;
 }
 
@@ -198,13 +225,13 @@ _connection_add_watch_cb (DBusWatch *watch, IBusConnection *connection)
 
     channel = g_io_channel_unix_new (dbus_watch_get_unix_fd (watch));
 
-    source_id = g_io_add_watch (channel, condition, 
+    source_id = g_io_add_watch (channel, condition,
                 (GIOFunc) _watch_event_cb, watch);
-    
+
     dbus_watch_set_data (watch, (void *) source_id, NULL);
 
     g_io_channel_unref (channel);
-    
+
     return TRUE;
 }
 
@@ -214,7 +241,7 @@ _connection_remove_watch_cb (DBusWatch *watch, IBusConnection *connection)
     guint source_id;
     source_id = (guint) dbus_watch_get_data (watch);
     g_return_if_fail (source_id != (guint) NULL);
-    
+
     g_source_remove (source_id);
 
     dbus_watch_set_data (watch, NULL, NULL);
@@ -245,12 +272,12 @@ _connection_add_timeout_cb (DBusTimeout *timeout, IBusConnection *connection)
 
     if (!dbus_timeout_get_enabled (timeout))
         return TRUE;
-    
+
     g_assert (dbus_timeout_get_data (timeout) == NULL);
 
     source_id = g_timeout_add (dbus_timeout_get_interval (timeout),
                                 (GSourceFunc)_timeout_event_cb, timeout);
-    
+
     dbus_timeout_set_data (timeout, (void *)source_id, NULL);
     return TRUE;
 }
@@ -261,7 +288,7 @@ _connection_remove_timeout_cb (DBusTimeout *timeout, IBusConnection *connection)
     guint source_id;
     source_id = (guint) dbus_timeout_get_data (timeout);
     g_return_if_fail (source_id != (guint) NULL);
-    
+
     g_source_remove (source_id);
     dbus_timeout_set_data (timeout, NULL, NULL);
 }
@@ -298,7 +325,7 @@ _setup_connection (IBusConnection *connection)
 {
     gboolean result;
     IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-    
+
     g_assert (priv->connection != NULL);
     g_assert (dbus_connection_get_is_connected (priv->connection));
 
@@ -334,7 +361,7 @@ ibus_connection_open (const gchar *address)
 
     DBusError error;
     DBusConnection *dbus_connection;
-    
+
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open (address, &error);
     if (dbus_connection == NULL) {
@@ -370,7 +397,7 @@ ibus_connection_open_private (const gchar *address)
 
     DBusError error;
     DBusConnection *dbus_connection;
-    
+
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open_private (address, &error);
     if (dbus_connection == NULL) {
@@ -378,15 +405,15 @@ ibus_connection_open_private (const gchar *address)
         dbus_error_free (&error);
         return NULL;
     }
-    
+
     IBusConnection *connection;
     connection = ibus_connection_new ();
     IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
     priv->connection = dbus_connection;
     priv->shared = FALSE;
-    
+
     _setup_connection (connection);
-    
+
     return connection;
 }
 
@@ -398,4 +425,11 @@ ibus_connection_get_is_connected (IBusConnection *connection)
         return FALSE;
     }
     return dbus_connection_get_is_connected (priv->connection);
+}
+
+DBusConnection *
+ibus_connection_get_connection (IBusConnection *connection)
+{
+    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    return priv->connection;
 }
