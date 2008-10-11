@@ -45,6 +45,8 @@ libibus_la_SOURCES = \
 	ibusservice.h \
 	ibusfactory.c \
 	ibusfactory.h \
+	ibusengine.c \
+	ibusengine.h \
 	ibusattribute.c \
 	ibusattribute.h \
 	ibuskeysyms.h \

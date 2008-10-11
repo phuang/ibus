@@ -26,6 +26,7 @@
 #include "ibusproxy.h"
 #include "ibusservice.h"
 #include "ibusfactory.h"
+#include "ibusengine.h"
 
 #endif
 
