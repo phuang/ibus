@@ -25,7 +25,20 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE, IBusEnginePrivate))
 
 enum {
-    DBUS_MESSAGE,
+    KEY_PRESS,
+    FOCUS_IN,
+    FOCUS_OUT,
+    RESET,
+    ENABLE,
+    DISBALE,
+    SET_CURSOR_LOCATION,
+    PAGE_UP,
+    PAGE_DOWN,
+    CURSOR_UP,
+    CURSOR_DOWN,
+    PROPERTY_ACTIVATE,
+    PROPERTY_SHOW,
+    PROPERTY_HIDE,
     LAST_SIGNAL,
 };
 
@@ -44,20 +57,46 @@ typedef struct _IBusEnginePrivate IBusEnginePrivate;
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_engine_class_init      (IBusEngineClass   *klass);
-static void     ibus_engine_init            (IBusEngine        *engine);
-static void     ibus_engine_finalize        (IBusEngine        *engine);
-static void     ibus_engine_set_property    (IBusEngine        *engine,
-                                             guint              prop_id,
+static void     ibus_engine_class_init      (IBusEngineClass    *klass);
+static void     ibus_engine_init            (IBusEngine         *engine);
+static void     ibus_engine_finalize        (IBusEngine         *engine);
+static void     ibus_engine_set_property    (IBusEngine         *engine,
+                                             guint               prop_id,
                                              const GValue       *value,
                                              GParamSpec         *pspec);
-static void     ibus_engine_get_property    (IBusEngine        *engine,
-                                             guint              prop_id,
+static void     ibus_engine_get_property    (IBusEngine         *engine,
+                                             guint               prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static gboolean ibus_engine_dbus_message    (IBusEngine        *engine,
+static gboolean ibus_engine_dbus_message    (IBusEngine         *engine,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
+static gboolean ibus_engine_key_press       (IBusEngine         *engine,
+                                             guint               keyval,
+                                             gboolean            is_press,
+                                             guint               state);
+static void     ibus_engine_focus_in        (IBusEngine         *engine);
+static void     ibus_engine_focus_out       (IBusEngine         *engine);
+static void     ibus_engine_reset           (IBusEngine         *engine);
+static void     ibus_engine_enable          (IBusEngine         *engine);
+static void     ibus_engine_disable         (IBusEngine         *engine);
+static void     ibus_engine_set_cursor_location
+                                            (IBusEngine         *engine,
+                                             gint                x,
+                                             gint                y,
+                                             gint                w,
+                                             gint                h);
+static void     ibus_engine_page_up         (IBusEngine         *engine);
+static void     ibus_engine_page_down       (IBusEngine         *engine);
+static void     ibus_engine_cursor_up       (IBusEngine         *engine);
+static void     ibus_engine_cursor_down     (IBusEngine         *engine);
+static void     ibus_engine_property_activate
+                                            (IBusEngine         *engine,
+                                             const gchar        *prop_name,
+                                             gint                prop_state);
+static void     ibus_engine_property_show   (IBusEngine         *engine);
+static void     ibus_engine_property_hide   (IBusEngine         *engine);
+
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -123,6 +162,22 @@ ibus_engine_class_init (IBusEngineClass *klass)
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_engine_dbus_message;
 
+    klass->key_press    = ibus_engine_key_press;
+    klass->focus_in     = ibus_engine_focus_in;
+    klass->focus_out    = ibus_engine_focus_out;
+    klass->reset        = ibus_engine_reset;
+    klass->enable       = ibus_engine_enable;
+    klass->disable      = ibus_engine_disable;
+    klass->page_up      = ibus_engine_page_up;
+    klass->page_down    = ibus_engine_page_down;
+    klass->cursor_up    = ibus_engine_cursor_up;
+    klass->cursor_down  = ibus_engine_cursor_down;
+    klass->property_activate    = ibus_engine_property_activate;
+    klass->property_show        = ibus_engine_property_show;
+    klass->property_hide        = ibus_engine_property_hide;
+    klass->set_cursor_location  = ibus_engine_set_cursor_location;
+
+
     /* install properties */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,
@@ -131,6 +186,81 @@ ibus_engine_class_init (IBusEngineClass *klass)
                         "The connection of engine object",
                         IBUS_TYPE_CONNECTION,
                         G_PARAM_READABLE));
+
+    /* install signals */
+    _signals[KEY_PRESS] =
+        g_signal_new (I_("key_press"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_BOOLEAN, 3,
+            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+
+
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_CONNECTION,
+                    g_param_spec_object ("connection",
+                        "connection",
+                        "The connection of engine object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READABLE));
+
+    /* install signals */
+    _signals[KEY_PRESS] =
+        g_signal_new (I_("key_press"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_BOOLEAN, 3,
+            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+
+
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_CONNECTION,
+                    g_param_spec_object ("connection",
+                        "connection",
+                        "The connection of engine object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READABLE));
+
+    /* install signals */
+    _signals[KEY_PRESS] =
+        g_signal_new (I_("key_press"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_BOOLEAN, 3,
+            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+
+
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_CONNECTION,
+                    g_param_spec_object ("connection",
+                        "connection",
+                        "The connection of engine object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READABLE));
+
+    /* install signals */
+    _signals[KEY_PRESS] =
+        g_signal_new (I_("key_press"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_BOOLEAN, 3,
+            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+
 }
 
 static void
@@ -178,16 +308,6 @@ ibus_engine_get_property (IBusEngine *engine,
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
     }
-}
-
-gboolean
-ibus_engine_handle_message (IBusEngine *engine, IBusConnection *connection, DBusMessage *message)
-{
-    gboolean retval = FALSE;
-    g_return_val_if_fail (message != NULL, FALSE);
-
-    g_signal_emit (engine, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
-    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean

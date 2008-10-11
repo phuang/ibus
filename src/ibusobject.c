@@ -78,6 +78,7 @@ ibus_object_class_init     (IBusObjectClass *klass)
 
     gobject_class->finalize = ibus_object_finalize;
 
+    /* install signals */
     _signals[DESTROY] =
         g_signal_new (I_("destroy"),
             G_TYPE_FROM_CLASS (gobject_class),
