@@ -51,3 +51,18 @@ ibus_lookup_table_free (IBusLookupTable *table)
     g_assert (table != NULL);
     g_slice_free (IBusLookupTable, table);
 }
+
+IBusLookupTable *
+ibus_lookup_tabel_from_dbus_message (DBusMessageIter *iter)
+{
+    g_assert (iter != NULL);
+}
+
+gboolean
+ibus_lookup_tabel_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter)
+{
+    g_assert (table != NULL);
+    g_assert (iter != NULL);
+}
+
+

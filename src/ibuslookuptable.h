@@ -45,12 +45,11 @@ GType                ibus_lookup_table_get_type ();
 IBusLookupTable     *ibus_lookup_table_new      ();
 IBusLookupTable     *ibus_lookup_table_copy     (IBusLookupTable    *table);
 void                 ibus_lookup_table_free     (IBusLookupTable    *table);
-void                 ibus_lookup_tabel_from_dbus_message
+IBusLookupTable     *ibus_lookup_tabel_from_dbus_message
+                                                (DBusMessageIter    *iter);
+gboolean             ibus_lookup_tabel_to_dbus_message
                                                 (IBusLookupTable    *table,
-                                                 DBusMessage        *message);
-void                 ibus_lookup_tabel_to_dbus_message
-                                                (IBusLookupTable    *table,
-                                                 DBusMessage        *message);
+                                                 DBusMessageIter    *iter);
 
 G_END_DECLS
 #endif
