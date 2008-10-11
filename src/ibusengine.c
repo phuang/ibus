@@ -315,3 +315,77 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
 {
     return FALSE;
 }
+
+static gboolean
+ibus_engine_key_press (IBusEngine *engine, guint keyval, gboolean is_press, guint state)
+{
+    return FALSE;
+}
+
+static void
+ibus_engine_focus_in (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_focus_out (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_reset (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_enable (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_disable (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_set_cursor_location (IBusEngine *engine,
+        gint x, gint y, gint w, gint h)
+{
+}
+
+static void
+ibus_engine_page_up (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_page_down (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_cursor_up (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_cursor_down (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_property_activate (IBusEngine *engine,
+    const gchar *prop_name, gint prop_state)
+{
+}
+
+static void
+ibus_engine_property_show (IBusEngine *engine)
+{
+}
+
+static void
+ibus_engine_property_hide (IBusEngine *engine)
+{
+}
+
