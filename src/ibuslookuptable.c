@@ -134,7 +134,29 @@ ibus_lookup_tabel_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);
+    
+    gint i;
+    DBusMessageIter sub_iter, sub_sub_iter, sub_sub_sub_iter;
 
+    dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
+
+    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_INT32, &table->page_size);
+    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_INT32, &table->cursor_pos);
+    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_BOOLEAN, &table->cursor_visible);
+    
+    dbus_message_iter_open_container (&sub_iter, DBUS_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
+
+    for (i = 0; i < table->candidates->len; i++) {
+        dbus_message_iter_open_container (&sub_sub_iter, DBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
+        
+        IBusCandidate *candidate = &g_array_index (table->candidates, IBusCandidate, i);
+        dbus_message_iter_append_basic (&sub_sub_sub_iter, DBUS_TYPE_STRING, &candidate->text);
+        ibus_attr_list_to_dbus_message (candidate->attr_list, &sub_sub_sub_iter);
+        dbus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);
+    }
+    
+    dbus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+    dbus_message_iter_close_container (iter, &sub_iter);
     return TRUE;
 }
 
