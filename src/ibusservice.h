@@ -65,10 +65,12 @@ struct _IBusServiceClass {
 };
 
 GType        ibus_service_get_type          (void);
-IBusService *ibus_service_new               (void);
+IBusService *ibus_service_new               (const gchar    *object_path);
 gboolean     ibus_service_handle_message    (IBusService    *service,
                                              IBusConnection *connection,
                                              DBusMessage    *message);
+gboolean     ibus_service_add_to_connection (IBusService    *service,
+                                             IBusConnection *connection);
 
 G_END_DECLS
 #endif

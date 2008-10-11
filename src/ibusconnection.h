@@ -46,6 +46,8 @@ G_BEGIN_DECLS
 typedef struct _IBusConnection IBusConnection;
 typedef struct _IBusConnectionClass IBusConnectionClass;
 
+typedef gboolean (* IBusMessageFunc) (IBusConnection *connection, DBusMessage *message, gpointer user_data);
+
 struct _IBusConnection {
   IBusObject parent;
   /* instance members */
@@ -69,6 +71,14 @@ IBusConnection  *ibus_connection_open               (const gchar        *address
 IBusConnection  *ibus_connection_open_private       (const gchar        *address);
 gboolean         ibus_connection_get_is_connected   (IBusConnection     *connection);
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
+gboolean         ibus_connection_register_object_path
+                                                    (IBusConnection     *connection,
+                                                     const gchar        *path,
+                                                     IBusMessageFunc    message_func,
+                                                     gpointer           user_data);
+gboolean         ibus_connection_unregister_object_path
+                                                    (IBusConnection     *connection,
+                                                     const gchar        *path);
 
 G_END_DECLS
 #endif

@@ -24,6 +24,8 @@
 #define IBUS_SERVICE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
 
+#define DECLARE_PRIV IBusServicePrivate *priv = IBUS_SERVICE_GET_PRIVATE(service)
+
 enum {
     DBUS_MESSAGE,
     DBUS_SIGNAL,
@@ -33,6 +35,8 @@ enum {
 
 /* IBusServicePriv */
 struct _IBusServicePrivate {
+    gchar *object_path;
+    GList *connections;
 };
 typedef struct _IBusServicePrivate IBusServicePrivate;
 
@@ -78,9 +82,15 @@ ibus_service_get_type (void)
 }
 
 IBusService *
-ibus_service_new (void)
+ibus_service_new (const gchar *object_path)
 {
-    return IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, NULL));
+    IBusService *service;
+    service = IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, NULL));
+
+    DECLARE_PRIV;
+    priv->object_path = g_strdup (object_path);
+
+    return service;
 }
 
 static void
@@ -128,6 +138,8 @@ ibus_service_init (IBusService *service)
 static void
 ibus_service_finalize (IBusService *service)
 {
+    DECLARE_PRIV;
+    g_free (priv->object_path);
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (service));
 }
 
@@ -152,3 +164,83 @@ ibus_service_dbus_signal (IBusService *service, IBusConnection *connection, DBus
 {
     return FALSE;
 }
+
+
+gboolean
+_service_message_function (IBusConnection *connection, DBusMessage *message, IBusService *service)
+{
+    return ibus_service_handle_message (service, connection, message);
+}
+
+gboolean
+ibus_service_add_to_connection (IBusService *service, IBusConnection *connection)
+{
+    g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
+    g_return_val_if_fail (IBUS_IS_CONNECTION (connection), FALSE);
+
+    DECLARE_PRIV;
+
+    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+    g_return_val_if_fail (g_list_find (priv->connections, connection) == NULL, FALSE);
+
+    gboolean retval;
+    retval = ibus_connection_register_object_path (connection, priv->object_path,
+                    (IBusMessageFunc *) _service_message_function, service);
+    if (!retval) {
+        g_warning ("Out of memory!");
+        return FALSE;
+    }
+
+    priv->connections = g_list_append (priv->connections, connection);
+
+    return retval;
+}
+
+gboolean
+ibus_service_remove_from_connection (IBusService *service, IBusConnection *connection)
+{
+    g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
+    g_return_val_if_fail (IBUS_IS_CONNECTION (connection), FALSE);
+
+    DECLARE_PRIV;
+
+    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+    g_return_val_if_fail (g_list_find (priv->connections, connection) != NULL, FALSE);
+
+    gboolean retval;
+    retval = ibus_connection_unregister_object_path (connection, priv->object_path);
+
+    if (!retval) {
+        g_warning ("Out of memory!");
+        return FALSE;
+    }
+    priv->connections = g_list_remove (priv->connections, connection);
+    return TRUE;
+}
+
+gboolean
+ibus_service_remove_from_all_connections (IBusService *service)
+{
+    g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
+
+    DECLARE_PRIV;
+
+    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+
+    GList *element = priv->connections;
+    while (element != NULL) {
+        IBusConnection *connection = IBUS_CONNECTION (element->data);
+
+        gboolean retval;
+        retval = ibus_connection_unregister_object_path (connection, priv->object_path);
+        if (!retval) {
+            g_warning ("Out of memory");
+        }
+        element = element->next;
+    }
+
+    g_list_free (priv->connections);
+    priv->connections = NULL;
+    return TRUE;
+}
+

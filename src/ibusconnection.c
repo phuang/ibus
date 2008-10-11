@@ -23,6 +23,7 @@
 
 #define IBUS_CONNECTION_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONNECTION, IBusConnectionPrivate))
+#define DECLARE_PRIV IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE(connection)
 
 enum {
     DBUS_SIGNAL,
@@ -147,7 +148,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 static void
 ibus_connection_init (IBusConnection *connection)
 {
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
     priv->connection = NULL;
     priv->shared = FALSE;
 }
@@ -155,7 +156,7 @@ ibus_connection_init (IBusConnection *connection)
 static void
 ibus_connection_finalize (IBusConnection *connection)
 {
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
 
     if (!priv->shared && priv->connection) {
         dbus_connection_close (priv->connection);
@@ -190,7 +191,7 @@ ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
 static gboolean
 ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
 {
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
 
     if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
         dbus_connection_unref (priv->connection);
@@ -336,11 +337,21 @@ _connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *mes
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
+static gint
+_get_slot ()
+{
+    static gint slot = -1;
+    if (slot == -1) {
+        dbus_connection_allocate_data_slot (&slot);
+    }
+    return slot;
+}
+
 static void
 ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus_connection, gboolean shared)
 {
     gboolean result;
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
 
     g_assert (priv->connection == NULL);
     g_assert (dbus_connection != NULL);
@@ -368,6 +379,7 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
                     (DBusHandleMessageFunction) _connection_handle_message_cb,
                     connection, NULL);
     g_warn_if_fail (result);
+    dbus_connection_set_data (priv->connection, _get_slot(), connection, NULL);
 }
 
 IBusConnection *
@@ -430,7 +442,7 @@ ibus_connection_open_private (const gchar *address)
 gboolean
 ibus_connection_get_is_connected (IBusConnection *connection)
 {
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
     if (priv->connection == NULL) {
         return FALSE;
     }
@@ -440,6 +452,76 @@ ibus_connection_get_is_connected (IBusConnection *connection)
 DBusConnection *
 ibus_connection_get_connection (IBusConnection *connection)
 {
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    DECLARE_PRIV;
     return priv->connection;
 }
+
+typedef struct _VTableCallData {
+    IBusMessageFunc message_func;
+    gpointer user_data;
+}VTableCallData;
+
+void
+_unregister_function (DBusConnection *dbus_connection, VTableCallData *data)
+{
+    g_slice_free (VTableCallData, data);
+}
+
+DBusHandlerResult
+_message_function (DBusConnection *dbus_connection, DBusMessage *message, VTableCallData *data)
+{
+    gboolean retval;
+    IBusConnection *connection;
+
+    connection = IBUS_CONNECTION (dbus_connection_get_data (dbus_connection, _get_slot()));
+    retval = data->message_func (connection, message, data->user_data);
+
+    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+gboolean
+ibus_connection_register_object_path (IBusConnection *connection,
+        const gchar *path, IBusMessageFunc message_func, gpointer user_data)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (path != NULL);
+    g_assert (message_func != NULL);
+
+    DECLARE_PRIV;
+    gboolean retval;
+    DBusObjectPathVTable vtable = {0};
+    VTableCallData *data;
+
+    vtable.unregister_function = (DBusObjectPathUnregisterFunction) _unregister_function;
+    vtable.message_function = (DBusObjectPathMessageFunction) _message_function;
+
+    data = g_slice_new (VTableCallData);
+    data->message_func = message_func;
+    data->user_data = user_data;
+
+    retval = dbus_connection_register_object_path (priv->connection, path, &vtable, data);
+    if (!retval) {
+        g_warning ("Out of memory!");
+        return FALSE;
+    }
+    return TRUE;
+}
+
+gboolean
+ibus_connection_unregister_object_path (IBusConnection *connection, const gchar *path)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (path != NULL);
+
+    DECLARE_PRIV;
+    gboolean retval;
+
+    retval = dbus_connection_unregister_object_path (priv->connection, path);
+    if (!retval) {
+        g_warning ("Out of memory!");
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
