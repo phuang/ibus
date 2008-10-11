@@ -22,6 +22,8 @@
 
 #include <dbus/dbus.h>
 #include "ibusservice.h"
+#include "ibusattribute.h"
+#include "ibuslookuptable.h"
 
 /*
  * Type macros.
@@ -47,21 +49,79 @@ typedef struct _IBusEngine IBusEngine;
 typedef struct _IBusEngineClass IBusEngineClass;
 
 struct _IBusEngine {
-  IBusService parent;
-  /* instance members */
+    IBusService parent;
+    /* instance members */
 };
 
 struct _IBusEngineClass {
-  IBusServiceClass parent;
+    IBusServiceClass parent;
 
-  /* class members */
+    /* class members */
+    gboolean    (* key_press)       (IBusEngine     *engine,
+                                     guint          keyval,
+                                     gboolean       is_press,
+                                     guint          state);
+    void        (* focus_in)        (IBusEngine     *engine);
+    void        (* focus_out)       (IBusEngine     *engine);
+    void        (* reset)           (IBusEngine     *engine);
+    void        (* enable)          (IBusEngine     *engine);
+    void        (* disable)         (IBusEngine     *engine);
+    void        (* set_cursor_location)
+                                    (IBusEngine     *engine,
+                                    gint            x,
+                                    gint            y,
+                                    gint            w,
+                                    gint            h);
+
+    void        (* page_up)         (IBusEngine     *engine);
+    void        (* page_down)       (IBusEngine     *engine);
+    void        (* cursor_up)       (IBusEngine     *engine);
+    void        (* cursor_down)     (IBusEngine     *engine);
+
+    void        (* property_activate)
+                                    (IBusEngine     *engine,
+                                     const gchar    *prop_name,
+                                     gint            prop_state);
+    void        (* property_show)   (IBusEngine     *engine);
+    void        (* property_hide)   (IBusEngine     *engine);
+
 };
 
-GType       ibus_engine_get_type        (void);
-IBusEngine *ibus_engine_new             (const gchar    *path);
-gboolean     ibus_engine_handle_message (IBusEngine    *engine,
-                                         IBusConnection *connection,
-                                         DBusMessage    *message);
+GType        ibus_engine_get_type        (void);
+IBusEngine  *ibus_engine_new             (const gchar       *path);
+gboolean     ibus_engine_handle_message  (IBusEngine        *engine,
+                                          IBusConnection    *connection,
+                                          DBusMessage       *message);
+void         ibus_engine_commit_string   (IBusEngine        *engine,
+                                          const gchar       *text);
+void         ibus_engine_update_preedit  (IBusEngine        *engine,
+                                          const gchar       *text,
+                                          IBusAttrList      *attr_list,
+                                          gint               cursor_pos,
+                                          gboolean           visible);
+void         ibus_engine_show_preedit    (IBusEngine        *engine);
+void         ibus_engine_hide_preedit    (IBusEngine        *engine);
+void         ibus_engine_update_aux_string
+                                         (IBusEngine        *engine,
+                                          const gchar       *text,
+                                          IBusAttrList      *attr_list,
+                                          gboolean           visible);
+void         ibus_engine_show_aux_string (IBusEngine        *engine);
+void         ibus_engine_hide_aux_string (IBusEngine        *engine);
+void         ibus_engine_update_lookup_table
+                                         (IBusEngine        *engine,
+                                          IBusLookupTable   *lookup_table,
+                                          gboolean           visible);
+void         ibus_engine_show_lookup_table
+                                         (IBusEngine        *engine);
+void         ibus_engine_hide_lookup_table
+                                         (IBusEngine        *engine);
+
+void         ibus_engine_forward_key_event
+                                         (IBusEngine        *engine,
+                                          guint             keyval,
+                                          gboolean          is_press,
+                                          guint             state);
 
 G_END_DECLS
 #endif
