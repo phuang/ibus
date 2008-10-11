@@ -32,10 +32,14 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0,
+    PROP_PATH
+};
 
 /* IBusServicePriv */
 struct _IBusServicePrivate {
-    gchar *object_path;
+    gchar *path;
     GList *connections;
 };
 typedef struct _IBusServicePrivate IBusServicePrivate;
@@ -45,6 +49,15 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_service_class_init     (IBusServiceClass   *klass);
 static void     ibus_service_init           (IBusService        *service);
+static void     ibus_service_finalize       (IBusService        *service);
+static void     ibus_service_set_property   (IBusService        *service,
+                                             guint              property_id,
+                                             const GValue       *value,
+                                             GParamSpec         *pspec);
+static void     ibus_service_get_property   (IBusService        *service,
+                                             guint              property_id,
+                                             GValue             *value,
+                                             GParamSpec         *pspec);
 static void     ibus_service_finalize       (IBusService        *service);
 static gboolean ibus_service_dbus_message   (IBusService        *service,
                                              IBusConnection     *connection,
@@ -82,14 +95,10 @@ ibus_service_get_type (void)
 }
 
 IBusService *
-ibus_service_new (const gchar *object_path)
+ibus_service_new (const gchar *path)
 {
     IBusService *service;
-    service = IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, NULL));
-
-    DECLARE_PRIV;
-    priv->object_path = g_strdup (object_path);
-
+    service = IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, "path", path, NULL));
     return service;
 }
 
@@ -103,10 +112,22 @@ ibus_service_class_init (IBusServiceClass *klass)
     g_type_class_add_private (klass, sizeof (IBusServicePrivate));
 
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_service_finalize;
-
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_service_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_service_get_property;
+    
     klass->dbus_message = ibus_service_dbus_message;
     klass->dbus_signal = ibus_service_dbus_signal;
+    
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_PATH,
+                    g_param_spec_string ("path",
+                        "object path",
+                        "The path of service object",
+                        NULL,
+                        G_PARAM_READWRITE));
 
+    /* Install signals */
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
@@ -132,15 +153,50 @@ ibus_service_class_init (IBusServiceClass *klass)
 static void
 ibus_service_init (IBusService *service)
 {
-    // IBusServicePrivate *priv = IBUS_SERVICE_GET_PRIVATE (service);
+    DECLARE_PRIV;
+
+    priv->path = NULL;
+    priv->connections = NULL;
 }
 
 static void
 ibus_service_finalize (IBusService *service)
 {
     DECLARE_PRIV;
-    g_free (priv->object_path);
+    ibus_service_remove_from_all_connections (service);
+    g_free (priv->path);
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (service));
+}
+
+static void
+ibus_service_set_property (IBusService *service,
+    guint property_id, const GValue *value, GParamSpec *pspec)
+{
+    DECLARE_PRIV;
+
+    switch (property_id) {
+    case PROP_PATH:
+        if (priv->path == NULL)
+            priv->path = g_strdup (g_value_get_string (value));
+        break;
+    default:
+        G_OBJECT_CLASS (_parent_class)->set_property (G_OBJECT (service), property_id, value, pspec);
+    }
+}
+
+static void
+ibus_service_get_property (IBusService *service,
+    guint property_id, GValue *value, GParamSpec *pspec)
+{
+    DECLARE_PRIV;
+
+    switch (property_id) {
+    case PROP_PATH:
+        g_value_set_string (value, priv->path ? priv->path: "");
+        break;
+    default:
+        G_OBJECT_CLASS (_parent_class)->get_property (G_OBJECT (service), property_id, value, pspec);
+    }
 }
 
 gboolean
@@ -188,11 +244,11 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
 
     DECLARE_PRIV;
 
-    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+    g_return_val_if_fail (priv->path != NULL, FALSE);
     g_return_val_if_fail (g_list_find (priv->connections, connection) == NULL, FALSE);
 
     gboolean retval;
-    retval = ibus_connection_register_object_path (connection, priv->object_path,
+    retval = ibus_connection_register_object_path (connection, priv->path,
                     (IBusMessageFunc) _service_message_function, service);
     if (!retval) {
         return FALSE;
@@ -213,11 +269,11 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
 
     DECLARE_PRIV;
 
-    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+    g_return_val_if_fail (priv->path != NULL, FALSE);
     g_return_val_if_fail (g_list_find (priv->connections, connection) != NULL, FALSE);
 
     gboolean retval;
-    retval = ibus_connection_unregister_object_path (connection, priv->object_path);
+    retval = ibus_connection_unregister_object_path (connection, priv->path);
 
     if (!retval) {
         return FALSE;
@@ -234,14 +290,14 @@ ibus_service_remove_from_all_connections (IBusService *service)
 
     DECLARE_PRIV;
 
-    g_return_val_if_fail (priv->object_path != NULL, FALSE);
+    g_return_val_if_fail (priv->path != NULL, FALSE);
 
     GList *element = priv->connections;
     while (element != NULL) {
         IBusConnection *connection = IBUS_CONNECTION (element->data);
 
         gboolean retval;
-        retval = ibus_connection_unregister_object_path (connection, priv->object_path);
+        retval = ibus_connection_unregister_object_path (connection, priv->path);
         g_object_unref (connection);
         element = element->next;
     }

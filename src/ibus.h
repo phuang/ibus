@@ -25,6 +25,7 @@
 #include "ibusconnection.h"
 #include "ibusproxy.h"
 #include "ibusservice.h"
+#include "ibusfactory.h"
 
 #endif
 

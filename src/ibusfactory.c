@@ -23,6 +23,7 @@
 
 #define IBUS_FACTORY_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))
+#define DECLARE_PRIV IBusFactoryPrivate *priv = IBUS_FACTORY_GET_PRIVATE(factory)
 
 enum {
     DBUS_MESSAGE,
@@ -32,6 +33,11 @@ enum {
 
 /* IBusFactoryPriv */
 struct _IBusFactoryPrivate {
+    gchar *name;
+    gchar *lang;
+    gchar *icon;
+    gchar *authors;
+    gchar *credits;
 };
 typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
@@ -74,9 +80,11 @@ ibus_factory_get_type (void)
 }
 
 IBusFactory *
-ibus_factory_new (void)
+ibus_factory_new (const gchar *path)
 {
-    return IBUS_FACTORY (g_object_new (IBUS_TYPE_FACTORY, NULL));
+    IBusFactory *factory;
+    factory = IBUS_FACTORY (g_object_new (IBUS_TYPE_FACTORY, "path", path, NULL));
+    return factory;
 }
 
 static void
@@ -90,9 +98,8 @@ ibus_factory_class_init (IBusFactoryClass *klass)
 
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_factory_finalize;
 
+    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_factory_dbus_message;
 #if 0
-    klass->dbus_message = ibus_factory_dbus_message;
-
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
@@ -108,7 +115,12 @@ ibus_factory_class_init (IBusFactoryClass *klass)
 static void
 ibus_factory_init (IBusFactory *factory)
 {
-    // IBusFactoryPrivate *priv = IBUS_FACTORY_GET_PRIVATE (factory);
+    DECLARE_PRIV;
+    priv->name = NULL;
+    priv->lang = NULL;
+    priv->icon = NULL;
+    priv->authors = NULL;
+    priv->credits = NULL;
 }
 
 static void
