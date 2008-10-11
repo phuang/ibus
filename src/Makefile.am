@@ -83,12 +83,9 @@ AM_LDFLAGS = \
 
 TESTS = \
 	test-attribute \
+	test-lookuptable \
 	$(NULL)
 noinst_PROGRAMS = $(TESTS)
-test_attribute_SOURCES = \
-	test-attribute.c \
-	$(NULL)
-
 
 # gen marshal
 ibusmarshalers.h: stamp-ibusmarshalers.h

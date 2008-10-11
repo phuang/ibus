@@ -72,7 +72,7 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
 }
 
 IBusLookupTable *
-ibus_lookup_tabel_from_dbus_message (DBusMessageIter *iter)
+ibus_lookup_table_from_dbus_message (DBusMessageIter *iter)
 {
     g_assert (iter != NULL);
     
@@ -115,8 +115,8 @@ ibus_lookup_tabel_from_dbus_message (DBusMessageIter *iter)
         if (dbus_message_iter_get_arg_type (&sub_sub_sub_iter) != DBUS_TYPE_STRING)
             break;
         dbus_message_iter_get_basic (&sub_sub_sub_iter, &text);
+        dbus_message_iter_next (&sub_sub_sub_iter);
         
-        dbus_message_iter_next (&sub_iter);
         attr_list = ibus_attr_list_from_dbus_message (&sub_sub_sub_iter);
         if (attr_list == NULL)
             break;
@@ -130,7 +130,7 @@ ibus_lookup_tabel_from_dbus_message (DBusMessageIter *iter)
 }
 
 gboolean
-ibus_lookup_tabel_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter)
+ibus_lookup_table_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter)
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);

@@ -56,9 +56,9 @@ void                 ibus_lookup_table_append_candidate
                                                 (IBusLookupTable    *table,
                                                  const gchar        *text,
                                                  IBusAttrList       *attr_list);
-IBusLookupTable     *ibus_lookup_tabel_from_dbus_message
+IBusLookupTable     *ibus_lookup_table_from_dbus_message
                                                 (DBusMessageIter    *iter);
-gboolean             ibus_lookup_tabel_to_dbus_message
+gboolean             ibus_lookup_table_to_dbus_message
                                                 (IBusLookupTable    *table,
                                                  DBusMessageIter    *iter);
 
