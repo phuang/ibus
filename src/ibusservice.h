@@ -48,16 +48,20 @@ typedef struct _IBusService IBusService;
 typedef struct _IBusServiceClass IBusServiceClass;
 
 struct _IBusService {
-  IBusObject parent;
-  /* instance members */
+    IBusObject parent;
+    /* instance members */
 };
 
 struct _IBusServiceClass {
-  IBusObjectClass parent;
+    IBusObjectClass parent;
 
-  /* class members */
-  gboolean  (* dbus_message)    (IBusService   *service,
-                                 DBusMessage      *message);
+    /* class members */
+    gboolean  (* dbus_message)      (IBusService    *service,
+                                     IBusConnection *connection,
+                                     DBusMessage    *message);
+    gboolean  (* dbus_signal)       (IBusService    *service,
+                                     IBusConnection *connection,
+                                     DBusMessage    *message);
 };
 
 GType        ibus_service_get_type          (void);

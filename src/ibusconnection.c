@@ -51,6 +51,10 @@ static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
 static gboolean ibus_connection_dbus_signal (IBusConnection         *connection,
                                              DBusMessage            *message);
 static void     ibus_connection_disconnected(IBusConnection         *connection);
+static void     ibus_connection_set_connection
+                                            (IBusConnection         *connection,
+                                             DBusConnection         *dbus_connection,
+                                             gboolean shared);
 
 static IBusObjectClass  *_parent_class = NULL;
 static GHashTable       *_connections = NULL;
@@ -83,9 +87,15 @@ ibus_connection_get_type (void)
 }
 
 IBusConnection *
-ibus_connection_new (void)
+ibus_connection_new (DBusConnection *dbus_connection, gboolean shared)
 {
-    return IBUS_CONNECTION (g_object_new (IBUS_TYPE_CONNECTION, NULL));
+    g_assert (dbus_connection);
+
+    IBusConnection *connection = IBUS_CONNECTION (g_object_new (IBUS_TYPE_CONNECTION, NULL));
+
+    ibus_connection_set_connection (connection, dbus_connection, shared);
+
+    return connection;
 }
 
 static void
@@ -322,20 +332,22 @@ static DBusHandlerResult
 _connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
 {
     gboolean retval = FALSE;
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-
     g_signal_emit (connection, _signals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static void
-_setup_connection (IBusConnection *connection)
+ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus_connection, gboolean shared)
 {
     gboolean result;
     IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
-    g_assert (priv->connection != NULL);
-    g_assert (dbus_connection_get_is_connected (priv->connection));
+    g_assert (priv->connection == NULL);
+    g_assert (dbus_connection != NULL);
+    g_assert (dbus_connection_get_is_connected (dbus_connection));
+
+    priv->connection = dbus_connection_ref (dbus_connection);
+    priv->shared = shared;
 
     result = dbus_connection_set_watch_functions (priv->connection,
                     (DBusAddWatchFunction) _connection_add_watch_cb,
@@ -387,13 +399,8 @@ ibus_connection_open (const gchar *address)
         return connection;
     }
 
-    connection = ibus_connection_new ();
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-    priv->connection = dbus_connection;
-    priv->shared = TRUE;
-
+    connection = ibus_connection_new (dbus_connection, TRUE);
     g_hash_table_insert (_connections, dbus_connection, connection);
-    _setup_connection (connection);
 
     return connection;
 }
@@ -415,12 +422,7 @@ ibus_connection_open_private (const gchar *address)
     }
 
     IBusConnection *connection;
-    connection = ibus_connection_new ();
-    IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-    priv->connection = dbus_connection;
-    priv->shared = FALSE;
-
-    _setup_connection (connection);
+    connection = ibus_connection_new (dbus_connection, FALSE);
 
     return connection;
 }

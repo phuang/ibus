@@ -26,6 +26,7 @@
 
 enum {
     DBUS_MESSAGE,
+    DBUS_SIGNAL,
     LAST_SIGNAL,
 };
 
@@ -42,6 +43,9 @@ static void     ibus_service_class_init     (IBusServiceClass   *klass);
 static void     ibus_service_init           (IBusService        *service);
 static void     ibus_service_finalize       (IBusService        *service);
 static gboolean ibus_service_dbus_message   (IBusService        *service,
+                                             IBusConnection     *connection,
+                                             DBusMessage        *message);
+static gboolean ibus_service_dbus_signal    (IBusService        *service,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
 
@@ -91,16 +95,27 @@ ibus_service_class_init (IBusServiceClass *klass)
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_service_finalize;
 
     klass->dbus_message = ibus_service_dbus_message;
+    klass->dbus_signal = ibus_service_dbus_signal;
 
     _signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusServiceClass, dbus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
-            G_TYPE_BOOLEAN,
-            2, G_TYPE_POINTER, G_TYPE_POINTER);
+            G_TYPE_BOOLEAN, 2,
+            G_TYPE_POINTER, G_TYPE_POINTER);
+
+    _signals[DBUS_SIGNAL] =
+        g_signal_new (I_("dbus-signal"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusServiceClass, dbus_signal),
+            NULL, NULL,
+            ibus_marshal_BOOLEAN__POINTER_POINTER,
+            G_TYPE_BOOLEAN, 2,
+            G_TYPE_POINTER, G_TYPE_POINTER);
 
 }
 
@@ -121,13 +136,19 @@ ibus_service_handle_message (IBusService *service, IBusConnection *connection, D
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
-    
+
     g_signal_emit (service, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
 ibus_service_dbus_message (IBusService *service, IBusConnection *connection, DBusMessage *message)
+{
+    return FALSE;
+}
+
+static gboolean
+ibus_service_dbus_signal (IBusService *service, IBusConnection *connection, DBusMessage *message)
 {
     return FALSE;
 }
