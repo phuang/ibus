@@ -8,7 +8,7 @@ int main()
 	g_type_init ();
 	mainloop = g_main_loop_new (NULL, FALSE);
 	connection = ibus_connection_open ("unix:path=/tmp/ibus-phuang/ibus--0.0");
-	IBusService *service = ibus_factory_new ("/a/a", "Test", "zh_CN", "ibus", "Huang Peng", "GPL", "/e/e");
+	IBusService *service = IBUS_SERVICE (ibus_factory_new ("/a/a", "Test", "zh_CN", "ibus", "Huang Peng", "GPL", "/e/e"));
 	GValue value = {0};
 	g_value_init (&value, G_TYPE_STRING);
 	g_object_get_property (service, "authors", &value);

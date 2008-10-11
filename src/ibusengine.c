@@ -23,7 +23,6 @@
 
 #define IBUS_ENGINE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE, IBusEnginePrivate))
-#define DECLARE_PRIV IBusEnginePrivate *priv = IBUS_ENGINE_GET_PRIVATE(engine)
 
 enum {
     DBUS_MESSAGE,
@@ -32,41 +31,31 @@ enum {
 
 enum {
     PROP_0,
-    PROP_NAME,
-    PROP_LANG,
-    PROP_ICON,
-    PROP_AUTHORS,
-    PROP_CREDITS,
-    PROP_ENGINE_PATH,
+    PROP_CONNECTION,
 };
 
 
 /* IBusEnginePriv */
 struct _IBusEnginePrivate {
-    gchar *name;
-    gchar *lang;
-    gchar *icon;
-    gchar *authors;
-    gchar *credits;
-    gchar *engine_path;
+    IBusConnection *connection;
 };
 typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_engine_class_init     (IBusEngineClass   *klass);
-static void     ibus_engine_init           (IBusEngine        *engine);
-static void     ibus_engine_finalize       (IBusEngine        *engine);
-static void     ibus_engine_set_property   (IBusEngine        *engine,
+static void     ibus_engine_class_init      (IBusEngineClass   *klass);
+static void     ibus_engine_init            (IBusEngine        *engine);
+static void     ibus_engine_finalize        (IBusEngine        *engine);
+static void     ibus_engine_set_property    (IBusEngine        *engine,
                                              guint              prop_id,
                                              const GValue       *value,
                                              GParamSpec         *pspec);
-static void     ibus_engine_get_property   (IBusEngine        *engine,
+static void     ibus_engine_get_property    (IBusEngine        *engine,
                                              guint              prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static gboolean ibus_engine_dbus_message   (IBusEngine        *engine,
+static gboolean ibus_engine_dbus_message    (IBusEngine        *engine,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
 
@@ -99,12 +88,23 @@ ibus_engine_get_type (void)
 }
 
 IBusEngine *
-ibus_engine_new (const gchar *path)
+ibus_engine_new (const gchar *path, IBusConnection *connection)
 {
+    g_assert (path);
+    g_assert (IBUS_IS_CONNECTION (connection));
+    
+    IBusEnginePrivate *priv;
     IBusEngine *engine;
+
     engine = IBUS_ENGINE (g_object_new (IBUS_TYPE_ENGINE,
                 "path", path,
                 NULL));
+    
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    priv->connection = g_object_ref (connection);
+    
+    ibus_service_add_to_connection (IBUS_SERVICE (engine), connection);
+
     return engine;
 }
 
@@ -125,69 +125,29 @@ ibus_engine_class_init (IBusEngineClass *klass)
 
     /* install properties */
     g_object_class_install_property (gobject_class,
-                    PROP_NAME,
-                    g_param_spec_string ("name",
-                        "engine name",
-                        "The name of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
-
-    g_object_class_install_property (gobject_class,
-                    PROP_LANG,
-                    g_param_spec_string ("lang",
-                        "engine language",
-                        "The language of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
-
-    g_object_class_install_property (gobject_class,
-                    PROP_ICON,
-                    g_param_spec_string ("icon",
-                        "engine icon",
-                        "The icon of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
-
-    g_object_class_install_property (gobject_class,
-                    PROP_AUTHORS,
-                    g_param_spec_string ("authors",
-                        "engine authors",
-                        "The authors of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
-
-    g_object_class_install_property (gobject_class,
-                    PROP_CREDITS,
-                    g_param_spec_string ("credits",
-                        "engine credits",
-                        "The credits of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
-
-    g_object_class_install_property (gobject_class,
-                    PROP_ENGINE_PATH,
-                    g_param_spec_string ("engine-path",
-                        "engine path",
-                        "The path of engine object",
-                        NULL,
-                        G_PARAM_READWRITE));
+                    PROP_CONNECTION,
+                    g_param_spec_object ("connection",
+                        "connection",
+                        "The connection of engine object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READABLE));
 }
 
 static void
 ibus_engine_init (IBusEngine *engine)
 {
-    DECLARE_PRIV;
-    priv->name = NULL;
-    priv->lang = NULL;
-    priv->icon = NULL;
-    priv->authors = NULL;
-    priv->credits = NULL;
-    priv->engine_path = NULL;
+    IBusEnginePrivate *priv;
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    
+    priv->connection = NULL;
 }
 
 static void
 ibus_engine_finalize (IBusEngine *engine)
 {
+    IBusEnginePrivate *priv;
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    g_object_unref (priv->connection);
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (engine));
 }
 
@@ -195,33 +155,10 @@ static void
 ibus_engine_set_property (IBusEngine *engine,
     guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-    DECLARE_PRIV;
+    IBusEnginePrivate *priv;
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     switch (prop_id) {
-    case PROP_NAME:
-        if (priv->name == NULL)
-            priv->name = g_strdup (g_value_get_string (value));
-        break;
-    case PROP_LANG:
-        if (priv->lang == NULL)
-            priv->lang = g_strdup (g_value_get_string (value));
-        break;
-    case PROP_ICON:
-        if (priv->icon == NULL)
-            priv->icon = g_strdup (g_value_get_string (value));
-        break;
-    case PROP_AUTHORS:
-        if (priv->authors == NULL)
-            priv->authors = g_strdup (g_value_get_string (value));
-        break;
-    case PROP_CREDITS:
-        if (priv->credits == NULL)
-            priv->credits = g_strdup (g_value_get_string (value));
-        break;
-    case PROP_ENGINE_PATH:
-        if (priv->engine_path == NULL)
-            priv->engine_path = g_strdup (g_value_get_string (value));
-        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
     }
@@ -231,26 +168,12 @@ static void
 ibus_engine_get_property (IBusEngine *engine,
     guint prop_id, GValue *value, GParamSpec *pspec)
 {
-    DECLARE_PRIV;
+    IBusEnginePrivate *priv;
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     switch (prop_id) {
-    case PROP_NAME:
-        g_value_set_string (value, priv->name ? priv->name : "");
-        break;
-    case PROP_LANG:
-        g_value_set_string (value, priv->lang ? priv->lang : "");
-        break;
-    case PROP_ICON:
-        g_value_set_string (value, priv->icon ? priv->icon : "");
-        break;
-    case PROP_AUTHORS:
-        g_value_set_string (value, priv->authors ? priv->authors : "");
-        break;
-    case PROP_CREDITS:
-        g_value_set_string (value, priv->credits ? priv->credits : "");
-        break;
-    case PROP_ENGINE_PATH:
-        g_value_set_string (value, priv->engine_path ? priv->engine_path : "");
+    case PROP_CONNECTION:
+        g_value_set_object (value, priv->connection);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);

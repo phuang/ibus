@@ -88,7 +88,8 @@ struct _IBusEngineClass {
 };
 
 GType        ibus_engine_get_type        (void);
-IBusEngine  *ibus_engine_new             (const gchar       *path);
+IBusEngine  *ibus_engine_new             (const gchar       *path,
+                                          IBusConnection    *connection);
 gboolean     ibus_engine_handle_message  (IBusEngine        *engine,
                                           IBusConnection    *connection,
                                           DBusMessage       *message);
