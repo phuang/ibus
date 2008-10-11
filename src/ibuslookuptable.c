@@ -62,12 +62,15 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
 {
     g_assert (table != NULL);
     g_assert (text != NULL);
+    
     IBusCandidate candidate;
+    
     candidate.text = g_strdup (text);
     if (attr_list)
         candidate.attr_list = ibus_attr_list_ref (attr_list);
     else
         candidate.attr_list = ibus_attr_list_new ();
+    
     g_array_append_val (table->candidates, candidate);
 }
 
