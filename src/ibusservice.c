@@ -172,6 +172,14 @@ _service_message_function (IBusConnection *connection, DBusMessage *message, IBu
     return ibus_service_handle_message (service, connection, message);
 }
 
+static void
+_connection_disconnected_cb (IBusConnection *connection, IBusService *service)
+{
+    DECLARE_PRIV;
+    g_object_unref (connection);
+    priv->connections = g_list_remove (priv->connections, connection);
+}
+
 gboolean
 ibus_service_add_to_connection (IBusService *service, IBusConnection *connection)
 {
@@ -185,13 +193,14 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
 
     gboolean retval;
     retval = ibus_connection_register_object_path (connection, priv->object_path,
-                    (IBusMessageFunc *) _service_message_function, service);
+                    (IBusMessageFunc) _service_message_function, service);
     if (!retval) {
-        g_warning ("Out of memory!");
         return FALSE;
     }
 
+    g_object_ref (connection);
     priv->connections = g_list_append (priv->connections, connection);
+    g_signal_connect (connection, "disconnected", (GCallback) _connection_disconnected_cb, service);
 
     return retval;
 }
@@ -211,10 +220,10 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     retval = ibus_connection_unregister_object_path (connection, priv->object_path);
 
     if (!retval) {
-        g_warning ("Out of memory!");
         return FALSE;
     }
     priv->connections = g_list_remove (priv->connections, connection);
+    g_object_unref (connection);
     return TRUE;
 }
 
@@ -233,9 +242,7 @@ ibus_service_remove_from_all_connections (IBusService *service)
 
         gboolean retval;
         retval = ibus_connection_unregister_object_path (connection, priv->object_path);
-        if (!retval) {
-            g_warning ("Out of memory");
-        }
+        g_object_unref (connection);
         element = element->next;
     }
 
