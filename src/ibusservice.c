@@ -51,11 +51,11 @@ static void     ibus_service_class_init     (IBusServiceClass   *klass);
 static void     ibus_service_init           (IBusService        *service);
 static void     ibus_service_finalize       (IBusService        *service);
 static void     ibus_service_set_property   (IBusService        *service,
-                                             guint              property_id,
+                                             guint              prop_id,
                                              const GValue       *value,
                                              GParamSpec         *pspec);
 static void     ibus_service_get_property   (IBusService        *service,
-                                             guint              property_id,
+                                             guint              prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
 static void     ibus_service_finalize       (IBusService        *service);
@@ -170,32 +170,32 @@ ibus_service_finalize (IBusService *service)
 
 static void
 ibus_service_set_property (IBusService *service,
-    guint property_id, const GValue *value, GParamSpec *pspec)
+    guint prop_id, const GValue *value, GParamSpec *pspec)
 {
     DECLARE_PRIV;
 
-    switch (property_id) {
+    switch (prop_id) {
     case PROP_PATH:
         if (priv->path == NULL)
             priv->path = g_strdup (g_value_get_string (value));
         break;
     default:
-        G_OBJECT_CLASS (_parent_class)->set_property (G_OBJECT (service), property_id, value, pspec);
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
     }
 }
 
 static void
 ibus_service_get_property (IBusService *service,
-    guint property_id, GValue *value, GParamSpec *pspec)
+    guint prop_id, GValue *value, GParamSpec *pspec)
 {
     DECLARE_PRIV;
 
-    switch (property_id) {
+    switch (prop_id) {
     case PROP_PATH:
         g_value_set_string (value, priv->path ? priv->path: "");
         break;
     default:
-        G_OBJECT_CLASS (_parent_class)->get_property (G_OBJECT (service), property_id, value, pspec);
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
     }
 }
 

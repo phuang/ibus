@@ -58,7 +58,13 @@ struct _IBusFactoryClass {
 };
 
 GType        ibus_factory_get_type          (void);
-IBusFactory *ibus_factory_new               (const gchar    *path);
+IBusFactory *ibus_factory_new               (const gchar    *path,
+                                             const gchar    *name,
+                                             const gchar    *lang,
+                                             const gchar    *icon,
+                                             const gchar    *authors,
+                                             const gchar    *credits,
+                                             const gchar    *engine_path);
 gboolean     ibus_factory_handle_message    (IBusFactory    *factory,
                                              IBusConnection *connection,
                                              DBusMessage    *message);

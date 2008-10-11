@@ -30,6 +30,16 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0,
+    PROP_NAME,
+    PROP_LANG,
+    PROP_ICON,
+    PROP_AUTHORS,
+    PROP_CREDITS,
+    PROP_ENGINE_PATH,
+};
+
 
 /* IBusFactoryPriv */
 struct _IBusFactoryPrivate {
@@ -38,6 +48,7 @@ struct _IBusFactoryPrivate {
     gchar *icon;
     gchar *authors;
     gchar *credits;
+    gchar *engine_path;
 };
 typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
@@ -47,6 +58,14 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
 static void     ibus_factory_init           (IBusFactory        *factory);
 static void     ibus_factory_finalize       (IBusFactory        *factory);
+static void     ibus_factory_set_property   (IBusFactory        *factory,
+                                             guint              prop_id,
+                                             const GValue       *value,
+                                             GParamSpec         *pspec);
+static void     ibus_factory_get_property   (IBusFactory        *factory,
+                                             guint              prop_id,
+                                             GValue             *value,
+                                             GParamSpec         *pspec);
 static gboolean ibus_factory_dbus_message   (IBusFactory        *factory,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
@@ -80,10 +99,19 @@ ibus_factory_get_type (void)
 }
 
 IBusFactory *
-ibus_factory_new (const gchar *path)
+ibus_factory_new (const gchar *path, const gchar *name, const gchar *lang, const gchar *icon,
+    const gchar *authors, const gchar *credits, const gchar *engine_path)
 {
     IBusFactory *factory;
-    factory = IBUS_FACTORY (g_object_new (IBUS_TYPE_FACTORY, "path", path, NULL));
+    factory = IBUS_FACTORY (g_object_new (IBUS_TYPE_FACTORY,
+                "path", path,
+                "name", name,
+                "lang", lang,
+                "icon", icon,
+                "authors", authors,
+                "credits", credits,
+                "engine-path", engine_path,
+                NULL));
     return factory;
 }
 
@@ -97,19 +125,59 @@ ibus_factory_class_init (IBusFactoryClass *klass)
     g_type_class_add_private (klass, sizeof (IBusFactoryPrivate));
 
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_factory_finalize;
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_factory_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_factory_get_property;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_factory_dbus_message;
-#if 0
-    _signals[DBUS_MESSAGE] =
-        g_signal_new (I_("dbus-message"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
-            G_STRUCT_OFFSET (IBusFactoryClass, dbus_message),
-            NULL, NULL,
-            ibus_marshal_BOOLEAN__POINTER_POINTER,
-            G_TYPE_BOOLEAN,
-            2, G_TYPE_POINTER, G_TYPE_POINTER);
-#endif
+
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_NAME,
+                    g_param_spec_string ("name",
+                        "factory name",
+                        "The name of factory object",
+                        NULL,
+                        G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                    PROP_LANG,
+                    g_param_spec_string ("lang",
+                        "factory language",
+                        "The language of factory object",
+                        NULL,
+                        G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                    PROP_ICON,
+                    g_param_spec_string ("icon",
+                        "factory icon",
+                        "The icon of factory object",
+                        NULL,
+                        G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                    PROP_AUTHORS,
+                    g_param_spec_string ("authors",
+                        "factory authors",
+                        "The authors of factory object",
+                        NULL,
+                        G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                    PROP_CREDITS,
+                    g_param_spec_string ("credits",
+                        "factory credits",
+                        "The credits of factory object",
+                        NULL,
+                        G_PARAM_READWRITE));
+
+    g_object_class_install_property (gobject_class,
+                    PROP_ENGINE_PATH,
+                    g_param_spec_string ("engine-path",
+                        "engine path",
+                        "The path of engine object",
+                        NULL,
+                        G_PARAM_READWRITE));
 }
 
 static void
@@ -121,6 +189,7 @@ ibus_factory_init (IBusFactory *factory)
     priv->icon = NULL;
     priv->authors = NULL;
     priv->credits = NULL;
+    priv->engine_path = NULL;
 }
 
 static void
@@ -129,12 +198,78 @@ ibus_factory_finalize (IBusFactory *factory)
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (factory));
 }
 
+static void
+ibus_factory_set_property (IBusFactory *factory,
+    guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+    DECLARE_PRIV;
+
+    switch (prop_id) {
+    case PROP_NAME:
+        if (priv->name == NULL)
+            priv->name = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_LANG:
+        if (priv->lang == NULL)
+            priv->lang = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_ICON:
+        if (priv->icon == NULL)
+            priv->icon = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_AUTHORS:
+        if (priv->authors == NULL)
+            priv->authors = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_CREDITS:
+        if (priv->credits == NULL)
+            priv->credits = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_ENGINE_PATH:
+        if (priv->engine_path == NULL)
+            priv->engine_path = g_strdup (g_value_get_string (value));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
+    }
+}
+
+static void
+ibus_factory_get_property (IBusFactory *factory,
+    guint prop_id, GValue *value, GParamSpec *pspec)
+{
+    DECLARE_PRIV;
+
+    switch (prop_id) {
+    case PROP_NAME:
+        g_value_set_string (value, priv->name ? priv->name : "");
+        break;
+    case PROP_LANG:
+        g_value_set_string (value, priv->lang ? priv->lang : "");
+        break;
+    case PROP_ICON:
+        g_value_set_string (value, priv->icon ? priv->icon : "");
+        break;
+    case PROP_AUTHORS:
+        g_value_set_string (value, priv->authors ? priv->authors : "");
+        break;
+    case PROP_CREDITS:
+        g_value_set_string (value, priv->credits ? priv->credits : "");
+        break;
+    case PROP_ENGINE_PATH:
+        g_value_set_string (value, priv->engine_path ? priv->engine_path : "");
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
+    }
+}
+
 gboolean
 ibus_factory_handle_message (IBusFactory *factory, IBusConnection *connection, DBusMessage *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
-    
+
     g_signal_emit (factory, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
