@@ -30,7 +30,7 @@ enum {
     FOCUS_OUT,
     RESET,
     ENABLE,
-    DISBALE,
+    DISABLE,
     SET_CURSOR_LOCATION,
     PAGE_UP,
     PAGE_DOWN,
@@ -189,77 +189,132 @@ ibus_engine_class_init (IBusEngineClass *klass)
 
     /* install signals */
     _signals[KEY_PRESS] =
-        g_signal_new (I_("key_press"),
+        g_signal_new (I_("key-press"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, key_press),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            ibus_marshal_BOOL__UINT_BOOL_UINT,
             G_TYPE_BOOLEAN, 3,
             G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
-
-
-    /* install properties */
-    g_object_class_install_property (gobject_class,
-                    PROP_CONNECTION,
-                    g_param_spec_object ("connection",
-                        "connection",
-                        "The connection of engine object",
-                        IBUS_TYPE_CONNECTION,
-                        G_PARAM_READABLE));
-
-    /* install signals */
-    _signals[KEY_PRESS] =
-        g_signal_new (I_("key_press"),
+    
+    _signals[FOCUS_IN] =
+        g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            G_STRUCT_OFFSET (IBusEngineClass, focus_in),
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_BOOLEAN, 3,
-            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+            G_TYPE_NONE, 0);
 
-
-    /* install properties */
-    g_object_class_install_property (gobject_class,
-                    PROP_CONNECTION,
-                    g_param_spec_object ("connection",
-                        "connection",
-                        "The connection of engine object",
-                        IBUS_TYPE_CONNECTION,
-                        G_PARAM_READABLE));
-
-    /* install signals */
-    _signals[KEY_PRESS] =
-        g_signal_new (I_("key_press"),
+    _signals[FOCUS_OUT] =
+        g_signal_new (I_("focus-out"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            G_STRUCT_OFFSET (IBusEngineClass, focus_out),
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_BOOLEAN, 3,
-            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
-
-
-    /* install properties */
-    g_object_class_install_property (gobject_class,
-                    PROP_CONNECTION,
-                    g_param_spec_object ("connection",
-                        "connection",
-                        "The connection of engine object",
-                        IBUS_TYPE_CONNECTION,
-                        G_PARAM_READABLE));
-
-    /* install signals */
-    _signals[KEY_PRESS] =
-        g_signal_new (I_("key_press"),
+            G_TYPE_NONE, 0);
+    
+    _signals[RESET] =
+        g_signal_new (I_("reset"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusEngineClass, key_press),
+            G_STRUCT_OFFSET (IBusEngineClass, reset),
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_BOOLEAN, 3,
-            G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
+            G_TYPE_NONE, 0);
+    
+    _signals[ENABLE] =
+        g_signal_new (I_("enable"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, enable),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[DISABLE] =
+        g_signal_new (I_("disable"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, disable),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    _signals[SET_CURSOR_LOCATION] =
+        g_signal_new (I_("set-cursor-location"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, set_cursor_location),
+            NULL, NULL,
+            ibus_marshal_VOID__INT_INT_INT_INT,
+            G_TYPE_NONE, 4,
+            G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+
+    _signals[PAGE_UP] =
+        g_signal_new (I_("page-up"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, page_up),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    _signals[PAGE_DOWN] =
+        g_signal_new (I_("page-down"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, page_down),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[CURSOR_UP] =
+        g_signal_new (I_("cursor-up"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, cursor_up),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    _signals[CURSOR_DOWN] =
+        g_signal_new (I_("cursor-down"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, cursor_down),
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[PROPERTY_ACTIVATE] =
+        g_signal_new (I_("property-activate"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, property_activate),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_INT,
+            G_TYPE_NONE, 0);
+    
+    _signals[PROPERTY_SHOW] =
+        g_signal_new (I_("property-show"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, property_show),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 0);
+    
+    _signals[PROPERTY_HIDE] =
+        g_signal_new (I_("property-hide"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, property_hide),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 0);
 
 }
 
