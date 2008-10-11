@@ -33,18 +33,29 @@
 
 G_BEGIN_DECLS
 typedef struct _IBusLookupTable IBusLookupTable;
-
 struct _IBusLookupTable {
     gint page_size;
     gint cursor_pos; 
     gboolean cursor_visible;
-    GList candidates;
+    GArray *candidates;
+};
+
+typedef struct _IBusCandidate IBusCandidate;
+struct _IBusCandidate {
+    gchar *text;
+    IBusAttrList *attr_list;
 };
 
 GType                ibus_lookup_table_get_type ();
-IBusLookupTable     *ibus_lookup_table_new      ();
+IBusLookupTable     *ibus_lookup_table_new      (gint                page_size,
+                                                 gint                cursor_pos,
+                                                 gboolean            cursor_visible);
 IBusLookupTable     *ibus_lookup_table_copy     (IBusLookupTable    *table);
 void                 ibus_lookup_table_free     (IBusLookupTable    *table);
+void                 ibus_lookup_table_append_candidate
+                                                (IBusLookupTable    *table,
+                                                 const gchar        *text,
+                                                 IBusAttrList       *attr_list);
 IBusLookupTable     *ibus_lookup_tabel_from_dbus_message
                                                 (DBusMessageIter    *iter);
 gboolean             ibus_lookup_tabel_to_dbus_message

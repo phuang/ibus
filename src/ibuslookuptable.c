@@ -33,16 +33,21 @@ ibus_lookup_table_get_type ()
 }
 
 IBusLookupTable *
-ibus_lookup_table_new ()
+ibus_lookup_table_new (gint page_size, gint cursor_pos, gboolean cursor_visible)
 {
     IBusLookupTable *table = g_slice_new (IBusLookupTable);
+    table->page_size = page_size;
+    table->cursor_pos = cursor_pos;
+    table->cursor_visible = cursor_visible;
+    table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusCandidate));
     return table;
 }
 
 IBusLookupTable *
 ibus_lookup_table_copy (IBusLookupTable *table)
 {
-    return ibus_lookup_table_new ();
+    return ibus_lookup_table_new (table->page_size, table->cursor_pos,
+                table->cursor_visible);
 }
 
 void
@@ -52,10 +57,76 @@ ibus_lookup_table_free (IBusLookupTable *table)
     g_slice_free (IBusLookupTable, table);
 }
 
+void
+ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, IBusAttrList *attr_list)
+{
+    g_assert (table != NULL);
+    g_assert (text != NULL);
+    IBusCandidate candidate;
+    candidate.text = g_strdup (text);
+    if (attr_list)
+        candidate.attr_list = ibus_attr_list_ref (attr_list);
+    else
+        candidate.attr_list = ibus_attr_list_new ();
+    g_array_append_val (table->candidates, candidate);
+}
+
 IBusLookupTable *
 ibus_lookup_tabel_from_dbus_message (DBusMessageIter *iter)
 {
     g_assert (iter != NULL);
+    
+    DBusMessageIter sub_iter, sub_sub_iter;
+    IBusLookupTable *table;
+    gint page_size, cursor_pos;
+    gboolean cursor_visible;
+
+    g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT, NULL);
+
+
+    dbus_message_iter_recurse (iter, &sub_iter);
+
+    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_INT32, NULL);
+    dbus_message_iter_get_basic (&sub_iter, &page_size);
+    dbus_message_iter_next (&sub_iter);
+    
+    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_INT32, NULL);
+    dbus_message_iter_get_basic (&sub_iter, &cursor_pos);
+    dbus_message_iter_next (&sub_iter);
+    
+    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_BOOLEAN, NULL);
+    dbus_message_iter_get_basic (&sub_iter, &cursor_visible);
+    dbus_message_iter_next (&sub_iter);
+
+    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_ARRAY, NULL);
+    table = ibus_lookup_table_new (page_size, cursor_pos, cursor_visible);
+    
+    dbus_message_iter_recurse (&sub_iter, &sub_sub_iter);
+    
+    while (1) {
+        gchar *text;
+        IBusAttrList *attr_list;
+        DBusMessageIter sub_sub_sub_iter;
+        
+        if (dbus_message_iter_get_arg_type (&sub_sub_iter) != DBUS_TYPE_STRUCT)
+            break;
+        
+        dbus_message_iter_recurse (&sub_sub_iter, &sub_sub_sub_iter);
+        if (dbus_message_iter_get_arg_type (&sub_sub_sub_iter) != DBUS_TYPE_STRING)
+            break;
+        dbus_message_iter_get_basic (&sub_sub_sub_iter, &text);
+        
+        dbus_message_iter_next (&sub_iter);
+        attr_list = ibus_attr_list_from_dbus_message (&sub_sub_sub_iter);
+        if (attr_list == NULL)
+            break;
+        ibus_lookup_table_append_candidate (table, text, attr_list);
+
+        dbus_message_iter_next (&sub_sub_iter);
+    }
+    
+    dbus_message_iter_next (iter);
+    return table;
 }
 
 gboolean
@@ -63,6 +134,8 @@ ibus_lookup_tabel_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);
+
+    return TRUE;
 }
 
 
