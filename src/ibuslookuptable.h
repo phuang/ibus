@@ -21,6 +21,7 @@
 #define __IBUS_LOOKUP_TABLE_H_
 
 #include <glib-object.h>
+#include <dbus/dbus.h>
 #include "ibusattribute.h"
 
 /*
@@ -34,16 +35,23 @@ G_BEGIN_DECLS
 typedef struct _IBusLookupTable IBusLookupTable;
 
 struct _IBusLookupTable {
-    guint type;
-    guint value;
-    guint start_index;
-    guint end_index;
+    gint page_size;
+    gint cursor_pos; 
+    gboolean cursor_visible;
+    GList candidates;
 };
 
-GType                ibus_lookup_table_get_type   ();
-IBusLookupTable     *ibus_lookup_table_new        ();
-IBusLookupTable     *ibus_lookup_table_copy       (IBusLookupTable  *table);
-void                 ibus_lookup_table_free       (IBusLookupTable  *table);
+GType                ibus_lookup_table_get_type ();
+IBusLookupTable     *ibus_lookup_table_new      ();
+IBusLookupTable     *ibus_lookup_table_copy     (IBusLookupTable    *table);
+void                 ibus_lookup_table_free     (IBusLookupTable    *table);
+void                 ibus_lookup_tabel_from_dbus_message
+                                                (IBusLookupTable    *table,
+                                                 DBusMessage        *message);
+void                 ibus_lookup_tabel_to_dbus_message
+                                                (IBusLookupTable    *table,
+                                                 DBusMessage        *message);
+
 G_END_DECLS
 #endif
 
