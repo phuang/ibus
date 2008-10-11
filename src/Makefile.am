@@ -68,19 +68,25 @@ libibus_la_LDFLAGS = \
 	@DBUS_LIBS@ \
 	$(NULL)
 
-# ibus programs
-bin_PROGRAMS = ibus-test
-ibus_test_SOURCES = \
-	test.c \
-	$(NULL)
-ibus_test_CFLAGS = \
+
+# test programs
+
+AM_CFLAGS = \
 	@X11_CFLAGS@ \
 	@GLIB2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
-ibus_test_LDFLAGS = \
+AM_LDFLAGS = \
 	libibus.la \
+	$(NULL)
+
+TESTS = \
+	test-attribute \
+	$(NULL)
+noinst_PROGRAMS = $(TESTS)
+test_attribute_SOURCES = \
+	test-attribute.c \
 	$(NULL)
 
 
