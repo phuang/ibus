@@ -30,6 +30,7 @@ SUBDIRS = \
 	client \
 	setup \
 	src \
+	bus \
 	icons \
 	m4 \
 	po \

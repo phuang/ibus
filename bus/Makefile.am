@@ -24,16 +24,20 @@ INCLUDES = \
 	$(NULL)
 
 bin_PROGRAMS = ibus-daemon
+ibus_daemon_SOURCES = \
+	main.c \
+	$(NULL)
 ibus_daemon_CFLAGS = \
 	@X11_CFLAGS@ \
 	@GLIB2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
+	-I$(top_srcdir)/src \
 	$(NULL)
 ibus_daemon_LDFLAGS = \
 	@X11_LIBS@ \
 	@GLIB2_LIBS@ \
 	@DBUS_LIBS@ \
-	$(builddir)/../libibus.la \
+	$(top_builddir)/src/libibus.la \
 	$(NULL)
 
