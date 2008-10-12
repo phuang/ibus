@@ -52,7 +52,7 @@ struct _IBusAttribute {
 };
 
 struct _IBusAttrList {
-    gint   refcount; 
+    gint   refcount;
     GArray *attributes;
 };
 

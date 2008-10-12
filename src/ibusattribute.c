@@ -181,30 +181,30 @@ ibus_attribute_from_dbus_message (DBusMessageIter *iter)
     DBusMessageIter sub_iter;
 
     guint _type, value, start_index, end_index;
-    
+
     type = dbus_message_iter_get_arg_type (iter);
     g_return_val_if_fail (type == DBUS_TYPE_STRUCT, NULL);
 
     dbus_message_iter_recurse (iter, &sub_iter);
-    
+
     g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
     dbus_message_iter_get_basic (&sub_iter, &_type);
     dbus_message_iter_next (&sub_iter);
-    
+
     g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
     dbus_message_iter_get_basic (&sub_iter, &value);
     dbus_message_iter_next (&sub_iter);
-    
+
     g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
     dbus_message_iter_get_basic (&sub_iter, &start_index);
     dbus_message_iter_next (&sub_iter);
-    
+
     g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
     dbus_message_iter_get_basic (&sub_iter, &end_index);
     dbus_message_iter_next (&sub_iter);
-    
+
     dbus_message_iter_next (iter);
-    
+
     return ibus_attribute_new (_type, value, start_index, end_index);
 }
 
@@ -214,12 +214,12 @@ ibus_attr_list_from_dbus_message (DBusMessageIter *iter)
     gint type;
     DBusMessageIter sub_iter;
     IBusAttrList *attr_list;
-    
+
     type = dbus_message_iter_get_arg_type (iter);
     g_return_val_if_fail (type == DBUS_TYPE_ARRAY, NULL);
-    
+
     attr_list = ibus_attr_list_new ();
-    
+
     dbus_message_iter_recurse (iter, &sub_iter);
 
     while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
@@ -240,14 +240,14 @@ ibus_attribute_to_dbus_message (IBusAttribute *attr, DBusMessageIter *iter)
     g_assert (iter != NULL);
 
     DBusMessageIter sub_iter;
-    
+
     dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
     dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->type);
     dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->value);
     dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->start_index);
     dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->end_index);
     dbus_message_iter_close_container (iter, &sub_iter);
-    
+
     return TRUE;
 }
 
@@ -260,7 +260,7 @@ ibus_attr_list_to_dbus_message (IBusAttrList *attr_list, DBusMessageIter *iter)
 
     gint i;
     DBusMessageIter sub_iter;
-    
+
     dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "(uuuu)", &sub_iter);
     for (i = 0;; i++) {
         IBusAttribute *attr = ibus_attr_list_get (attr_list, i);
