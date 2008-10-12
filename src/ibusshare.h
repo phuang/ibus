@@ -19,7 +19,7 @@
  */
 #ifndef __IBUS_SHARE_H_
 #define __IBUS_SHARE_H_
-
+#include <glib.h>
 #define IBUS_SERVICE_BUS        "org.freedesktop.IBus"
 #define IBUS_SERVICE_PANEL      "org.freedesktop.IBus.Panel" 
 #define IBUS_SERVICE_CONFIG     "org.freedesktop.IBus.Config" 
