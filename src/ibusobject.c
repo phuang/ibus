@@ -19,7 +19,7 @@
  */
 
 #include "ibusobject.h"
-#include "ibusinternel.h"
+#include "ibusinternal.h"
 
 enum {
     DESTROY,

@@ -35,11 +35,14 @@ libibus_la_SOURCES = \
 	ibus.h \
 	ibusshare.h \
 	ibusdebug.h \
-	ibusinternel.h \
+	ibusinternal.h \
+	ibusinternal.c \
 	ibusobject.c \
 	ibusobject.h \
 	ibusconnection.c \
 	ibusconnection.h \
+	ibusserver.c \
+	ibusserver.h \
 	ibusproxy.c \
 	ibusproxy.h \
 	ibusservice.c \

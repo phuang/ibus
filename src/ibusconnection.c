@@ -19,7 +19,7 @@
  */
 
 #include "ibusconnection.h"
-#include "ibusinternel.h"
+#include "ibusinternal.h"
 
 #define IBUS_CONNECTION_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONNECTION, IBusConnectionPrivate))
@@ -204,129 +204,8 @@ ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
 }
 
 static void
-ibus_connection_disconnected (IBusConnection *connection)
+ibus_connection_disconnected (IBusConnection         *connection)
 {
-}
-
-
-static gboolean
-_watch_event_cb (GIOChannel *channel, GIOCondition condition, DBusWatch *watch)
-{
-    guint flags = 0;
-
-    if (condition & G_IO_IN)
-        flags |= DBUS_WATCH_READABLE;
-    if (condition & G_IO_OUT)
-        flags |= DBUS_WATCH_WRITABLE;
-    if (condition & G_IO_ERR)
-        flags |= DBUS_WATCH_ERROR;
-    if (condition & G_IO_HUP)
-        flags |= DBUS_WATCH_HANGUP;
-
-    if (!dbus_watch_handle (watch, flags))
-        g_warning ("Out of memory!");
-
-    return TRUE;
-}
-
-static gboolean
-_connection_add_watch_cb (DBusWatch *watch, IBusConnection *connection)
-{
-    guint flags;
-    GIOCondition condition;
-    GIOChannel *channel;
-    guint source_id;
-
-    if (!dbus_watch_get_enabled (watch))
-        return TRUE;
-
-    g_assert (dbus_watch_get_data (watch) == NULL);
-
-    flags = dbus_watch_get_flags (watch);
-
-    condition = G_IO_ERR | G_IO_HUP;
-    if (flags & DBUS_WATCH_READABLE)
-        condition |= G_IO_IN;
-    if (flags & DBUS_WATCH_WRITABLE)
-        condition |= G_IO_OUT;
-
-    channel = g_io_channel_unix_new (dbus_watch_get_unix_fd (watch));
-
-    source_id = g_io_add_watch (channel, condition,
-                (GIOFunc) _watch_event_cb, watch);
-
-    dbus_watch_set_data (watch, (void *) source_id, NULL);
-
-    g_io_channel_unref (channel);
-
-    return TRUE;
-}
-
-static void
-_connection_remove_watch_cb (DBusWatch *watch, IBusConnection *connection)
-{
-    guint source_id;
-    source_id = (guint) dbus_watch_get_data (watch);
-    g_return_if_fail (source_id != (guint) NULL);
-
-    g_source_remove (source_id);
-
-    dbus_watch_set_data (watch, NULL, NULL);
-}
-
-static void
-_connection_watch_toggled_cb (DBusWatch *watch, IBusConnection *connection)
-{
-    if (dbus_watch_get_enabled (watch))
-        _connection_add_watch_cb (watch, connection);
-    else
-        _connection_remove_watch_cb (watch, connection);
-}
-
-static gboolean
-_timeout_event_cb (DBusTimeout *timeout)
-{
-    if (!dbus_timeout_handle (timeout))
-        g_warning ("Out of memory!");
-    return TRUE;
-}
-
-
-static gboolean
-_connection_add_timeout_cb (DBusTimeout *timeout, IBusConnection *connection)
-{
-    guint source_id;
-
-    if (!dbus_timeout_get_enabled (timeout))
-        return TRUE;
-
-    g_assert (dbus_timeout_get_data (timeout) == NULL);
-
-    source_id = g_timeout_add (dbus_timeout_get_interval (timeout),
-                                (GSourceFunc)_timeout_event_cb, timeout);
-
-    dbus_timeout_set_data (timeout, (void *)source_id, NULL);
-    return TRUE;
-}
-
-static void
-_connection_remove_timeout_cb (DBusTimeout *timeout, IBusConnection *connection)
-{
-    guint source_id;
-    source_id = (guint) dbus_timeout_get_data (timeout);
-    g_return_if_fail (source_id != (guint) NULL);
-
-    g_source_remove (source_id);
-    dbus_timeout_set_data (timeout, NULL, NULL);
-}
-
-static void
-_connection_timeout_toggled_cb (DBusTimeout *timeout, IBusConnection *connection)
-{
-    if (dbus_timeout_get_enabled (timeout))
-        _connection_add_timeout_cb (timeout, connection);
-    else
-        _connection_remove_timeout_cb (timeout, connection);
 }
 
 static DBusHandlerResult
@@ -359,21 +238,8 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
 
     priv->connection = dbus_connection_ref (dbus_connection);
     priv->shared = shared;
-
-    result = dbus_connection_set_watch_functions (priv->connection,
-                    (DBusAddWatchFunction) _connection_add_watch_cb,
-                    (DBusRemoveWatchFunction) _connection_remove_watch_cb,
-                    (DBusWatchToggledFunction) _connection_watch_toggled_cb,
-                    connection, NULL);
-    g_warn_if_fail (result);
-
-
-    result = dbus_connection_set_timeout_functions (priv->connection,
-                    (DBusAddTimeoutFunction) _connection_add_timeout_cb,
-                    (DBusRemoveTimeoutFunction) _connection_remove_timeout_cb,
-                    (DBusTimeoutToggledFunction) _connection_timeout_toggled_cb,
-                    connection, NULL);
-    g_warn_if_fail (result);
+    
+    dbus_setup_connection (priv->connection);
 
     result = dbus_connection_add_filter (priv->connection,
                     (DBusHandleMessageFunction) _connection_handle_message_cb,

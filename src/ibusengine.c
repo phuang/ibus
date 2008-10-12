@@ -19,7 +19,7 @@
  */
 
 #include "ibusengine.h"
-#include "ibusinternel.h"
+#include "ibusinternal.h"
 #include "ibusshare.h"
 
 #define IBUS_ENGINE_GET_PRIVATE(o)  \

@@ -19,7 +19,7 @@
  */
 
 #include "ibusfactory.h"
-#include "ibusinternel.h"
+#include "ibusinternal.h"
 
 #define IBUS_FACTORY_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))

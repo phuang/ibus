@@ -21,8 +21,12 @@
 #define __IBUS_INTERNEL_H_
 
 #include <glib.h>
+#include <dbus/dbus.h>
 
 #define I_(string) g_intern_static_string (string)
+
+void    dbus_setup_server       (DBusServer     *server);
+void    dbus_setup_connection   (DBusConnection *connection);
 
 #endif
 
