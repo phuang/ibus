@@ -73,6 +73,18 @@ gboolean         ibus_connection_get_is_connected   (IBusConnection     *connect
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
 gboolean         ibus_connection_send               (IBusConnection     *connection,
                                                      DBusMessage        *message);
+gboolean         ibus_connection_send_signal        (IBusConnection     *connection,
+                                                     const gchar        *path,
+                                                     const gchar        *interface,
+                                                     const gchar        *name,
+                                                     gint                first_arg_type,
+                                                     ...);
+gboolean         ibus_connection_send_signal_valist (IBusConnection     *connection,
+                                                     const gchar        *path,
+                                                     const gchar        *interface,
+                                                     const gchar        *name,
+                                                     gint                first_arg_type,
+                                                     va_list             args);
 void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path
                                                     (IBusConnection     *connection,

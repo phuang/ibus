@@ -538,6 +538,50 @@ ibus_connection_send (IBusConnection *connection, DBusMessage *message)
     return dbus_connection_send (priv->connection, message, NULL);
 }
 
+
+gboolean
+ibus_connection_send_signal (IBusConnection     *connection,
+                             const gchar        *path,
+                             const gchar        *interface,
+                             const gchar        *name,
+                             gint                first_arg_type,
+                             ...)
+{
+    va_list args;
+    gboolean retval;
+
+    va_start (args, first_arg_type);
+    retval = ibus_connection_send_signal_valist (connection, path, interface, name,
+            first_arg_type, args);
+    va_end (args);
+    return retval;
+}
+
+gboolean
+ibus_connection_send_signal_valist (IBusConnection  *connection,
+                                    const gchar     *path,
+                                    const gchar     *interface,
+                                    const gchar     *name,
+                                    gint             first_arg_type,
+                                    va_list          args)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (interface != NULL);
+    g_assert (name != NULL);
+ 
+    gboolean retval;
+    DBusMessage *message;
+
+    message = dbus_message_new_signal (
+                    path,
+                    interface, name);
+    dbus_message_append_args_valist (message, first_arg_type, args);
+    retval = ibus_connection_send (connection, message);
+    dbus_message_unref (message);
+    
+    return retval;
+}
+
 void
 ibus_connection_flush (IBusConnection *connection)
 {

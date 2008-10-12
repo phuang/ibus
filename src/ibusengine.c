@@ -692,18 +692,10 @@ _send_signal (IBusEngine *engine, const gchar *name,
     DBusMessage *message;
     const gchar *path;
     
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-    path = ibus_service_get_path (IBUS_SERVICE (engine));
-    message = dbus_message_new_signal (
-                    path,
-                    IBUS_INTERFACE_ENGINE, name);
-
     va_start (args, first_arg_type);
-    dbus_message_append_args_valist (message, first_arg_type, args);
+    ibus_connection_send_signal_valist (priv->connection, path, IBUS_INTERFACE_ENGINE, name,
+            first_arg_type, args);
     va_end (args);
-    
-    ibus_connection_send (priv->connection, message);
-    dbus_message_unref (message);
 }
 
 void
@@ -715,9 +707,11 @@ ibus_engine_commit_string (IBusEngine *engine, const gchar *text)
 }
 
 void
-ibus_engine_update_preedit (IBusEngine *engine,
-    const gchar *text, IBusAttrList *attr_list,
-    gint cursor_pos, gboolean visible)
+ibus_engine_update_preedit (IBusEngine      *engine,
+                            const gchar     *text,
+                            IBusAttrList    *attr_list,
+                            gint             cursor_pos,
+                            gboolean         visible)
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (text != NULL);
@@ -759,8 +753,10 @@ void ibus_engine_hide_preedit (IBusEngine *engine)
             DBUS_TYPE_INVALID);
 }
 
-void ibus_engine_update_aux_string (IBusEngine *engine,
-    const gchar *text, IBusAttrList *attr_list, gboolean visible)
+void ibus_engine_update_aux_string (IBusEngine      *engine,
+                                    const gchar     *text,
+                                    IBusAttrList    *attr_list,
+                                    gboolean         visible)
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (text != NULL);
@@ -802,8 +798,9 @@ ibus_engine_hide_aux_string (IBusEngine *engine)
             DBUS_TYPE_INVALID);
 }
 
-void ibus_engine_update_lookup_table(IBusEngine *engine,
-    IBusLookupTable *table, gboolean visible)
+void ibus_engine_update_lookup_table (IBusEngine        *engine,
+                                      IBusLookupTable   *table,
+                                      gboolean           visible)
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (table != NULL);
@@ -841,8 +838,10 @@ void ibus_engine_hide_lookup_table (IBusEngine *engine)
             DBUS_TYPE_INVALID);
 }
 
-void ibus_engine_forward_key_event (IBusEngine *engine,
-    guint keyval, gboolean is_press, guint state)
+void ibus_engine_forward_key_event (IBusEngine      *engine,
+                                    guint            keyval,
+                                    gboolean         is_press,
+                                    guint            state)
 {
     _send_signal (engine, "HideLookupTable",
             DBUS_TYPE_UINT32, &keyval,
