@@ -63,7 +63,9 @@ struct _IBusServerClass {
 };
 
 GType            ibus_server_get_type           (void);
-IBusServer      *ibus_server_listen             (const gchar    *address);
+IBusServer      *ibus_server_new                (void);
+gboolean         ibus_server_listen             (IBusServer     *server,
+                                                 const gchar    *address);
 void             ibus_server_disconnect         (IBusServer     *server);
 const gchar     *ibus_server_get_address        (IBusServer     *server);
 const gchar     *ibus_server_get_id             (IBusServer     *server);

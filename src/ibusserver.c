@@ -81,17 +81,23 @@ ibus_server_get_type (void)
 }
 
 IBusServer *
-ibus_server_listen (const gchar *address)
+ibus_server_new (void)
 {
-    g_assert (address != NULL);
-
     IBusServer *server;
     
     server = IBUS_SERVER (g_object_new (IBUS_TYPE_SERVER, NULL));
+    return server;
+}
 
+gboolean
+ibus_server_listen  (IBusServer     *server,
+                     const gchar *address)
+{
+    g_assert (IBUS_IS_SERVER (server));
+    g_assert (address != NULL);
     ibus_server_listen_internal (server, address);
 
-    return server;
+    return TRUE;
 }
 
 static void
