@@ -72,6 +72,9 @@ typedef gboolean  (* ServiceDBusSignalFunc)     (IBusService    *service,
 
 GType        ibus_service_get_type          (void);
 IBusService *ibus_service_new               (const gchar    *path);
+void         ibus_service_set_path          (IBusService    *service,
+                                             const gchar    *path);
+const gchar *ibus_service_get_path          (IBusService    *service);
 gboolean     ibus_service_handle_message    (IBusService    *service,
                                              IBusConnection *connection,
                                              DBusMessage    *message);

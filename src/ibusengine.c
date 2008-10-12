@@ -372,7 +372,13 @@ static gboolean
 ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMessage *message)
 {
     g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
+
+    IBusEnginePrivate *priv;
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+
+    g_assert (priv->connection == connection);
 
     DBusMessage *return_message = NULL;
     DBusMessage *error_message = NULL;
@@ -674,3 +680,173 @@ ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
     g_debug ("property-hide ('%s')", prop_name);
 }
 
+static void
+_send_signal (IBusEngine *engine, const gchar *name,
+    gint first_arg_type, ...)
+{
+    g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (name != NULL);
+    
+    va_list args;
+    IBusEnginePrivate *priv;
+    DBusMessage *message;
+    const gchar *path;
+    
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    path = ibus_service_get_path (IBUS_SERVICE (engine));
+    message = dbus_message_new_signal (
+                    path,
+                    IBUS_INTERFACE_ENGINE, name);
+
+    va_start (args, first_arg_type);
+    dbus_message_append_args_valist (message, first_arg_type, args);
+    va_end (args);
+    
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+}
+
+void
+ibus_engine_commit_string (IBusEngine *engine, const gchar *text)
+{
+    _send_signal (engine, "CommitString",
+            DBUS_TYPE_STRING, &text,
+            DBUS_TYPE_INVALID);
+}
+
+void
+ibus_engine_update_preedit (IBusEngine *engine,
+    const gchar *text, IBusAttrList *attr_list,
+    gint cursor_pos, gboolean visible)
+{
+    g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (text != NULL);
+    g_assert (attr_list != NULL);
+
+    IBusEnginePrivate *priv;
+    DBusMessage *message;
+    DBusMessageIter iter;
+    const gchar *path;
+    
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+
+    path = ibus_service_get_path (IBUS_SERVICE (engine));
+    message = dbus_message_new_signal (
+                    path,
+                    IBUS_INTERFACE_ENGINE, "UpdatePreedit");
+
+    dbus_message_iter_init_append (message, &iter);
+    
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
+    ibus_attr_list_to_dbus_message (attr_list, &iter);
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cursor_pos);
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
+    
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+}
+
+void
+ibus_engine_show_preedit (IBusEngine *engine)
+{
+    _send_signal (engine, "ShowPreedit",
+            DBUS_TYPE_INVALID);
+}
+
+void ibus_engine_hide_preedit (IBusEngine *engine)
+{
+    _send_signal (engine, "HidePreedit",
+            DBUS_TYPE_INVALID);
+}
+
+void ibus_engine_update_aux_string (IBusEngine *engine,
+    const gchar *text, IBusAttrList *attr_list, gboolean visible)
+{
+    g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (text != NULL);
+    g_assert (attr_list != NULL);
+
+    IBusEnginePrivate *priv;
+    DBusMessage *message;
+    DBusMessageIter iter;
+    const gchar *path;
+    
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+
+    path = ibus_service_get_path (IBUS_SERVICE (engine));
+    message = dbus_message_new_signal (
+                    path,
+                    IBUS_INTERFACE_ENGINE, "UpdateAuxString");
+
+    dbus_message_iter_init_append (message, &iter);
+    
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
+    ibus_attr_list_to_dbus_message (attr_list, &iter);
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
+    
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+}
+
+void
+ibus_engine_show_aux_string (IBusEngine *engine)
+{
+    _send_signal (engine, "ShowAuxString",
+            DBUS_TYPE_INVALID);
+}
+
+void
+ibus_engine_hide_aux_string (IBusEngine *engine)
+{
+    _send_signal (engine, "HideAuxString",
+            DBUS_TYPE_INVALID);
+}
+
+void ibus_engine_update_lookup_table(IBusEngine *engine,
+    IBusLookupTable *table, gboolean visible)
+{
+    g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (table != NULL);
+
+    IBusEnginePrivate *priv;
+    DBusMessage *message;
+    DBusMessageIter iter;
+    const gchar *path;
+    
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+
+    path = ibus_service_get_path (IBUS_SERVICE (engine));
+    message = dbus_message_new_signal (
+                    path,
+                    IBUS_INTERFACE_ENGINE, "UpdateLookupTable");
+
+    dbus_message_iter_init_append (message, &iter);
+    
+    ibus_lookup_table_to_dbus_message (table, &iter);
+    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
+    
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+}
+
+void ibus_engine_show_lookup_table (IBusEngine *engine)
+{
+    _send_signal (engine, "ShowLookupTable",
+            DBUS_TYPE_INVALID);
+}
+
+void ibus_engine_hide_lookup_table (IBusEngine *engine)
+{
+    _send_signal (engine, "HideLookupTable",
+            DBUS_TYPE_INVALID);
+}
+
+void ibus_engine_forward_key_event (IBusEngine *engine,
+    guint keyval, gboolean is_press, guint state)
+{
+    _send_signal (engine, "HideLookupTable",
+            DBUS_TYPE_UINT32, &keyval,
+            DBUS_TYPE_BOOLEAN, &is_press,
+            DBUS_TYPE_UINT32, &state,
+            DBUS_TYPE_INVALID);
+}

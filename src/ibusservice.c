@@ -172,12 +172,9 @@ static void
 ibus_service_set_property (IBusService *service,
     guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-    DECLARE_PRIV;
-
     switch (prop_id) {
     case PROP_PATH:
-        if (priv->path == NULL)
-            priv->path = g_strdup (g_value_get_string (value));
+        ibus_service_set_path (service, g_value_get_string (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
@@ -188,15 +185,38 @@ static void
 ibus_service_get_property (IBusService *service,
     guint prop_id, GValue *value, GParamSpec *pspec)
 {
-    DECLARE_PRIV;
-
     switch (prop_id) {
     case PROP_PATH:
-        g_value_set_string (value, priv->path ? priv->path: "");
+        g_value_set_string (value, ibus_service_get_path (service));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
     }
+}
+
+void
+ibus_service_set_path (IBusService *service, const gchar *path)
+{
+    g_assert (IBUS_IS_SERVICE (service));
+    g_assert (path != NULL);
+    
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+
+    g_assert (priv->path == NULL);
+
+    priv->path = g_strdup (path);
+}
+
+const gchar *
+ibus_service_get_path (IBusService *service)
+{
+    g_assert (IBUS_IS_SERVICE (service));
+    
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+    
+    return priv->path;
 }
 
 gboolean
