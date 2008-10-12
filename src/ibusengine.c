@@ -134,17 +134,17 @@ ibus_engine_new (const gchar *path, IBusConnection *connection)
 {
     g_assert (path);
     g_assert (IBUS_IS_CONNECTION (connection));
-    
+
     IBusEnginePrivate *priv;
     IBusEngine *engine;
 
     engine = IBUS_ENGINE (g_object_new (IBUS_TYPE_ENGINE,
                 "path", path,
                 NULL));
-    
+
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
     priv->connection = g_object_ref (connection);
-    
+
     ibus_service_add_to_connection (IBUS_SERVICE (engine), connection);
 
     return engine;
@@ -200,7 +200,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_BOOL__UINT_BOOL_UINT,
             G_TYPE_BOOLEAN, 3,
             G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
-    
+
     _signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -218,7 +218,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[RESET] =
         g_signal_new (I_("reset"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -227,7 +227,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[ENABLE] =
         g_signal_new (I_("enable"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -236,7 +236,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[DISABLE] =
         g_signal_new (I_("disable"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -273,7 +273,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[CURSOR_UP] =
         g_signal_new (I_("cursor-up"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -291,7 +291,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-    
+
     _signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -300,7 +300,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING_INT,
             G_TYPE_NONE, 0);
-    
+
     _signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -309,7 +309,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 0);
-    
+
     _signals[PROPERTY_HIDE] =
         g_signal_new (I_("property-hide"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -326,7 +326,7 @@ ibus_engine_init (IBusEngine *engine)
 {
     IBusEnginePrivate *priv;
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
-    
+
     priv->connection = NULL;
 }
 
@@ -385,7 +385,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
 
     static struct {
         gchar *member;
-        guint  signal_id; 
+        guint  signal_id;
     } no_arg_methods[] = {
         {"FocusIn",     FOCUS_IN},
         {"FocusOut",    FOCUS_OUT},
@@ -403,7 +403,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
     for (i = 0; no_arg_methods[i].member != NULL; i++) {
         if (!dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, no_arg_methods[i].member))
             continue;
-        
+
         DBusMessageIter iter;
         dbus_message_iter_init (message, &iter);
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID) {
@@ -414,14 +414,14 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
             dbus_message_unref (error_message);
             return TRUE;
         }
-        
+
         g_signal_emit (engine, _signals[no_arg_methods[i].signal_id], 0);
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
         return TRUE;
     }
-    
+
 
     if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "KeyPress")) {
         guint keyval, state;
@@ -429,12 +429,12 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         DBusMessageIter iter;
 
         dbus_message_iter_init (message, &iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
             goto _keypress_fail;
         dbus_message_iter_get_basic (&iter, &keyval);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN)
             goto _keypress_fail;
         dbus_message_iter_get_basic (&iter, &is_press);
@@ -444,12 +444,12 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
             goto _keypress_fail;
         dbus_message_iter_get_basic (&iter, &state);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _keypress_fail;
 
         g_signal_emit (engine, _signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
-        
+
         return_message = dbus_message_new_method_return (message);
         dbus_message_append_args (return_message, DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID);
         ibus_connection_send (connection, return_message);
@@ -470,22 +470,22 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         DBusMessageIter iter;
 
         dbus_message_iter_init (message, &iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
             goto _property_activate_fail;
         dbus_message_iter_get_basic (&iter, &name);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
             goto _property_activate_fail;
         dbus_message_iter_get_basic (&iter, &state);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_activate_fail;
 
         g_signal_emit (engine, _signals[PROPERTY_ACTIVATE], 0, name, state);
-        
+
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
@@ -505,17 +505,17 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         DBusMessageIter iter;
 
         dbus_message_iter_init (message, &iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
             goto _property_show_fail;
         dbus_message_iter_get_basic (&iter, &name);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_show_fail;
 
         g_signal_emit (engine, _signals[PROPERTY_SHOW], 0, name);
-        
+
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
@@ -534,17 +534,17 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         DBusMessageIter iter;
 
         dbus_message_iter_init (message, &iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
             goto _property_hide_fail;
         dbus_message_iter_get_basic (&iter, &name);
         dbus_message_iter_next (&iter);
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_hide_fail;
 
         g_signal_emit (engine, _signals[PROPERTY_HIDE], 0, name);
-        
+
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
@@ -569,13 +569,13 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
             dbus_message_iter_get_basic (&iter, &args[i]);
             dbus_message_iter_next (&iter);
         }
-        
+
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _set_cursor_location_fail;
 
         g_signal_emit (engine, _signals[SET_CURSOR_LOCATION], 0,
                     args[0], args[1], args[2], args[3]);
-        
+
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
@@ -686,14 +686,16 @@ _send_signal (IBusEngine *engine, const gchar *name,
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (name != NULL);
-    
+
     va_list args;
-    IBusEnginePrivate *priv;
     const gchar *path;
-    
+    IBusEnginePrivate *priv;
+
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+
     va_start (args, first_arg_type);
-    ibus_connection_send_valist (priv->connection, 
-            DBUS_MESSAGE_TYPE_SIGNAL, path, IBUS_INTERFACE_ENGINE, name,
+    ibus_connection_send_signal_valist (priv->connection,
+            path, IBUS_INTERFACE_ENGINE, name,
             first_arg_type, args);
     va_end (args);
 }
@@ -721,7 +723,7 @@ ibus_engine_update_preedit (IBusEngine      *engine,
     DBusMessage *message;
     DBusMessageIter iter;
     const gchar *path;
-    
+
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     path = ibus_service_get_path (IBUS_SERVICE (engine));
@@ -730,12 +732,12 @@ ibus_engine_update_preedit (IBusEngine      *engine,
                     IBUS_INTERFACE_ENGINE, "UpdatePreedit");
 
     dbus_message_iter_init_append (message, &iter);
-    
+
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
     ibus_attr_list_to_dbus_message (attr_list, &iter);
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cursor_pos);
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-    
+
     ibus_connection_send (priv->connection, message);
     dbus_message_unref (message);
 }
@@ -766,7 +768,7 @@ void ibus_engine_update_aux_string (IBusEngine      *engine,
     DBusMessage *message;
     DBusMessageIter iter;
     const gchar *path;
-    
+
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     path = ibus_service_get_path (IBUS_SERVICE (engine));
@@ -775,11 +777,11 @@ void ibus_engine_update_aux_string (IBusEngine      *engine,
                     IBUS_INTERFACE_ENGINE, "UpdateAuxString");
 
     dbus_message_iter_init_append (message, &iter);
-    
+
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
     ibus_attr_list_to_dbus_message (attr_list, &iter);
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-    
+
     ibus_connection_send (priv->connection, message);
     dbus_message_unref (message);
 }
@@ -809,7 +811,7 @@ void ibus_engine_update_lookup_table (IBusEngine        *engine,
     DBusMessage *message;
     DBusMessageIter iter;
     const gchar *path;
-    
+
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     path = ibus_service_get_path (IBUS_SERVICE (engine));
@@ -818,10 +820,10 @@ void ibus_engine_update_lookup_table (IBusEngine        *engine,
                     IBUS_INTERFACE_ENGINE, "UpdateLookupTable");
 
     dbus_message_iter_init_append (message, &iter);
-    
+
     ibus_lookup_table_to_dbus_message (table, &iter);
     dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-    
+
     ibus_connection_send (priv->connection, message);
     dbus_message_unref (message);
 }

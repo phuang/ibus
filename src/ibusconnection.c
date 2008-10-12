@@ -533,7 +533,7 @@ ibus_connection_send (IBusConnection *connection, DBusMessage *message)
     g_assert (message != NULL);
 
     IBusConnectionPrivate *priv;
-    
+
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
     return dbus_connection_send (priv->connection, message, NULL);
 }
@@ -551,10 +551,34 @@ ibus_connection_send_signal (IBusConnection     *connection,
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = ibus_connection_send_valist (connection,
-                DBUS_MESSAGE_TYPE_SIGNAL, path, interface, name,
+    retval = ibus_connection_send_signal_valist (connection,
+                path, interface, name,
                 first_arg_type, args);
     va_end (args);
+    return retval;
+}
+
+gboolean
+ibus_connection_send_signal_valist (IBusConnection  *connection,
+                                    const gchar     *path,
+                                    const gchar     *interface,
+                                    const gchar     *name,
+                                    gint             first_arg_type,
+                                    va_list          args)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (interface != NULL);
+    g_assert (name != NULL);
+
+    gboolean retval;
+    DBusMessage *message;
+
+    message = dbus_message_new_signal (path, interface, name);
+
+    dbus_message_append_args_valist (message, first_arg_type, args);
+    retval = ibus_connection_send (connection, message);
+    dbus_message_unref (message);
+
     return retval;
 }
 
@@ -570,7 +594,7 @@ ibus_connection_send_valist (IBusConnection  *connection,
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (interface != NULL);
     g_assert (name != NULL);
- 
+
     gboolean retval;
     DBusMessage *message;
 
@@ -578,11 +602,11 @@ ibus_connection_send_valist (IBusConnection  *connection,
     dbus_message_set_path (message, path);
     dbus_message_set_interface (message, interface);
     dbus_message_set_member (message, name);
-    
+
     dbus_message_append_args_valist (message, first_arg_type, args);
     retval = ibus_connection_send (connection, message);
     dbus_message_unref (message);
-    
+
     return retval;
 }
 
@@ -591,10 +615,10 @@ ibus_connection_flush (IBusConnection *connection)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (ibus_connection_get_is_connected (connection));
-    
+
     IBusConnectionPrivate *priv;
-    
+
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-    
+
     dbus_connection_flush (priv->connection);
 }
