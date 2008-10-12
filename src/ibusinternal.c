@@ -77,10 +77,11 @@ _remove_watch_cb (DBusWatch *watch, gpointer user_data)
 {
     guint source_id;
     source_id = (guint) dbus_watch_get_data (watch);
-    g_return_if_fail (source_id != (guint) NULL);
+
+    if (source_id == (guint) NULL)
+        return;
 
     g_source_remove (source_id);
-
     dbus_watch_set_data (watch, NULL, NULL);
 }
 
@@ -164,6 +165,7 @@ dbus_setup_server (DBusServer     *server)
 void
 dbus_setup_connection (DBusConnection *connection)
 {
+    
     gboolean result;
     
     result = dbus_connection_set_watch_functions (connection,

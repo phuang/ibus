@@ -155,7 +155,6 @@ _new_connection_cb (DBusServer      *dbus_server,
     g_signal_emit (server, _signals[NEW_CONNECTION], 0, connection);
     
     g_object_unref (connection);
-    dbus_connection_unref (new_connection);
 }
 
 static void

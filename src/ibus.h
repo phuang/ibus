@@ -24,6 +24,7 @@
 #include "ibusobject.h"
 #include "ibusattribute.h"
 #include "ibusconnection.h"
+#include "ibusserver.h"
 #include "ibusproxy.h"
 #include "ibusservice.h"
 #include "ibusfactory.h"

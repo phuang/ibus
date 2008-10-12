@@ -88,6 +88,7 @@ AM_LDFLAGS = \
 TESTS = \
 	test-attribute \
 	test-lookuptable \
+	test-server \
 	test-engine \
 	$(NULL)
 noinst_PROGRAMS = $(TESTS)
