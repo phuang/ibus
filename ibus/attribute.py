@@ -77,14 +77,14 @@ class Attribute:
                 dbus.UInt32 (self.__value),
                 dbus.UInt32 (self.__start_index),
                 dbus.UInt32 (self.__end_index)]
-        return dbus.Array (values, signature="u")
+        return dbus.Struct (values, signature="uuuu")
 
     def from_dbus_value (self, value):
-        if not isinstance (value, dbus.Array):
-            raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
+        if not isinstance (value, dbus.Struct):
+            raise dbus.Exception ("Attribute must be dbus.Struct uuuu")
 
         if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
-            raise dbus.Exception ("Attribute must be dbus.Array (uuuu)")
+            raise dbus.Exception ("Attribute must be dbus.Struct uuuu")
 
         self.__type = value[0]
         self.__value = value[1]
