@@ -79,7 +79,8 @@ gboolean         ibus_connection_send_signal        (IBusConnection     *connect
                                                      const gchar        *name,
                                                      gint                first_arg_type,
                                                      ...);
-gboolean         ibus_connection_send_signal_valist (IBusConnection     *connection,
+gboolean         ibus_connection_send_valist        (IBusConnection     *connection,
+                                                     gint                message_type,
                                                      const gchar        *path,
                                                      const gchar        *interface,
                                                      const gchar        *name,

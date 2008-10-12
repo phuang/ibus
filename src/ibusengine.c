@@ -689,11 +689,11 @@ _send_signal (IBusEngine *engine, const gchar *name,
     
     va_list args;
     IBusEnginePrivate *priv;
-    DBusMessage *message;
     const gchar *path;
     
     va_start (args, first_arg_type);
-    ibus_connection_send_signal_valist (priv->connection, path, IBUS_INTERFACE_ENGINE, name,
+    ibus_connection_send_valist (priv->connection, 
+            DBUS_MESSAGE_TYPE_SIGNAL, path, IBUS_INTERFACE_ENGINE, name,
             first_arg_type, args);
     va_end (args);
 }

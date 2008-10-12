@@ -551,19 +551,21 @@ ibus_connection_send_signal (IBusConnection     *connection,
     gboolean retval;
 
     va_start (args, first_arg_type);
-    retval = ibus_connection_send_signal_valist (connection, path, interface, name,
-            first_arg_type, args);
+    retval = ibus_connection_send_valist (connection,
+                DBUS_MESSAGE_TYPE_SIGNAL, path, interface, name,
+                first_arg_type, args);
     va_end (args);
     return retval;
 }
 
 gboolean
-ibus_connection_send_signal_valist (IBusConnection  *connection,
-                                    const gchar     *path,
-                                    const gchar     *interface,
-                                    const gchar     *name,
-                                    gint             first_arg_type,
-                                    va_list          args)
+ibus_connection_send_valist (IBusConnection  *connection,
+                             gint             message_type,
+                             const gchar     *path,
+                             const gchar     *interface,
+                             const gchar     *name,
+                             gint             first_arg_type,
+                             va_list          args)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (interface != NULL);
@@ -572,9 +574,11 @@ ibus_connection_send_signal_valist (IBusConnection  *connection,
     gboolean retval;
     DBusMessage *message;
 
-    message = dbus_message_new_signal (
-                    path,
-                    interface, name);
+    message = dbus_message_new (message_type);
+    dbus_message_set_path (message, path);
+    dbus_message_set_interface (message, interface);
+    dbus_message_set_member (message, name);
+    
     dbus_message_append_args_valist (message, first_arg_type, args);
     retval = ibus_connection_send (connection, message);
     dbus_message_unref (message);
