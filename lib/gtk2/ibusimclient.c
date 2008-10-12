@@ -1089,45 +1089,7 @@ _ibus_signal_update_preedit_handler (DBusConnection *connection, DBusMessage *me
         return;
     }
 
-    dbus_message_iter_recurse (&iter, &sub_iter);
-
-    if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
-        if (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_ARRAY ||
-            dbus_message_iter_get_element_type (&sub_iter) != DBUS_TYPE_UINT32 ) {
-            g_warning ("The 3rd argument of UpdatePreedit signal must be a Struct Array");
-            return;
-        }
-
-        attrs = ibus_attr_list_new ();
-
-        while ((sub_type = dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID)) {
-            IBusAttribute *attr;
-            DBusMessageIter sub_sub_iter;
-            guint *values = NULL;
-            gint length = 0;
-            dbus_message_iter_recurse (&sub_iter, &sub_sub_iter);
-            dbus_message_iter_get_fixed_array (&sub_sub_iter, &values, &length);
-
-            if (length <= 0) {
-                g_warning ("The element of the 3rd argument of UpdatePreedit should not be a empty array");
-                continue;
-            }
-
-            switch (values[0]) {
-            case IBUS_ATTR_TYPE_UNDERLINE:  /* Underline */
-            case IBUS_ATTR_TYPE_FOREGROUND: /* Foreground Color */
-            case IBUS_ATTR_TYPE_BACKGROUND: /* Background Color */
-                attr = ibus_attribute_new (values[0], values[1], values[2], values[3]);
-                ibus_attr_list_append (attrs, attr);
-                break;
-            default:
-                g_warning ("Unkown type attribute type = %d", values[0]);
-            }
-
-            dbus_message_iter_next (&sub_iter);
-        }
-    }
-    dbus_message_iter_next (&iter);
+    attrs = ibus_attr_list_from_dbus_message (&iter);
 
     type = dbus_message_iter_get_arg_type (&iter);
     if (type != DBUS_TYPE_INT32) {
