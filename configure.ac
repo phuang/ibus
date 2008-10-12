@@ -244,6 +244,7 @@ setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop
 src/Makefile
+src/bus/Makefile
 util/Makefile
 util/IMdkit/Makefile
 util/gconf/Makefile
