@@ -553,7 +553,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         return TRUE;
     }
     else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCursorLocation")) {
-        gint args[4], i;
+        gint args[4];
         DBusMessageIter iter;
 
         dbus_message_iter_init (message, &iter);
