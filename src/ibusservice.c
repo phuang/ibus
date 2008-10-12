@@ -49,7 +49,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_service_class_init     (IBusServiceClass   *klass);
 static void     ibus_service_init           (IBusService        *service);
-static void     ibus_service_finalize       (IBusService        *service);
+static void     ibus_service_dispose        (IBusService        *service);
 static void     ibus_service_set_property   (IBusService        *service,
                                              guint              prop_id,
                                              const GValue       *value,
@@ -58,7 +58,6 @@ static void     ibus_service_get_property   (IBusService        *service,
                                              guint              prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static void     ibus_service_finalize       (IBusService        *service);
 static gboolean ibus_service_dbus_message   (IBusService        *service,
                                              IBusConnection     *connection,
                                              DBusMessage        *message);
@@ -111,7 +110,7 @@ ibus_service_class_init (IBusServiceClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusServicePrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_service_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_service_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_service_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_service_get_property;
     
@@ -160,12 +159,14 @@ ibus_service_init (IBusService *service)
 }
 
 static void
-ibus_service_finalize (IBusService *service)
+ibus_service_dispose (IBusService *service)
 {
     DECLARE_PRIV;
     ibus_service_remove_from_all_connections (service);
     g_free (priv->path);
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (service));
+    priv->path = NULL;
+    
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (service));
 }
 
 static void

@@ -45,7 +45,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
 static void     ibus_connection_init        (IBusConnection         *connection);
-static void     ibus_connection_finalize    (IBusConnection         *connection);
+static void     ibus_connection_dispose    (IBusConnection         *connection);
 
 static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
                                              DBusMessage            *message);
@@ -108,7 +108,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusConnectionPrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_connection_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_connection_dispose;
 
     klass->dbus_message = ibus_connection_dbus_message;
     klass->dbus_signal  = ibus_connection_dbus_signal;
@@ -154,9 +154,10 @@ ibus_connection_init (IBusConnection *connection)
 }
 
 static void
-ibus_connection_finalize (IBusConnection *connection)
+ibus_connection_dispose (IBusConnection *connection)
 {
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     if (!priv->shared && priv->connection) {
         dbus_connection_close (priv->connection);
@@ -175,7 +176,7 @@ ibus_connection_finalize (IBusConnection *connection)
         goto _out;
     }
 _out:
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (connection));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (connection));
 }
 
 static gboolean
@@ -206,6 +207,7 @@ ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
 static void
 ibus_connection_disconnected (IBusConnection         *connection)
 {
+    ibus_object_destroy (IBUS_OBJECT (connection));
 }
 
 static DBusHandlerResult
@@ -303,6 +305,15 @@ ibus_connection_open_private (const gchar *address)
     connection = ibus_connection_new (dbus_connection, FALSE);
 
     return connection;
+}
+
+void ibus_connection_close (IBusConnection     *connection)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    dbus_connection_close (priv->connection);
 }
 
 gboolean

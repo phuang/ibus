@@ -42,7 +42,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_server_class_init  (IBusServerClass    *klass);
 static void     ibus_server_init        (IBusServer         *server);
-static void     ibus_server_finalize    (IBusServer         *server);
+static void     ibus_server_dispose     (IBusServer         *server);
 
 static void     ibus_server_listen_internal
                                         (IBusServer         *server,
@@ -103,7 +103,7 @@ ibus_server_class_init (IBusServerClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusServerPrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_server_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_server_dispose;
 
     klass->new_connection = ibus_server_new_connection;
 
@@ -127,16 +127,17 @@ ibus_server_init (IBusServer *server)
 }
 
 static void
-ibus_server_finalize (IBusServer *server)
+ibus_server_dispose (IBusServer *server)
 {
     IBusServerPrivate *priv;
     priv = IBUS_SERVER_GET_PRIVATE (server);
 
     if (priv->server) {
         dbus_server_unref (priv->server);
+        priv->server = NULL;
     }
 
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (server));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (server));
 }
 
 static void

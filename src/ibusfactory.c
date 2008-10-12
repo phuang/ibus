@@ -57,7 +57,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
 static void     ibus_factory_init           (IBusFactory        *factory);
-static void     ibus_factory_finalize       (IBusFactory        *factory);
+static void     ibus_factory_dispose        (IBusFactory        *factory);
 static void     ibus_factory_set_property   (IBusFactory        *factory,
                                              guint              prop_id,
                                              const GValue       *value,
@@ -124,7 +124,7 @@ ibus_factory_class_init (IBusFactoryClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusFactoryPrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_factory_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_factory_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_factory_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_factory_get_property;
 
@@ -193,9 +193,9 @@ ibus_factory_init (IBusFactory *factory)
 }
 
 static void
-ibus_factory_finalize (IBusFactory *factory)
+ibus_factory_dispose (IBusFactory *factory)
 {
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (factory));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (factory));
 }
 
 static void

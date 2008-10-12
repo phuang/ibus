@@ -60,7 +60,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_engine_class_init      (IBusEngineClass    *klass);
 static void     ibus_engine_init            (IBusEngine         *engine);
-static void     ibus_engine_finalize        (IBusEngine         *engine);
+static void     ibus_engine_dispose         (IBusEngine         *engine);
 static void     ibus_engine_set_property    (IBusEngine         *engine,
                                              guint               prop_id,
                                              const GValue       *value,
@@ -159,7 +159,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_engine_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_engine_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_engine_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_engine_get_property;
 
@@ -331,12 +331,12 @@ ibus_engine_init (IBusEngine *engine)
 }
 
 static void
-ibus_engine_finalize (IBusEngine *engine)
+ibus_engine_dispose (IBusEngine *engine)
 {
     IBusEnginePrivate *priv;
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
     g_object_unref (priv->connection);
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (engine));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (engine));
 }
 
 static void

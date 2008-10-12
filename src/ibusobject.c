@@ -31,6 +31,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_object_class_init      (IBusObjectClass  *klass);
 static void     ibus_object_init            (IBusObject       *client);
+static void     ibus_object_dispose         (GObject            *obj);
 static void     ibus_object_finalize        (GObject            *obj);
 
 static GObjectClass *_parent_class = NULL;
@@ -76,13 +77,14 @@ ibus_object_class_init     (IBusObjectClass *klass)
 
     _parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
 
+    gobject_class->dispose = ibus_object_dispose;
     gobject_class->finalize = ibus_object_finalize;
 
     /* install signals */
     _signals[DESTROY] =
         g_signal_new (I_("destroy"),
             G_TYPE_FROM_CLASS (gobject_class),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusObjectClass, destroy),
             NULL, NULL,
             ibus_marshal_VOID__VOID,
@@ -96,10 +98,20 @@ ibus_object_init (IBusObject *obj)
 
 
 static void
-ibus_object_finalize (GObject *obj)
+ibus_object_dispose (GObject *obj)
 {
     g_signal_emit (obj, _signals[DESTROY], 0);
+    G_OBJECT_CLASS(_parent_class)->dispose (obj);
+}
+
+static void
+ibus_object_finalize (GObject *obj)
+{
     G_OBJECT_CLASS(_parent_class)->finalize (obj);
 }
 
-
+void
+ibus_object_destroy (IBusObject *obj)
+{
+    g_signal_emit (obj, _signals[DESTROY], 0); 
+}

@@ -40,7 +40,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_proxy_class_init  (IBusProxyClass    *klass);
 static void     ibus_proxy_init        (IBusProxy         *proxy);
-static void     ibus_proxy_finalize    (IBusProxy         *proxy);
+static void     ibus_proxy_dispose     (IBusProxy         *proxy);
 
 static gboolean ibus_proxy_dbus_message(IBusProxy         *proxy,
                                         DBusMessage            *message);
@@ -88,7 +88,7 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusProxyPrivate));
 
-    gobject_class->finalize = (GObjectFinalizeFunc) ibus_proxy_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_proxy_dispose;
 
     klass->dbus_message = ibus_proxy_dbus_message;
 
@@ -111,9 +111,9 @@ ibus_proxy_init (IBusProxy *proxy)
 }
 
 static void
-ibus_proxy_finalize (IBusProxy *proxy)
+ibus_proxy_dispose (IBusProxy *proxy)
 {
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (proxy));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (proxy));
 }
 
 gboolean
