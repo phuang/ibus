@@ -1,4 +1,4 @@
-/* vim:set et ts=4: */
+/* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
  *
@@ -21,6 +21,7 @@
 #define __IBUS_ATTRIBUTE_H_
 
 #include <glib-object.h>
+#include <dbus/dbus.h>
 
 /*
  * Type macros.
@@ -51,40 +52,49 @@ struct _IBusAttribute {
 };
 
 struct _IBusAttrList {
-    gint   refcount; 
+    gint   refcount;
     GArray *attributes;
 };
 
-GType            ibus_attribute_get_type   ();
-IBusAttribute   *ibus_attribute_new        (guint       type,
-                                            guint       value,
-                                            guint       start_index,
-                                            guint       end_index);
-IBusAttribute   *ibus_attribute_copy       (IBusAttribute
-                                                       *attr);
-void             ibus_attribute_free       (IBusAttribute
-                                                       *attr);
-IBusAttribute   *ibus_attr_underline_new   (guint       underline_type,
-                                            guint       start_index,
-                                            guint       end_index);
-IBusAttribute   *ibus_attr_foreground_new  (guint       color,
-                                            guint       start_index,
-                                            guint       end_index);
-IBusAttribute   *ibus_attr_background_new  (guint       color,
-                                            guint       start_index,
-                                            guint       end_index);
-
-GType            ibus_attr_list_get_type   ();
-IBusAttrList    *ibus_attr_list_new        ();
-IBusAttrList    *ibus_attr_list_copy       (IBusAttrList    *attr_list);
-IBusAttrList    *ibus_attr_list_ref        (IBusAttrList    *attr_list);
-void             ibus_attr_list_unref      (IBusAttrList    *attr_list);
-void             ibus_attr_list_append     (IBusAttrList    *attr_list,
-                                            IBusAttribute   *attr);
-IBusAttribute   *ibus_attr_list_get        (IBusAttrList    *attr_list,
-                                            guint           index);
+GType            ibus_attribute_get_type    ();
+IBusAttribute   *ibus_attribute_new         (guint       type,
+                                             guint       value,
+                                             guint       start_index,
+                                             guint       end_index);
+IBusAttribute   *ibus_attribute_copy        (IBusAttribute
+                                                        *attr);
+void             ibus_attribute_free        (IBusAttribute
+                                                        *attr);
+IBusAttribute   *ibus_attr_underline_new    (guint       underline_type,
+                                             guint       start_index,
+                                             guint       end_index);
+IBusAttribute   *ibus_attr_foreground_new   (guint       color,
+                                             guint       start_index,
+                                             guint       end_index);
+IBusAttribute   *ibus_attr_background_new   (guint       color,
+                                             guint       start_index,
+                                             guint       end_index);
+IBusAttribute   *ibus_attribute_from_dbus_message
+                                            (DBusMessageIter    *iter);
+gboolean         ibus_attribute_to_dbus_message
+                                            (IBusAttribute      *attr,
+                                             DBusMessageIter    *iter);
 
 
+GType            ibus_attr_list_get_type    ();
+IBusAttrList    *ibus_attr_list_new         ();
+IBusAttrList    *ibus_attr_list_copy        (IBusAttrList   *attr_list);
+IBusAttrList    *ibus_attr_list_ref         (IBusAttrList   *attr_list);
+void             ibus_attr_list_unref       (IBusAttrList   *attr_list);
+void             ibus_attr_list_append      (IBusAttrList   *attr_list,
+                                             IBusAttribute  *attr);
+IBusAttribute   *ibus_attr_list_get         (IBusAttrList   *attr_list,
+                                             guint           index);
+IBusAttrList    *ibus_attr_list_from_dbus_message
+                                            (DBusMessageIter    *iter);
+gboolean         ibus_attr_list_to_dbus_message
+                                            (IBusAttrList       *attr_list,
+                                             DBusMessageIter    *iter);
 G_END_DECLS
 #endif
 

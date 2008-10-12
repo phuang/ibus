@@ -95,7 +95,7 @@ class IEngine(dbus.service.Object):
     @signal(signature="ubu")
     def ForwardKeyEvent(self, keyval, is_press, state): pass
 
-    @signal(signature="saauib")
+    @signal(signature="sa(uuuu)ib")
     def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
 
     @signal()
@@ -104,7 +104,7 @@ class IEngine(dbus.service.Object):
     @signal()
     def HidePreedit(self): pass
 
-    @signal(signature="svb")
+    @signal(signature="sa(uuuu)b")
     def UpdateAuxString(self, text, attrs, visible): pass
 
     @signal()
