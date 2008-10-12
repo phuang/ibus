@@ -187,3 +187,59 @@ ibus_server_listen_internal (IBusServer     *server,
                 server, NULL);
 }
 
+void ibus_server_disconnect (IBusServer     *server)
+{
+    g_assert (IBUS_IS_SERVER (server));
+
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+
+    g_assert (priv->server != NULL);
+    dbus_server_disconnect (priv->server);
+}
+
+const gchar *ibus_server_get_address (IBusServer     *server)
+{
+    g_assert (IBUS_IS_SERVER (server));
+
+    gchar *address, *tmp;
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+    
+    g_assert (priv->server != NULL);
+
+    tmp = dbus_server_get_address (priv->server);
+    address = g_strdup (tmp);
+    dbus_free (tmp);
+    return address;
+}
+
+const gchar *ibus_server_get_id (IBusServer     *server)
+{
+    g_assert (IBUS_IS_SERVER (server));
+
+    gchar *id, *tmp;
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+    
+    g_assert (priv->server != NULL);
+
+    tmp = dbus_server_get_id (priv->server);
+    id = g_strdup (tmp);
+    dbus_free (tmp);
+    return id;
+}
+
+gboolean ibus_server_get_is_connected (IBusServer     *server)
+{
+    g_assert (IBUS_IS_SERVER (server));
+
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+    
+    g_assert (priv->server != NULL);
+
+    return dbus_server_get_is_connected (priv->server);
+}
+
+
