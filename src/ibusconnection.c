@@ -525,3 +525,28 @@ ibus_connection_unregister_object_path (IBusConnection *connection, const gchar 
     return TRUE;
 }
 
+
+gboolean
+ibus_connection_send (IBusConnection *connection, DBusMessage *message)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (message != NULL);
+
+    IBusConnectionPrivate *priv;
+    
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    return dbus_connection_send (priv->connection, message, NULL);
+}
+
+void
+ibus_connection_flush (IBusConnection *connection)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (ibus_connection_get_is_connected (connection));
+    
+    IBusConnectionPrivate *priv;
+    
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    
+    dbus_connection_flush (priv->connection);
+}

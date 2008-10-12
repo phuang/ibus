@@ -71,6 +71,9 @@ IBusConnection  *ibus_connection_open               (const gchar        *address
 IBusConnection  *ibus_connection_open_private       (const gchar        *address);
 gboolean         ibus_connection_get_is_connected   (IBusConnection     *connection);
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
+gboolean         ibus_connection_send               (IBusConnection     *connection,
+                                                     DBusMessage        *message);
+void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path
                                                     (IBusConnection     *connection,
                                                      const gchar        *path,

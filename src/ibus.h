@@ -20,6 +20,7 @@
 #ifndef __IBUS_H_
 #define __IBUS_H_
 
+#include "ibusshare.h"
 #include "ibusobject.h"
 #include "ibusattribute.h"
 #include "ibusconnection.h"

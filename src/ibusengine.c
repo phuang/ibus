@@ -20,6 +20,7 @@
 
 #include "ibusengine.h"
 #include "ibusinternel.h"
+#include "ibusshare.h"
 
 #define IBUS_ENGINE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE, IBusEnginePrivate))
@@ -94,8 +95,10 @@ static void     ibus_engine_property_activate
                                             (IBusEngine         *engine,
                                              const gchar        *prop_name,
                                              gint                prop_state);
-static void     ibus_engine_property_show   (IBusEngine         *engine);
-static void     ibus_engine_property_hide   (IBusEngine         *engine);
+static void     ibus_engine_property_show   (IBusEngine         *engine,
+                                             const gchar        *prop_name);
+static void     ibus_engine_property_hide   (IBusEngine         *engine,
+                                             const gchar        *prop_name);
 
 
 static IBusObjectClass  *_parent_class = NULL;
@@ -368,79 +371,306 @@ ibus_engine_get_property (IBusEngine *engine,
 static gboolean
 ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMessage *message)
 {
+    g_assert (IBUS_IS_ENGINE (engine));
+    g_assert (message != NULL);
+
+    DBusMessage *return_message = NULL;
+    DBusMessage *error_message = NULL;
+
+    static struct {
+        gchar *member;
+        guint  signal_id; 
+    } no_arg_methods[] = {
+        {"FocusIn",     FOCUS_IN},
+        {"FocusOut",    FOCUS_OUT},
+        {"Reset",       RESET},
+        {"Enable",      ENABLE},
+        {"Disable",     DISABLE},
+        {"PageUp",      PAGE_UP},
+        {"PageDown",    PAGE_DOWN},
+        {"CursorUp",    CURSOR_UP},
+        {"CursorDown",  CURSOR_DOWN},
+        {NULL, 0},
+    };
+    gint i;
+
+    for (i = 0; no_arg_methods[i].member != NULL; i++) {
+        if (!dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, no_arg_methods[i].member))
+            continue;
+        
+        DBusMessageIter iter;
+        dbus_message_iter_init (message, &iter);
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID) {
+            error_message = dbus_message_new_error_printf (message,
+                                "%s.%s: Method does not have arguments",
+                                IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
+            ibus_connection_send (connection, error_message);
+            dbus_message_unref (error_message);
+            return TRUE;
+        }
+        
+        g_signal_emit (engine, _signals[no_arg_methods[i].signal_id], 0);
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+    }
+    
+
+    if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "KeyPress")) {
+        guint keyval, state;
+        gboolean is_press, retval;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
+            goto _keypress_fail;
+        dbus_message_iter_get_basic (&iter, &keyval);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN)
+            goto _keypress_fail;
+        dbus_message_iter_get_basic (&iter, &is_press);
+        dbus_message_iter_next (&iter);
+
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
+            goto _keypress_fail;
+        dbus_message_iter_get_basic (&iter, &state);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _keypress_fail;
+
+        g_signal_emit (engine, _signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
+        
+        return_message = dbus_message_new_method_return (message);
+        dbus_message_append_args (return_message, DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _keypress_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (ubu) of method",
+                        IBUS_INTERFACE_ENGINE, "KeyPress");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+    }
+    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyActivate")) {
+        gchar *name;
+        gint state;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+            goto _property_activate_fail;
+        dbus_message_iter_get_basic (&iter, &name);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
+            goto _property_activate_fail;
+        dbus_message_iter_get_basic (&iter, &state);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _property_activate_fail;
+
+        g_signal_emit (engine, _signals[PROPERTY_ACTIVATE], 0, name, state);
+        
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _property_activate_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (si) of method",
+                        IBUS_INTERFACE_ENGINE, "PropertyActivate");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+
+    }
+    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyShow")) {
+        gchar *name;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+            goto _property_show_fail;
+        dbus_message_iter_get_basic (&iter, &name);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _property_show_fail;
+
+        g_signal_emit (engine, _signals[PROPERTY_SHOW], 0, name);
+        
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _property_show_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (s) of method",
+                        IBUS_INTERFACE_ENGINE, "PropertyShow");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+    }
+    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyHide")) {
+        gchar *name;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+            goto _property_hide_fail;
+        dbus_message_iter_get_basic (&iter, &name);
+        dbus_message_iter_next (&iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _property_hide_fail;
+
+        g_signal_emit (engine, _signals[PROPERTY_HIDE], 0, name);
+        
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _property_hide_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (s) of method",
+                        IBUS_INTERFACE_ENGINE, "PropertyHide");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+    }
+    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCursorLocation")) {
+        gint args[4], i;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        for (i =0; i < 4; i++) {
+            if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
+                goto _set_cursor_location_fail;
+            dbus_message_iter_get_basic (&iter, &args[i]);
+            dbus_message_iter_next (&iter);
+        }
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _set_cursor_location_fail;
+
+        g_signal_emit (engine, _signals[SET_CURSOR_LOCATION], 0,
+                    args[0], args[1], args[2], args[3]);
+        
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _set_cursor_location_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (iiii) of method",
+                        IBUS_INTERFACE_ENGINE, "SetCursorLocation");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+    }
+
     return FALSE;
 }
 
 static gboolean
 ibus_engine_key_press (IBusEngine *engine, guint keyval, gboolean is_press, guint state)
 {
+    g_debug ("key-press (%d, %d, %d)", keyval, is_press, state);
     return FALSE;
 }
 
 static void
 ibus_engine_focus_in (IBusEngine *engine)
 {
+    g_debug ("focus-in");
 }
 
 static void
 ibus_engine_focus_out (IBusEngine *engine)
 {
+    g_debug ("focus-out");
 }
 
 static void
 ibus_engine_reset (IBusEngine *engine)
 {
+    g_debug ("reset");
 }
 
 static void
 ibus_engine_enable (IBusEngine *engine)
 {
+    g_debug ("enable");
 }
 
 static void
 ibus_engine_disable (IBusEngine *engine)
 {
+    g_debug ("disable");
 }
 
 static void
 ibus_engine_set_cursor_location (IBusEngine *engine,
         gint x, gint y, gint w, gint h)
 {
+    g_debug ("set-cursor-location (%d, %d, %d, %d)", x, y, w, h);
 }
 
 static void
 ibus_engine_page_up (IBusEngine *engine)
 {
+    g_debug ("page-up");
 }
 
 static void
 ibus_engine_page_down (IBusEngine *engine)
 {
+    g_debug ("page-down");
 }
 
 static void
 ibus_engine_cursor_up (IBusEngine *engine)
 {
+    g_debug ("cursor-up");
 }
 
 static void
 ibus_engine_cursor_down (IBusEngine *engine)
 {
+    g_debug ("cursor-down");
 }
 
 static void
 ibus_engine_property_activate (IBusEngine *engine,
     const gchar *prop_name, gint prop_state)
 {
+    g_debug ("property-activate ('%s', %d)", prop_name, prop_state);
 }
 
 static void
-ibus_engine_property_show (IBusEngine *engine)
+ibus_engine_property_show (IBusEngine *engine, const gchar *prop_name)
 {
+    g_debug ("property-show ('%s')", prop_name);
 }
 
 static void
-ibus_engine_property_hide (IBusEngine *engine)
+ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
 {
+    g_debug ("property-hide ('%s')", prop_name);
 }
 

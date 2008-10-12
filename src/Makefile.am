@@ -33,6 +33,7 @@ lib_LTLIBRARIES = libibus.la
 
 libibus_la_SOURCES = \
 	ibus.h \
+	ibusshare.h \
 	ibusdebug.h \
 	ibusinternel.h \
 	ibusobject.c \

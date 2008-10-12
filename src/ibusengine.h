@@ -82,8 +82,10 @@ struct _IBusEngineClass {
                                     (IBusEngine     *engine,
                                      const gchar    *prop_name,
                                      gint            prop_state);
-    void        (* property_show)   (IBusEngine     *engine);
-    void        (* property_hide)   (IBusEngine     *engine);
+    void        (* property_show)   (IBusEngine     *engine,
+                                     const gchar    *prop_name);
+    void        (* property_hide)   (IBusEngine     *engine,
+                                     const gchar    *prop_name);
 
 };
 
