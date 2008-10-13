@@ -20,7 +20,7 @@
 #ifndef __SERVER_H_
 #define __SERVER_H_
 
-#include <bus.h>
+#include <ibus.h>
 
 /*
  * Type macros.
@@ -45,8 +45,6 @@ G_BEGIN_DECLS
 typedef struct _BusServer BusServer;
 typedef struct _BusServerClass BusServerClass;
 
-typedef void (* BusNewConnectionFunc) (BusServer *server, BusConnection *connection);
-
 struct _BusServer {
   IBusServer parent;
   /* instance members */
@@ -56,8 +54,6 @@ struct _BusServerClass {
   IBusServerClass parent;
 
   /* class members */
-  void  (* new_connection)  (BusServer     *server,
-                             BusConnection *connectin);
 };
 
 GType            bus_server_get_type            (void);

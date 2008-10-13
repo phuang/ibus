@@ -30,10 +30,15 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0,
+    PROP_CONNECTION_TYPE,
+};
 
 /* IBusServerPriv */
 struct _IBusServerPrivate {
     DBusServer *server;
+    GType       connection_type;
 };
 typedef struct _IBusServerPrivate IBusServerPrivate;
 
@@ -43,7 +48,14 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 static void     ibus_server_class_init  (IBusServerClass    *klass);
 static void     ibus_server_init        (IBusServer         *server);
 static void     ibus_server_dispose     (IBusServer         *server);
-
+static void     ibus_server_set_property(IBusServer         *server,
+                                         guint               prop_id,
+                                         const GValue       *value,
+                                         GParamSpec         *pspec);
+static void     ibus_server_get_property(IBusServer         *server,
+                                         guint               prop_id,
+                                         GValue             *value,
+                                         GParamSpec         *pspec);
 static void     ibus_server_listen_internal
                                         (IBusServer         *server,
                                          const gchar        *address);
@@ -110,9 +122,21 @@ ibus_server_class_init (IBusServerClass *klass)
     g_type_class_add_private (klass, sizeof (IBusServerPrivate));
 
     gobject_class->dispose = (GObjectFinalizeFunc) ibus_server_dispose;
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_server_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_server_get_property;
 
     klass->new_connection = ibus_server_new_connection;
-
+    
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_CONNECTION_TYPE,
+                    g_param_spec_gtype ("connection-type",
+                        "connection type",
+                        "The connection type of server object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READWRITE));
+    
+    /* install signals */
     _signals[NEW_CONNECTION] =
         g_signal_new (I_("new-connection"),
             G_TYPE_FROM_CLASS (klass),
@@ -130,6 +154,7 @@ ibus_server_init (IBusServer *server)
     IBusServerPrivate *priv;
     priv = IBUS_SERVER_GET_PRIVATE (server);
     priv->server = NULL;
+    priv->connection_type = IBUS_TYPE_CONNECTION;
 }
 
 static void
@@ -147,6 +172,46 @@ ibus_server_dispose (IBusServer *server)
 }
 
 static void
+ibus_server_set_property    (IBusServer     *server,
+                             guint           prop_id,
+                             const GValue   *value,
+                             GParamSpec     *pspec)
+{
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+
+    switch (prop_id) {
+    case PROP_CONNECTION_TYPE:
+    {
+        GType type;
+        type = g_value_get_gtype (value);
+        g_assert (g_type_is_a (type, IBUS_TYPE_CONNECTION));
+        priv->connection_type = type;
+    }
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (server, prop_id, pspec);
+    }
+}
+
+static void
+ibus_server_get_property    (IBusServer     *server,
+                             guint           prop_id,
+                             GValue         *value,
+                             GParamSpec     *pspec)
+{
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+    
+    switch (prop_id) {
+    case PROP_CONNECTION_TYPE:
+        g_value_set_gtype (value, priv->connection_type);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (server, prop_id, pspec);
+    }
+}
+
+static void
 ibus_server_new_connection (IBusServer      *server,
                             IBusConnection  *connection)
 {
@@ -157,10 +222,14 @@ _new_connection_cb (DBusServer      *dbus_server,
                     DBusConnection  *new_connection,
                     IBusServer      *server)
 {
+    IBusServerPrivate *priv;
     IBusConnection *connection;
-    connection = ibus_connection_new (new_connection, FALSE);
-    g_signal_emit (server, _signals[NEW_CONNECTION], 0, connection);
     
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+    connection = IBUS_CONNECTION (g_object_new (priv->connection_type, NULL));
+    ibus_connection_set_connection (connection, new_connection, FALSE);
+    
+    g_signal_emit (server, _signals[NEW_CONNECTION], 0, connection);
     g_object_unref (connection);
 }
 
@@ -237,7 +306,8 @@ const gchar *ibus_server_get_id (IBusServer     *server)
     return id;
 }
 
-gboolean ibus_server_get_is_connected (IBusServer     *server)
+gboolean
+ibus_server_get_is_connected (IBusServer     *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 

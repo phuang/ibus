@@ -37,4 +37,9 @@
 #define IBUS_INTERFACE_CONFIG   "org.freedesktop.IBus.Config" 
 #define IBUS_INTERFACE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications" 
 
+G_BEGIN_DECLS
+
+const gchar     *ibus_get_address       (void);
+
+G_END_DECLS
 #endif

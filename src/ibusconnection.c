@@ -52,10 +52,6 @@ static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
 static gboolean ibus_connection_dbus_signal (IBusConnection         *connection,
                                              DBusMessage            *message);
 static void     ibus_connection_disconnected(IBusConnection         *connection);
-static void     ibus_connection_set_connection
-                                            (IBusConnection         *connection,
-                                             DBusConnection         *dbus_connection,
-                                             gboolean shared);
 
 static IBusObjectClass  *_parent_class = NULL;
 static GHashTable       *_connections = NULL;
@@ -88,14 +84,9 @@ ibus_connection_get_type (void)
 }
 
 IBusConnection *
-ibus_connection_new (DBusConnection *dbus_connection, gboolean shared)
+ibus_connection_new (void)
 {
-    g_assert (dbus_connection);
-
     IBusConnection *connection = IBUS_CONNECTION (g_object_new (IBUS_TYPE_CONNECTION, NULL));
-
-    ibus_connection_set_connection (connection, dbus_connection, shared);
-
     return connection;
 }
 
@@ -228,7 +219,7 @@ _get_slot ()
     return slot;
 }
 
-static void
+void
 ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus_connection, gboolean shared)
 {
     gboolean result;
@@ -279,7 +270,8 @@ ibus_connection_open (const gchar *address)
         return connection;
     }
 
-    connection = ibus_connection_new (dbus_connection, TRUE);
+    connection = ibus_connection_new ();
+    ibus_connection_set_connection (connection, dbus_connection, TRUE);
     g_hash_table_insert (_connections, dbus_connection, connection);
 
     return connection;
@@ -302,7 +294,8 @@ ibus_connection_open_private (const gchar *address)
     }
 
     IBusConnection *connection;
-    connection = ibus_connection_new (dbus_connection, FALSE);
+    connection = ibus_connection_new ();
+    ibus_connection_set_connection (connection, dbus_connection, FALSE);
 
     return connection;
 }

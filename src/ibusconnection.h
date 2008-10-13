@@ -65,8 +65,10 @@ struct _IBusConnectionClass {
 };
 
 GType            ibus_connection_get_type           (void);
-IBusConnection  *ibus_connection_new                (DBusConnection     *dbus_connection,
-                                                     gboolean           shared);
+IBusConnection  *ibus_connection_new                (void);
+void             ibus_connection_set_connection     (IBusConnection     *connection,
+                                                     DBusConnection     *dbus_connection,
+                                                     gboolean            shared);
 IBusConnection  *ibus_connection_open               (const gchar        *address);
 IBusConnection  *ibus_connection_open_private       (const gchar        *address);
 void             ibus_connection_close              (IBusConnection     *connection);
