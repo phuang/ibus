@@ -25,8 +25,10 @@
 
 #define I_(string) g_intern_static_string (string)
 
-void    dbus_setup_server       (DBusServer     *server);
-void    dbus_setup_connection   (DBusConnection *connection);
+void    dbus_server_setup       (DBusServer     *server,
+                                 GMainContext   *context);
+void    dbus_connection_setup   (DBusConnection *connection,
+                                 GMainContext   *context);
 
 #endif
 

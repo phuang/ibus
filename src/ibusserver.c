@@ -256,12 +256,14 @@ ibus_server_listen_internal (IBusServer     *server,
                  "  %s:%s", 
                  address, error.name, error.message);
     }
-
-    dbus_setup_server (priv->server);
-
+    
     dbus_server_set_new_connection_function (priv->server,
                 (DBusNewConnectionFunction) _new_connection_cb,
                 server, NULL);
+
+    dbus_server_set_auth_mechanisms (priv->server, NULL);
+    
+    dbus_server_setup (priv->server, NULL);
 }
 
 void ibus_server_disconnect (IBusServer     *server)
