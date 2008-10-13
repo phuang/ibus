@@ -417,12 +417,13 @@ _dbus_request_name (BusServer      *server,
 
     DBusMessage *reply_message;
     DBusError error;
-    gchar *rule;
+    gchar *name;
     guint flags;
+    guint retval;
 
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_STRING, &name,
             DBUS_TYPE_UINT32, &flags,
             DBUS_TYPE_INVALID)) {
         reply_message = dbus_message_new_error_printf (message,
@@ -431,7 +432,21 @@ _dbus_request_name (BusServer      *server,
         dbus_error_free (&error);
     }
     else {
-        reply_message = dbus_message_new_method_return (message);
+        if (g_hash_table_lookup (priv->names, name)) {
+            reply_message = dbus_message_new_error_printf (message,
+                        "RequestName",
+                        "Name %s has owner", name);
+        }
+        else {
+            retval = 1;
+            g_hash_table_insert (priv->names,
+                    (gpointer )bus_connection_add_name (connection, name),
+                    connection);
+            reply_message = dbus_message_new_method_return (message);
+            dbus_message_append_args (message,
+                    DBUS_TYPE_UINT32, &retval,
+                    DBUS_TYPE_INVALID);
+        }
     }
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
@@ -449,11 +464,11 @@ _dbus_release_name (BusServer      *server,
 
     DBusMessage *reply_message;
     DBusError error;
-    gchar *rule;
+    gchar *name;
 
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_STRING, &name,
             DBUS_TYPE_INVALID)) {
         reply_message = dbus_message_new_error_printf (message,
                                     "ReleaseName",
