@@ -187,6 +187,7 @@ ibus_server_set_property    (IBusServer     *server,
         type = g_value_get_gtype (value);
         g_assert (g_type_is_a (type, IBUS_TYPE_CONNECTION));
         priv->connection_type = type;
+        break;
     }
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (server, prop_id, pspec);

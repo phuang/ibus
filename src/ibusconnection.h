@@ -46,7 +46,13 @@ G_BEGIN_DECLS
 typedef struct _IBusConnection IBusConnection;
 typedef struct _IBusConnectionClass IBusConnectionClass;
 
-typedef gboolean (* IBusMessageFunc) (IBusConnection *connection, DBusMessage *message);
+typedef gboolean (* IBusDBusMessageFunc)(IBusConnection     *connection,
+                                         DBusMessage        *message);
+typedef gboolean (* IBusDBusSignalFunc) (IBusConnection     *connection,
+                                         DBusMessage        *message);
+typedef gboolean (* IBusMessageFunc)    (IBusConnection     *connection,
+                                         DBusMessage        *message,
+                                         gpointer            user_data);
 
 struct _IBusConnection {
   IBusObject parent;

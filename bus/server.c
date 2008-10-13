@@ -19,6 +19,7 @@
  */
 
 #include "server.h"
+#include "connection.h"
 
 #define BUS_SERVER_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_SERVER, BusServerPrivate))
@@ -32,7 +33,7 @@ enum {
 
 /* BusServerPriv */
 struct _BusServerPrivate {
-    DBusServer *server;
+    void *pad;
 };
 typedef struct _BusServerPrivate BusServerPrivate;
 
@@ -79,7 +80,9 @@ BusServer *
 bus_server_new (void)
 {
     BusServer *server;
-    server = BUS_SERVER (g_object_new (BUS_TYPE_SERVER, NULL));
+    server = BUS_SERVER (g_object_new (BUS_TYPE_SERVER,
+                    "connection-type", BUS_TYPE_CONNECTION,
+                    NULL));
     return server;
 }
 
@@ -118,6 +121,7 @@ static void
 bus_server_new_connection   (BusServer          *server,
                              IBusConnection     *connection)
 {
+    g_debug ("new_connection %s", g_type_name (G_TYPE_FROM_INSTANCE (connection)));
 }
 
 static void
