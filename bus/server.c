@@ -407,6 +407,7 @@ _dbus_remove_match (BusServer      *server,
     dbus_message_unref (reply_message);
     return TRUE;
 }
+
 static gboolean
 _dbus_request_name (BusServer      *server,
                     DBusMessage    *message,
@@ -465,6 +466,7 @@ _dbus_release_name (BusServer      *server,
     DBusMessage *reply_message;
     DBusError error;
     gchar *name;
+    guint retval;
 
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
@@ -477,6 +479,15 @@ _dbus_release_name (BusServer      *server,
     }
     else {
         reply_message = dbus_message_new_method_return (message);
+        if (bus_connection_remove_name (connection, name)) {
+            retval = 1;
+        }
+        else {
+            retval = 2;
+        }
+        dbus_message_append_args (message,
+                    DBUS_TYPE_UINT32, &retval,
+                    DBUS_TYPE_INVALID);
     }
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
