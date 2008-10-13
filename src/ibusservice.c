@@ -40,7 +40,7 @@ enum {
 /* IBusServicePriv */
 struct _IBusServicePrivate {
     gchar *path;
-    GList *connections;
+    GSList *connections;
 };
 typedef struct _IBusServicePrivate IBusServicePrivate;
 
@@ -254,7 +254,7 @@ _connection_disconnected_cb (IBusConnection *connection, IBusService *service)
 {
     DECLARE_PRIV;
     g_object_unref (connection);
-    priv->connections = g_list_remove (priv->connections, connection);
+    priv->connections = g_slist_remove (priv->connections, connection);
 }
 
 gboolean
@@ -266,7 +266,7 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
     DECLARE_PRIV;
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
-    g_return_val_if_fail (g_list_find (priv->connections, connection) == NULL, FALSE);
+    g_return_val_if_fail (g_slist_find (priv->connections, connection) == NULL, FALSE);
 
     gboolean retval;
     retval = ibus_connection_register_object_path (connection, priv->path,
@@ -276,7 +276,7 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
     }
 
     g_object_ref (connection);
-    priv->connections = g_list_append (priv->connections, connection);
+    priv->connections = g_slist_append (priv->connections, connection);
     g_signal_connect (connection, "disconnected", (GCallback) _connection_disconnected_cb, service);
 
     return retval;
@@ -291,7 +291,7 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     DECLARE_PRIV;
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
-    g_return_val_if_fail (g_list_find (priv->connections, connection) != NULL, FALSE);
+    g_return_val_if_fail (g_slist_find (priv->connections, connection) != NULL, FALSE);
 
     gboolean retval;
     retval = ibus_connection_unregister_object_path (connection, priv->path);
@@ -299,7 +299,7 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     if (!retval) {
         return FALSE;
     }
-    priv->connections = g_list_remove (priv->connections, connection);
+    priv->connections = g_slist_remove (priv->connections, connection);
     g_object_unref (connection);
     return TRUE;
 }
@@ -323,7 +323,7 @@ ibus_service_remove_from_all_connections (IBusService *service)
         element = element->next;
     }
 
-    g_list_free (priv->connections);
+    g_slist_free (priv->connections);
     priv->connections = NULL;
     return TRUE;
 }
