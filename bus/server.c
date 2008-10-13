@@ -553,8 +553,7 @@ _connection_dbus_message_cb     (BusConnection  *connection,
         { IBUS_INTERFACE_IBUS, "RegisterRestartEngine",  _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "RegisterStopEngine",  _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "Kill",  _ibus_get_address },
-
-
+ 
         {NULL, NULL, NULL},
     };
 
