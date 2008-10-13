@@ -270,7 +270,7 @@ class DBus(dbus.service.Object):
     def ListActivatableNames(self):
         return DBus.__bus.list_activatable_names()
 
-    @method(in_signature="s", out_signature="as")
+    @method(in_signature="s", out_signature="b")
     def NameHasOwner(self, name):
         return DBus.__bus.name_has_owner(name)
 

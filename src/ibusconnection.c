@@ -122,7 +122,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_STRUCT_OFFSET (IBusConnectionClass, dbus_signal),
             NULL, NULL,
             ibus_marshal_BOOL__POINTER,
-            G_TYPE_NONE, 1,
+            G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
     _signals[DISCONNECTED] =
