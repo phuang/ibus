@@ -28,6 +28,8 @@ ibus_daemon_SOURCES = \
 	main.c \
 	server.c \
 	server.h \
+	connection.c \
+	connection.h \
 	$(NULL)
 ibus_daemon_CFLAGS = \
 	@X11_CFLAGS@ \

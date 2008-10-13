@@ -66,7 +66,7 @@ bus_server_get_type (void)
     };
 
     if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
+        type = g_type_register_static (IBUS_TYPE_SERVER,
                     "BusServer",
                     &type_info,
                     (GTypeFlags)0);
