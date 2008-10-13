@@ -122,6 +122,7 @@ bus_server_new_connection   (BusServer          *server,
                              IBusConnection     *connection)
 {
     g_debug ("new_connection %s", g_type_name (G_TYPE_FROM_INSTANCE (connection)));
+    g_object_ref (connection);
 }
 
 static void

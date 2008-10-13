@@ -204,6 +204,7 @@ ibus_connection_disconnected (IBusConnection         *connection)
 static DBusHandlerResult
 _connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
 {
+    g_debug ("message   a");
     gboolean retval = FALSE;
     g_signal_emit (connection, _signals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -232,13 +233,15 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
     priv->connection = dbus_connection_ref (dbus_connection);
     priv->shared = shared;
     
-    dbus_setup_connection (priv->connection);
 
+    dbus_connection_set_data (priv->connection, _get_slot(), connection, NULL);
+    
     result = dbus_connection_add_filter (priv->connection,
                     (DBusHandleMessageFunction) _connection_handle_message_cb,
                     connection, NULL);
+    
+    dbus_setup_connection (priv->connection);
     g_warn_if_fail (result);
-    dbus_connection_set_data (priv->connection, _get_slot(), connection, NULL);
 }
 
 IBusConnection *
