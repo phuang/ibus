@@ -23,7 +23,6 @@
 
 #define IBUS_CONNECTION_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONNECTION, IBusConnectionPrivate))
-#define DECLARE_PRIV IBusConnectionPrivate *priv = IBUS_CONNECTION_GET_PRIVATE(connection)
 
 enum {
     DBUS_SIGNAL,
@@ -139,7 +138,9 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 static void
 ibus_connection_init (IBusConnection *connection)
 {
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+    
     priv->connection = NULL;
     priv->shared = FALSE;
 }
@@ -183,7 +184,8 @@ ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
 static gboolean
 ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
 {
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
         dbus_connection_unref (priv->connection);
@@ -316,7 +318,9 @@ void ibus_connection_close (IBusConnection     *connection)
 gboolean
 ibus_connection_get_is_connected (IBusConnection *connection)
 {
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
     if (priv->connection == NULL) {
         return FALSE;
     }
@@ -326,7 +330,9 @@ ibus_connection_get_is_connected (IBusConnection *connection)
 DBusConnection *
 ibus_connection_get_connection (IBusConnection *connection)
 {
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
     return priv->connection;
 }
 
@@ -361,7 +367,9 @@ ibus_connection_register_object_path (IBusConnection *connection,
     g_assert (path != NULL);
     g_assert (message_func != NULL);
 
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
     gboolean retval;
     DBusObjectPathVTable vtable = {0};
     VTableCallData *data;
@@ -387,7 +395,9 @@ ibus_connection_unregister_object_path (IBusConnection *connection, const gchar 
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (path != NULL);
 
-    DECLARE_PRIV;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
     gboolean retval;
 
     retval = dbus_connection_unregister_object_path (priv->connection, path);

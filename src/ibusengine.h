@@ -92,9 +92,6 @@ struct _IBusEngineClass {
 GType        ibus_engine_get_type        (void);
 IBusEngine  *ibus_engine_new             (const gchar       *path,
                                           IBusConnection    *connection);
-gboolean     ibus_engine_handle_message  (IBusEngine        *engine,
-                                          IBusConnection    *connection,
-                                          DBusMessage       *message);
 void         ibus_engine_commit_string   (IBusEngine        *engine,
                                           const gchar       *text);
 void         ibus_engine_update_preedit  (IBusEngine        *engine,

@@ -70,6 +70,7 @@ struct _IBusObjectClass {
 GType           ibus_object_get_type            (void);
 IBusObject     *ibus_object_new                 (void);
 void            ibus_object_destroy             (IBusObject     *object);
+gboolean        ibus_object_is_destroyed        (IBusObject     *object);
 
 G_END_DECLS
 #endif

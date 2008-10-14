@@ -21,18 +21,26 @@
 #include "ibusobject.h"
 #include "ibusinternal.h"
 
+#define IBUS_OBJECT_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_OBJECT, IBusObjectPrivate))
+
 enum {
     DESTROY,
     LAST_SIGNAL,
 };
 
+typedef struct _IBusObjectPrivate IBusObjectPrivate;
+struct _IBusObjectPrivate {
+    gboolean destroyed;
+};
+
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_object_class_init      (IBusObjectClass  *klass);
-static void     ibus_object_init            (IBusObject       *client);
-static void     ibus_object_dispose         (GObject            *obj);
-static void     ibus_object_finalize        (GObject            *obj);
+static void     ibus_object_class_init      (IBusObjectClass    *klass);
+static void     ibus_object_init            (IBusObject         *obj);
+static void     ibus_object_dispose         (IBusObject         *obj);
+static void     ibus_object_finalize        (IBusObject         *obj);
 
 static GObjectClass *_parent_class = NULL;
 
@@ -76,9 +84,11 @@ ibus_object_class_init     (IBusObjectClass *klass)
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     _parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
+    
+    g_type_class_add_private (klass, sizeof (IBusObjectPrivate));
 
-    gobject_class->dispose = ibus_object_dispose;
-    gobject_class->finalize = ibus_object_finalize;
+    gobject_class->dispose = (GObjectFinalizeFunc) ibus_object_dispose;
+    gobject_class->finalize = (GObjectFinalizeFunc) ibus_object_finalize;
 
     /* install signals */
     _signals[DESTROY] =
@@ -94,24 +104,46 @@ ibus_object_class_init     (IBusObjectClass *klass)
 static void
 ibus_object_init (IBusObject *obj)
 {
+    IBusObjectPrivate *priv;
+    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+
+    priv->destroyed = FALSE;
 }
 
 
 static void
-ibus_object_dispose (GObject *obj)
+ibus_object_dispose (IBusObject *obj)
 {
-    g_signal_emit (obj, _signals[DESTROY], 0);
-    G_OBJECT_CLASS(_parent_class)->dispose (obj);
+    ibus_object_destroy (obj);
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (obj));
 }
 
 static void
-ibus_object_finalize (GObject *obj)
+ibus_object_finalize (IBusObject *obj)
 {
-    G_OBJECT_CLASS(_parent_class)->finalize (obj);
+    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (obj));
 }
 
 void
 ibus_object_destroy (IBusObject *obj)
 {
-    g_signal_emit (obj, _signals[DESTROY], 0); 
+    IBusObjectPrivate *priv;
+    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+
+    if (!priv->destroyed) {
+        g_signal_emit (obj, _signals[DESTROY], 0);
+        priv->destroyed = FALSE;
+    }
+    else {
+        g_warn_if_reached ();
+    }
+}
+
+gboolean
+ibus_object_is_destroyed (IBusObject *obj)
+{
+    IBusObjectPrivate *priv;
+    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+
+    return priv->destroyed;
 }
