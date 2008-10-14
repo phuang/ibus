@@ -125,7 +125,7 @@ ibus_server_class_init (IBusServerClass *klass)
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_server_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_server_get_property;
     
-    ibus_object_class->destroy = (IBusDestroyFunc) ibus_server_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_server_destroy;
 
     klass->new_connection = ibus_server_new_connection;
     

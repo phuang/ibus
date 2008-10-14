@@ -111,7 +111,7 @@ ibus_service_class_init (IBusServiceClass *klass)
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_service_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_service_get_property;
-    ibus_object_class->destroy = (IBusDestroyFunc) ibus_service_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_service_destroy;
     
     klass->dbus_message = ibus_service_dbus_message;
     klass->dbus_signal = ibus_service_dbus_signal;
@@ -324,7 +324,7 @@ ibus_service_remove_from_all_connections (IBusService *service)
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
 
-    GList *element = priv->connections;
+    GSList *element = priv->connections;
     while (element != NULL) {
         IBusConnection *connection = IBUS_CONNECTION (element->data);
 

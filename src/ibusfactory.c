@@ -128,7 +128,7 @@ ibus_factory_class_init (IBusFactoryClass *klass)
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_factory_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_factory_get_property;
     
-    ibus_object_class->destroy = (IBusDestroyFunc) ibus_factory_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_factory_destroy;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_factory_dbus_message;
 

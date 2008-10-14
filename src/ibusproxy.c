@@ -82,14 +82,13 @@ ibus_proxy_new (void)
 static void
 ibus_proxy_class_init (IBusProxyClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    IBusObjectClass *ibus_object_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusProxyPrivate));
 
-    ibus_object_class->destroy = (IBusDestroyFunc) ibus_proxy_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_proxy_destroy;
 
     klass->dbus_message = ibus_proxy_dbus_message;
 

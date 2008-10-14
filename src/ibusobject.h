@@ -60,7 +60,7 @@ struct _IBusObject {
   /* instance members */
 };
 
-typedef void ( *IBusDestroyFunc) (IBusObject *);
+typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
 
 struct _IBusObjectClass {
   GObjectClass parent;

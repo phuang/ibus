@@ -163,7 +163,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_engine_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_engine_get_property;
     
-    ibus_object_class->destroy = (IBusDestroyFunc) ibus_engine_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_engine_destroy;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_engine_dbus_message;
 
