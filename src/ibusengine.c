@@ -101,7 +101,7 @@ static void     ibus_engine_property_hide   (IBusEngine         *engine,
                                              const gchar        *prop_name);
 
 
-static IBusObjectClass  *_parent_class = NULL;
+static IBusServiceClass  *_parent_class = NULL;
 
 GType
 ibus_engine_get_type (void)
@@ -155,7 +155,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-    _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
+    _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
 
