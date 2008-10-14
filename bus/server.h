@@ -56,8 +56,9 @@ struct _BusServerClass {
   /* class members */
 };
 
-GType            bus_server_get_type            (void);
-BusServer       *bus_server_new                 (void);
+GType            bus_server_get_type        (void);
+BusServer       *bus_server_new             (void);
+gboolean         bus_server_listen          (BusServer  *server);
 
 G_END_DECLS
 #endif

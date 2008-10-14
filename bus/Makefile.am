@@ -26,10 +26,10 @@ INCLUDES = \
 bin_PROGRAMS = ibus-daemon
 ibus_daemon_SOURCES = \
 	main.c \
+	dbusimpl.c \
+	dbusimpl.h \
 	server.c \
 	server.h \
-	dbusimple.c \
-	dbusimple.h \
 	connection.c \
 	connection.h \
 	$(NULL)

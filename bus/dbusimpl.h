@@ -20,7 +20,8 @@
 #ifndef __DBUS_IMPL_H_
 #define __DBUS_IMPL_H_
 
-#include <bus.h>
+#include <ibus.h>
+#include "connection.h"
 
 /*
  * Type macros.
@@ -58,6 +59,8 @@ struct _BusDBusImplClass {
 
 GType            bus_dbus_impl_get_type         (void);
 BusDBusImpl     *bus_dbus_impl_new              (void);
+gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus_impl,
+                                                 BusConnection  *connection);
 
 G_END_DECLS
 #endif

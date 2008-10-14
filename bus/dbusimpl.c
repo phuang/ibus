@@ -19,9 +19,10 @@
  */
 
 #include "dbusimpl.h"
+#include "connection.h"
 
 #define BUS_DBUS_IMPL_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_DBUS_IMPL, IBusDBusImplPrivate))
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_DBUS_IMPL, BusDBusImplPrivate))
 
 enum {
     LAST_SIGNAL,
@@ -29,43 +30,46 @@ enum {
 
 enum {
     PROP_0,
-    PROP_CONNECTION,
 };
 
 
 /* IBusDBusImplPriv */
-struct _IBusDBusImplPrivate {
-    IBusConnection *connection;
+struct _BusDBusImplPrivate {
+    GHashTable *unique_names;
+    GHashTable *names;
+    GSList *connections;
+    gint id;
 };
-typedef struct _IBusDBusImplPrivate IBusDBusImplPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+typedef struct _BusDBusImplPrivate BusDBusImplPrivate;
+
+// static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_dbus_impl_class_init      (BusDBusImplClass    *klass);
-static void     ibus_dbus_impl_init            (BusDBusImpl         *dbus_impl);
-static void     ibus_dbus_impl_dispose         (BusDBusImpl         *dbus_impl);
-static gboolean ibus_dbus_impl_dbus_message    (BusDBusImpl         *dbus_impl,
-                                                BusConnection       *connection,
-                                                DBusMessage         *message);
+static void     bus_dbus_impl_class_init      (BusDBusImplClass    *klass);
+static void     bus_dbus_impl_init            (BusDBusImpl         *dbus_impl);
+static void     bus_dbus_impl_dispose         (BusDBusImpl         *dbus_impl);
+static gboolean bus_dbus_impl_dbus_message    (BusDBusImpl         *dbus_impl,
+                                               BusConnection       *connection,
+                                               DBusMessage         *message);
 
 static IBusServiceClass  *_parent_class = NULL;
 
 GType
-ibus_dbus_impl_get_type (void)
+bus_dbus_impl_get_type (void)
 {
     static GType type = 0;
 
     static const GTypeInfo type_info = {
-        sizeof (IBusDBusImplClass),
+        sizeof (BusDBusImplClass),
         (GBaseInitFunc)     NULL,
         (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_dbus_impl_class_init,
+        (GClassInitFunc)    bus_dbus_impl_class_init,
         NULL,               /* class finalize */
         NULL,               /* class data */
-        sizeof (IBusDBusImpl),
+        sizeof (BusDBusImpl),
         0,
-        (GInstanceInitFunc) ibus_dbus_impl_init,
+        (GInstanceInitFunc) bus_dbus_impl_init,
     };
 
     if (type == 0) {
@@ -77,282 +81,510 @@ ibus_dbus_impl_get_type (void)
     return type;
 }
 
-IBusDBusImpl *
-ibus_dbus_impl_new (const gchar *path, IBusConnection *connection)
+BusDBusImpl *
+bus_dbus_impl_new (void)
 {
-    g_assert (path);
-    g_assert (IBUS_IS_CONNECTION (connection));
+    // BusDBusImplPrivate *priv;
+    BusDBusImpl *dbus_impl;
 
-    IBusDBusImplPrivate *priv;
-    IBusDBusImpl *dbus_impl;
-
-    dbus_impl = IBUS_DBUS_IMPL (g_object_new (IBUS_TYPE_DBUS_IMPL,
-                "path", path,
-                NULL));
-
-    priv = IBUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    priv->connection = g_object_ref (connection);
-
-    ibus_service_add_to_connection (IBUS_SERVICE (dbus_impl), connection);
+    dbus_impl = BUS_DBUS_IMPL (g_object_new (BUS_TYPE_DBUS_IMPL,
+                    "path", DBUS_PATH_DBUS,
+                    NULL));
 
     return dbus_impl;
 }
 
 static void
-ibus_dbus_impl_class_init (IBusDBusImplClass *klass)
+bus_dbus_impl_class_init (BusDBusImplClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-    _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
+    _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (IBusDBusImplPrivate));
+    g_type_class_add_private (klass, sizeof (BusDBusImplPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) ibus_dbus_impl_dispose;
+    gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_dbus_impl_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
 
 }
 
 static void
-ibus_dbus_impl_init (IBusDBusImpl *dbus_impl)
+bus_dbus_impl_init (BusDBusImpl *dbus_impl)
 {
-    IBusDBusImplPrivate *priv;
-    priv = IBUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
+    priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
+    priv->names = g_hash_table_new (g_str_hash, g_str_equal);
+    priv->connections = NULL;
+    priv->id = 1;
 
-    priv->connection = NULL;
 }
 
 static void
-ibus_dbus_impl_dispose (IBusDBusImpl *dbus_impl)
+bus_dbus_impl_dispose (BusDBusImpl *dbus_impl)
 {
-    IBusDBusImplPrivate *priv;
-    priv = IBUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    g_object_unref (priv->connection);
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (dbus_impl));
 }
 
-static gboolean
-ibus_dbus_impl_dbus_message (IBusDBusImpl *dbus_impl, IBusConnection *connection, DBusMessage *message)
+/* dbus members */
+static DBusMessage *
+_dbus_no_implement (BusDBusImpl     *dbus_impl,
+                    DBusMessage     *message,
+                    BusConnection   *connection)
 {
-    g_assert (IBUS_IS_DBUS_IMPL (dbus_impl));
-    g_assert (IBUS_IS_CONNECTION (connection));
+    DBusMessage *reply_message;
+    reply_message = dbus_message_new_error_printf (message,
+                                    dbus_message_get_member (message),
+                                    "IBus does not support it.");
+    return reply_message;
+}
+
+
+static DBusMessage *
+_dbus_hello (BusDBusImpl    *dbus_impl,
+             DBusMessage    *message,
+             BusConnection  *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
+    DBusMessage *reply_message;
+
+    if (bus_connection_get_unique_name (connection) != NULL) {
+        reply_message = dbus_message_new_error_printf (message,
+                                    "Hello",
+                                    "Already handled a Hello message");
+    }
+    else {
+        gchar *name = g_strdup_printf (":1.%d", priv->id ++);
+        bus_connection_set_unique_name (connection, name);
+        
+        reply_message = dbus_message_new_method_return (message);
+        dbus_message_append_args (reply_message,
+                    DBUS_TYPE_STRING, &name,
+                    DBUS_TYPE_INVALID);
+        g_free (name);
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_list_names (BusDBusImpl       *dbus_impl,
+                  DBusMessage       *message,
+                  BusConnection     *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    DBusMessageIter iter, sub_iter;
+    GList *name, *names;
+
+    reply_message = dbus_message_new_method_return (message);
+
+    dbus_message_iter_init_append (message, &iter);
+    dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &sub_iter);
+    
+    // append unique names
+    names = g_hash_table_get_keys (priv->unique_names);
+    names = g_list_sort (names, (GCompareFunc) g_strcmp0);
+    for (name = names; name != NULL; name = name->next) {
+        dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &(name->data));
+    }
+    g_list_free (names);
+    
+    // append well-known names
+    names = g_hash_table_get_keys (priv->names);
+    names = g_list_sort (names, (GCompareFunc) g_strcmp0);
+    for (name = names; name != NULL; name = name->next) {
+        dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &(name->data));
+    }
+    g_list_free (names);
+
+    dbus_message_iter_close_container (&iter, &sub_iter);
+    
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_name_has_owner (BusDBusImpl   *dbus_impl,
+                      DBusMessage   *message,
+                      BusConnection *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
+    gchar *name;
+    gboolean retval;
+    gboolean has_owner;
+    DBusMessage *reply_message;
+    DBusError error;
+
+    dbus_error_init (&error);
+    retval = dbus_message_get_args (message, &error,
+                    DBUS_TYPE_STRING, &name,
+                    DBUS_TYPE_INVALID);
+
+    if (! retval) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        if (name[0] == ':') {
+            has_owner = g_hash_table_lookup (priv->unique_names, name) != NULL;
+        }
+        else {
+            has_owner = g_hash_table_lookup (priv->names, name) != NULL;
+        }
+        reply_message = dbus_message_new_method_return (message);
+        dbus_message_append_args (reply_message,
+                    DBUS_TYPE_BOOLEAN, &has_owner,
+                    DBUS_TYPE_INVALID);
+    }
+
+    return reply_message;
+}
+
+
+static DBusMessage *
+_dbus_get_name_owner (BusDBusImpl   *dbus_impl,
+                      DBusMessage   *message,
+                      BusConnection *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
+    gchar *name;
+    gboolean retval;
+    const gchar *owner_name;
+    DBusMessage *reply_message;
+    DBusError error;
+
+    dbus_error_init (&error);
+    retval = dbus_message_get_args (message, &error,
+                    DBUS_TYPE_STRING, &name,
+                    DBUS_TYPE_INVALID);
+
+    if (! retval) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        BusConnection *owner;
+        if (name[0] == ':') {
+            owner = BUS_CONNECTION (g_hash_table_lookup (priv->unique_names, name));
+        }
+        else {
+            owner = BUS_CONNECTION (g_hash_table_lookup (priv->names, name));
+        }
+
+        if (owner != NULL) {
+            owner_name = bus_connection_get_unique_name (owner);
+            reply_message = dbus_message_new_method_return (message);
+            dbus_message_append_args (reply_message,
+                    DBUS_TYPE_STRING, &owner_name,
+                    DBUS_TYPE_INVALID);
+        }
+        else {
+            reply_message = dbus_message_new_error_printf (message,
+                                    "GetNameOwner",
+                                    "org.freedesktop.DBus.Error.NameHasNoOwner");
+        }
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_get_id (BusDBusImpl      *dbus_impl,
+              DBusMessage    *message,
+              BusConnection  *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    const gchar *name;
+
+    name = bus_connection_get_unique_name (connection);
+
+    if (name == NULL) {
+        reply_message = dbus_message_new_error_printf (message,
+                                    "GetId",
+                                    "Can not GetId before Hello");
+    }
+    else {
+        reply_message = dbus_message_new_method_return (message);
+        dbus_message_append_args (reply_message,
+                    DBUS_TYPE_STRING, &name,
+                    DBUS_TYPE_INVALID);
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_add_match (BusDBusImpl    *dbus_impl,
+                 DBusMessage    *message,
+                 BusConnection  *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    DBusError error;
+    gchar *rule;
+
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_INVALID)) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        reply_message = dbus_message_new_method_return (message);
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_remove_match (BusDBusImpl     *dbus_impl,
+                    DBusMessage     *message,
+                    BusConnection   *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    DBusError error;
+    gchar *rule;
+
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_INVALID)) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        reply_message = dbus_message_new_method_return (message);
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_request_name (BusDBusImpl      *dbus_impl,
+                    DBusMessage    *message,
+                    BusConnection  *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    DBusError error;
+    gchar *name;
+    guint flags;
+    guint retval;
+
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &name,
+            DBUS_TYPE_UINT32, &flags,
+            DBUS_TYPE_INVALID)) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        if (g_hash_table_lookup (priv->names, name)) {
+            reply_message = dbus_message_new_error_printf (message,
+                        "RequestName",
+                        "Name %s has owner", name);
+        }
+        else {
+            retval = 1;
+            g_hash_table_insert (priv->names,
+                    (gpointer )bus_connection_add_name (connection, name),
+                    connection);
+            reply_message = dbus_message_new_method_return (message);
+            dbus_message_append_args (message,
+                    DBUS_TYPE_UINT32, &retval,
+                    DBUS_TYPE_INVALID);
+        }
+    }
+
+    return reply_message;
+}
+
+static DBusMessage *
+_dbus_release_name (BusDBusImpl     *dbus_impl,
+                    DBusMessage     *message,
+                    BusConnection   *connection)
+{
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    DBusMessage *reply_message;
+    DBusError error;
+    gchar *name;
+    guint retval;
+
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+            DBUS_TYPE_STRING, &name,
+            DBUS_TYPE_INVALID)) {
+        reply_message = dbus_message_new_error (message,
+                                    error.name,
+                                    error.message);
+        dbus_error_free (&error);
+    }
+    else {
+        reply_message = dbus_message_new_method_return (message);
+        if (bus_connection_remove_name (connection, name)) {
+            retval = 1;
+        }
+        else {
+            retval = 2;
+        }
+        dbus_message_append_args (message,
+                    DBUS_TYPE_UINT32, &retval,
+                    DBUS_TYPE_INVALID);
+    }
+
+    return reply_message;
+}
+
+static gboolean
+bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, DBusMessage *message)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus_impl));
+    g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
-    IBusDBusImplPrivate *priv;
-    priv = IBUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-
-    g_assert (priv->connection == connection);
-
-    DBusMessage *return_message = NULL;
-    DBusMessage *error_message = NULL;
-
-    static struct {
-        gchar *member;
-        guint  signal_id;
-    } no_arg_methods[] = {
-        {"FocusIn",     FOCUS_IN},
-        {"FocusOut",    FOCUS_OUT},
-        {"Reset",       RESET},
-        {"Enable",      ENABLE},
-        {"Disable",     DISABLE},
-        {"PageUp",      PAGE_UP},
-        {"PageDown",    PAGE_DOWN},
-        {"CursorUp",    CURSOR_UP},
-        {"CursorDown",  CURSOR_DOWN},
-        {NULL, 0},
-    };
     gint i;
-
-    for (i = 0; no_arg_methods[i].member != NULL; i++) {
-        if (!dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, no_arg_methods[i].member))
-            continue;
-
-        DBusMessageIter iter;
-        dbus_message_iter_init (message, &iter);
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID) {
-            error_message = dbus_message_new_error_printf (message,
-                                "%s.%s: Method does not have arguments",
-                                IBUS_INTERFACE_DBUS_IMPL, no_arg_methods[i].member);
-            ibus_connection_send (connection, error_message);
-            dbus_message_unref (error_message);
+    DBusMessage *reply_message = NULL;
+    
+    struct {
+        const gchar *interface;
+        const gchar *name;
+        DBusMessage *(* handler) (BusDBusImpl *, DBusMessage *, BusConnection *);
+    } handlers[] =  {
+        /* dbus interface */
+        { DBUS_INTERFACE_DBUS, "Hello",     _dbus_hello },
+        { DBUS_INTERFACE_DBUS, "ListNames", _dbus_list_names },
+        { DBUS_INTERFACE_DBUS, "ListActivatableNames", 
+                                            _dbus_no_implement },
+        { DBUS_INTERFACE_DBUS, "NameHasOwner",
+                                            _dbus_name_has_owner },
+        { DBUS_INTERFACE_DBUS, "StartServiceByName",
+                                            _dbus_no_implement },
+        { DBUS_INTERFACE_DBUS, "GetNameOwner",
+                                            _dbus_get_name_owner },
+        { DBUS_INTERFACE_DBUS, "GetConnectionUnixUser",
+                                            _dbus_no_implement },
+        { DBUS_INTERFACE_DBUS, "AddMatch",  _dbus_add_match },
+        { DBUS_INTERFACE_DBUS, "RemoveMatch",
+                                            _dbus_remove_match },
+        { DBUS_INTERFACE_DBUS, "GetId",     _dbus_get_id },
+        { DBUS_INTERFACE_DBUS, "RequestName", _dbus_request_name },
+        { DBUS_INTERFACE_DBUS, "ReleaseName", _dbus_release_name },
+        { NULL, NULL, NULL }
+    };
+    
+    for (i = 0; handlers[i].interface != NULL; i++) {
+        if (dbus_message_is_method_call (message,
+                                         handlers[i].interface,
+                                         handlers[i].name)) {
+            reply_message = handlers[i].handler (dbus_impl, message, connection);
+            if (reply_message) {
+                ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
+                dbus_message_unref (reply_message);
+            }
+            g_signal_stop_emission_by_name (connection, "dbus-message");
             return TRUE;
         }
-
-        g_signal_emit (dbus_impl, _signals[no_arg_methods[i].signal_id], 0);
-        return_message = dbus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
     }
 
-
-    if (dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, "KeyPress")) {
-        guint keyval, state;
-        gboolean is_press, retval;
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &keyval);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &is_press);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &state);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _keypress_fail;
-
-        g_signal_emit (dbus_impl, _signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
-
-        return_message = dbus_message_new_method_return (message);
-        dbus_message_append_args (return_message, DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
-
-    _keypress_fail:
-        error_message = dbus_message_new_error_printf (message,
-                        "%s.%s: Can not match signature (ubu) of method",
-                        IBUS_INTERFACE_DBUS_IMPL, "KeyPress");
-        ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, "PropertyActivate")) {
-        gchar *name;
-        gint state;
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto _property_activate_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
-            goto _property_activate_fail;
-        dbus_message_iter_get_basic (&iter, &state);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _property_activate_fail;
-
-        g_signal_emit (dbus_impl, _signals[PROPERTY_ACTIVATE], 0, name, state);
-
-        return_message = dbus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
-
-    _property_activate_fail:
-        error_message = dbus_message_new_error_printf (message,
-                        "%s.%s: Can not match signature (si) of method",
-                        IBUS_INTERFACE_DBUS_IMPL, "PropertyActivate");
-        ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
-        return TRUE;
-
-    }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, "PropertyShow")) {
-        gchar *name;
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto _property_show_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _property_show_fail;
-
-        g_signal_emit (dbus_impl, _signals[PROPERTY_SHOW], 0, name);
-
-        return_message = dbus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
-
-    _property_show_fail:
-        error_message = dbus_message_new_error_printf (message,
-                        "%s.%s: Can not match signature (s) of method",
-                        IBUS_INTERFACE_DBUS_IMPL, "PropertyShow");
-        ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, "PropertyHide")) {
-        gchar *name;
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto _property_hide_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _property_hide_fail;
-
-        g_signal_emit (dbus_impl, _signals[PROPERTY_HIDE], 0, name);
-
-        return_message = dbus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
-
-    _property_hide_fail:
-        error_message = dbus_message_new_error_printf (message,
-                        "%s.%s: Can not match signature (s) of method",
-                        IBUS_INTERFACE_DBUS_IMPL, "PropertyHide");
-        ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_DBUS_IMPL, "SetCursorLocation")) {
-        gint args[4];
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-        for (i =0; i < 4; i++) {
-            if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
-                goto _set_cursor_location_fail;
-            dbus_message_iter_get_basic (&iter, &args[i]);
-            dbus_message_iter_next (&iter);
-        }
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _set_cursor_location_fail;
-
-        g_signal_emit (dbus_impl, _signals[SET_CURSOR_LOCATION], 0,
-                    args[0], args[1], args[2], args[3]);
-
-        return_message = dbus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
-        return TRUE;
-
-    _set_cursor_location_fail:
-        error_message = dbus_message_new_error_printf (message,
-                        "%s.%s: Can not match signature (iiii) of method",
-                        IBUS_INTERFACE_DBUS_IMPL, "SetCursorLocation");
-        ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
-        return TRUE;
-    }
-
+    reply_message = dbus_message_new_error_printf (message,
+                                "org.freedesktop.DBus.Error.NoImplement",
+                                "%s is not implemented",
+                                dbus_message_get_member (message));
+    
+    ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
+    dbus_message_unref (reply_message);
     return FALSE;
 }
 
+static void
+_connection_destroy_cb (BusConnection   *connection,
+                        BusDBusImpl     *dbus_impl)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (BUS_IS_DBUS_IMPL (dbus_impl));
+
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+
+    ibus_service_remove_from_connection (
+                    IBUS_SERVICE (dbus_impl),
+                    IBUS_CONNECTION (connection));
+    
+    const gchar *unique_name = bus_connection_get_unique_name (connection);
+    if (unique_name != NULL)
+        g_hash_table_remove (priv->unique_names, unique_name);
+
+    const GSList *name = bus_connection_get_names (connection);
+
+    while (name != NULL) {
+        g_hash_table_remove (priv->names, name->data);
+        name = name->next;
+    }
+    
+    priv->connections = g_slist_remove (priv->connections, connection);
+    g_object_unref (connection);
+}
+
+
+gboolean
+bus_dbus_impl_new_connection (BusDBusImpl    *dbus_impl,
+                              BusConnection  *connection)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus_impl));
+    g_assert (BUS_IS_CONNECTION (connection));
+    
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
+    
+    g_assert (g_slist_find (priv->connections, connection) == NULL);
+
+    g_object_ref (G_OBJECT (connection));
+    priv->connections = g_slist_append (priv->connections, connection);
+
+    g_signal_connect (connection, "destroy",
+                      (GCallback) _connection_destroy_cb,
+                      dbus_impl);
+    
+    ibus_service_add_to_connection (
+            IBUS_SERVICE (dbus_impl),
+            IBUS_CONNECTION (connection));
+    
+    return TRUE;
+}
