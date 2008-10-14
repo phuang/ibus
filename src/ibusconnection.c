@@ -44,7 +44,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
 static void     ibus_connection_init        (IBusConnection         *connection);
-static void     ibus_connection_dispose    (IBusConnection         *connection);
+static void     ibus_connection_destroy     (IBusConnection         *connection);
 
 static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
                                              DBusMessage            *message);
@@ -92,13 +92,13 @@ ibus_connection_new (void)
 static void
 ibus_connection_class_init (IBusConnectionClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusConnectionPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) ibus_connection_dispose;
+    object_class->destroy = ibus_connection_destroy;
 
     klass->dbus_message = ibus_connection_dbus_message;
     klass->dbus_signal  = ibus_connection_dbus_signal;
@@ -146,7 +146,7 @@ ibus_connection_init (IBusConnection *connection)
 }
 
 static void
-ibus_connection_dispose (IBusConnection *connection)
+ibus_connection_destroy (IBusConnection *connection)
 {
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
@@ -168,7 +168,7 @@ ibus_connection_dispose (IBusConnection *connection)
         goto _out;
     }
 _out:
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (connection));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (connection));
 }
 
 static gboolean

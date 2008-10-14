@@ -26,7 +26,7 @@ const gchar *
 ibus_get_address (void)
 {
     static gchar *address = NULL;
-    
+
     if (address == NULL) {
         gchar *display;
         gchar *hostname = "";

@@ -19,23 +19,25 @@
  */
 #ifndef __IBUS_SHARE_H_
 #define __IBUS_SHARE_H_
-#include <glib.h>
-#define IBUS_SERVICE_BUS        "org.freedesktop.IBus"
-#define IBUS_SERVICE_PANEL      "org.freedesktop.IBus.Panel" 
-#define IBUS_SERVICE_CONFIG     "org.freedesktop.IBus.Config" 
-#define IBUS_SERVICE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications" 
 
-#define IBUS_PATH_BUS           "/org/freedesktop/IBus"
-#define IBUS_PATH_PANEL         "/org/freedesktop/IBus/Panel" 
-#define IBUS_PATH_CONFIG        "/org/freedesktop/IBus/Config" 
+#include <glib.h>
+
+#define IBUS_SERVICE_IBUS       "org.freedesktop.IBus"
+#define IBUS_SERVICE_PANEL      "org.freedesktop.IBus.Panel"
+#define IBUS_SERVICE_CONFIG     "org.freedesktop.IBus.Config"
+#define IBUS_SERVICE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications"
+
+#define IBUS_PATH_IBUS          "/org/freedesktop/IBus"
+#define IBUS_PATH_PANEL         "/org/freedesktop/IBus/Panel"
+#define IBUS_PATH_CONFIG        "/org/freedesktop/IBus/Config"
 #define IBUS_PATH_NOTIFICATIONS "/org/freedesktop/IBus/Notifications"
 
-#define IBUS_INTERFACE_BUS      "org.freedesktop.IBus" 
-#define IBUS_INTERFACE_FACTORY  "org.freedesktop.IBus.Factory" 
-#define IBUS_INTERFACE_ENGINE   "org.freedesktop.IBus.Engine" 
-#define IBUS_INTERFACE_PANEL    "org.freedesktop.IBus.Panel" 
-#define IBUS_INTERFACE_CONFIG   "org.freedesktop.IBus.Config" 
-#define IBUS_INTERFACE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications" 
+#define IBUS_INTERFACE_IBUS     "org.freedesktop.IBus"
+#define IBUS_INTERFACE_FACTORY  "org.freedesktop.IBus.Factory"
+#define IBUS_INTERFACE_ENGINE   "org.freedesktop.IBus.Engine"
+#define IBUS_INTERFACE_PANEL    "org.freedesktop.IBus.Panel"
+#define IBUS_INTERFACE_CONFIG   "org.freedesktop.IBus.Config"
+#define IBUS_INTERFACE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications"
 
 G_BEGIN_DECLS
 

@@ -60,11 +60,13 @@ struct _IBusObject {
   /* instance members */
 };
 
+typedef void ( *IBusDestroyFunc) (IBusObject *);
+
 struct _IBusObjectClass {
   GObjectClass parent;
 
   /* class members */
-  void (* destroy)        (IBusObject   *client);
+  void (* destroy)        (IBusObject   *obj);
 };
 
 GType           ibus_object_get_type            (void);

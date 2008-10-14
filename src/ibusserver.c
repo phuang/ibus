@@ -47,7 +47,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_server_class_init  (IBusServerClass    *klass);
 static void     ibus_server_init        (IBusServer         *server);
-static void     ibus_server_dispose     (IBusServer         *server);
+static void     ibus_server_destroy     (IBusServer         *server);
 static void     ibus_server_set_property(IBusServer         *server,
                                          guint               prop_id,
                                          const GValue       *value,
@@ -116,14 +116,16 @@ static void
 ibus_server_class_init (IBusServerClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusServerPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) ibus_server_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_server_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_server_get_property;
+    
+    ibus_object_class->destroy = (IBusDestroyFunc) ibus_server_destroy;
 
     klass->new_connection = ibus_server_new_connection;
     
@@ -158,7 +160,7 @@ ibus_server_init (IBusServer *server)
 }
 
 static void
-ibus_server_dispose (IBusServer *server)
+ibus_server_destroy (IBusServer *server)
 {
     IBusServerPrivate *priv;
     priv = IBUS_SERVER_GET_PRIVATE (server);
@@ -168,7 +170,7 @@ ibus_server_dispose (IBusServer *server)
         priv->server = NULL;
     }
 
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (server));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (server));
 }
 
 static void

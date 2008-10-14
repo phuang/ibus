@@ -24,8 +24,6 @@
 #define IBUS_SERVICE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
 
-#define DECLARE_PRIV IBusServicePrivate *priv = IBUS_SERVICE_GET_PRIVATE(service)
-
 enum {
     DBUS_MESSAGE,
     DBUS_SIGNAL,
@@ -49,7 +47,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_service_class_init     (IBusServiceClass   *klass);
 static void     ibus_service_init           (IBusService        *service);
-static void     ibus_service_dispose        (IBusService        *service);
+static void     ibus_service_destroy        (IBusService        *service);
 static void     ibus_service_set_property   (IBusService        *service,
                                              guint              prop_id,
                                              const GValue       *value,
@@ -105,14 +103,15 @@ static void
 ibus_service_class_init (IBusServiceClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusServicePrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) ibus_service_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_service_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_service_get_property;
+    ibus_object_class->destroy = (IBusDestroyFunc) ibus_service_destroy;
     
     klass->dbus_message = ibus_service_dbus_message;
     klass->dbus_signal = ibus_service_dbus_signal;
@@ -152,21 +151,24 @@ ibus_service_class_init (IBusServiceClass *klass)
 static void
 ibus_service_init (IBusService *service)
 {
-    DECLARE_PRIV;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
 
     priv->path = NULL;
     priv->connections = NULL;
 }
 
 static void
-ibus_service_dispose (IBusService *service)
+ibus_service_destroy (IBusService *service)
 {
-    DECLARE_PRIV;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+    
     ibus_service_remove_from_all_connections (service);
     g_free (priv->path);
     priv->path = NULL;
     
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (service));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (service));
 }
 
 static void
@@ -250,9 +252,13 @@ _service_message_function (IBusConnection *connection, DBusMessage *message, IBu
 }
 
 static void
-_connection_disconnected_cb (IBusConnection *connection, IBusService *service)
+_connection_destroy_cb (IBusConnection *connection, IBusService *service)
 {
-    DECLARE_PRIV;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+
+    g_assert (g_slist_find (priv->connections, connection) != NULL);
+    
     g_object_unref (connection);
     priv->connections = g_slist_remove (priv->connections, connection);
 }
@@ -263,21 +269,24 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
     g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
     g_return_val_if_fail (IBUS_IS_CONNECTION (connection), FALSE);
 
-    DECLARE_PRIV;
+    gboolean retval;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
     g_return_val_if_fail (g_slist_find (priv->connections, connection) == NULL, FALSE);
 
-    gboolean retval;
+    g_object_ref (connection);
+    
     retval = ibus_connection_register_object_path (connection, priv->path,
                     (IBusMessageFunc) _service_message_function, service);
     if (!retval) {
+        g_object_unref (connection);
         return FALSE;
     }
 
-    g_object_ref (connection);
     priv->connections = g_slist_append (priv->connections, connection);
-    g_signal_connect (connection, "disconnected", (GCallback) _connection_disconnected_cb, service);
+    g_signal_connect (connection, "destroy", (GCallback) _connection_destroy_cb, service);
 
     return retval;
 }
@@ -288,7 +297,8 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
     g_return_val_if_fail (IBUS_IS_CONNECTION (connection), FALSE);
 
-    DECLARE_PRIV;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
     g_return_val_if_fail (g_slist_find (priv->connections, connection) != NULL, FALSE);
@@ -309,7 +319,8 @@ ibus_service_remove_from_all_connections (IBusService *service)
 {
     g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
 
-    DECLARE_PRIV;
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
 
     g_return_val_if_fail (priv->path != NULL, FALSE);
 

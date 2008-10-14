@@ -60,7 +60,7 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_engine_class_init      (IBusEngineClass    *klass);
 static void     ibus_engine_init            (IBusEngine         *engine);
-static void     ibus_engine_dispose         (IBusEngine         *engine);
+static void     ibus_engine_destroy         (IBusEngine         *engine);
 static void     ibus_engine_set_property    (IBusEngine         *engine,
                                              guint               prop_id,
                                              const GValue       *value,
@@ -154,14 +154,16 @@ static void
 ibus_engine_class_init (IBusEngineClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) ibus_engine_dispose;
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_engine_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_engine_get_property;
+    
+    ibus_object_class->destroy = (IBusDestroyFunc) ibus_engine_destroy;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_engine_dbus_message;
 
@@ -331,12 +333,12 @@ ibus_engine_init (IBusEngine *engine)
 }
 
 static void
-ibus_engine_dispose (IBusEngine *engine)
+ibus_engine_destroy (IBusEngine *engine)
 {
     IBusEnginePrivate *priv;
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
     g_object_unref (priv->connection);
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (engine));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine));
 }
 
 static void
