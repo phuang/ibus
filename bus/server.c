@@ -35,6 +35,7 @@ enum {
 struct _BusServerPrivate {
     GHashTable *unique_names;
     GHashTable *names;
+    GSList *connections;
     gint id;
 };
 typedef struct _BusServerPrivate BusServerPrivate;
@@ -120,6 +121,7 @@ bus_server_init (BusServer *server)
 
     priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
+    priv->connections = NULL;
     priv->id = 1;
 }
 
@@ -532,27 +534,27 @@ _connection_dbus_message_cb     (BusConnection  *connection,
         { DBUS_INTERFACE_DBUS, "RequestName", _dbus_request_name },
         { DBUS_INTERFACE_DBUS, "ReleaseName", _dbus_release_name },
         /* ibus interface */
-        { IBUS_INTERFACE_IBUS, "GetAddress",          _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "CreateInputContext",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "ReleaseInputContext", _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "ProcessKeyEvent",     _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "SetCursorLocation",   _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "FocusIn",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "FocusOut",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "Reset",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "GetIsEnabled",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "SetCapabilites",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterFactories",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "UnregisterFactories",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "GetFactoryInfo",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "SetFactory",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "GetInputContextStates",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterListEngines",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterReloadEngines",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterStartEngine",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterRestartEngine",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterStopEngine",  _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "Kill",  _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
+        { IBUS_INTERFACE_IBUS, "ReleaseInputContext",   _ibus_release_input_context },
+        { IBUS_INTERFACE_IBUS, "ProcessKeyEvent",       _ibus_process_key_event },
+        { IBUS_INTERFACE_IBUS, "SetCursorLocation",     _ibus_set_cursor_location },
+        { IBUS_INTERFACE_IBUS, "FocusIn",               _ibus_focus_in },
+        { IBUS_INTERFACE_IBUS, "FocusOut",              _ibus_focus_out },
+        { IBUS_INTERFACE_IBUS, "Reset",                 _ibus_reset },
+        { IBUS_INTERFACE_IBUS, "GetIsEnabled",          _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "SetCapabilites",        _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterListEngines",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterReloadEngines", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterStartEngine",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterRestartEngine", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterStopEngine",    _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_get_address },
  
         {NULL, NULL, NULL},
     };
@@ -590,6 +592,9 @@ _connection_destroy_cb (BusConnection   *connection,
         g_hash_table_remove (priv->names, name->data);
         name = name->next;
     }
+    
+    priv->connections = g_slist_remove (priv->connections, connection);
+    g_object_unref (connection);
 }
 
 
@@ -603,13 +608,15 @@ bus_server_new_connection   (BusServer          *server,
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
     
+    g_object_ref (connection);
+
     g_signal_connect (connection, "dbus_message",
                       (GCallback) _connection_dbus_message_cb,
                       server);
     g_signal_connect (connection, "destroy",
                       (GCallback) _connection_destroy_cb,
                       server);
-    g_object_ref (connection);
+    priv->connections = g_slist_append (priv->connections, connection);
 }
 
 static void

@@ -28,6 +28,8 @@ ibus_daemon_SOURCES = \
 	main.c \
 	server.c \
 	server.h \
+	dbusimple.c \
+	dbusimple.h \
 	connection.c \
 	connection.h \
 	$(NULL)
