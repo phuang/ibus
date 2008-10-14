@@ -21,6 +21,7 @@
 
 import sys
 import ibus
+import gobject
 from ibus import keysyms
 from ibus import modifier
 from contextmanager import ContextManager
@@ -68,7 +69,9 @@ class IBus(ibus.Object):
         self.__connections = list()
 
         self.__prev_key = None
+        self.__config_load_settings ()
 
+    def __config_load_settings (self):
         self.__shortcut_trigger = self.__load_config_shortcut(
                 "general", "keyboard_shortcut_trigger",
                 ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
@@ -526,9 +529,11 @@ class IBus(ibus.Object):
         self.__config.destroy()
         self.__config = Config(ibusconn)
         self.__install_config_handlers()
+        gobject.idle_add (self.__config_load_settings)
 
     def __install_config_handlers(self):
         signals = (
+            ("value-changed", self.__config_value_changed_cb),
             ("destroy", self.__config_destroy_cb),
         )
         for signal, handler in signals:
@@ -551,6 +556,17 @@ class IBus(ibus.Object):
                 keyval = 0
 
         return keyval, keymask
+
+    def __config_value_changed_cb (self, config, section, name, value):
+        if section == "general":
+            if name == "keyboard_shortcut_trigger":
+                self.__shortcut_trigger = self.__load_config_shortcut(
+                        "general", "keyboard_shortcut_trigger",
+                        ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
+            elif name =="keyboard_shortcut_next_engine":
+                self.__shortcut_next_engine = self.__load_config_shortcut(
+                        "general", "keyboard_shortcut_next_engine",
+                        ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
 
     def __config_destroy_cb(self, config):
         if config == self.__config:

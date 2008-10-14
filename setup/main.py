@@ -259,7 +259,7 @@ class Setup(object):
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return
-        self.__bus.config_set_value(section, name, shortcuts)
+        self.__bus.config_set_value(section, _name, shortcuts)
         entry.set_text("; ".join(shortcuts))
 
 
