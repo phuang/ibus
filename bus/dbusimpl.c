@@ -297,8 +297,9 @@ _dbus_get_name_owner (BusDBusImpl   *dbus_impl,
         }
         else {
             reply_message = dbus_message_new_error_printf (message,
-                                    "GetNameOwner",
-                                    "org.freedesktop.DBus.Error.NameHasNoOwner");
+                                    "org.freedesktop.DBus.Error.NameHasNoOwner",
+                                    "Name %s does have owner",
+                                    name);
         }
     }
 
@@ -343,12 +344,15 @@ _dbus_add_match (BusDBusImpl    *dbus_impl,
 
     DBusMessage *reply_message;
     DBusError error;
+    gboolean retval;
     gchar *rule;
 
     dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
+    retval = dbus_message_get_args (message, &error,
             DBUS_TYPE_STRING, &rule,
-            DBUS_TYPE_INVALID)) {
+            DBUS_TYPE_INVALID);
+    
+    if (!retval) {
         reply_message = dbus_message_new_error (message,
                                     error.name,
                                     error.message);
@@ -472,6 +476,109 @@ _dbus_release_name (BusDBusImpl     *dbus_impl,
     return reply_message;
 }
 
+static DBusMessage *
+_dbus_introspect (BusDBusImpl     *dbus_impl,
+                  DBusMessage     *message,
+                  BusConnection   *connection)
+{
+    static const gchar *introspect = 
+        "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
+        "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
+        "<node>\n"
+        "  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
+        "    <method name=\"Introspect\">\n"
+        "      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "  </interface>\n"
+        "  <interface name=\"org.freedesktop.DBus\">\n"
+        "    <method name=\"Hello\">\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"RequestName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"in\" type=\"u\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ReleaseName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"StartServiceByName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"in\" type=\"u\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"UpdateActivationEnvironment\">\n"
+        "      <arg direction=\"in\" type=\"a{ss}\"/>\n"
+        "    </method>\n"
+        "    <method name=\"NameHasOwner\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"b\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListNames\">\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListActivatableNames\">\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"AddMatch\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"RemoveMatch\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetNameOwner\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListQueuedOwners\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionUnixUser\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionUnixProcessID\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetAdtAuditSessionData\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"ay\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionSELinuxSecurityContext\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"ay\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ReloadConfig\">\n"
+        "    </method>\n"
+        "    <method name=\"GetId\">\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <signal name=\"NameOwnerChanged\">\n"
+        "      <arg type=\"s\"/>\n"
+        "      <arg type=\"s\"/>\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "    <signal name=\"NameLost\">\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "    <signal name=\"NameAcquired\">\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "  </interface>\n"
+        "</node>\n";
+    
+    DBusMessage *reply_message;    
+    reply_message = dbus_message_new_method_return (message);
+    dbus_message_append_args (message,
+            DBUS_TYPE_STRING, &introspect,
+            DBUS_TYPE_INVALID);
+
+    return reply_message;
+}
+
 static gboolean
 bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, DBusMessage *message)
 {
@@ -506,6 +613,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
         { DBUS_INTERFACE_DBUS, "GetId",     _dbus_get_id },
         { DBUS_INTERFACE_DBUS, "RequestName", _dbus_request_name },
         { DBUS_INTERFACE_DBUS, "ReleaseName", _dbus_release_name },
+        { DBUS_INTERFACE_INTROSPECTABLE, "Introspect", _dbus_introspect },
         { NULL, NULL, NULL }
     };
     
@@ -515,10 +623,15 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
                                          handlers[i].name)) {
             reply_message = handlers[i].handler (dbus_impl, message, connection);
             if (reply_message) {
+                
+                dbus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
+                dbus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
+                dbus_message_set_no_reply (reply_message, TRUE);
+
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
                 dbus_message_unref (reply_message);
             }
-            g_signal_stop_emission_by_name (connection, "dbus-message");
+            g_signal_stop_emission_by_name (dbus_impl, "dbus-message");
             return TRUE;
         }
     }
@@ -542,11 +655,13 @@ _connection_destroy_cb (BusConnection   *connection,
 
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-
+    
+    /*
     ibus_service_remove_from_connection (
                     IBUS_SERVICE (dbus_impl),
                     IBUS_CONNECTION (connection));
-    
+    */
+
     const gchar *unique_name = bus_connection_get_unique_name (connection);
     if (unique_name != NULL)
         g_hash_table_remove (priv->unique_names, unique_name);

@@ -41,6 +41,7 @@ static void     ibus_object_class_init      (IBusObjectClass    *klass);
 static void     ibus_object_init            (IBusObject         *obj);
 static void     ibus_object_dispose         (IBusObject         *obj);
 static void     ibus_object_finalize        (IBusObject         *obj);
+static void     _ibus_object_destroy        (IBusObject         *obj);
 
 static GObjectClass *_parent_class = NULL;
 
@@ -90,6 +91,8 @@ ibus_object_class_init     (IBusObjectClass *klass)
     gobject_class->dispose = (GObjectFinalizeFunc) ibus_object_dispose;
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_object_finalize;
 
+    klass->destroy = _ibus_object_destroy;
+
     /* install signals */
     _signals[DESTROY] =
         g_signal_new (I_("destroy"),
@@ -110,7 +113,6 @@ ibus_object_init (IBusObject *obj)
     priv->destroyed = FALSE;
 }
 
-
 static void
 ibus_object_dispose (IBusObject *obj)
 {
@@ -122,6 +124,11 @@ static void
 ibus_object_finalize (IBusObject *obj)
 {
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (obj));
+}
+
+static void
+_ibus_object_destroy (IBusObject *obj)
+{
 }
 
 void

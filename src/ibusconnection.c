@@ -168,7 +168,7 @@ ibus_connection_destroy (IBusConnection *connection)
         goto _out;
     }
 _out:
-    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (connection));
+    _parent_class->destroy (IBUS_OBJECT (connection));
 }
 
 static gboolean

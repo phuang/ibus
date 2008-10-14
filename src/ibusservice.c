@@ -254,13 +254,10 @@ _service_message_function (IBusConnection *connection, DBusMessage *message, IBu
 static void
 _connection_destroy_cb (IBusConnection *connection, IBusService *service)
 {
-    IBusServicePrivate *priv;
-    priv = IBUS_SERVICE_GET_PRIVATE (service);
-
-    g_assert (g_slist_find (priv->connections, connection) != NULL);
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (IBUS_IS_SERVICE (service));
     
-    g_object_unref (connection);
-    priv->connections = g_slist_remove (priv->connections, connection);
+    ibus_service_remove_from_connection (service, connection);
 }
 
 gboolean
@@ -300,8 +297,8 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     IBusServicePrivate *priv;
     priv = IBUS_SERVICE_GET_PRIVATE (service);
 
-    g_return_val_if_fail (priv->path != NULL, FALSE);
-    g_return_val_if_fail (g_slist_find (priv->connections, connection) != NULL, FALSE);
+    g_assert (priv->path != NULL);
+    g_assert (g_slist_find (priv->connections, connection) != NULL);
 
     gboolean retval;
     retval = ibus_connection_unregister_object_path (connection, priv->path);
@@ -309,8 +306,10 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
     if (!retval) {
         return FALSE;
     }
+    
     priv->connections = g_slist_remove (priv->connections, connection);
     g_object_unref (connection);
+    
     return TRUE;
 }
 
