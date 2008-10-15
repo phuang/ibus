@@ -149,6 +149,8 @@ typedef struct _Xi18nClient
      */
     int		sync;
     XIMPending  *pending;
+    /* property offset to read next data */
+    long        property_offset;
     void *trans_rec;		/* contains transport specific data  */
     struct _Xi18nClient *next;
 } Xi18nClient;
