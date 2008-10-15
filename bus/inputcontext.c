@@ -18,11 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "ibusimpl.h"
-#include "connection.h"
+#include "inputcontext.h"
 
-#define BUS_IBUS_IMPL_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_IBUS_IMPL, BusIBusImplPrivate))
+#define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
 
 enum {
     LAST_SIGNAL,
@@ -33,87 +32,87 @@ enum {
 };
 
 
-/* IBusIBusImplPriv */
-struct _BusIBusImplPrivate {
+/* IBusInputContextPriv */
+struct _BusInputContextPrivate {
     GHashTable *unique_names;
     GHashTable *names;
     GSList *connections;
     gint id;
 };
 
-typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
+typedef struct _BusInputContextPrivate BusInputContextPrivate;
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_ibus_impl_class_init      (BusIBusImplClass    *klass);
-static void     bus_ibus_impl_init            (BusIBusImpl         *ibus_impl);
-static void     bus_ibus_impl_dispose         (BusIBusImpl         *ibus_impl);
-static gboolean bus_ibus_impl_dbus_message    (BusIBusImpl         *ibus_impl,
+static void     bus_input_context_class_init      (BusInputContextClass    *klass);
+static void     bus_input_context_init            (BusInputContext         *input_context);
+static void     bus_input_context_dispose         (BusInputContext         *input_context);
+static gboolean bus_input_context_dbus_message    (BusInputContext         *input_context,
                                                BusConnection       *connection,
                                                DBusMessage         *message);
 
 static IBusServiceClass  *_parent_class = NULL;
 
 GType
-bus_ibus_impl_get_type (void)
+bus_input_context_get_type (void)
 {
     static GType type = 0;
 
     static const GTypeInfo type_info = {
-        sizeof (BusIBusImplClass),
+        sizeof (BusInputContextClass),
         (GBaseInitFunc)     NULL,
         (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_ibus_impl_class_init,
+        (GClassInitFunc)    bus_input_context_class_init,
         NULL,               /* class finalize */
         NULL,               /* class data */
-        sizeof (BusIBusImpl),
+        sizeof (BusInputContext),
         0,
-        (GInstanceInitFunc) bus_ibus_impl_init,
+        (GInstanceInitFunc) bus_input_context_init,
     };
 
     if (type == 0) {
         type = g_type_register_static (IBUS_TYPE_SERVICE,
-                    "BusIBusImpl",
+                    "BusInputContext",
                     &type_info,
                     (GTypeFlags) 0);
     }
     return type;
 }
 
-BusIBusImpl *
-bus_ibus_impl_new (void)
+BusInputContext *
+bus_input_context_new (void)
 {
-    // BusIBusImplPrivate *priv;
-    BusIBusImpl *ibus_impl;
+    // BusInputContextPrivate *priv;
+    BusInputContext *input_context;
 
-    ibus_impl = BUS_IBUS_IMPL (g_object_new (BUS_TYPE_IBUS_IMPL,
+    input_context = BUS_INPUT_CONTEXT (g_object_new (BUS_TYPE_INPUT_CONTEXT,
                     "path", IBUS_PATH_IBUS,
                     NULL));
 
-    return ibus_impl;
+    return input_context;
 }
 
 static void
-bus_ibus_impl_class_init (BusIBusImplClass *klass)
+bus_input_context_class_init (BusInputContextClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (BusIBusImplPrivate));
+    g_type_class_add_private (klass, sizeof (BusInputContextPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) bus_ibus_impl_dispose;
+    gobject_class->dispose = (GObjectFinalizeFunc) bus_input_context_dispose;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_ibus_impl_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_input_context_dbus_message;
 
 }
 
 static void
-bus_ibus_impl_init (BusIBusImpl *ibus_impl)
+bus_input_context_init (BusInputContext *input_context)
 {
-    BusIBusImplPrivate *priv;
-    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
 
     priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
@@ -123,17 +122,17 @@ bus_ibus_impl_init (BusIBusImpl *ibus_impl)
 }
 
 static void
-bus_ibus_impl_dispose (BusIBusImpl *ibus_impl)
+bus_input_context_dispose (BusInputContext *input_context)
 {
-    BusIBusImplPrivate *priv;
-    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
 
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (ibus_impl));
+    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (input_context));
 }
 
 /* dbus members */
 static DBusMessage *
-_dbus_no_implement (BusIBusImpl     *ibus_impl,
+_dbus_no_implement (BusInputContext     *input_context,
                     DBusMessage     *message,
                     BusConnection   *connection)
 {
@@ -147,7 +146,7 @@ _dbus_no_implement (BusIBusImpl     *ibus_impl,
 
 /* introspectable interface */
 static DBusMessage *
-_ibus_introspect (BusIBusImpl     *ibus_impl,
+_ibus_introspect (BusInputContext     *input_context,
                   DBusMessage     *message,
                   BusConnection   *connection)
 {
@@ -184,9 +183,9 @@ _ibus_introspect (BusIBusImpl     *ibus_impl,
 }
 
 static gboolean
-bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, DBusMessage *message)
+bus_input_context_dbus_message (BusInputContext *input_context, BusConnection *connection, DBusMessage *message)
 {
-    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
+    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
@@ -196,13 +195,16 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
     struct {
         const gchar *interface;
         const gchar *name;
-        DBusMessage *(* handler) (BusIBusImpl *, DBusMessage *, BusConnection *);
+        DBusMessage *(* handler) (BusInputContext *, DBusMessage *, BusConnection *);
     } handlers[] =  {
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
                                "Introspect", _ibus_introspect },
         /* IBus interface */
 #if 0
+        { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
+        { IBUS_INTERFACE_IBUS, "ReleaseInputContext",   _ibus_release_input_context },
         { IBUS_INTERFACE_IBUS, "ProcessKeyEvent",       _ibus_process_key_event },
         { IBUS_INTERFACE_IBUS, "SetCursorLocation",     _ibus_set_cursor_location },
         { IBUS_INTERFACE_IBUS, "FocusIn",               _ibus_focus_in },
@@ -210,7 +212,18 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
         { IBUS_INTERFACE_IBUS, "Reset",                 _ibus_reset },
         { IBUS_INTERFACE_IBUS, "GetIsEnabled",          _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "SetCapabilites",        _ibus_get_address },
-#endif   
+        { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterListEngines",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterReloadEngines", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterStartEngine",   _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterRestartEngine", _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "RegisterStopEngine",    _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_get_address },
+#endif
         { NULL, NULL, NULL }
     };
 
@@ -222,7 +235,7 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
                                          handlers[i].interface,
                                          handlers[i].name)) {
 
-            reply_message = handlers[i].handler (ibus_impl, message, connection);
+            reply_message = handlers[i].handler (input_context, message, connection);
             if (reply_message) {
 
                 dbus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
@@ -233,7 +246,7 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
                 dbus_message_unref (reply_message);
             }
 
-            g_signal_stop_emission_by_name (ibus_impl, "dbus-message");
+            g_signal_stop_emission_by_name (input_context, "dbus-message");
             return TRUE;
         }
     }
@@ -250,17 +263,17 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
 
 static void
 _connection_destroy_cb (BusConnection   *connection,
-                        BusIBusImpl     *ibus_impl)
+                        BusInputContext     *input_context)
 {
     g_assert (BUS_IS_CONNECTION (connection));
-    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
+    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
 
-    BusIBusImplPrivate *priv;
-    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
 
     /*
     ibus_service_remove_from_connection (
-                    IBUS_SERVICE (ibus_impl),
+                    IBUS_SERVICE (input_context),
                     IBUS_CONNECTION (connection));
     */
 
@@ -281,14 +294,14 @@ _connection_destroy_cb (BusConnection   *connection,
 
 
 gboolean
-bus_ibus_impl_new_connection (BusIBusImpl    *ibus_impl,
+bus_input_context_new_connection (BusInputContext    *input_context,
                               BusConnection  *connection)
 {
-    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
+    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
     g_assert (BUS_IS_CONNECTION (connection));
 
-    BusIBusImplPrivate *priv;
-    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
 
     g_assert (g_slist_find (priv->connections, connection) == NULL);
 
@@ -297,10 +310,10 @@ bus_ibus_impl_new_connection (BusIBusImpl    *ibus_impl,
 
     g_signal_connect (connection, "destroy",
                       (GCallback) _connection_destroy_cb,
-                      ibus_impl);
+                      input_context);
 
     ibus_service_add_to_connection (
-            IBUS_SERVICE (ibus_impl),
+            IBUS_SERVICE (input_context),
             IBUS_CONNECTION (connection));
 
     return TRUE;

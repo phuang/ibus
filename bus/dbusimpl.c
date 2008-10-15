@@ -131,7 +131,113 @@ bus_dbus_impl_dispose (BusDBusImpl *dbus_impl)
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (dbus_impl));
 }
 
-/* dbus members */
+
+/* introspectable interface */
+static DBusMessage *
+_dbus_introspect (BusDBusImpl     *dbus_impl,
+                  DBusMessage     *message,
+                  BusConnection   *connection)
+{
+    static const gchar *introspect =
+        "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
+        "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
+        "<node>\n"
+        "  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
+        "    <method name=\"Introspect\">\n"
+        "      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "  </interface>\n"
+        "  <interface name=\"org.freedesktop.DBus\">\n"
+        "    <method name=\"Hello\">\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"RequestName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"in\" type=\"u\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ReleaseName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"StartServiceByName\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"in\" type=\"u\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"UpdateActivationEnvironment\">\n"
+        "      <arg direction=\"in\" type=\"a{ss}\"/>\n"
+        "    </method>\n"
+        "    <method name=\"NameHasOwner\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"b\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListNames\">\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListActivatableNames\">\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"AddMatch\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"RemoveMatch\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetNameOwner\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ListQueuedOwners\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"as\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionUnixUser\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionUnixProcessID\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"u\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetAdtAuditSessionData\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"ay\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetConnectionSELinuxSecurityContext\">\n"
+        "      <arg direction=\"in\" type=\"s\"/>\n"
+        "      <arg direction=\"out\" type=\"ay\"/>\n"
+        "    </method>\n"
+        "    <method name=\"ReloadConfig\">\n"
+        "    </method>\n"
+        "    <method name=\"GetId\">\n"
+        "      <arg direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <signal name=\"NameOwnerChanged\">\n"
+        "      <arg type=\"s\"/>\n"
+        "      <arg type=\"s\"/>\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "    <signal name=\"NameLost\">\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "    <signal name=\"NameAcquired\">\n"
+        "      <arg type=\"s\"/>\n"
+        "    </signal>\n"
+        "  </interface>\n"
+        "</node>\n";
+
+    DBusMessage *reply_message;
+    reply_message = dbus_message_new_method_return (message);
+    dbus_message_append_args (reply_message,
+            DBUS_TYPE_STRING, &introspect,
+            DBUS_TYPE_INVALID);
+
+    return reply_message;
+}
+
+
+/* dbus interface */
 static DBusMessage *
 _dbus_no_implement (BusDBusImpl     *dbus_impl,
                     DBusMessage     *message,
@@ -477,108 +583,6 @@ _dbus_release_name (BusDBusImpl     *dbus_impl,
     return reply_message;
 }
 
-static DBusMessage *
-_dbus_introspect (BusDBusImpl     *dbus_impl,
-                  DBusMessage     *message,
-                  BusConnection   *connection)
-{
-    static const gchar *introspect =
-        "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
-        "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
-        "<node>\n"
-        "  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
-        "    <method name=\"Introspect\">\n"
-        "      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
-        "    </method>\n"
-        "  </interface>\n"
-        "  <interface name=\"org.freedesktop.DBus\">\n"
-        "    <method name=\"Hello\">\n"
-        "      <arg direction=\"out\" type=\"s\"/>\n"
-        "    </method>\n"
-        "    <method name=\"RequestName\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"in\" type=\"u\"/>\n"
-        "      <arg direction=\"out\" type=\"u\"/>\n"
-        "    </method>\n"
-        "    <method name=\"ReleaseName\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"u\"/>\n"
-        "    </method>\n"
-        "    <method name=\"StartServiceByName\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"in\" type=\"u\"/>\n"
-        "      <arg direction=\"out\" type=\"u\"/>\n"
-        "    </method>\n"
-        "    <method name=\"UpdateActivationEnvironment\">\n"
-        "      <arg direction=\"in\" type=\"a{ss}\"/>\n"
-        "    </method>\n"
-        "    <method name=\"NameHasOwner\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"b\"/>\n"
-        "    </method>\n"
-        "    <method name=\"ListNames\">\n"
-        "      <arg direction=\"out\" type=\"as\"/>\n"
-        "    </method>\n"
-        "    <method name=\"ListActivatableNames\">\n"
-        "      <arg direction=\"out\" type=\"as\"/>\n"
-        "    </method>\n"
-        "    <method name=\"AddMatch\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "    </method>\n"
-        "    <method name=\"RemoveMatch\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "    </method>\n"
-        "    <method name=\"GetNameOwner\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"s\"/>\n"
-        "    </method>\n"
-        "    <method name=\"ListQueuedOwners\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"as\"/>\n"
-        "    </method>\n"
-        "    <method name=\"GetConnectionUnixUser\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"u\"/>\n"
-        "    </method>\n"
-        "    <method name=\"GetConnectionUnixProcessID\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"u\"/>\n"
-        "    </method>\n"
-        "    <method name=\"GetAdtAuditSessionData\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"ay\"/>\n"
-        "    </method>\n"
-        "    <method name=\"GetConnectionSELinuxSecurityContext\">\n"
-        "      <arg direction=\"in\" type=\"s\"/>\n"
-        "      <arg direction=\"out\" type=\"ay\"/>\n"
-        "    </method>\n"
-        "    <method name=\"ReloadConfig\">\n"
-        "    </method>\n"
-        "    <method name=\"GetId\">\n"
-        "      <arg direction=\"out\" type=\"s\"/>\n"
-        "    </method>\n"
-        "    <signal name=\"NameOwnerChanged\">\n"
-        "      <arg type=\"s\"/>\n"
-        "      <arg type=\"s\"/>\n"
-        "      <arg type=\"s\"/>\n"
-        "    </signal>\n"
-        "    <signal name=\"NameLost\">\n"
-        "      <arg type=\"s\"/>\n"
-        "    </signal>\n"
-        "    <signal name=\"NameAcquired\">\n"
-        "      <arg type=\"s\"/>\n"
-        "    </signal>\n"
-        "  </interface>\n"
-        "</node>\n";
-
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply_message,
-            DBUS_TYPE_STRING, &introspect,
-            DBUS_TYPE_INVALID);
-
-    return reply_message;
-}
 
 static gboolean
 bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, DBusMessage *message)
