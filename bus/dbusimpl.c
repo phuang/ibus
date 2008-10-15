@@ -114,7 +114,7 @@ bus_dbus_impl_init (BusDBusImpl *dbus_impl)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->connections = NULL;
@@ -127,7 +127,7 @@ bus_dbus_impl_dispose (BusDBusImpl *dbus_impl)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (dbus_impl));
 }
 
@@ -139,8 +139,9 @@ _dbus_no_implement (BusDBusImpl     *dbus_impl,
 {
     DBusMessage *reply_message;
     reply_message = dbus_message_new_error_printf (message,
-                                    dbus_message_get_member (message),
-                                    "IBus does not support it.");
+                                    "org.freedesktop.DBus.Error.Failed",
+                                    "IBus does not support %s.",
+                                    dbus_message_get_member (message));
     return reply_message;
 }
 
@@ -152,18 +153,18 @@ _dbus_hello (BusDBusImpl    *dbus_impl,
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     DBusMessage *reply_message;
 
     if (bus_connection_get_unique_name (connection) != NULL) {
-        reply_message = dbus_message_new_error_printf (message,
-                                    "Hello",
-                                    "Already handled a Hello message");
+        reply_message = dbus_message_new_error (message,
+                                    "org.freedesktop.DBus.Error.Failed",
+                                    "Already handled an Hello message");
     }
     else {
         gchar *name = g_strdup_printf (":1.%d", priv->id ++);
         bus_connection_set_unique_name (connection, name);
-        
+
         reply_message = dbus_message_new_method_return (message);
         dbus_message_append_args (reply_message,
                     DBUS_TYPE_STRING, &name,
@@ -190,7 +191,7 @@ _dbus_list_names (BusDBusImpl       *dbus_impl,
 
     dbus_message_iter_init_append (message, &iter);
     dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &sub_iter);
-    
+
     // append unique names
     names = g_hash_table_get_keys (priv->unique_names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
@@ -198,7 +199,7 @@ _dbus_list_names (BusDBusImpl       *dbus_impl,
         dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
-    
+
     // append well-known names
     names = g_hash_table_get_keys (priv->names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
@@ -208,7 +209,7 @@ _dbus_list_names (BusDBusImpl       *dbus_impl,
     g_list_free (names);
 
     dbus_message_iter_close_container (&iter, &sub_iter);
-    
+
     return reply_message;
 }
 
@@ -219,7 +220,7 @@ _dbus_name_has_owner (BusDBusImpl   *dbus_impl,
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     gchar *name;
     gboolean retval;
     gboolean has_owner;
@@ -261,7 +262,7 @@ _dbus_get_name_owner (BusDBusImpl   *dbus_impl,
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     gchar *name;
     gboolean retval;
     const gchar *owner_name;
@@ -320,8 +321,8 @@ _dbus_get_id (BusDBusImpl      *dbus_impl,
     name = bus_connection_get_unique_name (connection);
 
     if (name == NULL) {
-        reply_message = dbus_message_new_error_printf (message,
-                                    "GetId",
+        reply_message = dbus_message_new_error (message,
+                                    "org.freedesktop.DBus.Error.Failed",
                                     "Can not GetId before Hello");
     }
     else {
@@ -351,7 +352,7 @@ _dbus_add_match (BusDBusImpl    *dbus_impl,
     retval = dbus_message_get_args (message, &error,
             DBUS_TYPE_STRING, &rule,
             DBUS_TYPE_INVALID);
-    
+
     if (!retval) {
         reply_message = dbus_message_new_error (message,
                                     error.name,
@@ -420,7 +421,7 @@ _dbus_request_name (BusDBusImpl      *dbus_impl,
     else {
         if (g_hash_table_lookup (priv->names, name)) {
             reply_message = dbus_message_new_error_printf (message,
-                        "RequestName",
+                        "org.freedesktop.DBus.Error.Failed",
                         "Name %s has owner", name);
         }
         else {
@@ -481,7 +482,7 @@ _dbus_introspect (BusDBusImpl     *dbus_impl,
                   DBusMessage     *message,
                   BusConnection   *connection)
 {
-    static const gchar *introspect = 
+    static const gchar *introspect =
         "<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
         "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
         "<node>\n"
@@ -569,10 +570,10 @@ _dbus_introspect (BusDBusImpl     *dbus_impl,
         "    </signal>\n"
         "  </interface>\n"
         "</node>\n";
-    
-    DBusMessage *reply_message;    
+
+    DBusMessage *reply_message;
     reply_message = dbus_message_new_method_return (message);
-    dbus_message_append_args (message,
+    dbus_message_append_args (reply_message,
             DBUS_TYPE_STRING, &introspect,
             DBUS_TYPE_INVALID);
 
@@ -588,7 +589,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
 
     gint i;
     DBusMessage *reply_message = NULL;
-    
+
     struct {
         const gchar *interface;
         const gchar *name;
@@ -597,7 +598,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
         /* dbus interface */
         { DBUS_INTERFACE_DBUS, "Hello",     _dbus_hello },
         { DBUS_INTERFACE_DBUS, "ListNames", _dbus_list_names },
-        { DBUS_INTERFACE_DBUS, "ListActivatableNames", 
+        { DBUS_INTERFACE_DBUS, "ListActivatableNames",
                                             _dbus_no_implement },
         { DBUS_INTERFACE_DBUS, "NameHasOwner",
                                             _dbus_name_has_owner },
@@ -613,17 +614,22 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
         { DBUS_INTERFACE_DBUS, "GetId",     _dbus_get_id },
         { DBUS_INTERFACE_DBUS, "RequestName", _dbus_request_name },
         { DBUS_INTERFACE_DBUS, "ReleaseName", _dbus_release_name },
-        { DBUS_INTERFACE_INTROSPECTABLE, "Introspect", _dbus_introspect },
+        { DBUS_INTERFACE_INTROSPECTABLE,
+                               "Introspect", _dbus_introspect },
         { NULL, NULL, NULL }
     };
-    
+
+    dbus_message_set_sender (message, bus_connection_get_unique_name (connection));
+    dbus_message_set_destination (message, DBUS_SERVICE_DBUS);
+
     for (i = 0; handlers[i].interface != NULL; i++) {
         if (dbus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {
+
             reply_message = handlers[i].handler (dbus_impl, message, connection);
             if (reply_message) {
-                
+
                 dbus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
                 dbus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
                 dbus_message_set_no_reply (reply_message, TRUE);
@@ -631,6 +637,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
                 dbus_message_unref (reply_message);
             }
+
             g_signal_stop_emission_by_name (dbus_impl, "dbus-message");
             return TRUE;
         }
@@ -640,7 +647,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
                                 "org.freedesktop.DBus.Error.NoImplement",
                                 "%s is not implemented",
                                 dbus_message_get_member (message));
-    
+
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
     dbus_message_unref (reply_message);
     return FALSE;
@@ -655,7 +662,7 @@ _connection_destroy_cb (BusConnection   *connection,
 
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     /*
     ibus_service_remove_from_connection (
                     IBUS_SERVICE (dbus_impl),
@@ -672,7 +679,7 @@ _connection_destroy_cb (BusConnection   *connection,
         g_hash_table_remove (priv->names, name->data);
         name = name->next;
     }
-    
+
     priv->connections = g_slist_remove (priv->connections, connection);
     g_object_unref (connection);
 }
@@ -684,10 +691,10 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus_impl,
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus_impl));
     g_assert (BUS_IS_CONNECTION (connection));
-    
+
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
-    
+
     g_assert (g_slist_find (priv->connections, connection) == NULL);
 
     g_object_ref (G_OBJECT (connection));
@@ -696,10 +703,10 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus_impl,
     g_signal_connect (connection, "destroy",
                       (GCallback) _connection_destroy_cb,
                       dbus_impl);
-    
+
     ibus_service_add_to_connection (
             IBUS_SERVICE (dbus_impl),
             IBUS_CONNECTION (connection));
-    
+
     return TRUE;
 }

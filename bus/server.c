@@ -92,7 +92,7 @@ bus_server_listen (BusServer *server)
 {
     g_assert (BUS_IS_SERVER (server));
 
-    const gchar *address = ibus_get_address ();
+    const gchar *address = "unix:abstract=/tmp/ibus-c";//ibus_get_address ();
 
     return ibus_server_listen (IBUS_SERVER (server), address);
 }
