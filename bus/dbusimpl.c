@@ -595,7 +595,10 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
         const gchar *name;
         DBusMessage *(* handler) (BusDBusImpl *, DBusMessage *, BusConnection *);
     } handlers[] =  {
-        /* dbus interface */
+        /* Introspectable interface */
+        { DBUS_INTERFACE_INTROSPECTABLE,
+                               "Introspect", _dbus_introspect },
+        /* DBus interface */
         { DBUS_INTERFACE_DBUS, "Hello",     _dbus_hello },
         { DBUS_INTERFACE_DBUS, "ListNames", _dbus_list_names },
         { DBUS_INTERFACE_DBUS, "ListActivatableNames",
@@ -614,8 +617,6 @@ bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, D
         { DBUS_INTERFACE_DBUS, "GetId",     _dbus_get_id },
         { DBUS_INTERFACE_DBUS, "RequestName", _dbus_request_name },
         { DBUS_INTERFACE_DBUS, "ReleaseName", _dbus_release_name },
-        { DBUS_INTERFACE_INTROSPECTABLE,
-                               "Introspect", _dbus_introspect },
         { NULL, NULL, NULL }
     };
 

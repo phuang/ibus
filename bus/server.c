@@ -21,6 +21,7 @@
 #include "server.h"
 #include "connection.h"
 #include "dbusimpl.h"
+#include "ibusimpl.h"
 
 #define BUS_SERVER_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_SERVER, BusServerPrivate))
@@ -35,6 +36,7 @@ enum {
 /* BusServerPriv */
 struct _BusServerPrivate {
     BusDBusImpl *dbus_impl;
+    BusIBusImpl *ibus_impl;
 };
 typedef struct _BusServerPrivate BusServerPrivate;
 
@@ -118,6 +120,7 @@ bus_server_init (BusServer *server)
     priv = BUS_SERVER_GET_PRIVATE (server);
 
     priv->dbus_impl = bus_dbus_impl_new ();
+    priv->dbus_impl = bus_ibus_impl_new ();
 }
 
 
@@ -192,6 +195,7 @@ bus_server_new_connection   (BusServer          *server,
     priv = BUS_SERVER_GET_PRIVATE (server);
 
     bus_dbus_impl_new_connection (priv->dbus_impl, connection);
+    bus_ibus_impl_new_connection (priv->ibus_impl, connection);
 }
 
 static void
@@ -201,6 +205,7 @@ bus_server_destroy (BusServer *server)
     priv = BUS_SERVER_GET_PRIVATE (server);
     
     g_object_unref (G_OBJECT (priv->dbus_impl));
+    g_object_unref (G_OBJECT (priv->ibus_impl));
     
     IBUS_OBJECT_CLASS (_parent_class)->destroy (IBUS_OBJECT (server));
 }
