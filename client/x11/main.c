@@ -266,7 +266,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
             x11ic->focus_window =  *(Window *) call_data->ic_attr[i].value;
         }
         else {
-            // g_debug ("Unknown ic attribute: %s", ic_attr->name);
+            LOG (1, "Unknown ic attribute: %s", ic_attr->name);
         }
     }
 
@@ -277,12 +277,12 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
             x11ic->preedit_area.y = ((XPoint *)pre_attr->value)->y;
         }
         else {
-            // g_debug ("Unknown preedit attribute: %s", pre_attr->name);
+            LOG (1, "Unknown preedit attribute: %s", pre_attr->name);
         }
     }
 
     for (i=0; i< (int) call_data->status_attr_num; ++i, ++sts_attr) {
-        // g_debug ("Unkown status attribute: %s", sts_attr->name);
+        LOG (1, "Unkown status attribute: %s", sts_attr->name);
     }
 
     return attrs;
