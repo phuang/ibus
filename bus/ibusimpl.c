@@ -131,20 +131,6 @@ bus_ibus_impl_dispose (BusIBusImpl *ibus_impl)
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (ibus_impl));
 }
 
-/* dbus members */
-static DBusMessage *
-_dbus_no_implement (BusIBusImpl     *ibus_impl,
-                    DBusMessage     *message,
-                    BusConnection   *connection)
-{
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_error_printf (message,
-                                    "org.freedesktop.DBus.Error.Failed",
-                                    "IBus does not support %s.",
-                                    dbus_message_get_member (message));
-    return reply_message;
-}
-
 /* introspectable interface */
 static DBusMessage *
 _ibus_introspect (BusIBusImpl     *ibus_impl,
@@ -219,7 +205,6 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
         { IBUS_INTERFACE_IBUS, "RegisterStopEngine",    _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_get_address },
 #endif
-
         { NULL, NULL, NULL }
     };
 

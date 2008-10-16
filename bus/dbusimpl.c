@@ -98,6 +98,7 @@ static void
 bus_dbus_impl_class_init (BusDBusImplClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusServiceClass *service_class = IBUS_SERVICE_CLASS (klass);
 
     _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
@@ -105,7 +106,7 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
 
     gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
+    service_class->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
 
 }
 
@@ -414,9 +415,9 @@ _dbus_get_name_owner (BusDBusImpl   *dbus_impl,
 }
 
 static DBusMessage *
-_dbus_get_id (BusDBusImpl      *dbus_impl,
-              DBusMessage    *message,
-              BusConnection  *connection)
+_dbus_get_id (BusDBusImpl   *dbus_impl,
+              DBusMessage   *message,
+              BusConnection *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
@@ -501,9 +502,9 @@ _dbus_remove_match (BusDBusImpl     *dbus_impl,
 }
 
 static DBusMessage *
-_dbus_request_name (BusDBusImpl      *dbus_impl,
-                    DBusMessage    *message,
-                    BusConnection  *connection)
+_dbus_request_name (BusDBusImpl     *dbus_impl,
+                    DBusMessage     *message,
+                    BusConnection   *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus_impl);
@@ -585,7 +586,9 @@ _dbus_release_name (BusDBusImpl     *dbus_impl,
 
 
 static gboolean
-bus_dbus_impl_dbus_message (BusDBusImpl *dbus_impl, BusConnection *connection, DBusMessage *message)
+bus_dbus_impl_dbus_message (BusDBusImpl     *dbus_impl,
+                            BusConnection   *connection,
+                            DBusMessage     *message)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus_impl));
     g_assert (BUS_IS_CONNECTION (connection));
