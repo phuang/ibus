@@ -55,13 +55,13 @@ struct _IBusProxyClass {
   IBusObjectClass parent;
 
   /* class members */
-  gboolean  (* dbus_message)    (IBusProxy   *proxy,
+  gboolean  (* dbus_signal)     (IBusProxy   *proxy,
                                  DBusMessage      *message);
 };
 
 GType        ibus_proxy_get_type        (void);
 IBusProxy   *ibus_proxy_new             (void);
-gboolean     ibus_proxy_handle_message  (IBusProxy      *proxy,
+gboolean     ibus_proxy_handle_signal   (IBusProxy      *proxy,
                                          DBusMessage    *message);
 
 G_END_DECLS

@@ -24,7 +24,23 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_ENGINE_PROXY, BusEngineProxyPrivate))
 
 enum {
-    DBUS_MESSAGE,
+    COMMIT_STRING,
+    FORWARD_KEY_EVENT,
+    UPDATE_PREEDIT,
+    SHOW_PREEDIT,
+    HIDE_PREEDIT,
+    UPDATE_AUX_STRING,
+    SHOW_AUX_STRING,
+    HIDE_AUX_STRING,
+    UPDATE_LOOKUP_TABLE,
+    SHOW_LOOKUP_TABLE,
+    HIDE_LOOKUP_TABLE,
+    PAGE_UP_LOOKUP_TABLE,
+    PAGE_DOWN_LOOKUP_TABLE,
+    CURSOR_UP_LOOKUP_TABLE,
+    CURSOR_DOWN_LOOKUP_TABLE,
+    REGISTER_PROPERTIES,
+    UPDATE_PROPERTY,
     LAST_SIGNAL,
 };
 
@@ -35,15 +51,15 @@ struct _BusEngineProxyPrivate {
 };
 typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+// static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_engine_proxy_class_init   (BusEngineProxyClass     *klass);
-static void     bus_engine_proxy_init         (BusEngineProxy          *engine_proxy);
-static void     bus_engine_proxy_destroy      (BusEngineProxy          *engine_proxy);
+static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
+static void     bus_engine_proxy_init           (BusEngineProxy         *engine_proxy);
+static void     bus_engine_proxy_destroy        (BusEngineProxy         *engine_proxy);
 
-static gboolean bus_engine_proxy_dbus_message (BusEngineProxy          *engine_proxy,
-                                         DBusMessage        *message);
+static gboolean bus_engine_proxy_dbus_signal    (BusEngineProxy         *engine_proxy,
+                                                 DBusMessage            *message);
 
 static IBusProxyClass  *_parent_class = NULL;
 
@@ -92,7 +108,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_destroy;
 
-    proxy_class->dbus_message = bus_engine_proxy_dbus_message;
+    proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
 }
 
 static void
@@ -108,18 +124,9 @@ bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine_proxy));
 }
 
-gboolean
-bus_engine_proxy_handle_message (BusEngineProxy *engine_proxy, DBusMessage *message)
-{
-    gboolean retval = FALSE;
-    g_return_val_if_fail (message != NULL, FALSE);
-    
-    g_signal_emit (engine_proxy, _signals[DBUS_MESSAGE], 0, message, &retval);
-    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
 static gboolean
-bus_engine_proxy_dbus_message (BusEngineProxy *engine_proxy, DBusMessage *message)
+bus_engine_proxy_dbus_signal (BusEngineProxy    *engine_proxy,
+                              DBusMessage       *message)
 {
     return FALSE;
 }

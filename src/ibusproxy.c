@@ -25,7 +25,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_PROXY, IBusProxyPrivate))
 
 enum {
-    DBUS_MESSAGE,
+    DBUS_SIGNAL,
     LAST_SIGNAL,
 };
 
@@ -38,12 +38,12 @@ typedef struct _IBusProxyPrivate IBusProxyPrivate;
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_proxy_class_init  (IBusProxyClass    *klass);
-static void     ibus_proxy_init        (IBusProxy         *proxy);
-static void     ibus_proxy_destroy     (IBusProxy         *proxy);
+static void     ibus_proxy_class_init  (IBusProxyClass  *klass);
+static void     ibus_proxy_init        (IBusProxy       *proxy);
+static void     ibus_proxy_destroy     (IBusProxy       *proxy);
 
-static gboolean ibus_proxy_dbus_message(IBusProxy         *proxy,
-                                        DBusMessage            *message);
+static gboolean ibus_proxy_dbus_signal (IBusProxy       *proxy,
+                                        DBusMessage     *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -90,13 +90,13 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_proxy_destroy;
 
-    klass->dbus_message = ibus_proxy_dbus_message;
+    klass->dbus_signal = ibus_proxy_dbus_signal;
 
-    _signals[DBUS_MESSAGE] =
-        g_signal_new (I_("dbus-message"),
+    _signals[DBUS_SIGNAL] =
+        g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_FIRST,
-            G_STRUCT_OFFSET (IBusProxyClass, dbus_message),
+            G_STRUCT_OFFSET (IBusProxyClass, dbus_signal),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
@@ -117,17 +117,17 @@ ibus_proxy_destroy (IBusProxy *proxy)
 }
 
 gboolean
-ibus_proxy_handle_message (IBusProxy *proxy, DBusMessage *message)
+ibus_proxy_handle_signal (IBusProxy *proxy, DBusMessage *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
     
-    g_signal_emit (proxy, _signals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (proxy, _signals[DBUS_SIGNAL], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
-ibus_proxy_dbus_message (IBusProxy *proxy, DBusMessage *message)
+ibus_proxy_dbus_signal (IBusProxy *proxy, DBusMessage *message)
 {
     return FALSE;
 }
