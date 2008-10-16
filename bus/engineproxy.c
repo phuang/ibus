@@ -98,7 +98,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 static void
 bus_engine_proxy_init (BusEngineProxy *engine_proxy)
 {
-    // BusEngineProxyPrivate *priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine_proxy);
+    BusEngineProxyPrivate *priv;
+    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine_proxy);
 }
 
 static void
