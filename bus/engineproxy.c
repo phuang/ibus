@@ -18,10 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "engine.h"
+#include "engineproxy.h"
 
-#define BUS_ENGINE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_ENGINE, BusEnginePrivate))
+#define BUS_ENGINE_PROXY_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_ENGINE_PROXY, BusEngineProxyPrivate))
 
 enum {
     DBUS_MESSAGE,
@@ -29,58 +29,58 @@ enum {
 };
 
 
-/* BusEnginePriv */
-struct _BusEnginePrivate {
+/* BusEngineProxyPriv */
+struct _BusEngineProxyPrivate {
     void *pad;
 };
-typedef struct _BusEnginePrivate BusEnginePrivate;
+typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_engine_class_init   (BusEngineClass     *klass);
-static void     bus_engine_init         (BusEngine          *engine);
-static void     bus_engine_destroy      (BusEngine          *engine);
+static void     bus_engine_proxy_class_init   (BusEngineProxyClass     *klass);
+static void     bus_engine_proxy_init         (BusEngineProxy          *engine_proxy);
+static void     bus_engine_proxy_destroy      (BusEngineProxy          *engine_proxy);
 
-static gboolean bus_engine_dbus_message (BusEngine          *engine,
+static gboolean bus_engine_proxy_dbus_message (BusEngineProxy          *engine_proxy,
                                          DBusMessage        *message);
 
 static IBusProxyClass  *_parent_class = NULL;
 
 GType
-bus_engine_get_type (void)
+bus_engine_proxy_get_type (void)
 {
     static GType type = 0;
 
     static const GTypeInfo type_info = {
-        sizeof (BusEngineClass),
+        sizeof (BusEngineProxyClass),
         (GBaseInitFunc)     NULL,
         (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_engine_class_init,
+        (GClassInitFunc)    bus_engine_proxy_class_init,
         NULL,               /* class finalize */
         NULL,               /* class data */
-        sizeof (BusEngine),
+        sizeof (BusEngineProxy),
         0,
-        (GInstanceInitFunc) bus_engine_init,
+        (GInstanceInitFunc) bus_engine_proxy_init,
     };
 
     if (type == 0) {
         type = g_type_register_static (IBUS_TYPE_PROXY,
-                    "BusEngine",
+                    "BusEngineProxy",
                     &type_info,
                     (GTypeFlags)0);
     }
     return type;
 }
 
-BusEngine *
-bus_engine_new (void)
+BusEngineProxy *
+bus_engine_proxy_new (void)
 {
-    return BUS_ENGINE (g_object_new (BUS_TYPE_ENGINE, NULL));
+    return BUS_ENGINE_PROXY (g_object_new (BUS_TYPE_ENGINE_PROXY, NULL));
 }
 
 static void
-bus_engine_class_init (BusEngineClass *klass)
+bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (klass);
@@ -88,37 +88,37 @@ bus_engine_class_init (BusEngineClass *klass)
 
     _parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (BusEnginePrivate));
+    g_type_class_add_private (klass, sizeof (BusEngineProxyPrivate));
 
-    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_destroy;
 
-    proxy_class->dbus_message = bus_engine_dbus_message;
+    proxy_class->dbus_message = bus_engine_proxy_dbus_message;
 }
 
 static void
-bus_engine_init (BusEngine *engine)
+bus_engine_proxy_init (BusEngineProxy *engine_proxy)
 {
-    // BusEnginePrivate *priv = BUS_ENGINE_GET_PRIVATE (engine);
+    // BusEngineProxyPrivate *priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine_proxy);
 }
 
 static void
-bus_engine_destroy (BusEngine *engine)
+bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
 {
-    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine_proxy));
 }
 
 gboolean
-bus_engine_handle_message (BusEngine *engine, DBusMessage *message)
+bus_engine_proxy_handle_message (BusEngineProxy *engine_proxy, DBusMessage *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
     
-    g_signal_emit (engine, _signals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (engine_proxy, _signals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
-bus_engine_dbus_message (BusEngine *engine, DBusMessage *message)
+bus_engine_proxy_dbus_message (BusEngineProxy *engine_proxy, DBusMessage *message)
 {
     return FALSE;
 }
