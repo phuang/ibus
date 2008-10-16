@@ -32,6 +32,8 @@ ibus_daemon_SOURCES = \
 	ibusimpl.h \
 	inputcontext.c \
 	inputcontext.h \
+	engine.c \
+	engine.h \
 	server.c \
 	server.h \
 	connection.c \
