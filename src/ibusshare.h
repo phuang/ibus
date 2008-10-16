@@ -33,6 +33,8 @@
 #define IBUS_PATH_NOTIFICATIONS "/org/freedesktop/IBus/Notifications"
 
 #define IBUS_INTERFACE_IBUS     "org.freedesktop.IBus"
+#define IBUS_INTERFACE_INPUT_CONTEXT \
+                                "org.freedesktop.IBus.InputContext"
 #define IBUS_INTERFACE_FACTORY  "org.freedesktop.IBus.Factory"
 #define IBUS_INTERFACE_ENGINE   "org.freedesktop.IBus.Engine"
 #define IBUS_INTERFACE_PANEL    "org.freedesktop.IBus.Panel"
