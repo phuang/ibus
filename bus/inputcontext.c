@@ -202,9 +202,6 @@ bus_input_context_dbus_message (BusInputContext *input_context, BusConnection *c
                                "Introspect", _ibus_introspect },
         /* IBus interface */
 #if 0
-        { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
-        { IBUS_INTERFACE_IBUS, "ReleaseInputContext",   _ibus_release_input_context },
         { IBUS_INTERFACE_IBUS, "ProcessKeyEvent",       _ibus_process_key_event },
         { IBUS_INTERFACE_IBUS, "SetCursorLocation",     _ibus_set_cursor_location },
         { IBUS_INTERFACE_IBUS, "FocusIn",               _ibus_focus_in },
@@ -212,17 +209,8 @@ bus_input_context_dbus_message (BusInputContext *input_context, BusConnection *c
         { IBUS_INTERFACE_IBUS, "Reset",                 _ibus_reset },
         { IBUS_INTERFACE_IBUS, "GetIsEnabled",          _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "SetCapabilites",        _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterListEngines",   _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterReloadEngines", _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterStartEngine",   _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterRestartEngine", _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "RegisterStopEngine",    _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_get_address },
+        { IBUS_INTERFACE_IBUS, "Destroy",               _ic_destroy },
 #endif
         { NULL, NULL, NULL }
     };
