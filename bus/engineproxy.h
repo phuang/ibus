@@ -21,6 +21,7 @@
 #define __ENGINE_PROXY_H_
 
 #include <ibus.h>
+#include "connection.h"
 
 /*
  * Type macros.
@@ -56,9 +57,35 @@ struct _BusEngineProxyClass {
 };
 
 GType            bus_engine_proxy_get_type          (void);
-BusEngineProxy  *bus_engine_proxy_new               (void);
-gboolean         bus_engine_proxy_handle_message    (BusEngineProxy *engine,
-                                                     DBusMessage    *message);
+BusEngineProxy  *bus_engine_proxy_new               (const gchar    *path,
+                                                     BusConnection  *connection);
+gboolean         bus_engine_proxy_process_key_event (BusEngineProxy *engine,
+                                                     guint32         keyval,
+                                                     gboolean        is_press,
+                                                     guint32         state);
+void             bus_engine_proxy_set_cursor_location
+                                                    (BusEngineProxy *engine,
+                                                     gint32          x,
+                                                     gint32          y,
+                                                     gint32          w,
+                                                     gint32          h);
+void             bus_engine_proxy_focus_in          (BusEngineProxy *engine);
+void             bus_engine_proxy_focus_out         (BusEngineProxy *engine);
+void             bus_engine_proxy_reset             (BusEngineProxy *engine);
+void             bus_engine_proxy_page_up           (BusEngineProxy *engine);
+void             bus_engine_proxy_page_down         (BusEngineProxy *engine);
+void             bus_engine_proxy_cursor_up         (BusEngineProxy *engine);
+void             bus_engine_proxy_cursor_down       (BusEngineProxy *engine);
+void             bus_engine_proxy_enable            (BusEngineProxy *engine);
+void             bus_engine_proxy_disable           (BusEngineProxy *engine);
+void             bus_engine_proxy_property_activate (BusEngineProxy *engine,
+                                                     const gchar    *prop_name,
+                                                     gint32          state);
+void             bus_engine_proxy_property_show     (BusEngineProxy *engine,
+                                                     const gchar    *prop_name);
+void             bus_engine_proxy_property_hide     (BusEngineProxy *engine,
+                                                     const gchar    *prop_name);
+void             bus_engine_proxy_destroy           (BusEngineProxy *engine);
 
 G_END_DECLS
 #endif

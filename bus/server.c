@@ -120,7 +120,7 @@ bus_server_init (BusServer *server)
     priv = BUS_SERVER_GET_PRIVATE (server);
 
     priv->dbus_impl = bus_dbus_impl_new ();
-    priv->dbus_impl = bus_ibus_impl_new ();
+    priv->ibus_impl = bus_ibus_impl_new ();
 }
 
 static void

@@ -356,7 +356,6 @@ ibus_proxy_get_connection (IBusProxy *proxy)
 
 gboolean
 ibus_proxy_call (IBusProxy      *proxy,
-                 const gchar    *interface,
                  const gchar    *method,
                  gint           first_arg_type,
                  ...)

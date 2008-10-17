@@ -56,7 +56,7 @@ typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 /* functions prototype */
 static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
 static void     bus_engine_proxy_init           (BusEngineProxy         *engine_proxy);
-static void     bus_engine_proxy_destroy        (BusEngineProxy         *engine_proxy);
+static void     _bus_engine_proxy_destroy       (BusEngineProxy         *engine_proxy);
 
 static gboolean bus_engine_proxy_dbus_signal    (BusEngineProxy         *engine_proxy,
                                                  DBusMessage            *message);
@@ -90,9 +90,20 @@ bus_engine_proxy_get_type (void)
 }
 
 BusEngineProxy *
-bus_engine_proxy_new (void)
+bus_engine_proxy_new (const gchar       *path,
+                      BusConnection     *connection)
 {
-    return BUS_ENGINE_PROXY (g_object_new (BUS_TYPE_ENGINE_PROXY, NULL));
+    g_assert (path != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+    GObject *obj;
+
+    obj = g_object_new (BUS_TYPE_ENGINE_PROXY,
+                        "name", "",
+                        "path", path,
+                        "connection", connection,
+                        NULL);
+
+    return BUS_ENGINE_PROXY (obj);
 }
 
 static void
@@ -106,7 +117,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     g_type_class_add_private (klass, sizeof (BusEngineProxyPrivate));
 
-    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) _bus_engine_proxy_destroy;
 
     proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
 }
@@ -119,7 +130,7 @@ bus_engine_proxy_init (BusEngineProxy *engine_proxy)
 }
 
 static void
-bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
+_bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
 {
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine_proxy));
 }
@@ -130,3 +141,141 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine_proxy,
 {
     return FALSE;
 }
+
+gboolean
+bus_engine_proxy_process_key_event (BusEngineProxy *engine,
+                                    guint32         keyval,
+                                    gboolean        is_press,
+                                    guint32         state)
+{
+    return FALSE;
+}
+
+void
+bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
+                                      gint32          x,
+                                      gint32          y,
+                                      gint32          w,
+                                      gint32          h)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "SetCursorLocation",
+                     DBUS_TYPE_INT32, &x,
+                     DBUS_TYPE_INT32, &y,
+                     DBUS_TYPE_INT32, &w,
+                     DBUS_TYPE_INT32, &h,
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_focus_in (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "FocusIn",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_focus_out (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "FocusOut",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_reset (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "Reset",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_page_up (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "PageUp",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_page_down (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "PageDown",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_cursor_up (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "CursorUp",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_cursor_down (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "CursorDown",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_enable (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "Enable",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_disable (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "Disable",
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_property_activate (BusEngineProxy *engine,
+                                    const gchar    *prop_name,
+                                    gint32          state)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "PropertyActivate",
+                     DBUS_TYPE_STRING, &prop_name,
+                     DBUS_TYPE_INT32, &state,
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_property_show (BusEngineProxy *engine,
+                                const gchar    *prop_name)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "PropertyShow",
+                     DBUS_TYPE_STRING, &prop_name,
+                     DBUS_TYPE_INVALID);
+}
+
+void bus_engine_proxy_property_hide (BusEngineProxy *engine,
+                                     const gchar    *prop_name)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "PropertyHide",
+                     DBUS_TYPE_STRING, &prop_name,
+                     DBUS_TYPE_INVALID);
+}
+
+void
+bus_engine_proxy_destroy (BusEngineProxy *engine)
+{
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "Destroy",
+                     DBUS_TYPE_INVALID);
+}
+
+
