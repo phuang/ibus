@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <ibusinternal.h>
+#include <ibusmarshalers.h>
 #include "engineproxy.h"
 
 #define BUS_ENGINE_PROXY_GET_PRIVATE(o)  \
@@ -51,6 +53,7 @@ struct _BusEngineProxyPrivate {
 };
 typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
+static guint            _signals[LAST_SIGNAL] = { 0 };
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
@@ -120,6 +123,176 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
     ibus_object_class->destroy = (IBusObjectDestroyFunc) _bus_engine_proxy_destroy;
 
     proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
+    
+    /* install signals */
+    _signals[COMMIT_STRING] =
+        g_signal_new (I_("commit-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING,
+            G_TYPE_NONE, 1,
+            G_TYPE_STRING);
+    
+    _signals[FORWARD_KEY_EVENT] =
+        g_signal_new (I_("forward-key-event"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__UINT_BOOLEAN_UINT,
+            G_TYPE_NONE, 3,
+            G_TYPE_UINT,
+            G_TYPE_BOOLEAN,
+            G_TYPE_UINT);
+    
+    _signals[UPDATE_PREEDIT] =
+        g_signal_new (I_("update-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_POINTER_INT_BOOLEAN,
+            G_TYPE_NONE, 4,
+            G_TYPE_STRING,
+            G_TYPE_POINTER,
+            G_TYPE_INT,
+            G_TYPE_BOOLEAN);
+    
+    _signals[SHOW_PREEDIT] =
+        g_signal_new (I_("show-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[HIDE_PREEDIT] =
+        g_signal_new (I_("hide-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[UPDATE_AUX_STRING] =
+        g_signal_new (I_("update-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_POINTER_BOOLEAN,
+            G_TYPE_NONE, 3,
+            G_TYPE_STRING,
+            G_TYPE_POINTER,
+            G_TYPE_BOOLEAN);
+    
+    _signals[SHOW_AUX_STRING] =
+        g_signal_new (I_("show-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[HIDE_AUX_STRING] =
+        g_signal_new (I_("hide-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    _signals[UPDATE_LOOKUP_TABLE] =
+        g_signal_new (I_("update-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__POINTER_BOOLEAN,
+            G_TYPE_NONE, 2,
+            G_TYPE_POINTER,
+            G_TYPE_BOOLEAN);
+    
+    _signals[SHOW_LOOKUP_TABLE] =
+        g_signal_new (I_("show-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[HIDE_LOOKUP_TABLE] =
+        g_signal_new (I_("hide-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    _signals[PAGE_UP_LOOKUP_TABLE] =
+        g_signal_new (I_("page-up-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[PAGE_DOWN_LOOKUP_TABLE] =
+        g_signal_new (I_("page-down-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[CURSOR_UP_LOOKUP_TABLE] =
+        g_signal_new (I_("cursor-up-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[CURSOR_DOWN_LOOKUP_TABLE] =
+        g_signal_new (I_("cursor-down-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[REGISTER_PROPERTIES] =
+        g_signal_new (I_("register-properties"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__POINTER,
+            G_TYPE_NONE, 1,
+            G_TYPE_POINTER);
+    
+    _signals[UPDATE_PROPERTY] =
+        g_signal_new (I_("update-property"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__POINTER,
+            G_TYPE_NONE, 1,
+            G_TYPE_POINTER);
+
 }
 
 static void

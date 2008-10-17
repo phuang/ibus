@@ -429,7 +429,7 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
                                             priv->connection,
                                             message,
                                             timeout_milliseconds,
-                                            _error);
+                                            (DBusError *)_error);
     dbus_message_unref (message);
 
     if (reply_message == NULL && error != NULL)
