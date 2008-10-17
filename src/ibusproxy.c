@@ -32,6 +32,9 @@ enum {
 
 /* IBusProxyPriv */
 struct _IBusProxyPrivate {
+    gchar *name;
+    gchar *path;
+    IBusConnection *connection;
 };
 typedef struct _IBusProxyPrivate IBusProxyPrivate;
 
@@ -74,9 +77,25 @@ ibus_proxy_get_type (void)
 }
 
 IBusProxy *
-ibus_proxy_new (void)
+ibus_proxy_new (const gchar     *name,
+                const gchar     *path,
+                IBusConnection  *connection)
 {
-    return IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY, NULL));
+    g_assert (name != NULL);
+    g_assert (path != NULL);
+    g_assert (IBUS_IS_CONNECTION (connection));
+
+    IBusProxy *proxy;
+    IBusProxyPrivate *priv;
+
+    proxy = IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY, NULL));
+
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    priv->name = g_strdup (name);
+    priv->path = g_strdup (path);
+    priv->connection = g_object_ref (connection);
+
+    return proxy;
 }
 
 static void
@@ -107,12 +126,28 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 static void
 ibus_proxy_init (IBusProxy *proxy)
 {
-    // IBusProxyPrivate *priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    priv->name = NULL;
+    priv->path = NULL;
+    priv->connection = NULL;
 }
 
 static void
 ibus_proxy_destroy (IBusProxy *proxy)
 {
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    
+    g_free (priv->name);
+    g_free (priv->path);
+    g_object_unref (priv->connection);
+    
+    priv->name = NULL;
+    priv->path = NULL;
+    priv->connection = NULL;
+    
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (proxy));
 }
 

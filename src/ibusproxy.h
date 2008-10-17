@@ -22,6 +22,7 @@
 
 #include <dbus/dbus.h>
 #include "ibusobject.h"
+#include "ibusconnection.h"
 
 /*
  * Type macros.
@@ -60,7 +61,16 @@ struct _IBusProxyClass {
 };
 
 GType        ibus_proxy_get_type        (void);
-IBusProxy   *ibus_proxy_new             (void);
+IBusProxy   *ibus_proxy_new             (const gchar    *name,
+                                         const gchar    *path,
+                                         IBusConnection *connection);
+gboolean     ibus_proxy_send            (IBusProxy      *proxy,
+                                         DBusMessage    *message);
+gboolean     ibus_proxy_send_with_reply (IBusProxy      *proxy,
+                                         DBusMessage    *message);
+DBusMessage *ibus_proxy_send_with_reply_and_block
+                                        (IBusProxy      *proxy,
+                                         DBusMessage    *message);
 gboolean     ibus_proxy_handle_signal   (IBusProxy      *proxy,
                                          DBusMessage    *message);
 

@@ -22,6 +22,7 @@
 
 #include <dbus/dbus.h>
 #include "ibusobject.h"
+#include "ibuserror.h"
 
 /*
  * Type macros.
@@ -52,6 +53,10 @@ typedef gboolean (* IBusDBusSignalFunc) (IBusConnection     *connection,
                                          DBusMessage        *message);
 typedef gboolean (* IBusMessageFunc)    (IBusConnection     *connection,
                                          DBusMessage        *message,
+                                         gpointer            user_data);
+typedef void     (* IBusConnectionReplyFunc)
+                                        (IBusConnection     *connection,
+                                         DBusMessage        *reply,
                                          gpointer            user_data);
 
 struct _IBusConnection {
@@ -101,6 +106,17 @@ gboolean         ibus_connection_send_valist        (IBusConnection     *connect
                                                      const gchar        *name,
                                                      gint                first_arg_type,
                                                      va_list             args);
+gboolean         ibus_connection_send_with_reply    (IBusConnection             *connection,
+                                                     DBusMessage                *message,
+                                                     int                         timeout_milliseconds,
+                                                     IBusConnectionReplyFunc     reply_callback,
+                                                     gpointer                    user_data,
+                                                     IBusFreeFunc                user_data_free_callback);
+DBusMessage     *ibus_connection_send_with_reply_and_block
+                                                    (IBusConnection     *connection,
+                                                     DBusMessage        *message,
+                                                     int                 timeout_milliseconds,
+                                                     IBusError          **error);
 void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path
                                                     (IBusConnection     *connection,

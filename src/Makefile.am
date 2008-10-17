@@ -56,6 +56,8 @@ libibus_la_SOURCES = \
 	ibusattribute.h \
 	ibuslookuptable.c \
 	ibuslookuptable.h \
+	ibuserror.c \
+	ibuserror.h \
 	ibuskeysyms.h \
 	ibustypes.h \
 	ibusmarshalers.h \

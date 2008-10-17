@@ -98,7 +98,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     g_type_class_add_private (klass, sizeof (IBusConnectionPrivate));
 
-    object_class->destroy = ibus_connection_destroy;
+    object_class->destroy = (IBusObjectDestroyFunc) ibus_connection_destroy;
 
     klass->dbus_message = ibus_connection_dbus_message;
     klass->dbus_signal  = ibus_connection_dbus_signal;
@@ -492,6 +492,112 @@ ibus_connection_send_valist (IBusConnection  *connection,
     dbus_message_unref (message);
 
     return retval;
+}
+
+typedef struct {
+    IBusConnection *connection;
+    IBusConnectionReplyFunc reply_func;
+    gpointer user_data;
+    IBusFreeFunc free_func;
+}PendingCallData;
+
+static void
+_pending_call_notify_cb (DBusPendingCall *pending,
+                         gpointer         user_data)
+{
+    PendingCallData *data;
+    data = (PendingCallData *) user_data;
+    data->reply_func (data->connection,
+                      dbus_pending_call_steal_reply (pending),
+                      data->user_data);
+}
+
+static void
+_pending_call_free (gpointer user_data)
+{
+    PendingCallData *data;
+    data = (PendingCallData *) user_data;
+
+    if (data->user_data && data->free_func)
+        data->free_func (data->user_data);
+    g_object_unref (data->connection);
+    g_slice_free (PendingCallData, data);
+}
+
+gboolean
+ibus_connection_send_with_reply (IBusConnection *connection,
+                                 DBusMessage    *message,
+                                 int             timeout_milliseconds,
+                                 IBusConnectionReplyFunc reply_callback,
+                                 gpointer        user_data,
+                                 IBusFreeFunc    user_data_free_callback)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (message != NULL);
+    g_assert (timeout_milliseconds > 0 || timeout_milliseconds == -1);
+    g_assert (reply_callback != NULL);
+
+    gboolean retval;
+    DBusPendingCall *pending_call;
+    PendingCallData *data;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    retval = dbus_connection_send_with_reply (priv->connection,
+                                              message,
+                                              &pending_call,
+                                              timeout_milliseconds);
+    if (!retval) {
+        return retval;
+    }
+
+    data = g_slice_new (PendingCallData);
+    data->connection = connection;
+    g_object_ref (connection);
+    data->reply_func = reply_callback;
+    data->user_data = user_data;
+    data->free_func = user_data_free_callback;
+
+    retval = dbus_pending_call_set_notify (pending_call,
+                                _pending_call_notify_cb,
+                                data,
+                                _pending_call_free);
+    if (!retval) {
+        g_object_unref (connection);
+        g_slice_free (PendingCallData, data);
+    }
+
+    return retval;
+}
+
+DBusMessage *
+ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
+                                           DBusMessage      *message,
+                                           int              timeout_milliseconds,
+                                           IBusError        **error)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (message != NULL);
+    g_assert (timeout_milliseconds > 0 || timeout_milliseconds == -1);
+    
+    IBusError *_error;
+    DBusMessage *reply;
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    _error = ibus_error_new ();
+
+    reply = dbus_connection_send_with_reply_and_block (priv->connection,
+                                                       message,
+                                                       timeout_milliseconds,
+                                                       _error);
+    if (reply == NULL && error != NULL) {
+            *error = _error;
+    }
+    else
+        ibus_error_free (_error);
+
+    return reply;
 }
 
 void

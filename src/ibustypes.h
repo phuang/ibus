@@ -49,5 +49,7 @@ typedef enum
     IBUS_MODIFIER_MASK = 0x5c001fff
 } IBusModifierType;
 
+typedef void (* IBusFreeFunc) (gpointer );
+
 #endif
 
