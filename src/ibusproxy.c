@@ -104,7 +104,6 @@ ibus_proxy_new (const gchar     *name,
     g_assert (IBUS_IS_CONNECTION (connection));
 
     IBusProxy *proxy;
-    IBusProxyPrivate *priv;
 
     proxy = IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY,
                             "name", name,
@@ -177,17 +176,28 @@ ibus_proxy_constructor (GType           type,
                         GObjectConstructParam *construct_params)
 {
     GObject *obj;
+    IBusProxy *proxy;
+    IBusProxyPrivate *priv;
 
-    g_debug ("%s", __FUNCTION__);
     obj = G_OBJECT_CLASS (_parent_class)->constructor (type, n_construct_params, construct_params);
-    g_debug ("%s", __FUNCTION__);
+    
+    proxy = IBUS_PROXY (obj);
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    
+    if (priv->connection != NULL) {
+        g_signal_connect_object (priv->connection,
+                                 "dbus-signal",
+                                 (GCallback) ibus_proxy_handle_signal,
+                                 proxy,
+                                 G_CONNECT_AFTER);
+    }
+
     return obj;
 }
 
 static void
 ibus_proxy_init (IBusProxy *proxy)
 {
-    g_debug ("%s", __FUNCTION__);
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
@@ -219,7 +229,6 @@ ibus_proxy_set_property (IBusProxy      *proxy,
                          const GValue   *value,
                          GParamSpec     *pspec)
 {
-    g_debug ("%s", __FUNCTION__);
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
     
@@ -248,18 +257,15 @@ ibus_proxy_get_property (IBusProxy      *proxy,
                          GValue         *value,
                          GParamSpec     *pspec)
 {
-    IBusProxyPrivate *priv;
-    priv = IBUS_PROXY_GET_PRIVATE (proxy);
-    
     switch (prop_id) {
     case PROP_NAME:
-        g_value_set_string (value, priv->name);
+        g_value_set_string (value, ibus_proxy_get_name (proxy));
         break;
     case PROP_PATH:
-        g_value_set_string (value, priv->path);
+        g_value_set_string (value, ibus_proxy_get_path (proxy));
         break;
     case PROP_CONNECTION:
-        g_value_set_object (value, priv->connection);
+        g_value_set_object (value, ibus_proxy_get_connection (proxy));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (proxy, prop_id, pspec);
@@ -283,4 +289,32 @@ ibus_proxy_dbus_signal (IBusProxy   *proxy,
                         DBusMessage *message)
 {
     return FALSE;
+}
+
+
+const gchar *
+ibus_proxy_get_name (IBusProxy *proxy)
+{
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    return priv->name;
+}
+
+const gchar *
+ibus_proxy_get_path (IBusProxy *proxy)
+{
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    return priv->path;
+}
+
+IBusConnection *
+ibus_proxy_get_connection (IBusProxy *proxy)
+{
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    return priv->connection;
 }

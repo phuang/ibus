@@ -60,19 +60,22 @@ struct _IBusProxyClass {
                                  DBusMessage      *message);
 };
 
-GType        ibus_proxy_get_type        (void);
-IBusProxy   *ibus_proxy_new             (const gchar    *name,
-                                         const gchar    *path,
-                                         IBusConnection *connection);
-gboolean     ibus_proxy_send            (IBusProxy      *proxy,
-                                         DBusMessage    *message);
-gboolean     ibus_proxy_send_with_reply (IBusProxy      *proxy,
-                                         DBusMessage    *message);
-DBusMessage *ibus_proxy_send_with_reply_and_block
-                                        (IBusProxy      *proxy,
-                                         DBusMessage    *message);
-gboolean     ibus_proxy_handle_signal   (IBusProxy      *proxy,
-                                         DBusMessage    *message);
+GType            ibus_proxy_get_type        (void);
+IBusProxy       *ibus_proxy_new             (const gchar    *name,
+                                             const gchar    *path,
+                                             IBusConnection *connection);
+gboolean         ibus_proxy_send            (IBusProxy      *proxy,
+                                             DBusMessage    *message);
+gboolean         ibus_proxy_send_with_reply (IBusProxy      *proxy,
+                                             DBusMessage    *message);
+DBusMessage     *ibus_proxy_send_with_reply_and_block
+                                            (IBusProxy      *proxy,
+                                             DBusMessage    *message);
+gboolean         ibus_proxy_handle_signal   (IBusProxy      *proxy,
+                                             DBusMessage    *message);
+const gchar     *ibus_proxy_get_name        (IBusProxy      *proxy);
+const gchar     *ibus_proxy_get_path        (IBusProxy      *proxy);
+IBusConnection  *ibus_proxy_get_connection  (IBusProxy      *proxy);
 
 G_END_DECLS
 #endif
