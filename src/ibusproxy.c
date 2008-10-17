@@ -33,6 +33,7 @@ enum {
     PROP_0,
     PROP_NAME,
     PROP_PATH,
+    PROP_INTERFACE,
     PROP_CONNECTION,
 };
 
@@ -41,6 +42,7 @@ enum {
 struct _IBusProxyPrivate {
     gchar *name;
     gchar *path;
+    gchar *interface;
     IBusConnection *connection;
 };
 typedef struct _IBusProxyPrivate IBusProxyPrivate;
@@ -216,6 +218,7 @@ ibus_proxy_init (IBusProxy *proxy)
 
     priv->name = NULL;
     priv->path = NULL;
+    priv->interface = NULL;
     priv->connection = NULL;
 }
 
@@ -227,10 +230,12 @@ ibus_proxy_destroy (IBusProxy *proxy)
     
     g_free (priv->name);
     g_free (priv->path);
+    g_free (priv->interface);
     g_object_unref (priv->connection);
     
     priv->name = NULL;
     priv->path = NULL;
+    priv->interface = NULL;
     priv->connection = NULL;
     
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (proxy));
@@ -254,6 +259,10 @@ ibus_proxy_set_property (IBusProxy      *proxy,
         g_assert (priv->path == NULL);
         priv->path = g_strdup (g_value_get_string (value));
         break;
+    case PROP_INTERFACE:
+        g_assert (priv->interface == NULL);
+        priv->interface = g_strdup (g_value_get_string (value));
+        break;
     case PROP_CONNECTION:
         g_assert (priv->connection == NULL);
         priv->connection = IBUS_CONNECTION (g_value_get_object (value));
@@ -276,6 +285,9 @@ ibus_proxy_get_property (IBusProxy      *proxy,
         break;
     case PROP_PATH:
         g_value_set_string (value, ibus_proxy_get_path (proxy));
+        break;
+    case PROP_INTERFACE:
+        g_value_set_string (value, ibus_proxy_get_interface (proxy));
         break;
     case PROP_CONNECTION:
         g_value_set_object (value, ibus_proxy_get_connection (proxy));
@@ -324,6 +336,15 @@ ibus_proxy_get_path (IBusProxy *proxy)
     return priv->path;
 }
 
+const gchar *
+ibus_proxy_get_interface (IBusProxy *proxy)
+{
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    return priv->interface;
+}
+
 IBusConnection *
 ibus_proxy_get_connection (IBusProxy *proxy)
 {
@@ -331,4 +352,39 @@ ibus_proxy_get_connection (IBusProxy *proxy)
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
     return priv->connection;
+}
+
+gboolean
+ibus_proxy_call (IBusProxy      *proxy,
+                 const gchar    *interface,
+                 const gchar    *method,
+                 gint           first_arg_type,
+                 ...)
+{
+    g_assert (IBUS_IS_PROXY (proxy));
+    g_assert (method != NULL);
+    
+    va_list args;
+    gboolean retval;
+    DBusMessage *message;
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    message = dbus_message_new_method_call (priv->name,
+                                            priv->path,
+                                            priv->interface,
+                                            method);
+    va_start (args, first_arg_type);
+    retval = dbus_message_append_args (message,
+                                       first_arg_type,
+                                       args);
+    va_end (args);
+
+    retval = ibus_connection_send (priv->connection, message);
+
+    dbus_message_unref (message);
+
+    return retval;
+
+
 }

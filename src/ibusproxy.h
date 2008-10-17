@@ -66,6 +66,11 @@ IBusProxy       *ibus_proxy_new             (const gchar    *name,
                                              IBusConnection *connection);
 gboolean         ibus_proxy_send            (IBusProxy      *proxy,
                                              DBusMessage    *message);
+gboolean         ibus_proxy_call            (IBusProxy      *proxy,
+                                             const gchar    *interface,
+                                             const gchar    *method,
+                                             gint           first_agr_type,
+                                             ...);
 gboolean         ibus_proxy_send_with_reply (IBusProxy      *proxy,
                                              DBusMessage    *message);
 DBusMessage     *ibus_proxy_send_with_reply_and_block
@@ -75,6 +80,7 @@ gboolean         ibus_proxy_handle_signal   (IBusProxy      *proxy,
                                              DBusMessage    *message);
 const gchar     *ibus_proxy_get_name        (IBusProxy      *proxy);
 const gchar     *ibus_proxy_get_path        (IBusProxy      *proxy);
+const gchar     *ibus_proxy_get_interface   (IBusProxy      *proxy);
 IBusConnection  *ibus_proxy_get_connection  (IBusProxy      *proxy);
 
 G_END_DECLS
