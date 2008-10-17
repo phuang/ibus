@@ -94,9 +94,11 @@ ibus_service_get_type (void)
 IBusService *
 ibus_service_new (const gchar *path)
 {
-    IBusService *service;
-    service = IBUS_SERVICE (g_object_new (IBUS_TYPE_SERVICE, "path", path, NULL));
-    return service;
+    GObject *obj;
+    obj = g_object_new (IBUS_TYPE_SERVICE,
+                        "path", path,
+                        NULL);
+    return IBUS_SERVICE (obj);
 }
 
 static void
@@ -123,7 +125,7 @@ ibus_service_class_init (IBusServiceClass *klass)
                         "object path",
                         "The path of service object",
                         NULL,
-                        G_PARAM_READWRITE));
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* Install signals */
     _signals[DBUS_MESSAGE] =
@@ -175,9 +177,12 @@ static void
 ibus_service_set_property (IBusService *service,
     guint prop_id, const GValue *value, GParamSpec *pspec)
 {
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+    
     switch (prop_id) {
     case PROP_PATH:
-        ibus_service_set_path (service, g_value_get_string (value));
+        priv->path = g_strdup (g_value_get_string (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
@@ -195,20 +200,6 @@ ibus_service_get_property (IBusService *service,
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (service, prop_id, pspec);
     }
-}
-
-void
-ibus_service_set_path (IBusService *service, const gchar *path)
-{
-    g_assert (IBUS_IS_SERVICE (service));
-    g_assert (path != NULL);
-    
-    IBusServicePrivate *priv;
-    priv = IBUS_SERVICE_GET_PRIVATE (service);
-
-    g_assert (priv->path == NULL);
-
-    priv->path = g_strdup (path);
 }
 
 const gchar *
