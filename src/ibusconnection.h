@@ -108,14 +108,14 @@ gboolean         ibus_connection_send_valist        (IBusConnection     *connect
                                                      va_list             args);
 gboolean         ibus_connection_send_with_reply    (IBusConnection             *connection,
                                                      DBusMessage                *message,
-                                                     int                         timeout_milliseconds,
+                                                     gint                        timeout_milliseconds,
                                                      IBusConnectionReplyFunc     reply_callback,
                                                      gpointer                    user_data,
                                                      IBusFreeFunc                user_data_free_callback);
 DBusMessage     *ibus_connection_send_with_reply_and_block
                                                     (IBusConnection     *connection,
                                                      DBusMessage        *message,
-                                                     int                 timeout_milliseconds,
+                                                     gint                timeout_milliseconds,
                                                      IBusError          **error);
 void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path

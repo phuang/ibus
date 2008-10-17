@@ -70,6 +70,13 @@ gboolean         ibus_proxy_call            (IBusProxy      *proxy,
                                              const gchar    *method,
                                              gint           first_agr_type,
                                              ...);
+DBusMessage     *ibus_proxy_call_with_reply_and_block
+                                            (IBusProxy      *proxy,
+                                             const gchar    *method,
+                                             gint           timeout_milliseconds,
+                                             IBusError      **error,
+                                             gint           first_agr_type,
+                                             ...);
 gboolean         ibus_proxy_send_with_reply (IBusProxy      *proxy,
                                              DBusMessage    *message);
 DBusMessage     *ibus_proxy_send_with_reply_and_block

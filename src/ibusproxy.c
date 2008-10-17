@@ -150,7 +150,15 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         "The path of proxy object",
                         NULL,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    
+     
+     g_object_class_install_property (gobject_class,
+                    PROP_PATH,
+                    g_param_spec_string ("interface",
+                        "interface",
+                        "The interface of proxy object",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+   
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,
                     g_param_spec_object ("connection",
@@ -384,6 +392,50 @@ ibus_proxy_call (IBusProxy      *proxy,
     dbus_message_unref (message);
 
     return retval;
+}
 
+DBusMessage *
+ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
+                                      const gchar    *method,
+                                      gint           timeout_milliseconds,
+                                      IBusError      **error,
+                                      gint           first_arg_type,
+                                      ...)
+{
+    g_assert (IBUS_IS_PROXY (proxy));
+    g_assert (method != NULL);
+    
+    va_list args;
+    gboolean retval;
+    IBusError *_error;
+    DBusMessage *message;
+    DBusMessage *reply_message;
 
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    message = dbus_message_new_method_call (priv->name,
+                                            priv->path,
+                                            priv->interface,
+                                            method);
+    va_start (args, first_arg_type);
+    retval = dbus_message_append_args (message,
+                                       first_arg_type,
+                                       args);
+    va_end (args);
+
+    _error = ibus_error_new ();
+    reply_message = ibus_connection_send_with_reply_and_block (
+                                            priv->connection,
+                                            message,
+                                            timeout_milliseconds,
+                                            _error);
+    dbus_message_unref (message);
+
+    if (reply_message == NULL && error != NULL)
+        *error = _error;
+    else
+        ibus_error_free (_error);
+    
+    return reply_message;
 }
