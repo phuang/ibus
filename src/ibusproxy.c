@@ -170,6 +170,19 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 
 }
 
+static gboolean
+__dbus_signal_cb (IBusConnection    *connection,
+                  DBusMessage       *message,
+                  IBusProxy         *proxy)
+{
+    if (ibus_proxy_handle_signal (proxy, message)) {
+        g_signal_stop_emission_by_name (connection, "dbus-signal");
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 static GObject *
 ibus_proxy_constructor (GType           type,
                         guint           n_construct_params,
@@ -185,11 +198,11 @@ ibus_proxy_constructor (GType           type,
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
     
     if (priv->connection != NULL) {
-        g_signal_connect_object (priv->connection,
-                                 "dbus-signal",
-                                 (GCallback) ibus_proxy_handle_signal,
-                                 proxy,
-                                 G_CONNECT_AFTER);
+        g_signal_connect (priv->connection,
+                          "dbus-signal",
+                          (GCallback) __dbus_signal_cb,
+                          proxy);
+
     }
 
     return obj;
@@ -281,7 +294,8 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     g_return_val_if_fail (message != NULL, FALSE);
     
     g_signal_emit (proxy, _signals[DBUS_SIGNAL], 0, message, &retval);
-    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    
+    return retval;
 }
 
 static gboolean
