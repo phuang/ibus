@@ -89,6 +89,7 @@ AM_LDFLAGS = \
 	$(NULL)
 
 TESTS = \
+	test-proxy \
 	test-attribute \
 	test-lookuptable \
 	test-server \

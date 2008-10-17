@@ -29,6 +29,13 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0,
+    PROP_NAME,
+    PROP_PATH,
+    PROP_CONNECTION,
+};
+
 
 /* IBusProxyPriv */
 struct _IBusProxyPrivate {
@@ -41,12 +48,23 @@ typedef struct _IBusProxyPrivate IBusProxyPrivate;
 static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_proxy_class_init  (IBusProxyClass  *klass);
-static void     ibus_proxy_init        (IBusProxy       *proxy);
-static void     ibus_proxy_destroy     (IBusProxy       *proxy);
+static void      ibus_proxy_class_init  (IBusProxyClass *klass);
+static void      ibus_proxy_init        (IBusProxy      *proxy);
+static GObject  *ibus_proxy_constructor (GType           type,
+                                         guint           n_construct_params,
+                                         GObjectConstructParam *construct_params);
+static void      ibus_proxy_destroy     (IBusProxy       *proxy);
+static void      ibus_proxy_set_property(IBusProxy       *proxy,
+                                         guint           prop_id,
+                                         const GValue    *value,
+                                         GParamSpec      *pspec);
+static void      ibus_proxy_get_property(IBusProxy       *proxy,
+                                         guint           prop_id,
+                                         GValue          *value,
+                                         GParamSpec      *pspec);
 
-static gboolean ibus_proxy_dbus_signal (IBusProxy       *proxy,
-                                        DBusMessage     *message);
+static gboolean  ibus_proxy_dbus_signal (IBusProxy       *proxy,
+                                         DBusMessage     *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -88,12 +106,11 @@ ibus_proxy_new (const gchar     *name,
     IBusProxy *proxy;
     IBusProxyPrivate *priv;
 
-    proxy = IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY, NULL));
-
-    priv = IBUS_PROXY_GET_PRIVATE (proxy);
-    priv->name = g_strdup (name);
-    priv->path = g_strdup (path);
-    priv->connection = g_object_ref (connection);
+    proxy = IBUS_PROXY (g_object_new (IBUS_TYPE_PROXY,
+                            "name", name,
+                            "path", path,
+                            "connection", connection,
+                            NULL));
 
     return proxy;
 }
@@ -101,20 +118,51 @@ ibus_proxy_new (const gchar     *name,
 static void
 ibus_proxy_class_init (IBusProxyClass *klass)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusProxyPrivate));
-
+    
+    gobject_class->constructor = ibus_proxy_constructor;
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_proxy_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_proxy_get_property;
+    
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_proxy_destroy;
 
     klass->dbus_signal = ibus_proxy_dbus_signal;
+    
+    /* install properties */
+    g_object_class_install_property (gobject_class,
+                    PROP_NAME,
+                    g_param_spec_string ("name",
+                        "service name",
+                        "The service name of proxy object",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    
+    g_object_class_install_property (gobject_class,
+                    PROP_PATH,
+                    g_param_spec_string ("path",
+                        "object path",
+                        "The path of proxy object",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    
+    g_object_class_install_property (gobject_class,
+                    PROP_CONNECTION,
+                    g_param_spec_object ("connection",
+                        "object path",
+                        "The path of proxy object",
+                        IBUS_TYPE_CONNECTION,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+    /* install signals */
     _signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusProxyClass, dbus_signal),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
@@ -123,9 +171,23 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 
 }
 
+static GObject *
+ibus_proxy_constructor (GType           type,
+                        guint           n_construct_params,
+                        GObjectConstructParam *construct_params)
+{
+    GObject *obj;
+
+    g_debug ("%s", __FUNCTION__);
+    obj = G_OBJECT_CLASS (_parent_class)->constructor (type, n_construct_params, construct_params);
+    g_debug ("%s", __FUNCTION__);
+    return obj;
+}
+
 static void
 ibus_proxy_init (IBusProxy *proxy)
 {
+    g_debug ("%s", __FUNCTION__);
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
@@ -151,8 +213,63 @@ ibus_proxy_destroy (IBusProxy *proxy)
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (proxy));
 }
 
+static void
+ibus_proxy_set_property (IBusProxy      *proxy,
+                         guint           prop_id,
+                         const GValue   *value,
+                         GParamSpec     *pspec)
+{
+    g_debug ("%s", __FUNCTION__);
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    
+    switch (prop_id) {
+    case PROP_NAME:
+        g_assert (priv->name == NULL);
+        priv->name = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_PATH:
+        g_assert (priv->path == NULL);
+        priv->path = g_strdup (g_value_get_string (value));
+        break;
+    case PROP_CONNECTION:
+        g_assert (priv->connection == NULL);
+        priv->connection = IBUS_CONNECTION (g_value_get_object (value));
+        g_object_ref (priv->connection);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (proxy, prop_id, pspec);
+    }
+}
+
+static void
+ibus_proxy_get_property (IBusProxy      *proxy,
+                         guint           prop_id,
+                         GValue         *value,
+                         GParamSpec     *pspec)
+{
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    
+    switch (prop_id) {
+    case PROP_NAME:
+        g_value_set_string (value, priv->name);
+        break;
+    case PROP_PATH:
+        g_value_set_string (value, priv->path);
+        break;
+    case PROP_CONNECTION:
+        g_value_set_object (value, priv->connection);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (proxy, prop_id, pspec);
+    }
+}
+
+
 gboolean
-ibus_proxy_handle_signal (IBusProxy *proxy, DBusMessage *message)
+ibus_proxy_handle_signal (IBusProxy     *proxy,
+                          DBusMessage   *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
@@ -162,7 +279,8 @@ ibus_proxy_handle_signal (IBusProxy *proxy, DBusMessage *message)
 }
 
 static gboolean
-ibus_proxy_dbus_signal (IBusProxy *proxy, DBusMessage *message)
+ibus_proxy_dbus_signal (IBusProxy   *proxy,
+                        DBusMessage *message)
 {
     return FALSE;
 }
