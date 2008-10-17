@@ -321,7 +321,43 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                     gboolean        is_press,
                                     guint32         state)
 {
-    return FALSE;
+    DBusMessage *reply_message;
+    IBusError *error;
+    gboolean retval;
+
+    reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (engine),
+                                                  "ProcessKeyEvent",
+                                                  -1,
+                                                  &error,
+                                                  DBUS_TYPE_UINT32, &keyval,
+                                                  DBUS_TYPE_BOOLEAN, &is_press,
+                                                  DBUS_TYPE_UINT32, &state,
+                                                  DBUS_TYPE_INVALID);
+    if (reply_message == NULL) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        retval = FALSE;
+    }
+
+    if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
+        g_debug ("%s",
+                 dbus_message_get_error_name (reply_message));
+        dbus_message_unref (reply_message);
+        retval = FALSE;
+    }
+    else {
+        DBusError error;
+        dbus_error_init (&error);
+        if (!dbus_message_get_args (reply_message, &error,
+                                   DBUS_TYPE_BOOLEAN, &retval,
+                                   DBUS_TYPE_INVALID)) {
+            g_debug ("%s: %s", error.name, error.message);
+            dbus_error_free (&error);
+            retval = FALSE;
+        }
+        dbus_message_unref (reply_message);
+    }
+    return retval;
 }
 
 void
