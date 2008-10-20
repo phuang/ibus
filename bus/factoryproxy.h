@@ -60,6 +60,11 @@ GType            bus_factory_proxy_get_type             (void);
 BusFactoryProxy *bus_factory_proxy_new                  (const gchar        *path,
                                                          BusConnection      *connection);
 void             bus_factory_proxy_destroy              (BusFactoryProxy    *factory);
+const gchar     *bus_factory_proxy_get_name             (BusFactoryProxy    *factory);
+const gchar     *bus_factory_proxy_get_lang             (BusFactoryProxy    *factory);
+const gchar     *bus_factory_proxy_get_icon             (BusFactoryProxy    *factory);
+const gchar     *bus_factory_proxy_get_authors          (BusFactoryProxy    *factory);
+const gchar     *bus_factory_proxy_get_credits          (BusFactoryProxy    *factory);
 
 G_END_DECLS
 #endif

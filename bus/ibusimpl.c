@@ -20,6 +20,7 @@
 
 #include "ibusimpl.h"
 #include "connection.h"
+#include "factoryproxy.h"
 
 #define BUS_IBUS_IMPL_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_IBUS_IMPL, BusIBusImplPrivate))
@@ -38,6 +39,7 @@ struct _BusIBusImplPrivate {
     GHashTable *unique_names;
     GHashTable *names;
     GSList *connections;
+    GSList *factories;
     gint id;
 };
 
@@ -118,6 +120,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus_impl)
     priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->connections = NULL;
+    priv->factories = NULL;
     priv->id = 1;
 
 }
@@ -169,6 +172,46 @@ _ibus_introspect (BusIBusImpl     *ibus_impl,
     return reply_message;
 }
 
+static DBusMessage *
+_ibus_register_factories (BusIBusImpl     *ibus_impl,
+                          DBusMessage     *message,
+                          BusConnection   *connection)
+{
+    gchar **paths;
+    gint n;
+    DBusMessage *reply;
+    BusIBusImplPrivate *priv;
+
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+
+    DBusError error;    
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+                        DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH,
+                        &paths, &n,
+                        DBUS_TYPE_INVALID)) {
+        reply = dbus_message_new_error (message,
+                                error.name,
+                                "RegisterFactories shoule pass an object_path array as arugment");
+        dbus_error_free (&error);
+        return reply;;
+    }
+
+    reply = dbus_message_new_method_return (message);
+    ibus_connection_send (IBUS_CONNECTION (connection), reply);
+    ibus_connection_flush (IBUS_CONNECTION (connection));
+    dbus_message_unref (reply);
+
+    gint i;
+    for (i = 0; i < n; i++ ) {
+        BusFactoryProxy *factory;
+        factory = bus_factory_proxy_new (paths[i], connection);
+        priv->factories = g_slist_append (priv->factories, factory);
+    }
+
+    return NULL;
+}
+
 static gboolean
 bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, DBusMessage *message)
 {
@@ -187,12 +230,13 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
                                "Introspect", _ibus_introspect },
-#if 0
         /* IBus interface */
+#if 0
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
-
-        { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_get_address },
+#endif
+        { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
+#if 0
         { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },

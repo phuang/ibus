@@ -152,7 +152,7 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
      
      g_object_class_install_property (gobject_class,
-                    PROP_PATH,
+                    PROP_INTERFACE,
                     g_param_spec_string ("interface",
                         "interface",
                         "The interface of proxy object",
@@ -264,6 +264,7 @@ ibus_proxy_set_property (IBusProxy      *proxy,
         priv->name = g_strdup (g_value_get_string (value));
         break;
     case PROP_PATH:
+        g_debug ("AAA");
         g_assert (priv->path == NULL);
         priv->path = g_strdup (g_value_get_string (value));
         break;

@@ -49,7 +49,12 @@ enum {
 
 /* BusFactoryProxyPriv */
 struct _BusFactoryProxyPrivate {
-    void *pad;
+    gboolean got_info;
+    gchar *name;
+    gchar *lang;
+    gchar *icon;
+    gchar *authors;
+    gchar *credits;
 };
 typedef struct _BusFactoryProxyPrivate BusFactoryProxyPrivate;
 
@@ -98,7 +103,7 @@ bus_factory_proxy_new (const gchar       *path,
     GObject *obj;
 
     obj = g_object_new (BUS_TYPE_FACTORY_PROXY,
-                        "name", "",
+                        "name", NULL,
                         "path", path,
                         "connection", connection,
                         NULL);
@@ -121,35 +126,39 @@ bus_factory_proxy_class_init (BusFactoryProxyClass *klass)
 }
 
 static void
-bus_factory_proxy_init (BusFactoryProxy *factory_proxy)
+bus_factory_proxy_init (BusFactoryProxy *factory)
 {
     BusFactoryProxyPrivate *priv;
-    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory_proxy);
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+
+    priv->name = NULL;
+    priv->lang = NULL;
+    priv->icon = NULL;
+    priv->authors = NULL;
+    priv->credits = NULL;
+    priv->got_info = FALSE;
 }
 
 static void
-_bus_factory_proxy_destroy (BusFactoryProxy *factory_proxy)
+_bus_factory_proxy_destroy (BusFactoryProxy *factory)
 {
-    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (factory_proxy));
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (factory));
 }
 
-gboolean
-bus_factory_proxy_get_info (BusFactoryProxy *factory,
-                            gchar           **name,
-                            gchar           **lang,
-                            gchar           **icon,
-                            gchar           **authors,
-                            gchar           **credits)
+static void
+bus_factory_proxy_get_info (BusFactoryProxy *factory)
 {
     g_assert (BUS_IS_FACTORY_PROXY (factory));
-    g_assert (name != NULL);
-    g_assert (lang != NULL);
-    g_assert (icon != NULL);
-    g_assert (authors != NULL);
-    g_assert (credits != NULL);
-
+    
+    BusFactoryProxyPrivate *priv;
     DBusMessage *reply_message;
     IBusError *error;
+
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+
+    if (priv->got_info)
+        return;
+    priv->got_info = TRUE;
 
     reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (factory),
                                                   "GetInfo",
@@ -159,14 +168,14 @@ bus_factory_proxy_get_info (BusFactoryProxy *factory,
     if (reply_message == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
-        return FALSE;
+        return;
     }
 
     if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
         g_warning ("%s",
                  dbus_message_get_error_name (reply_message));
         dbus_message_unref (reply_message);
-        return FALSE;
+        return;
     }
 
     DBusError _error;
@@ -176,29 +185,75 @@ bus_factory_proxy_get_info (BusFactoryProxy *factory,
     
     if (!dbus_message_get_args (reply_message, &_error,
                                 DBUS_TYPE_ARRAY, DBUS_TYPE_STRING,
-                                &values, n,
+                                &values, &n,
                                 DBUS_TYPE_INVALID)) {
         g_warning ("%s: %s", _error.name, _error.message);
         dbus_error_free (&_error);
         dbus_message_unref (reply_message);
-        return FALSE;
+        return;
     }
     
     if(n != 5) {
-        g_warning ("Factory.GetInfo should return 5 element");
-        dbus_free_string_array (values);
-        dbus_message_unref (reply_message);
-        return FALSE;
+        g_warning ("Factory.GetInfo should return 5 element %d", n);
     } else {
-        *name =  g_strdup (values[0]);
-        *lang =  g_strdup (values[1]);
-        *icon =  g_strdup (values[2]);
-        *authors =  g_strdup (values[3]);
-        *credits =  g_strdup (values[4]);
-        dbus_free_string_array (values);
-        dbus_message_unref (reply_message);
-        return TRUE;
+        priv->name =  g_strdup (values[0]);
+        priv->lang =  g_strdup (values[1]);
+        priv->icon =  g_strdup (values[2]);
+        priv->authors =  g_strdup (values[3]);
+        priv->credits =  g_strdup (values[4]);
     }
+    dbus_free_string_array (values);
+    dbus_message_unref (reply_message);
+}
+
+const gchar *
+bus_factory_proxy_get_name (BusFactoryProxy *factory)
+{
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+    bus_factory_proxy_get_info (factory);
+
+    return priv->name;
+}
+
+const gchar *
+bus_factory_proxy_get_lang (BusFactoryProxy *factory)
+{
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+    bus_factory_proxy_get_info (factory);
+
+    return priv->lang;
+}
+
+const gchar *
+bus_factory_proxy_get_icon (BusFactoryProxy *factory)
+{
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+    bus_factory_proxy_get_info (factory);
+
+    return priv->icon;
+}
+
+const gchar *
+bus_factory_proxy_get_authors (BusFactoryProxy *factory)
+{
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+    bus_factory_proxy_get_info (factory);
+
+    return priv->authors;
+}
+
+const gchar *
+bus_factory_proxy_get_credits (BusFactoryProxy *factory)
+{
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+    bus_factory_proxy_get_info (factory);
+
+    return priv->credits;
 }
 
 gboolean
