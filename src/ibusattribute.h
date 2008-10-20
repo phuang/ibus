@@ -31,14 +31,18 @@
 
 /* define GOBJECT macros */
 
-#define IBUS_ATTR_TYPE_UNDERLINE    1
-#define IBUS_ATTR_TYPE_FOREGROUND   2
-#define IBUS_ATTR_TYPE_BACKGROUND   3
+typedef enum {
+    IBUS_ATTR_TYPE_UNDERLINE    = 1,
+    IBUS_ATTR_TYPE_FOREGROUND   = 2,
+    IBUS_ATTR_TYPE_BACKGROUND   = 3,
+} IBusAttrType;
 
-#define IBUS_ATTR_UNDERLINE_NONE    0
-#define IBUS_ATTR_UNDERLINE_SINGLE  1
-#define IBUS_ATTR_UNDERLINE_DOUBLE  2
-#define IBUS_ATTR_UNDERLINE_LOW     3
+typedef enum {
+    IBUS_ATTR_UNDERLINE_NONE    = 0,
+    IBUS_ATTR_UNDERLINE_SINGLE  = 1,
+    IBUS_ATTR_UNDERLINE_DOUBLE  = 2,
+    IBUS_ATTR_UNDERLINE_LOW     = 3,
+} IBusAttrUnderline;
 
 G_BEGIN_DECLS
 typedef struct _IBusAttribute IBusAttribute;

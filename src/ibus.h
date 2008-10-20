@@ -29,6 +29,7 @@
 #include "ibusservice.h"
 #include "ibusfactory.h"
 #include "ibusengine.h"
+#include "ibusproperty.h"
 
 #endif
 
