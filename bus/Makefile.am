@@ -34,6 +34,8 @@ ibus_daemon_SOURCES = \
 	inputcontext.h \
 	engineproxy.c \
 	engineproxy.h \
+	factoryproxy.c \
+	factoryproxy.h \
 	server.c \
 	server.h \
 	connection.c \
