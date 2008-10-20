@@ -206,7 +206,7 @@ class Setup(object):
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0.5)
 
-        column.pack_start(renderer)
+        column.pack_start(renderer, False)
         column.set_attributes(renderer, pixbuf = COLUMN_ICON, visible = COLUMN_VISIBLE)
 
         renderer = gtk.CellRendererText()

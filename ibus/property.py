@@ -149,13 +149,13 @@ class Property(object):
     def to_dbus_value(self):
         sub_props = self.__sub_props.to_dbus_value()
         values = (dbus.String(self.__name),
-                dbus.Int32(self.__type),
+                dbus.UInt32(self.__type),
                 dbus.String(self.__label),
                 dbus.String(self.__icon),
                 dbus.String(self.__tooltip),
                 dbus.Boolean(self.__sensitive),
                 dbus.Boolean(self.__visible),
-                dbus.Int32(self.__state),
+                dbus.UInt32(self.__state),
                 sub_props)
         return dbus.Struct(values)
 
