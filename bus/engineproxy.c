@@ -448,9 +448,9 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
             ibus_lookup_table_unref (table);
             goto failed;
         }
-        dbus_message_iter_get_basic (&iter, &visiblt);
+        dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], 0, lookup_table, visible);
+        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         ibus_lookup_table_unref (table);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
@@ -479,7 +479,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
             goto failed;
         
         prop = ibus_property_from_dbus_message (&iter);
-        if (prop_list == NULL)
+        if (prop == NULL)
             goto failed;
         
         g_signal_emit (engine, _signals[UPDATE_PROPERTY], 0, prop);
