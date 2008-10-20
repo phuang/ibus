@@ -34,6 +34,7 @@
 G_BEGIN_DECLS
 typedef struct _IBusLookupTable IBusLookupTable;
 struct _IBusLookupTable {
+    gint refcount;
     gint page_size;
     gint cursor_pos; 
     gboolean cursor_visible;
@@ -51,7 +52,8 @@ IBusLookupTable     *ibus_lookup_table_new      (gint                page_size,
                                                  gint                cursor_pos,
                                                  gboolean            cursor_visible);
 IBusLookupTable     *ibus_lookup_table_copy     (IBusLookupTable    *table);
-void                 ibus_lookup_table_free     (IBusLookupTable    *table);
+IBusLookupTable     *ibus_lookup_table_ref      (IBusLookupTable    *table);
+void                 ibus_lookup_table_unref    (IBusLookupTable    *table);
 void                 ibus_lookup_table_append_candidate
                                                 (IBusLookupTable    *table,
                                                  const gchar        *text,

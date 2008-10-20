@@ -27,7 +27,7 @@ ibus_lookup_table_get_type ()
     if (type == 0) {
         type = g_boxed_type_register_static ("IBusLookupTable",
                     (GBoxedCopyFunc)ibus_lookup_table_copy,
-                    (GBoxedFreeFunc)ibus_lookup_table_free);
+                    (GBoxedFreeFunc)ibus_lookup_table_unref);
     }
     return type;
 }
@@ -39,7 +39,7 @@ ibus_lookup_table_new (gint page_size, gint cursor_pos, gboolean cursor_visible)
     table->page_size = page_size;
     table->cursor_pos = cursor_pos;
     table->cursor_visible = cursor_visible;
-    table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusCandidate));
+    table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusCandidate *));
     return table;
 }
 
@@ -50,11 +50,34 @@ ibus_lookup_table_copy (IBusLookupTable *table)
                 table->cursor_visible);
 }
 
-void
-ibus_lookup_table_free (IBusLookupTable *table)
+IBusLookupTable *
+ibus_lookup_table_ref (IBusLookupTable *table)
 {
-    g_assert (table != NULL);
-    g_slice_free (IBusLookupTable, table);
+    if (table == NULL)
+        return NULL;
+    table->refcount ++;
+
+    return table;
+}
+
+void
+ibus_lookup_table_unref (IBusLookupTable *table)
+{
+    if (table == NULL)
+        return;
+    table->refcount --;
+    if (table->refcount <= 0) {
+        IBusCandidate *candidate;
+        gint i;
+        for (i = 0; i < table->candidates->len; i++) {
+            candidate = g_array_index (table->candidates, IBusCandidate *, i);
+            g_free (candidate->text);
+            ibus_attr_list_unref (candidate->attr_list);
+            g_slice_free (IBusCandidate, candidate);
+        }
+        g_array_free (table->candidates, TRUE);
+        g_slice_free (IBusLookupTable, table);
+    }
 }
 
 void
@@ -63,13 +86,15 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
     g_assert (table != NULL);
     g_assert (text != NULL);
     
-    IBusCandidate candidate;
+    IBusCandidate *candidate;
+
+    candidate = g_slice_new (IBusCandidate);
     
-    candidate.text = g_strdup (text);
+    candidate->text = g_strdup (text);
     if (attr_list)
-        candidate.attr_list = ibus_attr_list_ref (attr_list);
+        candidate->attr_list = ibus_attr_list_ref (attr_list);
     else
-        candidate.attr_list = ibus_attr_list_new ();
+        candidate->attr_list = ibus_attr_list_new ();
     
     g_array_append_val (table->candidates, candidate);
 }

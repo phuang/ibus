@@ -314,10 +314,37 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     g_assert (message != NULL);
-
+    
     DBusError error;
-    dbus_error_init (&error);
+    gint i;
 
+    struct {
+        const gchar *member;
+        guint signal_id;
+    } signals [] = {
+        { "ShowPreedit", _signals[SHOW_PREEDIT] },
+        { "HidePreedit", _signals[HIDE_PREEDIT] },
+        { "ShowAuxString", _signals[SHOW_AUX_STRING] },
+        { "HideAuxString", _signals[HIDE_AUX_STRING] },
+        { "ShowLookupTable", _signals[SHOW_LOOKUP_TABLE] },
+        { "HideLookupTable", _signals[HIDE_LOOKUP_TABLE] },
+        { "PageUpLookupTable", _signals[PAGE_UP_LOOKUP_TABLE] },
+        { "PageDownLookupTable", _signals[PAGE_DOWN_LOOKUP_TABLE] },
+        { "CursorUpLookupTable", _signals[CURSOR_UP_LOOKUP_TABLE] },
+        { "CursorDownLookupTable", _signals[CURSOR_DOWN_LOOKUP_TABLE] },
+        { NULL, 0},
+    };
+    
+    for (i = 0; ; i++) {
+        if (signals[i].member == NULL)
+            break;
+        if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
+            g_signal_emit (engine, signals[i].signal_id, 0);
+            goto handled;
+        }
+    }
+    
+    dbus_error_init (&error);
     if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "CommitString")) {
         gchar *text;
         gboolean retval;
@@ -346,7 +373,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         g_signal_emit (engine, _signals[FORWARD_KEY_EVENT], keyval, is_press, states);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreedit")) {
-        gchar *text,
+        gchar *text;
         IBusAttrList *attr_list;
         gint32 cursor_pos;
         gboolean visible;
@@ -371,13 +398,13 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
             ibus_attr_list_unref (attr_list);
             goto failed;
         }
-        dbus_message_iter_get_basic (&iter, &visiblt);
+        dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_PREEDIT], text, attr_list, cursor_pos, visible);
+        g_signal_emit (engine, _signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxString")) {
-        gchar *text,
+        gchar *text;
         IBusAttrList *attr_list;
         gboolean visible;
         DBusMessageIter iter;
@@ -398,13 +425,12 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
             ibus_attr_list_unref (attr_list);
             goto failed;
         }
-        dbus_message_iter_get_basic (&iter, &visiblt);
+        dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_AUX_STRING], text, attr_list, visible);
+        g_signal_emit (engine, _signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
-        gchar *text,
         IBusLookupTable *table;
         gboolean visible;
         DBusMessageIter iter;
@@ -424,13 +450,11 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         }
         dbus_message_iter_get_basic (&iter, &visiblt);
 
-        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], lookup_table, visible);
+        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], 0, lookup_table, visible);
         ibus_lookup_table_unref (table);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
-        gchar *text,
-        IBusLookupTable *table;
-        gboolean visible;
+        IBusPropList *prop_list;
         DBusMessageIter iter;
         gboolean retval;
 
@@ -438,20 +462,31 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         if (!retval)
             goto failed;
         
-        table = ibus_lookup_table_from_dbus_message (&iter);
-        if (table == NULL)
+        prop_list = ibus_prop_list_from_dbus_message (&iter);
+        if (prop_list == NULL)
             goto failed;
         
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_lookup_table_unref (table);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visiblt);
+        g_signal_emit (engine, _signals[REGISTER_PROPERTIES], 0, prop_list);
+        ibus_prop_list_unref (prop_list);
+    }
+    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
+        IBusProperty *prop;
+        DBusMessageIter iter;
+        gboolean retval;
 
-        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], lookup_table, visible);
-        ibus_lookup_table_unref (table);
+        retval = dbus_message_iter_init (message, &iter);
+        if (!retval)
+            goto failed;
+        
+        prop = ibus_property_from_dbus_message (&iter);
+        if (prop_list == NULL)
+            goto failed;
+        
+        g_signal_emit (engine, _signals[UPDATE_PROPERTY], 0, prop);
+        ibus_property_free (prop);
     }
 
+handled:
     g_signal_stop_emission_by_name (engine, "dbus-signal");
     return TRUE;
   

@@ -30,6 +30,7 @@
 #include "ibusfactory.h"
 #include "ibusengine.h"
 #include "ibusproperty.h"
+#include "ibuslookuptable.h"
 
 #endif
 
