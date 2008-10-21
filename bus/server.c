@@ -35,8 +35,8 @@ enum {
 
 /* BusServerPriv */
 struct _BusServerPrivate {
-    BusDBusImpl *dbus_impl;
-    BusIBusImpl *ibus_impl;
+    BusDBusImpl *dbus;
+    BusIBusImpl *ibus;
 };
 typedef struct _BusServerPrivate BusServerPrivate;
 
@@ -120,8 +120,8 @@ bus_server_init (BusServer *server)
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
 
-    priv->dbus_impl = bus_dbus_impl_new ();
-    priv->ibus_impl = bus_ibus_impl_new ();
+    priv->dbus = bus_dbus_impl_new ();
+    priv->ibus = bus_ibus_impl_new ();
 }
 
 static void
@@ -134,8 +134,8 @@ bus_server_new_connection   (BusServer          *server,
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
 
-    bus_dbus_impl_new_connection (priv->dbus_impl, connection);
-    bus_ibus_impl_new_connection (priv->ibus_impl, connection);
+    bus_dbus_impl_new_connection (priv->dbus, connection);
+    bus_ibus_impl_new_connection (priv->ibus, connection);
 }
 
 static void
@@ -144,8 +144,8 @@ bus_server_destroy (BusServer *server)
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
     
-    g_object_unref (G_OBJECT (priv->dbus_impl));
-    g_object_unref (G_OBJECT (priv->ibus_impl));
+    g_object_unref (G_OBJECT (priv->dbus));
+    g_object_unref (G_OBJECT (priv->ibus));
     
     IBUS_OBJECT_CLASS (_parent_class)->destroy (IBUS_OBJECT (server));
 }

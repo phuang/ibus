@@ -59,7 +59,7 @@ struct _BusDBusImplClass {
 
 GType            bus_dbus_impl_get_type         (void);
 BusDBusImpl     *bus_dbus_impl_new              (void);
-gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus_impl,
+gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
                                                  BusConnection  *connection);
 
 G_END_DECLS
