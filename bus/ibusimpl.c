@@ -52,12 +52,14 @@ typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_ibus_impl_class_init      (BusIBusImplClass    *klass);
-static void     bus_ibus_impl_init            (BusIBusImpl         *ibus);
-static void     bus_ibus_impl_dispose         (BusIBusImpl         *ibus);
-static gboolean bus_ibus_impl_dbus_message    (BusIBusImpl         *ibus,
-                                               BusConnection       *connection,
-                                               DBusMessage         *message);
+static void     bus_ibus_impl_class_init      (BusIBusImplClass     *klass);
+static void     bus_ibus_impl_init            (BusIBusImpl          *ibus);
+static void     bus_ibus_impl_destroy         (BusIBusImpl          *ibus);
+static gboolean bus_ibus_impl_dbus_message    (BusIBusImpl          *ibus,
+                                               BusConnection        *connection,
+                                               DBusMessage          *message);
+static void     _connection_destroy_cb        (BusConnection        *connection,
+                                               BusIBusImpl          *ibus);
 
 static IBusServiceClass  *_parent_class = NULL;
 
@@ -103,13 +105,13 @@ bus_ibus_impl_new (void)
 static void
 bus_ibus_impl_class_init (BusIBusImplClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (BusIBusImplPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) bus_ibus_impl_dispose;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_ibus_impl_dbus_message;
 
@@ -132,12 +134,27 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 }
 
 static void
-bus_ibus_impl_dispose (BusIBusImpl *ibus)
+bus_ibus_impl_destroy (BusIBusImpl *ibus)
 {
+    BusConnection *connection;
+    GSList *p;
+    
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (ibus));
+    for (p = priv->connections; p != NULL; p = p->next) {
+        connection = BUS_CONNECTION (p->data);
+        g_signal_handlers_disconnect_by_func (connection, 
+                                              (GCallback) _connection_destroy_cb,
+                                              ibus);
+        ibus_object_destroy (IBUS_OBJECT (connection));
+        g_object_unref (connection);
+    }
+
+    g_slist_free (priv->connections);
+    priv->connections = NULL;
+
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
 /* introspectable interface */
@@ -317,6 +334,25 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     return NULL;
 }
 
+static DBusMessage *
+_ibus_kill (BusIBusImpl     *ibus,
+            DBusMessage     *message,
+            BusConnection   *connection)
+{
+    DBusMessage *reply;
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+
+    reply = dbus_message_new_method_return (message);
+    ibus_connection_send (IBUS_CONNECTION (connection), reply);
+    ibus_connection_flush (IBUS_CONNECTION (connection));
+    dbus_message_unref (reply);
+
+    ibus_object_destroy (IBUS_OBJECT (ibus));
+    return NULL;
+}
+
 static gboolean
 bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
                             BusConnection   *connection,
@@ -354,8 +390,8 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "RegisterStartEngine",   _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "RegisterRestartEngine", _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "RegisterStopEngine",    _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_get_address },
 #endif
+        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_kill },
         { NULL, NULL, NULL }
     };
 
