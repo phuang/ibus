@@ -46,9 +46,6 @@ typedef struct _BusServerPrivate BusServerPrivate;
 /* functions prototype */
 static void      bus_server_class_init  (BusServerClass     *klass);
 static void      bus_server_init        (BusServer          *server);
-static GObject  *bus_server_constructor (GType               type,
-                                         guint               n,
-                                         GObjectConstructParam *params);
 static void      bus_server_destroy     (BusServer          *server);
 static void      bus_server_new_connection
                                         (BusServer          *server,
@@ -85,12 +82,15 @@ bus_server_get_type (void)
 }
 
 BusServer *
-bus_server_new (void)
+bus_server_get_default (void)
 {
-    BusServer *server;
-    server = BUS_SERVER (g_object_new (BUS_TYPE_SERVER,
-                    "connection-type", BUS_TYPE_CONNECTION,
-                    NULL));
+    static BusServer *server = NULL;
+
+    if (server == NULL) {
+        server = BUS_SERVER (g_object_new (BUS_TYPE_SERVER,
+                        "connection-type", BUS_TYPE_CONNECTION,
+                        NULL));
+    }
     return server;
 }
 
@@ -137,8 +137,6 @@ bus_server_class_init (BusServerClass *klass)
 
     g_type_class_add_private (klass, sizeof (BusServerPrivate));
 
-    gobject_class->constructor = bus_server_constructor;
-    
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_server_destroy;
 
     IBUS_SERVER_CLASS (klass)->new_connection = (IBusNewConnectionFunc) bus_server_new_connection;
@@ -149,29 +147,10 @@ bus_server_init (BusServer *server)
 {
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
-   
+    
     priv->loop = g_main_loop_new (NULL, FALSE);
     priv->dbus = bus_dbus_impl_new ();
     priv->ibus = bus_ibus_impl_new ();
-}
-
-
-static GObject *
-bus_server_constructor (GType   type,
-                        guint   n,
-                        GObjectConstructParam *params)
-{
-    GObject *object;
-
-    if (_server == NULL ) {    
-        object = G_OBJECT_CLASS (_parent_class)->constructor (type,
-                                                              n,
-                                                              params);
-        _server = BUS_SERVER (object);
-    }
-
-    object = g_object_ref (_server);
-    return object;
 }
 
 static void

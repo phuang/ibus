@@ -5,7 +5,7 @@ int main()
 	g_type_init ();
 	
 	BusServer *server;
-	server = bus_server_new ();
+	server = bus_server_get_default ();
 	bus_server_listen (server);
 	bus_server_run (server);
 	

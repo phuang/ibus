@@ -154,7 +154,9 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     g_slist_free (priv->connections);
     priv->connections = NULL;
-    bus_server_quit (bus_server_new ());
+    
+    bus_server_quit (bus_server_get_default ());
+    
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
@@ -196,20 +198,27 @@ _ibus_introspect (BusIBusImpl     *ibus,
     return reply_message;
 }
 
-static int
-_factory_cmp (BusFactoryProxy   *a,
-              BusFactoryProxy   *b)
-{
-    g_assert (BUS_IS_FACTORY_PROXY (a));
-    g_assert (BUS_IS_FACTORY_PROXY (b));
-    
-    gint retval;
 
-    retval = g_strcmp0 (bus_factory_proxy_get_lang (a), bus_factory_proxy_get_lang (b));
-    if (retval != 0)
-        return retval;
-    retval = g_strcmp0 (bus_factory_proxy_get_name (a), bus_factory_proxy_get_name (b));
-    return retval;
+
+static DBusMessage *
+_ibus_get_address (BusIBusImpl     *ibus,
+                   DBusMessage     *message,
+                   BusConnection   *connection)
+{
+    const gchar *address;
+    DBusMessage *reply;
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    
+    address = ibus_server_get_address (IBUS_SERVER (bus_server_get_default ()));
+
+    reply = dbus_message_new_method_return (message);
+    dbus_message_append_args (message,
+                              DBUS_TYPE_STRING, &address,
+                              DBUS_TYPE_INVALID);
+
+    return reply;
 }
 
 static void
@@ -285,6 +294,22 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
     }
 
     g_object_unref (factory);
+}
+
+static int
+_factory_cmp (BusFactoryProxy   *a,
+              BusFactoryProxy   *b)
+{
+    g_assert (BUS_IS_FACTORY_PROXY (a));
+    g_assert (BUS_IS_FACTORY_PROXY (b));
+    
+    gint retval;
+
+    retval = g_strcmp0 (bus_factory_proxy_get_lang (a), bus_factory_proxy_get_lang (b));
+    if (retval != 0)
+        return retval;
+    retval = g_strcmp0 (bus_factory_proxy_get_name (a), bus_factory_proxy_get_name (b));
+    return retval;
 }
 
 static DBusMessage *
@@ -375,9 +400,7 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { DBUS_INTERFACE_INTROSPECTABLE,
                                "Introspect", _ibus_introspect },
         /* IBus interface */
-#if 0
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
-#endif
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
         { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
 #if 0
