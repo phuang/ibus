@@ -361,6 +361,42 @@ _ibus_register_factories (BusIBusImpl     *ibus,
 }
 
 static DBusMessage *
+_ibus_get_factories (BusIBusImpl     *ibus,
+                     DBusMessage     *message,
+                     BusConnection   *connection)
+{
+    DBusMessage *reply;
+    DBusMessageIter iter, sub_iter, sub_sub_iter;
+    GSList *p;
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+
+    reply = dbus_message_new_method_return (message);
+
+    dbus_message_iter_init_append (reply, &iter);
+    dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "(os)", &sub_iter);
+    
+    for (p = priv->factories; p != NULL; p = p->next) {
+        BusFactoryProxy *factory;
+        IBusConnection *connection;
+        const gchar *path;
+        const gchar *unique_name;
+
+        factory = BUS_FACTORY_PROXY (p->data);
+        path = ibus_proxy_get_path (IBUS_PROXY (factory));
+        connection = ibus_proxy_get_connection (IBUS_PROXY (factory));
+        unique_name = bus_connection_get_unique_name ( BUS_CONNECTION (connection));
+        dbus_message_iter_open_container (&sub_iter, DBUS_TYPE_STRUCT, "os", &sub_sub_iter);
+        dbus_message_iter_append_basic (&sub_sub_iter, DBUS_TYPE_OBJECT_PATH, &path);
+        dbus_message_iter_append_basic (&sub_sub_iter, DBUS_TYPE_STRING, &unique_name);
+        dbus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+    }
+    dbus_message_iter_close_container (&iter, &sub_iter);
+    return reply;
+}
+
+static DBusMessage *
 _ibus_kill (BusIBusImpl     *ibus,
             DBusMessage     *message,
             BusConnection   *connection)
@@ -403,8 +439,8 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
         { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
+        { IBUS_INTERFACE_IBUS, "GetFactories",          _ibus_get_factories },
 #if 0
-        { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
