@@ -63,9 +63,6 @@ typedef struct _BusFactoryProxyPrivate BusFactoryProxyPrivate;
 /* functions prototype */
 static void      bus_factory_proxy_class_init   (BusFactoryProxyClass   *klass);
 static void      bus_factory_proxy_init         (BusFactoryProxy        *factory);
-static GObject  *bus_factory_proxy_constructor  (GType                   type,
-                                                 guint                   n,
-                                                 GObjectConstructParam  *params);
 static void      _bus_factory_proxy_destroy     (BusFactoryProxy        *factory);
 
 
@@ -117,14 +114,11 @@ bus_factory_proxy_new (const gchar       *path,
 static void
 bus_factory_proxy_class_init (BusFactoryProxyClass *klass)
 {
-    GObjectClass    *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (BusFactoryProxyPrivate));
-
-    gobject_class->constructor = bus_factory_proxy_constructor;
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) _bus_factory_proxy_destroy;
 
@@ -145,34 +139,17 @@ bus_factory_proxy_init (BusFactoryProxy *factory)
     priv->got_info = FALSE;
 }
 
-static GObject *
-bus_factory_proxy_constructor (GType   type,
-                                guint   n,
-                                GObjectConstructParam *params)
-{
-    GObject *obj;
-    IBusFactoryProxy *factory;
-    IBusFactoryProxyPrivate *priv;
-
-    obj = G_OBJECT_CLASS (_parent_class)->constructor (type, n, params);
-    
-    proxy = BUS_FACTORY_PROXY (obj);
-    priv = BUS_FACTORY_PROXY_GET_PRIVATE (proxy);
-    
-    if (priv->connection != NULL) {
-        g_signal_connect (priv->connection,
-                          "dbus-signal",
-                          (GCallback) __dbus_signal_cb,
-                          proxy);
-
-    }
-
-    return obj;
-}
-
 static void
 _bus_factory_proxy_destroy (BusFactoryProxy *factory)
 {
+    BusFactoryProxyPrivate *priv;
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (factory);
+
+    g_free (priv->name);
+    g_free (priv->lang);
+    g_free (priv->icon);
+    g_free (priv->authors);
+    g_free (priv->credits);
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (factory));
 }
 
