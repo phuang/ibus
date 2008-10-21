@@ -58,9 +58,8 @@ struct _BusInputContextClass {
 };
 
 GType               bus_input_context_get_type          (void);
-BusInputContext     *bus_input_context_new              (void);
-gboolean            bus_input_context_new_connection    (BusInputContext    *context,
-                                                         BusConnection      *connection);
+BusInputContext     *bus_input_context_new              (BusConnection      *connection,
+                                                         const gchar        *client);
 
 G_END_DECLS
 #endif

@@ -34,10 +34,8 @@ enum {
 
 /* IBusInputContextPriv */
 struct _BusInputContextPrivate {
-    GHashTable *unique_names;
-    GHashTable *names;
-    GSList *connections;
-    gint id;
+    BusConnection *connection;
+    gchar *client;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -53,6 +51,7 @@ static gboolean bus_input_context_dbus_message  (BusInputContext        *input_c
                                                  DBusMessage            *message);
 
 static IBusServiceClass  *_parent_class = NULL;
+static guint id = 0;
 
 GType
 bus_input_context_get_type (void)
@@ -81,16 +80,30 @@ bus_input_context_get_type (void)
 }
 
 BusInputContext *
-bus_input_context_new (void)
+bus_input_context_new (BusConnection    *connection,
+                       const gchar      *client)
 {
-    // BusInputContextPrivate *priv;
-    BusInputContext *input_context;
+    BusInputContext *context;
+    gchar *path;
+    BusInputContextPrivate *priv;
 
-    input_context = BUS_INPUT_CONTEXT (g_object_new (BUS_TYPE_INPUT_CONTEXT,
-                    "path", IBUS_PATH_IBUS,
+    path = g_strdup_printf (IBUS_PATH_IBUS "/InputContext%d", ++id);
+
+    context = BUS_INPUT_CONTEXT (g_object_new (BUS_TYPE_INPUT_CONTEXT,
+                    "path", path,
                     NULL));
+    g_free (path);    
+    
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    return input_context;
+    ibus_service_add_to_connection (IBUS_SERVICE (context),
+                                 IBUS_CONNECTION (connection));
+
+    g_object_ref (connection);
+    priv->connection = connection;
+    priv->client = g_strdup (client);
+
+    return context;
 }
 
 static void
@@ -114,10 +127,8 @@ bus_input_context_init (BusInputContext *input_context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
 
-    priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->names = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->connections = NULL;
-    priv->id = 1;
+    priv->connection = NULL;
+    priv->client = NULL;
 
 }
 
@@ -441,62 +452,4 @@ bus_input_context_dbus_message (BusInputContext *input_context,
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
     dbus_message_unref (reply_message);
     return FALSE;
-}
-
-static void
-_connection_destroy_cb (BusConnection   *connection,
-                        BusInputContext     *input_context)
-{
-    g_assert (BUS_IS_CONNECTION (connection));
-    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
-
-    /*
-    ibus_service_remove_from_connection (
-                    IBUS_SERVICE (input_context),
-                    IBUS_CONNECTION (connection));
-    */
-
-    const gchar *unique_name = bus_connection_get_unique_name (connection);
-    if (unique_name != NULL)
-        g_hash_table_remove (priv->unique_names, unique_name);
-
-    const GSList *name = bus_connection_get_names (connection);
-
-    while (name != NULL) {
-        g_hash_table_remove (priv->names, name->data);
-        name = name->next;
-    }
-
-    priv->connections = g_slist_remove (priv->connections, connection);
-    g_object_unref (connection);
-}
-
-
-gboolean
-bus_input_context_new_connection (BusInputContext    *input_context,
-                              BusConnection  *connection)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
-    g_assert (BUS_IS_CONNECTION (connection));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
-
-    g_assert (g_slist_find (priv->connections, connection) == NULL);
-
-    g_object_ref (G_OBJECT (connection));
-    priv->connections = g_slist_append (priv->connections, connection);
-
-    g_signal_connect (connection, "destroy",
-                      (GCallback) _connection_destroy_cb,
-                      input_context);
-
-    ibus_service_add_to_connection (
-            IBUS_SERVICE (input_context),
-            IBUS_CONNECTION (connection));
-
-    return TRUE;
 }

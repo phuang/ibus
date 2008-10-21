@@ -21,6 +21,7 @@
 #include "ibusimpl.h"
 #include "connection.h"
 #include "factoryproxy.h"
+#include "inputcontext.h"
 
 #define BUS_IBUS_IMPL_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_IBUS_IMPL, BusIBusImplPrivate))
@@ -213,18 +214,54 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
 }
 
 static DBusMessage *
+_ibus_create_input_context (BusIBusImpl     *ibus,
+                            DBusMessage     *message,
+                            BusConnection   *connection)
+{
+    gchar *client;
+    DBusError error;
+    DBusMessage *reply;
+    BusInputContext *context;
+    const gchar *path;
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    
+    dbus_error_init (&error);
+    if (!dbus_message_get_args (message, &error,
+                        DBUS_TYPE_STRING, &client,
+                        DBUS_TYPE_INVALID)) {
+        reply = dbus_message_new_error (message,
+                                error.name,
+                                "RegisterFactories shoule pass an object_path array as arugment");
+        dbus_error_free (&error);
+        return reply;;
+    }
+
+    context = bus_input_context_new (connection, client);
+    path = ibus_service_get_path (IBUS_SERVICE (context));
+
+    reply = dbus_message_new_method_return (message);
+    dbus_message_append_args (message,
+                              DBUS_TYPE_OBJECT_PATH, &path,
+                              DBUS_TYPE_INVALID);
+
+    return reply;
+}
+
+static DBusMessage *
 _ibus_register_factories (BusIBusImpl     *ibus_impl,
                           DBusMessage     *message,
                           BusConnection   *connection)
 {
     gchar **paths;
     gint n;
+    DBusError error; 
     DBusMessage *reply;
+    
     BusIBusImplPrivate *priv;
-
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
 
-    DBusError error;    
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
                         DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH,
@@ -247,7 +284,10 @@ _ibus_register_factories (BusIBusImpl     *ibus_impl,
         BusFactoryProxy *factory;
         factory = bus_factory_proxy_new (paths[i], connection);
         priv->factories = g_slist_append (priv->factories, factory);
-        g_signal_connect (factory, "destroy", _factory_destroy_cb, ibus_impl);
+        g_signal_connect (factory,
+                          "destroy",
+                          (GCallback) _factory_destroy_cb,
+                          ibus_impl);
     }
 
     if (i > 0) {
@@ -278,8 +318,8 @@ bus_ibus_impl_dbus_message (BusIBusImpl *ibus_impl, BusConnection *connection, D
         /* IBus interface */
 #if 0
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
-        { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
 #endif
+        { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
         { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
 #if 0
         { IBUS_INTERFACE_IBUS, "UnregisterFactories",   _ibus_get_address },
