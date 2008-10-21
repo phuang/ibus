@@ -19,6 +19,7 @@
  */
 
 #include "ibusimpl.h"
+#include "server.h"
 #include "connection.h"
 #include "factoryproxy.h"
 #include "inputcontext.h"
@@ -153,7 +154,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     g_slist_free (priv->connections);
     priv->connections = NULL;
-
+    bus_server_quit (bus_server_new ());
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 

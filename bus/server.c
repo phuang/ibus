@@ -35,6 +35,7 @@ enum {
 
 /* BusServerPriv */
 struct _BusServerPrivate {
+    GMainLoop   *loop;
     BusDBusImpl *dbus;
     BusIBusImpl *ibus;
 };
@@ -43,14 +44,18 @@ typedef struct _BusServerPrivate BusServerPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_server_class_init  (BusServerClass      *klass);
-static void     bus_server_init        (BusServer           *server);
-static void     bus_server_destroy     (BusServer           *server);
-static void     bus_server_new_connection
+static void      bus_server_class_init  (BusServerClass     *klass);
+static void      bus_server_init        (BusServer          *server);
+static GObject  *bus_server_constructor (GType               type,
+                                         guint               n,
+                                         GObjectConstructParam *params);
+static void      bus_server_destroy     (BusServer          *server);
+static void      bus_server_new_connection
                                         (BusServer          *server,
-                                         BusConnection     *connection);
+                                         BusConnection      *connection);
 
 static IBusObjectClass  *_parent_class = NULL;
+static BusServer        *_server = NULL;
 
 GType
 bus_server_get_type (void)
@@ -100,15 +105,40 @@ bus_server_listen (BusServer *server)
     return ibus_server_listen (IBUS_SERVER (server), address);
 }
 
+void
+bus_server_run (BusServer *server)
+{
+    g_assert (BUS_IS_SERVER (server));
+    
+    BusServerPrivate *priv;
+    priv = BUS_SERVER_GET_PRIVATE (server);
+
+    g_main_loop_run (priv->loop);
+}
+
+void
+bus_server_quit (BusServer *server)
+{
+    g_assert (BUS_IS_SERVER (server));
+
+    BusServerPrivate *priv;
+    priv = BUS_SERVER_GET_PRIVATE (server);
+
+    g_main_loop_quit (priv->loop);
+}
+
 static void
 bus_server_class_init (BusServerClass *klass)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (BusServerPrivate));
 
+    gobject_class->constructor = bus_server_constructor;
+    
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_server_destroy;
 
     IBUS_SERVER_CLASS (klass)->new_connection = (IBusNewConnectionFunc) bus_server_new_connection;
@@ -119,9 +149,29 @@ bus_server_init (BusServer *server)
 {
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
-
+   
+    priv->loop = g_main_loop_new (NULL, FALSE);
     priv->dbus = bus_dbus_impl_new ();
     priv->ibus = bus_ibus_impl_new ();
+}
+
+
+static GObject *
+bus_server_constructor (GType   type,
+                        guint   n,
+                        GObjectConstructParam *params)
+{
+    GObject *object;
+
+    if (_server == NULL ) {    
+        object = G_OBJECT_CLASS (_parent_class)->constructor (type,
+                                                              n,
+                                                              params);
+        _server = BUS_SERVER (object);
+    }
+
+    object = g_object_ref (_server);
+    return object;
 }
 
 static void
@@ -144,6 +194,10 @@ bus_server_destroy (BusServer *server)
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
     
+    while (g_main_loop_is_running (priv->loop)) {
+        g_main_loop_quit (priv->loop);
+    }
+    g_main_loop_unref (priv->loop);
     g_object_unref (G_OBJECT (priv->dbus));
     g_object_unref (G_OBJECT (priv->ibus));
     
