@@ -40,7 +40,10 @@ struct _BusIBusImplPrivate {
     GHashTable *names;
     GSList *connections;
     GSList *factories;
+    GSList *contexts;
     gint id;
+
+    BusFactoryProxy *default_factory;
 };
 
 typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
@@ -121,6 +124,8 @@ bus_ibus_impl_init (BusIBusImpl *ibus_impl)
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->connections = NULL;
     priv->factories = NULL;
+    priv->contexts = NULL;
+    priv->default_factory = NULL;
     priv->id = 1;
 
 }
@@ -172,6 +177,41 @@ _ibus_introspect (BusIBusImpl     *ibus_impl,
     return reply_message;
 }
 
+static int
+_factory_cmp (BusFactoryProxy   *a,
+              BusFactoryProxy   *b)
+{
+    g_assert (BUS_IS_FACTORY_PROXY (a));
+    g_assert (BUS_IS_FACTORY_PROXY (b));
+    
+    gint retval;
+
+    retval = g_strcmp0 (bus_factory_proxy_get_lang (a), bus_factory_proxy_get_lang (b));
+    if (retval != 0)
+        return retval;
+    retval = g_strcmp0 (bus_factory_proxy_get_name (a), bus_factory_proxy_get_name (b));
+    return retval;
+}
+
+static void
+_factory_destroy_cb (BusFactoryProxy    *factory,
+                     BusIBusImpl        *ibus_impl)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
+    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+
+    priv->factories = g_slist_remove (priv->factories, factory);
+
+    if (priv->default_factory == factory) {
+        priv->default_factory = NULL;
+    }
+
+    g_object_unref (factory);
+}
+
 static DBusMessage *
 _ibus_register_factories (BusIBusImpl     *ibus_impl,
                           DBusMessage     *message,
@@ -207,6 +247,11 @@ _ibus_register_factories (BusIBusImpl     *ibus_impl,
         BusFactoryProxy *factory;
         factory = bus_factory_proxy_new (paths[i], connection);
         priv->factories = g_slist_append (priv->factories, factory);
+        g_signal_connect (factory, "destroy", _factory_destroy_cb, ibus_impl);
+    }
+
+    if (i > 0) {
+        priv->factories = g_slist_sort (priv->factories, (GCompareFunc) _factory_cmp);
     }
 
     return NULL;

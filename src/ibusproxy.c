@@ -181,9 +181,9 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 }
 
 static gboolean
-__dbus_signal_cb (IBusConnection    *connection,
-                  DBusMessage       *message,
-                  IBusProxy         *proxy)
+_connection_dbus_signal_cb (IBusConnection *connection,
+                             DBusMessage    *message,
+                             IBusProxy      *proxy)
 {
     if (ibus_proxy_handle_signal (proxy, message)) {
         g_signal_stop_emission_by_name (connection, "dbus-signal");
@@ -191,6 +191,13 @@ __dbus_signal_cb (IBusConnection    *connection,
     }
 
     return FALSE;
+}
+
+static void
+_connection_destroy_cb (IBusConnection  *connection,
+                        IBusProxy       *proxy)
+{
+    ibus_object_destroy (IBUS_OBJECT (proxy));
 }
 
 static GObject *
@@ -210,9 +217,13 @@ ibus_proxy_constructor (GType           type,
     if (priv->connection != NULL) {
         g_signal_connect (priv->connection,
                           "dbus-signal",
-                          (GCallback) __dbus_signal_cb,
+                          (GCallback) _connection_dbus_signal_cb,
                           proxy);
-
+        
+        g_signal_connect (priv->connection,
+                          "destroy",
+                          (GCallback) _connection_destroy_cb,
+                          proxy);
     }
 
     return obj;

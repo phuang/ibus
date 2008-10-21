@@ -61,9 +61,12 @@ typedef struct _BusFactoryProxyPrivate BusFactoryProxyPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_factory_proxy_class_init     (BusFactoryProxyClass    *klass);
-static void     bus_factory_proxy_init           (BusFactoryProxy         *factory);
-static void     _bus_factory_proxy_destroy       (BusFactoryProxy         *factory);
+static void      bus_factory_proxy_class_init   (BusFactoryProxyClass   *klass);
+static void      bus_factory_proxy_init         (BusFactoryProxy        *factory);
+static GObject  *bus_factory_proxy_constructor  (GType                   type,
+                                                 guint                   n,
+                                                 GObjectConstructParam  *params);
+static void      _bus_factory_proxy_destroy     (BusFactoryProxy        *factory);
 
 
 static IBusProxyClass  *_parent_class = NULL;
@@ -114,11 +117,14 @@ bus_factory_proxy_new (const gchar       *path,
 static void
 bus_factory_proxy_class_init (BusFactoryProxyClass *klass)
 {
+    GObjectClass    *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (BusFactoryProxyPrivate));
+
+    gobject_class->constructor = bus_factory_proxy_constructor;
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) _bus_factory_proxy_destroy;
 
@@ -137,6 +143,31 @@ bus_factory_proxy_init (BusFactoryProxy *factory)
     priv->authors = NULL;
     priv->credits = NULL;
     priv->got_info = FALSE;
+}
+
+static GObject *
+bus_factory_proxy_constructor (GType   type,
+                                guint   n,
+                                GObjectConstructParam *params)
+{
+    GObject *obj;
+    IBusFactoryProxy *factory;
+    IBusFactoryProxyPrivate *priv;
+
+    obj = G_OBJECT_CLASS (_parent_class)->constructor (type, n, params);
+    
+    proxy = BUS_FACTORY_PROXY (obj);
+    priv = BUS_FACTORY_PROXY_GET_PRIVATE (proxy);
+    
+    if (priv->connection != NULL) {
+        g_signal_connect (priv->connection,
+                          "dbus-signal",
+                          (GCallback) __dbus_signal_cb,
+                          proxy);
+
+    }
+
+    return obj;
 }
 
 static void
