@@ -441,7 +441,6 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
         { IBUS_INTERFACE_IBUS, "GetFactories",          _ibus_get_factories },
 #if 0
-        { IBUS_INTERFACE_IBUS, "GetFactoryInfo",        _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
 
