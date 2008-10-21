@@ -188,9 +188,6 @@ ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-        dbus_connection_unref (priv->connection);
-        priv->connection = NULL;
-        priv->shared = FALSE;
         g_signal_emit (connection, _signals[DISCONNECTED], 0);
         return FALSE;
     }

@@ -116,7 +116,12 @@ ibus_object_init (IBusObject *obj)
 static void
 ibus_object_dispose (IBusObject *obj)
 {
-    ibus_object_destroy (obj);
+    IBusObjectPrivate *priv;
+    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+    
+    if (!priv->destroyed)
+        ibus_object_destroy (obj);
+    
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (obj));
 }
 
@@ -129,6 +134,10 @@ ibus_object_finalize (IBusObject *obj)
 static void
 _ibus_object_destroy (IBusObject *obj)
 {
+    IBusObjectPrivate *priv;
+    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+    
+    priv->destroyed = TRUE;
 }
 
 void
@@ -139,7 +148,6 @@ ibus_object_destroy (IBusObject *obj)
 
     if (!priv->destroyed) {
         g_signal_emit (obj, _signals[DESTROY], 0);
-        priv->destroyed = FALSE;
     }
     else {
         g_warn_if_reached ();
