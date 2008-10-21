@@ -44,9 +44,9 @@ typedef struct _BusInputContextPrivate BusInputContextPrivate;
 
 /* functions prototype */
 static void     bus_input_context_class_init    (BusInputContextClass   *klass);
-static void     bus_input_context_init          (BusInputContext        *input_context);
-static void     bus_input_context_dispose       (BusInputContext        *input_context);
-static gboolean bus_input_context_dbus_message  (BusInputContext        *input_context,
+static void     bus_input_context_init          (BusInputContext        *context);
+static void     bus_input_context_destroy       (BusInputContext        *context);
+static gboolean bus_input_context_dbus_message  (BusInputContext        *context,
                                                  BusConnection          *connection,
                                                  DBusMessage            *message);
 
@@ -79,6 +79,17 @@ bus_input_context_get_type (void)
     return type;
 }
 
+static void
+_connection_destroy_cb (BusConnection   *connection,
+                        BusInputContext *context)
+{
+    BUS_IS_CONNECTION (connection);
+    BUS_IS_INPUT_CONTEXT (context);
+
+    ibus_object_destroy (IBUS_OBJECT (context));
+}
+
+
 BusInputContext *
 bus_input_context_new (BusConnection    *connection,
                        const gchar      *client)
@@ -103,19 +114,24 @@ bus_input_context_new (BusConnection    *connection,
     priv->connection = connection;
     priv->client = g_strdup (client);
 
+    g_signal_connect (connection,
+                      "destroy",
+                      (GCallback) _connection_destroy_cb,
+                      context);
+
     return context;
 }
 
 static void
 bus_input_context_class_init (BusInputContextClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (BusInputContextPrivate));
 
-    gobject_class->dispose = (GObjectFinalizeFunc) bus_input_context_dispose;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_input_context_dbus_message;
 
@@ -133,12 +149,15 @@ bus_input_context_init (BusInputContext *input_context)
 }
 
 static void
-bus_input_context_dispose (BusInputContext *input_context)
+bus_input_context_destroy (BusInputContext *context)
 {
     BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (input_context));
+    g_free (priv->client);
+    g_object_unref (priv->connection);
+
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 /* introspectable interface */

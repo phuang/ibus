@@ -195,22 +195,18 @@ _factory_cmp (BusFactoryProxy   *a,
 }
 
 static void
-_factory_destroy_cb (BusFactoryProxy    *factory,
-                     BusIBusImpl        *ibus_impl)
+_context_destroy_cb (BusInputContext    *context,
+                     BusIBusImpl        *ibus)
 {
-    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
-    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
     
     BusIBusImplPrivate *priv;
-    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    priv->factories = g_slist_remove (priv->factories, factory);
+    priv->contexts = g_slist_remove (priv->contexts, context);
 
-    if (priv->default_factory == factory) {
-        priv->default_factory = NULL;
-    }
-
-    g_object_unref (factory);
+    g_object_unref (context);
 }
 
 static DBusMessage *
@@ -239,14 +235,38 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     }
 
     context = bus_input_context_new (connection, client);
+    priv->contexts = g_slist_append (priv->contexts, context);
+    g_signal_connect (context,
+                      "destroy",
+                      (GCallback) _context_destroy_cb,
+                      ibus);
+    
     path = ibus_service_get_path (IBUS_SERVICE (context));
-
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (message,
                               DBUS_TYPE_OBJECT_PATH, &path,
                               DBUS_TYPE_INVALID);
 
     return reply;
+}
+
+static void
+_factory_destroy_cb (BusFactoryProxy    *factory,
+                     BusIBusImpl        *ibus_impl)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus_impl));
+    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus_impl);
+
+    priv->factories = g_slist_remove (priv->factories, factory);
+
+    if (priv->default_factory == factory) {
+        priv->default_factory = NULL;
+    }
+
+    g_object_unref (factory);
 }
 
 static DBusMessage *
