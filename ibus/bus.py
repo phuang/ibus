@@ -125,6 +125,7 @@ class Bus(ibus.Object):
         self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
                                             dbus.BUS_DAEMON_PATH)
         self.__dbusconn.add_message_filter(self.__dbus_message_cb)
+        self.__unique_name = self.hello()
 
         try:
             unique_name = self.get_name_owner(ibus.IBUS_CONFIG_NAME)
@@ -137,6 +138,9 @@ class Bus(ibus.Object):
             "interface='" + dbus.BUS_DAEMON_IFACE + "',"
             "member='NameOwnerChanged',"
             "arg0='" + ibus.IBUS_CONFIG_NAME + "'")
+
+    def get_name(self):
+        return self.__unique_name
 
     # define dbus methods
     def get_dbus(self):
@@ -194,6 +198,7 @@ class Bus(ibus.Object):
         return self.__ibus.SetCapabilities(ic, caps)
 
     def register_factories(self, object_paths):
+        object_paths = dbus.Array(object_paths, signature="o")
         return self.__ibus.RegisterFactories(object_paths, **ibus.DEFAULT_ASYNC_HANDLERS)
 
     def unregister_factories(self, object_paths):
