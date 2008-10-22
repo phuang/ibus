@@ -246,6 +246,15 @@ ibus_proxy_destroy (IBusProxy *proxy)
 {
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    if (priv->connection) {
+        g_signal_handlers_disconnect_by_func (priv->connection,
+                                              (GCallback) _connection_dbus_signal_cb,
+                                              proxy);
+        g_signal_handlers_disconnect_by_func (priv->connection,
+                                              (GCallback) _connection_destroy_cb,
+                                              proxy);
+    }
     
     g_free (priv->name);
     g_free (priv->path);
