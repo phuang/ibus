@@ -111,19 +111,23 @@ bus_connection_init (BusConnection *connection)
 static void
 bus_connection_destroy (BusConnection *connection)
 {
+    GSList *name;
     BusConnectionPrivate *priv;
 
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (connection));
     
     priv = BUS_CONNECTION_GET_PRIVATE (connection);
     
-    g_free (priv->unique_name);
-    
-    GSList *name = priv->names;
-    while (name != NULL) {
-        g_free (name->data);
-        name = name->next;
+    if (priv->unique_name) {
+        g_free (priv->unique_name);
+        priv->unique_name = NULL;
     }
+    
+    for (name = priv->names; name != NULL; name = name->next) {
+        g_free (name->data);
+    }
+    g_slist_free (priv->names);
+    priv->names = NULL;
 }
 
 static gboolean
