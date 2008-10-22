@@ -91,15 +91,16 @@ bus_ibus_impl_get_type (void)
 }
 
 BusIBusImpl *
-bus_ibus_impl_new (void)
+bus_ibus_impl_get_default (void)
 {
     // BusIBusImplPrivate *priv;
-    BusIBusImpl *ibus;
+    static BusIBusImpl *ibus = NULL;
 
-    ibus = BUS_IBUS_IMPL (g_object_new (BUS_TYPE_IBUS_IMPL,
+    if (ibus == NULL) {
+        ibus = BUS_IBUS_IMPL (g_object_new (BUS_TYPE_IBUS_IMPL,
                     "path", IBUS_PATH_IBUS,
                     NULL));
-
+    }
     return ibus;
 }
 
@@ -131,7 +132,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     priv->contexts = NULL;
     priv->default_factory = NULL;
     priv->id = 1;
-
 }
 
 static void
@@ -290,6 +290,7 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
     priv->factories = g_slist_remove (priv->factories, factory);
 
     if (priv->default_factory == factory) {
+        g_object_unref (priv->default_factory);
         priv->default_factory = NULL;
     }
 

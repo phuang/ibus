@@ -58,7 +58,7 @@ struct _BusIBusImplClass {
 };
 
 GType            bus_ibus_impl_get_type         (void);
-BusIBusImpl     *bus_ibus_impl_new              (void);
+BusIBusImpl     *bus_ibus_impl_get_default      (void);
 gboolean         bus_ibus_impl_new_connection   (BusIBusImpl    *ibus,
                                                  BusConnection  *connection);
 

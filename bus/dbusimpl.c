@@ -82,15 +82,16 @@ bus_dbus_impl_get_type (void)
 }
 
 BusDBusImpl *
-bus_dbus_impl_new (void)
+bus_dbus_impl_get_default (void)
 {
     // BusDBusImplPrivate *priv;
-    BusDBusImpl *dbus;
+    static BusDBusImpl *dbus = NULL;
 
-    dbus = BUS_DBUS_IMPL (g_object_new (BUS_TYPE_DBUS_IMPL,
+    if (dbus == NULL) {
+        dbus = BUS_DBUS_IMPL (g_object_new (BUS_TYPE_DBUS_IMPL,
                     "path", DBUS_PATH_DBUS,
                     NULL));
-
+    }
     return dbus;
 }
 

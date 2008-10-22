@@ -130,7 +130,6 @@ bus_server_quit (BusServer *server)
 static void
 bus_server_class_init (BusServerClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     _parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
@@ -149,8 +148,8 @@ bus_server_init (BusServer *server)
     priv = BUS_SERVER_GET_PRIVATE (server);
     
     priv->loop = g_main_loop_new (NULL, FALSE);
-    priv->dbus = bus_dbus_impl_new ();
-    priv->ibus = bus_ibus_impl_new ();
+    priv->dbus = bus_dbus_impl_get_default ();
+    priv->ibus = bus_ibus_impl_get_default ();
 }
 
 static void
