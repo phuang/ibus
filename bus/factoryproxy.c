@@ -150,6 +150,13 @@ _bus_factory_proxy_destroy (BusFactoryProxy *factory)
     g_free (priv->icon);
     g_free (priv->authors);
     g_free (priv->credits);
+
+    priv->name = NULL;
+    priv->lang = NULL;
+    priv->icon = NULL;
+    priv->authors = NULL;
+    priv->credits = NULL;
+
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (factory));
 }
 
