@@ -39,6 +39,8 @@
     (G_TYPE_CHECK_CLASS_TYPE ((klass), BUS_TYPE_SERVER))
 #define BUS_SERVER_GET_CLASS(obj)   \
     (G_TYPE_CHECK_GET_CLASS ((obj), BUS_TYPE_SERVER, BusServerClass))
+#define BUS_DEFAULT_SERVER          \
+    (bus_server_get_default ())
 
 G_BEGIN_DECLS
 

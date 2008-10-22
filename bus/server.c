@@ -36,8 +36,6 @@ enum {
 /* BusServerPriv */
 struct _BusServerPrivate {
     GMainLoop   *loop;
-    BusDBusImpl *dbus;
-    BusIBusImpl *ibus;
 };
 typedef struct _BusServerPrivate BusServerPrivate;
 
@@ -148,8 +146,6 @@ bus_server_init (BusServer *server)
     priv = BUS_SERVER_GET_PRIVATE (server);
     
     priv->loop = g_main_loop_new (NULL, FALSE);
-    priv->dbus = bus_dbus_impl_get_default ();
-    priv->ibus = bus_ibus_impl_get_default ();
 }
 
 static void
@@ -162,8 +158,8 @@ bus_server_new_connection   (BusServer          *server,
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
 
-    bus_dbus_impl_new_connection (priv->dbus, connection);
-    bus_ibus_impl_new_connection (priv->ibus, connection);
+    bus_dbus_impl_new_connection (BUS_DEFAULT_DBUS, connection);
+    bus_ibus_impl_new_connection (BUS_DEFAULT_IBUS, connection);
 }
 
 static void
@@ -176,8 +172,6 @@ bus_server_destroy (BusServer *server)
         g_main_loop_quit (priv->loop);
     }
     g_main_loop_unref (priv->loop);
-    g_object_unref (G_OBJECT (priv->dbus));
-    g_object_unref (G_OBJECT (priv->ibus));
     
     IBUS_OBJECT_CLASS (_parent_class)->destroy (IBUS_OBJECT (server));
 }

@@ -41,6 +41,9 @@
 #define BUS_IBUS_IMPL_GET_CLASS(obj)   \
     (G_TYPE_CHECK_GET_CLASS ((obj), BUS_TYPE_IBUS_IMPL, BusIBusImplClass))
 
+#define BUS_DEFAULT_IBUS \
+    (bus_ibus_impl_get_default ())
+
 G_BEGIN_DECLS
 
 typedef struct _BusIBusImpl BusIBusImpl;

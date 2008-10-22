@@ -155,7 +155,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     g_slist_free (priv->connections);
     priv->connections = NULL;
     
-    bus_server_quit (bus_server_get_default ());
+    bus_server_quit (BUS_DEFAULT_SERVER);
     
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
@@ -211,7 +211,7 @@ _ibus_get_address (BusIBusImpl     *ibus,
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
     
-    address = ibus_server_get_address (IBUS_SERVER (bus_server_get_default ()));
+    address = ibus_server_get_address (BUS_DEFAULT_SERVER);
 
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (message,
