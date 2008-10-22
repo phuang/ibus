@@ -719,3 +719,30 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
 
     return TRUE;
 }
+
+
+BusConnection *
+bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
+                                      const gchar    *name)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+    g_assert (name != NULL);
+    
+    BusConnection *connection;
+
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+
+    if (name[0] == ':') {
+        connection = BUS_CONNECTION (g_hash_table_lookup (
+                                        priv->unique_names,
+                                        name));
+    }
+    else {
+        connection = BUS_CONNECTION (g_hash_table_lookup (
+                                        priv->names,
+                                        name));
+    }
+    
+    return connection;
+}

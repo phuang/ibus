@@ -211,7 +211,7 @@ _ibus_get_address (BusIBusImpl     *ibus,
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
     
-    address = ibus_server_get_address (BUS_DEFAULT_SERVER);
+    address = ibus_server_get_address (IBUS_SERVER (BUS_DEFAULT_SERVER));
 
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (message,

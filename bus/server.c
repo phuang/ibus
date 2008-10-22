@@ -50,7 +50,6 @@ static void      bus_server_new_connection
                                          BusConnection      *connection);
 
 static IBusObjectClass  *_parent_class = NULL;
-static BusServer        *_server = NULL;
 
 GType
 bus_server_get_type (void)

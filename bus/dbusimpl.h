@@ -64,6 +64,9 @@ GType            bus_dbus_impl_get_type         (void);
 BusDBusImpl     *bus_dbus_impl_get_default      (void);
 gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
                                                  BusConnection  *connection);
+BusConnection   *bus_dbus_impl_get_connection_by_name
+                                                (BusDBusImpl    *dbus,
+                                                 const gchar    *name);
 
 G_END_DECLS
 #endif
