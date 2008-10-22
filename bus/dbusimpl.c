@@ -390,13 +390,7 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
     }
     else {
         BusConnection *owner;
-        if (name[0] == ':') {
-            owner = BUS_CONNECTION (g_hash_table_lookup (priv->unique_names, name));
-        }
-        else {
-            owner = BUS_CONNECTION (g_hash_table_lookup (priv->names, name));
-        }
-
+        owner = bus_dbus_impl_get_connection_by_name (dbus, name);
         if (owner != NULL) {
             owner_name = bus_connection_get_unique_name (owner);
             reply_message = dbus_message_new_method_return (message);
