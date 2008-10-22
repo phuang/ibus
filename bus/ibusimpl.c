@@ -45,6 +45,7 @@ struct _BusIBusImplPrivate {
     gint id;
 
     BusFactoryProxy *default_factory;
+    BusInputContext *focused_context;
 };
 
 typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
@@ -129,6 +130,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     priv->factory_list = NULL;
     priv->contexts = NULL;
     priv->default_factory = NULL;
+    priv->focused_context = NULL;
     priv->id = 1;
 }
 
@@ -230,8 +232,48 @@ _context_destroy_cb (BusInputContext    *context,
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
     priv->contexts = g_slist_remove (priv->contexts, context);
-
     g_object_unref (context);
+}
+
+static void
+_context_focus_in_cb (BusInputContext    *context,
+                      BusIBusImpl        *ibus)
+{    
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    
+    if (priv->focused_context == context)
+        return;
+
+    if (priv->focused_context) {
+        bus_input_context_focus_out (priv->focused_context);
+        g_object_unref (priv->focused_context);
+    }
+
+    g_object_ref (context);
+    priv->focused_context = context;
+}
+
+static void
+_context_focus_out_cb (BusInputContext    *context,
+                       BusIBusImpl        *ibus)
+{    
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    
+    if (priv->focused_context != context)
+        return;
+
+    if (priv->focused_context) {
+        g_object_unref (priv->focused_context);
+        priv->focused_context = NULL;
+    }
 }
 
 static DBusMessage *
@@ -265,6 +307,14 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                       "destroy",
                       (GCallback) _context_destroy_cb,
                       ibus);
+    g_signal_connect (context,
+                      "focus-in",
+                      (GCallback) _context_focus_in_cb,
+                      ibus);
+    g_signal_connect (context,
+                      "focus-out",
+                      (GCallback) _context_focus_out_cb,
+                      ibus);
 
     path = ibus_service_get_path (IBUS_SERVICE (context));
     reply = dbus_message_new_method_return (message);
@@ -289,13 +339,12 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
                          ibus_proxy_get_path (IBUS_PROXY (factory)));
 
     priv->factory_list = g_slist_remove (priv->factory_list, factory);
+    g_object_unref (factory);
 
     if (priv->default_factory == factory) {
         g_object_unref (priv->default_factory);
         priv->default_factory = NULL;
     }
-
-    g_object_unref (factory);
 }
 
 static int
@@ -361,7 +410,7 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     for (i = 0; i < n; i++ ) {
         factory = bus_factory_proxy_new (paths[i], connection);
         g_hash_table_insert (priv->factory_dict,
-                             ibus_proxy_get_path (IBUS_PROXY (factory)),
+                             (gpointer) ibus_proxy_get_path (IBUS_PROXY (factory)),
                              factory);
         priv->factory_list = g_slist_append (priv->factory_list, factory);
         g_signal_connect (factory,
@@ -414,6 +463,14 @@ _ibus_get_factories (BusIBusImpl     *ibus,
 }
 
 static DBusMessage *
+_ibus_set_factory (BusIBusImpl      *ibus,
+                   DBusMessage      *message,
+                   BusConnection    *connection)
+{
+    return NULL;
+}
+
+static DBusMessage *
 _ibus_kill (BusIBusImpl     *ibus,
             DBusMessage     *message,
             BusConnection   *connection)
@@ -457,8 +514,8 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
         { IBUS_INTERFACE_IBUS, "RegisterFactories",     _ibus_register_factories },
         { IBUS_INTERFACE_IBUS, "GetFactories",          _ibus_get_factories },
+        { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_set_factory },
 #if 0
-        { IBUS_INTERFACE_IBUS, "SetFactory",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "GetInputContextStates", _ibus_get_address },
 
         { IBUS_INTERFACE_IBUS, "RegisterListEngines",   _ibus_get_address },

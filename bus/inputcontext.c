@@ -18,12 +18,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <ibusinternal.h>
+#include <ibusmarshalers.h>
 #include "inputcontext.h"
+#include "engineproxy.h"
 
 #define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
 
 enum {
+    FOCUS_IN,
+    FOCUS_OUT,
     LAST_SIGNAL,
 };
 
@@ -35,12 +40,14 @@ enum {
 /* IBusInputContextPriv */
 struct _BusInputContextPrivate {
     BusConnection *connection;
+    BusEngineProxy *engine;
     gchar *client;
+    gboolean has_focus;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
 
-// static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_input_context_class_init    (BusInputContextClass   *klass);
@@ -138,17 +145,38 @@ bus_input_context_class_init (BusInputContextClass *klass)
 
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_input_context_dbus_message;
 
+    /* install signals */
+    _signals[FOCUS_IN] =
+        g_signal_new (I_("focus-in"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    _signals[FOCUS_OUT] =
+        g_signal_new (I_("focus-out"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+
 }
 
 static void
-bus_input_context_init (BusInputContext *input_context)
+bus_input_context_init (BusInputContext *context)
 {
     BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (input_context);
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     priv->connection = NULL;
     priv->client = NULL;
-
+    priv->engine = NULL;
+    priv->has_focus = FALSE;
 }
 
 static void
@@ -157,19 +185,25 @@ bus_input_context_destroy (BusInputContext *context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    g_signal_handlers_disconnect_by_func (priv->connection,
+    if (priv->connection) {
+        g_signal_handlers_disconnect_by_func (priv->connection,
                                          (GCallback) _connection_destroy_cb,
                                          context);
+        g_object_unref (priv->connection);
+        priv->connection = NULL;
+    }
 
-    g_free (priv->client);
-    g_object_unref (priv->connection);
+    if (priv->client) {
+        g_free (priv->client);
+        priv->client = NULL;
+    }
 
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 /* introspectable interface */
 static DBusMessage *
-_ibus_introspect (BusInputContext   *input_context,
+_ibus_introspect (BusInputContext   *context,
                   DBusMessage       *message,
                   BusConnection     *connection)
 {
@@ -411,11 +445,11 @@ _ic_destroy (BusInputContext  *context,
 }
 
 static gboolean
-bus_input_context_dbus_message (BusInputContext *input_context,
+bus_input_context_dbus_message (BusInputContext *context,
                                 BusConnection   *connection,
                                 DBusMessage     *message)
 {
-    g_assert (BUS_IS_INPUT_CONTEXT (input_context));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
@@ -452,7 +486,7 @@ bus_input_context_dbus_message (BusInputContext *input_context,
                                          handlers[i].interface,
                                          handlers[i].name)) {
 
-            reply_message = handlers[i].handler (input_context, message, connection);
+            reply_message = handlers[i].handler (context, message, connection);
             if (reply_message) {
 
                 dbus_message_set_sender (reply_message,
@@ -465,7 +499,7 @@ bus_input_context_dbus_message (BusInputContext *input_context,
                 dbus_message_unref (reply_message);
             }
 
-            g_signal_stop_emission_by_name (input_context, "dbus-message");
+            g_signal_stop_emission_by_name (context, "dbus-message");
             return TRUE;
         }
     }
@@ -478,4 +512,44 @@ bus_input_context_dbus_message (BusInputContext *input_context,
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
     dbus_message_unref (reply_message);
     return FALSE;
+}
+
+
+gboolean
+bus_input_context_is_focus (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    return priv->has_focus;
+}
+
+void
+bus_input_context_focus_in (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->has_focus)
+        return;
+
+    g_signal_emit (context, _signals[FOCUS_IN], 0);
+}
+
+void
+bus_input_context_focus_out (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!priv->has_focus)
+        return;
+
+    g_signal_emit (context, _signals[FOCUS_OUT], 0);
 }

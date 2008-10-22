@@ -259,12 +259,15 @@ ibus_proxy_destroy (IBusProxy *proxy)
     g_free (priv->name);
     g_free (priv->path);
     g_free (priv->interface);
-    g_object_unref (priv->connection);
     
     priv->name = NULL;
     priv->path = NULL;
     priv->interface = NULL;
-    priv->connection = NULL;
+    
+    if (priv->connection) {
+        g_object_unref (priv->connection);
+        priv->connection = NULL;
+    }
     
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (proxy));
 }

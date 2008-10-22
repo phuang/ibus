@@ -31,7 +31,7 @@ enum {
 
 typedef struct _IBusObjectPrivate IBusObjectPrivate;
 struct _IBusObjectPrivate {
-    gboolean destroyed;
+    gboolean in_destructor;
 };
 
 static guint            _signals[LAST_SIGNAL] = { 0 };
@@ -41,7 +41,7 @@ static void     ibus_object_class_init      (IBusObjectClass    *klass);
 static void     ibus_object_init            (IBusObject         *obj);
 static void     ibus_object_dispose         (IBusObject         *obj);
 static void     ibus_object_finalize        (IBusObject         *obj);
-static void     _ibus_object_destroy        (IBusObject         *obj);
+static void     ibus_object_real_destroy    (IBusObject         *obj);
 
 static GObjectClass *_parent_class = NULL;
 
@@ -91,7 +91,7 @@ ibus_object_class_init     (IBusObjectClass *klass)
     gobject_class->dispose = (GObjectFinalizeFunc) ibus_object_dispose;
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_object_finalize;
 
-    klass->destroy = _ibus_object_destroy;
+    klass->destroy = ibus_object_real_destroy;
 
     /* install signals */
     _signals[DESTROY] =
@@ -110,7 +110,7 @@ ibus_object_init (IBusObject *obj)
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
 
-    priv->destroyed = FALSE;
+    priv->in_destructor = FALSE;
 }
 
 static void
@@ -118,10 +118,13 @@ ibus_object_dispose (IBusObject *obj)
 {
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
-    
-    if (!priv->destroyed)
-        ibus_object_destroy (obj);
-    
+
+    if (!priv->in_destructor) {
+        priv->in_destructor = TRUE;
+        g_signal_emit (obj, _signals[DESTROY], 0);
+        priv->in_destructor = FALSE;
+    }
+
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (obj));
 }
 
@@ -132,12 +135,9 @@ ibus_object_finalize (IBusObject *obj)
 }
 
 static void
-_ibus_object_destroy (IBusObject *obj)
+ibus_object_real_destroy (IBusObject *obj)
 {
-    IBusObjectPrivate *priv;
-    priv = IBUS_OBJECT_GET_PRIVATE (obj);
-    
-    priv->destroyed = TRUE;
+    g_signal_handlers_destroy (obj);
 }
 
 void
@@ -146,19 +146,7 @@ ibus_object_destroy (IBusObject *obj)
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
 
-    if (!priv->destroyed) {
-        g_signal_emit (obj, _signals[DESTROY], 0);
+    if (!priv->in_destructor) {
+            g_object_run_dispose (G_OBJECT (obj));
     }
-    else {
-        g_warn_if_reached ();
-    }
-}
-
-gboolean
-ibus_object_is_destroyed (IBusObject *obj)
-{
-    IBusObjectPrivate *priv;
-    priv = IBUS_OBJECT_GET_PRIVATE (obj);
-
-    return priv->destroyed;
 }

@@ -337,7 +337,12 @@ ibus_engine_destroy (IBusEngine *engine)
 {
     IBusEnginePrivate *priv;
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
-    g_object_unref (priv->connection);
+
+    if (priv->connection) {
+        g_object_unref (priv->connection);
+        priv->connection = NULL;
+    }
+
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine));
 }
 

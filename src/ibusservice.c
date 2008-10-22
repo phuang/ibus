@@ -167,6 +167,7 @@ ibus_service_destroy (IBusService *service)
     priv = IBUS_SERVICE_GET_PRIVATE (service);
     
     ibus_service_remove_from_all_connections (service);
+    
     g_free (priv->path);
     priv->path = NULL;
     
@@ -274,7 +275,10 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
     }
 
     priv->connections = g_slist_append (priv->connections, connection);
-    g_signal_connect (connection, "destroy", (GCallback) _connection_destroy_cb, service);
+    g_signal_connect (connection,
+                      "destroy",
+                      (GCallback) _connection_destroy_cb,
+                      service);
 
     return retval;
 }
@@ -311,8 +315,6 @@ ibus_service_remove_from_all_connections (IBusService *service)
 
     IBusServicePrivate *priv;
     priv = IBUS_SERVICE_GET_PRIVATE (service);
-
-    g_return_val_if_fail (priv->path != NULL, FALSE);
 
     GSList *element = priv->connections;
     while (element != NULL) {
