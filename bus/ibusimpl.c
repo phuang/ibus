@@ -38,10 +38,9 @@ enum {
 
 /* IBusIBusImplPriv */
 struct _BusIBusImplPrivate {
-    GHashTable *unique_names;
-    GHashTable *names;
+    GHashTable *factory_dict;
     GSList *connections;
-    GSList *factories;
+    GSList *factory_list;
     GSList *contexts;
     gint id;
 
@@ -125,10 +124,9 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->connections = NULL;
-    priv->factories = NULL;
+    priv->factory_dict = g_hash_table_new (g_str_hash, g_str_equal);
+    priv->factory_list = NULL;
     priv->contexts = NULL;
     priv->default_factory = NULL;
     priv->id = 1;
@@ -139,13 +137,13 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 {
     BusConnection *connection;
     GSList *p;
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
     for (p = priv->connections; p != NULL; p = p->next) {
         connection = BUS_CONNECTION (p->data);
-        g_signal_handlers_disconnect_by_func (connection, 
+        g_signal_handlers_disconnect_by_func (connection,
                                               (GCallback) _connection_destroy_cb,
                                               ibus);
         ibus_object_destroy (IBUS_OBJECT (connection));
@@ -154,9 +152,9 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     g_slist_free (priv->connections);
     priv->connections = NULL;
-    
+
     bus_server_quit (BUS_DEFAULT_SERVER);
-    
+
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
@@ -207,10 +205,10 @@ _ibus_get_address (BusIBusImpl     *ibus,
 {
     const gchar *address;
     DBusMessage *reply;
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
-    
+
     address = ibus_server_get_address (IBUS_SERVER (BUS_DEFAULT_SERVER));
 
     reply = dbus_message_new_method_return (message);
@@ -227,7 +225,7 @@ _context_destroy_cb (BusInputContext    *context,
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
@@ -246,10 +244,10 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     DBusMessage *reply;
     BusInputContext *context;
     const gchar *path;
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
-    
+
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
                         DBUS_TYPE_STRING, &client,
@@ -267,7 +265,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                       "destroy",
                       (GCallback) _context_destroy_cb,
                       ibus);
-    
+
     path = ibus_service_get_path (IBUS_SERVICE (context));
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (message,
@@ -283,11 +281,14 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_FACTORY_PROXY (factory));
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    priv->factories = g_slist_remove (priv->factories, factory);
+    g_hash_table_remove (priv->factory_dict,
+                         ibus_proxy_get_path (IBUS_PROXY (factory)));
+
+    priv->factory_list = g_slist_remove (priv->factory_list, factory);
 
     if (priv->default_factory == factory) {
         g_object_unref (priv->default_factory);
@@ -303,7 +304,7 @@ _factory_cmp (BusFactoryProxy   *a,
 {
     g_assert (BUS_IS_FACTORY_PROXY (a));
     g_assert (BUS_IS_FACTORY_PROXY (b));
-    
+
     gint retval;
 
     retval = g_strcmp0 (bus_factory_proxy_get_lang (a), bus_factory_proxy_get_lang (b));
@@ -320,9 +321,11 @@ _ibus_register_factories (BusIBusImpl     *ibus,
 {
     gchar **paths;
     gint n;
-    DBusError error; 
+    DBusError error;
     DBusMessage *reply;
-    
+    gint i;
+    BusFactoryProxy *factory;
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
@@ -343,11 +346,24 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     ibus_connection_flush (IBUS_CONNECTION (connection));
     dbus_message_unref (reply);
 
-    gint i;
+    for (i = 0; i < n; i++) {
+        if (g_hash_table_lookup (priv->factory_dict, paths[i]) != NULL) {
+            reply = dbus_message_new_error_printf (
+                                    message,
+                                    "org.freedesktop.IBus.Error",
+                                    "Factory %s has been registered!",
+                                    paths[i]);
+            dbus_free_string_array (paths);
+            return reply;
+        }
+    }
+
     for (i = 0; i < n; i++ ) {
-        BusFactoryProxy *factory;
         factory = bus_factory_proxy_new (paths[i], connection);
-        priv->factories = g_slist_append (priv->factories, factory);
+        g_hash_table_insert (priv->factory_dict,
+                             ibus_proxy_get_path (IBUS_PROXY (factory)),
+                             factory);
+        priv->factory_list = g_slist_append (priv->factory_list, factory);
         g_signal_connect (factory,
                           "destroy",
                           (GCallback) _factory_destroy_cb,
@@ -355,7 +371,7 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     }
 
     if (i > 0) {
-        priv->factories = g_slist_sort (priv->factories, (GCompareFunc) _factory_cmp);
+        priv->factory_list = g_slist_sort (priv->factory_list, (GCompareFunc) _factory_cmp);
     }
 
     return NULL;
@@ -369,7 +385,7 @@ _ibus_get_factories (BusIBusImpl     *ibus,
     DBusMessage *reply;
     DBusMessageIter iter, sub_iter, sub_sub_iter;
     GSList *p;
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
@@ -377,8 +393,8 @@ _ibus_get_factories (BusIBusImpl     *ibus,
 
     dbus_message_iter_init_append (reply, &iter);
     dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "(os)", &sub_iter);
-    
-    for (p = priv->factories; p != NULL; p = p->next) {
+
+    for (p = priv->factory_list; p != NULL; p = p->next) {
         BusFactoryProxy *factory;
         IBusConnection *connection;
         const gchar *path;
@@ -403,7 +419,7 @@ _ibus_kill (BusIBusImpl     *ibus,
             BusConnection   *connection)
 {
     DBusMessage *reply;
-    
+
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
@@ -504,17 +520,6 @@ _connection_destroy_cb (BusConnection   *connection,
                     IBUS_SERVICE (ibus),
                     IBUS_CONNECTION (connection));
     */
-
-    const gchar *unique_name = bus_connection_get_unique_name (connection);
-    if (unique_name != NULL)
-        g_hash_table_remove (priv->unique_names, unique_name);
-
-    const GSList *name = bus_connection_get_names (connection);
-
-    while (name != NULL) {
-        g_hash_table_remove (priv->names, name->data);
-        name = name->next;
-    }
 
     priv->connections = g_slist_remove (priv->connections, connection);
     g_object_unref (connection);
