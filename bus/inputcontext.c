@@ -94,6 +94,9 @@ BusInputContext *
 bus_input_context_new (BusConnection    *connection,
                        const gchar      *client)
 {
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (client != NULL);
+
     BusInputContext *context;
     gchar *path;
     BusInputContextPrivate *priv;
@@ -114,7 +117,7 @@ bus_input_context_new (BusConnection    *connection,
     priv->connection = connection;
     priv->client = g_strdup (client);
 
-    g_signal_connect (connection,
+    g_signal_connect (priv->connection,
                       "destroy",
                       (GCallback) _connection_destroy_cb,
                       context);
@@ -153,6 +156,10 @@ bus_input_context_destroy (BusInputContext *context)
 {
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_signal_handlers_disconnect_by_func (priv->connection,
+                                         (GCallback) _connection_destroy_cb,
+                                         context);
 
     g_free (priv->client);
     g_object_unref (priv->connection);
