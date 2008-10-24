@@ -350,7 +350,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
     }
     
     dbus_error_init (&error);
-    if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "CommitString")) {
+    if (dbus_message_is_signal (message,
+                                IBUS_INTERFACE_INPUT_CONTEXT,
+                                "CommitString")) {
         gchar *text;
         gboolean retval;
 
@@ -361,7 +363,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
             goto failed;
         g_signal_emit (context, _signals[COMMIT_STRING], 0, text);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "ForwardKeyEvent")) {
         guint32 keyval;
         gboolean is_press;
         guint32 states;
@@ -377,7 +381,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
             goto failed;
         g_signal_emit (context, _signals[FORWARD_KEY_EVENT], keyval, is_press, states);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreedit")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdatePreedit")) {
         gchar *text;
         IBusAttrList *attr_list;
         gint32 cursor_pos;
@@ -408,7 +414,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         g_signal_emit (context, _signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxString")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateAuxString")) {
         gchar *text;
         IBusAttrList *attr_list;
         gboolean visible;
@@ -435,7 +443,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         g_signal_emit (context, _signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateLookupTable")) {
         IBusLookupTable *table;
         gboolean visible;
         DBusMessageIter iter;
@@ -458,7 +468,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         g_signal_emit (context, _signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         ibus_lookup_table_unref (table);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "RegisterProperties")) {
         IBusPropList *prop_list;
         DBusMessageIter iter;
         gboolean retval;
@@ -474,7 +486,9 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         g_signal_emit (context, _signals[REGISTER_PROPERTIES], 0, prop_list);
         ibus_prop_list_unref (prop_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
+    else if (dbus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateProperty")) {
         IBusProperty *prop;
         DBusMessageIter iter;
         gboolean retval;
