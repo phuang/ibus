@@ -69,7 +69,7 @@ gboolean         ibus_server_listen             (IBusServer     *server,
 void             ibus_server_disconnect         (IBusServer     *server);
 const gchar     *ibus_server_get_address        (IBusServer     *server);
 const gchar     *ibus_server_get_id             (IBusServer     *server);
-gboolean         ibus_server_get_is_connected   (IBusServer     *server);
+gboolean         ibus_server_is_connected       (IBusServer     *server);
 
 G_END_DECLS
 #endif

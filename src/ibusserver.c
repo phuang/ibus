@@ -312,7 +312,7 @@ const gchar *ibus_server_get_id (IBusServer     *server)
 }
 
 gboolean
-ibus_server_get_is_connected (IBusServer     *server)
+ibus_server_is_connected (IBusServer     *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 
