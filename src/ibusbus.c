@@ -36,7 +36,6 @@ enum {
 
 /* IBusBusPriv */
 struct _IBusBusPrivate {
-    GFile *file;
     GFileMonitor *monitor;
     IBusConnection *connection;
 };
@@ -47,7 +46,7 @@ static guint    bus_signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void     ibus_bus_class_init     (IBusBusClass   *klass);
 static void     ibus_bus_init           (IBusBus        *bus);
-static void     ibus_bus_finalize       (IBusBus        *bus);
+static void     ibus_bus_destroy        (IBusObject     *object);
 
 static IBusObjectClass  *parent_class = NULL;
 
@@ -89,11 +88,13 @@ ibus_bus_new (void)
 static void
 ibus_bus_class_init (IBusBusClass *klass)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusBusPrivate));
+
+    ibus_object_class->destroy = ibus_bus_destroy;
     
     // install signals
     bus_signals[CONNECTED] =
@@ -116,28 +117,115 @@ ibus_bus_class_init (IBusBusClass *klass)
 
 }
 
-void
+static void
+_connection_destroy_cb (IBusConnection  *connection,
+                        IBusBus         *bus)
+{
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    g_assert (connection == priv->connection);
+
+    g_object_unref (priv->connection);    
+    priv->connection = NULL;
+}
+
+static void
+ibus_bus_connect (IBusBus *bus)
+{
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    g_assert (priv->connection == NULL);
+
+    priv->connection = ibus_connection_open (ibus_get_address ());
+
+    if (!ibus_connection_is_connected (priv->connection)) {
+        g_object_unref (priv->connection);
+        priv->connection = NULL;
+    }
+
+    g_signal_connect (priv->connection,
+                      "destroy",
+                      (GCallback) _connection_destroy_cb,
+                      bus);
+}
+
+static void
 _changed_cb (GFileMonitor       *monitor,
              GFile              *file,
              GFile              *other_file,
              GFileMonitorEvent   event_type,
              IBusBus            *bus)
 {
-    g_warning ("changed");
+    static GFile *socket_file = NULL;
+
+    if (socket_file == NULL) {
+        socket_file = g_file_new_for_path (ibus_get_socket_path ());
+    }
+
+    if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
+        if (g_file_equal (file, socket_file)) {
+            ibus_bus_connect (bus);
+        }
+    }
 }
 
 static void
 ibus_bus_init (IBusBus *bus)
 {
     gchar *path;
+    GFile *file;
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
+    priv->connection = NULL;
+
+    ibus_bus_connect (bus);
+
     path = g_strdup_printf ("/tmp/ibus-%s/", ibus_get_user_name ());
-    priv->file = g_file_new_for_path ("/tmp/ibus-%s");
-    priv->monitor = g_file_monitor_directory (priv->file, 0xff, NULL, NULL);
-
+    file = g_file_new_for_path (path);
+    priv->monitor = g_file_monitor_directory (file, 0, NULL, NULL);
+   
     g_signal_connect (priv->monitor, "changed", (GCallback) _changed_cb, NULL);
-
+    
+    g_object_unref (file);
     g_free (path);
+}
+
+static void
+ibus_bus_destroy (IBusObject *object)
+{
+    IBusBus *bus;
+    IBusBusPrivate *priv;
+    
+    bus = IBUS_BUS (object);
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->monitor) {
+        g_object_unref (priv->monitor);
+        priv->monitor = NULL;
+    }
+
+    if (priv->connection) {
+        g_object_unref (priv->connection);
+        priv->connection = NULL;
+    }
+
+    IBUS_OBJECT_CLASS (parent_class)->destroy (object);
+}
+
+gboolean
+ibus_bus_is_connected (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->connection) {
+        return ibus_connection_is_connected (priv->connection);
+    }
+
+    return FALSE;
 }

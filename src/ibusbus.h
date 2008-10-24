@@ -57,7 +57,7 @@ struct _IBusBusClass {
 };
 
 GType        ibus_bus_get_type          (void);
-IBusBus     *ibus_bus_open              (const gchar    *address);
+IBusBus     *ibus_bus_new               (void);
 gboolean     ibus_bus_is_connected      (IBusBus        *bus);
 
 G_END_DECLS

@@ -57,11 +57,11 @@ ibus_get_user_name (void)
 }
 
 const gchar *
-ibus_get_address (void)
+ibus_get_socket_path (void)
 {
-    static gchar *address = NULL;
-
-    if (address == NULL) {
+    static gchar *path = NULL;
+    
+    if (path == NULL) {
         gchar *display;
         gchar *hostname = "";
         gchar *displaynumber = "0";
@@ -95,11 +95,25 @@ ibus_get_address (void)
 
         username = ibus_get_user_name ();
 
-        address = g_strdup_printf (
-            "unix:path=/tmp/ibus-%s/ibus-%s-%s.%s",
+        path = g_strdup_printf (
+            "/tmp/ibus-%s/ibus-%s-%s.%s",
             username, hostname, displaynumber, screennumber);
 
         g_free (display);
+    }
+    return path;
+   
+}
+
+const gchar *
+ibus_get_address (void)
+{
+    static gchar *address = NULL;
+
+    if (address == NULL) {
+        address = g_strdup_printf (
+            "unix:path=%s",
+            ibus_get_socket_path ());
     }
     return address;
 }

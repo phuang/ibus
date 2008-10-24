@@ -45,6 +45,7 @@ G_BEGIN_DECLS
 
 const gchar     *ibus_get_address       (void);
 const gchar     *ibus_get_user_name     (void);
+const gchar     *ibus_get_socket_path   (void);
 
 G_END_DECLS
 #endif
