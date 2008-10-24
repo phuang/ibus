@@ -39,7 +39,7 @@ struct _IBusConnectionPrivate {
 };
 typedef struct _IBusConnectionPrivate IBusConnectionPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            connection_singals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
@@ -85,8 +85,9 @@ ibus_connection_get_type (void)
 IBusConnection *
 ibus_connection_new (void)
 {
-    IBusConnection *connection = IBUS_CONNECTION (g_object_new (IBUS_TYPE_CONNECTION, NULL));
-    return connection;
+    GObject *object;
+    object = g_object_new (IBUS_TYPE_CONNECTION, NULL);
+    return IBUS_CONNECTION (object);
 }
 
 static void
@@ -104,7 +105,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     klass->dbus_signal  = ibus_connection_dbus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
-    _signals[DBUS_MESSAGE] =
+    connection_singals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -114,7 +115,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
-    _signals[DBUS_SIGNAL] =
+    connection_singals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -124,7 +125,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
-    _signals[DISCONNECTED] =
+    connection_singals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_FIRST,
@@ -176,7 +177,7 @@ ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
 {
     gboolean retval = FALSE;
     if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL)
-        g_signal_emit (connection, _signals[DBUS_SIGNAL], 0, message, &retval);
+        g_signal_emit (connection, connection_singals[DBUS_SIGNAL], 0, message, &retval);
 
     return retval;
 }
@@ -188,7 +189,7 @@ ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-        g_signal_emit (connection, _signals[DISCONNECTED], 0);
+        g_signal_emit (connection, connection_singals[DISCONNECTED], 0);
         return FALSE;
     }
     return FALSE;
@@ -204,7 +205,7 @@ static DBusHandlerResult
 _connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
 {
     gboolean retval = FALSE;
-    g_signal_emit (connection, _signals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (connection, connection_singals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
@@ -247,14 +248,16 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
 IBusConnection *
 ibus_connection_open (const gchar *address)
 {
-    g_return_val_if_fail (address != NULL, NULL);
+    g_assert (address != NULL);
+    
+    DBusError error;
+    DBusConnection *dbus_connection;
+    IBusConnection *connection;
 
     if (_connections == NULL) {
         _connections = g_hash_table_new (g_direct_hash, g_direct_equal);
     }
 
-    DBusError error;
-    DBusConnection *dbus_connection;
 
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open (address, &error);
@@ -264,7 +267,6 @@ ibus_connection_open (const gchar *address)
         return NULL;
     }
 
-    IBusConnection *connection;
     connection = g_hash_table_lookup (_connections, dbus_connection);
 
     if (connection) {
@@ -283,10 +285,11 @@ ibus_connection_open (const gchar *address)
 IBusConnection *
 ibus_connection_open_private (const gchar *address)
 {
-    g_return_val_if_fail (address != NULL, NULL);
+    g_assert (address != NULL);
 
     DBusError error;
     DBusConnection *dbus_connection;
+    IBusConnection *connection;
 
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open_private (address, &error);
@@ -296,7 +299,6 @@ ibus_connection_open_private (const gchar *address)
         return NULL;
     }
 
-    IBusConnection *connection;
     connection = ibus_connection_new ();
     ibus_connection_set_connection (connection, dbus_connection, FALSE);
 
@@ -306,6 +308,7 @@ ibus_connection_open_private (const gchar *address)
 void ibus_connection_close (IBusConnection     *connection)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
+    
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
