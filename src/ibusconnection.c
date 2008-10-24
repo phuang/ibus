@@ -316,7 +316,7 @@ void ibus_connection_close (IBusConnection     *connection)
 }
 
 gboolean
-ibus_connection_get_is_connected (IBusConnection *connection)
+ibus_connection_is_connected (IBusConnection *connection)
 {
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
@@ -604,7 +604,7 @@ void
 ibus_connection_flush (IBusConnection *connection)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
-    g_assert (ibus_connection_get_is_connected (connection));
+    g_assert (ibus_connection_is_connected (connection));
 
     IBusConnectionPrivate *priv;
 

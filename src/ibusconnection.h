@@ -83,7 +83,7 @@ void             ibus_connection_set_connection     (IBusConnection     *connect
 IBusConnection  *ibus_connection_open               (const gchar        *address);
 IBusConnection  *ibus_connection_open_private       (const gchar        *address);
 void             ibus_connection_close              (IBusConnection     *connection);
-gboolean         ibus_connection_get_is_connected   (IBusConnection     *connection);
+gboolean         ibus_connection_is_connected       (IBusConnection     *connection);
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
 gboolean         ibus_connection_send               (IBusConnection     *connection,
                                                      DBusMessage        *message);
