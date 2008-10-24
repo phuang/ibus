@@ -65,9 +65,6 @@ IBusFactory *ibus_factory_new               (const gchar    *path,
                                              const gchar    *authors,
                                              const gchar    *credits,
                                              const gchar    *engine_path);
-gboolean     ibus_factory_handle_message    (IBusFactory    *factory,
-                                             IBusConnection *connection,
-                                             DBusMessage    *message);
 
 G_END_DECLS
 #endif

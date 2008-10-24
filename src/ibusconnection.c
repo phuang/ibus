@@ -39,7 +39,7 @@ struct _IBusConnectionPrivate {
 };
 typedef struct _IBusConnectionPrivate IBusConnectionPrivate;
 
-static guint            connection_singals[LAST_SIGNAL] = { 0 };
+static guint            connection_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
@@ -105,7 +105,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     klass->dbus_signal  = ibus_connection_dbus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
-    connection_singals[DBUS_MESSAGE] =
+    connection_signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -115,7 +115,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
-    connection_singals[DBUS_SIGNAL] =
+    connection_signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -125,7 +125,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
-    connection_singals[DISCONNECTED] =
+    connection_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_FIRST,
@@ -177,7 +177,7 @@ ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
 {
     gboolean retval = FALSE;
     if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL)
-        g_signal_emit (connection, connection_singals[DBUS_SIGNAL], 0, message, &retval);
+        g_signal_emit (connection, connection_signals[DBUS_SIGNAL], 0, message, &retval);
 
     return retval;
 }
@@ -189,7 +189,7 @@ ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-        g_signal_emit (connection, connection_singals[DISCONNECTED], 0);
+        g_signal_emit (connection, connection_signals[DISCONNECTED], 0);
         return FALSE;
     }
     return FALSE;
@@ -205,7 +205,7 @@ static DBusHandlerResult
 _connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
 {
     gboolean retval = FALSE;
-    g_signal_emit (connection, connection_singals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (connection, connection_signals[DBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 

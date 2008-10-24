@@ -55,7 +55,7 @@ struct _IBusEnginePrivate {
 };
 typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_engine_class_init      (IBusEngineClass    *klass);
@@ -193,7 +193,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
                         G_PARAM_READABLE));
 
     /* install signals */
-    _signals[KEY_PRESS] =
+    engine_signals[KEY_PRESS] =
         g_signal_new (I_("key-press"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -203,7 +203,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_BOOLEAN, 3,
             G_TYPE_UINT, G_TYPE_BOOLEAN, G_TYPE_UINT);
 
-    _signals[FOCUS_IN] =
+    engine_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -212,7 +212,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[FOCUS_OUT] =
+    engine_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -221,7 +221,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[RESET] =
+    engine_signals[RESET] =
         g_signal_new (I_("reset"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -230,7 +230,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[ENABLE] =
+    engine_signals[ENABLE] =
         g_signal_new (I_("enable"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -239,7 +239,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[DISABLE] =
+    engine_signals[DISABLE] =
         g_signal_new (I_("disable"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -248,7 +248,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[SET_CURSOR_LOCATION] =
+    engine_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -258,7 +258,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE, 4,
             G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
 
-    _signals[PAGE_UP] =
+    engine_signals[PAGE_UP] =
         g_signal_new (I_("page-up"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -267,7 +267,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[PAGE_DOWN] =
+    engine_signals[PAGE_DOWN] =
         g_signal_new (I_("page-down"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -276,7 +276,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[CURSOR_UP] =
+    engine_signals[CURSOR_UP] =
         g_signal_new (I_("cursor-up"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -285,7 +285,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[CURSOR_DOWN] =
+    engine_signals[CURSOR_DOWN] =
         g_signal_new (I_("cursor-down"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -294,7 +294,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[PROPERTY_ACTIVATE] =
+    engine_signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -303,7 +303,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__STRING_INT,
             G_TYPE_NONE, 0);
 
-    _signals[PROPERTY_SHOW] =
+    engine_signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -312,7 +312,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__STRING,
             G_TYPE_NONE, 0);
 
-    _signals[PROPERTY_HIDE] =
+    engine_signals[PROPERTY_HIDE] =
         g_signal_new (I_("property-hide"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -422,7 +422,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
             return TRUE;
         }
 
-        g_signal_emit (engine, _signals[no_arg_methods[i].signal_id], 0);
+        g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
         dbus_message_unref (return_message);
@@ -455,7 +455,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _keypress_fail;
 
-        g_signal_emit (engine, _signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
+        g_signal_emit (engine, engine_signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
 
         return_message = dbus_message_new_method_return (message);
         dbus_message_append_args (return_message, DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID);
@@ -491,7 +491,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_activate_fail;
 
-        g_signal_emit (engine, _signals[PROPERTY_ACTIVATE], 0, name, state);
+        g_signal_emit (engine, engine_signals[PROPERTY_ACTIVATE], 0, name, state);
 
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
@@ -521,7 +521,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_show_fail;
 
-        g_signal_emit (engine, _signals[PROPERTY_SHOW], 0, name);
+        g_signal_emit (engine, engine_signals[PROPERTY_SHOW], 0, name);
 
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
@@ -550,7 +550,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _property_hide_fail;
 
-        g_signal_emit (engine, _signals[PROPERTY_HIDE], 0, name);
+        g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
 
         return_message = dbus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
@@ -580,7 +580,7 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _set_cursor_location_fail;
 
-        g_signal_emit (engine, _signals[SET_CURSOR_LOCATION], 0,
+        g_signal_emit (engine, engine_signals[SET_CURSOR_LOCATION], 0,
                     args[0], args[1], args[2], args[3]);
 
         return_message = dbus_message_new_method_return (message);

@@ -34,7 +34,7 @@ struct _IBusObjectPrivate {
     gboolean in_destructor;
 };
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            object_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_object_class_init      (IBusObjectClass    *klass);
@@ -94,7 +94,7 @@ ibus_object_class_init     (IBusObjectClass *klass)
     klass->destroy = ibus_object_real_destroy;
 
     /* install signals */
-    _signals[DESTROY] =
+    object_signals[DESTROY] =
         g_signal_new (I_("destroy"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
@@ -121,7 +121,7 @@ ibus_object_dispose (IBusObject *obj)
 
     if (!priv->in_destructor) {
         priv->in_destructor = TRUE;
-        g_signal_emit (obj, _signals[DESTROY], 0);
+        g_signal_emit (obj, object_signals[DESTROY], 0);
         priv->in_destructor = FALSE;
     }
 

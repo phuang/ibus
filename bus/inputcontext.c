@@ -47,7 +47,7 @@ struct _BusInputContextPrivate {
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint    context_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_input_context_class_init    (BusInputContextClass   *klass);
@@ -146,7 +146,7 @@ bus_input_context_class_init (BusInputContextClass *klass)
     IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_input_context_dbus_message;
 
     /* install signals */
-    _signals[FOCUS_IN] =
+    context_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -155,7 +155,7 @@ bus_input_context_class_init (BusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[FOCUS_OUT] =
+    context_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -537,7 +537,7 @@ bus_input_context_focus_in (BusInputContext *context)
     if (priv->has_focus)
         return;
 
-    g_signal_emit (context, _signals[FOCUS_IN], 0);
+    g_signal_emit (context, context_signals[FOCUS_IN], 0);
 }
 
 void
@@ -551,5 +551,5 @@ bus_input_context_focus_out (BusInputContext *context)
     if (!priv->has_focus)
         return;
 
-    g_signal_emit (context, _signals[FOCUS_OUT], 0);
+    g_signal_emit (context, context_signals[FOCUS_OUT], 0);
 }

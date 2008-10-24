@@ -53,8 +53,8 @@ struct _BusEngineProxyPrivate {
 };
 typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
-// static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            engine_signals[LAST_SIGNAL] = { 0 };
+// static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
@@ -125,7 +125,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
     proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
     
     /* install signals */
-    _signals[COMMIT_STRING] =
+    engine_signals[COMMIT_STRING] =
         g_signal_new (I_("commit-string"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -135,7 +135,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_NONE, 1,
             G_TYPE_STRING);
     
-    _signals[FORWARD_KEY_EVENT] =
+    engine_signals[FORWARD_KEY_EVENT] =
         g_signal_new (I_("forward-key-event"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -147,7 +147,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_BOOLEAN,
             G_TYPE_UINT);
     
-    _signals[UPDATE_PREEDIT] =
+    engine_signals[UPDATE_PREEDIT] =
         g_signal_new (I_("update-preedit"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -160,7 +160,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_INT,
             G_TYPE_BOOLEAN);
     
-    _signals[SHOW_PREEDIT] =
+    engine_signals[SHOW_PREEDIT] =
         g_signal_new (I_("show-preedit"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -169,7 +169,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[HIDE_PREEDIT] =
+    engine_signals[HIDE_PREEDIT] =
         g_signal_new (I_("hide-preedit"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -178,7 +178,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[UPDATE_AUX_STRING] =
+    engine_signals[UPDATE_AUX_STRING] =
         g_signal_new (I_("update-aux-string"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -190,7 +190,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_POINTER,
             G_TYPE_BOOLEAN);
     
-    _signals[SHOW_AUX_STRING] =
+    engine_signals[SHOW_AUX_STRING] =
         g_signal_new (I_("show-aux-string"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -199,7 +199,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[HIDE_AUX_STRING] =
+    engine_signals[HIDE_AUX_STRING] =
         g_signal_new (I_("hide-aux-string"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -208,7 +208,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[UPDATE_LOOKUP_TABLE] =
+    engine_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -219,7 +219,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_POINTER,
             G_TYPE_BOOLEAN);
     
-    _signals[SHOW_LOOKUP_TABLE] =
+    engine_signals[SHOW_LOOKUP_TABLE] =
         g_signal_new (I_("show-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -228,7 +228,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[HIDE_LOOKUP_TABLE] =
+    engine_signals[HIDE_LOOKUP_TABLE] =
         g_signal_new (I_("hide-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -237,7 +237,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    _signals[PAGE_UP_LOOKUP_TABLE] =
+    engine_signals[PAGE_UP_LOOKUP_TABLE] =
         g_signal_new (I_("page-up-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -246,7 +246,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[PAGE_DOWN_LOOKUP_TABLE] =
+    engine_signals[PAGE_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("page-down-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -255,7 +255,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[CURSOR_UP_LOOKUP_TABLE] =
+    engine_signals[CURSOR_UP_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-up-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -264,7 +264,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[CURSOR_DOWN_LOOKUP_TABLE] =
+    engine_signals[CURSOR_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-down-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -273,7 +273,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
     
-    _signals[REGISTER_PROPERTIES] =
+    engine_signals[REGISTER_PROPERTIES] =
         g_signal_new (I_("register-properties"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -283,7 +283,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_TYPE_NONE, 1,
             G_TYPE_POINTER);
     
-    _signals[UPDATE_PROPERTY] =
+    engine_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -320,18 +320,18 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
 
     struct {
         const gchar *member;
-        guint signal_id;
+        const guint signal_id;
     } signals [] = {
-        { "ShowPreedit", _signals[SHOW_PREEDIT] },
-        { "HidePreedit", _signals[HIDE_PREEDIT] },
-        { "ShowAuxString", _signals[SHOW_AUX_STRING] },
-        { "HideAuxString", _signals[HIDE_AUX_STRING] },
-        { "ShowLookupTable", _signals[SHOW_LOOKUP_TABLE] },
-        { "HideLookupTable", _signals[HIDE_LOOKUP_TABLE] },
-        { "PageUpLookupTable", _signals[PAGE_UP_LOOKUP_TABLE] },
-        { "PageDownLookupTable", _signals[PAGE_DOWN_LOOKUP_TABLE] },
-        { "CursorUpLookupTable", _signals[CURSOR_UP_LOOKUP_TABLE] },
-        { "CursorDownLookupTable", _signals[CURSOR_DOWN_LOOKUP_TABLE] },
+        { "ShowPreedit",            SHOW_PREEDIT },
+        { "HidePreedit",            HIDE_PREEDIT },
+        { "ShowAuxString",          SHOW_AUX_STRING },
+        { "HideAuxString",          HIDE_AUX_STRING },
+        { "ShowLookupTable",        SHOW_LOOKUP_TABLE },
+        { "HideLookupTable",        HIDE_LOOKUP_TABLE },
+        { "PageUpLookupTable",      PAGE_UP_LOOKUP_TABLE },
+        { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE },
+        { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE },
+        { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
         { NULL, 0},
     };
     
@@ -339,7 +339,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         if (signals[i].member == NULL)
             break;
         if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
-            g_signal_emit (engine, signals[i].signal_id, 0);
+            g_signal_emit (engine, engine_signals[signals[i].signal_id], 0);
             goto handled;
         }
     }
@@ -354,7 +354,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
                                 DBUS_TYPE_INVALID);
         if (!retval)
             goto failed;
-        g_signal_emit (engine, _signals[COMMIT_STRING], 0, text);
+        g_signal_emit (engine, engine_signals[COMMIT_STRING], 0, text);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
         guint32 keyval;
@@ -370,7 +370,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
 
         if (!retval)
             goto failed;
-        g_signal_emit (engine, _signals[FORWARD_KEY_EVENT], keyval, is_press, states);
+        g_signal_emit (engine, engine_signals[FORWARD_KEY_EVENT], keyval, is_press, states);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreedit")) {
         gchar *text;
@@ -400,7 +400,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
+        g_signal_emit (engine, engine_signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxString")) {
@@ -427,7 +427,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
+        g_signal_emit (engine, engine_signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
@@ -450,7 +450,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (engine, _signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
+        g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         ibus_lookup_table_unref (table);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
@@ -466,7 +466,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         if (prop_list == NULL)
             goto failed;
         
-        g_signal_emit (engine, _signals[REGISTER_PROPERTIES], 0, prop_list);
+        g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, prop_list);
         ibus_prop_list_unref (prop_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
@@ -482,7 +482,7 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         if (prop == NULL)
             goto failed;
         
-        g_signal_emit (engine, _signals[UPDATE_PROPERTY], 0, prop);
+        g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
         ibus_property_free (prop);
     }
 

@@ -26,7 +26,6 @@
 #define DECLARE_PRIV IBusFactoryPrivate *priv = IBUS_FACTORY_GET_PRIVATE(factory)
 
 enum {
-    DBUS_MESSAGE,
     LAST_SIGNAL,
 };
 
@@ -52,7 +51,7 @@ struct _IBusFactoryPrivate {
 };
 typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            factory_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
@@ -264,16 +263,6 @@ ibus_factory_get_property (IBusFactory *factory,
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
     }
-}
-
-gboolean
-ibus_factory_handle_message (IBusFactory *factory, IBusConnection *connection, DBusMessage *message)
-{
-    gboolean retval = FALSE;
-    g_return_val_if_fail (message != NULL, FALSE);
-
-    g_signal_emit (factory, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
-    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean

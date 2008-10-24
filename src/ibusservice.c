@@ -42,7 +42,7 @@ struct _IBusServicePrivate {
 };
 typedef struct _IBusServicePrivate IBusServicePrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            service_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_service_class_init     (IBusServiceClass   *klass);
@@ -128,7 +128,7 @@ ibus_service_class_init (IBusServiceClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* Install signals */
-    _signals[DBUS_MESSAGE] =
+    service_signals[DBUS_MESSAGE] =
         g_signal_new (I_("dbus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -138,7 +138,7 @@ ibus_service_class_init (IBusServiceClass *klass)
             G_TYPE_BOOLEAN, 2,
             G_TYPE_POINTER, G_TYPE_POINTER);
 
-    _signals[DBUS_SIGNAL] =
+    service_signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -220,7 +220,7 @@ ibus_service_handle_message (IBusService *service, IBusConnection *connection, D
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
 
-    g_signal_emit (service, _signals[DBUS_MESSAGE], 0, connection, message, &retval);
+    g_signal_emit (service, service_signals[DBUS_MESSAGE], 0, connection, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 

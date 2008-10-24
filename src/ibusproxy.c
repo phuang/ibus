@@ -47,7 +47,7 @@ struct _IBusProxyPrivate {
 };
 typedef struct _IBusProxyPrivate IBusProxyPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            proxy_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void      ibus_proxy_class_init  (IBusProxyClass *klass);
@@ -168,7 +168,7 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
-    _signals[DBUS_SIGNAL] =
+    proxy_signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -337,7 +337,7 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
     
-    g_signal_emit (proxy, _signals[DBUS_SIGNAL], 0, message, &retval);
+    g_signal_emit (proxy, proxy_signals[DBUS_SIGNAL], 0, message, &retval);
     
     return retval;
 }

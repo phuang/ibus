@@ -42,7 +42,7 @@ struct _IBusServerPrivate {
 };
 typedef struct _IBusServerPrivate IBusServerPrivate;
 
-static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint            server_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_server_class_init  (IBusServerClass    *klass);
@@ -139,7 +139,7 @@ ibus_server_class_init (IBusServerClass *klass)
                         G_PARAM_READWRITE));
     
     /* install signals */
-    _signals[NEW_CONNECTION] =
+    server_signals[NEW_CONNECTION] =
         g_signal_new (I_("new-connection"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -232,7 +232,7 @@ _new_connection_cb (DBusServer      *dbus_server,
     connection = IBUS_CONNECTION (g_object_new (priv->connection_type, NULL));
     ibus_connection_set_connection (connection, new_connection, FALSE);
     
-    g_signal_emit (server, _signals[NEW_CONNECTION], 0, connection);
+    g_signal_emit (server, server_signals[NEW_CONNECTION], 0, connection);
     g_object_unref (connection);
 }
 
