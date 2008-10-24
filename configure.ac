@@ -60,6 +60,9 @@ PKG_CHECK_MODULES(GLIB2, [
 PKG_CHECK_MODULES(GOBJECT2, [
     gobject-2.0
 ])
+PKG_CHECK_MODULES(GIO2, [
+    gio-2.0
+])
 
 
 # check gtk, gdk & pygtk

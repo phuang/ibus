@@ -23,6 +23,40 @@
 #include "ibusshare.h"
 
 const gchar *
+ibus_get_user_name (void)
+{
+    static gchar *username = NULL;
+    if (username == NULL) {
+        username = g_strdup (getlogin());
+        if (username == NULL)
+            username = g_strdup (g_getenv("SUDO_USER"));
+        if (username == NULL) {
+            const gchar *uid = g_getenv ("USERHELPER_UID");
+            if (uid != NULL) {
+                gchar *end;
+                uid_t id = (uid_t)strtol(uid, &end, 10);
+                if (uid != end) {
+                    struct passwd *pw = getpwuid (id);
+                    if (pw != NULL) {
+                        username = g_strdup (pw->pw_name);
+                    }
+                }
+            }
+        }
+        if (username == NULL)
+            username = g_strdup (g_getenv("USERNAME"));
+        if (username == NULL)
+            username = g_strdup (g_getenv("LOGNAME"));
+        if (username == NULL)
+            username = g_strdup (g_getenv("USER"));
+        if (username == NULL)
+            username = g_strdup (g_getenv("LNAME"));
+
+    }
+    return username;
+}
+
+const gchar *
 ibus_get_address (void)
 {
     static gchar *address = NULL;
@@ -59,37 +93,13 @@ ibus_get_address (void)
             }
         }
 
-        username = g_strdup (getlogin());
-        if (username == NULL)
-            username = g_strdup (g_getenv("SUDO_USER"));
-        if (username == NULL) {
-            const gchar *uid = g_getenv ("USERHELPER_UID");
-            if (uid != NULL) {
-                gchar *end;
-                uid_t id = (uid_t)strtol(uid, &end, 10);
-                if (uid != end) {
-                    struct passwd *pw = getpwuid (id);
-                    if (pw != NULL) {
-                        username = g_strdup (pw->pw_name);
-                    }
-                }
-            }
-        }
-        if (username == NULL)
-            username = g_strdup (g_getenv("USERNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LOGNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("USER"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LNAME"));
+        username = ibus_get_user_name ();
 
         address = g_strdup_printf (
             "unix:path=/tmp/ibus-%s/ibus-%s-%s.%s",
             username, hostname, displaynumber, screennumber);
 
         g_free (display);
-        g_free (username);
     }
     return address;
 }

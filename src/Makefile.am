@@ -72,12 +72,16 @@ libibus_la_SOURCES = \
 libibus_la_CFLAGS = \
 	@X11_CFLAGS@ \
 	@GLIB2_CFLAGS@ \
+	@GOBJECT2_CFLAGS@ \
+	@GIO2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
 libibus_la_LDFLAGS = \
 	@X11_LIBS@ \
 	@GLIB2_LIBS@ \
+	@GOBJECT2_LIBS@ \
+	@GIO2_LIBS@ \
 	@DBUS_LIBS@ \
 	$(NULL)
 
@@ -86,7 +90,6 @@ libibus_la_LDFLAGS = \
 
 AM_CFLAGS = \
 	@X11_CFLAGS@ \
-	@GLIB2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
@@ -95,6 +98,7 @@ AM_LDFLAGS = \
 	$(NULL)
 
 TESTS = \
+	test-bus \
 	test-proxy \
 	test-attribute \
 	test-lookuptable \

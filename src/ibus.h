@@ -31,6 +31,7 @@
 #include "ibusengine.h"
 #include "ibusproperty.h"
 #include "ibuslookuptable.h"
+#include "ibusbus.h"
 
 #endif
 
