@@ -57,12 +57,12 @@ struct _BusInputContextClass {
     /* class members */
 };
 
-GType               bus_input_context_get_type          (void);
+GType                bus_input_context_get_type         (void);
 BusInputContext     *bus_input_context_new              (BusConnection      *connection,
                                                          const gchar        *client);
-gboolean            bus_input_context_is_focus          (BusInputContext    *context);
-void                bus_input_context_focus_in          (BusInputContext    *context);
-void                bus_input_context_focus_out         (BusInputContext    *context);
+gboolean             bus_input_context_is_focus         (BusInputContext    *context);
+void                 bus_input_context_focus_in         (BusInputContext    *context);
+void                 bus_input_context_focus_out        (BusInputContext    *context);
 
 G_END_DECLS
 #endif

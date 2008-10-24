@@ -318,7 +318,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
 
     path = ibus_service_get_path (IBUS_SERVICE (context));
     reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (message,
+    dbus_message_append_args (reply,
                               DBUS_TYPE_OBJECT_PATH, &path,
                               DBUS_TYPE_INVALID);
 
