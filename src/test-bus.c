@@ -6,9 +6,11 @@ int main()
 	
 	GMainLoop *mainloop;
 	IBusBus *bus;
+	IBusInputContext *context;
 	
 	mainloop = g_main_loop_new (NULL, FALSE);
 	bus = ibus_bus_new ();
+	context = ibus_bus_create_input_context (bus, "test");
 	g_main_loop_run (mainloop);
 	
 	return 0;

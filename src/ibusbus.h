@@ -21,7 +21,7 @@
 #define __IBUS_BUS_H_
 
 #include <dbus/dbus.h>
-#include "ibusconnection.h"
+#include "ibusinputcontext.h"
 
 /*
  * Type macros.
@@ -59,6 +59,10 @@ struct _IBusBusClass {
 GType        ibus_bus_get_type          (void);
 IBusBus     *ibus_bus_new               (void);
 gboolean     ibus_bus_is_connected      (IBusBus        *bus);
+IBusInputContext
+            *ibus_bus_create_input_context
+                                        (IBusBus        *bus,
+                                         const gchar    *client_name);
 
 G_END_DECLS
 #endif

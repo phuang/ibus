@@ -29,7 +29,7 @@
 
 enum {
     CONNECTED,
-    DISCONNECT,
+    DISCONNECTED,
     LAST_SIGNAL,
 };
 
@@ -128,6 +128,8 @@ _connection_destroy_cb (IBusConnection  *connection,
 
     g_object_unref (priv->connection);    
     priv->connection = NULL;
+
+    g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
 }
 
 static void
@@ -149,6 +151,7 @@ ibus_bus_connect (IBusBus *bus)
                       "destroy",
                       (GCallback) _connection_destroy_cb,
                       bus);
+    g_signal_emit (bus, bus_signals[CONNECTED], 0);
 }
 
 static void
@@ -228,4 +231,63 @@ ibus_bus_is_connected (IBusBus *bus)
     }
 
     return FALSE;
+}
+
+
+IBusInputContext *
+ibus_bus_create_input_context (IBusBus      *bus,
+                               const gchar  *client_name)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (client_name != NULL);
+    g_assert (ibus_bus_is_connected (bus));
+
+    DBusMessage *call = NULL;
+    DBusMessage *reply = NULL;
+    IBusError *error;
+    IBusInputContext *context = NULL;
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    call = dbus_message_new_method_call (IBUS_SERVICE_IBUS,
+                                         IBUS_PATH_IBUS,
+                                         IBUS_INTERFACE_IBUS,
+                                         "CreateInputContext");
+    dbus_message_append_args (call,
+                              DBUS_TYPE_STRING, &client_name,
+                              DBUS_TYPE_INVALID);
+
+    reply = ibus_connection_send_with_reply_and_block (priv->connection,
+                                                       call,
+                                                       -1,
+                                                       &error);
+    dbus_message_unref (call);
+
+    if (reply == NULL) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        return NULL;
+    }
+    else {
+        if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
+            gchar *path;
+            DBusError error;
+            dbus_error_init (&error);
+            if (!dbus_message_get_args (reply,
+                                        &error,
+                                        DBUS_TYPE_OBJECT_PATH, &path,
+                                        DBUS_TYPE_INVALID)) {
+                g_warning ("%s: %s", error.name, error.message);
+                dbus_error_free (&error);
+            }
+            else 
+                context = ibus_input_context_new (path, priv->connection);
+        }
+        else if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR) {
+            g_warning ("%s:", dbus_message_get_error_name (reply));
+        }
+        dbus_message_unref (reply);
+    }
+    
+    return context;
 }
