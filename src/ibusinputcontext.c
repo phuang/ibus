@@ -379,7 +379,12 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
 
         if (!retval)
             goto failed;
-        g_signal_emit (context, _signals[FORWARD_KEY_EVENT], keyval, is_press, states);
+        g_signal_emit (context,
+                       _signals[FORWARD_KEY_EVENT],
+                       0,
+                       keyval,
+                       is_press,
+                       states);
     }
     else if (dbus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
@@ -411,7 +416,13 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (context, _signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
+        g_signal_emit (context,
+                       _signals[UPDATE_PREEDIT],
+                       0,
+                       text,
+                       attr_list,
+                       cursor_pos,
+                       visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message,
@@ -440,7 +451,12 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (context, _signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
+        g_signal_emit (context,
+                       _signals[UPDATE_AUX_STRING],
+                       0,
+                       text,
+                       attr_list,
+                       visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message,
@@ -465,7 +481,11 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         }
         dbus_message_iter_get_basic (&iter, &visible);
 
-        g_signal_emit (context, _signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
+        g_signal_emit (context,
+                       _signals[UPDATE_LOOKUP_TABLE],
+                       0,
+                       table,
+                       visible);
         ibus_lookup_table_unref (table);
     }
     else if (dbus_message_is_signal (message,
