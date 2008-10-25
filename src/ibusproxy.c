@@ -334,10 +334,16 @@ gboolean
 ibus_proxy_handle_signal (IBusProxy     *proxy,
                           DBusMessage   *message)
 {
-    gboolean retval = FALSE;
-    g_return_val_if_fail (message != NULL, FALSE);
+    g_assert (IBUS_IS_PROXY (proxy));
+    g_assert (message != NULL);
     
-    g_signal_emit (proxy, proxy_signals[DBUS_SIGNAL], 0, message, &retval);
+    gboolean retval = FALSE;
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    if (g_strcmp0 (dbus_message_get_path (message), priv->path) == 0) {
+        g_signal_emit (proxy, proxy_signals[DBUS_SIGNAL], 0, message, &retval);
+    }
     
     return retval;
 }
