@@ -66,7 +66,7 @@ ibus_get_socket_path (void)
         gchar *hostname = "";
         gchar *displaynumber = "0";
         gchar *screennumber = "0";
-        gchar *username = NULL;
+        const gchar *username = NULL;
         gchar *p;
 
         display = g_strdup (g_getenv ("DISPLAY"));

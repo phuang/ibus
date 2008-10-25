@@ -436,7 +436,6 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
     
     va_list args;
     gboolean retval;
-    IBusError *_error;
     DBusMessage *message;
     DBusMessage *reply_message;
 
@@ -453,18 +452,12 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
                                        args);
     va_end (args);
 
-    _error = ibus_error_new ();
     reply_message = ibus_connection_send_with_reply_and_block (
                                             priv->connection,
                                             message,
                                             timeout_milliseconds,
-                                            (DBusError *)_error);
+                                            error);
     dbus_message_unref (message);
 
-    if (reply_message == NULL && error != NULL)
-        *error = _error;
-    else
-        ibus_error_free (_error);
-    
     return reply_message;
 }
