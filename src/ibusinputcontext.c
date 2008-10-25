@@ -601,6 +601,18 @@ ibus_input_context_set_cursor_location (IBusInputContext *context,
 }
 
 void
+ibus_input_context_set_capabilites (IBusInputContext   *context,
+                                    guint32             capabilites)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    ibus_proxy_call (IBUS_PROXY (context),
+                     "SetCapabilites",
+                     DBUS_TYPE_UINT32, &capabilites,
+                     DBUS_TYPE_INVALID);
+}
+
+void
 ibus_input_context_focus_in (IBusInputContext *context)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
