@@ -57,7 +57,7 @@ class Panel(ibus.Object):
     def __init__(self, ibusconn):
         super(Panel, self).__init__()
         self.__ibusconn = ibusconn
-        self.__panel = self.__ibusconn.get_object(ibus.IBUS_PANEL_PATH)
+        self.__panel = self.__ibusconn.get_object(ibus.IBUS_PATH_PANEL)
 
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
@@ -151,21 +151,21 @@ class Panel(ibus.Object):
         self.destroy()
 
     def __dbus_signal_cb(self, ibusconn, message):
-        if message.is_signal(ibus.IBUS_PANEL_IFACE, "PageUp"):
+        if message.is_signal(ibus.IBUS_IFACE_PANEL, "PageUp"):
             self.emit("page-up")
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "PageDown"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "PageDown"):
             self.emit("page-down")
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "CursorUp"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "CursorUp"):
             self.emit("cursor-up")
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "CursorDown"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "CursorDown"):
             self.emit("cursor-down")
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "PropertyActivate"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "PropertyActivate"):
             args = message.get_args_list()
             self.emit("property-activate", args[0], args[1])
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "PropertyShow"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "PropertyShow"):
             args = message.get_args_list()
             self.emit("property-show", args[0])
-        elif message.is_signal(ibus.IBUS_PANEL_IFACE, "PropertyHide"):
+        elif message.is_signal(ibus.IBUS_IFACE_PANEL, "PropertyHide"):
             args = message.get_args_list()
             self.emit("property-hide", args[0])
         else:

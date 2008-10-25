@@ -28,6 +28,7 @@ ibus_PYTHON = \
 	attribute.py \
 	common.py \
 	bus.py \
+	inputcontext.py \
 	engine.py \
 	exception.py \
 	factory.py \

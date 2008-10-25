@@ -20,6 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 from iibus import *
+from iinputcontext import *
 from iengine import *
 from ienginefactory import *
 from ipanel import *

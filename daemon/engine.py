@@ -110,45 +110,45 @@ class Engine(ibus.Object):
         return self.__object_path
 
     def handle_dbus_signal(self, message):
-        if message.is_signal(ibus.IBUS_ENGINE_IFACE, "CommitString"):
+        if message.is_signal(ibus.IBUS_IFACE_ENGINE, "CommitString"):
             args = message.get_args_list()
             self.emit("commit-string", args[0])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ForwardKeyEvent"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "ForwardKeyEvent"):
             args = message.get_args_list()
             self.emit("forward-key-event", args[0], bool(arg[1]), arg[2])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdatePreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "UpdatePreedit"):
             args = message.get_args_list()
             self.emit("update-preedit", args[0], args[1], args[2], args[3])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowPreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "ShowPreedit"):
             self.emit("show-preedit")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HidePreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "HidePreedit"):
             self.emit("hide-preedit")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdateAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "UpdateAuxString"):
             args = message.get_args_list()
             self.emit("update-aux-string", args[0], args[1], args[2])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "ShowAuxString"):
             self.emit("show-aux-string")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HideAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "HideAuxString"):
             self.emit("hide-aux-string")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdateLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "UpdateLookupTable"):
             args = message.get_args_list()
             self.emit("update-lookup-table", args[0], args[1])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "ShowLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "ShowLookupTable"):
             self.emit("show-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "HideLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "HideLookupTable"):
             self.emit("hide-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "PageUpLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "PageUpLookupTable"):
             self.emit("page-up-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "PageDownLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "PageDownLookupTable"):
             self.emit("page-down-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "CursorUpLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "CursorUpLookupTable"):
             self.emit("cursor-up-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "CursorDownLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "CursorDownLookupTable"):
             self.emit("cursor-down-lookup-table")
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "RegisterProperties"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "RegisterProperties"):
             args = message.get_args_list()
             self.emit("register-properties", args[0])
-        elif message.is_signal(ibus.IBUS_ENGINE_IFACE, "UpdateProperty"):
+        elif message.is_signal(ibus.IBUS_IFACE_ENGINE, "UpdateProperty"):
             args = message.get_args_list()
             self.emit("update-property", args[0])
         else:

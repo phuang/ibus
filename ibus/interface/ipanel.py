@@ -23,22 +23,22 @@ __all__ = ("IPanel", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_PANEL_IFACE
+    IBUS_IFACE_PANEL
 
 class IPanel(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_PANEL_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_PANEL, \
                             **args)
 
     # define signal decorator.
     signal = lambda **args: \
-        dbus.service.signal(dbus_interface=IBUS_PANEL_IFACE, \
+        dbus.service.signal(dbus_interface=IBUS_IFACE_PANEL, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_PANE_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_PANEL, \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
     @method(in_signature="iiii")

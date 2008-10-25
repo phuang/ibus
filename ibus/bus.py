@@ -120,8 +120,8 @@ class Bus(ibus.Object):
     def __init__(self):
         super(Bus, self).__init__()
         self.__dbusconn = dbus.connection.Connection(ibus.IBUS_ADDR)
-        self.__ibus = self.__dbusconn.get_object(ibus.IBUS_NAME,
-                                            ibus.IBUS_PATH)
+        self.__ibus = self.__dbusconn.get_object(ibus.IBUS_SERVICE_IBUS,
+                                            ibus.IBUS_PATH_IBUS)
         self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
                                             dbus.BUS_DAEMON_PATH)
         self.__dbusconn.add_message_filter(self.__dbus_message_cb)
@@ -130,7 +130,7 @@ class Bus(ibus.Object):
         try:
             unique_name = self.get_name_owner(ibus.IBUS_CONFIG_NAME)
             self.__config = self.__dbusconn.get_object(unique_name,
-                                            ibus.IBUS_CONFIG_PATH)
+                                            ibus.IBUS_PATH_CONFIG)
         except:
             self.__config = None
         self.add_match(
@@ -272,96 +272,96 @@ class Bus(ibus.Object):
             args = message.get_args_list()
             if args[0] == ibus.IBUS_CONFIG_NAME:
                 if args[2] != "":
-                    self.__config = self.__dbusconn.get_object(args[2], ibus.IBUS_CONFIG_PATH)
+                    self.__config = self.__dbusconn.get_object(args[2], ibus.IBUS_PATH_CONFIG)
                 else:
                     self.__config = None
                 self.emit("config-reloaded")
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
         # commit string signal
-        elif message.is_signal(ibus.IBUS_IFACE, "CommitString"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "CommitString"):
             args = message.get_args_list()
             ic, string = args[0:2]
             self.emit("commit-string", ic, string.encode("utf-8"))
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # preedit signals
-        elif message.is_signal(ibus.IBUS_IFACE, "UpdatePreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "UpdatePreedit"):
             args = message.get_args_list()
             ic, preedit, attrs, cursor_pos, visible = args[0:5]
             attrs = ibus.attr_list_from_dbus_value(attrs)
             self.emit("update-preedit", ic, preedit.encode("utf-8"),
                         attrs, cursor_pos, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "ShowPreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "ShowPreedit"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("show-preedit", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "HidePreedit"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "HidePreedit"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("hide-preedit", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # aux string signals
-        elif message.is_signal(ibus.IBUS_IFACE, "UpdateAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "UpdateAuxString"):
             args = message.get_args_list()
             ic, aux_string, attrs, visible = args[0:4]
             attrs = ibus.attr_list_from_dbus_value(attrs)
             self.emit("update-aux-string", ic, aux_string.encode("utf-8"),
                         attrs, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "ShowAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "ShowAuxString"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("show-aux-string", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "HideAuxString"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "HideAuxString"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("hide-aux-string", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # lookup table signals
-        elif message.is_signal(ibus.IBUS_IFACE, "UpdateLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "UpdateLookupTable"):
             args = message.get_args_list()
             ic, lookup_table, visible = args[0:3]
             lookup_table = ibus.lookup_table_from_dbus_value(lookup_table)
             self.emit("update-lookup-table", ic, lookup_table, visible)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "ShowLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "ShowLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("show-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "HideLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "HideLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("hide-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "PageUpLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "PageUpLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("page-up-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "PageDownLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "PageDownLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("page-down-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "CursorUpLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "CursorUpLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("cursor-up-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
-        elif message.is_signal(ibus.IBUS_IFACE, "CursorDownLookupTable"):
+        elif message.is_signal(ibus.IBUS_IFACE_IBUS, "CursorDownLookupTable"):
             args = message.get_args_list()
             ic = args[0]
             self.emit("cursor-down-lookup-table", ic)
             retval = dbus.lowlevel.HANDLER_RESULT_HANDLED
 
         # Config signals
-        elif message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
+        elif message.is_signal(ibus.IBUS_IFACE_CONFIG, "ValueChanged"):
             args = message.get_args_list()
             section, name, value = args[0:3]
             self.emit("config-value-changed", section, name, value)

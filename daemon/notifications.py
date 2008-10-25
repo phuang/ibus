@@ -37,7 +37,7 @@ class Notifications(ibus.Object):
     def __init__(self, ibusconn):
         super(Notifications, self).__init__()
         self.__ibusconn = ibusconn
-        self.__notifications = self.__ibusconn.get_object(ibus.IBUS_NOTIFICATIONS_PATH)
+        self.__notifications = self.__ibusconn.get_object(ibus.IBUS_PATH_NOTIFICATIONS)
 
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
@@ -51,10 +51,10 @@ class Notifications(ibus.Object):
         return self.__notifications.CloseNotifications(id)
 
     def __dbus_signal_cb(self, ibusconn, message):
-        if message.is_signal(ibus.IBUS_NOTIFICATIONS_IFACE, "NotificationsClosed"):
+        if message.is_signal(ibus.IBUS_IFACE_NOTIFICATIONS, "NotificationsClosed"):
             args = message.get_args_list()
             self.emit("notifications-closed", args[0], args[1])
-        elif message.is_signal(ibus.IBUS_NOTIFICATIONS_IFACE, "ActionInvoked"):
+        elif message.is_signal(ibus.IBUS_IFACE_NOTIFICATIONS, "ActionInvoked"):
             args = message.get_args_list()
             self.emit("action-invoked", args[0], args[1])
         else:

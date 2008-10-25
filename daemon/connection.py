@@ -62,7 +62,7 @@ class Connection(ibus.Object):
         return self.__dbusconn.get_object("no.name", path)
 
     def emit_dbus_signal(self, name, *args):
-        message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH, ibus.IBUS_IFACE, name)
+        message = dbus.lowlevel.SignalMessage(ibus.IBUS_PATH_IBUS, ibus.IBUS_IFACE_IBUS, name)
         message.append(*args)
         self.send_message(message)
 

@@ -625,7 +625,7 @@ class IBus(ibus.Object):
 
 class IBusProxy(ibus.IIBus):
     def __init__(self, bus, conn):
-        super(IBusProxy, self).__init__(conn.get_dbusconn(), ibus.IBUS_PATH)
+        super(IBusProxy, self).__init__(conn.get_dbusconn(), ibus.IBUS_PATH_IBUS)
         self.__ibus = bus
         self.__conn = conn
         self.__conn.connect("destroy", self.__conn_destroy_cb)

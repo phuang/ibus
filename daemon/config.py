@@ -38,7 +38,7 @@ class Config(ibus.Object):
     def __init__(self, ibusconn):
         super(Config, self).__init__()
         self.__ibusconn = ibusconn
-        self.__config = self.__ibusconn.get_object(ibus.IBUS_CONFIG_PATH)
+        self.__config = self.__ibusconn.get_object(ibus.IBUS_PATH_CONFIG)
 
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
         self.__ibusconn.connect("dbus-signal", self.__dbus_signal_cb)
@@ -63,7 +63,7 @@ class Config(ibus.Object):
         self.destroy()
 
     def __dbus_signal_cb(self, ibusconn, message):
-        if message.is_signal(ibus.IBUS_CONFIG_IFACE, "ValueChanged"):
+        if message.is_signal(ibus.IBUS_IFACE_CONFIG, "ValueChanged"):
             args = message.get_args_list()
             self.emit("value-changed", args[0], args[1], args[2])
         return False

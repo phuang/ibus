@@ -2,12 +2,12 @@
 #
 # ibus - The Input Bus
 #
-# Copyright(c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or(at your option) any later version.
+# version 2 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,32 +19,31 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-__all__ = ("IEngine", )
+__all__ = ("IInputContext", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_IFACE_ENGINE
+    IBUS_IFACE_INPUT_CONTEXT
 
-class IEngine(dbus.service.Object):
+class IInputContext(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE, \
-                            **args)
-
-    # define signal decorator.
-    signal = lambda **args: \
-        dbus.service.signal(dbus_interface=IBUS_IFACE_ENGINE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_INPUT_CONTEXT, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_INPUT_CONTEXT, \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
-    @method(in_signature="ubu", out_signature="b")
-    def ProcessKeyEvent(self, keyval, is_press, state):
-        pass
+    # define signal decorator.
+    signal = lambda **args: \
+        dbus.service.signal(dbus_interface=IBUS_IFACE_INPUT_CONTEXT, \
+                            **args)
+
+    @async_method(in_signature="ubu", out_signature="b")
+    def ProcessKeyEvent(self, keyval, is_press, state, reply_cb, error_cb): pass
 
     @method(in_signature="iiii")
     def SetCursorLocation(self, x, y, w, h): pass
@@ -58,37 +57,19 @@ class IEngine(dbus.service.Object):
     @method()
     def Reset(self): pass
 
-    # signals for lookup table
-    @method()
-    def PageUp(self): pass
+    @method(out_signature="b")
+    def IsEnabled(self): pass
 
-    @method()
-    def PageDown(self): pass
+    @method(in_signature="i")
+    def SetCapabilities(self, caps): pass
 
-    @method()
-    def CursorUp(self): pass
-
-    @method()
-    def CursorDown(self): pass
-
-    @method()
-    def Enable(self): pass
-
-    @method()
-    def Disable(self): pass
-
-    @method(in_signature="si")
-    def PropertyActivate(self, prop_name, prop_state): pass
-
-    @method(in_signature="s")
-    def PropertyShow(self, prop_name): pass
-
-    @method(in_signature="s")
-    def PropertyHide(self, prop_name): pass
+    @method(out_signature="sb")
+    def GetInputContextStates(self): pass
 
     @method()
     def Destroy(self): pass
 
+    #sigals
     @signal(signature="s")
     def CommitString(self, text): pass
 
@@ -139,4 +120,5 @@ class IEngine(dbus.service.Object):
 
     @signal(signature="v")
     def UpdateProperty(self, prop): pass
+
 

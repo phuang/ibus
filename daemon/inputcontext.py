@@ -447,3 +447,61 @@ class InputContext(ibus.Object):
             self.__engine_handlers.append(id)
 
 gobject.type_register(InputContext)
+
+class InputContextProxy(ibus.IInputContext):
+    def __init__(self, context, conn, path):
+        super(InputContextProxy, self).__init__(conn.get_dbusconn(), path)
+        self.__context = context
+        self.__conn = conn
+        self.__conn.connect("destroy", self.__conn_destroy_cb)
+
+    def __conn_destroy_cb(self, conn):
+        self.__context = None
+        self.__conn = None
+
+    def ProcessKeyEvent(self, keyval, is_press, state, reply_cb, error_cb):
+        return self.__context.process_key_event(keyval, is_press, state, reply_cb, error_cb)
+
+    def SetCursorLocation(self, x, y, w, h):
+        return self.__context.set_cursor_location(x, y, w, h)
+
+    def FocusIn(self):
+        return self.__context.focus_in()
+
+    def FocusOut(self):
+        return self.__context.focus_out()
+
+    def Reset(self):
+        return self.__context.reset()
+
+    def IsEnabled(self):
+        return self.__context.is_enabled()
+
+    def SetCapabilities(self, caps):
+        return self.__context.set_capabilities(caps)
+
+    def GetInputContextStates(self):
+        return self.__context.get_states()
+
+    def Destroy(self):
+        self.__context.destroy()
+        self.__context = None
+        self.__conn = None
+
+    def CommitString(self, text):
+        pass
+
+    def UpdatePreedit(self, text, attrs, cursor_pos, visible):
+        pass
+
+    def UpdateAuxString(self, text, attrs, visible):
+        pass
+
+    def UpdateLookupTable(self, table, visible):
+        pass
+
+    def Enabled(self):
+        pass
+
+    def Disabled(self):
+        pass
