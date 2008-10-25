@@ -287,7 +287,6 @@ ibus_proxy_set_property (IBusProxy      *proxy,
         priv->name = g_strdup (g_value_get_string (value));
         break;
     case PROP_PATH:
-        g_debug ("AAA");
         g_assert (priv->path == NULL);
         priv->path = g_strdup (g_value_get_string (value));
         break;

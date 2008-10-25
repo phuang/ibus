@@ -31,7 +31,7 @@ enum {
 
 typedef struct _IBusObjectPrivate IBusObjectPrivate;
 struct _IBusObjectPrivate {
-    gboolean in_destructor;
+    gpointer pad;
 };
 
 static guint            object_signals[LAST_SIGNAL] = { 0 };
@@ -110,20 +110,19 @@ ibus_object_init (IBusObject *obj)
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
 
-    priv->in_destructor = FALSE;
+    obj->flags = 0;
 }
 
 static void
 ibus_object_dispose (IBusObject *obj)
 {
-    IBusObjectPrivate *priv;
-    priv = IBUS_OBJECT_GET_PRIVATE (obj);
-
-    
-    if (!priv->in_destructor) {
-        priv->in_destructor = TRUE;
-        g_signal_emit (obj, object_signals[DESTROY], 0);
-        priv->in_destructor = FALSE;
+    if (! (IBUS_OBJECT_FLAGS (obj) & IBUS_IN_DESTRUCTION)) {
+        IBUS_OBJECT_SET_FLAGS (obj, IBUS_IN_DESTRUCTION);
+        if (! (IBUS_OBJECT_FLAGS (obj) & IBUS_DESTROYED)) {
+            g_signal_emit (obj, object_signals[DESTROY], 0);
+            IBUS_OBJECT_SET_FLAGS (obj, IBUS_DESTROYED);
+        }
+        IBUS_OBJECT_UNSET_FLAGS (obj, IBUS_IN_DESTRUCTION);
     }
 
     G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (obj));
@@ -148,7 +147,7 @@ ibus_object_destroy (IBusObject *obj)
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
 
-    if (!priv->in_destructor) {
-            g_object_run_dispose (G_OBJECT (obj));
+    if (! (IBUS_OBJECT_FLAGS (obj) & IBUS_IN_DESTRUCTION)) {
+        g_object_run_dispose (G_OBJECT (obj));
     }
 }

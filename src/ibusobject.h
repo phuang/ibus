@@ -43,13 +43,16 @@
 #define IBUS_OBJECT_GET_CLASS(obj)   \
     (G_TYPE_CHECK_GET_CLASS ((obj), IBUS_TYPE_OBJECT, IBusObjectClass))
 
-#if 0
-#define DEBUG_FUNCTION_IN   g_debug("%s IN", __FUNCTION__);
-#define DEBUG_FUNCTION_OUT  g_debug("%s OUT", __FUNCTION__);
-#else
-#define DEBUG_FUNCTION_IN
-#define DEBUG_FUNCTION_OUT
-#endif
+typedef enum {
+    IBUS_IN_DESTRUCTION = (1 << 0),
+    IBUS_DESTROYED      = (1 << 1),
+    IBUS_RESERVED_1     = (1 << 2),
+    IBUS_RESERVED_2     = (1 << 3),
+} IBusObjectFlags;
+
+#define IBUS_OBJECT_FLAGS(obj)         (IBUS_OBJECT (obj)->flags)
+#define IBUS_OBJECT_SET_FLAGS(obj,flag)    G_STMT_START{ (IBUS_OBJECT_FLAGS (obj) |= (flag)); }G_STMT_END
+#define IBUS_OBJECT_UNSET_FLAGS(obj,flag)  G_STMT_START{ (IBUS_OBJECT_FLAGS (obj) &= ~(flag)); }G_STMT_END
 
 G_BEGIN_DECLS
 
@@ -59,6 +62,7 @@ typedef struct _IBusObjectClass IBusObjectClass;
 struct _IBusObject {
   GObject parent;
   /* instance members */
+  guint32 flags;
 };
 
 typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
