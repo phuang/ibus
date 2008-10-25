@@ -58,10 +58,10 @@ static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
-static void     bus_engine_proxy_init           (BusEngineProxy         *engine_proxy);
-static void     _bus_engine_proxy_destroy       (BusEngineProxy         *engine_proxy);
+static void     bus_engine_proxy_init           (BusEngineProxy         *engine);
+static void     _bus_engine_proxy_destroy       (BusEngineProxy         *engine);
 
-static gboolean bus_engine_proxy_dbus_signal    (BusEngineProxy         *engine_proxy,
+static gboolean bus_engine_proxy_dbus_signal    (IBusProxy              *proxy,
                                                  DBusMessage            *message);
 
 static IBusProxyClass  *_parent_class = NULL;
@@ -309,12 +309,13 @@ _bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
 }
 
 static gboolean
-bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
-                              DBusMessage       *message)
+bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
+                              DBusMessage   *message)
 {
-    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_ENGINE_PROXY (proxy));
     g_assert (message != NULL);
     
+    BusEngineProxy *engine;
     DBusError error;
     gint i;
 
@@ -334,6 +335,8 @@ bus_engine_proxy_dbus_signal (BusEngineProxy    *engine,
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
         { NULL, 0},
     };
+
+    engine = BUS_ENGINE_PROXY (proxy);
     
     for (i = 0; ; i++) {
         if (signals[i].member == NULL)

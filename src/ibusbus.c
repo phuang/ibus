@@ -215,7 +215,7 @@ ibus_bus_destroy (IBusObject *object)
     }
 
     if (priv->connection) {
-        ibus_object_destroy (priv->connection);
+        ibus_object_destroy (IBUS_OBJECT (priv->connection));
         priv->connection = NULL;
     }
 

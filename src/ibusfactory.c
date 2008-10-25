@@ -51,7 +51,7 @@ struct _IBusFactoryPrivate {
 };
 typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
-static guint            factory_signals[LAST_SIGNAL] = { 0 };
+// static guint factory_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
