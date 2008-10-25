@@ -302,6 +302,9 @@ ibus_service_remove_from_connection (IBusService *service, IBusConnection *conne
         return FALSE;
     }
     
+    g_signal_handlers_disconnect_by_func (connection,
+                                          (GCallback) _connection_destroy_cb,
+                                          service);
     priv->connections = g_slist_remove (priv->connections, connection);
     g_object_unref (connection);
     
@@ -322,6 +325,10 @@ ibus_service_remove_from_all_connections (IBusService *service)
 
         gboolean retval;
         retval = ibus_connection_unregister_object_path (connection, priv->path);
+        
+        g_signal_handlers_disconnect_by_func (connection,
+                                              (GCallback) _connection_destroy_cb,
+                                              service);
         g_object_unref (connection);
         element = element->next;
     }

@@ -57,8 +57,7 @@ struct _IBusInputContextClass {
 
 GType        ibus_input_context_get_type    (void);
 IBusInputContext
-            *ibus_input_context_new         (const gchar        *name,
-                                             const gchar        *path,
+            *ibus_input_context_new         (const gchar        *path,
                                              IBusConnection     *connection);
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,

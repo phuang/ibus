@@ -439,6 +439,7 @@ _ic_destroy (BusInputContext  *context,
     DBusMessage *reply;
     
     /* TODO */
+    ibus_object_destroy (IBUS_OBJECT (context));
     reply = dbus_message_new_method_return (message);
     
     return reply;

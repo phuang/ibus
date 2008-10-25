@@ -119,6 +119,7 @@ ibus_object_dispose (IBusObject *obj)
     IBusObjectPrivate *priv;
     priv = IBUS_OBJECT_GET_PRIVATE (obj);
 
+    
     if (!priv->in_destructor) {
         priv->in_destructor = TRUE;
         g_signal_emit (obj, object_signals[DESTROY], 0);
@@ -131,6 +132,7 @@ ibus_object_dispose (IBusObject *obj)
 static void
 ibus_object_finalize (IBusObject *obj)
 {
+    g_debug ("%s finalize", G_OBJECT_TYPE_NAME(obj));
     G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (obj));
 }
 

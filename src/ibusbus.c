@@ -281,8 +281,7 @@ ibus_bus_create_input_context (IBusBus      *bus,
                 dbus_error_free (&error);
             }
             else 
-                context = ibus_input_context_new (IBUS_SERVICE_IBUS,
-                                                  path,
+                context = ibus_input_context_new (path,
                                                   priv->connection);
         }
         else if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR) {

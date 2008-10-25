@@ -94,8 +94,7 @@ ibus_input_context_get_type (void)
 }
 
 IBusInputContext *
-ibus_input_context_new (const gchar     *name,
-                        const gchar     *path,
+ibus_input_context_new (const gchar     *path,
                         IBusConnection  *connection)
 {
     g_assert (path != NULL);
@@ -103,7 +102,7 @@ ibus_input_context_new (const gchar     *name,
     GObject *obj;
 
     obj = g_object_new (IBUS_TYPE_INPUT_CONTEXT,
-                        "name", name,
+                        "name", IBUS_SERVICE_IBUS,
                         "path", path,
                         "connection", connection,
                         NULL);
