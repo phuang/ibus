@@ -412,9 +412,9 @@ ibus_proxy_call (IBusProxy      *proxy,
                                             priv->interface,
                                             method);
     va_start (args, first_arg_type);
-    retval = dbus_message_append_args (message,
-                                       first_arg_type,
-                                       args);
+    retval = dbus_message_append_args_valist (message,
+                                              first_arg_type,
+                                              args);
     va_end (args);
 
     retval = ibus_connection_send (priv->connection, message);
