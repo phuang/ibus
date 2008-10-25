@@ -727,6 +727,6 @@ ibus_input_context_destroy (IBusInputContext *context)
     ibus_proxy_call (IBUS_PROXY (context),
                      "Destroy",
                      DBUS_TYPE_INVALID);
+    ibus_object_destroy (IBUS_OBJECT (context));
 }
-
 

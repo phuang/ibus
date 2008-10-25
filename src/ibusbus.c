@@ -106,7 +106,7 @@ ibus_bus_class_init (IBusBusClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
-    bus_signals[CONNECTED] =
+    bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
@@ -124,8 +124,11 @@ _connection_destroy_cb (IBusConnection  *connection,
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
-    g_assert (connection == priv->connection);
+    g_assert (priv->connection == connection);
 
+    g_signal_handlers_disconnect_by_func (priv->connection,
+                                          (GCallback) _connection_destroy_cb,
+                                          bus);
     g_object_unref (priv->connection);    
     priv->connection = NULL;
 
@@ -146,12 +149,13 @@ ibus_bus_connect (IBusBus *bus)
         g_object_unref (priv->connection);
         priv->connection = NULL;
     }
-
-    g_signal_connect (priv->connection,
-                      "destroy",
-                      (GCallback) _connection_destroy_cb,
-                      bus);
-    g_signal_emit (bus, bus_signals[CONNECTED], 0);
+    else {
+        g_signal_connect (priv->connection,
+                          "destroy",
+                          (GCallback) _connection_destroy_cb,
+                          bus);
+        g_signal_emit (bus, bus_signals[CONNECTED], 0);
+    }
 }
 
 static void
@@ -211,7 +215,7 @@ ibus_bus_destroy (IBusObject *object)
     }
 
     if (priv->connection) {
-        g_object_unref (priv->connection);
+        ibus_object_destroy (priv->connection);
         priv->connection = NULL;
     }
 
