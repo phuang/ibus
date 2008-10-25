@@ -51,6 +51,10 @@ static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
 static gboolean ibus_connection_dbus_signal (IBusConnection         *connection,
                                              DBusMessage            *message);
 static void     ibus_connection_disconnected(IBusConnection         *connection);
+static DBusHandlerResult
+                _connection_handle_message_cb(DBusConnection        *dbus_connection,
+                                              DBusMessage           *message,
+                                              IBusConnection   *connection);
 
 static IBusObjectClass  *_parent_class = NULL;
 static GHashTable       *_connections = NULL;
@@ -152,6 +156,12 @@ ibus_connection_destroy (IBusConnection *connection)
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
+    if (priv->connection) {
+        dbus_connection_remove_filter (priv->connection,
+                    (DBusHandleMessageFunction) _connection_handle_message_cb,
+                    connection);
+    }
+
     if (!priv->shared && priv->connection) {
         dbus_connection_close (priv->connection);
         dbus_connection_unref (priv->connection);
@@ -202,7 +212,9 @@ ibus_connection_disconnected (IBusConnection         *connection)
 }
 
 static DBusHandlerResult
-_connection_handle_message_cb (DBusConnection *dbus_connection, DBusMessage *message, IBusConnection *connection)
+_connection_handle_message_cb (DBusConnection   *dbus_connection,
+                               DBusMessage      *message,
+                               IBusConnection   *connection)
 {
     gboolean retval = FALSE;
     g_signal_emit (connection, connection_signals[DBUS_MESSAGE], 0, message, &retval);
