@@ -708,7 +708,8 @@ ibus_input_context_property_show (IBusInputContext *context,
                      DBUS_TYPE_INVALID);
 }
 
-void ibus_input_context_property_hide (IBusInputContext *context,
+void
+ibus_input_context_property_hide (IBusInputContext *context,
                                        const gchar      *prop_name)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
@@ -729,4 +730,6 @@ ibus_input_context_destroy (IBusInputContext *context)
                      DBUS_TYPE_INVALID);
     ibus_object_destroy (IBUS_OBJECT (context));
 }
+
+
 
