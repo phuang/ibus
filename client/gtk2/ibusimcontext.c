@@ -591,7 +591,8 @@ _ic_update_preedit_cb (IBusInputContext *ic,
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContextPrivate *priv = context->priv;
+    IBusIMContextPrivate *priv;
+    priv = context->priv;
 
     if (priv->preedit_string) {
         g_free (priv->preedit_string);
@@ -733,7 +734,6 @@ _create_input_context (IBusIMContext *context)
                       "hide-preedit",
                       G_CALLBACK (_ic_hide_preedit_cb),
                       context);
-#if 0
     g_signal_connect (priv->ic,
                       "enabled",
                       G_CALLBACK (_ic_enabled_cb),
@@ -742,7 +742,6 @@ _create_input_context (IBusIMContext *context)
                       "disabled",
                       G_CALLBACK (_ic_disabled_cb),
                       context);
-#endif
     g_signal_connect (priv->ic, "destroy",
                       G_CALLBACK (_ic_destroy_cb),
                       context);

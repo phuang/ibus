@@ -102,6 +102,10 @@ class InputContext(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             ()),
+        "set-cursor-location" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT)),
         "engine-lost" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
@@ -160,6 +164,7 @@ class InputContext(ibus.Object):
     def set_cursor_location(self, x, y, w, h):
         if self.__engine:
             self.__engine.set_cursor_location(x, y, w, h)
+        self.emit("set-cursor-location", x, y, w, h)
 
     def focus_in(self):
         if self.__engine and self.__enable:
@@ -236,7 +241,6 @@ class InputContext(ibus.Object):
         self.__proxy.CommitString(text)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
-        print "update preedit"
         if not self.__enable:
             return
 
@@ -245,8 +249,10 @@ class InputContext(ibus.Object):
         self.__cursor_pos = cursor_pos
         self.__preedit_visible = visible
         if self.__support_preedit:
+            print "update preedit im module"
             self.__proxy.UpdatePreedit(text, attrs, cursor_pos, visible)
         else:
+            print "update preedit panel"
             # show preedit on panel
             self.emit("update-preedit", text, attrs, cursor_pos, visible)
 

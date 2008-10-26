@@ -183,11 +183,10 @@ class IBus(ibus.Object):
         else:
             context.process_key_event(keyval, is_press, state, reply_cb, error_cb)
 
-    def set_cursor_location(self, ic, x, y, w, h, conn):
-        context = self.__lookup_context(ic, conn)
-        context.set_cursor_location(x, y, w, h)
-        if context == self.__focused_context:
-            self.__panel.set_cursor_location(x, y, w, h)
+    def __set_cursor_location_cb(self, context, x, y, w, h):
+        if context != self.__focused_context:
+            return
+        self.__panel.set_cursor_location(x, y, w, h)
 
     def __context_enable(self, context):
         if context.get_engine() == None:
@@ -275,6 +274,7 @@ class IBus(ibus.Object):
         signals = (
             ("focus-in", lambda c: self.focus_in(c)),
             ("focus-out", lambda c: self.focus_out(c)),
+            ("set-cursor-location", self.__set_cursor_location_cb),
             ("update-preedit", self.__update_preedit_cb),
             ("show-preedit", self.__show_preedit_cb),
             ("hide-preedit", self.__hide_preedit_cb),
@@ -647,24 +647,6 @@ class IBusProxy(ibus.IIBus):
                             self.__conn, reply_cb, error_cb)
         except Exception, e:
             error_cb(e)
-
-    def SetCursorLocation(self, ic, x, y, w, h, dbusconn):
-        self.__ibus.set_cursor_location(ic, x, y, w, h, self.__conn)
-
-    def FocusIn(self, ic, dbusconn):
-        self.__ibus.focus_in(ic, self.__conn)
-
-    def FocusOut(self, ic, dbusconn):
-        self.__ibus.focus_out(ic, self.__conn)
-
-    def Reset(self, ic, dbusconn):
-        self.__ibus.reset(ic, self.__conn)
-
-    def IsEnabled(self, ic, dbusconn):
-        return self.__ibus.is_enabled(ic, self.__conn)
-
-    def SetCapabilities(self, ic, caps, dbusconn):
-        return self.__ibus.set_capabilities(ic, caps, self.__conn)
 
     def GetFactories(self, dbusconn):
         return self.__ibus.get_factories()

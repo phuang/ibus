@@ -28,6 +28,8 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
 
 enum {
+    ENABLED,
+    DISABLED,
     COMMIT_STRING,
     FORWARD_KEY_EVENT,
     UPDATE_PREEDIT,
@@ -126,6 +128,24 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
     proxy_class->dbus_signal = ibus_input_context_dbus_signal;
     
     /* install signals */
+    context_signals[ENABLED] =
+        g_signal_new (I_("enabled"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[DISABLED] =
+        g_signal_new (I_("disabled"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
     context_signals[COMMIT_STRING] =
         g_signal_new (I_("commit-string"),
             G_TYPE_FROM_CLASS (klass),
@@ -314,7 +334,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (proxy));
     g_assert (message != NULL);
-    
+
     IBusInputContext *context;
     DBusError error;
     gint i;
@@ -325,6 +345,8 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         const gchar *member;
         guint signal_id;
     } signals [] = {
+        { "Enabled",                ENABLED                 },
+        { "Disabled",               DISABLED                },
         { "ShowPreedit",            SHOW_PREEDIT            },
         { "HidePreedit",            HIDE_PREEDIT            },
         { "ShowAuxString",          SHOW_AUX_STRING         },
@@ -397,18 +419,26 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         gboolean retval;
 
         retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
+        if (!retval) {
+            g_warning ("Out of memory!");
             goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+        }
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING) {
+            g_warning ("Argument 1 of UpdatePredit shoule be a string!");
             goto failed;
+        }
         dbus_message_iter_get_basic (&iter, &text);
         dbus_message_iter_next (&iter);
 
         attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL)
+        if (attr_list == NULL) {
+            g_warning ("Argument 2 of UpdatePredit shoule be an AttrList!");
             goto failed;
+        }
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32) {
             ibus_attr_list_unref (attr_list);
+            g_warning ("Argument 3 of UpdatePredit shoule be an INT32!");
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &cursor_pos);
@@ -416,6 +446,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
             ibus_attr_list_unref (attr_list);
+            g_warning ("Argument 4 of UpdatePredit shoule be an BOOLEAN!");
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &visible);
