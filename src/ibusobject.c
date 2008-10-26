@@ -37,13 +37,17 @@ struct _IBusObjectPrivate {
 static guint            object_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_object_class_init      (IBusObjectClass    *klass);
-static void     ibus_object_init            (IBusObject         *obj);
-static void     ibus_object_dispose         (IBusObject         *obj);
-static void     ibus_object_finalize        (IBusObject         *obj);
-static void     ibus_object_real_destroy    (IBusObject         *obj);
+static void      ibus_object_class_init     (IBusObjectClass    *klass);
+static void      ibus_object_init           (IBusObject         *obj);
+static GObject  *ibus_object_constructor    (GType               type,
+                                             guint               n,
+                                             GObjectConstructParam
+                                                                *args);
+static void      ibus_object_dispose        (IBusObject         *obj);
+static void      ibus_object_finalize       (IBusObject         *obj);
+static void      ibus_object_real_destroy   (IBusObject         *obj);
 
-static GObjectClass *_parent_class = NULL;
+static GObjectClass *parent_class = NULL;
 
 
 GType
@@ -85,10 +89,11 @@ ibus_object_class_init     (IBusObjectClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-    _parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
+    parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
     
     g_type_class_add_private (klass, sizeof (IBusObjectPrivate));
-
+    
+    gobject_class->constructor = ibus_object_constructor;
     gobject_class->dispose = (GObjectFinalizeFunc) ibus_object_dispose;
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_object_finalize;
 
@@ -114,6 +119,21 @@ ibus_object_init (IBusObject *obj)
     obj->flags = 0;
 }
 
+
+static GObject *
+ibus_object_constructor (GType                   type,
+                         guint                   n,
+                         GObjectConstructParam  *args)
+{
+    GObject *object;
+
+    object = parent_class->constructor (type, n ,args);
+
+    g_debug ("%s init", G_OBJECT_TYPE_NAME(object));
+    return object;
+}
+
+
 static void
 ibus_object_dispose (IBusObject *obj)
 {
@@ -126,14 +146,14 @@ ibus_object_dispose (IBusObject *obj)
         IBUS_OBJECT_UNSET_FLAGS (obj, IBUS_IN_DESTRUCTION);
     }
 
-    G_OBJECT_CLASS(_parent_class)->dispose (G_OBJECT (obj));
+    G_OBJECT_CLASS(parent_class)->dispose (G_OBJECT (obj));
 }
 
 static void
 ibus_object_finalize (IBusObject *obj)
 {
     g_debug ("%s finalize", G_OBJECT_TYPE_NAME(obj));
-    G_OBJECT_CLASS(_parent_class)->finalize (G_OBJECT (obj));
+    G_OBJECT_CLASS(parent_class)->finalize (G_OBJECT (obj));
 }
 
 static void

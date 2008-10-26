@@ -135,7 +135,7 @@ class DBusReal(ibus.Object):
 
     def get_name_owner(self, name):
         if name == dbus.BUS_DAEMON_NAME or \
-            name == ibus.IBUS_NAME:
+            name == ibus.IBUS_SERVICE_IBUS:
             return name
         if name.startswith(":"):
             if name in self.__unique_name_dict:

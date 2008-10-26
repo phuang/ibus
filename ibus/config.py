@@ -25,8 +25,8 @@ __all__ = (
         "IBUS_PATH_CONFIG"
     )
 
-IBUS_SERVICE_CONFIG = "org.freedesktop.ibus.Config"
-IBUS_PATH_CONFIG = "/org/freedesktop/ibus/Config"
+IBUS_SERVICE_CONFIG = "org.freedesktop.IBus.Config"
+IBUS_PATH_CONFIG = "/org/freedesktop/IBus/Config"
 
 import ibus
 from ibus import interface
