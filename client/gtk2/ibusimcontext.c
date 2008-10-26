@@ -210,9 +210,6 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-    /* init bus object */
-    if (_bus == NULL)
-        _bus = ibus_bus_new();
 }
 
 static void
@@ -259,6 +256,10 @@ ibus_im_context_init (GObject *obj)
                 "retrieve-surrounding", G_CALLBACK (_slave_retrieve_surrounding_cb), obj);
     g_signal_connect (priv->slave,
                 "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
+
+    /* init bus object */
+    if (_bus == NULL)
+        _bus = ibus_bus_new();
 
     if (ibus_bus_is_connected (_bus)) {
         _create_input_context (ibuscontext);
@@ -330,11 +331,13 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 static void
 ibus_im_context_focus_in (GtkIMContext *context)
 {
-    g_return_if_fail (context != NULL);
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+    g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
-    IBusIMContextPrivate *priv = ibus->priv;
+    IBusIMContext *ibuscontext;
+    IBusIMContextPrivate *priv;
+    
+    ibuscontext = IBUS_IM_CONTEXT (context);
+    priv = ibuscontext->priv;
 
     priv->has_focus = TRUE;
     if (priv->ic) {
@@ -349,12 +352,15 @@ ibus_im_context_focus_in (GtkIMContext *context)
 static void
 ibus_im_context_focus_out (GtkIMContext *context)
 {
-    g_return_if_fail (context != NULL);
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
-    IBusIMContextPrivate *priv = ibus->priv;
+    g_assert (IBUS_IS_IM_CONTEXT (context));
 
+    IBusIMContext *ibuscontext;
+    IBusIMContextPrivate *priv;
+    
+    ibuscontext = IBUS_IM_CONTEXT (context);
+    priv = ibuscontext->priv;
+    
     priv->has_focus = FALSE;
     if (priv->ic) {
         ibus_input_context_focus_out (priv->ic);
@@ -365,11 +371,13 @@ ibus_im_context_focus_out (GtkIMContext *context)
 static void
 ibus_im_context_reset (GtkIMContext *context)
 {
-    g_return_if_fail (context != NULL);
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+    g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
-    IBusIMContextPrivate *priv = ibus->priv;
+    IBusIMContext *ibuscontext;
+    IBusIMContextPrivate *priv;
+    
+    ibuscontext = IBUS_IM_CONTEXT (context);
+    priv = ibuscontext->priv;
 
     if (priv->ic) {
         ibus_input_context_reset (priv->ic);

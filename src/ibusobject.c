@@ -64,6 +64,7 @@ ibus_object_get_type (void)
     };
 
     if (type == 0) {
+        g_debug ("register object");
         type = g_type_register_static (G_TYPE_OBJECT,
                     "IBusObject",
                     &type_info,
