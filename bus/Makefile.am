@@ -23,7 +23,7 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
-bin_PROGRAMS = ibus-daemon
+noinst_PROGRAMS = ibus-daemon
 ibus_daemon_SOURCES = \
 	main.c \
 	dbusimpl.c \
