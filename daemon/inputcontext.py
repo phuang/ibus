@@ -249,10 +249,8 @@ class InputContext(ibus.Object):
         self.__cursor_pos = cursor_pos
         self.__preedit_visible = visible
         if self.__support_preedit:
-            print "update preedit im module"
             self.__proxy.UpdatePreedit(text, attrs, cursor_pos, visible)
         else:
-            print "update preedit panel"
             # show preedit on panel
             self.emit("update-preedit", text, attrs, cursor_pos, visible)
 

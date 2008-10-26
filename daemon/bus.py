@@ -161,14 +161,6 @@ class IBus(ibus.Object):
             self.__focused_context = None
             self.__panel.focus_out(context.get_path())
 
-    def is_enabled(self, ic, conn):
-        context = self.__lookup_context(ic, conn)
-        return context.is_enabled()
-
-    def set_capabilities(self, ic, caps, conn):
-        context = self.__lookup_context(ic, conn)
-        return context.set_capabilities(caps)
-
     def process_key_event(self, ic, keyval, is_press, state,
                                 conn, reply_cb, error_cb):
         context = self.__lookup_context(ic, conn)
@@ -272,26 +264,26 @@ class IBus(ibus.Object):
     def __install_context_handlers(self, context):
         # Install all callback functions
         signals = (
-            ("focus-in", lambda c: self.focus_in(c)),
-            ("focus-out", lambda c: self.focus_out(c)),
+            ("focus-in",            lambda c: self.focus_in(c)),
+            ("focus-out",           lambda c: self.focus_out(c)),
             ("set-cursor-location", self.__set_cursor_location_cb),
-            ("update-preedit", self.__update_preedit_cb),
-            ("show-preedit", self.__show_preedit_cb),
-            ("hide-preedit", self.__hide_preedit_cb),
-            ("update-aux-string", self.__update_aux_string_cb),
-            ("show-aux-string", self.__show_aux_string_cb),
-            ("hide-aux-string", self.__hide_aux_string_cb),
+            ("update-preedit",      self.__update_preedit_cb),
+            ("show-preedit",        self.__show_preedit_cb),
+            ("hide-preedit",        self.__hide_preedit_cb),
+            ("update-aux-string",   self.__update_aux_string_cb),
+            ("show-aux-string",     self.__show_aux_string_cb),
+            ("hide-aux-string",     self.__hide_aux_string_cb),
             ("update-lookup-table", self.__update_lookup_table_cb),
-            ("show-lookup-table", self.__show_lookup_table_cb),
-            ("hide-lookup-table", self.__hide_lookup_table_cb),
-            ("page-up-lookup-table", self.__page_up_lookup_table_cb),
-            ("page-down-lookup-table", self.__page_down_lookup_table_cb),
-            ("cursor-up-lookup-table", self.__cursor_up_lookup_table_cb),
-            ("cursor-down-lookup-table", self.__cursor_down_lookup_table_cb),
+            ("show-lookup-table",   self.__show_lookup_table_cb),
+            ("hide-lookup-table",   self.__hide_lookup_table_cb),
+            ("page-up-lookup-table",        self.__page_up_lookup_table_cb),
+            ("page-down-lookup-table",      self.__page_down_lookup_table_cb),
+            ("cursor-up-lookup-table",      self.__cursor_up_lookup_table_cb),
+            ("cursor-down-lookup-table",    self.__cursor_down_lookup_table_cb),
             ("register-properties", self.__register_properties_cb),
-            ("update-property", self.__update_property_cb),
-            ("engine-lost", self.__engine_lost_cb),
-            ("destroy", self.__context_destroy_cb)
+            ("update-property",     self.__update_property_cb),
+            ("engine-lost",         self.__engine_lost_cb),
+            ("destroy",             self.__context_destroy_cb)
         )
         for name, handler in signals:
             context.connect(name, handler)
@@ -619,14 +611,11 @@ class IBusProxy(ibus.IIBus):
         self.__conn = None
         self.__ibus = None
 
-    def GetIBusAddress(self, dbusconn):
-        return self.__ibus_addr
+    def GetAddress(self, dbusconn):
+        return self.__ibus.get_address()
 
     def CreateInputContext(self, context_name, dbusconn):
         return self.__ibus.create_input_context(context_name, self.__conn)
-
-    def ReleaseInputContext(self, ic, dbusconn):
-        self.__ibus.release_input_context(ic, self.__conn)
 
     def RegisterFactories(self, object_paths, dbusconn):
         self.__ibus.register_factories(object_paths, self.__conn)
@@ -639,14 +628,6 @@ class IBusProxy(ibus.IIBus):
 
     def RegisterConfig(self, object_path, replace, dbusconn):
         self.__ibus.register_config(object_path, replace, self.__conn)
-
-    def ProcessKeyEvent(self, ic, keyval, is_press, state, \
-                            dbusconn, reply_cb, error_cb):
-        try:
-            self.__ibus.process_key_event(ic, keyval, is_press, state,
-                            self.__conn, reply_cb, error_cb)
-        except Exception, e:
-            error_cb(e)
 
     def GetFactories(self, dbusconn):
         return self.__ibus.get_factories()
