@@ -57,13 +57,10 @@ class IBus(ibus.Object):
         self.__no_engine_notification_show = True
 
         self.__config = DummyConfig()
-        self.__config_handlers = list()
-        self.__install_config_handlers()
 
         self.__register = Register()
 
         self.__focused_context = None
-        self.__last_focused_context = None
         self.__context_handlers = list()
 
         self.__connections = list()
@@ -142,40 +139,28 @@ class IBus(ibus.Object):
         if self.__default_factory != None:
             engine = self.__default_factory.create_engine()
             context.set_engine(engine)
+        context.connect("focus-in", lambda c: self.focus_in(c))
+        context.connect("focus-out", lambda c: self.focus_out(c))
+        context.connect("destroy", lambda c: self.focus_out(c))
         return context.get_path()
 
     def release_input_context(self, ic, conn):
         self.__context_manager.release_input_context(ic, conn)
 
-    def focus_in(self, ic, conn):
-        context = self.__lookup_context(ic, conn)
-        if not context.get_support_focus():
-            return
-        if self.__focused_context != context and self.__focused_context != None:
-            self.__remove_focused_context_handlers()
+    def focus_in(self, context):
+        if self.__focused_context != None:
+            if context == None:
+                return
             self.__focused_context.focus_out()
-
+        
         self.__focused_context = context
-        self.__install_focused_context_handlers()
+        self.__panel.focus_in(context.get_path())
 
-        self.__panel.focus_in(context.get_id())
-        self.__last_focused_context = context
-        context.focus_in()
-        self.__prev_key = None
-
-    def focus_out(self, ic, conn):
-        context = self.__lookup_context(ic, conn)
-
+    def focus_out(self, context):
         if context == self.__focused_context:
             self.__remove_focused_context_handlers()
             self.__focused_context = None
-            self.__panel.focus_out(context.get_id())
-
-        context.focus_out()
-
-    def reset(self, ic, conn):
-        context = self.__lookup_context(ic, conn)
-        context.reset()
+            self.__panel.focus_out(context.get_path())
 
     def is_enabled(self, ic, conn):
         context = self.__lookup_context(ic, conn)
@@ -525,24 +510,10 @@ class IBus(ibus.Object):
     ##########################################################
     def __config_changed(self, bus_name):
         ibusconn = _dbus.bus.get_connection_by_name(bus_name)
-        self.__uninstall_config_handlers()
         self.__config.destroy()
         self.__config = Config(ibusconn)
-        self.__install_config_handlers()
+        self.__config.connect("value-changed", self.__config_value_changed_cb)
         gobject.idle_add (self.__config_load_settings)
-
-    def __install_config_handlers(self):
-        signals = (
-            ("value-changed", self.__config_value_changed_cb),
-            ("destroy", self.__config_destroy_cb),
-        )
-        for signal, handler in signals:
-            id = self.__config.connect(signal, handler)
-            self.__config_handlers.append(id)
-
-    def __uninstall_config_handlers(self):
-        map(lambda id:self.__config.disconnect(id), self.__config_handlers)
-        self.__config_handlers = list()
 
     def __parse_shortcut_string(self, string):
         keys = string.split("+")

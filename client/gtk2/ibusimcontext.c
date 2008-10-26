@@ -219,9 +219,9 @@ static void
 ibus_im_context_init (GObject *obj)
 {
 
-    IBusIMContext *context = IBUS_IM_CONTEXT (obj);
-    IBusIMContextPrivate *priv = context->priv =
-        G_TYPE_INSTANCE_GET_PRIVATE (obj, IBUS_TYPE_IM_CONTEXT, IBusIMContextPrivate);
+    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (obj);
+    IBusIMContextPrivate *priv = ibuscontext->priv =
+        G_TYPE_INSTANCE_GET_PRIVATE (ibuscontext, IBUS_TYPE_IM_CONTEXT, IBusIMContextPrivate);
 
     priv->client_window = NULL;
 
@@ -261,7 +261,7 @@ ibus_im_context_init (GObject *obj)
                 "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
 
     if (ibus_bus_is_connected (_bus)) {
-        _create_input_context (context);
+        _create_input_context (ibuscontext);
     }
 
     g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), obj);
@@ -380,15 +380,17 @@ ibus_im_context_reset (GtkIMContext *context)
 
 static void
 ibus_im_context_get_preedit_string (GtkIMContext   *context,
-                   gchar         **str,
-                   PangoAttrList **attrs,
-                   gint           *cursor_pos)
+                                    gchar         **str,
+                                    PangoAttrList **attrs,
+                                    gint           *cursor_pos)
 {
-    g_return_if_fail (context != NULL);
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+    g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibus = IBUS_IM_CONTEXT (context);
-    IBusIMContextPrivate *priv = ibus->priv;
+    IBusIMContext *ibuscontext;
+    IBusIMContextPrivate *priv;
+    
+    ibuscontext = IBUS_IM_CONTEXT (context);
+    priv = ibuscontext->priv;
 
     if (priv->enable) {
         if (priv->preedit_visible) {

@@ -28,21 +28,30 @@ import gobject
 class Object(gobject.GObject):
     __gsignals__ = {
         'destroy' : (
-            gobject.SIGNAL_RUN_FIRST, 
+            gobject.SIGNAL_RUN_LAST, 
             gobject.TYPE_NONE,
             ())
     }
 
     def __init__(self):
         super(Object, self).__init__()
-        self._destroyed = False
+        self.__destroyed = False
+        self.__handlers = []
 
     def destroy(self):
-        if not self._destroyed:
+        if not self.__destroyed:
             self.emit("destroy")
-            self._destroyed = True
+            self.__destroyed = True
 
     def do_destroy(self):
-        pass
+        self.__disconnect_all()
+
+    def connect(self, signal_name, handler, *args):
+        id = super(Object, self).connect(signal_name, handler, *args)
+        self.__handlers.append(id)
+
+    def __disconnect_all(self):
+        map(self.disconnect, self.__handlers)
+        self.__handlers = []
 
 gobject.type_register(Object)

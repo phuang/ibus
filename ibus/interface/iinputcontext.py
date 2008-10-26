@@ -72,6 +72,12 @@ class IInputContext(dbus.service.Object):
     #sigals
     @signal(signature="s")
     def CommitString(self, text): pass
+    
+    @signal()
+    def Enabled(self): pass
+    
+    @signal()
+    def Disabled(self): pass
 
     @signal(signature="ubu")
     def ForwardKeyEvent(self, keyval, is_press, state): pass

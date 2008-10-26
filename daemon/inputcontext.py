@@ -90,6 +90,18 @@ class InputContext(ibus.Object):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             (gobject.TYPE_PYOBJECT, )),
+        "focus-in" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "focus-out" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "reset" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
         "engine-lost" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
@@ -152,14 +164,17 @@ class InputContext(ibus.Object):
     def focus_in(self):
         if self.__engine and self.__enable:
             self.__engine.focus_in()
+        self.emit("focus-in")
 
     def focus_out(self):
         if self.__engine and self.__enable:
             self.__engine.focus_out()
+        self.emit("focus-out")
 
     def reset(self):
         if self.__engine and self.__enable:
             self.__engine.reset()
+        self.emit("reset")
 
     def page_up(self):
         if self.__engine and self.__enable:
@@ -327,7 +342,6 @@ class InputContext(ibus.Object):
             return
 
         if self.__engine != None:
-            self.__remove_engine_handlers()
             self.__engine.destroy()
             self.__engine = None
 
@@ -343,8 +357,6 @@ class InputContext(ibus.Object):
         return None
 
     def __engine_destroy_cb(self, engine):
-        if self.__engine == engine:
-            self.__remove_engine_handlers()
         self.__engine = None
         self.__enable = False
         self.update_preedit (u"", ibus.AttrList().to_dbus_value(), 0 , False)
@@ -353,7 +365,6 @@ class InputContext(ibus.Object):
 
     def __ibusconn_destroy_cb(self, ibusconn):
         if self.__engine != None:
-            self.__remove_engine_handlers()
             self.__engine.destroy()
             self.__engine = None
         self.destroy()
@@ -403,12 +414,6 @@ class InputContext(ibus.Object):
         if not self.__enable:
             return
         self.emit("update-property", prop)
-
-    def __remove_engine_handlers(self):
-        assert self.__engine != None
-
-        map(self.__engine.disconnect, self.__engine_handlers)
-        del self.__engine_handlers[:]
 
     def __install_engine_handlers(self):
         signals = (
