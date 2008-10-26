@@ -96,12 +96,13 @@ class InputContext(ibus.Object):
             ()),
     }
 
-    def __init__(self, name, ibusconn):
+    def __init__(self, name, ibusconn, path):
         super(InputContext, self).__init__()
         self.__id = "%d" % InputContext.id
         InputContext.id += 1
         self.__ibusconn = ibusconn
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
+        self.__proxy = IInputContextProxy(self, ibusconn, path)
 
         # init default values
         self.__enable = False
@@ -215,34 +216,111 @@ class InputContext(ibus.Object):
                     self.__engine.disable()
 
     def commit_string(self, text):
-        self.__ibusconn.emit_dbus_signal("CommitString", self.__id, text)
+        if not self.__enable:
+            return
+
+        self.__proxy.CommitString(text)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
+        if not self.__enable:
+            return
+
         self.__preedit_string = text
         self.__preedit_attrs = attrs
         self.__cursor_pos = cursor_pos
         self.__preedit_visible = visible
         if self.__support_preedit:
-            self.__ibusconn.emit_dbus_signal("UpdatePreedit", self.__id, text, attrs, cursor_pos, visible)
+            self.__proxy.UpdatePreedit(text, attrs, cursor_pos, visible)
         else:
             # show preedit on panel
             self.emit("update-preedit", text, attrs, cursor_pos, visible)
 
     def show_preedit(self):
+        if not self.__enable:
+            return
+
         self.__preedit_visible = True
         if self.__support_preedit:
-            self.__ibusconn.emit_dbus_signal("ShowPreedit", self.__id)
+            self.__proxy.ShowPreedit()
         else:
             # show preedit on panel
             self.emit("show-preedit")
-
+    
     def hide_preedit(self):
+        if not self.__enable:
+            return
+
         self.__preedit_visible = False
         if self.__support_preedit:
-            self.__ibusconn.emit_dbus_signal("HidePreedit", self.__id)
+            self.__proxy.HidePreedit()
         else:
             # show preedit on panel
-            self.emit("hide-preedit")
+            self.emit("show-preedit")
+   
+    def update_aux_string(self, text, attrs, visible):
+        if not self.__enable:
+            return
+
+        self.__aux_string = text
+        self.__aux_attrs = attrs
+        self.__aux_visible = visible
+        if self.__support_aux_string:
+            self.__proxy.UpdateAuxString(text, attrs, visible)
+        else:
+            # show aux string on panel
+            self.emit("update-aux-string", text, attrs, visible)
+
+    def show_aux_string(self):
+        if not self.__enable:
+            return
+
+        self.__aux_string_visible = True
+        if self.__support_aux_string:
+            self.__proxy.ShowAuxString()
+        else:
+            # show aux string on panel
+            self.emit("show-aux-string")
+
+    def hide_aux_string(self):
+        if not self.__enable:
+            return
+
+        self.__aux_string_visible = False
+        if self.__support_aux_string:
+            self.__proxy.HideAuxString()
+        else:
+            # show aux string on panel
+            self.emit("hide-aux-string")
+    
+    def update_lookup_table(self, table, visible):
+        if not self.__enable:
+            return
+
+        if self.__support_lookup_table:
+            self.__proxy.UpdateLookupTable(table, visible)
+        else:
+            # show lookup table on panel
+            self.emit("update-lookup-table", table, visible)
+
+    def show_lookup_table(self):
+        if not self.__enable:
+            return
+
+        if self.__support_lookup_table:
+            self.__proxy.ShowLookupTable()
+        else:
+            # show lookup table on panel
+            self.emit("show-lookup-table")
+
+    def hide_lookup_table(self):
+        if not self.__enable:
+            return
+
+        if self.__support_lookup_table:
+            self.__proxy.HideLookupTable()
+        else:
+            # show aux string on panel
+            self.emit("hide-lookup-table")
 
     def set_engine(self, engine):
         if self.__engine == engine:
@@ -269,14 +347,8 @@ class InputContext(ibus.Object):
             self.__remove_engine_handlers()
         self.__engine = None
         self.__enable = False
-        if self.__support_preedit:
-            self.__ibusconn.emit_dbus_signal("UpdatePreedit",
-                                self.__id,
-                                u"",
-                                ibus.AttrList().to_dbus_value(),
-                                0,
-                                False)
-        self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
+        self.update_preedit (u"", ibus.AttrList().to_dbus_value(), 0 , False)
+        self.__proxy.Disabled()
         self.emit("engine-lost")
 
     def __ibusconn_destroy_cb(self, ibusconn):
@@ -286,131 +358,48 @@ class InputContext(ibus.Object):
             self.__engine = None
         self.destroy()
 
-    def __commit_string_cb(self, engine, text):
-        if not self.__enable:
-            return
-        self.commit_string(text)
-
-    def __update_preedit_cb(self, engine, text, attrs, cursor_pos, visible):
-        if not self.__enable:
-            return
-        self.update_preedit(text, attrs, cursor_pos, visible)
-
-    def __show_preedit_cb(self, engine):
-        if not self.__enable:
-            return
-        self.show_preedit()
-
-    def __hide_preedit_cb(self, engine):
-        if not self.__enable:
-            return
-        self.hide_preedit()
-
-    def __update_aux_string_cb(self, engine, text, attrs, visible):
-        if not self.__enable:
-            return
-        self.__aux_string = text
-        self.__aux_attrs = attrs
-        self.__aux_visible = visible
-
-        if self.__support_aux_string:
-            self.__ibusconn.emit_dbus_signal("UpdateAuxString", self.__id, text, attrs, visible)
-        else:
-            self.emit("update-aux-string", text, attrs, visible)
-
-    def __show_aux_string_cb(self, engine):
-        if not self.__enable:
-            return
-        self.__aux_visible = True
-
-        if self.__support_aux_string:
-            self.__ibusconn.emit_dbus_signal("ShowAuxString", self.__id)
-        else:
-            self.emit("show-aux-string")
-
-    def __hide_aux_string_cb(self, engine):
-        if not self.__enable:
-            return
-        self.__aux_visible = False
-
-        if self.__support_aux_string:
-            self.__ibusconn.emit_dbus_signal("HideAuxString", self.__id)
-        else:
-            self.emit("hide-aux-string")
-
-    def __update_lookup_table_cb(self, engine, lookup_table, visible):
-        if not self.__enable:
-            return
-        self.__lookup_table = lookup_table
-        self.__lookup_table_visible = visible
-
-        if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("UpdateLookupTable", self.__id, lookup_table, visible)
-        else:
-            self.emit("update-lookup-table", lookup_table, visible)
-
-    def __show_lookup_table_cb(self, engine):
-        if not self.__enable:
-            return
-        self.__lookup_table_visible = True
-
-        if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("ShowLookupTable", self.__id)
-        else:
-            self.emit("show-lookup-table")
-
-    def __hide_lookup_table_cb(self, engine):
-        if not self.__enable:
-            return
-        self.__lookup_table_visible = False
-
-        if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("HideLookupTable", self.__id)
-        else:
-            self.emit("hide-lookup-table")
-
-    def __page_up_lookup_table_cb(self, engine):
+    def page_up_lookup_table(self):
         if not self.__enable:
             return
 
         if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("PageUpLookupTable", self.__id)
+            self.__proxy.PageUpLookupTable()
         else:
             self.emit("page-up-lookup-table")
 
-    def __page_down_lookup_table_cb(self, engine):
+    def page_down_lookup_table(self):
         if not self.__enable:
             return
 
         if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("PageDownLookupTable", self.__id)
+            self.__proxy.PageDownLookupTable()
         else:
             self.emit("page-down-lookup-table")
 
-    def __cursor_up_lookup_table_cb(self, engine):
+    def cursor_up_lookup_table(self):
         if not self.__enable:
             return
 
         if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("CursorUpLookupTable", self.__id)
+            self.__proxy.CursorUpLookupTable()
         else:
             self.emit("cursor-up-lookup-table")
 
-    def __cursor_down_lookup_table_cb(self, engine):
+    def cursor_down_lookup_table(self):
         if not self.__enable:
             return
 
         if self.__support_lookup_table:
-            self.__ibusconn.emit_dbus_signal("CursorDownLookupTable", self.__id)
+            self.__proxy.CursorDownLookupTable()
         else:
             self.emit("cursor-down-lookup-table")
 
-    def __register_properties_cb(self, engine, props):
+    def register_properties(self, props):
         if not self.__enable:
             return
         self.emit("register-properties", props)
 
-    def __update_property_cb(self, engine, prop):
+    def update_property(self, prop):
         if not self.__enable:
             return
         self.emit("update-property", prop)
@@ -423,23 +412,23 @@ class InputContext(ibus.Object):
 
     def __install_engine_handlers(self):
         signals = (
-            ("destroy", self.__engine_destroy_cb),
-            ("commit-string", self.__commit_string_cb),
-            ("update-preedit", self.__update_preedit_cb),
-            ("show-preedit", self.__show_preedit_cb),
-            ("hide-preedit", self.__hide_preedit_cb),
-            ("update-aux-string", self.__update_aux_string_cb),
-            ("show-aux-string", self.__show_aux_string_cb),
-            ("hide-aux-string", self.__hide_aux_string_cb),
-            ("update-lookup-table", self.__update_lookup_table_cb),
-            ("show-lookup-table", self.__show_lookup_table_cb),
-            ("hide-lookup-table", self.__hide_lookup_table_cb),
-            ("page-up-lookup-table", self.__page_up_lookup_table_cb),
-            ("page-down-lookup-table", self.__page_down_lookup_table_cb),
-            ("cursor-up-lookup-table", self.__cursor_up_lookup_table_cb),
-            ("cursor-down-lookup-table", self.__cursor_down_lookup_table_cb),
-            ("register-properties", self.__register_properties_cb),
-            ("update-property", self.__update_property_cb)
+            ("destroy",                     self.__engine_destroy_cb),
+            ("commit-string",               lambda e, t: self.commit_string(t)),
+            ("update-preedit",              lambda e, t, a, c, v: self.update_preedit(t, a, c, v)),
+            ("show-preedit",                lambda e: self.show_preedit()),
+            ("hide-preedit",                lambda e: self.hide_preedit()),
+            ("update-aux-string",           lambda e, t, a, v: self.update_aux_string(t, a, v)),
+            ("show-aux-string",             lambda e: self.show_aux_string()),
+            ("hide-aux-string",             lambda e: self.hide_aux_string()),
+            ("update-lookup-table",         lambda e, t, v: self.update_lookup_table(t, v)),
+            ("show-lookup-table",           lambda e: self.show_lookup_table()),
+            ("hide-lookup-table",           lambda e: self.hide_lookup_table()),
+            ("page-up-lookup-table",        lambda e: self.page_up_lookup_table()),
+            ("page-down-lookup-table",      lambda e: self.page_down_lookup_table()),
+            ("cursor-up-lookup-table",      lambda e: self.cursor_up_lookup_table()),
+            ("cursor-down-lookup-table",    lambda e: self.cursor_down_lookup_table()),
+            ("register-properties",         lambda e, p: self.register_properties(p)),
+            ("update-property",             lambda e, p: self.update_property(p))
         )
 
         for signal, handler in signals:
@@ -488,20 +477,3 @@ class InputContextProxy(ibus.IInputContext):
         self.__context = None
         self.__conn = None
 
-    def CommitString(self, text):
-        pass
-
-    def UpdatePreedit(self, text, attrs, cursor_pos, visible):
-        pass
-
-    def UpdateAuxString(self, text, attrs, visible):
-        pass
-
-    def UpdateLookupTable(self, table, visible):
-        pass
-
-    def Enabled(self):
-        pass
-
-    def Disabled(self):
-        pass

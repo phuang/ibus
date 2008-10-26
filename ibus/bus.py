@@ -128,7 +128,7 @@ class Bus(ibus.Object):
         self.__unique_name = self.hello()
 
         try:
-            unique_name = self.get_name_owner(ibus.IBUS_CONFIG_NAME)
+            unique_name = self.get_name_owner(ibus.IBUS_SERVICE_CONFIG)
             self.__config = self.__dbusconn.get_object(unique_name,
                                             ibus.IBUS_PATH_CONFIG)
         except:
@@ -137,7 +137,7 @@ class Bus(ibus.Object):
             "type='signal',"
             "interface='" + dbus.BUS_DAEMON_IFACE + "',"
             "member='NameOwnerChanged',"
-            "arg0='" + ibus.IBUS_CONFIG_NAME + "'")
+            "arg0='" + ibus.IBUS_SERVICE_CONFIG + "'")
 
     def get_name(self):
         return self.__unique_name
@@ -222,7 +222,7 @@ class Bus(ibus.Object):
     def config_add_watch(self, section):
         return self.add_match(
                     "type='signal',"
-                    "interface='" + ibus.IBUS_CONFIG_NAME + "',"
+                    "interface='" + ibus.IBUS_IFACE_CONFIG + "',"
                     "member='ValueChanged',"
                     "arg0='" + section + "'"
                     )
@@ -230,7 +230,7 @@ class Bus(ibus.Object):
     def config_remove_watch(self, section):
         return self.remove_match(
                     "type='signal',"
-                    "interface='" + ibus.IBUS_CONFIG_NAME + "',"
+                    "interface='" + ibus.IBUS_IFACE_CONFIG + "',"
                     "member='ValueChanged',"
                     "arg0='" + section + "'"
                     )
@@ -270,7 +270,7 @@ class Bus(ibus.Object):
         # name owner changed signal
         if message.is_signal(dbus.BUS_DAEMON_IFACE, "NameOwnerChanged"):
             args = message.get_args_list()
-            if args[0] == ibus.IBUS_CONFIG_NAME:
+            if args[0] == ibus.IBUS_SERVICE_CONFIG:
                 if args[2] != "":
                     self.__config = self.__dbusconn.get_object(args[2], ibus.IBUS_PATH_CONFIG)
                 else:

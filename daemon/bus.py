@@ -84,11 +84,11 @@ class IBus(ibus.Object):
         self.__default_factory = None
 
     def __dbus_name_owner_changed_cb(self, bus, name, old_name, new_name):
-        if name == ibus.IBUS_PANEL_NAME:
+        if name == ibus.IBUS_SERVICE_PANEL:
             self.__panel_changed(new_name)
-        elif name == ibus.IBUS_CONFIG_NAME:
+        elif name == ibus.IBUS_SERVICE_CONFIG:
             self.__config_changed(new_name)
-        elif name == ibus.IBUS_NOTIFICATIONS_NAME:
+        elif name == ibus.IBUS_SERVICE_NOTIFICATIONS:
             self.__notifications_changed(new_name)
 
     def __factory_manager_default_factory_changed_cb(self, manager, factory):

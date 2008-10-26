@@ -25,12 +25,12 @@ __all__ = (
         "PanelButton",
         "PanelToggleButton",
         "PanelMenu",
-        "IBUS_PANEL_NAME",
-        "IBUS_PANEL_PATH"
+        "IBUS_SERVICE_PANEL",
+        "IBUS_PATH_PANEL"
     )
 
-IBUS_PANEL_NAME = "org.freedesktop.ibus.Panel"
-IBUS_PANEL_PATH = "/org/freedesktop/ibus/Panel"
+IBUS_SERVICE_PANEL = "org.freedesktop.ibus.Panel"
+IBUS_PATH_PANEL = "/org/freedesktop/ibus/Panel"
 
 import ibus
 from ibus import interface
@@ -151,7 +151,7 @@ class PanelBase(ibus.Object):
 
 class PanelProxy(interface.IPanel):
     def __init__ (self, panel, dbusconn):
-        super(PanelProxy, self).__init__(dbusconn, IBUS_PANEL_PATH)
+        super(PanelProxy, self).__init__(dbusconn, IBUS_PATH_PANEL)
         self.__dbusconn = dbusconn
         self.__panel = panel
 

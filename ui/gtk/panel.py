@@ -97,7 +97,7 @@ class Panel(ibus.PanelBase):
         self.__config_load_lookup_table_orientation()
         self.__config_load_auto_hide()
         self.__config_load_custom_font()
-        self.__bus.request_name(ibus.panel.IBUS_PANEL_NAME, 0)
+        self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
     def set_cursor_location(self, x, y, w, h):
         self.__candidate_panel.set_cursor_location(x + w, y + h)

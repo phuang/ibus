@@ -34,7 +34,7 @@ class GconfApplication:
 
         self.__config = config.Config(self.__bus)
         self.__config.connect("destroy", self.__config_destroy_cb)
-        self.__bus.request_name(ibus.IBUS_CONFIG_NAME, 0)
+        self.__bus.request_name(ibus.IBUS_SERVICE_CONFIG, 0)
 
     def run(self):
         self.__mainloop.run()

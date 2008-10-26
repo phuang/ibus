@@ -21,12 +21,12 @@
 
 __all__ = (
         "ConfigBase",
-        "IBUS_CONFIG_NAME",
-        "IBUS_CONFIG_PATH"
+        "IBUS_SERVICE_CONFIG",
+        "IBUS_PATH_CONFIG"
     )
 
-IBUS_CONFIG_NAME = "org.freedesktop.ibus.Config"
-IBUS_CONFIG_PATH = "/org/freedesktop/ibus/Config"
+IBUS_SERVICE_CONFIG = "org.freedesktop.ibus.Config"
+IBUS_PATH_CONFIG = "/org/freedesktop/ibus/Config"
 
 import ibus
 from ibus import interface
@@ -48,7 +48,7 @@ class ConfigBase(ibus.Object):
 
 class ConfigProxy(interface.IConfig):
     def __init__ (self, config, dbusconn):
-        super(ConfigProxy, self).__init__(dbusconn, IBUS_CONFIG_PATH)
+        super(ConfigProxy, self).__init__(dbusconn, IBUS_PATH_CONFIG)
         self.__dbusconn = dbusconn
         self.__config = config
 
