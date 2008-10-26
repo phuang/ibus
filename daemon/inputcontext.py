@@ -96,13 +96,13 @@ class InputContext(ibus.Object):
             ()),
     }
 
-    def __init__(self, name, ibusconn, path):
+    def __init__(self, name, ibusconn):
         super(InputContext, self).__init__()
-        self.__id = "%d" % InputContext.id
-        InputContext.id += 1
         self.__ibusconn = ibusconn
         self.__ibusconn.connect("destroy", self.__ibusconn_destroy_cb)
-        self.__proxy = IInputContextProxy(self, ibusconn, path)
+        self.__path = ibus.IBUS_PATH_IBUS + "/" + str(InputContext.id)
+        InputContext.id += 1
+        self.__proxy = InputContextProxy(self, ibusconn, self.__path)
 
         # init default values
         self.__enable = False
@@ -128,8 +128,8 @@ class InputContext(ibus.Object):
         self.__lookup_table = None
         self.__lookup_table_visible = False
 
-    def get_id(self):
-        return self.__id;
+    def get_path(self):
+        return self.__path;
 
     def get_preedit_string(self):
         return self.__preedit_string, self.__preedit_attrs, self.__cursor_pos

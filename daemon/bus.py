@@ -142,7 +142,7 @@ class IBus(ibus.Object):
         if self.__default_factory != None:
             engine = self.__default_factory.create_engine()
             context.set_engine(engine)
-        return context.get_id()
+        return context.get_path()
 
     def release_input_context(self, ic, conn):
         self.__context_manager.release_input_context(ic, conn)

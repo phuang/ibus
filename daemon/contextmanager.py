@@ -29,7 +29,7 @@ class ContextManager(ibus.Object):
 
     def create_input_context(self, name, ibusconn):
         context = InputContext(name, ibusconn)
-        self._contexts[context.get_id()] = context
+        self._contexts[context.get_path()] = context
         context.connect("destroy", self._context_destroy_cb)
         return context
 
@@ -41,5 +41,5 @@ class ContextManager(ibus.Object):
         return self._contexts[ic]
 
     def _context_destroy_cb(self, context):
-        del self._contexts[context.get_id()]
+        del self._contexts[context.get_path()]
 
