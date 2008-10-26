@@ -46,6 +46,9 @@ class IIBus(dbus.service.Object):
     @method(in_signature="s", out_signature="o")
     def CreateInputContext(self, client_name, dbusconn): pass
 
+    @method(in_signature="s", out_signature="sb")
+    def GetInputContextStates(self, ic, dbusconn): pass
+    
     # methods for ibus engine provide
     @method(in_signature="ao")
     def RegisterFactories(self, object_paths, dbusconn): pass

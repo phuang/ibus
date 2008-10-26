@@ -402,6 +402,8 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
             goto failed;
         dbus_message_iter_get_basic (&iter, &text);
+        dbus_message_iter_next (&iter);
+
         attr_list = ibus_attr_list_from_dbus_message (&iter);
         if (attr_list == NULL)
             goto failed;
@@ -410,11 +412,14 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &cursor_pos);
+        dbus_message_iter_next (&iter);
+        
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
             ibus_attr_list_unref (attr_list);
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &visible);
+        dbus_message_iter_next (&iter);
 
         g_signal_emit (context,
                        context_signals[UPDATE_PREEDIT],
@@ -440,6 +445,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
             goto failed;
         dbus_message_iter_get_basic (&iter, &text);
+        dbus_message_iter_next (&iter);
         
         attr_list = ibus_attr_list_from_dbus_message (&iter);
         if (attr_list == NULL)
@@ -450,6 +456,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &visible);
+        dbus_message_iter_next (&iter);
 
         g_signal_emit (context,
                        context_signals[UPDATE_AUX_STRING],
@@ -480,6 +487,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
             goto failed;
         }
         dbus_message_iter_get_basic (&iter, &visible);
+        dbus_message_iter_next (&iter);
 
         g_signal_emit (context,
                        context_signals[UPDATE_LOOKUP_TABLE],

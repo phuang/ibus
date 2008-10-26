@@ -135,13 +135,12 @@ class IBus(ibus.Object):
 
     def create_input_context(self, name, conn):
         context = self.__context_manager.create_input_context(name, conn)
+        self.__install_context_handlers(context)
+        
         self.__load_default_factory()
         if self.__default_factory != None:
             engine = self.__default_factory.create_engine()
             context.set_engine(engine)
-        context.connect("focus-in", lambda c: self.focus_in(c))
-        context.connect("focus-out", lambda c: self.focus_out(c))
-        context.connect("destroy", lambda c: self.focus_out(c))
         return context.get_path()
 
     def release_input_context(self, ic, conn):
@@ -271,11 +270,11 @@ class IBus(ibus.Object):
     def __lookup_context(self, ic, conn):
         return self.__context_manager.lookup_context(ic, conn)
 
-    def __install_focused_context_handlers(self):
+    def __install_context_handlers(self, context):
         # Install all callback functions
-        if self.__focused_context == None:
-            return
         signals = (
+            ("focus-in", lambda c: self.focus_in(c)),
+            ("focus-out", lambda c: self.focus_out(c)),
             ("update-preedit", self.__update_preedit_cb),
             ("show-preedit", self.__show_preedit_cb),
             ("hide-preedit", self.__hide_preedit_cb),
@@ -295,8 +294,7 @@ class IBus(ibus.Object):
             ("destroy", self.__context_destroy_cb)
         )
         for name, handler in signals:
-            id = self.__focused_context.connect(name, handler)
-            self.__context_handlers.append(id)
+            context.connect(name, handler)
 
     def __remove_focused_context_handlers(self):
         if self.__focused_context == None:
@@ -305,74 +303,90 @@ class IBus(ibus.Object):
         self.__context_handlers = []
 
     def __update_preedit_cb(self, context, text, attrs, cursor_pos, visible):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.update_preedit(text, attrs, cursor_pos, visible)
 
     def __show_preedit_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.show_preedit()
 
     def __hide_preedit_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.hide_preedit()
 
     def __update_aux_string_cb(self, context, text, attrs, visible):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.update_aux_string(text, attrs, visible)
 
     def __show_aux_string_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.show_aux_string()
 
     def __hide_aux_string_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.hide_aux_string()
 
     def __update_lookup_table_cb(self, context, lookup_table, visible):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.update_lookup_table(lookup_table, visible)
 
     def __show_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.show_lookup_table()
 
     def __hide_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.hide_lookup_table()
 
     def __page_up_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.page_up_lookup_table()
 
     def __page_down_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.page_down_lookup_table()
 
     def __cursor_up_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.cursor_up_lookup_table()
 
     def __cursor_down_lookup_table_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.cursor_down_lookup_table()
 
     def __register_properties_cb(self, context, props):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.register_properties(props)
 
 
     def __update_property_cb(self, context, prop):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.update_property(prop)
 
     def __engine_lost_cb(self, context):
-        assert self.__focused_context == context
+        if self.__focused_context != context:
+            return
         self.__panel.reset()
 
     def __context_destroy_cb(self, context):
-        assert context == self.__focused_context
-        self.__remove_focused_context_handlers()
-        self.__panel.focus_out(context.get_id())
+        if context != self.__focused_context:
+            return
+        self.__panel.focus_out(context.get_path())
         self.__focused_context = None
 
     ##########################################################

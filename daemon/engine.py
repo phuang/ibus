@@ -110,6 +110,7 @@ class Engine(ibus.Object):
         return self.__object_path
 
     def handle_dbus_signal(self, message):
+        print "dbus signal name = %s" % message.get_member()
         if message.is_signal(ibus.IBUS_IFACE_ENGINE, "CommitString"):
             args = message.get_args_list()
             self.emit("commit-string", args[0])

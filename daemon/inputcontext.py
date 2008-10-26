@@ -220,23 +220,23 @@ class InputContext(ibus.Object):
         if self.__enable != enable:
             self.__enable = enable
             if self.__enable:
-                self.__ibusconn.emit_dbus_signal("Enabled", self.__id)
+                self.__proxy.Enabled()
                 if self.__engine:
                     self.__engine.enable()
                     self.__engine.focus_in()
             else:
                 self.hide_preedit()
-                self.__ibusconn.emit_dbus_signal("Disabled", self.__id)
+                self.__proxy.Disabled()
                 if self.__engine:
                     self.__engine.disable()
 
     def commit_string(self, text):
         if not self.__enable:
             return
-
         self.__proxy.CommitString(text)
 
     def update_preedit(self, text, attrs, cursor_pos, visible):
+        print "update preedit"
         if not self.__enable:
             return
 
@@ -474,7 +474,7 @@ class InputContextProxy(ibus.IInputContext):
     def SetCapabilities(self, caps):
         return self.__context.set_capabilities(caps)
 
-    def GetInputContextStates(self):
+    def GetStates(self):
         return self.__context.get_states()
 
     def Destroy(self):
