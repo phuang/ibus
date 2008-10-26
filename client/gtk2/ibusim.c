@@ -43,15 +43,8 @@ im_module_init (GTypeModule *type_module)
 {
     /* make module resident */
     g_type_module_use (type_module);
+    
     ibus_im_context_register_type(type_module);
-#if 0
-    gchar **p = environ;
-    extern gchar **environ;
-    while (*p != NULL) {
-        g_fprintf (stderr, "%s\n", *p);
-        p ++;
-    }
-#endif
 }
 
 void
