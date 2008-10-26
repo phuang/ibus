@@ -447,9 +447,9 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
                                             priv->interface,
                                             method);
     va_start (args, first_arg_type);
-    retval = dbus_message_append_args (message,
-                                       first_arg_type,
-                                       args);
+    retval = dbus_message_append_args_valist (message,
+                                              first_arg_type,
+                                              args);
     va_end (args);
 
     reply_message = ibus_connection_send_with_reply_and_block (

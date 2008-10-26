@@ -41,6 +41,13 @@
 #define IBUS_INTERFACE_CONFIG   "org.freedesktop.IBus.Config"
 #define IBUS_INTERFACE_NOTIFICATIONS    "org.freedesktop.IBus.Notifications"
 
+typedef enum {
+    IBUS_CAP_PREEDIT        = (1),
+    IBUS_CAP_AUX_STRING     = (1 << 1),
+    IBUS_CAP_LOOKUP_TABLE   = (1 << 2),
+    IBUS_CAP_FOCUS          = (1 << 3),
+} IBusCapabilite;
+
 G_BEGIN_DECLS
 
 const gchar     *ibus_get_address       (void);

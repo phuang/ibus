@@ -21,7 +21,7 @@
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
-#include "ibusimclient.h"
+#include <ibus.h>
 #include "ibusimcontext.h"
 
 #define IBUS_LOCALDIR ""
@@ -41,7 +41,6 @@ static const GtkIMContextInfo * info_list[] = {
 void
 im_module_init (GTypeModule *type_module)
 {
-    ibus_im_client_register_type(type_module);
     ibus_im_context_register_type(type_module);
 #if 0
     gchar **p = environ;

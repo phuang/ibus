@@ -601,8 +601,8 @@ ibus_input_context_set_cursor_location (IBusInputContext *context,
 }
 
 void
-ibus_input_context_set_capabilites (IBusInputContext   *context,
-                                    guint32             capabilites)
+ibus_input_context_set_capabilities (IBusInputContext   *context,
+                                     guint32             capabilites)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
