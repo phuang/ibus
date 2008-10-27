@@ -393,6 +393,19 @@ ibus_proxy_get_connection (IBusProxy *proxy)
 }
 
 gboolean
+ibus_proxy_send (IBusProxy      *proxy,
+                 DBusMessage    *message)
+{
+    g_assert (IBUS_IS_PROXY (proxy));
+    g_assert (message != NULL);
+    
+    IBusProxyPrivate *priv;
+    priv = IBUS_PROXY_GET_PRIVATE (proxy);
+    
+    return ibus_connection_send (priv->connection, message);
+}
+
+gboolean
 ibus_proxy_call (IBusProxy      *proxy,
                  const gchar    *method,
                  gint           first_arg_type,

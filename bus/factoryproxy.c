@@ -312,7 +312,7 @@ bus_factory_create_engine (BusFactoryProxy  *factory)
     }
 
     IBusConnection *connection = ibus_proxy_get_connection (IBUS_PROXY (factory));
-    engine = bus_engine_proxy_new (object_path, connection);
+    engine = bus_engine_proxy_new (object_path, BUS_CONNECTION (connection));
     dbus_message_unref (reply_message);
     return engine;
 }
