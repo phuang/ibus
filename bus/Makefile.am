@@ -19,11 +19,16 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+libibus = $(top_builddir)/src/libibus.la
+
 INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
 noinst_PROGRAMS = ibus-daemon
+ibus_daemon_DEPENDENCIES = \
+	$(libibus) \
+	$(NULL)
 ibus_daemon_SOURCES = \
 	main.c \
 	dbusimpl.c \
@@ -48,10 +53,12 @@ ibus_daemon_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-I$(top_srcdir)/src \
 	$(NULL)
-ibus_daemon_LDFLAGS = \
+ibus_daemon_LDADD = \
 	@X11_LIBS@ \
 	@GLIB2_LIBS@ \
 	@DBUS_LIBS@ \
-	$(top_builddir)/src/libibus.la \
+	$(libibus) \
 	$(NULL)
 
+$(libibus):
+	$(MAKE) -C $(top_builddir)/src

@@ -20,6 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 SUBDIRS = \
+	src \
 	daemon \
 	gconf \
 	ibus \
@@ -29,7 +30,6 @@ SUBDIRS = \
 	util \
 	client \
 	setup \
-	src \
 	bus \
 	icons \
 	m4 \
