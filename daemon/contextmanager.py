@@ -33,10 +33,6 @@ class ContextManager(ibus.Object):
         context.connect("destroy", self._context_destroy_cb)
         return context
 
-    def release_input_context(self, ic, ibusconn):
-        context = self._contexts[ic]
-        context.destroy()
-
     def lookup_context(self, ic, ibusconn):
         return self._contexts[ic]
 
