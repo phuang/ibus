@@ -42,7 +42,6 @@ struct _BusIBusImplPrivate {
     GSList *connections;
     GList *factory_list;
     GSList *contexts;
-    gint id;
 
     BusFactoryProxy *default_factory;
     BusInputContext *focused_context;
@@ -131,7 +130,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     priv->contexts = NULL;
     priv->default_factory = NULL;
     priv->focused_context = NULL;
-    priv->id = 1;
 }
 
 static void
