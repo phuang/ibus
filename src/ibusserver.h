@@ -50,16 +50,16 @@ typedef struct _IBusServerClass IBusServerClass;
 typedef void (* IBusNewConnectionFunc) (IBusServer *server, IBusConnection *connection);
 
 struct _IBusServer {
-  IBusObject parent;
-  /* instance members */
+    IBusObject parent;
+    /* instance members */
 };
 
 struct _IBusServerClass {
-  IBusObjectClass parent;
+    IBusObjectClass parent;
 
-  /* class members */
-  void  (* new_connection)  (IBusServer     *server,
-                             IBusConnection *connectin);
+    /* class members */
+    void  (* new_connection)    (IBusServer     *server,
+                                 IBusConnection *connectin);
 };
 
 GType            ibus_server_get_type           (void);

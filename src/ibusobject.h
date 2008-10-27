@@ -68,10 +68,10 @@ struct _IBusObject {
 typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
 
 struct _IBusObjectClass {
-  GObjectClass parent;
+    GObjectClass parent;
 
-  /* class members */
-  void (* destroy)        (IBusObject   *obj);
+    /* class members */
+    void (* destroy)        (IBusObject   *object);
 };
 
 GType           ibus_object_get_type            (void);
