@@ -157,23 +157,22 @@ class IBus(ibus.Object):
 
     def focus_out(self, context):
         if context == self.__focused_context:
-            self.__remove_focused_context_handlers()
             self.__focused_context = None
             self.__panel.focus_out(context.get_path())
 
-    def process_key_event(self, ic, keyval, is_press, state,
-                                conn, reply_cb, error_cb):
-        context = self.__lookup_context(ic, conn)
-
+    def __process_key_event_cb(self, context, keyval, is_press, state):
         # focus in the context, if context supports focus
         if context != self.__focused_context and context.get_support_focus():
-            self.focus_in(ic, conn)
+            self.focus_in(context)
 
-        if self.__filter_keyboard_shortcuts(context, keyval, is_press, state):
-            reply_cb(True)
-            return
-        else:
-            context.process_key_event(keyval, is_press, state, reply_cb, error_cb)
+        retval = self.__filter_keyboard_shortcuts(context, 
+                                                  keyval,
+                                                  is_press,
+                                                  state)
+        if retval:
+            context.stop_emission("process-key-event")
+            return True
+        return False
 
     def __set_cursor_location_cb(self, context, x, y, w, h):
         if context != self.__focused_context:
@@ -201,22 +200,27 @@ class IBus(ibus.Object):
 
         if context.get_engine() != None:
             context.set_enable(True)
-        self.__panel.states_changed()
+        if context == self.__focused_context:
+            self.__panel.states_changed()
 
     def __context_disable(self, context):
         context.set_enable(False)
-        self.__panel.reset()
-        self.__panel.states_changed()
+        if context == self.__focused_context:
+            self.__panel.reset()
+            self.__panel.states_changed()
 
     def __context_next_factory(self, context):
         old_factory = context.get_factory()
         new_factory = self.__factory_manager.get_next_factory(old_factory)
         self.__factory_manager.set_default_factory(new_factory)
         engine = new_factory.create_engine()
-        self.__panel.reset()
+        if context == self.__focused_context:
+            self.__panel.reset()
         engine.focus_in()
         context.set_engine(engine)
-        self.__panel.states_changed()
+        context.set_enable(True)
+        if context == self.__focused_context:
+            self.__panel.states_changed()
 
     def __match_keyboard_shortcuts(self, keyval, is_press, state, shortcuts):
         for sc in shortcuts:
@@ -264,6 +268,7 @@ class IBus(ibus.Object):
     def __install_context_handlers(self, context):
         # Install all callback functions
         signals = (
+            ("process-key-event",   self.__process_key_event_cb),
             ("focus-in",            lambda c: self.focus_in(c)),
             ("focus-out",           lambda c: self.focus_out(c)),
             ("set-cursor-location", self.__set_cursor_location_cb),
@@ -287,12 +292,6 @@ class IBus(ibus.Object):
         )
         for name, handler in signals:
             context.connect(name, handler)
-
-    def __remove_focused_context_handlers(self):
-        if self.__focused_context == None:
-            return
-        map(self.__focused_context.disconnect, self.__context_handlers)
-        self.__context_handlers = []
 
     def __update_preedit_cb(self, context, text, attrs, cursor_pos, visible):
         if self.__focused_context != context:

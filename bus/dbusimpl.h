@@ -67,6 +67,8 @@ gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
 BusConnection   *bus_dbus_impl_get_connection_by_name
                                                 (BusDBusImpl    *dbus,
                                                  const gchar    *name);
+void             bus_dbus_dispatch_message      (BusDBusImpl    *dbus,
+                                                 DBusMessage    *message);
 
 G_END_DECLS
 #endif

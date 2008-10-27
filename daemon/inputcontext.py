@@ -30,6 +30,10 @@ IBUS_CAP_FOCUS = 1 << 3
 class InputContext(ibus.Object):
     id = 1
     __gsignals__ = {
+        "process-key-event" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_BOOLEAN,
+            (gobject.TYPE_UINT, gobject.TYPE_BOOLEAN, gobject.TYPE_UINT)),
         "update-preedit" : (
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
@@ -144,6 +148,8 @@ class InputContext(ibus.Object):
         self.__lookup_table = None
         self.__lookup_table_visible = False
 
+        self.__prev_key = None
+
     def get_path(self):
         return self.__path;
 
@@ -155,11 +161,17 @@ class InputContext(ibus.Object):
 
     def process_key_event(self, keyval, is_press, state,
                                 reply_cb, error_cb):
+        retval = self.emit("process-key-event", keyval, is_press, state)
+        if retval:
+            reply_cb(True)
+            return
         if self.__engine != None and self.__enable:
             self.__engine.process_key_event(keyval, is_press, state,
                                 reply_cb, error_cb)
         else:
             reply_cb(False)
+
+        self.__prev_key = (keyval, is_press, state)
 
     def set_cursor_location(self, x, y, w, h):
         if self.__engine:
@@ -177,6 +189,7 @@ class InputContext(ibus.Object):
         self.emit("focus-out")
 
     def reset(self):
+        self.__prev_key = None
         if self.__engine and self.__enable:
             self.__engine.reset()
         self.emit("reset")
