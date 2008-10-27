@@ -40,7 +40,7 @@ enum {
 struct _BusIBusImplPrivate {
     GHashTable *factory_dict;
     GSList *connections;
-    GSList *factory_list;
+    GList *factory_list;
     GSList *contexts;
     gint id;
 
@@ -335,7 +335,7 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
     g_hash_table_remove (priv->factory_dict,
                          ibus_proxy_get_path (IBUS_PROXY (factory)));
 
-    priv->factory_list = g_slist_remove (priv->factory_list, factory);
+    priv->factory_list = g_list_remove (priv->factory_list, factory);
     g_object_unref (factory);
 
     if (priv->default_factory == factory) {
@@ -409,7 +409,7 @@ _ibus_register_factories (BusIBusImpl     *ibus,
         g_hash_table_insert (priv->factory_dict,
                              (gpointer) ibus_proxy_get_path (IBUS_PROXY (factory)),
                              factory);
-        priv->factory_list = g_slist_append (priv->factory_list, factory);
+        priv->factory_list = g_list_append (priv->factory_list, factory);
         g_signal_connect (factory,
                           "destroy",
                           (GCallback) _factory_destroy_cb,
@@ -417,7 +417,7 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     }
 
     if (i > 0) {
-        priv->factory_list = g_slist_sort (priv->factory_list, (GCompareFunc) _factory_cmp);
+        priv->factory_list = g_list_sort (priv->factory_list, (GCompareFunc) _factory_cmp);
     }
 
     return NULL;
@@ -430,7 +430,7 @@ _ibus_get_factories (BusIBusImpl     *ibus,
 {
     DBusMessage *reply;
     DBusMessageIter iter, sub_iter, sub_sub_iter;
-    GSList *p;
+    GList *p;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
@@ -605,3 +605,77 @@ bus_ibus_impl_new_connection (BusIBusImpl    *ibus,
 
     return TRUE;
 }
+
+BusFactoryProxy *
+bus_ibus_impl_get_default_factory (BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+
+    if (priv->default_factory == NULL && priv->factory_list != NULL) {
+        priv->default_factory = BUS_FACTORY_PROXY (priv->factory_list->data);
+    }
+
+    if (priv->default_factory) {
+        /* TODO */
+    }
+
+    return priv->default_factory;
+}
+
+BusFactoryProxy *
+bus_ibus_impl_get_next_factory (BusIBusImpl     *ibus,
+                                BusFactoryProxy *factory)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_FACTORY_PROXY (factory) || factory == NULL);
+
+    GList *link;
+    BusIBusImplPrivate *priv;
+    
+    if (factory == NULL)
+        return bus_ibus_impl_get_default_factory (ibus);
+
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    link = g_list_find (priv->factory_list, factory);
+
+    g_assert (link != NULL);
+
+    link = link->next;
+
+    if (link != NULL) {
+        link = priv->factory_list;
+    }
+    
+    return BUS_FACTORY_PROXY (link->data);
+}
+
+BusFactoryProxy *
+bus_ibus_impl_get_previous_factory (BusIBusImpl     *ibus,
+                                    BusFactoryProxy *factory)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_FACTORY_PROXY (factory) || factory == NULL);
+
+    GList *link;
+    BusIBusImplPrivate *priv;
+    
+    if (factory == NULL)
+        return bus_ibus_impl_get_default_factory (ibus);
+
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+    link = g_list_find (priv->factory_list, factory);
+
+    g_assert (link != NULL);
+
+    link = link->prev;
+
+    if (link != NULL) {
+        link = g_list_last (priv->factory_list);
+    }
+    
+    return BUS_FACTORY_PROXY (link->data);
+}
+

@@ -108,7 +108,7 @@ bus_input_context_new (BusConnection    *connection,
     gchar *path;
     BusInputContextPrivate *priv;
 
-    path = g_strdup_printf (IBUS_PATH_IBUS "/InputContext%d", ++id);
+    path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
 
     context = BUS_INPUT_CONTEXT (g_object_new (BUS_TYPE_INPUT_CONTEXT,
                     "path", path,

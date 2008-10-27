@@ -22,6 +22,7 @@
 
 #include <ibus.h>
 #include "connection.h"
+#include "factoryproxy.h"
 
 /*
  * Type macros.
@@ -60,10 +61,15 @@ struct _BusIBusImplClass {
     /* class members */
 };
 
-GType            bus_ibus_impl_get_type         (void);
-BusIBusImpl     *bus_ibus_impl_get_default      (void);
-gboolean         bus_ibus_impl_new_connection   (BusIBusImpl    *ibus,
-                                                 BusConnection  *connection);
+GType            bus_ibus_impl_get_type             (void);
+BusIBusImpl     *bus_ibus_impl_get_default          (void);
+gboolean         bus_ibus_impl_new_connection       (BusIBusImpl        *ibus,
+                                                     BusConnection      *connection);
+BusFactoryProxy *bus_ibus_impl_get_default_factory  (BusIBusImpl        *ibus);
+BusFactoryProxy *bus_ibus_impl_get_next_factory     (BusIBusImpl        *ibus,
+                                                     BusFactoryProxy    *factory);
+BusFactoryProxy *bus_ibus_impl_get_previous_factory (BusIBusImpl        *ibus,
+                                                     BusFactoryProxy    *factory);
 
 G_END_DECLS
 #endif
