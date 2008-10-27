@@ -53,13 +53,13 @@ struct _BusEngineProxyPrivate {
 };
 typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
-static guint            engine_signals[LAST_SIGNAL] = { 0 };
+static guint    engine_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
 static void     bus_engine_proxy_init           (BusEngineProxy         *engine);
-static void     _bus_engine_proxy_destroy       (BusEngineProxy         *engine);
+static void     bus_engine_proxy_real_destroy   (BusEngineProxy         *engine);
 
 static gboolean bus_engine_proxy_dbus_signal    (IBusProxy              *proxy,
                                                  DBusMessage            *message);
@@ -120,7 +120,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     g_type_class_add_private (klass, sizeof (BusEngineProxyPrivate));
 
-    ibus_object_class->destroy = (IBusObjectDestroyFunc) _bus_engine_proxy_destroy;
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_real_destroy;
 
     proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
     
@@ -296,16 +296,20 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 }
 
 static void
-bus_engine_proxy_init (BusEngineProxy *engine_proxy)
+bus_engine_proxy_init (BusEngineProxy *engine)
 {
     BusEngineProxyPrivate *priv;
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine_proxy);
+    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
 }
 
 static void
-_bus_engine_proxy_destroy (BusEngineProxy *engine_proxy)
+bus_engine_proxy_real_destroy (BusEngineProxy *engine)
 {
-    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine_proxy));
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "Destroy",
+                     DBUS_TYPE_INVALID);
+    
+    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (engine));
 }
 
 static gboolean
@@ -662,13 +666,3 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                      DBUS_TYPE_STRING, &prop_name,
                      DBUS_TYPE_INVALID);
 }
-
-void
-bus_engine_proxy_destroy (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "Destroy",
-                     DBUS_TYPE_INVALID);
-}
-
-

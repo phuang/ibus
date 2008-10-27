@@ -271,15 +271,14 @@ bus_factory_proxy_get_credits (BusFactoryProxy *factory)
     return priv->credits;
 }
 
-gboolean
-bus_factory_proxy_create_engine (BusFactoryProxy *factory,
-                                 gchar           **object_path)
+BusEngineProxy *
+bus_factory_create_engine (BusFactoryProxy  *factory)
 {
     g_assert (BUS_IS_FACTORY_PROXY (factory));
-    g_assert (object_path != NULL);
 
     DBusMessage *reply_message;
     IBusError *error;
+    BusEngineProxy *engine;
 
     reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (factory),
                                                   "CreateEngine",
@@ -289,31 +288,32 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     if (reply_message == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
-        return FALSE;
+        return NULL;
     }
 
     if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
         g_warning ("%s",
                  dbus_message_get_error_name (reply_message));
         dbus_message_unref (reply_message);
-        return FALSE;
+        return NULL;
     }
 
     DBusError _error;
     dbus_error_init (&_error);
-    gchar *value;
+    gchar *object_path;
     
     if (!dbus_message_get_args (reply_message, &_error,
-                                   DBUS_TYPE_STRING, &value,
+                                   DBUS_TYPE_STRING, &object_path,
                                    DBUS_TYPE_INVALID)) {
         g_warning ("%s: %s", _error.name, _error.message);
         dbus_error_free (&_error);
         dbus_message_unref (reply_message);
-        return FALSE;
+        return NULL;
     }
-    
-    *object_path = g_strdup (value);
+
+    IBusConnection *connection = ibus_proxy_get_connection (IBUS_PROXY (factory));
+    engine = bus_engine_proxy_new (object_path, connection);
     dbus_message_unref (reply_message);
-    return TRUE;
+    return engine;
 }
 
