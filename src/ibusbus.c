@@ -125,10 +125,6 @@ _connection_destroy_cb (IBusConnection  *connection,
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
     g_assert (priv->connection == connection);
-
-    g_signal_handlers_disconnect_by_func (priv->connection,
-                                          (GCallback) _connection_destroy_cb,
-                                          bus);
     g_object_unref (priv->connection);    
     priv->connection = NULL;
 

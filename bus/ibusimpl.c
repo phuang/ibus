@@ -145,9 +145,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     for (p = priv->connections; p != NULL; p = p->next) {
         connection = BUS_CONNECTION (p->data);
-        g_signal_handlers_disconnect_by_func (connection,
-                                              (GCallback) _connection_destroy_cb,
-                                              ibus);
         ibus_object_destroy (IBUS_OBJECT (connection));
         g_object_unref (connection);
     }

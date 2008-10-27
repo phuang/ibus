@@ -271,7 +271,9 @@ _ic_process_key_event (BusInputContext  *context,
 
     retval = FALSE;
     reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply, DBUS_TYPE_BOOLEAN, &retval);
+    dbus_message_append_args (reply,
+                              DBUS_TYPE_BOOLEAN, &retval,
+                              DBUS_TYPE_INVALID);
 
     return reply;
 }

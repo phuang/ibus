@@ -554,31 +554,33 @@ _ic_commit_string_cb (IBusInputContext  *ic,
 }
 
 static void
-_ic_forward_event_cb (IBusInputContext  *ic,
-                      GdkEvent          *event,
-                      IBusIMContext     *context)
+_ic_forward_key_event_cb (IBusInputContext  *ic,
+                          guint              keyval,
+                          gboolean           is_press,
+                          guint              state,
+                          IBusIMContext     *context)
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
+    
+    GdkEventKey *event;
+    IBusIMContextPrivate *priv;
 
-#if 0
-    if (event->type == GDK_KEY_PRESS ||
-        event->type == GDK_KEY_RELEASE) {
-    /*
-        GTimeVal time;
-        event->key.time = time.tv_sec * 1000 + time.tv_usec / 1000;
-     */
-        event->key.time = GDK_CURRENT_TIME;
-    }
+    priv = context->priv;
+    event = (GdkEventKey *)gdk_event_new (is_press ? GDK_KEY_PRESS : GDK_KEY_RELEASE);
 
-    if (event->any.window != context->priv->client_window) {
-        GdkWindow *old_window = event->any.window;
-        event->any.window = context->priv->client_window;
-        gdk_event_put (event);
-        event->any.window = old_window;
-    }
-    else
+    event->time = GDK_CURRENT_TIME;
+    event->window = g_object_ref (priv->client_window);
+    event->send_event = FALSE;
+    event->state = state;
+    event->keyval = keyval;
+    event->string = gdk_keyval_name (keyval);
+    event->length = strlen (event->string);
+    event->hardware_keycode = 0;
+    event->group = 0;
+    event->is_modifier = 0;
+
     gdk_event_put (event);
-#endif
+    gdk_event_free (event);
 }
 
 static void
@@ -720,7 +722,7 @@ _create_input_context (IBusIMContext *context)
                       context);
     g_signal_connect (priv->ic,
                       "forward-key-event",
-                      G_CALLBACK (_ic_forward_event_cb),
+                      G_CALLBACK (_ic_forward_key_event_cb),
                       context);
     g_signal_connect (priv->ic,
                       "update-preedit",

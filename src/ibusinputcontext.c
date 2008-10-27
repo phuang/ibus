@@ -390,13 +390,13 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                                      "ForwardKeyEvent")) {
         guint32 keyval;
         gboolean is_press;
-        guint32 states;
+        guint32 state;
         gboolean retval;
 
         retval = dbus_message_get_args (message, &error,
                                 DBUS_TYPE_UINT32, &keyval,
                                 DBUS_TYPE_BOOLEAN, &is_press,
-                                DBUS_TYPE_UINT32, &states,
+                                DBUS_TYPE_UINT32, &state,
                                 DBUS_TYPE_INVALID);
 
         if (!retval)
@@ -406,7 +406,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                        0,
                        keyval,
                        is_press,
-                       states);
+                       state | IBUS_FORWARD_MASK);
     }
     else if (dbus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
@@ -585,6 +585,9 @@ ibus_input_context_process_key_event (IBusInputContext *context,
     DBusMessage *reply_message;
     IBusError *error;
     gboolean retval;
+
+    if (state & IBUS_FORWARD_MASK)
+        return FALSE;
 
     reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (context),
                                                   "ProcessKeyEvent",

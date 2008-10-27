@@ -39,7 +39,9 @@ typedef enum
     /* The next few modifiers are used by XKB, so we skip to the end.
      * Bits 15 - 25 are currently unused. Bit 29 is used internally.
      */
-    
+    /* forard mask */
+    IBUS_FORWARD_MASK  = 1 << 25,
+
     IBUS_SUPER_MASK    = 1 << 26,
     IBUS_HYPER_MASK    = 1 << 27,
     IBUS_META_MASK     = 1 << 28,
@@ -48,6 +50,13 @@ typedef enum
   
     IBUS_MODIFIER_MASK = 0x5c001fff
 } IBusModifierType;
+
+typedef enum {
+    IBUS_CAP_PREEDIT        = (1),
+    IBUS_CAP_AUX_STRING     = (1 << 1),
+    IBUS_CAP_LOOKUP_TABLE   = (1 << 2),
+    IBUS_CAP_FOCUS          = (1 << 3),
+} IBusCapabilite;
 
 typedef void (* IBusFreeFunc) (gpointer );
 
