@@ -509,6 +509,8 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                     gboolean        is_press,
                                     guint32         state)
 {
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    
     DBusMessage *reply_message;
     IBusError *error;
     gboolean retval;
@@ -555,6 +557,8 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
                                       gint32          w,
                                       gint32          h)
 {
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    
     ibus_proxy_call (IBUS_PROXY (engine),
                      "SetCursorLocation",
                      DBUS_TYPE_INT32, &x,
@@ -565,82 +569,13 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
 }
 
 void
-bus_engine_proxy_focus_in (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "FocusIn",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_focus_out (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "FocusOut",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_reset (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "Reset",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_page_up (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "PageUp",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_page_down (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "PageDown",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_cursor_up (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "CursorUp",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_cursor_down (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "CursorDown",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_enable (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "Enable",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-bus_engine_proxy_disable (BusEngineProxy *engine)
-{
-    ibus_proxy_call (IBUS_PROXY (engine),
-                     "Disable",
-                     DBUS_TYPE_INVALID);
-}
-
-void
 bus_engine_proxy_property_activate (BusEngineProxy *engine,
                                     const gchar    *prop_name,
                                     gint32          state)
 {
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (prop_name != NULL);
+
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyActivate",
                      DBUS_TYPE_STRING, &prop_name,
@@ -652,6 +587,9 @@ void
 bus_engine_proxy_property_show (BusEngineProxy *engine,
                                 const gchar    *prop_name)
 {
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (prop_name != NULL);
+
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyShow",
                      DBUS_TYPE_STRING, &prop_name,
@@ -661,8 +599,33 @@ bus_engine_proxy_property_show (BusEngineProxy *engine,
 void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                                      const gchar    *prop_name)
 {
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (prop_name != NULL);
+
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyHide",
                      DBUS_TYPE_STRING, &prop_name,
                      DBUS_TYPE_INVALID);
 }
+
+#define DEFINE_FUNCTION(Name, name)                         \
+    void bus_engine_proxy_##name (BusEngineProxy *engine)   \
+    {                                                       \
+        g_assert (BUS_IS_ENGINE_PROXY (engine));            \
+        ibus_proxy_call (IBUS_PROXY (engine),               \
+                     #Name,                                 \
+                     DBUS_TYPE_INVALID);                    \
+    }
+
+DEFINE_FUNCTION (FocusIn, focus_in)
+DEFINE_FUNCTION (FocusOut, focus_out)
+DEFINE_FUNCTION (Reset, reset)
+DEFINE_FUNCTION (PageUp, page_up)
+DEFINE_FUNCTION (PageDown, page_down)
+DEFINE_FUNCTION (CursorUp, cursor_up)
+DEFINE_FUNCTION (CursorDown, cursor_down)
+DEFINE_FUNCTION (Enable, enable)
+DEFINE_FUNCTION (Disable, disable)
+
+#undef DEFINE_FUNCTION
+
