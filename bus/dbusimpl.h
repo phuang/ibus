@@ -58,6 +58,10 @@ struct _BusDBusImplClass {
     IBusServiceClass parent;
 
     /* class members */
+    void    (* name_owner_changed) (BusDBusImpl     *dbus,
+                                    gchar           *name,
+                                    gchar           *old_name,
+                                    gchar           *new_name);
 };
 
 GType            bus_dbus_impl_get_type         (void);

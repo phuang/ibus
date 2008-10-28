@@ -27,6 +27,8 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_DBUS_IMPL, BusDBusImplPrivate))
 
 enum {
+    NAME_ACQUIRED,
+    NAME_LOST,
     NAME_OWNER_CHANGED,
     LAST_SIGNAL,
 };
@@ -49,12 +51,17 @@ typedef struct _BusDBusImplPrivate BusDBusImplPrivate;
 static guint dbus_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_dbus_impl_class_init      (BusDBusImplClass    *klass);
-static void     bus_dbus_impl_init            (BusDBusImpl         *dbus);
-static void     bus_dbus_impl_dispose         (BusDBusImpl         *dbus);
-static gboolean bus_dbus_impl_dbus_message    (BusDBusImpl         *dbus,
-                                               BusConnection       *connection,
-                                               DBusMessage         *message);
+static void     bus_dbus_impl_class_init      (BusDBusImplClass     *klass);
+static void     bus_dbus_impl_init            (BusDBusImpl          *dbus);
+static void     bus_dbus_impl_dispose         (BusDBusImpl          *dbus);
+static gboolean bus_dbus_impl_dbus_message    (BusDBusImpl          *dbus,
+                                               BusConnection        *connection,
+                                               DBusMessage          *message);
+static void     bus_dbus_impl_name_owner_changed
+                                              (BusDBusImpl          *dbus,
+                                               gchar                *name,
+                                               gchar                *old_name,
+                                               gchar                *new_name);
 
 static IBusServiceClass  *_parent_class = NULL;
 
@@ -111,6 +118,8 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
     gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
 
     service_class->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
+
+    klass->name_owner_changed = bus_dbus_impl_name_owner_changed;
     
     /* install signals */
     dbus_signals[NAME_OWNER_CHANGED] =
@@ -287,13 +296,23 @@ _dbus_hello (BusDBusImpl    *dbus,
                                     "Already handled an Hello message");
     }
     else {
-        gchar *name = g_strdup_printf (":1.%d", priv->id ++);
+        gchar *name;
+        name = g_strdup_printf (":1.%d", priv->id ++);
         bus_connection_set_unique_name (connection, name);
 
         reply_message = dbus_message_new_method_return (message);
+        g_hash_table_insert (priv->names, name, connection);
         dbus_message_append_args (reply_message,
                     DBUS_TYPE_STRING, &name,
                     DBUS_TYPE_INVALID);
+        
+        g_signal_emit (dbus,
+                       dbus_signals[NAME_OWNER_CHANGED],
+                       0,
+                       name,
+                       "",
+                       name);
+        
         g_free (name);
     }
 
@@ -552,6 +571,13 @@ _dbus_request_name (BusDBusImpl     *dbus,
             dbus_message_append_args (message,
                     DBUS_TYPE_UINT32, &retval,
                     DBUS_TYPE_INVALID);
+            
+            g_signal_emit (dbus,
+                       dbus_signals[NAME_OWNER_CHANGED],
+                       0,
+                       name,
+                       "",
+                       bus_connection_get_unique_name (connection));
         }
     }
 
@@ -690,13 +716,26 @@ _connection_destroy_cb (BusConnection   *connection,
     */
 
     const gchar *unique_name = bus_connection_get_unique_name (connection);
-    if (unique_name != NULL)
+    if (unique_name != NULL) {
         g_hash_table_remove (priv->unique_names, unique_name);
+        g_signal_emit (dbus,
+                       dbus_signals[NAME_OWNER_CHANGED],
+                       0,
+                       unique_name,
+                       unique_name,
+                       "");
+    }
 
     const GSList *name = bus_connection_get_names (connection);
 
     while (name != NULL) {
         g_hash_table_remove (priv->names, name->data);
+        g_signal_emit (dbus,
+                       dbus_signals[NAME_OWNER_CHANGED],
+                       0,
+                       name->data,
+                       unique_name,
+                       "");
         name = name->next;
     }
 
