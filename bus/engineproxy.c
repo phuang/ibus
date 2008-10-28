@@ -132,7 +132,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__STRING,
-            G_TYPE_NONE, 1,
+            G_TYPE_NONE,
+            1,
             G_TYPE_STRING);
     
     engine_signals[FORWARD_KEY_EVENT] =
@@ -142,7 +143,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__UINT_BOOLEAN_UINT,
-            G_TYPE_NONE, 3,
+            G_TYPE_NONE,
+            3,
             G_TYPE_UINT,
             G_TYPE_BOOLEAN,
             G_TYPE_UINT);
@@ -153,10 +155,11 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__STRING_POINTER_INT_BOOLEAN,
-            G_TYPE_NONE, 4,
+            ibus_marshal_VOID__STRING_BOXED_INT_BOOLEAN,
+            G_TYPE_NONE,
+            4,
             G_TYPE_STRING,
-            G_TYPE_POINTER,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_INT,
             G_TYPE_BOOLEAN);
     
@@ -167,7 +170,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
     
     engine_signals[HIDE_PREEDIT] =
         g_signal_new (I_("hide-preedit"),
@@ -176,7 +180,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
     
     engine_signals[UPDATE_AUX_STRING] =
         g_signal_new (I_("update-aux-string"),
@@ -184,10 +189,11 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__STRING_POINTER_BOOLEAN,
-            G_TYPE_NONE, 3,
+            ibus_marshal_VOID__STRING_BOXED_BOOLEAN,
+            G_TYPE_NONE,
+            3,
             G_TYPE_STRING,
-            G_TYPE_POINTER,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN);
     
     engine_signals[SHOW_AUX_STRING] =
@@ -197,7 +203,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
     
     engine_signals[HIDE_AUX_STRING] =
         g_signal_new (I_("hide-aux-string"),
@@ -206,7 +213,8 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
 
     engine_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
@@ -214,9 +222,10 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER_BOOLEAN,
-            G_TYPE_NONE, 2,
-            G_TYPE_POINTER,
+            ibus_marshal_VOID__BOXED_BOOLEAN,
+            G_TYPE_NONE,
+            2,
+            IBUS_TYPE_LOOKUP_TABLE | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN);
     
     engine_signals[SHOW_LOOKUP_TABLE] =
@@ -279,9 +288,10 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER,
-            G_TYPE_NONE, 1,
-            G_TYPE_POINTER);
+            ibus_marshal_VOID__BOXED,
+            G_TYPE_NONE,
+            1,
+            IBUS_TYPE_PROP_LIST | G_SIGNAL_TYPE_STATIC_SCOPE);
     
     engine_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
@@ -289,9 +299,10 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER,
-            G_TYPE_NONE, 1,
-            G_TYPE_POINTER);
+            ibus_marshal_VOID__BOXED,
+            G_TYPE_NONE,
+            1,
+            IBUS_TYPE_PROPERTY | G_SIGNAL_TYPE_STATIC_SCOPE);
 
 }
 

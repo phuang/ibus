@@ -37,14 +37,17 @@ struct _BusConfigProxyPrivate {
 };
 typedef struct _BusConfigProxyPrivate BusConfigProxyPrivate;
 
+#if 0
 struct _BusPair {
     GValue car;
     GValue cdr;
 };
 typedef struct _BusPair BusPair;
+#endif
 
 static guint    config_signals[LAST_SIGNAL] = { 0 };
 
+#if 0
 /* functions prototype */
 static BusPair  *bus_pair_new                   (GType                  car_type,
                                                  GType                  cdr_type,
@@ -52,6 +55,7 @@ static BusPair  *bus_pair_new                   (GType                  car_type
                                                  gpointer               cdr);
 static BusPair  *bus_pair_copy                  (BusPair                *pair);
 static void      bus_pair_free                  (BusPair                *pair);
+#endif
 static void      bus_config_proxy_class_init    (BusConfigProxyClass    *klass);
 static void      bus_config_proxy_init          (BusConfigProxy         *config);
 static void      bus_config_proxy_real_destroy  (BusConfigProxy         *config);
@@ -61,6 +65,7 @@ static gboolean bus_config_proxy_dbus_signal    (IBusProxy             *proxy,
 
 static IBusProxyClass  *parent_class = NULL;
 
+#if 0
 static BusPair *
 bus_pair_new (GType     car_type,
               GType     cdr_type,
@@ -142,6 +147,8 @@ bus_pair_free (BusPair *pair)
     g_slice_free (BusPair, pair);
 }
 
+#endif
+
 GType
 bus_config_proxy_get_type (void)
 {
@@ -209,7 +216,7 @@ bus_config_proxy_class_init (BusConfigProxyClass *klass)
             G_TYPE_NONE, 3,
             G_TYPE_STRING,
             G_TYPE_STRING,
-            G_TYPE_VALUE);
+            G_TYPE_VALUE | G_SIGNAL_TYPE_STATIC_SCOPE);
 }
 
 static void

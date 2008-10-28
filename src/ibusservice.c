@@ -135,8 +135,10 @@ ibus_service_class_init (IBusServiceClass *klass)
             G_STRUCT_OFFSET (IBusServiceClass, dbus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
-            G_TYPE_BOOLEAN, 2,
-            G_TYPE_POINTER, G_TYPE_POINTER);
+            G_TYPE_BOOLEAN,
+            2,
+            G_TYPE_POINTER,
+            G_TYPE_POINTER);
 
     service_signals[DBUS_SIGNAL] =
         g_signal_new (I_("dbus-signal"),
@@ -145,8 +147,10 @@ ibus_service_class_init (IBusServiceClass *klass)
             G_STRUCT_OFFSET (IBusServiceClass, dbus_signal),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
-            G_TYPE_BOOLEAN, 2,
-            G_TYPE_POINTER, G_TYPE_POINTER);
+            G_TYPE_BOOLEAN,
+            2,
+            G_TYPE_POINTER,
+            G_TYPE_POINTER);
 
 }
 

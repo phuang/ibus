@@ -174,10 +174,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__STRING_POINTER_INT_BOOLEAN,
+            ibus_marshal_VOID__STRING_BOXED_INT_BOOLEAN,
             G_TYPE_NONE, 4,
             G_TYPE_STRING,
-            G_TYPE_POINTER,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_INT,
             G_TYPE_BOOLEAN);
     
@@ -205,10 +205,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__STRING_POINTER_BOOLEAN,
+            ibus_marshal_VOID__STRING_BOXED_BOOLEAN,
             G_TYPE_NONE, 3,
             G_TYPE_STRING,
-            G_TYPE_POINTER,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN);
     
     context_signals[SHOW_AUX_STRING] =
@@ -235,9 +235,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER_BOOLEAN,
+            ibus_marshal_VOID__BOXED_BOOLEAN,
             G_TYPE_NONE, 2,
-            G_TYPE_POINTER,
+            IBUS_TYPE_LOOKUP_TABLE | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN);
     
     context_signals[SHOW_LOOKUP_TABLE] =
@@ -300,9 +300,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER,
+            ibus_marshal_VOID__BOXED,
             G_TYPE_NONE, 1,
-            G_TYPE_POINTER);
+            IBUS_TYPE_PROP_LIST);
     
     context_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
@@ -310,9 +310,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__POINTER,
+            ibus_marshal_VOID__BOXED,
             G_TYPE_NONE, 1,
-            G_TYPE_POINTER);
+            IBUS_TYPE_PROPERTY);
 }
 
 static void
