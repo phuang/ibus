@@ -125,7 +125,7 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
     dbus_signals[NAME_OWNER_CHANGED] =
         g_signal_new (I_("name-owner-changed"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
+            G_SIGNAL_RUN_FIRST,
             0,
             NULL, NULL,
             ibus_marshal_VOID__STRING_STRING_STRING,
@@ -700,6 +700,34 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
 }
 
 static void
+bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
+                                  gchar         *name,
+                                  gchar         *old_name,
+                                  gchar         *new_name)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+    g_assert (name != NULL);
+    g_assert (old_name != NULL);
+    g_assert (new_name != NULL);
+
+    DBusMessage *message;
+
+    message = dbus_message_new_signal (DBUS_PATH_DBUS,
+                                       DBUS_INTERFACE_DBUS,
+                                       "NameOwnerChanged");
+    dbus_message_append_args (message,
+                              DBUS_TYPE_STRING, &name,
+                              DBUS_TYPE_STRING, &old_name,
+                              DBUS_TYPE_STRING, &new_name,
+                              DBUS_TYPE_INVALID);
+    
+    bus_dbus_impl_dispatch_message (dbus, message);
+
+    dbus_message_unref (message);
+
+}
+
+static void
 _connection_destroy_cb (BusConnection   *connection,
                         BusDBusImpl     *dbus)
 {
@@ -795,4 +823,17 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
     }
     
     return connection;
+}
+
+
+void
+bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
+                           DBusMessage  *message)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+    g_assert (message != NULL);
+    
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+
 }
