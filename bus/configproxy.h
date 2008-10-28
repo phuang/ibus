@@ -22,6 +22,7 @@
 
 #include <ibus.h>
 #include "connection.h"
+#include "inputcontext.h"
 
 /*
  * Type macros.
@@ -58,11 +59,11 @@ struct _BusConfigProxyClass {
 
 GType            bus_config_proxy_get_type          (void);
 BusConfigProxy  *bus_config_proxy_new               (BusConnection      *connection);
-void             bus_config_proxy_get_value         (BusConfigProxy     *config,
+gboolean         bus_config_proxy_get_value         (BusConfigProxy     *config,
                                                      const gchar        *section,
                                                      const gchar        *name,
                                                      GValue             *value);
-void             bus_config_proxy_set_value         (BusConfigProxy     *config,
+gboolean         bus_config_proxy_set_value         (BusConfigProxy     *config,
                                                      const gchar        *section,
                                                      const gchar        *name,
                                                      const GValue       *value);
