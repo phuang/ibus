@@ -132,7 +132,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     connection_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_FIRST,
+            G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusConnectionClass, disconnected),
             NULL, NULL,
             ibus_marshal_VOID__VOID,

@@ -213,7 +213,8 @@ bus_config_proxy_class_init (BusConfigProxyClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__STRING_STRING_BOXED,
-            G_TYPE_NONE, 3,
+            G_TYPE_NONE,
+            3,
             G_TYPE_STRING,
             G_TYPE_STRING,
             G_TYPE_VALUE | G_SIGNAL_TYPE_STATIC_SCOPE);
@@ -243,6 +244,9 @@ static void
 _from_dbus_value (DBusMessageIter   *iter,
                   GValue            *value)
 {
+    g_assert (iter != NULL);
+    g_assert (value != NULL);
+
     gint type;
 
     type = dbus_message_iter_get_arg_type (iter);
@@ -409,7 +413,12 @@ bus_config_proxy_dbus_signal (IBusProxy     *proxy,
 
         _from_dbus_value (&iter, &value);
 
-        g_signal_emit (config, config_signals[VALUE_CHANGED], 0, section, name, &value);
+        g_signal_emit (config,
+                       config_signals[VALUE_CHANGED],
+                       0,
+                       section,
+                       name,
+                       &value);
         g_signal_stop_emission_by_name (config, "dbus-signal");
         return TRUE;
     }

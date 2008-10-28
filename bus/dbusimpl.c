@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <ibusinternal.h>
+#include <ibusmarshalers.h>
 #include "dbusimpl.h"
 #include "connection.h"
 
@@ -25,6 +27,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_DBUS_IMPL, BusDBusImplPrivate))
 
 enum {
+    NAME_OWNER_CHANGED,
     LAST_SIGNAL,
 };
 
@@ -43,7 +46,7 @@ struct _BusDBusImplPrivate {
 
 typedef struct _BusDBusImplPrivate BusDBusImplPrivate;
 
-// static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint dbus_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_dbus_impl_class_init      (BusDBusImplClass    *klass);
@@ -108,6 +111,20 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
     gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
 
     service_class->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
+    
+    /* install signals */
+    dbus_signals[NAME_OWNER_CHANGED] =
+        g_signal_new (I_("name-owner-changed"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_STRING_STRING,
+            G_TYPE_NONE,
+            3,
+            G_TYPE_STRING,
+            G_TYPE_STRING,
+            G_TYPE_STRING);
 
 }
 
