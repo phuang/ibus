@@ -492,6 +492,9 @@ bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
         ibus_property_free (prop);
     }
+    else {
+        return FALSE;
+    }
 
 handled:
     g_signal_stop_emission_by_name (engine, "dbus-signal");

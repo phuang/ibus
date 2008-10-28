@@ -37,18 +37,110 @@ struct _BusConfigProxyPrivate {
 };
 typedef struct _BusConfigProxyPrivate BusConfigProxyPrivate;
 
+struct _BusPair {
+    GValue car;
+    GValue cdr;
+};
+typedef struct _BusPair BusPair;
+
 static guint    config_signals[LAST_SIGNAL] = { 0 };
-// static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_config_proxy_class_init     (BusConfigProxyClass    *klass);
-static void     bus_config_proxy_init           (BusConfigProxy         *config);
-static void     bus_config_proxy_real_destroy   (BusConfigProxy         *config);
+static BusPair  *bus_pair_new                   (GType                  car_type,
+                                                 GType                  cdr_type,
+                                                 gpointer               car,
+                                                 gpointer               cdr);
+static BusPair  *bus_pair_copy                  (BusPair                *pair);
+static void      bus_pair_free                  (BusPair                *pair);
+static void      bus_config_proxy_class_init    (BusConfigProxyClass    *klass);
+static void      bus_config_proxy_init          (BusConfigProxy         *config);
+static void      bus_config_proxy_real_destroy  (BusConfigProxy         *config);
 
-static gboolean bus_config_proxy_dbus_signal     (IBusProxy             *proxy,
+static gboolean bus_config_proxy_dbus_signal    (IBusProxy             *proxy,
                                                  DBusMessage            *message);
 
 static IBusProxyClass  *parent_class = NULL;
+
+static BusPair *
+bus_pair_new (GType     car_type,
+              GType     cdr_type,
+              gpointer  car,
+              gpointer  cdr)
+{
+
+    g_assert (car_type == G_TYPE_STRING ||
+              car_type == G_TYPE_INT ||
+              car_type == G_TYPE_BOOLEAN ||
+              car_type == G_TYPE_DOUBLE);
+    g_assert (cdr_type == G_TYPE_STRING ||
+              cdr_type == G_TYPE_INT ||
+              cdr_type == G_TYPE_BOOLEAN ||
+              cdr_type == G_TYPE_DOUBLE);
+    g_assert (car != NULL);
+    g_assert (cdr != NULL);
+
+    BusPair *pair;
+
+    pair = g_slice_new0 (BusPair);
+
+    g_value_init (&(pair->car), car_type);
+    g_value_init (&(pair->cdr), cdr_type);
+
+    switch (car_type) {
+    case G_TYPE_STRING:
+        g_value_set_string (&(pair->car), *(gchar **)car);
+        break;
+    case G_TYPE_INT:
+        g_value_set_int (&(pair->car), *(gint32 *)car);
+        break;
+    case G_TYPE_BOOLEAN:
+        g_value_set_boolean (&(pair->car), *(gboolean *)car);
+        break;
+    case G_TYPE_DOUBLE:
+        g_value_set_double (&(pair->car), *(gdouble *)car);
+        break;
+    }
+    
+    switch (cdr_type) {
+    case G_TYPE_STRING:
+        g_value_set_string (&(pair->cdr), *(gchar **)cdr);
+        break;
+    case G_TYPE_INT:
+        g_value_set_int (&(pair->cdr), *(gint32 *)car);
+        break;
+    case G_TYPE_BOOLEAN:
+        g_value_set_boolean (&(pair->cdr), *(gboolean *)cdr);
+        break;
+    case G_TYPE_DOUBLE:
+        g_value_set_double (&(pair->cdr), *(gdouble *)cdr);
+        break;
+    }
+    return pair;
+}
+
+static BusPair *
+bus_pair_copy (BusPair *pair)
+{
+    g_assert (pair != NULL);
+    
+    BusPair *new_pair;
+
+    new_pair = g_slice_new0 (BusPair);
+    g_value_copy (&(pair->car), &(new_pair->car));
+    g_value_copy (&(pair->cdr), &(new_pair->cdr));
+    return new_pair;
+}
+
+static void
+bus_pair_free (BusPair *pair)
+{
+    g_assert (pair == NULL);
+    
+    g_value_unset (&(pair->car));
+    g_value_unset (&(pair->cdr));
+
+    g_slice_free (BusPair, pair);
+}
 
 GType
 bus_config_proxy_get_type (void)
@@ -141,79 +233,72 @@ bus_config_proxy_real_destroy (BusConfigProxy *config)
 }
 
 static void
-_from_dbus_value (DBusMesssageIter *iter, GValue *value)
+_from_dbus_value (DBusMessageIter *iter, GValue *value)
 {
     gint type;
 
-    type = dbus_message_iter_get_arg_type (&iter);
+    type = dbus_message_iter_get_arg_type (iter);
     
     switch (type) {
     case DBUS_TYPE_STRING:
         {
             gchar *v;
-            g_value_init (&value, G_TYPE_STRING);
-            dbus_message_iter_basic (iter, &v)
-            g_value_set_string (&value, v)
+            g_value_init (value, G_TYPE_STRING);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_string (value, v);
         }
         break;
     case DBUS_TYPE_INT32:
         {
             gint v;
-            g_value_init (&value, G_TYPE_INT);
-            dbus_message_iter_basic (iter, &v)
-            g_value_set_int (&value, v)
+            g_value_init (value, G_TYPE_INT);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_int (value, v);
         }
         break;
     case DBUS_TYPE_BOOLEAN:
         {
             gboolean v;
-            g_value_init (&value, G_TYPE_BOOLEAN);
-            dbus_message_iter_basic (iter, &v)
-            g_value_set_boolean (&value, v)
+            g_value_init (value, G_TYPE_BOOLEAN);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_boolean (value, v);
         }
         break;
     case DBUS_TYPE_DOUBLE:
         {
             gdouble v;
-            g_value_init (&value, G_TYPE_DOUBLE);
-            dbus_message_iter_basic (iter, &v)
-            g_value_set_double (&value, v)
-        }
-        break;
-    case DBUS_TYPE_STRUCT:
-        {
-            GValue v = { 0 };
-            DBusMessage sub_iter;
-            gint sub_type;
-
-            g_value_init (&value, G_TYPE_ARRAY);
-            
-            dbus_message_iter_recurse (&iter, &sub_iter);            
-            while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
-                _from_dbus_value (&sub_iter, &v);
-                g_value_array_append (&value, &v);
-                dbus_message_iter_next (&sub_iter);
-            }
-            break;
+            g_value_init (value, G_TYPE_DOUBLE);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_double (value, v);
         }
         break;
     case DBUS_TYPE_ARRAY:
         {
             GValue v = { 0 };
-            DBusMessage sub_iter;
+            DBusMessageIter sub_iter;
             gint sub_type;
+            GValueArray *array;
 
-            g_value_init (&value, G_TYPE_ARRAY);
             
-            dbus_message_iter_recurse (&iter, &sub_iter);            
+            sub_type = dbus_message_iter_get_element_type (iter);
+            g_assert (sub_type == DBUS_TYPE_STRING ||
+                      sub_type == DBUS_TYPE_INT32 ||
+                      sub_type == DBUS_TYPE_BOOLEAN ||
+                      sub_type == DBUS_TYPE_DOUBLE);
+            
+            g_value_init (value, G_TYPE_VALUE_ARRAY);
+            array = g_value_array_new (0);            
+            dbus_message_iter_recurse (iter, &sub_iter);
             while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
                 _from_dbus_value (&sub_iter, &v);
-                g_value_array_append (&value, &v);
+                g_value_array_append (array, &v);
                 dbus_message_iter_next (&sub_iter);
             }
+            g_value_take_boxed (value, array);
             break;
         }
     default:
+        g_assert_not_reached();
     }
 }
 
@@ -225,53 +310,41 @@ bus_config_proxy_dbus_signal (IBusProxy     *proxy,
     g_assert (message != NULL);
     
     BusConfigProxy *config;
-    DBusError error;
     config = BUS_CONFIG_PROXY (proxy);
     
     dbus_error_init (&error);
     if (dbus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
         DBusMessageIter iter;
+        gchar *section;
+        gchar *name;
         GValue value = { 0 };
         gint type;
 
         dbus_message_iter_init (message, &iter);
+        
+        type = dbus_message_iter_get_arg_type (&iter);
+        if (type != DBUS_TYPE_STRING) {
+            g_warning ("Argument 1 of ValueChanged should be a string");
+            return FALSE;
+        }
+        dbus_message_iter_get_basic (&iter, &section);
+        
+        if (type != DBUS_TYPE_STRING) {
+            g_warning ("Argument 2 of ValueChanged should be a string");
+            return FALSE;
+        }
+        dbus_message_iter_get_basic (&iter, &name);
+
         _from_dbus_value (&iter, &value);
 
-        if (!retval)
-            goto failed;
-        g_signal_emit (panel, config_signals[PROPERTY_ACTIVATE], 0, prop_name, prop_state);
+        g_signal_emit (panel, config_signals[VALUE_CHANGED], 0, section, name, value);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyShow")) {
-        gchar *prop_name;
-        gboolean retval;
-
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &prop_name,
-                                DBUS_TYPE_INVALID);
-        if (!retval)
-            goto failed;
-        g_signal_emit (panel, config_signals[PROPERTY_SHOW], 0, prop_name);
-    }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyHide")) {
-        gchar *prop_name;
-        gboolean retval;
-
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &prop_name,
-                                DBUS_TYPE_INVALID);
-        if (!retval)
-            goto failed;
-        g_signal_emit (panel, config_signals[PROPERTY_HIDE], 0, prop_name);
-    }
+    
+    return FALSE;
 
 handled:
     g_signal_stop_emission_by_name (panel, "dbus-signal");
     return TRUE;
-  
-failed:
-    g_warning ("%s: %s", error.name, error.message);
-    dbus_error_free (&error);
-    return FALSE;
 }
 
 
