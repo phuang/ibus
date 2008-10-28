@@ -49,6 +49,8 @@ ibus_daemon_SOURCES = \
 	server.h \
 	connection.c \
 	connection.h \
+	matchrule.c \
+	matchrule.h \
 	$(NULL)
 ibus_daemon_CFLAGS = \
 	@X11_CFLAGS@ \
