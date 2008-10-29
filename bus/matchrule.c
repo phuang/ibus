@@ -156,6 +156,18 @@ failed:
     return NULL;
 }
 
+static void
+tokens_free (GArray *tokens)
+{
+    gint i;
+    for (i = 0; i < tokens->len; i++) {
+        Token *token = &g_array_index (tokens, Token, i);
+        g_free (token->key);
+        g_free (token->value);
+    }
+    g_array_free (tokens, TRUE);
+}
+
 BusMatchRule *
 bus_match_rule_new (const gchar *text)
 {
@@ -209,9 +221,11 @@ bus_match_rule_new (const gchar *text)
         }
     }
 
+    tokens_free (tokens);
     return rule;
 
 failed:
+    tokens_free (tokens);
     bus_match_rule_unref (rule);
     return NULL;
 }
