@@ -192,12 +192,13 @@ bus_match_rule_new (const gchar *text)
 
     Token *tokens, *p;
     BusMatchRule *rule;
-    GArray *args = NULL;
 
     rule = g_slice_new0 (BusMatchRule);
 
     rule->refcount = 1;
     rule->message_type = DBUS_MESSAGE_TYPE_INVALID;
+
+    rule->args = g_array_new (TRUE, TRUE, sizeof (gchar *));
 
     /* parse rule */
     tokens = tokenize_rule (text);
@@ -236,42 +237,18 @@ bus_match_rule_new (const gchar *text)
         }
         else if (strncmp (p->key, "arg", 3) == 0) {
             gint i;
-            
-            rule->flags |= MATCH_ARGS;
             if (! _atoi (p->key + 3, &i))
                 goto failed;
-            
-            if (args == NULL) {
-                args = g_array_new (TRUE, TRUE, sizeof (gchar *));
-            }
-
-            if (i >= args->len) {
-                g_array_set_size (args, i + 1);
-            }
-            
-            g_free (g_array_index (args, gchar *, i));
-            g_array_index (args, gchar *, i) = g_strdup (p->value);
+            bus_match_rule_set_arg (rule, i, p->value);
         }
         else
             goto failed;
-    }
-
-    if (args) {
-        rule->args_len = args->len;
-        rule->args = (gchar **) g_array_free (args, FALSE);
     }
 
     tokens_free (tokens);
     return rule;
 
 failed:
-    if (args) {
-        gchar **p = (gchar **) g_array_free (args, FALSE);
-        if (*p != NULL) {
-            g_free (*p);
-            p++;
-        }
-    }
     tokens_free (tokens);
     bus_match_rule_unref (rule);
     return NULL;
@@ -282,7 +259,7 @@ bus_match_rule_unref (BusMatchRule *rule)
 {
     g_assert (rule != NULL);
 
-    gchar **p;
+    gint i;
 
     rule->refcount --;
 
@@ -295,10 +272,10 @@ bus_match_rule_unref (BusMatchRule *rule)
     g_free (rule->destination);
     g_free (rule->path);
 
-    for (p = rule->args; p != NULL && *p != NULL; p++) {
-        g_free (*p);
+    for (i = 0; i < rule->args->len; i++) {
+        g_free (g_array_index (rule->args, gchar *, i));
     }
-    g_free (rule->args);
+    g_array_free (rule->args, TRUE);
 }
 
 gboolean
@@ -393,12 +370,18 @@ bus_match_rule_set_destination (BusMatchRule   *rule,
 
 gboolean
 bus_match_rule_set_arg (BusMatchRule   *rule,
-                        guint           arg_index,
+                        guint           arg_i,
                         const gchar    *arg)
 {
     g_assert (rule != NULL);
     g_assert (arg != NULL);
-    
+
+    if (arg_i >= rule->args->len) {
+        g_array_set_size (rule->args, arg_i + 1);
+    }
+
+    g_free (g_array_index (rule->args, gchar *, arg_i));
+    g_array_index (rule->args, gchar *, arg_i) = g_strdup (arg);
     return TRUE;
 }
 
@@ -439,6 +422,30 @@ bus_match_rule_match (BusMatchRule   *rule,
             return FALSE;
     }
 
-    return FALSE;
+    if (rule->flags & MATCH_ARGS) {
+        guint i;
+        DBusMessageIter iter;
+        
+        dbus_message_iter_init (message, &iter);
+
+        for (i = 0; i < rule->args->len; i++) {
+            gchar *arg = g_array_index (rule->args, gchar *, i);
+            if (arg != NULL) {
+                gint type;
+                gchar *value;
+
+                type = dbus_message_iter_get_arg_type (&iter);
+                if (type != DBUS_TYPE_STRING && type != DBUS_TYPE_OBJECT_PATH)
+                    return FALSE;
+                
+                dbus_message_iter_get_basic (&iter, &value);
+
+                if (g_strcmp0 (arg, value) != 0)
+                    return FALSE;
+            }
+            dbus_message_iter_next (&iter);
+        }
+    }
+    return TRUE;
 }
 

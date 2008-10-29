@@ -42,8 +42,7 @@ struct _BusMatchRule {
     gchar *destination;
     gchar *path;
 
-    gchar **args;
-    gint args_len;
+    GArray *args;
 };
 
 G_BEGIN_DECLS
@@ -66,7 +65,7 @@ gboolean         bus_match_rule_set_destination
                                             (BusMatchRule   *rule,
                                              const gchar    *dest);
 gboolean         bus_match_rule_set_arg     (BusMatchRule   *rule,
-                                             guint           arg_index,
+                                             guint           arg_i,
                                              const gchar    *arg);
 gboolean         bus_match_rule_match       (BusMatchRule   *rule,
                                              DBusMessage    *message);

@@ -22,7 +22,6 @@ int main()
 							   "arg2='ibus.freedesktop.IBus.config'");
 	g_assert (rule->message_type == DBUS_MESSAGE_TYPE_SIGNAL);
 	g_assert (g_strcmp0 (rule->interface, "org.freedesktop.DBus") == 0 );
-	g_assert (rule->args_len == 3);
 	bus_match_rule_unref (rule);
 
 	return 0;
