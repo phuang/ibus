@@ -236,6 +236,8 @@ bus_match_rule_new (const gchar *text)
         }
         else if (strncmp (p->key, "arg", 3) == 0) {
             gint i;
+            
+            rule->flags |= MATCH_ARGS;
             if (! _atoi (p->key + 3, &i))
                 goto failed;
             
@@ -308,6 +310,8 @@ bus_match_rule_set_message_type (BusMatchRule   *rule,
               type == DBUS_MESSAGE_TYPE_METHOD_CALL ||
               type == DBUS_MESSAGE_TYPE_METHOD_RETURN ||
               type == DBUS_MESSAGE_TYPE_ERROR);
+    
+    rule->flags |= MATCH_TYPE;
     rule->message_type = type;
 
     return TRUE;
@@ -320,8 +324,11 @@ bus_match_rule_set_sender  (BusMatchRule    *rule,
     g_assert (rule != NULL);
     g_assert (sender != NULL);
 
+    rule->flags |= MATCH_SENDER;
+    
     g_free (rule->sender);
     rule->sender = g_strdup (sender);
+    
     return TRUE;
 }
 
@@ -332,6 +339,8 @@ bus_match_rule_set_interface (BusMatchRule   *rule,
     g_assert (rule != NULL);
     g_assert (interface != NULL);
 
+    rule->flags |= MATCH_INTERFACE;
+    
     g_free (rule->interface);
     rule->interface = g_strdup (interface);
     return TRUE;
@@ -344,8 +353,11 @@ bus_match_rule_set_member (BusMatchRule   *rule,
     g_assert (rule != NULL);
     g_assert (member != NULL);
 
+    rule->flags |= MATCH_MEMBER;
+    
     g_free (rule->member);
     rule->member = g_strdup (member);
+    
     return TRUE;
 }
 
@@ -356,8 +368,11 @@ bus_match_rule_set_path (BusMatchRule   *rule,
     g_assert (rule != NULL);
     g_assert (path != NULL);
 
+    rule->flags |= MATCH_PATH;
+    
     g_free (rule->path);
     rule->path = g_strdup (path);
+    
     return TRUE;
 }
 
@@ -368,8 +383,11 @@ bus_match_rule_set_destination (BusMatchRule   *rule,
     g_assert (rule != NULL);
     g_assert (dest != NULL);
 
+    rule->flags |= MATCH_DESTINATION;
+    
     g_free (rule->destination);
     rule->destination = g_strdup (dest);
+    
     return TRUE;
 }
 
@@ -390,6 +408,36 @@ bus_match_rule_match (BusMatchRule   *rule,
 {
     g_assert (rule != NULL);
     g_assert (message != NULL);
+
+    if (rule->flags & MATCH_TYPE) {
+        if (dbus_message_get_type (message) != rule->message_type)
+            return FALSE;
+    }
+
+    if (rule->flags & MATCH_INTERFACE) {
+        if (g_strcmp0 (dbus_message_get_interface (message), rule->interface) != 0)
+            return FALSE;
+    }
+
+    if (rule->flags & MATCH_MEMBER) {
+        if (g_strcmp0 (dbus_message_get_member (message), rule->member) != 0)
+            return FALSE;
+    }
+    
+    if (rule->flags & MATCH_SENDER) {
+        if (g_strcmp0 (dbus_message_get_sender (message), rule->sender) != 0)
+            return FALSE;
+    }
+    
+    if (rule->flags & MATCH_DESTINATION) {
+        if (g_strcmp0 (dbus_message_get_destination (message), rule->destination) != 0)
+            return FALSE;
+    }
+    
+    if (rule->flags & MATCH_PATH) {
+        if (g_strcmp0 (dbus_message_get_path (message), rule->path) != 0)
+            return FALSE;
+    }
 
     return FALSE;
 }

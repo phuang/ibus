@@ -26,6 +26,10 @@ typedef enum {
     MATCH_TYPE = 1 << 0,
     MATCH_INTERFACE = 1 << 1,
     MATCH_MEMBER = 1 << 2,
+    MATCH_SENDER = 1 << 3,
+    MATCH_DESTINATION = 1 << 4,
+    MATCH_PATH = 1 << 5,
+    MATCH_ARGS = 1 << 6,
 } BusMatchFlags;
 
 struct _BusMatchRule {
