@@ -98,7 +98,7 @@ failed:
     return NULL;
 }
 
-static GArray *
+static Token *
 tokenize_rule (const gchar *text)
 {
     GArray *tokens;
@@ -106,7 +106,7 @@ tokenize_rule (const gchar *text)
     const gchar *p;
     gint i;
 
-    tokens = g_array_new (FALSE, TRUE, sizeof (Token));
+    tokens = g_array_new (TRUE, TRUE, sizeof (Token));
 
     p = text;
 
@@ -142,7 +142,7 @@ tokenize_rule (const gchar *text)
         g_array_append_val (tokens, token);
     }
 
-    return tokens;
+    return (Token *)g_array_free (tokens, FALSE);
 
 failed:
     
@@ -157,15 +157,17 @@ failed:
 }
 
 static void
-tokens_free (GArray *tokens)
+tokens_free (Token *tokens)
 {
-    gint i;
-    for (i = 0; i < tokens->len; i++) {
-        Token *token = &g_array_index (tokens, Token, i);
-        g_free (token->key);
-        g_free (token->value);
+    Token *p;
+    p = tokens;
+
+    while (p != NULL && p->key != NULL) {
+        g_free (p->key);
+        g_free (p->value);
+        p ++;
     }
-    g_array_free (tokens, TRUE);
+    g_free (tokens);
 }
 
 BusMatchRule *
@@ -173,8 +175,7 @@ bus_match_rule_new (const gchar *text)
 {
     g_assert (text != NULL);
 
-    GArray *tokens;
-    gint i;
+    Token *tokens, *p;
     BusMatchRule *rule;
 
     rule = g_slice_new0 (BusMatchRule);
@@ -186,38 +187,37 @@ bus_match_rule_new (const gchar *text)
     /* parse rule */
     tokens = tokenize_rule (text);
 
-    for (i = 0; i < tokens->len; i++) {
-        Token *token = &g_array_index (tokens, Token, i);
-        if (g_strcmp0 (token->key, "type") == 0) {
-            if (g_strcmp0 (token->value, "signal") == 0) {
+    for (p = tokens; p != NULL && p->key != 0; p++) {
+        if (g_strcmp0 (p->key, "type") == 0) {
+            if (g_strcmp0 (p->value, "signal") == 0) {
                 bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_SIGNAL);
             }
-            else if (g_strcmp0 (token->value, "method_call") == 0) {
+            else if (g_strcmp0 (p->value, "method_call") == 0) {
                 bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_CALL);
             }
-            else if (g_strcmp0 (token->value, "method_return") == 0) {
+            else if (g_strcmp0 (p->value, "method_return") == 0) {
                 bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_RETURN);
             }
-            else if (g_strcmp0 (token->value, "error") == 0) {
+            else if (g_strcmp0 (p->value, "error") == 0) {
                 bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_ERROR);
             }
             else
                 goto failed;            
         }
-        else if (g_strcmp0 (token->key, "sender") == 0) {
-            bus_match_rule_set_sender (rule, token->value);
+        else if (g_strcmp0 (p->key, "sender") == 0) {
+            bus_match_rule_set_sender (rule, p->value);
         }
-        else if (g_strcmp0 (token->key, "interface") == 0) {
-            bus_match_rule_set_interface (rule, token->value);
+        else if (g_strcmp0 (p->key, "interface") == 0) {
+            bus_match_rule_set_interface (rule, p->value);
         }
-        else if (g_strcmp0 (token->key, "member") == 0) {
-            bus_match_rule_set_member (rule, token->value);
+        else if (g_strcmp0 (p->key, "member") == 0) {
+            bus_match_rule_set_member (rule, p->value);
         }
-        else if (g_strcmp0 (token->key, "path") == 0) {
-            bus_match_rule_set_path (rule, token->value);
+        else if (g_strcmp0 (p->key, "path") == 0) {
+            bus_match_rule_set_path (rule, p->value);
         }
-        else if (g_strcmp0 (token->key, "destination") == 0) {
-            bus_match_rule_set_destination (rule, token->value);
+        else if (g_strcmp0 (p->key, "destination") == 0) {
+            bus_match_rule_set_destination (rule, p->value);
         }
     }
 
