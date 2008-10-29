@@ -69,6 +69,8 @@ gboolean         bus_match_rule_set_arg     (BusMatchRule   *rule,
                                              const gchar    *arg);
 gboolean         bus_match_rule_match       (BusMatchRule   *rule,
                                              DBusMessage    *message);
+gboolean         bus_match_rule_is_equal    (BusMatchRule   *a,
+                                             BusMatchRule   *b);
 
 G_END_DECLS
 #endif

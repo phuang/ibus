@@ -376,6 +376,8 @@ bus_match_rule_set_arg (BusMatchRule   *rule,
     g_assert (rule != NULL);
     g_assert (arg != NULL);
 
+    rule->flags |= MATCH_ARGS;
+
     if (arg_i >= rule->args->len) {
         g_array_set_size (rule->args, arg_i + 1);
     }
@@ -449,3 +451,58 @@ bus_match_rule_match (BusMatchRule   *rule,
     return TRUE;
 }
 
+gboolean
+bus_match_rule_is_equal (BusMatchRule   *a,
+                         BusMatchRule   *b)
+{
+    g_assert (a != NULL);
+    g_assert (b != NULL);
+
+    if (a->flags != b->flags)
+        return FALSE;
+
+    if (a->flags & MATCH_TYPE) {
+        if (a->message_type != b->message_type)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_INTERFACE) {
+        if (g_strcmp0 (a->interface, b->interface) != 0)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_MEMBER) {
+        if (g_strcmp0 (a->member, b->member) != 0)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_SENDER) {
+        if (g_strcmp0 (a->sender, b->sender) != 0)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_DESTINATION) {
+        if (g_strcmp0 (a->destination, b->destination) != 0)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_PATH) {
+        if (g_strcmp0 (a->path, b->path) != 0)
+            return FALSE;
+    }
+    
+    if (a->flags & MATCH_ARGS) {
+        if (a->args->len != b->args->len)
+            return FALSE;
+
+        gint i;
+
+        for (i = 0; i < a->args->len; i++) {
+            if (g_strcmp0 (g_array_index (a->args, gchar *, i), 
+                           g_array_index (b->args, gchar *, i)) != 0)
+                return FALSE;
+        }
+    }
+
+    return TRUE;
+}
