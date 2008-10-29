@@ -48,7 +48,9 @@ struct _BusMatchRule {
 G_BEGIN_DECLS
 
 BusMatchRule    *bus_match_rule_new         (const gchar    *text);
+BusMatchRule    *bus_match_rule_ref         (BusMatchRule   *rule);
 void             bus_match_rule_unref       (BusMatchRule   *rule);
+void             bus_match_rule_free        (BusMatchRule   *rule);
 gboolean         bus_match_rule_set_message_type
                                             (BusMatchRule   *rule,
                                              gint            type);

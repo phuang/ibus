@@ -19,6 +19,7 @@
  */
 
 #include "connection.h"
+#include "matchrule.h"
 
 #define BUS_CONNECTION_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONNECTION, BusConnectionPrivate))
@@ -28,6 +29,7 @@ struct _BusConnectionPrivate {
     gchar *unique_name;
     /* list for well known names */
     GSList  *names;
+    GSList  *rules;
 };
 typedef struct _BusConnectionPrivate BusConnectionPrivate;
 
@@ -207,16 +209,53 @@ bus_connection_remove_name (BusConnection     *connection,
                              const gchar       *name)
 {
     BusConnectionPrivate *priv;
-    GSList *name_node;
+    GSList *link;
     
     priv = BUS_CONNECTION_GET_PRIVATE (connection);
 
-    name_node = g_slist_find_custom (priv->names, name, (GCompareFunc) g_strcmp0);
+    link = g_slist_find_custom (priv->names, name, (GCompareFunc) g_strcmp0);
 
-    if (name_node) {
-        g_free (name_node->data);
-        priv->names = g_slist_delete_link (priv->names, name_node);
+    if (link) {
+        g_free (link->data);
+        priv->names = g_slist_delete_link (priv->names, link);
         return TRUE;
     }
     return FALSE;
 }
+
+gboolean
+bus_connection_add_match (BusConnection  *connection,
+                          const gchar    *rule)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (rule != NULL);
+
+    BusMatchRule *p;
+    GSList *link;
+    BusConnectionPrivate *priv;
+    
+    priv = BUS_CONNECTION_GET_PRIVATE (connection);
+
+    p = bus_match_rule_new (rule);
+    if (p == NULL)
+        return FALSE;
+
+    for (link = priv->rules; link != NULL; link = link->next) {
+        if (bus_match_rule_is_equal (p, (BusMatchRule *)link->data)) {
+            bus_match_rule_ref ((BusMatchRule *)link->data);
+            bus_match_rule_unref (p);
+            return TRUE;
+        }
+    }
+
+    priv->rules = g_slist_append (priv->rules, p);
+    return TRUE;
+
+}
+
+gboolean
+bus_connection_remove_match (BusConnection  *connection,
+                             const gchar    *rule)
+{
+}
+

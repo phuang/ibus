@@ -254,6 +254,16 @@ failed:
     return NULL;
 }
 
+BusMatchRule *
+bus_match_rule_ref (BusMatchRule *rule)
+{
+    g_assert (rule != NULL);
+
+    rule->refcount ++;
+
+    return rule;
+}
+
 void
 bus_match_rule_unref (BusMatchRule *rule)
 {
@@ -266,6 +276,13 @@ bus_match_rule_unref (BusMatchRule *rule)
     if (rule->refcount > 0)
         return;
 
+    bus_match_rule_free (rule);
+}
+
+
+void
+bus_match_rule_free (BusMatchRule *rule)
+{
     g_free (rule->interface);
     g_free (rule->member);
     g_free (rule->sender);
