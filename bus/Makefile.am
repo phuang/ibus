@@ -25,7 +25,25 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
-noinst_PROGRAMS = ibus-daemon
+AM_CFLAGS = \
+	@X11_CFLAGS@ \
+	@GLIB2_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	-I$(top_srcdir)/src \
+	$(NULL)
+AM_LDFLAGS = \
+	@X11_LIBS@ \
+	@GLIB2_LIBS@ \
+	@DBUS_LIBS@ \
+	$(libibus) \
+	$(NULL)
+
+TESTS = \
+	test-matchrule \
+	$(NULL)
+
+noinst_PROGRAMS = ibus-daemon $(TESTS)
 ibus_daemon_DEPENDENCIES = \
 	$(libibus) \
 	$(NULL)

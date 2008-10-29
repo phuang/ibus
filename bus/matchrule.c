@@ -33,42 +33,31 @@ struct _Token {
     gchar *value;
 };
 
-struct _BusMatchRule {
-    gint   refcount;
-    gint   message_type;
-    gchar *interface;
-    gchar *member;
-    gchar *sender;
-    gchar *destination;
-    gchar *path;
-
-    GArray *args;
-};
 
 #define SKIP_WHITE(a)   \
-    while (*a == ' ' || *a == '\t') { a++; }
+    while (*(a) == ' ' || *(a) == '\t') { (a)++; }
 #define IS_ALPHA(a) \
-    ((*a >= 'a' && *a <= 'z') || (*a >= 'A' && *a <= 'Z'))
+    ((*(a) >= 'a' && *(a) <= 'z') || (*(a) >= 'A' && *(a) <= 'Z'))
 #define IS_NUMBER(a) \
-    (*a >= '0' && *a <= '9')
+    (*(a) >= '0' && *(a) <= '9')
 
 static gchar *
-find_key (const gchar *p)
+find_key (const gchar **p)
 {
     GString *text;
 
     text = g_string_new ("");
     
-    SKIP_WHITE(p)
-    if (!IS_ALPHA (p))
+    SKIP_WHITE(*p)
+    if (!IS_ALPHA (*p))
         goto failed;
     
-    g_string_append_c (text, *p);
-    p ++;
+    g_string_append_c (text, **p);
+    (*p) ++;
 
-    while (IS_ALPHA (p) || IS_NUMBER (p)) {
-        g_string_append_c (text, *p);
-        p ++;
+    while (IS_ALPHA (*p) || IS_NUMBER (*p)) {
+        g_string_append_c (text, **p);
+        (*p) ++;
     }
 
     return g_string_free (text, FALSE);
@@ -80,25 +69,27 @@ failed:
 }
 
 static gchar *
-find_value (const gchar *p)
+find_value (const gchar **p)
 {
     GString *text;
 
     text = g_string_new ("");
     
-    SKIP_WHITE (p);
+    SKIP_WHITE (*p);
 
-    if (*p++ != '\'')
+    if (**p != '\'')
         goto failed;
+    (*p) ++;
 
-    while (*p != '\'') {
-        if (*p == '\0')
+    while (**p != '\'') {
+        if (**p == '\0')
             goto failed;
-        if (*p == '\\')
-            p++;
-        g_string_append_c (text, *p);
-        p ++;
+        if (**p == '\\')
+            (*p) ++;
+        g_string_append_c (text, **p);
+        (*p) ++;
     }
+    (*p) ++;
 
     return g_string_free (text, FALSE);
 
@@ -124,14 +115,15 @@ tokenize_rule (const gchar *text)
         gchar *value;
 
         SKIP_WHITE (p);
-        key = find_key (p);
+        key = find_key (&p);
         if (key == NULL)
             goto failed;
         SKIP_WHITE (p);
         if (*p != '=')
             goto failed;
+        p ++;
         SKIP_WHITE (p);
-        value = find_value (p);
+        value = find_value (&p);
         if (value == NULL) {
             g_free (key);
             goto failed;
@@ -142,6 +134,11 @@ tokenize_rule (const gchar *text)
             g_free (value);
             goto failed;
         }
+
+        if (*p == ',')
+         p ++;
+        token.key = key;
+        token.value = value;
         g_array_append_val (tokens, token);
     }
 
@@ -164,6 +161,8 @@ bus_match_rule_new (const gchar *text)
 {
     g_assert (text != NULL);
 
+    GArray *tokens;
+    gint i;
     BusMatchRule *rule;
 
     rule = g_slice_new0 (BusMatchRule);
@@ -173,6 +172,13 @@ bus_match_rule_new (const gchar *text)
     rule->args = g_array_new (FALSE, TRUE, sizeof (BusArg));
 
     /* parse rule */
+    tokens = tokenize_rule (text);
+
+    for (i = 0; i < tokens->len; i++) {
+        Token *token = &g_array_index (tokens, Token, i);
+        g_debug ("key=%s, value=%s", token->key, token->value);
+    }
+
 
 
     return rule;

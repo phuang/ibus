@@ -22,6 +22,19 @@
 
 #include <glib-object.h>
 typedef struct _BusMatchRule BusMatchRule;
+
+struct _BusMatchRule {
+    gint   refcount;
+    gint   message_type;
+    gchar *interface;
+    gchar *member;
+    gchar *sender;
+    gchar *destination;
+    gchar *path;
+
+    GArray *args;
+};
+
 G_BEGIN_DECLS
 
 BusMatchRule    *bus_match_rule_new     (const gchar    *text);
