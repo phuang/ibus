@@ -32,7 +32,8 @@ struct _BusMatchRule {
     gchar *destination;
     gchar *path;
 
-    GArray *args;
+    gchar **args;
+    gint args_len;
 };
 
 G_BEGIN_DECLS

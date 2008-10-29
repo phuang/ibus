@@ -17,6 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <string.h>
 #include <glib.h>
 #include <dbus/dbus.h>
 #include "matchrule.h"
@@ -170,6 +171,20 @@ tokens_free (Token *tokens)
     g_free (tokens);
 }
 
+static gboolean
+_atoi (const gchar *text, gint *i)
+{
+    const gchar *p = text;
+    *i = 0;
+    while (*p != '\0') {
+        if (!IS_NUMBER(p))
+            return FALSE;
+        *i = (*i) * 10 - '0'  + *p;
+        p ++;
+    }
+    return TRUE;
+}
+
 BusMatchRule *
 bus_match_rule_new (const gchar *text)
 {
@@ -177,12 +192,12 @@ bus_match_rule_new (const gchar *text)
 
     Token *tokens, *p;
     BusMatchRule *rule;
+    GArray *args = NULL;
 
     rule = g_slice_new0 (BusMatchRule);
 
     rule->refcount = 1;
     rule->message_type = DBUS_MESSAGE_TYPE_INVALID;
-    rule->args = g_array_new (FALSE, TRUE, sizeof (BusArg));
 
     /* parse rule */
     tokens = tokenize_rule (text);
@@ -219,12 +234,42 @@ bus_match_rule_new (const gchar *text)
         else if (g_strcmp0 (p->key, "destination") == 0) {
             bus_match_rule_set_destination (rule, p->value);
         }
+        else if (strncmp (p->key, "arg", 3) == 0) {
+            gint i;
+            if (! _atoi (p->key + 3, &i))
+                goto failed;
+            
+            if (args == NULL) {
+                args = g_array_new (TRUE, TRUE, sizeof (gchar *));
+            }
+
+            if (i >= args->len) {
+                g_array_set_size (args, i + 1);
+            }
+            
+            g_free (g_array_index (args, gchar *, i));
+            g_array_index (args, gchar *, i) = g_strdup (p->value);
+        }
+        else
+            goto failed;
+    }
+
+    if (args) {
+        rule->args_len = args->len;
+        rule->args = (gchar **) g_array_free (args, FALSE);
     }
 
     tokens_free (tokens);
     return rule;
 
 failed:
+    if (args) {
+        gchar **p = (gchar **) g_array_free (args, FALSE);
+        if (*p != NULL) {
+            g_free (*p);
+            p++;
+        }
+    }
     tokens_free (tokens);
     bus_match_rule_unref (rule);
     return NULL;
@@ -235,7 +280,7 @@ bus_match_rule_unref (BusMatchRule *rule)
 {
     g_assert (rule != NULL);
 
-    gint i;
+    gchar **p;
 
     rule->refcount --;
 
@@ -248,12 +293,10 @@ bus_match_rule_unref (BusMatchRule *rule)
     g_free (rule->destination);
     g_free (rule->path);
 
-    for (i = 0; i < rule->args->len; i++ ) {
-        BusArg *arg = &g_array_index (rule->args, BusArg, i);
-        g_free (arg->value);
+    for (p = rule->args; p != NULL && *p != NULL; p++) {
+        g_free (*p);
     }
-
-    g_array_free (rule->args, TRUE);
+    g_free (rule->args);
 }
 
 gboolean
