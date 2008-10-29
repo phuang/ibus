@@ -176,10 +176,38 @@ bus_match_rule_new (const gchar *text)
 
     for (i = 0; i < tokens->len; i++) {
         Token *token = &g_array_index (tokens, Token, i);
-        g_debug ("key=%s, value=%s", token->key, token->value);
+        if (g_strcmp0 (token->key, "type") == 0) {
+            if (g_strcmp0 (token->value, "signal") == 0) {
+                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_SIGNAL);
+            }
+            else if (g_strcmp0 (token->value, "method_call") == 0) {
+                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_CALL);
+            }
+            else if (g_strcmp0 (token->value, "method_return") == 0) {
+                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_RETURN);
+            }
+            else if (g_strcmp0 (token->value, "error") == 0) {
+                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_ERROR);
+            }
+            else
+                goto failed;            
+        }
+        else if (g_strcmp0 (token->key, "sender") == 0) {
+            bus_match_rule_set_sender (rule, token->value);
+        }
+        else if (g_strcmp0 (token->key, "interface") == 0) {
+            bus_match_rule_set_interface (rule, token->value);
+        }
+        else if (g_strcmp0 (token->key, "member") == 0) {
+            bus_match_rule_set_member (rule, token->value);
+        }
+        else if (g_strcmp0 (token->key, "path") == 0) {
+            bus_match_rule_set_path (rule, token->value);
+        }
+        else if (g_strcmp0 (token->key, "destination") == 0) {
+            bus_match_rule_set_destination (rule, token->value);
+        }
     }
-
-
 
     return rule;
 
@@ -214,4 +242,98 @@ bus_match_rule_unref (BusMatchRule *rule)
     g_array_free (rule->args, TRUE);
 }
 
+gboolean
+bus_match_rule_set_message_type (BusMatchRule   *rule,
+                                 gint            type)
+{
+    g_assert (rule != NULL);
+    g_assert (type == DBUS_MESSAGE_TYPE_SIGNAL ||
+              type == DBUS_MESSAGE_TYPE_METHOD_CALL ||
+              type == DBUS_MESSAGE_TYPE_METHOD_RETURN ||
+              type == DBUS_MESSAGE_TYPE_ERROR);
+    rule->message_type = type;
+
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_sender  (BusMatchRule    *rule,
+                            const gchar     *sender)
+{
+    g_assert (rule != NULL);
+    g_assert (sender != NULL);
+
+    g_free (rule->sender);
+    rule->sender = g_strdup (sender);
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_interface (BusMatchRule   *rule,
+                              const gchar    *interface)
+{
+    g_assert (rule != NULL);
+    g_assert (interface != NULL);
+
+    g_free (rule->interface);
+    rule->interface = g_strdup (interface);
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_member (BusMatchRule   *rule,
+                           const gchar    *member)
+{
+    g_assert (rule != NULL);
+    g_assert (member != NULL);
+
+    g_free (rule->member);
+    rule->member = g_strdup (member);
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_path (BusMatchRule   *rule,
+                         const gchar    *path)
+{
+    g_assert (rule != NULL);
+    g_assert (path != NULL);
+
+    g_free (rule->path);
+    rule->path = g_strdup (path);
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_destination (BusMatchRule   *rule,
+                                const gchar    *dest)
+{
+    g_assert (rule != NULL);
+    g_assert (dest != NULL);
+
+    g_free (rule->destination);
+    rule->destination = g_strdup (dest);
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_set_arg (BusMatchRule   *rule,
+                        guint           arg_index,
+                        const gchar    *arg)
+{
+    g_assert (rule != NULL);
+    g_assert (arg != NULL);
+    
+    return TRUE;
+}
+
+gboolean
+bus_match_rule_match (BusMatchRule   *rule,
+                      DBusMessage    *message)
+{
+    g_assert (rule != NULL);
+    g_assert (message != NULL);
+
+    return FALSE;
+}
 

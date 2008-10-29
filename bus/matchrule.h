@@ -37,8 +37,28 @@ struct _BusMatchRule {
 
 G_BEGIN_DECLS
 
-BusMatchRule    *bus_match_rule_new     (const gchar    *text);
-void             bus_match_rule_unref   (BusMatchRule   *rule);
+BusMatchRule    *bus_match_rule_new         (const gchar    *text);
+void             bus_match_rule_unref       (BusMatchRule   *rule);
+gboolean         bus_match_rule_set_message_type
+                                            (BusMatchRule   *rule,
+                                             gint            type);
+gboolean         bus_match_rule_set_sender  (BusMatchRule   *rule,
+                                             const gchar    *sender);
+gboolean         bus_match_rule_set_interface
+                                            (BusMatchRule   *rule,
+                                             const gchar    *interface);
+gboolean         bus_match_rule_set_member  (BusMatchRule   *rule,
+                                             const gchar    *member);
+gboolean         bus_match_rule_set_path    (BusMatchRule   *rule,
+                                             const gchar    *path);
+gboolean         bus_match_rule_set_destination
+                                            (BusMatchRule   *rule,
+                                             const gchar    *dest);
+gboolean         bus_match_rule_set_arg     (BusMatchRule   *rule,
+                                             guint           arg_index,
+                                             const gchar    *arg);
+gboolean         bus_match_rule_match       (BusMatchRule   *rule,
+                                             DBusMessage    *message);
 
 G_END_DECLS
 #endif
