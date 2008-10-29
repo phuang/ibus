@@ -22,9 +22,15 @@
 
 #include <glib-object.h>
 typedef struct _BusMatchRule BusMatchRule;
+typedef enum {
+    MATCH_TYPE = 1 << 0,
+    MATCH_INTERFACE = 1 << 1,
+    MATCH_MEMBER = 1 << 2,
+} BusMatchFlags;
 
 struct _BusMatchRule {
     gint   refcount;
+    gint   flags;
     gint   message_type;
     gchar *interface;
     gchar *member;
