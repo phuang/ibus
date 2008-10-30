@@ -111,7 +111,10 @@ gboolean         bus_match_rule_is_equal    (BusMatchRule   *a,
 void             bus_match_rule_add_recipient
                                             (BusMatchRule   *rule,
                                              BusConnection  *connection);
-gboolean         bus_match_rule_get_recipients
+void             bus_match_rule_remove_recipient
+                                            (BusMatchRule   *rule,
+                                             BusConnection  *connection);
+gboolean         bus_match_rule_get_recipient
                                             (BusMatchRule   *rule,
                                              GList          **recipients);
 

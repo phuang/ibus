@@ -22,6 +22,7 @@
 #include <ibusmarshalers.h>
 #include "dbusimpl.h"
 #include "connection.h"
+#include "matchrule.h"
 
 #define BUS_DBUS_IMPL_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_DBUS_IMPL, BusDBusImplPrivate))
@@ -43,6 +44,7 @@ struct _BusDBusImplPrivate {
     GHashTable *unique_names;
     GHashTable *names;
     GSList *connections;
+    GSList *rules;
     gint id;
 };
 
@@ -146,6 +148,7 @@ bus_dbus_impl_init (BusDBusImpl *dbus)
     priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->names = g_hash_table_new (g_str_hash, g_str_equal);
     priv->connections = NULL;
+    priv->rules = NULL;
     priv->id = 1;
 
 }
@@ -473,6 +476,20 @@ _dbus_get_id (BusDBusImpl   *dbus,
     return reply_message;
 }
 
+static void
+_rule_destroy_cb (BusMatchRule *rule,
+                  BusDBusImpl  *dbus)
+{
+    g_assert (BUS_IS_MATCH_RULE (rule));
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+
+    priv->rules = g_slist_remove (priv->rules, rule);
+    g_object_unref (rule);
+}
+
 static DBusMessage *
 _dbus_add_match (BusDBusImpl    *dbus,
                  DBusMessage    *message,
@@ -484,11 +501,13 @@ _dbus_add_match (BusDBusImpl    *dbus,
     DBusMessage *reply_message;
     DBusError error;
     gboolean retval;
-    gchar *rule;
+    gchar *rule_text;
+    BusMatchRule *rule;
+    GSList *link;
 
     dbus_error_init (&error);
     retval = dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_STRING, &rule_text,
             DBUS_TYPE_INVALID);
 
     if (!retval) {
@@ -496,11 +515,34 @@ _dbus_add_match (BusDBusImpl    *dbus,
                                     error.name,
                                     error.message);
         dbus_error_free (&error);
-    }
-    else {
-        reply_message = dbus_message_new_method_return (message);
+        return reply_message;
     }
 
+    rule = bus_match_rule_new (rule_text);
+
+    if (rule == NULL) {
+         reply_message = dbus_message_new_error_printf (message,
+                                    DBUS_ERROR_MATCH_RULE_INVALID,
+                                    "Parse rule [%s] failed", rule_text);
+        return reply_message;
+    }
+
+    for (link = priv->rules; link != NULL; link = link->next) {
+        if (bus_match_rule_is_equal (rule, BUS_MATCH_RULE (link->data))) {
+            bus_match_rule_add_recipient (BUS_MATCH_RULE (link->data), connection);
+            g_object_unref (rule);
+            rule = NULL;
+            break;
+        }
+    }
+
+    if (rule) {
+        bus_match_rule_add_recipient (rule, connection);
+        priv->rules = g_slist_append (priv->rules, rule);
+        g_signal_connect (rule, "destroy", G_CALLBACK (_rule_destroy_cb), dbus);
+    }
+    
+    reply_message = dbus_message_new_method_return (message);
     return reply_message;
 }
 
@@ -514,21 +556,40 @@ _dbus_remove_match (BusDBusImpl     *dbus,
 
     DBusMessage *reply_message;
     DBusError error;
-    gchar *rule;
+    gchar *rule_text;
+    BusMatchRule *rule;
+    GSList *link;
 
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule,
+            DBUS_TYPE_STRING, &rule_text,
             DBUS_TYPE_INVALID)) {
         reply_message = dbus_message_new_error (message,
                                     error.name,
                                     error.message);
         dbus_error_free (&error);
-    }
-    else {
-        reply_message = dbus_message_new_method_return (message);
+        return reply_message;
     }
 
+    rule = bus_match_rule_new (rule_text);
+
+    if (rule == NULL ) {
+         reply_message = dbus_message_new_error_printf (message,
+                                    DBUS_ERROR_MATCH_RULE_INVALID,
+                                    "Parse rule [%s] failed", rule_text);
+        return reply_message;
+    }
+    
+    for (link = priv->rules; link != NULL; link = link->next) {
+        if (bus_match_rule_is_equal (rule, BUS_MATCH_RULE (link->data))) {
+            bus_match_rule_remove_recipient (BUS_MATCH_RULE (link->data), connection);
+            break;
+        }
+    }
+
+    g_object_unref (rule);
+   
+    reply_message = dbus_message_new_method_return (message);
     return reply_message;
 }
 
