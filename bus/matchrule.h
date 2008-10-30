@@ -20,20 +20,51 @@
 #ifndef __MATCH_RULE_H_
 #define __MATCH_RULE_H_
 
-#include <glib-object.h>
+#include <ibus.h>
+#include "connection.h"
+
+/*
+ * Type macros.
+ */
+
+/* define GOBJECT macros */
+#define BUS_TYPE_MATCH_RULE             \
+    (bus_match_rule_get_type ())
+#define BUS_MATCH_RULE(obj)             \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), BUS_TYPE_MATCH_RULE, BusMatchRule))
+#define BUS_MATCH_RULE_CLASS(klass)     \
+    (G_TYPE_CHECK_CLASS_CAST ((klass), BUS_TYPE_MATCH_RULE, BusMatchRuleClass))
+#define BUS_IS_MATCH_RULE(obj)          \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BUS_TYPE_MATCH_RULE))
+#define BUS_IS_MATCH_RULE_CLASS(klass)  \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), BUS_TYPE_MATCH_RULE))
+#define BUS_MATCH_RULE_GET_CLASS(obj)   \
+    (G_TYPE_CHECK_GET_CLASS ((obj), BUS_TYPE_MATCH_RULE, BusMatchRuleClass))
+
+G_BEGIN_DECLS
+
 typedef struct _BusMatchRule BusMatchRule;
+typedef struct _BusMatchRuleClass BusMatchRuleClass;
+
 typedef enum {
-    MATCH_TYPE = 1 << 0,
-    MATCH_INTERFACE = 1 << 1,
-    MATCH_MEMBER = 1 << 2,
-    MATCH_SENDER = 1 << 3,
-    MATCH_DESTINATION = 1 << 4,
-    MATCH_PATH = 1 << 5,
-    MATCH_ARGS = 1 << 6,
+    MATCH_TYPE          = 1 << 0,
+    MATCH_INTERFACE     = 1 << 1,
+    MATCH_MEMBER        = 1 << 2,
+    MATCH_SENDER        = 1 << 3,
+    MATCH_DESTINATION   = 1 << 4,
+    MATCH_PATH          = 1 << 5,
+    MATCH_ARGS          = 1 << 6,
 } BusMatchFlags;
 
+typedef struct _Recipient Recipient;
+struct _Recipient {
+    BusConnection *connection;
+    gint refcount;
+};
+
 struct _BusMatchRule {
-    gint   refcount;
+    IBusProxy parent;
+    /* instance members */
     gint   flags;
     gint   message_type;
     gchar *interface;
@@ -41,12 +72,16 @@ struct _BusMatchRule {
     gchar *sender;
     gchar *destination;
     gchar *path;
-
     GArray *args;
+    GList  *recipients;
 };
 
-G_BEGIN_DECLS
+struct _BusMatchRuleClass {
+    IBusProxyClass parent;
+    /* class members */
+};
 
+GType            bus_match_rule_get_type    (void);
 BusMatchRule    *bus_match_rule_new         (const gchar    *text);
 BusMatchRule    *bus_match_rule_ref         (BusMatchRule   *rule);
 void             bus_match_rule_unref       (BusMatchRule   *rule);
@@ -73,6 +108,12 @@ gboolean         bus_match_rule_match       (BusMatchRule   *rule,
                                              DBusMessage    *message);
 gboolean         bus_match_rule_is_equal    (BusMatchRule   *a,
                                              BusMatchRule   *b);
+void             bus_match_rule_add_recipient
+                                            (BusMatchRule   *rule,
+                                             BusConnection  *connection);
+gboolean         bus_match_rule_get_recipients
+                                            (BusMatchRule   *rule,
+                                             GList          **recipients);
 
 G_END_DECLS
 #endif

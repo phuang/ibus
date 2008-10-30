@@ -242,8 +242,7 @@ bus_connection_add_match (BusConnection  *connection,
 
     for (link = priv->rules; link != NULL; link = link->next) {
         if (bus_match_rule_is_equal (p, (BusMatchRule *)link->data)) {
-            bus_match_rule_ref ((BusMatchRule *)link->data);
-            bus_match_rule_unref (p);
+            g_object_unref (p);
             return TRUE;
         }
     }
@@ -257,5 +256,6 @@ gboolean
 bus_connection_remove_match (BusConnection  *connection,
                              const gchar    *rule)
 {
+    return FALSE;
 }
 

@@ -18,22 +18,100 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <string.h>
-#include <glib.h>
 #include <dbus/dbus.h>
 #include "matchrule.h"
 
-typedef struct _BusArg BusArg;
-struct _BusArg {
-    guint len;
-    gchar *value;
-};
+#define BUS_CONFIG_PROXY_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONFIG_PROXY, BusMatchRulePrivate))
 
-typedef struct _Token Token;
-struct _Token {
+
+static void      bus_match_rule_class_init      (BusMatchRuleClass    *klass);
+static void      bus_match_rule_init            (BusMatchRule         *rule);
+static void      bus_match_rule_destroy         (BusMatchRule         *rule);
+
+static IBusObjectClass  *parent_class = NULL;
+
+GType
+bus_match_rule_get_type (void)
+{
+    static GType type = 0;
+
+    static const GTypeInfo type_info = {
+        sizeof (BusMatchRuleClass),
+        (GBaseInitFunc)     NULL,
+        (GBaseFinalizeFunc) NULL,
+        (GClassInitFunc)    bus_match_rule_class_init,
+        NULL,               /* class finalize */
+        NULL,               /* class data */
+        sizeof (BusMatchRule),
+        0,
+        (GInstanceInitFunc) bus_match_rule_init,
+    };
+
+    if (type == 0) {
+        type = g_type_register_static (IBUS_TYPE_OBJECT,
+                    "BusMatchRule",
+                    &type_info,
+                    (GTypeFlags)0);
+    }
+    return type;
+}
+
+static void
+bus_match_rule_class_init (BusMatchRuleClass *klass)
+{
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+
+    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
+
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_match_rule_destroy;
+}
+
+static void
+bus_match_rule_init (BusMatchRule *rule)
+{
+    rule->flags = 0;
+    rule->message_type = DBUS_MESSAGE_TYPE_INVALID;
+    rule->interface = NULL;
+    rule->member = NULL;
+    rule->sender = NULL;
+    rule->destination = NULL;
+    rule->path = NULL;
+    rule->args = g_array_new (TRUE, TRUE, sizeof (gchar *));
+}
+
+static void
+bus_match_rule_destroy (BusMatchRule *rule)
+{
+    g_free (rule->interface);
+    g_free (rule->member);
+    g_free (rule->sender);
+    g_free (rule->destination);
+    g_free (rule->path);
+    
+    gint i;
+    GList *link;
+    
+    for (i = 0; i < rule->args->len; i++) {
+        g_free (g_array_index (rule->args, gchar *, i));
+    }
+    g_array_free (rule->args, TRUE);
+
+    for (link = rule->recipients; link != NULL; link = link->next) {
+        Recipient *recipient = (Recipient *) link->data;
+        g_object_unref (recipient->connection);
+        g_slice_free (Recipient, recipient);
+    }
+    g_list_free (rule->recipients);
+
+    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (rule));
+}
+
+
+typedef struct _Token {
     gchar *key;
     gchar *value;
-};
-
+} Token;
 
 #define SKIP_WHITE(a)   \
     while (*(a) == ' ' || *(a) == '\t') { (a)++; }
@@ -193,12 +271,7 @@ bus_match_rule_new (const gchar *text)
     Token *tokens, *p;
     BusMatchRule *rule;
 
-    rule = g_slice_new0 (BusMatchRule);
-
-    rule->refcount = 1;
-    rule->message_type = DBUS_MESSAGE_TYPE_INVALID;
-
-    rule->args = g_array_new (TRUE, TRUE, sizeof (gchar *));
+    rule = BUS_MATCH_RULE (g_object_new (BUS_TYPE_MATCH_RULE, NULL));
 
     /* parse rule */
     tokens = tokenize_rule (text);
@@ -250,49 +323,8 @@ bus_match_rule_new (const gchar *text)
 
 failed:
     tokens_free (tokens);
-    bus_match_rule_unref (rule);
+    g_object_unref (rule);
     return NULL;
-}
-
-BusMatchRule *
-bus_match_rule_ref (BusMatchRule *rule)
-{
-    g_assert (rule != NULL);
-
-    rule->refcount ++;
-
-    return rule;
-}
-
-void
-bus_match_rule_unref (BusMatchRule *rule)
-{
-    g_assert (rule != NULL);
-
-    gint i;
-
-    rule->refcount --;
-
-    if (rule->refcount > 0)
-        return;
-
-    bus_match_rule_free (rule);
-}
-
-
-void
-bus_match_rule_free (BusMatchRule *rule)
-{
-    g_free (rule->interface);
-    g_free (rule->member);
-    g_free (rule->sender);
-    g_free (rule->destination);
-    g_free (rule->path);
-
-    for (i = 0; i < rule->args->len; i++) {
-        g_free (g_array_index (rule->args, gchar *, i));
-    }
-    g_array_free (rule->args, TRUE);
 }
 
 gboolean
@@ -523,3 +555,23 @@ bus_match_rule_is_equal (BusMatchRule   *a,
 
     return TRUE;
 }
+
+void
+bus_match_rule_add_recipient (BusMatchRule   *rule,
+                              BusConnection  *connection)
+{
+}
+
+void
+bus_match_rule_remove_recipient (BusMatchRule   *rule,
+                                 BusConnection  *connection)
+{
+}
+
+gboolean
+bus_match_rule_get_recipients (BusMatchRule   *rule,
+                               GList          **recipients)
+{
+    return TRUE;
+}
+
