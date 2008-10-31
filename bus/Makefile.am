@@ -84,5 +84,11 @@ ibus_daemon_LDADD = \
 	$(libibus) \
 	$(NULL)
 
+test_matchrule_SOURCES = \
+	connection.c \
+	matchrule.c \
+	test-matchrule.c \
+	$(NULL)
+
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src

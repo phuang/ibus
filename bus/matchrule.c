@@ -98,9 +98,9 @@ bus_match_rule_destroy (BusMatchRule *rule)
     g_array_free (rule->args, TRUE);
 
     for (link = rule->recipients; link != NULL; link = link->next) {
-        Recipient *recipient = (Recipient *) link->data;
+        BusRecipient *recipient = (BusRecipient *) link->data;
         g_object_unref (recipient->connection);
-        g_slice_free (Recipient, recipient);
+        g_slice_free (BusRecipient, recipient);
     }
     g_list_free (rule->recipients);
 
@@ -556,16 +556,87 @@ bus_match_rule_is_equal (BusMatchRule   *a,
     return TRUE;
 }
 
+static void
+_connection_destroy_cb (BusConnection   *connection,
+                        BusMatchRule    *rule)
+{
+    g_assert (BUS_IS_MATCH_RULE (rule));
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    GList *link;
+    BusRecipient *recipient;
+
+    for (link = rule->recipients; link != NULL; link = link->next) {
+        recipient = (BusRecipient *)link->data;
+
+        if (recipient->connection == connection) {
+            rule->recipients = g_list_remove_link (rule->recipients, link);
+            g_object_unref (connection);
+            g_slice_free (BusRecipient, recipient);
+            return;
+        }
+    }
+    g_assert_not_reached ();
+}
+
 void
 bus_match_rule_add_recipient (BusMatchRule   *rule,
                               BusConnection  *connection)
 {
+    g_assert (BUS_IS_MATCH_RULE (rule));
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    GList *link;
+    BusRecipient *recipient;
+
+    for (link = rule->recipients; link != NULL; link = link->next) {
+        recipient = (BusRecipient *) link->data;
+        if (connection == recipient->connection) {
+            recipient->refcount ++;
+            return;
+        }
+    }
+    
+    recipient = g_slice_new (BusRecipient);
+
+    g_object_ref (connection);
+    recipient->connection = connection;
+    recipient->refcount  = 1;
+
+    rule->recipients = g_list_append (rule->recipients, recipient);
+    g_signal_connect (connection,
+                      "destroy",
+                      G_CALLBACK (_connection_destroy_cb),
+                      rule);
 }
 
 void
 bus_match_rule_remove_recipient (BusMatchRule   *rule,
                                  BusConnection  *connection)
 {
+    g_assert (BUS_IS_MATCH_RULE (rule));
+    g_assert (BUS_IS_CONNECTION (connection));
+    
+    GList *link;
+    BusRecipient *recipient;
+
+    for (link = rule->recipients; link != NULL; link = link->next) {
+        recipient = (BusRecipient *) link->data;
+        if (connection == recipient->connection) {
+            recipient->refcount --;
+            if (recipient->refcount == 0) {
+                rule->recipients = g_list_remove_link (rule->recipients, link);
+                g_slice_free (BusRecipient, recipient);
+                g_signal_handlers_disconnect_by_func (connection,
+                                                      G_CALLBACK (_connection_destroy_cb),
+                                                      rule);
+                g_object_unref (connection);
+            }
+            return;
+        }
+    }
+
+    g_warning ("Remove recipient failed");
 }
 
 gboolean

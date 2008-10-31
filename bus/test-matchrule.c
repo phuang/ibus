@@ -1,4 +1,4 @@
-#include "matchrule.c"
+#include "matchrule.h"
 
 int main()
 {

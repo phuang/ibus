@@ -56,8 +56,8 @@ typedef enum {
     MATCH_ARGS          = 1 << 6,
 } BusMatchFlags;
 
-typedef struct _Recipient Recipient;
-struct _Recipient {
+typedef struct _BusRecipient BusRecipient;
+struct _BusRecipient {
     BusConnection *connection;
     gint refcount;
 };
