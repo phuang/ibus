@@ -262,7 +262,9 @@ _ic_process_key_event (BusInputContext  *context,
                 DBUS_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message, error.name, error.message);
+        reply = dbus_message_new_error (message,
+                                        error.name,
+                                        error.message);
         dbus_error_free (&error);
         return reply;
     }
@@ -301,7 +303,9 @@ _ic_set_cursor_location (BusInputContext  *context,
                 DBUS_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message, error.name, error.message);
+        reply = dbus_message_new_error (message,
+                                        error.name,
+                                        error.message);
         dbus_error_free (&error);
         return reply;
     }
@@ -376,7 +380,9 @@ _ic_set_capabilities (BusInputContext  *context,
                 DBUS_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message, error.name, error.message);
+        reply = dbus_message_new_error (message,
+                                        error.name,
+                                        error.message);
         dbus_error_free (&error);
         return reply;
     }
@@ -508,8 +514,8 @@ bus_input_context_dbus_message (BusInputContext *context,
     }
 
     reply_message = dbus_message_new_error_printf (message,
-                                "org.freedesktop.DBus.Error.NoImplement",
-                                "%s is not implemented",
+                                DBUS_ERROR_UNKNOWN_METHOD,
+                                "Can not find %s method",
                                 dbus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);

@@ -290,8 +290,8 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                         DBUS_TYPE_STRING, &client,
                         DBUS_TYPE_INVALID)) {
         reply = dbus_message_new_error (message,
-                                error.name,
-                                "RegisterFactories shoule pass an object_path array as arugment");
+                                DBUS_ERROR_INVALID_ARGS,
+                                "Argument of  RegisterFactories should be an string");
         dbus_error_free (&error);
         return reply;;
     }
@@ -394,7 +394,7 @@ _ibus_register_factories (BusIBusImpl     *ibus,
         if (g_hash_table_lookup (priv->factory_dict, paths[i]) != NULL) {
             reply = dbus_message_new_error_printf (
                                     message,
-                                    "org.freedesktop.IBus.Error",
+                                    DBUS_ERROR_FAILED,
                                     "Factory %s has been registered!",
                                     paths[i]);
             dbus_free_string_array (paths);
@@ -548,7 +548,7 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
     }
 
     reply_message = dbus_message_new_error_printf (message,
-                                "org.freedesktop.DBus.Error.NoImplement",
+                                DBUS_ERROR_UNKNOWN_METHOD,
                                 "%s is not implemented",
                                 dbus_message_get_member (message));
 
