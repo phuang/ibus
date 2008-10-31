@@ -20,6 +20,15 @@
 #include <glib.h>
 #include "ibusattribute.h"
 
+/**
+ * SECTION: IBusAttribute
+ * @short_description: Attribute
+ * @include: ibus.h
+ *
+ * Entry point for using IBus functionality.
+ *
+ **/
+
 GType
 ibus_attribute_get_type ()
 {
