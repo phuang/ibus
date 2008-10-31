@@ -65,7 +65,7 @@ PKG_CHECK_MODULES(GIO2, [
 ])
 
 
-# check gtk, gdk & pygtk
+# check for gtk, gdk & pygtk
 PKG_CHECK_MODULES(GTK2, [
     gtk+-2.0
 ])
@@ -77,7 +77,9 @@ PKG_CHECK_MODULES(GDK2, [
     gdk-2.0
 ])
 
-# check dbus-glib
+# check for gtk-doc
+GTK_DOC_CHECK(1.9)
+# check for dbus-glib
 PKG_CHECK_MODULES(DBUS, [
     dbus-glib-1
 ])
@@ -252,6 +254,9 @@ util/Makefile
 util/IMdkit/Makefile
 util/gconf/Makefile
 icons/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/ibus/Makefile
 m4/Makefile
 ])
 
@@ -265,5 +270,6 @@ Build options:
   Gtk immodule dir         $GTK_IM_MODULEDIR
   Enable Qt4 IM module     $enable_qt4
   Build pygconf            $enable_pygconf
+  Build document           $enable_gtk_doc
 ])
 
