@@ -276,7 +276,7 @@ _dbus_no_implement (BusDBusImpl     *dbus,
 {
     DBusMessage *reply_message;
     reply_message = dbus_message_new_error_printf (message,
-                                    "org.freedesktop.DBus.Error.Failed",
+                                    DBUS_ERROR_UNKNOWN_METHOD,
                                     "IBus does not support %s.",
                                     dbus_message_get_member (message));
     return reply_message;
@@ -295,7 +295,7 @@ _dbus_hello (BusDBusImpl    *dbus,
 
     if (bus_connection_get_unique_name (connection) != NULL) {
         reply_message = dbus_message_new_error (message,
-                                    "org.freedesktop.DBus.Error.Failed",
+                                    DBUS_ERROR_FAILED,
                                     "Already handled an Hello message");
     }
     else {
@@ -439,7 +439,7 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
         }
         else {
             reply_message = dbus_message_new_error_printf (message,
-                                    "org.freedesktop.DBus.Error.NameHasNoOwner",
+                                    DBUS_ERROR_NAME_HAS_NO_OWNER,
                                     "Name %s does have owner",
                                     name);
         }
@@ -463,7 +463,7 @@ _dbus_get_id (BusDBusImpl   *dbus,
 
     if (name == NULL) {
         reply_message = dbus_message_new_error (message,
-                                    "org.freedesktop.DBus.Error.Failed",
+                                    DBUS_ERROR_FAILED,
                                     "Can not GetId before Hello");
     }
     else {
@@ -620,7 +620,7 @@ _dbus_request_name (BusDBusImpl     *dbus,
     else {
         if (g_hash_table_lookup (priv->names, name)) {
             reply_message = dbus_message_new_error_printf (message,
-                        "org.freedesktop.DBus.Error.Failed",
+                        DBUS_ERROR_FAILED,
                         "Name %s has owner", name);
         }
         else {
@@ -751,8 +751,8 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
     }
 
     reply_message = dbus_message_new_error_printf (message,
-                                "org.freedesktop.DBus.Error.NoImplement",
-                                "%s is not implemented",
+                                DBUS_ERROR_UNKNOWN_METHOD,
+                                "Can not find method %s",
                                 dbus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
