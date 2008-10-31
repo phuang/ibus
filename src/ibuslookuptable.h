@@ -32,7 +32,9 @@
 /* define GOBJECT macros */
 
 G_BEGIN_DECLS
+
 typedef struct _IBusLookupTable IBusLookupTable;
+
 struct _IBusLookupTable {
     gint refcount;
     gint page_size;
@@ -42,6 +44,7 @@ struct _IBusLookupTable {
 };
 
 typedef struct _IBusCandidate IBusCandidate;
+
 struct _IBusCandidate {
     gchar *text;
     IBusAttrList *attr_list;
