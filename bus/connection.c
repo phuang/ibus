@@ -28,8 +28,8 @@
 struct _BusConnectionPrivate {
     gchar *unique_name;
     /* list for well known names */
-    GSList  *names;
-    GSList  *rules;
+    GList  *names;
+    GList  *rules;
 };
 typedef struct _BusConnectionPrivate BusConnectionPrivate;
 
@@ -113,7 +113,7 @@ bus_connection_init (BusConnection *connection)
 static void
 bus_connection_destroy (BusConnection *connection)
 {
-    GSList *name;
+    GList *name;
     BusConnectionPrivate *priv;
 
     IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (connection));
@@ -128,7 +128,7 @@ bus_connection_destroy (BusConnection *connection)
     for (name = priv->names; name != NULL; name = name->next) {
         g_free (name->data);
     }
-    g_slist_free (priv->names);
+    g_list_free (priv->names);
     priv->names = NULL;
 }
 
@@ -181,7 +181,7 @@ bus_connection_set_unique_name (BusConnection   *connection,
     priv->unique_name = g_strdup (name);
 }
 
-const GSList *
+const GList *
 bus_connection_get_names (BusConnection   *connection)
 {
     BusConnectionPrivate *priv;
@@ -199,7 +199,7 @@ bus_connection_add_name (BusConnection     *connection,
     
     priv = BUS_CONNECTION_GET_PRIVATE (connection);
     new_name = g_strdup (name);
-    priv->names = g_slist_append (priv->names, new_name);
+    priv->names = g_list_append (priv->names, new_name);
 
     return new_name;
 }
@@ -209,15 +209,15 @@ bus_connection_remove_name (BusConnection     *connection,
                              const gchar       *name)
 {
     BusConnectionPrivate *priv;
-    GSList *link;
+    GList *link;
     
     priv = BUS_CONNECTION_GET_PRIVATE (connection);
 
-    link = g_slist_find_custom (priv->names, name, (GCompareFunc) g_strcmp0);
+    link = g_list_find_custom (priv->names, name, (GCompareFunc) g_strcmp0);
 
     if (link) {
         g_free (link->data);
-        priv->names = g_slist_delete_link (priv->names, link);
+        priv->names = g_list_delete_link (priv->names, link);
         return TRUE;
     }
     return FALSE;
@@ -231,7 +231,7 @@ bus_connection_add_match (BusConnection  *connection,
     g_assert (rule != NULL);
 
     BusMatchRule *p;
-    GSList *link;
+    GList *link;
     BusConnectionPrivate *priv;
     
     priv = BUS_CONNECTION_GET_PRIVATE (connection);
@@ -247,7 +247,7 @@ bus_connection_add_match (BusConnection  *connection,
         }
     }
 
-    priv->rules = g_slist_append (priv->rules, p);
+    priv->rules = g_list_append (priv->rules, p);
     return TRUE;
 
 }

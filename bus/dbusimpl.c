@@ -43,8 +43,8 @@ enum {
 struct _BusDBusImplPrivate {
     GHashTable *unique_names;
     GHashTable *names;
-    GSList *connections;
-    GSList *rules;
+    GList *connections;
+    GList *rules;
     gint id;
 };
 
@@ -486,7 +486,7 @@ _rule_destroy_cb (BusMatchRule *rule,
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    priv->rules = g_slist_remove (priv->rules, rule);
+    priv->rules = g_list_remove (priv->rules, rule);
     g_object_unref (rule);
 }
 
@@ -503,7 +503,7 @@ _dbus_add_match (BusDBusImpl    *dbus,
     gboolean retval;
     gchar *rule_text;
     BusMatchRule *rule;
-    GSList *link;
+    GList *link;
 
     dbus_error_init (&error);
     retval = dbus_message_get_args (message, &error,
@@ -538,7 +538,7 @@ _dbus_add_match (BusDBusImpl    *dbus,
 
     if (rule) {
         bus_match_rule_add_recipient (rule, connection);
-        priv->rules = g_slist_append (priv->rules, rule);
+        priv->rules = g_list_append (priv->rules, rule);
         g_signal_connect (rule, "destroy", G_CALLBACK (_rule_destroy_cb), dbus);
     }
     
@@ -558,7 +558,7 @@ _dbus_remove_match (BusDBusImpl     *dbus,
     DBusError error;
     gchar *rule_text;
     BusMatchRule *rule;
-    GSList *link;
+    GList *link;
 
     dbus_error_init (&error);
     if (!dbus_message_get_args (message, &error,
@@ -815,7 +815,7 @@ _connection_destroy_cb (BusConnection   *connection,
                        "");
     }
 
-    const GSList *name = bus_connection_get_names (connection);
+    const GList *name = bus_connection_get_names (connection);
 
     while (name != NULL) {
         g_hash_table_remove (priv->names, name->data);
@@ -828,7 +828,7 @@ _connection_destroy_cb (BusConnection   *connection,
         name = name->next;
     }
 
-    priv->connections = g_slist_remove (priv->connections, connection);
+    priv->connections = g_list_remove (priv->connections, connection);
     g_object_unref (connection);
 }
 
@@ -843,10 +843,10 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    g_assert (g_slist_find (priv->connections, connection) == NULL);
+    g_assert (g_list_find (priv->connections, connection) == NULL);
 
     g_object_ref (G_OBJECT (connection));
-    priv->connections = g_slist_append (priv->connections, connection);
+    priv->connections = g_list_append (priv->connections, connection);
 
     g_signal_connect (connection, "destroy",
                       (GCallback) _connection_destroy_cb,
@@ -889,7 +889,7 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
 
 void
 bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
-                           DBusMessage  *message)
+                                DBusMessage  *message)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (message != NULL);
@@ -897,4 +897,30 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
+    const gchar *destination;
+    BusConnection *dest_connection;
+    GList *recipients = NULL;
+    GList *link;
+
+    destination = dbus_message_get_destination (message);
+    if (destination != NULL) {
+        dest_connection = bus_dbus_impl_get_connection_by_name (dbus, destination);
+        ibus_connection_send (IBUS_CONNECTION (dest_connection), message);
+    }
+
+    for (link = priv->rules; link != NULL; link = link->next) {
+        if (bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
+                                           message,
+                                           &recipients)) {
+            break;
+        }
+    }
+
+    for (link = recipients; link != NULL; link = link->next) {
+        if (dest_connection != BUS_CONNECTION (link->data)) {
+            ibus_connection_send (IBUS_CONNECTION (link->data), message);
+        }
+        g_object_unref (link->data);
+    }
+    g_list_free (recipients);
 }

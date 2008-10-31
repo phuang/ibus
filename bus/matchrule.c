@@ -575,6 +575,10 @@ _connection_destroy_cb (BusConnection   *connection,
             g_slice_free (BusRecipient, recipient);
             return;
         }
+        
+        if (rule->recipients == NULL) {
+            ibus_object_destroy (IBUS_OBJECT (rule));
+        }
     }
     g_assert_not_reached ();
 }
@@ -632,6 +636,10 @@ bus_match_rule_remove_recipient (BusMatchRule   *rule,
                                                       rule);
                 g_object_unref (connection);
             }
+
+            if (rule->recipients == NULL ) {
+                ibus_object_destroy (IBUS_OBJECT(rule));
+            }
             return;
         }
     }
@@ -641,8 +649,25 @@ bus_match_rule_remove_recipient (BusMatchRule   *rule,
 
 gboolean
 bus_match_rule_get_recipients (BusMatchRule   *rule,
+                               DBusMessage    *message,
                                GList          **recipients)
 {
+    g_assert (BUS_IS_MATCH_RULE (rule));
+    g_assert (message != NULL);
+    g_assert (recipients != NULL);
+    
+    GList *link;
+
+    if (!bus_match_rule_match (rule, message))
+        return FALSE;
+
+    for (link = rule->recipients; link != NULL; link = link->next) {
+        BusRecipient *recipient = (BusRecipient *) link->data;
+        
+        g_object_ref (recipient->connection);
+        *recipients = g_list_append (*recipients, recipient->connection);
+    }
+
     return TRUE;
 }
 

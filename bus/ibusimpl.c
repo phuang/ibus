@@ -39,9 +39,9 @@ enum {
 /* IBusIBusImplPriv */
 struct _BusIBusImplPrivate {
     GHashTable *factory_dict;
-    GSList *connections;
+    GList *connections;
     GList *factory_list;
-    GSList *contexts;
+    GList *contexts;
 
     BusFactoryProxy *default_factory;
     BusInputContext *focused_context;
@@ -136,7 +136,7 @@ static void
 bus_ibus_impl_destroy (BusIBusImpl *ibus)
 {
     BusConnection *connection;
-    GSList *p;
+    GList *p;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
@@ -147,7 +147,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         g_object_unref (connection);
     }
 
-    g_slist_free (priv->connections);
+    g_list_free (priv->connections);
     priv->connections = NULL;
 
     bus_server_quit (BUS_DEFAULT_SERVER);
@@ -226,7 +226,7 @@ _context_destroy_cb (BusInputContext    *context,
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    priv->contexts = g_slist_remove (priv->contexts, context);
+    priv->contexts = g_list_remove (priv->contexts, context);
     g_object_unref (context);
 }
 
@@ -297,7 +297,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     }
 
     context = bus_input_context_new (connection, client);
-    priv->contexts = g_slist_append (priv->contexts, context);
+    priv->contexts = g_list_append (priv->contexts, context);
     g_signal_connect (context,
                       "destroy",
                       (GCallback) _context_destroy_cb,
@@ -573,7 +573,7 @@ _connection_destroy_cb (BusConnection   *connection,
                     IBUS_CONNECTION (connection));
     */
 
-    priv->connections = g_slist_remove (priv->connections, connection);
+    priv->connections = g_list_remove (priv->connections, connection);
     g_object_unref (connection);
 }
 
@@ -588,10 +588,10 @@ bus_ibus_impl_new_connection (BusIBusImpl    *ibus,
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    g_assert (g_slist_find (priv->connections, connection) == NULL);
+    g_assert (g_list_find (priv->connections, connection) == NULL);
 
     g_object_ref (G_OBJECT (connection));
-    priv->connections = g_slist_append (priv->connections, connection);
+    priv->connections = g_list_append (priv->connections, connection);
 
     g_signal_connect (connection, "destroy",
                       (GCallback) _connection_destroy_cb,

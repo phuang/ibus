@@ -61,17 +61,11 @@ BusConnection   *bus_connection_new                 (void);
 const gchar     *bus_connection_get_unique_name     (BusConnection  *connection);
 void             bus_connection_set_unique_name     (BusConnection  *connection,
                                                      const gchar    *name);
-const GSList    *bus_connection_get_names           (BusConnection  *connection);
+const GList     *bus_connection_get_names           (BusConnection  *connection);
 const gchar     *bus_connection_add_name            (BusConnection  *connection,
                                                      const gchar    *name);
 gboolean         bus_connection_remove_name         (BusConnection  *connection,
                                                      const gchar    *name);
-gboolean         bus_connection_add_match           (BusConnection  *connection,
-                                                     const gchar    *rule);
-gboolean         bus_connection_remove_match        (BusConnection  *connection,
-                                                     const gchar    *rule);
-gboolean         bus_connection_match_message       (BusConnection  *connection,
-                                                     DBusMessage    *message);
 G_END_DECLS
 #endif
 
