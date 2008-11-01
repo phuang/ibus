@@ -39,7 +39,6 @@ enum {
 /* IBusIBusImplPriv */
 struct _BusIBusImplPrivate {
     GHashTable *factory_dict;
-    GList *connections;
     GList *factory_list;
     GList *contexts;
 
@@ -124,7 +123,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    priv->connections = NULL;
     priv->factory_dict = g_hash_table_new (g_str_hash, g_str_equal);
     priv->factory_list = NULL;
     priv->contexts = NULL;
@@ -140,15 +138,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
-
-    for (p = priv->connections; p != NULL; p = p->next) {
-        connection = BUS_CONNECTION (p->data);
-        ibus_object_destroy (IBUS_OBJECT (connection));
-        g_object_unref (connection);
-    }
-
-    g_list_free (priv->connections);
-    priv->connections = NULL;
 
     bus_server_quit (BUS_DEFAULT_SERVER);
 
@@ -572,9 +561,6 @@ _connection_destroy_cb (BusConnection   *connection,
                     IBUS_SERVICE (ibus),
                     IBUS_CONNECTION (connection));
     */
-
-    priv->connections = g_list_remove (priv->connections, connection);
-    g_object_unref (connection);
 }
 
 
@@ -587,15 +573,6 @@ bus_ibus_impl_new_connection (BusIBusImpl    *ibus,
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
-
-    g_assert (g_list_find (priv->connections, connection) == NULL);
-
-    g_object_ref (G_OBJECT (connection));
-    priv->connections = g_list_append (priv->connections, connection);
-
-    g_signal_connect (connection, "destroy",
-                      (GCallback) _connection_destroy_cb,
-                      ibus);
 
     ibus_service_add_to_connection (
             IBUS_SERVICE (ibus),
