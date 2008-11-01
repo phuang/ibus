@@ -788,6 +788,33 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
 
 }
 
+static gboolean
+_connection_dbus_message_cb (BusConnection  *connection,
+                             DBusMessage    *message,
+                             BusDBusImpl    *dbus)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+
+    const gchar *dest;
+    BusConnection *dest_connection = NULL;
+
+    dest = dbus_message_get_destination (message);
+
+    if (dest) {
+        if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
+            g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
+            bus_dbus_impl_dispatch_message (dbus, message);
+            g_signal_stop_emission_by_name (connection, "dbus-signal");
+            return TRUE;
+        }
+    }
+    
+    bus_dbus_impl_dispatch_message_with_rule (dbus, message, NULL);
+    return FALSE;
+}
+
 static void
 _connection_destroy_cb (BusConnection   *connection,
                         BusDBusImpl     *dbus)
@@ -848,8 +875,15 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
     g_object_ref (G_OBJECT (connection));
     priv->connections = g_list_append (priv->connections, connection);
 
-    g_signal_connect (connection, "destroy",
-                      (GCallback) _connection_destroy_cb,
+    g_signal_connect (connection,
+                      "dbus-message",
+                      G_CALLBACK (_connection_dbus_message_cb),
+                      dbus);
+            
+
+    g_signal_connect (connection,
+                      "destroy",
+                      G_CALLBACK (_connection_destroy_cb),
                       dbus);
 
     ibus_service_add_to_connection (
