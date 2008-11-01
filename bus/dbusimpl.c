@@ -782,7 +782,7 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
                               DBUS_TYPE_STRING, &new_name,
                               DBUS_TYPE_INVALID);
     
-    bus_dbus_impl_dispatch_message (dbus, message);
+    bus_dbus_impl_dispatch_message_with_rule (dbus, message, NULL);
 
     dbus_message_unref (message);
 
@@ -894,19 +894,32 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (message != NULL);
     
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     const gchar *destination;
     BusConnection *dest_connection;
-    GList *recipients = NULL;
-    GList *link;
-
+    
     destination = dbus_message_get_destination (message);
     if (destination != NULL) {
         dest_connection = bus_dbus_impl_get_connection_by_name (dbus, destination);
         ibus_connection_send (IBUS_CONNECTION (dest_connection), message);
     }
+
+    bus_dbus_impl_dispatch_message_with_rule (dbus, message, dest_connection);
+}
+
+void
+bus_dbus_impl_dispatch_message_with_rule (BusDBusImpl     *dbus,
+                                          DBusMessage     *message,
+                                          BusConnection   *skip_connection)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (skip_connection) || skip_connection == NULL);
+
+    GList *recipients;
+    GList *link;
+    
+    BusDBusImplPrivate *priv;
+    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
     for (link = priv->rules; link != NULL; link = link->next) {
         if (bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
@@ -917,8 +930,9 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     }
 
     for (link = recipients; link != NULL; link = link->next) {
-        if (dest_connection != BUS_CONNECTION (link->data)) {
-            ibus_connection_send (IBUS_CONNECTION (link->data), message);
+        BusConnection *connection = BUS_CONNECTION (link->data);
+        if (connection != skip_connection) {
+            ibus_connection_send (IBUS_CONNECTION (connection), message);
         }
         g_object_unref (link->data);
     }
