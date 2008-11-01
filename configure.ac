@@ -55,13 +55,13 @@ AC_CHECK_HEADERS([sys/inotify.h])
 # check glib2
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [
-    glib-2.0 >= 2.16
+    glib-2.0 >= 2.18
 ])
 PKG_CHECK_MODULES(GOBJECT2, [
-    gobject-2.0
+    gobject-2.0 >= 2.18
 ])
 PKG_CHECK_MODULES(GIO2, [
-    gio-2.0
+    gio-2.0 >= 2.18
 ])
 
 
