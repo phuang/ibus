@@ -27,6 +27,7 @@
 enum {
     DBUS_SIGNAL,
     DBUS_MESSAGE,
+    DBUS_MESSAGE_SENT,
     DISCONNECTED,
     LAST_SIGNAL,
 };
@@ -127,6 +128,16 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             NULL, NULL,
             ibus_marshal_BOOL__POINTER,
             G_TYPE_BOOLEAN, 1,
+            G_TYPE_POINTER);
+    
+    connection_signals[DBUS_MESSAGE_SENT] =
+        g_signal_new (I_("dbus-message-sent"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusConnectionClass, dbus_message_sent),
+            NULL, NULL,
+            ibus_marshal_VOID__POINTER,
+            G_TYPE_NONE, 1,
             G_TYPE_POINTER);
 
     connection_signals[DISCONNECTED] =
@@ -428,10 +439,20 @@ ibus_connection_send (IBusConnection *connection, DBusMessage *message)
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
+    gboolean retval;
     IBusConnectionPrivate *priv;
 
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-    return dbus_connection_send (priv->connection, message, NULL);
+    retval = dbus_connection_send (priv->connection, message, NULL);
+
+    if (retval) {
+        g_signal_emit (connection,
+                       connection_signals[DBUS_MESSAGE_SENT],
+                       0,
+                       message);
+    }
+
+    return retval;
 }
 
 
@@ -559,9 +580,14 @@ ibus_connection_send_with_reply (IBusConnection *connection,
                                               message,
                                               &pending_call,
                                               timeout_milliseconds);
-    if (!retval) {
-        return retval;
+    if (retval) {
+        g_signal_emit (connection,
+                       connection_signals[DBUS_MESSAGE_SENT],
+                       0,
+                       message);
     }
+    else
+        return FALSE;
 
     data = g_slice_new (PendingCallData);
     data->connection = connection;
@@ -603,6 +629,14 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
                                                        message,
                                                        timeout_milliseconds,
                                                        _error);
+
+    if (reply != NULL) {
+        g_signal_emit (connection,
+                       connection_signals[DBUS_MESSAGE_SENT],
+                       0,
+                       message);
+    }
+
     if (reply == NULL && error != NULL) {
             *error = _error;
     }

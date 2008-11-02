@@ -948,7 +948,10 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     destination = dbus_message_get_destination (message);
     if (destination != NULL) {
         dest_connection = bus_dbus_impl_get_connection_by_name (dbus, destination);
-        ibus_connection_send (IBUS_CONNECTION (dest_connection), message);
+
+        if (dest_connection != NULL) {
+            ibus_connection_send (IBUS_CONNECTION (dest_connection), message);
+        }
     }
 
     bus_dbus_impl_dispatch_message_by_rule (dbus, message, dest_connection);

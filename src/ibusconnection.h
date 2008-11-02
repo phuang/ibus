@@ -72,6 +72,9 @@ struct _IBusConnectionClass {
                                  DBusMessage      *message);
   gboolean  (* dbus_signal)     (IBusConnection   *connection,
                                  DBusMessage      *message);
+  void      (* dbus_message_sent)
+                                (IBusConnection   *connection,
+                                 DBusMessage      *message);
   void      (* disconnected)    (IBusConnection   *connection);
 };
 
