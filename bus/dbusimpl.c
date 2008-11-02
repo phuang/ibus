@@ -811,6 +811,11 @@ _connection_dbus_message_cb (BusConnection  *connection,
     const gchar *dest;
     BusConnection *dest_connection = NULL;
 
+    if (dbus_message_is_signal (message,
+                                DBUS_INTERFACE_LOCAL,
+                                "Disconnected"))
+        return FALSE;
+
     dest = dbus_message_get_destination (message);
 
     if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
