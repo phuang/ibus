@@ -813,13 +813,15 @@ _connection_dbus_message_cb (BusConnection  *connection,
 
     if (dbus_message_is_signal (message,
                                 DBUS_INTERFACE_LOCAL,
-                                "Disconnected"))
+                                "Disconnected")) {
+        /* ignore signal from local interface */
         return FALSE;
+    }
 
     dest = dbus_message_get_destination (message);
-    /* forward message to destination */
     if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
         g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
+        /* If the destination is not IBus or DBus, the message will be forwanded. */
         bus_dbus_impl_dispatch_message (dbus, message);
         g_signal_stop_emission_by_name (connection, "dbus-signal");
         return TRUE;
@@ -995,6 +997,7 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
         dbus_message_allocate_data_slot (&data_slot);
     }
 
+    /* If this message has been dispatched by rule, it will be ignored. */
     if (dbus_message_get_data (message, data_slot) != NULL)
         return;
 
