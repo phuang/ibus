@@ -412,7 +412,7 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
 
     gchar *name;
     gboolean retval;
-    const gchar *owner_name;
+    const gchar *owner_name = NULL;
     DBusMessage *reply_message;
     DBusError error;
 
@@ -429,9 +429,18 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
     }
     else {
         BusConnection *owner;
-        owner = bus_dbus_impl_get_connection_by_name (dbus, name);
-        if (owner != NULL) {
-            owner_name = bus_connection_get_unique_name (owner);
+        if (g_strcmp0 (name, DBUS_SERVICE_DBUS) == 0 ||
+            g_strcmp0 (name, IBUS_SERVICE_IBUS) == 0) {
+            owner_name = name;
+        }
+        else {
+            owner = bus_dbus_impl_get_connection_by_name (dbus, name);
+            if (owner != NULL) {
+                owner_name = bus_connection_get_unique_name (owner);
+            }
+        }
+
+        if (owner_name != NULL) {
             reply_message = dbus_message_new_method_return (message);
             dbus_message_append_args (reply_message,
                     DBUS_TYPE_STRING, &owner_name,
@@ -440,7 +449,7 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
         else {
             reply_message = dbus_message_new_error_printf (message,
                                     DBUS_ERROR_NAME_HAS_NO_OWNER,
-                                    "Name %s does have owner",
+                                    "Name '%s' does have owner",
                                     name);
         }
     }
@@ -742,6 +751,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
                 dbus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
+                bus_dbus_impl_dispatch_message_with_rule (dbus, reply_message, connection);
                 dbus_message_unref (reply_message);
             }
 
@@ -756,6 +766,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
                                 dbus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
+    bus_dbus_impl_dispatch_message_with_rule (dbus, reply_message, connection);
     dbus_message_unref (reply_message);
     return FALSE;
 }
@@ -802,13 +813,11 @@ _connection_dbus_message_cb (BusConnection  *connection,
 
     dest = dbus_message_get_destination (message);
 
-    if (dest) {
-        if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
-            g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
-            bus_dbus_impl_dispatch_message (dbus, message);
-            g_signal_stop_emission_by_name (connection, "dbus-signal");
-            return TRUE;
-        }
+    if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
+        g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
+        bus_dbus_impl_dispatch_message (dbus, message);
+        g_signal_stop_emission_by_name (connection, "dbus-signal");
+        return TRUE;
     }
     
     bus_dbus_impl_dispatch_message_with_rule (dbus, message, NULL);
