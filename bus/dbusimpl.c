@@ -751,7 +751,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
                 dbus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-                bus_dbus_impl_dispatch_message_with_rule (dbus, reply_message, connection);
+                bus_dbus_impl_dispatch_message_by_rule (dbus, reply_message, connection);
                 dbus_message_unref (reply_message);
             }
 
@@ -766,7 +766,7 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
                                 dbus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-    bus_dbus_impl_dispatch_message_with_rule (dbus, reply_message, connection);
+    bus_dbus_impl_dispatch_message_by_rule (dbus, reply_message, connection);
     dbus_message_unref (reply_message);
     return FALSE;
 }
@@ -793,7 +793,7 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
                               DBUS_TYPE_STRING, &new_name,
                               DBUS_TYPE_INVALID);
     
-    bus_dbus_impl_dispatch_message_with_rule (dbus, message, NULL);
+    bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
 
     dbus_message_unref (message);
 
@@ -817,7 +817,7 @@ _connection_dbus_message_cb (BusConnection  *connection,
         return FALSE;
 
     dest = dbus_message_get_destination (message);
-
+    /* forward message to destination */
     if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
         g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
         bus_dbus_impl_dispatch_message (dbus, message);
@@ -825,7 +825,7 @@ _connection_dbus_message_cb (BusConnection  *connection,
         return TRUE;
     }
     
-    bus_dbus_impl_dispatch_message_with_rule (dbus, message, NULL);
+    bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
     return FALSE;
 }
 
@@ -951,13 +951,13 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
         ibus_connection_send (IBUS_CONNECTION (dest_connection), message);
     }
 
-    bus_dbus_impl_dispatch_message_with_rule (dbus, message, dest_connection);
+    bus_dbus_impl_dispatch_message_by_rule (dbus, message, dest_connection);
 }
 
 void
-bus_dbus_impl_dispatch_message_with_rule (BusDBusImpl     *dbus,
-                                          DBusMessage     *message,
-                                          BusConnection   *skip_connection)
+bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
+                                        DBusMessage     *message,
+                                        BusConnection   *skip_connection)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (message != NULL);

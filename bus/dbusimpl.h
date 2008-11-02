@@ -73,7 +73,7 @@ BusConnection   *bus_dbus_impl_get_connection_by_name
                                                  const gchar    *name);
 void             bus_dbus_impl_dispatch_message (BusDBusImpl    *dbus,
                                                  DBusMessage    *message);
-void             bus_dbus_impl_dispatch_message_with_rule 
+void             bus_dbus_impl_dispatch_message_by_rule 
                                                 (BusDBusImpl    *dbus,
                                                  DBusMessage    *message,
                                                  BusConnection  *skip_connection);
