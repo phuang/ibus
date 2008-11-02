@@ -830,6 +830,18 @@ _connection_dbus_message_cb (BusConnection  *connection,
 }
 
 static void
+_connection_dbus_message_sent_cb (BusConnection  *connection,
+                                  DBusMessage    *message,
+                                  BusDBusImpl    *dbus)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+
+    bus_dbus_impl_dispatch_message_by_rule (dbus, message, connection);
+}
+
+static void
 _connection_destroy_cb (BusConnection   *connection,
                         BusDBusImpl     *dbus)
 {
@@ -893,7 +905,12 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
                       "dbus-message",
                       G_CALLBACK (_connection_dbus_message_cb),
                       dbus);
-            
+    
+    g_signal_connect (connection,
+                      "dbus-message-sent",
+                      G_CALLBACK (_connection_dbus_message_sent_cb),
+                      dbus);
+           
 
     g_signal_connect (connection,
                       "destroy",
@@ -943,7 +960,7 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     g_assert (message != NULL);
     
     const gchar *destination;
-    BusConnection *dest_connection;
+    BusConnection *dest_connection = NULL;
     
     destination = dbus_message_get_destination (message);
     if (destination != NULL) {
@@ -968,9 +985,20 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
 
     GList *recipients;
     GList *link;
-    
+
+    static gint32 data_slot = -1;
+
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+    
+    if (data_slot == -1) {
+        dbus_message_allocate_data_slot (&data_slot);
+    }
+
+    if (dbus_message_get_data (message, data_slot) != NULL)
+        return;
+
+    dbus_message_set_data (message, data_slot, (gpointer) TRUE, NULL);
 
     for (link = priv->rules; link != NULL; link = link->next) {
         if (bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),

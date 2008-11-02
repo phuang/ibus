@@ -43,8 +43,6 @@
 
 #define BUS_DEFAULT_DBUS \
     (bus_dbus_impl_get_default ())
-#define BUS_DBUS_DISPATCH_MESSAGE_BY_RULE(message, skip_connection) \
-    bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, (message), (skip_connection)) 
 
 G_BEGIN_DECLS
 

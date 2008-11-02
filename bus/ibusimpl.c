@@ -378,7 +378,6 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     reply = dbus_message_new_method_return (message);
     ibus_connection_send (IBUS_CONNECTION (connection), reply);
     ibus_connection_flush (IBUS_CONNECTION (connection));
-    BUS_DBUS_DISPATCH_MESSAGE_BY_RULE (reply, connection);
     dbus_message_unref (reply);
 
     for (i = 0; i < n; i++) {
@@ -469,7 +468,6 @@ _ibus_kill (BusIBusImpl     *ibus,
     reply = dbus_message_new_method_return (message);
     ibus_connection_send (IBUS_CONNECTION (connection), reply);
     ibus_connection_flush (IBUS_CONNECTION (connection));
-    BUS_DBUS_DISPATCH_MESSAGE_BY_RULE (reply, connection);
     dbus_message_unref (reply);
 
     ibus_object_destroy (IBUS_OBJECT (ibus));
@@ -531,7 +529,6 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
                 dbus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-                BUS_DBUS_DISPATCH_MESSAGE_BY_RULE (reply_message, connection);
                 dbus_message_unref (reply_message);
             }
 
@@ -546,7 +543,6 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
                                 dbus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-    BUS_DBUS_DISPATCH_MESSAGE_BY_RULE (reply_message, connection);
     dbus_message_unref (reply_message);
     return FALSE;
 }
