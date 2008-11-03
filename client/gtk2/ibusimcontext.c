@@ -245,17 +245,29 @@ ibus_im_context_init (GObject *obj)
     // Create slave im context
     priv->slave = gtk_im_context_simple_new ();
     g_signal_connect (priv->slave,
-                "commit", G_CALLBACK (_slave_commit_cb), obj);
+                      "commit",
+                      G_CALLBACK (_slave_commit_cb),
+                      ibuscontext);
     g_signal_connect (priv->slave,
-                "preedit-start", G_CALLBACK (_slave_preedit_start_cb), obj);
+                      "preedit-start",
+                      G_CALLBACK (_slave_preedit_start_cb),
+                      ibuscontext);
     g_signal_connect (priv->slave,
-                "preedit-end", G_CALLBACK (_slave_preedit_end_cb), obj);
+                      "preedit-end",
+                      G_CALLBACK (_slave_preedit_end_cb),
+                      ibuscontext);
     g_signal_connect (priv->slave,
-                "preedit-changed", G_CALLBACK (_slave_preedit_changed_cb), obj);
+                      "preedit-changed",
+                      G_CALLBACK (_slave_preedit_changed_cb),
+                      ibuscontext);
     g_signal_connect (priv->slave,
-                "retrieve-surrounding", G_CALLBACK (_slave_retrieve_surrounding_cb), obj);
+                      "retrieve-surrounding",
+                      G_CALLBACK (_slave_retrieve_surrounding_cb),
+                      ibuscontext);
     g_signal_connect (priv->slave,
-                "delete-surrounding", G_CALLBACK (_slave_delete_surrounding_cb), obj);
+                      "delete-surrounding",
+                      G_CALLBACK (_slave_delete_surrounding_cb),
+                      ibuscontext);
 
     /* init bus object */
     if (_bus == NULL)

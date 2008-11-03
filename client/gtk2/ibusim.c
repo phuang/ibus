@@ -42,15 +42,17 @@ G_MODULE_EXPORT const gchar* g_module_check_init (GModule *module);
 const gchar*
 g_module_check_init (GModule *module)
 {
-    /* make module resident */
-    g_module_make_resident (module);
-    
-    return NULL;
+    return glib_check_version (GLIB_MAJOR_VERSION,
+                               GLIB_MINOR_VERSION,
+                               GLIB_MICRO_VERSION);
 }
 
 void
 im_module_init (GTypeModule *type_module)
 {
+    /* make module resident */
+    g_type_module_use (type_module);
+
     ibus_im_context_register_type (type_module);
 }
 
