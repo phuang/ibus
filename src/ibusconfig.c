@@ -17,57 +17,138 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "ibusshare.h"
+
 #include "ibusinternal.h"
+#include "ibusmarshalers.h"
+#include "ibusshare.h"
 #include "ibusconfig.h"
-#include "ibusattribute.h"
-#include "ibuslookuptable.h"
-#include "ibusproperty.h"
 
 #define IBUS_CONFIG_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG, IBusConfigPrivate))
 
 enum {
-    ENABLED,
-    DISABLED,
-    COMMIT_STRING,
-    FORWARD_KEY_EVENT,
-    UPDATE_PREEDIT,
-    SHOW_PREEDIT,
-    HIDE_PREEDIT,
-    UPDATE_AUX_STRING,
-    SHOW_AUX_STRING,
-    HIDE_AUX_STRING,
-    UPDATE_LOOKUP_TABLE,
-    SHOW_LOOKUP_TABLE,
-    HIDE_LOOKUP_TABLE,
-    PAGE_UP_LOOKUP_TABLE,
-    PAGE_DOWN_LOOKUP_TABLE,
-    CURSOR_UP_LOOKUP_TABLE,
-    CURSOR_DOWN_LOOKUP_TABLE,
-    REGISTER_PROPERTIES,
-    UPDATE_PROPERTY,
+    VALUE_CHANGED,
     LAST_SIGNAL,
 };
 
 
-/* BusConfigPriv */
+/* IBusConfigPriv */
 struct _IBusConfigPrivate {
-    void *pad;
+    gpointer pad;
 };
 typedef struct _IBusConfigPrivate IBusConfigPrivate;
 
-static guint            context_signals[LAST_SIGNAL] = { 0 };
-// static guint            context_signals[LAST_SIGNAL] = { 0 };
+#if 0
+struct _BusPair {
+    GValue car;
+    GValue cdr;
+};
+typedef struct _BusPair BusPair;
+#endif
 
+static guint    config_signals[LAST_SIGNAL] = { 0 };
+
+#if 0
 /* functions prototype */
-static void     ibus_config_class_init   (IBusConfigClass  *klass);
-static void     ibus_config_init         (IBusConfig       *context);
-static void     ibus_config_real_destroy (IBusConfig       *context);
-static gboolean ibus_config_dbus_signal  (IBusProxy              *proxy,
+static BusPair  *bus_pair_new                   (GType                  car_type,
+                                                 GType                  cdr_type,
+                                                 gpointer               car,
+                                                 gpointer               cdr);
+static BusPair  *bus_pair_copy                  (BusPair                *pair);
+static void      bus_pair_free                  (BusPair                *pair);
+#endif
+static void      ibus_config_class_init    (IBusConfigClass    *klass);
+static void      ibus_config_init          (IBusConfig         *config);
+static void      ibus_config_real_destroy  (IBusConfig         *config);
+
+static gboolean ibus_config_dbus_signal    (IBusProxy             *proxy,
                                                  DBusMessage            *message);
 
-static IBusProxyClass  *_parent_class = NULL;
+static IBusProxyClass  *parent_class = NULL;
+
+#if 0
+static BusPair *
+bus_pair_new (GType     car_type,
+              GType     cdr_type,
+              gpointer  car,
+              gpointer  cdr)
+{
+
+    g_assert (car_type == G_TYPE_STRING ||
+              car_type == G_TYPE_INT ||
+              car_type == G_TYPE_BOOLEAN ||
+              car_type == G_TYPE_DOUBLE);
+    g_assert (cdr_type == G_TYPE_STRING ||
+              cdr_type == G_TYPE_INT ||
+              cdr_type == G_TYPE_BOOLEAN ||
+              cdr_type == G_TYPE_DOUBLE);
+    g_assert (car != NULL);
+    g_assert (cdr != NULL);
+
+    BusPair *pair;
+
+    pair = g_slice_new0 (BusPair);
+
+    g_value_init (&(pair->car), car_type);
+    g_value_init (&(pair->cdr), cdr_type);
+
+    switch (car_type) {
+    case G_TYPE_STRING:
+        g_value_set_string (&(pair->car), *(gchar **)car);
+        break;
+    case G_TYPE_INT:
+        g_value_set_int (&(pair->car), *(gint32 *)car);
+        break;
+    case G_TYPE_BOOLEAN:
+        g_value_set_boolean (&(pair->car), *(gboolean *)car);
+        break;
+    case G_TYPE_DOUBLE:
+        g_value_set_double (&(pair->car), *(gdouble *)car);
+        break;
+    }
+    
+    switch (cdr_type) {
+    case G_TYPE_STRING:
+        g_value_set_string (&(pair->cdr), *(gchar **)cdr);
+        break;
+    case G_TYPE_INT:
+        g_value_set_int (&(pair->cdr), *(gint32 *)car);
+        break;
+    case G_TYPE_BOOLEAN:
+        g_value_set_boolean (&(pair->cdr), *(gboolean *)cdr);
+        break;
+    case G_TYPE_DOUBLE:
+        g_value_set_double (&(pair->cdr), *(gdouble *)cdr);
+        break;
+    }
+    return pair;
+}
+
+static BusPair *
+bus_pair_copy (BusPair *pair)
+{
+    g_assert (pair != NULL);
+    
+    BusPair *new_pair;
+
+    new_pair = g_slice_new0 (BusPair);
+    g_value_copy (&(pair->car), &(new_pair->car));
+    g_value_copy (&(pair->cdr), &(new_pair->cdr));
+    return new_pair;
+}
+
+static void
+bus_pair_free (BusPair *pair)
+{
+    g_assert (pair == NULL);
+    
+    g_value_unset (&(pair->car));
+    g_value_unset (&(pair->cdr));
+
+    g_slice_free (BusPair, pair);
+}
+
+#endif
 
 GType
 ibus_config_get_type (void)
@@ -96,16 +177,14 @@ ibus_config_get_type (void)
 }
 
 IBusConfig *
-ibus_config_new (const gchar     *path,
-                        IBusConnection  *connection)
+ibus_config_new (IBusConnection *connection)
 {
-    g_assert (path != NULL);
     g_assert (IBUS_IS_CONNECTION (connection));
+    
     GObject *obj;
-
     obj = g_object_new (IBUS_TYPE_CONFIG,
-                        "name", IBUS_SERVICE_IBUS,
-                        "path", path,
+                        "name", IBUS_SERVICE_CONFIG,
+                        "path", IBUS_PATH_CONFIG,
                         "connection", connection,
                         NULL);
 
@@ -119,7 +198,7 @@ ibus_config_class_init (IBusConfigClass *klass)
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (klass);
 
 
-    _parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
+    parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusConfigPrivate));
 
@@ -128,667 +207,286 @@ ibus_config_class_init (IBusConfigClass *klass)
     proxy_class->dbus_signal = ibus_config_dbus_signal;
     
     /* install signals */
-    context_signals[ENABLED] =
-        g_signal_new (I_("enabled"),
+    config_signals[VALUE_CHANGED] =
+        g_signal_new (I_("value-changed"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[DISABLED] =
-        g_signal_new (I_("disabled"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-
-    context_signals[COMMIT_STRING] =
-        g_signal_new (I_("commit-string"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__STRING,
+            ibus_marshal_VOID__STRING_STRING_BOXED,
             G_TYPE_NONE,
-            1,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
-    
-    context_signals[FORWARD_KEY_EVENT] =
-        g_signal_new (I_("forward-key-event"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__UINT_BOOLEAN_UINT,
-            G_TYPE_NONE, 3,
-            G_TYPE_UINT,
-            G_TYPE_BOOLEAN,
-            G_TYPE_UINT);
-    
-    context_signals[UPDATE_PREEDIT] =
-        g_signal_new (I_("update-preedit"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__STRING_BOXED_INT_BOOLEAN,
-            G_TYPE_NONE,
-            4,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
-            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
-            G_TYPE_INT,
-            G_TYPE_BOOLEAN);
-    
-    context_signals[SHOW_PREEDIT] =
-        g_signal_new (I_("show-preedit"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[HIDE_PREEDIT] =
-        g_signal_new (I_("hide-preedit"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[UPDATE_AUX_STRING] =
-        g_signal_new (I_("update-aux-string"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__STRING_BOXED_BOOLEAN,
-            G_TYPE_NONE, 3,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
-            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
-            G_TYPE_BOOLEAN);
-    
-    context_signals[SHOW_AUX_STRING] =
-        g_signal_new (I_("show-aux-string"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[HIDE_AUX_STRING] =
-        g_signal_new (I_("hide-aux-string"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-
-    context_signals[UPDATE_LOOKUP_TABLE] =
-        g_signal_new (I_("update-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__BOXED_BOOLEAN,
-            G_TYPE_NONE, 2,
-            IBUS_TYPE_LOOKUP_TABLE | G_SIGNAL_TYPE_STATIC_SCOPE,
-            G_TYPE_BOOLEAN);
-    
-    context_signals[SHOW_LOOKUP_TABLE] =
-        g_signal_new (I_("show-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[HIDE_LOOKUP_TABLE] =
-        g_signal_new (I_("hide-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-
-    context_signals[PAGE_UP_LOOKUP_TABLE] =
-        g_signal_new (I_("page-up-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[PAGE_DOWN_LOOKUP_TABLE] =
-        g_signal_new (I_("page-down-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[CURSOR_UP_LOOKUP_TABLE] =
-        g_signal_new (I_("cursor-up-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[CURSOR_DOWN_LOOKUP_TABLE] =
-        g_signal_new (I_("cursor-down-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
-    
-    context_signals[REGISTER_PROPERTIES] =
-        g_signal_new (I_("register-properties"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__BOXED,
-            G_TYPE_NONE, 1,
-            IBUS_TYPE_PROP_LIST);
-    
-    context_signals[UPDATE_PROPERTY] =
-        g_signal_new (I_("update-property"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__BOXED,
-            G_TYPE_NONE, 1,
-            IBUS_TYPE_PROPERTY);
+            3,
+            G_TYPE_STRING,
+            G_TYPE_STRING,
+            G_TYPE_VALUE | G_SIGNAL_TYPE_STATIC_SCOPE);
 }
 
 static void
-ibus_config_init (IBusConfig *context)
+ibus_config_init (IBusConfig *config)
 {
     IBusConfigPrivate *priv;
-    priv = IBUS_CONFIG_GET_PRIVATE (context);
+    priv = IBUS_CONFIG_GET_PRIVATE (config);
 }
 
 static void
-ibus_config_real_destroy (IBusConfig *context)
+ibus_config_real_destroy (IBusConfig *config)
 {
-    IBUS_OBJECT_CLASS(_parent_class)->destroy (IBUS_OBJECT (context));
+    IBusConfigPrivate *priv;
+    priv = IBUS_CONFIG_GET_PRIVATE (config);
+    
+    ibus_proxy_call (IBUS_PROXY (config),
+                     "Destroy",
+                     DBUS_TYPE_INVALID);
+
+    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (config));
+}
+
+static void
+_from_dbus_value (DBusMessageIter   *iter,
+                  GValue            *value)
+{
+    g_assert (iter != NULL);
+    g_assert (value != NULL);
+
+    gint type;
+
+    type = dbus_message_iter_get_arg_type (iter);
+    
+    switch (type) {
+    case DBUS_TYPE_STRING:
+        {
+            gchar *v;
+            g_value_init (value, G_TYPE_STRING);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_string (value, v);
+        }
+        break;
+    case DBUS_TYPE_INT32:
+        {
+            gint v;
+            g_value_init (value, G_TYPE_INT);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_int (value, v);
+        }
+        break;
+    case DBUS_TYPE_BOOLEAN:
+        {
+            gboolean v;
+            g_value_init (value, G_TYPE_BOOLEAN);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_boolean (value, v);
+        }
+        break;
+    case DBUS_TYPE_DOUBLE:
+        {
+            gdouble v;
+            g_value_init (value, G_TYPE_DOUBLE);
+            dbus_message_iter_get_basic (iter, &v);
+            g_value_set_double (value, v);
+        }
+        break;
+    case DBUS_TYPE_ARRAY:
+        {
+            GValue v = { 0 };
+            DBusMessageIter sub_iter;
+            gint sub_type;
+            GValueArray *array;
+
+            
+            sub_type = dbus_message_iter_get_element_type (iter);
+            g_assert (sub_type == DBUS_TYPE_STRING ||
+                      sub_type == DBUS_TYPE_INT32 ||
+                      sub_type == DBUS_TYPE_BOOLEAN ||
+                      sub_type == DBUS_TYPE_DOUBLE);
+            
+            g_value_init (value, G_TYPE_VALUE_ARRAY);
+            array = g_value_array_new (0);            
+            dbus_message_iter_recurse (iter, &sub_iter);
+            while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
+                _from_dbus_value (&sub_iter, &v);
+                g_value_array_append (array, &v);
+                dbus_message_iter_next (&sub_iter);
+            }
+            g_value_take_boxed (value, array);
+            break;
+        }
+    default:
+        g_assert_not_reached();
+    }
+}
+
+static void
+_to_dbus_value (DBusMessageIter *iter,
+                const GValue    *value)
+{
+    switch (G_VALUE_TYPE (value)) {
+    case G_TYPE_STRING:
+        {
+            const gchar * v = g_value_get_string (value);
+            dbus_message_iter_append_basic (iter,
+                                            DBUS_TYPE_STRING,
+                                            &v);
+        }
+        break;
+    case G_TYPE_INT:
+        {
+            gint v = g_value_get_int (value);
+            dbus_message_iter_append_basic (iter,
+                                            DBUS_TYPE_INT32,
+                                            &v);
+        }
+        break;
+    case G_TYPE_BOOLEAN:
+        {
+            gboolean v = g_value_get_boolean (value);
+            dbus_message_iter_append_basic (iter,
+                                            DBUS_TYPE_BOOLEAN,
+                                            &v);
+        }
+        break;
+    case G_TYPE_DOUBLE:
+        {
+            gdouble v = g_value_get_double (value);
+            dbus_message_iter_append_basic (iter,
+                                            DBUS_TYPE_DOUBLE,
+                                            &v);
+        }
+        break;
+    default:
+        if (G_TYPE_VALUE_ARRAY == G_VALUE_TYPE (value)) {
+            DBusMessageIter sub_iter;
+            GType type = G_TYPE_INVALID;
+            gint i;
+            GValueArray *array = (GValueArray *)g_value_get_boxed (value);
+            dbus_message_iter_open_container (iter, 
+                                              DBUS_TYPE_ARRAY,
+                                              "v",
+                                              &sub_iter);
+            if (array->n_values > 0) {
+                type = G_VALUE_TYPE (&array->values[0]);
+                g_assert (type == G_TYPE_STRING ||
+                          type == G_TYPE_INT ||
+                          type == G_TYPE_BOOLEAN ||
+                          type == G_TYPE_DOUBLE);
+            }
+            for (i = 0; i < array->n_values; i++) {
+                g_assert (type == G_VALUE_TYPE (&array->values[i]));
+                _to_dbus_value (&sub_iter, &array->values[i]);
+            }
+            dbus_message_iter_close_container (iter, &sub_iter);
+            break;
+        }
+        g_assert_not_reached();
+    }
 }
 
 static gboolean
-ibus_config_dbus_signal (IBusProxy           *proxy,
-                                DBusMessage         *message)
+ibus_config_dbus_signal (IBusProxy     *proxy,
+                              DBusMessage   *message)
 {
-    g_assert (IBUS_IS_CONFIG (proxy));
+    g_assert (BUS_IS_CONFIG (proxy));
     g_assert (message != NULL);
-
-    IBusConfig *context;
-    DBusError error;
-    gint i;
-
-    context = IBUS_CONFIG (proxy);
-
-    struct {
-        const gchar *member;
-        guint signal_id;
-    } signals [] = {
-        { "Enabled",                ENABLED                 },
-        { "Disabled",               DISABLED                },
-        { "ShowPreedit",            SHOW_PREEDIT            },
-        { "HidePreedit",            HIDE_PREEDIT            },
-        { "ShowAuxString",          SHOW_AUX_STRING         },
-        { "HideAuxString",          HIDE_AUX_STRING         },
-        { "ShowLookupTable",        SHOW_LOOKUP_TABLE       },
-        { "HideLookupTable",        HIDE_LOOKUP_TABLE       },
-        { "PageUpLookupTable",      PAGE_UP_LOOKUP_TABLE    },
-        { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE  },
-        { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE  },
-        { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE},
-        { NULL, 0},
-    };
     
-    for (i = 0; ; i++) {
-        if (signals[i].member == NULL)
-            break;
-        if (dbus_message_is_signal (message,
-                                    IBUS_INTERFACE_CONFIG,
-                                    signals[i].member)) {
-            g_signal_emit (context, context_signals[signals[i].signal_id], 0);
-            goto handled;
+    IBusConfig *config;
+    config = IBUS_CONFIG (proxy);
+    
+    if (dbus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
+        DBusMessageIter iter;
+        gchar *section;
+        gchar *name;
+        GValue value = { 0 };
+        gint type;
+
+        dbus_message_iter_init (message, &iter);
+        
+        type = dbus_message_iter_get_arg_type (&iter);
+        if (type != DBUS_TYPE_STRING) {
+            g_warning ("Argument 1 of ValueChanged should be a string");
+            return FALSE;
         }
+        dbus_message_iter_get_basic (&iter, &section);
+        
+        if (type != DBUS_TYPE_STRING) {
+            g_warning ("Argument 2 of ValueChanged should be a string");
+            return FALSE;
+        }
+        dbus_message_iter_get_basic (&iter, &name);
+
+        _from_dbus_value (&iter, &value);
+
+        g_signal_emit (config,
+                       config_signals[VALUE_CHANGED],
+                       0,
+                       section,
+                       name,
+                       &value);
+        g_signal_stop_emission_by_name (config, "dbus-signal");
+        return TRUE;
     }
     
-    dbus_error_init (&error);
-    if (dbus_message_is_signal (message,
-                                IBUS_INTERFACE_CONFIG,
-                                "CommitString")) {
-        gchar *text;
-        gboolean retval;
-
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &text,
-                                DBUS_TYPE_INVALID);
-        if (!retval)
-            goto failed;
-        g_signal_emit (context, context_signals[COMMIT_STRING], 0, text);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "ForwardKeyEvent")) {
-        guint32 keyval;
-        gboolean is_press;
-        guint32 state;
-        gboolean retval;
-
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_UINT32, &keyval,
-                                DBUS_TYPE_BOOLEAN, &is_press,
-                                DBUS_TYPE_UINT32, &state,
-                                DBUS_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-        g_signal_emit (context,
-                       context_signals[FORWARD_KEY_EVENT],
-                       0,
-                       keyval,
-                       is_press,
-                       state | IBUS_FORWARD_MASK);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "UpdatePreedit")) {
-        gchar *text;
-        IBusAttrList *attr_list;
-        gint32 cursor_pos;
-        gboolean visible;
-        DBusMessageIter iter;
-        gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval) {
-            g_warning ("Out of memory!");
-            goto failed;
-        }
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING) {
-            g_warning ("Argument 1 of UpdatePredit shoule be a string!");
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &text);
-        dbus_message_iter_next (&iter);
-
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL) {
-            g_warning ("Argument 2 of UpdatePredit shoule be an AttrList!");
-            goto failed;
-        }
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32) {
-            ibus_attr_list_unref (attr_list);
-            g_warning ("Argument 3 of UpdatePredit shoule be an INT32!");
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &cursor_pos);
-        dbus_message_iter_next (&iter);
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            g_warning ("Argument 4 of UpdatePredit shoule be an BOOLEAN!");
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_PREEDIT],
-                       0,
-                       text,
-                       attr_list,
-                       cursor_pos,
-                       visible);
-        ibus_attr_list_unref (attr_list);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "UpdateAuxString")) {
-        gchar *text;
-        IBusAttrList *attr_list;
-        gboolean visible;
-        DBusMessageIter iter;
-        gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto failed;
-        dbus_message_iter_get_basic (&iter, &text);
-        dbus_message_iter_next (&iter);
-        
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_AUX_STRING],
-                       0,
-                       text,
-                       attr_list,
-                       visible);
-        ibus_attr_list_unref (attr_list);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "UpdateLookupTable")) {
-        IBusLookupTable *table;
-        gboolean visible;
-        DBusMessageIter iter;
-        gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
-        
-        table = ibus_lookup_table_from_dbus_message (&iter);
-        if (table == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_lookup_table_unref (table);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_LOOKUP_TABLE],
-                       0,
-                       table,
-                       visible);
-        ibus_lookup_table_unref (table);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "RegisterProperties")) {
-        IBusPropList *prop_list;
-        DBusMessageIter iter;
-        gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
-        
-        prop_list = ibus_prop_list_from_dbus_message (&iter);
-        if (prop_list == NULL)
-            goto failed;
-        
-        g_signal_emit (context, context_signals[REGISTER_PROPERTIES], 0, prop_list);
-        ibus_prop_list_unref (prop_list);
-    }
-    else if (dbus_message_is_signal (message,
-                                     IBUS_INTERFACE_CONFIG,
-                                     "UpdateProperty")) {
-        IBusProperty *prop;
-        DBusMessageIter iter;
-        gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
-        
-        prop = ibus_property_from_dbus_message (&iter);
-        if (prop == NULL)
-            goto failed;
-        
-        g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
-        ibus_property_free (prop);
-    }
-    else {
-        return FALSE;
-    }
-
-handled:
-    g_signal_stop_emission_by_name (context, "dbus-signal");
-    return TRUE;
-  
-failed:
-    g_warning ("%s: %s", error.name, error.message);
-    dbus_error_free (&error);
     return FALSE;
 }
 
 gboolean
-ibus_config_process_key_event (IBusConfig *context,
-                                      guint32           keyval,
-                                      gboolean          is_press,
-                                      guint32           state)
+ibus_config_get_value (IBusConfig  *config,
+                            const gchar     *section,
+                            const gchar     *name,
+                            GValue          *value)
 {
-    g_assert (IBUS_IS_CONFIG (context));
+    g_assert (BUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
+    g_assert (value != NULL);
 
-    DBusMessage *reply_message;
+    DBusMessage *reply;
     IBusError *error;
-    gboolean retval;
 
-    if (state & IBUS_FORWARD_MASK)
-        return FALSE;
-
-    reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (context),
-                                                  "ProcessKeyEvent",
+    reply = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (config),
+                                                  "GetValue",
                                                   -1,
                                                   &error,
-                                                  DBUS_TYPE_UINT32, &keyval,
-                                                  DBUS_TYPE_BOOLEAN, &is_press,
-                                                  DBUS_TYPE_UINT32, &state,
+                                                  DBUS_TYPE_STRING, section,
+                                                  DBUS_TYPE_STRING, name,
                                                   DBUS_TYPE_INVALID);
-    if (reply_message == NULL) {
-        g_debug ("%s: %s", error->name, error->message);
+    if (reply == NULL) {
+        g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
-        retval = FALSE;
+        return FALSE;
     }
 
-    if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
-        g_debug ("%s",
-                 dbus_message_get_error_name (reply_message));
-        dbus_message_unref (reply_message);
-        retval = FALSE;
-    }
-    else {
-        DBusError error;
-        dbus_error_init (&error);
-        if (!dbus_message_get_args (reply_message, &error,
-                                   DBUS_TYPE_BOOLEAN, &retval,
-                                   DBUS_TYPE_INVALID)) {
-            g_debug ("%s: %s", error.name, error.message);
-            dbus_error_free (&error);
-            retval = FALSE;
-        }
-        dbus_message_unref (reply_message);
-    }
-    return retval;
+    DBusMessageIter iter;
+    dbus_message_iter_init (reply, &iter);
+    _from_dbus_value (&iter, value);
+
+    dbus_message_unref (reply);
+
+    return TRUE;
 }
 
-void
-ibus_config_set_cursor_location (IBusConfig *context,
-                                        gint32            x,
-                                        gint32            y,
-                                        gint32            w,
-                                        gint32            h)
+gboolean
+ibus_config_set_value (IBusConfig  *config,
+                            const gchar     *section,
+                            const gchar     *name,
+                            const GValue    *value)
 {
-    g_assert (IBUS_IS_CONFIG (context));
+    g_assert (BUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
+    g_assert (value != NULL);
 
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "SetCursorLocation",
-                     DBUS_TYPE_INT32, &x,
-                     DBUS_TYPE_INT32, &y,
-                     DBUS_TYPE_INT32, &w,
-                     DBUS_TYPE_INT32, &h,
-                     DBUS_TYPE_INVALID);
+    DBusMessage *message;
+    DBusMessageIter iter;
+
+    message = dbus_message_new_method_call (
+                                ibus_proxy_get_name (IBUS_PROXY (config)),
+                                ibus_proxy_get_path (IBUS_PROXY (config)),
+                                ibus_proxy_get_interface (IBUS_PROXY (config)),
+                                "SetValue");
+    dbus_message_iter_init_append (message, &iter);
+    _to_dbus_value (&iter, value);
+
+    ibus_proxy_send (IBUS_PROXY (config), message);
+    dbus_message_unref (message);
+
+    return TRUE;
 }
-
-void
-ibus_config_set_capabilities (IBusConfig   *context,
-                                     guint32             capabilites)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "SetCapabilites",
-                     DBUS_TYPE_UINT32, &capabilites,
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_focus_in (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "FocusIn",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_focus_out (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "FocusOut",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_reset (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "Reset",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_page_up (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "PageUp",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_page_down (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "PageDown",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_cursor_up (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "CursorUp",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_cursor_down (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "CursorDown",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_enable (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "Enable",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_disable (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "Disable",
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_property_activate (IBusConfig *context,
-                                      const gchar      *prop_name,
-                                      gint32            state)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "PropertyActivate",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INT32, &state,
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_property_show (IBusConfig *context,
-                                  const gchar     *prop_name)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "PropertyShow",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_property_hide (IBusConfig *context,
-                                       const gchar      *prop_name)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "PropertyHide",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
-}
-
-void
-ibus_config_destroy (IBusConfig *context)
-{
-    g_assert (IBUS_IS_CONFIG (context));
-
-    ibus_proxy_call (IBUS_PROXY (context),
-                     "Destroy",
-                     DBUS_TYPE_INVALID);
-    ibus_object_destroy (IBUS_OBJECT (context));
-}
-
-
-

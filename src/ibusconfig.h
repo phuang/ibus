@@ -17,8 +17,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __IBUS_CONFIG_H_
-#define __IBUS_CONFIG_H_
+#ifndef __CONFIG_H_
+#define __CONFIG_H_
 
 #include "ibusproxy.h"
 
@@ -55,31 +55,16 @@ struct _IBusConfigClass {
     /* class members */
 };
 
-GType        ibus_config_get_type    (void);
-IBusConfig
-            *ibus_config_new         (const gchar        *path,
-                                             IBusConnection     *connection);
-gboolean     ibus_config_process_key_event
-                                            (IBusConfig   *context,
-                                             guint32             keyval,
-                                             gboolean            is_press,
-                                             guint32             state);
-void         ibus_config_set_cursor_location
-                                            (IBusConfig   *context,
-                                             gint32              x,
-                                             gint32              y,
-                                             gint32              w,
-                                             gint32              h);
-void         ibus_config_set_capabilities
-                                            (IBusConfig   *context,
-                                             guint32             capabilites);
-void         ibus_config_focus_in    (IBusConfig   *context);
-void         ibus_config_focus_out   (IBusConfig   *context);
-void         ibus_config_reset       (IBusConfig   *context);
-void         ibus_config_enable      (IBusConfig   *context);
-void         ibus_config_disable     (IBusConfig   *context);
-void         ibus_config_destroy     (IBusConfig   *context);
-
+GType            ibus_config_get_type       (void);
+IBusConfig      *ibus_config_new            (IBusConnection     *connection);
+gboolean         ibus_config_get_value      (IBusConfig         *config,
+                                             const gchar        *section,
+                                             const gchar        *name,
+                                             GValue             *value);
+gboolean         ibus_config_set_value      (IBusConfig         *config,
+                                             const gchar        *section,
+                                             const gchar        *name,
+                                             const GValue       *value);
 G_END_DECLS
 #endif
 
