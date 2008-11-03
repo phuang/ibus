@@ -141,11 +141,7 @@ ibus_bus_connect (IBusBus *bus)
 
     priv->connection = ibus_connection_open (ibus_get_address ());
 
-    if (!ibus_connection_is_connected (priv->connection)) {
-        g_object_unref (priv->connection);
-        priv->connection = NULL;
-    }
-    else {
+    if (priv->connection) {
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
