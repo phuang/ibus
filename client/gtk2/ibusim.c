@@ -38,13 +38,20 @@ static const GtkIMContextInfo * info_list[] = {
 };
 
 
+G_MODULE_EXPORT const gchar* g_module_check_init (GModule *module);
+const gchar*
+g_module_check_init (GModule *module)
+{
+    /* make module resident */
+    g_module_make_resident (module);
+    
+    return NULL;
+}
+
 void
 im_module_init (GTypeModule *type_module)
 {
-    /* make module resident */
-    g_module_make_resident (type_module);
-    
-    ibus_im_context_register_type(type_module);
+    ibus_im_context_register_type (type_module);
 }
 
 void

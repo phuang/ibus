@@ -139,12 +139,14 @@ bus_connection_dbus_message (BusConnection  *connection,
     gboolean retval;
 
     g_debug ("\nmessage:\n"
+             "\tdestination = %s\n"
              "\tpath = %s\n"
              "\tinterface = %s\n"
-             "\tmember = %s", 
-        dbus_message_get_path (message),
-        dbus_message_get_interface (message),
-        dbus_message_get_member (message));
+             "\tmember = %s",
+             dbus_message_get_destination (message),
+             dbus_message_get_path (message),
+             dbus_message_get_interface (message),
+             dbus_message_get_member (message));
     retval = IBUS_CONNECTION_CLASS (_parent_class)->dbus_message (
             IBUS_CONNECTION (connection), message);
     return retval;

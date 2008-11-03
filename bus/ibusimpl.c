@@ -281,7 +281,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                         DBUS_TYPE_INVALID)) {
         reply = dbus_message_new_error (message,
                                 DBUS_ERROR_INVALID_ARGS,
-                                "Argument of  RegisterFactories should be an string");
+                                "Argument 1 of CreateInputContext should be an string");
         dbus_error_free (&error);
         return reply;;
     }

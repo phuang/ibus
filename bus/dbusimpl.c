@@ -985,8 +985,8 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (skip_connection) || skip_connection == NULL);
 
-    GList *recipients;
-    GList *link;
+    GList *recipients = NULL;
+    GList *link = NULL;
 
     static gint32 data_slot = -1;
 
