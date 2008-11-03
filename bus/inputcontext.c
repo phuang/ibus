@@ -22,6 +22,7 @@
 #include <ibusmarshalers.h>
 #include "inputcontext.h"
 #include "engineproxy.h"
+#include "factoryproxy.h"
 
 #define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
@@ -40,6 +41,7 @@ enum {
 /* IBusInputContextPriv */
 struct _BusInputContextPrivate {
     BusConnection *connection;
+    BusFactoryProxy *factory;
     BusEngineProxy *engine;
     gchar *client;
     gboolean has_focus;
@@ -163,8 +165,6 @@ bus_input_context_class_init (BusInputContextClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-
-
 }
 
 static void
@@ -175,6 +175,7 @@ bus_input_context_init (BusInputContext *context)
 
     priv->connection = NULL;
     priv->client = NULL;
+    priv->factory = NULL;
     priv->engine = NULL;
     priv->has_focus = FALSE;
 }
@@ -184,6 +185,16 @@ bus_input_context_destroy (BusInputContext *context)
 {
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->factory) {
+        g_object_unref (priv->factory);
+        priv->factory = NULL;
+    }
+
+    if (priv->engine) {
+        g_object_unref (priv->engine);
+        priv->engine = NULL;
+    }
 
     if (priv->connection) {
         g_signal_handlers_disconnect_by_func (priv->connection,
@@ -216,7 +227,7 @@ _ibus_introspect (BusInputContext   *context,
         "      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
         "    </method>\n"
         "  </interface>\n"
-        "  <interface name=\"org.freedesktop.DBus\">\n"
+        "  <interface name=\"org.freedesktop.IBus\">\n"
         "    <method name=\"RequestName\">\n"
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"in\" type=\"u\"/>\n"

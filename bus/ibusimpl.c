@@ -283,7 +283,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                                 DBUS_ERROR_INVALID_ARGS,
                                 "Argument 1 of CreateInputContext should be an string");
         dbus_error_free (&error);
-        return reply;;
+        return reply;
     }
 
     context = bus_input_context_new (connection, client);
@@ -369,8 +369,8 @@ _ibus_register_factories (BusIBusImpl     *ibus,
                         &paths, &n,
                         DBUS_TYPE_INVALID)) {
         reply = dbus_message_new_error (message,
-                                error.name,
-                                "RegisterFactories shoule pass an object_path array as arugment");
+                    error.name,
+                    "RegisterFactories shoule pass an object_path array as arugment");
         dbus_error_free (&error);
         return reply;;
     }

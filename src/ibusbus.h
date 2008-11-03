@@ -63,6 +63,9 @@ IBusInputContext
             *ibus_bus_create_input_context
                                         (IBusBus        *bus,
                                          const gchar    *client_name);
+void         ibus_bus_set_watch_dbus_signal
+                                        (IBusBus        *bus,
+                                         gboolean        watch);
 
 G_END_DECLS
 #endif

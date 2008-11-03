@@ -30,6 +30,7 @@
 enum {
     CONNECTED,
     DISCONNECTED,
+    NAME_OWNER_CHANGED,
     LAST_SIGNAL,
 };
 
@@ -38,6 +39,7 @@ enum {
 struct _IBusBusPrivate {
     GFileMonitor *monitor;
     IBusConnection *connection;
+    gboolean watch_dbus_signal;
 };
 typedef struct _IBusBusPrivate IBusBusPrivate;
 
@@ -47,7 +49,10 @@ static guint    bus_signals[LAST_SIGNAL] = { 0 };
 static void     ibus_bus_class_init     (IBusBusClass   *klass);
 static void     ibus_bus_init           (IBusBus        *bus);
 static void     ibus_bus_destroy        (IBusObject     *object);
-
+static void     ibus_bus_watch_dbus_signal
+                                        (IBusBus        *bus);
+static void     ibus_bus_unwatch_dbus_signal
+                                        (IBusBus        *bus);
 static IBusObjectClass  *parent_class = NULL;
 
 GType
@@ -104,7 +109,8 @@ ibus_bus_class_init (IBusBusClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
 
     bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
@@ -113,14 +119,74 @@ ibus_bus_class_init (IBusBusClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
+            G_TYPE_NONE,
+            0);
+    
+    bus_signals[NAME_OWNER_CHANGED] =
+        g_signal_new (I_("name-owner-changed"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_STRING_STRING,
+            G_TYPE_NONE,
+            3,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE
+            );
 
+}
+
+static gboolean
+_connection_dbus_signal_cb (IBusConnection *connection,
+                            DBusMessage    *message,
+                            IBusBus        *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (message != NULL);
+    g_assert (IBUS_IS_CONNECTION (connection));
+    
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
+        DBusError error;
+        const gchar *name;
+        const gchar *old_name;
+        const gchar *new_name;
+        gboolean retval;
+
+        dbus_error_init (&error);
+        retval = dbus_message_get_args (message, &error,
+                                        DBUS_TYPE_STRING, &name,
+                                        DBUS_TYPE_STRING, &old_name,
+                                        DBUS_TYPE_STRING, &new_name,
+                                        DBUS_TYPE_INVALID);
+        if (!retval) {
+            g_warning ("%s: %s", error.name, error.message);
+            dbus_error_free (&error);
+        }
+        else {
+            g_signal_emit (bus,
+                           bus_signals[NAME_OWNER_CHANGED],
+                           0,
+                           name,
+                           old_name,
+                           new_name);
+        }
+    }
+
+    return FALSE;
 }
 
 static void
 _connection_destroy_cb (IBusConnection  *connection,
                         IBusBus         *bus)
 {
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (IBUS_IS_CONNECTION (connection));
+    
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
@@ -143,10 +209,19 @@ ibus_bus_connect (IBusBus *bus)
 
     if (priv->connection) {
         g_signal_connect (priv->connection,
+                          "dbus-signal",
+                          (GCallback) _connection_dbus_signal_cb,
+                          bus);
+
+        g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
                           bus);
         g_signal_emit (bus, bus_signals[CONNECTED], 0);
+
+        if (priv->watch_dbus_signal) {
+            ibus_bus_watch_dbus_signal (bus);
+        }
     }
 }
 
@@ -179,6 +254,7 @@ ibus_bus_init (IBusBus *bus)
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
     priv->connection = NULL;
+    priv->watch_dbus_signal = FALSE;
 
     ibus_bus_connect (bus);
 
@@ -288,3 +364,83 @@ ibus_bus_create_input_context (IBusBus      *bus,
     
     return context;
 }
+
+static void
+ibus_bus_watch_dbus_signal (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (ibus_bus_is_connected (bus));
+    
+    IBusBusPrivate *priv;
+    DBusMessage *message;
+    const gchar *rule;
+    
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    rule = "type='signal'," \
+           "path='" DBUS_PATH_DBUS "'," \
+           "interface='" DBUS_INTERFACE_DBUS "'";
+
+    message = dbus_message_new_method_call (DBUS_SERVICE_DBUS,
+                                            DBUS_PATH_DBUS,
+                                            DBUS_INTERFACE_DBUS,
+                                            "AddMatch");
+    dbus_message_append_args (message,
+                              DBUS_TYPE_STRING, &rule,
+                              DBUS_TYPE_INVALID);
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+}
+
+static void
+ibus_bus_unwatch_dbus_signal (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (ibus_bus_is_connected (bus));
+    
+    IBusBusPrivate *priv;
+    DBusMessage *message;
+    const gchar *rule;
+    
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    rule = "type='signal'," \
+           "path='" DBUS_PATH_DBUS "'," \
+           "interface='" DBUS_INTERFACE_DBUS "'";
+
+    message = dbus_message_new_method_call (DBUS_SERVICE_DBUS,
+                                            DBUS_PATH_DBUS,
+                                            DBUS_INTERFACE_DBUS,
+                                            "RemoveMatch");
+    dbus_message_append_args (message,
+                              DBUS_TYPE_STRING, &rule,
+                              DBUS_TYPE_INVALID);
+    ibus_connection_send (priv->connection, message);
+    dbus_message_unref (message);
+
+}
+
+void
+ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
+                                gboolean        watch)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->watch_dbus_signal == watch)
+        return;
+
+    priv->watch_dbus_signal = watch;
+
+    if (ibus_bus_is_connected (bus)) {
+        if (watch) {
+            ibus_bus_watch_dbus_signal (bus);
+        }
+        else {
+            ibus_bus_unwatch_dbus_signal (bus);
+        }
+    }
+}
+

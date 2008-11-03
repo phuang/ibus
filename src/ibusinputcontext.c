@@ -153,8 +153,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__STRING,
-            G_TYPE_NONE, 1,
-            G_TYPE_STRING);
+            G_TYPE_NONE,
+            1,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE);
     
     context_signals[FORWARD_KEY_EVENT] =
         g_signal_new (I_("forward-key-event"),
@@ -175,8 +176,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             0,
             NULL, NULL,
             ibus_marshal_VOID__STRING_BOXED_INT_BOOLEAN,
-            G_TYPE_NONE, 4,
-            G_TYPE_STRING,
+            G_TYPE_NONE,
+            4,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
             IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_INT,
             G_TYPE_BOOLEAN);
@@ -207,7 +209,7 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__STRING_BOXED_BOOLEAN,
             G_TYPE_NONE, 3,
-            G_TYPE_STRING,
+            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
             IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_BOOLEAN);
     
