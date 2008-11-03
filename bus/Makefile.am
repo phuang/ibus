@@ -59,8 +59,6 @@ ibus_daemon_SOURCES = \
 	engineproxy.h \
 	panelproxy.c \
 	panelproxy.h \
-	configproxy.c \
-	configproxy.h \
 	factoryproxy.c \
 	factoryproxy.h \
 	server.c \

@@ -22,6 +22,7 @@
 
 #include <dbus/dbus.h>
 #include "ibusinputcontext.h"
+#include "ibusconfig.h"
 
 /*
  * Type macros.
@@ -59,13 +60,32 @@ struct _IBusBusClass {
 GType        ibus_bus_get_type          (void);
 IBusBus     *ibus_bus_new               (void);
 gboolean     ibus_bus_is_connected      (IBusBus        *bus);
+void         ibus_bus_set_watch_dbus_signal
+                                        (IBusBus        *bus,
+                                         gboolean        watch);
+IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
+
+/* declare dbus methods */
+const gchar *ibus_bus_hello             (IBusBus        *bus);
+guint        ibus_bus_request_name      (IBusBus        *bus,
+                                         const gchar    *name,
+                                         guint           flags);
+guint        ibus_bus_release_name      (IBusBus        *bus,
+                                         const gchar    *name);
+gboolean     ibus_bus_name_has_owner    (IBusBus        *bus,
+                                         const gchar    *name);
+GList       *ibus_bus_list_names        (IBusBus        *bus);
+void         ibus_bus_add_match         (IBusBus        *bus,
+                                         const gchar    *rule);
+void         ibus_bus_remove_match      (IBusBus        *bus,
+                                         const gchar    *rule);
+const gchar *ibus_bus_get_name_owner    (IBusBus        *bus,
+                                         const gchar    *name);
+/* declare ibus methods */
 IBusInputContext
             *ibus_bus_create_input_context
                                         (IBusBus        *bus,
                                          const gchar    *client_name);
-void         ibus_bus_set_watch_dbus_signal
-                                        (IBusBus        *bus,
-                                         gboolean        watch);
 
 G_END_DECLS
 #endif

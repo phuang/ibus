@@ -384,7 +384,7 @@ static gboolean
 ibus_config_dbus_signal (IBusProxy     *proxy,
                               DBusMessage   *message)
 {
-    g_assert (BUS_IS_CONFIG (proxy));
+    g_assert (IBUS_IS_CONFIG (proxy));
     g_assert (message != NULL);
     
     IBusConfig *config;
@@ -433,7 +433,7 @@ ibus_config_get_value (IBusConfig  *config,
                             const gchar     *name,
                             GValue          *value)
 {
-    g_assert (BUS_IS_CONFIG (config));
+    g_assert (IBUS_IS_CONFIG (config));
     g_assert (section != NULL);
     g_assert (name != NULL);
     g_assert (value != NULL);
@@ -469,7 +469,7 @@ ibus_config_set_value (IBusConfig  *config,
                             const gchar     *name,
                             const GValue    *value)
 {
-    g_assert (BUS_IS_CONFIG (config));
+    g_assert (IBUS_IS_CONFIG (config));
     g_assert (section != NULL);
     g_assert (name != NULL);
     g_assert (value != NULL);
