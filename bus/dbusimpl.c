@@ -300,11 +300,12 @@ _dbus_hello (BusDBusImpl    *dbus,
     }
     else {
         gchar *name;
+        
         name = g_strdup_printf (":1.%d", priv->id ++);
         bus_connection_set_unique_name (connection, name);
+        g_hash_table_insert (priv->names, name, connection);
 
         reply_message = dbus_message_new_method_return (message);
-        g_hash_table_insert (priv->names, name, connection);
         dbus_message_append_args (reply_message,
                     DBUS_TYPE_STRING, &name,
                     DBUS_TYPE_INVALID);

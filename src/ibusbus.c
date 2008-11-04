@@ -210,6 +210,7 @@ ibus_bus_connect (IBusBus *bus)
     priv->connection = ibus_connection_open (ibus_get_address ());
 
     if (priv->connection) {
+        ibus_bus_hello (bus);
         g_signal_connect (priv->connection,
                           "dbus-signal",
                           (GCallback) _connection_dbus_signal_cb,
@@ -380,7 +381,7 @@ ibus_bus_watch_dbus_signal (IBusBus *bus)
            "path='" DBUS_PATH_DBUS "'," \
            "interface='" DBUS_INTERFACE_DBUS "'";
 
-    ibus_bus_dbus_add_match (bus, rule);
+    ibus_bus_add_match (bus, rule);
 
 }
 
@@ -396,7 +397,7 @@ ibus_bus_unwatch_dbus_signal (IBusBus *bus)
            "path='" DBUS_PATH_DBUS "'," \
            "interface='" DBUS_INTERFACE_DBUS "'";
 
-    ibus_bus_dbus_remove_match (bus, rule);
+    ibus_bus_remove_match (bus, rule);
 }
 
 void
@@ -492,7 +493,7 @@ ibus_bus_call (IBusBus      *bus,
     type = va_arg (args, gint);
     DBusError _error;
     dbus_error_init (&_error);
-    retval = dbus_message_get_args_valist (message, &_error, type, args);
+    retval = dbus_message_get_args_valist (reply, &_error, type, args);
     va_end (args);
 
     dbus_message_unref (reply);
