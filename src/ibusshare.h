@@ -48,5 +48,7 @@ const gchar     *ibus_get_address       (void);
 const gchar     *ibus_get_user_name     (void);
 const gchar     *ibus_get_socket_path   (void);
 
+const gchar     *ibus_keyval_name       (guint           keyval);
+guint            ibus_keyval_from_name  (const gchar    *keyval_name);
 G_END_DECLS
 #endif

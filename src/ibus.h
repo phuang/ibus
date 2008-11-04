@@ -32,6 +32,7 @@
 #include "ibusproperty.h"
 #include "ibuslookuptable.h"
 #include "ibusbus.h"
+#include "ibuskeysyms.h"
 
 #endif
 

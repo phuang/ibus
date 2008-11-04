@@ -102,6 +102,7 @@ AM_LDFLAGS = \
 	$(NULL)
 
 TESTS = \
+	test-keynames \
 	test-bus \
 	test-proxy \
 	test-attribute \
