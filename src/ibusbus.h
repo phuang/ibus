@@ -60,9 +60,8 @@ struct _IBusBusClass {
 GType        ibus_bus_get_type          (void);
 IBusBus     *ibus_bus_new               (void);
 gboolean     ibus_bus_is_connected      (IBusBus        *bus);
-void         ibus_bus_set_watch_dbus_signal
-                                        (IBusBus        *bus,
-                                         gboolean        watch);
+IBusConnection
+            *ibus_bus_get_connection    (IBusBus        *bus);
 /* declare dbus methods */
 const gchar *ibus_bus_hello             (IBusBus        *bus);
 guint        ibus_bus_request_name      (IBusBus        *bus,

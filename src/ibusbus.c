@@ -667,6 +667,17 @@ ibus_bus_get_name_owner (IBusBus        *bus,
     return NULL;
 }
 
+IBusConnection *
+ibus_bus_get_connection (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    
+    IBusBusPrivate *priv;
+
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+    return priv->connection;
+}
+
 #if 0
 IBusConfig *
 ibus_bus_get_config (IBusBus *bus)
