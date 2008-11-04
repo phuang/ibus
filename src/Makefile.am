@@ -70,6 +70,8 @@ libibus_la_SOURCES = \
 	ibusmarshalers.c \
 	ibusbus.c \
 	ibusbus.h \
+	keynames.h \
+	ibuskeynames.c \
 	$(NULL)
 libibus_la_CFLAGS = \
 	@X11_CFLAGS@ \
