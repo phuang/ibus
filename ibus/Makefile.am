@@ -57,5 +57,5 @@ CLEANFILES = \
 	$(NULL)
 
 DISTCLEANFILES = \
-	config.py \
+	_config.py \
 	$(NULL)
