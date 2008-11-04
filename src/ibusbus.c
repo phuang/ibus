@@ -40,8 +40,6 @@ struct _IBusBusPrivate {
     GFileMonitor *monitor;
     IBusConnection *connection;
     gboolean watch_dbus_signal;
-
-    IBusConfig *config;
 };
 typedef struct _IBusBusPrivate IBusBusPrivate;
 
@@ -123,7 +121,7 @@ ibus_bus_class_init (IBusBusClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
-    
+#if 0    
     bus_signals[NAME_OWNER_CHANGED] =
         g_signal_new (I_("name-owner-changed"),
             G_TYPE_FROM_CLASS (klass),
@@ -137,9 +135,10 @@ ibus_bus_class_init (IBusBusClass *klass)
             G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
             G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE
             );
-
+#endif
 }
 
+#if 0
 static gboolean
 _connection_dbus_signal_cb (IBusConnection *connection,
                             DBusMessage    *message,
@@ -181,6 +180,7 @@ _connection_dbus_signal_cb (IBusConnection *connection,
 
     return FALSE;
 }
+#endif
 
 static void
 _connection_destroy_cb (IBusConnection  *connection,
@@ -211,11 +211,12 @@ ibus_bus_connect (IBusBus *bus)
 
     if (priv->connection) {
         ibus_bus_hello (bus);
+#if 0
         g_signal_connect (priv->connection,
                           "dbus-signal",
                           (GCallback) _connection_dbus_signal_cb,
                           bus);
-
+#endif
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
@@ -258,8 +259,6 @@ ibus_bus_init (IBusBus *bus)
 
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
-
-    priv->config = NULL;
 
     ibus_bus_connect (bus);
 
@@ -424,12 +423,6 @@ ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
     }
 }
 
-
-IBusConfig *
-ibus_bus_get_config (IBusBus *bus)
-{
-    
-}
 
 static gboolean
 ibus_bus_call (IBusBus      *bus,
@@ -674,3 +667,22 @@ ibus_bus_get_name_owner (IBusBus        *bus,
     return NULL;
 }
 
+#if 0
+IBusConfig *
+ibus_bus_get_config (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    IBusBusPrivate *priv;
+    
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->config == NULL) {
+        if (ibus_bus_is_connected (bus)) {
+            
+        }
+    }
+
+    return priv->config;
+}
+#endif

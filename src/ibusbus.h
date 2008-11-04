@@ -63,8 +63,6 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
 void         ibus_bus_set_watch_dbus_signal
                                         (IBusBus        *bus,
                                          gboolean        watch);
-IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
-
 /* declare dbus methods */
 const gchar *ibus_bus_hello             (IBusBus        *bus);
 guint        ibus_bus_request_name      (IBusBus        *bus,
