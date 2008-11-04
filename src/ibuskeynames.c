@@ -37,7 +37,7 @@ gdk_keys_keyval_compare (const void *pkey, const void *pbase)
   return (*(int *) pkey) - ((gdk_key *) pbase)->keyval;
 }
 
-gchar*
+const gchar*
 ibus_keyval_name (guint keyval)
 {
   static gchar buf[100];
