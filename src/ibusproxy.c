@@ -216,6 +216,33 @@ ibus_proxy_constructor (GType           type,
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
     
     if (priv->connection != NULL) {
+        if (priv->name != NULL) {
+            
+            IBusError *error;
+            gchar *rule;
+            
+            rule = g_strdup_printf ("type='signal',"
+                                    "sender='"      DBUS_SERVICE_DBUS   "',"
+                                    "path='"        DBUS_PATH_DBUS      "',"
+                                    "interface='"   DBUS_INTERFACE_DBUS "',"
+                                    "member='NameOwnerChanged',"
+                                    "arg0='%s'",
+                                    priv->name);
+                                        
+            if (!ibus_connection_call (priv->connection,
+                                       DBUS_SERVICE_DBUS,
+                                       DBUS_PATH_DBUS,
+                                       DBUS_INTERFACE_DBUS,
+                                       "AddMatch",
+                                       &error,
+                                       DBUS_TYPE_STRING, &rule,
+                                       DBUS_TYPE_INVALID,
+                                       DBUS_TYPE_INVALID)) {
+                g_warning ("%s: %s", error->name, error->message);
+                ibus_error_free (error);
+            }
+            g_free (rule);
+        }
         g_signal_connect (priv->connection,
                           "dbus-signal",
                           (GCallback) _connection_dbus_signal_cb,
@@ -249,6 +276,35 @@ ibus_proxy_destroy (IBusProxy *proxy)
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
     if (priv->connection) {
+        if (priv->name != NULL) {
+            
+            IBusError *error;
+            gchar *rule;
+
+            rule = g_strdup_printf ("type='signal',"
+                                    "sender='"      DBUS_SERVICE_DBUS   "',"
+                                    "path='"        DBUS_PATH_DBUS      "',"
+                                    "interface='"   DBUS_INTERFACE_DBUS "',"
+                                    "member='NameOwnerChanged',"
+                                    "arg0='%s'",
+                                    priv->name);
+                                        
+            if (!ibus_connection_call (priv->connection,
+                                       DBUS_SERVICE_DBUS,
+                                       DBUS_PATH_DBUS,
+                                       DBUS_INTERFACE_DBUS,
+                                       "RemoveMatch",
+                                       &error,
+                                       DBUS_TYPE_STRING, &rule,
+                                       DBUS_TYPE_INVALID,
+                                       DBUS_TYPE_INVALID)) {
+
+                g_warning ("%s: %s", error->name, error->message);
+                ibus_error_free (error);
+            }
+            g_free (rule);
+        }
+
         g_signal_handlers_disconnect_by_func (priv->connection,
                                               (GCallback) _connection_dbus_signal_cb,
                                               proxy);
@@ -340,6 +396,27 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     gboolean retval = FALSE;
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
+
+    if (dbus_message_is_signal (message, DBUS_SERVICE_DBUS, "NameOwnerChanged")) {
+        gchar *name, *old_name, *new_name;
+        IBusError *error;
+        
+        error = ibus_error_new ();
+        if (!dbus_message_get_args (message,
+                                    error,
+                                    DBUS_TYPE_STRING, &name,
+                                    DBUS_TYPE_STRING, &old_name,
+                                    DBUS_TYPE_STRING, &new_name,
+                                    DBUS_TYPE_INVALID)) {
+            g_warning ("%s :%s", error->name, error->message);
+        }
+        ibus_error_free (error);
+
+        if (g_strcmp0 (priv->name, old_name) == 0) {
+            ibus_object_destroy (IBUS_OBJECT (proxy));
+            return FALSE;
+        }
+    }
 
     if (g_strcmp0 (dbus_message_get_path (message), priv->path) == 0) {
         g_signal_emit (proxy, proxy_signals[DBUS_SIGNAL], 0, message, &retval);

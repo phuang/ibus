@@ -646,6 +646,90 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
     return reply;
 }
 
+gboolean
+ibus_connection_call (IBusConnection     *connection,
+                      const gchar        *name,
+                      const gchar        *path,
+                      const gchar        *interface,
+                      const gchar        *member,
+                      IBusError          **error,
+                      gint               first_arg_type,
+                      ...)
+{
+    g_assert (IBUS_IS_CONNECTION (connection));
+    g_assert (name != NULL);
+    g_assert (path != NULL);
+    g_assert (interface != NULL);
+    g_assert (member != NULL);
+
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    g_assert (dbus_connection_get_is_connected (priv->connection));
+    
+    DBusMessage *message, *reply;
+    DBusError *_error;
+    va_list args;
+    gint type;
+    gboolean retval;
+
+    message = dbus_message_new_method_call (name, path, interface, member);
+
+    va_start (args, first_arg_type);
+
+    dbus_message_append_args_valist (message, first_arg_type, args);
+    
+    va_end (args);
+    
+    reply = ibus_connection_send_with_reply_and_block (
+                                        connection,
+                                        message,
+                                        -1,
+                                        &_error);
+    dbus_message_unref (message);
+
+    if (reply == NULL) {
+        goto failed;
+    }
+
+    if (_error = ibus_error_from_message (reply)) {
+        dbus_message_unref (reply);
+        goto failed;
+    }
+    
+    va_start (args, first_arg_type);
+    
+    type = first_arg_type;
+    
+    while (type != DBUS_TYPE_INVALID) {
+        va_arg (args, void *);
+        type = va_arg (args, gint);
+    }    
+    type = va_arg (args, gint);
+    
+    _error = ibus_error_new ();
+    retval = dbus_message_get_args_valist (reply, _error, type, args);
+    va_end (args);
+
+    dbus_message_unref (reply);
+
+    if (!retval) {
+        return FALSE;
+    }
+
+    ibus_error_free (_error);
+
+    return TRUE;
+
+failed:
+    if (error)
+        *error = _error;
+    else
+        ibus_error_free (_error);
+    return FALSE;
+
+}
+
 void
 ibus_connection_flush (IBusConnection *connection)
 {

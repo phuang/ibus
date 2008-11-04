@@ -28,7 +28,9 @@ G_BEGIN_DECLS
 typedef DBusError IBusError;
 
 IBusError       *ibus_error_new         (void);
-void             ibus_error_free        (IBusError  *error);
+IBusError       *ibus_error_from_message
+                                        (DBusMessage    *message);
+void             ibus_error_free        (IBusError      *error);
 
 G_END_DECLS
 #endif

@@ -120,6 +120,14 @@ DBusMessage     *ibus_connection_send_with_reply_and_block
                                                      DBusMessage        *message,
                                                      gint                timeout_milliseconds,
                                                      IBusError          **error);
+gboolean         ibus_connection_call               (IBusConnection     *connection,
+                                                     const gchar        *name,
+                                                     const gchar        *path,
+                                                     const gchar        *interface,
+                                                     const gchar        *member,
+                                                     IBusError          **error,
+                                                     gint               first_arg_type,
+                                                     ...);
 void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path
                                                     (IBusConnection     *connection,

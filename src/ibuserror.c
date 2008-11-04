@@ -22,7 +22,31 @@
 IBusError *
 ibus_error_new (void)
 {
-    return g_slice_new0 (IBusError);
+    IBusError *error;
+    
+    error = g_slice_new0 (IBusError);    
+    dbus_error_init (error);
+
+    return error;
+}
+
+IBusError *
+ibus_error_from_message (DBusMessage    *message)
+{
+    g_assert (message != NULL);
+    
+    IBusError *error;
+    
+    if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_ERROR)
+        return NULL;
+
+    error = ibus_error_new ();
+
+    if (dbus_set_error_from_message (error, message))
+        return error;
+
+    dbus_error_free (error);
+    return NULL;
 }
 
 void
