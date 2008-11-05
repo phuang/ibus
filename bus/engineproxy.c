@@ -49,7 +49,7 @@ enum {
 
 /* BusEngineProxyPriv */
 struct _BusEngineProxyPrivate {
-    void *pad;
+    gboolean enabled;
 };
 typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
@@ -311,6 +311,8 @@ bus_engine_proxy_init (BusEngineProxy *engine)
 {
     BusEngineProxyPrivate *priv;
     priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
+
+    priv->enabled = FALSE;
 }
 
 static void
@@ -642,4 +644,3 @@ DEFINE_FUNCTION (Enable, enable)
 DEFINE_FUNCTION (Disable, disable)
 
 #undef DEFINE_FUNCTION
-

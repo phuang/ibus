@@ -20,6 +20,7 @@
 
 #include <ibusinternal.h>
 #include <ibusmarshalers.h>
+#include "ibusimpl.h"
 #include "inputcontext.h"
 #include "engineproxy.h"
 #include "factoryproxy.h"
@@ -45,6 +46,7 @@ struct _BusInputContextPrivate {
     BusEngineProxy *engine;
     gchar *client;
     gboolean has_focus;
+    gboolean enabled;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -58,6 +60,12 @@ static void     bus_input_context_destroy       (BusInputContext        *context
 static gboolean bus_input_context_dbus_message  (BusInputContext        *context,
                                                  BusConnection          *connection,
                                                  DBusMessage            *message);
+static gboolean bus_input_context_filter_keyboard_shortcuts
+                                                (BusInputContext        *context,
+                                                 guint                   keyval,
+                                                 gboolean                is_press,
+                                                 guint                   state);
+                                                 
 
 static IBusServiceClass  *_parent_class = NULL;
 static guint id = 0;
@@ -178,6 +186,7 @@ bus_input_context_init (BusInputContext *context)
     priv->factory = NULL;
     priv->engine = NULL;
     priv->has_focus = FALSE;
+    priv->enabled = FALSE;
 }
 
 static void
@@ -187,12 +196,12 @@ bus_input_context_destroy (BusInputContext *context)
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     if (priv->factory) {
-        g_object_unref (priv->factory);
+        ibus_object_destroy (IBUS_OBJECT (priv->factory));
         priv->factory = NULL;
     }
 
     if (priv->engine) {
-        g_object_unref (priv->engine);
+        ibus_object_destroy (IBUS_OBJECT (priv->engine));
         priv->engine = NULL;
     }
 
@@ -263,10 +272,10 @@ _ic_process_key_event (BusInputContext  *context,
     guint32 keyval, state;
     gboolean is_press;
     gboolean retval;
-    DBusError error;
+    IBusError *error;
 
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
+    error = ibus_error_new ();
+    retval = dbus_message_get_args (message, error,
                 DBUS_TYPE_UINT32, &keyval,
                 DBUS_TYPE_BOOLEAN, &is_press,
                 DBUS_TYPE_UINT32, &state,
@@ -274,15 +283,23 @@ _ic_process_key_event (BusInputContext  *context,
 
     if (!retval) {
         reply = dbus_message_new_error (message,
-                                        error.name,
-                                        error.message);
-        dbus_error_free (&error);
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
         return reply;
     }
     
+    ibus_error_free (error);
+    
     /* TODO */
+    retval = bus_input_context_filter_keyboard_shortcuts (context,
+                                                          keyval,
+                                                          is_press,
+                                                          state);
+    if (retval)
+        goto out;
 
-    retval = FALSE;
+out:
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (reply,
                               DBUS_TYPE_BOOLEAN, &retval,
@@ -572,4 +589,96 @@ bus_input_context_focus_out (BusInputContext *context)
         return;
 
     g_signal_emit (context, context_signals[FOCUS_OUT], 0);
+}
+
+static void
+_engine_destroy_cb (BusEngineProxy      *engine,
+                    BusInputContext     *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    
+    g_assert (engine == priv->engine);
+
+    priv->enabled = FALSE;
+
+    g_object_unref (priv->engine);
+    priv->engine = NULL;
+}
+
+static void
+_factory_destroy_cb (BusFactoryProxy    *factory,
+                     BusInputContext    *context)
+{
+    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (factory == priv->factory);
+
+    priv->enabled = FALSE;
+
+    priv->factory = NULL;
+    g_object_unref (priv->factory);
+
+    if (priv->engine != NULL) {
+        ibus_object_destroy (IBUS_OBJECT (priv->engine));
+        priv->engine = NULL;
+    }
+}
+
+static void
+bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->factory == NULL) {
+        priv->factory = bus_ibus_impl_get_default_factory (BUS_DEFAULT_IBUS);
+        if (priv->factory) {
+            g_signal_connect (priv->factory,
+                              "destroy",
+                              _factory_destroy_cb,
+                              context);
+            g_object_ref (priv->factory);
+
+            priv->engine = bus_factory_create_engine (priv->factory);
+        }
+    }
+
+    if (priv->factory == NULL || priv->engine == NULL)
+        return;
+
+    priv->enabled = ! priv->enabled;
+
+    if (priv->enabled) {
+        bus_engine_proxy_enable (priv->engine);
+    }
+    else {
+        bus_engine_proxy_disable (priv->engine);
+    }
+}
+
+static gboolean
+bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
+                                             guint               keyval,
+                                             gboolean            is_press,
+                                             guint               state)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    state &= IBUS_MODIFIER_MASK;
+
+    if (is_press && keyval == IBUS_space && (state & IBUS_CONTROL_MASK)) {
+        bus_input_context_enable_or_disabe_engine (context);
+        return TRUE;
+    }
+    return FALSE;
 }
