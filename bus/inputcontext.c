@@ -312,7 +312,6 @@ _ic_process_key_event (BusInputContext  *context,
     
     ibus_error_free (error);
     
-    /* TODO */
     retval = bus_input_context_filter_keyboard_shortcuts (context,
                                                           keyval,
                                                           is_press,
@@ -396,17 +395,10 @@ _ic_focus_in (BusInputContext  *context,
 
     DBusMessage *reply;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!priv->has_focus) {
-        priv->has_focus = TRUE;
-        if (priv->engine) {
-            bus_engine_proxy_focus_in (priv->engine);
-        }
-    }
+    bus_input_context_focus_in (context);
 
     reply = dbus_message_new_method_return (message);
+
     return reply;
 }
 
@@ -421,17 +413,10 @@ _ic_focus_out (BusInputContext  *context,
 
     DBusMessage *reply;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->has_focus) {
-        priv->has_focus = FALSE;
-        if (priv->engine) {
-            bus_engine_proxy_focus_out (priv->engine);
-        }
-    }
+    bus_input_context_focus_out (context);
 
     reply = dbus_message_new_method_return (message);
+
     return reply;
 }
 
@@ -512,12 +497,13 @@ _ic_is_enabled (BusInputContext  *context,
     
     DBusMessage *reply;
     gboolean retval;
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    retval = FALSE;
-    /* TODO */
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (reply,
-            DBUS_TYPE_BOOLEAN, &retval,
+            DBUS_TYPE_BOOLEAN, &priv->enabled,
             DBUS_TYPE_INVALID);
 
     return reply;
@@ -533,9 +519,15 @@ _ic_get_factory (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
     
     DBusMessage *reply;
-    gchar *factory = "";
+    const gchar *factory = "";
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    /* TODO */
+    if (priv->factory) {
+        factory = ibus_proxy_get_path (IBUS_PROXY (priv->factory));
+    }
+
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (reply,
             DBUS_TYPE_STRING, &factory,
@@ -555,7 +547,6 @@ _ic_destroy (BusInputContext  *context,
     
     DBusMessage *reply;
     
-    /* TODO */
     ibus_object_destroy (IBUS_OBJECT (context));
     reply = dbus_message_new_method_return (message);
     
@@ -655,6 +646,12 @@ bus_input_context_focus_in (BusInputContext *context)
     if (priv->has_focus)
         return;
 
+    priv->has_focus = TRUE;
+
+    if (priv->engine) {
+        bus_engine_proxy_focus_in (priv->engine);
+    }
+
     g_signal_emit (context, context_signals[FOCUS_IN], 0);
 }
 
@@ -668,6 +665,12 @@ bus_input_context_focus_out (BusInputContext *context)
 
     if (!priv->has_focus)
         return;
+    
+    priv->has_focus = FALSE;
+    
+    if (priv->engine) {
+        bus_engine_proxy_focus_out (priv->engine);
+    }
 
     g_signal_emit (context, context_signals[FOCUS_OUT], 0);
 }
