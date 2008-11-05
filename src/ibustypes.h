@@ -58,6 +58,14 @@ typedef enum {
     IBUS_CAP_FOCUS          = (1 << 3),
 } IBusCapabilite;
 
+typedef struct _IBusRectangle IBusRectangle;
+struct _IBusRectangle {
+    gint x;
+    gint y;
+    gint width;
+    gint height;
+};
+
 typedef void (* IBusFreeFunc) (gpointer );
 
 #endif

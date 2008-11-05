@@ -51,6 +51,12 @@ typedef struct _IBusEngineClass IBusEngineClass;
 struct _IBusEngine {
     IBusService parent;
     /* instance members */
+    gboolean enabled;
+    gboolean has_focus;
+
+    /* cursor location */
+    IBusRectangle cursor_area;
+    guint client_capabilities;
 };
 
 struct _IBusEngineClass {
@@ -58,9 +64,9 @@ struct _IBusEngineClass {
 
     /* class members */
     gboolean    (* key_press)       (IBusEngine     *engine,
-                                     guint          keyval,
-                                     gboolean       is_press,
-                                     guint          state);
+                                     guint           keyval,
+                                     gboolean        is_press,
+                                     guint           state);
     void        (* focus_in)        (IBusEngine     *engine);
     void        (* focus_out)       (IBusEngine     *engine);
     void        (* reset)           (IBusEngine     *engine);
@@ -68,10 +74,13 @@ struct _IBusEngineClass {
     void        (* disable)         (IBusEngine     *engine);
     void        (* set_cursor_location)
                                     (IBusEngine     *engine,
-                                    gint            x,
-                                    gint            y,
-                                    gint            w,
-                                    gint            h);
+                                    gint             x,
+                                    gint             y,
+                                    gint             w,
+                                    gint             h);
+    void        (* set_capabilities)
+                                    (IBusEngine     *engine,
+                                     guint           caps);
 
     void        (* page_up)         (IBusEngine     *engine);
     void        (* page_down)       (IBusEngine     *engine);

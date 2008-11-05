@@ -34,6 +34,7 @@ enum {
     ENABLE,
     DISABLE,
     SET_CURSOR_LOCATION,
+    SET_CAPABILITIES,
     PAGE_UP,
     PAGE_DOWN,
     CURSOR_UP,
@@ -88,6 +89,9 @@ static void     ibus_engine_set_cursor_location
                                              gint                y,
                                              gint                w,
                                              gint                h);
+static void     ibus_engine_set_capabilities
+                                            (IBusEngine         *engine,
+                                             guint               caps);
 static void     ibus_engine_page_up         (IBusEngine         *engine);
 static void     ibus_engine_page_down       (IBusEngine         *engine);
 static void     ibus_engine_cursor_up       (IBusEngine         *engine);
@@ -182,6 +186,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     klass->property_show        = ibus_engine_property_show;
     klass->property_hide        = ibus_engine_property_hide;
     klass->set_cursor_location  = ibus_engine_set_cursor_location;
+    klass->set_capabilities     = ibus_engine_set_capabilities;
 
 
     /* install properties */
@@ -258,6 +263,16 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__INT_INT_INT_INT,
             G_TYPE_NONE, 4,
             G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+    
+    engine_signals[SET_CAPABILITIES] =
+        g_signal_new (I_("set-capabilities"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, set_capabilities),
+            NULL, NULL,
+            ibus_marshal_VOID__UINT,
+            G_TYPE_NONE, 1,
+            G_TYPE_UINT);
 
     engine_signals[PAGE_UP] =
         g_signal_new (I_("page-up"),
@@ -580,6 +595,11 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
 
         if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
             goto _set_cursor_location_fail;
+        
+        engine->cursor_area.x = args[0];
+        engine->cursor_area.y = args[1];
+        engine->cursor_area.width = args[2];
+        engine->cursor_area.height = args[3];
 
         g_signal_emit (engine, engine_signals[SET_CURSOR_LOCATION], 0,
                     args[0], args[1], args[2], args[3]);
@@ -593,6 +613,37 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
         error_message = dbus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (iiii) of method",
                         IBUS_INTERFACE_ENGINE, "SetCursorLocation");
+        ibus_connection_send (connection, error_message);
+        dbus_message_unref (error_message);
+        return TRUE;
+    }
+    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCapabilities")) {
+        guint caps;
+        DBusMessageIter iter;
+
+        dbus_message_iter_init (message, &iter);
+        
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
+            goto _set_capabilities_fail;
+        dbus_message_iter_get_basic (&iter, &caps);
+        dbus_message_iter_next (&iter);
+
+        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+            goto _set_capabilities_fail;
+
+        engine->client_capabilities = caps;
+        
+        g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
+
+        return_message = dbus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        dbus_message_unref (return_message);
+        return TRUE;
+
+    _set_capabilities_fail:
+        error_message = dbus_message_new_error_printf (message,
+                        "%s.%s: Can not match signature (u) of method",
+                        IBUS_INTERFACE_ENGINE, "SetCapabilities");
         ibus_connection_send (connection, error_message);
         dbus_message_unref (error_message);
         return TRUE;
@@ -640,9 +691,19 @@ ibus_engine_disable (IBusEngine *engine)
 
 static void
 ibus_engine_set_cursor_location (IBusEngine *engine,
-        gint x, gint y, gint w, gint h)
+                                 gint        x,
+                                 gint        y,
+                                 gint        w,
+                                 gint        h)
 {
     g_debug ("set-cursor-location (%d, %d, %d, %d)", x, y, w, h);
+}
+
+static void
+ibus_engine_set_capabilities (IBusEngine *engine,
+                              guint       caps)
+{
+    g_debug ("set-capabilities (0x%04x)", caps);
 }
 
 static void
