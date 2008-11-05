@@ -585,8 +585,8 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
 }
 
 void
-bus_engine_proxy_set_capabilites (BusEngineProxy *engine,
-                                  guint           caps)
+bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
+                                   guint           caps)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     

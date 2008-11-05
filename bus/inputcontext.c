@@ -493,11 +493,10 @@ _ic_set_capabilities (BusInputContext  *context,
         priv->capabilities = caps;
         
         if (priv->engine) {
-            bus_engine_proxy_set_capabilities (caps);
+            bus_engine_proxy_set_capabilities (priv->engine, caps);
         }
     }
 
-    /* TODO */
     reply = dbus_message_new_method_return (message);
     return reply;
 }
@@ -727,7 +726,7 @@ bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
         if (priv->factory) {
             g_signal_connect (priv->factory,
                               "destroy",
-                              _factory_destroy_cb,
+                              G_CALLBACK (_factory_destroy_cb),
                               context);
             g_object_ref (priv->factory);
 
