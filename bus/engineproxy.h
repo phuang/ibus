@@ -72,6 +72,8 @@ void             bus_engine_proxy_set_cursor_location
 void             bus_engine_proxy_focus_in          (BusEngineProxy *engine);
 void             bus_engine_proxy_focus_out         (BusEngineProxy *engine);
 void             bus_engine_proxy_reset             (BusEngineProxy *engine);
+void             bus_engine_proxy_set_capabilites   (BusEngineProxy *engine,
+                                                     guint           caps);
 void             bus_engine_proxy_page_up           (BusEngineProxy *engine);
 void             bus_engine_proxy_page_down         (BusEngineProxy *engine);
 void             bus_engine_proxy_cursor_up         (BusEngineProxy *engine);

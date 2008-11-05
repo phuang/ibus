@@ -45,8 +45,18 @@ struct _BusInputContextPrivate {
     BusFactoryProxy *factory;
     BusEngineProxy *engine;
     gchar *client;
+    
     gboolean has_focus;
     gboolean enabled;
+
+    /* capabilities */
+    guint capabilities;
+
+    /* cursor location */
+    gint x;
+    gint y;
+    gint w;
+    gint h;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -187,6 +197,13 @@ bus_input_context_init (BusInputContext *context)
     priv->engine = NULL;
     priv->has_focus = FALSE;
     priv->enabled = FALSE;
+
+    priv->capabilities = 0;
+
+    priv->x = 0;
+    priv->y = 0;
+    priv->w = 0;
+    priv->h = 0;
 }
 
 static void
@@ -273,6 +290,10 @@ _ic_process_key_event (BusInputContext  *context,
     gboolean is_press;
     gboolean retval;
     IBusError *error;
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    
 
     error = ibus_error_new ();
     retval = dbus_message_get_args (message, error,
@@ -299,6 +320,16 @@ _ic_process_key_event (BusInputContext  *context,
     if (retval)
         goto out;
 
+    if (priv->enabled && priv->engine) {
+        retval = bus_engine_proxy_process_key_event (priv->engine,
+                                                     keyval,
+                                                     is_press,
+                                                     state);
+    }
+    else {
+        retval = FALSE;
+    }
+
 out:
     reply = dbus_message_new_method_return (message);
     dbus_message_append_args (reply,
@@ -322,6 +353,9 @@ _ic_set_cursor_location (BusInputContext  *context,
     gboolean retval;
     DBusError error;
 
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    
     dbus_error_init (&error);
     retval = dbus_message_get_args (message, &error,
                 DBUS_TYPE_UINT32, &x,
@@ -337,8 +371,16 @@ _ic_set_cursor_location (BusInputContext  *context,
         dbus_error_free (&error);
         return reply;
     }
+
+    priv->x = x;
+    priv->y = y;
+    priv->h = h;
+    priv->w = w;
     
-    /* TODO */
+    if (priv->engine) {
+        bus_engine_proxy_set_cursor_location (priv->engine, x, y, w, h);
+    }
+
     reply = dbus_message_new_method_return (message);
     return reply;
 }
@@ -353,7 +395,17 @@ _ic_focus_in (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     DBusMessage *reply;
-    /* TODO */
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!priv->has_focus) {
+        priv->has_focus = TRUE;
+        if (priv->engine) {
+            bus_engine_proxy_focus_in (priv->engine);
+        }
+    }
+
     reply = dbus_message_new_method_return (message);
     return reply;
 }
@@ -368,7 +420,17 @@ _ic_focus_out (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     DBusMessage *reply;
-    /* TODO */
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->has_focus) {
+        priv->has_focus = FALSE;
+        if (priv->engine) {
+            bus_engine_proxy_focus_out (priv->engine);
+        }
+    }
+
     reply = dbus_message_new_method_return (message);
     return reply;
 }
@@ -383,7 +445,15 @@ _ic_reset (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     DBusMessage *reply;
-    /* TODO */
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    
+    
+    if (priv->engine) {
+        bus_engine_proxy_reset (priv->engine);
+    }
+
     reply = dbus_message_new_method_return (message);
     return reply;
 }
@@ -401,6 +471,10 @@ _ic_set_capabilities (BusInputContext  *context,
     guint32 caps;
     gboolean retval;
     DBusError error;
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    
 
     dbus_error_init (&error);
     retval = dbus_message_get_args (message, &error,
@@ -413,6 +487,14 @@ _ic_set_capabilities (BusInputContext  *context,
                                         error.message);
         dbus_error_free (&error);
         return reply;
+    }
+
+    if (priv->capabilities != caps) {
+        priv->capabilities = caps;
+        
+        if (priv->engine) {
+            bus_engine_proxy_set_capabilities (caps);
+        }
     }
 
     /* TODO */

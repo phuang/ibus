@@ -585,6 +585,19 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
 }
 
 void
+bus_engine_proxy_set_capabilites (BusEngineProxy *engine,
+                                  guint           caps)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    
+    ibus_proxy_call (IBUS_PROXY (engine),
+                     "SetCapabilites",
+                     DBUS_TYPE_UINT32, &caps,
+                     DBUS_TYPE_INVALID);
+
+}
+
+void
 bus_engine_proxy_property_activate (BusEngineProxy *engine,
                                     const gchar    *prop_name,
                                     gint32          state)
