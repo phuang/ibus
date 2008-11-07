@@ -21,7 +21,9 @@
 #define __IBUS_MESSAGE_H_
 
 #include <glib.h>
+#include <glib-object.h>
 #include <dbus/dbus.h>
+#include "ibuserror.h"
 
 G_BEGIN_DECLS
 
@@ -60,7 +62,7 @@ gboolean         ibus_message_set_member        (IBusMessage        *message,
                                                  const gchar        *member);
 gboolean         ibus_message_set_path          (IBusMessage        *message,
                                                  const gchar        *path);
-gboolean         ibus_message_set_no_reply      (IBusMessage        *message,
+void             ibus_message_set_no_reply      (IBusMessage        *message,
                                                  gboolean            no_reply);
 gboolean         ibus_message_set_reply_serial  (IBusMessage        *message,
                                                  guint32             reply_serial);
@@ -73,17 +75,13 @@ const gchar     *ibus_message_get_path          (IBusMessage        *message);
 gboolean         ibus_message_get_no_reply      (IBusMessage        *message);
 guint32          ibus_message_get_reply_serial  (IBusMessage        *message);
 guint32          ibus_message_get_serial        (IBusMessage        *message);
-
-
-
-
-gboolean         ibus_message_append_args       (IBusMesssage       *message,
+gboolean         ibus_message_append_args       (IBusMessage        *message,
                                                  GType               first_arg_type,
                                                  ...);
 gboolean         ibus_message_append_args_valist(IBusMessage        *message,
                                                  GType               first_arg_type,
                                                  va_list             va_args);
-gboolean         ibus_message_get_args          (IBusMesssage       *message,
+gboolean         ibus_message_get_args          (IBusMessage        *message,
                                                  IBusError          **error,
                                                  GType               first_arg_type,
                                                  ...);

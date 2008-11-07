@@ -18,50 +18,308 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "ibusmessage.h"
-IBusMessage     *ibus_message_new               (gint                message_type);
-IBusMessage     *ibus_message_new_method_call   (const gchar        *destination,
-                                                 const gchar        *path,
-                                                 const gchar        *interface,
-                                                 const gchar        *method);
-IBusMessage     *ibus_message_new_method_return (IBusMessage        *reply_to);
-IBusMessage     *ibus_message_new_error         (IBusMessage        *reply_to,
-                                                 const gchar        *error_name,
-                                                 const gchar        *error_message);
-IBusMessage     *ibus_message_new_signal        (const gchar        *path,
-                                                 const gchar        *interface,
-                                                 const gchar        *method);
-gboolean         ibus_message_append_args       (IBusMesssage       *message,
-                                                 GType               first_arg_type,
-                                                 ...);
-gboolean         ibus_message_append_args_valist(IBusMessage        *message,
-                                                 GType               first_arg_type,
-                                                 va_list             va_args);
-gboolean         ibus_message_get_args          (IBusMesssage       *message,
-                                                 IBusError          **error,
-                                                 GType               first_arg_type,
-                                                 ...);
-gboolean         ibus_message_get_args_valist   (IBusMessage        *message,
-                                                 IBusError          **error,
-                                                 GType               first_arg_type,
-                                                 va_list             va_args);
-void             ibus_message_iter_init_append  (IBusMessage        *message,
-                                                 IBusMessageIter    *iter);
-gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
-                                                 GType               type,
-                                                 gconstpointer       value);
-gboolean         ibus_message_iter_init         (IBusMessage        *message,
-                                                 IBusMessageIter    *iter);
-gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
-                                                 GType               type,
-                                                 gpointer            value);
-gboolean         ibus_message_iter_next         (IBusMessageIter    *iter);
-gboolean         ibus_message_iter_has_next     (IBusMessageIter    *iter);
-gboolean         ibus_message_iter_open_container
-                                                (IBusMessageIter    *iter,
-                                                 GType               type,
-                                                 const gchar        *contained_signature,
-                                                 IBusMessageIter    *sub);
-void             ibus_message_iter_recurse      (IBusMessageIter    *iter,
-                                                 IBusMessageIter    *sub);
-GType            ibus_message_iter_get_arg_type (IBusMessageIter    *iter);
 
+IBusMessage *
+ibus_message_new (gint message_type)
+{
+    return dbus_message_new (message_type);
+}
+
+IBusMessage *
+ibus_message_new_method_call (const gchar   *destination,
+                              const gchar   *path,
+                              const gchar   *interface,
+                              const gchar   *method)
+{
+    return dbus_message_new_method_call (destination,
+                                         path,
+                                         interface,
+                                         method);
+}
+
+IBusMessage *
+ibus_message_new_method_return (IBusMessage *reply_to)
+{
+    return dbus_message_new_method_return (reply_to);
+}
+
+IBusMessage *
+ibus_message_new_error (IBusMessage     *reply_to,
+                        const gchar     *error_name,
+                        const gchar     *error_message)
+{
+    return dbus_message_new_error (reply_to,
+                                   error_name,
+                                   error_message);
+}
+
+IBusMessage *
+ibus_message_new_signal (const gchar    *path,
+                         const gchar    *interface,
+                         const gchar    *name)
+{
+    return dbus_message_new_signal (path,
+                                    interface,
+                                    name);
+}
+
+gboolean
+ibus_message_is_method_call (IBusMessage    *message,
+                             const gchar    *interface,
+                             const gchar    *method)
+{
+    return dbus_message_is_method_call (message,
+                                        interface,
+                                        method);
+}
+
+gboolean
+ibus_message_is_error (IBusMessage  *message,
+                       const gchar  *error_name)
+{
+    return dbus_message_is_error (message, error_name);
+}
+
+gboolean
+ibus_message_is_signal (IBusMessage     *message,
+                        const gchar     *interface,
+                        const gchar     *signal_name)
+{
+    return dbus_message_is_signal (message,
+                                   interface,
+                                   signal_name);
+}
+
+gboolean
+ibus_message_set_destination (IBusMessage   *message,
+                              const gchar   *destination)
+{
+    return dbus_message_set_destination (message, destination);
+}
+
+gboolean
+ibus_message_set_sender (IBusMessage    *message,
+                         const gchar    *sender)
+{
+    return dbus_message_set_sender (message, sender);
+}
+
+gboolean
+ibus_message_set_error_name (IBusMessage    *message,
+                             const gchar    *error_name)
+{
+    return dbus_message_set_error_name (message, error_name);
+}
+
+gboolean
+ibus_message_set_interface (IBusMessage     *message,
+                            const gchar     *interface)
+{
+    return dbus_message_set_interface (message, interface);
+}
+
+gboolean
+ibus_message_set_member (IBusMessage    *message,
+                         const gchar    *member)
+{
+    return dbus_message_set_member (message, member);
+}
+
+gboolean
+ibus_message_set_path (IBusMessage  *message,
+                       const gchar  *path)
+{
+    return dbus_message_set_path (message, path);
+}
+
+void
+ibus_message_set_no_reply (IBusMessage  *message,
+                           gboolean      no_reply)
+{
+    return dbus_message_set_no_reply (message, no_reply);
+}
+
+gboolean
+ibus_message_set_reply_serial (IBusMessage  *message,
+                               guint32       reply_serial)
+{
+    return dbus_message_set_reply_serial (message, reply_serial);
+}
+
+const gchar *
+ibus_message_get_destination (IBusMessage *message)
+{
+    return dbus_message_get_destination (message);
+}
+
+const gchar *
+ibus_message_get_sender (IBusMessage *message)
+{
+    return dbus_message_get_sender (message);
+}
+
+const gchar *
+ibus_message_get_error_name (IBusMessage *message)
+{
+    return dbus_message_get_error_name (message);
+}
+
+const gchar *
+ibus_message_get_interface (IBusMessage *message)
+{
+    return dbus_message_get_interface (message);
+}
+
+const gchar *
+ibus_message_get_member (IBusMessage *message)
+{
+    return dbus_message_get_member (message);
+}
+
+const gchar *
+ibus_message_get_path (IBusMessage *message)
+{
+    return dbus_message_get_path (message);
+}
+
+gboolean
+ibus_message_get_no_reply (IBusMessage *message)
+{
+    return dbus_message_get_no_reply (message);
+}
+
+guint32
+ibus_message_get_reply_serial (IBusMessage *message)
+{
+    return dbus_message_get_reply_serial (message);
+}
+
+guint32
+ibus_message_get_serial (IBusMessage *message)
+{
+    return dbus_message_get_serial (message);
+}
+
+gboolean
+ibus_message_append_args (IBusMessage *message,
+                          GType        first_arg_type,
+                          ...)
+{
+    gboolean retval;
+    va_list va_args;
+
+    va_start (va_args, first_arg_type);
+    retval = ibus_message_append_args_valist (message,
+                                              first_arg_type,
+                                              va_args);
+    va_end (va_args);
+
+    return retval;
+}
+
+gboolean
+ibus_message_append_args_valist (IBusMessage *message,
+                                 GType        first_arg_type,
+                                 va_list      va_args)
+{
+    // TODO
+    return FALSE;
+}
+
+gboolean
+ibus_message_get_args (IBusMessage  *message,
+                       IBusError    **error,
+                       GType         first_arg_type,
+                       ...)
+{
+    gboolean retval;
+    va_list va_args;
+
+    va_start (va_args, first_arg_type);
+    retval = ibus_message_get_args_valist (message,
+                                           error,
+                                           first_arg_type,
+                                           va_args);
+    va_end (va_args);
+
+    return retval;
+
+}
+
+gboolean
+ibus_message_get_args_valist (IBusMessage *message,
+                              IBusError   **error,
+                              GType        first_arg_type,
+                              va_list      va_args)
+{
+    // TODO
+    return FALSE;
+}
+
+void
+ibus_message_iter_init_append (IBusMessage      *message,
+                               IBusMessageIter  *iter)
+{
+    dbus_message_iter_init_append (message, iter);
+}
+
+gboolean
+ibus_message_iter_append (IBusMessageIter *iter,
+                          GType            type,
+                          gconstpointer    value)
+{
+    // TODO
+    return FALSE;
+}
+
+gboolean
+ibus_message_iter_init (IBusMessage     *message,
+                        IBusMessageIter *iter)
+{
+    return dbus_message_iter_init (message, iter);
+}
+
+gboolean
+ibus_message_iter_get (IBusMessageIter *iter,
+                       GType            type,
+                       gpointer         value)
+{
+    // TODO
+    return FALSE;
+}
+
+gboolean
+ibus_message_iter_next (IBusMessageIter *iter)
+{
+    return dbus_message_iter_next (iter);
+}
+
+gboolean
+ibus_message_iter_has_next (IBusMessageIter *iter)
+{
+    return dbus_message_iter_has_next (iter);
+}
+
+gboolean
+ibus_message_iter_open_container (IBusMessageIter *iter,
+                                  GType            type,
+                                  const gchar     *contained_signature,
+                                  IBusMessageIter *sub)
+{
+    // TODO
+    return FALSE;
+}
+
+void
+ibus_message_iter_recurse (IBusMessageIter *iter,
+                           IBusMessageIter *sub)
+{
+    dbus_message_iter_recurse (iter, sub);
+}
+
+GType
+ibus_message_iter_get_arg_type (IBusMessageIter *iter)
+{
+    // TODO
+    return G_TYPE_INVALID;
+}
