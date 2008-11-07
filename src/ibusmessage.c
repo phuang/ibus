@@ -252,8 +252,27 @@ ibus_message_get_args_valist (IBusMessage *message,
                               GType        first_arg_type,
                               va_list      va_args)
 {
-    // TODO
-    return FALSE;
+    g_assert (message != NULL);
+    
+    gboolean retval;
+    IBusMessageIter iter;
+    GType type;
+    gpointer value;
+    
+    retval = ibus_message_iter_init (message, &iter);
+
+    if (!retval)
+        return FALSE;
+
+    type = va_arg (va_args, GType);
+    
+    while (type != G_TYPE_INVALID) {
+        value = va_arg (va_args, gpointer);
+        retval = ibus_message_iter_get (&iter, type, value);
+        if (!retval)
+            return FALSE;
+    }
+    return TRUE;
 }
 
 void
@@ -284,7 +303,74 @@ ibus_message_iter_get (IBusMessageIter *iter,
                        GType            type,
                        gpointer         value)
 {
-    // TODO
+    g_assert (iter != NULL);
+    gint dbus_type;
+
+    switch (type) {
+    case G_TYPE_INT:
+    {
+        dbus_int32_t v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_INT32)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(gint *) value = (gint) v;
+        return TRUE;
+    }
+    case G_TYPE_UINT:
+    {
+        dbus_uint32_t v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_UINT32)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(guint *) value = (guint) v;
+        return TRUE;
+    }
+    case G_TYPE_BOOLEAN:
+    {
+        dbus_bool_t v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_BOOLEAN)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(gboolean *) value = (gboolean) v;
+        return TRUE;
+    }
+    case G_TYPE_STRING:
+    {
+        gchar *v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_STRING)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(gchar **) value = (gchar *) v;
+        return TRUE;
+    }
+    case G_TYPE_INT64:
+    {
+        dbus_int64_t v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_INT64)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(gint64 *) value = (gint64) v;
+        return TRUE;
+    }
+    case G_TYPE_UINT64:
+    {
+        dbus_uint64_t v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_UINT64)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(guint64 *) value = (guint64) v;
+        return TRUE;
+    }
+    case G_TYPE_DOUBLE:
+    {
+        double v;
+        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_DOUBLE)
+            return FALSE;
+        dbus_message_get_basic (iter, &v);
+        *(gdouble *) value = (gdouble) v;
+        return TRUE;
+    }
+    }
     return FALSE;
 }
 
