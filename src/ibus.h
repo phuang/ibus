@@ -33,6 +33,8 @@
 #include "ibuslookuptable.h"
 #include "ibusbus.h"
 #include "ibuskeysyms.h"
+#include "ibusmessage.h"
+#include "ibuserror.h"
 
 #endif
 

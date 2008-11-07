@@ -85,6 +85,10 @@ gboolean         ibus_service_remove_from_connection
                                                  IBusConnection *connection);
 gboolean         ibus_service_remove_from_all_connections
                                                 (IBusService    *service);
+gboolean         ibus_service_send_signal       (IBusService    *service,
+                                                 const gchar    *name,
+                                                 gint            first_arg_type,
+                                                 ...);
 G_END_DECLS
 #endif
 

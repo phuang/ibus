@@ -342,3 +342,32 @@ ibus_service_remove_from_all_connections (IBusService *service)
     return TRUE;
 }
 
+gboolean
+ibus_service_send_signal (IBusService   *service,
+                          const gchar   *name,
+                          gint           first_arg_type,
+                          ...)
+{
+    g_assert (IBUS_IS_SERVICE (service));
+    g_assert (name != NULL);
+    
+    gboolean retval;
+    va_list args;
+
+    IBusServicePrivate *priv;
+    priv = IBUS_SERVICE_GET_PRIVATE (service);
+
+#if 0
+    g_assert (priv->connection != NULL);
+    va_start (first_arg_type, args);
+    retval = ibus_connection_send_signal_valist (priv->connection,
+                                                 priv->path,
+                                                 priv->interface,
+                                                 name,
+                                                 first_arg_type,
+                                                 args);
+    va_end (args);
+#endif
+    return retval;
+
+}

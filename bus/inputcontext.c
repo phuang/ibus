@@ -717,6 +717,113 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
 }
 
 static void
+_engine_commit_string_cb (BusEngineProxy    *engine,
+                          const gchar       *text,
+                          BusInputContext   *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "CommitString",
+                                 DBUS_TYPE_STRING, &text,
+                                 DBUS_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_forward_key_event_cb (BusEngineProxy    *engine,
+                              guint              keyval,
+                              gboolean           is_press,
+                              guint              state,
+                              BusInputContext   *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "ForwardKeyEvent",
+                                 DBUS_TYPE_UINT32,  &keyval,
+                                 DBUS_TYPE_BOOLEAN, &is_press,
+                                 DBUS_TYPE_UINT32,  &state,
+                                 DBUS_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_forward_key_event_cb (BusEngineProxy    *engine,
+                              guint              keyval,
+                              gboolean           is_press,
+                              guint              state,
+                              BusInputContext   *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "ForwardKeyEvent",
+                                 DBUS_TYPE_UINT32,  &keyval,
+                                 DBUS_TYPE_BOOLEAN, &is_press,
+                                 DBUS_TYPE_UINT32,  &state,
+                                 DBUS_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_update_preedit_cb (BusEngineProxy   *engine,
+                           const gchar      *text,
+                           IBusAttrList     *attr_list,
+                           gint              cursor_pos,
+                           gboolean          visible,
+                           BusInputContext  *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "ForwardKeyEvent",
+                                 DBUS_TYPE_UINT32,  &keyval,
+                                 DBUS_TYPE_BOOLEAN, &is_press,
+                                 DBUS_TYPE_UINT32,  &state,
+                                 DBUS_TYPE_INVALID);
+                                 
+}
+
+static void
 bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
@@ -734,6 +841,39 @@ bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
             g_object_ref (priv->factory);
 
             priv->engine = bus_factory_create_engine (priv->factory);
+
+            gint i;
+            const static struct {
+                const gchar *name;
+                GCallback    callback;
+            } signals [] = {
+                { "commit-string",      G_CALLBACK (_engine_commit_string_cb) },
+                { "forward-key-event",  G_CALLBACK (_engine_forward_key_event_cb) },
+                { "update-preedit",     G_CALLBACK (_engine_update_preedit_cb) },
+                { "show-preedit",       G_CALLBACK (_engine_show_preedit_cb) },
+                { "hide-preedit",       G_CALLBACK (_engine_hide_preedit_cb) },
+                { "update-aux-string",  G_CALLBACK (_engine_update_aux_string_cb) },
+                { "show-aux-string",    G_CALLBACK (_engine_show_aux_string_cb) },
+                { "hide-aux-string",    G_CALLBACK (_engine_hide_aux_string_cb) },
+                { "update-lookup-table",G_CALLBACK (_engine_update_lookup_table_cb) },
+                { "show-lookup-table",  G_CALLBACK (_engine_show_lookup_table_cb) },
+                { "hide-lookup-table",  G_CALLBACK (_engine_hide_lookup_table_cb) },
+                { "page-up-lookup-table",       G_CALLBACK (_engine_page_up_lookup_table_cb) },
+                { "page-down-lookup-table",     G_CALLBACK (_engine_page_down_lookup_table_cb) },
+                { "cursor-up-lookup-table",     G_CALLBACK (_engine_cursor_up_lookup_table_cb) },
+                { "cursor-down-lookup-table",   G_CALLBACK (_engine_cursor_down_lookup_table_cb) },
+                { "register-properties",        G_CALLBACK (_engine_register_properties_cb) },
+                { "update-property",            G_CALLBACK (_engine_update_property_cb) },
+                { NULL, 0 }
+            };
+
+            for (i = 0; signals[i].name != NULL; i++) {
+                g_signal_connect (priv->engine,
+                                  signals[i].name,
+                                  signals[i].callback,
+                                  context);
+            }
+
         }
     }
 

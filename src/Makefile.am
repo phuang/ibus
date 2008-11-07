@@ -62,6 +62,8 @@ libibus_la_SOURCES = \
 	ibusinputcontext.h \
 	ibusconfig.c \
 	ibusconfig.h \
+	ibusmessage.c \
+	ibusmessage.h \
 	ibuserror.c \
 	ibuserror.h \
 	ibuskeysyms.h \
