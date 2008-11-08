@@ -418,20 +418,30 @@ ibus_message_iter_has_next (IBusMessageIter *iter)
 }
 
 gboolean
-ibus_message_iter_open_container (IBusMessageIter *iter,
-                                  GType            type,
-                                  const gchar     *contained_signature,
-                                  IBusMessageIter *sub)
+ibus_message_iter_open_container (IBusMessageIter   *iter,
+                                  IBusContainerType  type,
+                                  const gchar       *contained_signature,
+                                  IBusMessageIter   *sub)
 {
     // TODO
     return FALSE;
 }
 
-void
-ibus_message_iter_recurse (IBusMessageIter *iter,
-                           IBusMessageIter *sub)
+gboolean
+ibus_message_iter_close_container (IBusMessageIter *iter,
+                                   IBusMessageIter *sub)
+{
+    return dbus_message_iter_close_container (iter, sub);
+}
+
+gboolean
+ibus_message_iter_recurse (IBusMessageIter   *iter,
+                           IBusContainerType  type,
+                           IBusMessageIter   *sub)
 {
     dbus_message_iter_recurse (iter, sub);
+
+    return TRUE;
 }
 
 GType

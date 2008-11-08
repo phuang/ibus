@@ -21,7 +21,7 @@
 #define __IBUS_ATTRIBUTE_H_
 
 #include <glib-object.h>
-#include <dbus/dbus.h>
+#include "ibusmessage.h"
 
 /*
  * Type macros.
@@ -79,11 +79,6 @@ IBusAttribute       *ibus_attr_foreground_new   (guint       color,
 IBusAttribute       *ibus_attr_background_new   (guint       color,
                                                  guint       start_index,
                                                  guint       end_index);
-IBusAttribute       *ibus_attribute_from_dbus_message
-                                                (DBusMessageIter    *iter);
-gboolean             ibus_attribute_to_dbus_message
-                                                (IBusAttribute      *attr,
-                                                 DBusMessageIter    *iter);
 
 
 GType                ibus_attr_list_get_type    ();
@@ -95,11 +90,7 @@ void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
                                                  IBusAttribute  *attr);
 IBusAttribute       *ibus_attr_list_get         (IBusAttrList   *attr_list,
                                                  guint           index);
-IBusAttrList        *ibus_attr_list_from_dbus_message
-                                                (DBusMessageIter    *iter);
-gboolean             ibus_attr_list_to_dbus_message
-                                                (IBusAttrList       *attr_list,
-                                                 DBusMessageIter    *iter);
+
 G_END_DECLS
 #endif
 

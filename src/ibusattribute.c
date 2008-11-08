@@ -30,6 +30,13 @@
  *
  **/
 
+static IBusAttrList     *ibus_attr_list_from_ibus_message   (IBusMessageIter    *iter);
+static gboolean          ibus_attr_list_to_ibus_message     (IBusAttrList       *attr_list,
+                                                             IBusMessageIter    *iter);
+static IBusAttribute    *ibus_attribute_from_ibus_message   (IBusMessageIter    *iter);
+static gboolean          ibus_attribute_to_ibus_message     (IBusAttribute      *attr,
+                                                             IBusMessageIter    *iter);
+
 GType
 ibus_attribute_get_type ()
 {
@@ -40,8 +47,8 @@ ibus_attribute_get_type ()
                     (GBoxedFreeFunc)ibus_attribute_free);
 
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_attribute_to_dbus_message,
-                                    (IBusDeserializeFunc) ibus_attribute_from_dbus_message);
+                                    (IBusSerializeFunc) ibus_attribute_to_ibus_message,
+                                    (IBusDeserializeFunc) ibus_attribute_from_ibus_message);
     }
     return type;
 }
@@ -111,8 +118,8 @@ ibus_attr_list_get_type ()
                     (GBoxedFreeFunc)ibus_attr_list_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_attr_list_to_dbus_message,
-                                    (IBusDeserializeFunc) ibus_attr_list_from_dbus_message);
+                                    (IBusSerializeFunc) ibus_attr_list_to_ibus_message,
+                                    (IBusDeserializeFunc) ibus_attr_list_from_ibus_message);
     }
     return type;
 }
@@ -193,85 +200,72 @@ ibus_attr_list_get (IBusAttrList *attr_list, guint index)
 }
 
 IBusAttribute *
-ibus_attribute_from_dbus_message (DBusMessageIter *iter)
+ibus_attribute_from_ibus_message (DBusMessageIter *iter)
 {
-    gint type;
     DBusMessageIter sub_iter;
+    gboolean retval;
 
-    guint _type, value, start_index, end_index;
+    guint type, value, start_index, end_index;
 
-    type = dbus_message_iter_get_arg_type (iter);
-    g_return_val_if_fail (type == DBUS_TYPE_STRUCT, NULL);
+    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    g_assert (retval);
 
-    dbus_message_iter_recurse (iter, &sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &value);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &start_index);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &end_index);
 
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &_type);
-    dbus_message_iter_next (&sub_iter);
-
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &value);
-    dbus_message_iter_next (&sub_iter);
-
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &start_index);
-    dbus_message_iter_next (&sub_iter);
-
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &end_index);
-    dbus_message_iter_next (&sub_iter);
-
-    dbus_message_iter_next (iter);
-
-    return ibus_attribute_new (_type, value, start_index, end_index);
+    return ibus_attribute_new (type, value, start_index, end_index);
 }
 
 IBusAttrList *
-ibus_attr_list_from_dbus_message (DBusMessageIter *iter)
+ibus_attr_list_from_ibus_message (DBusMessageIter *iter)
 {
     gint type;
     DBusMessageIter sub_iter;
     IBusAttrList *attr_list;
+    gboolean retval;
 
-    type = dbus_message_iter_get_arg_type (iter);
-    g_return_val_if_fail (type == DBUS_TYPE_ARRAY, NULL);
-
+    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_iter);
+    g_assert (retval);
+    
     attr_list = ibus_attr_list_new ();
+    
+    while (ibus_message_iter_get_arg_type (&sub_iter) != G_TYPE_INVALID) {
+        IBusAttribute *attr;
+        
+        ibus_message_iter_get (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
 
-    dbus_message_iter_recurse (iter, &sub_iter);
-
-    while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
-        IBusAttribute *attr = ibus_attribute_from_dbus_message (&sub_iter);
         if (attr == NULL)
             break;
         ibus_attr_list_append (attr_list, attr);
     }
 
-    dbus_message_iter_next (iter);
+    ibus_message_iter_next (iter);
     return attr_list;
 }
 
 gboolean
-ibus_attribute_to_dbus_message (IBusAttribute *attr, DBusMessageIter *iter)
+ibus_attribute_to_ibus_message (IBusAttribute *attr, DBusMessageIter *iter)
 {
     g_assert (attr != NULL);
     g_assert (iter != NULL);
 
     DBusMessageIter sub_iter;
 
-    dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->type);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->value);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->start_index);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &attr->end_index);
-    dbus_message_iter_close_container (iter, &sub_iter);
+    ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_STRUCT, "uuuu", &sub_iter);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->type);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->value);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->start_index);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->end_index);
+    ibus_message_iter_close_container (iter, &sub_iter);
 
     return TRUE;
 }
 
 
 gboolean
-ibus_attr_list_to_dbus_message (IBusAttrList *attr_list, DBusMessageIter *iter)
+ibus_attr_list_to_ibus_message (IBusAttrList *attr_list, DBusMessageIter *iter)
 {
     g_assert (attr_list != NULL);
     g_assert (iter != NULL);
@@ -279,16 +273,16 @@ ibus_attr_list_to_dbus_message (IBusAttrList *attr_list, DBusMessageIter *iter)
     gint i;
     DBusMessageIter sub_iter;
 
-    dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "(uuuu)", &sub_iter);
-    for (i = 0;; i++) {
-        IBusAttribute *attr = ibus_attr_list_get (attr_list, i);
+    ibus_message_iter_open_container(iter, IBUS_CONTAINER_TYPE_ARRAY, "(uuuu)", &sub_iter);
+    for (i = 0; ;i++) {
+        IBusAttribute *attr;
+        attr = ibus_attr_list_get (attr_list, i);
         if (attr == NULL)
             break;
-        ibus_attribute_to_dbus_message (attr, &sub_iter);
+        ibus_message_iter_append (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
     }
-    dbus_message_iter_close_container (iter, &sub_iter);
+    ibus_message_iter_close_container (iter, &sub_iter);
+    
     return TRUE;
 }
-
-
 

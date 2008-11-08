@@ -101,12 +101,21 @@ gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
                                                  gpointer            value);
 gboolean         ibus_message_iter_next         (IBusMessageIter    *iter);
 gboolean         ibus_message_iter_has_next     (IBusMessageIter    *iter);
+
+typedef enum {
+    IBUS_CONTAINER_TYPE_ARRAY = 1,
+    IBUS_CONTAINER_TYPE_STRUCT = 2,
+} IBusContainerType;
 gboolean         ibus_message_iter_open_container
                                                 (IBusMessageIter    *iter,
-                                                 GType               type,
+                                                 IBusContainerType   type,
                                                  const gchar        *contained_signature,
                                                  IBusMessageIter    *sub);
-void             ibus_message_iter_recurse      (IBusMessageIter    *iter,
+gboolean         ibus_message_iter_close_container
+                                                (IBusMessageIter    *iter,
+                                                 IBusMessageIter    *sub);
+gboolean         ibus_message_iter_recurse      (IBusMessageIter    *iter,
+                                                 IBusContainerType  type,
                                                  IBusMessageIter    *sub);
 GType            ibus_message_iter_get_arg_type (IBusMessageIter    *iter);
 typedef gboolean (* IBusSerializeFunc)          (gpointer           *instance,
