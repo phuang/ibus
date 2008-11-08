@@ -19,6 +19,9 @@
  */
 #include "ibusmessage.h"
 
+static GQuark   quark_serialize = 0;
+static GQuark   quark_deserialize = 0;
+
 IBusMessage *
 ibus_message_new (gint message_type)
 {
@@ -308,68 +311,96 @@ ibus_message_iter_get (IBusMessageIter *iter,
 
     switch (type) {
     case G_TYPE_INT:
-    {
-        dbus_int32_t v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_INT32)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(gint *) value = (gint) v;
-        return TRUE;
-    }
+        {
+            dbus_int32_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_INT32)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gint *) value = (gint) v;
+            return TRUE;
+        }
     case G_TYPE_UINT:
-    {
-        dbus_uint32_t v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_UINT32)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(guint *) value = (guint) v;
-        return TRUE;
-    }
+        {
+            dbus_uint32_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_UINT32)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(guint *) value = (guint) v;
+            return TRUE;
+        }
     case G_TYPE_BOOLEAN:
-    {
-        dbus_bool_t v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_BOOLEAN)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(gboolean *) value = (gboolean) v;
-        return TRUE;
-    }
+        {
+            dbus_bool_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_BOOLEAN)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gboolean *) value = (gboolean) v;
+            return TRUE;
+        }
     case G_TYPE_STRING:
-    {
-        gchar *v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_STRING)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(gchar **) value = (gchar *) v;
-        return TRUE;
-    }
+        {
+            gchar *v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_STRING)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gchar **) value = (gchar *) v;
+            return TRUE;
+        }
     case G_TYPE_INT64:
-    {
-        dbus_int64_t v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_INT64)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(gint64 *) value = (gint64) v;
-        return TRUE;
-    }
+        {
+            dbus_int64_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_INT64)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gint64 *) value = (gint64) v;
+            return TRUE;
+        }
     case G_TYPE_UINT64:
-    {
-        dbus_uint64_t v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_UINT64)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(guint64 *) value = (guint64) v;
-        return TRUE;
-    }
+        {
+            dbus_uint64_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_UINT64)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(guint64 *) value = (guint64) v;
+            return TRUE;
+        }
+    case G_TYPE_FLOAT:
+        {
+            double v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_DOUBLE)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gfloat *) value = (gfloat) v;
+            return TRUE;
+        }
+
     case G_TYPE_DOUBLE:
-    {
-        double v;
-        if (dbus_message_get_arg_type (iter) != DBUS_TYPE_DOUBLE)
-            return FALSE;
-        dbus_message_get_basic (iter, &v);
-        *(gdouble *) value = (gdouble) v;
-        return TRUE;
+        {
+            double v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_DOUBLE)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gdouble *) value = (gdouble) v;
+            return TRUE;
+        }
+    default:
+        break;
     }
+
+    IBusDeserializeFunc func;
+    gpointer v;
+    func = (IBusDeserializeFunc) g_type_get_qdata (type, quark_deserialize);
+
+    if (func == NULL) {
+        g_warning ("Type %s doesn't support deserizlize", g_type_name (type));
+        return FALSE;
+    }
+
+    v = func (iter);
+
+    if (v != NULL) {
+        *(gpointer *)value = v;
+        return TRUE;
     }
     return FALSE;
 }
@@ -408,4 +439,28 @@ ibus_message_iter_get_arg_type (IBusMessageIter *iter)
 {
     // TODO
     return G_TYPE_INVALID;
+}
+
+
+gboolean
+ibus_message_register_type (GType               type,
+                            IBusSerializeFunc   serialize_func,
+                            IBusDeserializeFunc deserialize_func)
+{
+    g_assert (type != G_TYPE_INVALID);
+    g_assert (serialize_func != NULL);
+    g_assert (deserialize_func != NULL);
+
+    if (quark_serialize == 0 || quark_deserialize) {
+        quark_serialize = g_quark_from_static_string ("serialize");
+        quark_deserialize = g_quark_from_static_string ("deserialize");
+    }
+
+    g_assert (g_type_get_qdata (type, quark_serialize) == NULL);
+    g_assert (g_type_get_qdata (type, quark_deserialize) == NULL);
+
+    g_type_set_qdata (type, quark_serialize, serialize_func);
+    g_type_set_qdata (type, quark_deserialize, deserialize_func);
+
+    return TRUE;
 }

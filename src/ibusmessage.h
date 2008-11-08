@@ -109,6 +109,12 @@ gboolean         ibus_message_iter_open_container
 void             ibus_message_iter_recurse      (IBusMessageIter    *iter,
                                                  IBusMessageIter    *sub);
 GType            ibus_message_iter_get_arg_type (IBusMessageIter    *iter);
+typedef gboolean (* IBusSerializeFunc)          (gpointer           *instance,
+                                                 IBusMessageIter    *iter);
+typedef gpointer (* IBusDeserializeFunc)        (IBusMessageIter    *iter);
+gboolean         ibus_message_register_type     (GType               type,
+                                                 IBusSerializeFunc   serialize_func,
+                                                 IBusDeserializeFunc deserilize_func);
 
 G_END_DECLS
 #endif
