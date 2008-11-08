@@ -19,6 +19,7 @@
  */
 #include <glib.h>
 #include "ibusattribute.h"
+#include "ibusmessage.h"
 
 /**
  * SECTION: IBusAttribute
@@ -37,6 +38,10 @@ ibus_attribute_get_type ()
         type = g_boxed_type_register_static ("IBusAttribute",
                     (GBoxedCopyFunc)ibus_attribute_copy,
                     (GBoxedFreeFunc)ibus_attribute_free);
+
+        ibus_message_register_type (type,
+                                    (IBusSerializeFunc) ibus_attribute_to_dbus_message,
+                                    (IBusDeserializeFunc) ibus_attribute_from_dbus_message);
     }
     return type;
 }
@@ -104,6 +109,10 @@ ibus_attr_list_get_type ()
         type = g_boxed_type_register_static ("IBusAttrList",
                     (GBoxedCopyFunc)ibus_attr_list_copy,
                     (GBoxedFreeFunc)ibus_attr_list_unref);
+        
+        ibus_message_register_type (type,
+                                    (IBusSerializeFunc) ibus_attr_list_to_dbus_message,
+                                    (IBusDeserializeFunc) ibus_attr_list_from_dbus_message);
     }
     return type;
 }

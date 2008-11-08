@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <glib.h>
+#include "ibusmessage.h"
 #include "ibuslookuptable.h"
 
 GType
@@ -28,6 +29,10 @@ ibus_lookup_table_get_type ()
         type = g_boxed_type_register_static ("IBusLookupTable",
                     (GBoxedCopyFunc)ibus_lookup_table_copy,
                     (GBoxedFreeFunc)ibus_lookup_table_unref);
+        
+        ibus_message_register_type (type,
+                                    (IBusSerializeFunc) ibus_lookup_table_to_dbus_message,
+                                    (IBusDeserializeFunc) ibus_lookup_table_from_dbus_message);
     }
     return type;
 }

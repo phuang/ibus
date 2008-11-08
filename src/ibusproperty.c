@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <glib.h>
+#include "ibusmessage.h"
 #include "ibusproperty.h"
 
 GType
@@ -28,6 +29,10 @@ ibus_property_get_type ()
         type = g_boxed_type_register_static ("IBusProperty",
                     (GBoxedCopyFunc)ibus_property_copy,
                     (GBoxedFreeFunc)ibus_property_free);
+
+        ibus_message_register_type (type,
+                                    (IBusSerializeFunc) ibus_property_to_dbus_message,
+                                    (IBusDeserializeFunc) ibus_property_from_dbus_message);
     }
     return type;
 }
@@ -114,6 +119,10 @@ ibus_prop_list_get_type ()
         type = g_boxed_type_register_static ("IBusPropList",
                     (GBoxedCopyFunc)ibus_prop_list_copy,
                     (GBoxedFreeFunc)ibus_prop_list_unref);
+        
+        ibus_message_register_type (type,
+                                    (IBusSerializeFunc) ibus_prop_list_to_dbus_message,
+                                    (IBusDeserializeFunc) ibus_prop_list_from_dbus_message);
     }
     return type;
 }
