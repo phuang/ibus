@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <stdarg.h>
+#include "ibusmessage.h"
 #include "ibusconnection.h"
 #include "ibusinternal.h"
 
@@ -25,9 +26,9 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONNECTION, IBusConnectionPrivate))
 
 enum {
-    DBUS_SIGNAL,
-    DBUS_MESSAGE,
-    DBUS_MESSAGE_SENT,
+    IBUS_SIGNAL,
+    IBUS_MESSAGE,
+    IBUS_MESSAGE_SENT,
     DISCONNECTED,
     LAST_SIGNAL,
 };
@@ -47,15 +48,15 @@ static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
 static void     ibus_connection_init        (IBusConnection         *connection);
 static void     ibus_connection_destroy     (IBusConnection         *connection);
 
-static gboolean ibus_connection_dbus_message(IBusConnection         *connection,
-                                             DBusMessage            *message);
-static gboolean ibus_connection_dbus_signal (IBusConnection         *connection,
-                                             DBusMessage            *message);
+static gboolean ibus_connection_ibus_message(IBusConnection         *connection,
+                                             IBusMessage            *message);
+static gboolean ibus_connection_ibus_signal (IBusConnection         *connection,
+                                             IBusMessage            *message);
 static void     ibus_connection_disconnected(IBusConnection         *connection);
 static DBusHandlerResult
                 _connection_handle_message_cb(DBusConnection        *dbus_connection,
-                                              DBusMessage           *message,
-                                              IBusConnection   *connection);
+                                              IBusMessage           *message,
+                                              IBusConnection        *connection);
 
 static IBusObjectClass  *_parent_class = NULL;
 static GHashTable       *_connections = NULL;
@@ -106,35 +107,35 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_connection_destroy;
 
-    klass->dbus_message = ibus_connection_dbus_message;
-    klass->dbus_signal  = ibus_connection_dbus_signal;
+    klass->ibus_message = ibus_connection_ibus_message;
+    klass->ibus_signal  = ibus_connection_ibus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
-    connection_signals[DBUS_MESSAGE] =
-        g_signal_new (I_("dbus-message"),
+    connection_signals[IBUS_MESSAGE] =
+        g_signal_new (I_("ibus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusConnectionClass, dbus_message),
+            G_STRUCT_OFFSET (IBusConnectionClass, ibus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
-    connection_signals[DBUS_SIGNAL] =
-        g_signal_new (I_("dbus-signal"),
+    connection_signals[IBUS_SIGNAL] =
+        g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusConnectionClass, dbus_signal),
+            G_STRUCT_OFFSET (IBusConnectionClass, ibus_signal),
             NULL, NULL,
             ibus_marshal_BOOL__POINTER,
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
     
-    connection_signals[DBUS_MESSAGE_SENT] =
-        g_signal_new (I_("dbus-message-sent"),
+    connection_signals[IBUS_MESSAGE_SENT] =
+        g_signal_new (I_("ibus-message-sent"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusConnectionClass, dbus_message_sent),
+            G_STRUCT_OFFSET (IBusConnectionClass, ibus_message_sent),
             NULL, NULL,
             ibus_marshal_VOID__POINTER,
             G_TYPE_NONE, 1,
@@ -194,22 +195,23 @@ _out:
 }
 
 static gboolean
-ibus_connection_dbus_message (IBusConnection *connection, DBusMessage *message)
+ibus_connection_ibus_message (IBusConnection *connection,
+                              IBusMessage    *message)
 {
     gboolean retval = FALSE;
-    if (dbus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL)
-        g_signal_emit (connection, connection_signals[DBUS_SIGNAL], 0, message, &retval);
+    if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL)
+        g_signal_emit (connection, connection_signals[IBUS_SIGNAL], 0, message, &retval);
 
     return retval;
 }
 
 static gboolean
-ibus_connection_dbus_signal (IBusConnection *connection, DBusMessage *message)
+ibus_connection_ibus_signal (IBusConnection *connection, IBusMessage *message)
 {
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
-    if (dbus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+    if (ibus_message_is_signal (message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
         g_signal_emit (connection, connection_signals[DISCONNECTED], 0);
         return FALSE;
     }
@@ -224,11 +226,11 @@ ibus_connection_disconnected (IBusConnection         *connection)
 
 static DBusHandlerResult
 _connection_handle_message_cb (DBusConnection   *dbus_connection,
-                               DBusMessage      *message,
+                               IBusMessage      *message,
                                IBusConnection   *connection)
 {
     gboolean retval = FALSE;
-    g_signal_emit (connection, connection_signals[DBUS_MESSAGE], 0, message, &retval);
+    g_signal_emit (connection, connection_signals[IBUS_MESSAGE], 0, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
@@ -447,7 +449,7 @@ ibus_connection_send (IBusConnection *connection, DBusMessage *message)
 
     if (retval) {
         g_signal_emit (connection,
-                       connection_signals[DBUS_MESSAGE_SENT],
+                       connection_signals[IBUS_MESSAGE_SENT],
                        0,
                        message);
     }
@@ -582,7 +584,7 @@ ibus_connection_send_with_reply (IBusConnection *connection,
                                               timeout_milliseconds);
     if (retval) {
         g_signal_emit (connection,
-                       connection_signals[DBUS_MESSAGE_SENT],
+                       connection_signals[IBUS_MESSAGE_SENT],
                        0,
                        message);
     }
@@ -632,7 +634,7 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
 
     if (reply != NULL) {
         g_signal_emit (connection,
-                       connection_signals[DBUS_MESSAGE_SENT],
+                       connection_signals[IBUS_MESSAGE_SENT],
                        0,
                        message);
     }

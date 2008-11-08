@@ -64,7 +64,7 @@ static guint            context_signals[LAST_SIGNAL] = { 0 };
 static void     ibus_input_context_class_init   (IBusInputContextClass  *klass);
 static void     ibus_input_context_init         (IBusInputContext       *context);
 static void     ibus_input_context_real_destroy (IBusInputContext       *context);
-static gboolean ibus_input_context_dbus_signal  (IBusProxy              *proxy,
+static gboolean ibus_input_context_ibus_signal  (IBusProxy              *proxy,
                                                  DBusMessage            *message);
 
 static IBusProxyClass  *_parent_class = NULL;
@@ -125,7 +125,7 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_input_context_real_destroy;
 
-    proxy_class->dbus_signal = ibus_input_context_dbus_signal;
+    proxy_class->ibus_signal = ibus_input_context_ibus_signal;
     
     /* install signals */
     context_signals[ENABLED] =
@@ -331,14 +331,14 @@ ibus_input_context_real_destroy (IBusInputContext *context)
 }
 
 static gboolean
-ibus_input_context_dbus_signal (IBusProxy           *proxy,
-                                DBusMessage         *message)
+ibus_input_context_ibus_signal (IBusProxy           *proxy,
+                                IBusMessage         *message)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (proxy));
     g_assert (message != NULL);
 
     IBusInputContext *context;
-    DBusError error;
+    IBusError *error = NULL;
     gint i;
 
     context = IBUS_INPUT_CONTEXT (proxy);
@@ -365,7 +365,7 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
     for (i = 0; ; i++) {
         if (signals[i].member == NULL)
             break;
-        if (dbus_message_is_signal (message,
+        if (ibus_message_is_signal (message,
                                     IBUS_INTERFACE_INPUT_CONTEXT,
                                     signals[i].member)) {
             g_signal_emit (context, context_signals[signals[i].signal_id], 0);
@@ -373,21 +373,21 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         }
     }
     
-    dbus_error_init (&error);
-    if (dbus_message_is_signal (message,
+    if (ibus_message_is_signal (message,
                                 IBUS_INTERFACE_INPUT_CONTEXT,
                                 "CommitString")) {
         gchar *text;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &text,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        G_TYPE_INVALID);
         if (!retval)
             goto failed;
         g_signal_emit (context, context_signals[COMMIT_STRING], 0, text);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "ForwardKeyEvent")) {
         guint32 keyval;
@@ -395,11 +395,12 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
         guint32 state;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_UINT32, &keyval,
-                                DBUS_TYPE_BOOLEAN, &is_press,
-                                DBUS_TYPE_UINT32, &state,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        G_TYPE_UINT, &keyval,
+                                        G_TYPE_BOOLEAN, &is_press,
+                                        G_TYPE_UINT, &state,
+                                        G_TYPE_INVALID);
 
         if (!retval)
             goto failed;
@@ -410,50 +411,26 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                        is_press,
                        state | IBUS_FORWARD_MASK);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "UpdatePreedit")) {
         gchar *text;
         IBusAttrList *attr_list;
         gint32 cursor_pos;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval) {
-            g_warning ("Out of memory!");
-            goto failed;
-        }
         
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING) {
-            g_warning ("Argument 1 of UpdatePredit shoule be a string!");
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &text);
-        dbus_message_iter_next (&iter);
-
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL) {
-            g_warning ("Argument 2 of UpdatePredit shoule be an AttrList!");
-            goto failed;
-        }
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32) {
-            ibus_attr_list_unref (attr_list);
-            g_warning ("Argument 3 of UpdatePredit shoule be an INT32!");
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &cursor_pos);
-        dbus_message_iter_next (&iter);
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        IBUS_TYPE_ATTR_LIST, &attr_list,
+                                        G_TYPE_INT, &cursor_pos,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
         
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            g_warning ("Argument 4 of UpdatePredit shoule be an BOOLEAN!");
+        if (!retval)
             goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
+        
         g_signal_emit (context,
                        context_signals[UPDATE_PREEDIT],
                        0,
@@ -463,34 +440,24 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                        visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "UpdateAuxString")) {
         gchar *text;
         IBusAttrList *attr_list;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
+        
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        IBUS_TYPE_ATTR_LIST, &attr_list,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
 
-        retval = dbus_message_iter_init (message, &iter);
         if (!retval)
             goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto failed;
-        dbus_message_iter_get_basic (&iter, &text);
-        dbus_message_iter_next (&iter);
         
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
         g_signal_emit (context,
                        context_signals[UPDATE_AUX_STRING],
                        0,
@@ -499,29 +466,22 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                        visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "UpdateLookupTable")) {
         IBusLookupTable *table;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
+        
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        IBUS_TYPE_LOOKUP_TABLE, &table,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
 
-        retval = dbus_message_iter_init (message, &iter);
         if (!retval)
             goto failed;
         
-        table = ibus_lookup_table_from_dbus_message (&iter);
-        if (table == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_lookup_table_unref (table);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-        dbus_message_iter_next (&iter);
-
         g_signal_emit (context,
                        context_signals[UPDATE_LOOKUP_TABLE],
                        0,
@@ -529,37 +489,37 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
                        visible);
         ibus_lookup_table_unref (table);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "RegisterProperties")) {
         IBusPropList *prop_list;
-        DBusMessageIter iter;
         gboolean retval;
 
-        retval = dbus_message_iter_init (message, &iter);
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        IBUS_TYPE_PROP_LIST, &prop_list,
+                                        G_TYPE_INVALID);
+        
         if (!retval)
             goto failed;
         
-        prop_list = ibus_prop_list_from_dbus_message (&iter);
-        if (prop_list == NULL)
-            goto failed;
-        
-        g_signal_emit (context, context_signals[REGISTER_PROPERTIES], 0, prop_list);
+        g_signal_emit (context,
+                       context_signals[REGISTER_PROPERTIES],
+                       0,
+                       prop_list);
         ibus_prop_list_unref (prop_list);
     }
-    else if (dbus_message_is_signal (message,
+    else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "UpdateProperty")) {
         IBusProperty *prop;
-        DBusMessageIter iter;
         gboolean retval;
 
-        retval = dbus_message_iter_init (message, &iter);
+        retval = ibus_message_get_args (message, 
+                                        &error,
+                                        IBUS_TYPE_PROPERTY, &prop,
+                                        G_TYPE_INVALID);
         if (!retval)
-            goto failed;
-        
-        prop = ibus_property_from_dbus_message (&iter);
-        if (prop == NULL)
             goto failed;
         
         g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
@@ -570,12 +530,14 @@ ibus_input_context_dbus_signal (IBusProxy           *proxy,
     }
 
 handled:
-    g_signal_stop_emission_by_name (context, "dbus-signal");
+    g_signal_stop_emission_by_name (context, "ibus-signal");
     return TRUE;
   
 failed:
-    g_warning ("%s: %s", error.name, error.message);
-    dbus_error_free (&error);
+    if (error) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+    }
     return FALSE;
 }
 
@@ -588,7 +550,7 @@ ibus_input_context_process_key_event (IBusInputContext *context,
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
     DBusMessage *reply_message;
-    IBusError *error;
+    IBusError *error = NULL;
     gboolean retval;
 
     if (state & IBUS_FORWARD_MASK)
@@ -598,33 +560,33 @@ ibus_input_context_process_key_event (IBusInputContext *context,
                                                   "ProcessKeyEvent",
                                                   -1,
                                                   &error,
-                                                  DBUS_TYPE_UINT32, &keyval,
-                                                  DBUS_TYPE_BOOLEAN, &is_press,
-                                                  DBUS_TYPE_UINT32, &state,
-                                                  DBUS_TYPE_INVALID);
+                                                  G_TYPE_UINT, &keyval,
+                                                  G_TYPE_BOOLEAN, &is_press,
+                                                  G_TYPE_UINT, &state,
+                                                  G_TYPE_INVALID);
     if (reply_message == NULL) {
         g_debug ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         retval = FALSE;
     }
 
-    if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
-        g_debug ("%s",
-                 dbus_message_get_error_name (reply_message));
-        dbus_message_unref (reply_message);
+    if (error = ibus_error_from_message (reply_message)) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_message_unref (reply_message);
+        ibus_error_free (error);
         retval = FALSE;
     }
     else {
-        DBusError error;
-        dbus_error_init (&error);
-        if (!dbus_message_get_args (reply_message, &error,
-                                   DBUS_TYPE_BOOLEAN, &retval,
-                                   DBUS_TYPE_INVALID)) {
-            g_debug ("%s: %s", error.name, error.message);
-            dbus_error_free (&error);
+        
+        if (!ibus_message_get_args (reply_message,
+                                    &error,
+                                    DBUS_TYPE_BOOLEAN, &retval,
+                                    DBUS_TYPE_INVALID)) {
+            g_debug ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
             retval = FALSE;
         }
-        dbus_message_unref (reply_message);
+        ibus_message_unref (reply_message);
     }
     return retval;
 }

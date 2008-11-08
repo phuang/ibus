@@ -61,8 +61,8 @@ static void      ibus_config_class_init    (IBusConfigClass    *klass);
 static void      ibus_config_init          (IBusConfig         *config);
 static void      ibus_config_real_destroy  (IBusConfig         *config);
 
-static gboolean ibus_config_dbus_signal    (IBusProxy             *proxy,
-                                                 DBusMessage            *message);
+static gboolean ibus_config_ibus_signal    (IBusProxy           *proxy,
+                                            IBusMessage         *message);
 
 static IBusProxyClass  *parent_class = NULL;
 
@@ -204,7 +204,7 @@ ibus_config_class_init (IBusConfigClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_config_real_destroy;
 
-    proxy_class->dbus_signal = ibus_config_dbus_signal;
+    proxy_class->ibus_signal = ibus_config_ibus_signal;
     
     /* install signals */
     config_signals[VALUE_CHANGED] =
@@ -381,8 +381,8 @@ _to_dbus_value (DBusMessageIter *iter,
 }
 
 static gboolean
-ibus_config_dbus_signal (IBusProxy     *proxy,
-                              DBusMessage   *message)
+ibus_config_ibus_signal (IBusProxy     *proxy,
+                         IBusMessage   *message)
 {
     g_assert (IBUS_IS_CONFIG (proxy));
     g_assert (message != NULL);

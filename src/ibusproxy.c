@@ -19,6 +19,7 @@
  */
 
 #include <stdarg.h>
+#include "ibusmessage.h"
 #include "ibusproxy.h"
 #include "ibusinternal.h"
 
@@ -26,7 +27,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_PROXY, IBusProxyPrivate))
 
 enum {
-    DBUS_SIGNAL,
+    IBUS_SIGNAL,
     LAST_SIGNAL,
 };
 
@@ -66,8 +67,8 @@ static void      ibus_proxy_get_property(IBusProxy       *proxy,
                                          GValue          *value,
                                          GParamSpec      *pspec);
 
-static gboolean  ibus_proxy_dbus_signal (IBusProxy       *proxy,
-                                         DBusMessage     *message);
+static gboolean  ibus_proxy_ibus_signal (IBusProxy       *proxy,
+                                         IBusMessage     *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -133,7 +134,7 @@ ibus_proxy_class_init (IBusProxyClass *klass)
     
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_proxy_destroy;
 
-    klass->dbus_signal = ibus_proxy_dbus_signal;
+    klass->ibus_signal = ibus_proxy_ibus_signal;
     
     /* install properties */
     g_object_class_install_property (gobject_class,
@@ -169,11 +170,11 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
-    proxy_signals[DBUS_SIGNAL] =
-        g_signal_new (I_("dbus-signal"),
+    proxy_signals[IBUS_SIGNAL] =
+        g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusProxyClass, dbus_signal),
+            G_STRUCT_OFFSET (IBusProxyClass, ibus_signal),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER,
             G_TYPE_BOOLEAN,
@@ -182,12 +183,12 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 }
 
 static gboolean
-_connection_dbus_signal_cb (IBusConnection *connection,
-                             DBusMessage    *message,
-                             IBusProxy      *proxy)
+_connection_ibus_signal_cb (IBusConnection *connection,
+                            IBusMessage    *message,
+                            IBusProxy      *proxy)
 {
     if (ibus_proxy_handle_signal (proxy, message)) {
-        g_signal_stop_emission_by_name (connection, "dbus-signal");
+        g_signal_stop_emission_by_name (connection, "ibus-signal");
         return TRUE;
     }
 
@@ -244,8 +245,8 @@ ibus_proxy_constructor (GType           type,
             g_free (rule);
         }
         g_signal_connect (priv->connection,
-                          "dbus-signal",
-                          (GCallback) _connection_dbus_signal_cb,
+                          "ibus-signal",
+                          (GCallback) _connection_ibus_signal_cb,
                           proxy);
         
         g_signal_connect (priv->connection,
@@ -306,7 +307,7 @@ ibus_proxy_destroy (IBusProxy *proxy)
         }
 
         g_signal_handlers_disconnect_by_func (priv->connection,
-                                              (GCallback) _connection_dbus_signal_cb,
+                                              (GCallback) _connection_ibus_signal_cb,
                                               proxy);
         g_signal_handlers_disconnect_by_func (priv->connection,
                                               (GCallback) _connection_destroy_cb,
@@ -397,20 +398,19 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
-    if (dbus_message_is_signal (message, DBUS_SERVICE_DBUS, "NameOwnerChanged")) {
+    if (ibus_message_is_signal (message, DBUS_SERVICE_DBUS, "NameOwnerChanged")) {
         gchar *name, *old_name, *new_name;
         IBusError *error;
         
-        error = ibus_error_new ();
-        if (!dbus_message_get_args (message,
-                                    error,
-                                    DBUS_TYPE_STRING, &name,
-                                    DBUS_TYPE_STRING, &old_name,
-                                    DBUS_TYPE_STRING, &new_name,
-                                    DBUS_TYPE_INVALID)) {
+        if (!ibus_message_get_args (message,
+                                    &error,
+                                    G_TYPE_STRING, &name,
+                                    G_TYPE_STRING, &old_name,
+                                    G_TYPE_STRING, &new_name,
+                                    G_TYPE_INVALID)) {
             g_warning ("%s :%s", error->name, error->message);
+            ibus_error_free (error);
         }
-        ibus_error_free (error);
 
         if (g_strcmp0 (priv->name, old_name) == 0) {
             ibus_object_destroy (IBUS_OBJECT (proxy));
@@ -418,15 +418,15 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
         }
     }
 
-    if (g_strcmp0 (dbus_message_get_path (message), priv->path) == 0) {
-        g_signal_emit (proxy, proxy_signals[DBUS_SIGNAL], 0, message, &retval);
+    if (g_strcmp0 (ibus_message_get_path (message), priv->path) == 0) {
+        g_signal_emit (proxy, proxy_signals[IBUS_SIGNAL], 0, message, &retval);
     }
     
     return retval;
 }
 
 static gboolean
-ibus_proxy_dbus_signal (IBusProxy   *proxy,
+ibus_proxy_ibus_signal (IBusProxy   *proxy,
                         DBusMessage *message)
 {
     return FALSE;
@@ -485,7 +485,7 @@ ibus_proxy_send (IBusProxy      *proxy,
 gboolean
 ibus_proxy_call (IBusProxy      *proxy,
                  const gchar    *method,
-                 gint           first_arg_type,
+                 GType           first_arg_type,
                  ...)
 {
     g_assert (IBUS_IS_PROXY (proxy));
@@ -497,19 +497,19 @@ ibus_proxy_call (IBusProxy      *proxy,
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
-    message = dbus_message_new_method_call (priv->name,
+    message = ibus_message_new_method_call (priv->name,
                                             priv->path,
                                             priv->interface,
                                             method);
     va_start (args, first_arg_type);
-    retval = dbus_message_append_args_valist (message,
+    retval = ibus_message_append_args_valist (message,
                                               first_arg_type,
                                               args);
     va_end (args);
 
     retval = ibus_connection_send (priv->connection, message);
 
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     return retval;
 }
@@ -517,9 +517,9 @@ ibus_proxy_call (IBusProxy      *proxy,
 DBusMessage *
 ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
                                       const gchar    *method,
-                                      gint           timeout_milliseconds,
+                                      gint            timeout_milliseconds,
                                       IBusError      **error,
-                                      gint           first_arg_type,
+                                      GType           first_arg_type,
                                       ...)
 {
     g_assert (IBUS_IS_PROXY (proxy));
@@ -533,12 +533,12 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
-    message = dbus_message_new_method_call (priv->name,
+    message = ibus_message_new_method_call (priv->name,
                                             priv->path,
                                             priv->interface,
                                             method);
     va_start (args, first_arg_type);
-    retval = dbus_message_append_args_valist (message,
+    retval = ibus_message_append_args_valist (message,
                                               first_arg_type,
                                               args);
     va_end (args);
@@ -548,7 +548,7 @@ ibus_proxy_call_with_reply_and_block (IBusProxy      *proxy,
                                             message,
                                             timeout_milliseconds,
                                             error);
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     return reply_message;
 }

@@ -21,6 +21,7 @@
 #define __IBUS_CONNECTION_H_
 
 #include <dbus/dbus.h>
+#include "ibusmessage.h"
 #include "ibusobject.h"
 #include "ibuserror.h"
 
@@ -68,13 +69,13 @@ struct _IBusConnectionClass {
   IBusObjectClass parent;
 
   /* class members */
-  gboolean  (* dbus_message)    (IBusConnection   *connection,
-                                 DBusMessage      *message);
-  gboolean  (* dbus_signal)     (IBusConnection   *connection,
-                                 DBusMessage      *message);
-  void      (* dbus_message_sent)
+  gboolean  (* ibus_message)    (IBusConnection   *connection,
+                                 IBusMessage      *message);
+  gboolean  (* ibus_signal)     (IBusConnection   *connection,
+                                 IBusMessage      *message);
+  void      (* ibus_message_sent)
                                 (IBusConnection   *connection,
-                                 DBusMessage      *message);
+                                 IBusMessage      *message);
   void      (* disconnected)    (IBusConnection   *connection);
 };
 
