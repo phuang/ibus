@@ -21,7 +21,7 @@
 #define __IBUS_LOOKUP_TABLE_H_
 
 #include <glib-object.h>
-#include <dbus/dbus.h>
+#include "ibusmessage.h"
 #include "ibusattribute.h"
 
 /*
@@ -61,12 +61,6 @@ void                 ibus_lookup_table_append_candidate
                                                 (IBusLookupTable    *table,
                                                  const gchar        *text,
                                                  IBusAttrList       *attr_list);
-IBusLookupTable     *ibus_lookup_table_from_dbus_message
-                                                (DBusMessageIter    *iter);
-gboolean             ibus_lookup_table_to_dbus_message
-                                                (IBusLookupTable    *table,
-                                                 DBusMessageIter    *iter);
-
 G_END_DECLS
 #endif
 

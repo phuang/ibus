@@ -21,7 +21,7 @@
 #define __IBUS_PROPERTY_H_
 
 #include <glib-object.h>
-#include <dbus/dbus.h>
+#include "ibusmessage.h"
 
 /*
  * Type macros.
@@ -80,12 +80,6 @@ void             ibus_property_set_sub_props(IBusProperty   *prop,
                                              IBusPropList   *prop_list);
 IBusProperty    *ibus_property_copy         (IBusProperty   *prop);
 void             ibus_property_free         (IBusProperty   *prop);
-IBusProperty    *ibus_property_from_dbus_message
-                                            (DBusMessageIter *iter);
-gboolean         ibus_property_to_dbus_message
-                                            (IBusProperty    *prop,
-                                             DBusMessageIter *iter);
-
 
 GType            ibus_prop_list_get_type    ();
 IBusPropList    *ibus_prop_list_new         ();
@@ -96,11 +90,6 @@ void             ibus_prop_list_append      (IBusPropList   *prop_list,
                                              IBusProperty   *prop);
 IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
                                              guint           index);
-IBusPropList    *ibus_prop_list_from_dbus_message
-                                            (DBusMessageIter *iter);
-gboolean         ibus_prop_list_to_dbus_message
-                                            (IBusPropList    *prop_list,
-                                             DBusMessageIter *iter);
 G_END_DECLS
 #endif
 

@@ -21,6 +21,14 @@
 #include "ibusmessage.h"
 #include "ibusproperty.h"
 
+static IBusProperty *ibus_property_from_ibus_message    (IBusMessageIter *iter);
+static gboolean      ibus_property_to_ibus_message      (IBusProperty    *prop,
+                                                         IBusMessageIter *iter);
+static IBusPropList *ibus_prop_list_from_ibus_message   (IBusMessageIter *iter);
+static gboolean      ibus_prop_list_to_ibus_message     (IBusPropList    *prop_list,
+                                                         IBusMessageIter *iter);
+
+
 GType
 ibus_property_get_type ()
 {
@@ -31,8 +39,8 @@ ibus_property_get_type ()
                     (GBoxedFreeFunc)ibus_property_free);
 
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_property_to_dbus_message,
-                                    (IBusDeserializeFunc) ibus_property_from_dbus_message);
+                                    (IBusSerializeFunc) ibus_property_to_ibus_message,
+                                    (IBusDeserializeFunc) ibus_property_from_ibus_message);
     }
     return type;
 }
@@ -121,8 +129,8 @@ ibus_prop_list_get_type ()
                     (GBoxedFreeFunc)ibus_prop_list_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_prop_list_to_dbus_message,
-                                    (IBusDeserializeFunc) ibus_prop_list_from_dbus_message);
+                                    (IBusSerializeFunc) ibus_prop_list_to_ibus_message,
+                                    (IBusDeserializeFunc) ibus_prop_list_from_ibus_message);
     }
     return type;
 }
@@ -199,8 +207,8 @@ ibus_prop_list_get (IBusPropList *prop_list, guint index)
     return prop;
 }
 
-IBusProperty *
-ibus_property_from_dbus_message (DBusMessageIter *iter)
+static IBusProperty *
+ibus_property_from_ibus_message (IBusMessageIter *iter)
 {
     gchar *name;
     guint32 type;
@@ -210,56 +218,41 @@ ibus_property_from_dbus_message (DBusMessageIter *iter)
     gboolean sensitive;
     gboolean visible;
     guint32 state;
-    IBusPropList *prop_list;
+    IBusPropList *prop_list = NULL;
     IBusProperty *prop;
+    gboolean retval;
     
-    DBusMessageIter sub_iter;
+    IBusMessageIter sub_iter;
 
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT, NULL);
-    dbus_message_iter_recurse (iter, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    g_assert (retval);
 
     // get name
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_STRING, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &name);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &name);
     
     // get type
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &type);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
     
     // get label
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_STRING, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &label);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &label);
     
     // get icon
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_STRING, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &icon);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &icon);
     
     // get tooltip
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_STRING, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &tooltip);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &tooltip);
     
     // get sensitive
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_BOOLEAN, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &sensitive);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &sensitive);
     
     // get visible
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_BOOLEAN, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &visible);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &visible);
     
     // get visible
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_UINT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &state);
-    dbus_message_iter_next (&sub_iter);
+    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &state);
 
     // get sub prop
-    prop_list = ibus_prop_list_from_dbus_message (&sub_iter);
+    ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROP_LIST, &prop_list);
     
     prop = ibus_property_new (name, type, label, icon, tooltip, sensitive, visible, state, prop_list);
     
@@ -267,72 +260,73 @@ ibus_property_from_dbus_message (DBusMessageIter *iter)
 }
 
 IBusPropList *
-ibus_prop_list_from_dbus_message (DBusMessageIter *iter)
+ibus_prop_list_from_ibus_message (IBusMessageIter *iter)
 {
-    gint type;
-    DBusMessageIter sub_iter;
+    IBusMessageIter sub_iter;
     IBusPropList *prop_list;
+    gboolean retval;
 
-    type = dbus_message_iter_get_arg_type (iter);
-    g_return_val_if_fail (type == DBUS_TYPE_ARRAY, NULL);
-
+    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_iter);
+    g_assert (retval);
+    
     prop_list = ibus_prop_list_new ();
 
-    dbus_message_iter_recurse (iter, &sub_iter);
-
-    while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
-        IBusProperty *prop = ibus_property_from_dbus_message (&sub_iter);
+    while (ibus_message_iter_has_next (&sub_iter)) {
+        IBusProperty *prop = NULL;
+        ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
         if (prop == NULL)
             break;
         ibus_prop_list_append (prop_list, prop);
     }
-
-    dbus_message_iter_next (iter);
     return prop_list;
 }
 
 gboolean
-ibus_property_to_dbus_message (IBusProperty *prop, DBusMessageIter *iter)
+ibus_property_to_ibus_message (IBusProperty *prop, IBusMessageIter *iter)
 {
     g_assert (prop != NULL);
     g_assert (iter != NULL);
 
-    DBusMessageIter sub_iter;
+    IBusMessageIter sub_iter;
+    gboolean retval;
 
-    dbus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &prop->name);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &prop->type);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &prop->label);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &prop->icon);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &prop->tooltip);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_BOOLEAN, &prop->sensitive);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_BOOLEAN, &prop->visible);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_UINT32, &prop->state);
-    ibus_prop_list_to_dbus_message (prop->sub_props, &sub_iter);
-    dbus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
+    g_assert (retval);
+
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->name);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->type);
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->label);
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->icon);
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->tooltip);
+    ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->sensitive);
+    ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->visible);
+    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->state);
+    ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
+    ibus_message_iter_close_container (iter, &sub_iter);
 
     return TRUE;
 }
 
 
 gboolean
-ibus_prop_list_to_dbus_message (IBusPropList *prop_list, DBusMessageIter *iter)
+ibus_prop_list_to_ibus_message (IBusPropList *prop_list, IBusMessageIter *iter)
 {
     g_assert (prop_list != NULL);
     g_assert (iter != NULL);
 
     gint i;
     IBusProperty *prop;
-    DBusMessageIter sub_iter;
+    IBusMessageIter sub_iter;
+    gboolean retval;
 
-    dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "(susssbbuav)", &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_ARRAY, "(susssbbuav)", &sub_iter);
     for (i = 0;; i++) {
         prop = ibus_prop_list_get (prop_list, i);
         if (prop == NULL)
             break;
-        ibus_property_to_dbus_message (prop, &sub_iter);
+        ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
     }
-    dbus_message_iter_close_container (iter, &sub_iter);
+    ibus_message_iter_close_container (iter, &sub_iter);
     return TRUE;
 }
 

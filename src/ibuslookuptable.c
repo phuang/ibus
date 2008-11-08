@@ -21,6 +21,11 @@
 #include "ibusmessage.h"
 #include "ibuslookuptable.h"
 
+static IBusLookupTable  *ibus_lookup_table_from_ibus_message    (IBusMessageIter    *iter);
+static gboolean          ibus_lookup_table_to_ibus_message      (IBusLookupTable    *table,
+                                                                 IBusMessageIter    *iter);
+
+
 GType
 ibus_lookup_table_get_type ()
 {
@@ -31,8 +36,8 @@ ibus_lookup_table_get_type ()
                     (GBoxedFreeFunc)ibus_lookup_table_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_lookup_table_to_dbus_message,
-                                    (IBusDeserializeFunc) ibus_lookup_table_from_dbus_message);
+                                    (IBusSerializeFunc) ibus_lookup_table_to_ibus_message,
+                                    (IBusDeserializeFunc) ibus_lookup_table_from_ibus_message);
     }
     return type;
 }
@@ -105,91 +110,80 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
 }
 
 IBusLookupTable *
-ibus_lookup_table_from_dbus_message (DBusMessageIter *iter)
+ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
 {
     g_assert (iter != NULL);
     
-    DBusMessageIter sub_iter, sub_sub_iter;
+    IBusMessageIter sub_iter, sub_sub_iter;
     IBusLookupTable *table;
     gint page_size, cursor_pos;
     gboolean cursor_visible;
+    gboolean retval;
 
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT, NULL);
+    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    g_assert (retval);
 
+    ibus_message_iter_get (&sub_iter, G_TYPE_INT, &page_size);
+    ibus_message_iter_get (&sub_iter, G_TYPE_INT, &cursor_pos);
+    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &cursor_visible);
 
-    dbus_message_iter_recurse (iter, &sub_iter);
-
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_INT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &page_size);
-    dbus_message_iter_next (&sub_iter);
+    retval = ibus_message_iter_recurse (&sub_iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_sub_iter);
+    g_assert (retval);
     
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_INT32, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &cursor_pos);
-    dbus_message_iter_next (&sub_iter);
-    
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_BOOLEAN, NULL);
-    dbus_message_iter_get_basic (&sub_iter, &cursor_visible);
-    dbus_message_iter_next (&sub_iter);
-
-    g_return_val_if_fail (dbus_message_iter_get_arg_type (&sub_iter) == DBUS_TYPE_ARRAY, NULL);
     table = ibus_lookup_table_new (page_size, cursor_pos, cursor_visible);
     
-    dbus_message_iter_recurse (&sub_iter, &sub_sub_iter);
-    
-    while (1) {
+    while (ibus_message_iter_has_next (&sub_sub_iter)) {
         gchar *text;
         IBusAttrList *attr_list;
-        DBusMessageIter sub_sub_sub_iter;
+        IBusMessageIter sub_sub_sub_iter;
         
-        if (dbus_message_iter_get_arg_type (&sub_sub_iter) != DBUS_TYPE_STRUCT)
-            break;
-        
-        dbus_message_iter_recurse (&sub_sub_iter, &sub_sub_sub_iter);
-        if (dbus_message_iter_get_arg_type (&sub_sub_sub_iter) != DBUS_TYPE_STRING)
-            break;
-        dbus_message_iter_get_basic (&sub_sub_sub_iter, &text);
-        dbus_message_iter_next (&sub_sub_sub_iter);
-        
-        attr_list = ibus_attr_list_from_dbus_message (&sub_sub_sub_iter);
-        if (attr_list == NULL)
-            break;
-        ibus_lookup_table_append_candidate (table, text, attr_list);
+        retval = ibus_message_iter_recurse (&sub_sub_iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_sub_sub_iter);
+        g_assert (retval);
 
-        dbus_message_iter_next (&sub_sub_iter);
+        ibus_message_iter_get_basic (&sub_sub_sub_iter, G_TYPE_STRING, &text);
+        ibus_message_iter_get_basic (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &attr_list);
+        
+        g_assert (attr_list);
+        
+        ibus_lookup_table_append_candidate (table, text, attr_list);
     }
     
-    dbus_message_iter_next (iter);
     return table;
 }
 
 gboolean
-ibus_lookup_table_to_dbus_message (IBusLookupTable *table, DBusMessageIter *iter)
+ibus_lookup_table_to_ibus_message (IBusLookupTable *table, IBusMessageIter *iter)
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);
     
+    gboolean retval;
     gint i;
-    DBusMessageIter sub_iter, sub_sub_iter, sub_sub_sub_iter;
+    IBusMessageIter sub_iter, sub_sub_iter, sub_sub_sub_iter;
 
-    dbus_message_iter_open_container (iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_STRUCT, 0, &sub_iter);
 
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_INT32, &table->page_size);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_INT32, &table->cursor_pos);
-    dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_BOOLEAN, &table->cursor_visible);
+    g_assert (retval);
+
+    ibus_message_iter_append (&sub_iter, G_TYPE_INT, &table->page_size);
+    ibus_message_iter_append (&sub_iter, G_TYPE_INT, &table->cursor_pos);
+    ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &table->cursor_visible);
     
-    dbus_message_iter_open_container (&sub_iter, DBUS_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
+    retval = ibus_message_iter_open_container (&sub_iter, IBUS_CONTAINER_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
+    g_assert (retval);
 
     for (i = 0; i < table->candidates->len; i++) {
-        dbus_message_iter_open_container (&sub_sub_iter, DBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
+        ibus_message_iter_open_container (&sub_sub_iter, IBUS_CONTAINER_TYPE_STRUCT, 0, &sub_sub_sub_iter);
         
         IBusCandidate *candidate = &g_array_index (table->candidates, IBusCandidate, i);
-        dbus_message_iter_append_basic (&sub_sub_sub_iter, DBUS_TYPE_STRING, &candidate->text);
-        ibus_attr_list_to_dbus_message (candidate->attr_list, &sub_sub_sub_iter);
-        dbus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);
+        ibus_message_iter_append (&sub_sub_sub_iter, G_TYPE_STRING, &candidate->text);
+        ibus_message_iter_append (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &candidate->attr_list);
+        ibus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);
     }
     
-    dbus_message_iter_close_container (&sub_iter, &sub_sub_iter);
-    dbus_message_iter_close_container (iter, &sub_iter);
+    ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+    ibus_message_iter_close_container (iter, &sub_iter);
+    
     return TRUE;
 }
 
