@@ -48,16 +48,16 @@ G_BEGIN_DECLS
 typedef struct _IBusConnection IBusConnection;
 typedef struct _IBusConnectionClass IBusConnectionClass;
 
-typedef gboolean (* IBusDBusMessageFunc)(IBusConnection     *connection,
-                                         DBusMessage        *message);
-typedef gboolean (* IBusDBusSignalFunc) (IBusConnection     *connection,
-                                         DBusMessage        *message);
+typedef gboolean (* IBusIBusMessageFunc)(IBusConnection     *connection,
+                                         IBusMessage        *message);
+typedef gboolean (* IBusIBusSignalFunc) (IBusConnection     *connection,
+                                         IBusMessage        *message);
 typedef gboolean (* IBusMessageFunc)    (IBusConnection     *connection,
-                                         DBusMessage        *message,
+                                         IBusMessage        *message,
                                          gpointer            user_data);
 typedef void     (* IBusConnectionReplyFunc)
                                         (IBusConnection     *connection,
-                                         DBusMessage        *reply,
+                                         IBusMessage        *reply,
                                          gpointer            user_data);
 
 struct _IBusConnection {
@@ -90,35 +90,35 @@ void             ibus_connection_close              (IBusConnection     *connect
 gboolean         ibus_connection_is_connected       (IBusConnection     *connection);
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
 gboolean         ibus_connection_send               (IBusConnection     *connection,
-                                                     DBusMessage        *message);
+                                                     IBusMessage        *message);
 gboolean         ibus_connection_send_signal        (IBusConnection     *connection,
                                                      const gchar        *path,
                                                      const gchar        *interface,
                                                      const gchar        *name,
-                                                     gint                first_arg_type,
+                                                     GType               first_arg_type,
                                                      ...);
 gboolean         ibus_connection_send_signal_valist (IBusConnection     *connection,
                                                      const gchar        *path,
                                                      const gchar        *interface,
                                                      const gchar        *name,
-                                                     gint                first_arg_type,
+                                                     GType               first_arg_type,
                                                      va_list             args);
 gboolean         ibus_connection_send_valist        (IBusConnection     *connection,
                                                      gint                message_type,
                                                      const gchar        *path,
                                                      const gchar        *interface,
                                                      const gchar        *name,
-                                                     gint                first_arg_type,
+                                                     GType               first_arg_type,
                                                      va_list             args);
 gboolean         ibus_connection_send_with_reply    (IBusConnection             *connection,
-                                                     DBusMessage                *message,
+                                                     IBusMessage                *message,
                                                      gint                        timeout_milliseconds,
                                                      IBusConnectionReplyFunc     reply_callback,
                                                      gpointer                    user_data,
                                                      IBusFreeFunc                user_data_free_callback);
-DBusMessage     *ibus_connection_send_with_reply_and_block
+IBusMessage     *ibus_connection_send_with_reply_and_block
                                                     (IBusConnection     *connection,
-                                                     DBusMessage        *message,
+                                                     IBusMessage        *message,
                                                      gint                timeout_milliseconds,
                                                      IBusError          **error);
 gboolean         ibus_connection_call               (IBusConnection     *connection,
@@ -127,7 +127,7 @@ gboolean         ibus_connection_call               (IBusConnection     *connect
                                                      const gchar        *interface,
                                                      const gchar        *member,
                                                      IBusError          **error,
-                                                     gint               first_arg_type,
+                                                     GType              first_arg_type,
                                                      ...);
 void             ibus_connection_flush              (IBusConnection     *connection);
 gboolean         ibus_connection_register_object_path

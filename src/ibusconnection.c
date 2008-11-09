@@ -373,7 +373,9 @@ _unregister_function (DBusConnection *dbus_connection, VTableCallData *data)
 }
 
 DBusHandlerResult
-_message_function (DBusConnection *dbus_connection, DBusMessage *message, VTableCallData *data)
+_message_function (DBusConnection *dbus_connection,
+                   DBusMessage    *message,
+                   VTableCallData *data)
 {
     gboolean retval;
     IBusConnection *connection;
@@ -436,7 +438,8 @@ ibus_connection_unregister_object_path (IBusConnection *connection, const gchar 
 
 
 gboolean
-ibus_connection_send (IBusConnection *connection, DBusMessage *message)
+ibus_connection_send (IBusConnection *connection,
+                      IBusMessage    *message)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
@@ -459,11 +462,11 @@ ibus_connection_send (IBusConnection *connection, DBusMessage *message)
 
 
 gboolean
-ibus_connection_send_signal (IBusConnection     *connection,
-                             const gchar        *path,
-                             const gchar        *interface,
-                             const gchar        *name,
-                             gint                first_arg_type,
+ibus_connection_send_signal (IBusConnection *connection,
+                             const gchar    *path,
+                             const gchar    *interface,
+                             const gchar    *name,
+                             GType          first_arg_type,
                              ...)
 {
     va_list args;
@@ -471,8 +474,11 @@ ibus_connection_send_signal (IBusConnection     *connection,
 
     va_start (args, first_arg_type);
     retval = ibus_connection_send_signal_valist (connection,
-                path, interface, name,
-                first_arg_type, args);
+                                                 path,
+                                                 interface,
+                                                 name,
+                                                 first_arg_type,
+                                                 args);
     va_end (args);
     return retval;
 }
@@ -482,7 +488,7 @@ ibus_connection_send_signal_valist (IBusConnection  *connection,
                                     const gchar     *path,
                                     const gchar     *interface,
                                     const gchar     *name,
-                                    gint             first_arg_type,
+                                    GType            first_arg_type,
                                     va_list          args)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
@@ -490,13 +496,13 @@ ibus_connection_send_signal_valist (IBusConnection  *connection,
     g_assert (name != NULL);
 
     gboolean retval;
-    DBusMessage *message;
+    IBusMessage *message;
 
-    message = dbus_message_new_signal (path, interface, name);
+    message = ibus_message_new_signal (path, interface, name);
 
-    dbus_message_append_args_valist (message, first_arg_type, args);
+    ibus_message_append_args_valist (message, first_arg_type, args);
     retval = ibus_connection_send (connection, message);
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     return retval;
 }
@@ -507,7 +513,7 @@ ibus_connection_send_valist (IBusConnection  *connection,
                              const gchar     *path,
                              const gchar     *interface,
                              const gchar     *name,
-                             gint             first_arg_type,
+                             GType            first_arg_type,
                              va_list          args)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
@@ -515,16 +521,16 @@ ibus_connection_send_valist (IBusConnection  *connection,
     g_assert (name != NULL);
 
     gboolean retval;
-    DBusMessage *message;
+    IBusMessage *message;
 
-    message = dbus_message_new (message_type);
-    dbus_message_set_path (message, path);
-    dbus_message_set_interface (message, interface);
-    dbus_message_set_member (message, name);
+    message = ibus_message_new (message_type);
+    ibus_message_set_path (message, path);
+    ibus_message_set_interface (message, interface);
+    ibus_message_set_member (message, name);
 
-    dbus_message_append_args_valist (message, first_arg_type, args);
+    ibus_message_append_args_valist (message, first_arg_type, args);
     retval = ibus_connection_send (connection, message);
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     return retval;
 }
@@ -561,7 +567,7 @@ _pending_call_free (gpointer user_data)
 
 gboolean
 ibus_connection_send_with_reply (IBusConnection *connection,
-                                 DBusMessage    *message,
+                                 IBusMessage    *message,
                                  int             timeout_milliseconds,
                                  IBusConnectionReplyFunc reply_callback,
                                  gpointer        user_data,
@@ -610,10 +616,10 @@ ibus_connection_send_with_reply (IBusConnection *connection,
     return retval;
 }
 
-DBusMessage *
+IBusMessage *
 ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
-                                           DBusMessage      *message,
-                                           int              timeout_milliseconds,
+                                           IBusMessage      *message,
+                                           gint              timeout_milliseconds,
                                            IBusError        **error)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
@@ -621,7 +627,7 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
     g_assert (timeout_milliseconds > 0 || timeout_milliseconds == -1);
     
     IBusError *_error;
-    DBusMessage *reply;
+    IBusMessage *reply;
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
@@ -655,7 +661,7 @@ ibus_connection_call (IBusConnection     *connection,
                       const gchar        *interface,
                       const gchar        *member,
                       IBusError          **error,
-                      gint               first_arg_type,
+                      GType              first_arg_type,
                       ...)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
@@ -669,17 +675,17 @@ ibus_connection_call (IBusConnection     *connection,
 
     g_assert (dbus_connection_get_is_connected (priv->connection));
     
-    DBusMessage *message, *reply;
-    DBusError *_error;
+    IBusMessage *message, *reply;
+    IBusError *tmp_error;
     va_list args;
-    gint type;
+    GType type;
     gboolean retval;
 
-    message = dbus_message_new_method_call (name, path, interface, member);
+    message = ibus_message_new_method_call (name, path, interface, member);
 
     va_start (args, first_arg_type);
 
-    dbus_message_append_args_valist (message, first_arg_type, args);
+    ibus_message_append_args_valist (message, first_arg_type, args);
     
     va_end (args);
     
@@ -687,16 +693,21 @@ ibus_connection_call (IBusConnection     *connection,
                                         connection,
                                         message,
                                         -1,
-                                        &_error);
-    dbus_message_unref (message);
+                                        error);
+    ibus_message_unref (message);
 
     if (reply == NULL) {
-        goto failed;
+        return FALSE;
     }
 
-    if (_error = ibus_error_from_message (reply)) {
-        dbus_message_unref (reply);
-        goto failed;
+    if (tmp_error = ibus_error_from_message (reply)) {
+        if (error) {
+            *error = tmp_error;
+        }
+        else
+            ibus_error_free (tmp_error);
+        ibus_message_unref (reply);
+        return FALSE;
     }
     
     va_start (args, first_arg_type);
@@ -705,31 +716,20 @@ ibus_connection_call (IBusConnection     *connection,
     
     while (type != DBUS_TYPE_INVALID) {
         va_arg (args, void *);
-        type = va_arg (args, gint);
+        type = va_arg (args, GType);
     }    
-    type = va_arg (args, gint);
+    type = va_arg (args, GType);
     
-    _error = ibus_error_new ();
-    retval = dbus_message_get_args_valist (reply, _error, type, args);
+    retval = ibus_message_get_args_valist (reply, error, type, args);
     va_end (args);
 
-    dbus_message_unref (reply);
+    ibus_message_unref (reply);
 
     if (!retval) {
         return FALSE;
     }
 
-    ibus_error_free (_error);
-
     return TRUE;
-
-failed:
-    if (error)
-        *error = _error;
-    else
-        ibus_error_free (_error);
-    return FALSE;
-
 }
 
 void
