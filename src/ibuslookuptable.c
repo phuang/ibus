@@ -140,8 +140,8 @@ ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
         retval = ibus_message_iter_recurse (&sub_sub_iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_sub_sub_iter);
         g_assert (retval);
 
-        ibus_message_iter_get_basic (&sub_sub_sub_iter, G_TYPE_STRING, &text);
-        ibus_message_iter_get_basic (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &attr_list);
+        ibus_message_iter_get (&sub_sub_sub_iter, G_TYPE_STRING, &text);
+        ibus_message_iter_get (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &attr_list);
         
         g_assert (attr_list);
         

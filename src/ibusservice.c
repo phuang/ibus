@@ -25,8 +25,8 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
 
 enum {
-    DBUS_MESSAGE,
-    DBUS_SIGNAL,
+    IBUS_MESSAGE,
+    IBUS_SIGNAL,
     LAST_SIGNAL,
 };
 
@@ -56,12 +56,12 @@ static void     ibus_service_get_property   (IBusService        *service,
                                              guint              prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static gboolean ibus_service_dbus_message   (IBusService        *service,
+static gboolean ibus_service_ibus_message   (IBusService        *service,
                                              IBusConnection     *connection,
-                                             DBusMessage        *message);
-static gboolean ibus_service_dbus_signal    (IBusService        *service,
+                                             IBusMessage        *message);
+static gboolean ibus_service_ibus_signal    (IBusService        *service,
                                              IBusConnection     *connection,
-                                             DBusMessage        *message);
+                                             IBusMessage        *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -115,8 +115,8 @@ ibus_service_class_init (IBusServiceClass *klass)
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_service_get_property;
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_service_destroy;
     
-    klass->dbus_message = ibus_service_dbus_message;
-    klass->dbus_signal = ibus_service_dbus_signal;
+    klass->ibus_message = ibus_service_ibus_message;
+    klass->ibus_signal = ibus_service_ibus_signal;
     
     /* install properties */
     g_object_class_install_property (gobject_class,
@@ -128,11 +128,11 @@ ibus_service_class_init (IBusServiceClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* Install signals */
-    service_signals[DBUS_MESSAGE] =
-        g_signal_new (I_("dbus-message"),
+    service_signals[IBUS_MESSAGE] =
+        g_signal_new (I_("ibus-message"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusServiceClass, dbus_message),
+            G_STRUCT_OFFSET (IBusServiceClass, ibus_message),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
             G_TYPE_BOOLEAN,
@@ -140,11 +140,11 @@ ibus_service_class_init (IBusServiceClass *klass)
             G_TYPE_POINTER,
             G_TYPE_POINTER);
 
-    service_signals[DBUS_SIGNAL] =
-        g_signal_new (I_("dbus-signal"),
+    service_signals[IBUS_SIGNAL] =
+        g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusServiceClass, dbus_signal),
+            G_STRUCT_OFFSET (IBusServiceClass, ibus_signal),
             NULL, NULL,
             ibus_marshal_BOOLEAN__POINTER_POINTER,
             G_TYPE_BOOLEAN,
@@ -219,30 +219,38 @@ ibus_service_get_path (IBusService *service)
 }
 
 gboolean
-ibus_service_handle_message (IBusService *service, IBusConnection *connection, DBusMessage *message)
+ibus_service_handle_message (IBusService    *service,
+                             IBusConnection *connection,
+                             IBusMessage    *message)
 {
     gboolean retval = FALSE;
     g_return_val_if_fail (message != NULL, FALSE);
 
-    g_signal_emit (service, service_signals[DBUS_MESSAGE], 0, connection, message, &retval);
+    g_signal_emit (service, service_signals[IBUS_MESSAGE], 0, connection, message, &retval);
     return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gboolean
-ibus_service_dbus_message (IBusService *service, IBusConnection *connection, DBusMessage *message)
+ibus_service_ibus_message (IBusService    *service,
+                           IBusConnection *connection,
+                           IBusMessage    *message)
 {
     return FALSE;
 }
 
 static gboolean
-ibus_service_dbus_signal (IBusService *service, IBusConnection *connection, DBusMessage *message)
+ibus_service_ibus_signal (IBusService    *service,
+                          IBusConnection *connection,
+                          IBusMessage    *message)
 {
     return FALSE;
 }
 
 
 gboolean
-_service_message_function (IBusConnection *connection, DBusMessage *message, IBusService *service)
+_service_message_function (IBusConnection *connection,
+                           IBusMessage    *message,
+                           IBusService *service)
 {
     return ibus_service_handle_message (service, connection, message);
 }

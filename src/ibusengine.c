@@ -71,9 +71,9 @@ static void     ibus_engine_get_property    (IBusEngine         *engine,
                                              guint               prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static gboolean ibus_engine_dbus_message    (IBusEngine         *engine,
+static gboolean ibus_engine_ibus_message    (IBusEngine         *engine,
                                              IBusConnection     *connection,
-                                             DBusMessage        *message);
+                                             IBusMessage        *message);
 static gboolean ibus_engine_key_press       (IBusEngine         *engine,
                                              guint               keyval,
                                              gboolean            is_press,
@@ -170,7 +170,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_engine_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_engine_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_engine_ibus_message;
 
     klass->key_press    = ibus_engine_key_press;
     klass->focus_in     = ibus_engine_focus_in;
@@ -392,7 +392,9 @@ ibus_engine_get_property (IBusEngine *engine,
 }
 
 static gboolean
-ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMessage *message)
+ibus_engine_ibus_message (IBusEngine     *engine,
+                          IBusConnection *connection,
+                          IBusMessage    *message)
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (IBUS_IS_CONNECTION (connection));
@@ -403,8 +405,8 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
 
     g_assert (priv->connection == connection);
 
-    DBusMessage *return_message = NULL;
-    DBusMessage *error_message = NULL;
+    IBusMessage *return_message = NULL;
+    IBusMessage *error_message = NULL;
 
     static struct {
         gchar *member;
@@ -424,228 +426,230 @@ ibus_engine_dbus_message (IBusEngine *engine, IBusConnection *connection, DBusMe
     gint i;
 
     for (i = 0; no_arg_methods[i].member != NULL; i++) {
-        if (!dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, no_arg_methods[i].member))
+        if (!ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, no_arg_methods[i].member))
             continue;
 
-        DBusMessageIter iter;
-        dbus_message_iter_init (message, &iter);
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID) {
-            error_message = dbus_message_new_error_printf (message,
+        IBusMessageIter iter;
+        ibus_message_iter_init (message, &iter);
+        if (ibus_message_iter_has_next (&iter)) {
+            error_message = ibus_message_new_error_printf (message,
                                 "%s.%s: Method does not have arguments",
                                 IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
             ibus_connection_send (connection, error_message);
-            dbus_message_unref (error_message);
+            ibus_message_unref (error_message);
             return TRUE;
         }
 
         g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
     }
 
 
-    if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "KeyPress")) {
+    if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "KeyPress")) {
         guint keyval, state;
         gboolean is_press, retval;
-        DBusMessageIter iter;
+        IBusError *error = NULL;
 
-        dbus_message_iter_init (message, &iter);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &keyval,
+                                        G_TYPE_BOOLEAN, &is_press,
+                                        G_TYPE_UINT, &state,
+                                        G_TYPE_INVALID);
 
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &keyval);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &is_press);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
-            goto _keypress_fail;
-        dbus_message_iter_get_basic (&iter, &state);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+        if (!retval)
             goto _keypress_fail;
 
-        g_signal_emit (engine, engine_signals[KEY_PRESS], 0, keyval, is_press, state, &retval);
+        retval = FALSE;
+        g_signal_emit (engine,
+                       engine_signals[KEY_PRESS],
+                       0,
+                       keyval,
+                       is_press,
+                       state,
+                       &retval);
 
-        return_message = dbus_message_new_method_return (message);
-        dbus_message_append_args (return_message, DBUS_TYPE_BOOLEAN, &retval, DBUS_TYPE_INVALID);
+        return_message = ibus_message_new_method_return (message);
+        ibus_message_append_args (return_message,
+                                  G_TYPE_BOOLEAN, &retval,
+                                  DBUS_TYPE_INVALID);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _keypress_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (ubu) of method",
                         IBUS_INTERFACE_ENGINE, "KeyPress");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyActivate")) {
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyActivate")) {
         gchar *name;
         gint state;
-        DBusMessageIter iter;
+        gboolean retval;
+        IBusError *error = NULL;
 
-        dbus_message_iter_init (message, &iter);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &name,
+                                        G_TYPE_INT, &state,
+                                        G_TYPE_INVALID);
 
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto _property_activate_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
-            goto _property_activate_fail;
-        dbus_message_iter_get_basic (&iter, &state);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+        if (!retval)
             goto _property_activate_fail;
 
-        g_signal_emit (engine, engine_signals[PROPERTY_ACTIVATE], 0, name, state);
+        g_signal_emit (engine,
+                       engine_signals[PROPERTY_ACTIVATE],
+                       0,
+                       name,
+                       state);
 
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _property_activate_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (si) of method",
-                        IBUS_INTERFACE_ENGINE, "PropertyActivate");
+                        IBUS_INTERFACE_ENGINE,
+                        "PropertyActivate");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
 
     }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyShow")) {
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyShow")) {
         gchar *name;
-        DBusMessageIter iter;
+        gboolean retval;
+        IBusError *error;
 
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &name,
+                                        G_TYPE_INVALID);
+        
+        if (!retval)
             goto _property_show_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
 
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _property_show_fail;
+        g_signal_emit (engine,
+                       engine_signals[PROPERTY_SHOW],
+                       0,
+                       name);
 
-        g_signal_emit (engine, engine_signals[PROPERTY_SHOW], 0, name);
-
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _property_show_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (s) of method",
-                        IBUS_INTERFACE_ENGINE, "PropertyShow");
+                        IBUS_INTERFACE_ENGINE,
+                        "PropertyShow");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyHide")) {
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyHide")) {
         gchar *name;
-        DBusMessageIter iter;
+        gboolean retval;
+        IBusError *error = NULL;
 
-        dbus_message_iter_init (message, &iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto _property_hide_fail;
-        dbus_message_iter_get_basic (&iter, &name);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &name,
+                                        G_TYPE_INVALID);
+        if (!retval)
             goto _property_hide_fail;
 
         g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
 
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _property_hide_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (s) of method",
                         IBUS_INTERFACE_ENGINE, "PropertyHide");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCursorLocation")) {
-        gint args[4];
-        DBusMessageIter iter;
-
-        dbus_message_iter_init (message, &iter);
-        for (i =0; i < 4; i++) {
-            if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32)
-                goto _set_cursor_location_fail;
-            dbus_message_iter_get_basic (&iter, &args[i]);
-            dbus_message_iter_next (&iter);
-        }
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCursorLocation")) {
+        gint x, y, w, h;
+        gboolean retval;
+        IBusError *error = NULL;
+        
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_INT, &x,
+                                        G_TYPE_INT, &y,
+                                        G_TYPE_INT, &w,
+                                        G_TYPE_INT, &h,
+                                        G_TYPE_INVALID);
+        if (!retval)
             goto _set_cursor_location_fail;
         
-        engine->cursor_area.x = args[0];
-        engine->cursor_area.y = args[1];
-        engine->cursor_area.width = args[2];
-        engine->cursor_area.height = args[3];
+        engine->cursor_area.x = x;
+        engine->cursor_area.y = y;
+        engine->cursor_area.width = w;
+        engine->cursor_area.height = h;
 
-        g_signal_emit (engine, engine_signals[SET_CURSOR_LOCATION], 0,
-                    args[0], args[1], args[2], args[3]);
+        g_signal_emit (engine,
+                       engine_signals[SET_CURSOR_LOCATION],
+                       0,
+                       x, y, w, h);
 
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _set_cursor_location_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (iiii) of method",
-                        IBUS_INTERFACE_ENGINE, "SetCursorLocation");
+                        IBUS_INTERFACE_ENGINE,
+                        "SetCursorLocation");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (dbus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCapabilities")) {
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCapabilities")) {
         guint caps;
-        DBusMessageIter iter;
+        gboolean retval;
+        IBusError *error = NULL;
 
-        dbus_message_iter_init (message, &iter);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &caps,
+                                        G_TYPE_INVALID);
+
+        if (!retval)
+            goto _set_capabilities_fail;
         
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_UINT32)
-            goto _set_capabilities_fail;
-        dbus_message_iter_get_basic (&iter, &caps);
-        dbus_message_iter_next (&iter);
-
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INVALID)
-            goto _set_capabilities_fail;
-
         engine->client_capabilities = caps;
         
         g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
 
-        return_message = dbus_message_new_method_return (message);
+        return_message = ibus_message_new_method_return (message);
         ibus_connection_send (connection, return_message);
-        dbus_message_unref (return_message);
+        ibus_message_unref (return_message);
         return TRUE;
 
     _set_capabilities_fail:
-        error_message = dbus_message_new_error_printf (message,
+        error_message = ibus_message_new_error_printf (message,
                         "%s.%s: Can not match signature (u) of method",
                         IBUS_INTERFACE_ENGINE, "SetCapabilities");
         ibus_connection_send (connection, error_message);
-        dbus_message_unref (error_message);
+        ibus_message_unref (error_message);
         return TRUE;
     }
 
@@ -750,8 +754,10 @@ ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
 }
 
 static void
-_send_signal (IBusEngine *engine, const gchar *name,
-    gint first_arg_type, ...)
+_send_signal (IBusEngine  *engine,
+              const gchar *name,
+              GType        first_arg_type,
+              ...)
 {
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (name != NULL);
@@ -764,17 +770,21 @@ _send_signal (IBusEngine *engine, const gchar *name,
 
     va_start (args, first_arg_type);
     ibus_connection_send_signal_valist (priv->connection,
-            path, IBUS_INTERFACE_ENGINE, name,
-            first_arg_type, args);
+                                        path,
+                                        IBUS_INTERFACE_ENGINE,
+                                        name,
+                                        first_arg_type,
+                                        args);
     va_end (args);
 }
 
 void
 ibus_engine_commit_string (IBusEngine *engine, const gchar *text)
 {
-    _send_signal (engine, "CommitString",
-            DBUS_TYPE_STRING, &text,
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "CommitString",
+                  G_TYPE_STRING, &text,
+                  G_TYPE_INVALID);
 }
 
 void
@@ -784,44 +794,28 @@ ibus_engine_update_preedit (IBusEngine      *engine,
                             gint             cursor_pos,
                             gboolean         visible)
 {
-    g_assert (IBUS_IS_ENGINE (engine));
-    g_assert (text != NULL);
-    g_assert (attr_list != NULL);
-
-    IBusEnginePrivate *priv;
-    DBusMessage *message;
-    DBusMessageIter iter;
-    const gchar *path;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    path = ibus_service_get_path (IBUS_SERVICE (engine));
-    message = dbus_message_new_signal (
-                    path,
-                    IBUS_INTERFACE_ENGINE, "UpdatePreedit");
-
-    dbus_message_iter_init_append (message, &iter);
-
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
-    ibus_attr_list_to_dbus_message (attr_list, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cursor_pos);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_connection_send (priv->connection, message);
-    dbus_message_unref (message);
+    _send_signal (engine,
+                  "UpdatePreedit",
+                  G_TYPE_STRING, &text,
+                  IBUS_TYPE_ATTR_LIST, &attr_list,
+                  G_TYPE_INT, &cursor_pos,
+                  G_TYPE_BOOLEAN, &visible,
+                  G_TYPE_INVALID);
 }
 
 void
 ibus_engine_show_preedit (IBusEngine *engine)
 {
-    _send_signal (engine, "ShowPreedit",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "ShowPreedit",
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_hide_preedit (IBusEngine *engine)
 {
-    _send_signal (engine, "HidePreedit",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "HidePreedit",
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_update_aux_string (IBusEngine      *engine,
@@ -829,84 +823,53 @@ void ibus_engine_update_aux_string (IBusEngine      *engine,
                                     IBusAttrList    *attr_list,
                                     gboolean         visible)
 {
-    g_assert (IBUS_IS_ENGINE (engine));
-    g_assert (text != NULL);
-    g_assert (attr_list != NULL);
-
-    IBusEnginePrivate *priv;
-    DBusMessage *message;
-    DBusMessageIter iter;
-    const gchar *path;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    path = ibus_service_get_path (IBUS_SERVICE (engine));
-    message = dbus_message_new_signal (
-                    path,
-                    IBUS_INTERFACE_ENGINE, "UpdateAuxString");
-
-    dbus_message_iter_init_append (message, &iter);
-
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
-    ibus_attr_list_to_dbus_message (attr_list, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_connection_send (priv->connection, message);
-    dbus_message_unref (message);
+    _send_signal (engine,
+                  "UpdateAuxString",
+                  G_TYPE_STRING, &text,
+                  IBUS_TYPE_ATTR_LIST, &attr_list,
+                  G_TYPE_BOOLEAN, &visible,
+                  G_TYPE_INVALID);
 }
 
 void
 ibus_engine_show_aux_string (IBusEngine *engine)
 {
-    _send_signal (engine, "ShowAuxString",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "ShowAuxString",
+                  G_TYPE_INVALID);
 }
 
 void
 ibus_engine_hide_aux_string (IBusEngine *engine)
 {
-    _send_signal (engine, "HideAuxString",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "HideAuxString",
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_update_lookup_table (IBusEngine        *engine,
                                       IBusLookupTable   *table,
                                       gboolean           visible)
 {
-    g_assert (IBUS_IS_ENGINE (engine));
-    g_assert (table != NULL);
-
-    IBusEnginePrivate *priv;
-    DBusMessage *message;
-    DBusMessageIter iter;
-    const gchar *path;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    path = ibus_service_get_path (IBUS_SERVICE (engine));
-    message = dbus_message_new_signal (
-                    path,
-                    IBUS_INTERFACE_ENGINE, "UpdateLookupTable");
-
-    dbus_message_iter_init_append (message, &iter);
-
-    ibus_lookup_table_to_dbus_message (table, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_connection_send (priv->connection, message);
-    dbus_message_unref (message);
+    _send_signal (engine,
+                  "UpdateLookupTable",
+                  IBUS_TYPE_LOOKUP_TABLE, &table,
+                  G_TYPE_BOOLEAN, &visible,
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_show_lookup_table (IBusEngine *engine)
 {
-    _send_signal (engine, "ShowLookupTable",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "ShowLookupTable",
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_hide_lookup_table (IBusEngine *engine)
 {
-    _send_signal (engine, "HideLookupTable",
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "HideLookupTable",
+                  G_TYPE_INVALID);
 }
 
 void ibus_engine_forward_key_event (IBusEngine      *engine,
@@ -914,9 +877,10 @@ void ibus_engine_forward_key_event (IBusEngine      *engine,
                                     gboolean         is_press,
                                     guint            state)
 {
-    _send_signal (engine, "HideLookupTable",
-            DBUS_TYPE_UINT32, &keyval,
-            DBUS_TYPE_BOOLEAN, &is_press,
-            DBUS_TYPE_UINT32, &state,
-            DBUS_TYPE_INVALID);
+    _send_signal (engine,
+                  "HideLookupTable",
+                  G_TYPE_UINT, &keyval,
+                  G_TYPE_BOOLEAN, &is_press,
+                  G_TYPE_UINT, &state,
+                  G_TYPE_INVALID);
 }

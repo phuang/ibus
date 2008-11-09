@@ -65,9 +65,9 @@ static void     ibus_factory_get_property   (IBusFactory        *factory,
                                              guint              prop_id,
                                              GValue             *value,
                                              GParamSpec         *pspec);
-static gboolean ibus_factory_dbus_message   (IBusFactory        *factory,
+static gboolean ibus_factory_ibus_message   (IBusFactory        *factory,
                                              IBusConnection     *connection,
-                                             DBusMessage        *message);
+                                             IBusMessage        *message);
 
 static IBusObjectClass  *_parent_class = NULL;
 
@@ -129,7 +129,7 @@ ibus_factory_class_init (IBusFactoryClass *klass)
     
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_factory_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) ibus_factory_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_factory_ibus_message;
 
     /* install properties */
     g_object_class_install_property (gobject_class,
@@ -200,8 +200,10 @@ ibus_factory_destroy (IBusFactory *factory)
 }
 
 static void
-ibus_factory_set_property (IBusFactory *factory,
-    guint prop_id, const GValue *value, GParamSpec *pspec)
+ibus_factory_set_property (IBusFactory  *factory,
+                           guint         prop_id,
+                           const GValue *value,
+                           GParamSpec   *pspec)
 {
     DECLARE_PRIV;
 
@@ -237,7 +239,9 @@ ibus_factory_set_property (IBusFactory *factory,
 
 static void
 ibus_factory_get_property (IBusFactory *factory,
-    guint prop_id, GValue *value, GParamSpec *pspec)
+                           guint        prop_id,
+                           GValue      *value,
+                           GParamSpec  *pspec)
 {
     DECLARE_PRIV;
 
@@ -266,7 +270,9 @@ ibus_factory_get_property (IBusFactory *factory,
 }
 
 static gboolean
-ibus_factory_dbus_message (IBusFactory *factory, IBusConnection *connection, DBusMessage *message)
+ibus_factory_ibus_message (IBusFactory    *factory,
+                           IBusConnection *connection,
+                           IBusMessage    *message)
 {
     return FALSE;
 }

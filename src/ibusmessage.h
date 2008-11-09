@@ -31,6 +31,8 @@ typedef DBusMessage IBusMessage;
 typedef DBusMessageIter IBusMessageIter;
 
 IBusMessage     *ibus_message_new               (gint                message_type);
+IBusMessage     *ibus_message_ref               (IBusMessage        *message);
+void             ibus_message_unref             (IBusMessage        *message);
 IBusMessage     *ibus_message_new_method_call   (const gchar        *destination,
                                                  const gchar        *path,
                                                  const gchar        *interface,
@@ -39,6 +41,10 @@ IBusMessage     *ibus_message_new_method_return (IBusMessage        *reply_to);
 IBusMessage     *ibus_message_new_error         (IBusMessage        *reply_to,
                                                  const gchar        *error_name,
                                                  const gchar        *error_message);
+IBusMessage     *ibus_message_new_error_printf  (IBusMessage        *reply_to,
+                                                 const gchar        *error_name,
+                                                 const gchar        *error_format,
+                                                 ...);
 IBusMessage     *ibus_message_new_signal        (const gchar        *path,
                                                  const gchar        *interface,
                                                  const gchar        *method);
@@ -66,6 +72,7 @@ void             ibus_message_set_no_reply      (IBusMessage        *message,
                                                  gboolean            no_reply);
 gboolean         ibus_message_set_reply_serial  (IBusMessage        *message,
                                                  guint32             reply_serial);
+gint             ibus_message_get_type          (IBusMessage        *message);
 const gchar     *ibus_message_get_destination   (IBusMessage        *message);
 const gchar     *ibus_message_get_sender        (IBusMessage        *message);
 const gchar     *ibus_message_get_error_name    (IBusMessage        *message);

@@ -29,6 +29,18 @@ ibus_message_new (gint message_type)
 }
 
 IBusMessage *
+ibus_message_ref (IBusMessage *message)
+{
+    return dbus_message_ref (message);
+}
+
+void
+ibus_message_unref (IBusMessage *message)
+{
+    dbus_message_unref (message);
+}
+
+IBusMessage *
 ibus_message_new_method_call (const gchar   *destination,
                               const gchar   *path,
                               const gchar   *interface,
@@ -47,13 +59,35 @@ ibus_message_new_method_return (IBusMessage *reply_to)
 }
 
 IBusMessage *
-ibus_message_new_error (IBusMessage     *reply_to,
-                        const gchar     *error_name,
-                        const gchar     *error_message)
+ibus_message_new_error (IBusMessage *reply_to,
+                        const gchar *error_name,
+                        const gchar *error_message)
 {
     return dbus_message_new_error (reply_to,
                                    error_name,
                                    error_message);
+}
+
+IBusMessage *
+ibus_message_new_error_printf (IBusMessage *reply_to,
+                               const gchar *error_name,
+                               const gchar *error_format,
+                               ...)
+{
+    va_list va_args;
+    gchar *error_message;
+    IBusMessage *message;
+
+    va_start (va_args, error_format);
+    error_message = g_strdup_vprintf (error_format, va_args);
+    va_end (va_args);
+
+    message = ibus_message_new_error (reply_to,
+                                      error_name,
+                                      error_message);
+    g_free (error_message);
+
+    return message;
 }
 
 IBusMessage *
@@ -147,6 +181,12 @@ ibus_message_set_reply_serial (IBusMessage  *message,
                                guint32       reply_serial)
 {
     return dbus_message_set_reply_serial (message, reply_serial);
+}
+
+gint
+ibus_message_get_type (IBusMessage *message)
+{
+    return dbus_message_get_type (message);
 }
 
 const gchar *

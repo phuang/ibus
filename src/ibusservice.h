@@ -52,23 +52,23 @@ struct _IBusService {
     /* instance members */
 };
 
-typedef gboolean  (* ServiceDBusMessageFunc)    (IBusService    *service,
+typedef gboolean  (* ServiceIBusMessageFunc)    (IBusService    *service,
                                                  IBusConnection *connection,
-                                                 DBusMessage    *message);
-typedef gboolean  (* ServiceDBusSignalFunc)     (IBusService    *service,
+                                                 IBusMessage    *message);
+typedef gboolean  (* ServiceIBusSignalFunc)     (IBusService    *service,
                                                  IBusConnection *connection,
-                                                 DBusMessage    *message);
+                                                 IBusMessage    *message);
 
 struct _IBusServiceClass {
     IBusObjectClass parent;
 
     /* class members */
-    gboolean  (* dbus_message)      (IBusService    *service,
+    gboolean  (* ibus_message)      (IBusService    *service,
                                      IBusConnection *connection,
-                                     DBusMessage    *message);
-    gboolean  (* dbus_signal)       (IBusService    *service,
+                                     IBusMessage    *message);
+    gboolean  (* ibus_signal)       (IBusService    *service,
                                      IBusConnection *connection,
-                                     DBusMessage    *message);
+                                     IBusMessage    *message);
 };
 
 
@@ -77,7 +77,7 @@ IBusService     *ibus_service_new               (const gchar    *path);
 const gchar     *ibus_service_get_path          (IBusService    *service);
 gboolean         ibus_service_handle_message    (IBusService    *service,
                                                  IBusConnection *connection,
-                                                 DBusMessage    *message);
+                                                 IBusMessage    *message);
 gboolean         ibus_service_add_to_connection (IBusService    *service,
                                                  IBusConnection *connection);
 gboolean         ibus_service_remove_from_connection
