@@ -799,6 +799,109 @@ _engine_update_preedit_cb (BusEngineProxy   *engine,
 }
 
 static void
+_engine_update_aux_string_cb (BusEngineProxy   *engine,
+                              const gchar      *text,
+                              IBusAttrList     *attr_list,
+                              gboolean          visible,
+                              BusInputContext  *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
+    g_assert (attr_list != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "UpdateAuxString",
+                                 G_TYPE_STRING, &text,
+                                 IBUS_TYPE_ATTR_LIST, &attr_list,
+                                 G_TYPE_BOOLEAN, &visible,
+                                 G_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_update_lookup_table_cb (BusEngineProxy   *engine,
+                                IBusLookupTable  *table,
+                                gboolean          visible,
+                                BusInputContext  *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (table != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "UpdateLookupTable",
+                                 IBUS_TYPE_LOOKUP_TABLE, &table,
+                                 G_TYPE_BOOLEAN, &visible,
+                                 G_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_register_properties_cb (BusEngineProxy  *engine,
+                                IBusPropList    *prop_list,
+                                BusInputContext *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (prop_list != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "RegisterProperties",
+                                 IBUS_TYPE_PROP_LIST, &prop_list,
+                                 G_TYPE_INVALID);
+                                 
+}
+
+static void
+_engine_update_property_cb (BusEngineProxy  *engine,
+                            IBusProperty    *prop,
+                            BusInputContext *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (prop != NULL);
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    g_assert (priv->engine == engine);
+    g_assert (priv->connection != NULL);
+
+    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 IBUS_INTERFACE_INPUT_CONTEXT,
+                                 "UpdateProperty",
+                                 IBUS_TYPE_PROPERTY, &prop,
+                                 G_TYPE_INVALID);
+                                 
+}
+
+static void
 bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));

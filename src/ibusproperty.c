@@ -21,12 +21,12 @@
 #include "ibusmessage.h"
 #include "ibusproperty.h"
 
-static IBusProperty *ibus_property_from_ibus_message    (IBusMessageIter *iter);
-static gboolean      ibus_property_to_ibus_message      (IBusProperty    *prop,
-                                                         IBusMessageIter *iter);
-static IBusPropList *ibus_prop_list_from_ibus_message   (IBusMessageIter *iter);
-static gboolean      ibus_prop_list_to_ibus_message     (IBusPropList    *prop_list,
-                                                         IBusMessageIter *iter);
+static gboolean      ibus_property_serialize      (IBusProperty    *prop,
+                                                   IBusMessageIter *iter);
+static IBusProperty *ibus_property_deserialize    (IBusMessageIter *iter);
+static gboolean      ibus_prop_list_serialize     (IBusPropList    *prop_list,
+                                                   IBusMessageIter *iter);
+static IBusPropList *ibus_prop_list_deserialize   (IBusMessageIter *iter);
 
 
 GType
@@ -39,8 +39,8 @@ ibus_property_get_type ()
                     (GBoxedFreeFunc)ibus_property_free);
 
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_property_to_ibus_message,
-                                    (IBusDeserializeFunc) ibus_property_from_ibus_message);
+                                    (IBusSerializeFunc) ibus_property_serialize,
+                                    (IBusDeserializeFunc) ibus_property_deserialize);
     }
     return type;
 }
@@ -129,8 +129,8 @@ ibus_prop_list_get_type ()
                     (GBoxedFreeFunc)ibus_prop_list_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_prop_list_to_ibus_message,
-                                    (IBusDeserializeFunc) ibus_prop_list_from_ibus_message);
+                                    (IBusSerializeFunc) ibus_prop_list_serialize,
+                                    (IBusDeserializeFunc) ibus_prop_list_deserialize);
     }
     return type;
 }
@@ -208,7 +208,7 @@ ibus_prop_list_get (IBusPropList *prop_list, guint index)
 }
 
 static IBusProperty *
-ibus_property_from_ibus_message (IBusMessageIter *iter)
+ibus_property_deserialize (IBusMessageIter *iter)
 {
     gchar *name;
     guint32 type;
@@ -260,7 +260,7 @@ ibus_property_from_ibus_message (IBusMessageIter *iter)
 }
 
 IBusPropList *
-ibus_prop_list_from_ibus_message (IBusMessageIter *iter)
+ibus_prop_list_deserialize (IBusMessageIter *iter)
 {
     IBusMessageIter sub_iter;
     IBusPropList *prop_list;
@@ -282,7 +282,8 @@ ibus_prop_list_from_ibus_message (IBusMessageIter *iter)
 }
 
 gboolean
-ibus_property_to_ibus_message (IBusProperty *prop, IBusMessageIter *iter)
+ibus_property_serialize (IBusProperty    *prop,
+                         IBusMessageIter *iter)
 {
     g_assert (prop != NULL);
     g_assert (iter != NULL);
@@ -309,7 +310,8 @@ ibus_property_to_ibus_message (IBusProperty *prop, IBusMessageIter *iter)
 
 
 gboolean
-ibus_prop_list_to_ibus_message (IBusPropList *prop_list, IBusMessageIter *iter)
+ibus_prop_list_serialize (IBusPropList    *prop_list,
+                          IBusMessageIter *iter)
 {
     g_assert (prop_list != NULL);
     g_assert (iter != NULL);

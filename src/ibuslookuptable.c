@@ -21,9 +21,9 @@
 #include "ibusmessage.h"
 #include "ibuslookuptable.h"
 
-static gboolean          ibus_lookup_table_seralize     (IBusLookupTable    *table,
-                                                         IBusMessageIter    *iter);
-static IBusLookupTable  *ibus_lookup_table_deseralize   (IBusMessageIter    *iter);
+static gboolean          ibus_lookup_table_serialize     (IBusLookupTable    *table,
+                                                          IBusMessageIter    *iter);
+static IBusLookupTable  *ibus_lookup_table_deserialize   (IBusMessageIter    *iter);
 
 GType
 ibus_lookup_table_get_type ()
@@ -35,8 +35,8 @@ ibus_lookup_table_get_type ()
                     (GBoxedFreeFunc)ibus_lookup_table_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_lookup_table_seralize,
-                                    (IBusDeserializeFunc) ibus_lookup_table_deseralize);
+                                    (IBusSerializeFunc) ibus_lookup_table_serialize,
+                                    (IBusDeserializeFunc) ibus_lookup_table_deserialize);
     }
     return type;
 }
@@ -112,7 +112,7 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
 }
 
 IBusLookupTable *
-ibus_lookup_table_deseralize (IBusMessageIter *iter)
+ibus_lookup_table_deserialize (IBusMessageIter *iter)
 {
     g_assert (iter != NULL);
     
@@ -155,8 +155,8 @@ ibus_lookup_table_deseralize (IBusMessageIter *iter)
 }
 
 gboolean
-ibus_lookup_table_seralize (IBusLookupTable *table,
-                            IBusMessageIter *iter)
+ibus_lookup_table_serialize (IBusLookupTable *table,
+                             IBusMessageIter *iter)
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);
