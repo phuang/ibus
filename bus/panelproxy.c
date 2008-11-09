@@ -51,8 +51,8 @@ static void     bus_panel_proxy_class_init      (BusPanelProxyClass    *klass);
 static void     bus_panel_proxy_init            (BusPanelProxy         *panel);
 static void     bus_panel_proxy_real_destroy    (BusPanelProxy         *panel);
 
-static gboolean bus_panel_proxy_dbus_signal     (IBusProxy             *proxy,
-                                                 DBusMessage            *message);
+static gboolean bus_panel_proxy_ibus_signal     (IBusProxy             *proxy,
+                                                 IBusMessage            *message);
 
 static IBusProxyClass  *parent_class = NULL;
 
@@ -110,7 +110,7 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_panel_proxy_real_destroy;
 
-    proxy_class->dbus_signal = bus_panel_proxy_dbus_signal;
+    proxy_class->ibus_signal = bus_panel_proxy_ibus_signal;
     
     /* install signals */
     panel_signals[PAGE_UP] =
@@ -210,14 +210,14 @@ bus_panel_proxy_real_destroy (BusPanelProxy *panel)
 }
 
 static gboolean
-bus_panel_proxy_dbus_signal (IBusProxy      *proxy,
-                             DBusMessage    *message)
+bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
+                             IBusMessage    *message)
 {
     g_assert (BUS_IS_PANEL_PROXY (proxy));
     g_assert (message != NULL);
     
     BusPanelProxy *panel;
-    DBusError error;
+    IBusError *error;
     gint i;
 
     struct {
@@ -236,44 +236,47 @@ bus_panel_proxy_dbus_signal (IBusProxy      *proxy,
     for (i = 0; ; i++) {
         if (signals[i].member == NULL)
             break;
-        if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
+        if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
             g_signal_emit (panel, panel_signals[signals[i].signal_id], 0);
             goto handled;
         }
     }
     
-    dbus_error_init (&error);
-    if (dbus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyActivate")) {
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyActivate")) {
         gchar *prop_name;
         gint prop_state;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &prop_name,
-                                DBUS_TYPE_INT32, &prop_state,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &prop_name,
+                                        G_TYPE_INT, &prop_state,
+                                        G_TYPE_INVALID);
         if (!retval)
             goto failed;
+
         g_signal_emit (panel, panel_signals[PROPERTY_ACTIVATE], 0, prop_name, prop_state);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyShow")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyShow")) {
         gchar *prop_name;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &prop_name,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &prop_name,
+                                        G_TYPE_INVALID);
         if (!retval)
             goto failed;
         g_signal_emit (panel, panel_signals[PROPERTY_SHOW], 0, prop_name);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyHide")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyHide")) {
         gchar *prop_name;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &prop_name,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &prop_name,
+                                        G_TYPE_INVALID);
         if (!retval)
             goto failed;
         g_signal_emit (panel, panel_signals[PROPERTY_HIDE], 0, prop_name);
@@ -284,8 +287,8 @@ handled:
     return TRUE;
   
 failed:
-    g_warning ("%s: %s", error.name, error.message);
-    dbus_error_free (&error);
+    g_warning ("%s: %s", error->name, error->message);
+    ibus_error_free (error);
     return FALSE;
 }
 
@@ -337,11 +340,11 @@ bus_panel_proxy_set_cursor_location (BusPanelProxy *panel,
 
     ibus_proxy_call (IBUS_PROXY (panel),
                      "SetCursorLocation",
-                     DBUS_TYPE_INT32, &x,
-                     DBUS_TYPE_INT32, &y,
-                     DBUS_TYPE_INT32, &w,
-                     DBUS_TYPE_INT32, &h,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INT, &x,
+                     G_TYPE_INT, &y,
+                     G_TYPE_INT, &w,
+                     G_TYPE_INT, &h,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -355,25 +358,13 @@ bus_panel_proxy_update_preedit (BusPanelProxy   *panel,
     g_assert (text != NULL);
     g_assert (attr_list != NULL);
 
-    DBusMessage *message;
-    DBusMessageIter iter;
-
-    message = dbus_message_new_method_call (
-                                ibus_proxy_get_name (IBUS_PROXY (panel)),
-                                ibus_proxy_get_path (IBUS_PROXY (panel)),
-                                ibus_proxy_get_interface (IBUS_PROXY (panel)),
-                                "UpdatePreedit");
-    
-    dbus_message_iter_init_append (message, &iter);
-
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
-    ibus_attr_list_to_dbus_message (attr_list, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &cursor_pos);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_proxy_send (IBUS_PROXY (panel), message);
-
-    dbus_message_unref (message);
+    ibus_proxy_call (IBUS_PROXY (panel),
+                     "UpdatePreedit",
+                     G_TYPE_STRING, &text,
+                     IBUS_TYPE_ATTR_LIST, &attr_list,
+                     G_TYPE_INT, &cursor_pos,
+                     G_TYPE_BOOLEAN, &visible,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -386,25 +377,12 @@ bus_panel_proxy_update_aux_string (BusPanelProxy *panel,
     g_assert (text != NULL);
     g_assert (attr_list != NULL);
 
-    DBusMessage *message;
-    DBusMessageIter iter;
-
-    message = dbus_message_new_method_call (
-                                ibus_proxy_get_name (IBUS_PROXY (panel)),
-                                ibus_proxy_get_path (IBUS_PROXY (panel)),
-                                ibus_proxy_get_interface (IBUS_PROXY (panel)),
-                                "UpdateAuxString");
-    
-    dbus_message_iter_init_append (message, &iter);
-
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &text);
-    ibus_attr_list_to_dbus_message (attr_list, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_proxy_send (IBUS_PROXY (panel), message);
-
-    dbus_message_unref (message);
-
+    ibus_proxy_call (IBUS_PROXY (panel),
+                     "UpdateAuxString",    
+                     G_TYPE_STRING, &text,
+                     IBUS_TYPE_ATTR_LIST, &attr_list,
+                     G_TYPE_BOOLEAN, &visible,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -415,23 +393,11 @@ bus_panel_proxy_update_lookup_table (BusPanelProxy   *panel,
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (table != NULL);
 
-    DBusMessage *message;
-    DBusMessageIter iter;
-
-    message = dbus_message_new_method_call (
-                                ibus_proxy_get_name (IBUS_PROXY (panel)),
-                                ibus_proxy_get_path (IBUS_PROXY (panel)),
-                                ibus_proxy_get_interface (IBUS_PROXY (panel)),
-                                "UpdateLookupTable");
-    
-    dbus_message_iter_init_append (message, &iter);
-
-    ibus_lookup_table_to_dbus_message (table, &iter);
-    dbus_message_iter_append_basic (&iter, DBUS_TYPE_BOOLEAN, &visible);
-
-    ibus_proxy_send (IBUS_PROXY (panel), message);
-
-    dbus_message_unref (message);
+    ibus_proxy_call (IBUS_PROXY (panel),
+                     "UpdateLookupTable",    
+                     IBUS_TYPE_LOOKUP_TABLE, &table,
+                     G_TYPE_BOOLEAN, &visible,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -441,22 +407,10 @@ bus_panel_proxy_register_properties (BusPanelProxy  *panel,
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (prop_list != NULL);
 
-    DBusMessage *message;
-    DBusMessageIter iter;
-
-    message = dbus_message_new_method_call (
-                                ibus_proxy_get_name (IBUS_PROXY (panel)),
-                                ibus_proxy_get_path (IBUS_PROXY (panel)),
-                                ibus_proxy_get_interface (IBUS_PROXY (panel)),
-                                "RegisterProperties");
-    
-    dbus_message_iter_init_append (message, &iter);
-
-    ibus_prop_list_to_dbus_message (prop_list, &iter);
-
-    ibus_proxy_send (IBUS_PROXY (panel), message);
-
-    dbus_message_unref (message);
+    ibus_proxy_call (IBUS_PROXY (panel),
+                     "RegisterProperties",
+                     IBUS_TYPE_PROP_LIST, &prop_list,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -465,23 +419,11 @@ bus_panel_proxy_update_property (BusPanelProxy  *panel,
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (prop != NULL);
-
-    DBusMessage *message;
-    DBusMessageIter iter;
-
-    message = dbus_message_new_method_call (
-                                ibus_proxy_get_name (IBUS_PROXY (panel)),
-                                ibus_proxy_get_path (IBUS_PROXY (panel)),
-                                ibus_proxy_get_interface (IBUS_PROXY (panel)),
-                                "UpdateProperty");
     
-    dbus_message_iter_init_append (message, &iter);
-
-    ibus_property_to_dbus_message (prop, &iter);
-
-    ibus_proxy_send (IBUS_PROXY (panel), message);
-
-    dbus_message_unref (message);
+    ibus_proxy_call (IBUS_PROXY (panel),
+                     "UpdateProperty",
+                     IBUS_TYPE_PROPERTY, &prop,
+                     G_TYPE_INVALID);
 }
 
 #define DEFINE_FUNCTION(Name, name)                     \
@@ -490,7 +432,7 @@ bus_panel_proxy_update_property (BusPanelProxy  *panel,
         g_assert (BUS_IS_PANEL_PROXY (panel));          \
         ibus_proxy_call (IBUS_PROXY (panel),            \
                      #Name,                             \
-                     DBUS_TYPE_INVALID);                \
+                     G_TYPE_INVALID);                   \
     }
 
 DEFINE_FUNCTION (ShowPreedit, show_preedit)

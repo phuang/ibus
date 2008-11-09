@@ -439,8 +439,8 @@ _ibus_get_factories (BusIBusImpl     *ibus,
         connection = ibus_proxy_get_connection (IBUS_PROXY (factory));
         unique_name = bus_connection_get_unique_name ( BUS_CONNECTION (connection));
         ibus_message_iter_open_container (&sub_iter, IBUS_TYPE_STRUCT, "os", &sub_sub_iter);
-        ibus_message_iter_append_basic (&sub_sub_iter, IBUS_TYPE_OBJECT_PATH, &path);
-        ibus_message_iter_append_basic (&sub_sub_iter, G_TYPE_STRING, &unique_name);
+        ibus_message_iter_append (&sub_sub_iter, IBUS_TYPE_OBJECT_PATH, &path);
+        ibus_message_iter_append (&sub_sub_iter, G_TYPE_STRING, &unique_name);
         ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
     }
     ibus_message_iter_close_container (&iter, &sub_iter);

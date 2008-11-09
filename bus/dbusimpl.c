@@ -344,7 +344,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
     names = g_hash_table_get_keys (priv->unique_names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
-        ibus_message_iter_append_basic (&sub_iter, G_TYPE_STRING, &(name->data));
+        ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
 
@@ -352,7 +352,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
     names = g_hash_table_get_keys (priv->names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
-        ibus_message_iter_append_basic (&sub_iter, G_TYPE_STRING, &(name->data));
+        ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
 

@@ -39,8 +39,8 @@ typedef struct _BusConnectionPrivate BusConnectionPrivate;
 static void     bus_connection_class_init   (BusConnectionClass     *klass);
 static void     bus_connection_init         (BusConnection          *connection);
 static void     bus_connection_destroy      (BusConnection          *connection);
-static gboolean bus_connection_dbus_message (BusConnection          *connection,
-                                             DBusMessage            *message);
+static gboolean bus_connection_ibus_message (BusConnection          *connection,
+                                             IBusMessage            *message);
 #if 0
 static gboolean bus_connection_dbus_signal  (BusConnection          *connection,
                                              DBusMessage            *message);
@@ -94,8 +94,8 @@ bus_connection_class_init (BusConnectionClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
     
-    ibus_connection_class->dbus_message = 
-            (IBusDBusMessageFunc) bus_connection_dbus_message;
+    ibus_connection_class->ibus_message = 
+            (IBusIBusMessageFunc) bus_connection_ibus_message;
 
 }
 
@@ -133,8 +133,8 @@ bus_connection_destroy (BusConnection *connection)
 }
 
 static gboolean
-bus_connection_dbus_message (BusConnection  *connection,
-                             DBusMessage    *message)
+bus_connection_ibus_message (BusConnection  *connection,
+                             IBusMessage    *message)
 {
     gboolean retval;
 
@@ -143,12 +143,14 @@ bus_connection_dbus_message (BusConnection  *connection,
              "\tpath = %s\n"
              "\tinterface = %s\n"
              "\tmember = %s",
-             dbus_message_get_destination (message),
-             dbus_message_get_path (message),
-             dbus_message_get_interface (message),
-             dbus_message_get_member (message));
-    retval = IBUS_CONNECTION_CLASS (_parent_class)->dbus_message (
-            IBUS_CONNECTION (connection), message);
+             ibus_message_get_destination (message),
+             ibus_message_get_path (message),
+             ibus_message_get_interface (message),
+             ibus_message_get_member (message));
+    
+    retval = IBUS_CONNECTION_CLASS (_parent_class)->ibus_message (
+                    IBUS_CONNECTION (connection),
+                    message);
     return retval;
 }
 

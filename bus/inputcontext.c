@@ -901,6 +901,41 @@ _engine_update_property_cb (BusEngineProxy  *engine,
                                  
 }
 
+#define DEFINE_FUNCTION(name, Name)                         \
+    static void                                             \
+    _engine_##name##_cb (BusEngineProxy   *engine,          \
+                         BusInputContext *context)          \
+    {                                                       \
+        g_assert (BUS_IS_ENGINE_PROXY (engine));            \
+        g_assert (BUS_IS_INPUT_CONTEXT (context));          \
+                                                            \
+        BusInputContextPrivate *priv;                       \
+        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);     \
+                                                            \
+        g_assert (priv->engine == engine);                  \
+        g_assert (priv->connection != NULL);                \
+                                                            \
+        ibus_connection_send_signal (                       \
+            IBUS_CONNECTION (priv->connection),             \
+            ibus_service_get_path (IBUS_SERVICE (engine)),  \
+            IBUS_INTERFACE_INPUT_CONTEXT,                   \
+            #Name,                                          \
+            G_TYPE_INVALID);                                \
+    }
+
+DEFINE_FUNCTION (show_preedit, ShowPreedit)
+DEFINE_FUNCTION (hide_preedit, HidePreedit)
+DEFINE_FUNCTION (show_aux_string, ShowAuxString)
+DEFINE_FUNCTION (hide_aux_string, HideAuxString)
+DEFINE_FUNCTION (show_lookup_table, ShowLookupTable)
+DEFINE_FUNCTION (hide_lookup_table, HideLookupTable)
+DEFINE_FUNCTION (page_up_lookup_table, PageUpLookupTable)
+DEFINE_FUNCTION (page_down_lookup_table, PageDownLookupTable)
+DEFINE_FUNCTION (cursor_up_lookup_table, CursorUpLookupTable)
+DEFINE_FUNCTION (cursor_down_lookup_table, CursorDownLookupTable)
+
+#undef DEFINE_FUNCTION
+
 static void
 bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
 {

@@ -61,8 +61,8 @@ static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
 static void     bus_engine_proxy_init           (BusEngineProxy         *engine);
 static void     bus_engine_proxy_real_destroy   (BusEngineProxy         *engine);
 
-static gboolean bus_engine_proxy_dbus_signal    (IBusProxy              *proxy,
-                                                 DBusMessage            *message);
+static gboolean bus_engine_proxy_ibus_signal    (IBusProxy              *proxy,
+                                                 IBusMessage            *message);
 
 static IBusProxyClass  *_parent_class = NULL;
 
@@ -122,7 +122,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_real_destroy;
 
-    proxy_class->dbus_signal = bus_engine_proxy_dbus_signal;
+    proxy_class->ibus_signal = bus_engine_proxy_ibus_signal;
     
     /* install signals */
     engine_signals[COMMIT_STRING] =
@@ -326,14 +326,14 @@ bus_engine_proxy_real_destroy (BusEngineProxy *engine)
 }
 
 static gboolean
-bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
-                              DBusMessage   *message)
+bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
+                              IBusMessage   *message)
 {
     g_assert (BUS_IS_ENGINE_PROXY (proxy));
     g_assert (message != NULL);
     
     BusEngineProxy *engine;
-    DBusError error;
+    IBusError *error;
     gint i;
 
     struct {
@@ -364,61 +364,52 @@ bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
         }
     }
     
-    dbus_error_init (&error);
-    if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "CommitString")) {
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "CommitString")) {
         gchar *text;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_STRING, &text,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        G_TYPE_INVALID);
         if (!retval)
             goto failed;
         g_signal_emit (engine, engine_signals[COMMIT_STRING], 0, text);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
         guint32 keyval;
         gboolean is_press;
         guint32 states;
         gboolean retval;
 
-        retval = dbus_message_get_args (message, &error,
-                                DBUS_TYPE_UINT32, &keyval,
-                                DBUS_TYPE_BOOLEAN, &is_press,
-                                DBUS_TYPE_UINT32, &states,
-                                DBUS_TYPE_INVALID);
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &keyval,
+                                        G_TYPE_BOOLEAN, &is_press,
+                                        G_TYPE_UINT, &states,
+                                        G_TYPE_INVALID);
 
         if (!retval)
             goto failed;
         g_signal_emit (engine, engine_signals[FORWARD_KEY_EVENT], keyval, is_press, states);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreedit")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreedit")) {
         gchar *text;
         IBusAttrList *attr_list;
         gint32 cursor_pos;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
+        
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        IBUS_TYPE_ATTR_LIST, &attr_list,
+                                        G_TYPE_INT, &cursor_pos,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
 
-        retval = dbus_message_iter_init (message, &iter);
         if (!retval)
             goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto failed;
-        dbus_message_iter_get_basic (&iter, &text);
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL)
-            goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_INT32) {
-            ibus_attr_list_unref (attr_list);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &cursor_pos);
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
 
         g_signal_emit (engine, engine_signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
         ibus_attr_list_unref (attr_list);
@@ -427,79 +418,60 @@ bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
         gchar *text;
         IBusAttrList *attr_list;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
+        
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        IBUS_TYPE_ATTR_LIST, &attr_list,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
 
-        retval = dbus_message_iter_init (message, &iter);
         if (!retval)
             goto failed;
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRING)
-            goto failed;
-        dbus_message_iter_get_basic (&iter, &text);
         
-        attr_list = ibus_attr_list_from_dbus_message (&iter);
-        if (attr_list == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_attr_list_unref (attr_list);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-
         g_signal_emit (engine, engine_signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
         ibus_attr_list_unref (attr_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
         IBusLookupTable *table;
         gboolean visible;
-        DBusMessageIter iter;
         gboolean retval;
+        
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        IBUS_TYPE_LOOKUP_TABLE, &table,
+                                        G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_INVALID);
 
-        retval = dbus_message_iter_init (message, &iter);
         if (!retval)
             goto failed;
-        
-        table = ibus_lookup_table_from_dbus_message (&iter);
-        if (table == NULL)
-            goto failed;
-        
-        if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_BOOLEAN) {
-            ibus_lookup_table_unref (table);
-            goto failed;
-        }
-        dbus_message_iter_get_basic (&iter, &visible);
-
+ 
         g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         ibus_lookup_table_unref (table);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
         IBusPropList *prop_list;
-        DBusMessageIter iter;
         gboolean retval;
 
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
-        
-        prop_list = ibus_prop_list_from_dbus_message (&iter);
-        if (prop_list == NULL)
-            goto failed;
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        IBUS_TYPE_PROP_LIST, &prop_list,
+                                        G_TYPE_INVALID);
         
         g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, prop_list);
         ibus_prop_list_unref (prop_list);
     }
     else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
         IBusProperty *prop;
-        DBusMessageIter iter;
         gboolean retval;
-
-        retval = dbus_message_iter_init (message, &iter);
-        if (!retval)
-            goto failed;
         
-        prop = ibus_property_from_dbus_message (&iter);
-        if (prop == NULL)
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        IBUS_TYPE_PROPERTY, &prop,
+                                        G_TYPE_INVALID);
+
+        if (!retval)
             goto failed;
         
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
@@ -510,12 +482,12 @@ bus_engine_proxy_dbus_signal (IBusProxy     *proxy,
     }
 
 handled:
-    g_signal_stop_emission_by_name (engine, "dbus-signal");
+    g_signal_stop_emission_by_name (engine, "ibus-signal");
     return TRUE;
   
 failed:
-    g_warning ("%s: %s", error.name, error.message);
-    dbus_error_free (&error);
+    g_warning ("%s: %s", error->name, error->message);
+    ibus_error_free (error);
     return FALSE;
 }
 
@@ -532,37 +504,36 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     gboolean retval;
 
     reply_message = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (engine),
-                                                  "ProcessKeyEvent",
-                                                  -1,
-                                                  &error,
-                                                  DBUS_TYPE_UINT32, &keyval,
-                                                  DBUS_TYPE_BOOLEAN, &is_press,
-                                                  DBUS_TYPE_UINT32, &state,
-                                                  DBUS_TYPE_INVALID);
+                                                          "ProcessKeyEvent",
+                                                          -1,
+                                                          &error,
+                                                          G_TYPE_UINT, &keyval,
+                                                          G_TYPE_BOOLEAN, &is_press,
+                                                          G_TYPE_UINT, &state,
+                                                          G_TYPE_INVALID);
     if (reply_message == NULL) {
         g_debug ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         retval = FALSE;
     }
 
-    if (dbus_message_get_type (reply_message) == DBUS_MESSAGE_TYPE_ERROR) {
-        g_debug ("%s",
-                 dbus_message_get_error_name (reply_message));
-        dbus_message_unref (reply_message);
-        retval = FALSE;
+    if (error = ibus_error_from_message (reply_message)) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_message_unref (reply_message);
+        ibus_error_free (error);
+        return FALSE;
     }
-    else {
-        DBusError error;
-        dbus_error_init (&error);
-        if (!dbus_message_get_args (reply_message, &error,
-                                   DBUS_TYPE_BOOLEAN, &retval,
-                                   DBUS_TYPE_INVALID)) {
-            g_debug ("%s: %s", error.name, error.message);
-            dbus_error_free (&error);
-            retval = FALSE;
-        }
+    
+    if (!ibus_message_get_args (reply_message,
+                                &error,
+                                G_TYPE_BOOLEAN, &retval,
+                                G_TYPE_INVALID)) {
+        g_warning ("%s: %s", error->name, error->message);
         dbus_message_unref (reply_message);
+        ibus_error_free (error);
+        return FALSE;
     }
+
     return retval;
 }
 
@@ -577,11 +548,11 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
     
     ibus_proxy_call (IBUS_PROXY (engine),
                      "SetCursorLocation",
-                     DBUS_TYPE_INT32, &x,
-                     DBUS_TYPE_INT32, &y,
-                     DBUS_TYPE_INT32, &w,
-                     DBUS_TYPE_INT32, &h,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INT, &x,
+                     G_TYPE_INT, &y,
+                     G_TYPE_INT, &w,
+                     G_TYPE_INT, &h,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -592,8 +563,8 @@ bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
     
     ibus_proxy_call (IBUS_PROXY (engine),
                      "SetCapabilites",
-                     DBUS_TYPE_UINT32, &caps,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_UINT, &caps,
+                     G_TYPE_INVALID);
 
 }
 
@@ -607,9 +578,9 @@ bus_engine_proxy_property_activate (BusEngineProxy *engine,
 
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyActivate",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INT32, &state,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INT, &state,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -621,8 +592,8 @@ bus_engine_proxy_property_show (BusEngineProxy *engine,
 
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyShow",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
 }
 
 void bus_engine_proxy_property_hide (BusEngineProxy *engine,
@@ -633,8 +604,8 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
 
     ibus_proxy_call (IBUS_PROXY (engine),
                      "PropertyHide",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
 }
 
 #define DEFINE_FUNCTION(Name, name)                         \
