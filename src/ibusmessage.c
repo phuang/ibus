@@ -679,7 +679,6 @@ ibus_message_iter_recurse (IBusMessageIter   *iter,
     g_return_val_if_fail (dbus_type == dbus_message_iter_get_arg_type (iter), FALSE);
     
     dbus_message_iter_recurse (iter, sub);
-    ibus_message_iter_next (iter);
     
     return TRUE;
 }

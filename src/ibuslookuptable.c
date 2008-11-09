@@ -21,10 +21,9 @@
 #include "ibusmessage.h"
 #include "ibuslookuptable.h"
 
-static IBusLookupTable  *ibus_lookup_table_from_ibus_message    (IBusMessageIter    *iter);
-static gboolean          ibus_lookup_table_to_ibus_message      (IBusLookupTable    *table,
-                                                                 IBusMessageIter    *iter);
-
+static gboolean          ibus_lookup_table_seralize     (IBusLookupTable    *table,
+                                                         IBusMessageIter    *iter);
+static IBusLookupTable  *ibus_lookup_table_deseralize   (IBusMessageIter    *iter);
 
 GType
 ibus_lookup_table_get_type ()
@@ -36,8 +35,8 @@ ibus_lookup_table_get_type ()
                     (GBoxedFreeFunc)ibus_lookup_table_unref);
         
         ibus_message_register_type (type,
-                                    (IBusSerializeFunc) ibus_lookup_table_to_ibus_message,
-                                    (IBusDeserializeFunc) ibus_lookup_table_from_ibus_message);
+                                    (IBusSerializeFunc) ibus_lookup_table_seralize,
+                                    (IBusDeserializeFunc) ibus_lookup_table_deseralize);
     }
     return type;
 }
@@ -46,10 +45,13 @@ IBusLookupTable *
 ibus_lookup_table_new (gint page_size, gint cursor_pos, gboolean cursor_visible)
 {
     IBusLookupTable *table = g_slice_new (IBusLookupTable);
+
+    table->refcount = 1;
     table->page_size = page_size;
     table->cursor_pos = cursor_pos;
     table->cursor_visible = cursor_visible;
     table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusCandidate *));
+
     return table;
 }
 
@@ -110,7 +112,7 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table, const gchar *text, I
 }
 
 IBusLookupTable *
-ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
+ibus_lookup_table_deseralize (IBusMessageIter *iter)
 {
     g_assert (iter != NULL);
     
@@ -132,7 +134,7 @@ ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
     
     table = ibus_lookup_table_new (page_size, cursor_pos, cursor_visible);
     
-    while (ibus_message_iter_has_next (&sub_sub_iter)) {
+    while (ibus_message_iter_get_arg_type (&sub_sub_iter) != G_TYPE_INVALID) {
         gchar *text;
         IBusAttrList *attr_list;
         IBusMessageIter sub_sub_sub_iter;
@@ -146,13 +148,15 @@ ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
         g_assert (attr_list);
         
         ibus_lookup_table_append_candidate (table, text, attr_list);
+        ibus_message_iter_next (&sub_sub_iter);
     }
     
     return table;
 }
 
 gboolean
-ibus_lookup_table_to_ibus_message (IBusLookupTable *table, IBusMessageIter *iter)
+ibus_lookup_table_seralize (IBusLookupTable *table,
+                            IBusMessageIter *iter)
 {
     g_assert (table != NULL);
     g_assert (iter != NULL);
@@ -175,7 +179,7 @@ ibus_lookup_table_to_ibus_message (IBusLookupTable *table, IBusMessageIter *iter
     for (i = 0; i < table->candidates->len; i++) {
         ibus_message_iter_open_container (&sub_sub_iter, IBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
         
-        IBusCandidate *candidate = &g_array_index (table->candidates, IBusCandidate, i);
+        IBusCandidate *candidate = g_array_index (table->candidates, IBusCandidate *, i);
         ibus_message_iter_append (&sub_sub_sub_iter, G_TYPE_STRING, &candidate->text);
         ibus_message_iter_append (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &candidate->attr_list);
         ibus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);

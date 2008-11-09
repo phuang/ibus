@@ -3,20 +3,37 @@
 int main()
 {
 	g_type_init ();
-	IBusLookupTable *table;
-	DBusMessage *message;
+	IBusLookupTable *table, *table1;
+	IBusMessage *message;
+	IBusError *error;
+	gboolean retval;
 
 	table = ibus_lookup_table_new (9, 3, TRUE);
 	ibus_lookup_table_append_candidate (table, "Hello", ibus_attr_list_new ());
 	ibus_lookup_table_append_candidate (table, "Cool", ibus_attr_list_new ());
 
-	DBusMessageIter iter;
+	message = ibus_message_new (DBUS_MESSAGE_TYPE_METHOD_CALL);
 	
-	message = dbus_message_new (DBUS_MESSAGE_TYPE_METHOD_CALL);
-	dbus_message_iter_init_append (message, &iter);
-	ibus_lookup_table_to_dbus_message (table, &iter);
-	
-	dbus_message_iter_init (message, &iter);
-	table = ibus_lookup_table_from_dbus_message (&iter);
+	retval = ibus_message_append_args (message,
+							  		   IBUS_TYPE_LOOKUP_TABLE, &table,
+							  		   IBUS_TYPE_LOOKUP_TABLE, &table,
+							  		   G_TYPE_INVALID);
+	g_assert (retval);
+
+	ibus_lookup_table_unref (table);
+	table = table1 = NULL;
+
+	retval = ibus_message_get_args (message,
+								    &error,
+								    IBUS_TYPE_LOOKUP_TABLE, &table,
+								    IBUS_TYPE_LOOKUP_TABLE, &table1,
+									G_TYPE_INVALID);
+	g_assert (retval);
+	g_assert (table);
+	g_assert (table1);
+
+	ibus_lookup_table_unref (table);
+	ibus_lookup_table_unref (table1);
+
 	return 0;
 }
