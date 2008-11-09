@@ -25,10 +25,20 @@
 #include <dbus/dbus.h>
 #include "ibuserror.h"
 
+#define IBUS_TYPE_OBJECT_PATH   (ibus_type_get_object_path ())
+#define IBUS_TYPE_ARRAY         (ibus_type_get_array ())
+#define IBUS_TYPE_STRUCT        (ibus_type_get_struct ())
+#define IBUS_TYPE_VARIANT       (ibus_type_get_variant ())
+
 G_BEGIN_DECLS
 
 typedef DBusMessage IBusMessage;
 typedef DBusMessageIter IBusMessageIter;
+
+GType            ibus_type_get_object_path      (void);
+GType            ibus_type_get_array            (void);
+GType            ibus_type_get_struct           (void);
+GType            ibus_type_get_variant          (void);
 
 IBusMessage     *ibus_message_new               (gint                message_type);
 IBusMessage     *ibus_message_ref               (IBusMessage        *message);
@@ -103,6 +113,9 @@ gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
                                                  gconstpointer       value);
 gboolean         ibus_message_iter_init         (IBusMessage        *message,
                                                  IBusMessageIter    *iter);
+gboolean         ibus_message_iter_peek         (IBusMessageIter    *iter,
+                                                 GType               type,
+                                                 gpointer            value);
 gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gpointer            value);

@@ -22,6 +22,74 @@
 static GQuark   quark_serialize = 0;
 static GQuark   quark_deserialize = 0;
 
+GType
+ibus_type_get_object_path (void)
+{
+    static GType type = 0;
+
+    if (type == 0) {
+        type = g_type_register_static_simple (G_TYPE_STRING,
+                                              "IBusObjectPath",
+                                              0,
+                                              NULL,
+                                              0,
+                                              NULL,
+                                              0);
+    }
+    return type;
+}
+
+GType
+ibus_type_get_array (void)
+{
+    static GType type = 0;
+
+    if (type == 0) {
+        type = g_type_register_static_simple (G_TYPE_BOXED,
+                                              "IBusArray",
+                                              0,
+                                              NULL,
+                                              0,
+                                              NULL,
+                                              0);
+    }
+    return type;
+}
+
+GType
+ibus_type_get_struct (void)
+{
+    static GType type = 0;
+
+    if (type == 0) {
+        type = g_type_register_static_simple (G_TYPE_BOXED,
+                                              "IBusStruct",
+                                              0,
+                                              NULL,
+                                              0,
+                                              NULL,
+                                              0);
+    }
+    return type;
+}
+
+GType
+ibus_type_get_variant (void)
+{
+    static GType type = 0;
+
+    if (type == 0) {
+        type = g_type_register_static_simple (G_TYPE_BOXED,
+                                              "IBusVariant",
+                                              0,
+                                              NULL,
+                                              0,
+                                              NULL,
+                                              0);
+    }
+    return type;
+}
+
 IBusMessage *
 ibus_message_new (gint message_type)
 {
@@ -346,6 +414,19 @@ ibus_message_iter_get (IBusMessageIter *iter,
                        GType            type,
                        gpointer         value)
 {
+    gboolean retval;
+
+    retval = ibus_message_iter_peek (iter, type, value);
+    ibus_message_iter_next (iter);
+
+    return retval;
+}
+
+gboolean
+ibus_message_iter_peek (IBusMessageIter *iter,
+                        GType            type,
+                        gpointer         value)
+{
     g_assert (iter != NULL);
     gint dbus_type;
 
@@ -480,17 +561,34 @@ ibus_message_iter_recurse (IBusMessageIter   *iter,
                            IBusMessageIter   *sub)
 {
     dbus_message_iter_recurse (iter, sub);
-
+    ibus_message_iter_next (iter);
     return TRUE;
 }
 
 GType
 ibus_message_iter_get_arg_type (IBusMessageIter *iter)
 {
-    // TODO
+    gint type;
+
+    type = dbus_message_iter_get_arg_type (iter);
+    switch (type) {
+#define TYPE_TABLE(a, b) case a: return (b);
+        TYPE_TABLE (DBUS_TYPE_BYTE, G_TYPE_CHAR);
+        TYPE_TABLE (DBUS_TYPE_INT32, G_TYPE_INT);
+        TYPE_TABLE (DBUS_TYPE_INT64, G_TYPE_INT64);
+        TYPE_TABLE (DBUS_TYPE_UINT32, G_TYPE_UINT);
+        TYPE_TABLE (DBUS_TYPE_UINT64, G_TYPE_UINT64);
+        TYPE_TABLE (DBUS_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
+        TYPE_TABLE (DBUS_TYPE_DOUBLE, G_TYPE_DOUBLE);
+        TYPE_TABLE (DBUS_TYPE_STRING, G_TYPE_STRING);
+        TYPE_TABLE (DBUS_TYPE_OBJECT_PATH, IBUS_TYPE_OBJECT_PATH);
+        TYPE_TABLE (DBUS_TYPE_ARRAY, IBUS_TYPE_ARRAY);
+        TYPE_TABLE (DBUS_TYPE_STRUCT, IBUS_TYPE_STRUCT);
+        TYPE_TABLE (DBUS_TYPE_VARIANT, IBUS_TYPE_VARIANT);
+#undef TYPE_TABLE
+    }
     return G_TYPE_INVALID;
 }
-
 
 gboolean
 ibus_message_register_type (GType               type,

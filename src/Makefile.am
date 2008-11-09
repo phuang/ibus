@@ -105,10 +105,10 @@ AM_LDFLAGS = \
 
 TESTS = \
 	test-keynames \
-	test-bus \
-	test-proxy \
 	test-attribute \
 	test-lookuptable \
+	test-bus \
+	test-proxy \
 	test-server \
 	test-engine \
 	$(NULL)

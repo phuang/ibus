@@ -359,7 +359,7 @@ ibus_bus_create_input_context (IBusBus      *bus,
                                 G_TYPE_INVALID)) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_message_unref (reply);
-        ibus_error_free (&error);
+        ibus_error_free (error);
 
         return NULL;
     }
