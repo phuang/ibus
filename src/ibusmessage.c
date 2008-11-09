@@ -559,8 +559,21 @@ ibus_message_iter_open_container (IBusMessageIter   *iter,
                                   const gchar       *contained_signature,
                                   IBusMessageIter   *sub)
 {
-    // TODO
-    return FALSE;
+    gint dbus_type;
+    
+    if (type == IBUS_TYPE_ARRAY) {
+        dbus_type = DBUS_TYPE_ARRAY;
+    }
+    else if (type == IBUS_TYPE_STRUCT) {
+        dbus_type = DBUS_TYPE_STRUCT;
+    }
+    else
+        g_return_val_if_reached (FALSE);
+
+    return dbus_message_iter_open_container (iter,
+                                             dbus_type,
+                                             contained_signature,
+                                             sub);
 }
 
 gboolean
@@ -575,8 +588,22 @@ ibus_message_iter_recurse (IBusMessageIter   *iter,
                            GType              type,
                            IBusMessageIter   *sub)
 {
+    gint dbus_type;
+    
+    if (type == IBUS_TYPE_ARRAY) {
+        dbus_type = DBUS_TYPE_ARRAY;
+    }
+    else if (type == IBUS_TYPE_STRUCT) {
+        dbus_type = DBUS_TYPE_STRUCT;
+    }
+    else
+        g_return_val_if_reached (FALSE);
+
+    g_return_val_if_fail (dbus_type == dbus_message_iter_get_arg_type (iter), FALSE);
+    
     dbus_message_iter_recurse (iter, sub);
     ibus_message_iter_next (iter);
+    
     return TRUE;
 }
 
