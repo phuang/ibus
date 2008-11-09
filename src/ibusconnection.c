@@ -715,12 +715,15 @@ ibus_connection_call (IBusConnection     *connection,
     type = first_arg_type;
     
     while (type != DBUS_TYPE_INVALID) {
-        va_arg (args, void *);
+        va_arg (args, gpointer);
         type = va_arg (args, GType);
     }    
     type = va_arg (args, GType);
-    
-    retval = ibus_message_get_args_valist (reply, error, type, args);
+
+    if (type != G_TYPE_INVALID) { 
+        retval = ibus_message_get_args_valist (reply, error, type, args);
+    }
+
     va_end (args);
 
     ibus_message_unref (reply);

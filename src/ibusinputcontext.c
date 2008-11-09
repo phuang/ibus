@@ -580,8 +580,8 @@ ibus_input_context_process_key_event (IBusInputContext *context,
         
         if (!ibus_message_get_args (reply_message,
                                     &error,
-                                    DBUS_TYPE_BOOLEAN, &retval,
-                                    DBUS_TYPE_INVALID)) {
+                                    G_TYPE_BOOLEAN, &retval,
+                                    G_TYPE_INVALID)) {
             g_debug ("%s: %s", error->name, error->message);
             ibus_error_free (error);
             retval = FALSE;
@@ -602,11 +602,11 @@ ibus_input_context_set_cursor_location (IBusInputContext *context,
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "SetCursorLocation",
-                     DBUS_TYPE_INT32, &x,
-                     DBUS_TYPE_INT32, &y,
-                     DBUS_TYPE_INT32, &w,
-                     DBUS_TYPE_INT32, &h,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INT, &x,
+                     G_TYPE_INT, &y,
+                     G_TYPE_INT, &w,
+                     G_TYPE_INT, &h,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -617,8 +617,8 @@ ibus_input_context_set_capabilities (IBusInputContext   *context,
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "SetCapabilites",
-                     DBUS_TYPE_UINT32, &capabilites,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_UINT, &capabilites,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -628,7 +628,7 @@ ibus_input_context_focus_in (IBusInputContext *context)
     
     ibus_proxy_call (IBUS_PROXY (context),
                      "FocusIn",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -637,7 +637,7 @@ ibus_input_context_focus_out (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "FocusOut",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -646,7 +646,7 @@ ibus_input_context_reset (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "Reset",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -655,7 +655,7 @@ ibus_input_context_page_up (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "PageUp",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -664,7 +664,7 @@ ibus_input_context_page_down (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "PageDown",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -673,7 +673,7 @@ ibus_input_context_cursor_up (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "CursorUp",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -682,7 +682,7 @@ ibus_input_context_cursor_down (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "CursorDown",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -691,7 +691,7 @@ ibus_input_context_enable (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "Enable",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -700,7 +700,7 @@ ibus_input_context_disable (IBusInputContext *context)
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     ibus_proxy_call (IBUS_PROXY (context),
                      "Disable",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 }
 
 void
@@ -712,9 +712,9 @@ ibus_input_context_property_activate (IBusInputContext *context,
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "PropertyActivate",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INT32, &state,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INT, &state,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -725,8 +725,8 @@ ibus_input_context_property_show (IBusInputContext *context,
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "PropertyShow",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -737,8 +737,8 @@ ibus_input_context_property_hide (IBusInputContext *context,
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "PropertyHide",
-                     DBUS_TYPE_STRING, &prop_name,
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
 }
 
 void
@@ -748,7 +748,7 @@ ibus_input_context_destroy (IBusInputContext *context)
 
     ibus_proxy_call (IBUS_PROXY (context),
                      "Destroy",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
     ibus_object_destroy (IBUS_OBJECT (context));
 }
 

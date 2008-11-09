@@ -291,7 +291,7 @@ ibus_property_serialize (IBusProperty    *prop,
     IBusMessageIter sub_iter;
     gboolean retval;
 
-    retval = ibus_message_iter_open_container(iter, DBUS_TYPE_STRUCT, 0, &sub_iter);
+    retval = ibus_message_iter_open_container(iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
     g_assert (retval);
 
     ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->name);

@@ -236,9 +236,9 @@ ibus_proxy_constructor (GType           type,
                                        DBUS_INTERFACE_DBUS,
                                        "AddMatch",
                                        &error,
-                                       DBUS_TYPE_STRING, &rule,
-                                       DBUS_TYPE_INVALID,
-                                       DBUS_TYPE_INVALID)) {
+                                       G_TYPE_STRING, &rule,
+                                       G_TYPE_INVALID,
+                                       G_TYPE_INVALID)) {
                 g_warning ("%s: %s", error->name, error->message);
                 ibus_error_free (error);
             }
@@ -296,9 +296,9 @@ ibus_proxy_destroy (IBusProxy *proxy)
                                        DBUS_INTERFACE_DBUS,
                                        "RemoveMatch",
                                        &error,
-                                       DBUS_TYPE_STRING, &rule,
-                                       DBUS_TYPE_INVALID,
-                                       DBUS_TYPE_INVALID)) {
+                                       G_TYPE_STRING, &rule,
+                                       G_TYPE_INVALID,
+                                       G_TYPE_INVALID)) {
 
                 g_warning ("%s: %s", error->name, error->message);
                 ibus_error_free (error);

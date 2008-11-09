@@ -513,9 +513,9 @@ ibus_bus_hello (IBusBus *bus)
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "Hello",
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_STRING, &unique_name,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_INVALID,
+                            G_TYPE_STRING, &unique_name,
+                            G_TYPE_INVALID);
 
     if (result)
         return unique_name;
@@ -538,11 +538,11 @@ ibus_bus_request_name (IBusBus      *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "RequestName",
-                            DBUS_TYPE_STRING, &name,
-                            DBUS_TYPE_UINT32, &flags,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_UINT32, &retval,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &name,
+                            G_TYPE_UINT, &flags,
+                            G_TYPE_INVALID,
+                            G_TYPE_UINT, &retval,
+                            G_TYPE_INVALID);
 
     if (result)
         return retval;
@@ -564,10 +564,10 @@ ibus_bus_release_name (IBusBus      *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "ReleaseName",
-                            DBUS_TYPE_STRING, &name,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_UINT32, &retval,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &name,
+                            G_TYPE_INVALID,
+                            G_TYPE_UINT, &retval,
+                            G_TYPE_INVALID);
 
     if (result)
         return retval;
@@ -589,10 +589,10 @@ ibus_bus_name_has_owner (IBusBus        *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "NameHasOwner",
-                            DBUS_TYPE_STRING, &name,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_BOOLEAN, &retval,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &name,
+                            G_TYPE_INVALID,
+                            G_TYPE_BOOLEAN, &retval,
+                            G_TYPE_INVALID);
 
     if (result)
         return retval;
@@ -619,9 +619,9 @@ ibus_bus_add_match (IBusBus     *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "AddMatch",
-                            DBUS_TYPE_STRING, &rule,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &rule,
+                            G_TYPE_INVALID,
+                            G_TYPE_INVALID);
 }
 
 void
@@ -637,9 +637,9 @@ ibus_bus_remove_match (IBusBus      *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "RemoveMatch",
-                            DBUS_TYPE_STRING, &rule,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &rule,
+                            G_TYPE_INVALID,
+                            G_TYPE_INVALID);
 }
 
 const gchar *
@@ -656,10 +656,10 @@ ibus_bus_get_name_owner (IBusBus        *bus,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
                             "RemoveMatch",
-                            DBUS_TYPE_STRING, &name,
-                            DBUS_TYPE_INVALID,
-                            DBUS_TYPE_STRING, &owner,
-                            DBUS_TYPE_INVALID);
+                            G_TYPE_STRING, &name,
+                            G_TYPE_INVALID,
+                            G_TYPE_STRING, &owner,
+                            G_TYPE_INVALID);
 
     if (result)
         return owner;
