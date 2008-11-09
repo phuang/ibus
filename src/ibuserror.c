@@ -31,7 +31,18 @@ ibus_error_new (void)
 }
 
 IBusError *
-ibus_error_from_message (DBusMessage    *message)
+ibus_error_from_text (const gchar *name,
+                      const gchar *message)
+{
+    IBusError *error = ibus_error_new ();
+
+    dbus_set_error (error, name, "%s", message);
+
+    return error;
+}
+
+IBusError *
+ibus_error_from_message (DBusMessage *message)
 {
     g_assert (message != NULL);
     

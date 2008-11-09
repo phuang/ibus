@@ -116,6 +116,8 @@ gboolean         ibus_message_iter_init         (IBusMessage        *message,
 gboolean         ibus_message_iter_peek         (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gpointer            value);
+void             ibus_message_iter_get_basic    (IBusMessageIter    *iter,
+                                                 gpointer            value);
 gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gpointer            value);

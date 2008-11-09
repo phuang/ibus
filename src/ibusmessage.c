@@ -394,8 +394,11 @@ ibus_message_get_args_valist (IBusMessage *message,
     while (type != G_TYPE_INVALID) {
         value = va_arg (va_args, gpointer);
         retval = ibus_message_iter_get (&iter, type, value);
-        if (!retval)
+        if (!retval) {
+            if (error)
+                *error = ibus_error_from_text (DBUS_ERROR_INVALID_ARGS, "");
             return FALSE;
+        }
         type = va_arg (va_args, GType);
     }
     return TRUE;
@@ -491,6 +494,13 @@ ibus_message_iter_init (IBusMessage     *message,
                         IBusMessageIter *iter)
 {
     return dbus_message_iter_init (message, iter);
+}
+
+void
+ibus_message_iter_get_basic (IBusMessageIter *iter,
+                             gpointer         value)
+{
+    dbus_message_iter_get_basic (iter, value);
 }
 
 gboolean

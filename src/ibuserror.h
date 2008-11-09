@@ -28,6 +28,8 @@ G_BEGIN_DECLS
 typedef DBusError IBusError;
 
 IBusError       *ibus_error_new         (void);
+IBusError       *ibus_error_from_text   (const gchar    *name,
+                                         const gchar    *message);
 IBusError       *ibus_error_from_message
                                         (DBusMessage    *message);
 void             ibus_error_free        (IBusError      *error);

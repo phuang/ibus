@@ -18,7 +18,6 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <string.h>
-#include <dbus/dbus.h>
 #include "matchrule.h"
 
 #define BUS_CONFIG_PROXY_GET_PRIVATE(o)  \
@@ -444,32 +443,32 @@ bus_match_rule_match (BusMatchRule   *rule,
     g_assert (message != NULL);
 
     if (rule->flags & MATCH_TYPE) {
-        if (dbus_message_get_type (message) != rule->message_type)
+        if (ibus_message_get_type (message) != rule->message_type)
             return FALSE;
     }
 
     if (rule->flags & MATCH_INTERFACE) {
-        if (g_strcmp0 (dbus_message_get_interface (message), rule->interface) != 0)
+        if (g_strcmp0 (ibus_message_get_interface (message), rule->interface) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_MEMBER) {
-        if (g_strcmp0 (dbus_message_get_member (message), rule->member) != 0)
+        if (g_strcmp0 (ibus_message_get_member (message), rule->member) != 0)
             return FALSE;
     }
     
     if (rule->flags & MATCH_SENDER) {
-        if (g_strcmp0 (dbus_message_get_sender (message), rule->sender) != 0)
+        if (g_strcmp0 (ibus_message_get_sender (message), rule->sender) != 0)
             return FALSE;
     }
     
     if (rule->flags & MATCH_DESTINATION) {
-        if (g_strcmp0 (dbus_message_get_destination (message), rule->destination) != 0)
+        if (g_strcmp0 (ibus_message_get_destination (message), rule->destination) != 0)
             return FALSE;
     }
     
     if (rule->flags & MATCH_PATH) {
-        if (g_strcmp0 (dbus_message_get_path (message), rule->path) != 0)
+        if (g_strcmp0 (ibus_message_get_path (message), rule->path) != 0)
             return FALSE;
     }
 
@@ -477,7 +476,7 @@ bus_match_rule_match (BusMatchRule   *rule,
         guint i;
         DBusMessageIter iter;
         
-        dbus_message_iter_init (message, &iter);
+        ibus_message_iter_init (message, &iter);
 
         for (i = 0; i < rule->args->len; i++) {
             gchar *arg = g_array_index (rule->args, gchar *, i);
@@ -485,16 +484,16 @@ bus_match_rule_match (BusMatchRule   *rule,
                 gint type;
                 gchar *value;
 
-                type = dbus_message_iter_get_arg_type (&iter);
-                if (type != DBUS_TYPE_STRING && type != DBUS_TYPE_OBJECT_PATH)
+                type = ibus_message_iter_get_arg_type (&iter);
+                if (type != G_TYPE_STRING && type != IBUS_TYPE_OBJECT_PATH)
                     return FALSE;
                 
-                dbus_message_iter_get_basic (&iter, &value);
+                ibus_message_iter_get_basic (&iter, &value);
 
                 if (g_strcmp0 (arg, value) != 0)
                     return FALSE;
             }
-            dbus_message_iter_next (&iter);
+            ibus_message_iter_next (&iter);
         }
     }
     return TRUE;

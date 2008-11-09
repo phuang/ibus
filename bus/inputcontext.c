@@ -296,14 +296,15 @@ _ic_process_key_event (BusInputContext  *context,
     
 
     error = ibus_error_new ();
-    retval = dbus_message_get_args (message, error,
-                DBUS_TYPE_UINT32, &keyval,
-                DBUS_TYPE_BOOLEAN, &is_press,
-                DBUS_TYPE_UINT32, &state,
-                DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message,
+                &error,
+                G_TYPE_UINT, &keyval,
+                G_TYPE_BOOLEAN, &is_press,
+                G_TYPE_UINT, &state,
+                G_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message,
+        reply = ibus_message_new_error (message,
                                         error->name,
                                         error->message);
         ibus_error_free (error);
@@ -330,10 +331,10 @@ _ic_process_key_event (BusInputContext  *context,
     }
 
 out:
-    reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply,
-                              DBUS_TYPE_BOOLEAN, &retval,
-                              DBUS_TYPE_INVALID);
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+                              G_TYPE_BOOLEAN, &retval,
+                              G_TYPE_INVALID);
 
     return reply;
 }
@@ -350,24 +351,23 @@ _ic_set_cursor_location (BusInputContext  *context,
     IBusMessage *reply;
     guint32 x, y, w, h;
     gboolean retval;
-    DBusError error;
+    IBusError *error;
 
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
     
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
-                DBUS_TYPE_UINT32, &x,
-                DBUS_TYPE_UINT32, &y,
-                DBUS_TYPE_UINT32, &w,
-                DBUS_TYPE_UINT32, &h,
-                DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message, &error,
+                G_TYPE_UINT, &x,
+                G_TYPE_UINT, &y,
+                G_TYPE_UINT, &w,
+                G_TYPE_UINT, &h,
+                G_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message,
-                                        error.name,
-                                        error.message);
-        dbus_error_free (&error);
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
         return reply;
     }
 
@@ -380,7 +380,7 @@ _ic_set_cursor_location (BusInputContext  *context,
         bus_engine_proxy_set_cursor_location (priv->engine, x, y, w, h);
     }
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     return reply;
 }
 
@@ -397,7 +397,7 @@ _ic_focus_in (BusInputContext  *context,
 
     bus_input_context_focus_in (context);
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
 
     return reply;
 }
@@ -415,7 +415,7 @@ _ic_focus_out (BusInputContext  *context,
 
     bus_input_context_focus_out (context);
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
 
     return reply;
 }
@@ -439,7 +439,7 @@ _ic_reset (BusInputContext  *context,
         bus_engine_proxy_reset (priv->engine);
     }
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     return reply;
 }
 
@@ -455,22 +455,22 @@ _ic_set_capabilities (BusInputContext  *context,
     IBusMessage *reply;
     guint32 caps;
     gboolean retval;
-    DBusError error;
+    IBusError *error;
     
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
     
 
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
-                DBUS_TYPE_UINT32, &caps,
-                DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message,
+                &error,
+                G_TYPE_UINT, &caps,
+                G_TYPE_INVALID);
 
     if (!retval) {
-        reply = dbus_message_new_error (message,
-                                        error.name,
-                                        error.message);
-        dbus_error_free (&error);
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
         return reply;
     }
 
@@ -482,7 +482,7 @@ _ic_set_capabilities (BusInputContext  *context,
         }
     }
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     return reply;
 }
 
@@ -501,10 +501,10 @@ _ic_is_enabled (BusInputContext  *context,
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply,
-            DBUS_TYPE_BOOLEAN, &priv->enabled,
-            DBUS_TYPE_INVALID);
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+            G_TYPE_BOOLEAN, &priv->enabled,
+            G_TYPE_INVALID);
 
     return reply;
 }
@@ -528,10 +528,10 @@ _ic_get_factory (BusInputContext  *context,
         factory = ibus_proxy_get_path (IBUS_PROXY (priv->factory));
     }
 
-    reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply,
-            DBUS_TYPE_STRING, &factory,
-            DBUS_TYPE_INVALID);
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+            G_TYPE_STRING, &factory,
+            G_TYPE_INVALID);
 
     return reply;
 }
@@ -548,7 +548,7 @@ _ic_destroy (BusInputContext  *context,
     IBusMessage *reply;
     
     ibus_object_destroy (IBUS_OBJECT (context));
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     
     return reply;
 }
@@ -587,25 +587,25 @@ bus_input_context_ibus_message (BusInputContext *context,
         { NULL, NULL, NULL }
     };
 
-    dbus_message_set_sender (message, bus_connection_get_unique_name (connection));
-    dbus_message_set_destination (message, DBUS_SERVICE_DBUS);
+    ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
+    ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     for (i = 0; handlers[i].interface != NULL; i++) {
-        if (dbus_message_is_method_call (message,
+        if (ibus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {
 
             reply_message = handlers[i].handler (context, message, connection);
             if (reply_message) {
 
-                dbus_message_set_sender (reply_message,
+                ibus_message_set_sender (reply_message,
                                          DBUS_SERVICE_DBUS);
-                dbus_message_set_destination (reply_message,
+                ibus_message_set_destination (reply_message,
                                               bus_connection_get_unique_name (connection));
-                dbus_message_set_no_reply (reply_message, TRUE);
+                ibus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-                dbus_message_unref (reply_message);
+                ibus_message_unref (reply_message);
             }
 
             g_signal_stop_emission_by_name (context, "ibus-message");
@@ -613,13 +613,13 @@ bus_input_context_ibus_message (BusInputContext *context,
         }
     }
 
-    reply_message = dbus_message_new_error_printf (message,
+    reply_message = ibus_message_new_error_printf (message,
                                 DBUS_ERROR_UNKNOWN_METHOD,
                                 "Can not find %s method",
-                                dbus_message_get_member (message));
+                                ibus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-    dbus_message_unref (reply_message);
+    ibus_message_unref (reply_message);
     return FALSE;
 }
 
@@ -735,8 +735,8 @@ _engine_commit_string_cb (BusEngineProxy    *engine,
                                  ibus_service_get_path  (IBUS_SERVICE (engine)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "CommitString",
-                                 DBUS_TYPE_STRING, &text,
-                                 DBUS_TYPE_INVALID);
+                                 G_TYPE_STRING, &text,
+                                 G_TYPE_INVALID);
                                  
 }
 
