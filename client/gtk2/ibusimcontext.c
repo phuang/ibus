@@ -591,8 +591,8 @@ _ic_forward_key_event_cb (IBusInputContext  *ic,
     event->group = 0;
     event->is_modifier = 0;
 
-    gdk_event_put (event);
-    gdk_event_free (event);
+    gdk_event_put ((GdkEvent *)event);
+    gdk_event_free ((GdkEvent *)event);
 }
 
 static void

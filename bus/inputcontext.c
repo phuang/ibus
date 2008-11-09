@@ -608,7 +608,7 @@ bus_input_context_ibus_message (BusInputContext *context,
                 dbus_message_unref (reply_message);
             }
 
-            g_signal_stop_emission_by_name (context, "dbus-message");
+            g_signal_stop_emission_by_name (context, "ibus-message");
             return TRUE;
         }
     }
