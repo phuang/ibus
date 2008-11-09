@@ -224,7 +224,7 @@ ibus_property_from_ibus_message (IBusMessageIter *iter)
     
     IBusMessageIter sub_iter;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
     g_assert (retval);
 
     // get name
@@ -266,7 +266,7 @@ ibus_prop_list_from_ibus_message (IBusMessageIter *iter)
     IBusPropList *prop_list;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
     g_assert (retval);
     
     prop_list = ibus_prop_list_new ();
@@ -319,7 +319,7 @@ ibus_prop_list_to_ibus_message (IBusPropList *prop_list, IBusMessageIter *iter)
     IBusMessageIter sub_iter;
     gboolean retval;
 
-    retval = ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_ARRAY, "(susssbbuav)", &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_ARRAY, "(susssbbuav)", &sub_iter);
     for (i = 0;; i++) {
         prop = ibus_prop_list_get (prop_list, i);
         if (prop == NULL)

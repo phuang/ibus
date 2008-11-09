@@ -207,7 +207,7 @@ ibus_attribute_from_ibus_message (DBusMessageIter *iter)
 
     guint type, value, start_index, end_index;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
     g_assert (retval);
 
     ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
@@ -226,7 +226,7 @@ ibus_attr_list_from_ibus_message (DBusMessageIter *iter)
     IBusAttrList *attr_list;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
     g_assert (retval);
     
     attr_list = ibus_attr_list_new ();
@@ -253,7 +253,7 @@ ibus_attribute_to_ibus_message (IBusAttribute *attr, DBusMessageIter *iter)
 
     DBusMessageIter sub_iter;
 
-    ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_STRUCT, "uuuu", &sub_iter);
+    ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, "uuuu", &sub_iter);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->type);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->value);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->start_index);
@@ -273,7 +273,7 @@ ibus_attr_list_to_ibus_message (IBusAttrList *attr_list, DBusMessageIter *iter)
     gint i;
     DBusMessageIter sub_iter;
 
-    ibus_message_iter_open_container(iter, IBUS_CONTAINER_TYPE_ARRAY, "(uuuu)", &sub_iter);
+    ibus_message_iter_open_container(iter, IBUS_TYPE_ARRAY, "(uuuu)", &sub_iter);
     for (i = 0; ;i++) {
         IBusAttribute *attr;
         attr = ibus_attr_list_get (attr_list, i);

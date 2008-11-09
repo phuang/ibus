@@ -333,8 +333,23 @@ ibus_message_append_args_valist (IBusMessage *message,
                                  GType        first_arg_type,
                                  va_list      va_args)
 {
-    // TODO
-    return FALSE;
+    GType type;
+    gboolean retval;
+    IBusMessageIter iter;
+
+    ibus_message_iter_init_append (message, &iter);
+    
+    type = first_arg_type;
+    while (type != G_TYPE_INVALID) {
+        gpointer value = va_arg (va_args, gpointer);
+        retval = ibus_message_iter_append (&iter, type, value);
+        type = va_arg (va_args, GType);
+        
+        if (!retval)
+            return FALSE;
+    }
+    
+    return TRUE;
 }
 
 gboolean
@@ -540,7 +555,7 @@ ibus_message_iter_has_next (IBusMessageIter *iter)
 
 gboolean
 ibus_message_iter_open_container (IBusMessageIter   *iter,
-                                  IBusContainerType  type,
+                                  GType              type,
                                   const gchar       *contained_signature,
                                   IBusMessageIter   *sub)
 {
@@ -557,7 +572,7 @@ ibus_message_iter_close_container (IBusMessageIter *iter,
 
 gboolean
 ibus_message_iter_recurse (IBusMessageIter   *iter,
-                           IBusContainerType  type,
+                           GType              type,
                            IBusMessageIter   *sub)
 {
     dbus_message_iter_recurse (iter, sub);

@@ -120,14 +120,14 @@ ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
     gboolean cursor_visible;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
     g_assert (retval);
 
     ibus_message_iter_get (&sub_iter, G_TYPE_INT, &page_size);
     ibus_message_iter_get (&sub_iter, G_TYPE_INT, &cursor_pos);
     ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &cursor_visible);
 
-    retval = ibus_message_iter_recurse (&sub_iter, IBUS_CONTAINER_TYPE_ARRAY, &sub_sub_iter);
+    retval = ibus_message_iter_recurse (&sub_iter, IBUS_TYPE_ARRAY, &sub_sub_iter);
     g_assert (retval);
     
     table = ibus_lookup_table_new (page_size, cursor_pos, cursor_visible);
@@ -137,7 +137,7 @@ ibus_lookup_table_from_ibus_message (IBusMessageIter *iter)
         IBusAttrList *attr_list;
         IBusMessageIter sub_sub_sub_iter;
         
-        retval = ibus_message_iter_recurse (&sub_sub_iter, IBUS_CONTAINER_TYPE_STRUCT, &sub_sub_sub_iter);
+        retval = ibus_message_iter_recurse (&sub_sub_iter, IBUS_TYPE_STRUCT, &sub_sub_sub_iter);
         g_assert (retval);
 
         ibus_message_iter_get (&sub_sub_sub_iter, G_TYPE_STRING, &text);
@@ -161,7 +161,7 @@ ibus_lookup_table_to_ibus_message (IBusLookupTable *table, IBusMessageIter *iter
     gint i;
     IBusMessageIter sub_iter, sub_sub_iter, sub_sub_sub_iter;
 
-    retval = ibus_message_iter_open_container (iter, IBUS_CONTAINER_TYPE_STRUCT, 0, &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
 
     g_assert (retval);
 
@@ -169,11 +169,11 @@ ibus_lookup_table_to_ibus_message (IBusLookupTable *table, IBusMessageIter *iter
     ibus_message_iter_append (&sub_iter, G_TYPE_INT, &table->cursor_pos);
     ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &table->cursor_visible);
     
-    retval = ibus_message_iter_open_container (&sub_iter, IBUS_CONTAINER_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
+    retval = ibus_message_iter_open_container (&sub_iter, IBUS_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
     g_assert (retval);
 
     for (i = 0; i < table->candidates->len; i++) {
-        ibus_message_iter_open_container (&sub_sub_iter, IBUS_CONTAINER_TYPE_STRUCT, 0, &sub_sub_sub_iter);
+        ibus_message_iter_open_container (&sub_sub_iter, IBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
         
         IBusCandidate *candidate = &g_array_index (table->candidates, IBusCandidate, i);
         ibus_message_iter_append (&sub_sub_sub_iter, G_TYPE_STRING, &candidate->text);
