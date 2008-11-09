@@ -118,3 +118,17 @@ ibus_get_address (void)
     return address;
 }
 
+void
+ibus_free_strv (gchar **strv)
+{
+    gchar **p;
+    
+    if (strv == NULL)
+        return;
+
+    for (p = strv; *p != NULL; p++) {
+        g_free (*p);
+    }
+
+    g_free (strv);
+}

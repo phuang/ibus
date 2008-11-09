@@ -353,61 +353,56 @@ _ibus_register_factories (BusIBusImpl     *ibus,
                           IBusMessage     *message,
                           BusConnection   *connection)
 {
-    gchar **paths;
     gint n;
-    IBusError *error;
+    IBusMessageIter iter, sub_iter;
     IBusMessage *reply;
-    gint i;
+    gboolean retval;
     BusFactoryProxy *factory;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    if (!ibus_message_get_args (message,
-                                &error,
-                                IBUS_TYPE_ARRAY, IBUS_TYPE_OBJECT_PATH,
-                                &paths, &n,
-                                G_TYPE_INVALID)) {
-        reply = ibus_message_new_error (message,
-                                        error->name,
-                                        "RegisterFactories shoule pass an object_path array as arugment");
-        ibus_error_free (error);
-        return reply;;
-    }
+    retval = ibus_message_iter_init (message, &iter);
+    g_assert (retval);
 
-    reply = ibus_message_new_method_return (message);
-    ibus_connection_send (IBUS_CONNECTION (connection), reply);
-    ibus_connection_flush (IBUS_CONNECTION (connection));
-    ibus_message_unref (reply);
+    retval = ibus_message_iter_recurse (&iter, IBUS_TYPE_ARRAY, &sub_iter);
+    g_assert (retval);
 
-    for (i = 0; i < n; i++) {
-        if (g_hash_table_lookup (priv->factory_dict, paths[i]) != NULL) {
-            reply = ibus_message_new_error_printf (
-                                    message,
-                                    DBUS_ERROR_FAILED,
-                                    "Factory %s has been registered!",
-                                    paths[i]);
-            ibus_free_string_array (paths);
+    while (1) {
+        gchar *path;
+        if (ibus_message_iter_get_arg_type (&sub_iter) != IBUS_TYPE_OBJECT_PATH)
+            break;
+        retval = ibus_message_iter_get (&sub_iter,
+                                        IBUS_TYPE_OBJECT_PATH,
+                                        &path);
+        g_assert (retval);
+
+        if (g_hash_table_lookup (priv->factory_dict, path) != NULL) {
+            reply = ibus_message_new_error_printf (message,
+                                                   DBUS_ERROR_FAILED,
+                                                   "Factory %s has been registered!",
+                                                   path);
             return reply;
         }
-    }
-
-    for (i = 0; i < n; i++ ) {
-        factory = bus_factory_proxy_new (paths[i], connection);
+        
+        factory = bus_factory_proxy_new (path, connection);
         g_hash_table_insert (priv->factory_dict,
                              (gpointer) ibus_proxy_get_path (IBUS_PROXY (factory)),
                              factory);
         priv->factory_list = g_list_append (priv->factory_list, factory);
+        
         g_signal_connect (factory,
                           "destroy",
                           (GCallback) _factory_destroy_cb,
                           ibus);
     }
 
-    if (i > 0) {
-        priv->factory_list = g_list_sort (priv->factory_list, (GCompareFunc) _factory_cmp);
-    }
+    reply = ibus_message_new_method_return (message);
+    ibus_connection_send (IBUS_CONNECTION (connection), reply);
+    ibus_connection_flush (IBUS_CONNECTION (connection));
 
+    priv->factory_list = g_list_sort (priv->factory_list, (GCompareFunc) _factory_cmp);
+    
     return NULL;
 }
 
