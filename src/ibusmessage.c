@@ -390,13 +390,13 @@ ibus_message_get_args_valist (IBusMessage *message,
     if (!retval)
         return FALSE;
 
-    type = va_arg (va_args, GType);
-    
+    type = first_arg_type;
     while (type != G_TYPE_INVALID) {
         value = va_arg (va_args, gpointer);
         retval = ibus_message_iter_get (&iter, type, value);
         if (!retval)
             return FALSE;
+        type = va_arg (va_args, GType);
     }
     return TRUE;
 }
@@ -483,7 +483,7 @@ ibus_message_iter_append (IBusMessageIter *iter,
         return FALSE;
     }
 
-    return func (value, iter);
+    return func (*(gconstpointer *)value, iter);
 }
 
 gboolean

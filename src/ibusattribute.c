@@ -253,7 +253,7 @@ ibus_attribute_to_ibus_message (IBusAttribute *attr, DBusMessageIter *iter)
 
     DBusMessageIter sub_iter;
 
-    ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, "uuuu", &sub_iter);
+    ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, NULL, &sub_iter);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->type);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->value);
     ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->start_index);
