@@ -56,9 +56,9 @@ static guint dbus_signals[LAST_SIGNAL] = { 0 };
 static void     bus_dbus_impl_class_init      (BusDBusImplClass     *klass);
 static void     bus_dbus_impl_init            (BusDBusImpl          *dbus);
 static void     bus_dbus_impl_dispose         (BusDBusImpl          *dbus);
-static gboolean bus_dbus_impl_dbus_message    (BusDBusImpl          *dbus,
+static gboolean bus_dbus_impl_ibus_message    (BusDBusImpl          *dbus,
                                                BusConnection        *connection,
-                                               DBusMessage          *message);
+                                               IBusMessage          *message);
 static void     bus_dbus_impl_name_owner_changed
                                               (BusDBusImpl          *dbus,
                                                gchar                *name,
@@ -119,7 +119,7 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
 
     gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
 
-    service_class->dbus_message = (ServiceDBusMessageFunc) bus_dbus_impl_dbus_message;
+    service_class->ibus_message = (ServiceIBusMessageFunc) bus_dbus_impl_ibus_message;
 
     klass->name_owner_changed = bus_dbus_impl_name_owner_changed;
     
@@ -164,9 +164,9 @@ bus_dbus_impl_dispose (BusDBusImpl *dbus)
 
 
 /* introspectable interface */
-static DBusMessage *
+static IBusMessage *
 _dbus_introspect (BusDBusImpl     *dbus,
-                  DBusMessage     *message,
+                  IBusMessage     *message,
                   BusConnection   *connection)
 {
     static const gchar *introspect =
@@ -258,45 +258,45 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "  </interface>\n"
         "</node>\n";
 
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply_message,
-            DBUS_TYPE_STRING, &introspect,
-            DBUS_TYPE_INVALID);
+    IBusMessage *reply_message;
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply_message,
+                              G_TYPE_STRING, &introspect,
+                              G_TYPE_INVALID);
 
     return reply_message;
 }
 
 
 /* dbus interface */
-static DBusMessage *
+static IBusMessage *
 _dbus_no_implement (BusDBusImpl     *dbus,
-                    DBusMessage     *message,
+                    IBusMessage     *message,
                     BusConnection   *connection)
 {
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_error_printf (message,
-                                    DBUS_ERROR_UNKNOWN_METHOD,
-                                    "IBus does not support %s.",
-                                    dbus_message_get_member (message));
+    IBusMessage *reply_message;
+    reply_message = ibus_message_new_error_printf (message,
+                                                   DBUS_ERROR_UNKNOWN_METHOD,
+                                                   "IBus does not support %s.",
+                                                   ibus_message_get_member (message));
     return reply_message;
 }
 
 
-static DBusMessage *
+static IBusMessage *
 _dbus_hello (BusDBusImpl    *dbus,
-             DBusMessage    *message,
+             IBusMessage    *message,
              BusConnection  *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
+    IBusMessage *reply_message;
 
     if (bus_connection_get_unique_name (connection) != NULL) {
-        reply_message = dbus_message_new_error (message,
-                                    DBUS_ERROR_FAILED,
-                                    "Already handled an Hello message");
+        reply_message = ibus_message_new_error (message,
+                                                DBUS_ERROR_FAILED,
+                                                "Already handled an Hello message");
     }
     else {
         gchar *name;
@@ -305,10 +305,10 @@ _dbus_hello (BusDBusImpl    *dbus,
         bus_connection_set_unique_name (connection, name);
         g_hash_table_insert (priv->names, name, connection);
 
-        reply_message = dbus_message_new_method_return (message);
-        dbus_message_append_args (reply_message,
-                    DBUS_TYPE_STRING, &name,
-                    DBUS_TYPE_INVALID);
+        reply_message = ibus_message_new_method_return (message);
+        ibus_message_append_args (reply_message,
+                                  G_TYPE_STRING, &name,
+                                  G_TYPE_INVALID);
         
         g_signal_emit (dbus,
                        dbus_signals[NAME_OWNER_CHANGED],
@@ -323,28 +323,28 @@ _dbus_hello (BusDBusImpl    *dbus,
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_list_names (BusDBusImpl       *dbus,
-                  DBusMessage       *message,
+                  IBusMessage       *message,
                   BusConnection     *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
-    DBusMessageIter iter, sub_iter;
+    IBusMessage *reply_message;
+    IBusMessageIter iter, sub_iter;
     GList *name, *names;
 
-    reply_message = dbus_message_new_method_return (message);
+    reply_message = ibus_message_new_method_return (message);
 
-    dbus_message_iter_init_append (message, &iter);
-    dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &sub_iter);
+    ibus_message_iter_init_append (message, &iter);
+    ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "s", &sub_iter);
 
     // append unique names
     names = g_hash_table_get_keys (priv->unique_names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
-        dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &(name->data));
+        ibus_message_iter_append_basic (&sub_iter, G_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
 
@@ -352,18 +352,18 @@ _dbus_list_names (BusDBusImpl       *dbus,
     names = g_hash_table_get_keys (priv->names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
-        dbus_message_iter_append_basic (&sub_iter, DBUS_TYPE_STRING, &(name->data));
+        ibus_message_iter_append_basic (&sub_iter, G_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
 
-    dbus_message_iter_close_container (&iter, &sub_iter);
+    ibus_message_iter_close_container (&iter, &sub_iter);
 
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_name_has_owner (BusDBusImpl   *dbus,
-                      DBusMessage   *message,
+                      IBusMessage   *message,
                       BusConnection *connection)
 {
     BusDBusImplPrivate *priv;
@@ -372,117 +372,117 @@ _dbus_name_has_owner (BusDBusImpl   *dbus,
     gchar *name;
     gboolean retval;
     gboolean has_owner;
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
 
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
-                    DBUS_TYPE_STRING, &name,
-                    DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message,
+                                    &error,
+                                    G_TYPE_STRING, &name,
+                                    G_TYPE_INVALID);
 
     if (! retval) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
+        return reply_message;
+    }
+
+    if (name[0] == ':') {
+        has_owner = g_hash_table_lookup (priv->unique_names, name) != NULL;
     }
     else {
-        if (name[0] == ':') {
-            has_owner = g_hash_table_lookup (priv->unique_names, name) != NULL;
-        }
-        else {
-            has_owner = g_hash_table_lookup (priv->names, name) != NULL;
-        }
-        reply_message = dbus_message_new_method_return (message);
-        dbus_message_append_args (reply_message,
-                    DBUS_TYPE_BOOLEAN, &has_owner,
-                    DBUS_TYPE_INVALID);
+        has_owner = g_hash_table_lookup (priv->names, name) != NULL;
     }
+    
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply_message,
+                              G_TYPE_BOOLEAN, &has_owner,
+                              G_TYPE_INVALID);
 
     return reply_message;
 }
 
 
-static DBusMessage *
+static IBusMessage *
 _dbus_get_name_owner (BusDBusImpl   *dbus,
-                      DBusMessage   *message,
+                      IBusMessage   *message,
                       BusConnection *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
     gchar *name;
+    BusConnection *owner;
     gboolean retval;
     const gchar *owner_name = NULL;
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
 
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
-                    DBUS_TYPE_STRING, &name,
-                    DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message, 
+                                    &error,
+                                    G_TYPE_STRING, &name,
+                                    G_TYPE_INVALID);
 
     if (! retval) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
+        return reply_message;
+    }
+
+    if (g_strcmp0 (name, DBUS_SERVICE_DBUS) == 0 ||
+        g_strcmp0 (name, IBUS_SERVICE_IBUS) == 0) {
+        owner_name = name;
     }
     else {
-        BusConnection *owner;
-        if (g_strcmp0 (name, DBUS_SERVICE_DBUS) == 0 ||
-            g_strcmp0 (name, IBUS_SERVICE_IBUS) == 0) {
-            owner_name = name;
+        owner = bus_dbus_impl_get_connection_by_name (dbus, name);
+        if (owner != NULL) {
+            owner_name = bus_connection_get_unique_name (owner);
         }
-        else {
-            owner = bus_dbus_impl_get_connection_by_name (dbus, name);
-            if (owner != NULL) {
-                owner_name = bus_connection_get_unique_name (owner);
-            }
-        }
+    }
 
-        if (owner_name != NULL) {
-            reply_message = dbus_message_new_method_return (message);
-            dbus_message_append_args (reply_message,
-                    DBUS_TYPE_STRING, &owner_name,
-                    DBUS_TYPE_INVALID);
-        }
-        else {
-            reply_message = dbus_message_new_error_printf (message,
-                                    DBUS_ERROR_NAME_HAS_NO_OWNER,
-                                    "Name '%s' does have owner",
-                                    name);
-        }
+    if (owner_name != NULL) {
+        reply_message = ibus_message_new_method_return (message);
+        ibus_message_append_args (reply_message,
+                                  G_TYPE_STRING, &owner_name,
+                                  G_TYPE_INVALID);
+    }
+    else {
+        reply_message = ibus_message_new_error_printf (message,
+                                                       DBUS_ERROR_NAME_HAS_NO_OWNER,
+                                                       "Name '%s' does have owner",
+                                                       name);
     }
 
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_get_id (BusDBusImpl   *dbus,
-              DBusMessage   *message,
+              IBusMessage   *message,
               BusConnection *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
+    IBusMessage *reply_message;
     const gchar *name;
 
     name = bus_connection_get_unique_name (connection);
 
     if (name == NULL) {
-        reply_message = dbus_message_new_error (message,
-                                    DBUS_ERROR_FAILED,
-                                    "Can not GetId before Hello");
+        reply_message = ibus_message_new_error (message,
+                                                DBUS_ERROR_FAILED,
+                                                "Can not GetId before Hello");
+        return reply_message;
     }
-    else {
-        reply_message = dbus_message_new_method_return (message);
-        dbus_message_append_args (reply_message,
-                    DBUS_TYPE_STRING, &name,
-                    DBUS_TYPE_INVALID);
-    }
-
+    
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply_message,
+                              G_TYPE_STRING, &name,
+                              G_TYPE_INVALID);
     return reply_message;
 }
 
@@ -500,40 +500,41 @@ _rule_destroy_cb (BusMatchRule *rule,
     g_object_unref (rule);
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_add_match (BusDBusImpl    *dbus,
-                 DBusMessage    *message,
+                 IBusMessage    *message,
                  BusConnection  *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
     gboolean retval;
     gchar *rule_text;
     BusMatchRule *rule;
     GList *link;
 
-    dbus_error_init (&error);
-    retval = dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule_text,
-            DBUS_TYPE_INVALID);
+    retval = ibus_message_get_args (message,
+                                    &error,
+                                    G_TYPE_STRING, &rule_text,
+                                    G_TYPE_INVALID);
 
     if (!retval) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
         return reply_message;
     }
 
     rule = bus_match_rule_new (rule_text);
 
     if (rule == NULL) {
-         reply_message = dbus_message_new_error_printf (message,
-                                    DBUS_ERROR_MATCH_RULE_INVALID,
-                                    "Parse rule [%s] failed", rule_text);
+         reply_message = ibus_message_new_error_printf (message,
+                                                        DBUS_ERROR_MATCH_RULE_INVALID,
+                                                        "Parse rule [%s] failed",
+                                                        rule_text);
         return reply_message;
     }
 
@@ -552,41 +553,42 @@ _dbus_add_match (BusDBusImpl    *dbus,
         g_signal_connect (rule, "destroy", G_CALLBACK (_rule_destroy_cb), dbus);
     }
     
-    reply_message = dbus_message_new_method_return (message);
+    reply_message = ibus_message_new_method_return (message);
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_remove_match (BusDBusImpl     *dbus,
-                    DBusMessage     *message,
+                    IBusMessage     *message,
                     BusConnection   *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
     gchar *rule_text;
     BusMatchRule *rule;
     GList *link;
 
-    dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &rule_text,
-            DBUS_TYPE_INVALID)) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+    if (!ibus_message_get_args (message,
+                                &error,
+                                G_TYPE_STRING, &rule_text,
+                                G_TYPE_INVALID)) {
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
         return reply_message;
     }
 
     rule = bus_match_rule_new (rule_text);
 
     if (rule == NULL ) {
-         reply_message = dbus_message_new_error_printf (message,
-                                    DBUS_ERROR_MATCH_RULE_INVALID,
-                                    "Parse rule [%s] failed", rule_text);
+         reply_message = ibus_message_new_error_printf (message,
+                                                        DBUS_ERROR_MATCH_RULE_INVALID,
+                                                        "Parse rule [%s] failed",
+                                                        rule_text);
         return reply_message;
     }
     
@@ -599,117 +601,118 @@ _dbus_remove_match (BusDBusImpl     *dbus,
 
     g_object_unref (rule);
    
-    reply_message = dbus_message_new_method_return (message);
+    reply_message = ibus_message_new_method_return (message);
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_request_name (BusDBusImpl     *dbus,
-                    DBusMessage     *message,
+                    IBusMessage     *message,
                     BusConnection   *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
     gchar *name;
     guint flags;
     guint retval;
 
-    dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &name,
-            DBUS_TYPE_UINT32, &flags,
-            DBUS_TYPE_INVALID)) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+    if (!ibus_message_get_args (message,
+                                &error,
+                                G_TYPE_STRING, &name,
+                                G_TYPE_UINT, &flags,
+                                G_TYPE_INVALID)) {
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
+        return reply_message;
     }
-    else {
-        if (g_hash_table_lookup (priv->names, name)) {
-            reply_message = dbus_message_new_error_printf (message,
-                        DBUS_ERROR_FAILED,
-                        "Name %s has owner", name);
-        }
-        else {
-            retval = 1;
-            g_hash_table_insert (priv->names,
-                    (gpointer )bus_connection_add_name (connection, name),
-                    connection);
-            reply_message = dbus_message_new_method_return (message);
-            dbus_message_append_args (message,
-                    DBUS_TYPE_UINT32, &retval,
-                    DBUS_TYPE_INVALID);
-            
-            g_signal_emit (dbus,
-                       dbus_signals[NAME_OWNER_CHANGED],
-                       0,
-                       name,
-                       "",
-                       bus_connection_get_unique_name (connection));
-        }
+        
+    if (g_hash_table_lookup (priv->names, name)) {
+        reply_message = ibus_message_new_error_printf (message,
+                                                       DBUS_ERROR_FAILED,
+                                                       "Name %s has owner",
+                                                       name);
+        return reply_message;
     }
 
+    retval = 1;
+    g_hash_table_insert (priv->names,
+                         (gpointer )bus_connection_add_name (connection, name),
+                         connection);
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (message,
+                              G_TYPE_UINT, &retval,
+                              G_TYPE_INVALID);
+            
+    g_signal_emit (dbus,
+                   dbus_signals[NAME_OWNER_CHANGED],
+                   0,
+                   name,
+                   "",
+                   bus_connection_get_unique_name (connection));
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _dbus_release_name (BusDBusImpl     *dbus,
-                    DBusMessage     *message,
+                    IBusMessage     *message,
                     BusConnection   *connection)
 {
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
 
-    DBusMessage *reply_message;
-    DBusError error;
+    IBusMessage *reply_message;
+    IBusError *error;
     gchar *name;
     guint retval;
 
-    dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
-            DBUS_TYPE_STRING, &name,
-            DBUS_TYPE_INVALID)) {
-        reply_message = dbus_message_new_error (message,
-                                    error.name,
-                                    error.message);
-        dbus_error_free (&error);
+    if (!ibus_message_get_args (message,
+                                &error,
+                                G_TYPE_STRING, &name,
+                                G_TYPE_INVALID)) {
+        reply_message = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+        ibus_error_free (error);
+        return reply_message;
+    }
+    
+    reply_message = ibus_message_new_method_return (message);
+    if (bus_connection_remove_name (connection, name)) {
+        retval = 1;
     }
     else {
-        reply_message = dbus_message_new_method_return (message);
-        if (bus_connection_remove_name (connection, name)) {
-            retval = 1;
-        }
-        else {
-            retval = 2;
-        }
-        dbus_message_append_args (message,
-                    DBUS_TYPE_UINT32, &retval,
-                    DBUS_TYPE_INVALID);
+        retval = 2;
     }
+    
+    ibus_message_append_args (message,
+                              G_TYPE_UINT, &retval,
+                              G_TYPE_INVALID);
 
     return reply_message;
 }
 
 
 static gboolean
-bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
+bus_dbus_impl_ibus_message (BusDBusImpl  *dbus,
                             BusConnection   *connection,
-                            DBusMessage     *message)
+                            IBusMessage     *message)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
     gint i;
-    DBusMessage *reply_message = NULL;
+    IBusMessage *reply_message = NULL;
 
     struct {
         const gchar *interface;
         const gchar *name;
-        DBusMessage *(* handler) (BusDBusImpl *, DBusMessage *, BusConnection *);
+        IBusMessage *(* handler) (BusDBusImpl *, IBusMessage *, BusConnection *);
     } handlers[] =  {
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
@@ -736,39 +739,40 @@ bus_dbus_impl_dbus_message (BusDBusImpl  *dbus,
         { NULL, NULL, NULL }
     };
 
-    dbus_message_set_sender (message, bus_connection_get_unique_name (connection));
-    dbus_message_set_destination (message, DBUS_SERVICE_DBUS);
+    ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
+    ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     for (i = 0; handlers[i].interface != NULL; i++) {
-        if (dbus_message_is_method_call (message,
+        if (ibus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {
 
             reply_message = handlers[i].handler (dbus, message, connection);
             if (reply_message) {
 
-                dbus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
-                dbus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
-                dbus_message_set_no_reply (reply_message, TRUE);
+                ibus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
+                ibus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
+                ibus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
                 bus_dbus_impl_dispatch_message_by_rule (dbus, reply_message, connection);
-                dbus_message_unref (reply_message);
+                ibus_message_unref (reply_message);
             }
 
-            g_signal_stop_emission_by_name (dbus, "dbus-message");
+            g_signal_stop_emission_by_name (dbus, "ibus-message");
             return TRUE;
         }
     }
 
-    reply_message = dbus_message_new_error_printf (message,
-                                DBUS_ERROR_UNKNOWN_METHOD,
-                                "Can not find method %s",
-                                dbus_message_get_member (message));
+    reply_message = ibus_message_new_error_printf (message,
+                                                   DBUS_ERROR_UNKNOWN_METHOD,
+                                                   "Can not find method %s",
+                                                   ibus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
     bus_dbus_impl_dispatch_message_by_rule (dbus, reply_message, connection);
-    dbus_message_unref (reply_message);
+    ibus_message_unref (reply_message);
+    
     return FALSE;
 }
 
@@ -783,26 +787,26 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
     g_assert (old_name != NULL);
     g_assert (new_name != NULL);
 
-    DBusMessage *message;
+    IBusMessage *message;
 
-    message = dbus_message_new_signal (DBUS_PATH_DBUS,
+    message = ibus_message_new_signal (DBUS_PATH_DBUS,
                                        DBUS_INTERFACE_DBUS,
                                        "NameOwnerChanged");
-    dbus_message_append_args (message,
-                              DBUS_TYPE_STRING, &name,
-                              DBUS_TYPE_STRING, &old_name,
-                              DBUS_TYPE_STRING, &new_name,
-                              DBUS_TYPE_INVALID);
+    ibus_message_append_args (message,
+                              G_TYPE_STRING, &name,
+                              G_TYPE_STRING, &old_name,
+                              G_TYPE_STRING, &new_name,
+                              G_TYPE_INVALID);
     
     bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
 
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
 }
 
 static gboolean
-_connection_dbus_message_cb (BusConnection  *connection,
-                             DBusMessage    *message,
+_connection_ibus_message_cb (BusConnection  *connection,
+                             IBusMessage    *message,
                              BusDBusImpl    *dbus)
 {
     g_assert (BUS_IS_CONNECTION (connection));
@@ -812,19 +816,19 @@ _connection_dbus_message_cb (BusConnection  *connection,
     const gchar *dest;
     BusConnection *dest_connection = NULL;
 
-    if (dbus_message_is_signal (message,
+    if (ibus_message_is_signal (message,
                                 DBUS_INTERFACE_LOCAL,
                                 "Disconnected")) {
         /* ignore signal from local interface */
         return FALSE;
     }
 
-    dest = dbus_message_get_destination (message);
+    dest = ibus_message_get_destination (message);
     if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
         g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
         /* If the destination is not IBus or DBus, the message will be forwanded. */
         bus_dbus_impl_dispatch_message (dbus, message);
-        g_signal_stop_emission_by_name (connection, "dbus-signal");
+        g_signal_stop_emission_by_name (connection, "ibus-signal");
         return TRUE;
     }
     
@@ -833,8 +837,8 @@ _connection_dbus_message_cb (BusConnection  *connection,
 }
 
 static void
-_connection_dbus_message_sent_cb (BusConnection  *connection,
-                                  DBusMessage    *message,
+_connection_ibus_message_sent_cb (BusConnection  *connection,
+                                  IBusMessage    *message,
                                   BusDBusImpl    *dbus)
 {
     g_assert (BUS_IS_CONNECTION (connection));
@@ -905,13 +909,13 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
     priv->connections = g_list_append (priv->connections, connection);
 
     g_signal_connect (connection,
-                      "dbus-message",
-                      G_CALLBACK (_connection_dbus_message_cb),
+                      "ibus-message",
+                      G_CALLBACK (_connection_ibus_message_cb),
                       dbus);
     
     g_signal_connect (connection,
-                      "dbus-message-sent",
-                      G_CALLBACK (_connection_dbus_message_sent_cb),
+                      "ibus-message-sent",
+                      G_CALLBACK (_connection_ibus_message_sent_cb),
                       dbus);
            
 
@@ -965,7 +969,7 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
     const gchar *destination;
     BusConnection *dest_connection = NULL;
     
-    destination = dbus_message_get_destination (message);
+    destination = ibus_message_get_destination (message);
     if (destination != NULL) {
         dest_connection = bus_dbus_impl_get_connection_by_name (dbus, destination);
 
@@ -979,7 +983,7 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
 
 void
 bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
-                                        DBusMessage     *message,
+                                        IBusMessage     *message,
                                         BusConnection   *skip_connection)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus));

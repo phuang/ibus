@@ -55,9 +55,9 @@ typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
 static void     bus_ibus_impl_class_init      (BusIBusImplClass     *klass);
 static void     bus_ibus_impl_init            (BusIBusImpl          *ibus);
 static void     bus_ibus_impl_destroy         (BusIBusImpl          *ibus);
-static gboolean bus_ibus_impl_dbus_message    (BusIBusImpl          *ibus,
+static gboolean bus_ibus_impl_ibus_message    (BusIBusImpl          *ibus,
                                                BusConnection        *connection,
-                                               DBusMessage          *message);
+                                               IBusMessage          *message);
 static void     _connection_destroy_cb        (BusConnection        *connection,
                                                BusIBusImpl          *ibus);
 
@@ -114,7 +114,7 @@ bus_ibus_impl_class_init (BusIBusImplClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_ibus_impl_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) bus_ibus_impl_ibus_message;
 
 }
 
@@ -146,9 +146,9 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 }
 
 /* introspectable interface */
-static DBusMessage *
+static IBusMessage *
 _ibus_introspect (BusIBusImpl     *ibus,
-                  DBusMessage     *message,
+                  IBusMessage     *message,
                   BusConnection   *connection)
 {
     static const gchar *introspect =
@@ -174,34 +174,34 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "  </interface>\n"
         "</node>\n";
 
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply_message,
-            DBUS_TYPE_STRING, &introspect,
-            DBUS_TYPE_INVALID);
+    IBusMessage *reply_message;
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply_message,
+                              G_TYPE_STRING, &introspect,
+                              G_TYPE_INVALID);
 
     return reply_message;
 }
 
 
 
-static DBusMessage *
+static IBusMessage *
 _ibus_get_address (BusIBusImpl     *ibus,
-                   DBusMessage     *message,
+                   IBusMessage     *message,
                    BusConnection   *connection)
 {
     const gchar *address;
-    DBusMessage *reply;
+    IBusMessage *reply;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
     address = ibus_server_get_address (IBUS_SERVER (BUS_DEFAULT_SERVER));
 
-    reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (message,
-                              DBUS_TYPE_STRING, &address,
-                              DBUS_TYPE_INVALID);
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (message,
+                              G_TYPE_STRING, &address,
+                              G_TYPE_INVALID);
 
     return reply;
 }
@@ -261,28 +261,28 @@ _context_focus_out_cb (BusInputContext    *context,
     }
 }
 
-static DBusMessage *
+static IBusMessage *
 _ibus_create_input_context (BusIBusImpl     *ibus,
-                            DBusMessage     *message,
+                            IBusMessage     *message,
                             BusConnection   *connection)
 {
     gchar *client;
-    DBusError error;
-    DBusMessage *reply;
+    IBusError *error;
+    IBusMessage *reply;
     BusInputContext *context;
     const gchar *path;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
-                        DBUS_TYPE_STRING, &client,
-                        DBUS_TYPE_INVALID)) {
-        reply = dbus_message_new_error (message,
-                                DBUS_ERROR_INVALID_ARGS,
-                                "Argument 1 of CreateInputContext should be an string");
-        dbus_error_free (&error);
+    if (!ibus_message_get_args (message, 
+                                &error,
+                                G_TYPE_STRING, &client,
+                                G_TYPE_INVALID)) {
+        reply = ibus_message_new_error (message,
+                                        DBUS_ERROR_INVALID_ARGS,
+                                        "Argument 1 of CreateInputContext should be an string");
+        ibus_error_free (error);
         return reply;
     }
 
@@ -302,10 +302,10 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                       ibus);
 
     path = ibus_service_get_path (IBUS_SERVICE (context));
-    reply = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply,
-                              DBUS_TYPE_OBJECT_PATH, &path,
-                              DBUS_TYPE_INVALID);
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+                              IBUS_TYPE_OBJECT_PATH, &path,
+                              G_TYPE_INVALID);
 
     return reply;
 }
@@ -348,46 +348,46 @@ _factory_cmp (BusFactoryProxy   *a,
     return retval;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ibus_register_factories (BusIBusImpl     *ibus,
-                          DBusMessage     *message,
+                          IBusMessage     *message,
                           BusConnection   *connection)
 {
     gchar **paths;
     gint n;
-    DBusError error;
-    DBusMessage *reply;
+    IBusError *error;
+    IBusMessage *reply;
     gint i;
     BusFactoryProxy *factory;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    dbus_error_init (&error);
-    if (!dbus_message_get_args (message, &error,
-                        DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH,
-                        &paths, &n,
-                        DBUS_TYPE_INVALID)) {
-        reply = dbus_message_new_error (message,
-                    error.name,
-                    "RegisterFactories shoule pass an object_path array as arugment");
-        dbus_error_free (&error);
+    if (!ibus_message_get_args (message,
+                                &error,
+                                IBUS_TYPE_ARRAY, IBUS_TYPE_OBJECT_PATH,
+                                &paths, &n,
+                                G_TYPE_INVALID)) {
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        "RegisterFactories shoule pass an object_path array as arugment");
+        ibus_error_free (error);
         return reply;;
     }
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     ibus_connection_send (IBUS_CONNECTION (connection), reply);
     ibus_connection_flush (IBUS_CONNECTION (connection));
-    dbus_message_unref (reply);
+    ibus_message_unref (reply);
 
     for (i = 0; i < n; i++) {
         if (g_hash_table_lookup (priv->factory_dict, paths[i]) != NULL) {
-            reply = dbus_message_new_error_printf (
+            reply = ibus_message_new_error_printf (
                                     message,
                                     DBUS_ERROR_FAILED,
                                     "Factory %s has been registered!",
                                     paths[i]);
-            dbus_free_string_array (paths);
+            ibus_free_string_array (paths);
             return reply;
         }
     }
@@ -411,22 +411,22 @@ _ibus_register_factories (BusIBusImpl     *ibus,
     return NULL;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ibus_get_factories (BusIBusImpl     *ibus,
-                     DBusMessage     *message,
+                     IBusMessage     *message,
                      BusConnection   *connection)
 {
-    DBusMessage *reply;
-    DBusMessageIter iter, sub_iter, sub_sub_iter;
+    IBusMessage *reply;
+    IBusMessageIter iter, sub_iter, sub_sub_iter;
     GList *p;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
 
-    dbus_message_iter_init_append (reply, &iter);
-    dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "(os)", &sub_iter);
+    ibus_message_iter_init_append (reply, &iter);
+    ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "(os)", &sub_iter);
 
     for (p = priv->factory_list; p != NULL; p = p->next) {
         BusFactoryProxy *factory;
@@ -438,58 +438,58 @@ _ibus_get_factories (BusIBusImpl     *ibus,
         path = ibus_proxy_get_path (IBUS_PROXY (factory));
         connection = ibus_proxy_get_connection (IBUS_PROXY (factory));
         unique_name = bus_connection_get_unique_name ( BUS_CONNECTION (connection));
-        dbus_message_iter_open_container (&sub_iter, DBUS_TYPE_STRUCT, "os", &sub_sub_iter);
-        dbus_message_iter_append_basic (&sub_sub_iter, DBUS_TYPE_OBJECT_PATH, &path);
-        dbus_message_iter_append_basic (&sub_sub_iter, DBUS_TYPE_STRING, &unique_name);
-        dbus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+        ibus_message_iter_open_container (&sub_iter, IBUS_TYPE_STRUCT, "os", &sub_sub_iter);
+        ibus_message_iter_append_basic (&sub_sub_iter, IBUS_TYPE_OBJECT_PATH, &path);
+        ibus_message_iter_append_basic (&sub_sub_iter, G_TYPE_STRING, &unique_name);
+        ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
     }
-    dbus_message_iter_close_container (&iter, &sub_iter);
+    ibus_message_iter_close_container (&iter, &sub_iter);
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ibus_set_factory (BusIBusImpl      *ibus,
-                   DBusMessage      *message,
+                   IBusMessage      *message,
                    BusConnection    *connection)
 {
     return NULL;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ibus_kill (BusIBusImpl     *ibus,
-            DBusMessage     *message,
+            IBusMessage     *message,
             BusConnection   *connection)
 {
-    DBusMessage *reply;
+    IBusMessage *reply;
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    reply = dbus_message_new_method_return (message);
+    reply = ibus_message_new_method_return (message);
     ibus_connection_send (IBUS_CONNECTION (connection), reply);
     ibus_connection_flush (IBUS_CONNECTION (connection));
-    dbus_message_unref (reply);
+    ibus_message_unref (reply);
 
     ibus_object_destroy (IBUS_OBJECT (ibus));
     return NULL;
 }
 
 static gboolean
-bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
+bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
                             BusConnection   *connection,
-                            DBusMessage     *message)
+                            IBusMessage     *message)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
     gint i;
-    DBusMessage *reply_message = NULL;
+    IBusMessage *reply_message = NULL;
 
     struct {
         const gchar *interface;
         const gchar *name;
-        DBusMessage *(* handler) (BusIBusImpl *, DBusMessage *, BusConnection *);
+        IBusMessage *(* handler) (BusIBusImpl *, IBusMessage *, BusConnection *);
     } handlers[] =  {
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
@@ -513,37 +513,37 @@ bus_ibus_impl_dbus_message (BusIBusImpl     *ibus,
         { NULL, NULL, NULL }
     };
 
-    dbus_message_set_sender (message, bus_connection_get_unique_name (connection));
-    dbus_message_set_destination (message, DBUS_SERVICE_DBUS);
+    ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
+    ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     for (i = 0; handlers[i].interface != NULL; i++) {
-        if (dbus_message_is_method_call (message,
+        if (ibus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {
 
             reply_message = handlers[i].handler (ibus, message, connection);
             if (reply_message) {
 
-                dbus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
-                dbus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
-                dbus_message_set_no_reply (reply_message, TRUE);
+                ibus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
+                ibus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
+                ibus_message_set_no_reply (reply_message, TRUE);
 
                 ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-                dbus_message_unref (reply_message);
+                ibus_message_unref (reply_message);
             }
 
-            g_signal_stop_emission_by_name (ibus, "dbus-message");
+            g_signal_stop_emission_by_name (ibus, "ibus-message");
             return TRUE;
         }
     }
 
-    reply_message = dbus_message_new_error_printf (message,
-                                DBUS_ERROR_UNKNOWN_METHOD,
-                                "%s is not implemented",
-                                dbus_message_get_member (message));
+    reply_message = ibus_message_new_error_printf (message,
+                                                   DBUS_ERROR_UNKNOWN_METHOD,
+                                                   "%s is not implemented",
+                                                   ibus_message_get_member (message));
 
     ibus_connection_send (IBUS_CONNECTION (connection), reply_message);
-    dbus_message_unref (reply_message);
+    ibus_message_unref (reply_message);
     return FALSE;
 }
 

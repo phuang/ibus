@@ -67,9 +67,9 @@ static guint    context_signals[LAST_SIGNAL] = { 0 };
 static void     bus_input_context_class_init    (BusInputContextClass   *klass);
 static void     bus_input_context_init          (BusInputContext        *context);
 static void     bus_input_context_destroy       (BusInputContext        *context);
-static gboolean bus_input_context_dbus_message  (BusInputContext        *context,
+static gboolean bus_input_context_ibus_message  (BusInputContext        *context,
                                                  BusConnection          *connection,
-                                                 DBusMessage            *message);
+                                                 IBusMessage            *message);
 static gboolean bus_input_context_filter_keyboard_shortcuts
                                                 (BusInputContext        *context,
                                                  guint                   keyval,
@@ -163,7 +163,7 @@ bus_input_context_class_init (BusInputContextClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->dbus_message = (ServiceDBusMessageFunc) bus_input_context_dbus_message;
+    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) bus_input_context_ibus_message;
 
     /* install signals */
     context_signals[FOCUS_IN] =
@@ -239,9 +239,9 @@ bus_input_context_destroy (BusInputContext *context)
 }
 
 /* introspectable interface */
-static DBusMessage *
+static IBusMessage *
 _ibus_introspect (BusInputContext   *context,
-                  DBusMessage       *message,
+                  IBusMessage       *message,
                   BusConnection     *connection)
 {
     static const gchar *introspect =
@@ -267,25 +267,25 @@ _ibus_introspect (BusInputContext   *context,
         "  </interface>\n"
         "</node>\n";
 
-    DBusMessage *reply_message;
-    reply_message = dbus_message_new_method_return (message);
-    dbus_message_append_args (reply_message,
-            DBUS_TYPE_STRING, &introspect,
-            DBUS_TYPE_INVALID);
+    IBusMessage *reply_message;
+    reply_message = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply_message,
+                              G_TYPE_STRING, &introspect,
+                              G_TYPE_INVALID);
 
     return reply_message;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_process_key_event (BusInputContext  *context,
-                       DBusMessage      *message,
+                       IBusMessage      *message,
                        BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    DBusMessage *reply;
+    IBusMessage *reply;
     guint32 keyval, state;
     gboolean is_press;
     gboolean retval;
@@ -338,16 +338,16 @@ out:
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_set_cursor_location (BusInputContext  *context,
-                         DBusMessage      *message,
+                         IBusMessage      *message,
                          BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    DBusMessage *reply;
+    IBusMessage *reply;
     guint32 x, y, w, h;
     gboolean retval;
     DBusError error;
@@ -384,16 +384,16 @@ _ic_set_cursor_location (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_focus_in (BusInputContext  *context,
-              DBusMessage      *message,
+              IBusMessage      *message,
               BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    DBusMessage *reply;
+    IBusMessage *reply;
 
     bus_input_context_focus_in (context);
 
@@ -402,16 +402,16 @@ _ic_focus_in (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_focus_out (BusInputContext  *context,
-              DBusMessage      *message,
+              IBusMessage      *message,
               BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    DBusMessage *reply;
+    IBusMessage *reply;
 
     bus_input_context_focus_out (context);
 
@@ -420,16 +420,16 @@ _ic_focus_out (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_reset (BusInputContext  *context,
-           DBusMessage      *message,
+           IBusMessage      *message,
            BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    DBusMessage *reply;
+    IBusMessage *reply;
     
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
@@ -443,16 +443,16 @@ _ic_reset (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_set_capabilities (BusInputContext  *context,
-                      DBusMessage      *message,
+                      IBusMessage      *message,
                       BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
     
-    DBusMessage *reply;
+    IBusMessage *reply;
     guint32 caps;
     gboolean retval;
     DBusError error;
@@ -486,16 +486,16 @@ _ic_set_capabilities (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_is_enabled (BusInputContext  *context,
-                DBusMessage      *message,
+                IBusMessage      *message,
                 BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
     
-    DBusMessage *reply;
+    IBusMessage *reply;
     gboolean retval;
     
     BusInputContextPrivate *priv;
@@ -509,16 +509,16 @@ _ic_is_enabled (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_get_factory (BusInputContext  *context,
-                 DBusMessage      *message,
+                 IBusMessage      *message,
                  BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
     
-    DBusMessage *reply;
+    IBusMessage *reply;
     const gchar *factory = "";
     
     BusInputContextPrivate *priv;
@@ -536,16 +536,16 @@ _ic_get_factory (BusInputContext  *context,
     return reply;
 }
 
-static DBusMessage *
+static IBusMessage *
 _ic_destroy (BusInputContext  *context,
-             DBusMessage      *message,
+             IBusMessage      *message,
              BusConnection    *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
     
-    DBusMessage *reply;
+    IBusMessage *reply;
     
     ibus_object_destroy (IBUS_OBJECT (context));
     reply = dbus_message_new_method_return (message);
@@ -554,21 +554,21 @@ _ic_destroy (BusInputContext  *context,
 }
 
 static gboolean
-bus_input_context_dbus_message (BusInputContext *context,
+bus_input_context_ibus_message (BusInputContext *context,
                                 BusConnection   *connection,
-                                DBusMessage     *message)
+                                IBusMessage     *message)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
     gint i;
-    DBusMessage *reply_message = NULL;
+    IBusMessage *reply_message = NULL;
 
     struct {
         const gchar *interface;
         const gchar *name;
-        DBusMessage *(* handler) (BusInputContext *, DBusMessage *, BusConnection *);
+        IBusMessage *(* handler) (BusInputContext *, IBusMessage *, BusConnection *);
     } handlers[] =  {
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
@@ -757,40 +757,13 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path (IBUS_SERVICE (engine)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "ForwardKeyEvent",
-                                 DBUS_TYPE_UINT32,  &keyval,
-                                 DBUS_TYPE_BOOLEAN, &is_press,
-                                 DBUS_TYPE_UINT32,  &state,
-                                 DBUS_TYPE_INVALID);
-                                 
-}
-
-static void
-_engine_forward_key_event_cb (BusEngineProxy    *engine,
-                              guint              keyval,
-                              gboolean           is_press,
-                              guint              state,
-                              BusInputContext   *context)
-{
-    g_assert (BUS_IS_ENGINE_PROXY (engine));
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
-    g_assert (priv->connection != NULL);
-
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "ForwardKeyEvent",
-                                 DBUS_TYPE_UINT32,  &keyval,
-                                 DBUS_TYPE_BOOLEAN, &is_press,
-                                 DBUS_TYPE_UINT32,  &state,
-                                 DBUS_TYPE_INVALID);
+                                 G_TYPE_UINT,  &keyval,
+                                 G_TYPE_BOOLEAN, &is_press,
+                                 G_TYPE_UINT,  &state,
+                                 G_TYPE_INVALID);
                                  
 }
 
@@ -804,6 +777,7 @@ _engine_update_preedit_cb (BusEngineProxy   *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     g_assert (text != NULL);
+    g_assert (attr_list != NULL);
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     
     BusInputContextPrivate *priv;
@@ -815,11 +789,12 @@ _engine_update_preedit_cb (BusEngineProxy   *engine,
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
                                  ibus_service_get_path  (IBUS_SERVICE (engine)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "ForwardKeyEvent",
-                                 DBUS_TYPE_UINT32,  &keyval,
-                                 DBUS_TYPE_BOOLEAN, &is_press,
-                                 DBUS_TYPE_UINT32,  &state,
-                                 DBUS_TYPE_INVALID);
+                                 "UpdatePreedit",
+                                 G_TYPE_STRING, &text,
+                                 IBUS_TYPE_ATTR_LIST, &attr_list,
+                                 G_TYPE_INT, &cursor_pos,
+                                 G_TYPE_BOOLEAN, &visible,
+                                 G_TYPE_INVALID);
                                  
 }
 
