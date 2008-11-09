@@ -318,6 +318,7 @@ ibus_bus_create_input_context (IBusBus      *bus,
     g_assert (client_name != NULL);
     g_assert (ibus_bus_is_connected (bus));
 
+    gchar *path;
     DBusMessage *call = NULL;
     DBusMessage *reply = NULL;
     IBusError *error;
@@ -325,46 +326,46 @@ ibus_bus_create_input_context (IBusBus      *bus,
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
-    call = dbus_message_new_method_call (IBUS_SERVICE_IBUS,
+    call = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
                                          IBUS_PATH_IBUS,
                                          IBUS_INTERFACE_IBUS,
                                          "CreateInputContext");
-    dbus_message_append_args (call,
-                              DBUS_TYPE_STRING, &client_name,
-                              DBUS_TYPE_INVALID);
+    ibus_message_append_args (call,
+                              G_TYPE_STRING, &client_name,
+                              G_TYPE_INVALID);
 
     reply = ibus_connection_send_with_reply_and_block (priv->connection,
                                                        call,
                                                        -1,
                                                        &error);
-    dbus_message_unref (call);
+    ibus_message_unref (call);
 
     if (reply == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         return NULL;
     }
-    else {
-        if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
-            gchar *path;
-            DBusError _error;
-            dbus_error_init (&_error);
-            if (!dbus_message_get_args (reply,
-                                        &_error,
-                                        DBUS_TYPE_OBJECT_PATH, &path,
-                                        DBUS_TYPE_INVALID)) {
-                g_warning ("%s: %s", _error.name, _error.message);
-                dbus_error_free (&_error);
-            }
-            else 
-                context = ibus_input_context_new (path,
-                                                  priv->connection);
-        }
-        else if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR) {
-            g_warning ("%s:", dbus_message_get_error_name (reply));
-        }
-        dbus_message_unref (reply);
+    
+    if (error = ibus_error_from_message (reply)) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_message_unref (reply);
+        ibus_error_free (error);
+        return NULL;
     }
+    
+    if (!ibus_message_get_args (reply,
+                                &error,
+                                IBUS_TYPE_OBJECT_PATH, &path,
+                                G_TYPE_INVALID)) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_message_unref (reply);
+        ibus_error_free (&error);
+
+        return NULL;
+    }
+    
+    context = ibus_input_context_new (path, priv->connection);
+    ibus_message_unref (reply);
     
     return context;
 }
@@ -430,7 +431,7 @@ ibus_bus_call (IBusBus      *bus,
                const gchar  *path,
                const gchar  *interface,
                const gchar  *member,
-               gint          first_arg,
+               GType         first_arg_type,
                ...)
 {
     g_assert (IBUS_IS_BUS (bus));
@@ -443,16 +444,16 @@ ibus_bus_call (IBusBus      *bus,
     DBusMessage *message, *reply;
     IBusError *error;
     va_list args;
-    gint type;
+    GType type;
     gboolean retval;
     IBusBusPrivate *priv;
 
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
-    message = dbus_message_new_method_call (name, path, interface, member);
+    message = ibus_message_new_method_call (name, path, interface, member);
 
-    va_start (args, first_arg);
-    dbus_message_append_args_valist (message, first_arg, args);
+    va_start (args, first_arg_type);
+    ibus_message_append_args_valist (message, first_arg_type, args);
     va_end (args);
     
     reply = ibus_connection_send_with_reply_and_block (
@@ -460,7 +461,7 @@ ibus_bus_call (IBusBus      *bus,
                                         message,
                                         -1,
                                         &error);
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     if (reply == NULL) {
         g_warning ("%s : %s", error->name, error->message);
@@ -468,32 +469,31 @@ ibus_bus_call (IBusBus      *bus,
         return FALSE;
     }
 
-    if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR) {
-        g_warning ("%s", dbus_message_get_error_name (reply));
-        dbus_message_unref (reply);
+    if (error = ibus_error_from_message (reply)) {
+        g_warning ("%s : %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply);
         return FALSE;
     }
 
-    va_start (args, first_arg);
+    va_start (args, first_arg_type);
     
-    type = first_arg;
+    type = first_arg_type;
     
-    while (type != DBUS_TYPE_INVALID) {
-        va_arg (args, void *);
+    while (type != G_TYPE_INVALID) {
+        va_arg (args, gpointer);
         type = va_arg (args, gint);
     }
     
     type = va_arg (args, gint);
-    DBusError _error;
-    dbus_error_init (&_error);
-    retval = dbus_message_get_args_valist (reply, &_error, type, args);
+    retval = ibus_message_get_args_valist (reply, &error, type, args);
     va_end (args);
 
-    dbus_message_unref (reply);
+    ibus_message_unref (reply);
 
     if (!retval) {
-        g_warning ("%s: %s", _error.name, _error.message);
-        dbus_error_free (&_error);
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
         return FALSE;
     }
 
