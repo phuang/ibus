@@ -413,8 +413,77 @@ ibus_message_iter_append (IBusMessageIter *iter,
                           GType            type,
                           gconstpointer    value)
 {
-    // TODO
-    return FALSE;
+    g_assert (iter != NULL);
+    g_assert (type != G_TYPE_INVALID);
+    g_assert (value != NULL);
+
+    switch (type) {
+    case G_TYPE_INT:
+        {
+            dbus_int32_t v;
+            v = * (gint *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_INT32, &v);
+        }
+    case G_TYPE_UINT:
+        {
+            dbus_uint32_t v;
+            v = * (guint *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT32, &v);
+        }
+    case G_TYPE_BOOLEAN:
+        {
+            dbus_bool_t v;
+            v = * (gboolean *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &v);
+        }
+    case G_TYPE_STRING:
+        {
+            const gchar *v;
+            v = * (gchar **)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &v);
+        }
+    case G_TYPE_INT64:
+        {
+            dbus_int64_t v;
+            v = * (gint64 *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_INT64, &v);
+        }
+    case G_TYPE_UINT64:
+        {
+            dbus_uint64_t v;
+            v = * (guint64 *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT64, &v);
+        }
+    case G_TYPE_FLOAT:
+        {
+            double v;
+            v = * (gfloat *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_DOUBLE, &v);
+        }
+
+    case G_TYPE_DOUBLE:
+        {
+            double v;
+            v = * (gdouble *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_DOUBLE, &v);
+        }
+    default:
+        if (type == IBUS_TYPE_OBJECT_PATH) {
+            const gchar *v;
+            v = * (gchar **)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_OBJECT_PATH, &v);
+        }
+    }
+
+    IBusSerializeFunc func;
+    func = (IBusSerializeFunc) g_type_get_qdata (type, quark_serialize);
+
+    if (func == NULL) {
+        g_warning ("Type %s doesn't support serizlize", g_type_name (type));
+        return FALSE;
+    }
+
+    return func (value, iter);
 }
 
 gboolean
@@ -443,7 +512,8 @@ ibus_message_iter_peek (IBusMessageIter *iter,
                         gpointer         value)
 {
     g_assert (iter != NULL);
-    gint dbus_type;
+    g_assert (type != G_TYPE_INVALID);
+    g_assert (value != NULL);
 
     switch (type) {
     case G_TYPE_INT:
@@ -520,7 +590,14 @@ ibus_message_iter_peek (IBusMessageIter *iter,
             return TRUE;
         }
     default:
-        break;
+        if (type == IBUS_TYPE_OBJECT_PATH) {
+            gchar *v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_OBJECT_PATH)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gchar **) value = (gchar *) v;
+            return TRUE;
+        }
     }
 
     IBusDeserializeFunc func;
