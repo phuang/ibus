@@ -60,8 +60,8 @@ static void      bus_config_proxy_class_init    (BusConfigProxyClass    *klass);
 static void      bus_config_proxy_init          (BusConfigProxy         *config);
 static void      bus_config_proxy_real_destroy  (BusConfigProxy         *config);
 
-static gboolean bus_config_proxy_dbus_signal    (IBusProxy             *proxy,
-                                                 DBusMessage            *message);
+static gboolean  bus_config_proxy_ibus_signal   (IBusProxy             *proxy,
+                                                 IBusMessage            *message);
 
 static IBusProxyClass  *parent_class = NULL;
 
@@ -203,7 +203,7 @@ bus_config_proxy_class_init (BusConfigProxyClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_config_proxy_real_destroy;
 
-    proxy_class->dbus_signal = bus_config_proxy_dbus_signal;
+    proxy_class->ibus_signal = bus_config_proxy_ibus_signal;
     
     /* install signals */
     config_signals[VALUE_CHANGED] =
@@ -380,8 +380,8 @@ _to_dbus_value (DBusMessageIter *iter,
 }
 
 static gboolean
-bus_config_proxy_dbus_signal (IBusProxy     *proxy,
-                              DBusMessage   *message)
+bus_config_proxy_ibus_signal (IBusProxy     *proxy,
+                              IBusMessage   *message)
 {
     g_assert (BUS_IS_CONFIG_PROXY (proxy));
     g_assert (message != NULL);
@@ -389,7 +389,7 @@ bus_config_proxy_dbus_signal (IBusProxy     *proxy,
     BusConfigProxy *config;
     config = BUS_CONFIG_PROXY (proxy);
     
-    if (dbus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
         DBusMessageIter iter;
         gchar *section;
         gchar *name;

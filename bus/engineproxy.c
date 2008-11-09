@@ -358,7 +358,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
     for (i = 0; ; i++) {
         if (signals[i].member == NULL)
             break;
-        if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
+        if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
             g_signal_emit (engine, engine_signals[signals[i].signal_id], 0);
             goto handled;
         }
@@ -414,7 +414,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_PREEDIT], 0, text, attr_list, cursor_pos, visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxString")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxString")) {
         gchar *text;
         IBusAttrList *attr_list;
         gboolean visible;
@@ -433,7 +433,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_AUX_STRING], 0, text, attr_list, visible);
         ibus_attr_list_unref (attr_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
         IBusLookupTable *table;
         gboolean visible;
         gboolean retval;
@@ -450,7 +450,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         ibus_lookup_table_unref (table);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
         IBusPropList *prop_list;
         gboolean retval;
 
@@ -462,7 +462,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, prop_list);
         ibus_prop_list_unref (prop_list);
     }
-    else if (dbus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
         IBusProperty *prop;
         gboolean retval;
         
@@ -529,7 +529,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                 G_TYPE_BOOLEAN, &retval,
                                 G_TYPE_INVALID)) {
         g_warning ("%s: %s", error->name, error->message);
-        dbus_message_unref (reply_message);
+        ibus_message_unref (reply_message);
         ibus_error_free (error);
         return FALSE;
     }
