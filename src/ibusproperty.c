@@ -222,37 +222,49 @@ ibus_property_deserialize (IBusMessageIter *iter)
     IBusProperty *prop;
     gboolean retval;
     
-    IBusMessageIter sub_iter;
+    IBusMessageIter sub_iter, sub_sub_iter;
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, NULL);
 
     // get name
-    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &name);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &name);
+    g_return_val_if_fail (retval, NULL);
     
     // get type
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
+    g_return_val_if_fail (retval, NULL);
     
     // get label
-    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &label);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &label);
+    g_return_val_if_fail (retval, NULL);
     
     // get icon
-    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &icon);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &icon);
+    g_return_val_if_fail (retval, NULL);
     
     // get tooltip
-    ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &tooltip);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &tooltip);
+    g_return_val_if_fail (retval, NULL);
     
     // get sensitive
-    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &sensitive);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &sensitive);
+    g_return_val_if_fail (retval, NULL);
     
     // get visible
-    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &visible);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &visible);
+    g_return_val_if_fail (retval, NULL);
     
     // get visible
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &state);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &state);
+    g_return_val_if_fail (retval, NULL);
 
+    retval = ibus_message_iter_recurse (&sub_iter, IBUS_TYPE_VARIANT, &sub_sub_iter);
+    g_return_val_if_fail (retval, NULL);
+    
     // get sub prop
-    ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROP_LIST, &prop_list);
+    retval = ibus_message_iter_get (&sub_sub_iter, IBUS_TYPE_PROP_LIST, &prop_list);
+    g_return_val_if_fail (retval, NULL);
     
     prop = ibus_property_new (name, type, label, icon, tooltip, sensitive, visible, state, prop_list);
     
@@ -267,15 +279,16 @@ ibus_prop_list_deserialize (IBusMessageIter *iter)
     gboolean retval;
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, NULL);
     
     prop_list = ibus_prop_list_new ();
 
     while (ibus_message_iter_has_next (&sub_iter)) {
         IBusProperty *prop = NULL;
-        ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
-        if (prop == NULL)
-            break;
+        
+        retval = ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
+        g_return_val_if_fail (retval, NULL);
+        
         ibus_prop_list_append (prop_list, prop);
     }
     return prop_list;
@@ -288,22 +301,50 @@ ibus_property_serialize (IBusProperty    *prop,
     g_assert (prop != NULL);
     g_assert (iter != NULL);
 
-    IBusMessageIter sub_iter;
+    IBusMessageIter sub_iter, sub_sub_iter;
     gboolean retval;
 
     retval = ibus_message_iter_open_container(iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, FALSE);
 
-    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->name);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->type);
-    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->label);
-    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->icon);
-    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->tooltip);
-    ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->sensitive);
-    ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->visible);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->state);
-    ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
-    ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->name);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->type);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->label);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->icon);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->tooltip);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->sensitive);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &prop->visible);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->state);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_open_container(&sub_iter,
+                                              IBUS_TYPE_VARIANT,
+                                              "av", 
+                                              &sub_sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_sub_iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
 }
@@ -321,14 +362,21 @@ ibus_prop_list_serialize (IBusPropList    *prop_list,
     IBusMessageIter sub_iter;
     gboolean retval;
 
-    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_ARRAY, "(susssbbuav)", &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_ARRAY, "(susssbbuv)", &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
     for (i = 0;; i++) {
         prop = ibus_prop_list_get (prop_list, i);
         if (prop == NULL)
             break;
-        ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
+        
+        retval = ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROPERTY, &prop);
+        g_return_val_if_fail (retval, FALSE);
     }
-    ibus_message_iter_close_container (iter, &sub_iter);
+    
+    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
     return TRUE;
 }
 

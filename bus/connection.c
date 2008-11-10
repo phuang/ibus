@@ -132,11 +132,13 @@ bus_connection_destroy (BusConnection *connection)
     priv->names = NULL;
 }
 
-static gboolean
-bus_connection_ibus_message (BusConnection  *connection,
-                             IBusMessage    *message)
+static void
+print_message (IBusMessage *message)
 {
-    gboolean retval;
+
+    IBusMessageIter iter;
+    GType type;
+    gint i = 0;
 
     g_debug ("\nmessage:\n"
              "\tdestination = %s\n"
@@ -148,6 +150,22 @@ bus_connection_ibus_message (BusConnection  *connection,
              ibus_message_get_interface (message),
              ibus_message_get_member (message));
     
+    ibus_message_iter_init (message, &iter);
+    while ((type = ibus_message_iter_get_arg_type (&iter)) != G_TYPE_INVALID) {
+        printf ("\t\targ%d is %s\n", i++, g_type_name (type));
+        ibus_message_iter_next (&iter);
+    }
+
+}
+
+static gboolean
+bus_connection_ibus_message (BusConnection  *connection,
+                             IBusMessage    *message)
+{
+    gboolean retval;
+
+    // print_message (message);
+
     retval = IBUS_CONNECTION_CLASS (_parent_class)->ibus_message (
                     IBUS_CONNECTION (connection),
                     message);

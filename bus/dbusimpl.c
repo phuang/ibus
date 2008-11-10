@@ -828,7 +828,7 @@ _connection_ibus_message_cb (BusConnection  *connection,
         g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
         /* If the destination is not IBus or DBus, the message will be forwanded. */
         bus_dbus_impl_dispatch_message (dbus, message);
-        g_signal_stop_emission_by_name (connection, "ibus-signal");
+        g_signal_stop_emission_by_name (connection, "ibus-message");
         return TRUE;
     }
     

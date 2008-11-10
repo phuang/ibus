@@ -68,7 +68,6 @@ ibus_object_get_type (void)
     };
 
     if (type == 0) {
-        g_debug ("register object");
         type = g_type_register_static (G_TYPE_OBJECT,
                     "IBusObject",
                     &type_info,
@@ -129,7 +128,6 @@ ibus_object_constructor (GType                   type,
 
     object = parent_class->constructor (type, n ,args);
 
-    g_debug ("%s init", G_OBJECT_TYPE_NAME(object));
     return object;
 }
 
@@ -152,7 +150,6 @@ ibus_object_dispose (IBusObject *obj)
 static void
 ibus_object_finalize (IBusObject *obj)
 {
-    g_debug ("%s finalize", G_OBJECT_TYPE_NAME(obj));
     G_OBJECT_CLASS(parent_class)->finalize (G_OBJECT (obj));
 }
 

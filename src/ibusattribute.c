@@ -208,12 +208,19 @@ ibus_attribute_deserialize (IBusMessageIter *iter)
     guint type, value, start_index, end_index;
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, NULL);
 
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &value);
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &start_index);
-    ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &end_index);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &value);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &start_index);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &end_index);
+    g_return_val_if_fail (retval, NULL);
 
     return ibus_attribute_new (type, value, start_index, end_index);
 }
@@ -227,14 +234,15 @@ ibus_attr_list_deserialize (IBusMessageIter *iter)
     gboolean retval;
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, NULL);
     
     attr_list = ibus_attr_list_new ();
     
     while (ibus_message_iter_get_arg_type (&sub_iter) != G_TYPE_INVALID) {
         IBusAttribute *attr;
         
-        ibus_message_iter_get (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
+        retval = ibus_message_iter_get (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
+        g_return_val_if_fail (retval, NULL);
 
         if (attr == NULL)
             break;
@@ -252,13 +260,28 @@ ibus_attribute_serialize (IBusAttribute   *attr,
     g_assert (iter != NULL);
 
     DBusMessageIter sub_iter;
+    gboolean retval;
 
-    ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, NULL, &sub_iter);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->type);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->value);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->start_index);
-    ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->end_index);
-    ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_open_container (iter,
+                                               IBUS_TYPE_STRUCT,
+                                               NULL,
+                                               &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->type);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->value);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->start_index);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->end_index);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
 }
@@ -273,16 +296,26 @@ ibus_attr_list_serialize (IBusAttrList    *attr_list,
 
     gint i;
     DBusMessageIter sub_iter;
+    gboolean retval;
 
-    ibus_message_iter_open_container(iter, IBUS_TYPE_ARRAY, "(uuuu)", &sub_iter);
+    retval = ibus_message_iter_open_container(iter,
+                                              IBUS_TYPE_ARRAY,
+                                              "(uuuu)",
+                                              &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+
     for (i = 0; ;i++) {
         IBusAttribute *attr;
         attr = ibus_attr_list_get (attr_list, i);
         if (attr == NULL)
             break;
-        ibus_message_iter_append (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
+        retval = ibus_message_iter_append (&sub_iter, IBUS_TYPE_ATTRIBUTE, &attr);
+        g_return_val_if_fail (retval, FALSE);
+
     }
-    ibus_message_iter_close_container (iter, &sub_iter);
+    
+    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
     
     return TRUE;
 }

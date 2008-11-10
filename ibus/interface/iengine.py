@@ -134,7 +134,7 @@ class IEngine(dbus.service.Object):
     @signal()
     def CursorDownLookupTable(self): pass
 
-    @signal(signature="v")
+    @signal(signature="a(susssbbuv)")
     def RegisterProperties(self, props): pass
 
     @signal(signature="v")

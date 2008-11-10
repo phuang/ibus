@@ -655,6 +655,9 @@ ibus_message_iter_open_container (IBusMessageIter   *iter,
     else if (type == IBUS_TYPE_STRUCT) {
         dbus_type = DBUS_TYPE_STRUCT;
     }
+    else if (type == IBUS_TYPE_VARIANT) {
+        dbus_type = DBUS_TYPE_VARIANT;
+    }
     else
         g_return_val_if_reached (FALSE);
 
@@ -671,28 +674,6 @@ ibus_message_iter_close_container (IBusMessageIter *iter,
     return dbus_message_iter_close_container (iter, sub);
 }
 
-gboolean
-ibus_message_iter_recurse (IBusMessageIter   *iter,
-                           GType              type,
-                           IBusMessageIter   *sub)
-{
-    gint dbus_type;
-    
-    if (type == IBUS_TYPE_ARRAY) {
-        dbus_type = DBUS_TYPE_ARRAY;
-    }
-    else if (type == IBUS_TYPE_STRUCT) {
-        dbus_type = DBUS_TYPE_STRUCT;
-    }
-    else
-        g_return_val_if_reached (FALSE);
-
-    g_return_val_if_fail (dbus_type == dbus_message_iter_get_arg_type (iter), FALSE);
-    
-    dbus_message_iter_recurse (iter, sub);
-    
-    return TRUE;
-}
 
 static GType
 dbus_type_to_gtype (gint type)
@@ -714,6 +695,28 @@ dbus_type_to_gtype (gint type)
 #undef TYPE_TABLE
     }
     return G_TYPE_INVALID;
+}
+
+
+gboolean
+ibus_message_iter_recurse (IBusMessageIter   *iter,
+                           GType              type,
+                           IBusMessageIter   *sub)
+{
+    g_assert (iter != NULL);
+    g_assert (sub != NULL);
+    g_assert (type == IBUS_TYPE_ARRAY ||
+              type == IBUS_TYPE_STRUCT ||
+              type == IBUS_TYPE_VARIANT);
+    GType gtype;
+
+    gtype = ibus_message_iter_get_arg_type (iter);
+
+    g_return_val_if_fail (gtype == type, FALSE);
+    
+    dbus_message_iter_recurse (iter, sub);
+    
+    return TRUE;
 }
 
 GType

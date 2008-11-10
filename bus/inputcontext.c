@@ -76,6 +76,8 @@ static gboolean bus_input_context_filter_keyboard_shortcuts
                                                  gboolean                is_press,
                                                  guint                   state);
                                                  
+static void     _factory_destroy_cb             (BusFactoryProxy        *factory,
+                                                 BusInputContext        *context);
 
 static IBusServiceClass  *_parent_class = NULL;
 static guint id = 0;
@@ -213,7 +215,10 @@ bus_input_context_destroy (BusInputContext *context)
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     if (priv->factory) {
-        ibus_object_destroy (IBUS_OBJECT (priv->factory));
+        g_signal_handlers_disconnect_by_func (priv->factory,
+                                              G_CALLBACK (_factory_destroy_cb),
+                                              context);
+        g_object_unref (priv->factory);
         priv->factory = NULL;
     }
 
@@ -707,8 +712,8 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
 
     priv->enabled = FALSE;
 
-    priv->factory = NULL;
     g_object_unref (priv->factory);
+    priv->factory = NULL;
 
     if (priv->engine != NULL) {
         ibus_object_destroy (IBUS_OBJECT (priv->engine));
@@ -732,7 +737,7 @@ _engine_commit_string_cb (BusEngineProxy    *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "CommitString",
                                  G_TYPE_STRING, &text,
@@ -757,7 +762,7 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "ForwardKeyEvent",
                                  G_TYPE_UINT,  &keyval,
@@ -787,7 +792,7 @@ _engine_update_preedit_cb (BusEngineProxy   *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "UpdatePreedit",
                                  G_TYPE_STRING, &text,
@@ -817,7 +822,7 @@ _engine_update_aux_string_cb (BusEngineProxy   *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "UpdateAuxString",
                                  G_TYPE_STRING, &text,
@@ -844,7 +849,7 @@ _engine_update_lookup_table_cb (BusEngineProxy   *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "UpdateLookupTable",
                                  IBUS_TYPE_LOOKUP_TABLE, &table,
@@ -869,7 +874,7 @@ _engine_register_properties_cb (BusEngineProxy  *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "RegisterProperties",
                                  IBUS_TYPE_PROP_LIST, &prop_list,
@@ -893,7 +898,7 @@ _engine_update_property_cb (BusEngineProxy  *engine,
     g_assert (priv->connection != NULL);
 
     ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (engine)),
+                                 ibus_service_get_path  (IBUS_SERVICE (context)),
                                  IBUS_INTERFACE_INPUT_CONTEXT,
                                  "UpdateProperty",
                                  IBUS_TYPE_PROPERTY, &prop,
@@ -917,7 +922,7 @@ _engine_update_property_cb (BusEngineProxy  *engine,
                                                             \
         ibus_connection_send_signal (                       \
             IBUS_CONNECTION (priv->connection),             \
-            ibus_service_get_path (IBUS_SERVICE (engine)),  \
+            ibus_service_get_path (IBUS_SERVICE (context)), \
             IBUS_INTERFACE_INPUT_CONTEXT,                   \
             #Name,                                          \
             G_TYPE_INVALID);                                \
@@ -946,6 +951,7 @@ bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
 
     if (priv->factory == NULL) {
         priv->factory = bus_ibus_impl_get_default_factory (BUS_DEFAULT_IBUS);
+
         if (priv->factory) {
             g_signal_connect (priv->factory,
                               "destroy",

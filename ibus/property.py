@@ -205,7 +205,7 @@ class PropList(object):
 
     def to_dbus_value(self):
         props = map(lambda p: p.to_dbus_value(), self.__props)
-        return dbus.Array(props, signature = "v")
+        return dbus.Array(props, signature = "(susssbbuv)")
 
     def from_dbus_value(self, value):
         props = []

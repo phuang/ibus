@@ -101,7 +101,7 @@ bus_engine_proxy_new (const gchar       *path,
     GObject *obj;
 
     obj = g_object_new (BUS_TYPE_ENGINE_PROXY,
-                        "name", "",
+                        "name", NULL,
                         "path", path,
                         "connection", connection,
                         NULL);
@@ -499,7 +499,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     
-    DBusMessage *reply_message;
+    IBusMessage *reply_message;
     IBusError *error;
     gboolean retval;
 
@@ -512,7 +512,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                                           G_TYPE_UINT, &state,
                                                           G_TYPE_INVALID);
     if (reply_message == NULL) {
-        g_debug ("%s: %s", error->name, error->message);
+        g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         retval = FALSE;
     }
