@@ -501,6 +501,7 @@ ibus_message_iter_get_basic (IBusMessageIter *iter,
                              gpointer         value)
 {
     dbus_message_iter_get_basic (iter, value);
+    dbus_message_iter_next (iter);
 }
 
 gboolean
@@ -693,12 +694,9 @@ ibus_message_iter_recurse (IBusMessageIter   *iter,
     return TRUE;
 }
 
-GType
-ibus_message_iter_get_arg_type (IBusMessageIter *iter)
+static GType
+dbus_type_to_gtype (gint type)
 {
-    gint type;
-
-    type = dbus_message_iter_get_arg_type (iter);
     switch (type) {
 #define TYPE_TABLE(a, b) case a: return (b);
         TYPE_TABLE (DBUS_TYPE_BYTE, G_TYPE_CHAR);
@@ -716,6 +714,27 @@ ibus_message_iter_get_arg_type (IBusMessageIter *iter)
 #undef TYPE_TABLE
     }
     return G_TYPE_INVALID;
+}
+
+GType
+ibus_message_iter_get_arg_type (IBusMessageIter *iter)
+{
+    gint type;
+    
+    type = dbus_message_iter_get_arg_type (iter);
+    
+    return dbus_type_to_gtype (type);
+}
+
+
+GType
+ibus_message_iter_get_element_type (IBusMessageIter *iter)
+{
+    gint type;
+
+    type = dbus_message_iter_get_element_type (iter);
+
+    return dbus_type_to_gtype (type);
 }
 
 gboolean

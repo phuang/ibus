@@ -135,6 +135,8 @@ gboolean         ibus_message_iter_recurse      (IBusMessageIter    *iter,
                                                  GType               type,
                                                  IBusMessageIter    *sub);
 GType            ibus_message_iter_get_arg_type (IBusMessageIter    *iter);
+GType            ibus_message_iter_get_element_type
+                                                (IBusMessageIter    *iter);
 typedef gboolean (* IBusSerializeFunc)          (gpointer           *instance,
                                                  IBusMessageIter    *iter);
 typedef gpointer (* IBusDeserializeFunc)        (IBusMessageIter    *iter);

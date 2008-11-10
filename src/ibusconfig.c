@@ -236,13 +236,13 @@ ibus_config_real_destroy (IBusConfig *config)
     
     ibus_proxy_call (IBUS_PROXY (config),
                      "Destroy",
-                     DBUS_TYPE_INVALID);
+                     G_TYPE_INVALID);
 
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (config));
 }
 
 static void
-_from_dbus_value (DBusMessageIter   *iter,
+_from_dbus_value (IBusMessageIter   *iter,
                   GValue            *value)
 {
     g_assert (iter != NULL);
@@ -250,116 +250,115 @@ _from_dbus_value (DBusMessageIter   *iter,
 
     gint type;
 
-    type = dbus_message_iter_get_arg_type (iter);
+    type = ibus_message_iter_get_arg_type (iter);
     
     switch (type) {
-    case DBUS_TYPE_STRING:
+    case G_TYPE_STRING:
         {
             gchar *v;
             g_value_init (value, G_TYPE_STRING);
-            dbus_message_iter_get_basic (iter, &v);
+            ibus_message_iter_get_basic (iter, &v);
             g_value_set_string (value, v);
         }
         break;
-    case DBUS_TYPE_INT32:
+    case G_TYPE_INT:
         {
             gint v;
             g_value_init (value, G_TYPE_INT);
-            dbus_message_iter_get_basic (iter, &v);
+            ibus_message_iter_get_basic (iter, &v);
             g_value_set_int (value, v);
         }
         break;
-    case DBUS_TYPE_BOOLEAN:
+    case G_TYPE_BOOLEAN:
         {
             gboolean v;
             g_value_init (value, G_TYPE_BOOLEAN);
-            dbus_message_iter_get_basic (iter, &v);
+            ibus_message_iter_get_basic (iter, &v);
             g_value_set_boolean (value, v);
         }
         break;
-    case DBUS_TYPE_DOUBLE:
+    case G_TYPE_DOUBLE:
         {
             gdouble v;
             g_value_init (value, G_TYPE_DOUBLE);
-            dbus_message_iter_get_basic (iter, &v);
+            ibus_message_iter_get_basic (iter, &v);
             g_value_set_double (value, v);
         }
         break;
-    case DBUS_TYPE_ARRAY:
-        {
+    default:
+        if (type == IBUS_TYPE_ARRAY) {
             GValue v = { 0 };
-            DBusMessageIter sub_iter;
+            IBusMessageIter sub_iter;
             gint sub_type;
             GValueArray *array;
 
             
-            sub_type = dbus_message_iter_get_element_type (iter);
-            g_assert (sub_type == DBUS_TYPE_STRING ||
-                      sub_type == DBUS_TYPE_INT32 ||
-                      sub_type == DBUS_TYPE_BOOLEAN ||
-                      sub_type == DBUS_TYPE_DOUBLE);
+            sub_type = ibus_message_iter_get_element_type (iter);
+            g_assert (sub_type == G_TYPE_STRING ||
+                      sub_type == G_TYPE_INT ||
+                      sub_type == G_TYPE_BOOLEAN ||
+                      sub_type == G_TYPE_DOUBLE);
             
             g_value_init (value, G_TYPE_VALUE_ARRAY);
             array = g_value_array_new (0);            
-            dbus_message_iter_recurse (iter, &sub_iter);
-            while (dbus_message_iter_get_arg_type (&sub_iter) != DBUS_TYPE_INVALID) {
+            ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
+            while (ibus_message_iter_get_arg_type (&sub_iter) != G_TYPE_INVALID) {
                 _from_dbus_value (&sub_iter, &v);
                 g_value_array_append (array, &v);
-                dbus_message_iter_next (&sub_iter);
             }
             g_value_take_boxed (value, array);
             break;
         }
-    default:
+        
         g_assert_not_reached();
     }
 }
 
 static void
-_to_dbus_value (DBusMessageIter *iter,
+_to_dbus_value (IBusMessageIter *iter,
                 const GValue    *value)
 {
     switch (G_VALUE_TYPE (value)) {
     case G_TYPE_STRING:
         {
-            const gchar * v = g_value_get_string (value);
-            dbus_message_iter_append_basic (iter,
-                                            DBUS_TYPE_STRING,
+            const gchar *v = g_value_get_string (value);
+            ibus_message_iter_append (iter,
+                                            G_TYPE_STRING,
                                             &v);
         }
         break;
     case G_TYPE_INT:
         {
             gint v = g_value_get_int (value);
-            dbus_message_iter_append_basic (iter,
-                                            DBUS_TYPE_INT32,
+            ibus_message_iter_append (iter,
+                                            G_TYPE_INT,
                                             &v);
         }
         break;
     case G_TYPE_BOOLEAN:
         {
             gboolean v = g_value_get_boolean (value);
-            dbus_message_iter_append_basic (iter,
-                                            DBUS_TYPE_BOOLEAN,
+            ibus_message_iter_append (iter,
+                                            G_TYPE_BOOLEAN,
                                             &v);
         }
         break;
     case G_TYPE_DOUBLE:
         {
             gdouble v = g_value_get_double (value);
-            dbus_message_iter_append_basic (iter,
-                                            DBUS_TYPE_DOUBLE,
+            ibus_message_iter_append (iter,
+                                            G_TYPE_DOUBLE,
                                             &v);
         }
         break;
     default:
         if (G_TYPE_VALUE_ARRAY == G_VALUE_TYPE (value)) {
-            DBusMessageIter sub_iter;
+            IBusMessageIter sub_iter;
             GType type = G_TYPE_INVALID;
             gint i;
             GValueArray *array = (GValueArray *)g_value_get_boxed (value);
-            dbus_message_iter_open_container (iter, 
-                                              DBUS_TYPE_ARRAY,
+            ibus_message_iter_open_container (iter, 
+                                              IBUS_TYPE_ARRAY,
                                               "v",
                                               &sub_iter);
             if (array->n_values > 0) {
@@ -373,7 +372,7 @@ _to_dbus_value (DBusMessageIter *iter,
                 g_assert (type == G_VALUE_TYPE (&array->values[i]));
                 _to_dbus_value (&sub_iter, &array->values[i]);
             }
-            dbus_message_iter_close_container (iter, &sub_iter);
+            ibus_message_iter_close_container (iter, &sub_iter);
             break;
         }
         g_assert_not_reached();
@@ -390,28 +389,25 @@ ibus_config_ibus_signal (IBusProxy     *proxy,
     IBusConfig *config;
     config = IBUS_CONFIG (proxy);
     
-    if (dbus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
-        DBusMessageIter iter;
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
+        IBusMessageIter iter;
         gchar *section;
         gchar *name;
         GValue value = { 0 };
         gint type;
 
-        dbus_message_iter_init (message, &iter);
+        ibus_message_iter_init (message, &iter);
         
-        type = dbus_message_iter_get_arg_type (&iter);
-        if (type != DBUS_TYPE_STRING) {
+        if (!ibus_message_iter_get (&iter, G_TYPE_STRING, &section)) {
             g_warning ("Argument 1 of ValueChanged should be a string");
             return FALSE;
         }
-        dbus_message_iter_get_basic (&iter, &section);
         
-        if (type != DBUS_TYPE_STRING) {
+        if (!ibus_message_iter_get (&iter, G_TYPE_STRING, &name)) {
             g_warning ("Argument 2 of ValueChanged should be a string");
             return FALSE;
         }
-        dbus_message_iter_get_basic (&iter, &name);
-
+        
         _from_dbus_value (&iter, &value);
 
         g_signal_emit (config,
@@ -420,7 +416,8 @@ ibus_config_ibus_signal (IBusProxy     *proxy,
                        section,
                        name,
                        &value);
-        g_signal_stop_emission_by_name (config, "dbus-signal");
+        
+        g_signal_stop_emission_by_name (config, "ibus-signal");
         return TRUE;
     }
     
@@ -438,27 +435,34 @@ ibus_config_get_value (IBusConfig  *config,
     g_assert (name != NULL);
     g_assert (value != NULL);
 
-    DBusMessage *reply;
+    IBusMessage *reply;
     IBusError *error;
 
     reply = ibus_proxy_call_with_reply_and_block (IBUS_PROXY (config),
                                                   "GetValue",
                                                   -1,
                                                   &error,
-                                                  DBUS_TYPE_STRING, section,
-                                                  DBUS_TYPE_STRING, name,
-                                                  DBUS_TYPE_INVALID);
+                                                  G_TYPE_STRING, section,
+                                                  G_TYPE_STRING, name,
+                                                  G_TYPE_INVALID);
     if (reply == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         return FALSE;
     }
 
-    DBusMessageIter iter;
-    dbus_message_iter_init (reply, &iter);
+    if (error = ibus_error_from_message (reply)) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply);
+        return FALSE;
+    }
+
+    IBusMessageIter iter;
+    ibus_message_iter_init (reply, &iter);
     _from_dbus_value (&iter, value);
 
-    dbus_message_unref (reply);
+    ibus_message_unref (reply);
 
     return TRUE;
 }
@@ -474,19 +478,19 @@ ibus_config_set_value (IBusConfig  *config,
     g_assert (name != NULL);
     g_assert (value != NULL);
 
-    DBusMessage *message;
-    DBusMessageIter iter;
+    IBusMessage *message;
+    IBusMessageIter iter;
 
-    message = dbus_message_new_method_call (
+    message = ibus_message_new_method_call (
                                 ibus_proxy_get_name (IBUS_PROXY (config)),
                                 ibus_proxy_get_path (IBUS_PROXY (config)),
                                 ibus_proxy_get_interface (IBUS_PROXY (config)),
                                 "SetValue");
-    dbus_message_iter_init_append (message, &iter);
+    ibus_message_iter_init_append (message, &iter);
     _to_dbus_value (&iter, value);
 
     ibus_proxy_send (IBUS_PROXY (config), message);
-    dbus_message_unref (message);
+    ibus_message_unref (message);
 
     return TRUE;
 }
