@@ -343,7 +343,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
 
     context = IBUS_INPUT_CONTEXT (proxy);
 
-    struct {
+    static const struct {
         const gchar *member;
         guint signal_id;
     } signals [] = {

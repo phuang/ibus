@@ -220,7 +220,7 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
     IBusError *error;
     gint i;
 
-    struct {
+    static const struct {
         const gchar *member;
         const guint signal_id;
     } signals [] = {

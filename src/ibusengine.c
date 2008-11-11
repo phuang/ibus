@@ -408,7 +408,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     IBusMessage *return_message = NULL;
     IBusMessage *error_message = NULL;
 
-    static struct {
+    static const struct {
         gchar *member;
         guint  signal_id;
     } no_arg_methods[] = {
