@@ -23,6 +23,7 @@
 #include "server.h"
 #include "connection.h"
 #include "factoryproxy.h"
+#include "panelproxy.h"
 #include "inputcontext.h"
 
 #define BUS_IBUS_IMPL_GET_PRIVATE(o)  \
@@ -45,6 +46,7 @@ struct _BusIBusImplPrivate {
 
     BusFactoryProxy *default_factory;
     BusInputContext *focused_context;
+    BusPanelProxy   *panel;
 };
 
 typedef struct _BusIBusImplPrivate BusIBusImplPrivate;
@@ -119,6 +121,67 @@ bus_ibus_impl_class_init (BusIBusImplClass *klass)
 }
 
 static void
+_panel_destroy_cb (BusPanelProxy *panel,
+                   BusIBusImpl   *ibus)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+
+    g_assert (priv->panel == panel);
+
+    priv->panel = NULL;
+    g_object_unref (panel);
+}
+
+static void
+_dbus_name_owner_changed (BusDBusImpl *dbus,
+                          const gchar *name,
+                          const gchar *old_name,
+                          const gchar *new_name,
+                          BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_DBUS_IMPL (dbus));
+    g_assert (name != NULL);
+    g_assert (old_name != NULL);
+    g_assert (new_name != NULL);
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    
+    BusIBusImplPrivate *priv;
+    priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
+
+    g_debug ("NameOwnerChanged: \"%s\" \"%s\" \"%s\"", name, old_name, new_name);
+    
+    if (g_strcmp0 (name, IBUS_SERVICE_PANEL) == 0 &&
+        g_strcmp0 (new_name, "") != 0) {
+        
+        BusConnection *connection;
+
+        if (priv->panel != NULL) {
+            ibus_object_destroy (IBUS_OBJECT (priv->panel));
+            priv->panel = NULL;
+        }
+
+        connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name); 
+
+        g_return_if_fail (connection != NULL);
+        
+        priv->panel = bus_panel_proxy_new (connection);
+
+        g_signal_connect (priv->panel,
+                          "destroy",
+                          G_CALLBACK (_panel_destroy_cb),
+                          ibus);
+
+        if (priv->focused_context != NULL) {
+            bus_panel_proxy_focus_in (priv->panel, priv->focused_context);
+        }
+    }
+}
+
+static void
 bus_ibus_impl_init (BusIBusImpl *ibus)
 {
     BusIBusImplPrivate *priv;
@@ -129,6 +192,12 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     priv->contexts = NULL;
     priv->default_factory = NULL;
     priv->focused_context = NULL;
+    priv->panel = NULL;
+
+    g_signal_connect (BUS_DEFAULT_DBUS,
+                      "name-owner-changed",
+                      G_CALLBACK (_dbus_name_owner_changed),
+                      ibus);
 }
 
 static void
@@ -229,7 +298,7 @@ _context_focus_in_cb (BusInputContext    *context,
 
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
-    
+   
     if (priv->focused_context == context)
         return;
 
@@ -240,6 +309,11 @@ _context_focus_in_cb (BusInputContext    *context,
 
     g_object_ref (context);
     priv->focused_context = context;
+    
+    if (priv->panel != NULL) {
+        bus_panel_proxy_focus_in (priv->panel, priv->focused_context);
+    }
+
 }
 
 static void
@@ -255,6 +329,10 @@ _context_focus_out_cb (BusInputContext    *context,
     if (priv->focused_context != context)
         return;
 
+    if (priv->panel != NULL) {
+        bus_panel_proxy_focus_out (priv->panel, priv->focused_context);
+    }
+
     if (priv->focused_context) {
         g_object_unref (priv->focused_context);
         priv->focused_context = NULL;
@@ -266,6 +344,11 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
                             IBusMessage     *message,
                             BusConnection   *connection)
 {
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    gint i;
     gchar *client;
     IBusError *error;
     IBusMessage *reply;
@@ -288,19 +371,24 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
 
     context = bus_input_context_new (connection, client);
     priv->contexts = g_list_append (priv->contexts, context);
-    g_signal_connect (context,
-                      "destroy",
-                      (GCallback) _context_destroy_cb,
-                      ibus);
-    g_signal_connect (context,
-                      "focus-in",
-                      (GCallback) _context_focus_in_cb,
-                      ibus);
-    g_signal_connect (context,
-                      "focus-out",
-                      (GCallback) _context_focus_out_cb,
-                      ibus);
 
+    static const struct {
+        gchar *name;
+        GCallback callback;
+    } signals [] = {
+        { "focus-in",   G_CALLBACK (_context_focus_in_cb) },
+        { "focus-out",  G_CALLBACK (_context_focus_out_cb) },
+        { "destroy",    G_CALLBACK (_context_destroy_cb) },
+        { NULL, NULL }
+    };
+
+    for (i = 0; signals[i].name != NULL; i++) {
+        g_signal_connect (context,
+                          signals[i].name,
+                          signals[i].callback,
+                          ibus);
+    }
+    
     path = ibus_service_get_path (IBUS_SERVICE (context));
     reply = ibus_message_new_method_return (message);
     ibus_message_append_args (reply,
@@ -481,7 +569,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
     gint i;
     IBusMessage *reply_message = NULL;
 
-    struct {
+    static const struct {
         const gchar *interface;
         const gchar *name;
         IBusMessage *(* handler) (BusIBusImpl *, IBusMessage *, BusConnection *);
@@ -589,7 +677,7 @@ bus_ibus_impl_get_default_factory (BusIBusImpl *ibus)
         priv->default_factory = BUS_FACTORY_PROXY (priv->factory_list->data);
     }
 
-    if (priv->default_factory) {
+    if (priv->default_factory == NULL) {
         /* TODO */
     }
 
@@ -606,8 +694,9 @@ bus_ibus_impl_get_next_factory (BusIBusImpl     *ibus,
     GList *link;
     BusIBusImplPrivate *priv;
     
-    if (factory == NULL)
+    if (factory == NULL) {
         return bus_ibus_impl_get_default_factory (ibus);
+    }
 
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
     link = g_list_find (priv->factory_list, factory);
@@ -633,8 +722,9 @@ bus_ibus_impl_get_previous_factory (BusIBusImpl     *ibus,
     GList *link;
     BusIBusImplPrivate *priv;
     
-    if (factory == NULL)
+    if (factory == NULL) {
         return bus_ibus_impl_get_default_factory (ibus);
+    }
 
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
     link = g_list_find (priv->factory_list, factory);

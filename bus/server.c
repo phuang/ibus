@@ -157,8 +157,8 @@ bus_server_new_connection   (BusServer          *server,
     BusServerPrivate *priv;
     priv = BUS_SERVER_GET_PRIVATE (server);
 
-    bus_dbus_impl_new_connection (BUS_DEFAULT_DBUS, connection);
     bus_ibus_impl_new_connection (BUS_DEFAULT_IBUS, connection);
+    bus_dbus_impl_new_connection (BUS_DEFAULT_DBUS, connection);
 }
 
 static void
