@@ -1002,10 +1002,23 @@ bus_input_context_enable_or_disabe_engine (BusInputContext    *context)
     priv->enabled = ! priv->enabled;
 
     if (priv->enabled) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "Enabled",
+                                     G_TYPE_INVALID);
+
+
         bus_engine_proxy_enable (priv->engine);
     }
     else {
         bus_engine_proxy_disable (priv->engine);
+
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "Disabled",
+                                     G_TYPE_INVALID);
     }
 }
 
