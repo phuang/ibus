@@ -394,11 +394,6 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     g_assert (IBUS_IS_PROXY (proxy));
     g_assert (message != NULL);
 
-    gchar *p;
-    p = ibus_message_to_string (message);
-    g_debug ("%s", p);
-    g_free (p);
-
     gboolean retval = FALSE;
     IBusProxyPrivate *priv;
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
