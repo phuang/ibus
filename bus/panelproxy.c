@@ -293,19 +293,22 @@ failed:
 }
 
 static void
-_context_destroy_cb (BusInputContext *context,
-                     BusPanelProxy   *panel)
+_context_set_cursor_location_cb (BusInputContext *context,
+                                 gint             x,
+                                 gint             y,
+                                 gint             w,
+                                 gint             h,
+                                 BusPanelProxy   *panel)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
-
+    
     BusPanelProxyPrivate *priv;
     priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-    
-    g_assert (context == priv->focused_context);
-    
-    priv->focused_context = NULL;
-    g_object_unref (context);
+
+    g_return_if_fail (priv->focused_context == context);
+
+    bus_panel_proxy_set_cursor_location (panel, x, y, w, h);
 }
 
 static void
@@ -320,24 +323,18 @@ _context_update_preedit_cb (BusInputContext *context,
     g_assert (text != NULL);
     g_assert (attr_list != NULL);
     g_assert (BUS_IS_PANEL_PROXY (panel));
-}
 
-static void
-_context_show_preedit_cb (BusInputContext *context,
-                          BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+    BusPanelProxyPrivate *priv;
+    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
 
-static void
-_context_hide_preedit_cb (BusInputContext *context,
-                          BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+    g_return_if_fail (priv->focused_context == context);
 
+    bus_panel_proxy_update_preedit (panel,
+                                    text,
+                                    attr_list,
+                                    cursor_pos,
+                                    visible);
+}
 
 static void
 _context_update_aux_string_cb (BusInputContext *context,
@@ -345,22 +342,6 @@ _context_update_aux_string_cb (BusInputContext *context,
                                IBusAttrList    *attr_list,
                                gboolean         visible,
                                BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
-
-static void
-_context_show_aux_string_cb (BusInputContext *context,
-                             BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
-
-static void
-_context_hide_aux_string_cb (BusInputContext *context,
-                             BusPanelProxy   *panel)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
@@ -377,52 +358,69 @@ _context_update_lookup_table_cb (BusInputContext *context,
 }
 
 static void
-_context_show_lookup_table_cb (BusInputContext *context,
-                               BusPanelProxy   *panel)
+_context_destroy_cb (BusInputContext *context,
+                     BusPanelProxy   *panel)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    BusPanelProxyPrivate *priv;
+    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
+    
+    g_assert (context == priv->focused_context);
+
+    bus_panel_proxy_focus_out (panel, context);
 }
 
-static void
-_context_hide_lookup_table_cb (BusInputContext *context,
-                               BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+#define DEFINE_FUNCTION(name)                                   \
+    static void _context_##name##_cb (BusInputContext *context, \
+                                      BusPanelProxy   *panel)   \
+    {                                                           \
+        g_assert (BUS_IS_INPUT_CONTEXT (context));              \
+        g_assert (BUS_IS_PANEL_PROXY (panel));                  \
+                                                                \
+        BusPanelProxyPrivate *priv;                             \
+        priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);             \
+                                                                \
+        g_return_if_fail (priv->focused_context == context);    \
+                                                                \
+        bus_panel_proxy_##name (panel);                         \
+    }
 
-static void
-_context_page_up_lookup_table_cb (BusInputContext *context,
-                                  BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+DEFINE_FUNCTION (show_preedit)
+DEFINE_FUNCTION (hide_preedit)
+DEFINE_FUNCTION (show_aux_string)
+DEFINE_FUNCTION (hide_aux_string)
+DEFINE_FUNCTION (show_lookup_table)
+DEFINE_FUNCTION (hide_lookup_table)
+DEFINE_FUNCTION (page_up_lookup_table)
+DEFINE_FUNCTION (page_down_lookup_table)
+DEFINE_FUNCTION (cursor_up_lookup_table)
+DEFINE_FUNCTION (cursor_down_lookup_table)
 
-static void
-_context_page_down_lookup_table_cb (BusInputContext *context,
-                                    BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+#undef DEFILE_FUNCTION
 
-static void
-_context_cursor_up_lookup_table_cb (BusInputContext *context,
-                                    BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
-
-static void
-_context_cursor_down_lookup_table_cb (BusInputContext *context,
-                                      BusPanelProxy   *panel)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-}
+static const struct {
+    gchar *name;
+    GCallback callback;
+} __signals [] = {
+    { "set-cursor-location",        G_CALLBACK (_context_set_cursor_location_cb) },
+    { "update-preedit",             G_CALLBACK (_context_update_preedit_cb) },
+    { "show-preedit",               G_CALLBACK (_context_show_preedit_cb) },
+    { "hide-preedit",               G_CALLBACK (_context_hide_preedit_cb) },
+    { "update-aux-string",          G_CALLBACK (_context_update_aux_string_cb) },
+    { "show-aux-string",            G_CALLBACK (_context_show_aux_string_cb) },
+    { "hide-aux-string",            G_CALLBACK (_context_hide_aux_string_cb) },
+    { "update-lookup-table",        G_CALLBACK (_context_update_lookup_table_cb) },
+    { "show-lookup-table",          G_CALLBACK (_context_show_lookup_table_cb) },
+    { "hide-lookup-table",          G_CALLBACK (_context_hide_lookup_table_cb) },
+    { "page-up-lookup-table",       G_CALLBACK (_context_page_up_lookup_table_cb) },
+    { "page-down-lookup-table",     G_CALLBACK (_context_page_down_lookup_table_cb) },
+    { "cursor-up-lookup-table",     G_CALLBACK (_context_cursor_up_lookup_table_cb) },
+    { "cursor-down-lookup-table",   G_CALLBACK (_context_cursor_down_lookup_table_cb) },
+    { "destroy",                    G_CALLBACK (_context_destroy_cb) },
+    { NULL, NULL}
+};
 
 void
 bus_panel_proxy_focus_in (BusPanelProxy     *panel,
@@ -444,32 +442,11 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
     priv->focused_context = context;
 
     /* install signal handlers */
-    static const struct {
-        gchar *name;
-        GCallback callback;
-    } signals [] = {
-        { "update-preedit", G_CALLBACK (_context_update_preedit_cb) },
-        { "show-preedit",   G_CALLBACK (_context_show_preedit_cb) },
-        { "hide-preedit",   G_CALLBACK (_context_hide_preedit_cb) },
-        { "update-aux-string",  G_CALLBACK (_context_update_aux_string_cb) },
-        { "show-aux-string",    G_CALLBACK (_context_show_aux_string_cb) },
-        { "hide-aux-string",    G_CALLBACK (_context_hide_aux_string_cb) },
-        { "update-lookup-table",G_CALLBACK (_context_update_lookup_table_cb) },
-        { "show-lookup-table",  G_CALLBACK (_context_show_lookup_table_cb) },
-        { "hide-lookup-table",  G_CALLBACK (_context_hide_lookup_table_cb) },
-        { "page-up-lookup-table",   G_CALLBACK (_context_page_up_lookup_table_cb) },
-        { "page-down-lookup-table", G_CALLBACK (_context_page_down_lookup_table_cb) },
-        { "cursor-up-lookup-table",   G_CALLBACK (_context_cursor_up_lookup_table_cb) },
-        { "cursor-down-lookup-table", G_CALLBACK (_context_cursor_down_lookup_table_cb) },
-        { "destroy",    G_CALLBACK (_context_destroy_cb) },
-        { NULL, NULL}
-    };
-
     gint i;
-    for (i = 0; signals[i].name != NULL; i++) {
+    for (i = 0; __signals[i].name != NULL; i++) {
         g_signal_connect (context,
-                          signals[i].name,
-                          signals[i].callback,
+                          __signals[i].name,
+                          __signals[i].callback,
                           panel);
     }
 }
@@ -487,31 +464,10 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
     g_assert (priv->focused_context == context);
     
     /* uninstall signal handlers */
-    static const struct {
-        gchar *name;
-        GCallback callback;
-    } signals [] = {
-        { "update-preedit", G_CALLBACK (_context_update_preedit_cb) },
-        { "show-preedit",   G_CALLBACK (_context_show_preedit_cb) },
-        { "hide-preedit",   G_CALLBACK (_context_hide_preedit_cb) },
-        { "update-aux-string",  G_CALLBACK (_context_update_aux_string_cb) },
-        { "show-aux-string",    G_CALLBACK (_context_show_aux_string_cb) },
-        { "hide-aux-string",    G_CALLBACK (_context_hide_aux_string_cb) },
-        { "update-lookup-table",G_CALLBACK (_context_update_lookup_table_cb) },
-        { "show-lookup-table",  G_CALLBACK (_context_show_lookup_table_cb) },
-        { "hide-lookup-table",  G_CALLBACK (_context_hide_lookup_table_cb) },
-        { "page-up-lookup-table",   G_CALLBACK (_context_page_up_lookup_table_cb) },
-        { "page-down-lookup-table", G_CALLBACK (_context_page_down_lookup_table_cb) },
-        { "cursor-up-lookup-table",   G_CALLBACK (_context_cursor_up_lookup_table_cb) },
-        { "cursor-down-lookup-table", G_CALLBACK (_context_cursor_down_lookup_table_cb) },
-        { "destroy",    G_CALLBACK (_context_destroy_cb) },
-        { NULL, NULL}
-    };
-
     gint i;
-    for (i = 0; signals[i].name != NULL; i++) {
+    for (i = 0; __signals[i].name != NULL; i++) {
         g_signal_handlers_disconnect_by_func (context,
-                                              signals[i].callback,
+                                              __signals[i].callback,
                                               panel);
     }
    
