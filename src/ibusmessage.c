@@ -344,9 +344,8 @@ ibus_message_append_args_valist (IBusMessage *message,
         gpointer value = va_arg (va_args, gpointer);
         retval = ibus_message_iter_append (&iter, type, value);
         type = va_arg (va_args, GType);
-        
-        if (!retval)
-            return FALSE;
+       
+        g_return_val_if_fail (retval, FALSE);
     }
     
     return TRUE;
@@ -762,3 +761,36 @@ ibus_message_register_type (GType               type,
 
     return TRUE;
 }
+
+gchar *
+ibus_message_to_string (IBusMessage *message)
+{
+    g_assert (message != NULL);
+
+    GString *string = g_string_new ("");
+
+    IBusMessageIter iter;
+    GType type;
+    gint i = 0;
+
+    g_string_append_printf (string,
+                            "message: %d\n"
+                            "\tdestination = %s\n"
+                            "\tpath = %s\n"
+                            "\tinterface = %s\n"
+                            "\tmember = %s\n",
+                            ibus_message_get_type (message),
+                            ibus_message_get_destination (message),
+                            ibus_message_get_path (message),
+                            ibus_message_get_interface (message),
+                            ibus_message_get_member (message));
+    
+    ibus_message_iter_init (message, &iter);
+    while ((type = ibus_message_iter_get_arg_type (&iter)) != G_TYPE_INVALID) {
+        g_string_append_printf (string, "\t\targ%d is %s\n", i++, g_type_name (type));
+        ibus_message_iter_next (&iter);
+    }
+
+    return g_string_free (string, FALSE);
+}
+

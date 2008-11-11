@@ -202,12 +202,15 @@ ibus_attr_list_get (IBusAttrList *attr_list, guint index)
 IBusAttribute *
 ibus_attribute_deserialize (IBusMessageIter *iter)
 {
-    DBusMessageIter sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
     gboolean retval;
 
     guint type, value, start_index, end_index;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_STRUCT, &sub_iter);
     g_return_val_if_fail (retval, NULL);
 
     retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &type);
@@ -229,11 +232,14 @@ IBusAttrList *
 ibus_attr_list_deserialize (IBusMessageIter *iter)
 {
     gint type;
-    DBusMessageIter sub_iter;
+    DBusMessageIter variant_iter, sub_iter;
     IBusAttrList *attr_list;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_ARRAY, &sub_iter);
     g_return_val_if_fail (retval, NULL);
     
     attr_list = ibus_attr_list_new ();
@@ -259,10 +265,16 @@ ibus_attribute_serialize (IBusAttribute   *attr,
     g_assert (attr != NULL);
     g_assert (iter != NULL);
 
-    DBusMessageIter sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
     gboolean retval;
 
     retval = ibus_message_iter_open_container (iter,
+                                               IBUS_TYPE_VARIANT,
+                                               "(uuuu)",
+                                               &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_open_container (&variant_iter,
                                                IBUS_TYPE_STRUCT,
                                                NULL,
                                                &sub_iter);
@@ -280,7 +292,10 @@ ibus_attribute_serialize (IBusAttribute   *attr,
     retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &attr->end_index);
     g_return_val_if_fail (retval, FALSE);
     
-    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (iter, &variant_iter);
     g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
@@ -295,12 +310,18 @@ ibus_attr_list_serialize (IBusAttrList    *attr_list,
     g_assert (iter != NULL);
 
     gint i;
-    DBusMessageIter sub_iter;
+    DBusMessageIter variant_iter, sub_iter;
     gboolean retval;
 
     retval = ibus_message_iter_open_container(iter,
+                                              IBUS_TYPE_VARIANT,
+                                              "av",
+                                              &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_open_container(&variant_iter,
                                               IBUS_TYPE_ARRAY,
-                                              "(uuuu)",
+                                              "v",
                                               &sub_iter);
     g_return_val_if_fail (retval, FALSE);
 
@@ -314,7 +335,8 @@ ibus_attr_list_serialize (IBusAttrList    *attr_list,
 
     }
     
-    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
+    retval = ibus_message_iter_close_container (iter, &variant_iter);
     g_return_val_if_fail (retval, FALSE);
     
     return TRUE;

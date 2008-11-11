@@ -144,5 +144,7 @@ gboolean         ibus_message_register_type     (GType               type,
                                                  IBusSerializeFunc   serialize_func,
                                                  IBusDeserializeFunc deserilize_func);
 
+gchar           *ibus_message_to_string         (IBusMessage *message);
+
 G_END_DECLS
 #endif

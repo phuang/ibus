@@ -116,21 +116,29 @@ ibus_lookup_table_deserialize (IBusMessageIter *iter)
 {
     g_assert (iter != NULL);
     
-    IBusMessageIter sub_iter, sub_sub_iter;
+    IBusMessageIter variant_iter, sub_iter, sub_sub_iter;
     IBusLookupTable *table;
     gint page_size, cursor_pos;
     gboolean cursor_visible;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
-    g_assert (retval);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_STRUCT, &sub_iter);
+    g_return_val_if_fail (retval, NULL);
 
-    ibus_message_iter_get (&sub_iter, G_TYPE_INT, &page_size);
-    ibus_message_iter_get (&sub_iter, G_TYPE_INT, &cursor_pos);
-    ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &cursor_visible);
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_INT, &page_size);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_INT, &cursor_pos);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_get (&sub_iter, G_TYPE_BOOLEAN, &cursor_visible);
+    g_return_val_if_fail (retval, NULL);
 
     retval = ibus_message_iter_recurse (&sub_iter, IBUS_TYPE_ARRAY, &sub_sub_iter);
-    g_assert (retval);
+    g_return_val_if_fail (retval, NULL);
     
     table = ibus_lookup_table_new (page_size, cursor_pos, cursor_visible);
     
@@ -140,12 +148,13 @@ ibus_lookup_table_deserialize (IBusMessageIter *iter)
         IBusMessageIter sub_sub_sub_iter;
         
         retval = ibus_message_iter_recurse (&sub_sub_iter, IBUS_TYPE_STRUCT, &sub_sub_sub_iter);
-        g_assert (retval);
+        g_return_val_if_fail (retval, NULL);
 
-        ibus_message_iter_get (&sub_sub_sub_iter, G_TYPE_STRING, &text);
-        ibus_message_iter_get (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &attr_list);
+        retval = ibus_message_iter_get (&sub_sub_sub_iter, G_TYPE_STRING, &text);
+        g_return_val_if_fail (retval, NULL);
         
-        g_assert (attr_list);
+        retval = ibus_message_iter_get (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &attr_list);
+        g_return_val_if_fail (retval, NULL);
         
         ibus_lookup_table_append_candidate (table, text, attr_list);
         ibus_message_iter_next (&sub_sub_iter);
@@ -163,30 +172,44 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
     
     gboolean retval;
     gint i;
-    IBusMessageIter sub_iter, sub_sub_iter, sub_sub_sub_iter;
+    IBusMessageIter variant_iter, sub_iter, sub_sub_iter, sub_sub_sub_iter;
 
-    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
-
-    g_assert (retval);
+    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_VARIANT, "(iiba(sv))", &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_open_container (&variant_iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
 
     ibus_message_iter_append (&sub_iter, G_TYPE_INT, &table->page_size);
     ibus_message_iter_append (&sub_iter, G_TYPE_INT, &table->cursor_pos);
     ibus_message_iter_append (&sub_iter, G_TYPE_BOOLEAN, &table->cursor_visible);
     
-    retval = ibus_message_iter_open_container (&sub_iter, IBUS_TYPE_ARRAY, "(sa(uuuu))", &sub_sub_iter);
-    g_assert (retval);
+    retval = ibus_message_iter_open_container (&sub_iter, IBUS_TYPE_ARRAY, "(sv)", &sub_sub_iter);
+    g_return_val_if_fail (retval, FALSE);
 
     for (i = 0; i < table->candidates->len; i++) {
-        ibus_message_iter_open_container (&sub_sub_iter, IBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
+        retval = ibus_message_iter_open_container (&sub_sub_iter, IBUS_TYPE_STRUCT, 0, &sub_sub_sub_iter);
+        g_return_val_if_fail (retval, FALSE);
         
         IBusCandidate *candidate = g_array_index (table->candidates, IBusCandidate *, i);
-        ibus_message_iter_append (&sub_sub_sub_iter, G_TYPE_STRING, &candidate->text);
-        ibus_message_iter_append (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &candidate->attr_list);
-        ibus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);
+        retval = ibus_message_iter_append (&sub_sub_sub_iter, G_TYPE_STRING, &candidate->text);
+        g_return_val_if_fail (retval, FALSE);
+        
+        retval = ibus_message_iter_append (&sub_sub_sub_iter, IBUS_TYPE_ATTR_LIST, &candidate->attr_list);
+        g_return_val_if_fail (retval, FALSE);
+        
+        retval = ibus_message_iter_close_container (&sub_sub_iter, &sub_sub_sub_iter);
+        g_return_val_if_fail (retval, FALSE);
     }
     
-    ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
-    ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (iter, &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
     
     return TRUE;
 }

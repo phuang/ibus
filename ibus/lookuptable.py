@@ -39,7 +39,7 @@ class CandidateList(list):
         return CandidateList(items)
 
     def to_dbus_value(self):
-        value = dbus.Array([], signature="v")
+        value = dbus.Array([], signature="(sv)")
         for text, attrs in self:
             value.append(dbus.Struct((dbus.String(text), attrs.to_dbus_value())))
         return value

@@ -222,9 +222,12 @@ ibus_property_deserialize (IBusMessageIter *iter)
     IBusProperty *prop;
     gboolean retval;
     
-    IBusMessageIter sub_iter, sub_sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_STRUCT, &sub_iter);
     g_return_val_if_fail (retval, NULL);
 
     // get name
@@ -259,11 +262,8 @@ ibus_property_deserialize (IBusMessageIter *iter)
     retval = ibus_message_iter_get (&sub_iter, G_TYPE_UINT, &state);
     g_return_val_if_fail (retval, NULL);
 
-    retval = ibus_message_iter_recurse (&sub_iter, IBUS_TYPE_VARIANT, &sub_sub_iter);
-    g_return_val_if_fail (retval, NULL);
-    
     // get sub prop
-    retval = ibus_message_iter_get (&sub_sub_iter, IBUS_TYPE_PROP_LIST, &prop_list);
+    retval = ibus_message_iter_get (&sub_iter, IBUS_TYPE_PROP_LIST, &prop_list);
     g_return_val_if_fail (retval, NULL);
     
     prop = ibus_property_new (name, type, label, icon, tooltip, sensitive, visible, state, prop_list);
@@ -274,11 +274,14 @@ ibus_property_deserialize (IBusMessageIter *iter)
 IBusPropList *
 ibus_prop_list_deserialize (IBusMessageIter *iter)
 {
-    IBusMessageIter sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
     IBusPropList *prop_list;
     gboolean retval;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
+    g_return_val_if_fail (retval, NULL);
+    
+    retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_ARRAY, &sub_iter);
     g_return_val_if_fail (retval, NULL);
     
     prop_list = ibus_prop_list_new ();
@@ -301,10 +304,13 @@ ibus_property_serialize (IBusProperty    *prop,
     g_assert (prop != NULL);
     g_assert (iter != NULL);
 
-    IBusMessageIter sub_iter, sub_sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
     gboolean retval;
 
-    retval = ibus_message_iter_open_container(iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
+    retval = ibus_message_iter_open_container(iter, IBUS_TYPE_VARIANT, "(susssbbuv)", &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_open_container(&variant_iter, IBUS_TYPE_STRUCT, 0, &sub_iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &prop->name);
@@ -331,19 +337,13 @@ ibus_property_serialize (IBusProperty    *prop,
     retval = ibus_message_iter_append (&sub_iter, G_TYPE_UINT, &prop->state);
     g_return_val_if_fail (retval, FALSE);
     
-    retval = ibus_message_iter_open_container(&sub_iter,
-                                              IBUS_TYPE_VARIANT,
-                                              "av", 
-                                              &sub_sub_iter);
+    retval = ibus_message_iter_append (&sub_iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
     g_return_val_if_fail (retval, FALSE);
     
-    retval = ibus_message_iter_append (&sub_sub_iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
+    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
     g_return_val_if_fail (retval, FALSE);
     
-    retval = ibus_message_iter_close_container (&sub_iter, &sub_sub_iter);
-    g_return_val_if_fail (retval, FALSE);
-    
-    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_close_container (iter, &variant_iter);
     g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
@@ -359,10 +359,13 @@ ibus_prop_list_serialize (IBusPropList    *prop_list,
 
     gint i;
     IBusProperty *prop;
-    IBusMessageIter sub_iter;
+    IBusMessageIter variant_iter, sub_iter;
     gboolean retval;
 
-    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_ARRAY, "(susssbbuv)", &sub_iter);
+    retval = ibus_message_iter_open_container (iter, IBUS_TYPE_VARIANT, "av", &variant_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_open_container (&variant_iter, IBUS_TYPE_ARRAY, "(susssbbuv)", &sub_iter);
     g_return_val_if_fail (retval, FALSE);
     
     for (i = 0;; i++) {
@@ -374,7 +377,10 @@ ibus_prop_list_serialize (IBusPropList    *prop_list,
         g_return_val_if_fail (retval, FALSE);
     }
     
-    retval = ibus_message_iter_close_container (iter, &sub_iter);
+    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_close_container (iter, &variant_iter);
     g_return_val_if_fail (retval, FALSE);
     
     return TRUE;

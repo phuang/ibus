@@ -824,7 +824,8 @@ _connection_ibus_message_cb (BusConnection  *connection,
     }
 
     dest = ibus_message_get_destination (message);
-    if (g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
+    if (dest &&
+        g_strcmp0 (dest, IBUS_SERVICE_IBUS) != 0 &&
         g_strcmp0 (dest, DBUS_SERVICE_DBUS) != 0) {
         /* If the destination is not IBus or DBus, the message will be forwanded. */
         bus_dbus_impl_dispatch_message (dbus, message);

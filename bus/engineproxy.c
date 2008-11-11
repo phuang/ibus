@@ -331,12 +331,12 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
 {
     g_assert (BUS_IS_ENGINE_PROXY (proxy));
     g_assert (message != NULL);
-    
+
     BusEngineProxy *engine;
     IBusError *error;
     gint i;
 
-    struct {
+    static const struct {
         const gchar *member;
         const guint signal_id;
     } signals [] = {

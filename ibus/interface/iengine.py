@@ -95,7 +95,7 @@ class IEngine(dbus.service.Object):
     @signal(signature="ubu")
     def ForwardKeyEvent(self, keyval, is_press, state): pass
 
-    @signal(signature="sa(uuuu)ib")
+    @signal(signature="svib")
     def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
 
     @signal()
@@ -104,7 +104,7 @@ class IEngine(dbus.service.Object):
     @signal()
     def HidePreedit(self): pass
 
-    @signal(signature="sa(uuuu)b")
+    @signal(signature="svb")
     def UpdateAuxString(self, text, attrs, visible): pass
 
     @signal()
@@ -134,7 +134,7 @@ class IEngine(dbus.service.Object):
     @signal()
     def CursorDownLookupTable(self): pass
 
-    @signal(signature="a(susssbbuv)")
+    @signal(signature="v")
     def RegisterProperties(self, props): pass
 
     @signal(signature="v")

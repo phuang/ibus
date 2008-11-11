@@ -199,6 +199,7 @@ ibus_connection_ibus_message (IBusConnection *connection,
                               IBusMessage    *message)
 {
     gboolean retval = FALSE;
+    
     if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL)
         g_signal_emit (connection, connection_signals[IBUS_SIGNAL], 0, message, &retval);
 
@@ -230,8 +231,16 @@ _connection_handle_message_cb (DBusConnection   *dbus_connection,
                                IBusConnection   *connection)
 {
     gboolean retval = FALSE;
+
+    gint type;
+
+    type = ibus_message_get_type (message);
     g_signal_emit (connection, connection_signals[IBUS_MESSAGE], 0, message, &retval);
-    return retval ? DBUS_HANDLER_RESULT_HANDLED : DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    
+    if (retval)
+        return DBUS_HANDLER_RESULT_HANDLED;
+    
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static gint
