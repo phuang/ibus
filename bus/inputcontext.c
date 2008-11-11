@@ -29,6 +29,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
 
 enum {
+    SET_CURSOR_LOCATION,
     FOCUS_IN,
     FOCUS_OUT,
     UPDATE_PREEDIT,
@@ -183,6 +184,20 @@ bus_input_context_class_init (BusInputContextClass *klass)
     IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) bus_input_context_ibus_message;
 
     /* install signals */
+    context_signals[SET_CURSOR_LOCATION] =
+        g_signal_new (I_("set-cursor-location"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__INT_INT_INT_INT,
+            G_TYPE_NONE,
+            4,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT);
+
     context_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (klass),
@@ -554,6 +569,16 @@ _ic_set_cursor_location (BusInputContext  *context,
     
     if (priv->engine) {
         bus_engine_proxy_set_cursor_location (priv->engine, x, y, w, h);
+    }
+
+    if (priv->capabilities & IBUS_CAP_FOCUS) {
+        g_signal_emit (context,
+                       context_signals[SET_CURSOR_LOCATION],
+                       0,
+                       x,
+                       y,
+                       w,
+                       h);
     }
 
     reply = ibus_message_new_method_return (message);
