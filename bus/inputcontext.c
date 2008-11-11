@@ -31,6 +31,21 @@
 enum {
     FOCUS_IN,
     FOCUS_OUT,
+    UPDATE_PREEDIT,
+    SHOW_PREEDIT,
+    HIDE_PREEDIT,
+    UPDATE_AUX_STRING,
+    SHOW_AUX_STRING,
+    HIDE_AUX_STRING,
+    UPDATE_LOOKUP_TABLE,
+    SHOW_LOOKUP_TABLE,
+    HIDE_LOOKUP_TABLE,
+    PAGE_UP_LOOKUP_TABLE,
+    PAGE_DOWN_LOOKUP_TABLE,
+    CURSOR_UP_LOOKUP_TABLE,
+    CURSOR_DOWN_LOOKUP_TABLE,
+    REGISTER_PROPERTIES,
+    UPDATE_PROPERTY,
     LAST_SIGNAL,
 };
 
@@ -185,6 +200,162 @@ bus_input_context_class_init (BusInputContextClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+    
+    context_signals[UPDATE_PREEDIT] =
+        g_signal_new (I_("update-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_BOXED_INT_BOOLEAN,
+            G_TYPE_NONE,
+            4,
+            G_TYPE_STRING,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_INT,
+            G_TYPE_BOOLEAN);
+    
+    context_signals[SHOW_PREEDIT] =
+        g_signal_new (I_("show-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+    
+    context_signals[HIDE_PREEDIT] =
+        g_signal_new (I_("hide-preedit"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+    
+    context_signals[UPDATE_AUX_STRING] =
+        g_signal_new (I_("update-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_BOXED_BOOLEAN,
+            G_TYPE_NONE,
+            3,
+            G_TYPE_STRING,
+            IBUS_TYPE_ATTR_LIST | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_BOOLEAN);
+    
+    context_signals[SHOW_AUX_STRING] =
+        g_signal_new (I_("show-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+    
+    context_signals[HIDE_AUX_STRING] =
+        g_signal_new (I_("hide-aux-string"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+
+    context_signals[UPDATE_LOOKUP_TABLE] =
+        g_signal_new (I_("update-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__BOXED_BOOLEAN,
+            G_TYPE_NONE,
+            2,
+            IBUS_TYPE_LOOKUP_TABLE | G_SIGNAL_TYPE_STATIC_SCOPE,
+            G_TYPE_BOOLEAN);
+    
+    context_signals[SHOW_LOOKUP_TABLE] =
+        g_signal_new (I_("show-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[HIDE_LOOKUP_TABLE] =
+        g_signal_new (I_("hide-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+
+    context_signals[PAGE_UP_LOOKUP_TABLE] =
+        g_signal_new (I_("page-up-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[PAGE_DOWN_LOOKUP_TABLE] =
+        g_signal_new (I_("page-down-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[CURSOR_UP_LOOKUP_TABLE] =
+        g_signal_new (I_("cursor-up-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[CURSOR_DOWN_LOOKUP_TABLE] =
+        g_signal_new (I_("cursor-down-lookup-table"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
+    
+    context_signals[REGISTER_PROPERTIES] =
+        g_signal_new (I_("register-properties"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__BOXED,
+            G_TYPE_NONE,
+            1,
+            IBUS_TYPE_PROP_LIST | G_SIGNAL_TYPE_STATIC_SCOPE);
+    
+    context_signals[UPDATE_PROPERTY] =
+        g_signal_new (I_("update-property"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__BOXED,
+            G_TYPE_NONE,
+            1,
+            IBUS_TYPE_PROPERTY | G_SIGNAL_TYPE_STATIC_SCOPE);
+
 }
 
 static void
@@ -399,7 +570,7 @@ _ic_focus_in (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     IBusMessage *reply;
-
+    
     bus_input_context_focus_in (context);
 
     reply = ibus_message_new_method_return (message);
@@ -419,7 +590,7 @@ _ic_focus_out (BusInputContext  *context,
     IBusMessage *reply;
 
     bus_input_context_focus_out (context);
-
+    
     reply = ibus_message_new_method_return (message);
 
     return reply;
@@ -657,7 +828,9 @@ bus_input_context_focus_in (BusInputContext *context)
         bus_engine_proxy_focus_in (priv->engine);
     }
 
-    g_signal_emit (context, context_signals[FOCUS_IN], 0);
+    if (priv->capabilities & IBUS_CAP_FOCUS) {
+        g_signal_emit (context, context_signals[FOCUS_IN], 0);
+    }
 }
 
 void
@@ -677,7 +850,9 @@ bus_input_context_focus_out (BusInputContext *context)
         bus_engine_proxy_focus_out (priv->engine);
     }
 
-    g_signal_emit (context, context_signals[FOCUS_OUT], 0);
+    if (priv->capabilities & IBUS_CAP_FOCUS) {
+        g_signal_emit (context, context_signals[FOCUS_OUT], 0);
+    }
 }
 
 static void
@@ -791,15 +966,26 @@ _engine_update_preedit_cb (BusEngineProxy   *engine,
     g_assert (priv->engine == engine);
     g_assert (priv->connection != NULL);
 
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (context)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "UpdatePreedit",
-                                 G_TYPE_STRING, &text,
-                                 IBUS_TYPE_ATTR_LIST, &attr_list,
-                                 G_TYPE_INT, &cursor_pos,
-                                 G_TYPE_BOOLEAN, &visible,
-                                 G_TYPE_INVALID);
+    if (priv->capabilities & IBUS_CAP_PREEDIT) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdatePreedit",
+                                     G_TYPE_STRING, &text,
+                                     IBUS_TYPE_ATTR_LIST, &attr_list,
+                                     G_TYPE_INT, &cursor_pos,
+                                     G_TYPE_BOOLEAN, &visible,
+                                     G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_PREEDIT],
+                       0,
+                       text,
+                       attr_list,
+                       cursor_pos,
+                       visible);
+    }
                                  
 }
 
@@ -821,15 +1007,24 @@ _engine_update_aux_string_cb (BusEngineProxy   *engine,
     g_assert (priv->engine == engine);
     g_assert (priv->connection != NULL);
 
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (context)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "UpdateAuxString",
-                                 G_TYPE_STRING, &text,
-                                 IBUS_TYPE_ATTR_LIST, &attr_list,
-                                 G_TYPE_BOOLEAN, &visible,
-                                 G_TYPE_INVALID);
-                                 
+    if (priv->capabilities & IBUS_CAP_AUX_STRING) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateAuxString",
+                                     G_TYPE_STRING, &text,
+                                     IBUS_TYPE_ATTR_LIST, &attr_list,
+                                     G_TYPE_BOOLEAN, &visible,
+                                     G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_AUX_STRING],
+                       0,
+                       text,
+                       attr_list,
+                       visible);
+    }
 }
 
 static void
@@ -848,14 +1043,22 @@ _engine_update_lookup_table_cb (BusEngineProxy   *engine,
     g_assert (priv->engine == engine);
     g_assert (priv->connection != NULL);
 
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (context)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "UpdateLookupTable",
-                                 IBUS_TYPE_LOOKUP_TABLE, &table,
-                                 G_TYPE_BOOLEAN, &visible,
-                                 G_TYPE_INVALID);
-                                 
+    if (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateLookupTable",
+                                     IBUS_TYPE_LOOKUP_TABLE, &table,
+                                     G_TYPE_BOOLEAN, &visible,
+                                     G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_LOOKUP_TABLE],
+                       0,
+                       table,
+                       visible);
+    }                            
 }
 
 static void
@@ -873,13 +1076,20 @@ _engine_register_properties_cb (BusEngineProxy  *engine,
     g_assert (priv->engine == engine);
     g_assert (priv->connection != NULL);
 
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (context)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "RegisterProperties",
-                                 IBUS_TYPE_PROP_LIST, &prop_list,
-                                 G_TYPE_INVALID);
-                                 
+    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "RegisterProperties",
+                                     IBUS_TYPE_PROP_LIST, &prop_list,
+                                     G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[REGISTER_PROPERTIES],
+                       0,
+                       prop_list);
+    }                            
 }
 
 static void
@@ -897,47 +1107,61 @@ _engine_update_property_cb (BusEngineProxy  *engine,
     g_assert (priv->engine == engine);
     g_assert (priv->connection != NULL);
 
-    ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
-                                 ibus_service_get_path  (IBUS_SERVICE (context)),
-                                 IBUS_INTERFACE_INPUT_CONTEXT,
-                                 "UpdateProperty",
-                                 IBUS_TYPE_PROPERTY, &prop,
-                                 G_TYPE_INVALID);
-                                 
+    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+        ibus_connection_send_signal (IBUS_CONNECTION (priv->connection),
+                                     ibus_service_get_path  (IBUS_SERVICE (context)),
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "UpdateProperty",
+                                     IBUS_TYPE_PROPERTY, &prop,
+                                     G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_PROPERTY],
+                       0,
+                       prop);
+    }
 }
 
-#define DEFINE_FUNCTION(name, Name)                         \
-    static void                                             \
-    _engine_##name##_cb (BusEngineProxy   *engine,          \
-                         BusInputContext *context)          \
-    {                                                       \
-        g_assert (BUS_IS_ENGINE_PROXY (engine));            \
-        g_assert (BUS_IS_INPUT_CONTEXT (context));          \
-                                                            \
-        BusInputContextPrivate *priv;                       \
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);     \
-                                                            \
-        g_assert (priv->engine == engine);                  \
-        g_assert (priv->connection != NULL);                \
-                                                            \
-        ibus_connection_send_signal (                       \
-            IBUS_CONNECTION (priv->connection),             \
-            ibus_service_get_path (IBUS_SERVICE (context)), \
-            IBUS_INTERFACE_INPUT_CONTEXT,                   \
-            #Name,                                          \
-            G_TYPE_INVALID);                                \
-    }
+#define DEFINE_FUNCTION(name, Name, signal_name, cap)           \
+    static void                                                 \
+    _engine_##name##_cb (BusEngineProxy   *engine,              \
+                         BusInputContext *context)              \
+    {                                                           \
+        g_assert (BUS_IS_ENGINE_PROXY (engine));                \
+        g_assert (BUS_IS_INPUT_CONTEXT (context));              \
+                                                                \
+        BusInputContextPrivate *priv;                           \
+        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);         \
+                                                                \
+        g_assert (priv->engine == engine);                      \
+        g_assert (priv->connection != NULL);                    \
+                                                                \
+        if ((priv->capabilities & (cap)) == (cap)) {            \
+            ibus_connection_send_signal (                       \
+                IBUS_CONNECTION (priv->connection),             \
+                ibus_service_get_path (IBUS_SERVICE (context)), \
+                IBUS_INTERFACE_INPUT_CONTEXT,                   \
+                #Name,                                          \
+                G_TYPE_INVALID);                                \
+        }                                                       \
+        else {                                                  \
+            g_signal_emit (context,                             \
+                       context_signals[signal_name],            \
+                       0);                                      \
+        }                                                       \
+}
 
-DEFINE_FUNCTION (show_preedit, ShowPreedit)
-DEFINE_FUNCTION (hide_preedit, HidePreedit)
-DEFINE_FUNCTION (show_aux_string, ShowAuxString)
-DEFINE_FUNCTION (hide_aux_string, HideAuxString)
-DEFINE_FUNCTION (show_lookup_table, ShowLookupTable)
-DEFINE_FUNCTION (hide_lookup_table, HideLookupTable)
-DEFINE_FUNCTION (page_up_lookup_table, PageUpLookupTable)
-DEFINE_FUNCTION (page_down_lookup_table, PageDownLookupTable)
-DEFINE_FUNCTION (cursor_up_lookup_table, CursorUpLookupTable)
-DEFINE_FUNCTION (cursor_down_lookup_table, CursorDownLookupTable)
+DEFINE_FUNCTION (show_preedit, ShowPreedit, SHOW_PREEDIT, IBUS_CAP_PREEDIT)
+DEFINE_FUNCTION (hide_preedit, HidePreedit, HIDE_PREEDIT, IBUS_CAP_PREEDIT)
+DEFINE_FUNCTION (show_aux_string, ShowAuxString, SHOW_AUX_STRING, IBUS_CAP_AUX_STRING)
+DEFINE_FUNCTION (hide_aux_string, HideAuxString, HIDE_AUX_STRING, IBUS_CAP_AUX_STRING)
+DEFINE_FUNCTION (show_lookup_table, ShowLookupTable, SHOW_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (hide_lookup_table, HideLookupTable, HIDE_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (page_up_lookup_table, PageUpLookupTable, PAGE_UP_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (page_down_lookup_table, PageDownLookupTable, PAGE_DOWN_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (cursor_up_lookup_table, CursorUpLookupTable, CURSOR_UP_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (cursor_down_lookup_table, CursorDownLookupTable, CURSOR_DOWN_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
 
 #undef DEFINE_FUNCTION
 
