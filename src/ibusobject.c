@@ -71,7 +71,7 @@ ibus_object_get_type (void)
         type = g_type_register_static (G_TYPE_OBJECT,
                     "IBusObject",
                     &type_info,
-                    (GTypeFlags)0);
+                    G_TYPE_FLAG_ABSTRACT);
     }
     
     return type;
