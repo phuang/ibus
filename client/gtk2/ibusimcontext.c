@@ -759,6 +759,12 @@ _create_input_context (IBusIMContext *context)
     g_signal_connect (priv->ibus_context, "destroy",
                       G_CALLBACK (_ibus_context_destroy_cb),
                       context);
+    
+    ibus_input_context_set_capabilities (priv->ibus_context, priv->caps);
+
+    if (priv->has_focus) {
+        ibus_input_context_focus_in (priv->ibus_context);
+    }
 }
 
 /* Callback functions for slave context */

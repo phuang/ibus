@@ -303,7 +303,10 @@ _dbus_hello (BusDBusImpl    *dbus,
         
         name = g_strdup_printf (":1.%d", priv->id ++);
         bus_connection_set_unique_name (connection, name);
-        g_hash_table_insert (priv->names, name, connection);
+        g_free (name);
+
+        name = bus_connection_get_unique_name (connection);
+        g_hash_table_insert (priv->unique_names, name, connection);
 
         reply_message = ibus_message_new_method_return (message);
         ibus_message_append_args (reply_message,
@@ -317,7 +320,6 @@ _dbus_hello (BusDBusImpl    *dbus,
                        "",
                        name);
         
-        g_free (name);
     }
 
     return reply_message;
@@ -342,6 +344,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
 
     // append unique names
     names = g_hash_table_get_keys (priv->unique_names);
+
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
         ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
@@ -631,7 +634,7 @@ _dbus_request_name (BusDBusImpl     *dbus,
         return reply_message;
     }
         
-    if (g_hash_table_lookup (priv->names, name)) {
+    if (g_hash_table_lookup (priv->names, name) != NULL) {
         reply_message = ibus_message_new_error_printf (message,
                                                        DBUS_ERROR_FAILED,
                                                        "Name %s has owner",
@@ -940,7 +943,7 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (name != NULL);
     
-    BusConnection *connection;
+    BusConnection *connection = NULL;
 
     BusDBusImplPrivate *priv;
     priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);

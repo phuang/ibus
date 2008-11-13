@@ -25,8 +25,8 @@ __all__ = (
         "IBUS_PATH_NOTIFICATIONS"
     )
 
-IBUS_SERVICE_NOTIFICATIONS = "org.freedesktop.ibus.Notifications"
-IBUS_PATH_NOTIFICATIONS = "/org/freedesktop/ibus/Notifications"
+IBUS_SERVICE_NOTIFICATIONS = "org.freedesktop.IBus.Notifications"
+IBUS_PATH_NOTIFICATIONS = "/org/freedesktop/IBus/Notifications"
 
 import ibus
 from ibus import interface

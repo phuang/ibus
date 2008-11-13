@@ -60,7 +60,7 @@ class IInputContext(dbus.service.Object):
     @method(out_signature="b")
     def IsEnabled(self): pass
 
-    @method(in_signature="i")
+    @method(in_signature="u")
     def SetCapabilities(self, caps): pass
 
     @method(out_signature="sb")

@@ -150,7 +150,7 @@ class Bus(ibus.Object):
         return self.__dbus.Hello()
 
     def request_name(self, name, flags):
-        return self.__dbus.RequestName(name, flags)
+        return self.__dbus.RequestName(name, dbus.UInt32 (flags))
 
     def release_name(self, name):
         return self.__dbus.ReleaseName(name)

@@ -29,8 +29,8 @@ __all__ = (
         "IBUS_PATH_PANEL"
     )
 
-IBUS_SERVICE_PANEL = "org.freedesktop.ibus.Panel"
-IBUS_PATH_PANEL = "/org/freedesktop/ibus/Panel"
+IBUS_SERVICE_PANEL = "org.freedesktop.IBus.Panel"
+IBUS_PATH_PANEL = "/org/freedesktop/IBus/Panel"
 
 import ibus
 from ibus import interface

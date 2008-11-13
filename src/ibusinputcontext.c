@@ -616,7 +616,7 @@ ibus_input_context_set_capabilities (IBusInputContext   *context,
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
     ibus_proxy_call (IBUS_PROXY (context),
-                     "SetCapabilites",
+                     "SetCapabilities",
                      G_TYPE_UINT, &capabilites,
                      G_TYPE_INVALID);
 }
