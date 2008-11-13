@@ -42,6 +42,24 @@ ibus_error_from_text (const gchar *name,
 }
 
 IBusError *
+ibus_error_from_printf (const gchar *name,
+                        const gchar *format_message,
+                        ...)
+{
+    IBusError *error;
+    gchar *message;
+    va_list va_args;
+
+    va_start (va_args, message);
+    message = g_strdup_vprintf (format_message, va_args);
+
+    error = ibus_error_from_text (name, message);
+    g_free (message);
+
+    return error;
+}
+
+IBusError *
 ibus_error_from_message (DBusMessage *message)
 {
     g_assert (message != NULL);

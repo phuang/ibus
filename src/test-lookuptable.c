@@ -3,7 +3,7 @@
 int main()
 {
 	g_type_init ();
-	IBusLookupTable *table, *table1;
+	IBusLookupTable *table, *table1, table2;
 	IBusMessage *message;
 	IBusError *error;
 	gboolean retval;
@@ -34,6 +34,17 @@ int main()
 
 	ibus_lookup_table_unref (table);
 	ibus_lookup_table_unref (table1);
+	
+	retval = ibus_message_get_args (message,
+								    &error,
+								    IBUS_TYPE_LOOKUP_TABLE, &table,
+								    IBUS_TYPE_LOOKUP_TABLE, &table1,
+								    IBUS_TYPE_LOOKUP_TABLE, &table2,
+									G_TYPE_INVALID);
+	g_assert (!retval);
+
+	g_debug ("%s: %s", error->name, error->message);
+	ibus_error_free (error);
 
 	return 0;
 }

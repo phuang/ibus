@@ -383,24 +383,51 @@ ibus_message_get_args_valist (IBusMessage *message,
     IBusMessageIter iter;
     GType type;
     gpointer value;
+    va_list backup_args;
+    gint i;
     
     retval = ibus_message_iter_init (message, &iter);
 
     if (!retval)
         return FALSE;
-
+    
+    va_copy (backup_args, va_args);
+    
+    i = 0;
     type = first_arg_type;
     while (type != G_TYPE_INVALID) {
         value = va_arg (va_args, gpointer);
         retval = ibus_message_iter_get (&iter, type, value);
-        if (!retval) {
-            if (error)
-                *error = ibus_error_from_text (DBUS_ERROR_INVALID_ARGS, "");
-            return FALSE;
-        }
+        if (!retval)
+            goto _failed;
+        i ++;
         type = va_arg (va_args, GType);
     }
+    va_end (backup_args);
+    
     return TRUE;
+
+_failed:
+    *error = ibus_error_from_printf (DBUS_ERROR_INVALID_ARGS,
+                                     "The argument %d is not %s",
+                                     i,
+                                     g_type_name (type));
+    /* release resources */
+    type = first_arg_type;
+    while (i > 0) {
+        gpointer *value = va_arg (backup_args, gpointer *);
+        if (g_type_is_a (type, G_TYPE_BOXED)) {
+            g_boxed_free (type, *value);
+        }
+        else if (g_type_is_a (type, G_TYPE_OBJECT)) {
+            g_object_unref (*value);
+        }
+        i --;
+        type = va_arg (backup_args, GType);
+    }
+    va_end (backup_args);
+
+    return FALSE;
 }
 
 void
