@@ -58,7 +58,12 @@ G_BEGIN_DECLS
 
 typedef struct _IBusObject IBusObject;
 typedef struct _IBusObjectClass IBusObjectClass;
-
+/**
+ * IBusObject:
+ *
+ * All the fields in the <structname>IBusObject</structname> structure are
+ * prtivate to the #IBusObject and should never be accessed directly.
+ */
 struct _IBusObject {
   GObject parent;
   /* instance members */
@@ -70,8 +75,12 @@ typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
 struct _IBusObjectClass {
     GObjectClass parent;
 
-    /* class members */
+    /* signals */
     void (* destroy)        (IBusObject   *object);
+
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[7];
 };
 
 GType           ibus_object_get_type            (void);

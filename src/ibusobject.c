@@ -77,6 +77,13 @@ ibus_object_get_type (void)
     return type;
 }
 
+/**
+ * ibus_object_new:
+ *
+ * Creates a new instance of an #IBusObject.
+ *
+ * Returns: a new instance of #IBusObject.
+ */
 IBusObject *
 ibus_object_new (void)
 {
@@ -159,6 +166,17 @@ ibus_object_real_destroy (IBusObject *obj)
     g_signal_handlers_destroy (obj);
 }
 
+/**
+ * ibus_object_destroy:
+ * @object: an #IBusObject to destroy.
+ *
+ * Emit the "destory" signal notifying all reference holders that they should
+ * release the #IBusObject.
+ *
+ * The memory for the object itself won't be deleted until its reference count
+ * actually drops to 0; ibus_object_destroy merely asks reference holders to
+ * release their references. it does not free the object.
+ */
 void
 ibus_object_destroy (IBusObject *obj)
 {
