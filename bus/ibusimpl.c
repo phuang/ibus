@@ -152,8 +152,6 @@ _dbus_name_owner_changed (BusDBusImpl *dbus,
     BusIBusImplPrivate *priv;
     priv = BUS_IBUS_IMPL_GET_PRIVATE (ibus);
 
-    g_debug ("NameOwnerChanged: \"%s\" \"%s\" \"%s\"", name, old_name, new_name);
-    
     if (g_strcmp0 (name, IBUS_SERVICE_PANEL) == 0 &&
         g_strcmp0 (new_name, "") != 0) {
         

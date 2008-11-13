@@ -345,6 +345,16 @@ _context_update_aux_string_cb (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
+    
+    BusPanelProxyPrivate *priv;
+    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
+
+    g_return_if_fail (priv->focused_context == context);
+
+    bus_panel_proxy_update_aux_string (panel,
+                                       text,
+                                       attr_list,
+                                       visible);
 }
 
 static void
@@ -355,6 +365,15 @@ _context_update_lookup_table_cb (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    BusPanelProxyPrivate *priv;
+    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
+
+    g_return_if_fail (priv->focused_context == context);
+
+    bus_panel_proxy_update_lookup_table (panel,
+                                         table,
+                                         visible);
 }
 
 static void
@@ -483,7 +502,7 @@ bus_panel_proxy_set_cursor_location (BusPanelProxy *panel,
                                      gint32         h)
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
-
+    
     ibus_proxy_call (IBUS_PROXY (panel),
                      "SetCursorLocation",
                      G_TYPE_INT, &x,

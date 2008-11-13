@@ -548,10 +548,10 @@ _ic_set_cursor_location (BusInputContext  *context,
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
     
     retval = ibus_message_get_args (message, &error,
-                G_TYPE_UINT, &x,
-                G_TYPE_UINT, &y,
-                G_TYPE_UINT, &w,
-                G_TYPE_UINT, &h,
+                G_TYPE_INT, &x,
+                G_TYPE_INT, &y,
+                G_TYPE_INT, &w,
+                G_TYPE_INT, &h,
                 G_TYPE_INVALID);
 
     if (!retval) {
