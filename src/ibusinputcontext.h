@@ -52,7 +52,11 @@ struct _IBusInputContext {
 
 struct _IBusInputContextClass {
     IBusProxyClass parent;
-    /* class members */
+    /* signals */
+    
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[24];
 };
 
 GType        ibus_input_context_get_type    (void);

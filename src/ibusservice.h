@@ -62,13 +62,16 @@ typedef gboolean  (* ServiceIBusSignalFunc)     (IBusService    *service,
 struct _IBusServiceClass {
     IBusObjectClass parent;
 
-    /* class members */
+    /* signals */
     gboolean  (* ibus_message)      (IBusService    *service,
                                      IBusConnection *connection,
                                      IBusMessage    *message);
     gboolean  (* ibus_signal)       (IBusService    *service,
                                      IBusConnection *connection,
                                      IBusMessage    *message);
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[6];
 };
 
 

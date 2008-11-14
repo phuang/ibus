@@ -66,17 +66,21 @@ struct _IBusConnection {
 };
 
 struct _IBusConnectionClass {
-  IBusObjectClass parent;
+    IBusObjectClass parent;
 
-  /* class members */
-  gboolean  (* ibus_message)    (IBusConnection   *connection,
-                                 IBusMessage      *message);
-  gboolean  (* ibus_signal)     (IBusConnection   *connection,
-                                 IBusMessage      *message);
-  void      (* ibus_message_sent)
-                                (IBusConnection   *connection,
-                                 IBusMessage      *message);
-  void      (* disconnected)    (IBusConnection   *connection);
+    /* signals */
+    gboolean    (* ibus_message)    (IBusConnection   *connection,
+                                     IBusMessage      *message);
+    gboolean    (* ibus_signal)     (IBusConnection   *connection,
+                                     IBusMessage      *message);
+    void        (* ibus_message_sent)
+                                    (IBusConnection   *connection,
+                                     IBusMessage      *message);
+    void        (* disconnected)    (IBusConnection   *connection);
+    
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[4];
 };
 
 GType            ibus_connection_get_type           (void);

@@ -47,14 +47,18 @@ typedef struct _IBusFactory IBusFactory;
 typedef struct _IBusFactoryClass IBusFactoryClass;
 
 struct _IBusFactory {
-  IBusService parent;
-  /* instance members */
+    IBusService parent;
+    /* instance members */
 };
 
 struct _IBusFactoryClass {
-  IBusServiceClass parent;
+    IBusServiceClass parent;
 
-  /* class members */
+    /* signals */
+    
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[8];
 };
 
 GType        ibus_factory_get_type          (void);

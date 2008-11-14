@@ -49,16 +49,19 @@ typedef struct _IBusProxy IBusProxy;
 typedef struct _IBusProxyClass IBusProxyClass;
 
 struct _IBusProxy {
-  IBusObject parent;
-  /* instance members */
+    IBusObject parent;
+    /* instance members */
 };
 
 struct _IBusProxyClass {
-  IBusObjectClass parent;
+    IBusObjectClass parent;
 
-  /* class members */
-  gboolean  (* ibus_signal)     (IBusProxy   *proxy,
-                                 IBusMessage      *message);
+    /* class members */
+    gboolean    (* ibus_signal)     (IBusProxy   *proxy,
+                                     IBusMessage      *message);
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[7];
 };
 
 GType            ibus_proxy_get_type        (void);

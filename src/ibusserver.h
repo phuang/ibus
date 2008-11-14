@@ -57,9 +57,12 @@ struct _IBusServer {
 struct _IBusServerClass {
     IBusObjectClass parent;
 
-    /* class members */
+    /* signals */
     void  (* new_connection)    (IBusServer     *server,
                                  IBusConnection *connectin);
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[7];
 };
 
 GType            ibus_server_get_type           (void);

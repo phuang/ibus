@@ -96,6 +96,9 @@ struct _IBusEngineClass {
     void        (* property_hide)   (IBusEngine     *engine,
                                      const gchar    *prop_name);
 
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[9];
 };
 
 GType        ibus_engine_get_type        (void);
