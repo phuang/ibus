@@ -26,6 +26,7 @@ import ibus
 import icon as _icon
 import os
 import sys
+import signal
 from os import path
 from ibus import interface
 from languagebar import LanguageBar
@@ -61,6 +62,9 @@ class Panel(ibus.PanelBase):
         self.__icons_dir = path.join(self.__data_dir, "icons")
         self.__ibus_icon = path.join(self.__icons_dir, "ibus.svg")
         self.__setup_cmd = path.join(self.__prefix, "bin", "ibus-setup")
+
+        # hanlder signal
+        signal.signal(signal.SIGCHLD, self.__sigchld_cb)
 
         # connect bus signal
         self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
@@ -365,6 +369,11 @@ class Panel(ibus.PanelBase):
             self.__bus.kill()
         else:
             print >> sys.stderr, "Unknown command %s" % command
+    
+    def __sigchld_cb(self, sig, sf):
+        pid = os.wait()
+        if self.__setup_pid == pid:
+            self.__setup_pid = 0
 
     def __start_setup(self):
         if self.__setup_pid != 0:
