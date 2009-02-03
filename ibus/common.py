@@ -94,10 +94,7 @@ CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT = [
     "Zenkaku_Hankaku",
     "Hangul"]
 CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE = "/general/keyboard_shortcut_next_engine"
-CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT = [
-    "Ctrl+Shift+Release+Shift_L",
-    "Ctrl+Shift+Release+Shift_R",
-    ]
+CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT = []
 CONFIG_GENERAL_SHORTCUT_PREV_ENGINE = "/general/keyboard_shortcut_prev_engine"
 CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT = []
 
