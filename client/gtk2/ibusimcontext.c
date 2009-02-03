@@ -147,7 +147,7 @@ ibus_im_context_register_type (GTypeModule *type_module)
     }
 }
 
-int
+GType
 ibus_im_context_get_type (void)
 {
     if (_ibus_type_im_context == 0) {

@@ -44,42 +44,42 @@ typedef struct _IBusIMContextClass IBusIMContextClass;
 typedef struct _IBusIMContextPrivate IBusIMContextPrivate;
 
 struct _IBusIMContext {
-  GtkIMContext parent;
-  /* instance members */
-  IBusIMContextPrivate *priv;
+    GtkIMContext parent;
+    /* instance members */
+    IBusIMContextPrivate *priv;
 };
 
 struct _IBusIMContextClass {
-  GtkIMContextClass parent;
-  /* class members */
+GtkIMContextClass parent;
+    /* class members */
 };
 
-int     ibus_im_context_get_type(void);
+GType    ibus_im_context_get_type (void);
 IBusIMContext
-        *ibus_im_context_new    (void);
-void    ibus_im_context_register_type
-                                (GTypeModule    *type_module);
-void    ibus_im_context_shutdown
-                                (void);
+        *ibus_im_context_new      (void);
+void     ibus_im_context_register_type
+                                  (GTypeModule    *type_module);
+void     ibus_im_context_shutdown
+                                  (void);
 const gchar
-        *ibus_im_context_get_ic (IBusIMContext  *context);
-void    ibus_im_context_set_ic  (IBusIMContext  *context,
-                                 const gchar    *ic);
-void    ibus_im_context_enable  (IBusIMContext  *context);
-void    ibus_im_context_disable (IBusIMContext  *context);
-void    ibus_im_context_commit_string
-                                (IBusIMContext  *context,
-                                const gchar     *string);
-void    ibus_im_context_update_preedit
-                                (IBusIMContext  *context,
-                                const gchar     *string,
-                                PangoAttrList   *attrs,
-                                gint            cursor_pos,
-                                gboolean        visible);
-void    ibus_im_context_show_preedit
-                                (IBusIMContext  *context);
-void    ibus_im_context_hide_preedit
-                                (IBusIMContext  *context);
+        *ibus_im_context_get_ic   (IBusIMContext  *context);
+void     ibus_im_context_set_ic   (IBusIMContext  *context,
+                                   const gchar    *ic);
+void     ibus_im_context_enable   (IBusIMContext  *context);
+void     ibus_im_context_disable  (IBusIMContext  *context);
+void     ibus_im_context_commit_string
+                                  (IBusIMContext  *context,
+                                   const gchar    *string);
+void     ibus_im_context_update_preedit
+                                  (IBusIMContext  *context,
+                                   const gchar    *string,
+                                   PangoAttrList  *attrs,
+                                   gint            cursor_pos,
+                                   gboolean        visible);
+void     ibus_im_context_show_preedit
+                                  (IBusIMContext *context);
+void     ibus_im_context_hide_preedit
+                                  (IBusIMContext *context);
 G_END_DECLS
 #endif
 
