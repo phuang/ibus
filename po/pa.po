@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2008-10-19 09:45+0800\n"
+"POT-Creation-Date: 2009-02-03 10:50+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -16,20 +16,20 @@ msgstr ""
 "X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:294 ui/gtk/panel.py:295 ui/gtk/panel.py:296
-#: ui/gtk/panel.py:297 setup/main.py:361 setup/main.py:362 setup/main.py:363
+#: ibus/lang.py:40 ui/gtk/panel.py:298 ui/gtk/panel.py:299 ui/gtk/panel.py:300
+#: ui/gtk/panel.py:301 setup/main.py:361 setup/main.py:362 setup/main.py:363
 msgid "Other"
 msgstr "ਹੋਰ"
 
-#: ui/gtk/panel.py:94
+#: ui/gtk/panel.py:98
 msgid "iBus - Running"
 msgstr "iBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
 
-#: ui/gtk/panel.py:356
+#: ui/gtk/panel.py:360
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "iBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: ui/gtk/panel.py:360
+#: ui/gtk/panel.py:364
 msgid "translator-credits"
 msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
 
