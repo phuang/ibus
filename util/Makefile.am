@@ -21,5 +21,4 @@
 
 SUBDIRS = \
 	IMdkit \
-	gconf \
 	$(NULL)

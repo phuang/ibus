@@ -21,12 +21,12 @@
 
 __all__ = (
         "NotificationsBase",
-        "IBUS_NOTIFICATIONS_NAME",
-        "IBUS_NOTIFICATIONS_PATH"
+        "IBUS_SERVICE_NOTIFICATIONS",
+        "IBUS_PATH_NOTIFICATIONS"
     )
 
-IBUS_NOTIFICATIONS_NAME = "org.freedesktop.ibus.Notifications"
-IBUS_NOTIFICATIONS_PATH = "/org/freedesktop/ibus/Notifications"
+IBUS_SERVICE_NOTIFICATIONS = "org.freedesktop.IBus.Notifications"
+IBUS_PATH_NOTIFICATIONS = "/org/freedesktop/IBus/Notifications"
 
 import ibus
 from ibus import interface
@@ -50,7 +50,7 @@ class NotificationsBase(ibus.Object):
 
 class NotificationsProxy(interface.INotifications):
     def __init__ (self, notify, dbusconn):
-        super(NotificationsProxy, self).__init__(dbusconn, IBUS_NOTIFICATIONS_PATH)
+        super(NotificationsProxy, self).__init__(dbusconn, IBUS_PATH_NOTIFICATIONS)
         self.__dbusconn = dbusconn
         self.__notify = notify
     

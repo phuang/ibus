@@ -19,25 +19,30 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-SUBDIRS = \
-	daemon \
-	gconf \
-	ibus \
-	launcher \
-	ui \
-	lib \
-	util \
-	client \
-	setup \
-	icons \
-	m4 \
-	po \
+SUBDIRS = 		\
+	src 		\
+	bindings	\
+	gconf 		\
+	ibus 		\
+	ui 			\
+	util 		\
+	client 		\
+	setup 		\
+	bus 		\
+	icons 		\
+	m4 			\
+	po 			\
+	docs 		\
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ibus-1.0.pc
+
 EXTRA_DIST = \
 	autogen.sh \
+	ibus-1.0.pc.in \
 	ibus.spec.in \
 	python-config.py \
 	$(NULL)
@@ -55,6 +60,7 @@ install-data-hook:
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-pygconf \
+	--enable-gtk-doc \
 	$(NULL)
 
 rpm: dist @PACKAGE_NAME@.spec

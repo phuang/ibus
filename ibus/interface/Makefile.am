@@ -24,6 +24,7 @@ ibus_interface_PYTHON = \
 	ienginefactory.py \
 	iengine.py \
 	iibus.py \
+	iinputcontext.py \
 	ipanel.py \
 	inotifications.py \
 	__init__.py \

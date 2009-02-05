@@ -78,7 +78,7 @@ class LanguageBar(gtk.Toolbar):
         self.insert(self.__handle, -1)
 
         # create input methods menu
-        prop = ibus.Property(name = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch engine"))
+        prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch engine"))
         self.__im_menu = ToggleToolButton(prop)
         self.__im_menu.set_homogeneous(False)
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
@@ -192,6 +192,8 @@ class LanguageBar(gtk.Toolbar):
         self.__im_menu.set_sensitive(False)
         if self.__auto_hide:
             self.hide_all()
+        else:
+            self.show_all()
 
 gobject.type_register(LanguageBar, "IBusLanguageBar")
 

@@ -30,7 +30,7 @@ class PropItem:
 
         retval = False
 
-        if self._prop.name == prop.name and self._prop.type == prop.type:
+        if self._prop.key == prop.key and self._prop.type == prop.type:
             self._prop = prop
             self.property_changed ()
             retval =  True

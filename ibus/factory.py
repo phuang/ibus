@@ -21,24 +21,19 @@
 
 __all__ = (
         "EngineFactoryBase",
+        "FactoryInfo"
     )
+import dbus
+import object
+import interface
+from serializable import *
+from exception import *
 
-import ibus
-from ibus import interface
-
-class EngineFactoryBase(ibus.Object):
-    def __init__(self, info, engine_class, engine_path, bus, object_path):
+class EngineFactoryBase(object.Object):
+    def __init__(self, bus):
         super(EngineFactoryBase, self).__init__()
-        self.__proxy = EngineFactoryProxy (self, bus.get_dbusconn(), object_path)
-        self.__info = info
+        self.__proxy = EngineFactoryProxy (self, bus.get_dbusconn(), "/org/freedesktop/IBus/Factory")
         self.__bus = bus
-        self.__engine_class = engine_class
-        self.__engine_path = engine_path
-        self.__engine_id = 1
-        self.__object_path = object_path
-
-    def get_info(self):
-        return self.__info
 
     def initialize(self):
         pass
@@ -46,21 +41,13 @@ class EngineFactoryBase(ibus.Object):
     def uninitialize(self):
         pass
 
-    def register(self):
-        self.__bus.register_factories([self.__object_path])
-
-    def create_engine(self):
-        engine = self.__engine_class(self.__bus, self.__engine_path + str(self.__engine_id))
-        self.__engine_id += 1
-        return engine.get_dbus_object()
+    def create_engine(self, engine_name):
+        raise IBusException("Can not create engine %s" % engine_name)
 
     def do_destroy(self):
         self.__proxy = None
         self.__bus = None
-        self.__info = None
-        self.__engine_class = None
-        self.__engine_path = None
-        super(EngineFactoryBase,self).do_destroy()
+        super(EngineFactoryBase, self).do_destroy()
 
 
 class EngineFactoryProxy(interface.IEngineFactory):
@@ -77,11 +64,70 @@ class EngineFactoryProxy(interface.IEngineFactory):
     def Uninitialize(self):
         return self.__factory.uninitialize()
 
-    def CreateEngine(self):
-        return self.__factory.create_engine()
+    def CreateEngine(self, engine_name):
+        engine = self.__factory.create_engine(engine_name)
+        return engine.get_dbus_object()
 
     def Destroy(self):
         self.__factory.destroy()
         self.__factory = None
         self.remove_from_connection ()
+
+class FactoryInfo(Serializable):
+    __NAME__ = "IBusFactoryInfo"
+    def __init__ (self, path=None, name=None, lang=None, icon=None, authors=None, credits=None):
+        super(FactoryInfo, self).__init__()
+        self.__path = path
+        self.__name = name
+        self.__lang = lang
+        self.__icon = icon
+        self.__authors = authors
+        self.__credits = credits
+
+    def get_path(self):
+        return self.__path
+
+    def get_name(self):
+        return self.__name
+
+    def get_lang(self):
+        return self.__lang
+
+    def get_icon(self):
+        return self.__icon
+    def get_authors(self):
+        return self.__authors
+
+    def get_credits(self):
+        return self.__credits
+
+    path = property(get_path)
+    name = property(get_name)
+    lang = property(get_lang)
+    icon = property(get_icon)
+    authors = property(get_authors)
+    credits = property(get_credits)
+
+    def serialize(self, struct):
+        super(FactoryInfo, self).serialize(struct)
+        struct.append (dbus.ObjectPath(self.__path))
+        struct.append (dbus.String(self.__name))
+        struct.append (dbus.String(self.__lang))
+        struct.append (dbus.String(self.__icon))
+        struct.append (dbus.String(self.__authors))
+        struct.append (dbus.String(self.__credits))
+
+    def deserialize(self, struct):
+        super(FactoryInfo, self).deserialize(struct)
+        if len(struct) < 5:
+            raise IBusException ("Can not deserialize IBusFactoryInfo")
+
+        self.__path = struct.pop(0)
+        self.__name = struct.pop(0)
+        self.__lang = struct.pop(0)
+        self.__icon = struct.pop(0)
+        self.__authors = struct.pop(0)
+        self.__credits = struct.pop(0)
+
+serializable_register(FactoryInfo)
 

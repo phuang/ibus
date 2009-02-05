@@ -107,7 +107,7 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
             self.hide_all ()
 
     def do_activate (self):
-        self.emit ("property-activate", self._prop.name, self._prop.state)
+        self.emit ("property-activate", self._prop.key, self._prop.state)
 
     def property_changed (self):
         self.set_sensitive (self._prop.sensitive)
@@ -145,7 +145,7 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
             self._prop.state = ibus.PROP_STATE_CHECKED
         else:
             self._prop.state = ibus.PROP_STATE_UNCHECKED
-        self.emit ("property-activate", self._prop.name, self._prop.state)
+        self.emit ("property-activate", self._prop.key, self._prop.state)
 
     def property_changed (self):
         self.set_active (self._prop.state == ibus.PROP_STATE_CHECKED)
@@ -167,7 +167,7 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
     }
 
     def __init__ (self, group, prop):
-        gtk.RadioMenuItem.__init__ (self, group, label = prop.label)
+        gtk.RadioMenuItem.__init__ (self, group, label = prop.label.text)
         PropItem.__init__ (self, prop)
 
         self.set_active (self._prop.state == ibus.PROP_STATE_CHECKED)
@@ -194,7 +194,7 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
             self._prop.state = ibus.PROP_STATE_CHECKED
         else:
             self._prop.state = ibus.PROP_STATE_UNCHECKED
-        self.emit ("property-activate", self._prop.name, self._prop.state)
+        self.emit ("property-activate", self._prop.key, self._prop.state)
 
 class SeparatorMenuItem (gtk.SeparatorMenuItem, PropItem):
     __gsignals__ = {

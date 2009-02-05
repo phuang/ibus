@@ -1,8 +1,8 @@
 XIM=ibus
-XIM_PROGRAM="/usr/bin/ibus"
+XIM_PROGRAM="/usr/bin/ibus-daemon"
 ICON="/usr/share/ibus/icons/ibus.svg"
 # XIM_ARGS="0xffffffff"
 PREFERENCE_PROGRAM=/usr/bin/ibus-setup
-SHORT_DESC="iBus"
+SHORT_DESC="IBus"
 GTK_IM_MODULE=ibus
-QT_IM_MODULE=ibus
+# QT_IM_MODULE=ibus

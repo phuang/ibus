@@ -21,54 +21,24 @@
 
 __all__ = (
         "LookupTable",
-        "lookup_table_from_dbus_value"
     )
 
 import dbus
-from attribute import *
+from serializable import *
 from exception import *
 
-class CandidateList(list):
-    def __init__(self, items = []):
-        super(CandidateList, self).__init__(items)
-
-    def clean(self):
-        del self[:]
-    def __getslice__(self, i, j):
-        items = super(CandidateList, self).__getslice__(i, j)
-        return CandidateList(items)
-
-    def to_dbus_value(self):
-        value = dbus.Array([], signature="v")
-        for text, attrs in self:
-            value.append(dbus.Struct((dbus.String(text), attrs.to_dbus_value())))
-        return value
-
-    def from_dbus_value(self, value):
-        candidates = []
-        if not isinstance(value, dbus.Array):
-            raise dbus.Exception("Candidates must from dbus.Array(a(sa(...))")
-        for candidate in value:
-            if not isinstance(candidate, dbus.Struct):
-                raise IBusException("Candidates must from dbus.Array(a(sa(...)))")
-            if len(candidate) != 2 or \
-                not isinstance(candidate[0], dbus.String):
-                raise IBusException("Candidates must from dbus.Array(a(sa(...)))")
-            text = candidate[0]
-            attrs = attr_list_from_dbus_value(candidate[1])
-            candidates.append((text, attrs))
-
-        self.clean()
-        self[:] = candidates
-
-class LookupTable(object):
-    def __init__(self, page_size=5, labels=None):
+class LookupTable(Serializable):
+    __NAME__ = "IBusLookupTable"
+    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, candidates=None):
         super(LookupTable, self).__init__()
         self.__cursor_visible = True
-        self.__cursor_pos = 0
-        self.__candidates = CandidateList()
+        self.__cursor_pos = cursor_pos
+        if candidates == None:
+            self.__candidates = list()
+        else:
+            self.__candidates = candidates
         self.set_page_size(page_size)
-        self.set_labels(labels)
+        self.set_labels(None)
 
     def set_page_size(self, page_size):
         self.__page_size = page_size
@@ -159,18 +129,16 @@ class LookupTable(object):
         return True
 
     def clean(self):
-        self.__candidates.clean()
+        self.__candidates = list()
         self.__cursor_pos = 0
 
-    def append_candidate(self, candidate, attrs = None):
-        if attrs == None:
-            attrs = AttrList()
-        self.__candidates.append((candidate, attrs))
+    def append_candidate(self, text):
+        self.__candidates.append(text)
 
     def get_candidate(self, index):
         return self.__candidates[index]
 
-    def get_canidates_in_current_page(self):
+    def get_candidates_in_current_page(self):
         page = self.__cursor_pos / self.__page_size
         start_index = page * self.__page_size
         end_index = min((page + 1) * self.__page_size, len(self.__candidates))
@@ -185,50 +153,43 @@ class LookupTable(object):
     def __len__(self):
         return self.get_number_of_candidates()
 
-    def to_dbus_value(self):
-        value = (dbus.Int32(self.__page_size),
-                 dbus.Int32(self.__cursor_pos),
-                 dbus.Boolean(self.__cursor_visible),
-                 self.__candidates.to_dbus_value())
-        return dbus.Struct(value)
+    def serialize(self, struct):
+        super(LookupTable, self).serialize(struct)
+        struct.append(dbus.UInt32(self.__page_size))
+        struct.append(dbus.UInt32(self.__cursor_pos))
+        struct.append(dbus.Boolean(self.__cursor_visible))
+        candidates = map(lambda c: serialize_object(c), self.__candidates)
+        struct.append(dbus.Array(candidates, signature="v"))
 
-    def current_page_to_dbus_value(self):
-        candidates = self.get_canidates_in_current_page()
-        value = (dbus.Int32(self.__page_size),
-                 dbus.Int32(self.__cursor_pos % self.__page_size),
-                 dbus.Boolean(self.__cursor_visible),
-                 candidates.to_dbus_value())
-        return dbus.Struct(value)
+    def get_current_page_as_lookup_table(self):
+        candidates = self.get_candidates_in_current_page()
+        return LookupTable(self.__page_size,
+                           self.__cursor_pos % self.__page_size,
+                           self.__cursor_visible,
+                           candidates)
 
-    def from_dbus_value(self, value):
-        if not isinstance(value, dbus.Struct):
-            raise dbus.Exception("LookupTable must from dbus.Struct(uuba(...))")
+    def deserialize(self, struct):
+        super(LookupTable, self).deserialize(struct)
 
-        if len(value) != 4 or \
-            not isinstance(value[0], dbus.Int32) or \
-            not isinstance(value[1], dbus.Int32) or \
-            not isinstance(value[2], dbus.Boolean):
-            raise dbus.Exception("LookupTable must from dbus.Struct(uuba(...))")
+        self.__page_size = struct.pop(0)
+        self.__cursor_pos = struct.pop(0)
+        self.__cursor_visible = struct.pop(0)
+        self.__candidates = map(deserialize_object, struct.pop(0))
 
-        self.__candidates.from_dbus_value(value[3])
-        self.__page_size = value[0]
-        self.__cursor_pos = value[1]
-        self.__cursor_visible = value[2]
 
-def lookup_table_from_dbus_value(value):
-    lookup_table = LookupTable()
-    lookup_table.from_dbus_value(value)
-    return lookup_table
+serializable_register(LookupTable)
 
-def unit_test():
+def test():
     t = LookupTable()
     # attrs = AttrList()
     # attrs.append(AttributeBackground(RGB(233, 0,1), 0, 3))
     # attrs.append(AttributeUnderline(1, 3, 5))
     t.append_candidate("Hello")
-    value = t.to_dbus_value()
-    print value
-    t = lookup_table_from_dbus_value(value)
+    value = serialize_object(t)
+    t = deserialize_object(value)
+    t = t.get_current_page_as_lookup_table()
+    value = serialize_object(t)
+    t = deserialize_object(value)
 
 if __name__ == "__main__":
-    unit_test()
+    test()

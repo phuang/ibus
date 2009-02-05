@@ -24,7 +24,7 @@ import gtk.gdk as gdk
 import gobject
 import pango
 import ibus
-from ibus.gtk import PangoAttrList
+from ibus._gtk import PangoAttrList
 
 class Label(gtk.Label): pass
 gobject.type_register(Label, "IBusPanelLabel")
@@ -260,58 +260,53 @@ class CandidatePanel(gtk.VBox):
         # self.hide_all()
         # self.show_all()
 
-    def show_preedit(self):
+    def show_preedit_text(self):
         self.__preedit_visible = True
         self.__preedit_label.show()
         self.__check_show_states()
 
-    def hide_preedit(self):
+    def hide_preedit_text(self):
         self.__preedit_visible = False
         self.__preedit_label.hide()
         self.__check_show_states()
 
-    def update_preedit(self, text, attrs, cursor_pos, visible):
-        if attrs:
-            attrs = PangoAttrList(attrs, text)
+    def update_preedit_text(self, text, cursor_pos, visible):
+        attrs = PangoAttrList(text.attributes, text.text)
         if visible:
-            self.show_preedit()
+            self.show_preedit_text()
         else:
-            self.hide_preedit()
-        self.__preedit_string = text
-        self.__preedit_label.set_text(text)
-        if attrs == None:
-            attrs = pango.AttrList()
+            self.hide_preedit_text()
+        self.__preedit_stribg = text.text
+        self.__preedit_label.set_text(text.text)
         self.__preedit_attrs = attrs
         self.__preedit_label.set_attributes(attrs)
 
-    def show_aux_string(self):
+    def show_auxiliary_text(self):
         self.__aux_string_visible = True
         self.__aux_label.show()
         self.__check_show_states()
 
-    def hide_aux_string(self):
+    def hide_auxiliary_text(self):
         self.__aux_string_visible = False
         self.__aux_label.hide()
         self.__check_show_states()
 
-    def update_aux_string(self, text, attrs, show):
-        attrs = PangoAttrList(attrs, text)
+    def update_auxiliary_text(self, text, show):
+        attrs = PangoAttrList(text.attributes, text.text)
 
         if show:
-            self.show_aux_string()
+            self.show_auxiliary_text()
         else:
-            self.hide_aux_string()
+            self.hide_auxiliary_text()
 
-        self.__aux_string = text
-        self.__aux_label.set_text(text)
-        if attrs == None:
-            attrs = pango.AttrList()
+        self.__aux_string = text.text
+        self.__aux_label.set_text(text.text)
         self.__aux_attrs = attrs
         self.__aux_label.set_attributes(attrs)
 
     def __refresh_candidates(self):
-        candidates = self.__lookup_table.get_canidates_in_current_page()
-        candidates = map(lambda x: (x[0], PangoAttrList(x[1], x[0]) if x[1] else None), candidates)
+        candidates = self.__lookup_table.get_candidates_in_current_page()
+        candidates = map(lambda x: (x.text, PangoAttrList(x.attributes, x.text)), candidates)
         self.__candidate_area.set_candidates(candidates,
                 self.__lookup_table.get_cursor_pos_in_current_page(),
                 self.__lookup_table.is_cursor_visible()
@@ -372,8 +367,8 @@ class CandidatePanel(gtk.VBox):
             self.emit("hide")
 
     def reset(self):
-        self.update_preedit("", None, 0, False)
-        self.update_aux_string("", None, False)
+        self.update_preedit_text(ibus.Text(""), 0, False)
+        self.update_auxiliary_text(ibus.Text(""), False)
         self.update_lookup_table(None, False)
         self.hide()
 

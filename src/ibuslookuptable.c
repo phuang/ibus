@@ -1,0 +1,283 @@
+/* vim:set et sts=4: */
+/* IBus - The Input Bus
+ * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+#include "ibuslookuptable.h"
+
+/* functions prototype */
+static void         ibus_lookup_table_class_init    (IBusLookupTableClass   *klass);
+static void         ibus_lookup_table_init          (IBusLookupTable        *table);
+static void         ibus_lookup_table_destroy       (IBusLookupTable        *table);
+static gboolean     ibus_lookup_table_serialize     (IBusLookupTable        *table,
+                                                     IBusMessageIter        *iter);
+static gboolean     ibus_lookup_table_deserialize   (IBusLookupTable        *table,
+                                                     IBusMessageIter        *iter);
+static gboolean     ibus_lookup_table_copy          (IBusLookupTable        *dest,
+                                                     IBusLookupTable        *src);
+
+static IBusSerializableClass *parent_class = NULL;
+
+GType
+ibus_lookup_table_get_type (void)
+{
+    static GType type = 0;
+
+    static const GTypeInfo type_info = {
+        sizeof (IBusLookupTableClass),
+        (GBaseInitFunc)     NULL,
+        (GBaseFinalizeFunc) NULL,
+        (GClassInitFunc)    ibus_lookup_table_class_init,
+        NULL,               /* class finialize */
+        NULL,               /* class data */
+        sizeof (IBusLookupTable),
+        0,
+        (GInstanceInitFunc) ibus_lookup_table_init,
+    };
+
+    if (type == 0) {
+        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
+                                       "IBusLookupTable",
+                                       &type_info,
+                                       0);
+    }
+
+    return type;
+}
+
+static void
+ibus_lookup_table_class_init (IBusLookupTableClass *klass)
+{
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
+
+    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
+
+    object_class->destroy = (IBusObjectDestroyFunc) ibus_lookup_table_destroy;
+
+    serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_lookup_table_serialize;
+    serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_lookup_table_deserialize;
+    serializable_class->copy        = (IBusSerializableCopyFunc) ibus_lookup_table_copy;
+
+    g_string_append (serializable_class->signature, "uubav");
+}
+
+static void
+ibus_lookup_table_init (IBusLookupTable *table)
+{
+    table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusText *));
+}
+
+static void
+ibus_lookup_table_destroy (IBusLookupTable *table)
+{
+    IBusText **sp, **p;
+
+    if (table->candidates != NULL) {
+        p = sp = (IBusText **) g_array_free (table->candidates, FALSE);
+        table->candidates = NULL;
+        while (*p != NULL) {
+            g_object_unref (*p);
+            p ++;
+        }
+        g_free (sp);
+    }
+
+    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *) table);
+}
+
+static gboolean
+ibus_lookup_table_serialize (IBusLookupTable *table,
+                             IBusMessageIter *iter)
+{
+    IBusMessageIter array_iter;
+    gboolean retval;
+    guint i;
+
+    retval = parent_class->serialize ((IBusSerializable *)table, iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
+
+    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &table->page_size);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &table->cursor_pos);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_open_container (iter,
+                                               IBUS_TYPE_ARRAY,
+                                               "v",
+                                               &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    for (i = 0;; i++) {
+        IBusText *text;
+
+        text = ibus_lookup_table_get_candidate (table, i);
+        if (text == NULL)
+            break;
+
+        retval = ibus_message_iter_append (&array_iter, IBUS_TYPE_TEXT, &text);
+        g_return_val_if_fail (retval, FALSE);
+    }
+
+    retval = ibus_message_iter_close_container (iter, &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    return TRUE;
+}
+
+static gboolean
+ibus_lookup_table_deserialize (IBusLookupTable *table,
+                               IBusMessageIter *iter)
+{
+    DBusMessageIter array_iter;
+    gboolean retval;
+
+    retval = parent_class->deserialize ((IBusSerializable *)table, iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
+
+    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->page_size);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->cursor_pos);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
+        IBusText *text;
+        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
+        g_return_val_if_fail (retval, FALSE);
+
+        ibus_lookup_table_append_candidate (table, text);
+    }
+
+    ibus_message_iter_next (iter);
+
+    return TRUE;
+}
+
+static gboolean
+ibus_lookup_table_copy (IBusLookupTable *dest,
+                        IBusLookupTable *src)
+{
+    gboolean retval;
+    guint i;
+
+    retval = parent_class->copy ((IBusSerializable *)dest, (IBusSerializable *)src);
+    g_return_val_if_fail (retval, FALSE);
+
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (dest), FALSE);
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (src), FALSE);
+
+    for (i = 0;; i++) {
+        IBusText *text;
+
+        text = ibus_lookup_table_get_candidate (src, i);
+        if (text == NULL)
+            break;
+
+        text = (IBusText *) ibus_serializable_copy ((IBusSerializable *) text);
+
+        ibus_lookup_table_append_candidate (dest, text);
+        g_object_unref (text);
+    }
+
+    return TRUE;
+}
+
+IBusLookupTable *
+ibus_lookup_table_new (guint page_size,
+                       gboolean cursor_visible)
+{
+    IBusLookupTable *table;
+
+    table= g_object_new (IBUS_TYPE_LOOKUP_TABLE, NULL);
+
+    table->cursor_pos = 0;
+    table->page_size = page_size;
+    table->cursor_visible = cursor_visible;
+
+    return table;
+}
+
+void
+ibus_lookup_table_append_candidate (IBusLookupTable *table,
+                                    IBusText        *text)
+{
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    g_object_ref (text);
+    g_array_append_val (table->candidates, text);
+}
+
+IBusText *
+ibus_lookup_table_get_candidate (IBusLookupTable *table,
+                                 guint            index)
+{
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), NULL);
+
+    if (index >= table->candidates->len)
+        return NULL;
+
+    return g_array_index (table->candidates, IBusText *, index);
+}
+
+
+void
+ibus_lookup_table_clear (IBusLookupTable *table)
+{
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+
+    gint index;
+
+    for (index = 0; index < table->candidates->len; index ++) {
+        g_object_unref (g_array_index (table->candidates, IBusText *, index));
+    }
+
+    g_array_set_size (table->candidates, 0);
+}
+
+void
+ibus_lookup_table_set_cursor_pos (IBusLookupTable *table,
+                                  guint            cursor_pos)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+
+    table->cursor_pos = cursor_pos;
+}
+void
+ibus_lookup_table_set_page_size  (IBusLookupTable *table,
+                                  guint            page_size)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+
+    table->page_size = page_size;
+}
+

@@ -19,10 +19,10 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-libibus_gtk = $(top_builddir)/lib/gtk2/libibus-gtk.la
+libibus = $(top_builddir)/src/libibus.la
 
 INCLUDES = \
-	-I$(top_srcdir)/lib/gtk2 \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
 immoduledir = @GTK_IM_MODULEDIR@
@@ -34,8 +34,8 @@ im_ibus_la_SOURCES = \
 	ibusimcontext.h \
 	$(NULL)
 
-im_ibus_la_DEPENDENCIES = $(libibus_gtk)
-im_ibus_la_LIBADD = $(libibus_gtk)
+im_ibus_la_DEPENDENCIES = $(libibus)
+im_ibus_la_LIBADD = $(libibus)
 
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \
@@ -50,8 +50,8 @@ im_ibus_la_LDFLAGS = \
 	-module \
 	$(NULL)
 
-$(libibus_gtk):
-	(cd $(top_builddir)/lib/gtk2; make )
+$(libibus):
+	(cd $(top_builddir)/src; make )
 
 EXTRA_DIST = \
 	$(NULL)

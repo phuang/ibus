@@ -1,0 +1,12 @@
+ibusmarshalers.c
+ibusmarshalers.h
+test-attribute
+test-bus
+test-engine
+test-keynames
+test-lookuptable
+test-proxy
+test-server
+test-text
+stamp-ibusenumtypes.h
+stamp-ibusmarshalers.h

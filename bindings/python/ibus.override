@@ -1,0 +1,11 @@
+%%
+headers
+#include "common.h"
+%%
+modulename ibus
+%%
+import gobject.GObject as PyGObject_Type
+%%
+ignore-glob
+ *_get_type
+%%

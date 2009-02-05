@@ -19,22 +19,54 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-gconf_PYTHON = \
-	config.py \
-	main.py \
+libibus = $(top_builddir)/src/libibus.la
+
+INCLUDES = \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
-gconfdir = $(pkgdatadir)/gconf
+AM_CFLAGS = \
+	@GLIB2_CFLAGS@ \
+	@GCONF_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	$(INCLUDES) \
+	$(NULL)
+AM_LDFLAGS = \
+	@GLIB2_LIBS@ \
+	@GCONF_LIBS@ \
+	@DBUS_LIBS@ \
+	$(libibus) \
+	$(NULL)
 
-bin_SCRIPTS = ibus-gconf
+libexec_PROGRAMS = \
+	ibus-gconf \
+	$(NULL)
+
+ibus_gconf_SOURCES = \
+	main.c \
+	config.c \
+	config.h \
+	$(NULL)
+ibus_gconf_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(NULL)
+ibus_gconf_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	$(NULL)
+
+component_DATA = \
+	gconf.xml \
+	$(NULL)
+componentdir = $(pkgdatadir)/component
 
 CLEANFILES = \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
-	ibus-gconf.in \
+	gconf.xml.in \
 	$(NULL)
 
-test:
-	$(ENV) PYTHONPATH=$(top_srcdir) $(PYTHON) $(srcdir)/main.py
+$(libibus):
+	$(MAKE) -C $(top_builddir)/src

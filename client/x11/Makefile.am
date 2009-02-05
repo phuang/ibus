@@ -21,9 +21,9 @@
 
 
 libIMdkit = $(top_builddir)/util/IMdkit/libIMdkit.la
-libibus_gtk = $(top_builddir)/lib/gtk2/libibus-gtk.la
+libibus = $(top_builddir)/src/libibus.la
 
-bin_PROGRAMS = ibus-x11
+libexec_PROGRAMS = ibus-x11
 
 ibus_x11_SOURCES = \
 	main.c \
@@ -32,12 +32,12 @@ ibus_x11_SOURCES = \
 
 ibus_x11_DEPENDENCIES = \
 	$(libIMdkit) \
-	$(libibus_gtk) \
+	$(libibus) \
 	$(NULL)
 
 ibus_x11_LDADD = \
 	$(libIMdkit) \
-	$(libibus_gtk) \
+	$(libibus) \
 	$(NULL)
 
 ibus_x11_LDFLAGS = \
@@ -48,7 +48,7 @@ ibus_x11_CFLAGS = \
 	@GTK2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-I$(top_srcdir)/util/IMdkit \
-	-I$(top_srcdir)/lib/gtk2 \
+	-I$(top_srcdir)/src \
 	$(NULL)
 
 noinst_HEADERS = \
@@ -58,6 +58,6 @@ noinst_HEADERS = \
 $(IMdkit):
 	(cd $(top_builddir)/util/IMdkit; make)
 
-$(libibus_gtk):
-	(cd $(top_builddir)/lib/gtk2; make)
+$(libibus):
+	(cd $(top_builddir)/src; make)
 

@@ -23,17 +23,17 @@ __all__ = ("IEngineFactory", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_ENGINE_FACTORY_IFACE
+    IBUS_IFACE_ENGINE_FACTORY
 
 class IEngineFactory(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_ENGINE_FACTORY_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE_FACTORY, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_ENGINE_FACTORY_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE_FACTORY, \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
@@ -51,8 +51,8 @@ class IEngineFactory(dbus.service.Object):
 
     # Create an input context and return the id of the context.
     # If failed, it will return "" or None.
-    @method(out_signature="o")
-    def CreateEngine(self): pass
+    @method(in_signature="s", out_signature="o")
+    def CreateEngine(self, engine_name): pass
 
     # Destroy the engine
     @method()

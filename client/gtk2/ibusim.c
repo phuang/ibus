@@ -21,7 +21,7 @@
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
-#include "ibusimclient.h"
+#include <ibus.h>
 #include "ibusimcontext.h"
 
 #define IBUS_LOCALDIR ""
@@ -38,19 +38,22 @@ static const GtkIMContextInfo * info_list[] = {
 };
 
 
+G_MODULE_EXPORT const gchar* g_module_check_init (GModule *module);
+const gchar*
+g_module_check_init (GModule *module)
+{
+    return glib_check_version (GLIB_MAJOR_VERSION,
+                               GLIB_MINOR_VERSION,
+                               GLIB_MICRO_VERSION);
+}
+
 void
 im_module_init (GTypeModule *type_module)
 {
-    ibus_im_client_register_type(type_module);
-    ibus_im_context_register_type(type_module);
-#if 0
-    gchar **p = environ;
-    extern gchar **environ;
-    while (*p != NULL) {
-        g_fprintf (stderr, "%s\n", *p);
-        p ++;
-    }
-#endif
+    /* make module resident */
+    g_type_module_use (type_module);
+
+    ibus_im_context_register_type (type_module);
 }
 
 void

@@ -31,10 +31,16 @@ ui_gtk_PYTHON = \
 	propitem.py \
 	toolitem.py \
 	$(NULL)
-
 ui_gtkdir = $(pkgdatadir)/ui/gtk
 
-bin_SCRIPTS = ibus-ui-gtk
+libexec_SCRIPTS = \
+	ibus-ui-gtk \
+	$(NULL)
+
+component_DATA = \
+	gtkpanel.xml \
+	$(NULL)
+componentdir = $(pkgdatadir)/component
 
 CLEANFILES = \
 	*.pyc \
@@ -42,9 +48,11 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	ibus-ui-gtk.in \
+	gtkpanel.xml.in \
 	$(NULL)
 
 test:
 	$(ENV) DBUS_DEBUG=true \
+		IBUS_PREFIX=@prefix@ \
 		PYTHONPATH=$(top_srcdir) \
 		$(PYTHON) $(srcdir)/main.py

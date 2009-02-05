@@ -32,12 +32,12 @@ __all__ = (
         "AttributeForeground",
         "AttributeBackground",
         "AttrList",
-        "attribute_from_dbus_value",
-        "attr_list_from_dbus_value",
         "ARGB", "RGB"
     )
 
 import dbus
+from exception import IBusException
+from serializable import *
 
 ATTR_TYPE_UNDERLINE = 1
 ATTR_TYPE_FOREGROUND = 2
@@ -48,8 +48,10 @@ ATTR_UNDERLINE_SINGLE = 1
 ATTR_UNDERLINE_DOUBLE = 2
 ATTR_UNDERLINE_LOW = 3
 
-class Attribute:
-    def __init__ (self, type, value, start_index, end_index):
+class Attribute(Serializable):
+    __NAME__ = "IBusAttribute"
+    def __init__ (self, type=0, value=0, start_index=0, end_index=0):
+        super(Attribute, self).__init__()
         self.__type = type
         self.__value = value
         self.__start_index = start_index
@@ -72,30 +74,25 @@ class Attribute:
     start_index = property(get_start_index)
     end_index   = property(get_end_index)
 
-    def to_dbus_value (self):
-        values = [dbus.UInt32 (self.__type),
-                dbus.UInt32 (self.__value),
-                dbus.UInt32 (self.__start_index),
-                dbus.UInt32 (self.__end_index)]
-        return dbus.Struct (values, signature="uuuu")
+    def serialize(self, struct):
+        super(Attribute, self).serialize(struct)
+        struct.append (dbus.UInt32(self.__type))
+        struct.append (dbus.UInt32(self.__value))
+        struct.append (dbus.UInt32(self.__start_index))
+        struct.append (dbus.UInt32(self.__end_index))
 
-    def from_dbus_value (self, value):
-        if not isinstance (value, dbus.Struct):
-            raise dbus.Exception ("Attribute must be dbus.Struct uuuu")
+    def deserialize(self, struct):
+        super(Attribute, self).deserialize(struct)
+        if len(struct) < 4:
+            raise IBusException ("Can not deserialize IBusAttribute")
 
-        if len (value) != 4 or not all (map (lambda x: isinstance (x, dbus.UInt32), value)):
-            raise dbus.Exception ("Attribute must be dbus.Struct uuuu")
+        self.__type = struct.pop(0)
+        self.__value = struct.pop(0)
+        self.__start_index = struct.pop(0)
+        self.__end_index = struct.pop(0)
 
-        self.__type = value[0]
-        self.__value = value[1]
-        self.__start_index = value[2]
-        self.__end_index = value[3]
+serializable_register(Attribute)
 
-def attribute_from_dbus_value (value):
-    attribute = Attribute (0, 0, 0, 0)
-    attribute.from_dbus_value (value)
-    return attribute
-        
 class AttributeUnderline (Attribute):
     def __init__(self, value, start_index, end_index):
         Attribute.__init__ (self, ATTR_TYPE_UNDERLINE, value, start_index, end_index)
@@ -114,8 +111,10 @@ def ARGB (a, r, g, b):
 def RGB (r, g, b):
     return ARGB (255, r, g, b)
 
-class AttrList:
+class AttrList(Serializable):
+    __NAME__ = "IBusAttrList"
     def __init__ (self, attrs = []):
+        super(AttrList, self).__init__()
         self._attrs = []
         for attr in attrs:
             self.append (attr)
@@ -124,29 +123,31 @@ class AttrList:
         assert isinstance (attr, Attribute)
         self._attrs.append (attr)
 
-    def to_dbus_value (self):
-        array = dbus.Array (signature = "v")
-        for attr in self._attrs:
-            array.append (attr.to_dbus_value ())
-        return array
+    def serialize (self, struct):
+        super(AttrList, self).serialize (struct)
+        array = map (lambda a: serialize_object(a), self._attrs)
+        array = dbus.Array (array, signature = "v")
+        struct.append(array)
 
-    def from_dbus_value (self, value):
-        attrs = []
-        if not isinstance (value, dbus.Array):
-            raise IBusException ("AttrList must from dbus.Array (uuuu)")
-
-        for v in value:
-            attr = attribute_from_dbus_value (v)
-            attrs.append (attr)
-
+    def deserialize (self, struct):
+        super(AttrList, self).deserialize(struct)
+        attrs = map(lambda v: deserialize_object(v), struct.pop(0))
         self._attrs = attrs
 
     def __iter__ (self):
         return self._attrs.__iter__ ()
 
-def attr_list_from_dbus_value (value):
-    if len(value) == 0:
-        return None
-    attrs = AttrList ()
-    attrs.from_dbus_value (value)
-    return attrs
+serializable_register(AttrList)
+
+def test():
+    attr_list = AttrList()
+    attr_list.append (Attribute())
+    attr_list.append (Attribute())
+    attr_list.append (Attribute())
+    attr_list.append (Attribute())
+    attr_list.append (Attribute())
+    value = serialize_object(attr_list)
+    attr_list = deserialize_object(value)
+
+if __name__ == "__main__":
+    test()

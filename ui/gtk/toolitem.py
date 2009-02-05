@@ -36,7 +36,7 @@ class ToolButton(gtk.ToolButton, PropItem):
         }
 
     def __init__(self, prop):
-        gtk.ToolButton.__init__ (self, label = prop.label)
+        gtk.ToolButton.__init__ (self, label = prop.label.text)
         self.set_homogeneous(False)
         PropItem.__init__ (self, prop)
         self.property_changed()
@@ -58,14 +58,14 @@ class ToolButton(gtk.ToolButton, PropItem):
 
     def set_tooltip_text(self, text):
         if text:
-            gtk.ToolButton.set_tooltip_text(self, text)
+            gtk.ToolButton.set_tooltip_text(self, text.text)
         else:
             gtk.ToolButton.set_tooltip_text(self, None)
 
         self._prop.tooltip = text
 
     def property_changed(self):
-        self.set_label(self._prop.label)
+        self.set_label(self._prop.label.text)
         self.set_tooltip_text(self._prop.tooltip)
         self.set_sensitive(self._prop.sensitive)
         self.set_icon_name(self._prop.icon)
@@ -78,7 +78,7 @@ class ToolButton(gtk.ToolButton, PropItem):
             self.hide_all()
 
     def do_clicked(self):
-        self.emit("property-activate", self._prop.name, self._prop.state)
+        self.emit("property-activate", self._prop.key, self._prop.state)
 
 
 class ToggleToolButton(gtk.ToggleToolButton, PropItem):
@@ -112,7 +112,7 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
 
     def set_tooltip_text(self, text):
         if text:
-            gtk.ToggleToolButton.set_tooltip_text(self, text)
+            gtk.ToggleToolButton.set_tooltip_text(self, text.text)
         else:
             gtk.ToggleToolButton.set_tooltip_text(self, None)
 
@@ -120,7 +120,7 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
 
     def property_changed(self):
         self.set_tooltip_text(self._prop.tooltip)
-        self.set_label(self._prop.label)
+        self.set_label(self._prop.label.text)
         self.set_icon_name(self._prop.icon)
         self.set_active(self._prop.state == ibus.PROP_STATE_CHECKED)
         self.set_sensitive(self._prop.sensitive)
@@ -136,7 +136,7 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
             self._prop.state = ibus.PROP_STATE_CHECKED
         else:
             self._prop.state = ibus.PROP_STATE_UNCHECKED
-        self.emit("property-activate", self._prop.name, self._prop.state)
+        self.emit("property-activate", self._prop.key, self._prop.state)
 
 class SeparatorToolItem(gtk.SeparatorToolItem, PropItem):
     def __init__ (self, prop):

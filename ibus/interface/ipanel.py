@@ -23,44 +23,44 @@ __all__ = ("IPanel", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_PANEL_IFACE
+    IBUS_IFACE_PANEL
 
 class IPanel(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_PANEL_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_PANEL, \
                             **args)
 
     # define signal decorator.
     signal = lambda **args: \
-        dbus.service.signal(dbus_interface=IBUS_PANEL_IFACE, \
+        dbus.service.signal(dbus_interface=IBUS_IFACE_PANEL, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_PANE_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_PANEL, \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
     @method(in_signature="iiii")
     def SetCursorLocation(self, x, y, w, h): pass
 
-    @method(in_signature="svub")
-    def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
+    @method(in_signature="vub")
+    def UpdatePreeditText(self, text, cursor_pos, visible): pass
 
     @method()
-    def ShowPreedit(self): pass
+    def ShowPreeditText(self): pass
 
     @method()
-    def HidePreedit(self): pass
+    def HidePreeditText(self): pass
 
-    @method(in_signature="svb")
-    def UpdateAuxString(self, text, attrs, visible): pass
-
-    @method()
-    def ShowAuxString(self): pass
+    @method(in_signature="vb")
+    def UpdateAuxiliaryText(self, text, visible): pass
 
     @method()
-    def HideAuxString(self): pass
+    def ShowAuxiliaryText(self): pass
+
+    @method()
+    def HideAuxiliaryText(self): pass
 
     @method(in_signature="vb")
     def UpdateLookupTable(self, lookup_table, visible): pass
@@ -95,14 +95,14 @@ class IPanel(dbus.service.Object):
     @method()
     def HideLanguageBar(self): pass
 
-    @method(in_signature="s")
+    @method(in_signature="o")
     def FocusIn(self, ic): pass
 
-    @method(in_signature="s")
+    @method(in_signature="o")
     def FocusOut(self, ic): pass
 
     @method()
-    def StatesChanged(self): pass
+    def StateChanged(self): pass
 
     @method()
     def Reset(self): pass
@@ -126,12 +126,12 @@ class IPanel(dbus.service.Object):
     @signal()
     def CursorDown(self): pass
 
-    @signal()
+    @signal(signature="si")
     def PropertyActivate(self, prop_name, prop_state): pass
 
-    @signal()
+    @signal(signature="s")
     def PropertyShow(self, prop_name): pass
 
-    @signal()
+    @signal(signature="s")
     def PropertyHide(self, prop_name): pass
 

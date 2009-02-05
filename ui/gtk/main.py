@@ -31,18 +31,15 @@ import notifications
 class UIApplication:
     def __init__ (self):
         self.__bus = ibus.Bus()
-        self.__bus.connect("destroy", self.__bus_destroy_cb)
+        self.__bus.connect("disconnected", gtk.main_quit)
 
         self.__panel = panel.Panel(self.__bus)
-        self.__notify = notifications.Notifications(self.__bus)
-        self.__notify.set_status_icon(self.__panel.get_status_icon())
+        self.__bus.request_name(ibus.IBUS_SERVICE_PANEL, 0)
+        # self.__notify = notifications.Notifications(self.__bus)
+        # self.__notify.set_status_icon(self.__panel.get_status_icon())
 
     def run(self):
         gtk.main()
-
-    def __bus_destroy_cb(self, _ibus):
-        gtk.main_quit()
-
 
 def launch_panel():
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"

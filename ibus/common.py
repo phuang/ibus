@@ -21,14 +21,15 @@
 
 __all__ = (
         "IBUS_ADDR",
-        "IBUS_IFACE",
-        "IBUS_NAME",
-        "IBUS_PATH",
-        "IBUS_CONFIG_IFACE",
-        "IBUS_ENGINE_FACTORY_IFACE",
-        "IBUS_ENGINE_IFACE",
-        "IBUS_PANEL_IFACE",
-        "IBUS_NOTIFICATIONS_IFACE",
+        "IBUS_IFACE_IBUS",
+        "IBUS_SERVICE_IBUS",
+        "IBUS_PATH_IBUS",
+        "IBUS_IFACE_CONFIG",
+        "IBUS_IFACE_PANEL",
+        "IBUS_IFACE_ENGINE",
+        "IBUS_IFACE_ENGINE_FACTORY",
+        "IBUS_IFACE_INPUT_CONTEXT",
+        "IBUS_IFACE_NOTIFICATIONS",
         "default_reply_handler",
         "default_error_handler",
         "DEFAULT_ASYNC_HANDLERS",
@@ -67,15 +68,16 @@ if not __username:
 IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (__username, display.replace(":", "-"))
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
-IBUS_IFACE = "org.freedesktop.IBus"
-IBUS_PATH  = "/org/freedesktop/IBus"
-IBUS_NAME  = "org.freedesktop.IBus"
+IBUS_IFACE_IBUS     = "org.freedesktop.IBus"
+IBUS_PATH_IBUS      = "/org/freedesktop/IBus"
+IBUS_SERVICE_IBUS   = "org.freedesktop.IBus"
 
-IBUS_CONFIG_IFACE = "org.freedesktop.ibus.Config"
-IBUS_ENGINE_FACTORY_IFACE = "org.freedesktop.ibus.EngineFactory"
-IBUS_ENGINE_IFACE = "org.freedesktop.ibus.Engine"
-IBUS_PANEL_IFACE = "org.freedesktop.ibus.Panel"
-IBUS_NOTIFICATIONS_IFACE = "org.freedesktop.ibus.Notifications"
+IBUS_IFACE_PANEL            = "org.freedesktop.IBus.Panel"
+IBUS_IFACE_CONFIG           = "org.freedesktop.IBus.Config"
+IBUS_IFACE_ENGINE           = "org.freedesktop.IBus.Engine"
+IBUS_IFACE_ENGINE_FACTORY   = "org.freedesktop.IBus.EngineFactory"
+IBUS_IFACE_INPUT_CONTEXT    = "org.freedesktop.IBus.InputContext"
+IBUS_IFACE_NOTIFICATIONS    = "org.freedesktop.IBus.Notifications"
 
 def default_reply_handler( *args):
     pass

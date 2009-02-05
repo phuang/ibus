@@ -13,10 +13,13 @@ Source1:    xinput-ibus
 
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+%define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
+
 BuildRequires:  gettext-devel
 BuildRequires:  libtool
 BuildRequires:  python
 BuildRequires:  gtk2-devel
+BuildRequires:  dbus-devel
 BuildRequires:  qt-devel
 BuildRequires:  dbus-glib-devel
 BuildRequires:  desktop-file-utils
@@ -26,12 +29,15 @@ Requires(post):  %{_sbindir}/alternatives
 Requires(postun):  desktop-file-utils
 Requires(postun):  %{_sbindir}/alternatives
 
+Requires:   glib2 >= %{glib_ver}
 Requires:   pygtk2
 Requires:   dbus-python >= 0.83.0
 Requires:   gnome-python2-gconf
 Requires:   notification-daemon
 Requires:   pyxdg
 Requires:   iso-codes
+
+%define _xinputconf %{_sysconfdir}/X11/xinit/xinput.d/ibus.conf
 
 %description
 IBus means Intelligent Input Bus. It is a new input framework for Linux OS. It provides
@@ -55,7 +61,16 @@ Requires:   qt >= 4.4.2
 %description qt
 This package contains ibus im module for qt4
 
-%define _xinputconf %{_sysconfdir}/X11/xinit/xinput.d/ibus.conf
+%package devel
+Summary:    Development tools for ibus
+Group:      Development/Libraries
+Requires:   %{name} = %{version}-%{release}
+Requires:   glib2-devel
+Requires:   dbus-devel
+
+%description devel
+The ibus-devel package contains the header files and developer
+docs for ibus.
 
 %prep
 %setup -q
@@ -68,8 +83,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=${RPM_BUILD_ROOT} install
-rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-gtk.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/libibus.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk_binary_version}/immodules/im-ibus.la
 
 # install xinput config file
@@ -112,26 +126,15 @@ fi
 %dir %{python_sitelib}/ibus
 %{python_sitelib}/ibus/*
 %dir %{_datadir}/ibus/
-%dir %{_datadir}/ibus/daemon/
-%dir %{_datadir}/ibus/gconf/
-%dir %{_datadir}/ibus/ui
-%dir %{_datadir}/ibus/setup/
-%dir %{_datadir}/ibus/engine/
-%dir %{_datadir}/ibus/icons/
-%{_bindir}/ibus
+%{_bindir}/ibus-daemon
 %{_bindir}/ibus-setup
-%{_libdir}/libibus-gtk.so*
-%{_datadir}/ibus/daemon/*
-%{_datadir}/ibus/gconf/*
-%{_datadir}/ibus/ui/*
-%{_datadir}/ibus/setup/*
-%{_datadir}/ibus/icons/*
+%{_libdir}/libibus.so*
+%{_datadir}/ibus/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
-%{_bindir}/ibus-daemon
-%{_bindir}/ibus-gconf
-%{_bindir}/ibus-ui-gtk
-%{_bindir}/ibus-x11
+%{_libexecdir}/ibus-gconf
+%{_libexecdir}/ibus-ui-gtk
+%{_libexecdir}/ibus-x11
 %config %{_xinputconf}
 
 %files gtk
@@ -141,6 +144,13 @@ fi
 %files qt
 %defattr(-,root,root,-)
 %{_libdir}/qt4/plugins/inputmethods/libibus.so
+
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/lib*.so
+%{_includedir}/*
+%{_datadir}/gtk-doc/html/*
+%{_libdir}/pkgconfig/*
 
 %changelog
 * Thu Aug 07 2008 Huang Peng <shawn.p.huang@gmail.com> - @VERSION@-1

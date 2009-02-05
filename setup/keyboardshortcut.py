@@ -80,7 +80,7 @@ class KeyboardShortcutSelection(gtk.VBox):
 
         table = gtk.Table(4, 2)
         self.__modifier_buttons = []
-        self.__modifier_buttons.append(("Ctrl",     gtk.CheckButton("_Ctrl"),       gdk.CONTROL_MASK))
+        self.__modifier_buttons.append(("Control",     gtk.CheckButton("_Control"),       gdk.CONTROL_MASK))
         self.__modifier_buttons.append(("Alt",      gtk.CheckButton("A_lt"),        gdk.MOD1_MASK))
         self.__modifier_buttons.append(("Shift",    gtk.CheckButton("_Shift"),      gdk.SHIFT_MASK))
         self.__modifier_buttons.append(("Meta",     gtk.CheckButton("_Meta"),       gdk.META_MASK))
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     dlg = KeyboardShortcutSelectionDialog(
         title = "Select test",
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK))
-    dlg.add_shortcut("Ctrl+Shift+space")
+    dlg.add_shortcut("Control+Shift+space")
     dlg.set_shortcuts(None)
     print dlg.run()
     print dlg.get_shortcuts()

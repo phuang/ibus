@@ -6,6 +6,7 @@
 *.so
 *~
 tags
+TAGS
 Makefile.qmake
 Makefile
 Makefile.in
@@ -34,3 +35,4 @@ stamp-h1
 py-compile
 ibus-*.tar.*
 ibus.spec
+ibus-1.0.pc

@@ -30,11 +30,11 @@ __all__ = (
         "PROP_STATE_INCONSISTENT",
         "Property",
         "PropList",
-        "property_from_dbus_value",
-        "prop_list_from_dbus_value",
     )
 
 import dbus
+from text import Text
+from serializable import *
 
 PROP_TYPE_NORMAL = 0
 PROP_TYPE_TOGGLE = 1
@@ -52,18 +52,18 @@ def _to_unicode(text):
     if isinstance(text, str):
         return unicode(text, "utf8")
     raise TypeError("text must be instance of unicode or str")
+def _to_text(text):
+    if isinstance(text, Text):
+        return text
+    text = _to_unicode(text)
+    return Text(text)
 
-class Property(object):
-    def __init__(self, name,
-                        type = PROP_TYPE_NORMAL,
-                        label = u"",
-                        icon = u"",
-                        tooltip = u"",
-                        sensitive = True,
-                        visible = True,
-                        state = PROP_STATE_UNCHECKED):
+class Property(Serializable):
+    __NAME__ = "IBusProperty"
+    def __init__(self, key="", type=PROP_TYPE_NORMAL, label=u"", icon=u"", tooltip=u"",
+                 sensitive=True, visible=True, state=PROP_STATE_UNCHECKED):
         super(Property, self).__init__()
-        self.__name = _to_unicode(name)
+        self.__key = _to_unicode(key)
         self.__type = type
         self.label = label
         self.icon = icon
@@ -79,14 +79,14 @@ class Property(object):
     def get_sub_props(self):
         return self.__sub_props
 
-    def get_name(self):
-        return self.__name
+    def get_key(self):
+        return self.__key
 
     def get_type(self):
         return self.__type
 
     def set_label(self, label):
-        self.__label = _to_unicode(label)
+        self.__label = _to_text(label)
 
     def get_label(self):
         return self.__label
@@ -98,7 +98,7 @@ class Property(object):
         return self.__icon
 
     def set_tooltip(self, tooltip):
-        self.__tooltip = _to_unicode(tooltip)
+        self.__tooltip = _to_text(tooltip)
 
     def get_tooltip(self):
         return self.__tooltip
@@ -121,7 +121,7 @@ class Property(object):
     def get_visible(self):
         return self.__visible
 
-    name        = property(get_name)
+    key         = property(get_key)
     type        = property(get_type)
     label       = property(get_label, set_label)
     icon        = property(get_icon, set_icon)
@@ -146,38 +146,37 @@ class Property(object):
         return self.__sub_props.is_same(prop.__sub_props, test_all)
 
 
-    def to_dbus_value(self):
-        sub_props = self.__sub_props.to_dbus_value()
-        values = (dbus.String(self.__name),
-                dbus.UInt32(self.__type),
-                dbus.String(self.__label),
-                dbus.String(self.__icon),
-                dbus.String(self.__tooltip),
-                dbus.Boolean(self.__sensitive),
-                dbus.Boolean(self.__visible),
-                dbus.UInt32(self.__state),
-                sub_props)
-        return dbus.Struct(values)
+    def serialize(self, struct):
+        super(Property, self).serialize(struct)
+        struct.append(dbus.String(self.__key))
+        struct.append(dbus.UInt32(self.__type))
+        struct.append(serialize_object(self.__label))
+        struct.append(dbus.String(self.__icon))
+        struct.append(serialize_object(self.__tooltip))
+        struct.append(dbus.Boolean(self.__sensitive))
+        struct.append(dbus.Boolean(self.__visible))
+        struct.append(dbus.UInt32(self.__state))
+        sub_props = serialize_object(self.__sub_props)
+        struct.append(sub_props)
 
-    def from_dbus_value(self, value):
-        self.__name, \
-        self.__type, \
-        self.__label, \
-        self.__icon, \
-        self.__tooltip, \
-        self.__sensitive, \
-        self.__visible, \
-        self.__state, \
-        props = value
+    def deserialize(self, struct):
+        super(Property, self).deserialize(struct)
+        self.__key = struct.pop(0)
+        self.__type = struct.pop(0)
+        self.__label = deserialize_object(struct.pop(0))
+        self.__icon = struct.pop(0)
+        self.__tooltip = deserialize_object(struct.pop(0))
+        self.__sensitive = deserialize_object(struct.pop(0))
+        self.__visible = struct.pop(0)
+        self.__state = struct.pop(0)
+        props = struct.pop(0)
 
-        self.__sub_props = prop_list_from_dbus_value(props)
+        self.__sub_props = deserialize_object(props)
 
-def property_from_dbus_value(value):
-    p = Property("")
-    p.from_dbus_value(value)
-    return p
+serializable_register(Property)
 
-class PropList(object):
+class PropList(Serializable):
+    __NAME__ = "IBusPropList"
     def __init__(self):
         super(PropList, self).__init__()
         self.__props = []
@@ -203,14 +202,14 @@ class PropList(object):
                 return False
         return False
 
-    def to_dbus_value(self):
-        props = map(lambda p: p.to_dbus_value(), self.__props)
-        return dbus.Array(props, signature = "v")
+    def serialize(self, struct):
+        super(PropList, self).serialize(struct)
+        props = map(lambda p: serialize_object(p), self.__props)
+        struct.append (dbus.Array(props, signature = "v"))
 
-    def from_dbus_value(self, value):
-        props = []
-        for p in value:
-            props.append(property_from_dbus_value(p))
+    def deserialize(self, struct):
+        super(PropList, self).deserialize(struct)
+        props = map(lambda v: deserialize_object(v), struct.pop(0))
         self.__props = props
 
     def __iter__(self):
@@ -219,10 +218,7 @@ class PropList(object):
     def __getitem__(self, i):
         return self.__props.__getitem__(i)
 
-def prop_list_from_dbus_value(value):
-    props = PropList()
-    props.from_dbus_value(value)
-    return props
+serializable_register(PropList)
 
 def test():
     props = PropList()
@@ -230,18 +226,9 @@ def test():
     props.append(Property(u"b"))
     props.append(Property(u"c"))
     props.append(Property(u"d"))
-    value = props.to_dbus_value()
-    print prop_list_from_dbus_value(value)
-
-    p = Property(u"z")
-    p.set_sub_props(props)
-    props = PropList()
-    props.append(p)
-    value = props.to_dbus_value()
-    print prop_list_from_dbus_value(value)
-    p.label = u"a"
-    p.label = "a"
-    p.label = 1
+    value = serialize_object(props)
+    props = deserialize_object(value)
+    print props
 
 if __name__ == "__main__":
     test()

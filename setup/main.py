@@ -33,6 +33,9 @@ from os import path
 from xdg import BaseDirectory
 from gtk import gdk
 from gtk import glade
+from enginecombobox import EngineComboBox
+from enginetreeview import EngineTreeView
+from icon import load_icon
 
 _  = lambda a : gettext.dgettext("ibus", a)
 N_ = lambda a : a
@@ -75,12 +78,6 @@ class Setup(object):
 
     def __init_ui(self):
         # add icon search path
-        icon_theme = gtk.icon_theme_get_default()
-        dir = path.dirname(__file__)
-        icondir = path.join(dir, "..", "icons")
-        icon_theme.prepend_search_path(icondir)
-
-
         self.__dialog = self.__xml.get_widget("dialog_setup")
 
         # auto start ibus
@@ -90,76 +87,111 @@ class Setup(object):
 
         # keyboard shortcut
         # trigger
-        shortcuts = self.__bus.config_get_value(
-                        "general", "keyboard_shortcut_trigger",
+        self.__config = self.__bus.get_config()
+        shortcuts = self.__config.get_value(
+                        "general/hotkey", "trigger",
                         ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
+
         button = self.__xml.get_widget("button_trigger")
         entry = self.__xml.get_widget("entry_trigger")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("trigger"), "general", "keyboard_shortcut_trigger", entry)
+                    N_("trigger"), "general/hotkey", "trigger", entry)
 
         # next engine
-        shortcuts = self.__bus.config_get_value(
-                        "general", "keyboard_shortcut_next_engine",
+        shortcuts = self.__config.get_value(
+                        "general/hotkey", "next_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_next_engine")
         entry = self.__xml.get_widget("entry_next_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("next engine"), "general", "keyboard_shortcut_next_engine", entry)
+                    N_("next engine"), "general/hotkey", "next_engine", entry)
 
         # prev engine
-        shortcuts = self.__bus.config_get_value(
-                        "general", "keyboard_shortcut_prev_engine",
+        shortcuts = self.__config.get_value(
+                        "general/hotkey", "prev_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_prev_engine")
         entry = self.__xml.get_widget("entry_prev_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("prev engine"), "general", "keyboard_shortcut_prev_engine", entry)
-
-
+                    N_("prev engine"), "general/hotkey", "prev_engine", entry)
 
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
         self.__combobox_lookup_table_orientation.set_active(
-            self.__bus.config_get_value("panel", "lookup_table_orientation", 0))
+            self.__config.get_value("panel", "lookup_table_orientation", 0))
         self.__combobox_lookup_table_orientation.connect("changed",
             self.__combobox_lookup_table_orientation_changed_cb)
 
         # auto hide
         self.__checkbutton_auto_hide = self.__xml.get_widget("checkbutton_auto_hide")
         self.__checkbutton_auto_hide.set_active(
-            self.__bus.config_get_value("panel", "auto_hide", False))
+            self.__config.get_value("panel", "auto_hide", False))
         self.__checkbutton_auto_hide.connect("toggled", self.__checkbutton_auto_hide_toggled_cb)
 
         # custom font
         self.__checkbutton_custom_font = self.__xml.get_widget("checkbutton_custom_font")
         self.__checkbutton_custom_font.set_active(
-            self.__bus.config_get_value("panel", "use_custom_font", False))
+            self.__config.get_value("panel", "use_custom_font", False))
         self.__checkbutton_custom_font.connect("toggled", self.__checkbutton_custom_font_toggled_cb)
 
         self.__fontbutton_custom_font = self.__xml.get_widget("fontbutton_custom_font")
-        if self.__bus.config_get_value("panel", "use_custom_font", False):
+        if self.__config.get_value("panel", "use_custom_font", False):
             self.__fontbutton_custom_font.set_sensitive(True)
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
         font_name = unicode(font_name, "utf-8")
-        font_name = self.__bus.config_get_value("panel", "custom_font", font_name)
+        font_name = self.__config.get_value("panel", "custom_font", font_name)
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
 
-        self.__init_engine_view()
+        # init engine page
+        self.__engines = self.__bus.list_engines()
+        self.__combobox = EngineComboBox(self.__engines)
+        self.__combobox.show()
+        self.__xml.get_widget("alignment_engine_combobox").add(self.__combobox)
+
+        tmp_dict = {}
+        for e in self.__engines:
+            tmp_dict[e.name] = e
+        engine_names = self.__config.get_value("general", "preload_engines", [])
+        engines = []
+        for n in engine_names:
+            if n in tmp_dict:
+                engines.append(tmp_dict[n])
+        self.__treeview = EngineTreeView(engines)
+        self.__treeview.show()
+        self.__xml.get_widget("scrolledwindow_engine_treeview").add(self.__treeview)
+
+        self.__treeview.connect("changed", self.__treeview_changed_cb)
+
+        button = self.__xml.get_widget("button_engine_add")
+        button.connect("clicked",
+                       lambda *args:self.__treeview.prepend_engine(self.__combobox.get_active_engine()))
+        button = self.__xml.get_widget("button_engine_remove")
+        button.connect("clicked", lambda *args:self.__treeview.remove_engine())
+        button = self.__xml.get_widget("button_engine_up")
+        button.connect("clicked", lambda *args:self.__treeview.move_up_engine())
+
+        button = self.__xml.get_widget("button_engine_down")
+        button.connect("clicked", lambda *args:self.__treeview.move_down_engine())
+
+    def __treeview_changed_cb(self, treeview):
+        engines = self.__treeview.get_engines()
+        engine_names = map(lambda e: e.name, engines)
+        self.__config.set_list("general", "preload_engines", engine_names, "s")
 
     def __init_bus(self):
         try:
             self.__bus = ibus.Bus()
             # self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
-            self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
-            self.__bus.config_add_watch("/general")
-            self.__bus.config_add_watch("/panel")
+            # self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
+            # self.__bus.config_add_watch("/general")
+            # self.__bus.config_add_watch("/general/hotkey")
+            # self.__bus.config_add_watch("/panel")
         except:
             while self.__bus == None:
                 message = _("IBus daemon is not started. Do you want to start it now?")
@@ -190,60 +222,6 @@ class Setup(object):
                 dlg.destroy()
                 self.__flush_gtk_events()
 
-    def __init_engine_view(self):
-        # engines tree
-        self.__tree = self.__xml.get_widget("treeview_engines")
-        self.__preload_engines = set(self.__bus.config_get_value("general", "preload_engines", []))
-        model = self.__create_model()
-        self.__tree.set_model(model)
-
-        # column for engine
-        column = gtk.TreeViewColumn()
-        column.set_title(_("Engine"))
-        column.set_resizable(True)
-        column.set_min_width(120)
-
-        renderer = gtk.CellRendererPixbuf()
-        renderer.set_property("xalign", 0.5)
-
-        column.pack_start(renderer, False)
-        column.set_attributes(renderer, pixbuf = COLUMN_ICON, visible = COLUMN_VISIBLE)
-
-        renderer = gtk.CellRendererText()
-        renderer.set_property("xalign", 0.0)
-        renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
-
-        # column.set_clickable(True)
-        column.pack_start(renderer)
-        column.set_attributes(renderer, text = COLUMN_NAME)
-
-        self.__tree.append_column(column)
-
-        # column for started
-        renderer = gtk.CellRendererToggle()
-        renderer.set_data('column', COLUMN_ENABLE)
-        renderer.set_property("xalign", 0.5)
-        renderer.connect("toggled", self.__item_started_column_toggled_cb, model)
-
-        #col_offset = gtk.TreeViewColumn("Holiday", renderer, text=HOLIDAY_NAME)
-        column = gtk.TreeViewColumn(_("Started"), renderer, active = COLUMN_ENABLE, visible = COLUMN_VISIBLE)
-        column.set_resizable(True)
-        self.__tree.append_column(column)
-
-        # column for preload
-        renderer = gtk.CellRendererToggle()
-        renderer.set_data('column', COLUMN_PRELOAD)
-        renderer.set_property("xalign", 0.5)
-        renderer.connect("toggled", self.__item_preload_column_toggled_cb, model)
-
-        column = gtk.TreeViewColumn(_("Preload"), renderer, active = COLUMN_PRELOAD, visible = COLUMN_VISIBLE)
-        column.set_resizable(True)
-        self.__tree.append_column(column)
-
-        renderer = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("", renderer)
-        self.__tree.append_column(column)
-
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_OK)
         title = _("Select keyboard shortcut for %s") %  _(name)
@@ -259,7 +237,7 @@ class Setup(object):
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return
-        self.__bus.config_set_value(section, _name, shortcuts)
+        self.__config.set_value(section, _name, shortcuts)
         entry.set_text("; ".join(shortcuts))
 
 
@@ -309,93 +287,14 @@ class Setup(object):
         if data[DATA_PRELOAD]:
             if engine not in self.__preload_engines:
                 self.__preload_engines.add(engine)
-                self.__bus.config_set_list("general", "preload_engines", list(self.__preload_engines), "s")
+                self.__config.set_list("general", "preload_engines", list(self.__preload_engines), "s")
         else:
             if engine in self.__preload_engines:
                 self.__preload_engines.remove(engine)
-                self.__bus.config_set_list("general", "preload_engines", list(self.__preload_engines), "s")
+                self.__config.set_list("general", "preload_engines", list(self.__preload_engines), "s")
 
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
-
-    def __load_icon(self, icon, icon_size):
-        pixbuf = None
-        try:
-            pixbuf = gdk.pixbuf_new_from_file(icon)
-            w, h = pixbuf.get_width(), pixbuf.get_height()
-            rate = max(w, h) / float(icon_size)
-            w = int(w / rate)
-            h = int(h / rate)
-            pixbuf = pixbuf.scale_simple(w, h, gdk.INTERP_BILINEAR)
-        except:
-            pass
-        if pixbuf == None:
-            try:
-                theme = gtk.icon_theme_get_default()
-                pixbuf = theme.load_icon(icon, icon_size, 0)
-            except:
-                pass
-        return pixbuf
-
-    def __create_model(self):
-        # create tree store
-        model = gtk.TreeStore(
-            gobject.TYPE_STRING,
-            gobject.TYPE_BOOLEAN,
-            gobject.TYPE_BOOLEAN,
-            gobject.TYPE_BOOLEAN,
-            gdk.Pixbuf,
-            gobject.TYPE_PYOBJECT)
-
-        langs = dict()
-
-        self.__bus.register_reload_engines()
-        for name, local_name, lang, icon, author, credits, _exec, started in self.__bus.register_list_engines():
-            _lang = ibus.get_language_name(lang)
-            if _lang not in langs:
-                langs[_lang] = list()
-            langs[_lang].append([name, local_name, lang, icon, author, credits, _exec, started])
-
-        keys = langs.keys()
-        keys.sort()
-        if _("Other") in keys:
-            keys.remove(_("Other"))
-            keys.append(_("Other"))
-
-        icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
-        pixbuf_missing = self.__load_icon("engine-default", icon_size)
-        if pixbuf_missing == None:
-            pixbuf_missing = self.__load_icon("gtk-missing-image", icon_size)
-
-        for key in keys:
-            iter = model.append(None)
-            model.set(iter,
-                COLUMN_NAME, key,
-                COLUMN_ENABLE, False,
-                COLUMN_PRELOAD, False,
-                COLUMN_VISIBLE, False,
-                COLUMN_ICON, None,
-                COLUMN_DATA, None)
-            langs[key].sort()
-
-            for name, local_name, lang, icon, author, credits, _exec, started in langs[key]:
-                child_iter = model.append(iter)
-                is_preload = "%s:%s" % (lang, name) in self.__preload_engines
-
-                pixbuf = self.__load_icon(icon, icon_size)
-                if pixbuf == None:
-                    pixbuf = pixbuf_missing
-
-                model.set(child_iter,
-                    COLUMN_NAME, local_name,
-                    COLUMN_ENABLE, started,
-                    COLUMN_PRELOAD, is_preload,
-                    COLUMN_VISIBLE, True,
-                    COLUMN_ICON, pixbuf,
-                    COLUMN_DATA,
-                    [name, local_name, lang, icon, author, credits, _exec, started, is_preload])
-
-        return model
 
     def __is_auto_start(self):
         link_file = path.join(BaseDirectory.xdg_config_home, "autostart/ibus.desktop")
@@ -425,27 +324,27 @@ class Setup(object):
             os.symlink(ibus_desktop, link_file)
 
     def __combobox_lookup_table_orientation_changed_cb(self, combobox):
-        self.__bus.config_set_value(
+        self.__config.set_value(
             "panel", "lookup_table_orientation",
             self.__combobox_lookup_table_orientation.get_active())
 
     def __checkbutton_auto_hide_toggled_cb(self, button):
-        self.__bus.config_set_value(
+        self.__config.set_value(
             "panel", "auto_hide",
             self.__checkbutton_auto_hide.get_active())
 
     def __checkbutton_custom_font_toggled_cb(self, button):
         if self.__checkbutton_custom_font.get_active():
             self.__fontbutton_custom_font.set_sensitive(True)
-            self.__bus.config_set_value("panel", "use_custom_font", True)
+            self.__config.set_value("panel", "use_custom_font", True)
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
-            self.__bus.config_set_value("panel", "use_custom_font", False)
+            self.__config.set_value("panel", "use_custom_font", False)
 
     def __fontbutton_custom_font_notify_cb(self, button, arg):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
-        self.__bus.config_set_value("panel", "custom_font", font_name)
+        self.__config.set_value("panel", "custom_font", font_name)
 
     def __config_value_changed_cb(self, bus, section, name, value):
         pass

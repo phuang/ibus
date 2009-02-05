@@ -21,9 +21,9 @@
 
 # if not 1, append datestamp to the version number.
 m4_define([ibus_released], [0])
-m4_define([ibus_major_version], [0])
+m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [1])
-m4_define([ibus_micro_version], [1])
+m4_define([ibus_micro_version], [0])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -49,20 +49,34 @@ AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
 
+# If only source code changed, lt_revision + 1
+# If any interface added, lt_age + 1
+# If any interfaces changed or removed, lt_current + 1
+m4_define([lt_current], [0])
+m4_define([lt_revision], [0])
+m4_define([lt_age], [0])
+LT_VERSION_INFO="lt_current:lt_revision:lt_age"
+AC_SUBST(LT_VERSION_INFO)
+
 # check inotify
 AC_CHECK_HEADERS([sys/inotify.h])
 
 # check glib2
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [
-    glib-2.0 >= 2.16
+    glib-2.0 >= 2.18
 ])
 PKG_CHECK_MODULES(GOBJECT2, [
-    gobject-2.0
+    gobject-2.0 >= 2.18
+])
+PKG_CHECK_MODULES(GIO2, [
+    gio-2.0 >= 2.18
+])
+PKG_CHECK_MODULES(PYGOBJECT2, [
+    pygobject-2.0 >= 2.15
 ])
 
-
-# check gtk, gdk & pygtk
+# check for gtk, gdk & pygtk
 PKG_CHECK_MODULES(GTK2, [
     gtk+-2.0
 ])
@@ -74,9 +88,11 @@ PKG_CHECK_MODULES(GDK2, [
     gdk-2.0
 ])
 
-# check dbus-glib
+# check for gtk-doc
+GTK_DOC_CHECK(1.9)
+# check for dbus-glib
 PKG_CHECK_MODULES(DBUS, [
-    dbus-glib-1
+    dbus-1
 ])
 
 # Check for Qt4
@@ -131,6 +147,9 @@ AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_INCLUDES)
 AC_SUBST(PYTHON_LIBS)
 
+#
+REBUILD = #
+AC_SUBST(REBUILD)
 
 # define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus
@@ -158,31 +177,8 @@ AC_ARG_ENABLE(qt4-immodule,
 if test x"$IBUS_HAS_QT4" != x"yes"; then
     enable_qt4=no
 fi
+enable_qt=no
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
-
-# check pygtk gconf for pygconf
-AC_ARG_ENABLE(pygconf,
-    AS_HELP_STRING([--enable-pygconf],
-        [Build python gconf binding, with it ibus will not depend on gnome-python]),
-    [enable_pygconf=$enableval],
-    [enable_pygconf=no],
-)
-
-PKG_CHECK_MODULES(PYGTK,
-    pygtk-2.0 >= 2.10.3,
-    [IBUS_HAS_PYGTK=yes],
-    [IBUS_HAS_PYGTK=no]
-)
-AC_SUBST(PYGTK_CFLAGS)
-AC_SUBST(PYGTK_LIBS)
-if test x"$IBUS_HAS_PYGTK" != x"yes" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(can not build python gconf binding without pygtk-2.0)
-fi
-
-AC_PATH_PROG(PYGTK_CODEGEN, pygtk-codegen-2.0, no)
-if test x"$PYGTK_CODEGEN" = x"no" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(can not build python gconf binding without pygtk-codegen-2.0)
-fi
 
 PKG_CHECK_MODULES(GCONF,
     [gconf-2.0 >= 2.11.1],
@@ -191,11 +187,6 @@ PKG_CHECK_MODULES(GCONF,
 )
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GCONF_LIBS)
-if test x"$IBUS_HAS_GCONF" != x"yes" -a x"$enable_pygconf" = x"yes"; then
-  AC_MSG_ERROR(can not build python gconf binding without gconf-2.0)
-fi
-
-AM_CONDITIONAL(IBUS_BUILD_PYGCONF, [test x"$enable_pygconf" = x"yes" ])
 
 # check iso-codes
 AC_ARG_ENABLE(iso-codes-check,
@@ -220,22 +211,17 @@ fi
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
+ibus-1.0.pc
 ibus.spec
 ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
-daemon/Makefile
-daemon/ibus-daemon
-launcher/ibus
-launcher/ibus.desktop
-launcher/Makefile
 ui/Makefile
 ui/gtk/Makefile
 ui/gtk/ibus-ui-gtk
+ui/gtk/gtkpanel.xml
 gconf/Makefile
-gconf/ibus-gconf
-lib/Makefile
-lib/gtk2/Makefile
+gconf/gconf.xml
 client/Makefile
 client/gtk2/Makefile
 client/qt4/Makefile
@@ -243,10 +229,16 @@ client/x11/Makefile
 setup/Makefile
 setup/ibus-setup
 setup/ibus-setup.desktop
+src/Makefile
+bus/Makefile
+bindings/Makefile
+bindings/python/Makefile
 util/Makefile
 util/IMdkit/Makefile
-util/gconf/Makefile
 icons/Makefile
+docs/Makefile
+docs/reference/Makefile
+docs/reference/ibus/Makefile
 m4/Makefile
 ])
 
@@ -259,6 +251,6 @@ Build options:
   Build static libs        $enable_static
   Gtk immodule dir         $GTK_IM_MODULEDIR
   Enable Qt4 IM module     $enable_qt4
-  Build pygconf            $enable_pygconf
+  Build document           $enable_gtk_doc
 ])
 

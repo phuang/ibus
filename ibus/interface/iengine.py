@@ -23,27 +23,27 @@ __all__ = ("IEngine", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_ENGINE_IFACE
+    IBUS_IFACE_ENGINE
 
 class IEngine(dbus.service.Object):
     # define method decorator.
     method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_ENGINE_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE, \
                             **args)
 
     # define signal decorator.
     signal = lambda **args: \
-        dbus.service.signal(dbus_interface=IBUS_ENGINE_IFACE, \
+        dbus.service.signal(dbus_interface=IBUS_IFACE_ENGINE, \
                             **args)
 
     # define async method decorator.
     async_method = lambda **args: \
-        dbus.service.method(dbus_interface=IBUS_ENGINE_IFACE, \
+        dbus.service.method(dbus_interface=IBUS_IFACE_ENGINE, \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
-    @method(in_signature="ubu", out_signature="b")
-    def ProcessKeyEvent(self, keyval, is_press, state):
+    @method(in_signature="uu", out_signature="b")
+    def ProcessKeyEvent(self, keyval, state):
         pass
 
     @method(in_signature="iiii")
@@ -89,29 +89,30 @@ class IEngine(dbus.service.Object):
     @method()
     def Destroy(self): pass
 
-    @signal(signature="s")
-    def CommitString(self, text): pass
+
+    @signal(signature="v")
+    def CommitText(self, text): pass
 
     @signal(signature="ubu")
     def ForwardKeyEvent(self, keyval, is_press, state): pass
 
-    @signal(signature="sa(uuuu)ib")
-    def UpdatePreedit(self, text, attrs, cursor_pos, visible): pass
+    @signal(signature="vub")
+    def UpdatePreeditText(self, text, cursor_pos, visible): pass
 
     @signal()
-    def ShowPreedit(self): pass
+    def ShowPreeditText(self): pass
 
     @signal()
-    def HidePreedit(self): pass
+    def HidePreeditText(self): pass
 
-    @signal(signature="sa(uuuu)b")
-    def UpdateAuxString(self, text, attrs, visible): pass
-
-    @signal()
-    def ShowAuxString(self): pass
+    @signal(signature="vb")
+    def UpdateAuxiliaryText(self, text, visible): pass
 
     @signal()
-    def HideAuxString(self): pass
+    def ShowAuxiliaryText(self): pass
+
+    @signal()
+    def HideAuxiliaryText(self): pass
 
     @signal(signature="vb")
     def UpdateLookupTable(self, lookup_table, visible): pass

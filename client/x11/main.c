@@ -44,8 +44,7 @@
         g_debug (fmt_args); \
     }
 
-#include <ibusattribute.h>
-#include <ibusimclient.h>
+#include <ibus.h>
 #include "gdk-private.h"
 
 struct _X11ICONN {
@@ -53,32 +52,53 @@ struct _X11ICONN {
 };
 typedef struct _X11ICONN    X11ICONN;
 
+typedef struct _X11IC    X11IC;
 struct _X11IC {
-    gchar       *ibus_ic;
-    Window      client_window;
-    Window      focus_window;
-    gint32      input_style;
-    X11ICONN    *conn;
-    gint        icid;
-    gint        connect_id;
-    gchar       *lang;
-    gboolean        has_preedit_area;
-    GdkRectangle    preedit_area;
+    IBusInputContext *context;
+    Window           client_window;
+    Window           focus_window;
+    gint32           input_style;
+    X11ICONN        *conn;
+    gint             icid;
+    gint             connect_id;
+    gchar           *lang;
+    gboolean         has_preedit_area;
+    GdkRectangle     preedit_area;
 
     gchar           *preedit_string;
     IBusAttrList    *preedit_attrs;
-    gint            preedit_cursor;
-    gboolean        preedit_visible;
-    gboolean        preedit_started;
-    gint            onspot_preedit_length;
+    gint             preedit_cursor;
+    gboolean         preedit_visible;
+    gboolean         preedit_started;
+    gint             onspot_preedit_length;
 };
 
-typedef struct _X11IC    X11IC;
+static void     _xim_set_cursor_location    (X11IC              *x11ic);
+static void     _context_commit_text_cb     (IBusInputContext   *context,
+                                             IBusText           *text,
+                                             X11IC              *x11ic);
+static void     _context_forward_key_event_cb
+                                            (IBusInputContext   *context,
+                                             X11IC              *x11ic);
 
-static void _xim_set_cursor_location (X11IC *x11ic);
+static void     _context_update_preedit_text_cb
+                                            (IBusInputContext   *context,
+                                             IBusText           *text,
+                                             gint                cursor_pos,
+                                             gboolean            visible,
+                                             X11IC              *x11ic);
+static void     _context_show_preedit_text_cb
+                                            (IBusInputContext   *context,
+                                             X11IC              *x11ic);
+static void     _context_hide_preedit_text_cb
+                                            (IBusInputContext   *context,
+                                             X11IC              *x11ic);
+static void     _context_enabled_cb         (IBusInputContext   *context,
+                                             X11IC              *x11ic);
+static void     _context_disabled_cb        (IBusInputContext   *context,
+                                             X11IC              *x11ic);
 
 static GHashTable     *_x11_ic_table = NULL;
-static GHashTable     *_ibus_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
 static gchar _server_name[128] = "ibus";
@@ -95,9 +115,9 @@ static gchar _locale[1024] =
     "uk,ur,uz,ve,vi,wa,xh,yi,zh,zu";
 
 static gboolean _kill_daemon = FALSE;
-static gint        g_debug_level = 0;
+static gint     g_debug_level = 0;
 
-static IBusIMClient *_client = NULL;
+static IBusBus *_bus = NULL;
 
 static void
 _xim_preedit_start (XIMS xims, const X11IC *x11ic)
@@ -315,21 +335,35 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 
     i = _xim_store_ic_values (x11ic, call_data);
 
-    x11ic->ibus_ic = g_strdup (ibus_im_client_create_input_context (_client));
-    if (x11ic->ibus_ic == NULL) {
+    x11ic->context = ibus_bus_create_input_context (_bus, "xim");
+
+    if (x11ic->context == NULL) {
         g_slice_free (X11IC, x11ic);
         g_return_val_if_reached (0);
     }
 
-    g_hash_table_insert (_ibus_ic_table, x11ic->ibus_ic, (gpointer)x11ic);
+    g_signal_connect (x11ic->context, "commit-text",
+                        G_CALLBACK (_context_commit_text_cb), x11ic);
+    g_signal_connect (x11ic->context, "forward-key-event",
+                        G_CALLBACK (_context_forward_key_event_cb), x11ic);
+
+    g_signal_connect (x11ic->context, "update-preedit-text",
+                        G_CALLBACK (_context_update_preedit_text_cb), x11ic);
+    g_signal_connect (x11ic->context, "show-preedit-text",
+                        G_CALLBACK (_context_show_preedit_text_cb), x11ic);
+    g_signal_connect (x11ic->context, "hide-preedit-text",
+                        G_CALLBACK (_context_hide_preedit_text_cb), x11ic);
+    g_signal_connect (x11ic->context, "enabled",
+                        G_CALLBACK (_context_enabled_cb), x11ic);
+    g_signal_connect (x11ic->context, "disabled",
+                        G_CALLBACK (_context_disabled_cb), x11ic);
+
 
     if (x11ic->input_style & XIMPreeditCallbacks) {
-        ibus_im_client_set_capabilities (_client, x11ic->ibus_ic,
-                IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT);
+        ibus_input_context_set_capabilities (x11ic->context, IBUS_CAP_FOCUS | IBUS_CAP_PREEDIT_TEXT);
     }
     else {
-        ibus_im_client_set_capabilities (_client, x11ic->ibus_ic,
-                IBUS_CAP_FOCUS);
+        ibus_input_context_set_capabilities (x11ic->context, IBUS_CAP_FOCUS);
     }
 
     g_hash_table_insert (_x11_ic_table,
@@ -352,16 +386,23 @@ xim_destroy_ic (XIMS xims, IMChangeICStruct *call_data)
                 (gconstpointer)(unsigned long)call_data->icid);
     g_return_val_if_fail (x11ic != NULL, 0);
 
-    ibus_im_client_release_input_context (_client, x11ic->ibus_ic);
+    if (x11ic->context) {
+        ibus_object_destroy ((IBusObject *)x11ic->context);
+        g_object_unref (x11ic->context);
+        x11ic->context = NULL;
+    }
 
-    g_hash_table_remove (_ibus_ic_table, x11ic->ibus_ic);
     g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)call_data->icid);
     x11ic->conn->clients = g_list_remove (x11ic->conn->clients, (gconstpointer)x11ic);
 
     g_free (x11ic->preedit_string);
-    ibus_attr_list_unref (x11ic->preedit_attrs);
-    g_free (x11ic->ibus_ic);
+    x11ic->preedit_string = NULL;
+
+    if (x11ic->preedit_attrs) {
+        g_object_unref (x11ic->preedit_attrs);
+        x11ic->preedit_attrs = NULL;
+    }
 
     g_slice_free (X11IC, x11ic);
 
@@ -380,7 +421,7 @@ xim_set_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
                 (gconstpointer)(unsigned long)call_data->icid);
     g_return_val_if_fail (x11ic != NULL, 0);
 
-    ibus_im_client_focus_in (_client, x11ic->ibus_ic);
+    ibus_input_context_focus_in (x11ic->context);
     _xim_set_cursor_location (x11ic);
 
     return 1;
@@ -398,7 +439,7 @@ xim_unset_ic_focus (XIMS xims, IMChangeFocusStruct *call_data)
             (gconstpointer)(unsigned long)call_data->icid);
     g_return_val_if_fail (x11ic != NULL, 0);
 
-    ibus_im_client_focus_out (_client, x11ic->ibus_ic);
+    ibus_input_context_focus_out (x11ic->context);
 
     return 1;
 
@@ -426,8 +467,12 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     event.send_event = xevent->send_event;
     event.window = NULL;
 
-    if (ibus_im_client_filter_keypress (_client,
-                    x11ic->ibus_ic, &event, False)) {
+    if (event.type == GDK_KEY_RELEASE) {
+        event.state |= IBUS_RELEASE_MASK;
+    }
+
+    if (ibus_input_context_process_key_event (x11ic->context,
+                event.keyval, event.state)) {
         if (! x11ic->has_preedit_area) {
             _xim_set_cursor_location (x11ic);
         }
@@ -479,12 +524,19 @@ _free_ic (gpointer data, gpointer user_data)
     g_return_if_fail (x11ic != NULL);
 
     g_free (x11ic->preedit_string);
-    ibus_attr_list_unref (x11ic->preedit_attrs);
-    g_free (x11ic->ibus_ic);
+
+    if (x11ic->preedit_attrs) {
+        g_object_unref (x11ic->preedit_attrs);
+        x11ic->preedit_attrs = NULL;
+    }
+
+    if (x11ic->context) {
+        ibus_object_destroy ((IBusObject *)x11ic->context);
+        g_object_unref (x11ic->context);
+        x11ic->context = NULL;
+    }
 
     /* Remove the IC from g_client dictionary */
-    g_hash_table_remove (_ibus_ic_table,
-                (gconstpointer)(unsigned long)x11ic->ibus_ic);
     g_hash_table_remove (_x11_ic_table,
                 (gconstpointer)(unsigned long)x11ic->icid);
 
@@ -551,8 +603,11 @@ _xim_set_cursor_location (X11IC *x11ic)
         }
     }
 
-    ibus_im_client_set_cursor_location (_client,
-            x11ic->ibus_ic, &preedit_area);
+    ibus_input_context_set_cursor_location (x11ic->context,
+            preedit_area.x,
+            preedit_area.y,
+            preedit_area.width,
+            preedit_area.height);
 }
 
 
@@ -618,7 +673,7 @@ xim_reset_ic (XIMS xims, IMResetICStruct *call_data)
                 (gconstpointer)(unsigned long)call_data->icid);
     g_return_val_if_fail (x11ic != NULL, 0);
 
-    ibus_im_client_reset (_client, x11ic->ibus_ic);
+    ibus_input_context_reset (x11ic->context);
 
     return 1;
 }
@@ -702,23 +757,29 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 }
 
 static void
-_client_disconnected_cb (IBusIMClient *client, gpointer user_data)
+_bus_disconnected_cb (IBusBus  *bus,
+                      gpointer  user_data)
 {
     g_warning ("Connection closed by ibus-daemon");
+    g_object_unref (_bus);
+    _bus = NULL;
     exit(EXIT_SUCCESS);
 }
 
 static void
-_client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *string, gpointer user_data)
+_context_commit_text_cb (IBusInputContext *context,
+                         IBusText         *text,
+                         X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_TEXT (text));
+    g_assert (x11ic != NULL);
 
     XTextProperty tp;
     IMCommitStruct cms = {0};
 
     Xutf8TextListToTextProperty (GDK_DISPLAY (),
-        (gchar **)&string, 1, XCompoundTextStyle, &tp);
+        (gchar **)&(text->text), 1, XCompoundTextStyle, &tp);
 
     cms.major_code = XIM_COMMIT;
     cms.icid = x11ic->icid;
@@ -731,12 +792,12 @@ _client_commit_string_cb (IBusIMClient *client, const gchar *ic, const gchar *st
 }
 
 static void
-_client_forward_event_cb (IBusIMClient *client, const gchar *ic, GdkEvent *event, gpointer user_data)
+_context_forward_key_event_cb (IBusInputContext *context,
+                               X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (x11ic);
 
-    _xim_forward_gdk_event (&(event->key), x11ic);
+    // _xim_forward_gdk_event (&(event->key), x11ic);
 }
 
 static void
@@ -759,21 +820,27 @@ _update_preedit (X11IC *x11ic)
 }
 
 static void
-_client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *string,
-    IBusAttrList *attrs, gint cursor_pos, gboolean visible, gpointer user_data)
+_context_update_preedit_text_cb (IBusInputContext *context,
+                                 IBusText         *text,
+                                 gint              cursor_pos,
+                                 gboolean          visible,
+                                 X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_TEXT (text));
+    g_assert (x11ic);
 
     if (x11ic->preedit_string) {
         g_free(x11ic->preedit_string);
     }
-    x11ic->preedit_string = g_strdup(string);
+    x11ic->preedit_string = g_strdup(text->text);
 
     if (x11ic->preedit_attrs) {
-        ibus_attr_list_unref (x11ic->preedit_attrs);
+        g_object_unref (x11ic->preedit_attrs);
     }
-    x11ic->preedit_attrs = ibus_attr_list_ref(attrs);
+
+    g_object_ref(text->attrs);
+    x11ic->preedit_attrs = text->attrs;
 
     x11ic->preedit_cursor = cursor_pos;
     x11ic->preedit_visible = visible;
@@ -782,74 +849,62 @@ _client_update_preedit_cb (IBusIMClient *client, const gchar *ic, const gchar *s
 }
 
 static void
-_client_show_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+_context_show_preedit_text_cb (IBusInputContext *context,
+                               X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (x11ic);
 
     x11ic->preedit_visible = TRUE;
     _update_preedit (x11ic);
 }
 
 static void
-_client_hide_preedit_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+_context_hide_preedit_text_cb (IBusInputContext *context,
+                               X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (x11ic);
 
     x11ic->preedit_visible = FALSE;
     _update_preedit (x11ic);
 }
 
 static void
-_client_enabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+_context_enabled_cb (IBusInputContext *context,
+                    X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (x11ic);
 
     _xim_preedit_start (_xims, x11ic);
 }
 
 static void
-_client_disabled_cb (IBusIMClient *client, const gchar *ic, gpointer user_data)
+_context_disabled_cb (IBusInputContext *context,
+                    X11IC            *x11ic)
 {
-    X11IC *x11ic = g_hash_table_lookup (_ibus_ic_table, ic);
-    g_return_if_fail (x11ic != NULL);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (x11ic);
 
     _xim_preedit_end (_xims, x11ic);
 }
 
 static void
-_init_ibus_client (void)
+_init_ibus (void)
 {
-    if (_client != NULL)
+    if (_bus != NULL)
         return;
+    ibus_init ();
 
-    ibus_im_client_register_type (NULL);
+    _bus = ibus_bus_new ();
 
-    _client = ibus_im_client_new ();
-
-    if (!ibus_im_client_get_connected (_client)) {
+    if (!ibus_bus_is_connected (_bus)) {
         g_error ("Can not connect to ibus-daemon!");
     }
 
-    g_signal_connect (_client, "disconnected",
-                        G_CALLBACK (_client_disconnected_cb), NULL);
-    g_signal_connect (_client, "commit-string",
-                        G_CALLBACK (_client_commit_string_cb), NULL);
-    g_signal_connect (_client, "forward-event",
-                        G_CALLBACK (_client_forward_event_cb), NULL);
-
-    g_signal_connect (_client, "update-preedit",
-                        G_CALLBACK (_client_update_preedit_cb), NULL);
-    g_signal_connect (_client, "show-preedit",
-                        G_CALLBACK (_client_show_preedit_cb), NULL);
-    g_signal_connect (_client, "hide-preedit",
-                        G_CALLBACK (_client_hide_preedit_cb), NULL);
-    g_signal_connect (_client, "enabled",
-                        G_CALLBACK (_client_enabled_cb), NULL);
-    g_signal_connect (_client, "disabled",
-                        G_CALLBACK (_client_disabled_cb), NULL);
+    g_signal_connect (_bus, "disconnected",
+                        G_CALLBACK (_bus_disconnected_cb), NULL);
 }
 
 static void
@@ -915,9 +970,9 @@ _xim_init_IMdkit ()
         IMFilterEventMask, KeyPressMask | KeyReleaseMask,
         NULL);
 
-    _init_ibus_client ();
+    _init_ibus ();
 
-    if (!ibus_im_client_get_connected (_client)) {
+    if (!ibus_bus_is_connected (_bus)) {
         g_warning ("Can not connect to ibus daemon");
         exit (1);
     }
@@ -926,7 +981,9 @@ _xim_init_IMdkit ()
 static void
 _atexit_cb ()
 {
-    ibus_im_client_kill_daemon(_client);
+    if (_bus) {
+        ibus_bus_kill(_bus);
+    }
 }
 
 static void
@@ -1021,7 +1078,6 @@ main (int argc, char **argv)
     }
 
     _x11_ic_table = g_hash_table_new (g_direct_hash, g_direct_equal);
-    _ibus_ic_table = g_hash_table_new (g_str_hash, g_str_equal);
     _connections = g_hash_table_new (g_direct_hash, g_direct_equal);
 
     signal (SIGINT, _sighandler);

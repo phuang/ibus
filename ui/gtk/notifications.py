@@ -34,17 +34,13 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
-BUS_NOTIFICATIONS_NAME = "org.freedesktop.Notifications"
-BUS_NOTIFICATIONS_PATH = "/org/freedesktop/Notifications"
-BUS_NOTIFICATIONS_IFACE = "org.freedesktop.Notifications"
-
 class Notifications(ibus.NotificationsBase):
     def __init__ (self, bus):
         super(Notifications, self).__init__(bus)
         self.__bus = bus
         try:
             self.__dbus = dbus.SessionBus()
-            self.__dbus.watch_name_owner(BUS_NOTIFICATIONS_NAME,
+            self.__dbus.watch_name_owner(ibus.IBUS_SERVICE_NOTIFICATIONS,
                     self.__notifications_name_owner_changed_cb)
         except:
             self.__dbus = None
@@ -52,7 +48,7 @@ class Notifications(ibus.NotificationsBase):
         self.__ids = set([])
         self.__init_notifications()
         self.__status_icons = None
-        self.__bus.request_name(ibus.IBUS_NOTIFICATIONS_NAME, 0)
+        self.__bus.request_name(ibus.IBUS_SERVICE_NOTIFICATIONS, 0)
 
     def __notifications_name_owner_changed_cb(self, unique_name):
         if unique_name:
@@ -66,13 +62,13 @@ class Notifications(ibus.NotificationsBase):
 
         try:
             self.__notifications = self.__dbus.get_object(
-                    BUS_NOTIFICATIONS_NAME, BUS_NOTIFICATIONS_PATH)
+                    ibus.IBUS_SERVICE_NOTIFICATIONS, ibus.IBUS_PATH_NOTIFICATIONS)
             self.__notifications.connect_to_signal("NotificationClosed",
                     self.__notification_closed_cb,
-                    dbus_interface=BUS_NOTIFICATIONS_IFACE)
+                    dbus_interface=ibus.IBUS_IFACE_NOTIFICATIONS)
             self.__notifications.connect_to_signal("ActionInvoked",
                     self.__action_invoked_cb,
-                    dbus_interface=BUS_NOTIFICATIONS_IFACE)
+                    dbus_interface=ibus.IBUS_IFACE_NOTIFICATIONS)
             self.__ids = set([])
         except:
             self.__notifications = None

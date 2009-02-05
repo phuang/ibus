@@ -33,9 +33,6 @@ class IconWidget(gtk.Image):
                 theme = gtk.icon_theme_get_default()
                 pixbuf = theme.load_icon(icon, size, 0)
         except:
-            pass
-
-        if pixbuf == None:
             theme = gtk.icon_theme_get_default()
             pixbuf = theme.load_icon(gtk.STOCK_MISSING_IMAGE, size, 0)
 

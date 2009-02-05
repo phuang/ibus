@@ -23,15 +23,16 @@ __all__ = (
         "EngineBase",
     )
 
-import ibus
-from ibus import interface
+import object
+import serializable
+import interface
 
-class EngineBase(ibus.Object):
+class EngineBase(object.Object):
     def __init__(self, bus, object_path):
         super(EngineBase, self).__init__()
         self.__proxy = EngineProxy (self, bus.get_dbusconn(), object_path)
 
-    def process_key_event(self, keyval, is_press, state):
+    def process_key_event(self, keyval, state):
         return False
 
     def focus_in(self):
@@ -73,39 +74,37 @@ class EngineBase(ibus.Object):
     def property_hide(self, prop_name):
         pass
 
-    def commit_string(self, text):
-        return self.__proxy.CommitString(text)
+    def commit_text(self, text):
+        text = serializable.serialize_object(text)
+        return self.__proxy.CommitText(text)
 
-    def forward_key_event(self, keyval, is_press, state):
-        return self.__proxy.ForwardKeyEvent(keyval, is_press, state)
+    def forward_key_event(self, keyval, state):
+        return self.__proxy.ForwardKeyEvent(keyval, state)
 
-    def update_preedit(self, text, attrs, cursor_pos, visible):
-        if attrs == None:
-            attrs = ibus.AttrList()
-        return self.__proxy.UpdatePreedit(text, attrs.to_dbus_value(), cursor_pos, visible)
+    def update_preedit_text(self, text, cursor_pos, visible):
+        text = serializable.serialize_object(text)
+        return self.__proxy.UpdatePreeditText(text, cursor_pos, visible)
 
-    def show_preedit(self):
-        return self.__proxy.ShowPreedit()
+    def show_preedit_text(self):
+        return self.__proxy.ShowPreeditText()
 
-    def hide_preedit(self):
-        return self.__proxy.HidePreedit()
+    def hide_preedit_text(self):
+        return self.__proxy.HidePreeditText()
 
-    def update_aux_string(self, text, attrs, visible):
-        if attrs == None:
-            attrs = ibus.AttrList()
-        return self.__proxy.UpdateAuxString(text, attrs.to_dbus_value(), visible)
+    def update_auxiliary_text(self, text, visible):
+        text = serializable.serialize_object(text)
+        return self.__proxy.UpdateAuxiliaryText(text, visible)
 
-    def show_aux_string(self):
-        return self.__proxy.ShowAuxString()
+    def show_auxiliary_text(self):
+        return self.__proxy.ShowAuxiliaryText()
 
-    def hide_aux_string(self):
-        return self.__proxy.HideAuxString()
+    def hide_auxiliary_text(self):
+        return self.__proxy.HideAuxiliaryText()
 
     def update_lookup_table(self, lookup_table, visible, just_current_page = False):
         if just_current_page:
-            dbus_values = lookup_table.current_page_to_dbus_value()
-        else:
-            dbus_values = lookup_table.to_dbus_value()
+            lookup_table = lookup_table.get_current_page_as_lookup_table()
+        dbus_values = serializable.serialize_object(lookup_table)
         return self.__proxy.UpdateLookupTable(dbus_values, visible)
 
     def show_lookup_table(self):
@@ -127,10 +126,12 @@ class EngineBase(ibus.Object):
         return self.__proxy.CursorDownLookupTable()
 
     def register_properties(self, props):
-        return self.__proxy.RegisterProperties(props.to_dbus_value())
+        dbus_values = serializable.serialize_object(props)
+        return self.__proxy.RegisterProperties(dbus_values)
 
     def update_property(self, prop):
-        return self.__proxy.UpdateProperty(prop.to_dbus_value())
+        dbus_values = serializable.serialize_object(prop)
+        return self.__proxy.UpdateProperty(dbus_values)
 
     def get_dbus_object(self):
         return self.__proxy
@@ -145,8 +146,8 @@ class EngineProxy(interface.IEngine):
         super(EngineProxy, self).__init__(conn, object_path)
         self.__engine = engine
 
-    def ProcessKeyEvent(self, keyval, is_press, state):
-        return self.__engine.process_key_event(keyval, is_press, state)
+    def ProcessKeyEvent(self, keyval, state):
+        return self.__engine.process_key_event(keyval, state)
 
     def FocusIn(self):
         return self.__engine.focus_in()
