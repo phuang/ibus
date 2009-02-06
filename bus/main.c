@@ -45,7 +45,7 @@ static const GOptionEntry entries[] =
     { "panel", 'p', 0, G_OPTION_ARG_STRING, &panel, "specify the cmdline of panel program.", "cmdline" },
     { "config", 'c', 0, G_OPTION_ARG_STRING, &config, "specify the cmdline of config program.", "cmdline" },
     { "address", 'a', 0, G_OPTION_ARG_STRING, &address, "specify the address of ibus daemon.", "address" },
-    { "rescan", 'r', 0, G_OPTION_ARG_NONE, &g_rescan, "force to rescan components, and recreate registry cache.", NULL },
+    { "re-scan", 'r', 0, G_OPTION_ARG_NONE, &g_rescan, "force to re-scan components, and re-create registry cache.", NULL },
     { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "verbose.", NULL },
     { NULL },
 };
