@@ -61,12 +61,20 @@ component_DATA = \
 componentdir = $(pkgdatadir)/component
 
 CLEANFILES = \
+	gconf.xml \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
-	gconf.xml.in \
+	gconf.xml.in.in \
 	$(NULL)
+
+gconf.xml: gconf.xml.in
+	( \
+		libexecdir=${libexecdir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
 
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src

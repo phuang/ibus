@@ -43,13 +43,21 @@ component_DATA = \
 componentdir = $(pkgdatadir)/component
 
 CLEANFILES = \
+	gtkpanel.xml \
 	*.pyc \
 	$(NULL)
 
 EXTRA_DIST = \
 	ibus-ui-gtk.in \
-	gtkpanel.xml.in \
+	gtkpanel.xml.in.in \
 	$(NULL)
+
+gtkpanel.xml: gtkpanel.xml.in
+	( \
+		libexecdir=${libexecdir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
 
 test:
 	$(ENV) DBUS_DEBUG=true \

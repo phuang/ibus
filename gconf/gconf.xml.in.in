@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- filename: pinyin.xml -->
 <component>
-	<name>org.freedesktop.IBus.Panel</name>
-	<description>Gtk Panel Component</description>
-	<exec>@prefix@/libexec/ibus-ui-gtk</exec>
+	<name>org.freedesktop.IBus.Config</name>
+	<description>GConf Config Component</description>
+	<exec>${libexecdir}/ibus-gconf</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>

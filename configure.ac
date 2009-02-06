@@ -219,9 +219,9 @@ ibus/interface/Makefile
 ui/Makefile
 ui/gtk/Makefile
 ui/gtk/ibus-ui-gtk
-ui/gtk/gtkpanel.xml
+ui/gtk/gtkpanel.xml.in
 gconf/Makefile
-gconf/gconf.xml
+gconf/gconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/qt4/Makefile
