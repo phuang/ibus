@@ -21,6 +21,8 @@
 #define __SERVER_H_
 
 #include <ibus.h>
+#include "dbusimpl.h"
+#include "ibusimpl.h"
 
 /*
  * Type macros.
@@ -52,6 +54,9 @@ struct _BusServer {
 
     /* instance members */
     GMainLoop *loop;
+
+    BusDBusImpl *dbus;
+    BusIBusImpl *ibus;
 
 };
 

@@ -409,6 +409,14 @@ bus_registry_find_engine_by_name (BusRegistry *registry,
     return (IBusEngineDesc *) g_hash_table_lookup (registry->engine_table, name);
 }
 
+void
+bus_registry_stop_all_components (BusRegistry *registry)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+
+    g_list_foreach (registry->components, (GFunc) ibus_component_stop, NULL);
+    
+}
 
 BusFactoryProxy *
 bus_registry_name_owner_changed (BusRegistry *registry,

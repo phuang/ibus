@@ -982,7 +982,7 @@ static void
 _atexit_cb ()
 {
     if (_bus) {
-        ibus_bus_kill(_bus);
+        ibus_bus_exit(_bus, False);
     }
 }
 

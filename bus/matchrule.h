@@ -63,7 +63,7 @@ struct _BusRecipient {
 };
 
 struct _BusMatchRule {
-    IBusProxy parent;
+    IBusObject parent;
     /* instance members */
     gint   flags;
     gint   message_type;
@@ -77,7 +77,7 @@ struct _BusMatchRule {
 };
 
 struct _BusMatchRuleClass {
-    IBusProxyClass parent;
+    IBusObjectClass parent;
     /* class members */
 };
 

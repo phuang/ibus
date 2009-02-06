@@ -67,10 +67,8 @@ GType            bus_registry_get_type          (void);
 BusRegistry     *bus_registry_new               (void);
 GList           *bus_registry_get_components    (BusRegistry    *registry);
 GList           *bus_registry_get_engines       (BusRegistry    *registry);
-gboolean         bus_registry_exec_component    (BusRegistry    *registry,
-                                                 const gchar    *name);
-gboolean         bus_registry_kill_component    (BusRegistry    *registry,
-                                                 const gchar    *name);
+void             bus_registry_stop_all_components    
+                                                (BusRegistry    *registry);
 
 IBusComponent   *bus_registry_lookup_component_by_name
                                                 (BusRegistry    *registry,

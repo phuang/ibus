@@ -25,9 +25,6 @@
 #include "connection.h"
 #include "matchrule.h"
 
-#define BUS_DBUS_IMPL_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_DBUS_IMPL, BusDBusImplPrivate))
-
 enum {
     NAME_ACQUIRED,
     NAME_LOST,
@@ -39,33 +36,25 @@ enum {
     PROP_0,
 };
 
-
-/* IBusDBusImplPriv */
-struct _BusDBusImplPrivate {
-    GHashTable *unique_names;
-    GHashTable *names;
-    GHashTable *objects;
-    GList *connections;
-    GList *rules;
-    gint id;
-};
-
-typedef struct _BusDBusImplPrivate BusDBusImplPrivate;
-
 static guint dbus_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_dbus_impl_class_init      (BusDBusImplClass     *klass);
-static void     bus_dbus_impl_init            (BusDBusImpl          *dbus);
-static void     bus_dbus_impl_dispose         (BusDBusImpl          *dbus);
-static gboolean bus_dbus_impl_ibus_message    (BusDBusImpl          *dbus,
-                                               BusConnection        *connection,
-                                               IBusMessage          *message);
-static void     bus_dbus_impl_name_owner_changed
-                                              (BusDBusImpl          *dbus,
-                                               gchar                *name,
-                                               gchar                *old_name,
-                                               gchar                *new_name);
+static void     bus_dbus_impl_class_init        (BusDBusImplClass   *klass);
+static void     bus_dbus_impl_init              (BusDBusImpl        *dbus);
+static void     bus_dbus_impl_destroy           (BusDBusImpl        *dbus);
+static gboolean bus_dbus_impl_ibus_message      (BusDBusImpl        *dbus,
+                                                 BusConnection      *connection,
+                                                 IBusMessage        *message);
+static void     bus_dbus_impl_name_owner_changed(BusDBusImpl        *dbus,
+                                                 gchar              *name,
+                                                 gchar              *old_name,
+                                                 gchar              *new_name);
+
+
+static void     _connection_destroy_cb          (BusConnection      *connection,
+                                                 BusDBusImpl        *dbus);
+static void     _rule_destroy_cb                (BusMatchRule       *rule,
+                                                 BusDBusImpl        *dbus);
 
 static IBusServiceClass  *parent_class = NULL;
 
@@ -98,7 +87,6 @@ bus_dbus_impl_get_type (void)
 BusDBusImpl *
 bus_dbus_impl_get_default (void)
 {
-    // BusDBusImplPrivate *priv;
     static BusDBusImpl *dbus = NULL;
 
     if (dbus == NULL) {
@@ -118,9 +106,7 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
 
     parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (BusDBusImplPrivate));
-
-    gobject_class->dispose = (GObjectFinalizeFunc) bus_dbus_impl_dispose;
+    IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) bus_dbus_impl_destroy;
 
     service_class->ibus_message = (ServiceIBusMessageFunc) bus_dbus_impl_ibus_message;
 
@@ -145,25 +131,48 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
 static void
 bus_dbus_impl_init (BusDBusImpl *dbus)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
-    priv->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->names = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->objects = g_hash_table_new (g_str_hash, g_str_equal);
-    priv->connections = NULL;
-    priv->rules = NULL;
-    priv->id = 1;
+    dbus->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
+    dbus->names = g_hash_table_new (g_str_hash, g_str_equal);
+    dbus->objects = g_hash_table_new (g_str_hash, g_str_equal);
+    dbus->connections = NULL;
+    dbus->rules = NULL;
+    dbus->id = 1;
 
     g_object_ref (dbus);
-    g_hash_table_insert (priv->objects, DBUS_PATH_DBUS, dbus);
+    g_hash_table_insert (dbus->objects, DBUS_PATH_DBUS, dbus);
 }
 
 static void
-bus_dbus_impl_dispose (BusDBusImpl *dbus)
+bus_dbus_impl_destroy (BusDBusImpl *dbus)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+    GList *p;
+
+    for (p = dbus->rules; p != NULL; p = p->next) {
+        BusMatchRule *rule = BUS_MATCH_RULE (p->data);
+        g_signal_handlers_disconnect_by_func (rule, _rule_destroy_cb, dbus);
+        ibus_object_destroy ((IBusObject *) rule);
+        g_object_unref (rule);
+    }
+    g_list_free (dbus->rules);
+    dbus->rules = NULL;
+    
+    for (p = dbus->connections; p != NULL; p = p->next) {
+        BusConnection *connection = BUS_CONNECTION (p->data);
+        g_signal_handlers_disconnect_by_func (connection, _connection_destroy_cb, dbus);
+        ibus_connection_close ((IBusConnection *) connection);
+        ibus_object_destroy ((IBusObject *) connection);
+        g_object_unref (connection);
+    }
+    g_list_free (dbus->connections);
+    dbus->connections = NULL;
+
+    g_hash_table_remove_all (dbus->unique_names);
+    g_hash_table_remove_all (dbus->names);
+    g_hash_table_remove_all (dbus->objects);
+
+    dbus->unique_names = NULL;
+    dbus->names = NULL;
+    dbus->objects = NULL;
 
     G_OBJECT_CLASS(parent_class)->dispose (G_OBJECT (dbus));
 }
@@ -293,9 +302,6 @@ _dbus_hello (BusDBusImpl    *dbus,
              IBusMessage    *message,
              BusConnection  *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
 
     if (bus_connection_get_unique_name (connection) != NULL) {
@@ -306,12 +312,12 @@ _dbus_hello (BusDBusImpl    *dbus,
     else {
         gchar *name;
 
-        name = g_strdup_printf (":1.%d", priv->id ++);
+        name = g_strdup_printf (":1.%d", dbus->id ++);
         bus_connection_set_unique_name (connection, name);
         g_free (name);
 
         name = (gchar *) bus_connection_get_unique_name (connection);
-        g_hash_table_insert (priv->unique_names, name, connection);
+        g_hash_table_insert (dbus->unique_names, name, connection);
 
         reply_message = ibus_message_new_method_return (message);
         ibus_message_append_args (reply_message,
@@ -340,9 +346,6 @@ _dbus_list_names (BusDBusImpl       *dbus,
                   IBusMessage       *message,
                   BusConnection     *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     IBusMessageIter iter, sub_iter;
     GList *name, *names;
@@ -353,7 +356,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
     ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "s", &sub_iter);
 
     // append unique names
-    names = g_hash_table_get_keys (priv->unique_names);
+    names = g_hash_table_get_keys (dbus->unique_names);
 
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
@@ -362,7 +365,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
     g_list_free (names);
 
     // append well-known names
-    names = g_hash_table_get_keys (priv->names);
+    names = g_hash_table_get_keys (dbus->names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
         ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
@@ -379,9 +382,6 @@ _dbus_name_has_owner (BusDBusImpl   *dbus,
                       IBusMessage   *message,
                       BusConnection *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     gchar *name;
     gboolean retval;
     gboolean has_owner;
@@ -402,10 +402,10 @@ _dbus_name_has_owner (BusDBusImpl   *dbus,
     }
 
     if (name[0] == ':') {
-        has_owner = g_hash_table_lookup (priv->unique_names, name) != NULL;
+        has_owner = g_hash_table_lookup (dbus->unique_names, name) != NULL;
     }
     else {
-        has_owner = g_hash_table_lookup (priv->names, name) != NULL;
+        has_owner = g_hash_table_lookup (dbus->names, name) != NULL;
     }
 
     reply_message = ibus_message_new_method_return (message);
@@ -422,9 +422,6 @@ _dbus_get_name_owner (BusDBusImpl   *dbus,
                       IBusMessage   *message,
                       BusConnection *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     gchar *name;
     BusConnection *owner;
     gboolean retval;
@@ -477,9 +474,6 @@ _dbus_get_id (BusDBusImpl   *dbus,
               IBusMessage   *message,
               BusConnection *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     const gchar *name;
 
@@ -506,10 +500,7 @@ _rule_destroy_cb (BusMatchRule *rule,
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (BUS_IS_DBUS_IMPL (dbus));
 
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
-    priv->rules = g_list_remove (priv->rules, rule);
+    dbus->rules = g_list_remove (dbus->rules, rule);
     g_object_unref (rule);
 }
 
@@ -518,9 +509,6 @@ _dbus_add_match (BusDBusImpl    *dbus,
                  IBusMessage    *message,
                  BusConnection  *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     IBusError *error;
     gboolean retval;
@@ -551,7 +539,7 @@ _dbus_add_match (BusDBusImpl    *dbus,
         return reply_message;
     }
 
-    for (link = priv->rules; link != NULL; link = link->next) {
+    for (link = dbus->rules; link != NULL; link = link->next) {
         if (bus_match_rule_is_equal (rule, BUS_MATCH_RULE (link->data))) {
             bus_match_rule_add_recipient (BUS_MATCH_RULE (link->data), connection);
             g_object_unref (rule);
@@ -562,7 +550,7 @@ _dbus_add_match (BusDBusImpl    *dbus,
 
     if (rule) {
         bus_match_rule_add_recipient (rule, connection);
-        priv->rules = g_list_append (priv->rules, rule);
+        dbus->rules = g_list_append (dbus->rules, rule);
         g_signal_connect (rule, "destroy", G_CALLBACK (_rule_destroy_cb), dbus);
     }
 
@@ -575,9 +563,6 @@ _dbus_remove_match (BusDBusImpl     *dbus,
                     IBusMessage     *message,
                     BusConnection   *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     IBusError *error;
     gchar *rule_text;
@@ -605,7 +590,7 @@ _dbus_remove_match (BusDBusImpl     *dbus,
         return reply_message;
     }
 
-    for (link = priv->rules; link != NULL; link = link->next) {
+    for (link = dbus->rules; link != NULL; link = link->next) {
         if (bus_match_rule_is_equal (rule, BUS_MATCH_RULE (link->data))) {
             bus_match_rule_remove_recipient (BUS_MATCH_RULE (link->data), connection);
             break;
@@ -623,9 +608,6 @@ _dbus_request_name (BusDBusImpl     *dbus,
                     IBusMessage     *message,
                     BusConnection   *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     IBusError *error;
     gchar *name;
@@ -644,7 +626,7 @@ _dbus_request_name (BusDBusImpl     *dbus,
         return reply_message;
     }
 
-    if (g_hash_table_lookup (priv->names, name) != NULL) {
+    if (g_hash_table_lookup (dbus->names, name) != NULL) {
         reply_message = ibus_message_new_error_printf (message,
                                                        DBUS_ERROR_FAILED,
                                                        "Name %s has owner",
@@ -653,7 +635,7 @@ _dbus_request_name (BusDBusImpl     *dbus,
     }
 
     retval = 1;
-    g_hash_table_insert (priv->names,
+    g_hash_table_insert (dbus->names,
                          (gpointer )bus_connection_add_name (connection, name),
                          connection);
     reply_message = ibus_message_new_method_return (message);
@@ -680,9 +662,6 @@ _dbus_release_name (BusDBusImpl     *dbus,
                     IBusMessage     *message,
                     BusConnection   *connection)
 {
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     IBusMessage *reply_message;
     IBusError *error;
     gchar *name;
@@ -826,6 +805,10 @@ _connection_ibus_message_cb (BusConnection  *connection,
 
     const gchar *dest;
 
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+        return;
+    }
+    
     if (ibus_message_is_signal (message,
                                 DBUS_INTERFACE_LOCAL,
                                 "Disconnected")) {
@@ -872,12 +855,9 @@ _connection_ibus_message_cb (BusConnection  *connection,
                 const gchar *path;
                 IBusService *object;
 
-                BusDBusImplPrivate *priv;
-                priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
                 path = ibus_message_get_path (message);
 
-                object = g_hash_table_lookup (priv->objects, path);
+                object = g_hash_table_lookup (dbus->objects, path);
 
                 if (object == NULL ||
                     ibus_service_handle_message (object,
@@ -915,10 +895,6 @@ _connection_ibus_message_sent_cb (BusConnection  *connection,
                                   IBusMessage    *message,
                                   BusDBusImpl    *dbus)
 {
-    g_assert (BUS_IS_CONNECTION (connection));
-    g_assert (message != NULL);
-    g_assert (BUS_IS_DBUS_IMPL (dbus));
-
     bus_dbus_impl_dispatch_message_by_rule (dbus, message, connection);
 }
 
@@ -929,9 +905,6 @@ _connection_destroy_cb (BusConnection   *connection,
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (BUS_IS_DBUS_IMPL (dbus));
 
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     /*
     ibus_service_remove_from_connection (
                     IBUS_SERVICE (dbus),
@@ -940,7 +913,7 @@ _connection_destroy_cb (BusConnection   *connection,
 
     const gchar *unique_name = bus_connection_get_unique_name (connection);
     if (unique_name != NULL) {
-        g_hash_table_remove (priv->unique_names, unique_name);
+        g_hash_table_remove (dbus->unique_names, unique_name);
         g_signal_emit (dbus,
                        dbus_signals[NAME_OWNER_CHANGED],
                        0,
@@ -952,7 +925,7 @@ _connection_destroy_cb (BusConnection   *connection,
     const GList *name = bus_connection_get_names (connection);
 
     while (name != NULL) {
-        g_hash_table_remove (priv->names, name->data);
+        g_hash_table_remove (dbus->names, name->data);
         g_signal_emit (dbus,
                        dbus_signals[NAME_OWNER_CHANGED],
                        0,
@@ -962,7 +935,7 @@ _connection_destroy_cb (BusConnection   *connection,
         name = name->next;
     }
 
-    priv->connections = g_list_remove (priv->connections, connection);
+    dbus->connections = g_list_remove (dbus->connections, connection);
     g_object_unref (connection);
 }
 
@@ -974,13 +947,10 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (BUS_IS_CONNECTION (connection));
 
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
-    g_assert (g_list_find (priv->connections, connection) == NULL);
+    g_assert (g_list_find (dbus->connections, connection) == NULL);
 
     g_object_ref (connection);
-    priv->connections = g_list_append (priv->connections, connection);
+    dbus->connections = g_list_append (dbus->connections, connection);
 
     g_signal_connect (connection,
                       "ibus-message",
@@ -1010,17 +980,14 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
 
     BusConnection *connection = NULL;
 
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
-
     if (name[0] == ':') {
         connection = BUS_CONNECTION (g_hash_table_lookup (
-                                        priv->unique_names,
+                                        dbus->unique_names,
                                         name));
     }
     else {
         connection = BUS_CONNECTION (g_hash_table_lookup (
-                                        priv->names,
+                                        dbus->names,
                                         name));
     }
 
@@ -1037,6 +1004,10 @@ bus_dbus_impl_dispatch_message (BusDBusImpl  *dbus,
 
     const gchar *destination;
     BusConnection *dest_connection = NULL;
+
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+        return;
+    }
 
     destination = ibus_message_get_destination (message);
 
@@ -1074,8 +1045,9 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
 
     static gint32 data_slot = -1;
 
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+        return;
+    }
 
     if (data_slot == -1) {
         dbus_message_allocate_data_slot (&data_slot);
@@ -1093,7 +1065,7 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
     }
 #endif
 
-    for (link = priv->rules; link != NULL; link = link->next) {
+    for (link = dbus->rules; link != NULL; link = link->next) {
         if (bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
                                            message,
                                            &recipients)) {
@@ -1116,11 +1088,7 @@ static void
 _object_destroy_cb (IBusService *object,
                     BusDBusImpl *dbus)
 {
-    gboolean retval;
-
-    retval = bus_dbus_impl_unregister_object (dbus, object);
-
-    g_assert (retval);
+    bus_dbus_impl_unregister_object (dbus, object);
 }
 
 gboolean
@@ -1131,17 +1099,19 @@ bus_dbus_impl_register_object (BusDBusImpl *dbus,
     g_assert (IBUS_IS_SERVICE (object));
 
     const gchar *path;
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+    
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+        return FALSE;
+    }
 
     path = ibus_service_get_path (object);
 
     g_return_val_if_fail (path, FALSE);
 
-    g_return_val_if_fail  (g_hash_table_lookup (priv->objects, path) == NULL, FALSE);
+    g_return_val_if_fail  (g_hash_table_lookup (dbus->objects, path) == NULL, FALSE);
 
     g_object_ref (object);
-    g_hash_table_insert (priv->objects, (gpointer)path, object);
+    g_hash_table_insert (dbus->objects, (gpointer)path, object);
 
     g_signal_connect (object, "destroy", G_CALLBACK (_object_destroy_cb), dbus);
 
@@ -1156,17 +1126,19 @@ bus_dbus_impl_unregister_object (BusDBusImpl *dbus,
     g_assert (IBUS_IS_SERVICE (object));
 
     const gchar *path;
-    BusDBusImplPrivate *priv;
-    priv = BUS_DBUS_IMPL_GET_PRIVATE (dbus);
+    
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+        return FALSE;
+    }
 
     path = ibus_service_get_path (object);
     g_return_val_if_fail (path, FALSE);
 
-    g_return_val_if_fail  (g_hash_table_lookup (priv->objects, path) == object, FALSE);
+    g_return_val_if_fail  (g_hash_table_lookup (dbus->objects, path) == object, FALSE);
 
     g_signal_handlers_disconnect_by_func (object, G_CALLBACK (_object_destroy_cb), dbus);
 
-    g_hash_table_remove (priv->objects, path);
+    g_hash_table_remove (dbus->objects, path);
     g_object_unref (object);
 
     return TRUE;

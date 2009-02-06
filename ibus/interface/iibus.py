@@ -66,6 +66,6 @@ class IIBus(dbus.service.Object):
     @method(out_signature="av")
     def ListActiveEngines(self, dbusconn): pass
 
-    @async_method()
-    def Kill(self, dbusconn, reply_cb, error_cb): pass
+    @method(in_signature="b")
+    def Exit(self, restart, dbusconn): pass
 

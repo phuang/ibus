@@ -24,12 +24,16 @@
 #include "server.h"
 #include "ibusimpl.h"
 
+gchar **g_argv = NULL;
+
 static gboolean daemonize = FALSE;
 static gboolean single = FALSE;
 static gboolean xim = FALSE;
 static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
+static gchar *address = "";
+static gboolean rescan = FALSE;
 static gboolean verbose = FALSE;
 
 static const GOptionEntry entries[] =
@@ -40,6 +44,8 @@ static const GOptionEntry entries[] =
     { "desktop", 'n', 0, G_OPTION_ARG_STRING, &desktop, "specify the name of desktop session. [default=gnome]", "name" },
     { "panel", 'p', 0, G_OPTION_ARG_STRING, &panel, "specify the cmdline of panel program.", "cmdline" },
     { "config", 'c', 0, G_OPTION_ARG_STRING, &config, "specify the cmdline of config program.", "cmdline" },
+    { "address", 'a', 0, G_OPTION_ARG_STRING, &address, "specify the address of ibus daemon.", "address" },
+    { "rescan", 'r', 0, G_OPTION_ARG_NONE, &rescan, "force to rescan components, and recreate registry cache.", NULL },
     { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "verbose.", NULL },
     { NULL },
 };
@@ -91,10 +97,14 @@ main (gint argc, gchar **argv)
 
     g_option_context_add_main_entries (context, entries, "ibus-daemon");
 
+    g_argv = g_strdupv (argv);
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_printerr ("Option parsing failed: %s\n", error->message);
         exit (-1);
     }
+
+    /* create a new process group */
+    setpgrp ();
 
     if (daemonize) {
         if (daemon (1, 0) != 0) {

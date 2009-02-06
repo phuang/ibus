@@ -128,6 +128,8 @@ static void
 bus_server_init (BusServer *server)
 {
     server->loop = g_main_loop_new (NULL, FALSE);
+    server->dbus = bus_dbus_impl_get_default (); 
+    server->ibus = bus_ibus_impl_get_default (); 
 }
 
 static void
@@ -135,13 +137,18 @@ bus_server_new_connection (BusServer     *server,
                            BusConnection *connection)
 {
     g_assert (BUS_IS_SERVER (server));
-    bus_dbus_impl_new_connection (BUS_DEFAULT_DBUS, connection);
+    bus_dbus_impl_new_connection (server->dbus, connection);
 }
 
 static void
 bus_server_destroy (BusServer *server)
 {
     g_assert (BUS_IS_SERVER (server));
+
+    ibus_object_destroy ((IBusObject *) server->dbus);
+    g_object_unref (server->dbus);
+    ibus_object_destroy ((IBusObject *) server->ibus);
+    g_object_unref (server->ibus);
 
     while (g_main_loop_is_running (server->loop)) {
         g_main_loop_quit (server->loop);

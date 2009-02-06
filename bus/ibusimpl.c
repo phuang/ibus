@@ -18,6 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdlib.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"
 #include "server.h"
@@ -828,19 +832,59 @@ _ibus_list_active_engines (BusIBusImpl   *ibus,
     return reply;
 }
 
+extern gchar **g_argv;
+
 static IBusMessage *
-_ibus_kill (BusIBusImpl     *ibus,
+_ibus_exit (BusIBusImpl     *ibus,
             IBusMessage     *message,
             BusConnection   *connection)
 {
     IBusMessage *reply;
+    IBusError *error;
+    gboolean restart;
+    
+    if (!ibus_message_get_args (message,
+                                &error,
+                                G_TYPE_BOOLEAN, &restart,
+                                G_TYPE_INVALID)) {
+        reply = ibus_message_new_error (message,
+                                        DBUS_ERROR_INVALID_ARGS,
+                                        "Argument 1 of Exit should be an boolean");
+        ibus_error_free (error);
+        return reply;
+    }
 
     reply = ibus_message_new_method_return (message);
     ibus_connection_send ((IBusConnection *) connection, reply);
     ibus_connection_flush ((IBusConnection *) connection);
     ibus_message_unref (reply);
 
-    ibus_object_destroy (IBUS_OBJECT (ibus));
+    
+    if (!restart) {
+        exit (0);
+    }
+    else {
+        glong timeout;
+        gint fd;
+        gint status;
+        
+        bus_registry_stop_all_components (ibus->registry);
+        ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
+        for (fd = 3; fd <= sysconf (_SC_OPEN_MAX); fd++) {
+            close (fd);
+        }
+        for (timeout = 0; waitpid (0, &status, WNOHANG) != -1;) {
+            usleep (1000);
+            timeout += 1000;
+            if (timeout >= G_USEC_PER_SEC * 2) {
+                g_warning ("Not every child processes exited!");
+            }
+        };
+        execv (g_argv[0], g_argv);
+        g_warning ("execv %s failed!", g_argv[0]);
+        exit (-1);
+    }
+    
     return NULL;
 }
 
@@ -870,7 +914,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "RegisterComponent",     _ibus_register_component },
         { IBUS_INTERFACE_IBUS, "ListEngines",           _ibus_list_engines },
         { IBUS_INTERFACE_IBUS, "ListActiveEngines",     _ibus_list_active_engines },
-        { IBUS_INTERFACE_IBUS, "Kill",                  _ibus_kill },
+        { IBUS_INTERFACE_IBUS, "Exit",                  _ibus_exit },
         { NULL, NULL, NULL }
     };
 

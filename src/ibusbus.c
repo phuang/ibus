@@ -684,7 +684,8 @@ ibus_bus_get_connection (IBusBus *bus)
 }
 
 gboolean
-ibus_bus_kill (IBusBus *bus)
+ibus_bus_exit (IBusBus *bus,
+               gboolean restart)
 {
     g_assert (IBUS_IS_BUS (bus));
 
@@ -694,6 +695,7 @@ ibus_bus_kill (IBusBus *bus)
                             IBUS_PATH_IBUS,
                             IBUS_INTERFACE_IBUS,
                             "Kill",
+                            G_TYPE_BOOLEAN, &restart,
                             G_TYPE_INVALID,
                             G_TYPE_INVALID);
     return result;

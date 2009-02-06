@@ -52,6 +52,12 @@ typedef struct _BusDBusImplClass BusDBusImplClass;
 struct _BusDBusImpl {
     IBusService parent;
     /* instance members */
+    GHashTable *unique_names;
+    GHashTable *names;
+    GHashTable *objects;
+    GList *connections;
+    GList *rules;
+    gint id;
 };
 
 struct _BusDBusImplClass {

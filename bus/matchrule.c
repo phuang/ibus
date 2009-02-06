@@ -24,10 +24,11 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONFIG_PROXY, BusMatchRulePrivate))
 
 
-static void      bus_match_rule_class_init      (BusMatchRuleClass    *klass);
-static void      bus_match_rule_init            (BusMatchRule         *rule);
-static void      bus_match_rule_destroy         (BusMatchRule         *rule);
-
+static void      bus_match_rule_class_init      (BusMatchRuleClass  *klass);
+static void      bus_match_rule_init            (BusMatchRule       *rule);
+static void      bus_match_rule_destroy         (BusMatchRule       *rule);
+static void      _connection_destroy_cb         (BusConnection      *connection,
+                                                 BusMatchRule       *rule);
 static IBusObjectClass  *parent_class = NULL;
 
 GType
@@ -98,6 +99,8 @@ bus_match_rule_destroy (BusMatchRule *rule)
 
     for (link = rule->recipients; link != NULL; link = link->next) {
         BusRecipient *recipient = (BusRecipient *) link->data;
+        g_signal_handlers_disconnect_by_func (recipient->connection,
+                                              G_CALLBACK (_connection_destroy_cb), rule);
         g_object_unref (recipient->connection);
         g_slice_free (BusRecipient, recipient);
     }

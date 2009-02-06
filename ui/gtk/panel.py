@@ -278,6 +278,10 @@ class Panel(ibus.PanelBase):
             self.__sys_menu_item_activate_cb, gtk.STOCK_ABOUT)
         menu.add(item)
         menu.add(gtk.SeparatorMenuItem())
+        item = gtk.MenuItem(_("Restart"))
+        item.connect("activate",
+            self.__sys_menu_item_activate_cb, "Restart")
+        menu.add(item)
         item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         item.connect("activate",
             self.__sys_menu_item_activate_cb, gtk.STOCK_QUIT)
@@ -375,8 +379,10 @@ class Panel(ibus.PanelBase):
             about_dialog.set_logo_icon_name("ibus")
             about_dialog.run()
             about_dialog.destroy()
-        elif command == gtk.STOCK_QUIT:
-            self.__bus.kill()
+        elif command == gtk.STOCK_QUIT: 
+            self.__bus.exit(False)
+        elif command == "Restart":
+            self.__bus.exit(True)
         else:
             print >> sys.stderr, "Unknown command %s" % command
     
