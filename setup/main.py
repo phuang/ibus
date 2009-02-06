@@ -203,7 +203,7 @@ class Setup(object):
                 self.__flush_gtk_events()
                 if id != gtk.RESPONSE_YES:
                     sys.exit(0)
-                pid = os.spawnlp(os.P_NOWAIT, "ibus", "ibus")
+                pid = os.spawnlp(os.P_NOWAIT, "ibus-daemon", "ibus-daemon")
                 time.sleep(1)
                 try:
                     self.__bus = ibus.Bus()
