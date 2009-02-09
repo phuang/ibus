@@ -8,7 +8,7 @@ int main()
 	IBusError *error;
 	gboolean retval;
 
-	table = ibus_lookup_table_new (9, TRUE);
+	table = ibus_lookup_table_new (9, 0, TRUE, FALSE);
 	ibus_lookup_table_append_candidate (table, ibus_text_new_from_static_string ("Hello"));
 	ibus_lookup_table_append_candidate (table, ibus_text_new_from_static_string ("Cool"));
 

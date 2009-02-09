@@ -73,7 +73,7 @@ ibus_lookup_table_class_init (IBusLookupTableClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_lookup_table_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_lookup_table_copy;
 
-    g_string_append (serializable_class->signature, "uubav");
+    g_string_append (serializable_class->signature, "uubbav");
 }
 
 static void
@@ -121,6 +121,9 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
 
     retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
     g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->round);
+    g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_open_container (iter,
                                                IBUS_TYPE_ARRAY,
@@ -164,6 +167,9 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
+    g_return_val_if_fail (retval, FALSE);
+    
+    retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->round);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
@@ -213,15 +219,18 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
 
 IBusLookupTable *
 ibus_lookup_table_new (guint page_size,
-                       gboolean cursor_visible)
+                       guint cursor_pos,
+                       gboolean cursor_visible,
+                       gboolean round)
 {
     IBusLookupTable *table;
 
     table= g_object_new (IBUS_TYPE_LOOKUP_TABLE, NULL);
 
-    table->cursor_pos = 0;
     table->page_size = page_size;
+    table->cursor_pos = cursor_pos;
     table->cursor_visible = cursor_visible;
+    table->round = round;
 
     return table;
 }

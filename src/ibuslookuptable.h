@@ -52,6 +52,7 @@ struct _IBusLookupTable {
     guint page_size;
     guint cursor_pos;
     gboolean cursor_visible;
+    gboolean round;
 
     GArray *candidates;
 };
@@ -63,7 +64,9 @@ struct _IBusLookupTableClass {
 
 GType                ibus_lookup_table_get_type (void);
 IBusLookupTable     *ibus_lookup_table_new      (guint               page_size,
-                                                 gboolean            cursor_visible);
+                                                 guint               cursor_pos,
+                                                 gboolean            cursor_visible,
+                                                 gboolean            round);
 void                 ibus_lookup_table_append_candidate
                                                 (IBusLookupTable    *table,
                                                  IBusText           *text);

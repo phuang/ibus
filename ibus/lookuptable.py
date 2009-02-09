@@ -29,10 +29,11 @@ from exception import *
 
 class LookupTable(Serializable):
     __NAME__ = "IBusLookupTable"
-    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, candidates=None):
+    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, candidates=None):
         super(LookupTable, self).__init__()
-        self.__cursor_visible = True
         self.__cursor_pos = cursor_pos
+        self.__cursor_visible = True
+        self.__round = round
         if candidates == None:
             self.__candidates = list()
         else:
@@ -94,7 +95,15 @@ class LookupTable(Serializable):
 
     def page_up(self):
         if self.__cursor_pos < self.__page_size:
-            return False
+            if self.__round:
+                nr_candidates = len(self.__candidates)
+                max_page = nr_candidates / self.__page_size
+                self.__cursor_pos += max_page * self.__page_size
+                if self.__cursor_pos > nr_candidates - 1:
+                    self.__cursor_pos = nr_candidates - 1
+                return True
+            else:
+                return False
 
         self.__cursor_pos -= self.__page_size
         return True
@@ -105,25 +114,37 @@ class LookupTable(Serializable):
         max_page = nr_candidates / self.__page_size
 
         if current_page >= max_page:
-            return False
+            if self.__round:
+                self.__cursor_pos %= self.__page_size
+                return True
+            else:
+                return False
 
         pos = self.__cursor_pos + self.__page_size
         if pos >= nr_candidates:
-            return False
+            pos = nr_candidates - 1
         self.__cursor_pos = pos
 
         return True
 
     def cursor_up(self):
         if self.__cursor_pos == 0:
-            return False
+            if self.__round:
+                self.__cursor_pos = len(self.__candidates) - 1
+                return True
+            else:
+                return False
 
         self.__cursor_pos -= 1
         return True
 
     def cursor_down(self):
         if self.__cursor_pos == len(self.__candidates) - 1:
-            return False
+            if self.__round:
+                self.__cursor_pos = 0
+                return True
+            else:
+                return False
 
         self.__cursor_pos += 1
         return True
@@ -158,6 +179,7 @@ class LookupTable(Serializable):
         struct.append(dbus.UInt32(self.__page_size))
         struct.append(dbus.UInt32(self.__cursor_pos))
         struct.append(dbus.Boolean(self.__cursor_visible))
+        struct.append(dbus.Boolean(self.__round))
         candidates = map(lambda c: serialize_object(c), self.__candidates)
         struct.append(dbus.Array(candidates, signature="v"))
 
@@ -166,6 +188,7 @@ class LookupTable(Serializable):
         return LookupTable(self.__page_size,
                            self.__cursor_pos % self.__page_size,
                            self.__cursor_visible,
+                           self.__round,
                            candidates)
 
     def deserialize(self, struct):
@@ -174,6 +197,7 @@ class LookupTable(Serializable):
         self.__page_size = struct.pop(0)
         self.__cursor_pos = struct.pop(0)
         self.__cursor_visible = struct.pop(0)
+        self.__round = struct.pop(0)
         self.__candidates = map(deserialize_object, struct.pop(0))
 
 
