@@ -605,13 +605,16 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
                        connection_signals[IBUS_MESSAGE_SENT],
                        0,
                        message);
-    }
-
-    if (reply == NULL && error != NULL) {
-            *error = _error;
-    }
-    else
         ibus_error_free (_error);
+    }
+    else {
+        if (error != NULL) {
+            *error = _error;
+        }
+        else {
+            ibus_error_free (_error);
+        }
+    }
 
     return reply;
 }
@@ -666,8 +669,9 @@ ibus_connection_call (IBusConnection     *connection,
         if (error) {
             *error = tmp_error;
         }
-        else
+        else {
             ibus_error_free (tmp_error);
+        }
         ibus_message_unref (reply);
         return FALSE;
     }
@@ -676,7 +680,7 @@ ibus_connection_call (IBusConnection     *connection,
 
     type = first_arg_type;
 
-    while (type != DBUS_TYPE_INVALID) {
+    while (type != G_TYPE_INVALID) {
         va_arg (args, gpointer);
         type = va_arg (args, GType);
     }
@@ -685,16 +689,14 @@ ibus_connection_call (IBusConnection     *connection,
     if (type != G_TYPE_INVALID) {
         retval = ibus_message_get_args_valist (reply, error, type, args);
     }
-
-    va_end (args);
-
+    else {
+        retval = TRUE;
+    }
+    
+    va_end (args);    
     ibus_message_unref (reply);
 
-    if (!retval) {
-        return FALSE;
-    }
-
-    return TRUE;
+    return retval;
 }
 
 void

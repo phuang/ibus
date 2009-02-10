@@ -424,7 +424,7 @@ ibus_message_get_args_valist (IBusMessage *message,
     if (!retval) {
         if (error) {
             *error = ibus_error_new_from_printf (DBUS_ERROR_INVALID_ARGS,
-                                             "Message does not have arguments!");
+                                                 "Message does not have arguments!");
         }
         return FALSE;
     }
