@@ -292,7 +292,7 @@ ibus_im_context_finalize (GObject *obj)
     g_signal_handlers_disconnect_by_func (_bus, G_CALLBACK (_bus_connected_cb), obj);
 
     if (priv->ibus_context) {
-        ibus_object_destroy (priv->ibus_context);
+        ibus_object_destroy ((IBusObject *)priv->ibus_context);
     }
 
     g_object_unref (priv->slave);

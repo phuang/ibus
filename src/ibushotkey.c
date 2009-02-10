@@ -344,7 +344,7 @@ ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile *profile,
         g_return_val_if_reached (FALSE);
     }
 
-    g_tree_insert (priv->hotkeys, hotkey, (gpointer)event);
+    g_tree_insert (priv->hotkeys, (gpointer) hotkey, GUINT_TO_POINTER (event));
 
     gint i;
     IBusHotkeyEvent *p = NULL;
@@ -469,7 +469,7 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
         modifiers : modifiers & priv->mask,
     };
 
-    GQuark event = (GQuark) g_tree_lookup (priv->hotkeys, &hotkey);
+    GQuark event = (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
 
     if (event != 0) {
         g_signal_emit (profile, profile_signals[TRIGGER], event, event, user_data);

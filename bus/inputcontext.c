@@ -550,15 +550,21 @@ _ibus_introspect (BusInputContext   *context,
 typedef struct {
     BusInputContext *context;
     IBusMessage     *message;
-}CallData;
+} CallData;
 
 static void
-_ic_process_key_event_reply_cb (gboolean  retval,
-                                CallData *call_data)
+_ic_process_key_event_reply_cb (gpointer data,
+                                gpointer user_data)
 {
+    gboolean retval;
+    CallData *call_data;
+
     IBusMessage *reply;
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (call_data->context);
+
+    retval = (gboolean) GPOINTER_TO_INT (data);
+    call_data = (CallData *) user_data;
 
     reply = ibus_message_new_method_return (call_data->message);
     ibus_message_append_args (reply,
