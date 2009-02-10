@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=IBus
+GenericName=Intelligent Input Bus
+Comment=Intellignent Input Bus
+Exec=ibus-daemon --xim
+Icon=ibus
+Terminal=false
+Type=Application
+StartupNotify=false
+Categories=Utility;

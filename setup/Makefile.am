@@ -40,12 +40,11 @@ desktopdir = $(datadir)/applications
 CLEANFILES = \
 	*.pyc \
 	ibus-setup \
-	ibus-setup.desktop \
 	$(NULL)
 
 EXTRA_DIST = \
 	ibus-setup.in \
-	ibus-setup.desktop.in \
+	ibus-setup.desktop \
 	setup.glade \
 	$(NULL)
 

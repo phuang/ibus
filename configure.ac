@@ -228,7 +228,6 @@ client/qt4/Makefile
 client/x11/Makefile
 setup/Makefile
 setup/ibus-setup
-setup/ibus-setup.desktop
 src/Makefile
 bus/Makefile
 bindings/Makefile

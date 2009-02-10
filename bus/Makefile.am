@@ -43,6 +43,9 @@ TESTS = \
 	test-matchrule \
 	$(NULL)
 
+desktop_DATA = ibus.desktop
+desktopdir = $(datadir)/applications
+
 noinst_PROGRAMS = $(TESTS)
 bin_PROGRAMS = ibus-daemon
 ibus_daemon_DEPENDENCIES = \
@@ -90,6 +93,10 @@ test_matchrule_SOURCES = \
 	connection.c \
 	matchrule.c \
 	test-matchrule.c \
+	$(NULL)
+
+EXTRA_DIST = \
+	ibus.desktop \
 	$(NULL)
 
 $(libibus):
