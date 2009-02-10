@@ -370,6 +370,16 @@ ibus_connection_get_connection (IBusConnection *connection)
     return priv->connection;
 }
 
+gboolean
+ibus_connection_read_write_dispatch (IBusConnection *connection,
+                                     gint            timeout)
+{
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    return dbus_connection_read_write_dispatch (priv->connection, timeout);
+}
+
 typedef struct _VTableCallData {
     IBusMessageFunc message_func;
     gpointer user_data;
@@ -558,10 +568,14 @@ ibus_connection_send_with_reply (IBusConnection   *connection,
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
-    return dbus_connection_send_with_reply (priv->connection,
-                                            message,
-                                            pending_return,
-                                            timeout_milliseconds);
+    gboolean retval;
+
+    retval = dbus_connection_send_with_reply (priv->connection,
+                                              message,
+                                              pending_return,
+                                              timeout_milliseconds);
+
+    return retval;
 }
 
 IBusMessage *

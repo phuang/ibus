@@ -94,6 +94,8 @@ IBusConnection  *ibus_connection_open_private       (const gchar        *address
 void             ibus_connection_close              (IBusConnection     *connection);
 gboolean         ibus_connection_is_connected       (IBusConnection     *connection);
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
+gboolean         ibus_connection_read_write_dispatch(IBusConnection     *connection,
+                                                     gint                timeout);
 gboolean         ibus_connection_send               (IBusConnection     *connection,
                                                      IBusMessage        *message);
 gboolean         ibus_connection_send_signal        (IBusConnection     *connection,

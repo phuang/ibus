@@ -573,7 +573,10 @@ ibus_input_context_process_key_event (IBusInputContext *context,
     }
 
     /* wait reply or timeout */
-    ibus_pending_call_wait (pending);
+    IBusConnection *connection = ibus_proxy_get_connection ((IBusProxy *) context);
+    while (!ibus_pending_call_get_completed (pending)) {
+        ibus_connection_read_write_dispatch (connection, -1);
+    }
 
     reply_message = ibus_pending_call_steal_reply (pending);
     ibus_pending_call_unref (pending);
