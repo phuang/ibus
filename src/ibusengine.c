@@ -505,7 +505,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         return_message = ibus_message_new_method_return (message);
         ibus_message_append_args (return_message,
                                   G_TYPE_BOOLEAN, &retval,
-                                  DBUS_TYPE_INVALID);
+                                  G_TYPE_INVALID);
         ibus_connection_send (connection, return_message);
         ibus_message_unref (return_message);
         return TRUE;

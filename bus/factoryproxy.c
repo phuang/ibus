@@ -186,7 +186,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
                                                           -1,
                                                           &error,
                                                           G_TYPE_STRING, &(desc->name),
-                                                          DBUS_TYPE_INVALID);
+                                                          G_TYPE_INVALID);
     if (reply_message == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
