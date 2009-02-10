@@ -222,7 +222,7 @@ bus_panel_proxy_real_destroy (BusPanelProxy *panel)
     if (ibus_proxy_get_connection ((IBusProxy *)panel) != NULL) {
         ibus_proxy_call ((IBusProxy *) panel,
                          "Destroy",
-                         DBUS_TYPE_INVALID);
+                         G_TYPE_INVALID);
     }
 
     if (priv->focused_context) {

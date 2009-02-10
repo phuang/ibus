@@ -345,7 +345,7 @@ bus_engine_proxy_real_destroy (BusEngineProxy *engine)
     if (ibus_proxy_get_connection ((IBusProxy *) engine)) {
         ibus_proxy_call ((IBusProxy *) engine,
                          "Destroy",
-                         DBUS_TYPE_INVALID);
+                         G_TYPE_INVALID);
     }
 
     if (priv->desc) {
@@ -688,7 +688,7 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
         g_assert (BUS_IS_ENGINE_PROXY (engine));            \
         ibus_proxy_call ((IBusProxy *) engine,              \
                      #Name,                                 \
-                     DBUS_TYPE_INVALID);                    \
+                     G_TYPE_INVALID);                       \
     }
 
 DEFINE_FUNCTION (FocusIn, focus_in)

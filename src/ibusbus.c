@@ -138,50 +138,6 @@ ibus_bus_class_init (IBusBusClass *klass)
 #endif
 }
 
-#if 0
-static gboolean
-_connection_dbus_signal_cb (IBusConnection *connection,
-                            DBusMessage    *message,
-                            IBusBus        *bus)
-{
-    g_assert (IBUS_IS_BUS (bus));
-    g_assert (message != NULL);
-    g_assert (IBUS_IS_CONNECTION (connection));
-
-    IBusBusPrivate *priv;
-    priv = IBUS_BUS_GET_PRIVATE (bus);
-
-    if (dbus_message_is_signal (message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")) {
-        DBusError error;
-        const gchar *name;
-        const gchar *old_name;
-        const gchar *new_name;
-        gboolean retval;
-
-        dbus_error_init (&error);
-        retval = dbus_message_get_args (message, &error,
-                                        DBUS_TYPE_STRING, &name,
-                                        DBUS_TYPE_STRING, &old_name,
-                                        DBUS_TYPE_STRING, &new_name,
-                                        DBUS_TYPE_INVALID);
-        if (!retval) {
-            g_warning ("%s: %s", error.name, error.message);
-            dbus_error_free (&error);
-        }
-        else {
-            g_signal_emit (bus,
-                           bus_signals[NAME_OWNER_CHANGED],
-                           0,
-                           name,
-                           old_name,
-                           new_name);
-        }
-    }
-
-    return FALSE;
-}
-#endif
-
 static void
 _connection_destroy_cb (IBusConnection  *connection,
                         IBusBus         *bus)
@@ -211,12 +167,6 @@ ibus_bus_connect (IBusBus *bus)
 
     if (priv->connection) {
         ibus_bus_hello (bus);
-#if 0
-        g_signal_connect (priv->connection,
-                          "dbus-signal",
-                          (GCallback) _connection_dbus_signal_cb,
-                          bus);
-#endif
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
