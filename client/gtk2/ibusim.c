@@ -27,7 +27,7 @@
 #define IBUS_LOCALDIR ""
 static const GtkIMContextInfo ibus_im_info = {
     "ibus",
-    "iBus (Intelligent Input Bus)",
+    "IBus (Intelligent Input Bus)",
     "ibus",
     IBUS_LOCALDIR,
     "ja:ko:zh"

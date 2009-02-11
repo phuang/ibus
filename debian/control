@@ -8,5 +8,5 @@ Standards-Version: 3.7.2
 Package: ibus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, python-dbus (>= 0.83)
-Description: iBus - Intelligent Input Bus for Linux / Unix OS
+Description: IBus - Intelligent Input Bus for Linux / Unix OS
  ibus is a simplified Chinese input server. 

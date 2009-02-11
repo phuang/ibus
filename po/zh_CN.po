@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-05 10:11+0800\n"
+"POT-Creation-Date: 2009-02-11 09:02+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,20 +16,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
-#: ui/gtk/panel.py:310
+#: ibus/lang.py:40 ui/gtk/panel.py:311 ui/gtk/panel.py:312 ui/gtk/panel.py:313
+#: ui/gtk/panel.py:314
 msgid "Other"
 msgstr "其他"
 
 #: ui/gtk/panel.py:99
-msgid "iBus - Running"
-msgstr "iBus - 运行"
+msgid "IBus - Running"
+msgstr "IBus - 运行"
 
-#: ui/gtk/panel.py:370
-msgid "IBus is an intelligent input bus for Linux/Unix."
+#: ui/gtk/panel.py:281
+msgid "Restart"
 msgstr ""
 
 #: ui/gtk/panel.py:374
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr ""
+
+#: ui/gtk/panel.py:378
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -173,7 +177,7 @@ msgstr "输入法引擎"
 
 #: setup/setup.glade:477
 msgid ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
 "Homepage: http://code.google.com/p/ibus\n"
 "\n"

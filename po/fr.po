@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-06 09:43+0800\n"
+"POT-Creation-Date: 2009-02-11 09:02+0800\n"
 "PO-Revision-Date: 2009-02-06 01:55+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -24,8 +24,9 @@ msgid "Other"
 msgstr "Autre"
 
 #: ui/gtk/panel.py:99
-msgid "iBus - Running"
-msgstr "iBus - Démarré"
+#, fuzzy
+msgid "IBus - Running"
+msgstr "IBus - Démarré"
 
 #: ui/gtk/panel.py:281
 msgid "Restart"
@@ -182,14 +183,14 @@ msgstr "Moteur"
 
 #: setup/setup.glade:477
 msgid ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
 "Homepage: http://code.google.com/p/ibus\n"
 "\n"
 "\n"
 "\n"
 msgstr ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
 "Page d'accueil : http://code.google.com/p/ibus\n"
 "\n"

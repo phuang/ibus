@@ -474,7 +474,7 @@ Vertical</property>
                 <child>
                   <widget class="GtkLabel" id="label5">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;iBus&lt;/b&gt;&lt;/big&gt;
+                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;IBus&lt;/b&gt;&lt;/big&gt;
 &lt;small&gt;The intelligent input bus&lt;/small&gt;
 Homepage: http://code.google.com/p/ibus
 

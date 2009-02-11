@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-05 10:11+0800\n"
+"POT-Creation-Date: 2009-02-11 09:02+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -16,20 +16,24 @@ msgstr ""
 "X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
-#: ui/gtk/panel.py:310
+#: ibus/lang.py:40 ui/gtk/panel.py:311 ui/gtk/panel.py:312 ui/gtk/panel.py:313
+#: ui/gtk/panel.py:314
 msgid "Other"
 msgstr "ਹੋਰ"
 
 #: ui/gtk/panel.py:99
-msgid "iBus - Running"
-msgstr "iBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
+msgid "IBus - Running"
+msgstr "IBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
 
-#: ui/gtk/panel.py:370
-msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "iBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
+#: ui/gtk/panel.py:281
+msgid "Restart"
+msgstr ""
 
 #: ui/gtk/panel.py:374
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
+
+#: ui/gtk/panel.py:378
 msgid "translator-credits"
 msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
 
@@ -51,7 +55,7 @@ msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
 #: setup/main.py:197
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "iBus ਡੈਮਨ ਚੱਲਦੀ ਨਹੀਂ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
+msgstr "IBus ਡੈਮਨ ਚੱਲਦੀ ਨਹੀਂ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
 #: setup/main.py:212
 msgid ""
@@ -156,7 +160,6 @@ msgid "gtk-add"
 msgstr ""
 
 #: setup/setup.glade:409
-#, fuzzy
 msgid "gtk-remove"
 msgstr "gtk-close"
 
@@ -174,14 +177,14 @@ msgstr "ਇੰਜਣ"
 
 #: setup/setup.glade:477
 msgid ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
 "Homepage: http://code.google.com/p/ibus\n"
 "\n"
 "\n"
 "\n"
 msgstr ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 " <small>ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ</small>\n"
 " ਮੁੱਖ ਸਫ਼ਾ: http://code.google.com/p/ibus\n"
 " \n"
@@ -210,7 +213,7 @@ msgstr "gtk-close"
 #~ "engines!\n"
 #~ "Please use ibus-setup program to load some input engines."
 #~ msgstr ""
-#~ "iBus ਕੋਈ ਇੰਪੁੱਟ ਇੰਜਣ ਯੋਗ ਨਹੀਂ ਕਰ ਸਕਦੀ ਹੈ, ਕਿਉਂਕਿ ਆਈ-ਬੱਸ ਕਿਸੇ ਇੰਪੁੱਟ ਇੰਜਣ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕਰ "
+#~ "IBus ਕੋਈ ਇੰਪੁੱਟ ਇੰਜਣ ਯੋਗ ਨਹੀਂ ਕਰ ਸਕਦੀ ਹੈ, ਕਿਉਂਕਿ ਆਈ-ਬੱਸ ਕਿਸੇ ਇੰਪੁੱਟ ਇੰਜਣ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕਰ "
 #~ "ਸਕਦੀ ਹੈ!\n"
 #~ " ਕੁਝ ਇੰਪੁੱਟ ਇੰਜਣ ਨੂੰ ਲੋਡ ਕਰਨ ਵਾਸਤੇ ibus-setup ਪਰੋਗਰਾਮ ਵਰਤੋਂ।"
 

@@ -96,7 +96,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
         self.__status_icon.set_from_file(self.__ibus_icon)
-        self.__status_icon.set_tooltip(_("iBus - Running"))
+        self.__status_icon.set_tooltip(_("IBus - Running"))
         self.__status_icon.set_visible(True)
 
         self.__config_load_lookup_table_orientation()
@@ -367,7 +367,7 @@ class Panel(ibus.PanelBase):
             self.__start_setup()
         elif command == gtk.STOCK_ABOUT:
             about_dialog = gtk.AboutDialog()
-            about_dialog.set_program_name("iBus")
+            about_dialog.set_program_name("IBus")
             about_dialog.set_version(ibus.get_version())
             about_dialog.set_copyright(ibus.get_copyright())
             about_dialog.set_license(ibus.get_license())

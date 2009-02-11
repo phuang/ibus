@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-05 10:11+0800\n"
+"POT-Creation-Date: 2009-02-11 09:02+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -16,20 +16,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
-#: ui/gtk/panel.py:310
+#: ibus/lang.py:40 ui/gtk/panel.py:311 ui/gtk/panel.py:312 ui/gtk/panel.py:313
+#: ui/gtk/panel.py:314
 msgid "Other"
 msgstr ""
 
 #: ui/gtk/panel.py:99
-msgid "iBus - Running"
-msgstr "iBus - 実行中"
+msgid "IBus - Running"
+msgstr "IBus - 実行中"
 
-#: ui/gtk/panel.py:370
-msgid "IBus is an intelligent input bus for Linux/Unix."
+#: ui/gtk/panel.py:281
+msgid "Restart"
 msgstr ""
 
 #: ui/gtk/panel.py:374
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr ""
+
+#: ui/gtk/panel.py:378
 msgid "translator-credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
 
@@ -175,7 +179,7 @@ msgstr "エンジン"
 
 #: setup/setup.glade:477
 msgid ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
 "Homepage: http://code.google.com/p/ibus\n"
 "\n"
