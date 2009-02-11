@@ -29,6 +29,7 @@ gchar **g_argv = NULL;
 static gboolean daemonize = FALSE;
 static gboolean single = FALSE;
 static gboolean xim = FALSE;
+static gboolean replace = FALSE;
 static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
@@ -45,7 +46,8 @@ static const GOptionEntry entries[] =
     { "panel", 'p', 0, G_OPTION_ARG_STRING, &panel, "specify the cmdline of panel program.", "cmdline" },
     { "config", 'c', 0, G_OPTION_ARG_STRING, &config, "specify the cmdline of config program.", "cmdline" },
     { "address", 'a', 0, G_OPTION_ARG_STRING, &address, "specify the address of ibus daemon.", "address" },
-    { "re-scan", 'r', 0, G_OPTION_ARG_NONE, &g_rescan, "force to re-scan components, and re-create registry cache.", NULL },
+    { "replace", 'r', 0, G_OPTION_ARG_NONE, &replace, "if there is an old ibus-daemon is running, it will be replaced.", NULL },
+    { "re-scan", 't', 0, G_OPTION_ARG_NONE, &g_rescan, "force to re-scan components, and re-create registry cache.", NULL },
     { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "verbose.", NULL },
     { NULL },
 };
@@ -88,6 +90,7 @@ main (gint argc, gchar **argv)
 {
     GOptionContext *context;
     BusServer *server;
+    IBusBus *bus;
 
     GError *error = NULL;
 
@@ -115,6 +118,23 @@ main (gint argc, gchar **argv)
 
     g_type_init ();
 
+    /* check if ibus-daemon is running in this session */
+    bus = ibus_bus_new ();
+
+    if (ibus_bus_is_connected (bus)) {
+        if (!replace) {
+            g_printerr ("current session already has an ibus-daemon.\n");
+            exit (-1);
+        }
+        ibus_bus_exit (bus, FALSE);
+        while (ibus_bus_is_connected (bus)) {
+            g_main_context_iteration (NULL, TRUE);
+        }
+    }
+    g_object_unref (bus);
+    bus = NULL;
+    
+    /* create ibus server */
     server = bus_server_get_default ();
     bus_server_listen (server);
 
