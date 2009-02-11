@@ -644,7 +644,7 @@ ibus_bus_exit (IBusBus *bus,
                             IBUS_SERVICE_IBUS,
                             IBUS_PATH_IBUS,
                             IBUS_INTERFACE_IBUS,
-                            "Kill",
+                            "Exit",
                             G_TYPE_BOOLEAN, &restart,
                             G_TYPE_INVALID,
                             G_TYPE_INVALID);
