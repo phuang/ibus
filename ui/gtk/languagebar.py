@@ -60,22 +60,25 @@ class LanguageBar(gtk.Toolbar):
 
         self.__properties = []
         self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
+        self.__toplevel.connect("size-allocate", self.__toplevel_size_allocate_cb)
         self.__toplevel.add(self)
 
         root = gdk.get_default_root_window()
         try:
             workarea = root.property_get("_NET_WORKAREA")[2]
-            right, bottom = workarea[2], workarea[3]
+            right, bottom = workarea[0] + workarea[2], workarea[1] + workarea[3]
         except:
             right, bottom = root.get_size()
-        self.__position = right - 200, bottom - 40
+        self.__position = right - 20, bottom - 20
         self.__toplevel.move(*self.__position)
 
     def __create_ui(self):
         # create move handle
         self.__handle = gtk.ToolItem()
-        self.__handle.add(Handle())
+        handle = Handle()
+        self.__handle.add(handle)
         self.insert(self.__handle, -1)
+        handle.connect("move-end", self.__handle_move_end_cb)
 
         # create input methods menu
         prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch engine"))
@@ -96,9 +99,17 @@ class LanguageBar(gtk.Toolbar):
     def __im_menu_deactivate_cb(self, menu):
         self.__im_menu.set_active(False)
 
+    def __handle_move_end_cb(self, handle):
+        x, y = self.__toplevel.get_position()
+        w, h = self.__toplevel.get_size()
+        self.__position = x + w, y + h
+
+    def __toplevel_size_allocate_cb(self, toplevel, allocation):
+        x, y = self.__position
+        self.__toplevel.move(x - allocation.width, y - allocation.height)
+
     def __remove_properties(self):
         # reset all properties
-
         map(lambda i: i.destroy(), self.__properties)
         self.__properties = []
 

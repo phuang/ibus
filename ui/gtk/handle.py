@@ -24,6 +24,17 @@ import gtk.gdk as gdk
 import gobject
 
 class Handle(gtk.EventBox):
+    __gsignals__ = {
+        "move-begin" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            ()),
+        "move-end" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            ()),
+        }
+
     def __init__ (self):
         super(Handle, self).__init__()
         self.set_visible_window(False)
@@ -51,6 +62,7 @@ class Handle(gtk.EventBox):
             x, y = toplevel.get_position()
             self.__press_pos = event.x_root - x, event.y_root - y
             self.window.set_cursor(gdk.Cursor(gdk.FLEUR))
+            self.emit("move-begin")
             return True
         return False
 
@@ -60,6 +72,7 @@ class Handle(gtk.EventBox):
             del self.__press_pos
             del self.__workarea
             self.window.set_cursor(gdk.Cursor(gdk.LEFT_PTR))
+            self.emit("move-end")
             return True
 
         return False
