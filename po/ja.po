@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-11 09:02+0800\n"
+"POT-Creation-Date: 2009-02-11 14:27+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "translator-credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
 
-#: ui/gtk/languagebar.py:81
+#: ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr ""
 

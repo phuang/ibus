@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-11 09:02+0800\n"
+"POT-Creation-Date: 2009-02-11 14:27+0800\n"
 "PO-Revision-Date: 2009-02-06 01:55+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -40,7 +40,7 @@ msgstr "IBus est un IME intelligent pour Linux/Unix"
 msgid "translator-credits"
 msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
-#: ui/gtk/languagebar.py:81
+#: ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "Changer de moteur"
 
