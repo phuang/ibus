@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include <stdlib.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"
@@ -388,6 +389,41 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 static void
 bus_ibus_impl_destroy (BusIBusImpl *ibus)
 {
+    pid_t pid;
+    glong timeout;
+    gint status;
+    gboolean flag;
+        
+    bus_registry_stop_all_components (ibus->registry);
+
+    pid = 0;
+    timeout = 0;
+    flag = FALSE;
+    while (1) {
+        while ((pid = waitpid (0, &status, WNOHANG)) > 0);        
+        
+        if (pid == -1) { /* all children finished */
+            break;
+        }
+        if (pid == 0) { /* no child status changed */
+            usleep (1000);
+            timeout += 1000;
+            if (timeout >= G_USEC_PER_SEC) {
+                if (flag == FALSE) {
+                    gpointer old;
+                    old = signal (SIGTERM, SIG_IGN);
+                    kill (-getpid (), SIGTERM);
+                    signal (SIGTERM, old);
+                    flag = TRUE;
+                }
+                else {
+                    g_warning ("Not every child processes exited!");
+                    break;
+                }
+            }
+        }
+    };
+
     g_list_foreach (ibus->engine_list, (GFunc) g_object_unref, NULL);
     g_list_free (ibus->engine_list);
     ibus->engine_list = NULL;
@@ -407,7 +443,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     }
 
     bus_server_quit (BUS_DEFAULT_SERVER);
-
+    ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
@@ -832,7 +868,6 @@ _ibus_list_active_engines (BusIBusImpl   *ibus,
     return reply;
 }
 
-extern gchar **g_argv;
 
 static IBusMessage *
 _ibus_exit (BusIBusImpl     *ibus,
@@ -859,32 +894,21 @@ _ibus_exit (BusIBusImpl     *ibus,
     ibus_connection_flush ((IBusConnection *) connection);
     ibus_message_unref (reply);
 
-    
+    ibus_object_destroy ((IBusObject *) ibus);
+
     if (!restart) {
         exit (0);
     }
     else {
-        glong timeout;
-        gint fd;
-        gint status;
-        
-        bus_registry_stop_all_components (ibus->registry);
-        ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
-        for (fd = 3; fd <= sysconf (_SC_OPEN_MAX); fd++) {
-            close (fd);
-        }
-        for (timeout = 0; waitpid (0, &status, WNOHANG) != -1;) {
-            usleep (1000);
-            timeout += 1000;
-            if (timeout >= G_USEC_PER_SEC * 2) {
-                g_warning ("Not every child processes exited!");
-            }
-        };
+        extern gchar **g_argv;
         execv (g_argv[0], g_argv);
         g_warning ("execv %s failed!", g_argv[0]);
         exit (-1);
     }
     
+    /* should not reach here */
+    g_assert_not_reached ();
+
     return NULL;
 }
 

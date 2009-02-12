@@ -106,9 +106,6 @@ main (gint argc, gchar **argv)
         exit (-1);
     }
 
-    /* create a new process group */
-    setpgrp ();
-
     if (daemonize) {
         if (daemon (1, 0) != 0) {
             g_printerr ("Can not daemonize ibus.\n");
@@ -116,6 +113,9 @@ main (gint argc, gchar **argv)
         }
     }
 
+    /* create a new process group */
+    setpgrp ();
+    
     g_type_init ();
 
     /* check if ibus-daemon is running in this session */
