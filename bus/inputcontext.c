@@ -100,6 +100,8 @@ static gboolean bus_input_context_send_signal   (BusInputContext        *context
                                                  const gchar            *signal_name,
                                                  GType                   first_arg_type,
                                                  ...);
+
+static void     bus_input_context_unset_engine  (BusInputContext        *context);
 static void     _engine_destroy_cb              (BusEngineProxy         *factory,
                                                  BusInputContext        *context);
 
@@ -486,11 +488,7 @@ bus_input_context_destroy (BusInputContext *context)
     }
 
     if (priv->engine) {
-        g_signal_handlers_disconnect_by_func (priv->engine,
-                                              G_CALLBACK (_engine_destroy_cb),
-                                              context);
-        g_object_unref (priv->engine);
-        priv->engine = NULL;
+        bus_input_context_unset_engine (context);
     }
 
     if (priv->connection) {
@@ -1123,7 +1121,7 @@ _engine_destroy_cb (BusEngineProxy  *engine,
 
     g_assert (priv->engine == engine);
 
-    bus_input_context_set_engine (context, NULL);
+    bus_input_context_unset_engine (context);
 }
 
 static void
@@ -1409,6 +1407,48 @@ bus_input_context_disable (BusInputContext *context)
                    0);
 }
 
+const static struct {
+    const gchar *name;
+    GCallback    callback;
+} signals [] = {
+    { "commit-text",            G_CALLBACK (_engine_commit_text_cb) },
+    { "forward-key-event",      G_CALLBACK (_engine_forward_key_event_cb) },
+    { "update-preedit-text",    G_CALLBACK (_engine_update_preedit_text_cb) },
+    { "show-preedit-text",      G_CALLBACK (_engine_show_preedit_text_cb) },
+    { "hide-preedit-text",      G_CALLBACK (_engine_hide_preedit_text_cb) },
+    { "update-auxiliary-text",  G_CALLBACK (_engine_update_auxiliary_text_cb) },
+    { "show-auxiliary-text",    G_CALLBACK (_engine_show_auxiliary_text_cb) },
+    { "hide-auxiliary-text",    G_CALLBACK (_engine_hide_auxiliary_text_cb) },
+    { "update-lookup-table",    G_CALLBACK (_engine_update_lookup_table_cb) },
+    { "show-lookup-table",      G_CALLBACK (_engine_show_lookup_table_cb) },
+    { "hide-lookup-table",      G_CALLBACK (_engine_hide_lookup_table_cb) },
+    { "page-up-lookup-table",   G_CALLBACK (_engine_page_up_lookup_table_cb) },
+    { "page-down-lookup-table", G_CALLBACK (_engine_page_down_lookup_table_cb) },
+    { "cursor-up-lookup-table", G_CALLBACK (_engine_cursor_up_lookup_table_cb) },
+    { "cursor-down-lookup-table", G_CALLBACK (_engine_cursor_down_lookup_table_cb) },
+    { "register-properties",    G_CALLBACK (_engine_register_properties_cb) },
+    { "update-property",        G_CALLBACK (_engine_update_property_cb) },
+    { "destroy",                G_CALLBACK (_engine_destroy_cb) },
+    { NULL, 0 }
+};
+
+static void
+bus_input_context_unset_engine (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->engine) {
+        gint i;
+        for (i = 0; signals[i].name != NULL; i++) {
+            g_signal_handlers_disconnect_by_func (priv->engine, signals[i].callback, context);
+        }
+        g_object_unref (priv->engine);
+        priv->engine = NULL;
+    }
+}
 
 void
 bus_input_context_set_engine (BusInputContext *context,
@@ -1416,61 +1456,28 @@ bus_input_context_set_engine (BusInputContext *context,
 {
 
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-
+    
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     if (priv->engine != NULL) {
-        g_signal_handlers_disconnect_by_func (priv->engine, _engine_destroy_cb, context);
-        ibus_object_destroy ((IBusObject *) priv->engine);
-        g_object_unref (priv->engine);
-        priv->engine = NULL;
+        bus_input_context_unset_engine (context);
     }
 
     if (engine == NULL) {
         bus_input_context_disable (context);
-        g_signal_emit (context,
-                       context_signals[ENGINE_CHANGED],
-                       0);
-        return;
     }
-
-    priv->engine = engine;
-    g_object_ref (priv->engine);
-
-    gint i;
-    const static struct {
-        const gchar *name;
-        GCallback    callback;
-    } signals [] = {
-        { "commit-text",            G_CALLBACK (_engine_commit_text_cb) },
-        { "forward-key-event",      G_CALLBACK (_engine_forward_key_event_cb) },
-        { "update-preedit-text",    G_CALLBACK (_engine_update_preedit_text_cb) },
-        { "show-preedit-text",      G_CALLBACK (_engine_show_preedit_text_cb) },
-        { "hide-preedit-text",      G_CALLBACK (_engine_hide_preedit_text_cb) },
-        { "update-auxiliary-text",  G_CALLBACK (_engine_update_auxiliary_text_cb) },
-        { "show-auxiliary-text",    G_CALLBACK (_engine_show_auxiliary_text_cb) },
-        { "hide-auxiliary-text",    G_CALLBACK (_engine_hide_auxiliary_text_cb) },
-        { "update-lookup-table",    G_CALLBACK (_engine_update_lookup_table_cb) },
-        { "show-lookup-table",      G_CALLBACK (_engine_show_lookup_table_cb) },
-        { "hide-lookup-table",      G_CALLBACK (_engine_hide_lookup_table_cb) },
-        { "page-up-lookup-table",   G_CALLBACK (_engine_page_up_lookup_table_cb) },
-        { "page-down-lookup-table", G_CALLBACK (_engine_page_down_lookup_table_cb) },
-        { "cursor-up-lookup-table", G_CALLBACK (_engine_cursor_up_lookup_table_cb) },
-        { "cursor-down-lookup-table", G_CALLBACK (_engine_cursor_down_lookup_table_cb) },
-        { "register-properties",    G_CALLBACK (_engine_register_properties_cb) },
-        { "update-property",        G_CALLBACK (_engine_update_property_cb) },
-        { "destroy",                G_CALLBACK (_engine_destroy_cb) },
-        { NULL, 0 }
-    };
-
-    for (i = 0; signals[i].name != NULL; i++) {
-        g_signal_connect (priv->engine,
-                          signals[i].name,
-                          signals[i].callback,
-                          context);
+    else {
+        gint i;
+        priv->engine = engine;
+        g_object_ref (priv->engine);
+        for (i = 0; signals[i].name != NULL; i++) {
+            g_signal_connect (priv->engine,
+                              signals[i].name,
+                              signals[i].callback,
+                              context);
+        }
     }
-
     g_signal_emit (context,
                    context_signals[ENGINE_CHANGED],
                    0);
