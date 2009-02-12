@@ -74,9 +74,7 @@ class Panel(ibus.PanelBase):
 
         # add icon search path
         icon_theme = gtk.icon_theme_get_default()
-        dir = path.dirname(__file__)
-        icondir = path.join(dir, "..", "icons")
-        icon_theme.prepend_search_path(icondir)
+        icon_theme.prepend_search_path(self.__icons_dir)
 
         self.__language_bar = LanguageBar()
         self.__language_bar.connect("property-activate",

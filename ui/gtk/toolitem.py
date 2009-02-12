@@ -46,7 +46,7 @@ class ToolButton(gtk.ToolButton, PropItem):
             widget = icon.IconWidget(icon_name, 18)
             gtk.ToolButton.set_icon_widget(self, widget)
             self.set_is_important(False)
-        elif self._prop.label:
+        elif self._prop.label.text:
             gtk.ToolButton.set_icon_widget(self, None)
             self.set_is_important(True)
         else:

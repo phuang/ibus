@@ -92,7 +92,7 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
     }
 
     def __init__ (self, prop):
-        gtk.ImageMenuItem.__init__ (self, label = prop.label)
+        gtk.ImageMenuItem.__init__ (self, label = prop.label.text)
         PropItem.__init__ (self, prop)
 
         if self._prop.icon:
@@ -128,7 +128,7 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
     }
 
     def __init__ (self, prop):
-        gtk.CheckMenuItem.__init__ (self, label = prop.label)
+        gtk.CheckMenuItem.__init__ (self, label = prop.label.text)
         PropItem.__init__ (self, prop)
 
         self.set_active (self._prop._state == ibus.PROP_STATE_CHECKED)
