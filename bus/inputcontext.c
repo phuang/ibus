@@ -863,6 +863,7 @@ _ic_set_engine (BusInputContext  *context,
     }
 
     bus_input_context_enable (context);
+    bus_engine_proxy_set_cursor_location (priv->engine, priv->x, priv->y, priv->w, priv->h);
 
     reply = ibus_message_new_method_return (message);
     return reply;
