@@ -901,7 +901,14 @@ _ibus_exit (BusIBusImpl     *ibus,
     }
     else {
         extern gchar **g_argv;
-        execv (g_argv[0], g_argv);
+        gchar *exe;
+
+        exe = g_strdup_printf ("/proc/%d/exe", getpid ());
+        if (!g_file_test (exe, G_FILE_TEST_EXISTS)) {
+            g_free (exe);
+            exe = g_argv[0];
+        }
+        execv (exe, g_argv);
         g_warning ("execv %s failed!", g_argv[0]);
         exit (-1);
     }
