@@ -10,3 +10,4 @@ test-server
 test-text
 stamp-ibusenumtypes.h
 stamp-ibusmarshalers.h
+keysymdef.h
