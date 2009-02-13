@@ -560,7 +560,7 @@ _ic_process_key_event_reply_cb (gpointer data,
 
     retval = (gboolean) GPOINTER_TO_INT (data);
     call_data = (CallData *) user_data;
-    
+
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (call_data->context);
 
@@ -861,7 +861,6 @@ _ic_set_engine (BusInputContext  *context,
     }
 
     bus_input_context_enable (context);
-    bus_engine_proxy_set_cursor_location (priv->engine, priv->x, priv->y, priv->w, priv->h);
 
     reply = ibus_message_new_method_return (message);
     return reply;
@@ -1436,7 +1435,7 @@ static void
 bus_input_context_unset_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-    
+
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
@@ -1456,7 +1455,7 @@ bus_input_context_set_engine (BusInputContext *context,
 {
 
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-    
+
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
@@ -1471,12 +1470,14 @@ bus_input_context_set_engine (BusInputContext *context,
         gint i;
         priv->engine = engine;
         g_object_ref (priv->engine);
+
         for (i = 0; signals[i].name != NULL; i++) {
             g_signal_connect (priv->engine,
                               signals[i].name,
                               signals[i].callback,
                               context);
         }
+        bus_engine_proxy_set_cursor_location (priv->engine, priv->x, priv->y, priv->w, priv->h);
     }
     g_signal_emit (context,
                    context_signals[ENGINE_CHANGED],
