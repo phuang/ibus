@@ -177,7 +177,7 @@ AC_ARG_ENABLE(qt4-immodule,
 if test x"$IBUS_HAS_QT4" != x"yes"; then
     enable_qt4=no
 fi
-enable_qt=no
+enable_qt4=no
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
 PKG_CHECK_MODULES(GCONF,
