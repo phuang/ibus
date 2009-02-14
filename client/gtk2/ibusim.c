@@ -33,13 +33,11 @@ static const GtkIMContextInfo ibus_im_info = {
     "ja:ko:zh"
 };
 
-static const GtkIMContextInfo * info_list[] = {
+static const GtkIMContextInfo *info_list[] = {
     &ibus_im_info
 };
 
-
-G_MODULE_EXPORT const gchar* g_module_check_init (GModule *module);
-const gchar*
+G_MODULE_EXPORT const gchar*
 g_module_check_init (GModule *module)
 {
     return glib_check_version (GLIB_MAJOR_VERSION,
@@ -47,7 +45,7 @@ g_module_check_init (GModule *module)
                                GLIB_MICRO_VERSION);
 }
 
-void
+G_MODULE_EXPORT void
 im_module_init (GTypeModule *type_module)
 {
     /* make module resident */
@@ -56,25 +54,25 @@ im_module_init (GTypeModule *type_module)
     ibus_im_context_register_type (type_module);
 }
 
-void
+G_MODULE_EXPORT void
 im_module_exit (void)
 {
 }
 
-GtkIMContext *
+G_MODULE_EXPORT GtkIMContext *
 im_module_create (const gchar *context_id)
 {
     if (g_strcmp0 (context_id, "ibus") == 0) {
         IBusIMContext *context;
         context = ibus_im_context_new ();
-        return GTK_IM_CONTEXT(context);
+        return (GtkIMContext *) context;
     }
     return NULL;
 }
 
-void
+G_MODULE_EXPORT void
 im_module_list (const GtkIMContextInfo ***contexts,
-                int                      *n_contexts)
+                gint                     *n_contexts)
 {
     *contexts = info_list;
     *n_contexts = G_N_ELEMENTS (info_list);
