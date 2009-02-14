@@ -594,8 +594,6 @@ _ic_process_key_event (BusInputContext *context,
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-
-    error = ibus_error_new ();
     retval = ibus_message_get_args (message,
                 &error,
                 G_TYPE_UINT, &keyval,
@@ -610,8 +608,6 @@ _ic_process_key_event (BusInputContext *context,
         return reply;
     }
 
-    ibus_error_free (error);
-
     retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, modifiers);
 
     if (retval) {
@@ -621,11 +617,15 @@ _ic_process_key_event (BusInputContext *context,
                                   G_TYPE_INVALID);
     }
     else if (priv->enabled && priv->engine) {
-        CallData *call_data = g_slice_new (CallData);
-        call_data->context = context;
-        call_data->message = message;
+        CallData *call_data;
+
+        call_data = g_slice_new (CallData);
+
         g_object_ref (context);
         ibus_message_ref (message);
+
+        call_data->context = context;
+        call_data->message = message;
 
         bus_engine_proxy_process_key_event (priv->engine,
                                             keyval,
