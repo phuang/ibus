@@ -80,6 +80,11 @@ void                 ibus_lookup_table_set_page_size
                                                 (IBusLookupTable    *table,
                                                  guint               page_size);
 void                 ibus_lookup_table_clear    (IBusLookupTable    *table);
+gboolean             ibus_lookup_table_page_up  (IBusLookupTable    *table);
+gboolean             ibus_lookup_table_page_down(IBusLookupTable    *table);
+gboolean             ibus_lookup_table_cursor_up(IBusLookupTable    *table);
+gboolean             ibus_lookup_table_cursor_down
+                                                (IBusLookupTable    *table);
 G_END_DECLS
 #endif
 
