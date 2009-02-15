@@ -106,7 +106,7 @@ class LanguageBar(gtk.Toolbar):
 
     def __toplevel_size_allocate_cb(self, toplevel, allocation):
         x, y = self.__position
-        if x - self.__work_area[0] >= self.__work_area[2] - 40:
+        if x - self.__work_area[0] >= self.__work_area[2] - 80:
             self.__toplevel.move(x - allocation.width, y - allocation.height)
 
     def __remove_properties(self):
