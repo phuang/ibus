@@ -65,11 +65,11 @@ class LanguageBar(gtk.Toolbar):
 
         root = gdk.get_default_root_window()
         try:
-            workarea = root.property_get("_NET_WORKAREA")[2]
-            right, bottom = workarea[0] + workarea[2], workarea[1] + workarea[3]
+            self.__work_area = root.property_get("_NET_WORKAREA")[2]
         except:
-            right, bottom = root.get_size()
-        self.__position = right - 20, bottom - 20
+            w, h = root.get_size()
+            self.__work_area = 0, 0, w, h
+        self.__position = self.__work_area[0] + self.__work_area[2] - 20, self.__work_area[1] + self.__work_area[3] - 20
         self.__toplevel.move(*self.__position)
 
     def __create_ui(self):
@@ -106,7 +106,8 @@ class LanguageBar(gtk.Toolbar):
 
     def __toplevel_size_allocate_cb(self, toplevel, allocation):
         x, y = self.__position
-        self.__toplevel.move(x - allocation.width, y - allocation.height)
+        if x - self.__work_area[0] >= self.__work_area[2] - 40:
+            self.__toplevel.move(x - allocation.width, y - allocation.height)
 
     def __remove_properties(self):
         # reset all properties
