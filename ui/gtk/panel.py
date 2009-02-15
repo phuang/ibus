@@ -191,6 +191,7 @@ class Panel(ibus.PanelBase):
     def focus_out(self, ic):
         self.reset()
         self.__focus_ic = None
+        self.__language_bar.set_enabled(False)
         self.__language_bar.focus_out()
         self.__set_im_icon(self.__ibus_icon)
 

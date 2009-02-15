@@ -114,6 +114,11 @@ class LanguageBar(gtk.Toolbar):
         map(lambda i: i.destroy(), self.__properties)
         self.__properties = []
 
+    def __set_opacity(self, opacity):
+        if self.__toplevel.window == None:
+            self.__toplevel.realize()
+        self.__toplevel.window.set_opacity(opacity)
+
     def do_show(self):
         gtk.Toolbar.do_show(self)
 
@@ -129,10 +134,14 @@ class LanguageBar(gtk.Toolbar):
 
     def set_enabled(self, enabled):
         self.__enabled = enabled
-        if self.__enabled and self.__has_focus:
-            self.show_all()
-        if not self.__enabled and self.__auto_hide:
-            self.hide_all()
+        if self.__enabled:
+            self.__set_opacity(1.0)
+            if self.__has_focus:
+                self.show_all()
+        else:
+            self.__set_opacity(0.5)
+            if self.__auto_hide:
+                self.hide_all()
 
     def is_enabled(self):
         return self.__enabled
