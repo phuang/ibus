@@ -32,7 +32,6 @@ Requires(postun):  %{_sbindir}/alternatives
 Requires:   glib2 >= %{glib_ver}
 Requires:   pygtk2
 Requires:   dbus-python >= 0.83.0
-Requires:   gnome-python2-gconf
 Requires:   notification-daemon
 Requires:   pyxdg
 Requires:   iso-codes
