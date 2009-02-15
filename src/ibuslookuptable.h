@@ -76,9 +76,20 @@ IBusText            *ibus_lookup_table_get_candidate
 void                 ibus_lookup_table_set_cursor_pos
                                                 (IBusLookupTable    *table,
                                                  guint               cursor_pos);
+guint                ibus_lookup_table_get_cursor_pos
+                                                (IBusLookupTable    *table);
+void                 ibus_lookup_table_set_cursor_visible
+                                                (IBusLookupTable    *table,
+                                                 gboolean            visible);
+gboolean             ibus_lookup_table_is_cursor_visible
+                                                (IBusLookupTable    *table);
+guint                ibus_lookup_table_get_cursor_in_page
+                                                (IBusLookupTable    *table);
 void                 ibus_lookup_table_set_page_size
                                                 (IBusLookupTable    *table,
                                                  guint               page_size);
+guint                ibus_lookup_table_get_page_size
+                                                (IBusLookupTable    *table);
 void                 ibus_lookup_table_clear    (IBusLookupTable    *table);
 gboolean             ibus_lookup_table_page_up  (IBusLookupTable    *table);
 gboolean             ibus_lookup_table_page_down(IBusLookupTable    *table);
