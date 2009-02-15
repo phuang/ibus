@@ -1010,7 +1010,7 @@ bus_input_context_focus_in (BusInputContext *context)
 
     priv->has_focus = TRUE;
 
-    if (priv->engine) {
+    if (priv->engine && priv->enabled) {
         bus_engine_proxy_focus_in (priv->engine);
     }
 
@@ -1032,7 +1032,7 @@ bus_input_context_focus_out (BusInputContext *context)
 
     priv->has_focus = FALSE;
 
-    if (priv->engine) {
+    if (priv->engine && priv->enabled) {
         bus_engine_proxy_focus_out (priv->engine);
     }
 
@@ -1389,7 +1389,6 @@ bus_input_context_disable (BusInputContext *context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    priv->enabled = FALSE;
 
     if (priv->engine) {
         if (priv->has_focus) {
@@ -1404,6 +1403,8 @@ bus_input_context_disable (BusInputContext *context)
     g_signal_emit (context,
                    context_signals[DISABLED],
                    0);
+
+    priv->enabled = FALSE;
 }
 
 const static struct {
