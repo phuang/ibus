@@ -115,7 +115,7 @@ main (gint argc, gchar **argv)
 
     /* create a new process group */
     setpgrp ();
-    
+
     g_type_init ();
 
     /* check if ibus-daemon is running in this session */
@@ -133,7 +133,7 @@ main (gint argc, gchar **argv)
     }
     g_object_unref (bus);
     bus = NULL;
-    
+
     /* create ibus server */
     server = bus_server_get_default ();
     bus_server_listen (server);

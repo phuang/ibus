@@ -641,7 +641,7 @@ ibus_bus_exit (IBusBus *bus,
 
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
-    
+
     gboolean result;
     result = ibus_bus_call (bus,
                             IBUS_SERVICE_IBUS,
@@ -652,7 +652,7 @@ ibus_bus_exit (IBusBus *bus,
                             G_TYPE_INVALID,
                             G_TYPE_INVALID);
     ibus_connection_flush (priv->connection);
-    
+
     return result;
 }
 

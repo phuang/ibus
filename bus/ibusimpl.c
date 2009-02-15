@@ -393,15 +393,15 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     glong timeout;
     gint status;
     gboolean flag;
-        
+
     bus_registry_stop_all_components (ibus->registry);
 
     pid = 0;
     timeout = 0;
     flag = FALSE;
     while (1) {
-        while ((pid = waitpid (0, &status, WNOHANG)) > 0);        
-        
+        while ((pid = waitpid (0, &status, WNOHANG)) > 0);
+
         if (pid == -1) { /* all children finished */
             break;
         }
@@ -879,7 +879,7 @@ _ibus_exit (BusIBusImpl     *ibus,
     IBusMessage *reply;
     IBusError *error;
     gboolean restart;
-    
+
     if (!ibus_message_get_args (message,
                                 &error,
                                 G_TYPE_BOOLEAN, &restart,
@@ -914,7 +914,7 @@ _ibus_exit (BusIBusImpl     *ibus,
         g_warning ("execv %s failed!", g_argv[0]);
         exit (-1);
     }
-    
+
     /* should not reach here */
     g_assert_not_reached ();
 
