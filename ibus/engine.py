@@ -44,6 +44,9 @@ class EngineBase(object.Object):
     def set_cursor_location(self, x, y, w, h):
         pass
 
+    def set_capabilities(self, cap):
+        pass
+
     def reset(self):
         pass
 
@@ -157,6 +160,9 @@ class EngineProxy(interface.IEngine):
 
     def SetCursorLocation(self, x, y, w, h):
         return self.__engine.set_cursor_location(x, y, w, h)
+
+    def SetCapabilities(self, caps):
+        return self.__engine.set_capabilities(caps)
 
     def Reset(self):
         return self.__engine.reset()
