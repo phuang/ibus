@@ -636,7 +636,7 @@ bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     ibus_proxy_call ((IBusProxy *) engine,
-                     "SetCapabilites",
+                     "SetCapabilities",
                      G_TYPE_UINT, &caps,
                      G_TYPE_INVALID);
 

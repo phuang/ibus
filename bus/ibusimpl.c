@@ -698,6 +698,8 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     context = bus_input_context_new (connection, client);
     ibus->contexts = g_list_append (ibus->contexts, context);
 
+    _context_request_engine_cb (context, NULL, ibus);
+
     static const struct {
         gchar *name;
         GCallback callback;
