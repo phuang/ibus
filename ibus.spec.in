@@ -108,7 +108,7 @@ desktop-file-install --delete-original          \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
+%post libs
 /sbin/ldconfig
 update-desktop-database -q
 %{_sbindir}/alternatives --install %{_sysconfdir}/X11/xinit/xinputrc xinputrc %{_xinputconf} 83 || :
@@ -116,7 +116,7 @@ update-desktop-database -q
 %post gtk
 %{_bindir}/update-gtk-immodules %{_host} || :
 
-%postun
+%postun libs
 /sbin/ldconfig
 update-desktop-database -q
 if [ "$1" = "0" ]; then
