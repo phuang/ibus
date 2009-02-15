@@ -4,7 +4,7 @@ set -x
 
 autopoint  --force
 libtoolize --automake --copy --force
-gtkdocize  #--flavour=no-tmpl
+gtkdocize  --copy #--flavour=no-tmpl
 aclocal -I m4 --force
 autoheader --force
 automake --add-missing --copy --force
