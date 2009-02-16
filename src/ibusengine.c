@@ -101,7 +101,7 @@ static void     ibus_engine_cursor_down     (IBusEngine         *engine);
 static void     ibus_engine_property_activate
                                             (IBusEngine         *engine,
                                              const gchar        *prop_name,
-                                             gint                prop_state);
+                                             guint               prop_state);
 static void     ibus_engine_property_show   (IBusEngine         *engine,
                                              const gchar        *prop_name);
 static void     ibus_engine_property_hide   (IBusEngine         *engine,
@@ -550,7 +550,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_STRING, &name,
-                                        G_TYPE_INT, &state,
+                                        G_TYPE_UINT, &state,
                                         G_TYPE_INVALID);
 
         if (!retval)
@@ -803,8 +803,9 @@ ibus_engine_cursor_down (IBusEngine *engine)
 }
 
 static void
-ibus_engine_property_activate (IBusEngine *engine,
-    const gchar *prop_name, gint prop_state)
+ibus_engine_property_activate (IBusEngine  *engine,
+                               const gchar *prop_name,
+                               guint        prop_state)
 {
     // g_debug ("property-activate ('%s', %d)", prop_name, prop_state);
 }
