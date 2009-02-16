@@ -149,6 +149,9 @@ _connection_destroy_cb (IBusConnection  *connection,
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
     g_assert (priv->connection == connection);
+    g_signal_handlers_disconnect_by_func (priv->connection,
+                                          G_CALLBACK (_connection_destroy_cb),
+                                          bus);
     g_object_unref (priv->connection);
     priv->connection = NULL;
 
@@ -651,8 +654,6 @@ ibus_bus_exit (IBusBus *bus,
                             G_TYPE_BOOLEAN, &restart,
                             G_TYPE_INVALID,
                             G_TYPE_INVALID);
-    ibus_connection_flush (priv->connection);
-
     return result;
 }
 
