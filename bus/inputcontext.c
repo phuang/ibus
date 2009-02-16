@@ -1121,6 +1121,7 @@ _engine_destroy_cb (BusEngineProxy  *engine,
     g_assert (priv->engine == engine);
 
     bus_input_context_unset_engine (context);
+    bus_input_context_disable (context);
 }
 
 static void
