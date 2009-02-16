@@ -341,11 +341,11 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, property_activate),
             NULL, NULL,
-            ibus_marshal_VOID__STRING_INT,
+            ibus_marshal_VOID__STRING_UINT,
             G_TYPE_NONE,
             2,
             G_TYPE_STRING,
-            G_TYPE_INT);
+            G_TYPE_UINT);
 
     engine_signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
@@ -543,7 +543,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyActivate")) {
         gchar *name;
-        gint state;
+        guint state;
         gboolean retval;
         IBusError *error = NULL;
 
