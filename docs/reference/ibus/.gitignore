@@ -10,7 +10,6 @@ tmpl
 xml
 html-build.stamp
 html.stamp
-ibus-docs.sgml
 ibus.args
 ibus.hierarchy
 ibus.interfaces
