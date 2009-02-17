@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-11 14:27+0800\n"
+"POT-Creation-Date: 2009-02-17 16:05+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,24 +16,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:311 ui/gtk/panel.py:312 ui/gtk/panel.py:313
-#: ui/gtk/panel.py:314
+#: ibus/lang.py:40 ui/gtk/panel.py:310 ui/gtk/panel.py:311 ui/gtk/panel.py:312
+#: ui/gtk/panel.py:313
 msgid "Other"
 msgstr "其他"
 
-#: ui/gtk/panel.py:99
+#: ui/gtk/panel.py:97
 msgid "IBus - Running"
 msgstr "IBus - 运行"
 
-#: ui/gtk/panel.py:281
+#: ui/gtk/panel.py:280
 msgid "Restart"
 msgstr ""
 
-#: ui/gtk/panel.py:374
+#: ui/gtk/panel.py:379
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: ui/gtk/panel.py:378
+#: ui/gtk/panel.py:383
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -98,6 +98,10 @@ msgstr ""
 #: setup/keyboardshortcut.py:207
 msgid "Please press a key (or a key combination)"
 msgstr "请按一个键盘按键（或者一个组合按键）"
+
+#: setup/enginecombobox.py:94
+msgid "Select an input method"
+msgstr "选择输入法"
 
 #: setup/setup.glade:7
 msgid "IBus - Setup"
@@ -192,26 +196,3 @@ msgstr "关于"
 #: setup/setup.glade:524
 msgid "gtk-close"
 msgstr ""
-
-#~ msgid "Started"
-#~ msgstr "启动"
-
-#~ msgid "Preload"
-#~ msgstr "预加载"
-
-#~ msgid "Cannot enable input engine"
-#~ msgstr "不能启动输入引擎"
-
-#~ msgid ""
-#~ "IBus can not enable input engine, because IBus does not load any input "
-#~ "engines!\n"
-#~ "Please use ibus-setup program to load some input engines."
-#~ msgstr ""
-#~ "IBus不能启动输入引擎，因为IBus没有加载任何输入引擎！\n"
-#~ "请运行ibus-setup程序，启动需要的输入法引擎。"
-
-#~ msgid "Setup"
-#~ msgstr "设置"
-
-#~ msgid "Don't show this again"
-#~ msgstr "不再显示该信息"
