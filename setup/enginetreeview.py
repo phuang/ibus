@@ -65,7 +65,7 @@ class EngineTreeView(gtk.TreeView):
         pixbuf = load_icon(engine.icon, gtk.ICON_SIZE_LARGE_TOOLBAR)
 
         if pixbuf == None:
-            pixbuf = load_icon("default-engine", gtk.ICON_SIZE_LARGE_TOOLBAR)
+            pixbuf = load_icon("engine-default", gtk.ICON_SIZE_LARGE_TOOLBAR)
         if pixbuf == None:
             pixbuf = load_icon("gtk-missing-image", gtk.ICON_SIZE_LARGE_TOOLBAR)
 
