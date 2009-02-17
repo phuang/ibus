@@ -317,7 +317,10 @@ class Panel(ibus.PanelBase):
                     engine = tmp[lang][0]
                     item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-                    item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                    if engine.icon:
+                        item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                    else:
+                        item.set_image (_icon.IconWidget("engine-default", size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, engine)
                     menu.add(item)
                 else:
@@ -328,7 +331,10 @@ class Panel(ibus.PanelBase):
                     for engine in tmp[lang]:
                         item = gtk.ImageMenuItem(engine.longname)
                         size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-                        item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                        if engine.icon:
+                            item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                        else:
+                            item.set_image (_icon.IconWidget("engine-default", size[0]))
                         item.connect("activate", self.__im_menu_item_activate_cb, engine)
                         submenu.add(item)
 

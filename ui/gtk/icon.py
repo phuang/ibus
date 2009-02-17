@@ -45,4 +45,3 @@ class IconWidget(gtk.Image):
 
         self.set_from_pixbuf(pixbuf)
         self.show()
-
