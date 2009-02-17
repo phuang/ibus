@@ -263,7 +263,7 @@ ibus_property_new (const gchar   *key,
 
     IBusProperty *prop;
 
-    prop = (IBusProperty *)g_object_new (IBUS_TYPE_PROPERTY, 0);
+    prop = (IBusProperty *)g_object_new (IBUS_TYPE_PROPERTY, NULL);
 
     prop->key = g_strdup (key);
     prop->icon = g_strdup (icon != NULL ? icon : "");

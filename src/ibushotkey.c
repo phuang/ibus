@@ -315,7 +315,7 @@ ibus_hotkey_profile_copy (IBusHotkeyProfile       *dest,
 IBusHotkeyProfile *
 ibus_hotkey_profile_new (void)
 {
-    IBusHotkeyProfile *profile = g_object_new (IBUS_TYPE_HOTKEY_PROFILE, 0);
+    IBusHotkeyProfile *profile = g_object_new (IBUS_TYPE_HOTKEY_PROFILE, NULL);
 
     return profile;
 }

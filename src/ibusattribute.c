@@ -181,7 +181,7 @@ ibus_attribute_new (guint type,
         type == IBUS_ATTR_TYPE_FOREGROUND ||
         type == IBUS_ATTR_TYPE_BACKGROUND, NULL);
 
-    IBusAttribute *attr = IBUS_ATTRIBUTE (g_object_new (IBUS_TYPE_ATTRIBUTE, 0));
+    IBusAttribute *attr = IBUS_ATTRIBUTE (g_object_new (IBUS_TYPE_ATTRIBUTE, NULL));
 
     attr->type = type;
     attr->value = value;
@@ -402,7 +402,7 @@ IBusAttrList *
 ibus_attr_list_new ()
 {
     IBusAttrList *attr_list;
-    attr_list = g_object_new (IBUS_TYPE_ATTR_LIST, 0);
+    attr_list = g_object_new (IBUS_TYPE_ATTR_LIST, NULL);
     return attr_list;
 }
 

@@ -473,7 +473,7 @@ ibus_serializable_copy (IBusSerializable *object)
 
     type = G_OBJECT_TYPE (object);
 
-    new_object = g_object_new (type, 0);
+    new_object = g_object_new (type, NULL);
     g_return_val_if_fail (new_object != NULL, NULL);
 
     if (IBUS_SERIALIZABLE_GET_CLASS (new_object)->copy (new_object, object)) {
@@ -566,7 +566,7 @@ ibus_serializable_deserialize (IBusMessageIter *iter)
 
     g_return_val_if_fail (g_type_is_a (type, IBUS_TYPE_SERIALIZABLE), NULL);
 
-    object = g_object_new (type, 0);
+    object = g_object_new (type, NULL);
 
     retval = IBUS_SERIALIZABLE_GET_CLASS (object)->deserialize (object, &sub_iter);
     if (retval)

@@ -99,7 +99,7 @@ ibus_factory_new (IBusConnection *connection)
 
     factory = (IBusFactory *) g_object_new (IBUS_TYPE_FACTORY,
                                             "path", IBUS_PATH_FACTORY,
-                                            0);
+                                            NULL);
     priv = IBUS_FACTORY_GET_PRIVATE (factory);
 
     priv->connection = g_object_ref (connection);
@@ -238,7 +238,7 @@ ibus_factory_ibus_message (IBusFactory    *factory,
                                "name", engine_name,
                                "path", path,
                                "connection", priv->connection,
-                               0);
+                               NULL);
 
         priv->engine_list = g_list_append (priv->engine_list, engine);
         g_signal_connect (engine,
@@ -468,7 +468,7 @@ ibus_factory_info_new (const gchar *path,
 
     IBusFactoryInfo *info;
 
-    info = (IBusFactoryInfo *)g_object_new (IBUS_TYPE_FACTORY_INFO, 0);
+    info = (IBusFactoryInfo *) g_object_new (IBUS_TYPE_FACTORY_INFO, NULL);
 
     info->path = g_strdup (path);
     info->name = g_strdup (name);

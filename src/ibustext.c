@@ -176,7 +176,7 @@ ibus_text_new_from_string (const gchar *str)
 
     IBusText *text;
 
-    text= g_object_new (IBUS_TYPE_TEXT, 0);
+    text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = FALSE;
     text->text = g_strdup (str);
@@ -191,7 +191,7 @@ ibus_text_new_from_ucs4 (const gunichar *str)
 
     IBusText *text;
 
-    text= g_object_new (IBUS_TYPE_TEXT, 0);
+    text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = FALSE;
     text->text = g_ucs4_to_utf8 (str, -1, NULL, NULL, NULL);
@@ -206,7 +206,7 @@ ibus_text_new_from_static_string (const gchar *str)
 
     IBusText *text;
 
-    text= g_object_new (IBUS_TYPE_TEXT, 0);
+    text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = TRUE;
     text->text = (gchar *)str;
@@ -231,7 +231,7 @@ ibus_text_new_from_printf (const gchar *format,
     if (str == NULL)
         return NULL;
 
-    text= g_object_new (IBUS_TYPE_TEXT, 0);
+    text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->text = (gchar *)str;
 
@@ -244,7 +244,7 @@ ibus_text_new_from_unichar (gunichar c)
     IBusText *text;
     gint len;
 
-    text= g_object_new (IBUS_TYPE_TEXT, 0);
+    text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->text = (gchar *)g_malloc (12);
     len = g_unichar_to_utf8 (c, text->text);
