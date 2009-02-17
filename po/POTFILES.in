@@ -33,4 +33,5 @@
 ./ui/gtk/languagebar.py
 ./setup/main.py
 ./setup/keyboardshortcut.py
+./setup/enginecombobox.py
 ./setup/setup.glade
