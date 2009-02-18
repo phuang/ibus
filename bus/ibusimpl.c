@@ -593,6 +593,7 @@ _context_request_engine_cb (BusInputContext *context,
         return;
 
     bus_input_context_set_engine (context, engine);
+    g_object_unref (engine);
 }
 
 static void
