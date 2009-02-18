@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Feb 18 11:12:12 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Feb 18 11:15:45 2009 -->
 <glade-interface>
   <widget class="GtkDialog" id="dialog_setup">
     <property name="border_width">5</property>
@@ -490,7 +490,6 @@ Vertical</property>
             </child>
             <child>
               <widget class="GtkVBox" id="vbox4">
-                <property name="visible">True</property>
                 <child>
                   <placeholder/>
                 </child>
