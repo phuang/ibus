@@ -74,7 +74,8 @@ class EngineTreeView(gtk.TreeView):
     def __name_cell_data_cb(self, celllayout, renderer, model, iter):
         engine = self.__model.get_value(iter, 0)
         renderer.set_property("sensitive", True)
-        renderer.set_property("text", engine.longname)
+        language = ibus.get_language_name(engine.language)
+        renderer.set_property("text", "%s - %s" % (language, engine.longname))
 
     def set_engines(self, engines):
         self.__model.clear()
