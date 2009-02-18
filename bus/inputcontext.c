@@ -1445,6 +1445,8 @@ bus_input_context_unset_engine (BusInputContext *context)
         for (i = 0; signals[i].name != NULL; i++) {
             g_signal_handlers_disconnect_by_func (priv->engine, signals[i].callback, context);
         }
+        /* we destroy the engine */
+        ibus_object_destroy ((IBusObject *) priv->engine);
         g_object_unref (priv->engine);
         priv->engine = NULL;
     }
