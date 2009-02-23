@@ -128,7 +128,7 @@ class Setup(object):
         # auto hide
         self.__checkbutton_auto_hide = self.__xml.get_widget("checkbutton_auto_hide")
         self.__checkbutton_auto_hide.set_active(
-            self.__config.get_value("panel", "auto_hide", False))
+            self.__config.get_value("panel", "auto_hide", True))
         self.__checkbutton_auto_hide.connect("toggled", self.__checkbutton_auto_hide_toggled_cb)
 
         # custom font
