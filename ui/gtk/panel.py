@@ -94,7 +94,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
         self.__status_icon.set_from_file(self.__ibus_icon)
-        self.__status_icon.set_tooltip(_("IBus - Running"))
+        self.__status_icon.set_tooltip(_("IBus input method framework"))
         self.__status_icon.set_visible(True)
 
         self.__config_load_lookup_table_orientation()
