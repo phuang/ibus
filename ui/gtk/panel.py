@@ -235,7 +235,7 @@ class Panel(ibus.PanelBase):
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
     def __config_load_auto_hide(self):
-        auto_hide = self.__config.get_value("panel", "auto_hide", False)
+        auto_hide = self.__config.get_value("panel", "auto_hide", True)
         self.__language_bar.set_auto_hide(auto_hide)
 
     def __config_load_custom_font(self):
