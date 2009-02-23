@@ -72,9 +72,9 @@ PKG_CHECK_MODULES(GOBJECT2, [
 PKG_CHECK_MODULES(GIO2, [
     gio-2.0 >= 2.18
 ])
-PKG_CHECK_MODULES(PYGOBJECT2, [
-    pygobject-2.0 >= 2.15
-])
+# PKG_CHECK_MODULES(PYGOBJECT2, [
+#     pygobject-2.0 >= 2.14
+# ])
 
 # check for gtk, gdk & pygtk
 PKG_CHECK_MODULES(GTK2, [
