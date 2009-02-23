@@ -296,50 +296,45 @@ class Panel(ibus.PanelBase):
         menu = gtk.Menu()
         engines = self.__bus.list_active_engines()
 
-        if not engines:
-            item = gtk.MenuItem(label = "no engine")
-            item.set_sensitive(False)
-            menu.add(item)
-        else:
-            tmp = {}
-            for engine in engines:
-                lang = ibus.get_language_name(engine.language)
-                if lang not in tmp:
-                    tmp[lang] = []
-                tmp[lang].append(engine)
+        tmp = {}
+        for engine in engines:
+            lang = ibus.get_language_name(engine.language)
+            if lang not in tmp:
+                tmp[lang] = []
+            tmp[lang].append(engine)
 
-            langs = tmp.keys()
-            other = tmp.get(_("Other"), [])
-            if _("Other") in tmp:
-                langs.remove(_("Other"))
-                langs.append(_("Other"))
+        langs = tmp.keys()
+        other = tmp.get(_("Other"), [])
+        if _("Other") in tmp:
+            langs.remove(_("Other"))
+            langs.append(_("Other"))
 
-            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-            for lang in langs:
-                if len(tmp[lang]) == 1:
-                    engine = tmp[lang][0]
-                    item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
+        size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+        for lang in langs:
+            if len(tmp[lang]) == 1:
+                engine = tmp[lang][0]
+                item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
+                if engine.icon:
+                    item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                else:
+                    item.set_image (_icon.IconWidget("engine-default", size[0]))
+                item.connect("activate", self.__im_menu_item_activate_cb, engine)
+                menu.add(item)
+            else:
+                item = gtk.MenuItem(lang)
+                menu.add(item)
+                submenu = gtk.Menu()
+                item.set_submenu(submenu)
+                for engine in tmp[lang]:
+                    item = gtk.ImageMenuItem(engine.longname)
                     if engine.icon:
                         item.set_image (_icon.IconWidget(engine.icon, size[0]))
                     else:
                         item.set_image (_icon.IconWidget("engine-default", size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, engine)
-                    menu.add(item)
-                else:
-                    item = gtk.MenuItem(lang)
-                    menu.add(item)
-                    submenu = gtk.Menu()
-                    item.set_submenu(submenu)
-                    for engine in tmp[lang]:
-                        item = gtk.ImageMenuItem(engine.longname)
-                        if engine.icon:
-                            item.set_image (_icon.IconWidget(engine.icon, size[0]))
-                        else:
-                            item.set_image (_icon.IconWidget("engine-default", size[0]))
-                        item.connect("activate", self.__im_menu_item_activate_cb, engine)
-                        submenu.add(item)
+                    submenu.add(item)
 
-        item = gtk.ImageMenuItem(_("Disable"))
+        item = gtk.ImageMenuItem(_("No input method"))
         item.set_image (_icon.IconWidget("gtk-close", size[0]))
         item.connect("activate", self.__im_menu_item_activate_cb, None)
         menu.add (item)
