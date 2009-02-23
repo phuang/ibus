@@ -181,12 +181,8 @@ enable_qt4=no
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
 PKG_CHECK_MODULES(GCONF,
-    [gconf-2.0 >= 2.11.1],
-    [IBUS_HAS_GCONF=yes],
-    [IBUS_HAS_GCONF=no]
+    [gconf-2.0 >= 2.12],
 )
-AC_SUBST(GCONF_CFLAGS)
-AC_SUBST(GCONF_LIBS)
 
 # check iso-codes
 AC_ARG_ENABLE(iso-codes-check,
