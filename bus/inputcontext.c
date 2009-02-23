@@ -799,6 +799,40 @@ _ic_set_capabilities (BusInputContext  *context,
 }
 
 static IBusMessage *
+_ic_enable (BusInputContext *context,
+            IBusMessage     *message,
+            BusConnection   *connection)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+
+    bus_input_context_enable (context);
+
+    reply = ibus_message_new_method_return (message);
+    return reply;
+}
+
+static IBusMessage *
+_ic_disable (BusInputContext *context,
+            IBusMessage     *message,
+            BusConnection   *connection)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+
+    bus_input_context_disable (context);
+
+    reply = ibus_message_new_method_return (message);
+    return reply;
+}
+
+static IBusMessage *
 _ic_is_enabled (BusInputContext *context,
                 IBusMessage     *message,
                 BusConnection   *connection)
@@ -945,6 +979,8 @@ bus_input_context_ibus_message (BusInputContext *context,
         { IBUS_INTERFACE_INPUT_CONTEXT, "FocusOut",          _ic_focus_out },
         { IBUS_INTERFACE_INPUT_CONTEXT, "Reset",             _ic_reset },
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetCapabilities",   _ic_set_capabilities },
+        { IBUS_INTERFACE_INPUT_CONTEXT, "Enable",            _ic_enable },
+        { IBUS_INTERFACE_INPUT_CONTEXT, "Disable",           _ic_disable },
         { IBUS_INTERFACE_INPUT_CONTEXT, "IsEnabled",         _ic_is_enabled },
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetEngine",         _ic_set_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "GetEngine",         _ic_get_engine },

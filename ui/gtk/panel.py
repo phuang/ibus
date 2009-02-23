@@ -314,11 +314,11 @@ class Panel(ibus.PanelBase):
                 langs.remove(_("Other"))
                 langs.append(_("Other"))
 
+            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
             for lang in langs:
                 if len(tmp[lang]) == 1:
                     engine = tmp[lang][0]
                     item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
-                    size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                     if engine.icon:
                         item.set_image (_icon.IconWidget(engine.icon, size[0]))
                     else:
@@ -332,13 +332,17 @@ class Panel(ibus.PanelBase):
                     item.set_submenu(submenu)
                     for engine in tmp[lang]:
                         item = gtk.ImageMenuItem(engine.longname)
-                        size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                         if engine.icon:
                             item.set_image (_icon.IconWidget(engine.icon, size[0]))
                         else:
                             item.set_image (_icon.IconWidget("engine-default", size[0]))
                         item.connect("activate", self.__im_menu_item_activate_cb, engine)
                         submenu.add(item)
+
+        item = gtk.ImageMenuItem(_("Disable"))
+        item.set_image (_icon.IconWidget("gtk-close", size[0]))
+        item.connect("activate", self.__im_menu_item_activate_cb, None)
+        menu.add (item)
 
         menu.show_all()
         menu.set_take_focus(False)
@@ -367,7 +371,10 @@ class Panel(ibus.PanelBase):
                 self.__status_icon)
 
     def __im_menu_item_activate_cb(self, item, engine):
-        self.__focus_ic.set_engine(engine)
+        if engine:
+            self.__focus_ic.set_engine(engine)
+        else:
+            self.__focus_ic.disable()
 
     def __sys_menu_item_activate_cb(self, item, command):
         if command == gtk.STOCK_PREFERENCES:

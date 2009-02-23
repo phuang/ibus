@@ -57,6 +57,12 @@ class IInputContext(dbus.service.Object):
     @method()
     def Reset(self): pass
 
+    @method()
+    def Enable(self): pass
+
+    @method()
+    def Disable(self): pass
+
     @method(out_signature="b")
     def IsEnabled(self): pass
 
