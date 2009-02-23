@@ -40,11 +40,17 @@ ACLOCAL_AMFLAGS = -I m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ibus-1.0.pc
 
+xinitrc_SCRIPTS = \
+	ibus.sh \
+	$(NULL)
+xinitrcdir = /etc/X11/xinit/xinitrc.d
+
 EXTRA_DIST = \
 	autogen.sh \
 	ibus-1.0.pc.in \
 	ibus.spec.in \
 	python-config.py \
+	ibus.sh \
 	$(NULL)
 
 noinst_DIST = \
