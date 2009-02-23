@@ -130,6 +130,7 @@ libibus_la_LDFLAGS = \
 	@GOBJECT2_LIBS@ \
 	@GIO2_LIBS@ \
 	@DBUS_LIBS@ \
+	-export-symbols-regex "ibus_.*"
 	-version-info @LT_VERSION_INFO@ \
 	$(NULL)
 
