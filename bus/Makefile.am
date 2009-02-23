@@ -42,8 +42,13 @@ AM_LDFLAGS = \
 TESTS = \
 	test-matchrule \
 	$(NULL)
-
-desktop_DATA = ibus.desktop
+xdgautostart_DATA = \
+	ibus.desktop \
+	$(NULL)
+xdgautostartdir = $(sysconfdir)/xdg/autostart
+desktop_DATA = \
+	ibus.desktop \
+	$(NULL)
 desktopdir = $(datadir)/applications
 
 noinst_PROGRAMS = $(TESTS)
