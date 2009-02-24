@@ -20,6 +20,7 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "registry.h"
 
 enum {
@@ -402,6 +403,33 @@ bus_registry_get_engines (BusRegistry *registry)
     return g_hash_table_get_values (registry->engine_table);
 }
 
+
+GList *
+bus_registry_get_engines_by_language (BusRegistry *registry,
+                                      const gchar *language)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+    g_assert (language);
+
+    gint n;
+    GList *p1, *p2, *engines;
+
+    n = strlen (language);
+
+    p1 = bus_registry_get_engines (registry);
+
+    engines = NULL;
+
+    for (p2 = p1; p2 != NULL; p2 = p2->next) {
+        IBusEngineDesc *desc = (IBusEngineDesc *) p2->data;
+        if (strncmp (desc->language, language, n) == 0) {
+            engines = g_list_append (engines, desc);
+        }
+    }
+
+    g_list_free (p1);
+    return engines;
+}
 
 IBusEngineDesc *
 bus_registry_find_engine_by_name (BusRegistry *registry,

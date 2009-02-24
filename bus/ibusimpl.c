@@ -23,6 +23,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <locale.h>
+#include <strings.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"
 #include "server.h"
@@ -228,6 +230,60 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
 }
 
 static void
+bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    static gboolean done = FALSE;
+    GValue value = { 0 };
+    GList *engines, *l;
+    gchar *lang, *p;
+    GValueArray *array;
+
+    if (done || ibus->config == NULL) {
+        return;
+    }
+
+    if (ibus_config_get_value (ibus->config, "general", "preload_engines", &value)) {
+        done = TRUE;
+        g_value_unset (&value);
+        return;
+    }
+
+    done = TRUE;
+    lang = g_strdup (setlocale (LC_ALL, NULL));
+    p = index (lang, '.');
+    if (p) {
+        *p = '\0';
+    }
+
+    engines = bus_registry_get_engines_by_language (ibus->registry, lang);
+    if (engines == NULL) {
+        p = index (lang, '_');
+        if (p) {
+            *p = '\0';
+            engines = bus_registry_get_engines_by_language (ibus->registry, lang);
+        }
+    }
+    g_free (lang);
+
+    g_value_init (&value, G_TYPE_VALUE_ARRAY);
+    array = g_value_array_new (5);
+    for (l = engines; l != NULL; l = l->next) {
+        IBusEngineDesc *desc;
+        GValue name = { 0 };
+        desc = (IBusEngineDesc *)l->data;
+        g_value_init (&name, G_TYPE_STRING);
+        g_value_set_string (&name, desc->name);
+        g_value_array_append (array, &name);
+    }
+    g_value_take_boxed (&value, array);
+    ibus_config_set_value (ibus->config, "general", "preload_engines", &value);
+    g_value_unset (&value);
+    g_list_free (engines);
+}
+
+static void
 bus_ibus_impl_reload_config (BusIBusImpl *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
@@ -378,6 +434,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                               G_CALLBACK (_config_destroy_cb),
                               ibus);
 
+            bus_ibus_impl_set_default_preload_engines (ibus);
             bus_ibus_impl_reload_config (ibus);
         }
     }
