@@ -59,6 +59,7 @@ struct _IBusEngineDesc {
     gchar *author;
     gchar *icon;
     gchar *layout;
+    guint   priority;
 };
 
 struct _IBusEngineDescClass {

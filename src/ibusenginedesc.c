@@ -17,6 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <stdlib.h>
 #include "ibusenginedesc.h"
 #include "ibusxml.h"
 
@@ -108,6 +109,7 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->author = NULL;
     desc->icon = NULL;
     desc->layout = NULL;
+    desc->priority = 0;
 }
 
 static void
@@ -294,6 +296,9 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(layout);
 #undef PARSE_ENTRY
 #undef PARSE_ENTRY1
+        if (g_strcmp0 (sub_node->name , "priority") == 0) {
+            desc->priority = atoi (sub_node->text);
+        }
         g_warning ("<engines> element contains invalidate element <%s>", sub_node->name);
     }
     return TRUE;
