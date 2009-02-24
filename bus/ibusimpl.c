@@ -233,7 +233,7 @@ static gint
 _engine_desc_cmp (IBusEngineDesc *desc1,
                   IBusEngineDesc *desc2)
 {
-    return - ((gint) desc1->priority) + ((gint) desc2->priority);
+    return - ((gint) desc1->rank) + ((gint) desc2->rank);
 }
 
 static void

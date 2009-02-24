@@ -109,7 +109,7 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->author = NULL;
     desc->icon = NULL;
     desc->layout = NULL;
-    desc->priority = 0;
+    desc->rank = 0;
 }
 
 static void
@@ -264,7 +264,7 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(icon);
     OUTPUT_ENTRY_1(layout);
     g_string_append_indent (output, indent + 1);
-    g_string_append_printf (output, "<priority>%u</priority>", desc->priority);
+    g_string_append_printf (output, "<rank>%u</rank>", desc->rank);
 #undef OUTPUT_ENTRY
 #undef OUTPUT_ENTRY_1
     g_string_append_indent (output, indent);
@@ -298,8 +298,8 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(layout);
 #undef PARSE_ENTRY
 #undef PARSE_ENTRY1
-        if (g_strcmp0 (sub_node->name , "priority") == 0) {
-            desc->priority = atoi (sub_node->text);
+        if (g_strcmp0 (sub_node->name , "rank") == 0) {
+            desc->rank = atoi (sub_node->text);
             continue;
         }
         g_warning ("<engines> element contains invalidate element <%s>", sub_node->name);
