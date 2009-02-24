@@ -229,6 +229,13 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     ibus->engine_list = engine_list;
 }
 
+static gint
+_engine_desc_cmp (IBusEngineDesc *desc1,
+                  IBusEngineDesc *desc2)
+{
+    return - ((gint) desc1->priority) + ((gint) desc2->priority);
+}
+
 static void
 bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
 {
@@ -265,6 +272,8 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
             engines = bus_registry_get_engines_by_language (ibus->registry, lang);
         }
     }
+
+    engines = g_list_sort (engines, (GCompareFunc) _engine_desc_cmp);
     g_free (lang);
 
     g_value_init (&value, G_TYPE_VALUE_ARRAY);
