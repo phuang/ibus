@@ -481,12 +481,10 @@ ibus_component_parse_engines (IBusComponent *component,
             g_free (output);
 
             if (engines_node) {
-                if (g_strcmp0 (engines_node->name, "engines") != 0) {
-                    ibus_xml_free (engines_node);
-                    engines_node = NULL;
+                if (g_strcmp0 (engines_node->name, "engines") == 0) {
+                    node = engines_node;
                 }
             }
-            node = engines_node;
         }
     }
 
