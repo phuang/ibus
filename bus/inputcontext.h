@@ -61,18 +61,19 @@ struct _BusInputContextClass {
 GType                bus_input_context_get_type         (void);
 BusInputContext     *bus_input_context_new              (BusConnection      *connection,
                                                          const gchar        *client);
-gboolean             bus_input_context_is_focus         (BusInputContext    *context);
 void                 bus_input_context_focus_in         (BusInputContext    *context);
 void                 bus_input_context_focus_out        (BusInputContext    *context);
-void                 bus_input_context_enable_or_disable(BusInputContext    *context);
+gboolean             bus_input_context_has_focus        (BusInputContext    *context);
 void                 bus_input_context_enable           (BusInputContext    *context);
 void                 bus_input_context_disable          (BusInputContext    *context);
+gboolean             bus_input_context_is_enabled       (BusInputContext    *context);
 void                 bus_input_context_page_up          (BusInputContext    *context);
 void                 bus_input_context_page_down        (BusInputContext    *context);
 void                 bus_input_context_cursor_up        (BusInputContext    *context);
 void                 bus_input_context_cursor_down      (BusInputContext    *context);
 void                 bus_input_context_set_engine       (BusInputContext    *context,
                                                          BusEngineProxy     *factory);
+BusEngineProxy      *bus_input_context_get_engine       (BusInputContext    *context);
 void                 bus_input_context_property_activate(BusInputContext    *context,
                                                          const gchar        *prop_name,
                                                          gint                prop_state);

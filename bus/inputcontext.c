@@ -1022,7 +1022,7 @@ bus_input_context_ibus_message (BusInputContext *context,
 
 
 gboolean
-bus_input_context_is_focus (BusInputContext *context)
+bus_input_context_has_focus (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
@@ -1425,7 +1425,6 @@ bus_input_context_disable (BusInputContext *context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-
     if (priv->engine) {
         if (priv->has_focus) {
             bus_engine_proxy_focus_out (priv->engine);
@@ -1441,6 +1440,17 @@ bus_input_context_disable (BusInputContext *context)
                    0);
 
     priv->enabled = FALSE;
+}
+
+gboolean
+bus_input_context_is_enabled (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    return priv->enabled;
 }
 
 const static struct {
@@ -1492,7 +1502,6 @@ void
 bus_input_context_set_engine (BusInputContext *context,
                               BusEngineProxy  *engine)
 {
-
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     BusInputContextPrivate *priv;
@@ -1517,10 +1526,27 @@ bus_input_context_set_engine (BusInputContext *context,
                               context);
         }
         bus_engine_proxy_set_cursor_location (priv->engine, priv->x, priv->y, priv->w, priv->h);
+        if (priv->enabled) {
+            bus_engine_proxy_enable (priv->engine);
+            if (priv->has_focus) {
+                bus_engine_proxy_focus_in (priv->engine);
+            }
+        }
     }
     g_signal_emit (context,
                    context_signals[ENGINE_CHANGED],
                    0);
+}
+
+BusEngineProxy *
+bus_input_context_get_engine (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    return priv->engine;
 }
 
 static gboolean
@@ -1549,7 +1575,6 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
                                                   keyval,
                                                   modifiers,
                                                   0);
-
     if (event == trigger) {
         if (priv->engine == NULL) {
             g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
@@ -1569,9 +1594,17 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         return TRUE;
     }
     else if (event == next_factory) {
+        g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
+        if (priv->engine && !priv->enabled) {
+            bus_input_context_enable (context);
+        }
         return TRUE;
     }
     else if (event == prev_factory) {
+        g_signal_emit (context, context_signals[REQUEST_PREV_ENGINE], 0);
+        if (priv->engine && !priv->enabled) {
+            bus_input_context_enable (context);
+        }
         return TRUE;
     }
     else
