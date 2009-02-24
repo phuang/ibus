@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=IBus
-GenericName=Intelligent Input Bus
-Comment=Intellignent Input Bus
+GenericName=IBus input method framework
+Comment=IBus input method framework
 Exec=ibus-daemon --xim
 Icon=ibus
 Terminal=false
