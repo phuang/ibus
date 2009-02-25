@@ -56,7 +56,7 @@ static void     ibus_server_get_property(IBusServer         *server,
                                          guint               prop_id,
                                          GValue             *value,
                                          GParamSpec         *pspec);
-static void     ibus_server_listen_internal
+static gboolean ibus_server_listen_internal
                                         (IBusServer         *server,
                                          const gchar        *address);
 static void     ibus_server_new_connection
@@ -107,9 +107,8 @@ ibus_server_listen  (IBusServer  *server,
 {
     g_assert (IBUS_IS_SERVER (server));
     g_assert (address != NULL);
-    ibus_server_listen_internal (server, address);
 
-    return TRUE;
+    return ibus_server_listen_internal (server, address);
 }
 
 static void
@@ -236,7 +235,7 @@ _new_connection_cb (DBusServer      *dbus_server,
     g_object_unref (connection);
 }
 
-static void
+static gboolean
 ibus_server_listen_internal (IBusServer  *server,
                              const gchar *address)
 {
@@ -254,9 +253,10 @@ ibus_server_listen_internal (IBusServer  *server,
     priv->server = dbus_server_listen (address, &error);
 
     if (priv->server == NULL) {
-        g_error ("Can not listen on '%s':\n"
-                 "  %s:%s",
-                 address, error.name, error.message);
+        g_warning ("Can not listen on '%s':\n"
+                   "  %s:%s",
+                   address, error.name, error.message);
+        return FALSE;
     }
 
     dbus_server_set_new_connection_function (priv->server,
@@ -266,6 +266,7 @@ ibus_server_listen_internal (IBusServer  *server,
     dbus_server_set_auth_mechanisms (priv->server, NULL);
 
     dbus_server_setup (priv->server, NULL);
+    return TRUE;
 }
 
 void

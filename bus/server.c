@@ -87,13 +87,21 @@ bus_server_listen (BusServer *server)
     // const gchar *address = "unix:abstract=/tmp/ibus-c"
     const gchar *address;
     gchar *path;
+    gboolean retval;
 
     path = g_strdup_printf("/tmp/ibus-%s", ibus_get_user_name ());
     mkdir (path, 0775);
-    g_free(path);
     address = ibus_get_address ();
 
-    return ibus_server_listen (IBUS_SERVER (server), address);
+    retval = ibus_server_listen (IBUS_SERVER (server), address);
+
+    if (!retval) {
+        g_printerr ("Can not listen on %s! Please try remove directory %s and run again.", address, path);
+        exit (-1);
+    }
+
+    g_free(path);
+    return retval;
 }
 
 void
@@ -128,8 +136,8 @@ static void
 bus_server_init (BusServer *server)
 {
     server->loop = g_main_loop_new (NULL, FALSE);
-    server->dbus = bus_dbus_impl_get_default (); 
-    server->ibus = bus_ibus_impl_get_default (); 
+    server->dbus = bus_dbus_impl_get_default ();
+    server->ibus = bus_ibus_impl_get_default ();
 }
 
 static void
