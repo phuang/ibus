@@ -19,6 +19,8 @@
  */
 
 #include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <stdlib.h>
 #include <locale.h>
 #include "server.h"
@@ -106,6 +108,19 @@ main (gint argc, gchar **argv)
         exit (-1);
     }
 
+    /* check uid */
+    {
+        gchar *username = ibus_get_user_name ();
+        uid_t uid = getuid ();
+        struct passwd *pwd = getpwuid (uid);
+
+        if (pwd == NULL || strcmp (pwd->pw_name, username) != 0) {
+            g_printerr ("Please run ibus-daemon with login user! Do not run ibus-daemon with sudo or su.\n");
+            exit (-1);
+        }
+    }
+
+    /* daemonize process */
     if (daemonize) {
         if (daemon (1, 0) != 0) {
             g_printerr ("Can not daemonize ibus.\n");
