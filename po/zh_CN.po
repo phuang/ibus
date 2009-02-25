@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-23 14:34+0800\n"
+"POT-Creation-Date: 2009-02-24 18:14+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:312 ui/gtk/panel.py:313 ui/gtk/panel.py:314
-#: ui/gtk/panel.py:315
+#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
+#: ui/gtk/panel.py:310
 msgid "Other"
 msgstr "其他"
 
@@ -29,11 +29,15 @@ msgstr "IBus输入法框架"
 msgid "Restart"
 msgstr "重新启动"
 
-#: ui/gtk/panel.py:381
+#: ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "关闭输入法"
+
+#: ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: ui/gtk/panel.py:385
+#: ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -105,33 +109,33 @@ msgstr "选择输入法"
 
 #: setup/setup.glade:7
 msgid "IBus Preferences"
-msgstr ""
+msgstr "IBus设置"
 
-#: setup/setup.glade:48 setup/setup.glade:67 setup/setup.glade:86
+#: setup/setup.glade:44 setup/setup.glade:63 setup/setup.glade:81
 msgid "..."
 msgstr ""
 
-#: setup/setup.glade:148
+#: setup/setup.glade:145
 msgid "Previous engine:"
 msgstr "上一个引擎:"
 
-#: setup/setup.glade:164
+#: setup/setup.glade:161
 msgid "Next engine:"
 msgstr "下一个引擎:"
 
-#: setup/setup.glade:180
+#: setup/setup.glade:177
 msgid "Trigger:"
 msgstr "开关:"
 
-#: setup/setup.glade:197
+#: setup/setup.glade:194
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>快捷键</b>"
 
-#: setup/setup.glade:228
+#: setup/setup.glade:226
 msgid "Lookup table orientation:"
 msgstr "候选词表方向:"
 
-#: setup/setup.glade:239
+#: setup/setup.glade:238
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -147,43 +151,43 @@ msgstr "自动隐藏语言栏"
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: setup/setup.glade:290
+#: setup/setup.glade:291
 msgid "<b>Font and Style</b>"
-msgstr ""
+msgstr "<b>字体和风格</b>"
 
-#: setup/setup.glade:316
+#: setup/setup.glade:314
 msgid "Start ibus on login"
 msgstr "启动桌面时自动启动IBus"
 
 #: setup/setup.glade:326
 msgid "<b>Startup</b>"
-msgstr "<b>用户界面</b>"
+msgstr "<b>启动</b>"
 
 #: setup/setup.glade:351
 msgid "General"
 msgstr "通用"
 
-#: setup/setup.glade:422
+#: setup/setup.glade:425
 msgid "gtk-add"
 msgstr ""
 
-#: setup/setup.glade:432
+#: setup/setup.glade:439
 msgid "gtk-remove"
 msgstr ""
 
-#: setup/setup.glade:445
+#: setup/setup.glade:453
 msgid "gtk-go-up"
 msgstr ""
 
-#: setup/setup.glade:458
+#: setup/setup.glade:467
 msgid "gtk-go-down"
 msgstr ""
 
-#: setup/setup.glade:483
-msgid "Engines"
-msgstr "输入法引擎"
+#: setup/setup.glade:496
+msgid "Input Methods"
+msgstr "输入法"
 
-#: setup/setup.glade:499
+#: setup/setup.glade:512
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -193,10 +197,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:524
+#: setup/setup.glade:537
 msgid "About"
 msgstr "关于"
 
-#: setup/setup.glade:546
+#: setup/setup.glade:556
 msgid "gtk-close"
 msgstr ""
+

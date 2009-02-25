@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-17 16:05+0800\n"
+"POT-Creation-Date: 2009-02-24 18:14+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -16,24 +16,28 @@ msgstr ""
 "X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:310 ui/gtk/panel.py:311 ui/gtk/panel.py:312
-#: ui/gtk/panel.py:313
+#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
+#: ui/gtk/panel.py:310
 msgid "Other"
 msgstr "ਹੋਰ"
 
 #: ui/gtk/panel.py:97
-msgid "IBus - Running"
-msgstr "IBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
+msgid "IBus input method framework"
+msgstr ""
 
-#: ui/gtk/panel.py:280
+#: ui/gtk/panel.py:282
 msgid "Restart"
 msgstr ""
 
-#: ui/gtk/panel.py:379
+#: ui/gtk/panel.py:337
+msgid "No input method"
+msgstr ""
+
+#: ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: ui/gtk/panel.py:383
+#: ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
 
@@ -104,38 +108,34 @@ msgid "Select an input method"
 msgstr ""
 
 #: setup/setup.glade:7
-msgid "IBus - Setup"
-msgstr "IBus - ਸੈੱਟਅੱਪ"
+msgid "IBus Preferences"
+msgstr ""
 
-#: setup/setup.glade:32
-msgid "Auto start IBus on session login"
-msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
-
-#: setup/setup.glade:60
-msgid "Trigger:"
-msgstr "ਟਰਿੱਗਰ:"
-
-#: setup/setup.glade:74
-msgid "Next engine:"
-msgstr "ਅਗਲਾ ਇੰਜਣ:"
-
-#: setup/setup.glade:90
-msgid "Previous engine:"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
-
-#: setup/setup.glade:153 setup/setup.glade:170 setup/setup.glade:190
+#: setup/setup.glade:44 setup/setup.glade:63 setup/setup.glade:81
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:211
+#: setup/setup.glade:145
+msgid "Previous engine:"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#: setup/setup.glade:161
+msgid "Next engine:"
+msgstr "ਅਗਲਾ ਇੰਜਣ:"
+
+#: setup/setup.glade:177
+msgid "Trigger:"
+msgstr "ਟਰਿੱਗਰ:"
+
+#: setup/setup.glade:194
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
 
-#: setup/setup.glade:243
+#: setup/setup.glade:226
 msgid "Lookup table orientation:"
 msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
 
-#: setup/setup.glade:254
+#: setup/setup.glade:238
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -143,43 +143,53 @@ msgstr ""
 "ਹਰੀਜੱਟਲ\n"
 " ਵਰਟੀਕਲ"
 
-#: setup/setup.glade:267
+#: setup/setup.glade:252
 msgid "Auto hide language bar"
 msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਆਟੋਮੈਟਿਕ ਓਹਲੇ ਕਰੋ"
 
-#: setup/setup.glade:279
+#: setup/setup.glade:264
 msgid "Use custom font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: setup/setup.glade:305
-msgid "<b>UI</b>"
+#: setup/setup.glade:291
+msgid "<b>Font and Style</b>"
+msgstr ""
+
+#: setup/setup.glade:314
+#, fuzzy
+msgid "Start ibus on login"
+msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
+
+#: setup/setup.glade:326
+#, fuzzy
+msgid "<b>Startup</b>"
 msgstr "<b>UI</b>"
 
-#: setup/setup.glade:328
+#: setup/setup.glade:351
 msgid "General"
 msgstr "ਆਮ"
 
-#: setup/setup.glade:399
+#: setup/setup.glade:425
 msgid "gtk-add"
 msgstr ""
 
-#: setup/setup.glade:409
+#: setup/setup.glade:439
 msgid "gtk-remove"
 msgstr "gtk-close"
 
-#: setup/setup.glade:422
+#: setup/setup.glade:453
 msgid "gtk-go-up"
 msgstr ""
 
-#: setup/setup.glade:435
+#: setup/setup.glade:467
 msgid "gtk-go-down"
 msgstr ""
 
-#: setup/setup.glade:460
-msgid "Engine"
-msgstr "ਇੰਜਣ"
+#: setup/setup.glade:496
+msgid "Input Methods"
+msgstr ""
 
-#: setup/setup.glade:477
+#: setup/setup.glade:512
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -195,13 +205,22 @@ msgstr ""
 " \n"
 " \n"
 
-#: setup/setup.glade:502
+#: setup/setup.glade:537
 msgid "About"
 msgstr "ਇਸ ਬਾਰੇ"
 
-#: setup/setup.glade:524
+#: setup/setup.glade:556
 msgid "gtk-close"
 msgstr "gtk-close"
+
+#~ msgid "IBus - Running"
+#~ msgstr "IBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
+
+#~ msgid "IBus - Setup"
+#~ msgstr "IBus - ਸੈੱਟਅੱਪ"
+
+#~ msgid "Engine"
+#~ msgstr "ਇੰਜਣ"
 
 #~ msgid "Started"
 #~ msgstr "ਚਾਲੂ ਹੈ"

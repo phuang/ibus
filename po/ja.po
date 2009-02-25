@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-17 16:05+0800\n"
+"POT-Creation-Date: 2009-02-24 18:14+0800\n"
 "PO-Revision-Date: 2008-08-28 17:31+0900\n"
 "Last-Translator: UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -16,24 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:310 ui/gtk/panel.py:311 ui/gtk/panel.py:312
-#: ui/gtk/panel.py:313
+#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
+#: ui/gtk/panel.py:310
 msgid "Other"
 msgstr ""
 
 #: ui/gtk/panel.py:97
-msgid "IBus - Running"
-msgstr "IBus - 実行中"
+msgid "IBus input method framework"
+msgstr ""
 
-#: ui/gtk/panel.py:280
+#: ui/gtk/panel.py:282
 msgid "Restart"
 msgstr ""
 
-#: ui/gtk/panel.py:379
-msgid "IBus is an intelligent input bus for Linux/Unix."
+#: ui/gtk/panel.py:337
+msgid "No input method"
 msgstr ""
 
 #: ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr ""
+
+#: ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>"
 
@@ -105,38 +109,34 @@ msgid "Select an input method"
 msgstr ""
 
 #: setup/setup.glade:7
-msgid "IBus - Setup"
-msgstr "IBus - セットアップ"
+msgid "IBus Preferences"
+msgstr ""
 
-#: setup/setup.glade:32
-msgid "Auto start IBus on session login"
-msgstr "セッションログイン時に IBus を自動的に起動"
-
-#: setup/setup.glade:60
-msgid "Trigger:"
-msgstr "トリガー:"
-
-#: setup/setup.glade:74
-msgid "Next engine:"
-msgstr "次のエンジン:"
-
-#: setup/setup.glade:90
-msgid "Previous engine:"
-msgstr "前のエンジン:"
-
-#: setup/setup.glade:153 setup/setup.glade:170 setup/setup.glade:190
+#: setup/setup.glade:44 setup/setup.glade:63 setup/setup.glade:81
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:211
+#: setup/setup.glade:145
+msgid "Previous engine:"
+msgstr "前のエンジン:"
+
+#: setup/setup.glade:161
+msgid "Next engine:"
+msgstr "次のエンジン:"
+
+#: setup/setup.glade:177
+msgid "Trigger:"
+msgstr "トリガー:"
+
+#: setup/setup.glade:194
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>キーボードショートカット</b>"
 
-#: setup/setup.glade:243
+#: setup/setup.glade:226
 msgid "Lookup table orientation:"
 msgstr "候補ウィンドウの向き:"
 
-#: setup/setup.glade:254
+#: setup/setup.glade:238
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -144,44 +144,53 @@ msgstr ""
 "横\n"
 "縦"
 
-#: setup/setup.glade:267
+#: setup/setup.glade:252
 msgid "Auto hide language bar"
 msgstr "言語バーを自動で隠す"
 
-#: setup/setup.glade:279
+#: setup/setup.glade:264
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
-#: setup/setup.glade:305
-msgid "<b>UI</b>"
+#: setup/setup.glade:291
+msgid "<b>Font and Style</b>"
 msgstr ""
 
-#: setup/setup.glade:328
+#: setup/setup.glade:314
+#, fuzzy
+msgid "Start ibus on login"
+msgstr "セッションログイン時に IBus を自動的に起動"
+
+#: setup/setup.glade:326
+msgid "<b>Startup</b>"
+msgstr ""
+
+#: setup/setup.glade:351
 msgid "General"
 msgstr "一般"
 
-#: setup/setup.glade:399
+#: setup/setup.glade:425
 msgid "gtk-add"
 msgstr ""
 
-#: setup/setup.glade:409
+#: setup/setup.glade:439
 #, fuzzy
 msgid "gtk-remove"
 msgstr "gtk-close"
 
-#: setup/setup.glade:422
+#: setup/setup.glade:453
 msgid "gtk-go-up"
 msgstr ""
 
-#: setup/setup.glade:435
+#: setup/setup.glade:467
 msgid "gtk-go-down"
 msgstr ""
 
-#: setup/setup.glade:460
-msgid "Engine"
-msgstr "エンジン"
+#: setup/setup.glade:496
+msgid "Input Methods"
+msgstr ""
 
-#: setup/setup.glade:477
+#: setup/setup.glade:512
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -191,13 +200,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: setup/setup.glade:502
+#: setup/setup.glade:537
 msgid "About"
 msgstr "About"
 
-#: setup/setup.glade:524
+#: setup/setup.glade:556
 msgid "gtk-close"
 msgstr "gtk-close"
+
+#~ msgid "IBus - Running"
+#~ msgstr "IBus - 実行中"
+
+#~ msgid "IBus - Setup"
+#~ msgstr "IBus - セットアップ"
+
+#~ msgid "Engine"
+#~ msgstr "エンジン"
 
 #~ msgid "Started"
 #~ msgstr "開始"
