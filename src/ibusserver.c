@@ -102,7 +102,7 @@ ibus_server_new (void)
 }
 
 gboolean
-ibus_server_listen  (IBusServer     *server,
+ibus_server_listen  (IBusServer  *server,
                      const gchar *address)
 {
     g_assert (IBUS_IS_SERVER (server));
@@ -237,8 +237,8 @@ _new_connection_cb (DBusServer      *dbus_server,
 }
 
 static void
-ibus_server_listen_internal (IBusServer     *server,
-                             const gchar    *address)
+ibus_server_listen_internal (IBusServer  *server,
+                             const gchar *address)
 {
     g_assert (IBUS_IS_SERVER (server));
     g_assert (address != NULL);
@@ -268,7 +268,8 @@ ibus_server_listen_internal (IBusServer     *server,
     dbus_server_setup (priv->server, NULL);
 }
 
-void ibus_server_disconnect (IBusServer     *server)
+void
+ibus_server_disconnect (IBusServer *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 
@@ -279,7 +280,8 @@ void ibus_server_disconnect (IBusServer     *server)
     dbus_server_disconnect (priv->server);
 }
 
-const gchar *ibus_server_get_address (IBusServer     *server)
+const gchar *
+ibus_server_get_address (IBusServer *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 
@@ -295,7 +297,8 @@ const gchar *ibus_server_get_address (IBusServer     *server)
     return address;
 }
 
-const gchar *ibus_server_get_id (IBusServer     *server)
+const gchar *
+ibus_server_get_id (IBusServer *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 
@@ -312,7 +315,7 @@ const gchar *ibus_server_get_id (IBusServer     *server)
 }
 
 gboolean
-ibus_server_is_connected (IBusServer     *server)
+ibus_server_is_connected (IBusServer *server)
 {
     g_assert (IBUS_IS_SERVER (server));
 
@@ -323,5 +326,4 @@ ibus_server_is_connected (IBusServer     *server)
 
     return dbus_server_get_is_connected (priv->server);
 }
-
 
