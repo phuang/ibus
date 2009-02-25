@@ -190,11 +190,18 @@ ibus_text_new_from_ucs4 (const gunichar *str)
     g_return_val_if_fail (str != NULL, NULL);
 
     IBusText *text;
+    gchar *buf;
+
+    buf = g_ucs4_to_utf8 (str, -1, NULL, NULL, NULL);
+
+    if (buf == NULL) {
+        return NULL;
+    }
 
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = FALSE;
-    text->text = g_ucs4_to_utf8 (str, -1, NULL, NULL, NULL);
+    text->text = buf;
 
     return text;
 }
@@ -244,6 +251,10 @@ ibus_text_new_from_unichar (gunichar c)
     IBusText *text;
     gint len;
 
+    if (!g_unichar_validate (c)) {
+        return NULL;
+    }
+
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->text = (gchar *)g_malloc (12);
@@ -251,7 +262,6 @@ ibus_text_new_from_unichar (gunichar c)
     text->text[len] =  0;
 
     return text;
-
 }
 
 void
