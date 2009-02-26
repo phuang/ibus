@@ -90,10 +90,17 @@ PKG_CHECK_MODULES(GDK2, [
 
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
+
 # check for dbus-glib
 PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
+
+# check gconf
+PKG_CHECK_MODULES(GCONF,
+    [gconf-2.0 >= 2.12],
+)
+
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT,
@@ -180,9 +187,25 @@ fi
 enable_qt4=no
 AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
-PKG_CHECK_MODULES(GCONF,
-    [gconf-2.0 >= 2.12],
+# check for dbus-python
+AC_ARG_ENABLE(dbus-python-check,
+    AS_HELP_STRING([--disable-dbus-python-check],
+        [Do not check dbus-python]),
+    [enable_dbus_python_check=$enableval],
+    [enable_dbus_python_check=yes],
 )
+PKG_CHECK_MODULES(DBUS_PYTHON,
+    [dbus-python >= 0.83.0],
+    [IBUS_HAS_DBUS_PYTHON=yes],
+    [IBUS_HAS_DBUS_PYTHON=no]
+)
+if test x"$IBUS_HAS_DBUS_PYTHON" != x"yes"; then
+    if test x"$enable_dbus_python_check" != x"no"; then
+        AC_MSG_ERROR([can not find dbus-python >= 0.83.0. Please install or update dbus-python.])
+    else
+        AC_MSG_WARN([can not find dbus-python >= 0.83.0. It is required.])
+    fi
+fi
 
 # check iso-codes
 AC_ARG_ENABLE(iso-codes-check,
