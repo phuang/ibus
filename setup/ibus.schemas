@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gconfschemafile>
+  <schemalist>
+  <!--
+    <schema>
+      <key>/schemas/desktop/ibus/general/preload_engines</key>
+      <applyto>/desktop/ibus/general/preload_engines</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+      	<short>Preload Engines</short>
+	<long>Preload Engines during ibus starts up</long>
+      </locale>
+    </schema>
+  -->
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
+      <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[Control+space]</default>
+      <locale name="C">
+      	<short>Trigger Hotkey</short>
+	<long>Trigger hotkey for enable or disable input context</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/next_engine</key>
+      <applyto>/desktop/ibus/general/hotkey/next_engine</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+      	<short>Next Engine Hotkey</short>
+	<long>Next engine hotkey for switch to next input method engine</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/prev_engine</key>
+      <applyto>/desktop/ibus/general/hotkey/prev_engine</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+      	<short>Prev Engine Hotkey</short>
+	<long>Prev engine hotkey for switch to previous input method engine</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/auto_hide</key>
+      <applyto>/desktop/ibus/panel/auto_hide</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+      	<short>Auto Hide</short>
+	<long>Auto hide language panel</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/use_custom_font</key>
+      <applyto>/desktop/ibus/panel/use_custom_font</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+      	<short>Use Custom Font</short>
+	<long>Use custom font name for language panel</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/custom_font</key>
+      <applyto>/desktop/ibus/panel/custom_font</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default>Sans 10</default>
+      <locale name="C">
+      	<short>Custom Font</short>
+	<long>Custom font name for language panel</long>
+      </locale>
+    </schema>
+  <schemalist>
+</gconfschemafile>
