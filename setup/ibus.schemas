@@ -84,5 +84,5 @@
 	<long>Custom font name for language panel</long>
       </locale>
     </schema>
-  <schemalist>
+  </schemalist>
 </gconfschemafile>
