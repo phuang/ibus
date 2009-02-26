@@ -11,7 +11,7 @@
       <default>[]</default>
       <locale name="C">
       	<short>Preload Engines</short>
-	<long>Preload Engines during ibus starts up</long>
+	    <long>Preload Engines during ibus starts up</long>
       </locale>
     </schema>
   -->
@@ -24,7 +24,7 @@
       <default>[Control+space]</default>
       <locale name="C">
       	<short>Trigger Hotkey</short>
-	<long>Trigger hotkey for enable or disable input context</long>
+	    <long>Trigger hotkey for enable or disable input context</long>
       </locale>
     </schema>
     <schema>
@@ -36,7 +36,7 @@
       <default>[]</default>
       <locale name="C">
       	<short>Next Engine Hotkey</short>
-	<long>Next engine hotkey for switch to next input method engine</long>
+	    <long>Next engine hotkey for switch to next input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -48,7 +48,7 @@
       <default>[]</default>
       <locale name="C">
       	<short>Prev Engine Hotkey</short>
-	<long>Prev engine hotkey for switch to previous input method engine</long>
+	    <long>Prev engine hotkey for switch to previous input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -59,7 +59,7 @@
       <default>true</default>
       <locale name="C">
       	<short>Auto Hide</short>
-	<long>Auto hide language panel</long>
+	    <long>Auto hide language panel</long>
       </locale>
     </schema>
     <schema>
@@ -70,7 +70,7 @@
       <default>false</default>
       <locale name="C">
       	<short>Use Custom Font</short>
-	<long>Use custom font name for language panel</long>
+	    <long>Use custom font name for language panel</long>
       </locale>
     </schema>
     <schema>
@@ -81,7 +81,7 @@
       <default>Sans 10</default>
       <locale name="C">
       	<short>Custom Font</short>
-	<long>Custom font name for language panel</long>
+	    <long>Custom font name for language panel</long>
       </locale>
     </schema>
   </schemalist>
