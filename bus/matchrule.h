@@ -114,10 +114,9 @@ void             bus_match_rule_add_recipient
 void             bus_match_rule_remove_recipient
                                             (BusMatchRule   *rule,
                                              BusConnection  *connection);
-gboolean         bus_match_rule_get_recipients
+GList           *bus_match_rule_get_recipients
                                             (BusMatchRule   *rule,
-                                             DBusMessage    *message,
-                                             GList          **recipients);
+                                             DBusMessage    *message);
 
 G_END_DECLS
 #endif

@@ -649,16 +649,15 @@ bus_match_rule_remove_recipient (BusMatchRule   *rule,
     g_warning ("Remove recipient failed");
 }
 
-gboolean
+GList *
 bus_match_rule_get_recipients (BusMatchRule   *rule,
-                               DBusMessage    *message,
-                               GList          **recipients)
+                               DBusMessage    *message)
 {
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (message != NULL);
-    g_assert (recipients != NULL);
 
     GList *link;
+    GList *recipients = NULL;
 
     if (!bus_match_rule_match (rule, message))
         return FALSE;
@@ -667,9 +666,9 @@ bus_match_rule_get_recipients (BusMatchRule   *rule,
         BusRecipient *recipient = (BusRecipient *) link->data;
 
         g_object_ref (recipient->connection);
-        *recipients = g_list_append (*recipients, recipient->connection);
+        recipients = g_list_append (recipients, recipient->connection);
     }
 
-    return TRUE;
+    return recipients;
 }
 

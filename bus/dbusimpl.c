@@ -1066,11 +1066,10 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
 #endif
 
     for (link = dbus->rules; link != NULL; link = link->next) {
-        if (bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
-                                           message,
-                                           &recipients)) {
+        recipients = bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
+                                                    message);
+        if (recipients != NULL)
             break;
-        }
     }
 
     for (link = recipients; link != NULL; link = link->next) {
@@ -1078,7 +1077,7 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
         if (connection != skip_connection) {
             ibus_connection_send (IBUS_CONNECTION (connection), message);
         }
-        g_object_unref (link->data);
+        g_object_unref (connection);
     }
     g_list_free (recipients);
 }
