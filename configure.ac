@@ -101,6 +101,26 @@ PKG_CHECK_MODULES(GCONF,
     [gconf-2.0 >= 2.12],
 )
 
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+if test x"$GCONFTOOL" = xno; then
+    AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+fi
+
+AM_GCONF_SOURCE_2
+
+# GCONF_SERVERDIR=`$PKG_CONFIG --variable=gconf_serverdir gconf-2.0`
+# old_path=$PATH
+# if test x"$GCONF_SERVERDIR" != x; then
+#     PATH=$GCONF_SERVERDIR:$PATH
+# fi
+# 
+# AC_PATH_PROG(GCONF_SANITY_CHECK, gconf-sanity-check-2, no)
+# if test x"$GCONF_SANITY_CHECK" = xno; then
+#     AC_MSG_ERROR([gconf-sanity-check-2 executable not found in your path - should be installed with GConf])
+# fi
+# 
+# AC_SUBST(GCONF_SANITY_CHECK)
+# PATH=$old_path
 
 # Check for Qt4
 PKG_CHECK_MODULES(QT,
@@ -253,7 +273,8 @@ bindings/Makefile
 bindings/python/Makefile
 util/Makefile
 util/IMdkit/Makefile
-icons/Makefile
+data/Makefile
+data/icons/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/ibus/Makefile

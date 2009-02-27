@@ -29,7 +29,7 @@ SUBDIRS = 		\
 	client 		\
 	setup 		\
 	bus 		\
-	icons 		\
+	data 		\
 	m4 			\
 	po 			\
 	docs 		\
