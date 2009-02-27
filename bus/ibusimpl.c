@@ -227,6 +227,15 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
 
     g_list_foreach (engine_list, (GFunc) g_object_ref, NULL);
     ibus->engine_list = engine_list;
+
+    if (ibus->engine_list) {
+        IBusComponent *component;
+
+        component = ibus_component_get_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
+        if (component && !ibus_component_is_running (component)) {
+            ibus_component_start (component);
+        }
+    }
 }
 
 static gint
@@ -503,7 +512,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
             break;
         }
         if (pid == 0) { /* no child status changed */
-            usleep (1000);
+            g_usleep (1000);
             timeout += 1000;
             if (timeout >= G_USEC_PER_SEC) {
                 if (flag == FALSE) {
@@ -850,8 +859,6 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
 
     context = bus_input_context_new (connection, client);
     ibus->contexts = g_list_append (ibus->contexts, context);
-
-    _context_request_engine_cb (context, NULL, ibus);
 
     static const struct {
         gchar *name;

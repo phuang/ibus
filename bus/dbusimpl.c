@@ -819,6 +819,7 @@ _connection_ibus_message_cb (BusConnection  *connection,
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
 
     switch (ibus_message_get_type (message)) {
+#if 1
     case DBUS_MESSAGE_TYPE_ERROR:
         g_debug ("From :%s to %s, Error: %s : %s",
                  ibus_message_get_sender (message),
@@ -826,6 +827,7 @@ _connection_ibus_message_cb (BusConnection  *connection,
                  ibus_message_get_error_name (message),
                  ibus_message_get_error_message (message));
         break;
+#endif
 #if 0
     case DBUS_MESSAGE_TYPE_METHOD_CALL:
         g_debug("From %s to %s, Method %s on %s",
