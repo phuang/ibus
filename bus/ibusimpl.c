@@ -1057,12 +1057,19 @@ _ibus_exit (BusIBusImpl     *ibus,
     else {
         extern gchar **g_argv;
         gchar *exe;
+        gint fd;
 
         exe = g_strdup_printf ("/proc/%d/exe", getpid ());
         if (!g_file_test (exe, G_FILE_TEST_EXISTS)) {
             g_free (exe);
             exe = g_argv[0];
         }
+
+        /* close all fds except stdin, stdout, stderr */
+        for (fd = 3; fd <= sysconf (_SC_OPEN_MAX); fd ++) {
+            close (fd);
+        }
+
         execv (exe, g_argv);
         g_warning ("execv %s failed!", g_argv[0]);
         exit (-1);
