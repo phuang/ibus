@@ -694,6 +694,7 @@ _ibus_context_enabled_cb (IBusInputContext    *ibus_context,
     IBusIMContextPrivate *priv = context->priv;
 
     priv->enable = TRUE;
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 static void
@@ -704,6 +705,14 @@ _ibus_context_disabled_cb (IBusInputContext   *ibus_context,
     IBusIMContextPrivate *priv = context->priv;
 
     priv->enable = FALSE;
+    
+    /* clear preedit */
+    priv->preedit_visible = FALSE;
+    priv->preedit_cursor_pos = 0;
+    g_free (priv->preedit_string);
+    priv->preedit_string = NULL;
+    
+    g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 static void
