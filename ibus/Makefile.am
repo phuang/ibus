@@ -49,6 +49,9 @@ ibus_PYTHON = \
 	observedpath.py \
 	utility.py \
 	config.py \
+	$(NULL)
+
+nodist_ibus_PYTHON = \
 	_config.py \
 	$(NULL)
 

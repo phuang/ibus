@@ -37,3 +37,7 @@ if GCONF_SCHEMAS_INSTALL
 		done \
 	fi
 endif
+
+EXTRA_DIST = \
+	$(schemas_DATA) \
+	$(NULL)

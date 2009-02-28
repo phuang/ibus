@@ -65,8 +65,8 @@ install-data-hook:
 	$(MKDIR_P) $(DESTDIR)${pkgdatadir}/engine
 
 DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-pygconf \
 	--enable-gtk-doc \
+	--disable-schemas-install \
 	$(NULL)
 
 rpm: dist @PACKAGE_NAME@.spec
