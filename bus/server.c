@@ -17,10 +17,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <libgen.h>
+#include <stdlib.h>
 
 #include "server.h"
 #include "connection.h"
