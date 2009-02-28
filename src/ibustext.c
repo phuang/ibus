@@ -172,7 +172,7 @@ ibus_text_copy (IBusText       *dest,
 IBusText *
 ibus_text_new_from_string (const gchar *str)
 {
-    g_return_val_if_fail (str != NULL, NULL);
+    g_assert (str);
 
     IBusText *text;
 
@@ -187,7 +187,7 @@ ibus_text_new_from_string (const gchar *str)
 IBusText *
 ibus_text_new_from_ucs4 (const gunichar *str)
 {
-    g_return_val_if_fail (str != NULL, NULL);
+    g_assert (str);
 
     IBusText *text;
     gchar *buf;
@@ -209,7 +209,7 @@ ibus_text_new_from_ucs4 (const gunichar *str)
 IBusText *
 ibus_text_new_from_static_string (const gchar *str)
 {
-    g_return_val_if_fail (str != NULL, NULL);
+    g_assert (str);
 
     IBusText *text;
 
@@ -225,7 +225,7 @@ IBusText *
 ibus_text_new_from_printf (const gchar *format,
                            ...)
 {
-    g_return_val_if_fail (format != NULL, NULL);
+    g_assert (format);
 
     gchar *str;
     IBusText *text;
