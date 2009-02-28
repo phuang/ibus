@@ -25,7 +25,7 @@ import ibus
 import gettext
 from icon import load_icon
 
-_  = lambda a : gettext.dgettext("ibus", a)
+_ = lambda a : gettext.dgettext("ibus", a)
 
 class EngineComboBox(gtk.ComboBox):
     def __init__(self, engines):
@@ -42,7 +42,12 @@ class EngineComboBox(gtk.ComboBox):
                 lang[l] = []
             lang[l].append(e)
 
-        for l in lang.keys():
+        keys = lang.keys()
+        keys.sort()
+        if ibus.get_language_name("Other") in keys:
+            keys.remove( ibus.get_language_name("Other"))
+            keys += [ibus.get_language_name("Other")]
+        for l in keys:
             iter1 = self.__model.append(None)
             self.__model.set(iter1, 0, l)
             for e in lang[l]:
