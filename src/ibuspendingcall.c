@@ -61,7 +61,7 @@ ibus_pending_call_steal_reply (IBusPendingCall *pending)
 void
 ibus_pending_call_block (IBusPendingCall *pending)
 {
-    return dbus_pending_call_block (pending);
+    dbus_pending_call_block (pending);
 }
 
 void

@@ -261,7 +261,7 @@ void
 ibus_message_set_no_reply (IBusMessage  *message,
                            gboolean      no_reply)
 {
-    return dbus_message_set_no_reply (message, no_reply);
+    dbus_message_set_no_reply (message, no_reply);
 }
 
 gboolean

@@ -936,11 +936,11 @@ _xim_init_IMdkit ()
     };
 
     GdkWindowAttr window_attr = {
-        title : "ibus-xim",
-        event_mask : GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
-        wclass : GDK_INPUT_OUTPUT,
-        window_type : GDK_WINDOW_TOPLEVEL,
-        override_redirect : 1,
+        .title              = "ibus-xim",
+        .event_mask         = GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK,
+        .wclass             = GDK_INPUT_OUTPUT,
+        .window_type        = GDK_WINDOW_TOPLEVEL,
+        .override_redirect   = 1,
     };
 
     XIMStyles styles;

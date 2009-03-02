@@ -17,9 +17,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#include <config.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -87,6 +89,48 @@ execute_cmdline (const gchar *cmdline)
     return TRUE;
 }
 
+#ifndef HAVE_DAEMON
+void closeall(int fd)
+{
+    int fdlimit = sysconf(_SC_OPEN_MAX);
+
+    while (fd < fdlimit)
+      close(fd++);
+}
+
+int daemon(int nochdir, int noclose)
+{
+    switch (fork())
+    {
+        case 0:  break;
+        case -1: return -1;
+        default: _exit(0);
+    }
+
+    if (setsid() < 0)
+      return -1;
+
+    switch (fork())
+    {
+        case 0:  break;
+        case -1: return -1;
+        default: _exit(0);
+    }
+
+    if (!nochdir)
+      chdir("/");
+
+    if (!noclose)
+    {
+        closeall(0);
+        open("/dev/null",O_RDWR);
+        dup(0); dup(0);
+    }
+
+    return 0;
+}
+#endif
+
 gint
 main (gint argc, gchar **argv)
 {
@@ -110,7 +154,7 @@ main (gint argc, gchar **argv)
 
     /* check uid */
     {
-        gchar *username = ibus_get_user_name ();
+        const gchar *username = ibus_get_user_name ();
         uid_t uid = getuid ();
         struct passwd *pwd = getpwuid (uid);
 

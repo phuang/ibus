@@ -61,6 +61,9 @@ AC_SUBST(LT_VERSION_INFO)
 # check inotify
 AC_CHECK_HEADERS([sys/inotify.h])
 
+# check funcs
+AC_CHECK_FUNCS(daemon)
+
 # check glib2
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [

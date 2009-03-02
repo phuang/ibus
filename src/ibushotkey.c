@@ -390,8 +390,8 @@ ibus_hotkey_profile_remove_hotkey (IBusHotkeyProfile *profile,
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
     IBusHotkey hotkey = {
-        keyval : keyval,
-        modifiers : modifiers
+        .keyval = keyval,
+        .modifiers = modifiers
     };
 
     IBusHotkey *p1;
@@ -465,8 +465,8 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
     IBusHotkey hotkey = {
-        keyval : keyval,
-        modifiers : modifiers & priv->mask,
+        .keyval = keyval,
+        .modifiers = modifiers & priv->mask,
     };
 
     GQuark event = (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));

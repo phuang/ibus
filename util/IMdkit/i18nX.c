@@ -144,7 +144,7 @@ static unsigned char *ReadXIMMessage (XIMS ims,
             get_length = LONG_MAX;
         get_length /= 4;
         if (get_length == 0) {
-            fprintf(stderr, "%s: invalid length 0\n", __FUNCTION__);
+            fprintf(stderr, "%s: invalid length 0\n", __func__);
             return NULL;
         }
         return_code = XGetWindowProperty (i18n_core->address.dpy,
@@ -178,7 +178,7 @@ static unsigned char *ReadXIMMessage (XIMS ims,
             break;
         default:
             fprintf(stderr, "%s: unknown property return format: %d\n",
-                        __FUNCTION__, actual_format_ret);
+                        __func__, actual_format_ret);
             XFree(prop);
             client->property_offset = 0;
             return NULL;
