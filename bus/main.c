@@ -90,43 +90,44 @@ execute_cmdline (const gchar *cmdline)
 }
 
 #ifndef HAVE_DAEMON
-void closeall(int fd)
+static void
+closeall (gint fd)
 {
-    int fdlimit = sysconf(_SC_OPEN_MAX);
+    gint fdlimit = sysconf(_SC_OPEN_MAX);
 
-    while (fd < fdlimit)
+    while (fd < fdlimit) {
       close(fd++);
+    }
 }
 
-int daemon(int nochdir, int noclose)
+static gint
+daemon (gint nochdir, gint noclose)
 {
-    switch (fork())
-    {
+    switch (fork()) {
         case 0:  break;
         case -1: return -1;
         default: _exit(0);
     }
 
-    if (setsid() < 0)
+    if (setsid() < 0) {
       return -1;
+    }
 
-    switch (fork())
-    {
+    switch (fork()) {
         case 0:  break;
         case -1: return -1;
         default: _exit(0);
     }
 
-    if (!nochdir)
+    if (!nochdir) {
       chdir("/");
+    }
 
-    if (!noclose)
-    {
+    if (!noclose) {
         closeall(0);
         open("/dev/null",O_RDWR);
         dup(0); dup(0);
     }
-
     return 0;
 }
 #endif
