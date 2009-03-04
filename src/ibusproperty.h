@@ -126,6 +126,8 @@ void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
 void             ibus_property_set_sub_props(IBusProperty   *prop,
                                              IBusPropList   *prop_list);
+gboolean         ibus_property_update       (IBusProperty   *prop,
+                                             IBusProperty   *prop_update);
 
 GType            ibus_prop_list_get_type    ();
 IBusPropList    *ibus_prop_list_new         ();

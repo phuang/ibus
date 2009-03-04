@@ -320,8 +320,8 @@ void
 ibus_property_set_sub_props (IBusProperty *prop,
                              IBusPropList *prop_list)
 {
-    g_return_if_fail (IBUS_IS_PROPERTY (prop));
-    g_return_if_fail (IBUS_IS_PROP_LIST (prop_list) || prop_list == NULL);
+    g_assert (IBUS_IS_PROPERTY (prop));
+    g_assert (IBUS_IS_PROP_LIST (prop_list) || prop_list == NULL);
 
     if (prop->sub_props) {
         g_object_unref (prop->sub_props);
@@ -333,6 +333,36 @@ ibus_property_set_sub_props (IBusProperty *prop,
     }
     else
         prop->sub_props = ibus_prop_list_new ();
+}
+
+gboolean
+ibus_property_update (IBusProperty *prop,
+                      IBusProperty *prop_update)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+    g_assert (IBUS_IS_PROPERTY (prop_update));
+
+    if (g_strcmp0 (prop->key, prop_update->key) != 0) {
+        return ibus_prop_list_update_property (prop->sub_props, prop_update);
+    }
+    
+    g_free (prop->icon);
+    prop->icon = g_strdup (prop_update->icon);
+
+    if (prop->label) {
+        g_object_unref (prop->label);
+    }
+    prop->label = (IBusText *) g_object_ref (prop_update->label);
+
+    if (prop->tooltip) {
+        g_object_unref (prop->tooltip);
+    }
+    prop->tooltip = (IBusText *) g_object_ref (prop_update->tooltip);
+    prop->visible = prop_update->visible;
+    prop->state = prop_update->state;
+    prop->sensitive = prop_update->sensitive;
+
+    return TRUE;
 }
 
 GType
@@ -525,7 +555,19 @@ ibus_prop_list_get (IBusPropList *prop_list,
 
 gboolean
 ibus_prop_list_update_property (IBusPropList *prop_list,
-                                IBusProperty *prop)
+                                IBusProperty *prop_update)
 {
+    g_assert (IBUS_IS_PROP_LIST (prop_list));
+    g_assert (IBUS_IS_PROPERTY (prop_update));
+
+    gint i;
+
+    for (i = 0; i < prop_list->properties->len; i ++) {
+        IBusProperty *prop = g_array_index (prop_list->properties, IBusPropList *, i);
+        if (ibus_property_update (prop, prop_update)) {
+            return TRUE;
+        }
+    }
+
     return FALSE;
 }
