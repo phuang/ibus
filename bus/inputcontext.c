@@ -92,6 +92,9 @@ struct _BusInputContextPrivate {
     /* lookup table */
     IBusLookupTable *lookup_table;
     gboolean lookup_table_visible;
+
+    /* properties */
+    IBusPropList *props;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -140,6 +143,12 @@ static void     bus_input_context_show_lookup_table
                                                 (BusInputContext        *context);
 static void     bus_input_context_hide_lookup_table
                                                 (BusInputContext        *context);
+static void     bus_input_context_register_properties
+                                                (BusInputContext        *context,
+                                                 IBusPropList           *props);
+static void     bus_input_context_update_property
+                                                (BusInputContext        *context,
+                                                 IBusProperty           *prop);
 static void     _engine_destroy_cb              (BusEngineProxy         *factory,
                                                  BusInputContext        *context);
 
@@ -147,6 +156,7 @@ static IBusServiceClass  *parent_class = NULL;
 static guint id = 0;
 static IBusText *text_empty = NULL;
 static IBusLookupTable *lookup_table_empty = NULL;
+static IBusPropList    *props_empty = NULL;
 
 GType
 bus_input_context_get_type (void)
@@ -496,6 +506,7 @@ bus_input_context_class_init (BusInputContextClass *klass)
 
     text_empty = ibus_text_new_from_string ("");
     lookup_table_empty = ibus_lookup_table_new (9, 0, FALSE, FALSE);
+    props_empty = ibus_prop_list_new ();
 }
 
 static void
@@ -530,6 +541,8 @@ bus_input_context_init (BusInputContext *context)
     priv->lookup_table = lookup_table_empty;
     priv->lookup_table_visible = FALSE;
 
+    g_object_ref (props_empty);
+    priv->props = props_empty;
 }
 
 static void
@@ -560,6 +573,11 @@ bus_input_context_destroy (BusInputContext *context)
     if (priv->lookup_table) {
         g_object_unref (priv->lookup_table);
         priv->lookup_table = NULL;
+    }
+
+    if (priv->props) {
+        g_object_unref (priv->props);
+        priv->props = NULL;
     }
 
     if (priv->connection) {
@@ -1123,6 +1141,12 @@ bus_input_context_focus_in (BusInputContext *context)
     if (priv->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
 
+        if ((priv->capabilities & IBUS_CAP_PROPERTY) == 0) {
+            g_signal_emit (context,
+                           context_signals[REGISTER_PROPERTIES],
+                           0,
+                           priv->props);
+        }
         if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
             g_signal_emit (context,
                            context_signals[UPDATE_PREEDIT_TEXT],
@@ -1506,6 +1530,68 @@ bus_input_context_hide_lookup_table (BusInputContext *context)
 }
 
 static void
+bus_input_context_register_properties (BusInputContext *context,
+                                       IBusPropList    *props)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_PROP_LIST (props));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->props) {
+        g_object_unref (priv->props);
+    }
+
+    priv->props = (IBusPropList *) g_object_ref (props ? props : props_empty);
+
+    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+        bus_input_context_send_signal (context,
+                                       "RegisterProperties",
+                                       IBUS_TYPE_PROP_LIST, &(priv->props),
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[REGISTER_PROPERTIES],
+                       0,
+                       priv->props);
+    }
+
+}
+
+static void
+bus_input_context_update_property (BusInputContext *context,
+                                   IBusProperty    *prop)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_PROPERTY (prop));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->props == props_empty) {
+        return;
+    }
+
+    if (!ibus_prop_list_update_property (priv->props, prop)) {
+        return;
+    }
+
+    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+        bus_input_context_send_signal (context,
+                                       "UpdateProperty",
+                                       IBUS_TYPE_PROPERTY, &prop,
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_PROPERTY],
+                       0,
+                       prop);
+    }
+}
+static void
 _engine_destroy_cb (BusEngineProxy  *engine,
                     BusInputContext *context)
 {
@@ -1624,11 +1710,11 @@ _engine_update_lookup_table_cb (BusEngineProxy   *engine,
 
 static void
 _engine_register_properties_cb (BusEngineProxy  *engine,
-                                IBusPropList    *prop_list,
+                                IBusPropList    *props,
                                 BusInputContext *context)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
-    g_assert (IBUS_IS_PROP_LIST (prop_list));
+    g_assert (IBUS_IS_PROP_LIST (props));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     BusInputContextPrivate *priv;
@@ -1636,18 +1722,7 @@ _engine_register_properties_cb (BusEngineProxy  *engine,
 
     g_assert (priv->engine == engine);
 
-    if (priv->capabilities & IBUS_CAP_PROPERTY) {
-        bus_input_context_send_signal (context,
-                                       "RegisterProperties",
-                                       IBUS_TYPE_PROP_LIST, &prop_list,
-                                       G_TYPE_INVALID);
-    }
-    else {
-        g_signal_emit (context,
-                       context_signals[REGISTER_PROPERTIES],
-                       0,
-                       prop_list);
-    }
+    bus_input_context_register_properties (context, props);
 }
 
 static void
@@ -1664,18 +1739,7 @@ _engine_update_property_cb (BusEngineProxy  *engine,
 
     g_assert (priv->engine == engine);
 
-    if (priv->capabilities & IBUS_CAP_PROPERTY) {
-        bus_input_context_send_signal (context,
-                                       "UpdateProperty",
-                                       IBUS_TYPE_PROPERTY, &prop,
-                                       G_TYPE_INVALID);
-    }
-    else {
-        g_signal_emit (context,
-                       context_signals[UPDATE_PROPERTY],
-                       0,
-                       prop);
-    }
+    bus_input_context_update_property (context, prop);
 }
 
 #define DEFINE_FUNCTION(name)                                   \
@@ -1827,6 +1891,7 @@ bus_input_context_unset_engine (BusInputContext *context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
+    bus_input_context_register_properties (context, props_empty);
     bus_input_context_update_preedit_text (context, text_empty, 0, FALSE);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
