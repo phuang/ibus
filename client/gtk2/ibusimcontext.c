@@ -694,7 +694,7 @@ _ibus_context_enabled_cb (IBusInputContext    *ibus_context,
     IBusIMContextPrivate *priv = context->priv;
 
     priv->enable = TRUE;
-    g_signal_emit (context, _signal_preedit_changed_id, 0);
+    // g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
 static void
