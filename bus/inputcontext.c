@@ -143,6 +143,14 @@ static void     bus_input_context_show_lookup_table
                                                 (BusInputContext        *context);
 static void     bus_input_context_hide_lookup_table
                                                 (BusInputContext        *context);
+static void     bus_input_context_page_up_lookup_table
+                                                (BusInputContext        *context);
+static void     bus_input_context_page_down_lookup_table
+                                                (BusInputContext        *context);
+static void     bus_input_context_cursor_up_lookup_table
+                                                (BusInputContext        *context);
+static void     bus_input_context_cursor_down_lookup_table
+                                                (BusInputContext        *context);
 static void     bus_input_context_register_properties
                                                 (BusInputContext        *context,
                                                  IBusPropList           *props);
@@ -1530,6 +1538,102 @@ bus_input_context_hide_lookup_table (BusInputContext *context)
 }
 
 static void
+bus_input_context_page_up_lookup_table (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!ibus_lookup_table_page_up (priv->lookup_table)) {
+        return;
+    }
+
+    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+        bus_input_context_send_signal (context,
+                                       "PageUpLookupTable",
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[PAGE_UP_LOOKUP_TABLE],
+                       0);
+    }
+}
+
+static void
+bus_input_context_page_down_lookup_table (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!ibus_lookup_table_page_down (priv->lookup_table)) {
+        return;
+    }
+
+    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+        bus_input_context_send_signal (context,
+                                       "PageDownLookupTable",
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[PAGE_DOWN_LOOKUP_TABLE],
+                       0);
+    }
+}
+
+static void
+bus_input_context_cursor_up_lookup_table (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!ibus_lookup_table_cursor_up (priv->lookup_table)) {
+        return;
+    }
+
+    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+        bus_input_context_send_signal (context,
+                                       "CursorUpLookupTable",
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[CURSOR_UP_LOOKUP_TABLE],
+                       0);
+    }
+}
+
+static void
+bus_input_context_cursor_down_lookup_table (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    BusInputContextPrivate *priv;
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (!ibus_lookup_table_cursor_down (priv->lookup_table)) {
+        return;
+    }
+
+    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+        bus_input_context_send_signal (context,
+                                       "CursorDownLookupTable",
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[CURSOR_DOWN_LOOKUP_TABLE],
+                       0);
+    }
+}
+
+static void
 bus_input_context_register_properties (BusInputContext *context,
                                        IBusPropList    *props)
 {
@@ -1557,7 +1661,6 @@ bus_input_context_register_properties (BusInputContext *context,
                        0,
                        priv->props);
     }
-
 }
 
 static void
@@ -1591,6 +1694,7 @@ bus_input_context_update_property (BusInputContext *context,
                        prop);
     }
 }
+
 static void
 _engine_destroy_cb (BusEngineProxy  *engine,
                     BusInputContext *context)
@@ -1649,9 +1753,6 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
                                    G_TYPE_INVALID);
 
 }
-
-
-
 
 static void
 _engine_update_preedit_text_cb (BusEngineProxy  *engine,
@@ -1764,37 +1865,10 @@ DEFINE_FUNCTION (show_auxiliary_text)
 DEFINE_FUNCTION (hide_auxiliary_text)
 DEFINE_FUNCTION (show_lookup_table)
 DEFINE_FUNCTION (hide_lookup_table)
-#undef DEFINE_FUNCTION
-
-#define DEFINE_FUNCTION(name, Name, signal_name, cap)           \
-    static void                                                 \
-    _engine_##name##_cb (BusEngineProxy   *engine,              \
-                         BusInputContext *context)              \
-    {                                                           \
-        g_assert (BUS_IS_ENGINE_PROXY (engine));                \
-        g_assert (BUS_IS_INPUT_CONTEXT (context));              \
-                                                                \
-        BusInputContextPrivate *priv;                           \
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);         \
-                                                                \
-        g_assert (priv->engine == engine);                      \
-                                                                \
-        if ((priv->capabilities & (cap)) == (cap)) {            \
-            bus_input_context_send_signal (context,             \
-                                           #Name,               \
-                                           G_TYPE_INVALID);     \
-        }                                                       \
-        else {                                                  \
-            g_signal_emit (context,                             \
-                       context_signals[signal_name],            \
-                       0);                                      \
-        }                                                       \
-}
-
-DEFINE_FUNCTION (page_up_lookup_table, PageUpLookupTable, PAGE_UP_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
-DEFINE_FUNCTION (page_down_lookup_table, PageDownLookupTable, PAGE_DOWN_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
-DEFINE_FUNCTION (cursor_up_lookup_table, CursorUpLookupTable, CURSOR_UP_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
-DEFINE_FUNCTION (cursor_down_lookup_table, CursorDownLookupTable, CURSOR_DOWN_LOOKUP_TABLE, IBUS_CAP_LOOKUP_TABLE)
+DEFINE_FUNCTION (page_up_lookup_table)
+DEFINE_FUNCTION (page_down_lookup_table)
+DEFINE_FUNCTION (cursor_up_lookup_table)
+DEFINE_FUNCTION (cursor_down_lookup_table)
 #undef DEFINE_FUNCTION
 
 void
