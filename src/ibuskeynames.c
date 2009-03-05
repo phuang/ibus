@@ -99,29 +99,28 @@ ibus_keyval_from_name (const gchar *keyval_name)
 
 static const gchar *
 modifier_name[] = {
-    "Shift",
-    "Lock",
-    "Control",
-    "Alt",
-    "Mod2",
-    "Mod3",
-    "Mod4",
-    "Mod5",
-    "Button1",
-    "Button2",
-    "Button3",
-    "Button4",
-    "Button5",
-    NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL,
-    "Supper",
-    "Hyper",
-    "Meta",
-    NULL,
-    "Release",
-    NULL,
-    NULL,
+    "Shift",   	// 0
+    "Lock",		// 1
+    "Control",	// 2
+    "Alt",		// 3
+    "Mod2",		// 4
+    "Mod3",		// 5
+    "Mod4",		// 6
+    "Mod5",		// 7
+    "Button1",	// 8
+    "Button2",	// 9
+    "Button3",	// 10
+    "Button4",	// 11
+    "Button5",	// 12
+    NULL, NULL, NULL, NULL, NULL, // 13 - 17
+    NULL, NULL, NULL, NULL, NULL, // 18 - 22
+    NULL, NULL, NULL, // 23 - 25
+    "Supper",	// 26
+    "Hyper",	// 27
+    "Meta",		// 28
+    NULL,		// 29
+    "Release",	// 30
+    NULL,		// 31
 };
 
 const gchar *
