@@ -80,6 +80,8 @@ GQuark           ibus_hotkey_profile_filter_key_event
                                                 (IBusHotkeyProfile  *profile,
                                                  guint               keyval,
                                                  guint               modifiers,
+                                                 guint               prev_keyval,
+                                                 guint               prev_modifiers,
                                                  gpointer            user_data);
 
 G_END_DECLS

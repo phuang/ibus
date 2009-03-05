@@ -459,6 +459,8 @@ GQuark
 ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
                                       guint              keyval,
                                       guint              modifiers,
+                                      guint              prev_keyval,
+                                      guint              prev_modifiers,
                                       gpointer           user_data)
 {
     IBusHotkeyProfilePrivate *priv;
@@ -468,6 +470,10 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
         .keyval = keyval,
         .modifiers = modifiers & priv->mask,
     };
+
+    if ((modifiers & IBUS_RELEASE_MASK) && keyval != prev_keyval) {
+        return 0;
+    }
 
     GQuark event = (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
 

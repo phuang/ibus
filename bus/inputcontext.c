@@ -2048,6 +2048,9 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     static GQuark next_factory;
     static GQuark prev_factory;
 
+    static guint prev_keyval = 0;
+    static guint prev_modifiers = 0;
+
     GQuark event;
 
     if (trigger == 0) {
@@ -2059,7 +2062,12 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     event = ibus_hotkey_profile_filter_key_event (BUS_DEFAULT_HOTKEY_PROFILE,
                                                   keyval,
                                                   modifiers,
+                                                  prev_keyval,
+                                                  prev_modifiers,
                                                   0);
+    prev_keyval = keyval;
+    prev_modifiers = modifiers;
+
     if (event == trigger) {
         if (priv->engine == NULL) {
             g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
