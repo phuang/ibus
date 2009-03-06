@@ -49,14 +49,14 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/desktop/ibus/panel/auto_hide</key>
-      <applyto>/desktop/ibus/panel/auto_hide</applyto>
+      <key>/schemas/desktop/ibus/panel/show</key>
+      <applyto>/desktop/ibus/panel/show</applyto>
       <owner>ibus</owner>
-      <type>bool</type>
-      <default>true</default>
+      <type>int</type>
+      <default>1</default>
       <locale name="C">
       	<short>Auto Hide</short>
-	    <long>Auto hide language panel</long>
+	    <long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
     <schema>

@@ -126,10 +126,10 @@ class Setup(object):
             self.__combobox_lookup_table_orientation_changed_cb)
 
         # auto hide
-        self.__checkbutton_auto_hide = self.__xml.get_widget("checkbutton_auto_hide")
-        self.__checkbutton_auto_hide.set_active(
-            self.__config.get_value("panel", "auto_hide", True))
-        self.__checkbutton_auto_hide.connect("toggled", self.__checkbutton_auto_hide_toggled_cb)
+        self.__combobox_panel_show = self.__xml.get_widget("combobox_panel_show")
+        self.__combobox_panel_show.set_active(
+            self.__config.get_value("panel", "show", 1))
+        self.__combobox_panel_show.connect("changed", self.__combobox_panel_show_changed_cb)
 
         # custom font
         self.__checkbutton_custom_font = self.__xml.get_widget("checkbutton_custom_font")
@@ -328,10 +328,10 @@ class Setup(object):
             "panel", "lookup_table_orientation",
             self.__combobox_lookup_table_orientation.get_active())
 
-    def __checkbutton_auto_hide_toggled_cb(self, button):
+    def __combobox_panel_show_changed_cb(self, combobox):
         self.__config.set_value(
-            "panel", "auto_hide",
-            self.__checkbutton_auto_hide.get_active())
+            "panel", "show",
+            self.__combobox_panel_show.get_active())
 
     def __checkbutton_custom_font_toggled_cb(self, button):
         if self.__checkbutton_custom_font.get_active():

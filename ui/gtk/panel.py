@@ -98,7 +98,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon.set_visible(True)
 
         self.__config_load_lookup_table_orientation()
-        self.__config_load_auto_hide()
+        self.__config_load_show()
         self.__config_load_custom_font()
         # self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
@@ -234,9 +234,9 @@ class Panel(ibus.PanelBase):
         else:
             self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
 
-    def __config_load_auto_hide(self):
-        auto_hide = self.__config.get_value("panel", "auto_hide", True)
-        self.__language_bar.set_auto_hide(auto_hide)
+    def __config_load_show(self):
+        show = self.__config.get_value("panel", "show", 1)
+        self.__language_bar.set_show(show)
 
     def __config_load_custom_font(self):
         use_custom_font = self.__config.get_value("panel", "use_custom_font", False)
@@ -260,8 +260,8 @@ class Panel(ibus.PanelBase):
             return
         if name == "lookup_table_orientation":
             self.__config_load_lookup_table_orientation()
-        elif name == "auto_hide":
-            self.__config_load_auto_hide()
+        elif name == "show":
+            self.__config_load_show()
         elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
 

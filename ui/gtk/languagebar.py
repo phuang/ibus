@@ -50,7 +50,7 @@ class LanguageBar(gtk.Toolbar):
 
     def __init__ (self):
         super(LanguageBar, self).__init__()
-        self.__auto_hide = False
+        self.__show = 1
         self.__enabled = False
         self.__has_focus = False
         self.set_style(gtk.TOOLBAR_ICONS)
@@ -137,24 +137,27 @@ class LanguageBar(gtk.Toolbar):
         if self.__enabled:
             self.__set_opacity(1.0)
             if self.__has_focus:
-                self.show_all()
+                if self.__show in (1, 2):
+                    self.show_all()
         else:
             self.__set_opacity(0.5)
-            if self.__auto_hide:
+            if self.__show in (1, 0):
                 self.hide_all()
 
     def is_enabled(self):
         return self.__enabled
 
-    def set_auto_hide(self, auto_hide):
-        self.__auto_hide = auto_hide
+    def set_show(self, show):
+        if show not in (0, 1, 2):
+            show = 1
+        self.__show = show
         if self.__has_focus:
             self.focus_in()
         else:
             self.focus_out()
 
-    def get_auto_hide(self):
-        return self.__auto_hide
+    def get_show(self):
+        return self.__show
 
     def register_properties(self, props):
         self.__remove_properties()
@@ -206,12 +209,15 @@ class LanguageBar(gtk.Toolbar):
         self.__has_focus = True
         self.__im_menu.set_sensitive(True)
         if self.__enabled:
-            self.show_all()
+            if self.__show in (1, 2):
+                self.show_all()
+            else:
+                self.hide_all()
 
     def focus_out(self):
         self.__has_focus = False
         self.__im_menu.set_sensitive(False)
-        if self.__auto_hide:
+        if self.__show in (0, 1):
             self.hide_all()
         else:
             self.show_all()

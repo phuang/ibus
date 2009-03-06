@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-02-24 18:14+0800\n"
+"POT-Creation-Date: 2009-03-06 10:39+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -91,7 +91,7 @@ msgstr "ਕੀ ਕੋਡ:"
 msgid "Modifiers:"
 msgstr "ਮਾਡੀਫਾਇਰ:"
 
-#: setup/keyboardshortcut.py:205
+#: setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -99,11 +99,11 @@ msgstr ""
 "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਕੋਈ ਸਵਿੱਚ ਜੋੜ)।\n"
 " ਜਦੋਂ ਸਵਿੱਚ ਛੱਡੀ ਜਾਵੇਗੀ ਤਾਂ ਇਹ ਡਾਈਲਾਗ ਬੰਦ ਹੋ ਜਾਵੇਗਾ।"
 
-#: setup/keyboardshortcut.py:207
+#: setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਸਵਿੱਚ ਜੋੜ)"
 
-#: setup/enginecombobox.py:94
+#: setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr ""
 
@@ -111,31 +111,31 @@ msgstr ""
 msgid "IBus Preferences"
 msgstr ""
 
-#: setup/setup.glade:44 setup/setup.glade:63 setup/setup.glade:81
-msgid "..."
-msgstr "..."
-
-#: setup/setup.glade:145
-msgid "Previous engine:"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
-
-#: setup/setup.glade:161
-msgid "Next engine:"
-msgstr "ਅਗਲਾ ਇੰਜਣ:"
-
-#: setup/setup.glade:177
+#: setup/setup.glade:46
 msgid "Trigger:"
 msgstr "ਟਰਿੱਗਰ:"
 
-#: setup/setup.glade:194
+#: setup/setup.glade:60
+msgid "Next engine:"
+msgstr "ਅਗਲਾ ਇੰਜਣ:"
+
+#: setup/setup.glade:76
+msgid "Previous engine:"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#: setup/setup.glade:139 setup/setup.glade:156 setup/setup.glade:176
+msgid "..."
+msgstr "..."
+
+#: setup/setup.glade:197
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
 
-#: setup/setup.glade:226
+#: setup/setup.glade:229
 msgid "Lookup table orientation:"
 msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
 
-#: setup/setup.glade:238
+#: setup/setup.glade:240
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -143,53 +143,60 @@ msgstr ""
 "ਹਰੀਜੱਟਲ\n"
 " ਵਰਟੀਕਲ"
 
-#: setup/setup.glade:252
-msgid "Auto hide language bar"
-msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਆਟੋਮੈਟਿਕ ਓਹਲੇ ਕਰੋ"
+#: setup/setup.glade:257
+msgid "Show language panel:"
+msgstr ""
 
-#: setup/setup.glade:264
+#: setup/setup.glade:268
+msgid ""
+"Always Hide\n"
+"On Daemon\n"
+"Always Show"
+msgstr ""
+
+#: setup/setup.glade:285
 msgid "Use custom font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: setup/setup.glade:291
+#: setup/setup.glade:311
 msgid "<b>Font and Style</b>"
 msgstr ""
 
-#: setup/setup.glade:314
+#: setup/setup.glade:336
 #, fuzzy
 msgid "Start ibus on login"
 msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
 
-#: setup/setup.glade:326
+#: setup/setup.glade:346
 #, fuzzy
 msgid "<b>Startup</b>"
 msgstr "<b>UI</b>"
 
-#: setup/setup.glade:351
+#: setup/setup.glade:371
 msgid "General"
 msgstr "ਆਮ"
 
-#: setup/setup.glade:425
+#: setup/setup.glade:442
 msgid "gtk-add"
 msgstr ""
 
-#: setup/setup.glade:439
+#: setup/setup.glade:456
 msgid "gtk-remove"
 msgstr "gtk-close"
 
-#: setup/setup.glade:453
+#: setup/setup.glade:471
 msgid "gtk-go-up"
 msgstr ""
 
-#: setup/setup.glade:467
+#: setup/setup.glade:486
 msgid "gtk-go-down"
 msgstr ""
 
-#: setup/setup.glade:496
+#: setup/setup.glade:513
 msgid "Input Methods"
 msgstr ""
 
-#: setup/setup.glade:512
+#: setup/setup.glade:529
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -205,13 +212,16 @@ msgstr ""
 " \n"
 " \n"
 
-#: setup/setup.glade:537
+#: setup/setup.glade:554
 msgid "About"
 msgstr "ਇਸ ਬਾਰੇ"
 
-#: setup/setup.glade:556
+#: setup/setup.glade:576
 msgid "gtk-close"
 msgstr "gtk-close"
+
+#~ msgid "Auto hide language bar"
+#~ msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਆਟੋਮੈਟਿਕ ਓਹਲੇ ਕਰੋ"
 
 #~ msgid "IBus - Running"
 #~ msgstr "IBus -  ਚੱਲ ਰਿਹਾ ਹੈ"
