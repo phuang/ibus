@@ -270,8 +270,6 @@ bus_match_rule_new (const gchar *text)
 {
     g_assert (text != NULL);
 
-    g_debug ("new rule=%s", text);
-
     Token *tokens, *p;
     BusMatchRule *rule;
 
