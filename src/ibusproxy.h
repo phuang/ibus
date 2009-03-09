@@ -98,6 +98,7 @@ IBusMessage     *ibus_proxy_send_with_reply_and_block
 gboolean         ibus_proxy_handle_signal   (IBusProxy          *proxy,
                                              IBusMessage        *message);
 const gchar     *ibus_proxy_get_name        (IBusProxy          *proxy);
+const gchar     *ibus_proxy_get_unique_name (IBusProxy          *proxy);
 const gchar     *ibus_proxy_get_path        (IBusProxy          *proxy);
 const gchar     *ibus_proxy_get_interface   (IBusProxy          *proxy);
 IBusConnection  *ibus_proxy_get_connection  (IBusProxy          *proxy);

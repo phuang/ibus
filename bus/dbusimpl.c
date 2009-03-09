@@ -829,6 +829,16 @@ _connection_ibus_message_cb (BusConnection  *connection,
         break;
 #endif
 #if 0
+    case DBUS_MESSAGE_TYPE_SIGNAL:
+        g_debug ("From :%s to %s, Signal: %s @ %s",
+                 ibus_message_get_sender (message),
+                 ibus_message_get_destination (message),
+                 ibus_message_get_member (message),
+                 ibus_message_get_path (message)
+                 );
+        break;
+#endif
+#if 0
     case DBUS_MESSAGE_TYPE_METHOD_CALL:
         g_debug("From %s to %s, Method %s on %s",
                 ibus_message_get_sender (message),
@@ -1068,10 +1078,9 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
 #endif
 
     for (link = dbus->rules; link != NULL; link = link->next) {
-        recipients = bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
-                                                    message);
-        if (recipients != NULL)
-            break;
+        GList *list = bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
+                                                     message);
+        recipients = g_list_concat (recipients, list);
     }
 
     for (link = recipients; link != NULL; link = link->next) {

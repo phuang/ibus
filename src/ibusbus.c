@@ -23,6 +23,7 @@
 #include "ibusinternal.h"
 #include "ibusshare.h"
 #include "ibusconnection.h"
+#include "ibusconfig.h"
 
 #define IBUS_BUS_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_BUS, IBusBusPrivate))
@@ -40,6 +41,7 @@ struct _IBusBusPrivate {
     GFileMonitor *monitor;
     IBusConnection *connection;
     gboolean watch_dbus_signal;
+    IBusConfig *config;
 };
 typedef struct _IBusBusPrivate IBusBusPrivate;
 
@@ -210,6 +212,7 @@ ibus_bus_init (IBusBus *bus)
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
+    priv->config = NULL;
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
 
@@ -239,8 +242,13 @@ ibus_bus_destroy (IBusObject *object)
         priv->monitor = NULL;
     }
 
+    if (priv->config) {
+        ibus_object_destroy ((IBusObject *) priv->config);
+        priv->config = NULL;
+    }
+
     if (priv->connection) {
-        ibus_object_destroy (IBUS_OBJECT (priv->connection));
+        ibus_object_destroy ((IBusObject *) priv->connection);
         priv->connection = NULL;
     }
 
@@ -613,7 +621,7 @@ ibus_bus_get_name_owner (IBusBus        *bus,
                             DBUS_SERVICE_DBUS,
                             DBUS_PATH_DBUS,
                             DBUS_INTERFACE_DBUS,
-                            "RemoveMatch",
+                            "GetNameOwner",
                             G_TYPE_STRING, &name,
                             G_TYPE_INVALID,
                             G_TYPE_STRING, &owner,
@@ -728,4 +736,34 @@ GList *
 ibus_bus_list_active_engines (IBusBus *bus)
 {
     return NULL;
+}
+
+static void
+_config_destroy_cb (IBusConfig *config,
+                    IBusBus    *bus)
+{
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    g_assert (priv->config == config);
+
+    g_object_unref (config);
+    priv->config = NULL;
+}
+
+IBusConfig *
+ibus_bus_get_config (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->config == NULL && priv->connection) {
+        priv->config = ibus_config_new (priv->connection);
+        if (priv->config) {
+            g_signal_connect (priv->config, "destroy", G_CALLBACK (_config_destroy_cb), bus);
+        }
+    }
+
+    return priv->config;
 }

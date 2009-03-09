@@ -1,18 +1,26 @@
 #include "ibus.h"
 
+static
+_value_changed_cb (IBusConfig *config, gchar *section, gchar *name, GValue *value, gpointer data)
+{
+	g_debug ("value-changed %s %s", section, name);
+}
+
 int main()
 {
 	g_type_init ();
 
-	IBusConnection *connection;
-	IBusProxy *proxy;
+	IBusBus *bus;
+	IBusConfig *config;
 
-	connection = ibus_connection_new ();
-	proxy = ibus_proxy_new ("a", "/a", connection);
-	GValue value = {0};
-	g_value_init (&value, G_TYPE_STRING);
-	g_value_set_static_string (&value, "aaa");
-	g_object_set_property (G_OBJECT (proxy), "name", &value);
+	bus = ibus_bus_new ();
+	config = ibus_bus_get_config (bus);
+
+	g_signal_connect (config,
+					  "value-changed",
+					  G_CALLBACK (_value_changed_cb),
+					  NULL);
+	g_main_loop_run (g_main_loop_new (NULL, FALSE));
 
 	return 0;
 }

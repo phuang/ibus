@@ -92,6 +92,8 @@ gboolean     ibus_bus_register_component(IBusBus        *bus,
 GList       *ibus_bus_list_engines      (IBusBus        *bus);
 GList       *ibus_bus_list_active_engines
                                         (IBusBus        *bus);
+/* declare config apis */
+IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
 
 G_END_DECLS
 #endif
