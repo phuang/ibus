@@ -78,7 +78,11 @@ class Setup(object):
 
     def __init_ui(self):
         # add icon search path
-        self.__dialog = self.__xml.get_widget("dialog_setup")
+        self.__window = self.__xml.get_widget("window_preferences")
+        self.__window.connect("delete-event", gtk.main_quit)
+
+        self.__button_close = self.__xml.get_widget("button_close")
+        self.__button_close.connect("clicked", gtk.main_quit)
 
         # auto start ibus
         self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
@@ -353,7 +357,8 @@ class Setup(object):
         pass
 
     def run(self):
-        return self.__dialog.run()
+        self.__window.show_all()
+        gtk.main()
 
 if __name__ == "__main__":
     Setup().run()

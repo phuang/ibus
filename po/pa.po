@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-06 10:39+0800\n"
+"POT-Creation-Date: 2009-03-11 14:12+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -45,23 +45,23 @@ msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
 msgid "Switch engine"
 msgstr "ਇੰਜਣ ਬਦਲੋ"
 
-#: setup/main.py:99
+#: setup/main.py:103
 msgid "trigger"
 msgstr "ਟਰਿੱਗਰ"
 
-#: setup/main.py:109
+#: setup/main.py:113
 msgid "next engine"
 msgstr "ਅਗਲਾ ਇੰਜਣ"
 
-#: setup/main.py:119
+#: setup/main.py:123
 msgid "prev engine"
 msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
-#: setup/main.py:197
+#: setup/main.py:201
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ਡੈਮਨ ਚੱਲਦੀ ਨਹੀਂ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: setup/main.py:212
+#: setup/main.py:216
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -74,7 +74,7 @@ msgstr ""
 "   export XMODIFIERS=@im=ibus\n"
 "   export QT_IM_MODULE=ibus"
 
-#: setup/main.py:227
+#: setup/main.py:231
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ਲਈ ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ ਚੁਣੋ"
@@ -111,31 +111,33 @@ msgstr ""
 msgid "IBus Preferences"
 msgstr ""
 
-#: setup/setup.glade:46
-msgid "Trigger:"
-msgstr "ਟਰਿੱਗਰ:"
-
-#: setup/setup.glade:60
-msgid "Next engine:"
-msgstr "ਅਗਲਾ ਇੰਜਣ:"
-
-#: setup/setup.glade:76
-msgid "Previous engine:"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
-
-#: setup/setup.glade:139 setup/setup.glade:156 setup/setup.glade:176
+#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:197
+#: setup/setup.glade:148
+msgid "previous input method:"
+msgstr ""
+
+#: setup/setup.glade:161
+#, fuzzy
+msgid "Next input method:"
+msgstr "ਅਗਲਾ ਇੰਜਣ:"
+
+#: setup/setup.glade:174
+msgid "Enable or disable:"
+msgstr ""
+
+#: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
 
-#: setup/setup.glade:229
-msgid "Lookup table orientation:"
+#: setup/setup.glade:222
+#, fuzzy
+msgid "Candidates orientation:"
 msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
 
-#: setup/setup.glade:240
+#: setup/setup.glade:232
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -143,60 +145,39 @@ msgstr ""
 "ਹਰੀਜੱਟਲ\n"
 " ਵਰਟੀਕਲ"
 
-#: setup/setup.glade:257
+#: setup/setup.glade:249
 msgid "Show language panel:"
 msgstr ""
 
-#: setup/setup.glade:268
+#: setup/setup.glade:259
 msgid ""
-"Always Hide\n"
-"On Daemon\n"
-"Always Show"
+"Never\n"
+"Dynamically\n"
+"Always"
 msgstr ""
 
-#: setup/setup.glade:285
+#: setup/setup.glade:276
 msgid "Use custom font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: setup/setup.glade:311
+#: setup/setup.glade:292
+#, fuzzy
+msgid "Custom font:"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: setup/setup.glade:317
 msgid "<b>Font and Style</b>"
 msgstr ""
 
-#: setup/setup.glade:336
-#, fuzzy
-msgid "Start ibus on login"
-msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
-
-#: setup/setup.glade:346
-#, fuzzy
-msgid "<b>Startup</b>"
-msgstr "<b>UI</b>"
-
-#: setup/setup.glade:371
+#: setup/setup.glade:337
 msgid "General"
 msgstr "ਆਮ"
 
-#: setup/setup.glade:442
-msgid "gtk-add"
-msgstr ""
-
-#: setup/setup.glade:456
-msgid "gtk-remove"
-msgstr "gtk-close"
-
-#: setup/setup.glade:471
-msgid "gtk-go-up"
-msgstr ""
-
-#: setup/setup.glade:486
-msgid "gtk-go-down"
-msgstr ""
-
-#: setup/setup.glade:513
+#: setup/setup.glade:465
 msgid "Input Methods"
 msgstr ""
 
-#: setup/setup.glade:529
+#: setup/setup.glade:482
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -212,13 +193,32 @@ msgstr ""
 " \n"
 " \n"
 
-#: setup/setup.glade:554
+#: setup/setup.glade:510
+#, fuzzy
+msgid "Start ibus on login"
+msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
+
+#: setup/setup.glade:521
+#, fuzzy
+msgid "<b>Startup</b>"
+msgstr "<b>UI</b>"
+
+#: setup/setup.glade:543
 msgid "About"
 msgstr "ਇਸ ਬਾਰੇ"
 
-#: setup/setup.glade:576
-msgid "gtk-close"
-msgstr "gtk-close"
+#~ msgid "Trigger:"
+#~ msgstr "ਟਰਿੱਗਰ:"
+
+#, fuzzy
+#~ msgid "Previous IME:"
+#~ msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#~ msgid "gtk-remove"
+#~ msgstr "gtk-close"
+
+#~ msgid "gtk-close"
+#~ msgstr "gtk-close"
 
 #~ msgid "Auto hide language bar"
 #~ msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਆਟੋਮੈਟਿਕ ਓਹਲੇ ਕਰੋ"

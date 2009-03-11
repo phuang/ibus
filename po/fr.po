@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-06 10:39+0800\n"
+"POT-Creation-Date: 2009-03-11 14:12+0800\n"
 "PO-Revision-Date: 2009-02-06 01:55+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -47,23 +47,23 @@ msgstr "HUMBERT Julien <julroy67@gmail.com>"
 msgid "Switch engine"
 msgstr "Changer de moteur"
 
-#: setup/main.py:99
+#: setup/main.py:103
 msgid "trigger"
 msgstr "déclencheur"
 
-#: setup/main.py:109
+#: setup/main.py:113
 msgid "next engine"
 msgstr "moteur suivant"
 
-#: setup/main.py:119
+#: setup/main.py:123
 msgid "prev engine"
 msgstr "moteur précédent"
 
-#: setup/main.py:197
+#: setup/main.py:201
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Le démon IBus n'est pas démarré. Voulez-vous le démarrer maintenant ?"
 
-#: setup/main.py:212
+#: setup/main.py:216
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -78,7 +78,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:227
+#: setup/main.py:231
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Choisissez le raccourci clavier pour %s"
@@ -116,31 +116,33 @@ msgstr ""
 msgid "IBus Preferences"
 msgstr ""
 
-#: setup/setup.glade:46
-msgid "Trigger:"
-msgstr "Déclencheur :"
-
-#: setup/setup.glade:60
-msgid "Next engine:"
-msgstr "Moteur suivant :"
-
-#: setup/setup.glade:76
-msgid "Previous engine:"
-msgstr "Moteur précédent :"
-
-#: setup/setup.glade:139 setup/setup.glade:156 setup/setup.glade:176
+#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
 msgid "..."
 msgstr "…"
 
-#: setup/setup.glade:197
+#: setup/setup.glade:148
+msgid "previous input method:"
+msgstr ""
+
+#: setup/setup.glade:161
+#, fuzzy
+msgid "Next input method:"
+msgstr "Moteur suivant :"
+
+#: setup/setup.glade:174
+msgid "Enable or disable:"
+msgstr ""
+
+#: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Raccourcis claviers</b>"
 
-#: setup/setup.glade:229
-msgid "Lookup table orientation:"
+#: setup/setup.glade:222
+#, fuzzy
+msgid "Candidates orientation:"
 msgstr "Orientation de la table :"
 
-#: setup/setup.glade:240
+#: setup/setup.glade:232
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -148,60 +150,39 @@ msgstr ""
 "Horizontal\n"
 "Vertical"
 
-#: setup/setup.glade:257
+#: setup/setup.glade:249
 msgid "Show language panel:"
 msgstr ""
 
-#: setup/setup.glade:268
+#: setup/setup.glade:259
 msgid ""
-"Always Hide\n"
-"On Daemon\n"
-"Always Show"
+"Never\n"
+"Dynamically\n"
+"Always"
 msgstr ""
 
-#: setup/setup.glade:285
+#: setup/setup.glade:276
 msgid "Use custom font"
 msgstr "Utiliser une police personnalisée"
 
-#: setup/setup.glade:311
+#: setup/setup.glade:292
+#, fuzzy
+msgid "Custom font:"
+msgstr "Utiliser une police personnalisée"
+
+#: setup/setup.glade:317
 msgid "<b>Font and Style</b>"
 msgstr ""
 
-#: setup/setup.glade:336
-#, fuzzy
-msgid "Start ibus on login"
-msgstr "Démarrer automatiquement IBus lors de la connexion"
-
-#: setup/setup.glade:346
-#, fuzzy
-msgid "<b>Startup</b>"
-msgstr "<b>Interface Utilisateur</b>"
-
-#: setup/setup.glade:371
+#: setup/setup.glade:337
 msgid "General"
 msgstr "Général"
 
-#: setup/setup.glade:442
-msgid "gtk-add"
-msgstr "gtk-add"
-
-#: setup/setup.glade:456
-msgid "gtk-remove"
-msgstr "gtk-remove"
-
-#: setup/setup.glade:471
-msgid "gtk-go-up"
-msgstr "gtk-go-up"
-
-#: setup/setup.glade:486
-msgid "gtk-go-down"
-msgstr "gtk-go-down"
-
-#: setup/setup.glade:513
+#: setup/setup.glade:465
 msgid "Input Methods"
 msgstr ""
 
-#: setup/setup.glade:529
+#: setup/setup.glade:482
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -217,13 +198,41 @@ msgstr ""
 "\n"
 "\n"
 
-#: setup/setup.glade:554
+#: setup/setup.glade:510
+#, fuzzy
+msgid "Start ibus on login"
+msgstr "Démarrer automatiquement IBus lors de la connexion"
+
+#: setup/setup.glade:521
+#, fuzzy
+msgid "<b>Startup</b>"
+msgstr "<b>Interface Utilisateur</b>"
+
+#: setup/setup.glade:543
 msgid "About"
 msgstr "À propos"
 
-#: setup/setup.glade:576
-msgid "gtk-close"
-msgstr "gtk-close"
+#~ msgid "Trigger:"
+#~ msgstr "Déclencheur :"
+
+#, fuzzy
+#~ msgid "Previous IME:"
+#~ msgstr "Moteur précédent :"
+
+#~ msgid "gtk-add"
+#~ msgstr "gtk-add"
+
+#~ msgid "gtk-remove"
+#~ msgstr "gtk-remove"
+
+#~ msgid "gtk-go-up"
+#~ msgstr "gtk-go-up"
+
+#~ msgid "gtk-go-down"
+#~ msgstr "gtk-go-down"
+
+#~ msgid "gtk-close"
+#~ msgstr "gtk-close"
 
 #~ msgid "Auto hide language bar"
 #~ msgstr "Cacher automatiquement la barre de langue"
