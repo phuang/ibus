@@ -73,7 +73,6 @@ ibus_h_sources = \
 	ibusconfigprivate.h \
 	keyname-table.h \
 	$(ibus_public_h_sources) \
-	$(ibus_built_public_h_sources) \
 	$(NULL)
 ibus_c_sources = \
 	ibusshare.c \
@@ -103,18 +102,19 @@ ibus_c_sources = \
 	ibusenginedesc.c \
 	ibusobservedpath.c \
 	ibuscomponent.c \
-	$(ibus_built_c_sources) \
 	$(NULL)
-
 ibusincludedir = $(includedir)/ibus-1.0
 ibusinclude_HEADERS = \
 	$(ibus_public_h_sources) \
 	$(ibus_built_public_h_sources) \
 	$(NULL)
-
 libibus_la_SOURCES = \
 	$(ibus_h_sources) \
 	$(ibus_c_sources) \
+	$(NULL)
+nodist_libibus_la_SOURCES = \
+	$(ibus_built_h_sources) \
+	$(ibus_built_c_sources) \
 	$(NULL)
 libibus_la_CFLAGS = \
 	@X11_CFLAGS@ \
