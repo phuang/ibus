@@ -145,7 +145,7 @@ msgstr ""
 
 #: setup/setup.glade:249
 msgid "Show language panel:"
-msgstr "显示语言栏"
+msgstr "显示语言栏:"
 
 #: setup/setup.glade:259
 msgid ""
