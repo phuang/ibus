@@ -569,7 +569,6 @@ _ibus_context_commit_text_cb (IBusInputContext *ibus_context,
 static void
 _ibus_context_forward_key_event_cb (IBusInputContext  *ibus_context,
                                     guint              keyval,
-                                    gboolean           is_press,
                                     guint              state,
                                     IBusIMContext     *context)
 {
@@ -579,7 +578,7 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibus_context,
     IBusIMContextPrivate *priv;
 
     priv = context->priv;
-    event = (GdkEventKey *)gdk_event_new (is_press ? GDK_KEY_PRESS : GDK_KEY_RELEASE);
+    event = (GdkEventKey *)gdk_event_new (state & IBUS_RELEASE_MASK ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
 
     event->time = GDK_CURRENT_TIME;
     event->window = g_object_ref (priv->client_window);
