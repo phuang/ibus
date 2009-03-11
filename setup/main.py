@@ -141,10 +141,13 @@ class Setup(object):
             self.__config.get_value("panel", "use_custom_font", False))
         self.__checkbutton_custom_font.connect("toggled", self.__checkbutton_custom_font_toggled_cb)
 
+        self.__label_custom_font = self.__xml.get_widget("label_custom_font")
         self.__fontbutton_custom_font = self.__xml.get_widget("fontbutton_custom_font")
         if self.__config.get_value("panel", "use_custom_font", False):
+            self.__label_custom_font.set_sensitive(True)
             self.__fontbutton_custom_font.set_sensitive(True)
         else:
+            self.__label_custom_font.set_sensitive(False)
             self.__fontbutton_custom_font.set_sensitive(False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
         font_name = unicode(font_name, "utf-8")
@@ -339,9 +342,11 @@ class Setup(object):
 
     def __checkbutton_custom_font_toggled_cb(self, button):
         if self.__checkbutton_custom_font.get_active():
+            self.__label_custom_font.set_sensitive(True)
             self.__fontbutton_custom_font.set_sensitive(True)
             self.__config.set_value("panel", "use_custom_font", True)
         else:
+            self.__label_custom_font.set_sensitive(False)
             self.__fontbutton_custom_font.set_sensitive(False)
             self.__config.set_value("panel", "use_custom_font", False)
 
