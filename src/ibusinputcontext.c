@@ -426,14 +426,12 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "ForwardKeyEvent")) {
         guint32 keyval;
-        gboolean is_press;
         guint32 state;
         gboolean retval;
 
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_UINT, &keyval,
-                                        G_TYPE_BOOLEAN, &is_press,
                                         G_TYPE_UINT, &state,
                                         G_TYPE_INVALID);
 
