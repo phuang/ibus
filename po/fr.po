@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-11 14:12+0800\n"
+"POT-Creation-Date: 2009-03-11 14:31+0800\n"
 "PO-Revision-Date: 2009-02-06 01:55+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -59,11 +59,11 @@ msgstr "moteur suivant"
 msgid "prev engine"
 msgstr "moteur précédent"
 
-#: setup/main.py:201
+#: setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Le démon IBus n'est pas démarré. Voulez-vous le démarrer maintenant ?"
 
-#: setup/main.py:216
+#: setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -78,7 +78,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:231
+#: setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Choisissez le raccourci clavier pour %s"
@@ -116,22 +116,22 @@ msgstr ""
 msgid "IBus Preferences"
 msgstr ""
 
-#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
-msgid "..."
-msgstr "…"
-
-#: setup/setup.glade:148
-msgid "previous input method:"
+#: setup/setup.glade:51
+msgid "Enable or disable:"
 msgstr ""
 
-#: setup/setup.glade:161
+#: setup/setup.glade:62
 #, fuzzy
 msgid "Next input method:"
 msgstr "Moteur suivant :"
 
-#: setup/setup.glade:174
-msgid "Enable or disable:"
+#: setup/setup.glade:76
+msgid "previous input method:"
 msgstr ""
+
+#: setup/setup.glade:100 setup/setup.glade:130 setup/setup.glade:164
+msgid "..."
+msgstr "…"
 
 #: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-11 14:12+0800\n"
+"POT-Creation-Date: 2009-03-11 14:31+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -57,11 +57,11 @@ msgstr "下一个引擎"
 msgid "prev engine"
 msgstr "上一个引擎"
 
-#: setup/main.py:201
+#: setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: setup/main.py:216
+#: setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -74,7 +74,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:231
+#: setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
@@ -111,21 +111,21 @@ msgstr "选择输入法"
 msgid "IBus Preferences"
 msgstr "IBus设置"
 
-#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
-msgid "..."
-msgstr ""
+#: setup/setup.glade:51
+msgid "Enable or disable:"
+msgstr "开关"
 
-#: setup/setup.glade:148
-msgid "previous input method:"
-msgstr "前一入法"
-
-#: setup/setup.glade:161
+#: setup/setup.glade:62
 msgid "Next input method:"
 msgstr "下一入法"
 
-#: setup/setup.glade:174
-msgid "Enable or disable:"
-msgstr "开关"
+#: setup/setup.glade:76
+msgid "previous input method:"
+msgstr "前一入法"
+
+#: setup/setup.glade:100 setup/setup.glade:130 setup/setup.glade:164
+msgid "..."
+msgstr ""
 
 #: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
@@ -198,4 +198,3 @@ msgstr "<b>启动</b>"
 #: setup/setup.glade:543
 msgid "About"
 msgstr "关于"
-
