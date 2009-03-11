@@ -137,7 +137,6 @@ void         ibus_engine_hide_lookup_table
 void         ibus_engine_forward_key_event
                                         (IBusEngine         *engine,
                                          guint               keyval,
-                                         gboolean            is_press,
                                          guint               state);
 
 void         ibus_engine_register_properties
