@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
 "POT-Creation-Date: 2009-03-20 09:52+0800\n"
-"PO-Revision-Date: 2009-02-06 01:55+0100\n"
+"PO-Revision-Date: 2009-03-11 17:30+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,15 +25,15 @@ msgstr "Autre"
 
 #: ui/gtk/panel.py:97
 msgid "IBus input method framework"
-msgstr ""
+msgstr "Framework de méthode d'entrée IBus"
 
 #: ui/gtk/panel.py:282
 msgid "Restart"
-msgstr ""
+msgstr "Redémarrer"
 
 #: ui/gtk/panel.py:337
 msgid "No input method"
-msgstr ""
+msgstr "Aucune méthode d'entrée"
 
 #: ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
@@ -92,7 +92,6 @@ msgid "Key code:"
 msgstr "Code touche :"
 
 #: setup/keyboardshortcut.py:76
-#, fuzzy
 msgid "Modifiers:"
 msgstr "Modificateurs :"
 
@@ -110,11 +109,11 @@ msgstr "Veuillez presser une touche (ou une combinaison de touches)"
 
 #: setup/enginecombobox.py:99
 msgid "Select an input method"
-msgstr ""
+msgstr "Sélectionnez une méthode d'entrée"
 
 #: setup/setup.glade:7
 msgid "IBus Preferences"
-msgstr ""
+msgstr "Préférences d'IBus"
 
 #: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
 msgid "..."
@@ -122,23 +121,21 @@ msgstr "…"
 
 #: setup/setup.glade:148
 msgid "previous input method:"
-msgstr ""
+msgstr "méthode d'entrée précédente :"
 
 #: setup/setup.glade:161
-#, fuzzy
 msgid "Next input method:"
-msgstr "Moteur suivant :"
+msgstr "Méthode d'entrée suivante :"
 
 #: setup/setup.glade:174
 msgid "Enable or disable:"
-msgstr ""
+msgstr "Activer ou désactiver :"
 
 #: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Raccourcis claviers</b>"
 
 #: setup/setup.glade:222
-#, fuzzy
 msgid "Candidates orientation:"
 msgstr "Orientation de la table :"
 
@@ -152,7 +149,7 @@ msgstr ""
 
 #: setup/setup.glade:249
 msgid "Show language panel:"
-msgstr ""
+msgstr "Afficher la barre de langue :"
 
 #: setup/setup.glade:259
 msgid ""
@@ -160,19 +157,21 @@ msgid ""
 "When active\n"
 "Always"
 msgstr ""
+"Jamais\n"
+"Dynamiquement\n"
+"Toujours"
 
 #: setup/setup.glade:276
 msgid "Use custom font"
 msgstr "Utiliser une police personnalisée"
 
 #: setup/setup.glade:292
-#, fuzzy
 msgid "Custom font:"
-msgstr "Utiliser une police personnalisée"
+msgstr "Police personnalisée :"
 
 #: setup/setup.glade:317
 msgid "<b>Font and Style</b>"
-msgstr ""
+msgstr "<b>Police et Style</b>"
 
 #: setup/setup.glade:337
 msgid "General"
@@ -180,7 +179,7 @@ msgstr "Général"
 
 #: setup/setup.glade:465
 msgid "Input Methods"
-msgstr ""
+msgstr "Méthodes d'entrées"
 
 #: setup/setup.glade:482
 msgid ""
@@ -199,50 +198,13 @@ msgstr ""
 "\n"
 
 #: setup/setup.glade:510
-#, fuzzy
 msgid "Start ibus on login"
-msgstr "Démarrer automatiquement IBus lors de la connexion"
+msgstr "Démarrer IBus lors de la connexion"
 
 #: setup/setup.glade:521
-#, fuzzy
 msgid "<b>Startup</b>"
-msgstr "<b>Interface Utilisateur</b>"
+msgstr "<b>Démarrage</b>"
 
 #: setup/setup.glade:543
 msgid "About"
 msgstr "À propos"
-
-#~ msgid "Trigger:"
-#~ msgstr "Déclencheur :"
-
-#, fuzzy
-#~ msgid "Previous IME:"
-#~ msgstr "Moteur précédent :"
-
-#~ msgid "gtk-add"
-#~ msgstr "gtk-add"
-
-#~ msgid "gtk-remove"
-#~ msgstr "gtk-remove"
-
-#~ msgid "gtk-go-up"
-#~ msgstr "gtk-go-up"
-
-#~ msgid "gtk-go-down"
-#~ msgstr "gtk-go-down"
-
-#~ msgid "gtk-close"
-#~ msgstr "gtk-close"
-
-#~ msgid "Auto hide language bar"
-#~ msgstr "Cacher automatiquement la barre de langue"
-
-#, fuzzy
-#~ msgid "IBus - Running"
-#~ msgstr "IBus - Démarré"
-
-#~ msgid "IBus - Setup"
-#~ msgstr "IBus - Configuration"
-
-#~ msgid "Engine"
-#~ msgstr "Moteur"
