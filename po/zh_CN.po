@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-11 14:31+0800\n"
+"POT-Creation-Date: 2009-03-20 09:52+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -111,21 +111,21 @@ msgstr "选择输入法"
 msgid "IBus Preferences"
 msgstr "IBus设置"
 
-#: setup/setup.glade:51
-msgid "Enable or disable:"
-msgstr "开关"
+#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
+msgid "..."
+msgstr ""
 
-#: setup/setup.glade:62
-msgid "Next input method:"
-msgstr "下一入法"
-
-#: setup/setup.glade:76
+#: setup/setup.glade:148
 msgid "previous input method:"
 msgstr "前一入法"
 
-#: setup/setup.glade:100 setup/setup.glade:130 setup/setup.glade:164
-msgid "..."
-msgstr ""
+#: setup/setup.glade:161
+msgid "Next input method:"
+msgstr "下一入法"
+
+#: setup/setup.glade:174
+msgid "Enable or disable:"
+msgstr "开关"
 
 #: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
@@ -150,11 +150,11 @@ msgstr "显示语言栏:"
 #: setup/setup.glade:259
 msgid ""
 "Never\n"
-"Dynamically\n"
+"When active\n"
 "Always"
 msgstr ""
 "从不\n"
-"动态\n"
+"活动时\n"
 "总是"
 
 #: setup/setup.glade:276

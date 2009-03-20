@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-11 14:31+0800\n"
+"POT-Creation-Date: 2009-03-20 09:52+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -111,22 +111,22 @@ msgstr ""
 msgid "IBus Preferences"
 msgstr ""
 
-#: setup/setup.glade:51
-msgid "Enable or disable:"
+#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
+msgid "..."
+msgstr "..."
+
+#: setup/setup.glade:148
+msgid "previous input method:"
 msgstr ""
 
-#: setup/setup.glade:62
+#: setup/setup.glade:161
 #, fuzzy
 msgid "Next input method:"
 msgstr "ਅਗਲਾ ਇੰਜਣ:"
 
-#: setup/setup.glade:76
-msgid "previous input method:"
+#: setup/setup.glade:174
+msgid "Enable or disable:"
 msgstr ""
-
-#: setup/setup.glade:100 setup/setup.glade:130 setup/setup.glade:164
-msgid "..."
-msgstr "..."
 
 #: setup/setup.glade:188
 msgid "<b>Keyboard Shortcuts</b>"
@@ -152,7 +152,7 @@ msgstr ""
 #: setup/setup.glade:259
 msgid ""
 "Never\n"
-"Dynamically\n"
+"When active\n"
 "Always"
 msgstr ""
 
