@@ -915,15 +915,45 @@ ibus_engine_hide_auxiliary_text (IBusEngine *engine)
                   G_TYPE_INVALID);
 }
 
-void ibus_engine_update_lookup_table (IBusEngine        *engine,
-                                      IBusLookupTable   *table,
-                                      gboolean           visible)
+void
+ibus_engine_update_lookup_table (IBusEngine        *engine,
+                                 IBusLookupTable   *table,
+                                 gboolean           visible)
 {
     _send_signal (engine,
                   "UpdateLookupTable",
                   IBUS_TYPE_LOOKUP_TABLE, &table,
                   G_TYPE_BOOLEAN, &visible,
                   G_TYPE_INVALID);
+}
+
+void
+ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
+                                      IBusLookupTable   *table,
+                                      gboolean           visible)
+{
+    IBusLookupTable *new_table;
+    gint page_begin;
+    gint i;
+
+    if (table->candidates->len < table->page_size << 2) {
+        ibus_engine_update_lookup_table (engine, table, visible);
+        return;
+    }
+
+    page_begin = (table->cursor_pos / table->page_size) * table->page_size;
+
+    new_table = ibus_lookup_table_new (table->page_size, 0, table->cursor_visible, table->round);
+
+    for (i = page_begin; i < page_begin + table->page_size && i < table->candidates->len; i++) {
+        ibus_lookup_table_append_candidate (new_table, ibus_lookup_table_get_candidate (table, i));
+    }
+
+    ibus_lookup_table_set_cursor_pos (new_table, ibus_lookup_table_get_cursor_in_page (table));
+
+    ibus_engine_update_lookup_table (engine, new_table, visible);
+
+    g_object_unref (new_table);
 }
 
 void ibus_engine_show_lookup_table (IBusEngine *engine)

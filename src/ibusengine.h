@@ -129,6 +129,10 @@ void         ibus_engine_update_lookup_table
                                         (IBusEngine         *engine,
                                          IBusLookupTable    *lookup_table,
                                          gboolean            visible);
+void         ibus_engine_update_lookup_table_fast
+                                        (IBusEngine         *engine,
+                                         IBusLookupTable    *lookup_table,
+                                         gboolean            visible);
 void         ibus_engine_show_lookup_table
                                         (IBusEngine         *engine);
 void         ibus_engine_hide_lookup_table
