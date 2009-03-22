@@ -238,11 +238,11 @@ class CandidatePanel(gtk.VBox):
         else:
             # package all widgets in HORIZONTAL mode
             image = gtk.Image()
-            image.set_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
+            image.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
             self.__prev_button.set_image(image)
 
             image = gtk.Image()
-            image.set_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_MENU)
+            image.set_from_stock(gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
             self.__next_button.set_image(image)
 
             vbox = gtk.VBox()
