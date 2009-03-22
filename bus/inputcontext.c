@@ -1472,7 +1472,7 @@ bus_input_context_update_lookup_table (BusInputContext *context,
     if (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "UpdateLookupTable",
-                                       IBUS_TYPE_TEXT, &(priv->lookup_table),
+                                       IBUS_TYPE_LOOKUP_TABLE, &(priv->lookup_table),
                                        G_TYPE_BOOLEAN, &(priv->lookup_table_visible),
                                        G_TYPE_INVALID);
     }
