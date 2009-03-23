@@ -541,7 +541,11 @@ bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
 
     reply_message = dbus_pending_call_steal_reply (pending);
 
-    if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
+    if (reply_message == NULL) {
+        call_data->func(FALSE, call_data->user_data);
+        return;
+    }
+    else if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_message_unref (reply_message);
         ibus_error_free (error);
