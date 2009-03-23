@@ -273,6 +273,8 @@ ibus_lookup_table_clear (IBusLookupTable *table)
     }
 
     g_array_set_size (table->candidates, 0);
+
+    table->cursor_pos = 0;
 }
 
 void
