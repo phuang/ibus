@@ -244,7 +244,7 @@ class Setup(object):
         dialog.destroy()
         if id != gtk.RESPONSE_OK:
             return
-        self.__config.set_value(section, _name, shortcuts)
+        self.__config.set_list(section, _name, shortcuts, "s")
         entry.set_text("; ".join(shortcuts))
 
 
