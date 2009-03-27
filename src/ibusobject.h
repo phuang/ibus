@@ -17,9 +17,24 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusobject
+ * @short_description: Base Object of iBus.
+ * @stability: Stable
+ *
+ * iBus Object is the base object for all objects in iBus.
+ */
 #ifndef __IBUS_OBJECT_H_
 #define __IBUS_OBJECT_H_
 
+/**
+ * SECTION: iBusObject
+ * @short_description: Base object of iBus.
+ *
+ *
+ * This module provides essential definition and functions for manipulating
+ * iBus base object.
+ */
 #include <glib-object.h>
 #include "ibusmarshalers.h"
 #include "ibustypes.h"

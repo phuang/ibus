@@ -36,3 +36,6 @@ py-compile
 ibus-*.tar.*
 ibus.spec
 ibus-1.0.pc
+i386
+x86_64
+

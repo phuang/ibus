@@ -17,6 +17,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusconnection
+ * @short_description: DBusConnection wrapper.
+ * @see_also: <ulink url="http://dbus.freedesktop.org/doc/api/html/structDBusConnection.html">DBusConnection</ulink>
+ *
+ * An IBusConnection provides DBusConnection wrapper.
+ * It can be used to connect to either dBus or iBus daemon.
+ */
+
 #ifndef __IBUS_CONNECTION_H_
 #define __IBUS_CONNECTION_H_
 

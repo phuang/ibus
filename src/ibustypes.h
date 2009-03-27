@@ -17,9 +17,41 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibustypes
+ * @short_description: Generic types for  iBus.
+ * @stability: Stable
+ *
+ * This session consists generic types for iBus, including shift/control key modifiers,
+ * and a rectangle structure.
+ */
 #ifndef __IBUS_TYPES_H_
 #define __IBUS_TYPES_H_
 
+/**
+ * IBusModifierType:
+ * @IBUS_SHIFT_MASK: Shift  is activated.
+ * @IBUS_LOCK_MASK: Cap Lock is locked.
+ * @IBUS_CONTROL_MASK: Control key is activated.
+ * @IBUS_MOD1_MASK: Modifier 1 (Usually Alt_L (0x40),  Alt_R (0x6c),  Meta_L (0xcd)) activated.
+ * @IBUS_MOD2_MASK: Modifier 2 (Usually Num_Lock (0x4d)) activated.
+ * @IBUS_MOD3_MASK: Modifier 3 activated.
+ * @IBUS_MOD4_MASK: Modifier 4 (Usually Super_L (0xce),  Hyper_L (0xcf)) activated.
+ * @IBUS_MOD5_MASK: Modifier 5 (ISO_Level3_Shift (0x5c),  Mode_switch (0xcb)) activated.
+ * @IBUS_BUTTON1_MASK: Mouse button 1 (left) is activated.
+ * @IBUS_BUTTON2_MASK: Mouse button 2 (middle) is activated.
+ * @IBUS_BUTTON3_MASK: Mouse button 3 (right) is activated.
+ * @IBUS_BUTTON4_MASK: Mouse button 4 (scroll up) is activated.
+ * @IBUS_BUTTON5_MASK: Mouse button 5 (scroll down) is activated.
+ * @IBUS_FORWARD_MASK: Forward mask.
+ * @IBUS_SUPER_MASK: Super (Usually Win) key is activated.
+ * @IBUS_HYPER_MASK: Hyper key is activated.
+ * @IBUS_RELEASE_MASK: Key is released.
+ * @IBUS_MODIFIER_MASK: Modifier mask for the all the masks above.
+ *
+ * Handles key modifier such as control, shift and alt and release event.
+ * Note that nits 15 - 25 are currently unused, while bit 29 is used internally.
+ */
 typedef enum
 {
     IBUS_SHIFT_MASK    = 1 << 0,
@@ -40,7 +72,7 @@ typedef enum
      * Bits 15 - 25 are currently unused. Bit 29 is used internally.
      */
 
-    /* forard mask */
+    /* forward mask */
     IBUS_FORWARD_MASK  = 1 << 25,
 
     IBUS_SUPER_MASK    = 1 << 26,
@@ -52,6 +84,16 @@ typedef enum
     IBUS_MODIFIER_MASK = 0x5c001fff
 } IBusModifierType;
 
+/**
+ * IBusCapabilite:
+ * @IBUS_CAP_PREEDIT_TEXT: UI is capable to show pre-edit text.
+ * @IBUS_CAP_AUXILIARY_TEXT: UI is capable to show auxiliary text.
+ * @IBUS_CAP_LOOKUP_TABLE: UI is capable to show the lookup table.
+ * @IBUS_CAP_FOCUS: UI is capable to get focus.
+ * @IBUS_CAP_PROPERTY: UI is capable to have property.
+ *
+ * Capability flags of UI.
+ */
 typedef enum {
     IBUS_CAP_PREEDIT_TEXT       = 1 << 0,
     IBUS_CAP_AUXILIARY_TEXT     = 1 << 1,
@@ -60,6 +102,15 @@ typedef enum {
     IBUS_CAP_PROPERTY           = 1 << 4,
 } IBusCapabilite;
 
+/**
+ * IBusRectangle:
+ * @x: x coordinate.
+ * @y: y coordinate.
+ * @width: width of the rectangle.
+ * @height: height of the renctangl.
+ *
+ * Rectangle definition.
+ */
 typedef struct _IBusRectangle IBusRectangle;
 struct _IBusRectangle {
     gint x;
@@ -68,7 +119,13 @@ struct _IBusRectangle {
     gint height;
 };
 
-typedef void (* IBusFreeFunc) (gpointer );
+/**
+ * IBusFreeFunc:
+ * @object: object to be freed.
+ *
+ * Free function prototype.
+ */
+typedef void (* IBusFreeFunc) (gpointer object);
 
 #endif
 

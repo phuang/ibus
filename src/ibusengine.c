@@ -190,6 +190,11 @@ ibus_engine_class_init (IBusEngineClass *klass)
 
 
     /* install properties */
+    /**
+     * IBusEngine:name:
+     *
+     * Name of this IBusEngine.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_NAME,
                     g_param_spec_string ("name",
@@ -198,7 +203,11 @@ ibus_engine_class_init (IBusEngineClass *klass)
                         "noname",
                         G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
 
-
+    /**
+     * IBusEngine:connection:
+     *
+     * Connection for this IBusEngine.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,
                     g_param_spec_object ("connection",
@@ -208,6 +217,15 @@ ibus_engine_class_init (IBusEngineClass *klass)
                         G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
+    /**
+     * IBusEngine::process-key-event:
+     * @engine: An IBusEngine.
+     * @keyval: KeySym of the key press.
+     * @state: Key modifier flags
+     *
+     * This signal is emitted whenever a key event is received.
+     * Implement process_key_event() in extend class to receive this signal.
+     */
     engine_signals[PROCESS_KEY_EVENT] =
         g_signal_new (I_("process-key-event"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -220,6 +238,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_UINT,
             G_TYPE_UINT);
 
+    /**
+     * IBusEngine::focus-in:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the client application get the focus.
+     * Implement focus_in() in extend class to receive this signal.
+     */
     engine_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -230,6 +255,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::focus-out:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the client application  lost the focus.
+     * Implement focus_out() in extend class to receive this signal.
+     */
     engine_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -240,6 +272,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::reset:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the IME is reset.
+     * Implement reset() in extend class to receive this signal.
+     */
     engine_signals[RESET] =
         g_signal_new (I_("reset"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -250,6 +289,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::enable:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the IME is enabled.
+     * Implement enable() in extend class to receive this signal.
+     */
     engine_signals[ENABLE] =
         g_signal_new (I_("enable"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -260,6 +306,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::disable:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the IME is disabled.
+     * Implement disable() in extend class to receive this signal.
+     */
     engine_signals[DISABLE] =
         g_signal_new (I_("disable"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -270,6 +323,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::set-cursor-location:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the location of IME is set.
+     * Implement set_cursor_location() in extend class to receive this signal.
+     */
     engine_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -284,6 +344,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_INT,
             G_TYPE_INT);
 
+    /**
+     * IBusEngine::set-capabilities:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the client application capabilities is set.
+     * Implement set_cursor_location() in extend class to receive this signal.
+     */
     engine_signals[SET_CAPABILITIES] =
         g_signal_new (I_("set-capabilities"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -295,6 +362,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             1,
             G_TYPE_UINT);
 
+    /**
+     * IBusEngine::page-up:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the page-up key is pressed.
+     * Implement page_up() in extend class to receive this signal.
+     */
     engine_signals[PAGE_UP] =
         g_signal_new (I_("page-up"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -305,6 +379,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::page-down:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the page-down key is pressed.
+     * Implement page_down() in extend class to receive this signal.
+     */
     engine_signals[PAGE_DOWN] =
         g_signal_new (I_("page-down"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -315,6 +396,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::cursor-up:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the up cursor key is pressed.
+     * Implement cursor_up() in extend class to receive this signal.
+     */
     engine_signals[CURSOR_UP] =
         g_signal_new (I_("cursor-up"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -325,6 +413,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::cursor-down:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever the down cursor key is pressed.
+     * Implement cursor_down() in extend class to receive this signal.
+     */
     engine_signals[CURSOR_DOWN] =
         g_signal_new (I_("cursor-down"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -335,6 +430,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusEngine::property-activate:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever a property is activated or change changed.
+     * Implement property_activate() in extend class to receive this signal.
+     */
     engine_signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -347,6 +449,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_TYPE_STRING,
             G_TYPE_UINT);
 
+    /**
+     * IBusEngine::property-show:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever a property is shown.
+     * Implement property_show() in extend class to receive this signal.
+     */
     engine_signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -358,6 +467,13 @@ ibus_engine_class_init (IBusEngineClass *klass)
             1,
             G_TYPE_STRING);
 
+    /**
+     * IBusEngine::property-hide:
+     * @engine: An IBusEngine.
+     *
+     * This signal is emitted whenever a property is hidden.
+     * Implement property_hide() in extend class to receive this signal.
+     */
     engine_signals[PROPERTY_HIDE] =
         g_signal_new (I_("property-hide"),
             G_TYPE_FROM_CLASS (gobject_class),

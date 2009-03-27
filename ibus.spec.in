@@ -1,6 +1,8 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?gtk_binary_version: %define gtk_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-2.0)}
 %define mod_path ibus-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@
+%define host_vendor %(if [[ "%{_host_vendor}" == "unknown" ]]; then echo redhat; else echo %{_host_vendor}; fi)
+%define host %{_host_cpu}-%{host_vendor}-%{_host_os}
 Name:       ibus
 Version:    @PACKAGE_VERSION@
 Release:    1%{?dist}
@@ -108,13 +110,32 @@ desktop-file-install --delete-original          \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+if [ "$1" -gt 1 ] ; then
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+gconftool-2 --makefile-uninstall-rule \
+%{_sysconfdir}/gconf/schemas/%{name}.schemas >/dev/null || :
+fi
+
+%post
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+gconftool-2 --makefile-install-rule \
+%{_sysconfdir}/gconf/schemas/%{name}.schemas > /dev/null || :
+
+%preun
+if [ "$1" -eq 0 ] ; then
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+gconftool-2 --makefile-uninstall-rule \
+%{_sysconfdir}/gconf/schemas/%{name}.schemas > /dev/null || :
+fi
+
 %post libs
 /sbin/ldconfig
 update-desktop-database -q
 %{_sbindir}/alternatives --install %{_sysconfdir}/X11/xinit/xinputrc xinputrc %{_xinputconf} 83 || :
 
 %post gtk
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{host} || :
 
 %postun libs
 /sbin/ldconfig
@@ -126,7 +147,7 @@ if [ "$1" = "0" ]; then
 fi
 
 %postun gtk
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{host} || :
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -140,8 +161,9 @@ fi
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-ui-gtk
 %{_libexecdir}/ibus-x11
-%config %{_xinputconf}
-
+%config(noreplace) %{_xinputconf}
+%config(noreplace) %{_sysconfdir}/gconf/schemas/%{name}.schemas
+%config(noreplace) %{_sysconfdir}/xdg/autostart/ibus.desktop
 
 %files libs
 %defattr(-,root,root,-)
@@ -163,5 +185,9 @@ fi
 %{_libdir}/pkgconfig/*
 
 %changelog
-* Thu Aug 07 2008 Huang Peng <shawn.p.huang@gmail.com> - @VERSION@-1
+* @DATE_DISPLAY@ Huang Peng <shawn.p.huang@gmail.com> - @VERSION@-1
+- Current version.
+
+* Thu Aug 07 2008 Huang Peng <shawn.p.huang@gmail.com> - 0.1.0.20080810-1
 - The first version.
+

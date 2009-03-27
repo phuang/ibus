@@ -49,6 +49,13 @@ AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
 
+# For dislpay Date
+m4_define(ibus_maybe_datedisplay,
+    m4_esyscmd([if test x]ibus_released[ != x1; then date '+%a %b %d %Y' | tr -d '\n\r'; fi]))
+m4_define([ibus_datedisplay], ibus_maybe_datedisplay)
+DATE_DISPLAY="ibus_datedisplay"
+AC_SUBST(DATE_DISPLAY)
+
 # If only source code changed, lt_revision + 1
 # If any interface added, lt_age + 1
 # If any interfaces changed or removed, lt_current + 1

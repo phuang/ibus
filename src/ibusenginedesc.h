@@ -17,6 +17,22 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusenginedesc
+ * @short_description:  Input method engine description data.
+ * @stability: Stable
+ * @see_also: #IBusComponent, #IBusEngine
+ *
+ * An IBusEngineDesc stores description data of IBusEngine.
+ * The description data can either be passed to ibus_engine_desc_new(),
+ * or loaded from an XML node through ibus_engine_desc_new_from_xml_node()
+ * to construct IBusEngineDesc.
+ *
+ * However, the recommended way to load engine description data is
+ * using ibus_component_new_from_file() to load a component file,
+ * which also includes engine description data.
+ */
+
 #ifndef __ENGINE_DESC_H_
 #define __ENGINE_DESC_H_
 
@@ -47,10 +63,26 @@ typedef struct _IBusEngineDesc IBusEngineDesc;
 typedef struct _IBusEngineDescClass IBusEngineDescClass;
 typedef struct _BusComponent BusComponent;
 
+/**
+ * IBusEngineDesc:
+ * @name: Name of the engine.
+ * @longname: Long name of the input method engine.
+ * @description: Input method engine description.
+ * @language: Language (e.g. zh, jp) supported by this input method engine.
+ * @license: License of the input method engine.
+ * @author: Author of the input method engine.
+ * @icon: Icon file of this engine.
+ * @layout: Keyboard layout
+ * @rank: Preference rank among engines, the highest ranked IME will put in
+ * the front.
+ *
+ * Input method engine description data.
+ */
 struct _IBusEngineDesc {
     IBusSerializable parent;
     /* instance members */
 
+    /*< public >*/
     gchar *name;
     gchar *longname;
     gchar *description;
@@ -64,11 +96,25 @@ struct _IBusEngineDesc {
 
 struct _IBusEngineDescClass {
     IBusSerializableClass parent;
-
     /* class members */
 };
 
 GType            ibus_engine_desc_get_type      (void);
+
+/**
+ * ibus_engine_desc_new:
+ * @name: Name of the engine.
+ * @longname: Long name of the input method engine.
+ * @description: Input method engine description.
+ * @language: Language (e.g. zh, jp) supported by this input method engine.
+ * @license: License of the input method engine.
+ * @author: Author of the input method engine.
+ * @icon: Icon file of this engine.
+ * @layout: Keyboard layout
+ * @returns: A newly allocated IBusEngineDesc.
+ *
+ * New a IBusEngineDesc.
+ */
 IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
                                                  const gchar    *longname,
                                                  const gchar    *description,
@@ -77,8 +123,28 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
                                                  const gchar    *author,
                                                  const gchar    *icon,
                                                  const gchar    *layout);
+/**
+ * ibus_engine_desc_new_from_xml_node:
+ * @node: An XML node
+ * @returns: A newly allocated IBusEngineDesc that contains description from
+ * @node.
+ *
+ * New a IBusEngineDesc from an XML node.
+ * <note><para>This function is called by ibus_component_new_from_file(),
+ *  so developers normally do not need to call it directly.
+ * </para></note>
+ */
 IBusEngineDesc  *ibus_engine_desc_new_from_xml_node
                                                 (XMLNode        *node);
+/**
+ * ibus_engine_desc_output:
+ * @info: An IBusEngineDesc
+ * @output: XML-formatted Input method engine description.
+ * @indent: Number of indent (showed as 4 spaces).
+ *
+ * Output XML-formatted input method engine description.
+ * The result will be append to GString specified in @output.
+ */
 void             ibus_engine_desc_output        (IBusEngineDesc  *info,
                                                  GString        *output,
                                                  gint            indent);

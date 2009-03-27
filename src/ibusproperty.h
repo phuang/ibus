@@ -17,6 +17,19 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusproperty
+ * @short_description: UI component for input method engine property.
+ * @stability: Stable
+ * @see_also: #IBusEngine
+ *
+ * An IBusProperty is an UI component like a button or a menu item
+ * which shows the status of corresponding input method engine property.
+ * End user can operate and see the current status of IME through these components.
+ * For example, ibus-chewing users change the English/Chinese input mode by
+ * pressing ctrl-space or click on the Eng/Chi switch button.
+ * And the IBusProperty shows the change correspondingly.
+ */
 #ifndef __IBUS_PROPERTY_H_
 #define __IBUS_PROPERTY_H_
 
@@ -59,7 +72,17 @@ G_BEGIN_DECLS
 #define IBUS_PROP_LIST_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROP_LIST, IBusPropListClass))
 
-
+/**
+ * IBusPropType:
+ * @PROP_TYPE_NORMAL: Property is shown as normal text.
+ * @PROP_TYPE_TOGGLE: Property is shown as a toggle button.
+ * @PROP_TYPE_RADIO: Property is shown as a radio selection option.
+ * @PROP_TYPE_MENU: Property is shown as a menu, usually imply it has sub menu
+ * items.
+ * @PROP_TYPE_SEPARATOR: A separator for menu.
+ *
+ * Type of IBusProperty.
+ */
 typedef enum {
     PROP_TYPE_NORMAL = 0,
     PROP_TYPE_TOGGLE = 1,
@@ -68,6 +91,28 @@ typedef enum {
     PROP_TYPE_SEPARATOR = 4,
 } IBusPropType;
 
+/**
+ * IBusPropState:
+ * @PROP_STATE_UNCHECKED: Property option is unchecked.
+ * @PROP_STATE_CHECKED: Property option is checked.
+ * @PROP_STATE_INCONSISTENT: The state is inconsistent with the associated IME
+ * property.
+ *
+ * State of IBusProperty. The actual effect depends on #IBusPropType of the
+ * IBusProperty.
+ *
+ * <variablelist>
+ *     <varlistentry>
+ *         <term>PROP_TYPE_TOGGLE</term>
+ *         <listitem><para>Emphasized if PROP_STATE_CHECKED, normal otherwise.</para></listitem>
+ *     </varlistentry>
+ *     <varlistentry>
+ *         <term>PROP_TYPE_RADIO</term>
+ *         <listitem><para>Option checked if PROP_STATE_CHECKED, unchecked otherwise.</para></listitem>
+ *     </varlistentry>
+ * </variablelist>
+ * No effect on other types.
+ */
 typedef enum {
     PROP_STATE_UNCHECKED = 0,
     PROP_STATE_CHECKED = 1,
@@ -80,9 +125,25 @@ typedef struct _IBusPropertyClass IBusPropertyClass;
 typedef struct _IBusPropList IBusPropList;
 typedef struct _IBusPropListClass IBusPropListClass;
 
+/**
+ * IBusProperty:
+ * @key: Unique Identity for the IBusProperty.
+ * @icon: Icon file for the IBusProperty.
+ * @label: Text shown in UI.
+ * @tooltip: Message shown if mouse hovered the  IBusProperty.
+ * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
+ * @visible: Whether the IBusProperty is visible.
+ * @type: IBusPropType of IBusProperty.
+ * @state: IBusPropState of IBusProperty.
+ * @sub_props: IBusPropList that contains sub IBusProperties. These IBusProperties are usually
+ * shown as sub menu item.
+ *
+ * UI component for input method engine property.
+ */
 struct _IBusProperty {
     IBusSerializable parent;
 
+    /*< public >*/
     gchar    *key;
     gchar    *icon;
     IBusText *label;
@@ -100,9 +161,16 @@ struct _IBusPropertyClass {
     IBusSerializableClass parent;
 };
 
+/**
+ * IBusPropList:
+ * @properties: GArray that holds IBusProperties.
+ *
+ * A GArray of IBusProperties.
+ */
 struct _IBusPropList {
     IBusSerializable parent;
 
+    /*< public >*/
     GArray *properties;
 };
 
@@ -111,6 +179,22 @@ struct _IBusPropListClass {
 };
 
 GType            ibus_property_get_type     ();
+
+/**
+ * ibus_property_new:
+ * @key: Unique Identity for the IBusProperty.
+ * @icon: Icon file for the IBusProperty.
+ * @label: Text shown in UI.
+ * @tooltip: Message shown if mouse hovered the  IBusProperty.
+ * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
+ * @visible: Whether the IBusProperty is visible.
+ * @type: IBusPropType of IBusProperty.
+ * @state: IBusPropState of IBusProperty.
+ * @prop_list: IBusPropList that contains sub IBusProperties.
+ * @returns: A newly allocated IBusProperty.
+ *
+ * New a IBusProperty.
+ */
 IBusProperty    *ibus_property_new          (const gchar    *key,
                                              IBusPropType    type,
                                              IBusText       *label,
@@ -120,21 +204,90 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
                                              gboolean        visible,
                                              IBusPropState   state,
                                              IBusPropList   *prop_list);
+
+/**
+ * ibus_property_set_label:
+ * @prop: An IBusProperty.
+ * @label: Text shown in UI.
+ *
+ * Set the label of IBusProperty.
+ */
 void             ibus_property_set_label    (IBusProperty   *prop,
                                              IBusText       *label);
+
+/**
+ * ibus_property_set_visible:
+ * @prop: An IBusProperty.
+ * @visible: Whether the IBusProperty is visible.
+ *
+ * Set whether the IBusProperty is visible.
+ */
 void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
+
+/**
+ * ibus_property_set_sub_props:
+ * @prop: An IBusProperty.
+ * @prop_list: IBusPropList that contains sub IBusProperties.
+ *
+ * Set the sub IBusProperties.
+ */
 void             ibus_property_set_sub_props(IBusProperty   *prop,
                                              IBusPropList   *prop_list);
+
+/**
+ * ibus_property_update:
+ * @prop: An IBusProperty.
+ * @prop_update: IBusPropList that contains sub IBusProperties.
+ * @returns: TRUE for update suceeded; FALSE otherwise.
+ *
+ * Update the content of an IBusProperty.
+ * IBusProperty @prop_update can either be sub-property of @prop,
+ * or holds new values for @prop.
+ */
+
 gboolean         ibus_property_update       (IBusProperty   *prop,
                                              IBusProperty   *prop_update);
 
 GType            ibus_prop_list_get_type    ();
+
+/**
+ * ibus_prop_list_new:
+ * @returns: A newly allocated IBusPropList.
+ *
+ * New a IBusPropList.
+ */
 IBusPropList    *ibus_prop_list_new         ();
+
+/**
+ * ibus_prop_list_append:
+ * @prop_list: An IBusPropList.
+ * @prop: IBusProperty to be append to @prop_list.
+ *
+ * Append an IBusProperty to an IBusPropList.
+ */
 void             ibus_prop_list_append      (IBusPropList   *prop_list,
                                              IBusProperty   *prop);
+
+/**
+ * ibus_prop_list_get:
+ * @prop_list: An IBusPropList.
+ * @index: Index of an IBusPropList.
+ * @returns: IBusProperty at given index, NULL if no such IBusProperty.
+ *
+ * Returns IBusProperty at given index.
+ */
 IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
                                              guint           index);
+
+/**
+ * ibus_prop_list_update_property:
+ * @prop_list: An IBusPropList.
+ * @prop: IBusProperty to be update.
+ * @returns: TRUE if succeeded, FALSE otherwise.
+ *
+ * Update an IBusProperty in IBusPropList.
+ */
 gboolean         ibus_prop_list_update_property
                                             (IBusPropList   *prop_list,
                                              IBusProperty   *prop);

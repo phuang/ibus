@@ -25,7 +25,8 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
-SCAN_OPTIONS=--rebuild-sections
+# SCAN_OPTIONS=--rebuild-sections
+SCAN_OPTIONS=
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -42,7 +43,7 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=
+HFILE_GLOB=$(top_srcdir)/src/*.h
 CFILE_GLOB=
 
 # Header files to ignore when scanning.
@@ -97,4 +98,10 @@ EXTRA_DIST +=
 
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
-# CLEANFILES += ibus*
+
+clean-local:
+	rm -rf tmpl
+
+CLEANFILES+= *.stamp
+
+
