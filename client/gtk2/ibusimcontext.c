@@ -35,7 +35,7 @@ struct _IBusIMContext {
 
     /* enabled */
     gboolean        enable;
-    IBusInputContext *ibus_context;
+    IBusInputContext *ibuscontext;
 
     /* preedit status */
     gchar           *preedit_string;
@@ -61,6 +61,7 @@ static guint    _signal_preedit_start_id = 0;
 static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
+static GQuark   _q_ibus_im_context = 0;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
@@ -216,69 +217,70 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
+    _q_ibus_im_context = g_quark_from_static_string ("IBusIMContext");
 }
 
 static void
 ibus_im_context_init (GObject *obj)
 {
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (obj);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (obj);
 
-    ibuscontext->client_window = NULL;
+    ibusimcontext->client_window = NULL;
 
     // Init ibus status
-    ibuscontext->enable = FALSE;
+    ibusimcontext->enable = FALSE;
 
     // Init preedit status
-    ibuscontext->preedit_string = NULL;
-    ibuscontext->preedit_attrs = NULL;
-    ibuscontext->preedit_cursor_pos = 0;
-    ibuscontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_string = NULL;
+    ibusimcontext->preedit_attrs = NULL;
+    ibusimcontext->preedit_cursor_pos = 0;
+    ibusimcontext->preedit_visible = FALSE;
 
     // Init cursor area
-    ibuscontext->cursor_area.x = -1;
-    ibuscontext->cursor_area.y = -1;
-    ibuscontext->cursor_area.width = 0;
-    ibuscontext->cursor_area.height = 0;
+    ibusimcontext->cursor_area.x = -1;
+    ibusimcontext->cursor_area.y = -1;
+    ibusimcontext->cursor_area.width = 0;
+    ibusimcontext->cursor_area.height = 0;
 
-    ibuscontext->ibus_context = NULL;
-    ibuscontext->has_focus = FALSE;
-    ibuscontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS;
+    ibusimcontext->ibuscontext = NULL;
+    ibusimcontext->has_focus = FALSE;
+    ibusimcontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS;
 
 
     // Create slave im context
-    ibuscontext->slave = gtk_im_context_simple_new ();
-    g_signal_connect (ibuscontext->slave,
+    ibusimcontext->slave = gtk_im_context_simple_new ();
+    g_signal_connect (ibusimcontext->slave,
                       "commit",
                       G_CALLBACK (_slave_commit_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->slave,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->slave,
                       "preedit-start",
                       G_CALLBACK (_slave_preedit_start_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->slave,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->slave,
                       "preedit-end",
                       G_CALLBACK (_slave_preedit_end_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->slave,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->slave,
                       "preedit-changed",
                       G_CALLBACK (_slave_preedit_changed_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->slave,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->slave,
                       "retrieve-surrounding",
                       G_CALLBACK (_slave_retrieve_surrounding_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->slave,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->slave,
                       "delete-surrounding",
                       G_CALLBACK (_slave_delete_surrounding_cb),
-                      ibuscontext);
+                      ibusimcontext);
 
     /* init bus object */
     if (_bus == NULL)
         _bus = ibus_bus_new();
 
     if (ibus_bus_is_connected (_bus)) {
-        _create_input_context (ibuscontext);
+        _create_input_context (ibusimcontext);
     }
 
     g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), obj);
@@ -290,27 +292,29 @@ ibus_im_context_finalize (GObject *obj)
     g_return_if_fail (obj != NULL);
     g_return_if_fail (IBUS_IS_IM_CONTEXT (obj));
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (obj);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (obj);
 
     g_signal_handlers_disconnect_by_func (_bus, G_CALLBACK (_bus_connected_cb), obj);
 
-    if (ibuscontext->ibus_context) {
-        ibus_object_destroy ((IBusObject *)ibuscontext->ibus_context);
+    if (ibusimcontext->ibuscontext) {
+        ibus_object_destroy ((IBusObject *)ibusimcontext->ibuscontext);
     }
 
-    g_object_unref (ibuscontext->slave);
+    g_object_unref (ibusimcontext->slave);
 
-    if (ibuscontext->client_window) {
-        g_object_steal_data ((GObject *) ibuscontext->client_window, "IMContext");
-        g_object_unref (ibuscontext->client_window);
+    if (ibusimcontext->client_window) {
+        if (g_object_steal_qdata ((GObject *) ibusimcontext->client_window, _q_ibus_im_context) == ibusimcontext) {
+            g_object_unref (ibusimcontext);
+        }
+        g_object_unref (ibusimcontext->client_window);
     }
 
     // release preedit
-    if (ibuscontext->preedit_string) {
-        g_free (ibuscontext->preedit_string);
+    if (ibusimcontext->preedit_string) {
+        g_free (ibusimcontext->preedit_string);
     }
-    if (ibuscontext->preedit_attrs) {
-        pango_attr_list_unref (ibuscontext->preedit_attrs);
+    if (ibusimcontext->preedit_attrs) {
+        pango_attr_list_unref (ibusimcontext->preedit_attrs);
     }
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
@@ -323,21 +327,21 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     g_return_val_if_fail (context != NULL, FALSE);
     g_return_val_if_fail (IBUS_IS_IM_CONTEXT (context), FALSE);
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibuscontext->ibus_context && ibuscontext->has_focus) {
+    if (ibusimcontext->ibuscontext && ibusimcontext->has_focus) {
         /* If context does not have focus, ibus will process key event in sync mode.
          * It is a workaround for increase search in treeview.
          */
         gboolean retval;
         switch (event->type) {
         case GDK_KEY_RELEASE:
-            retval = ibus_input_context_process_key_event (ibuscontext->ibus_context,
+            retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                            event->keyval,
                                                            event->state | IBUS_RELEASE_MASK);
             break;
         case GDK_KEY_PRESS:
-            retval = ibus_input_context_process_key_event (ibuscontext->ibus_context,
+            retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                            event->keyval,
                                                            event->state);
             break;
@@ -348,10 +352,10 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
         if (retval) {
             return TRUE;
         }
-        return gtk_im_context_filter_keypress (ibuscontext->slave, event);
+        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
     }
     else {
-        return gtk_im_context_filter_keypress (ibuscontext->slave, event);
+        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
     }
 }
 
@@ -360,15 +364,15 @@ ibus_im_context_focus_in (GtkIMContext *context)
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext;
-    ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext;
+    ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    ibuscontext->has_focus = TRUE;
-    if (ibuscontext->ibus_context) {
-        ibus_input_context_focus_in (ibuscontext->ibus_context);
+    ibusimcontext->has_focus = TRUE;
+    if (ibusimcontext->ibuscontext) {
+        ibus_input_context_focus_in (ibusimcontext->ibuscontext);
     }
 
-    gtk_im_context_focus_in (ibuscontext->slave);
+    gtk_im_context_focus_in (ibusimcontext->slave);
 
     _set_cursor_location_internal (context);
 }
@@ -379,14 +383,14 @@ ibus_im_context_focus_out (GtkIMContext *context)
 
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext;
-    ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext;
+    ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    ibuscontext->has_focus = FALSE;
-    if (ibuscontext->ibus_context) {
-        ibus_input_context_focus_out (ibuscontext->ibus_context);
+    ibusimcontext->has_focus = FALSE;
+    if (ibusimcontext->ibuscontext) {
+        ibus_input_context_focus_out (ibusimcontext->ibuscontext);
     }
-    gtk_im_context_focus_out (ibuscontext->slave);
+    gtk_im_context_focus_out (ibusimcontext->slave);
 }
 
 static void
@@ -394,13 +398,13 @@ ibus_im_context_reset (GtkIMContext *context)
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext;
-    ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext;
+    ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibuscontext->ibus_context) {
-        ibus_input_context_reset (ibuscontext->ibus_context);
+    if (ibusimcontext->ibuscontext) {
+        ibus_input_context_reset (ibusimcontext->ibuscontext);
     }
-    gtk_im_context_reset (ibuscontext->slave);
+    gtk_im_context_reset (ibusimcontext->slave);
 }
 
 
@@ -412,23 +416,23 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext;
-    ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext;
+    ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibuscontext->enable) {
-        if (ibuscontext->preedit_visible) {
+    if (ibusimcontext->enable) {
+        if (ibusimcontext->preedit_visible) {
             if (str) {
-                *str = g_strdup (ibuscontext->preedit_string ? ibuscontext->preedit_string: "");
+                *str = g_strdup (ibusimcontext->preedit_string ? ibusimcontext->preedit_string: "");
             }
 
             if (attrs) {
-                *attrs = ibuscontext->preedit_attrs ?
-                            pango_attr_list_ref (ibuscontext->preedit_attrs):
+                *attrs = ibusimcontext->preedit_attrs ?
+                            pango_attr_list_ref (ibusimcontext->preedit_attrs):
                             pango_attr_list_new ();
             }
 
             if (cursor_pos) {
-                *cursor_pos = ibuscontext->preedit_cursor_pos;
+                *cursor_pos = ibusimcontext->preedit_cursor_pos;
             }
         }
         else {
@@ -444,7 +448,7 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
         }
     }
     else {
-        gtk_im_context_get_preedit_string (ibuscontext->slave, str, attrs, cursor_pos);
+        gtk_im_context_get_preedit_string (ibusimcontext->slave, str, attrs, cursor_pos);
     }
 }
 
@@ -455,45 +459,48 @@ ibus_im_context_set_client_window  (GtkIMContext *context, GdkWindow *client)
     g_return_if_fail (context != NULL);
     g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibuscontext->client_window) {
-        g_object_steal_data ((GObject *) ibuscontext->client_window, "IMContext");
-        g_object_unref (ibuscontext->client_window);
+    if (ibusimcontext->client_window) {
+        if (g_object_steal_qdata ((GObject *) ibusimcontext->client_window, _q_ibus_im_context) == ibusimcontext) {
+            g_object_unref (ibusimcontext);
+        }
+        g_object_unref (ibusimcontext->client_window);
     }
 
     if (client) {
         g_object_ref (client);
-        g_object_set_data ((GObject *) client, "IMContext", context);
+        g_object_ref (context);
+        g_object_set_qdata_full ((GObject *) client, _q_ibus_im_context, context, g_object_unref);
     }
 
-    ibuscontext->client_window = client;
-    gtk_im_context_set_client_window (ibuscontext->slave, client);
+    ibusimcontext->client_window = client;
+    gtk_im_context_set_client_window (ibusimcontext->slave, client);
 }
 
 static void
 _set_cursor_location_internal (GtkIMContext *context)
 {
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
     GdkRectangle area;
     gint x, y;
 
-    if(ibuscontext->client_window == NULL || ibuscontext->ibus_context == NULL) {
+    if(ibusimcontext->client_window == NULL || ibusimcontext->ibuscontext == NULL) {
         return;
     }
 
-    area = ibuscontext->cursor_area;
+    area = ibusimcontext->cursor_area;
     if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
         gint w, h;
-        gdk_drawable_get_size (ibuscontext->client_window, &w, &h);
+        gdk_drawable_get_size (ibusimcontext->client_window, &w, &h);
         area.y += h;
         area.x = 0;
     }
 
-    gdk_window_get_origin (ibuscontext->client_window, &x, &y);
+    gdk_window_get_origin (ibusimcontext->client_window, &x, &y);
     area.x += x;
     area.y += y;
-    ibus_input_context_set_cursor_location (ibuscontext->ibus_context,
+    ibus_input_context_set_cursor_location (ibusimcontext->ibuscontext,
                                             area.x,
                                             area.y,
                                             area.width,
@@ -506,11 +513,11 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
     g_return_if_fail (context != NULL);
     g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    ibuscontext->cursor_area = *area;
+    ibusimcontext->cursor_area = *area;
     _set_cursor_location_internal (context);
-    gtk_im_context_set_cursor_location (ibuscontext->slave, area);
+    gtk_im_context_set_cursor_location (ibusimcontext->slave, area);
 }
 
 static void
@@ -519,56 +526,56 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
     g_return_if_fail (context != NULL);
     g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
 
-    IBusIMContext *ibuscontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if(ibuscontext->ibus_context) {
+    if(ibusimcontext->ibuscontext) {
         if (use_preedit) {
-            ibuscontext->caps |= IBUS_CAP_PREEDIT_TEXT;
+            ibusimcontext->caps |= IBUS_CAP_PREEDIT_TEXT;
         }
         else {
-            ibuscontext->caps &= ~IBUS_CAP_PREEDIT_TEXT;
+            ibusimcontext->caps &= ~IBUS_CAP_PREEDIT_TEXT;
         }
-        ibus_input_context_set_capabilities (ibuscontext->ibus_context, ibuscontext->caps);
+        ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
     }
-    gtk_im_context_set_use_preedit (ibuscontext->slave, use_preedit);
+    gtk_im_context_set_use_preedit (ibusimcontext->slave, use_preedit);
 }
 
 static void
 _bus_connected_cb (IBusBus          *bus,
-                   IBusIMContext    *ibuscontext)
+                   IBusIMContext    *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
-    g_assert (ibuscontext->ibus_context == NULL);
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_assert (ibusimcontext->ibuscontext == NULL);
 
-    _create_input_context (ibuscontext);
+    _create_input_context (ibusimcontext);
 }
 
 static void
-_ibus_context_commit_text_cb (IBusInputContext *ibus_context,
+_ibus_context_commit_text_cb (IBusInputContext *ibuscontext,
                               IBusText         *text,
-                              IBusIMContext    *ibuscontext)
+                              IBusIMContext    *ibusimcontext)
 {
-    g_assert (IBUS_IS_INPUT_CONTEXT (ibus_context));
+    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
     g_assert (IBUS_IS_TEXT (text));
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    g_signal_emit (ibuscontext, _signal_commit_id, 0, text->text);
+    g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
 }
 
 static void
-_ibus_context_forward_key_event_cb (IBusInputContext  *ibus_context,
+_ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
                                     guint              keyval,
                                     guint              state,
-                                    IBusIMContext     *ibuscontext)
+                                    IBusIMContext     *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
     GdkEventKey *event;
 
     event = (GdkEventKey *)gdk_event_new (state & IBUS_RELEASE_MASK ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
 
     event->time = GDK_CURRENT_TIME;
-    event->window = g_object_ref (ibuscontext->client_window);
+    event->window = g_object_ref (ibusimcontext->client_window);
     event->send_event = FALSE;
     event->state = state;
     event->keyval = keyval;
@@ -583,31 +590,31 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibus_context,
 }
 
 static void
-_ibus_context_update_preedit_text_cb (IBusInputContext  *ibus_context,
+_ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
                                       IBusText          *text,
                                       gint               cursor_pos,
                                       gboolean           visible,
-                                      IBusIMContext     *ibuscontext)
+                                      IBusIMContext     *ibusimcontext)
 {
-    g_assert (IBUS_IS_INPUT_CONTEXT (ibus_context));
+    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
     g_assert (IBUS_IS_TEXT (text));
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
     const gchar *str;
 
-    if (ibuscontext->preedit_string) {
-        g_free (ibuscontext->preedit_string);
+    if (ibusimcontext->preedit_string) {
+        g_free (ibusimcontext->preedit_string);
     }
-    if (ibuscontext->preedit_attrs) {
-        pango_attr_list_unref (ibuscontext->preedit_attrs);
-        ibuscontext->preedit_attrs = NULL;
+    if (ibusimcontext->preedit_attrs) {
+        pango_attr_list_unref (ibusimcontext->preedit_attrs);
+        ibusimcontext->preedit_attrs = NULL;
     }
 
     str = text->text;
-    ibuscontext->preedit_string = g_strdup (str);
+    ibusimcontext->preedit_string = g_strdup (str);
     if (text->attrs) {
         guint i;
-        ibuscontext->preedit_attrs = pango_attr_list_new ();
+        ibusimcontext->preedit_attrs = pango_attr_list_new ();
         for (i = 0; ; i++) {
             IBusAttribute *attr = ibus_attr_list_get (text->attrs, i);
             if (attr == NULL) {
@@ -636,136 +643,136 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibus_context,
             }
             pango_attr->start_index = g_utf8_offset_to_pointer (str, attr->start_index) - str;
             pango_attr->end_index = g_utf8_offset_to_pointer (str, attr->end_index) - str;
-            pango_attr_list_insert (ibuscontext->preedit_attrs, pango_attr);
+            pango_attr_list_insert (ibusimcontext->preedit_attrs, pango_attr);
         }
     }
-    ibuscontext->preedit_cursor_pos = cursor_pos;
-    ibuscontext->preedit_visible = visible;
-    if (ibuscontext->preedit_visible) {
-        g_signal_emit (ibuscontext, _signal_preedit_start_id, 0);
-        g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
+    ibusimcontext->preedit_cursor_pos = cursor_pos;
+    ibusimcontext->preedit_visible = visible;
+    if (ibusimcontext->preedit_visible) {
+        g_signal_emit (ibusimcontext, _signal_preedit_start_id, 0);
+        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
     }
     else {
-        g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
-        g_signal_emit (ibuscontext, _signal_preedit_end_id, 0);
+        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
+        g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
     }
 }
 
 static void
-_ibus_context_show_preedit_text_cb (IBusInputContext   *ibus_context,
-                                    IBusIMContext      *ibuscontext)
+_ibus_context_show_preedit_text_cb (IBusInputContext   *ibuscontext,
+                                    IBusIMContext      *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->preedit_visible == FALSE) {
-        ibuscontext->preedit_visible = TRUE;
-        g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
+    if (ibusimcontext->preedit_visible == FALSE) {
+        ibusimcontext->preedit_visible = TRUE;
+        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
     }
 }
 
 static void
-_ibus_context_hide_preedit_text_cb (IBusInputContext *ibus_context,
-                                    IBusIMContext    *ibuscontext)
+_ibus_context_hide_preedit_text_cb (IBusInputContext *ibuscontext,
+                                    IBusIMContext    *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->preedit_visible == TRUE) {
-        ibuscontext->preedit_visible = FALSE;
-        g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
+    if (ibusimcontext->preedit_visible == TRUE) {
+        ibusimcontext->preedit_visible = FALSE;
+        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
     }
 }
 
 static void
-_ibus_context_enabled_cb (IBusInputContext *ibus_context,
-                          IBusIMContext    *ibuscontext)
+_ibus_context_enabled_cb (IBusInputContext *ibuscontext,
+                          IBusIMContext    *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    ibuscontext->enable = TRUE;
+    ibusimcontext->enable = TRUE;
 }
 
 static void
-_ibus_context_disabled_cb (IBusInputContext *ibus_context,
-                           IBusIMContext    *ibuscontext)
+_ibus_context_disabled_cb (IBusInputContext *ibuscontext,
+                           IBusIMContext    *ibusimcontext)
 {
-    ibuscontext->enable = FALSE;
+    ibusimcontext->enable = FALSE;
 
     /* clear preedit */
-    ibuscontext->preedit_visible = FALSE;
-    ibuscontext->preedit_cursor_pos = 0;
-    g_free (ibuscontext->preedit_string);
-    ibuscontext->preedit_string = NULL;
+    ibusimcontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_cursor_pos = 0;
+    g_free (ibusimcontext->preedit_string);
+    ibusimcontext->preedit_string = NULL;
 
-    g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibuscontext, _signal_preedit_end_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
 
 static void
-_ibus_context_destroy_cb (IBusInputContext *ibus_context,
-                          IBusIMContext    *ibuscontext)
+_ibus_context_destroy_cb (IBusInputContext *ibuscontext,
+                          IBusIMContext    *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
-    g_assert (ibuscontext->ibus_context == ibus_context);
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_assert (ibusimcontext->ibuscontext == ibuscontext);
 
-    g_object_unref (ibuscontext->ibus_context);
-    ibuscontext->ibus_context = NULL;
+    g_object_unref (ibusimcontext->ibuscontext);
+    ibusimcontext->ibuscontext = NULL;
 
-    ibuscontext->enable = FALSE;
+    ibusimcontext->enable = FALSE;
 
     /* clear preedit */
-    ibuscontext->preedit_visible = FALSE;
-    ibuscontext->preedit_cursor_pos = 0;
-    g_free (ibuscontext->preedit_string);
-    ibuscontext->preedit_string = NULL;
+    ibusimcontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_cursor_pos = 0;
+    g_free (ibusimcontext->preedit_string);
+    ibusimcontext->preedit_string = NULL;
 
-    g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibuscontext, _signal_preedit_end_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
 
 static void
-_create_input_context (IBusIMContext *ibuscontext)
+_create_input_context (IBusIMContext *ibusimcontext)
 {
-    g_assert (IBUS_IS_IM_CONTEXT (ibuscontext));
-    g_assert (ibuscontext->ibus_context == NULL);
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_assert (ibusimcontext->ibuscontext == NULL);
 
-    ibuscontext->ibus_context = ibus_bus_create_input_context (_bus, "test");
+    ibusimcontext->ibuscontext = ibus_bus_create_input_context (_bus, "test");
 
-    g_signal_connect (ibuscontext->ibus_context,
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "commit-text",
                       G_CALLBACK (_ibus_context_commit_text_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "forward-key-event",
                       G_CALLBACK (_ibus_context_forward_key_event_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "update-preedit-text",
                       G_CALLBACK (_ibus_context_update_preedit_text_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "show-preedit-text",
                       G_CALLBACK (_ibus_context_show_preedit_text_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "hide-preedit-text",
                       G_CALLBACK (_ibus_context_hide_preedit_text_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "enabled",
                       G_CALLBACK (_ibus_context_enabled_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context,
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "disabled",
                       G_CALLBACK (_ibus_context_disabled_cb),
-                      ibuscontext);
-    g_signal_connect (ibuscontext->ibus_context, "destroy",
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext, "destroy",
                       G_CALLBACK (_ibus_context_destroy_cb),
-                      ibuscontext);
+                      ibusimcontext);
 
-    ibus_input_context_set_capabilities (ibuscontext->ibus_context, ibuscontext->caps);
+    ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
 
-    if (ibuscontext->has_focus) {
-        ibus_input_context_focus_in (ibuscontext->ibus_context);
+    if (ibusimcontext->has_focus) {
+        ibus_input_context_focus_in (ibusimcontext->ibuscontext);
     }
 }
 
@@ -773,107 +780,107 @@ _create_input_context (IBusIMContext *ibuscontext)
 static void
 _slave_commit_cb (GtkIMContext  *slave,
                   gchar         *string,
-                  IBusIMContext *ibuscontext)
+                  IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
 #if 0
     if ((GtkIMContext *)context == CURRENT_CONTEXT && ibus_im_client_is_enabled (_client))
         return;
 #endif
-    g_signal_emit (ibuscontext, _signal_commit_id, 0, string);
+    g_signal_emit (ibusimcontext, _signal_commit_id, 0, string);
 }
 
 static void
 _slave_preedit_changed_cb (GtkIMContext  *slave,
-                           IBusIMContext *ibuscontext)
+                           IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->enable && ibuscontext->ibus_context) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
 
-    g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
 }
 
 static void
 _slave_preedit_start_cb (GtkIMContext  *slave,
-                         IBusIMContext *ibuscontext)
+                         IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->enable && ibuscontext->ibus_context) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
 
-    g_signal_emit (ibuscontext, _signal_preedit_start_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_start_id, 0);
 }
 
 static void
 _slave_preedit_end_cb (GtkIMContext  *slave,
-                       IBusIMContext *ibuscontext)
+                       IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->enable && ibuscontext->ibus_context) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
-    g_signal_emit (ibuscontext, _signal_preedit_end_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
 
 static void
 _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
-                                IBusIMContext *ibuscontext)
+                                IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->enable && ibuscontext->ibus_context) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
-    g_signal_emit (ibuscontext, _signal_retrieve_surrounding_id, 0);
+    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
 }
 
 static void
 _slave_delete_surrounding_cb (GtkIMContext  *slave,
                               gint           a1,
                               gint           a2,
-                              IBusIMContext *ibuscontext)
+                              IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->enable && ibuscontext->ibus_context) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
-    g_signal_emit (ibuscontext, _signal_delete_surrounding_id, 0, a1, a2);
+    g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, a1, a2);
 }
 
 void
-ibus_im_context_show_preedit (IBusIMContext *ibuscontext)
+ibus_im_context_show_preedit (IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (ibuscontext->preedit_visible) {
+    if (ibusimcontext->preedit_visible) {
         return;
     }
 
-    ibuscontext->preedit_visible = TRUE;
+    ibusimcontext->preedit_visible = TRUE;
 
-    g_signal_emit (ibuscontext, _signal_preedit_start_id, 0);
-    g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_start_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
 }
 
 void
-ibus_im_context_hide_preedit (IBusIMContext *ibuscontext)
+ibus_im_context_hide_preedit (IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibuscontext));
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
 
-    if (!ibuscontext->preedit_visible) {
+    if (!ibusimcontext->preedit_visible) {
         return;
     }
 
-    ibuscontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_visible = FALSE;
 
-    g_signal_emit (ibuscontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibuscontext, _signal_preedit_end_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
+    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
