@@ -43,16 +43,6 @@ typedef struct _IBusIMContext IBusIMContext;
 typedef struct _IBusIMContextClass IBusIMContextClass;
 typedef struct _IBusIMContextPrivate IBusIMContextPrivate;
 
-struct _IBusIMContext {
-    GtkIMContext parent;
-    /* instance members */
-    IBusIMContextPrivate *priv;
-};
-
-struct _IBusIMContextClass {
-GtkIMContextClass parent;
-    /* class members */
-};
 
 GType    ibus_im_context_get_type (void);
 IBusIMContext
