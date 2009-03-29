@@ -55,15 +55,15 @@ static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
 /* functions prototype */
-static void     ibus_im_context_class_init   (IBusIMContextClass    *klass);
-static void     ibus_im_context_init         (GObject               *obj);
-static void     ibus_im_context_finalize     (GObject               *obj);
-static void     ibus_im_context_reset        (GtkIMContext          *context);
+static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
+static void     ibus_im_context_init        (GObject               *obj);
+static void     ibus_im_context_finalize    (GObject               *obj);
+static void     ibus_im_context_reset       (GtkIMContext          *context);
 static gboolean ibus_im_context_filter_keypress
                                             (GtkIMContext           *context,
                                              GdkEventKey            *key);
-static void     ibus_im_context_focus_in     (GtkIMContext          *context);
-static void     ibus_im_context_focus_out    (GtkIMContext          *context);
+static void     ibus_im_context_focus_in    (GtkIMContext          *context);
+static void     ibus_im_context_focus_out   (GtkIMContext          *context);
 static void     ibus_im_context_get_preedit_string
                                             (GtkIMContext           *context,
                                              gchar                  **str,
@@ -656,7 +656,14 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibus_context,
     }
     priv->preedit_cursor_pos = cursor_pos;
     priv->preedit_visible = visible;
-    g_signal_emit (context, _signal_preedit_changed_id, 0);
+    if (priv->preedit_visible) {
+        g_signal_emit (context, _signal_preedit_start_id, 0);
+        g_signal_emit (context, _signal_preedit_changed_id, 0);
+    }
+    else {
+        g_signal_emit (context, _signal_preedit_changed_id, 0);
+        g_signal_emit (context, _signal_preedit_end_id, 0);
+    }
 }
 
 static void
@@ -878,6 +885,7 @@ ibus_im_context_show_preedit (IBusIMContext *context)
 
     priv->preedit_visible = TRUE;
 
+    g_signal_emit (context, _signal_preedit_start_id, 0);
     g_signal_emit (context, _signal_preedit_changed_id, 0);
 }
 
@@ -896,4 +904,5 @@ ibus_im_context_hide_preedit (IBusIMContext *context)
     priv->preedit_visible = FALSE;
 
     g_signal_emit (context, _signal_preedit_changed_id, 0);
+    g_signal_emit (context, _signal_preedit_end_id, 0);
 }
