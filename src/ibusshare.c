@@ -98,8 +98,8 @@ ibus_get_socket_path (void)
         username = ibus_get_user_name ();
 
         path = g_strdup_printf (
-            "/tmp/ibus-%s/ibus-%s-%s.%s",
-            username, hostname, displaynumber, screennumber);
+            "/tmp/ibus-%s/ibus-%s-%s",
+            username, hostname, displaynumber);
 
         g_free (display);
     }

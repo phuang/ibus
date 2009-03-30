@@ -47,9 +47,9 @@ __all__ = (
 import os
 import sys
 
-display = os.environ["DISPLAY"]
-if "." not in display:
-    display += ".0" 
+__display = os.environ["DISPLAY"]
+__hostname, __display_screen = __display.split(":", 1)
+__display_number = __display_screen.split(".")[0]
 
 __username = None
 try:
@@ -65,7 +65,7 @@ if not __username:
 if not __username:
     __username = os.getenv ("USERNAME")
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s" % (__username, display.replace(":", "-"))
+IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s-%s" % (__username, __hostname, __display_number)
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE_IBUS     = "org.freedesktop.IBus"
