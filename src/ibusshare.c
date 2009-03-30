@@ -24,6 +24,16 @@
 #include <pwd.h>
 #include "ibusshare.h"
 
+static gchar *display = NULL;
+
+void
+ibus_set_display (const gchar *display)
+{
+    if (display != NULL)
+        g_free (display);
+    display = g_strdup (display);
+}
+
 const gchar *
 ibus_get_user_name (void)
 {
@@ -64,14 +74,16 @@ ibus_get_socket_path (void)
     static gchar *path = NULL;
 
     if (path == NULL) {
-        gchar *display;
         gchar *hostname = "";
         gchar *displaynumber = "0";
         gchar *screennumber = "0";
         const gchar *username = NULL;
         gchar *p;
 
-        display = g_strdup (g_getenv ("DISPLAY"));
+        if (display == NULL) {
+            display = g_strdup (g_getenv ("DISPLAY"));
+        }
+
         if (display == NULL) {
             g_warning ("DISPLAY is empty! We use default DISPLAY (:0.0)");
         }
@@ -104,7 +116,6 @@ ibus_get_socket_path (void)
             "/tmp/ibus-%s/ibus-%s-%s",
             username, hostname, displaynumber);
 
-        g_free (display);
     }
     return path;
 
