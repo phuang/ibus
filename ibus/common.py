@@ -49,6 +49,8 @@ import sys
 
 __display = os.environ["DISPLAY"]
 __hostname, __display_screen = __display.split(":", 1)
+if not __hostname.strip():
+    __hostname = "unix"
 __display_number = __display_screen.split(".")[0]
 
 __username = None

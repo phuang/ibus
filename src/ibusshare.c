@@ -97,6 +97,9 @@ ibus_get_socket_path (void)
 
         username = ibus_get_user_name ();
 
+        if (hostname[0] == '\0')
+            hostname = "unix";
+
         path = g_strdup_printf (
             "/tmp/ibus-%s/ibus-%s-%s",
             username, hostname, displaynumber);
