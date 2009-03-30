@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-20 09:52+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-30 17:12+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -16,52 +16,125 @@ msgstr ""
 "X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
-#: ui/gtk/panel.py:310
+#: .././data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:2
+#, fuzzy
+msgid "Custom Font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: .././data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:4
+#, fuzzy
+msgid "Next Engine Hotkey"
+msgstr "ਅਗਲਾ ਇੰਜਣ"
+
+#: .././data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload Engines"
+msgstr "ਪ੍ਰੀ-ਲੋਡ"
+
+#: .././data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:10
+#, fuzzy
+msgid "Prev Engine Hotkey"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#: .././data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:13
+#, fuzzy
+msgid "Trigger Hotkey"
+msgstr "ਟਰਿੱਗਰ:"
+
+#: .././data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:15
+#, fuzzy
+msgid "Use Custom Font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: .././data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr ""
+
+#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
+#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
 msgid "Other"
 msgstr "ਹੋਰ"
 
-#: ui/gtk/panel.py:97
+#: .././ui/gtk/panel.py:97
 msgid "IBus input method framework"
 msgstr ""
 
-#: ui/gtk/panel.py:282
+#: .././ui/gtk/panel.py:282
 msgid "Restart"
 msgstr ""
 
-#: ui/gtk/panel.py:337
+#: .././ui/gtk/panel.py:337
 msgid "No input method"
 msgstr ""
 
-#: ui/gtk/panel.py:383
+#: .././ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: ui/gtk/panel.py:387
+#: .././ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
 
-#: ui/gtk/languagebar.py:84
+#. create input methods menu
+#: .././ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "ਇੰਜਣ ਬਦਲੋ"
 
-#: setup/main.py:103
+#: .././setup/main.py:103
 msgid "trigger"
 msgstr "ਟਰਿੱਗਰ"
 
-#: setup/main.py:113
+#: .././setup/main.py:113
 msgid "next engine"
 msgstr "ਅਗਲਾ ਇੰਜਣ"
 
-#: setup/main.py:123
+#: .././setup/main.py:123
 msgid "prev engine"
 msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
-#: setup/main.py:204
+#: .././setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ਡੈਮਨ ਚੱਲਦੀ ਨਹੀਂ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: setup/main.py:219
+#: .././setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -74,24 +147,24 @@ msgstr ""
 "   export XMODIFIERS=@im=ibus\n"
 "   export QT_IM_MODULE=ibus"
 
-#: setup/main.py:234
+#: .././setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ਲਈ ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ ਚੁਣੋ"
 
-#: setup/keyboardshortcut.py:53
+#: .././setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ"
 
-#: setup/keyboardshortcut.py:61
+#: .././setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "ਕੀ ਕੋਡ:"
 
-#: setup/keyboardshortcut.py:76
+#: .././setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "ਮਾਡੀਫਾਇਰ:"
 
-#: setup/keyboardshortcut.py:206
+#: .././setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -99,85 +172,32 @@ msgstr ""
 "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਕੋਈ ਸਵਿੱਚ ਜੋੜ)।\n"
 " ਜਦੋਂ ਸਵਿੱਚ ਛੱਡੀ ਜਾਵੇਗੀ ਤਾਂ ਇਹ ਡਾਈਲਾਗ ਬੰਦ ਹੋ ਜਾਵੇਗਾ।"
 
-#: setup/keyboardshortcut.py:208
+#: .././setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਸਵਿੱਚ ਜੋੜ)"
 
-#: setup/enginecombobox.py:99
+#: .././setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr ""
 
-#: setup/setup.glade:7
-msgid "IBus Preferences"
-msgstr ""
-
-#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
+#: .././setup/setup.glade.h:1
 msgid "..."
 msgstr "..."
 
-#: setup/setup.glade:148
-msgid "previous input method:"
-msgstr ""
-
-#: setup/setup.glade:161
-#, fuzzy
-msgid "Next input method:"
-msgstr "ਅਗਲਾ ਇੰਜਣ:"
-
-#: setup/setup.glade:174
-msgid "Enable or disable:"
-msgstr ""
-
-#: setup/setup.glade:188
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
-
-#: setup/setup.glade:222
-#, fuzzy
-msgid "Candidates orientation:"
-msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
-
-#: setup/setup.glade:232
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"ਹਰੀਜੱਟਲ\n"
-" ਵਰਟੀਕਲ"
-
-#: setup/setup.glade:249
-msgid "Show language panel:"
-msgstr ""
-
-#: setup/setup.glade:259
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-
-#: setup/setup.glade:276
-msgid "Use custom font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: setup/setup.glade:292
-#, fuzzy
-msgid "Custom font:"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: setup/setup.glade:317
+#: .././setup/setup.glade.h:2
 msgid "<b>Font and Style</b>"
 msgstr ""
 
-#: setup/setup.glade:337
-msgid "General"
-msgstr "ਆਮ"
+#: .././setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
 
-#: setup/setup.glade:465
-msgid "Input Methods"
-msgstr ""
+#: .././setup/setup.glade.h:4
+#, fuzzy
+msgid "<b>Startup</b>"
+msgstr "<b>UI</b>"
 
-#: setup/setup.glade:482
+#: .././setup/setup.glade.h:5
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -193,22 +213,72 @@ msgstr ""
 " \n"
 " \n"
 
-#: setup/setup.glade:510
+#: .././setup/setup.glade.h:12
+msgid "About"
+msgstr "ਇਸ ਬਾਰੇ"
+
+#: .././setup/setup.glade.h:13
+#, fuzzy
+msgid "Candidates orientation:"
+msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
+
+#: .././setup/setup.glade.h:14
+#, fuzzy
+msgid "Custom font:"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: .././setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr ""
+
+#: .././setup/setup.glade.h:16
+msgid "General"
+msgstr "ਆਮ"
+
+#: .././setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"ਹਰੀਜੱਟਲ\n"
+" ਵਰਟੀਕਲ"
+
+#: .././setup/setup.glade.h:19
+msgid "IBus Preferences"
+msgstr ""
+
+#: .././setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr ""
+
+#: .././setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+
+#: .././setup/setup.glade.h:24
+#, fuzzy
+msgid "Next input method:"
+msgstr "ਅਗਲਾ ਇੰਜਣ:"
+
+#: .././setup/setup.glade.h:25
+msgid "Show language panel:"
+msgstr ""
+
+#: .././setup/setup.glade.h:26
 #, fuzzy
 msgid "Start ibus on login"
 msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
 
-#: setup/setup.glade:521
-#, fuzzy
-msgid "<b>Startup</b>"
-msgstr "<b>UI</b>"
+#: .././setup/setup.glade.h:27
+msgid "Use custom font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: setup/setup.glade:543
-msgid "About"
-msgstr "ਇਸ ਬਾਰੇ"
-
-#~ msgid "Trigger:"
-#~ msgstr "ਟਰਿੱਗਰ:"
+#: .././setup/setup.glade.h:28
+msgid "previous input method:"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Previous IME:"
@@ -234,9 +304,6 @@ msgstr "ਇਸ ਬਾਰੇ"
 
 #~ msgid "Started"
 #~ msgstr "ਚਾਲੂ ਹੈ"
-
-#~ msgid "Preload"
-#~ msgstr "ਪ੍ਰੀ-ਲੋਡ"
 
 #~ msgid "Cannot enable input engine"
 #~ msgstr "ਇੰਪੁੱਟ ਇੰਜਣ ਯੋਗ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"

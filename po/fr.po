@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/entry\n"
-"POT-Creation-Date: 2009-03-20 09:52+0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-30 17:12+0800\n"
 "PO-Revision-Date: 2009-03-11 17:30+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -18,52 +18,124 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: ibus/lang.py:40 ui/gtk/panel.py:307 ui/gtk/panel.py:308 ui/gtk/panel.py:309
-#: ui/gtk/panel.py:310
+#: .././data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:2
+#, fuzzy
+msgid "Custom Font"
+msgstr "Police personnalisée :"
+
+#: .././data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:4
+#, fuzzy
+msgid "Next Engine Hotkey"
+msgstr "moteur suivant"
+
+#: .././data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload Engines"
+msgstr "moteur précédent"
+
+#: .././data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:10
+#, fuzzy
+msgid "Prev Engine Hotkey"
+msgstr "moteur précédent"
+
+#: .././data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:15
+#, fuzzy
+msgid "Use Custom Font"
+msgstr "Utiliser une police personnalisée"
+
+#: .././data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr ""
+
+#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
+#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
 msgid "Other"
 msgstr "Autre"
 
-#: ui/gtk/panel.py:97
+#: .././ui/gtk/panel.py:97
 msgid "IBus input method framework"
 msgstr "Framework de méthode d'entrée IBus"
 
-#: ui/gtk/panel.py:282
+#: .././ui/gtk/panel.py:282
 msgid "Restart"
 msgstr "Redémarrer"
 
-#: ui/gtk/panel.py:337
+#: .././ui/gtk/panel.py:337
 msgid "No input method"
 msgstr "Aucune méthode d'entrée"
 
-#: ui/gtk/panel.py:383
+#: .././ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus est un IME intelligent pour Linux/Unix"
 
-#: ui/gtk/panel.py:387
+#: .././ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
-#: ui/gtk/languagebar.py:84
+#. create input methods menu
+#: .././ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "Changer de moteur"
 
-#: setup/main.py:103
+#: .././setup/main.py:103
 msgid "trigger"
 msgstr "déclencheur"
 
-#: setup/main.py:113
+#: .././setup/main.py:113
 msgid "next engine"
 msgstr "moteur suivant"
 
-#: setup/main.py:123
+#: .././setup/main.py:123
 msgid "prev engine"
 msgstr "moteur précédent"
 
-#: setup/main.py:204
+#: .././setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Le démon IBus n'est pas démarré. Voulez-vous le démarrer maintenant ?"
 
-#: setup/main.py:219
+#: .././setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -78,24 +150,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: setup/main.py:234
+#: .././setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Choisissez le raccourci clavier pour %s"
 
-#: setup/keyboardshortcut.py:53
+#: .././setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis claviers"
 
-#: setup/keyboardshortcut.py:61
+#: .././setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "Code touche :"
 
-#: setup/keyboardshortcut.py:76
+#: .././setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "Modificateurs :"
 
-#: setup/keyboardshortcut.py:206
+#: .././setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -103,85 +175,31 @@ msgstr ""
 "Veuillez presser une touche (ou une combinaison de touches).\n"
 "La boîte de dialogue se fermera lorsque la touche sera relâchée."
 
-#: setup/keyboardshortcut.py:208
+#: .././setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "Veuillez presser une touche (ou une combinaison de touches)"
 
-#: setup/enginecombobox.py:99
+#: .././setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "Sélectionnez une méthode d'entrée"
 
-#: setup/setup.glade:7
-msgid "IBus Preferences"
-msgstr "Préférences d'IBus"
-
-#: setup/setup.glade:64 setup/setup.glade:96 setup/setup.glade:128
+#: .././setup/setup.glade.h:1
 msgid "..."
 msgstr "…"
 
-#: setup/setup.glade:148
-msgid "previous input method:"
-msgstr "méthode d'entrée précédente :"
-
-#: setup/setup.glade:161
-msgid "Next input method:"
-msgstr "Méthode d'entrée suivante :"
-
-#: setup/setup.glade:174
-msgid "Enable or disable:"
-msgstr "Activer ou désactiver :"
-
-#: setup/setup.glade:188
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>Raccourcis claviers</b>"
-
-#: setup/setup.glade:222
-msgid "Candidates orientation:"
-msgstr "Orientation de la table :"
-
-#: setup/setup.glade:232
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"Horizontal\n"
-"Vertical"
-
-#: setup/setup.glade:249
-msgid "Show language panel:"
-msgstr "Afficher la barre de langue :"
-
-#: setup/setup.glade:259
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"Jamais\n"
-"Dynamiquement\n"
-"Toujours"
-
-#: setup/setup.glade:276
-msgid "Use custom font"
-msgstr "Utiliser une police personnalisée"
-
-#: setup/setup.glade:292
-msgid "Custom font:"
-msgstr "Police personnalisée :"
-
-#: setup/setup.glade:317
+#: .././setup/setup.glade.h:2
 msgid "<b>Font and Style</b>"
 msgstr "<b>Police et Style</b>"
 
-#: setup/setup.glade:337
-msgid "General"
-msgstr "Général"
+#: .././setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Raccourcis claviers</b>"
 
-#: setup/setup.glade:465
-msgid "Input Methods"
-msgstr "Méthodes d'entrées"
+#: .././setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Démarrage</b>"
 
-#: setup/setup.glade:482
+#: .././setup/setup.glade.h:5
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -197,14 +215,68 @@ msgstr ""
 "\n"
 "\n"
 
-#: setup/setup.glade:510
+#: .././setup/setup.glade.h:12
+msgid "About"
+msgstr "À propos"
+
+#: .././setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "Orientation de la table :"
+
+#: .././setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "Police personnalisée :"
+
+#: .././setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "Activer ou désactiver :"
+
+#: .././setup/setup.glade.h:16
+msgid "General"
+msgstr "Général"
+
+#: .././setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"Horizontal\n"
+"Vertical"
+
+#: .././setup/setup.glade.h:19
+msgid "IBus Preferences"
+msgstr "Préférences d'IBus"
+
+#: .././setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "Méthodes d'entrées"
+
+#: .././setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"Jamais\n"
+"Dynamiquement\n"
+"Toujours"
+
+#: .././setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "Méthode d'entrée suivante :"
+
+#: .././setup/setup.glade.h:25
+msgid "Show language panel:"
+msgstr "Afficher la barre de langue :"
+
+#: .././setup/setup.glade.h:26
 msgid "Start ibus on login"
 msgstr "Démarrer IBus lors de la connexion"
 
-#: setup/setup.glade:521
-msgid "<b>Startup</b>"
-msgstr "<b>Démarrage</b>"
+#: .././setup/setup.glade.h:27
+msgid "Use custom font"
+msgstr "Utiliser une police personnalisée"
 
-#: setup/setup.glade:543
-msgid "About"
-msgstr "À propos"
+#: .././setup/setup.glade.h:28
+msgid "previous input method:"
+msgstr "méthode d'entrée précédente :"
