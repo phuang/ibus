@@ -32,7 +32,6 @@ struct _IBusIMContext {
     /* instance members */
     GtkIMContext *slave;
     GdkWindow *client_window;
-    GdkWindow *event_window;
 
     /* enabled */
     gboolean        enable;
@@ -62,8 +61,8 @@ static guint    _signal_preedit_start_id = 0;
 static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
-static GQuark   _q_ibus_im_context = 0;
 static gboolean _use_key_snooper = TRUE;
+static GtkIMContext *_focus_im_context = NULL;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
@@ -82,10 +81,6 @@ static void     ibus_im_context_get_preedit_string
                                              gint                   *cursor_pos);
 static void     ibus_im_context_set_client_window
                                             (GtkIMContext           *context,
-                                             GdkWindow              *client);
-
-static void     ibus_im_context_set_event_window
-                                            (IBusIMContext          *ibusimcontext,
                                              GdkWindow              *client);
 static void     ibus_im_context_set_cursor_location
                                             (GtkIMContext           *context,
@@ -186,23 +181,13 @@ _key_snooper_cb (GtkWidget   *widget,
                  GdkEventKey *event,
                  gpointer     user_data)
 {
-    GdkWindow *gdkwindow;
-    GtkIMContext *imcontext;
-
     if (!_use_key_snooper)
         return 0;
 
-    gdkwindow = gtk_widget_get_window (widget);
-
-    if (gdkwindow == NULL)
+    if (_focus_im_context == NULL)
         return 0;
 
-    imcontext = (GtkIMContext *) g_object_get_qdata ((GObject *) gdkwindow, _q_ibus_im_context);
-
-    if (imcontext == NULL)
-        return 0;
-
-    return gtk_im_context_filter_keypress (imcontext, event);
+    return ibus_im_context_filter_keypress ((GtkIMContext *) _focus_im_context, event);
 }
 
 static void
@@ -247,8 +232,6 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-    _q_ibus_im_context = g_quark_from_static_string ("IBusIMContext");
-
     if (_use_key_snooper) {
         gtk_key_snooper_install (_key_snooper_cb, NULL);
     }
@@ -261,7 +244,6 @@ ibus_im_context_init (GObject *obj)
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (obj);
 
     ibusimcontext->client_window = NULL;
-    ibusimcontext->event_window = NULL;
 
     // Init ibus status
     ibusimcontext->enable = FALSE;
@@ -338,7 +320,6 @@ ibus_im_context_finalize (GObject *obj)
     }
 
     ibus_im_context_set_client_window ((GtkIMContext *)ibusimcontext, NULL);
-    ibus_im_context_set_event_window (ibusimcontext, NULL);
 
     if (ibusimcontext->slave) {
         g_object_unref (ibusimcontext->slave);
@@ -363,11 +344,7 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     g_return_val_if_fail (context != NULL, FALSE);
     g_return_val_if_fail (IBUS_IS_IM_CONTEXT (context), FALSE);
 
-    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
-
-    if (event->window != ibusimcontext->client_window && event->window != ibusimcontext->event_window) {
-        ibus_im_context_set_event_window (ibusimcontext, event->window);
-    }
+    IBusIMContext *ibusimcontext = (IBusIMContext *) context;
 
     if (ibusimcontext->ibuscontext && ibusimcontext->has_focus) {
         /* If context does not have focus, ibus will process key event in sync mode.
@@ -400,12 +377,25 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 }
 
 static void
+_weak_notify_cb (gpointer data,
+                 GObject *context)
+{
+    if (_focus_im_context == (GtkIMContext *)context)
+        _focus_im_context = NULL;
+}
+
+static void
 ibus_im_context_focus_in (GtkIMContext *context)
 {
     g_assert (IBUS_IS_IM_CONTEXT (context));
 
     IBusIMContext *ibusimcontext;
     ibusimcontext = IBUS_IM_CONTEXT (context);
+
+    if (_focus_im_context != NULL && _focus_im_context != context) {
+        gtk_im_context_focus_out (_focus_im_context);
+        g_assert (_focus_im_context == NULL);
+    }
 
     ibusimcontext->has_focus = TRUE;
     if (ibusimcontext->ibuscontext) {
@@ -415,6 +405,11 @@ ibus_im_context_focus_in (GtkIMContext *context)
     gtk_im_context_focus_in (ibusimcontext->slave);
 
     _set_cursor_location_internal (context);
+
+    if (_focus_im_context != context) {
+        g_object_weak_ref ((GObject *) context, _weak_notify_cb, NULL);
+        _focus_im_context = context;
+    }
 }
 
 static void
@@ -425,6 +420,11 @@ ibus_im_context_focus_out (GtkIMContext *context)
 
     IBusIMContext *ibusimcontext;
     ibusimcontext = IBUS_IM_CONTEXT (context);
+
+    if (_focus_im_context == context) {
+        g_object_weak_unref ((GObject *)_focus_im_context, _weak_notify_cb, NULL);
+        _focus_im_context = NULL;
+    }
 
     ibusimcontext->has_focus = FALSE;
     if (ibusimcontext->ibuscontext) {
@@ -502,47 +502,17 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
     if (ibusimcontext->client_window) {
-        if (g_object_get_qdata ((GObject *) ibusimcontext->client_window, _q_ibus_im_context) == ibusimcontext) {
-            g_object_set_qdata ((GObject *) ibusimcontext->client_window, _q_ibus_im_context, NULL);
-        }
         g_object_unref (ibusimcontext->client_window);
     }
 
-    ibus_im_context_set_event_window (ibusimcontext, NULL);
-
     if (client) {
         g_object_ref (client);
-        g_object_ref (ibusimcontext);
-        g_object_set_qdata_full ((GObject *) client, _q_ibus_im_context, context, g_object_unref);
     }
 
     ibusimcontext->client_window = client;
 
     if (ibusimcontext->slave)
         gtk_im_context_set_client_window (ibusimcontext->slave, client);
-}
-
-static void
-ibus_im_context_set_event_window (IBusIMContext *ibusimcontext, GdkWindow *window)
-{
-    if (ibusimcontext->event_window) {
-        if (g_object_get_qdata ((GObject *) ibusimcontext->event_window, _q_ibus_im_context) == ibusimcontext) {
-            g_object_set_qdata ((GObject *) ibusimcontext->event_window, _q_ibus_im_context, NULL);
-        }
-        g_object_unref (ibusimcontext->event_window);
-        ibusimcontext->event_window = NULL;
-    }
-
-    if (window == ibusimcontext->client_window)
-        window = NULL;
-
-    if (window != NULL) {
-        g_object_ref (window);
-        g_object_ref (ibusimcontext);
-        g_object_set_qdata_full ((GObject *) window, _q_ibus_im_context, ibusimcontext, g_object_unref);
-    }
-
-    ibusimcontext->event_window = window;
 }
 
 static void
