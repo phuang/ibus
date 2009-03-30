@@ -313,7 +313,7 @@ ibus_im_context_init (GObject *obj)
     /* init bus object */
     if (_bus == NULL)
         
-        ibus_set_display (gdk_display_get_name (GDK_DISPLAY()));
+        ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
         _bus = ibus_bus_new();
 
     if (ibus_bus_is_connected (_bus)) {

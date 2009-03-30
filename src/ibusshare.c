@@ -24,14 +24,14 @@
 #include <pwd.h>
 #include "ibusshare.h"
 
-static gchar *display = NULL;
+static gchar *_display = NULL;
 
 void
 ibus_set_display (const gchar *display)
 {
-    if (display != NULL)
-        g_free (display);
-    display = g_strdup (display);
+    if (_display != NULL)
+        g_free (_display);
+    _display = g_strdup (display);
 }
 
 const gchar *
@@ -74,14 +74,18 @@ ibus_get_socket_path (void)
     static gchar *path = NULL;
 
     if (path == NULL) {
-        gchar *hostname = "";
+        gchar *hostname = "unix";
+        gchar *display;
         gchar *displaynumber = "0";
         gchar *screennumber = "0";
         const gchar *username = NULL;
         gchar *p;
 
-        if (display == NULL) {
+        if (_display == NULL) {
             display = g_strdup (g_getenv ("DISPLAY"));
+        }
+        else {
+            display = g_strdup (_display);
         }
 
         if (display == NULL) {
@@ -115,10 +119,9 @@ ibus_get_socket_path (void)
         path = g_strdup_printf (
             "/tmp/ibus-%s/ibus-%s-%s",
             username, hostname, displaynumber);
-
+        g_free (display);
     }
     return path;
-
 }
 
 const gchar *
