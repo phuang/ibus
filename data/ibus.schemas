@@ -9,7 +9,7 @@
       <list_type>string</list_type>
       <locale name="C">
       	<short>Preload Engines</short>
-	    <long>Preload Engines during ibus starts up</long>
+	<long>Preload Engines during ibus starts up</long>
       </locale>
     </schema>
     <schema>
@@ -21,7 +21,7 @@
       <default>[Control+space]</default>
       <locale name="C">
       	<short>Trigger Hotkey</short>
-	    <long>Trigger hotkey for enable or disable input context</long>
+	<long>Trigger hotkey for enable or disable input context</long>
       </locale>
     </schema>
     <schema>
@@ -33,7 +33,7 @@
       <default>[]</default>
       <locale name="C">
       	<short>Next Engine Hotkey</short>
-	    <long>Next engine hotkey for switch to next input method engine</long>
+	<long>Next engine hotkey for switch to next input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -45,7 +45,7 @@
       <default>[]</default>
       <locale name="C">
       	<short>Prev Engine Hotkey</short>
-	    <long>Prev engine hotkey for switch to previous input method engine</long>
+	<long>Prev engine hotkey for switch to previous input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -56,7 +56,7 @@
       <default>1</default>
       <locale name="C">
       	<short>Auto Hide</short>
-	    <long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
+	<long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
     <schema>
@@ -67,7 +67,7 @@
       <default>0</default>
       <locale name="C">
       	<short>Orientation of Lookup Table</short>
-	    <long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
+	<long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
       </locale>
     </schema>
     <schema>
@@ -78,7 +78,7 @@
       <default>false</default>
       <locale name="C">
       	<short>Use Custom Font</short>
-	    <long>Use custom font name for language panel</long>
+	<long>Use custom font name for language panel</long>
       </locale>
     </schema>
     <schema>
@@ -89,7 +89,7 @@
       <default>Sans 10</default>
       <locale name="C">
       	<short>Custom Font</short>
-	    <long>Custom font name for language panel</long>
+	<long>Custom font name for language panel</long>
       </locale>
     </schema>
   </schemalist>
