@@ -3,6 +3,7 @@ set -e
 set -x
 
 autopoint  --force || exit 1
+intltoolize --copy --force || exit 1
 libtoolize --automake --copy --force || exit 1
 gtkdocize  --copy || exit 1 #--flavour=no-tmpl
 aclocal -I m4 --force || exit 1

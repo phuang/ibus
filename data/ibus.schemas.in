@@ -8,8 +8,8 @@
       <type>list</type>
       <list_type>string</list_type>
       <locale name="C">
-      	<short>Preload Engines</short>
-	<long>Preload Engines during ibus starts up</long>
+        <short>Preload Engines</short>
+	    <long>Preload Engines during ibus starts up</long>
       </locale>
     </schema>
     <schema>
@@ -18,11 +18,17 @@
       <owner>ibus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[Control+space]</default>
       <locale name="C">
-      	<short>Trigger Hotkey</short>
-	<long>Trigger hotkey for enable or disable input context</long>
+        <default>[Control+space]</default>
+        <short>Trigger Hotkey</short>
+	    <long>Trigger hotkey for enable or disable input context</long>
       </locale>
+      <locale name="ja">
+        <default>[Zenkaku_Hankaku]</default>
+	  </locale>
+      <locale name="ko">
+        <default>[Hangul,Alt+space]</default>
+	  </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/ibus/general/hotkey/next_engine</key>
@@ -32,8 +38,8 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-      	<short>Next Engine Hotkey</short>
-	<long>Next engine hotkey for switch to next input method engine</long>
+        <short>Next Engine Hotkey</short>
+	    <long>Next engine hotkey for switch to next input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -44,8 +50,8 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-      	<short>Prev Engine Hotkey</short>
-	<long>Prev engine hotkey for switch to previous input method engine</long>
+        <short>Prev Engine Hotkey</short>
+	    <long>Prev engine hotkey for switch to previous input method engine</long>
       </locale>
     </schema>
     <schema>
@@ -55,8 +61,8 @@
       <type>int</type>
       <default>1</default>
       <locale name="C">
-      	<short>Auto Hide</short>
-	<long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
+        <short>Auto Hide</short>
+	    <long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
     <schema>
@@ -64,11 +70,14 @@
       <applyto>/desktop/ibus/panel/lookup_table_orientation</applyto>
       <owner>ibus</owner>
       <type>int</type>
-      <default>0</default>
       <locale name="C">
-      	<short>Orientation of Lookup Table</short>
-	<long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
+        <default>0</default>
+        <short>Orientation of Lookup Table</short>
+	    <long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
       </locale>
+      <locale name="ja">
+        <default>1</default>
+	  </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/ibus/panel/use_custom_font</key>
@@ -77,8 +86,8 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-      	<short>Use Custom Font</short>
-	<long>Use custom font name for language panel</long>
+        <short>Use Custom Font</short>
+	    <long>Use custom font name for language panel</long>
       </locale>
     </schema>
     <schema>
@@ -88,8 +97,8 @@
       <type>string</type>
       <default>Sans 10</default>
       <locale name="C">
-      	<short>Custom Font</short>
-	<long>Custom font name for language panel</long>
+        <short>Custom Font</short>
+	    <long>Custom font name for language panel</long>
       </locale>
     </schema>
   </schemalist>

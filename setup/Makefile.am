@@ -34,8 +34,10 @@ ibussetup_DATA = \
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup
 
-desktop_DATA = ibus-setup.desktop
 desktopdir = $(datadir)/applications
+desktop_in_files = ibus-setup.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+@INTLTOOL_DESKTOP_RULE@
 
 CLEANFILES = \
 	*.pyc \

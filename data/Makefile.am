@@ -23,10 +23,11 @@ SUBDIRS = \
 	icons \
 	$(NULL)
 
-schemas_DATA = \
-	ibus.schemas \
-	$(NULL)
+
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
+schemas_in_files = ibus.schemas
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+@INTLTOOL_SCHEMAS_RULE@
 
 install-data-local:
 if GCONF_SCHEMAS_INSTALL

@@ -47,10 +47,11 @@ xdgautostart_DATA = \
 	ibus.desktop \
 	$(NULL)
 xdgautostartdir = $(sysconfdir)/xdg/autostart
-desktop_DATA = \
-	ibus.desktop \
-	$(NULL)
+
 desktopdir = $(datadir)/applications
+desktop_in_files = ibus.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+@INTLTOOL_DESKTOP_RULE@
 
 noinst_PROGRAMS = $(TESTS)
 bin_PROGRAMS = ibus-daemon
