@@ -46,8 +46,12 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	ibus-setup.in \
-	ibus-setup.desktop \
 	setup.glade \
+	$(desktop_in_files) \
+	$(NULL)
+
+DISTCLEANFILES = \
+	$(desktop_DATA) \
 	$(NULL)
 
 test:

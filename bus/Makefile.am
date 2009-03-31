@@ -103,7 +103,11 @@ test_matchrule_SOURCES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	ibus.desktop \
+	$(desktop_in_files) \
+	$(NULL)
+
+DISTCLEANFILES = \
+	$(desktop_DATA) \
 	$(NULL)
 
 $(libibus):

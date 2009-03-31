@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-30 17:12+0800\n"
+"POT-Creation-Date: 2009-03-31 10:27+0800\n"
 "PO-Revision-Date: 2008-10-17 14:15+0530\n"
 "Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
@@ -15,78 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-
-#: .././data/ibus.schemas.in.h:1
-msgid "Auto Hide"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:2
-#, fuzzy
-msgid "Custom Font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: .././data/ibus.schemas.in.h:3
-msgid "Custom font name for language panel"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:4
-#, fuzzy
-msgid "Next Engine Hotkey"
-msgstr "ਅਗਲਾ ਇੰਜਣ"
-
-#: .././data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:6
-msgid "Orientation of Lookup Table"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:7
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:8
-#, fuzzy
-msgid "Preload Engines"
-msgstr "ਪ੍ਰੀ-ਲੋਡ"
-
-#: .././data/ibus.schemas.in.h:9
-msgid "Preload Engines during ibus starts up"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:10
-#, fuzzy
-msgid "Prev Engine Hotkey"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
-
-#: .././data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:12
-msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:13
-#, fuzzy
-msgid "Trigger Hotkey"
-msgstr "ਟਰਿੱਗਰ:"
-
-#: .././data/ibus.schemas.in.h:14
-msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
-
-#: .././data/ibus.schemas.in.h:15
-#, fuzzy
-msgid "Use Custom Font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
-
-#: .././data/ibus.schemas.in.h:16
-msgid "Use custom font name for language panel"
-msgstr ""
 
 #: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
 #: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
@@ -278,6 +206,82 @@ msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
 #: .././setup/setup.glade.h:28
 msgid "previous input method:"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:2
+#, fuzzy
+msgid "Custom Font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: .././data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:4
+#, fuzzy
+msgid "Next Engine Hotkey"
+msgstr "ਅਗਲਾ ਇੰਜਣ"
+
+#: .././data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload Engines"
+msgstr "ਪ੍ਰੀ-ਲੋਡ"
+
+#: .././data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:10
+#, fuzzy
+msgid "Prev Engine Hotkey"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#: .././data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:13
+#, fuzzy
+msgid "Trigger Hotkey"
+msgstr "ਟਰਿੱਗਰ:"
+
+#: .././data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:15
+#, fuzzy
+msgid "Use Custom Font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+
+#: .././data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr ""
+
+#: .././data/ibus.schemas.in.h:17
+msgid "[Control+space]"
 msgstr ""
 
 #, fuzzy
