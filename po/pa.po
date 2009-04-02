@@ -2,67 +2,218 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Amanpreet Singh <aalam@users.sf.net>, 2008.
+# A S Alam <aalam@users.sf.net>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-31 10:27+0800\n"
-"PO-Revision-Date: 2008-10-17 14:15+0530\n"
-"Last-Translator: Amanpreet Singh <aalam@users.sf.net>\n"
-"Language-Team: Punjabi/Panjabi <punjabi-l10n@lists.sf.net>\n"
+"POT-Creation-Date: 2009-04-02 14:56+0800\n"
+"PO-Revision-Date: 2009-03-31 21:46+0000\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
+"X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
-#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
+#: ../src/keyname-table.h:3940
+msgid "keyboard label|BackSpace"
+msgstr "BackSpace"
+
+#: ../src/keyname-table.h:3941
+msgid "keyboard label|Tab"
+msgstr "Tab"
+
+#: ../src/keyname-table.h:3942
+msgid "keyboard label|Return"
+msgstr "Return"
+
+#: ../src/keyname-table.h:3943
+msgid "keyboard label|Pause"
+msgstr "Pause"
+
+#: ../src/keyname-table.h:3944
+msgid "keyboard label|Scroll_Lock"
+msgstr "Scroll_Lock"
+
+#: ../src/keyname-table.h:3945
+msgid "keyboard label|Sys_Req"
+msgstr "Sys_Req"
+
+#: ../src/keyname-table.h:3946
+msgid "keyboard label|Escape"
+msgstr "Escape"
+
+#: ../src/keyname-table.h:3947
+msgid "keyboard label|Multi_key"
+msgstr "Multi_key"
+
+#: ../src/keyname-table.h:3948
+msgid "keyboard label|Home"
+msgstr "Home"
+
+#: ../src/keyname-table.h:3949
+msgid "keyboard label|Left"
+msgstr "ਖੱਬੇ"
+
+#: ../src/keyname-table.h:3950
+msgid "keyboard label|Up"
+msgstr "ਉੱਤੇ"
+
+#: ../src/keyname-table.h:3951
+msgid "keyboard label|Right"
+msgstr "ਸੱਜੇ"
+
+#: ../src/keyname-table.h:3952
+msgid "keyboard label|Down"
+msgstr "ਹੇਠਾਂ"
+
+#: ../src/keyname-table.h:3953
+msgid "keyboard label|Page_Up"
+msgstr "Page_Up"
+
+#: ../src/keyname-table.h:3954
+msgid "keyboard label|Page_Down"
+msgstr "Page_Down"
+
+#: ../src/keyname-table.h:3955
+msgid "keyboard label|End"
+msgstr "End"
+
+#: ../src/keyname-table.h:3956
+msgid "keyboard label|Begin"
+msgstr "Begin"
+
+#: ../src/keyname-table.h:3957
+msgid "keyboard label|Print"
+msgstr "Print"
+
+#: ../src/keyname-table.h:3958
+msgid "keyboard label|Insert"
+msgstr "Insert"
+
+#: ../src/keyname-table.h:3959
+msgid "keyboard label|Num_Lock"
+msgstr "Num_Lock"
+
+#: ../src/keyname-table.h:3960
+msgid "keyboard label|KP_Space"
+msgstr "KP_Space"
+
+#: ../src/keyname-table.h:3961
+msgid "keyboard label|KP_Tab"
+msgstr "KP_Tab"
+
+#: ../src/keyname-table.h:3962
+msgid "keyboard label|KP_Enter"
+msgstr "KP_Enter"
+
+#: ../src/keyname-table.h:3963
+msgid "keyboard label|KP_Home"
+msgstr "KP_Home"
+
+#: ../src/keyname-table.h:3964
+msgid "keyboard label|KP_Left"
+msgstr "KP_Left"
+
+#: ../src/keyname-table.h:3965
+msgid "keyboard label|KP_Up"
+msgstr "KP_Up"
+
+#: ../src/keyname-table.h:3966
+msgid "keyboard label|KP_Right"
+msgstr "KP_Right"
+
+#: ../src/keyname-table.h:3967
+msgid "keyboard label|KP_Down"
+msgstr "KP_Down"
+
+#: ../src/keyname-table.h:3968
+msgid "keyboard label|KP_Page_Up"
+msgstr "KP_Page_Up"
+
+#: ../src/keyname-table.h:3969
+msgid "keyboard label|KP_Prior"
+msgstr "KP_Prior"
+
+#: ../src/keyname-table.h:3970
+msgid "keyboard label|KP_Page_Down"
+msgstr "KP_Page_Down"
+
+#: ../src/keyname-table.h:3971
+msgid "keyboard label|KP_Next"
+msgstr "KP_Next"
+
+#: ../src/keyname-table.h:3972
+msgid "keyboard label|KP_End"
+msgstr "KP_End"
+
+#: ../src/keyname-table.h:3973
+msgid "keyboard label|KP_Begin"
+msgstr "KP_Begin"
+
+#: ../src/keyname-table.h:3974
+msgid "keyboard label|KP_Insert"
+msgstr "KP_Insert"
+
+#: ../src/keyname-table.h:3975
+msgid "keyboard label|KP_Delete"
+msgstr "KP_Delete"
+
+#: ../src/keyname-table.h:3976
+msgid "keyboard label|Delete"
+msgstr "Delete"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "ਹੋਰ"
 
-#: .././ui/gtk/panel.py:97
+#: ../ui/gtk/panel.py:97
 msgid "IBus input method framework"
-msgstr ""
+msgstr "IBus ਇੰਪੁੱਟ ਢੰਗ ਫਰੇਮਵਰਕ"
 
-#: .././ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:282
 msgid "Restart"
-msgstr ""
+msgstr "ਮੁੜ-ਚਾਲੂ"
 
-#: .././ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:337
 msgid "No input method"
-msgstr ""
+msgstr "ਕੋਈ ਇੰਪੁੱਟ ਢੰਗ ਨਹੀਂ"
 
-#: .././ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: .././ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:387
 msgid "translator-credits"
-msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
+msgstr ""
+"ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ <aalam@users.sf.net>\n"
+"http://www.satluj.com/"
 
 #. create input methods menu
-#: .././ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "ਇੰਜਣ ਬਦਲੋ"
 
-#: .././setup/main.py:103
+#: ../setup/main.py:103
 msgid "trigger"
 msgstr "ਟਰਿੱਗਰ"
 
-#: .././setup/main.py:113
+#: ../setup/main.py:113
 msgid "next engine"
 msgstr "ਅਗਲਾ ਇੰਜਣ"
 
-#: .././setup/main.py:123
+#: ../setup/main.py:123
 msgid "prev engine"
 msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
-#: .././setup/main.py:204
+#: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ਡੈਮਨ ਚੱਲਦੀ ਨਹੀਂ ਹੈ। ਕੀ ਤੁਸੀਂ ਇਸ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: .././setup/main.py:219
+#: ../setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -75,57 +226,56 @@ msgstr ""
 "   export XMODIFIERS=@im=ibus\n"
 "   export QT_IM_MODULE=ibus"
 
-#: .././setup/main.py:234
+#: ../setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ਲਈ ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ ਚੁਣੋ"
 
-#: .././setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ"
 
-#: .././setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "ਕੀ ਕੋਡ:"
 
-#: .././setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "ਮਾਡੀਫਾਇਰ:"
 
-#: .././setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr ""
 "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਕੋਈ ਸਵਿੱਚ ਜੋੜ)।\n"
-" ਜਦੋਂ ਸਵਿੱਚ ਛੱਡੀ ਜਾਵੇਗੀ ਤਾਂ ਇਹ ਡਾਈਲਾਗ ਬੰਦ ਹੋ ਜਾਵੇਗਾ।"
+"ਜਦੋਂ ਸਵਿੱਚ ਛੱਡੀ ਜਾਵੇਗੀ ਤਾਂ ਇਹ ਡਾਈਲਾਗ ਬੰਦ ਹੋ ਜਾਵੇਗਾ।"
 
-#: .././setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "ਕੋਈ ਵੀ ਸਵਿੱਚ ਦੱਬੋ (ਜਾਂ ਸਵਿੱਚ ਜੋੜ)"
 
-#: .././setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:99
 msgid "Select an input method"
-msgstr ""
+msgstr "ਇੱਕ ਇੰਪੁੱਟ ਢੰਗ ਚੁਣੋ"
 
-#: .././setup/setup.glade.h:1
+#: ../setup/setup.glade.h:1
 msgid "..."
 msgstr "..."
 
-#: .././setup/setup.glade.h:2
+#: ../setup/setup.glade.h:2
 msgid "<b>Font and Style</b>"
-msgstr ""
+msgstr "<b>ਫੋਂਟ ਅਤੇ ਸਟਾਈਲ</b>"
 
-#: .././setup/setup.glade.h:3
+#: ../setup/setup.glade.h:3
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>ਕੀਬੋਰਡ ਸ਼ਾਰਟਕੱਟ</b>"
 
-#: .././setup/setup.glade.h:4
-#, fuzzy
+#: ../setup/setup.glade.h:4
 msgid "<b>Startup</b>"
-msgstr "<b>UI</b>"
+msgstr "<b>ਸ਼ੁਰੂਆਤ</b>"
 
-#: .././setup/setup.glade.h:5
+#: ../setup/setup.glade.h:5
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -141,148 +291,141 @@ msgstr ""
 " \n"
 " \n"
 
-#: .././setup/setup.glade.h:12
+#: ../setup/setup.glade.h:12
 msgid "About"
 msgstr "ਇਸ ਬਾਰੇ"
 
-#: .././setup/setup.glade.h:13
-#, fuzzy
+#: ../setup/setup.glade.h:13
 msgid "Candidates orientation:"
-msgstr "ਖੋਜ ਟੇਬਲ ਸਥਿਤੀ:"
+msgstr "ਉਮੀਦਵਾਰ ਸਥਿਤੀ:"
 
-#: .././setup/setup.glade.h:14
-#, fuzzy
+#: ../setup/setup.glade.h:14
 msgid "Custom font:"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ:"
 
-#: .././setup/setup.glade.h:15
+#: ../setup/setup.glade.h:15
 msgid "Enable or disable:"
-msgstr ""
+msgstr "ਚਾਲੂ ਜਾਂ ਬੰਦ:"
 
-#: .././setup/setup.glade.h:16
+#: ../setup/setup.glade.h:16
 msgid "General"
 msgstr "ਆਮ"
 
-#: .././setup/setup.glade.h:17
+#: ../setup/setup.glade.h:17
 msgid ""
 "Horizontal\n"
 "Vertical"
 msgstr ""
 "ਹਰੀਜੱਟਲ\n"
-" ਵਰਟੀਕਲ"
+"ਵਰਟੀਕਲ"
 
-#: .././setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19
 msgid "IBus Preferences"
-msgstr ""
+msgstr "IBus ਪਸੰਦ"
 
-#: .././setup/setup.glade.h:20
+#: ../setup/setup.glade.h:20
 msgid "Input Methods"
-msgstr ""
+msgstr "ਇੰਪੁੱਟ ਢੰਗ"
 
-#: .././setup/setup.glade.h:21
+#: ../setup/setup.glade.h:21
 msgid ""
 "Never\n"
 "When active\n"
 "Always"
 msgstr ""
+"ਕਦੇ ਨਹੀਂ\n"
+"ਜਦੋਂ ਐਕਟਿਵ\n"
+"ਹਮੇਸ਼ਾ"
 
-#: .././setup/setup.glade.h:24
-#, fuzzy
+#: ../setup/setup.glade.h:24
 msgid "Next input method:"
-msgstr "ਅਗਲਾ ਇੰਜਣ:"
+msgstr "ਅਗਲਾ ਇੰਪੁੱਟ ਢੰਗ:"
 
-#: .././setup/setup.glade.h:25
+#: ../setup/setup.glade.h:25
 msgid "Show language panel:"
-msgstr ""
+msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਵੇਖੋ:"
 
-#: .././setup/setup.glade.h:26
-#, fuzzy
+#: ../setup/setup.glade.h:26
 msgid "Start ibus on login"
-msgstr "ਸ਼ੈਸ਼ਨ ਲਾਗਇਨ ਨਾਲ IBus ਆਟੋਮੈਟਿਕ ਚਾਲੂ ਕਰੋ"
+msgstr "ਲਾਗਇਨ ਸਮੇਂ ibus ਚਲਾਉ"
 
-#: .././setup/setup.glade.h:27
+#: ../setup/setup.glade.h:27
 msgid "Use custom font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: .././setup/setup.glade.h:28
+#: ../setup/setup.glade.h:28
 msgid "previous input method:"
-msgstr ""
+msgstr "ਪਿਛਲਾ ਇੰਪੁੱਟ ਢੰਗ:"
 
-#: .././data/ibus.schemas.in.h:1
+#: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
-msgstr ""
+msgstr "ਆਟੋਮੈਟਿਕ ਓਹਲੇ"
 
-#: .././data/ibus.schemas.in.h:2
-#, fuzzy
+#: ../data/ibus.schemas.in.h:2
 msgid "Custom Font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ"
 
-#: .././data/ibus.schemas.in.h:3
+#: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr ""
+msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ ਨਾਂ"
 
-#: .././data/ibus.schemas.in.h:4
-#, fuzzy
+#: ../data/ibus.schemas.in.h:4
 msgid "Next Engine Hotkey"
-msgstr "ਅਗਲਾ ਇੰਜਣ"
+msgstr "ਅਗਲਾ ਇੰਜਣ ਹਾਟ-ਕੀ"
 
-#: .././data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
+msgstr "ਅਗਲੇ ਇੰਪੁੱਟ ਢੰਗ ਇੰਜਣ ਲਈ ਬਦਲਣ ਵਾਸਤੇ ਅਗਲਾ ਇੰਜਣ ਹਾਟ-ਕੀ"
 
-#: .././data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
-msgstr ""
+msgstr "ਖੋਜ ਟੇਬਲ ਦੀ ਸਥਿਤੀ"
 
-#: .././data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:7
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr ""
+msgstr "ਖੋਜ ਟੇਬਲ ਦੀ ਸਥਿਤੀ। 0 = ਹਰੀਜੱਟਲ, 1 =ਵਰਟੀਕਲ"
 
-#: .././data/ibus.schemas.in.h:8
-#, fuzzy
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines"
-msgstr "ਪ੍ਰੀ-ਲੋਡ"
+msgstr "ਪ੍ਰੀ-ਲੋਡ ਇੰਜਣ"
 
-#: .././data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
-msgstr ""
+msgstr "ibus ਸ਼ੁਰੂ ਹੋਣ ਸਮੇਂ ਪਹਿਲਾਂ ਲੋਡ ਕੀਤੇ ਇੰਜਣ"
 
-#: .././data/ibus.schemas.in.h:10
-#, fuzzy
+#: ../data/ibus.schemas.in.h:10
 msgid "Prev Engine Hotkey"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ ਹਾਟਕੀ"
 
-#: .././data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
+msgstr "ਪਿਛਲੇ ਇੰਪੁੱਟ ਢੰਗ ਇੰਜਣ ਲਈ ਬਦਲਣ ਵਾਸਤੇ ਪਿਛਲਾ ਇੰਜਣ ਹਾਟ-ਕੀ"
 
-#: .././data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:12
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
+msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਦਾ ਰਵੱਈਆ: 0 = ਹਮੇਸ਼ਾ ਓਹਲੇ, 1 = ਆਟੋਮੈਟਿਕ ਓਹਲੇ, 2 = ਹਮੇਸ਼ਾ ਵੇਖੋ"
 
-#: .././data/ibus.schemas.in.h:13
-#, fuzzy
+#: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
-msgstr "ਟਰਿੱਗਰ:"
+msgstr "ਟਰਿੱਗਰ ਹਾਟਕੀ"
 
-#: .././data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:14
 msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
+msgstr "ਇੰਪੁੱਟ ਪਰਸੰਗ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰਨ ਵਾਸਤੇ ਟਰਿੱਗਰ ਹਾਟ-ਕੀ"
 
-#: .././data/ibus.schemas.in.h:15
-#, fuzzy
+#: ../data/ibus.schemas.in.h:15
 msgid "Use Custom Font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
-#: .././data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
-msgstr ""
+msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ ਨਾਂ ਵਰਤੋਂ"
 
-#: .././data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
-msgstr ""
+msgstr "[Control+space]"
 
 #, fuzzy
 #~ msgid "Previous IME:"
