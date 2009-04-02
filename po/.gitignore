@@ -11,6 +11,5 @@ insert-header.sin
 quot.sed
 remove-potcdate.sed
 remove-potcdate.sin
-*.pot
 *.gmo
 stamp-po
