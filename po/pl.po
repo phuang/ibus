@@ -1,0 +1,205 @@
+# translation of pl.po to Polish
+# Piotr Drąg <piotrdrag@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pl\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-26 16:32+0100\n"
+"PO-Revision-Date: 2009-03-26 16:43+0100\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
+"Language-Team: Polish <pl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
+#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
+msgid "Other"
+msgstr "Inne"
+
+#: .././ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "Struktura metody wejścia IBus"
+
+#: .././ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "Uruchom ponownie"
+
+#: .././ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "Brak metody wejścia"
+
+#: .././ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus jest inteligentną magistralą wejścia dla Linuksa/Uniksa."
+
+#: .././ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
+
+#. create input methods menu
+#: .././ui/gtk/languagebar.py:84
+msgid "Switch engine"
+msgstr "Przełącz mechanizm"
+
+#: .././setup/main.py:103
+msgid "trigger"
+msgstr "przełącznik"
+
+#: .././setup/main.py:113
+msgid "next engine"
+msgstr "następny mechanizm"
+
+#: .././setup/main.py:123
+msgid "prev engine"
+msgstr "poprzedni mechanizm"
+
+#: .././setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "Demon IBus nie jest uruchomiony. Czy chcesz uruchomić teraz?"
+
+#: .././setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus został uruchomiony! Jeśli nie możesz używać IBus, dodaj poniższe "
+"wiersze do $HOME/.bashrc i zaloguj się ponownie.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: .././setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "Wybierz skrót klawiszowy dla %s"
+
+#: .././setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "Skróty klawiszowe"
+
+#: .././setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "Kod klawisza:"
+
+#: .././setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "Modyfikatory:"
+
+#: .././setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"Naciśnij klawisz (lub kombinację klawiszy).\n"
+"Okno dialogowe zostanie zamknięte po zwolnieniu klawisza."
+
+#: .././setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "Naciśnij klawisz (lub kombinację klawiszy)"
+
+#: .././setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "Wybierz metodę wejścia"
+
+#: .././setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: .././setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Czcionka i styl</b>"
+
+#: .././setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Skróty klawiszowe</b>"
+
+#: .././setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Uruchom</b>"
+
+#: .././setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Inteligentna magistrala wejścia</small>\n"
+"Strona domowa: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: .././setup/setup.glade.h:12
+msgid "About"
+msgstr "O programie"
+
+#: .././setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "Orientacja kandydatów:"
+
+#: .././setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "Własna czcionka:"
+
+#: .././setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "Włącz lub wyłącz:"
+
+#: .././setup/setup.glade.h:16
+msgid "General"
+msgstr "Ogólne"
+
+#: .././setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"Poziome\n"
+"Pionowe"
+
+#: .././setup/setup.glade.h:19
+msgid "IBus Preferences"
+msgstr "Preferencje IBus"
+
+#: .././setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "Metody wejścia"
+
+#: .././setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"Nigdy\n"
+"W czasie aktywności\n"
+"Zawsze"
+
+#: .././setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "Następna metoda wejścia:"
+
+#: .././setup/setup.glade.h:25
+msgid "Show language panel:"
+msgstr "Wyświetl panel języka:"
+
+#: .././setup/setup.glade.h:26
+msgid "Start ibus on login"
+msgstr "Uruchom IBus podczas logowania"
+
+#: .././setup/setup.glade.h:27
+msgid "Use custom font"
+msgstr "Użyj własnej czcionki"
+
+#: .././setup/setup.glade.h:28
+msgid "previous input method:"
+msgstr "poprzednia metoda wejścia:"
