@@ -1,0 +1,285 @@
+# Danish translation of ibus.
+# Copyright (C) 2009
+# This file is distributed under the same license as the ibus package.
+# Kris Thomsen <lakristho@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ibus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-03 16:13+0800\n"
+"PO-Revision-Date: 2009-04-02 12:51+0200\n"
+"Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "Andre"
+
+#: ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus-ramme for inddatametode"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "Genstart"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "Ingen inddatametode"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus er en intelligent inddatabus til Linux/Unix."
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr ""
+"Kris Thomsen\n"
+"\n"
+"Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
+"Mere info: http://www.dansk-gruppen.dk"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch engine"
+msgstr "Skift motor"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "udløser"
+
+#: ../setup/main.py:113
+msgid "next engine"
+msgstr "næste motor"
+
+#: ../setup/main.py:123
+msgid "prev engine"
+msgstr "forrige motor"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "IBus-dæmonen er ikke startet. Vil du starte den nu?"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus er blevet startet! Hvis du ikke kan bruge IBus, skal du tilføje disse "
+"linjer i $HOME/.bashrc, og logge ind og ud igen til dit skrivebord.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "Vælg tastaturgenveje til %s"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "Tastaturgenveje"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "Nøglekode:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "Kombinationstaster:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"Tryk venligst på en tast (eller en tastekombination).\n"
+"Dialogen bliver lukket, når tasten slippes."
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "Tryk venligst på en tast (eller en tastekombination)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "Vælg en inddatametode"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Skrifttype og stil</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Tastaturgenveje</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Opstart</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Den intelligente inddatabus</small>\n"
+"Netsted: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "Om"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "Orientering for kandidater:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "Tilpasset skrifttype:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "Aktivér eller deaktivér:"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "Generelt"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"Vandret\n"
+"Lodret"
+
+#: ../setup/setup.glade.h:19
+msgid "IBus Preferences"
+msgstr "Indstillinger for IBus"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "Inddatametoder"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"Aldrig\n"
+"Hvis aktiv\n"
+"Altid"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "Næste inddatametode:"
+
+#: ../setup/setup.glade.h:25
+msgid "Show language panel:"
+msgstr "Vis sprogpanel:"
+
+#: ../setup/setup.glade.h:26
+msgid "Start ibus on login"
+msgstr "Start ibus ved logind"
+
+#: ../setup/setup.glade.h:27
+msgid "Use custom font"
+msgstr "Brug tilpasset skrifttype"
+
+#: ../setup/setup.glade.h:28
+msgid "previous input method:"
+msgstr "forrige inddatametode:"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "Skjul automatisk"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "Tilpasset skrifttype"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "Tilpasset skrifttypenavn til sprogpanel"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "Næste tastaturgenvej til motor"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr ""
+"Næste tastaturgenvej til motor til skift af næste motor for inddatametode"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "Orientering af opslagstabel"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "Orientering af opslagstabel. 0 = Vandret, 1 = Lodret"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "Forindlæs motorer"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "Forindlæs motorer under opstarten af ibus"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "Forrige tastaturgenvej til motor"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr ""
+"Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+"Sprogpanelets opførsel. 0 = Skjul altid, 1 = Skjul automatisk, 2 = Vis altid"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "Udløser til tastaturgenvej"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+"Udløser til tastaturgenvej for at aktivere eller deaktivere inddatakontekst"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "Brug tilpasset skrifttype"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "Brug tilpasset skrifttypenavn til sprogpanel"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
