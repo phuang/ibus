@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-31 10:27+0800\n"
+"POT-Creation-Date: 2009-04-02 15:05+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,53 +16,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
-#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "其他"
 
-#: .././ui/gtk/panel.py:97
+#: ../ui/gtk/panel.py:97
 msgid "IBus input method framework"
 msgstr "IBus输入法框架"
 
-#: .././ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:282
 msgid "Restart"
 msgstr "重新启动"
 
-#: .././ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:337
 msgid "No input method"
 msgstr "关闭输入法"
 
-#: .././ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr ""
+msgstr "IBus is an intelligent input bus for Linux/Unix."
 
-#: .././ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
 #. create input methods menu
-#: .././ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "切换引擎"
 
-#: .././setup/main.py:103
+#: ../setup/main.py:103
 msgid "trigger"
 msgstr "开关"
 
-#: .././setup/main.py:113
+#: ../setup/main.py:113
 msgid "next engine"
 msgstr "下一个引擎"
 
-#: .././setup/main.py:123
+#: ../setup/main.py:123
 msgid "prev engine"
 msgstr "上一个引擎"
 
-#: .././setup/main.py:204
+#: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: .././setup/main.py:219
+#: ../setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -75,24 +75,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: .././setup/main.py:234
+#: ../setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
 
-#: .././setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "快捷键"
 
-#: .././setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "按键:"
 
-#: .././setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "修饰符:"
 
-#: .././setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -100,31 +100,31 @@ msgstr ""
 "请按一个键盘按键（或者一个组合按键）\n"
 "当您松开任意按键时，对话框会自动关闭。"
 
-#: .././setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "请按一个键盘按键（或者一个组合按键）"
 
-#: .././setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "选择输入法"
 
-#: .././setup/setup.glade.h:1
+#: ../setup/setup.glade.h:1
 msgid "..."
-msgstr ""
+msgstr "..."
 
-#: .././setup/setup.glade.h:2
+#: ../setup/setup.glade.h:2
 msgid "<b>Font and Style</b>"
 msgstr "<b>字体和风格</b>"
 
-#: .././setup/setup.glade.h:3
+#: ../setup/setup.glade.h:3
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>快捷键</b>"
 
-#: .././setup/setup.glade.h:4
+#: ../setup/setup.glade.h:4
 msgid "<b>Startup</b>"
 msgstr "<b>启动</b>"
 
-#: .././setup/setup.glade.h:5
+#: ../setup/setup.glade.h:5
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -133,28 +133,34 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
 
-#: .././setup/setup.glade.h:12
+#: ../setup/setup.glade.h:12
 msgid "About"
 msgstr "关于"
 
-#: .././setup/setup.glade.h:13
+#: ../setup/setup.glade.h:13
 msgid "Candidates orientation:"
 msgstr "候选词排列方向:"
 
-#: .././setup/setup.glade.h:14
+#: ../setup/setup.glade.h:14
 msgid "Custom font:"
 msgstr "自定义字体:"
 
-#: .././setup/setup.glade.h:15
+#: ../setup/setup.glade.h:15
 msgid "Enable or disable:"
 msgstr "开关"
 
-#: .././setup/setup.glade.h:16
+#: ../setup/setup.glade.h:16
 msgid "General"
 msgstr "通用"
 
-#: .././setup/setup.glade.h:17
+#: ../setup/setup.glade.h:17
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -162,15 +168,15 @@ msgstr ""
 "水平\n"
 "竖直"
 
-#: .././setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19
 msgid "IBus Preferences"
 msgstr "IBus设置"
 
-#: .././setup/setup.glade.h:20
+#: ../setup/setup.glade.h:20
 msgid "Input Methods"
 msgstr "输入法"
 
-#: .././setup/setup.glade.h:21
+#: ../setup/setup.glade.h:21
 msgid ""
 "Never\n"
 "When active\n"
@@ -180,97 +186,92 @@ msgstr ""
 "活动时\n"
 "总是"
 
-#: .././setup/setup.glade.h:24
+#: ../setup/setup.glade.h:24
 msgid "Next input method:"
 msgstr "下一入法"
 
-#: .././setup/setup.glade.h:25
+#: ../setup/setup.glade.h:25
 msgid "Show language panel:"
 msgstr "显示语言栏:"
 
-#: .././setup/setup.glade.h:26
+#: ../setup/setup.glade.h:26
 msgid "Start ibus on login"
 msgstr "启动桌面时自动启动IBus"
 
-#: .././setup/setup.glade.h:27
+#: ../setup/setup.glade.h:27
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: .././setup/setup.glade.h:28
+#: ../setup/setup.glade.h:28
 msgid "previous input method:"
 msgstr "前一入法"
 
-#: .././data/ibus.schemas.in.h:1
+#: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
-msgstr ""
+msgstr "自动隐藏"
 
-#: .././data/ibus.schemas.in.h:2
-#, fuzzy
+#: ../data/ibus.schemas.in.h:2
 msgid "Custom Font"
 msgstr "自定义字体:"
 
-#: .././data/ibus.schemas.in.h:3
+#: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr ""
+msgstr "自定义语言栏字体"
 
-#: .././data/ibus.schemas.in.h:4
-#, fuzzy
+#: ../data/ibus.schemas.in.h:4
 msgid "Next Engine Hotkey"
-msgstr "下一个引擎"
+msgstr "下一个引擎快捷键"
 
-#: .././data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
+msgstr "切换下一个引擎快捷键"
 
-#: .././data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
-msgstr ""
+msgstr "候选词表方向"
 
-#: .././data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:7
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr ""
+msgstr "候选词表方向。0 = 水平，1 = 竖直。"
 
-#: .././data/ibus.schemas.in.h:8
-#, fuzzy
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines"
-msgstr "上一个引擎"
+msgstr "预加载引擎"
 
-#: .././data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
-msgstr ""
+msgstr "ibus启动时预加载的引擎"
 
-#: .././data/ibus.schemas.in.h:10
-#, fuzzy
+#: ../data/ibus.schemas.in.h:10
 msgid "Prev Engine Hotkey"
-msgstr "上一个引擎"
+msgstr "上一个引擎快捷键"
 
-#: .././data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
+msgstr "切换上一个引擎快捷键"
 
-#: .././data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:12
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
+msgstr "语言栏行为。0 = 总是隐藏，1 = 自动隐藏，2 = 总是显示。"
 
-#: .././data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
-msgstr ""
+msgstr "触发快捷键"
 
-#: .././data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:14
 msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
+msgstr "触发快捷键"
 
-#: .././data/ibus.schemas.in.h:15
-#, fuzzy
+#: ../data/ibus.schemas.in.h:15
 msgid "Use Custom Font"
 msgstr "使用自定义字体"
 
-#: .././data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
-msgstr ""
+msgstr "语言栏是否使用自定义字体"
 
-#: .././data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
-msgstr ""
+msgstr "[Control+space]"
