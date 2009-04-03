@@ -78,6 +78,9 @@
       <locale name="ja">
         <default>1</default>
 	  </locale>
+      <locale name="ko">
+        <default>1</default>
+	  </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/ibus/panel/use_custom_font</key>
