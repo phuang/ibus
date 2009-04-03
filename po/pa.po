@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 14:56+0800\n"
+"POT-Creation-Date: 2009-04-02 15:05+0800\n"
 "PO-Revision-Date: 2009-03-31 21:46+0000\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
@@ -16,154 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-
-#: ../src/keyname-table.h:3940
-msgid "keyboard label|BackSpace"
-msgstr "BackSpace"
-
-#: ../src/keyname-table.h:3941
-msgid "keyboard label|Tab"
-msgstr "Tab"
-
-#: ../src/keyname-table.h:3942
-msgid "keyboard label|Return"
-msgstr "Return"
-
-#: ../src/keyname-table.h:3943
-msgid "keyboard label|Pause"
-msgstr "Pause"
-
-#: ../src/keyname-table.h:3944
-msgid "keyboard label|Scroll_Lock"
-msgstr "Scroll_Lock"
-
-#: ../src/keyname-table.h:3945
-msgid "keyboard label|Sys_Req"
-msgstr "Sys_Req"
-
-#: ../src/keyname-table.h:3946
-msgid "keyboard label|Escape"
-msgstr "Escape"
-
-#: ../src/keyname-table.h:3947
-msgid "keyboard label|Multi_key"
-msgstr "Multi_key"
-
-#: ../src/keyname-table.h:3948
-msgid "keyboard label|Home"
-msgstr "Home"
-
-#: ../src/keyname-table.h:3949
-msgid "keyboard label|Left"
-msgstr "ਖੱਬੇ"
-
-#: ../src/keyname-table.h:3950
-msgid "keyboard label|Up"
-msgstr "ਉੱਤੇ"
-
-#: ../src/keyname-table.h:3951
-msgid "keyboard label|Right"
-msgstr "ਸੱਜੇ"
-
-#: ../src/keyname-table.h:3952
-msgid "keyboard label|Down"
-msgstr "ਹੇਠਾਂ"
-
-#: ../src/keyname-table.h:3953
-msgid "keyboard label|Page_Up"
-msgstr "Page_Up"
-
-#: ../src/keyname-table.h:3954
-msgid "keyboard label|Page_Down"
-msgstr "Page_Down"
-
-#: ../src/keyname-table.h:3955
-msgid "keyboard label|End"
-msgstr "End"
-
-#: ../src/keyname-table.h:3956
-msgid "keyboard label|Begin"
-msgstr "Begin"
-
-#: ../src/keyname-table.h:3957
-msgid "keyboard label|Print"
-msgstr "Print"
-
-#: ../src/keyname-table.h:3958
-msgid "keyboard label|Insert"
-msgstr "Insert"
-
-#: ../src/keyname-table.h:3959
-msgid "keyboard label|Num_Lock"
-msgstr "Num_Lock"
-
-#: ../src/keyname-table.h:3960
-msgid "keyboard label|KP_Space"
-msgstr "KP_Space"
-
-#: ../src/keyname-table.h:3961
-msgid "keyboard label|KP_Tab"
-msgstr "KP_Tab"
-
-#: ../src/keyname-table.h:3962
-msgid "keyboard label|KP_Enter"
-msgstr "KP_Enter"
-
-#: ../src/keyname-table.h:3963
-msgid "keyboard label|KP_Home"
-msgstr "KP_Home"
-
-#: ../src/keyname-table.h:3964
-msgid "keyboard label|KP_Left"
-msgstr "KP_Left"
-
-#: ../src/keyname-table.h:3965
-msgid "keyboard label|KP_Up"
-msgstr "KP_Up"
-
-#: ../src/keyname-table.h:3966
-msgid "keyboard label|KP_Right"
-msgstr "KP_Right"
-
-#: ../src/keyname-table.h:3967
-msgid "keyboard label|KP_Down"
-msgstr "KP_Down"
-
-#: ../src/keyname-table.h:3968
-msgid "keyboard label|KP_Page_Up"
-msgstr "KP_Page_Up"
-
-#: ../src/keyname-table.h:3969
-msgid "keyboard label|KP_Prior"
-msgstr "KP_Prior"
-
-#: ../src/keyname-table.h:3970
-msgid "keyboard label|KP_Page_Down"
-msgstr "KP_Page_Down"
-
-#: ../src/keyname-table.h:3971
-msgid "keyboard label|KP_Next"
-msgstr "KP_Next"
-
-#: ../src/keyname-table.h:3972
-msgid "keyboard label|KP_End"
-msgstr "KP_End"
-
-#: ../src/keyname-table.h:3973
-msgid "keyboard label|KP_Begin"
-msgstr "KP_Begin"
-
-#: ../src/keyname-table.h:3974
-msgid "keyboard label|KP_Insert"
-msgstr "KP_Insert"
-
-#: ../src/keyname-table.h:3975
-msgid "keyboard label|KP_Delete"
-msgstr "KP_Delete"
-
-#: ../src/keyname-table.h:3976
-msgid "keyboard label|Delete"
-msgstr "Delete"
 
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
@@ -426,6 +278,117 @@ msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ �
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "keyboard label|BackSpace"
+#~ msgstr "BackSpace"
+
+#~ msgid "keyboard label|Tab"
+#~ msgstr "Tab"
+
+#~ msgid "keyboard label|Return"
+#~ msgstr "Return"
+
+#~ msgid "keyboard label|Pause"
+#~ msgstr "Pause"
+
+#~ msgid "keyboard label|Scroll_Lock"
+#~ msgstr "Scroll_Lock"
+
+#~ msgid "keyboard label|Sys_Req"
+#~ msgstr "Sys_Req"
+
+#~ msgid "keyboard label|Escape"
+#~ msgstr "Escape"
+
+#~ msgid "keyboard label|Multi_key"
+#~ msgstr "Multi_key"
+
+#~ msgid "keyboard label|Home"
+#~ msgstr "Home"
+
+#~ msgid "keyboard label|Left"
+#~ msgstr "ਖੱਬੇ"
+
+#~ msgid "keyboard label|Up"
+#~ msgstr "ਉੱਤੇ"
+
+#~ msgid "keyboard label|Right"
+#~ msgstr "ਸੱਜੇ"
+
+#~ msgid "keyboard label|Down"
+#~ msgstr "ਹੇਠਾਂ"
+
+#~ msgid "keyboard label|Page_Up"
+#~ msgstr "Page_Up"
+
+#~ msgid "keyboard label|Page_Down"
+#~ msgstr "Page_Down"
+
+#~ msgid "keyboard label|End"
+#~ msgstr "End"
+
+#~ msgid "keyboard label|Begin"
+#~ msgstr "Begin"
+
+#~ msgid "keyboard label|Print"
+#~ msgstr "Print"
+
+#~ msgid "keyboard label|Insert"
+#~ msgstr "Insert"
+
+#~ msgid "keyboard label|Num_Lock"
+#~ msgstr "Num_Lock"
+
+#~ msgid "keyboard label|KP_Space"
+#~ msgstr "KP_Space"
+
+#~ msgid "keyboard label|KP_Tab"
+#~ msgstr "KP_Tab"
+
+#~ msgid "keyboard label|KP_Enter"
+#~ msgstr "KP_Enter"
+
+#~ msgid "keyboard label|KP_Home"
+#~ msgstr "KP_Home"
+
+#~ msgid "keyboard label|KP_Left"
+#~ msgstr "KP_Left"
+
+#~ msgid "keyboard label|KP_Up"
+#~ msgstr "KP_Up"
+
+#~ msgid "keyboard label|KP_Right"
+#~ msgstr "KP_Right"
+
+#~ msgid "keyboard label|KP_Down"
+#~ msgstr "KP_Down"
+
+#~ msgid "keyboard label|KP_Page_Up"
+#~ msgstr "KP_Page_Up"
+
+#~ msgid "keyboard label|KP_Prior"
+#~ msgstr "KP_Prior"
+
+#~ msgid "keyboard label|KP_Page_Down"
+#~ msgstr "KP_Page_Down"
+
+#~ msgid "keyboard label|KP_Next"
+#~ msgstr "KP_Next"
+
+#~ msgid "keyboard label|KP_End"
+#~ msgstr "KP_End"
+
+#~ msgid "keyboard label|KP_Begin"
+#~ msgstr "KP_Begin"
+
+#~ msgid "keyboard label|KP_Insert"
+#~ msgstr "KP_Insert"
+
+#~ msgid "keyboard label|KP_Delete"
+#~ msgstr "KP_Delete"
+
+#~ msgid "keyboard label|Delete"
+#~ msgstr "Delete"
 
 #, fuzzy
 #~ msgid "Previous IME:"

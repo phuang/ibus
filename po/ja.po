@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-31 10:27+0800\n"
+"POT-Creation-Date: 2009-04-02 15:05+0800\n"
 "PO-Revision-Date: 2009-03-19 16:12+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -16,55 +16,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .././ibus/lang.py:40 .././ui/gtk/panel.py:307 .././ui/gtk/panel.py:308
-#: .././ui/gtk/panel.py:309 .././ui/gtk/panel.py:310
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "その他"
 
-#: .././ui/gtk/panel.py:97
+#: ../ui/gtk/panel.py:97
 msgid "IBus input method framework"
 msgstr "IBus インプットメソッドフレームワーク"
 
-#: .././ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:282
 msgid "Restart"
 msgstr "再起動"
 
-#: .././ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:337
 msgid "No input method"
 msgstr "インプットメソッドがありません"
 
-#: .././ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:383
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: .././ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:387
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "IWAI, Masaharu <iwai@alib.jp>"
 
 #. create input methods menu
-#: .././ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:84
 msgid "Switch engine"
 msgstr "エンジンの変更"
 
-#: .././setup/main.py:103
+#: ../setup/main.py:103
 msgid "trigger"
 msgstr "トリガー"
 
-#: .././setup/main.py:113
+#: ../setup/main.py:113
 msgid "next engine"
 msgstr "次のエンジン"
 
-#: .././setup/main.py:123
+#: ../setup/main.py:123
 msgid "prev engine"
 msgstr "前のエンジン"
 
-#: .././setup/main.py:204
+#: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus デーモンが動いていません。起動しますか？"
 
-#: .././setup/main.py:219
+#: ../setup/main.py:219
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -78,24 +78,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: .././setup/main.py:234
+#: ../setup/main.py:234
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
 
-#: .././setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:53
 msgid "Keyboard shortcuts"
 msgstr "キーボードショートカット"
 
-#: .././setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:61
 msgid "Key code:"
 msgstr "キーコード:"
 
-#: .././setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:76
 msgid "Modifiers:"
 msgstr "モディファイア:"
 
-#: .././setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:206
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -103,31 +103,31 @@ msgstr ""
 "キーもしくはキーの組み合わせを入力してください。\n"
 "キーを離すとダイアログを閉じます"
 
-#: .././setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:208
 msgid "Please press a key (or a key combination)"
 msgstr "キーもしくはキーの組み合わせを入力してください"
 
-#: .././setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "インプットメソッドの選択"
 
-#: .././setup/setup.glade.h:1
+#: ../setup/setup.glade.h:1
 msgid "..."
 msgstr "..."
 
-#: .././setup/setup.glade.h:2
+#: ../setup/setup.glade.h:2
 msgid "<b>Font and Style</b>"
 msgstr "<b>フォントとスタイル</b>"
 
-#: .././setup/setup.glade.h:3
+#: ../setup/setup.glade.h:3
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>キーボードショートカット</b>"
 
-#: .././setup/setup.glade.h:4
+#: ../setup/setup.glade.h:4
 msgid "<b>Startup</b>"
 msgstr "<b>スタートアップ</b>"
 
-#: .././setup/setup.glade.h:5
+#: ../setup/setup.glade.h:5
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -143,27 +143,27 @@ msgstr ""
 "\n"
 "\n"
 
-#: .././setup/setup.glade.h:12
+#: ../setup/setup.glade.h:12
 msgid "About"
 msgstr "About"
 
-#: .././setup/setup.glade.h:13
+#: ../setup/setup.glade.h:13
 msgid "Candidates orientation:"
 msgstr "候補ウィンドウの向き:"
 
-#: .././setup/setup.glade.h:14
+#: ../setup/setup.glade.h:14
 msgid "Custom font:"
 msgstr "カスタムフォント:"
 
-#: .././setup/setup.glade.h:15
+#: ../setup/setup.glade.h:15
 msgid "Enable or disable:"
 msgstr "切り替え"
 
-#: .././setup/setup.glade.h:16
+#: ../setup/setup.glade.h:16
 msgid "General"
 msgstr "一般"
 
-#: .././setup/setup.glade.h:17
+#: ../setup/setup.glade.h:17
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -171,15 +171,15 @@ msgstr ""
 "横\n"
 "縦"
 
-#: .././setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19
 msgid "IBus Preferences"
 msgstr "IBus の設定"
 
-#: .././setup/setup.glade.h:20
+#: ../setup/setup.glade.h:20
 msgid "Input Methods"
 msgstr "インプットメソッド"
 
-#: .././setup/setup.glade.h:21
+#: ../setup/setup.glade.h:21
 msgid ""
 "Never\n"
 "When active\n"
@@ -189,97 +189,97 @@ msgstr ""
 "有効なときだけ表示する\n"
 "常に表示する"
 
-#: .././setup/setup.glade.h:24
+#: ../setup/setup.glade.h:24
 msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
-#: .././setup/setup.glade.h:25
+#: ../setup/setup.glade.h:25
 msgid "Show language panel:"
 msgstr "言語パネルの表示:"
 
-#: .././setup/setup.glade.h:26
+#: ../setup/setup.glade.h:26
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: .././setup/setup.glade.h:27
+#: ../setup/setup.glade.h:27
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
-#: .././setup/setup.glade.h:28
+#: ../setup/setup.glade.h:28
 msgid "previous input method:"
 msgstr "ひとつ前のインプットメソッド:"
 
-#: .././data/ibus.schemas.in.h:1
+#: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:2
+#: ../data/ibus.schemas.in.h:2
 #, fuzzy
 msgid "Custom Font"
 msgstr "カスタムフォント:"
 
-#: .././data/ibus.schemas.in.h:3
+#: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:4
+#: ../data/ibus.schemas.in.h:4
 #, fuzzy
 msgid "Next Engine Hotkey"
 msgstr "次のエンジン"
 
-#: .././data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:7
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:8
 #, fuzzy
 msgid "Preload Engines"
 msgstr "前のエンジン"
 
-#: .././data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Prev Engine Hotkey"
 msgstr "前のエンジン"
 
-#: .././data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:12
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:14
 msgid "Trigger hotkey for enable or disable input context"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:15
 #, fuzzy
 msgid "Use Custom Font"
 msgstr "カスタムフォントを使う"
 
-#: .././data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
 msgstr ""
 
-#: .././data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr ""
