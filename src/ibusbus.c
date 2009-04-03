@@ -166,7 +166,9 @@ ibus_bus_connect (IBusBus *bus)
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
-    g_assert (priv->connection == NULL);
+    if (priv->connection != NULL) {
+        ibus_object_destroy ((IBusObject *) priv->connection);
+    }
 
     priv->connection = ibus_connection_open (ibus_get_address ());
 
@@ -277,7 +279,8 @@ ibus_bus_create_input_context (IBusBus      *bus,
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (client_name != NULL);
-    g_assert (ibus_bus_is_connected (bus));
+
+    g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
 
     gchar *path;
     DBusMessage *call = NULL;
@@ -755,6 +758,8 @@ IBusConfig *
 ibus_bus_get_config (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
+    g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
+
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 

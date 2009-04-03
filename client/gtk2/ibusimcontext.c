@@ -774,6 +774,8 @@ _create_input_context (IBusIMContext *ibusimcontext)
 
     ibusimcontext->ibuscontext = ibus_bus_create_input_context (_bus, "test");
 
+    g_return_if_fail (ibusimcontext->ibuscontext != NULL);
+
     g_signal_connect (ibusimcontext->ibuscontext,
                       "commit-text",
                       G_CALLBACK (_ibus_context_commit_text_cb),
