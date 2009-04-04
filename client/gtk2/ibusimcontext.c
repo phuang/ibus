@@ -61,6 +61,10 @@ static guint    _signal_preedit_start_id = 0;
 static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
+#if 0
+static const gchar * _snooper_apps [] = {
+                    "xchat", "pidgin", NULL };
+#endif
 static gboolean _use_key_snooper = TRUE;
 static GtkIMContext *_focus_im_context = NULL;
 
@@ -181,18 +185,37 @@ _key_snooper_cb (GtkWidget   *widget,
                  GdkEventKey *event,
                  gpointer     user_data)
 {
+    gboolean retval = FALSE;
+
     if (!_use_key_snooper)
-        return 0;
+        return retval;
 
     if (_focus_im_context == NULL)
-        return 0;
+        return retval;
 
-    return ibus_im_context_filter_keypress ((GtkIMContext *) _focus_im_context, event);
+    switch (event->type) {
+    case GDK_KEY_RELEASE:
+        retval = ibus_input_context_process_key_event (((IBusIMContext *)_focus_im_context)->ibuscontext,
+                                                       event->keyval,
+                                                       event->state | IBUS_RELEASE_MASK);
+        break;
+    case GDK_KEY_PRESS:
+        retval = ibus_input_context_process_key_event (((IBusIMContext *)_focus_im_context)->ibuscontext,
+                                                       event->keyval,
+                                                       event->state);
+        break;
+    default:
+        retval = FALSE;
+    }
+
+    return retval;
 }
 
 static void
 ibus_im_context_class_init     (IBusIMContextClass *klass)
 {
+    const gchar **p;
+
     GtkIMContextClass *im_context_class = GTK_IM_CONTEXT_CLASS (klass);
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
@@ -231,6 +254,14 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     _signal_retrieve_surrounding_id =
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
+
+#if 0
+    for (p = _snooper_apps; *p != NULL; p++) {
+        if (g_strcmp0 (*p,  g_get_application_name()) == 0) {
+            _use_key_snooper = TRUE;
+        }
+    }
+#endif
 
     if (_use_key_snooper) {
         gtk_key_snooper_install (_key_snooper_cb, NULL);
@@ -294,7 +325,7 @@ ibus_im_context_init (GObject *obj)
 
     /* init bus object */
     if (_bus == NULL)
-        
+
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
         _bus = ibus_bus_new();
 
