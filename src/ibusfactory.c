@@ -169,16 +169,11 @@ static void
 _engine_destroy_cb (IBusEngine  *engine,
                     IBusFactory *factory)
 {
-    GList *list;
     IBusFactoryPrivate *priv;
     priv = IBUS_FACTORY_GET_PRIVATE (factory);
 
-    list = g_list_remove (priv->engine_list, engine);
-
-    if (list) {
-        g_object_unref (engine);
-        g_list_free_1 (list);
-    }
+    priv->engine_list = g_list_remove (priv->engine_list, engine);
+    g_object_unref (engine);
 }
 
 static gboolean
