@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-02 15:05+0800\n"
-"PO-Revision-Date: 2009-03-26 16:43+0100\n"
+"PO-Revision-Date: 2009-04-05 15:57+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -206,75 +206,77 @@ msgstr "poprzednia metoda wejścia:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
-msgstr ""
+msgstr "Automatyczne ukrywanie"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom Font"
-msgstr "Własna czcionka:"
+msgstr "Własna czcionka"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr ""
+msgstr "Nazwa własnej czcionki dla panelu języków"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next Engine Hotkey"
-msgstr "następny mechanizm"
+msgstr "Klawisz skrótu następnego mechanizmu"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
 msgstr ""
+"Klawisz skrótu następnego mechanizmu do przełączenia na następny mechanizm "
+"metody wejścia"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
-msgstr ""
+msgstr "Orientacja tablicy wyszukiwania"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr ""
+msgstr "Orientacja tablicy wyszukiwania. 0 = pozioma, 1 = pionowa"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload Engines"
-msgstr "poprzedni mechanizm"
+msgstr "Wcześniej wczytaj mechanizmy"
 
 #: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
-msgstr ""
+msgstr "Wczytaj mechanizmy podczas uruchamiania ibus"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "Prev Engine Hotkey"
-msgstr "poprzedni mechanizm"
+msgstr "Klawisz skrótu poprzedniego mechanizmu"
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr ""
+"Klawisz skrótu poprzedniego mechanizmu do przełączenia na poprzedni "
+"mechanizm metody wejścia"
 
 #: ../data/ibus.schemas.in.h:12
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
+"Zachowanie panelu języków. 0 = zawsze ukrywaj, 1 = automatycznie ukrywaj, 2 "
+"= zawsze wyświetlaj"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
-msgstr ""
+msgstr "Klawisz skrótu przełącznika"
 
 #: ../data/ibus.schemas.in.h:14
 msgid "Trigger hotkey for enable or disable input context"
 msgstr ""
+"Klawisz skrótu przełącznika do włączenia lub wyłączenia kontekstu wejścia"
 
 #: ../data/ibus.schemas.in.h:15
-#, fuzzy
 msgid "Use Custom Font"
 msgstr "Użyj własnej czcionki"
 
 #: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
-msgstr ""
+msgstr "Nazwa własnej czcionki użytej w panelu języków"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
-msgstr ""
+msgstr "[Control+space]"
