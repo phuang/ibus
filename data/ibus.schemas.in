@@ -27,7 +27,7 @@
         <default>[Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave]</default>
 	  </locale>
       <locale name="ko">
-        <default>[Hangul,Alt+space]</default>
+        <default>[Hangul,Shift+space]</default>
 	  </locale>
     </schema>
     <schema>
