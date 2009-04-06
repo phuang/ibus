@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Domingo Becker <domingobecker@gmail.com>\n"
 "Language-Team: Fedora Spanish <fedora-trans-es@redhat.com>\n"
@@ -190,20 +190,21 @@ msgid "Next input method:"
 msgstr "Siguiente método de entrada:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "Método de entrada anterior:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "Mostrar el panel de idioma:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "Iniciar ibus al ingresar"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "Usar fuente personalizada"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "método de entrada anterior:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

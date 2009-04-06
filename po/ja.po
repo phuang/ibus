@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2009-03-19 16:12+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -194,20 +194,21 @@ msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "ひとつ前のインプットメソッド:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "言語パネルの表示:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "ひとつ前のインプットメソッド:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

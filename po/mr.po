@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2009-04-01 17:05+0530\n"
 "Last-Translator: Sandeep Shedmake <sandeep.shedmake@gmail.com>\n"
 "Language-Team: marathi\n"
@@ -196,20 +196,21 @@ msgid "Next input method:"
 msgstr "पुढची इनपुट पद्धत:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "मागील इनपुट पद्धत:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "भाषा पटल दाखवा:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "प्रवेशवेळी ibus सुरू करा"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "स्वपसंत फॉन्ट वापरा"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "मागील इनपुट पद्धत:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -191,20 +191,20 @@ msgid "Next input method:"
 msgstr "下一入法:"
 
 #: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "前一入法:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "显示语言栏:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "启动桌面时自动启动IBus"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "使用自定义字体"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "前一入法:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

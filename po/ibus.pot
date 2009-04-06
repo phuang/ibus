@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -174,19 +174,19 @@ msgid "Next input method:"
 msgstr ""
 
 #: ../setup/setup.glade.h:25
-msgid "Show language panel:"
+msgid "Previous input method:"
 msgstr ""
 
 #: ../setup/setup.glade.h:26
-msgid "Start ibus on login"
+msgid "Show language panel:"
 msgstr ""
 
 #: ../setup/setup.glade.h:27
-msgid "Use custom font"
+msgid "Start ibus on login"
 msgstr ""
 
 #: ../setup/setup.glade.h:28
-msgid "previous input method:"
+msgid "Use custom font"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:1

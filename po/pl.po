@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2009-04-05 15:57+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -192,20 +192,21 @@ msgid "Next input method:"
 msgstr "Następna metoda wejścia:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "Poprzednia metoda wejścia:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "Wyświetl panel języka:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "Uruchom IBus podczas logowania"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "Użyj własnej czcionki"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "poprzednia metoda wejścia:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

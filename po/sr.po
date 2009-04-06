@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -196,20 +196,21 @@ msgid "Next input method:"
 msgstr "Следећа метода уноса:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "Претходна метода уноса:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "Прикажи језички панел:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "Покрени ibus при пријави"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "Употреби прилагођени фонт"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "Претходна метода уноса:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

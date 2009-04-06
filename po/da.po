@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:17+0800\n"
+"POT-Creation-Date: 2009-04-06 09:37+0800\n"
 "PO-Revision-Date: 2009-04-02 12:51+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -198,20 +198,21 @@ msgid "Next input method:"
 msgstr "Næste inddatametode:"
 
 #: ../setup/setup.glade.h:25
+#, fuzzy
+msgid "Previous input method:"
+msgstr "Forrige inddatametode:"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "Vis sprogpanel:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "Start ibus ved logind"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "Brug tilpasset skrifttype"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "forrige inddatametode:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
