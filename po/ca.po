@@ -297,4 +297,4 @@ msgstr "Empra el tipus de lletra personalitzada per al quadre d'idiomes"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
-msgstr "[Control+espai]"
+msgstr "[Control+space]"
