@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -17,14 +17,18 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus радни оквир методе уноса"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "Друго"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "IBus радни оквир методе уноса"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -173,7 +177,7 @@ msgstr ""
 "Водоравно\n"
 "Усправно"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus поставке"
 

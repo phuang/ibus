@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Domingo Becker <domingobecker@gmail.com>\n"
 "Language-Team: Fedora Spanish <fedora-trans-es@redhat.com>\n"
@@ -11,14 +11,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Spanish\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "Marco de trabajo para métodos de entrada IBus"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "Otro"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "Marco de trabajo para métodos de entrada IBus"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -167,7 +171,7 @@ msgstr ""
 "Horizontal\n"
 "Vertical"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "Preferencias de IBus"
 

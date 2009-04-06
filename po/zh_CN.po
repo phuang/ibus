@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -16,14 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus输入法框架"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "其他"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "IBus输入法框架"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -168,7 +172,7 @@ msgstr ""
 "水平\n"
 "竖直"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus设置"
 

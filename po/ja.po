@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: 2009-03-19 16:12+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -16,14 +16,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus インプットメソッドフレームワーク"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "その他"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "IBus インプットメソッドフレームワーク"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -171,7 +175,7 @@ msgstr ""
 "横\n"
 "縦"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus の設定"
 

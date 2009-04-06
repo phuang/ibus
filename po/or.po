@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: 2009-04-02 13:03+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
@@ -18,14 +18,18 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n"
 "\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "ଅନ୍ୟାନ୍ୟ"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -174,7 +178,7 @@ msgstr ""
 "ଭୂ-ସମାନ୍ତରାଳ\n"
 "ଭୂ-ଲମ୍ବ"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 

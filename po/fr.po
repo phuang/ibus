@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 09:37+0800\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
 "PO-Revision-Date: 2009-04-04 03:03+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -18,14 +18,18 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "Framework de méthode d'entrée IBus"
+
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "Autre"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "Framework de méthode d'entrée IBus"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -175,7 +179,7 @@ msgstr ""
 "Horizontal\n"
 "Vertical"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "Préférences d'IBus"
 
