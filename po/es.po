@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Domingo Becker <domingobecker@gmail.com>\n"
 "Language-Team: Fedora Spanish <fedora-trans-es@redhat.com>\n"
@@ -38,20 +38,23 @@ msgstr "Domingo Becker, <domingobecker@gmail.com>, 2009"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "Cambiar máquina"
+#, fuzzy
+msgid "Switch input method"
+msgstr "Cambiar método de entrada"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "activador"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "siguiente máquina"
+#, fuzzy
+msgid "next input method"
+msgstr "siguiente método de entrada"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "máquina anterior"
+#, fuzzy
+msgid "previous input method"
+msgstr "método de entrada anterior"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-03-19 16:12+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -45,20 +45,20 @@ msgstr ""
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "エンジンの変更"
+msgid "Switch input method"
+msgstr "インプットメソッドがありません"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "トリガー"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "次のエンジン"
+msgid "next input method"
+msgstr "次のインプットメソッド"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "前のエンジン"
+msgid "previous input method"
+msgstr "ひとつ前のインプットメソッド"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -283,3 +283,12 @@ msgstr ""
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr ""
+
+#~ msgid "Switch engine"
+#~ msgstr "エンジンの変更"
+
+#~ msgid "next engine"
+#~ msgstr "次のエンジン"
+
+#~ msgid "prev engine"
+#~ msgstr "前のエンジン"

@@ -110,7 +110,7 @@ class Setup(object):
         entry = self.__xml.get_widget("entry_next_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("next engine"), "general/hotkey", "next_engine", entry)
+                    N_("next input method"), "general/hotkey", "next_engine", entry)
 
         # prev engine
         shortcuts = self.__config.get_value(
@@ -120,7 +120,7 @@ class Setup(object):
         entry = self.__xml.get_widget("entry_prev_engine")
         entry.set_text("; ".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("prev engine"), "general/hotkey", "prev_engine", entry)
+                    N_("previous input method"), "general/hotkey", "prev_engine", entry)
 
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")

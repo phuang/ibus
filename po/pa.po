@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-03-31 21:46+0000\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
@@ -46,20 +46,23 @@ msgstr ""
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "ਇੰਜਣ ਬਦਲੋ"
+#, fuzzy
+msgid "Switch input method"
+msgstr "ਕੋਈ ਇੰਪੁੱਟ ਢੰਗ ਨਹੀਂ"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ਟਰਿੱਗਰ"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "ਅਗਲਾ ਇੰਜਣ"
+#, fuzzy
+msgid "next input method"
+msgstr "ਅਗਲਾ ਇੰਪੁੱਟ ਢੰਗ"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+#, fuzzy
+msgid "previous input method"
+msgstr "ਪਿਛਲਾ ਇੰਪੁੱਟ ਢੰਗ"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -278,6 +281,15 @@ msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ �
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "ਇੰਜਣ ਬਦਲੋ"
+
+#~ msgid "next engine"
+#~ msgstr "ਅਗਲਾ ਇੰਜਣ"
+
+#~ msgid "prev engine"
+#~ msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
 #~ msgid "keyboard label|BackSpace"
 #~ msgstr "BackSpace"

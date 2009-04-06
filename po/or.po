@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-02 13:03+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
@@ -45,20 +45,23 @@ msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "ଯନ୍ତ୍ର ବଦଳାନ୍ତୁ"
+#, fuzzy
+msgid "Switch input method"
+msgstr "କୌଣସି ନିବେଶ ପ୍ରଣୀଳୀ ନାହିଁ"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ଟ୍ରିଗର"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର"
+#, fuzzy
+msgid "next input method"
+msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "ପୂର୍ବ ଯନ୍ତ୍ର"
+#, fuzzy
+msgid "previous input method"
+msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -279,3 +282,12 @@ msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତା
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "ଯନ୍ତ୍ର ବଦଳାନ୍ତୁ"
+
+#~ msgid "next engine"
+#~ msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର"
+
+#~ msgid "prev engine"
+#~ msgstr "ପୂର୍ବ ଯନ୍ତ୍ର"

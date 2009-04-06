@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -43,20 +43,20 @@ msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "切换引擎"
+msgid "Switch input method"
+msgstr "切换输入法"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "开关"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "下一个引擎"
+msgid "next input method"
+msgstr "下一入法"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "上一个引擎"
+msgid "previous input method"
+msgstr "前一入法"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -188,7 +188,7 @@ msgstr ""
 
 #: ../setup/setup.glade.h:24
 msgid "Next input method:"
-msgstr "下一入法"
+msgstr "下一入法:"
 
 #: ../setup/setup.glade.h:25
 msgid "Show language panel:"
@@ -204,7 +204,7 @@ msgstr "使用自定义字体"
 
 #: ../setup/setup.glade.h:28
 msgid "previous input method:"
-msgstr "前一入法"
+msgstr "前一入法:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"

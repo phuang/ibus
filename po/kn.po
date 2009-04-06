@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-03 17:07+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
@@ -44,20 +44,23 @@ msgstr "ಶಂಕರ್ ಪ್ರಸಾದ್ <svenkate@redhat.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "ಎಂಜಿನ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"
+#, fuzzy
+msgid "Switch input method"
+msgstr "ಯಾವುದೆ ಇನ್‌ಪುಟ್ ವಿಧಾನವಿಲ್ಲ"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ಟ್ರಿಗರ್"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "ಮುಂದಿನ ಎಂಜಿನ್"
+#, fuzzy
+msgid "next input method"
+msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "ಹಿಂದಿನ ಎಂಜಿನ್"
+#, fuzzy
+msgid "previous input method"
+msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -278,3 +281,12 @@ msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿ ಇಚ್ಛೆಯ ಅಕ್
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "ಎಂಜಿನ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"
+
+#~ msgid "next engine"
+#~ msgstr "ಮುಂದಿನ ಎಂಜಿನ್"
+
+#~ msgid "prev engine"
+#~ msgstr "ಹಿಂದಿನ ಎಂಜಿನ್"

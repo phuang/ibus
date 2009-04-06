@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
+msgid "Switch input method"
 msgstr ""
 
 #: ../setup/main.py:103
@@ -51,11 +51,11 @@ msgid "trigger"
 msgstr ""
 
 #: ../setup/main.py:113
-msgid "next engine"
+msgid "next input method"
 msgstr ""
 
 #: ../setup/main.py:123
-msgid "prev engine"
+msgid "previous input method"
 msgstr ""
 
 #: ../setup/main.py:204

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-05 15:57+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -40,20 +40,23 @@ msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "Przełącz mechanizm"
+#, fuzzy
+msgid "Switch input method"
+msgstr "Brak metody wejścia"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "przełącznik"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "następny mechanizm"
+#, fuzzy
+msgid "next input method"
+msgstr "następna metoda wejścia"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "poprzedni mechanizm"
+#, fuzzy
+msgid "previous input method"
+msgstr "poprzednia metoda wejścia"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -280,3 +283,12 @@ msgstr "Nazwa własnej czcionki użytej w panelu języków"
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "Przełącz mechanizm"
+
+#~ msgid "next engine"
+#~ msgstr "następny mechanizm"
+
+#~ msgid "prev engine"
+#~ msgstr "poprzedni mechanizm"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-01 17:05+0530\n"
 "Last-Translator: Sandeep Shedmake <sandeep.shedmake@gmail.com>\n"
 "Language-Team: marathi\n"
@@ -44,20 +44,23 @@ msgstr "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "इंजिन बदला"
+#, fuzzy
+msgid "Switch input method"
+msgstr "इनपुट पद्धत आढळली नाही"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ट्रिगर"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "पुढिल इंजिन"
+#, fuzzy
+msgid "next input method"
+msgstr "पुढची इनपुट पद्धत"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "मागील इंजिन"
+#, fuzzy
+msgid "previous input method"
+msgstr "मागील इनपुट पद्धत"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -277,3 +280,12 @@ msgstr "भाषा पटल करीत स्वपसंत फॉन्�
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "इंजिन बदला"
+
+#~ msgid "next engine"
+#~ msgstr "पुढिल इंजिन"
+
+#~ msgid "prev engine"
+#~ msgstr "मागील इंजिन"

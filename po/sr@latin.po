@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-03 16:13+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -40,24 +40,27 @@ msgstr "IBus je inteligentna magistrala unosa za Linux/Unix."
 
 #: ../ui/gtk/panel.py:387
 msgid "translator-credits"
-msgstr ""
+msgstr "Serbian <fedora-trans-sr@redhat.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "Promeni pogon"
+#, fuzzy
+msgid "Switch input method"
+msgstr "Nema metode unosa"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "okidač"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "sledeći pogon"
+#, fuzzy
+msgid "next input method"
+msgstr "sledeća metoda unosa"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "prethodni pogon"
+#, fuzzy
+msgid "previous input method"
+msgstr "prethodna metoda unosa"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -280,3 +283,12 @@ msgstr "Koristi prilagođeni font za jezički panel"
 #: ../data/ibus.schemas.in.h:17
 msgid "[Control+space]"
 msgstr "[Control+space]"
+
+#~ msgid "Switch engine"
+#~ msgstr "Promeni pogon"
+
+#~ msgid "next engine"
+#~ msgstr "sledeći pogon"
+
+#~ msgid "prev engine"
+#~ msgstr "prethodni pogon"

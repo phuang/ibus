@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 15:05+0800\n"
+"POT-Creation-Date: 2009-04-06 09:17+0800\n"
 "PO-Revision-Date: 2009-04-04 03:03+0100\n"
 "Last-Translator: Julroy67 <julroy67@gmail.com>\n"
 "Language-Team: French <julroy67@gmail.com>\n"
@@ -45,20 +45,23 @@ msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "Changer de moteur"
+#, fuzzy
+msgid "Switch input method"
+msgstr "Changer méthode d'entrée"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "déclencheur"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "moteur suivant"
+#, fuzzy
+msgid "next input method"
+msgstr "Méthode d'entrée suivante"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "moteur précédent"
+#, fuzzy
+msgid "previous input method"
+msgstr "méthode d'entrée précédente"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"

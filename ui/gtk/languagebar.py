@@ -81,7 +81,7 @@ class LanguageBar(gtk.Toolbar):
         handle.connect("move-end", self.__handle_move_end_cb)
 
         # create input methods menu
-        prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch engine"))
+        prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch input method"))
         self.__im_menu = ToggleToolButton(prop)
         self.__im_menu.set_homogeneous(False)
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
