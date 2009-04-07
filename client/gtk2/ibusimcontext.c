@@ -187,20 +187,26 @@ _key_snooper_cb (GtkWidget   *widget,
 {
     gboolean retval = FALSE;
 
+    IBusIMContext *ibusimcontext;
+    ibusimcontext = (IBusIMContext *) _focus_im_context;
+
     if (!_use_key_snooper)
         return retval;
 
-    if (_focus_im_context == NULL)
+    if (ibusimcontext == NULL)
+        return retval;
+
+    if (ibusimcontext->ibuscontext == NULL || ibusimcontext->has_focus == FALSE)
         return retval;
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
-        retval = ibus_input_context_process_key_event (((IBusIMContext *)_focus_im_context)->ibuscontext,
+        retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state | IBUS_RELEASE_MASK);
         break;
     case GDK_KEY_PRESS:
-        retval = ibus_input_context_process_key_event (((IBusIMContext *)_focus_im_context)->ibuscontext,
+        retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state);
         break;
