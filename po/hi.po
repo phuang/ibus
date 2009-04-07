@@ -1,0 +1,284 @@
+# translation of ibus.master.ibus.po to Hindi
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Rajesh Ranjan <rranjan@redhat.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ibus.master.ibus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-06 13:42+0530\n"
+"Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
+"Language-Team: Hindi <Hindi.sf.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus इनपुट विधि फ्रेमवर्क"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "अन्य"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "पुनः प्रारंभ करें"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "कोई इनपुट विधि नहीं"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus Linux/Unix के लिए तेज तर्रार इनपुट बस है."
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "राजेश रंजन (rranjan@redhat.com)"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "इनपुट विधि बदलें"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "ट्रिगर"
+
+#: ../setup/main.py:113
+msgid "next input method"
+msgstr "अगली इनपुट विधि"
+
+#: ../setup/main.py:123
+msgid "previous input method"
+msgstr "पिछली इनपुट विधि"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "IBus अबतक आरंभ नहीं हुआ है. क्या आप इसे आरंभ करना चाहते हैं?"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus आरंभ किया गया है! यदि आप IBus का प्रयोग नहीं कर सकते हैं, कृपया नीचे की पंक्ति को "
+"$HOME/.bashrc में जोड़ें, और अपने डेस्कटॉप में फिर लॉगिन करें.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "%s के लिए कुंजीपटल शॉर्टकर्ट चुनें"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "कुंजीपटल शॉर्टकर्ट"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "कुंजी कोड:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "परिवर्तनकर्ता:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"कृपया कोई कुंजी दबाएँ (या कोई कुंजी संयोग).\n"
+"यह संवाद कुंजी छोड़े जाने पर बंद हो जाएगा."
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "कृपया कोई कुंजी दबाएँ (या कोई कुंजी संयोग)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "कोई इनपुट विधि चुनें"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>फ़ॉन्ट व शैली</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>कुंजीपटल शॉर्टकट</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>स्टार्टअप</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>तेज-तर्रार इनपुट बस</small>\n"
+"होमपेज: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "परिचय"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "कंडीडेट दिशा:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "मनपसंद फ़ॉन्ट:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "सक्रिय या निष्क्रिय करें:"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "सामान्य"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"क्षैतिज\n"
+"लंबवत"
+
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus वरीयता"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "इनपुट विधि"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"कभी नहीं\n"
+"जब सक्रिय हो\n"
+"हमेशा"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "अगली इनपुट विधि :"
+
+#: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "पिछली इनपुट विधि:"
+
+#: ../setup/setup.glade.h:26
+msgid "Show language panel:"
+msgstr "भाषा पैनल दिखाएँ:"
+
+#: ../setup/setup.glade.h:27
+msgid "Start ibus on login"
+msgstr "लॉगिन पर ibus आरंभ करें"
+
+#: ../setup/setup.glade.h:28
+msgid "Use custom font"
+msgstr "मनपसंद फ़ॉन्ट का प्रयोग करें"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "स्वतः छुपाएँ"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "मनपसंद फ़ॉन्ट"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "भाषा पटल के लिए मनपसंद फ़ॉन्ट नाम"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "अगला इंजन हॉटकी"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "अगली इनपुट विधि इंजन में जाने के लिए अगला इंजन हॉटकी"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "लुकअप सारणी की दिशा"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "सारणी देखने के लिए दिशा. 0 = क्षैतिज, 1 = लंबवत"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "पहले से लोड इंजन"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "ibus आरंभन के दौरान पहले से लोड इंजन"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "पिछला इंजन हॉटकी"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "पिछले इनपुट विधि इंजन में जाने के लिए पिछला इंजन हॉटकी"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr "भाषा पटल का आचरण. 0 = हमेशा छुपाएँ, 1 = स्वतः छुपाएँ, 2 = हमेशा दिखाएँ"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "ट्रिगर हॉटकी"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "इनपुट संदर्भ सक्रिय या निष्क्रिय करने के लिए ट्रिगर हॉटकी"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "मनपसंद फ़ॉन्ट का प्रयोग करें"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "भाषा पटल के लिए मनपसंद फ़ॉन्ट नाम का प्रयोग करें"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
