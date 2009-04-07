@@ -18,17 +18,11 @@
       <owner>ibus</owner>
       <type>list</type>
       <list_type>string</list_type>
+      <default>[Control+space,Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave,Hangul]</default>
       <locale name="C">
-        <default>[Control+space]</default>
         <short>Trigger Hotkey</short>
 	    <long>Trigger hotkey for enable or disable input context</long>
       </locale>
-      <locale name="ja">
-        <default>[Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave]</default>
-	  </locale>
-      <locale name="ko">
-        <default>[Hangul,Shift+space]</default>
-	  </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/ibus/general/hotkey/next_engine</key>
@@ -36,7 +30,7 @@
       <owner>ibus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[]</default>
+      <default>[Alt+Shift_L]</default>
       <locale name="C">
         <short>Next Engine Hotkey</short>
 	    <long>Next engine hotkey for switch to next input method engine</long>
