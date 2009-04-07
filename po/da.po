@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-02 12:51+0200\n"
+"PO-Revision-Date: 2009-04-06 21:47+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,6 @@ msgstr ""
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
 msgstr "Skift inddatametode"
 
@@ -59,12 +58,10 @@ msgid "trigger"
 msgstr "udløser"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
-msgstr "Næste inddatametode"
+msgstr "næste inddatametode"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "forrige inddatametode"
 
@@ -202,7 +199,6 @@ msgid "Next input method:"
 msgstr "Næste inddatametode:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "Forrige inddatametode:"
 
