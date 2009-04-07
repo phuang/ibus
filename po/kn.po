@@ -1,14 +1,14 @@
-# translation of ibus.master.ibus.kn.po to Kannada
+# translation of ibus.master.kn.po to Kannada
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Shankar Prasad <svenkate@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ibus.kn\n"
+"Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-03 17:07+0530\n"
+"POT-Creation-Date: 2009-04-07 15:38+0800\n"
+"PO-Revision-Date: 2009-04-07 11:40+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -48,21 +48,18 @@ msgstr "ಶಂಕರ್ ಪ್ರಸಾದ್ <svenkate@redhat.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "ಯಾವುದೆ ಇನ್‌ಪುಟ್ ವಿಧಾನವಿಲ್ಲ"
+msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸು"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ಟ್ರಿಗರ್"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
 msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
@@ -200,7 +197,6 @@ msgid "Next input method:"
 msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
@@ -283,15 +279,5 @@ msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸ�
 msgid "Use custom font name for language panel"
 msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರನ್ನು ಬಳಸಿ"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
-
-#~ msgid "Switch engine"
-#~ msgstr "ಎಂಜಿನ್ ಅನ್ನು ಬದಲಾಯಿಸಿ"
-
-#~ msgid "next engine"
-#~ msgstr "ಮುಂದಿನ ಎಂಜಿನ್"
-
-#~ msgid "prev engine"
-#~ msgstr "ಹಿಂದಿನ ಎಂಜಿನ್"
+#~ msgid "[Control+space]"
+#~ msgstr "[Control+space]"
