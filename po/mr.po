@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-01 17:05+0530\n"
+"PO-Revision-Date: 2009-04-06 13:54+0530\n"
 "Last-Translator: Sandeep Shedmake <sandeep.shedmake@gmail.com>\n"
 "Language-Team: marathi\n"
 "MIME-Version: 1.0\n"
@@ -48,21 +48,18 @@ msgstr "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "इनपुट पद्धत आढळली नाही"
+msgstr "इनपुट पद्धत बदला"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ट्रिगर"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
-msgstr "पुढची इनपुट पद्धत"
+msgstr "पुढिल इनपुट पद्धत"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "मागील इनपुट पद्धत"
 
@@ -78,8 +75,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus सुरू केले गेले आहे! तुम्ही IBus चा वापर करत नसल्यास, कृपया खालिल ओळ $HOME/.bashrc "
-"अंतर्गत समावेष करा, व पुन्हा डेस्कटॉपवर पुन्हा प्रवेश करा.\n"
+"IBus सुरू केले गेले आहे! तुम्ही IBus चा वापर करत नसल्यास, कृपया खालिल ओळ "
+"$HOME/.bashrc अंतर्गत समावेष करा, व पुन्हा डेस्कटॉपवर पुन्हा प्रवेश करा.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -200,7 +197,6 @@ msgid "Next input method:"
 msgstr "पुढची इनपुट पद्धत:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "मागील इनपुट पद्धत:"
 
@@ -264,7 +260,9 @@ msgstr "मागील इनपुट पद्धत इंजिन वा�
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr "भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgstr ""
+"भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
@@ -286,11 +284,3 @@ msgstr "भाषा पटल करीत स्वपसंत फॉन्�
 msgid "[Control+space]"
 msgstr "[Control+space]"
 
-#~ msgid "Switch engine"
-#~ msgstr "इंजिन बदला"
-
-#~ msgid "next engine"
-#~ msgstr "पुढिल इंजिन"
-
-#~ msgid "prev engine"
-#~ msgstr "मागील इंजिन"
