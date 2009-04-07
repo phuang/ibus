@@ -64,17 +64,11 @@
       <applyto>/desktop/ibus/panel/lookup_table_orientation</applyto>
       <owner>ibus</owner>
       <type>int</type>
+      <default>1</default>
       <locale name="C">
-        <default>0</default>
         <short>Orientation of Lookup Table</short>
 	    <long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
       </locale>
-      <locale name="ja">
-        <default>1</default>
-	  </locale>
-      <locale name="ko">
-        <default>1</default>
-	  </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/ibus/panel/use_custom_font</key>
