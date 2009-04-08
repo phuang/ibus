@@ -1,14 +1,14 @@
-# translation of ibus.master.ibus.or.po to Oriya
+# translation of ibus.master.or.po to Oriya
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Manoj Kumar Giri <mgiri@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ibus.or\n"
+"Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-02 13:03+0530\n"
+"POT-Creation-Date: 2009-04-08 11:23+0800\n"
+"PO-Revision-Date: 2009-04-08 00:30+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -49,21 +50,18 @@ msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "କୌଣସି ନିବେଶ ପ୍ରଣୀଳୀ ନାହିଁ"
+msgstr "ନିବେଶ ପ୍ରଣୀଳିକୁ ବଦଳାନ୍ତୁ"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ଟ୍ରିଗର"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
 msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ"
 
@@ -201,7 +199,6 @@ msgid "Next input method:"
 msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ:"
 
@@ -284,15 +281,5 @@ msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପକୁ ବ୍�
 msgid "Use custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
-
-#~ msgid "Switch engine"
-#~ msgstr "ଯନ୍ତ୍ର ବଦଳାନ୍ତୁ"
-
-#~ msgid "next engine"
-#~ msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର"
-
-#~ msgid "prev engine"
-#~ msgstr "ପୂର୍ବ ଯନ୍ତ୍ର"
+#~ msgid "[Control+space]"
+#~ msgstr "[Control+space]"
