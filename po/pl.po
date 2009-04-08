@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-05 15:57+0200\n"
+"POT-Creation-Date: 2009-04-08 11:23+0800\n"
+"PO-Revision-Date: 2009-04-07 00:51+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,21 +44,18 @@ msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "Brak metody wejścia"
+msgstr "Przełącz metodę wejścia"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "przełącznik"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
 msgstr "następna metoda wejścia"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "poprzednia metoda wejścia"
 
@@ -196,7 +193,6 @@ msgid "Next input method:"
 msgstr "Następna metoda wejścia:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "Poprzednia metoda wejścia:"
 
@@ -285,15 +281,5 @@ msgstr "Użyj własnej czcionki"
 msgid "Use custom font name for language panel"
 msgstr "Nazwa własnej czcionki użytej w panelu języków"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
-
-#~ msgid "Switch engine"
-#~ msgstr "Przełącz mechanizm"
-
-#~ msgid "next engine"
-#~ msgstr "następny mechanizm"
-
-#~ msgid "prev engine"
-#~ msgstr "poprzedni mechanizm"
+#~ msgid "[Control+space]"
+#~ msgstr "[Control+space]"
