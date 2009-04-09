@@ -1,0 +1,431 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Amitakhya Phukan <aphukan@fedoraproject.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ibus.master.ibus.as\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-02 02:13+0000\n"
+"PO-Revision-Date: 2009-04-08 15:55+0530\n"
+"Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
+"Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../src/keyname-table.h:3940
+msgid "keyboard label|BackSpace"
+msgstr "keyboard label|BackSpace"
+
+#: ../src/keyname-table.h:3941
+msgid "keyboard label|Tab"
+msgstr "keyboard label|Tab"
+
+#: ../src/keyname-table.h:3942
+msgid "keyboard label|Return"
+msgstr "keyboard label|Return"
+
+#: ../src/keyname-table.h:3943
+msgid "keyboard label|Pause"
+msgstr "keyboard label|Pause"
+
+#: ../src/keyname-table.h:3944
+msgid "keyboard label|Scroll_Lock"
+msgstr "keyboard label|Scroll_Lock"
+
+#: ../src/keyname-table.h:3945
+msgid "keyboard label|Sys_Req"
+msgstr "keyboard label|Sys_Req"
+
+#: ../src/keyname-table.h:3946
+msgid "keyboard label|Escape"
+msgstr "keyboard label|Escape"
+
+#: ../src/keyname-table.h:3947
+msgid "keyboard label|Multi_key"
+msgstr "keyboard label|Multi_key"
+
+#: ../src/keyname-table.h:3948
+msgid "keyboard label|Home"
+msgstr "keyboard label|Home"
+
+#: ../src/keyname-table.h:3949
+msgid "keyboard label|Left"
+msgstr "keyboard label|Left"
+
+#: ../src/keyname-table.h:3950
+msgid "keyboard label|Up"
+msgstr "keyboard label|Up"
+
+#: ../src/keyname-table.h:3951
+msgid "keyboard label|Right"
+msgstr "keyboard label|Right"
+
+#: ../src/keyname-table.h:3952
+msgid "keyboard label|Down"
+msgstr "keyboard label|Down"
+
+#: ../src/keyname-table.h:3953
+msgid "keyboard label|Page_Up"
+msgstr "keyboard label|Page_Up"
+
+#: ../src/keyname-table.h:3954
+msgid "keyboard label|Page_Down"
+msgstr "keyboard label|Page_Down"
+
+#: ../src/keyname-table.h:3955
+msgid "keyboard label|End"
+msgstr "keyboard label|End"
+
+#: ../src/keyname-table.h:3956
+msgid "keyboard label|Begin"
+msgstr "keyboard label|Begin"
+
+#: ../src/keyname-table.h:3957
+msgid "keyboard label|Print"
+msgstr "keyboard label|Print"
+
+#: ../src/keyname-table.h:3958
+msgid "keyboard label|Insert"
+msgstr "keyboard label|Insert"
+
+#: ../src/keyname-table.h:3959
+msgid "keyboard label|Num_Lock"
+msgstr "keyboard label|Num_Lock"
+
+#: ../src/keyname-table.h:3960
+msgid "keyboard label|KP_Space"
+msgstr "keyboard label|KP_Space"
+
+#: ../src/keyname-table.h:3961
+msgid "keyboard label|KP_Tab"
+msgstr "keyboard label|KP_Tab"
+
+#: ../src/keyname-table.h:3962
+msgid "keyboard label|KP_Enter"
+msgstr "keyboard label|KP_Enter"
+
+#: ../src/keyname-table.h:3963
+msgid "keyboard label|KP_Home"
+msgstr "keyboard label|KP_Home"
+
+#: ../src/keyname-table.h:3964
+msgid "keyboard label|KP_Left"
+msgstr "keyboard label|KP_Left"
+
+#: ../src/keyname-table.h:3965
+msgid "keyboard label|KP_Up"
+msgstr "keyboard label|KP_Up"
+
+#: ../src/keyname-table.h:3966
+msgid "keyboard label|KP_Right"
+msgstr "keyboard label|KP_Right"
+
+#: ../src/keyname-table.h:3967
+msgid "keyboard label|KP_Down"
+msgstr "keyboard label|KP_Down"
+
+#: ../src/keyname-table.h:3968
+msgid "keyboard label|KP_Page_Up"
+msgstr "keyboard label|KP_Page_Up"
+
+#: ../src/keyname-table.h:3969
+msgid "keyboard label|KP_Prior"
+msgstr "keyboard label|KP_Prior"
+
+#: ../src/keyname-table.h:3970
+msgid "keyboard label|KP_Page_Down"
+msgstr "keyboard label|KP_Page_Down"
+
+#: ../src/keyname-table.h:3971
+msgid "keyboard label|KP_Next"
+msgstr "keyboard label|KP_Next"
+
+#: ../src/keyname-table.h:3972
+msgid "keyboard label|KP_End"
+msgstr "keyboard label|KP_End"
+
+#: ../src/keyname-table.h:3973
+msgid "keyboard label|KP_Begin"
+msgstr "keyboard label|KP_Begin"
+
+#: ../src/keyname-table.h:3974
+msgid "keyboard label|KP_Insert"
+msgstr "keyboard label|KP_Insert"
+
+#: ../src/keyname-table.h:3975
+msgid "keyboard label|KP_Delete"
+msgstr "keyboard label|KP_Delete"
+
+#: ../src/keyname-table.h:3976
+msgid "keyboard label|Delete"
+msgstr "keyboard label|Delete"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "অন্য"
+
+#: ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus input method framework"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "পুনৰাৰম্ভ"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "কোনো নিবেশ পদ্ধতি নাই"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus এটা Linux/Unix ৰ কাৰণে বুদ্ধিমান নিবেশ bus ।"
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch engine"
+msgstr "কলঘৰ সলনি কৰক"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "ট্ৰিগাৰ"
+
+#: ../setup/main.py:113
+msgid "next engine"
+msgstr "পিছৰ কলঘৰ"
+
+#: ../setup/main.py:123
+msgid "prev engine"
+msgstr "আগৰ কলঘৰ"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr ""
+"IBus ডেমন আৰম্ভ কৰা হোৱা নাই । আপুনি ইয়াক এতিয়া আৰম্ভ কৰিব বিচাৰে নেকি ?"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus আৰম্ভ কৰা হ'ল! IBus ব্যৱহাৰ কৰিব নোৱাৰিলে, এই শাৰী"
+"$HOME/.bashrc ত যোগ দিয়ক, আৰু আপোনাৰ ডেষ্কট'পত পুনঃ প্ৰৱেশ কৰক ।\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "%s ৰ কাৰণে চাবিফলকৰ চমুপথ নিৰ্ব্বাচন কৰক"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "কীবৰ্ডৰ চমুপথবোৰ"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "চাবিৰ কোড:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "পৰিবৰ্তক:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ) ।\n"
+"চাবি এৰিলে সম্বাদ বন্ধ হ'ব ।"
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "এটা নিবেশ পদ্ধতি নিৰ্ব্বাচন কৰক"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>ফন্ট আৰু শৈলী</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>কীবৰ্ডৰ চমুপথবোৰ</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>ষ্টাৰ্টআপ</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>বুদ্ধিমান নিবেশ bus</small>\n"
+"ঘৰৰ পৃষ্ঠা: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "বিষয়ে"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "প্ৰাৰ্থীৰ দিশ:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "স্বনিৰ্বাচিত ফন্ট:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "সক্ৰিয় বা নিষ্ক্ৰিয় কৰক:"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "সাধাৰণ"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"অনুভূমিক\n"
+"উলম্ব"
+
+#: ../setup/setup.glade.h:19
+msgid "IBus Preferences"
+msgstr "IBus পছন্দ"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "নিবেশ পদ্ধতি"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"কেতিয়াও নহয়\n"
+"যেতিয়া সক্ৰিয়\n"
+"সদায়"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "পিছৰ নিবেশ পদ্ধতি:"
+
+#: ../setup/setup.glade.h:25
+msgid "Show language panel:"
+msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
+
+#: ../setup/setup.glade.h:26
+msgid "Start ibus on login"
+msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
+
+#: ../setup/setup.glade.h:27
+msgid "Use custom font"
+msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
+
+#: ../setup/setup.glade.h:28
+msgid "previous input method:"
+msgstr "আগৰ নিবেশ পদ্ধতি:"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "স্বয়ংক্ৰিয়ভাবে লুকাওক"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "স্বনিৰ্বাচিত ফন্ট"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "পিছৰ কলঘৰৰ Hotkey"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "পিছৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "লুকআপ টেবুলৰ দিশ"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "লুকআপ টেবুলৰ দিশ । ০ = অনুভূমিক, ১ = উলম্ব"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "পূৰ্বে কলঘৰ তুলি লওক"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "ibus আৰম্ভৰ পূৰ্বে কলঘৰ তুলি লওক"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "আগৰ কলঘৰৰ Hotkey"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+"ভাষাৰ পেনেলৰ আচৰণ । ০ = সদায় লুকাওক, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় "
+"দেখুৱাওক"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "ট্ৰিগাৰ Hotkey"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "ট্ৰিগাৰ Hotkey নিবেশ সনদৰ্ভ সক্ৰিয় বা নিষ্ক্ৰিয় কৰিবলৈ"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
+
+
