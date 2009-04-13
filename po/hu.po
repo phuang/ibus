@@ -1,0 +1,283 @@
+# Translation of the IBus master
+# Copyright (C) 2009 
+# This file is distributed under the same license as the IBus package.
+# Sulyok Péter <peti@fedoraproject.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: IBus master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-11 10:58+0200\n"
+"Last-Translator: Sulyok Péter <peti@fedoraproject.org>\n"
+"Language-Team: Hungarian <fedora-trans-hu@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus bevitel eljárás keretrendszer"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "Más"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "Újraindítás"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "Nincs bevitel eljárás"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus egy okos bemenő csatorna Linux/Unixhoz"
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "Sulyok Péter <peti@fedoraproject.org>, 2009."
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "Bevitel eljárás átváltás"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "ravasz"
+
+#: ../setup/main.py:113
+msgid "next input method"
+msgstr "következő bevitel eljárás"
+
+#: ../setup/main.py:123
+msgid "previous input method"
+msgstr "előző bevitel eljárás"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "Az IBus szolgáltatás áll. Beindítja?"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus működik! Ha nem tudja IBus-t használni, kérem fűzze az \n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+"sorokat a $HOME/.bashrc fájlhoz, majd lépjen be újra."
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "%s gyorsbillentyűjének kiválasztása"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "Gyorsbillentyűk"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "Kulcs kód:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "Módosítók:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"Kérem nyomjon egy billentyűt (vagy kombinációt).\n"
+"Az ablak bezárul, amint a billentyűt felengedi."
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "Kérem nyomjon egy billentyűt (vagy kombinációt)."
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "Bevitel eljárás kiválasztása"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "…"
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Betűtípus és stílus</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Gyorsbillentyűk</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Indulás</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Az okos bemenő csatorna</small>\n"
+"Honlap: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "Névjegy"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "Jelöltek iránya:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "Saját betű:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "Engedés vagy tiltás"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "Általános"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"vízszintes\n"
+"függőleges"
+
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus beállítás"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "Bevitel eljárások"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"soha\n"
+"aktívan\n"
+"mindig"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "Következő bevitel eljárás:"
+
+#: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "Előző bevitel eljárás:"
+
+#: ../setup/setup.glade.h:26
+msgid "Show language panel:"
+msgstr "Nyelv panel mutatása:"
+
+#: ../setup/setup.glade.h:27
+msgid "Start ibus on login"
+msgstr "Belépve ibus indítása"
+
+#: ../setup/setup.glade.h:28
+msgid "Use custom font"
+msgstr "Saját betű használata"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "Önműködő rejtés"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "Saját betű"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "Saját betű neve a nyelv panelen"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "Következő eljárás gyorsbillentyű"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "A következő eljárás gyorsbillentyű a következő bevitel eljárásra kapcsol"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "Kereső táblázat iránya"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "Kereső táblázat iránya. 0 = vízszintes, 1 = függőleges"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "Eljárások előtöltése"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "Eljárások előre betöltése ibus indulásakor"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "Előző eljárás gyorsbillentyű"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+"A nyelv panel viselkedése. 0 = mindig rejtve, 1 = rejtőzködő, 2 = mindig látható"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "Ravasz gyorsbillentyű"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "A ravasz gyorsbillentyű engedi vagy tiltja bevitel környezetet"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "Saját betű használata"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "Saját betű használata a nyelv panelen"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Ctrl+szóköz]"
+
