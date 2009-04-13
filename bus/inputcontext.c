@@ -80,6 +80,10 @@ struct _BusInputContextPrivate {
     gint w;
     gint h;
 
+    /* prev key event */
+    guint prev_keyval;
+    guint prev_modifiers;
+
     /* preedit text */
     IBusText *preedit_text;
     guint     preedit_cursor_pos;
@@ -528,6 +532,9 @@ bus_input_context_init (BusInputContext *context)
     priv->engine = NULL;
     priv->has_focus = FALSE;
     priv->enabled = FALSE;
+
+    priv->prev_keyval = IBUS_VoidSymbol;
+    priv->prev_modifiers = 0;
 
     priv->capabilities = 0;
 
@@ -2048,9 +2055,6 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     static GQuark next_factory;
     static GQuark prev_factory;
 
-    static guint prev_keyval = 0;
-    static guint prev_modifiers = 0;
-
     GQuark event;
 
     if (trigger == 0) {
@@ -2062,11 +2066,11 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     event = ibus_hotkey_profile_filter_key_event (BUS_DEFAULT_HOTKEY_PROFILE,
                                                   keyval,
                                                   modifiers,
-                                                  prev_keyval,
-                                                  prev_modifiers,
+                                                  priv->prev_keyval,
+                                                  priv->prev_modifiers,
                                                   0);
-    prev_keyval = keyval;
-    prev_modifiers = modifiers;
+    priv->prev_keyval = keyval;
+    priv->prev_modifiers = modifiers;
 
     if (event == trigger) {
         if (priv->engine == NULL) {
