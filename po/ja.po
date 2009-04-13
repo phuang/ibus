@@ -2,6 +2,7 @@
 # Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
+# IWAI, Masaharu <iwai@alib.jp>, 2009
 #
 #
 msgid ""
@@ -9,7 +10,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-03-19 16:12+0900\n"
+"PO-Revision-Date: 2009-04-11 03:13+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -198,7 +199,6 @@ msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "ひとつ前のインプットメソッド:"
 
@@ -219,9 +219,8 @@ msgid "Auto Hide"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom Font"
-msgstr "カスタムフォント:"
+msgstr "カスタムフォント"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -245,9 +244,8 @@ msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload Engines"
-msgstr "前のエンジン"
+msgstr ""
 
 #: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
@@ -277,7 +275,6 @@ msgid "Trigger hotkey for enable or disable input context"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:15
-#, fuzzy
 msgid "Use Custom Font"
 msgstr "カスタムフォントを使う"
 
