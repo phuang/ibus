@@ -90,10 +90,13 @@ bus_server_listen (BusServer *server)
     gboolean retval;
 
     path = g_strdup_printf("/tmp/ibus-%s", ibus_get_user_name ());
-    mkdir (path, 0775);
+    mkdir (path, 0700);
+    chmod (path, 0700);
+
     address = ibus_get_address ();
 
     retval = ibus_server_listen (IBUS_SERVER (server), address);
+    chmod (ibus_get_socket_path (), 0600);
 
     if (!retval) {
         g_printerr ("Can not listen on %s! Please try remove directory %s and run again.", address, path);
