@@ -330,10 +330,10 @@ ibus_im_context_init (GObject *obj)
                       ibusimcontext);
 
     /* init bus object */
-    if (_bus == NULL)
-
+    if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
         _bus = ibus_bus_new();
+    }
 
     if (ibus_bus_is_connected (_bus)) {
         _create_input_context (ibusimcontext);
