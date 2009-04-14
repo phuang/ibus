@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-02 02:13+0000\n"
-"PO-Revision-Date: 2009-04-08 15:55+0530\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-09 19:03+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,162 +16,18 @@ msgstr ""
 "X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../src/keyname-table.h:3940
-msgid "keyboard label|BackSpace"
-msgstr "keyboard label|BackSpace"
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
 
-#: ../src/keyname-table.h:3941
-msgid "keyboard label|Tab"
-msgstr "keyboard label|Tab"
-
-#: ../src/keyname-table.h:3942
-msgid "keyboard label|Return"
-msgstr "keyboard label|Return"
-
-#: ../src/keyname-table.h:3943
-msgid "keyboard label|Pause"
-msgstr "keyboard label|Pause"
-
-#: ../src/keyname-table.h:3944
-msgid "keyboard label|Scroll_Lock"
-msgstr "keyboard label|Scroll_Lock"
-
-#: ../src/keyname-table.h:3945
-msgid "keyboard label|Sys_Req"
-msgstr "keyboard label|Sys_Req"
-
-#: ../src/keyname-table.h:3946
-msgid "keyboard label|Escape"
-msgstr "keyboard label|Escape"
-
-#: ../src/keyname-table.h:3947
-msgid "keyboard label|Multi_key"
-msgstr "keyboard label|Multi_key"
-
-#: ../src/keyname-table.h:3948
-msgid "keyboard label|Home"
-msgstr "keyboard label|Home"
-
-#: ../src/keyname-table.h:3949
-msgid "keyboard label|Left"
-msgstr "keyboard label|Left"
-
-#: ../src/keyname-table.h:3950
-msgid "keyboard label|Up"
-msgstr "keyboard label|Up"
-
-#: ../src/keyname-table.h:3951
-msgid "keyboard label|Right"
-msgstr "keyboard label|Right"
-
-#: ../src/keyname-table.h:3952
-msgid "keyboard label|Down"
-msgstr "keyboard label|Down"
-
-#: ../src/keyname-table.h:3953
-msgid "keyboard label|Page_Up"
-msgstr "keyboard label|Page_Up"
-
-#: ../src/keyname-table.h:3954
-msgid "keyboard label|Page_Down"
-msgstr "keyboard label|Page_Down"
-
-#: ../src/keyname-table.h:3955
-msgid "keyboard label|End"
-msgstr "keyboard label|End"
-
-#: ../src/keyname-table.h:3956
-msgid "keyboard label|Begin"
-msgstr "keyboard label|Begin"
-
-#: ../src/keyname-table.h:3957
-msgid "keyboard label|Print"
-msgstr "keyboard label|Print"
-
-#: ../src/keyname-table.h:3958
-msgid "keyboard label|Insert"
-msgstr "keyboard label|Insert"
-
-#: ../src/keyname-table.h:3959
-msgid "keyboard label|Num_Lock"
-msgstr "keyboard label|Num_Lock"
-
-#: ../src/keyname-table.h:3960
-msgid "keyboard label|KP_Space"
-msgstr "keyboard label|KP_Space"
-
-#: ../src/keyname-table.h:3961
-msgid "keyboard label|KP_Tab"
-msgstr "keyboard label|KP_Tab"
-
-#: ../src/keyname-table.h:3962
-msgid "keyboard label|KP_Enter"
-msgstr "keyboard label|KP_Enter"
-
-#: ../src/keyname-table.h:3963
-msgid "keyboard label|KP_Home"
-msgstr "keyboard label|KP_Home"
-
-#: ../src/keyname-table.h:3964
-msgid "keyboard label|KP_Left"
-msgstr "keyboard label|KP_Left"
-
-#: ../src/keyname-table.h:3965
-msgid "keyboard label|KP_Up"
-msgstr "keyboard label|KP_Up"
-
-#: ../src/keyname-table.h:3966
-msgid "keyboard label|KP_Right"
-msgstr "keyboard label|KP_Right"
-
-#: ../src/keyname-table.h:3967
-msgid "keyboard label|KP_Down"
-msgstr "keyboard label|KP_Down"
-
-#: ../src/keyname-table.h:3968
-msgid "keyboard label|KP_Page_Up"
-msgstr "keyboard label|KP_Page_Up"
-
-#: ../src/keyname-table.h:3969
-msgid "keyboard label|KP_Prior"
-msgstr "keyboard label|KP_Prior"
-
-#: ../src/keyname-table.h:3970
-msgid "keyboard label|KP_Page_Down"
-msgstr "keyboard label|KP_Page_Down"
-
-#: ../src/keyname-table.h:3971
-msgid "keyboard label|KP_Next"
-msgstr "keyboard label|KP_Next"
-
-#: ../src/keyname-table.h:3972
-msgid "keyboard label|KP_End"
-msgstr "keyboard label|KP_End"
-
-#: ../src/keyname-table.h:3973
-msgid "keyboard label|KP_Begin"
-msgstr "keyboard label|KP_Begin"
-
-#: ../src/keyname-table.h:3974
-msgid "keyboard label|KP_Insert"
-msgstr "keyboard label|KP_Insert"
-
-#: ../src/keyname-table.h:3975
-msgid "keyboard label|KP_Delete"
-msgstr "keyboard label|KP_Delete"
-
-#: ../src/keyname-table.h:3976
-msgid "keyboard label|Delete"
-msgstr "keyboard label|Delete"
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus input method framework"
 
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
 #: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
 msgid "Other"
 msgstr "অন্য"
-
-#: ../ui/gtk/panel.py:97
-msgid "IBus input method framework"
-msgstr "IBus input method framework"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
@@ -191,25 +47,24 @@ msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-msgid "Switch engine"
-msgstr "কলঘৰ সলনি কৰক"
+msgid "Switch input method"
+msgstr "নিবেশ পদ্ধতি সলনি কৰক"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "ট্ৰিগাৰ"
 
 #: ../setup/main.py:113
-msgid "next engine"
-msgstr "পিছৰ কলঘৰ"
+msgid "next input method"
+msgstr "পিছৰ নিবেশ পদ্ধতি"
 
 #: ../setup/main.py:123
-msgid "prev engine"
-msgstr "আগৰ কলঘৰ"
+msgid "previous input method"
+msgstr "আগৰ নিবেশ পদ্ধতি"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr ""
-"IBus ডেমন আৰম্ভ কৰা হোৱা নাই । আপুনি ইয়াক এতিয়া আৰম্ভ কৰিব বিচাৰে নেকি ?"
+msgstr "IBus ডেমন আৰম্ভ কৰা হোৱা নাই । আপুনি ইয়াক এতিয়া আৰম্ভ কৰিব বিচাৰে নেকি ?"
 
 #: ../setup/main.py:219
 msgid ""
@@ -219,8 +74,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus আৰম্ভ কৰা হ'ল! IBus ব্যৱহাৰ কৰিব নোৱাৰিলে, এই শাৰী"
-"$HOME/.bashrc ত যোগ দিয়ক, আৰু আপোনাৰ ডেষ্কট'পত পুনঃ প্ৰৱেশ কৰক ।\n"
+"IBus আৰম্ভ কৰা হ'ল! IBus ব্যৱহাৰ কৰিব নোৱাৰিলে, এই শাৰী$HOME/.bashrc ত যোগ "
+"দিয়ক, আৰু আপোনাৰ ডেষ্কট'পত পুনঃ প্ৰৱেশ কৰক ।\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -318,7 +173,7 @@ msgstr ""
 "অনুভূমিক\n"
 "উলম্ব"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus পছন্দ"
 
@@ -341,20 +196,20 @@ msgid "Next input method:"
 msgstr "পিছৰ নিবেশ পদ্ধতি:"
 
 #: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "আগৰ নিবেশ পদ্ধতি"
+
+#: ../setup/setup.glade.h:26
 msgid "Show language panel:"
 msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
 msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:28
 msgid "Use custom font"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
-
-#: ../setup/setup.glade.h:28
-msgid "previous input method:"
-msgstr "আগৰ নিবেশ পদ্ধতি:"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -405,8 +260,7 @@ msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
-"ভাষাৰ পেনেলৰ আচৰণ । ০ = সদায় লুকাওক, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় "
-"দেখুৱাওক"
+"ভাষাৰ পেনেলৰ আচৰণ । ০ = সদায় লুকাওক, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় দেখুৱাওক"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
@@ -428,4 +282,122 @@ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্ব
 msgid "[Control+space]"
 msgstr "[Control+space]"
 
+#~ msgid "keyboard label|BackSpace"
+#~ msgstr "keyboard label|BackSpace"
 
+#~ msgid "keyboard label|Tab"
+#~ msgstr "keyboard label|Tab"
+
+#~ msgid "keyboard label|Return"
+#~ msgstr "keyboard label|Return"
+
+#~ msgid "keyboard label|Pause"
+#~ msgstr "keyboard label|Pause"
+
+#~ msgid "keyboard label|Scroll_Lock"
+#~ msgstr "keyboard label|Scroll_Lock"
+
+#~ msgid "keyboard label|Sys_Req"
+#~ msgstr "keyboard label|Sys_Req"
+
+#~ msgid "keyboard label|Escape"
+#~ msgstr "keyboard label|Escape"
+
+#~ msgid "keyboard label|Multi_key"
+#~ msgstr "keyboard label|Multi_key"
+
+#~ msgid "keyboard label|Home"
+#~ msgstr "keyboard label|Home"
+
+#~ msgid "keyboard label|Left"
+#~ msgstr "keyboard label|Left"
+
+#~ msgid "keyboard label|Up"
+#~ msgstr "keyboard label|Up"
+
+#~ msgid "keyboard label|Right"
+#~ msgstr "keyboard label|Right"
+
+#~ msgid "keyboard label|Down"
+#~ msgstr "keyboard label|Down"
+
+#~ msgid "keyboard label|Page_Up"
+#~ msgstr "keyboard label|Page_Up"
+
+#~ msgid "keyboard label|Page_Down"
+#~ msgstr "keyboard label|Page_Down"
+
+#~ msgid "keyboard label|End"
+#~ msgstr "keyboard label|End"
+
+#~ msgid "keyboard label|Begin"
+#~ msgstr "keyboard label|Begin"
+
+#~ msgid "keyboard label|Print"
+#~ msgstr "keyboard label|Print"
+
+#~ msgid "keyboard label|Insert"
+#~ msgstr "keyboard label|Insert"
+
+#~ msgid "keyboard label|Num_Lock"
+#~ msgstr "keyboard label|Num_Lock"
+
+#~ msgid "keyboard label|KP_Space"
+#~ msgstr "keyboard label|KP_Space"
+
+#~ msgid "keyboard label|KP_Tab"
+#~ msgstr "keyboard label|KP_Tab"
+
+#~ msgid "keyboard label|KP_Enter"
+#~ msgstr "keyboard label|KP_Enter"
+
+#~ msgid "keyboard label|KP_Home"
+#~ msgstr "keyboard label|KP_Home"
+
+#~ msgid "keyboard label|KP_Left"
+#~ msgstr "keyboard label|KP_Left"
+
+#~ msgid "keyboard label|KP_Up"
+#~ msgstr "keyboard label|KP_Up"
+
+#~ msgid "keyboard label|KP_Right"
+#~ msgstr "keyboard label|KP_Right"
+
+#~ msgid "keyboard label|KP_Down"
+#~ msgstr "keyboard label|KP_Down"
+
+#~ msgid "keyboard label|KP_Page_Up"
+#~ msgstr "keyboard label|KP_Page_Up"
+
+#~ msgid "keyboard label|KP_Prior"
+#~ msgstr "keyboard label|KP_Prior"
+
+#~ msgid "keyboard label|KP_Page_Down"
+#~ msgstr "keyboard label|KP_Page_Down"
+
+#~ msgid "keyboard label|KP_Next"
+#~ msgstr "keyboard label|KP_Next"
+
+#~ msgid "keyboard label|KP_End"
+#~ msgstr "keyboard label|KP_End"
+
+#~ msgid "keyboard label|KP_Begin"
+#~ msgstr "keyboard label|KP_Begin"
+
+#~ msgid "keyboard label|KP_Insert"
+#~ msgstr "keyboard label|KP_Insert"
+
+#~ msgid "keyboard label|KP_Delete"
+#~ msgstr "keyboard label|KP_Delete"
+
+#~ msgid "keyboard label|Delete"
+#~ msgstr "keyboard label|Delete"
+
+#~ msgid "Switch engine"
+#~ msgstr "কলঘৰ সলনি কৰক"
+
+#~ msgid "next engine"
+#~ msgstr "পিছৰ কলঘৰ"
+
+#~ msgid "prev engine"
+#~ msgstr "আগৰ কলঘৰ"
