@@ -27,6 +27,7 @@ __all__ = (
 import gobject
 import gtk
 from gtk import gdk
+from gtk import keysyms
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
@@ -217,8 +218,29 @@ class KeyboardShortcutSelection(gtk.VBox):
         if id != gtk.RESPONSE_OK or not out:
             return
         keyevent = out[0]
+        state = keyevent.state & (gdk.CONTROL_MASK | \
+                                  gdk.SHIFT_MASK   | \
+                                  gdk.MOD1_MASK    | \
+                                  gdk.META_MASK    | \
+                                  gdk.SUPER_MASK   | \
+                                  gdk.HYPER_MASK)
+        if state == 0:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Control_L, keysyms.Control_R) and state == gdk.CONTROL_MASK:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Shift_L, keysyms.Shift_R) and state == gdk.SHIFT_MASK:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Alt_L, keysyms.Alt_R) and state == gdk.MOD1_MASK:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Meta_L, keysyms.Meta_R) and state == gdk.META_MASK:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Super_L, keysyms.Super_R) and state == gdk.SUPER_MASK:
+            state = state | gdk.RELEASE_MASK
+        elif keyevent.keyval in (keysyms.Hyper_L, keysyms.Hyper_R) and state == gdk.HYPER_MASK:
+            state = state | gdk.RELEASE_MASK
+
         for name, button, mask in self.__modifier_buttons:
-            if keyevent.state & mask:
+            if state & mask:
                 button.set_active(True)
             else:
                 button.set_active(False)
