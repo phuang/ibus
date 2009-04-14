@@ -1,21 +1,21 @@
-# translation of ibus.master.ibus.po to Telugu
+# translation of ibus.master.te.po to Telugu
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Krishna Babu K <kkrothap@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ibus\n"
+"Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-07 15:38+0800\n"
-"PO-Revision-Date: 2009-04-07 00:39+0530\n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-14 15:04+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -49,23 +49,20 @@ msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "ఎటువంటి ఇన్పుట్ పద్దతిలేదు"
+msgstr "ఇన్పుట్ పద్దతి మార్చుము"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "బిస (ట్రిగ్గర్)"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
-msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
+msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
-msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
+msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -201,7 +198,6 @@ msgid "Next input method:"
 msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
 
@@ -285,14 +281,7 @@ msgstr "మలచుకొనిన ఫాంటు వుపయోగించ�
 msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
 
-#~ msgid "Switch engine"
-#~ msgstr "ఇంజన్‌ను మార్చుము"
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
 
-#~ msgid "next engine"
-#~ msgstr "తరువాతి యింజన్"
-
-#~ msgid "prev engine"
-#~ msgstr "మునుపటి యింజన్"
-
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"
