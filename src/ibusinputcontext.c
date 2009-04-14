@@ -553,7 +553,10 @@ ibus_input_context_process_key_event (IBusInputContext *context,
     IBusError *error = NULL;
     gboolean retval;
 
-    if (state & IBUS_FORWARD_MASK)
+    if (state & IBUS_HANDLED_MASK)
+        return TRUE;
+
+    if (state & IBUS_IGNORED_MASK)
         return FALSE;
 
     retval = ibus_proxy_call_with_reply ((IBusProxy *) context,

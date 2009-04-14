@@ -190,31 +190,42 @@ _key_snooper_cb (GtkWidget   *widget,
     IBusIMContext *ibusimcontext;
     ibusimcontext = (IBusIMContext *) _focus_im_context;
 
-    if (!_use_key_snooper)
+    if (G_UNLIKELY (!_use_key_snooper))
         return retval;
 
     if (ibusimcontext == NULL)
-        return retval;
+        return FALSE;
 
-    if (ibusimcontext->ibuscontext == NULL || ibusimcontext->has_focus == FALSE)
-        return retval;
+    if (G_UNLIKELY (ibusimcontext->ibuscontext == NULL || ibusimcontext->has_focus == FALSE))
+        return FALSE;
+
+    if (G_UNLIKELY (event->state & IBUS_HANDLED_MASK))
+        return TRUE;
+
+    if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
+        return FALSE;
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state | IBUS_RELEASE_MASK);
-        event->state |= IBUS_FORWARD_MASK;
         break;
     case GDK_KEY_PRESS:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state);
-        event->state |= IBUS_FORWARD_MASK;
         break;
     default:
         retval = FALSE;
         break;
+    }
+
+    if (retval) {
+        event->state |= IBUS_HANDLED_MASK;
+    }
+    else {
+        event->state |= IBUS_IGNORED_MASK;
     }
 
     return retval;
@@ -386,11 +397,18 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 
     IBusIMContext *ibusimcontext = (IBusIMContext *) context;
 
-    if (ibusimcontext->ibuscontext && ibusimcontext->has_focus) {
+    if (G_LIKELY (ibusimcontext->ibuscontext && ibusimcontext->has_focus)) {
         /* If context does not have focus, ibus will process key event in sync mode.
          * It is a workaround for increase search in treeview.
          */
-        gboolean retval;
+        gboolean retval = FALSE;
+
+        if (event->state & IBUS_HANDLED_MASK)
+            return TRUE;
+
+        if (event->state & IBUS_IGNORED_MASK)
+            return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
         switch (event->type) {
         case GDK_KEY_RELEASE:
             retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
@@ -407,9 +425,13 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
         }
 
         if (retval) {
+            event->state |= IBUS_HANDLED_MASK;
             return TRUE;
         }
-        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+        else {
+            event->state |= IBUS_IGNORED_MASK;
+            return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+        }
     }
     else {
         return gtk_im_context_filter_keypress (ibusimcontext->slave, event);

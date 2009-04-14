@@ -69,11 +69,13 @@ typedef enum
     IBUS_BUTTON5_MASK  = 1 << 12,
 
     /* The next few modifiers are used by XKB, so we skip to the end.
-     * Bits 15 - 24 are currently unused. Bit 29 is used internally.
+     * Bits 15 - 23 are currently unused. Bit 29 is used internally.
      */
 
-    /* forward mask */
+    /* ibus mask */
+    IBUS_HANDLED_MASK  = 1 << 24,
     IBUS_FORWARD_MASK  = 1 << 25,
+    IBUS_IGNORED_MASK  = IBUS_FORWARD_MASK,
 
     IBUS_SUPER_MASK    = 1 << 26,
     IBUS_HYPER_MASK    = 1 << 27,
