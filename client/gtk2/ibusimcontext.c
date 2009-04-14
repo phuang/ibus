@@ -212,6 +212,7 @@ _key_snooper_cb (GtkWidget   *widget,
         break;
     default:
         retval = FALSE;
+        break;
     }
 
     return retval;
