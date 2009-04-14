@@ -204,11 +204,13 @@ _key_snooper_cb (GtkWidget   *widget,
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state | IBUS_RELEASE_MASK);
+        event->state |= IBUS_FORWARD_MASK;
         break;
     case GDK_KEY_PRESS:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
                                                        event->state);
+        event->state |= IBUS_FORWARD_MASK;
         break;
     default:
         retval = FALSE;
