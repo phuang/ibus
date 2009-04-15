@@ -89,7 +89,7 @@ bus_server_listen (BusServer *server)
     gchar *path;
     gboolean retval;
 
-    path = g_strdup_printf("/tmp/ibus-%s", ibus_get_user_name ());
+    path = ibus_get_socket_folder ();
     mkdir (path, 0700);
     chmod (path, 0700);
 

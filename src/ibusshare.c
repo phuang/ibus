@@ -69,6 +69,31 @@ ibus_get_user_name (void)
 }
 
 const gchar *
+ibus_get_session_id (void)
+{
+    return g_getenv("IBUS_SESSION_ID");
+}
+
+const gchar *
+ibus_get_socket_folder (void)
+{
+    static gchar *folder = NULL;
+
+    if (folder == NULL) {
+        const gchar *session = ibus_get_session_id ();
+        if (session && session[0] != '\0') {
+            folder = g_strdup_printf ("/tmp/ibus-%s-%s",
+                ibus_get_user_name (), session);
+        }
+        else {
+            folder = g_strdup_printf ("/tmp/ibus-%s",
+                ibus_get_user_name ());
+        }
+    }
+    return folder;
+}
+
+const gchar *
 ibus_get_socket_path (void)
 {
     static gchar *path = NULL;

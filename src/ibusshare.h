@@ -49,6 +49,7 @@ void             ibus_set_display       (const gchar    *display);
 const gchar     *ibus_get_address       (void);
 const gchar     *ibus_get_user_name     (void);
 const gchar     *ibus_get_socket_path   (void);
+const gchar     *ibus_get_socket_folder (void);
 
 const gchar     *ibus_keyval_name       (guint           keyval);
 guint            ibus_keyval_from_name  (const gchar    *keyval_name);

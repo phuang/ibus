@@ -67,7 +67,12 @@ if not __username:
 if not __username:
     __username = os.getenv ("USERNAME")
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s/ibus-%s-%s" % (__username, __hostname, __display_number)
+__session_id = os.getenv ("IBUS_SESSION_ID")
+
+IBUS_ADDR = "unix:path=/tmp/ibus-%s%s/ibus-%s-%s" % (__username,
+                                                     "-" + __session_id if __session_id else "",
+                                                     __hostname,
+                                                     __display_number)
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE_IBUS     = "org.freedesktop.IBus"

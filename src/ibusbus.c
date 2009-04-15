@@ -220,7 +220,7 @@ ibus_bus_init (IBusBus *bus)
 
     ibus_bus_connect (bus);
 
-    path = g_strdup_printf ("/tmp/ibus-%s/", ibus_get_user_name ());
+    path = ibus_get_socket_folder ();
     file = g_file_new_for_path (path);
     priv->monitor = g_file_monitor_directory (file, 0, NULL, NULL);
 
