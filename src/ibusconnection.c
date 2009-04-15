@@ -113,9 +113,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     /* install signals */
     /**
-     * IBusConnnection:ibus-message:
+     * IBusConnnection::ibus-message:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage.
+     * @returns: TRUE if succeed; FALSE otherwise.
      *
-     * Emitted when sending an ibus-message.
+     * Emitted ::ibus-message when sending an ibus-message.
      * Implement this function in extended class to receive this signal.
      */
     connection_signals[IBUS_MESSAGE] =
@@ -129,9 +132,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_POINTER);
 
     /**
-     * IBusConnnection:ibus-singal:
+     * IBusConnnection::ibus-signal:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage that contain the signal.
+     * @returns: TRUE if succeed; FALSE otherwise.
      *
-     * Emitted when sending an ibus-singal.
+     * Emitted ::ibus-signal when sending an ibus-signal.
      * Implement this function in extended class to receive this signal.
      */
     connection_signals[IBUS_SIGNAL] =
@@ -145,9 +151,11 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_POINTER);
 
     /**
-     * IBusConnnection:ibus-message-sent:
+     * IBusConnnection::ibus-message-sent:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage that contain the signal.
      *
-     * Emitted when an ibus-message is sent.
+     * Emitted ::ibus-message-sent when an ibus-message is sent.
      * Implement this function in extended class to receive this signal.
      */
     connection_signals[IBUS_MESSAGE_SENT] =
@@ -161,9 +169,10 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_POINTER);
 
     /**
-     * IBusConnnection:ibus-message-disconnected:
+     * IBusConnnection::disconnect:
+     * @ibusconnection: The object which received the signal.
      *
-     * Emitted when an ibus-message is disconnected.
+     * Emitted ::disconnect when an ibus-message is disconnected.
      * Implement this function in extended class to receive this signal.
      */
     connection_signals[DISCONNECTED] =
@@ -717,8 +726,8 @@ ibus_connection_call (IBusConnection     *connection,
     else {
         retval = TRUE;
     }
-    
-    va_end (args);    
+
+    va_end (args);
     ibus_message_unref (reply);
 
     return retval;
