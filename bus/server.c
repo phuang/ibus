@@ -86,7 +86,7 @@ bus_server_listen (BusServer *server)
 
     // const gchar *address = "unix:abstract=/tmp/ibus-c"
     const gchar *address;
-    gchar *path;
+    const gchar *path;
     gboolean retval;
 
     path = ibus_get_socket_folder ();
@@ -103,7 +103,6 @@ bus_server_listen (BusServer *server)
         exit (-1);
     }
 
-    g_free(path);
     return retval;
 }
 

@@ -221,13 +221,16 @@ ibus_bus_init (IBusBus *bus)
     ibus_bus_connect (bus);
 
     path = ibus_get_socket_folder ();
+    mkdir (path, 0700);
+    chmod (path, 0700);
+
+
     file = g_file_new_for_path (path);
     priv->monitor = g_file_monitor_directory (file, 0, NULL, NULL);
 
     g_signal_connect (priv->monitor, "changed", (GCallback) _changed_cb, bus);
 
     g_object_unref (file);
-    g_free (path);
 }
 
 static void

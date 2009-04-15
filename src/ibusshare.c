@@ -103,7 +103,7 @@ ibus_get_socket_path (void)
         gchar *display;
         gchar *displaynumber = "0";
         gchar *screennumber = "0";
-        const gchar *username = NULL;
+        const gchar *folder= NULL;
         gchar *p;
 
         if (_display == NULL) {
@@ -136,14 +136,14 @@ ibus_get_socket_path (void)
             }
         }
 
-        username = ibus_get_user_name ();
+        folder = ibus_get_socket_folder ();
 
         if (hostname[0] == '\0')
             hostname = "unix";
 
         path = g_strdup_printf (
-            "/tmp/ibus-%s/ibus-%s-%s",
-            username, hostname, displaynumber);
+            "%s/ibus-%s-%s",
+            folder, hostname, displaynumber);
         g_free (display);
     }
     return path;
