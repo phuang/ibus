@@ -111,6 +111,13 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     klass->ibus_signal  = ibus_connection_ibus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
+    /* install signals */
+    /**
+     * IBusConnnection:ibus-message:
+     *
+     * Emitted when sending an ibus-message.
+     * Implement this function in extended class to receive this signal.
+     */
     connection_signals[IBUS_MESSAGE] =
         g_signal_new (I_("ibus-message"),
             G_TYPE_FROM_CLASS (klass),
@@ -121,6 +128,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnnection:ibus-singal:
+     *
+     * Emitted when sending an ibus-singal.
+     * Implement this function in extended class to receive this signal.
+     */
     connection_signals[IBUS_SIGNAL] =
         g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
@@ -131,6 +144,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnnection:ibus-message-sent:
+     *
+     * Emitted when an ibus-message is sent.
+     * Implement this function in extended class to receive this signal.
+     */
     connection_signals[IBUS_MESSAGE_SENT] =
         g_signal_new (I_("ibus-message-sent"),
             G_TYPE_FROM_CLASS (klass),
@@ -141,6 +160,12 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_NONE, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnnection:ibus-message-disconnected:
+     *
+     * Emitted when an ibus-message is disconnected.
+     * Implement this function in extended class to receive this signal.
+     */
     connection_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),

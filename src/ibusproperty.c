@@ -345,7 +345,7 @@ ibus_property_update (IBusProperty *prop,
     if (g_strcmp0 (prop->key, prop_update->key) != 0) {
         return ibus_prop_list_update_property (prop->sub_props, prop_update);
     }
-    
+
     g_free (prop->icon);
     prop->icon = g_strdup (prop_update->icon);
 

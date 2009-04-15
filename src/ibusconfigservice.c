@@ -118,6 +118,12 @@ ibus_config_service_class_init (IBusConfigServiceClass *klass)
     klass->set_value = ibus_config_service_set_value;
     klass->get_value = ibus_config_service_get_value;
 
+    /* install properties */
+    /**
+     * IBusConfigService:connection:
+     *
+     * Connection of this IBusConfigServifce.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,
                     g_param_spec_object ("connection",

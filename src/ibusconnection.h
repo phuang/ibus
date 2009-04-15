@@ -23,7 +23,7 @@
  * @see_also: <ulink url="http://dbus.freedesktop.org/doc/api/html/structDBusConnection.html">DBusConnection</ulink>
  *
  * An IBusConnection provides DBusConnection wrapper.
- * It can be used to connect to either dBus or iBus daemon.
+ * It can be used to connect to either dBus or IBus daemon.
  */
 
 #ifndef __IBUS_CONNECTION_H_
@@ -94,6 +94,13 @@ struct _IBusConnectionClass {
 };
 
 GType            ibus_connection_get_type           (void);
+
+/**
+ * ibus_connection_new:
+ * @returns: An newly allocated IBusConnection.
+ *
+ * New an IBusConnection.
+ */
 IBusConnection  *ibus_connection_new                (void);
 void             ibus_connection_set_connection     (IBusConnection     *connection,
                                                      DBusConnection     *dbus_connection,

@@ -4,6 +4,8 @@ ibus-overrides.txt
 ibus-undeclared.txt
 ibus-undocumented.txt
 ibus-unused.txt
+ibus-sections.txt
+ibus-sections.txt.old
 html
 tmpl
 xml

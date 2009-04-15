@@ -17,6 +17,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusservice
+ * @short_description: IBus service back-end.
+ * @stability: Stable
+ *
+ * An IBusService is a base class for services.
+ */
+
 #ifndef __IBUS_SERVICE_H_
 #define __IBUS_SERVICE_H_
 

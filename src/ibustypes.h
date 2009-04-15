@@ -19,10 +19,10 @@
  */
 /**
  * SECTION: ibustypes
- * @short_description: Generic types for  iBus.
+ * @short_description: Generic types for  IBus.
  * @stability: Stable
  *
- * This session consists generic types for iBus, including shift/control key modifiers,
+ * This section consists generic types for IBus, including shift/control key modifiers,
  * and a rectangle structure.
  */
 #ifndef __IBUS_TYPES_H_

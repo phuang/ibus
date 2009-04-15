@@ -531,7 +531,7 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
 
 IBusComponent *
 ibus_component_new (const gchar *name,
-                    const gchar *descritpion,
+                    const gchar *description,
                     const gchar *version,
                     const gchar *license,
                     const gchar *author,
@@ -544,7 +544,7 @@ ibus_component_new (const gchar *name,
     component = (IBusComponent *)g_object_new (IBUS_TYPE_COMPONENT, NULL);
 
     component->name         = g_strdup (name);
-    component->description  = g_strdup (descritpion);
+    component->description  = g_strdup (description);
     component->version      = g_strdup (version);
     component->license      = g_strdup (license);
     component->author       = g_strdup (author);

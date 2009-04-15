@@ -2,7 +2,7 @@
 %{!?gtk_binary_version: %define gtk_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-2.0)}
 %define mod_path ibus-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@
 %define host_vendor %(if [[ "%{_host_vendor}" == "unknown" ]]; then echo redhat; else echo %{_host_vendor}; fi)
-%define host %{_host_cpu}-%{host_vendor}-%{_host_os}
+%define host %{_host_cpu}-%{host_vendor}-%{_host_os}-gnu
 Name:       ibus
 Version:    @PACKAGE_VERSION@
 Release:    1%{?dist}
@@ -24,7 +24,9 @@ BuildRequires:  gtk2-devel
 BuildRequires:  dbus-devel
 # BuildRequires:  qt-devel
 BuildRequires:  dbus-glib-devel
+BuildRequires: dbus-python-devel
 BuildRequires:  desktop-file-utils
+BuildRequires: GConf2-devel
 
 Requires(post):  desktop-file-utils
 Requires(post):  %{_sbindir}/alternatives
@@ -67,7 +69,7 @@ This package contains ibus im module for gtk2
 # Group:      System Environment/Libraries
 # Requires:   %{name} = %{version}-%{release}
 # Requires:   qt >= 4.4.2
-# 
+#
 # %description qt
 # This package contains ibus im module for qt4
 

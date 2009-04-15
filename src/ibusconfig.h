@@ -17,6 +17,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusconfig
+ * @short_description: IBus engine configuration module.
+ *
+ * An IBusConfig provides engine configuration methods
+ * such as get and set the configure settings to configuration file.
+ *
+ * Currently, IBusConfig supports gconf.
+ */
 #ifndef __CONFIG_H_
 #define __CONFIG_H_
 
@@ -56,11 +65,51 @@ struct _IBusConfigClass {
 };
 
 GType            ibus_config_get_type       (void);
+
+/**
+ * ibus_config_new:
+ * @connection: An IBusConnection.
+ * @returns: An newly allocated IBusConfig corresponding to @connection.
+ *
+ * New a IBusConfig from existing IBusConnection.
+ */
 IBusConfig      *ibus_config_new            (IBusConnection     *connection);
+
+/**
+ * ibus_config_get_value:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @name: Name of the configure option.
+ * @value: GValue that holds the value.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Get the value of a configuration option.
+ *
+ * GConf stores configure options in a tree-like structure,
+ * and the IBus related setting is at /desktop/ibus,
+ * thus, @section here is a path from there,
+ * while @name is the key of that configuration option.
+ *
+ * ibus-chewing, for example, stores its setting in /desktop/ibus/engine/Chewing,
+ * so the section name for it is "engine/Chewing".
+ * @see_also: ibus_config_set_value.
+ */
 gboolean         ibus_config_get_value      (IBusConfig         *config,
                                              const gchar        *section,
                                              const gchar        *name,
                                              GValue             *value);
+
+/**
+ * ibus_config_set_value:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @name: Name of the configure option its self.
+ * @value: GValue that holds the value.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Set the value of a configuration option.
+ * @see_also: ibus_config_get_value.
+ */
 gboolean         ibus_config_set_value      (IBusConfig         *config,
                                              const gchar        *section,
                                              const gchar        *name,
