@@ -6,4 +6,7 @@ PREFERENCE_PROGRAM=/usr/bin/ibus-setup
 SHORT_DESC="IBus"
 GTK_IM_MODULE=ibus
 # QT_IM_MODULE=ibus
-export IBUS_SESSION_ID=$RANDOM
+
+if [ -z "$IBUS_SESSION_ID" ]; then
+  export IBUS_SESSION_ID=$RANDOM
+fi
