@@ -1,0 +1,281 @@
+# German translation of iBus.
+# Copyright (C) 2009
+# This file is distributed under the same license as the iBus package.
+# Fabian Affolter <fab@fedoraproject.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: iBus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-17 11:32+0100\n"
+"Last-Translator: Fabian Affolter <fab@fedoraproject.org>\n"
+"Language-Team: Gemran <fedora-trans-de@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2
+#: ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus-Eingabemethode-Framework"
+
+#: ../ibus/lang.py:40
+#: ../ui/gtk/panel.py:307
+#: ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309
+#: ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "Sonstige"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "Neustart"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "Keine Eingabemethode"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr ""
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "Fabian Affolter <fab@fedoraproject.org>, 2009."
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "Eingabemethode wechseln"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "trigger"
+
+#: ../setup/main.py:113
+msgid "next input method"
+msgstr "Nächste Eingabemethode"
+
+#: ../setup/main.py:123
+msgid "previous input method"
+msgstr "Vorherige Eingabemethode"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr ""
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr ""
+
+#: ../setup/keyboardshortcut.py:53
+#, fuzzy
+msgid "Keyboard shortcuts"
+msgstr "Tastatureingabe aufnehmen"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "Tasten-Code:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr ""
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr "Bitte eine Taste (oder eine Tastenkombination drücken).nDer Dialog wird geschlossen, wenn die Taste losgelassen wird."
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "Bitte eine Taste (oder eine Tastenkombination drücken)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr " Eingabemethode wählen"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Schriftart und Stil</b>"
+
+#: ../setup/setup.glade.h:3
+#, fuzzy
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "Tastatureingabe aufnehmen"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Starten</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Der intelligente Eingabe-Bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "Über"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr ""
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "Benutzerdefinierte Schriftart:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "Aktivieren oder deaktivieren:"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "Allgemein"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"Horizontal\n"
+"Vertikal"
+
+#: ../setup/setup.glade.h:19
+#: ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus-Einstellungen"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "Eingabemethode"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"Niemals\n"
+"Wenn aktiv\n"
+"Immer"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "Nächste Eingabemethode:"
+
+#: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "Vorherige Eingabemethode:"
+
+#: ../setup/setup.glade.h:26
+msgid "Show language panel:"
+msgstr "Zeige Sprach-Panel:"
+
+#: ../setup/setup.glade.h:27
+msgid "Start ibus on login"
+msgstr "Starte ibus bei der Anmeldung"
+
+#: ../setup/setup.glade.h:28
+msgid "Use custom font"
+msgstr "Benutze benutzerdefinierte Schriftart"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "Automatisch verstecken"
+
+#: ../data/ibus.schemas.in.h:2
+#, fuzzy
+msgid "Custom Font"
+msgstr "&Schriftart:"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:12
+msgid "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "Benutze benutzerdefinierte Schriftart"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Ctrl+Leertaste]"
+
