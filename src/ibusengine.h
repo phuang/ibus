@@ -133,8 +133,8 @@ GType        ibus_engine_get_type       (void);
  * New an IBusEngine.
  */
 IBusEngine  *ibus_engine_new            (const gchar        *name,
-        const gchar        *path,
-        IBusConnection     *connection);
+                                         const gchar        *path,
+                                         IBusConnection     *connection);
 
 /**
  * ibus_engine_commit_text:
@@ -144,7 +144,7 @@ IBusEngine  *ibus_engine_new            (const gchar        *name,
  * Commit output of input method to IBus client.
  */
 void         ibus_engine_commit_text    (IBusEngine         *engine,
-        IBusText           *text);
+                                         IBusText           *text);
 
 /**
  * ibus_engine_update_preedit_text:
@@ -156,10 +156,10 @@ void         ibus_engine_commit_text    (IBusEngine         *engine,
  * Update the pre-edit buffer.
  */
 void         ibus_engine_update_preedit_text
-(IBusEngine         *engine,
- IBusText           *text,
- guint               cursor_pos,
- gboolean            visible);
+                                        (IBusEngine         *engine,
+                                         IBusText           *text,
+                                         guint               cursor_pos,
+                                         gboolean            visible);
 
 /**
  * ibus_engine_show_preedit_text:
@@ -168,7 +168,7 @@ void         ibus_engine_update_preedit_text
  * Show the pre-edit buffer.
  */
 void         ibus_engine_show_preedit_text
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_hide_preedit_text:
@@ -177,7 +177,7 @@ void         ibus_engine_show_preedit_text
  * Hide the pre-edit buffer.
  */
 void         ibus_engine_hide_preedit_text
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_update_auxiliary_text:
@@ -188,9 +188,9 @@ void         ibus_engine_hide_preedit_text
  * Update the auxiliary bar.
  */
 void         ibus_engine_update_auxiliary_text
-(IBusEngine        *engine,
- IBusText          *text,
- gboolean           visible);
+                                        (IBusEngine        *engine,
+                                         IBusText          *text,
+                                         gboolean           visible);
 
 /**
  * ibus_engine_show_auxiliary_text:
@@ -199,7 +199,7 @@ void         ibus_engine_update_auxiliary_text
  * Show the auxiliary bar.
  */
 void         ibus_engine_show_auxiliary_text
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_hide_auxiliary_text:
@@ -208,7 +208,7 @@ void         ibus_engine_show_auxiliary_text
  * Hide the auxiliary bar.
  */
 void         ibus_engine_hide_auxiliary_text
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_update_lookup_table:
@@ -219,9 +219,9 @@ void         ibus_engine_hide_auxiliary_text
  * Update the lookup table.
  */
 void         ibus_engine_update_lookup_table
-(IBusEngine         *engine,
- IBusLookupTable    *lookup_table,
- gboolean            visible);
+                                        (IBusEngine         *engine,
+                                         IBusLookupTable    *lookup_table,
+                                         gboolean            visible);
 
 /**
  * ibus_engine_update_lookup_table_fast:
@@ -236,9 +236,9 @@ void         ibus_engine_update_lookup_table
  *
  */
 void         ibus_engine_update_lookup_table_fast
-(IBusEngine         *engine,
- IBusLookupTable    *lookup_table,
- gboolean            visible);
+                                        (IBusEngine         *engine,
+                                         IBusLookupTable    *lookup_table,
+                                         gboolean            visible);
 
 /**
  * ibus_engine_show_lookup_table:
@@ -247,7 +247,7 @@ void         ibus_engine_update_lookup_table_fast
  * Show the lookup table.
  */
 void         ibus_engine_show_lookup_table
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_hide_lookup_table:
@@ -256,7 +256,7 @@ void         ibus_engine_show_lookup_table
  * Hide the lookup table.
  */
 void         ibus_engine_hide_lookup_table
-(IBusEngine         *engine);
+                                        (IBusEngine         *engine);
 
 /**
  * ibus_engine_forward_key_event:
@@ -267,9 +267,9 @@ void         ibus_engine_hide_lookup_table
  * Forward the key event.
  */
 void         ibus_engine_forward_key_event
-(IBusEngine         *engine,
- guint               keyval,
- guint               state);
+                                        (IBusEngine         *engine,
+                                         guint               keyval,
+                                         guint               state);
 
 /**
  * ibus_engine_register_properties:
@@ -279,8 +279,8 @@ void         ibus_engine_forward_key_event
  * Register and show properties in language bar.
  */
 void         ibus_engine_register_properties
-(IBusEngine         *engine,
- IBusPropList       *prop_list);
+                                        (IBusEngine         *engine,
+                                         IBusPropList       *prop_list);
 
 /**
  * ibus_engine_update_property:
@@ -290,7 +290,7 @@ void         ibus_engine_register_properties
  * Update the state displayed in language bar.
  */
 void         ibus_engine_update_property(IBusEngine         *engine,
-        IBusProperty       *prop);
+                                         IBusProperty       *prop);
 
 /**
  * ibus_engine_get_name:
