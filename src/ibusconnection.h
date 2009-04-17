@@ -20,12 +20,13 @@
 /**
  * SECTION: ibusconnection
  * @short_description: DBusConnection wrapper.
+ * @stability: Stable
  * @see_also: IBusMessage
  * <ulink url="http://dbus.freedesktop.org/doc/api/html/structDBusConnection.html">DBusConnection</ulink>
  *
- * An IBusConnection provides DBusConnection wrapper, and is used to connect to either D-Bus or IBus daemon.
- * Usually, IBusConnection is set to a DBusConnection and emitting ibus-message when
- * receiving incoming messages from the DBusConnection.
+ * An IBusConnection provides #DBusConnection wrapper, and is used to connect to either D-Bus or IBus daemon.
+ * Usually, IBusConnection is set to a #DBusConnection and emitting ibus-message when
+ * receiving incoming messages from the #DBusConnection.
  */
 
 #ifndef __IBUS_CONNECTION_H_
@@ -396,9 +397,6 @@ IBusMessage     *ibus_connection_send_with_reply_and_block
  * @interface: The interface the signal is emitted from.
  * @member: The name of the member function to be called.
  * @error: Error is stored here; NULL to ignore error.
- * @message: An IBusMessage.
- * @timeout_milliseconds: timeout in milliseconds or -1 for default.
- * @error: Error is stored here; NULL to ignore error.
  * @first_arg_type: Type of first arg.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
@@ -416,7 +414,7 @@ gboolean         ibus_connection_call               (IBusConnection     *connect
                                                      ...);
 
 /**
- * ibus_connection_call:
+ * ibus_connection_flush:
  * @connection: An IBusConnection.
  *
  * Blocks until the outgoing message queue is empty.

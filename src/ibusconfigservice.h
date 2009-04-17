@@ -168,7 +168,7 @@ GType                ibus_config_service_get_type   (void);
 IBusConfigService   *ibus_config_service_new        (IBusConnection     *connection);
 
 /**
- * ibus_config_service_value_change:
+ * ibus_config_service_value_changed:
  * @config: An IBusConfigService.
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.

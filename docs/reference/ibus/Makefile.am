@@ -98,17 +98,19 @@ EXTRA_DIST +=
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
 
-trim-sections.txt:
+trim-sections.txt: $(DOC_MODULE)-sections.txt
 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
 	sed '/<TITLE>IBusAttrList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
 	sed '/<TITLE>IBusPropList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+	sed '/<TITLE>IBusFactoryInfo<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
 
 tmpl-build.stamp: trim-sections.txt  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-overrides.txt
 
 clean-local:
-	rm -rf tmpl
+	rm -rf tmpl ${DOC_MODULE)
 
-CLEANFILES+= *.stamp
+CLEANFILES+= *.stamp $(DOC_MODULE)-sections.txt
 
 

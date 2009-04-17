@@ -107,7 +107,7 @@ ibus_bus_class_init (IBusBusClass *klass)
     /**
      * IBusBus::connected:
      *
-     * The IBusBus is connected.
+     * Emitted when IBusBus is connected.
      */
     bus_signals[CONNECTED] =
         g_signal_new (I_("connected"),
@@ -122,7 +122,7 @@ ibus_bus_class_init (IBusBusClass *klass)
     /**
      * IBusBus::disconnected:
      *
-     * The IBusBus is disconnected.
+     * Emitted when IBusBus is disconnected.
      */
     bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),

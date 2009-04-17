@@ -17,9 +17,27 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusdebug
+ * @short_description: Debug message output.
+ * @stability: Stable
+ *
+ * This section lists functions that generate debug and warning messages.
+ */
 #ifndef __IBUS_DEBUG_H_
 #define __IBUS_DEBUG_H_
 
+/**
+ * ibus_warning:
+ * @msg: A printf formatted message to be print.
+ * @args...: Necessary arguments for @msg.
+ *
+ * A convenient wrapper for g_warning.
+ * The output format will be
+ * <programlisting>
+ *     source_file:line, message...
+ * </programlisting>
+ */
 #define ibus_warning(msg, args...) \
     g_warning("%s:%d, " msg, __FILE__, __LINE__, ##args)
 

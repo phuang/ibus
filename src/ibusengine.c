@@ -224,7 +224,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @state: Key modifier flags
      *
      * Emitted when a key event is received.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function process_key_event() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PROCESS_KEY_EVENT] =
         g_signal_new (I_("process-key-event"),
@@ -242,8 +244,10 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * IBusEngine::focus-in:
      * @engine: An IBusEngine.
      *
-     * Emitted when the client application get the focus.
-     * Implement this function in extended class to receive this signal.
+     * Emitted  when the client application get the focus.
+     * Implement the member function focus_in() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
@@ -260,7 +264,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the client application  lost the focus.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function focus_out() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
@@ -277,7 +283,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is reset.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function reset() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[RESET] =
         g_signal_new (I_("reset"),
@@ -294,7 +302,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is enabled.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function set_enable() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[ENABLE] =
         g_signal_new (I_("enable"),
@@ -311,7 +321,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is disabled.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function set_disable() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[DISABLE] =
         g_signal_new (I_("disable"),
@@ -328,7 +340,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the location of IME is set.
-     * Implement this functionin extended class to receive this signal.
+     * Implement the member function set_cursor_location() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
@@ -347,9 +361,12 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::set-capabilities:
      * @engine: An IBusEngine.
+     * @caps: Capabilities flags of IBusEngine, see #IBusCapabilite
      *
      * Emitted when the client application capabilities is set.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function set_capabilities() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[SET_CAPABILITIES] =
         g_signal_new (I_("set-capabilities"),
@@ -367,7 +384,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the page-up key is pressed.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function page_up() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PAGE_UP] =
         g_signal_new (I_("page-up"),
@@ -384,7 +403,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the page-down key is pressed.
-     * Implement this function extend class to receive this signal.
+     * Implement the member function page_down() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PAGE_DOWN] =
         g_signal_new (I_("page-down"),
@@ -401,7 +422,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the up cursor key is pressed.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function cursor_up() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[CURSOR_UP] =
         g_signal_new (I_("cursor-up"),
@@ -418,7 +441,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when the down cursor key is pressed.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function cursor_down() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[CURSOR_DOWN] =
         g_signal_new (I_("cursor-down"),
@@ -435,7 +460,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when a property is activated or change changed.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function property_activate() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
@@ -454,7 +481,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when a property is shown.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function property_side() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
@@ -472,7 +501,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * @engine: An IBusEngine.
      *
      * Emitted when a property is hidden.
-     * Implement this function in extended class to receive this signal.
+     * Implement the member function property_hide() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
      */
     engine_signals[PROPERTY_HIDE] =
         g_signal_new (I_("property-hide"),

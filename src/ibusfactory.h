@@ -17,6 +17,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusfactory
+ * @short_description: Factory for creating engine instances.
+ * @stability: Stable
+ * @see_also: #IBusEngine
+ *
+ * An IBusFactory is an #IBusService that creates input method engine (IME) instance.
+ * It provides CreateEngine remote method, which creates an IME instance by name,
+ * and returns the D-Bus object path to IBus daemon.
+ */
 #ifndef __IBUS_FACTORY_H_
 #define __IBUS_FACTORY_H_
 
@@ -63,6 +73,11 @@ typedef struct _IBusFactoryClass IBusFactoryClass;
 typedef struct _IBusFactoryInfo IBusFactoryInfo;
 typedef struct _IBusFactoryInfoClass IBusFactoryInfoClass;
 
+/**
+ * IBusFactory:
+ *
+ * An opaque data type representing an IBusFactory.
+ */
 struct _IBusFactory {
     IBusService parent;
 
@@ -79,10 +94,23 @@ struct _IBusFactoryClass {
     gpointer pdummy[8];
 };
 
+/**
+ * IBusFactoryInfo:
+ * @path: D-Bus path for the IME.
+ * @name: D-Bus name for the IME.
+ * @lang: Supporting language of the IME.
+ * @icon: Icon file of the IME.
+ * @authors: Authors of the IME.
+ * @credits: Credits of the IME.
+ *
+ * An IBusFactoryInfo stores information about an IME.
+ * So CreateEngine method can create instances of that IME.
+ */
 struct _IBusFactoryInfo {
     IBusSerializable parent;
 
     /* instance members */
+    /*< public >*/
     gchar *path;
     gchar *name;
     gchar *lang;
@@ -102,12 +130,52 @@ struct _IBusFactoryInfoClass {
 };
 
 GType            ibus_factory_get_type          (void);
+
+/**
+ * ibus_factory_new:
+ * @connection: An IBusConnection.
+ * @returns: A newly allocated IBusFactory.
+ *
+ * New an IBusFactory.
+ */
 IBusFactory     *ibus_factory_new               (IBusConnection *connection);
+
+/**
+ * ibus_factory_add_engine:
+ * @connection: An IBusConnection.
+ * @engine_name: Name of an engine.
+ * @engine_type: GType of an engine.
+ *
+ * Add an engine to the factory.
+ */
 void             ibus_factory_add_engine        (IBusFactory    *factory,
                                                  const gchar    *engine_name,
                                                  GType           engine_type);
+
+/**
+ * ibus_factory_get_info:
+ * @factory: An IBusFactory
+ * @returns: A corresponding IbusFactoryInfo.
+ *
+ * Get IBusFactoryInfo out of IBusFactory.
+ *
+ * <note><para>This function is currently commented out</para></note>
+ */
 IBusFactoryInfo *ibus_factory_get_info          (IBusFactory    *factory);
 GType            ibus_factory_info_get_type     (void);
+
+/**
+ * ibus_factory_info_new:
+ * @path: D-Bus path for the IME.
+ * @name: IME name.
+ * @lang: Supporting language of the IME.
+ * @icon: Icon file of the IME.
+ * @authors: Authors of the IME.
+ * @credits: Credits of the IME.
+ * @returns: A newly allocated IBusFactoryInfo.
+ *
+ * New an IBusFactoryInfo.
+ */
 IBusFactoryInfo *ibus_factory_info_new          (const gchar    *path,
                                                  const gchar    *name,
                                                  const gchar    *lang,
