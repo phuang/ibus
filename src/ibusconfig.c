@@ -123,6 +123,11 @@ ibus_config_class_init (IBusConfigClass *klass)
     proxy_class->ibus_signal = ibus_config_ibus_signal;
 
     /* install signals */
+    /**
+     * IBusConfig:value-changed:
+     *
+     * Emitted when configuration value is changed.
+     */
     config_signals[VALUE_CHANGED] =
         g_signal_new (I_("value-changed"),
             G_TYPE_FROM_CLASS (klass),

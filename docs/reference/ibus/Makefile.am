@@ -25,8 +25,7 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
-# SCAN_OPTIONS=--rebuild-sections
-SCAN_OPTIONS=
+SCAN_OPTIONS=--rebuild-sections
 
 # Extra options to supply to gtkdoc-mkdb.
 # e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -44,7 +43,7 @@ FIXXREF_OPTIONS=
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
 HFILE_GLOB=$(top_srcdir)/src/*.h
-CFILE_GLOB=
+CFILE_GLOB=$(top_srcdir)/src/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
@@ -99,9 +98,19 @@ EXTRA_DIST +=
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
 
-clean-local:
-	rm -rf tmpl
+trim-sections.txt: $(DOC_MODULE)-sections.txt
+	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+	sed '/<TITLE>IBusAttrList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+	sed '/<TITLE>IBusPropList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+	sed '/<TITLE>IBusFactoryInfo<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
 
-CLEANFILES+= *.stamp
+tmpl-build.stamp: trim-sections.txt  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-overrides.txt
+
+clean-local:
+	rm -rf tmpl ${DOC_MODULE)
+
+CLEANFILES+= *.stamp $(DOC_MODULE)-sections.txt
 
 

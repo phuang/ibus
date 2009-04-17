@@ -19,21 +19,21 @@
  */
 /**
  * SECTION: ibusobject
- * @short_description: Base Object of iBus.
+ * @short_description: Base Object of IBus.
  * @stability: Stable
  *
- * iBus Object is the base object for all objects in iBus.
+ * IBus Object is the base object for all objects in IBus.
  */
 #ifndef __IBUS_OBJECT_H_
 #define __IBUS_OBJECT_H_
 
 /**
- * SECTION: iBusObject
- * @short_description: Base object of iBus.
+ * SECTION: IBusObject
+ * @short_description: Base object of IBus.
  *
  *
  * This module provides essential definition and functions for manipulating
- * iBus base object.
+ * IBus base object.
  */
 #include <glib-object.h>
 #include "ibusmarshalers.h"

@@ -104,6 +104,11 @@ ibus_bus_class_init (IBusBusClass *klass)
     ibus_object_class->destroy = ibus_bus_destroy;
 
     // install signals
+    /**
+     * IBusBus::connected:
+     *
+     * Emitted when IBusBus is connected.
+     */
     bus_signals[CONNECTED] =
         g_signal_new (I_("connected"),
             G_TYPE_FROM_CLASS (klass),
@@ -114,6 +119,11 @@ ibus_bus_class_init (IBusBusClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusBus::disconnected:
+     *
+     * Emitted when IBusBus is disconnected.
+     */
     bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),

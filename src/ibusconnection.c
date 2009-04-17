@@ -111,6 +111,19 @@ ibus_connection_class_init (IBusConnectionClass *klass)
     klass->ibus_signal  = ibus_connection_ibus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
+    /* install signals */
+    /**
+     * IBusConnection::ibus-message:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage.
+     *
+     * Emitted when sending an ibus-message.
+     * Implement the member function ibus_message() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
+     *
+     * Returns: TRUE if succeed; FALSE otherwise.
+     */
     connection_signals[IBUS_MESSAGE] =
         g_signal_new (I_("ibus-message"),
             G_TYPE_FROM_CLASS (klass),
@@ -121,6 +134,18 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnection::ibus-signal:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage that contain the signal.
+     *
+     * Emitted when sending an ibus-signal.
+     * Implement the member function ibus_signal() function in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
+     *
+     * Returns: TRUE if succeed; FALSE otherwise.
+     */
     connection_signals[IBUS_SIGNAL] =
         g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
@@ -131,6 +156,16 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_BOOLEAN, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnection::ibus-message-sent:
+     * @ibusconnection: The object which received the signal.
+     * @message: An IBusMessage that contain the signal.
+     *
+     * Emitted when an ibus-message is sent.
+     * Implement the member function ibus_message_sent() function in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
+     */
     connection_signals[IBUS_MESSAGE_SENT] =
         g_signal_new (I_("ibus-message-sent"),
             G_TYPE_FROM_CLASS (klass),
@@ -141,6 +176,16 @@ ibus_connection_class_init (IBusConnectionClass *klass)
             G_TYPE_NONE, 1,
             G_TYPE_POINTER);
 
+    /**
+     * IBusConnection::disconnected:
+     * @ibusconnection: The object which received the signal.
+     *
+     * Emitted when an ibus-message is disconnected.
+     * Implement the member function disconnected() function in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
+     *
+     */
     connection_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
             G_TYPE_FROM_CLASS (klass),
@@ -692,8 +737,8 @@ ibus_connection_call (IBusConnection     *connection,
     else {
         retval = TRUE;
     }
-    
-    va_end (args);    
+
+    va_end (args);
     ibus_message_unref (reply);
 
     return retval;
