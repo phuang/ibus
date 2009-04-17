@@ -109,8 +109,8 @@ DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 trim-build.stamp: scan-build.stamp
 	sed "/<TITLE>IBusAttrList<\/TITLE>/d; \
 	     /<TITLE>IBusAttrList<\/TITLE>/d; \
-		 /<TITLE>IBusPropList<\/TITLE>/d; \
-		 /<TITLE>IBusFactoryInfo<\/TITLE>/d" \
+	     /<TITLE>IBusPropList<\/TITLE>/d; \
+	     /<TITLE>IBusFactoryInfo<\/TITLE>/d" \
 		 -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt
 	$(RM) $(srcdir)/$(DOC_MODULE)-sections.txt.bak
 	touch trim-build.stamp
