@@ -2091,10 +2091,10 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         return TRUE;
     }
     else if (event == next_factory) {
-        g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
-        if (priv->engine && !priv->enabled) {
-            bus_input_context_enable (context);
+        if (priv->engine == NULL || priv->enabled == FALSE) {
+            return FALSE;
         }
+        g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
         return TRUE;
     }
     else if (event == prev_factory) {
