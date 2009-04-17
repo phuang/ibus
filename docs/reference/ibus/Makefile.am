@@ -93,24 +93,32 @@ EXTRA_DIST +=
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
 # for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
-#DISTCLEANFILES +=
+DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
 
-trim-sections.txt: $(DOC_MODULE)-sections.txt
-	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-	sed '/<TITLE>IBusAttrList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
-	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-	sed '/<TITLE>IBusPropList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
-	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-	sed '/<TITLE>IBusFactoryInfo<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+# trim-sections.txt: $(DOC_MODULE)-sections.txt
+# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+# 	sed '/<TITLE>IBusAttrList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+# 	sed '/<TITLE>IBusPropList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
+# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
+# 	sed '/<TITLE>IBusFactoryInfo<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
 
-tmpl-build.stamp: trim-sections.txt  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-overrides.txt
+trim-build.stamp: scan-build.stamp
+	sed "/<TITLE>IBusAttrList<\/TITLE>/d; \
+	     /<TITLE>IBusAttrList<\/TITLE>/d; \
+		 /<TITLE>IBusPropList<\/TITLE>/d; \
+		 /<TITLE>IBusFactoryInfo<\/TITLE>/d" \
+		 -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt
+	$(RM) $(srcdir)/$(DOC_MODULE)-sections.txt.bak
+	touch trim-build.stamp
 
-clean-local:
-	rm -rf tmpl ${DOC_MODULE)
+tmpl-build.stamp: trim-build.stamp  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-overrides.txt
 
-CLEANFILES+= *.stamp $(DOC_MODULE)-sections.txt
+# clean-local:
+# 	rm -rf tmpl ${DOC_MODULE)
 
+CLEANFILES+= *.stamp
 
