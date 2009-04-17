@@ -33,6 +33,8 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
+MAX_HOTKEY = 6
+
 class KeyboardShortcutSelection(gtk.VBox):
     def __init__(self, shortcuts = None):
         super(KeyboardShortcutSelection, self).__init__()
@@ -134,7 +136,9 @@ class KeyboardShortcutSelection(gtk.VBox):
 
     def add_shortcut(self, shortcut):
         model = self.__shortcut_view.get_model()
-        if len(model) >= 6:
+        if len(model) > MAX_HOTKEY:
+            return
+        if shortcut in self.get_shortcuts():
             return
         model.insert(-1, (shortcut,))
 
@@ -188,19 +192,25 @@ class KeyboardShortcutSelection(gtk.VBox):
         else:
             self.__delete_button.set_sensitive(False)
 
-    def __modifier_button_toggled_cb(self, button, name):
+    def __update_add_and_apply_buttons(self):
         shortcut = self.__get_shortcut_from_buttons()
         selected_shortcut = self.__get_selected_shortcut()
-        self.__add_button.set_sensitive(shortcut != None)
-        can_apply = shortcut != selected_shortcut and shortcut != None and selected_shortcut != None
+        shortcuts = self.get_shortcuts()
+        can_add = shortcut != None and \
+                  shortcut not in shortcuts \
+                  and len(shortcuts) < MAX_HOTKEY
+        self.__add_button.set_sensitive(can_add)
+        can_apply = shortcut != selected_shortcut and \
+                    shortcut != None and \
+                    selected_shortcut != None and \
+                    shortcut not in shortcuts
         self.__apply_button.set_sensitive(can_apply)
 
+    def __modifier_button_toggled_cb(self, button, name):
+        self.__update_add_and_apply_buttons()
+
     def __keycode_entry_notify_cb(self, entry, arg):
-        shortcut = self.__get_shortcut_from_buttons()
-        selected_shortcut = self.__get_selected_shortcut()
-        self.__add_button.set_sensitive(shortcut != None)
-        can_apply = shortcut != selected_shortcut and shortcut != None and selected_shortcut != None
-        self.__apply_button.set_sensitive(can_apply)
+        self.__update_add_and_apply_buttons()
 
     def __keycode_button_clicked_cb(self, button):
         out = []
