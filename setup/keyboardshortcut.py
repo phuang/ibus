@@ -46,16 +46,17 @@ class KeyboardShortcutSelection(gtk.VBox):
         # self.pack_start(label, False, True, 4)
 
         # shortcuts view
-        viewport =  gtk.Viewport()
-        viewport.set_shadow_type(gtk.SHADOW_IN)
         self.__shortcut_view = gtk.TreeView(gtk.ListStore(gobject.TYPE_STRING))
         self.__shortcut_view.set_size_request(-1, 100)
         renderer = gtk.CellRendererText()
         column = gtk.TreeViewColumn(_("Keyboard shortcuts"), renderer, text = 0)
         self.__shortcut_view.append_column(column)
         self.__shortcut_view.connect("cursor-changed", self.__shortcut_view_cursor_changed_cb)
-        viewport.add(self.__shortcut_view)
-        self.pack_start(viewport, True, True, 4)
+        scrolledwindow = gtk.ScrolledWindow()
+        scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolledwindow.add(self.__shortcut_view)
+        scrolledwindow.set_shadow_type(gtk.SHADOW_IN)
+        self.pack_start(scrolledwindow, True, True, 4)
 
         # key code
         hbox = gtk.HBox()
