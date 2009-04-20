@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-05 20:43+0200\n"
+"POT-Creation-Date: 2009-04-21 07:03+0800\n"
+"PO-Revision-Date: 2009-04-18 20:43+0200\n"
 "Last-Translator: Oscar Osta Pueyo <oostap@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
 "MIME-Version: 1.0\n"
@@ -56,26 +56,26 @@ msgstr "IBus és un bus d'entrada intel·ligent per a Linux/Unix."
 
 #: ../ui/gtk/panel.py:387
 msgid "translator-credits"
-msgstr "Oscar Osta Pueyo <oostap@gmail.com>, 2009"
+msgstr ""
+"Oscar Osta Pueyo <oostap@gmail.com>, 2009\n"
+"Xavier Conde Rueda <xavi.conde@gmail.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
 msgid "Switch input method"
-msgstr ""
+msgstr "Canvia el mètode d'entrada"
 
 #: ../setup/main.py:103
 msgid "trigger"
-msgstr ""
+msgstr "activador"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
 msgstr "següent mètode d'entrada"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
-msgstr "mètode d'entrada anterior"
+msgstr "anterior mètode d'entrada"
 
 #: ../setup/main.py:204
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -100,19 +100,19 @@ msgstr ""
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccioneu la drecera de teclat per a %s"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "Dreceres de teclat"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "Codi de lletra:"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "Modificadors:"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:218
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -120,7 +120,7 @@ msgstr ""
 "Si us plau premeu una tecla (o una combinació de tecles).\n"
 "El diàleg es tancarà quan es deixi anar la tecla."
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:220
 msgid "Please press a key (or a key combination)"
 msgstr "Si us plau premeu una tecla (o una combinació de tecles)"
 
@@ -166,7 +166,7 @@ msgstr "Quant a"
 
 #: ../setup/setup.glade.h:13
 msgid "Candidates orientation:"
-msgstr ""
+msgstr "Orientació dels candidats:"
 
 #: ../setup/setup.glade.h:14
 msgid "Custom font:"
@@ -174,7 +174,7 @@ msgstr "Tipus de lletra personalitzada:"
 
 #: ../setup/setup.glade.h:15
 msgid "Enable or disable:"
-msgstr "Activar o desactivar"
+msgstr "Activa o desactiva:"
 
 #: ../setup/setup.glade.h:16
 msgid "General"
@@ -211,9 +211,8 @@ msgid "Next input method:"
 msgstr "Següent mètode d'entrada:"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
-msgstr "Mètode d'entrada anterior:"
+msgstr "Anterior mètode d'entrada:"
 
 #: ../setup/setup.glade.h:26
 msgid "Show language panel:"
@@ -221,15 +220,15 @@ msgstr "Mostra el quadre d'idiomes:"
 
 #: ../setup/setup.glade.h:27
 msgid "Start ibus on login"
-msgstr "Inicia l'ibus a l'entrar"
+msgstr "Inicia l'ibus en entrar"
 
 #: ../setup/setup.glade.h:28
 msgid "Use custom font"
-msgstr "Empra tipus de lletra personalitzada"
+msgstr "Empra tipus de lletra personalitzat"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
-msgstr "Ocultar automàticament"
+msgstr "Oculta automàticament"
 
 #: ../data/ibus.schemas.in.h:2
 msgid "Custom Font"
@@ -241,11 +240,11 @@ msgstr "Tipus de lletra personalitzada per al quadre d'idiomes"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Next Engine Hotkey"
-msgstr "Següent mètode d'entrada"
+msgstr "Tecla del mètode següent"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
+msgstr "Tecla ràpida per canviar al següent mètode d'entrada"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
@@ -257,19 +256,19 @@ msgstr "Orientació de la taula de cerca. 0 = Horitzontal, 1 = Vertical"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines"
-msgstr ""
+msgstr "Carrega a l'inici"
 
 #: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
-msgstr ""
+msgstr "Carrega els mètodes d'entrada a l'inici"
 
 #: ../data/ibus.schemas.in.h:10
 msgid "Prev Engine Hotkey"
-msgstr ""
+msgstr "Tecla del mètode anterior"
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
+msgstr "Tecla ràpida per canviar a l'anterior mètode d'entrada"
 
 #: ../data/ibus.schemas.in.h:12
 msgid ""
@@ -281,11 +280,11 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
-msgstr ""
+msgstr "Tecla d'activació"
 
 #: ../data/ibus.schemas.in.h:14
 msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
+msgstr "Tecla per activar o desactivar el context d'entrada"
 
 #: ../data/ibus.schemas.in.h:15
 msgid "Use Custom Font"
@@ -295,6 +294,3 @@ msgstr "Empra el tipus de lletra personalitzada"
 msgid "Use custom font name for language panel"
 msgstr "Empra el tipus de lletra personalitzada per al quadre d'idiomes"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
