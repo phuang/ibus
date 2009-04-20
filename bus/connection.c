@@ -39,6 +39,9 @@ typedef struct _BusConnectionPrivate BusConnectionPrivate;
 static void     bus_connection_class_init   (BusConnectionClass     *klass);
 static void     bus_connection_init         (BusConnection          *connection);
 static void     bus_connection_destroy      (BusConnection          *connection);
+static gboolean bus_connection_authenticate_unix_user
+                                            (IBusConnection         *connection,
+                                             gulong                  uid);
 static gboolean bus_connection_ibus_message (BusConnection          *connection,
                                              IBusMessage            *message);
 #if 0
@@ -94,6 +97,7 @@ bus_connection_class_init (BusConnectionClass *klass)
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
 
+    ibus_connection_class->authenticate_unix_user = bus_connection_authenticate_unix_user;
     ibus_connection_class->ibus_message =
             (IBusIBusMessageFunc) bus_connection_ibus_message;
 
@@ -130,6 +134,16 @@ bus_connection_destroy (BusConnection *connection)
     }
     g_list_free (priv->names);
     priv->names = NULL;
+}
+
+static gboolean
+bus_connection_authenticate_unix_user (IBusConnection *connection,
+                                       gulong          uid)
+{
+    /* just allow root or same user connect to ibus */
+    if (uid == 0 || uid == getuid ())
+        return TRUE;
+    return FALSE;
 }
 
 static gboolean

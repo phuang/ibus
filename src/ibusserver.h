@@ -73,6 +73,8 @@ void             ibus_server_disconnect         (IBusServer     *server);
 const gchar     *ibus_server_get_address        (IBusServer     *server);
 const gchar     *ibus_server_get_id             (IBusServer     *server);
 gboolean         ibus_server_is_connected       (IBusServer     *server);
+gboolean         ibus_server_set_auth_mechanisms(IBusServer     *server,
+                                                 const gchar   **mechanisms);
 
 G_END_DECLS
 #endif

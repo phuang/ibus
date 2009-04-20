@@ -328,3 +328,18 @@ ibus_server_is_connected (IBusServer *server)
     return dbus_server_get_is_connected (priv->server);
 }
 
+
+gboolean
+ibus_server_set_auth_mechanisms (IBusServer   *server,
+                                 const gchar **mechanisms)
+{
+    g_assert (IBUS_IS_SERVER (server));
+
+    IBusServerPrivate *priv;
+    priv = IBUS_SERVER_GET_PRIVATE (server);
+
+    g_assert (priv->server != NULL);
+
+    return dbus_server_set_auth_mechanisms (priv->server, mechanisms);
+}
+

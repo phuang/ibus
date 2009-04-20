@@ -124,6 +124,9 @@ struct _IBusConnectionClass {
     IBusObjectClass parent;
 
     /* signals */
+    gboolean    (* authenticate_unix_user)
+                                    (IBusConnection   *connection,
+                                     gulong            uid);
     gboolean    (* ibus_message)    (IBusConnection   *connection,
                                      IBusMessage      *message);
     gboolean    (* ibus_signal)     (IBusConnection   *connection,
@@ -208,6 +211,15 @@ void             ibus_connection_close              (IBusConnection     *connect
 gboolean         ibus_connection_is_connected       (IBusConnection     *connection);
 
 /**
+ * ibus_connection_is_authenticated:
+ * @connection: An IBusConnection.
+ * @returns: TRUE for authenticated; FALSE otherwise.
+ *
+ * Whether an IBusConnection is authenticated.
+ */
+gboolean         ibus_connection_is_authenticated   (IBusConnection     *connection);
+
+/**
  * ibus_connection_get_connection:
  * @connection: An IBusConnection.
  * @returns: The corresponding DBusConnection.
@@ -215,6 +227,15 @@ gboolean         ibus_connection_is_connected       (IBusConnection     *connect
  * Return corresponding DBusConnection.
  */
 DBusConnection  *ibus_connection_get_connection     (IBusConnection     *connection);
+
+/**
+ * ibus_connection_get_unix_user:
+ * @connection: An IBusConnection.
+ * @returns: The UNIX UID of peer user.
+ *
+ * Return The UNIX UID of peer user.
+ */
+glong            ibus_connection_get_unix_user      (IBusConnection     *connection);
 
 /**
  * ibus_connection_read_write_dispatch:

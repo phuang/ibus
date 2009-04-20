@@ -84,6 +84,11 @@ bus_server_listen (BusServer *server)
 {
     g_assert (BUS_IS_SERVER (server));
 
+    const gchar *mechanisms[] = {
+        "EXTERNAL",
+        NULL
+    };
+
     // const gchar *address = "unix:abstract=/tmp/ibus-c"
     const gchar *address;
     const gchar *path;
@@ -97,6 +102,7 @@ bus_server_listen (BusServer *server)
 
     retval = ibus_server_listen (IBUS_SERVER (server), address);
     chmod (ibus_get_socket_path (), 0600);
+    ibus_server_set_auth_mechanisms ((IBusServer *)server, mechanisms);
 
     if (!retval) {
         g_printerr ("Can not listen on %s! Please try remove directory %s and run again.", address, path);

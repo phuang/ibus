@@ -26,6 +26,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONNECTION, IBusConnectionPrivate))
 
 enum {
+    AUTHENTICATE_UNIX_USER,
     IBUS_SIGNAL,
     IBUS_MESSAGE,
     IBUS_MESSAGE_SENT,
@@ -48,6 +49,9 @@ static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
 static void     ibus_connection_init        (IBusConnection         *connection);
 static void     ibus_connection_destroy     (IBusConnection         *connection);
 
+static gboolean ibus_connection_authenticate_unix_user
+                                            (IBusConnection         *connection,
+                                             gulong                  uid);
 static gboolean ibus_connection_ibus_message(IBusConnection         *connection,
                                              IBusMessage            *message);
 static gboolean ibus_connection_ibus_signal (IBusConnection         *connection,
@@ -107,11 +111,34 @@ ibus_connection_class_init (IBusConnectionClass *klass)
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_connection_destroy;
 
+    klass->authenticate_unix_user = ibus_connection_authenticate_unix_user;
     klass->ibus_message = ibus_connection_ibus_message;
     klass->ibus_signal  = ibus_connection_ibus_signal;
     klass->disconnected = ibus_connection_disconnected;
 
     /* install signals */
+    /**
+     * IBusConnection::authenticate-unix-user:
+     * @ibusconnection: The object which received the signal.
+     * @uid: unix user id.
+     *
+     * Emitted when sending an ibus-message.
+     * Implement the member function ibus_message() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because GtkDoc.</para></note>
+     *
+     * Returns: TRUE if succeed; FALSE otherwise.
+     */
+    connection_signals[AUTHENTICATE_UNIX_USER] =
+        g_signal_new (I_("authenticate-unix-user"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusConnectionClass, authenticate_unix_user),
+            NULL, NULL,
+            ibus_marshal_BOOLEAN__ULONG,
+            G_TYPE_BOOLEAN, 1,
+            G_TYPE_ULONG);
+
     /**
      * IBusConnection::ibus-message:
      * @ibusconnection: The object which received the signal.
@@ -240,6 +267,13 @@ _out:
 }
 
 static gboolean
+ibus_connection_authenticate_unix_user (IBusConnection *connection,
+                                        gulong          uid)
+{
+    return FALSE;
+}
+
+static gboolean
 ibus_connection_ibus_message (IBusConnection *connection,
                               IBusMessage    *message)
 {
@@ -270,16 +304,28 @@ ibus_connection_disconnected (IBusConnection         *connection)
     ibus_object_destroy (IBUS_OBJECT (connection));
 }
 
-static DBusHandlerResult
-_connection_handle_message_cb (DBusConnection   *dbus_connection,
-                               IBusMessage      *message,
-                               IBusConnection   *connection)
+static dbus_bool_t
+_connection_allow_unix_user_cb (DBusConnection *dbus_connection,
+                                gulong          uid,
+                                IBusConnection *connection)
 {
     gboolean retval = FALSE;
 
-    gint type;
+    g_signal_emit (connection, connection_signals[AUTHENTICATE_UNIX_USER], 0, uid, &retval);
 
-    type = ibus_message_get_type (message);
+    if (retval)
+        return TRUE;
+
+    return FALSE;
+}
+
+static DBusHandlerResult
+_connection_handle_message_cb (DBusConnection *dbus_connection,
+                               IBusMessage    *message,
+                               IBusConnection *connection)
+{
+    gboolean retval = FALSE;
+
     g_signal_emit (connection, connection_signals[IBUS_MESSAGE], 0, message, &retval);
 
     if (retval)
@@ -315,6 +361,10 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
     priv->shared = shared;
 
     dbus_connection_set_data (priv->connection, _get_slot(), connection, NULL);
+
+    dbus_connection_set_unix_user_function (priv->connection,
+                    (DBusAllowUnixUserFunction) _connection_allow_unix_user_cb,
+                    connection, NULL);
 
     result = dbus_connection_add_filter (priv->connection,
                     (DBusHandleMessageFunction) _connection_handle_message_cb,
@@ -406,6 +456,18 @@ ibus_connection_is_connected (IBusConnection *connection)
     return dbus_connection_get_is_connected (priv->connection);
 }
 
+gboolean
+ibus_connection_is_authenticated (IBusConnection *connection)
+{
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    if (priv->connection == NULL) {
+        return FALSE;
+    }
+    return dbus_connection_get_is_authenticated (priv->connection);
+}
+
 DBusConnection *
 ibus_connection_get_connection (IBusConnection *connection)
 {
@@ -413,6 +475,19 @@ ibus_connection_get_connection (IBusConnection *connection)
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
     return priv->connection;
+}
+
+glong
+ibus_connection_get_unix_user (IBusConnection *connection)
+{
+    IBusConnectionPrivate *priv;
+    priv = IBUS_CONNECTION_GET_PRIVATE (connection);
+
+    gulong uid;
+
+    if (priv->connection && dbus_connection_get_unix_user (priv->connection, &uid))
+        return uid;
+    return -1;
 }
 
 gboolean
