@@ -176,8 +176,22 @@ _connection_destroy_cb (IBusConnection  *connection,
 static void
 ibus_bus_connect (IBusBus *bus)
 {
+    const gchar *socket_path;
+    struct stat buf;
+
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    socket_path = ibus_get_socket_path ();
+
+    if (stat (socket_path, &buf) != 0) {
+        g_warning ("Can not get stat from %s!", socket_path);
+        return;
+    }
+    if (buf.st_uid != ibus_get_daemon_uid ()) {
+        g_warning ("The owner of %s is not %s!", socket_path, ibus_get_user_name ());
+        return;
+    }
 
     if (priv->connection != NULL) {
         ibus_object_destroy ((IBusObject *) priv->connection);
@@ -237,7 +251,6 @@ ibus_bus_init (IBusBus *bus)
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != ibus_get_daemon_uid ()) {
-            g_debug ("%ld %ld", buf.st_uid, ibus_get_daemon_uid ());
             g_warning ("The owner of %s is not %s!", path, ibus_get_user_name ());
             return;
         }
