@@ -1886,6 +1886,10 @@ bus_input_context_enable (BusInputContext *context)
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
+    if (priv->engine == NULL) {
+            g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
+    }
+
     if (priv->engine == NULL)
         return;
 
@@ -2073,13 +2077,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     priv->prev_modifiers = modifiers;
 
     if (event == trigger) {
-        if (priv->engine == NULL) {
-            g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
-        }
-
-        if (priv->engine == NULL) {
-            return FALSE;
-        }
+        gboolean enabled = priv->enabled;
 
         if (priv->enabled) {
             bus_input_context_disable (context);
@@ -2088,7 +2086,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
             bus_input_context_enable (context);
         }
 
-        return TRUE;
+        return enabled != priv->enabled;
     }
     else if (event == next_factory) {
         if (priv->engine == NULL || priv->enabled == FALSE) {
