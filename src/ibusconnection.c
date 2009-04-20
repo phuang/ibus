@@ -391,7 +391,7 @@ ibus_connection_open (const gchar *address)
     dbus_error_init (&error);
     dbus_connection = dbus_connection_open (address, &error);
     if (dbus_connection == NULL) {
-        g_warning ("Connect to %s failed. %s.", address, error.message);
+        g_warning ("Connect to %s failed: %s.", address, error.message);
         dbus_error_free (&error);
         return NULL;
     }

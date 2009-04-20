@@ -18,6 +18,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <gio/gio.h>
 #include "ibusbus.h"
 #include "ibusinternal.h"
@@ -219,8 +222,10 @@ _changed_cb (GFileMonitor       *monitor,
 static void
 ibus_bus_init (IBusBus *bus)
 {
-    gchar *path;
+    struct stat buf;
+    const gchar *path;
     GFile *file;
+
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
@@ -228,11 +233,23 @@ ibus_bus_init (IBusBus *bus)
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
 
-    ibus_bus_connect (bus);
-
     path = ibus_get_socket_folder ();
-    mkdir (path, 0700);
-    chmod (path, 0700);
+
+    if (stat (path, &buf) == 0) {
+        if (buf.st_uid != ibus_get_daemon_uid ()) {
+            g_debug ("%ld %ld", buf.st_uid, ibus_get_daemon_uid ());
+            g_warning ("The owner of %s is not %s!", path, ibus_get_user_name ());
+            return;
+        }
+    }
+    else {
+        if (getuid () == ibus_get_daemon_uid ()) {
+            mkdir (path, 0700);
+            chmod (path, 0700);
+        }
+    }
+
+    ibus_bus_connect (bus);
 
 
     file = g_file_new_for_path (path);

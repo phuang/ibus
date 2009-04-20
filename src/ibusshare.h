@@ -48,6 +48,7 @@ G_BEGIN_DECLS
 void             ibus_set_display       (const gchar    *display);
 const gchar     *ibus_get_address       (void);
 const gchar     *ibus_get_user_name     (void);
+glong            ibus_get_daemon_uid    (void);
 const gchar     *ibus_get_socket_path   (void);
 const gchar     *ibus_get_socket_folder (void);
 

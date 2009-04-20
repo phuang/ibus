@@ -68,6 +68,29 @@ ibus_get_user_name (void)
     return username;
 }
 
+glong
+ibus_get_daemon_uid (void)
+{
+    struct passwd *pwd;
+    uid_t uid;
+    const gchar *username;
+
+    uid = getuid ();
+
+    if (uid != 0)
+        return uid;
+
+    username = ibus_get_user_name ();
+    if (username == NULL)
+        return 0;
+
+    pwd = getpwnam (username);
+    if (pwd == NULL)
+        return 0;
+
+    return pwd->pw_uid;
+}
+
 const gchar *
 ibus_get_session_id (void)
 {
