@@ -20,6 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 import gtk
+import glib
 import gobject
 import ibus
 
@@ -38,8 +39,14 @@ class EngineTreeView(gtk.TreeView):
 
         self.__engines = set([])
 
-        self.__model = gtk.TreeStore(gobject.TYPE_PYOBJECT)
+        self.__changed = False
+
+        self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT)
         self.set_model(self.__model)
+        self.__model.connect("row-changed", self.__emit_changed_delay_cb, "row-changed")
+        self.__model.connect("row-deleted", self.__emit_changed_delay_cb, "row-deleted")
+        self.__model.connect("row-inserted", self.__emit_changed_delay_cb, "row-inserted")
+        self.__model.connect("rows-reordered", self.__emit_changed_delay_cb, "rows-reordered")
 
         self.set_headers_visible(False)
 
@@ -56,7 +63,20 @@ class EngineTreeView(gtk.TreeView):
         column.set_cell_data_func(renderer, self.__name_cell_data_cb)
         self.append_column (column)
 
+        self.set_reorderable(True)
+
         self.set_engines(engines)
+
+    def __emit_changed(self, *args):
+        if self.__changed:
+            self.__changed = False
+            self.emit("changed")
+
+    def __emit_changed_delay_cb(self, *args):
+        if not self.__changed:
+            self.__changed = True
+            glib.idle_add(self.__emit_changed)
+
 
     def __icon_cell_data_cb(self, celllayout, renderer, model, iter):
         engine = self.__model.get_value(iter, 0)
@@ -86,7 +106,7 @@ class EngineTreeView(gtk.TreeView):
             iter = self.__model.append(None)
             self.__model.set(iter, 0, e)
             self.__engines.add(e)
-        self.emit("changed")
+        self.__emit_changed()
 
     def get_selected_iter(self):
         selection = self.get_selection()
@@ -94,7 +114,8 @@ class EngineTreeView(gtk.TreeView):
             return selection.get_selected()[1]
 
     def get_engines(self):
-        return map(lambda r: r[0], self.__model)
+        engines = [ r[0] for r in self.__model if r[0] != None]
+        return engines
 
     def get_select_engine(self):
         iter = self.get_selected_iter()
@@ -109,7 +130,6 @@ class EngineTreeView(gtk.TreeView):
         iter = self.__model.prepend(None)
         self.__model.set(iter, 0, engine)
         self.__engines.add(engine)
-        self.emit("changed")
         self.scroll_to_cell(self.__model[0].path, None)
 
     def remove_engine(self):
@@ -121,7 +141,6 @@ class EngineTreeView(gtk.TreeView):
         self.__engines.remove(engine)
         index = row.path[0]
         self.__model.remove(iter)
-        self.emit("changed")
         try:
             row = self.__model[index]
             selection = self.get_selection()
@@ -138,7 +157,6 @@ class EngineTreeView(gtk.TreeView):
         if index == 0:
             return
         self.__model.swap(iter, self.__model[index - 1].iter)
-        self.emit("changed")
         self.scroll_to_cell(row.path, None)
 
     def move_down_engine(self):
@@ -152,7 +170,6 @@ class EngineTreeView(gtk.TreeView):
         if index == last_index:
             return
         self.__model.swap(iter, self.__model[index + 1].iter)
-        self.emit("changed")
         self.scroll_to_cell(row.path, None)
 
 gobject.type_register(EngineTreeView)
