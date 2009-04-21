@@ -1,0 +1,285 @@
+# translation of ibus.master.ibus.ml.po to
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Ani Peter <apeter@redhat.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ibus.master.ibus.ml\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-21 11:28+0530\n"
+"Last-Translator: Ani Peter <apeter@redhat.com>\n"
+"Language-Team:  Swathanthra Malayalam Computing|സ്വതന്ത്ര മലയാളം കമ്പ്യൂട്ടിങ് <smc-discuss@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "മറ്റുള്ളവ"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "വീണ്ടും ആരംഭിക്കുക"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "ഇന്‍പുട്ട് മെഥേഡ് ലഭ്യമല്ല"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "ലിനക്സ്/യുണിക്സിനുള്ള ഇന്റലിജന്റ് ഇന്‍പുട്ട് ബസാണു് IBus."
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "അനി പീറ്റര്‍ <apeter@redhat.com>"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "ഇന്‍പുട്ട് മെഥേഡ് മാറ്റുക"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "ട്രിഗ്ഗര്‍ ചെയ്യുക"
+
+#: ../setup/main.py:113
+msgid "next input method"
+msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്"
+
+#: ../setup/main.py:123
+msgid "previous input method"
+msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "IBus ഡെമണ്‍ ആരംഭിച്ചിട്ടില്ല. നിങ്ങള്‍ക്കിതു് ഉടന്‍ ആരംഭിക്കണമോ?"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus ആരംഭിച്ചു! നിങ്ങള്‍ക്കു് IBus ആരംഭിക്കുവാന്‍ സാധ്യമല്ല എങ്കില്‍, $HOME/.bashrc-ല്‍ താഴെ "
+"പറഞ്ഞിരിക്കുന്ന വരികള്‍ ചേര്‍ക്കുക. ശേഷം നിങ്ങളുടെ പണിയിടത്തിലേക്കു് വീണ്ടും പ്രവേശിക്കുക.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "%s-നുള്ള കീബോര്‍ഡ് എളുപ്പവഴി തെരഞ്ഞെടുക്കുക"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "കീബോര്‍ഡ് എളുപ്പവഴികള്‍"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "കീ കോഡ്:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "മോഡിഫയറുകള്‍:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്).\n"
+"കീ റിലീസ് ചെയ്യുമ്പോള്‍ ഡയലോഗ് അടയ്ക്കുന്നു."
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "ഒരു ഇന്‍പുട്ട് മെഥേഡ് തെരഞ്ഞെടുക്കുക"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>അക്ഷരസഞ്ചയവും രീതിയും</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>കീബോര്‍ഡ് എളുപ്പവഴികള്‍</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>ആരംഭത്തില്‍</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>ഇന്റലി‍ജന്റ് ഇന്‍പുട്ട് ബസ്</small>\n"
+"പ്രധാന താള്‍: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "സംബന്ധിച്ചു്"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "ലഭ്യമായവയുടെ ക്രമീകരണങ്ങള്‍:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "സജ്ജമാക്കുക അല്ലെങ്കില്‍ നിര്‍ജ്ജീവമാക്കുക:"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "സാധാരണ"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"നേരേയുള്ള\n"
+"കുറുകെയുള്ള"
+
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus മുന്‍ഗണനകള്‍"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "ഇന്‍പുട്ട് മെഥേഡുകള്‍"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"ഒരിക്കലും ഇല്ല\n"
+"സജീവമാകുമ്പോള്‍\n"
+"എപ്പോഴും"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്:"
+
+#: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്:"
+
+#: ../setup/setup.glade.h:26
+msgid "Show language panel:"
+msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
+
+#: ../setup/setup.glade.h:27
+msgid "Start ibus on login"
+msgstr "പ്രവേശിക്കുമ്പോള്‍ തന്നെ ibus ആരംഭിക്കുക"
+
+#: ../setup/setup.glade.h:28
+msgid "Use custom font"
+msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "സ്വയം അദൃശ്യമാക്കുക"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "ഭാഷയുടെ പാനലിലേക്കുള്ള അക്ഷരസഞ്ചയത്തിനുള്ള പേരു് സജ്ജമാക്കുക"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "അടുത്ത സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം. 0 = നേരെയുള്ള, 1 = കുറുകയുള്ള"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "ibus ആരംഭിക്കുമ്പോള്‍ സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+"ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = എപ്പോഴും അദൃശ്യം, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും "
+"കാണിക്കുക"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "ഇന്‍പുട്ട് കോണ്‍ടെക്സ്റ്റ് സജ്ജമാക്കുകയോ നിര്‍ജ്ജീവമാക്കുകയോ ചെയ്യുന്നതിനായി ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
+
