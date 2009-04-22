@@ -44,9 +44,11 @@ def get_language_name(_locale):
 def __start_element(name, attrs):
     global __languages_dict
     try:
-        iso_639_1_code = attrs[u"iso_639_1_code"]
         name = attrs[u"name"]
-        __languages_dict[iso_639_1_code] = name
+        for attr_name in (u"iso_639_2B_code", u"iso_639_2T_code", u"iso_639_1_code"):
+            if attr_name in attrs:
+                attr_value = attrs[attr_name]
+                __languages_dict[attr_value] = name
     except:
         pass
 
@@ -67,4 +69,7 @@ def __load_lang():
 __load_lang()
 
 if __name__ == "__main__":
-    print get_language_name("zh_CN")
+    print get_language_name("mai")
+    print get_language_name("zh")
+    print get_language_name("ja")
+    print get_language_name("ko")
