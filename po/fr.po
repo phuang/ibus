@@ -1,22 +1,25 @@
 # Japanese translation of ibus.
 # Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
+#
+#
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
-#
-#
+# Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
-"PO-Revision-Date: 2009-04-04 03:03+0100\n"
-"Last-Translator: Julroy67 <julroy67@gmail.com>\n"
-"Language-Team: French <julroy67@gmail.com>\n"
+"POT-Creation-Date: 2009-04-27 07:42+0800\n"
+"PO-Revision-Date: 2009-04-15 22:46+0200\n"
+"Last-Translator: Charles-Antoine Couret <cacouret@wanadoo.fr>\n"
+"Language-Team: French <fedora-trans-fr@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -49,21 +52,18 @@ msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
 #. create input methods menu
 #: ../ui/gtk/languagebar.py:84
-#, fuzzy
 msgid "Switch input method"
-msgstr "Changer méthode d'entrée"
+msgstr "Changer de méthode d'entrée"
 
 #: ../setup/main.py:103
 msgid "trigger"
 msgstr "déclencheur"
 
 #: ../setup/main.py:113
-#, fuzzy
 msgid "next input method"
-msgstr "Méthode d'entrée suivante"
+msgstr "méthode d'entrée suivante"
 
 #: ../setup/main.py:123
-#, fuzzy
 msgid "previous input method"
 msgstr "méthode d'entrée précédente"
 
@@ -91,19 +91,19 @@ msgstr ""
 msgid "Select keyboard shortcut for %s"
 msgstr "Choisissez le raccourci clavier pour %s"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis claviers"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "Code touche :"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "Modificateurs :"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:218
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -111,7 +111,7 @@ msgstr ""
 "Veuillez presser une touche (ou une combinaison de touches).\n"
 "La boîte de dialogue se fermera lorsque la touche sera relâchée."
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:220
 msgid "Please press a key (or a key combination)"
 msgstr "Veuillez presser une touche (ou une combinaison de touches)"
 
@@ -202,7 +202,6 @@ msgid "Next input method:"
 msgstr "Méthode d'entrée suivante :"
 
 #: ../setup/setup.glade.h:25
-#, fuzzy
 msgid "Previous input method:"
 msgstr "Méthode d'entrée précédente :"
 
@@ -285,7 +284,3 @@ msgstr "Utiliser une police personnalisée"
 #: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
 msgstr "Utiliser une police personnalisée pour le panneau de langue"
-
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
