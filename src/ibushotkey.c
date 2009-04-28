@@ -478,7 +478,7 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
     GQuark event = (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
 
     if (event != 0) {
-        g_signal_emit (profile, profile_signals[TRIGGER], event, event, user_data);
+        g_signal_emit (profile, profile_signals[TRIGGER], event, user_data);
     }
 
     return event;
