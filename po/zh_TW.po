@@ -1,0 +1,281 @@
+# Translation for ibus.
+# Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
+# This file is distributed under the same license as the ibus package.
+# Huang Peng <shawn.p.huang@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.1.0.20090331\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"PO-Revision-Date: 2009-04-07 21:59+0800\n"
+"Last-Translator: Ding-Yi Chen <dchen@redhat.com>\n"
+"Language-Team: Ding-Yi Chen <dchen@redhat.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "IBus輸入法框架"
+
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "其他"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "重新啟動"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "無輸入法"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus 為 Linux/Unix上的智慧型輸入法框架。"
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "Ding-Yi Chen 陳定彞 <dchen@redhat.com>"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "切換輸入法"
+
+#: ../setup/main.py:103
+msgid "trigger"
+msgstr "切換"
+
+#: ../setup/main.py:113
+msgid "next input method"
+msgstr "下一輸入法"
+
+#: ../setup/main.py:123
+msgid "previous input method"
+msgstr "前一輸入法"
+
+#: ../setup/main.py:204
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "IBus daemon 没有啟動，您是否想現在啟動它？"
+
+#: ../setup/main.py:219
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus已經成功啟動！如果你不能正常使用IBus，請將下列代碼加入到$HOME/.bashrc"
+"中，並重新登入桌面。  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:234
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "選%s的熱鍵"
+
+#: ../setup/keyboardshortcut.py:53
+msgid "Keyboard shortcuts"
+msgstr "熱鍵"
+
+#: ../setup/keyboardshortcut.py:61
+msgid "Key code:"
+msgstr "按鍵:"
+
+#: ../setup/keyboardshortcut.py:76
+msgid "Modifiers:"
+msgstr "組合按鍵:"
+
+#: ../setup/keyboardshortcut.py:206
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"請按一個鍵盤按鍵（或是一個按鍵組合）\n"
+"當您鬆開任意鍵時，對話框會自動關閉。"
+
+#: ../setup/keyboardshortcut.py:208
+msgid "Please press a key (or a key combination)"
+msgstr "請按一個鍵盤按鍵（或是一個按鍵組合）"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr " 選擇輸入法"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>字體與風格</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>熱鍵</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>啟動</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid "About"
+msgstr "關於"
+
+#: ../setup/setup.glade.h:13
+msgid "Candidates orientation:"
+msgstr "候選詞排列方向:"
+
+#: ../setup/setup.glade.h:14
+msgid "Custom font:"
+msgstr "自訂字體:"
+
+#: ../setup/setup.glade.h:15
+msgid "Enable or disable:"
+msgstr "開關"
+
+#: ../setup/setup.glade.h:16
+msgid "General"
+msgstr "通用"
+
+#: ../setup/setup.glade.h:17
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"水平\n"
+"垂直"
+
+#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus設定"
+
+#: ../setup/setup.glade.h:20
+msgid "Input Methods"
+msgstr "輸入法"
+
+#: ../setup/setup.glade.h:21
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"從不\n"
+"啟動時\n"
+"總是"
+
+#: ../setup/setup.glade.h:24
+msgid "Next input method:"
+msgstr "下一輸入法:"
+
+#: ../setup/setup.glade.h:25
+msgid "Previous input method:"
+msgstr "前一輸入法:"
+
+#: ../setup/setup.glade.h:26
+msgid "Show language panel:"
+msgstr "顯示語言面板:"
+
+#: ../setup/setup.glade.h:27
+msgid "Start ibus on login"
+msgstr "啟動桌面時自動啟動IBus"
+
+#: ../setup/setup.glade.h:28
+msgid "Use custom font"
+msgstr "使用自訂字體"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "自動隱藏"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "自訂字體:"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "自訂語言面板"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "下一個引擎熱鍵"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "下一個引擎熱鍵"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "候選字詞表排列方向"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "候選字詞表排列方向。0 = 水平，1 = 垂直"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "預載引擎"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "ibus啟動時預先載入的引擎"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "上一個引擎熱鍵"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "上一個引擎引擎熱鍵"
+
+#: ../data/ibus.schemas.in.h:12
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr "語言面板行為。0 = 永遠隱藏，1 = 自動隱藏，2 = 永遠顯示。"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "觸發熱鍵"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "輸入法觸發熱鍵"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "使用自訂字體"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "語言面板是否使用自訂字體"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "[Control+space]"
+msgstr "[Control+space]"
