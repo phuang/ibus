@@ -43,9 +43,12 @@
  * @IBUS_BUTTON3_MASK: Mouse button 3 (right) is activated.
  * @IBUS_BUTTON4_MASK: Mouse button 4 (scroll up) is activated.
  * @IBUS_BUTTON5_MASK: Mouse button 5 (scroll down) is activated.
- * @IBUS_FORWARD_MASK: Forward mask.
+ * @IBUS_HANDLED_MASK: Handled mask indicates the event has been handled by ibus.
+ * @IBUS_FORWARD_MASK: Forward mask indicates the event has been forward from ibus.
+ * @IBUS_IGNORED_MASK: It is an alias of IBUS_FORWARD_MASK.
  * @IBUS_SUPER_MASK: Super (Usually Win) key is activated.
  * @IBUS_HYPER_MASK: Hyper key is activated.
+ * @IBUS_META_MASK: Meta key is activated.
  * @IBUS_RELEASE_MASK: Key is released.
  * @IBUS_MODIFIER_MASK: Modifier mask for the all the masks above.
  *
