@@ -72,7 +72,8 @@ static gboolean      ibus_hotkey_profile_deserialize(IBusHotkeyProfile      *pro
 static gboolean      ibus_hotkey_profile_copy       (IBusHotkeyProfile      *dest,
                                                      const IBusHotkeyProfile*src);
 static void          ibus_hotkey_profile_trigger    (IBusHotkeyProfile      *profile,
-                                                     GQuark                  event);
+                                                     GQuark                  event,
+                                                     gpointer                user_data);
 
 static IBusSerializableClass *parent_class = NULL;
 
@@ -322,7 +323,8 @@ ibus_hotkey_profile_new (void)
 
 static void
 ibus_hotkey_profile_trigger (IBusHotkeyProfile *profile,
-                             GQuark             event)
+                             GQuark             event,
+                             gpointer           user_data)
 {
     // g_debug ("%s is triggerred", g_quark_to_string (event));
 }

@@ -54,7 +54,8 @@ struct _IBusHotkeyProfileClass {
     IBusSerializableClass parent;
 
     void (* trigger) (IBusHotkeyProfile *profile,
-                      GQuark             event);
+                      GQuark             event,
+                      gpointer           user_data);
 };
 
 /* hotkey profile functions */
