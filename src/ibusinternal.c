@@ -69,8 +69,8 @@ message_queue_check (GSource *source)
 
 static gboolean
 message_queue_dispatch (GSource     *source,
-                          GSourceFunc  callback,
-                          gpointer     user_data)
+                        GSourceFunc  callback,
+                        gpointer     user_data)
 {
     DBusConnection *connection = ((IBusMessageQueue *)source)->connection;
 
@@ -181,8 +181,8 @@ io_handler_watch_freed (void *data)
 
 static gboolean
 io_handler_dispatch (GIOChannel   *source,
-                       GIOCondition  condition,
-                       gpointer      data)
+                     GIOCondition  condition,
+                     gpointer      data)
 {
     IOHandler *handler;
     guint dbus_condition = 0;
@@ -219,7 +219,7 @@ io_handler_dispatch (GIOChannel   *source,
 
 static void
 connection_setup_add_watch (ConnectionSetup *cs,
-                              DBusWatch       *watch)
+                            DBusWatch       *watch)
 {
     guint flags;
     GIOCondition condition;
@@ -258,7 +258,7 @@ connection_setup_add_watch (ConnectionSetup *cs,
 
 static void
 connection_setup_remove_watch (ConnectionSetup *cs,
-                                 DBusWatch       *watch)
+                               DBusWatch       *watch)
 {
     IOHandler *handler;
 
@@ -326,7 +326,7 @@ timeout_handler_dispatch (gpointer      data)
 
 static void
 connection_setup_add_timeout (ConnectionSetup *cs,
-                                DBusTimeout     *timeout)
+                              DBusTimeout     *timeout)
 {
     TimeoutHandler *handler;
 
@@ -351,7 +351,7 @@ connection_setup_add_timeout (ConnectionSetup *cs,
 
 static void
 connection_setup_remove_timeout (ConnectionSetup *cs,
-                                   DBusTimeout       *timeout)
+                                 DBusTimeout       *timeout)
 {
     TimeoutHandler *handler;
 
@@ -476,7 +476,7 @@ wakeup_main (void *data)
 /* Move to a new context */
 static ConnectionSetup*
 connection_setup_new_from_old (GMainContext    *context,
-                                 ConnectionSetup *old)
+                               ConnectionSetup *old)
 {
     GSList *tmp;
     ConnectionSetup *cs;
@@ -531,7 +531,7 @@ connection_setup_new_from_old (GMainContext    *context,
  */
 void
 dbus_connection_setup (DBusConnection *connection,
-                   GMainContext   *context)
+                       GMainContext   *context)
 {
     ConnectionSetup *old_setup;
     ConnectionSetup *cs;
@@ -608,7 +608,7 @@ dbus_connection_setup (DBusConnection *connection,
  */
 void
 dbus_server_setup (DBusServer   *server,
-				GMainContext *context)
+				   GMainContext *context)
 {
     ConnectionSetup *old_setup;
     ConnectionSetup *cs;
