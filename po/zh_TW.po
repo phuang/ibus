@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"POT-Creation-Date: 2009-04-28 15:40+0800\n"
 "PO-Revision-Date: 2009-04-07 21:59+0800\n"
 "Last-Translator: Ding-Yi Chen <dchen@redhat.com>\n"
 "Language-Team: Ding-Yi Chen <dchen@redhat.com>\n"
@@ -74,8 +74,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus已經成功啟動！如果你不能正常使用IBus，請將下列代碼加入到$HOME/.bashrc"
-"中，並重新登入桌面。  export GTK_IM_MODULE=ibus\n"
+"IBus已經成功啟動！如果你不能正常使用IBus，請將下列代碼加入到$HOME/.bashrc中，"
+"並重新登入桌面。  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
@@ -84,19 +84,19 @@ msgstr ""
 msgid "Select keyboard shortcut for %s"
 msgstr "選%s的熱鍵"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "熱鍵"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "按鍵:"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "組合按鍵:"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:218
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -104,7 +104,7 @@ msgstr ""
 "請按一個鍵盤按鍵（或是一個按鍵組合）\n"
 "當您鬆開任意鍵時，對話框會自動關閉。"
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:220
 msgid "Please press a key (or a key combination)"
 msgstr "請按一個鍵盤按鍵（或是一個按鍵組合）"
 
@@ -275,7 +275,3 @@ msgstr "使用自訂字體"
 #: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
 msgstr "語言面板是否使用自訂字體"
-
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
