@@ -1056,7 +1056,7 @@ _ibus_exit (BusIBusImpl     *ibus,
     ibus_connection_flush ((IBusConnection *) connection);
     ibus_message_unref (reply);
 
-    ibus_object_destroy ((IBusObject *) ibus);
+    ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
 
     if (!restart) {
         exit (0);
