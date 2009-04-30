@@ -17,36 +17,22 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __IBUS_H_
-#define __IBUS_H_
+#ifndef __IBUS_MAINLOOP_H_
+#define __IBUS_MAINLOOP_H_
 
-#include <ibusmainloop.h>
-#include <ibusshare.h>
-#include <ibusobject.h>
-#include <ibusserializable.h>
-#include <ibustext.h>
-#include <ibusconnection.h>
-#include <ibusserver.h>
-#include <ibusproxy.h>
-#include <ibusservice.h>
-#include <ibusfactory.h>
-#include <ibusengine.h>
-#include <ibusattribute.h>
-#include <ibusproperty.h>
-#include <ibuslookuptable.h>
-#include <ibusbus.h>
-#include <ibuskeysyms.h>
-#include <ibusmessage.h>
-#include <ibuspendingcall.h>
-#include <ibuserror.h>
-#include <ibusenumtypes.h>
-#include <ibushotkey.h>
-#include <ibusxml.h>
-#include <ibusenginedesc.h>
-#include <ibusobservedpath.h>
-#include <ibuscomponent.h>
-#include <ibusconfig.h>
-#include <ibusconfigservice.h>
+#include <glib.h>
+#include <dbus/dbus.h>
+
+typedef void (* DBusConnectionSetupFunc)    (DBusConnection *connection,
+                                             gpointer        user_data);
+typedef void (* DBusServerSetupFunc)        (DBusServer     *server,
+                                             gpointer        user_data);
+
+void    ibus_mainloop_setup         (DBusConnectionSetupFunc      connection_func,
+                                     DBusServerSetupFunc          server_func,
+                                     gpointer                     user_data);
+void    ibus_dbus_server_setup      (DBusServer                  *server);
+void    ibus_dbus_connection_setup  (DBusConnection              *connection);
 
 #endif
 

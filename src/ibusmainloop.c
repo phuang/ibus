@@ -17,36 +17,34 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __IBUS_H_
-#define __IBUS_H_
+#include "ibusmainloop.h"
+#include "ibusinternal.h"
 
-#include <ibusmainloop.h>
-#include <ibusshare.h>
-#include <ibusobject.h>
-#include <ibusserializable.h>
-#include <ibustext.h>
-#include <ibusconnection.h>
-#include <ibusserver.h>
-#include <ibusproxy.h>
-#include <ibusservice.h>
-#include <ibusfactory.h>
-#include <ibusengine.h>
-#include <ibusattribute.h>
-#include <ibusproperty.h>
-#include <ibuslookuptable.h>
-#include <ibusbus.h>
-#include <ibuskeysyms.h>
-#include <ibusmessage.h>
-#include <ibuspendingcall.h>
-#include <ibuserror.h>
-#include <ibusenumtypes.h>
-#include <ibushotkey.h>
-#include <ibusxml.h>
-#include <ibusenginedesc.h>
-#include <ibusobservedpath.h>
-#include <ibuscomponent.h>
-#include <ibusconfig.h>
-#include <ibusconfigservice.h>
+static DBusConnectionSetupFunc _connection_setup_func = dbus_connection_setup;
+static DBusServerSetupFunc _server_setup_func = dbus_server_setup;
+static gpointer _user_data = NULL;
 
-#endif
+void
+ibus_mainloop_setup (DBusConnectionSetupFunc connection_func,
+                     DBusServerSetupFunc     server_func,
+                     gpointer                user_data)
+{
+    _connection_setup_func = connection_func;
+    _server_setup_func = server_func;
+    _user_data = user_data;
+}
+
+void
+ibus_dbus_connection_setup (DBusConnection *connection)
+{
+    if (_connection_setup_func != NULL)
+        (_connection_setup_func) (connection, _user_data);
+}
+
+void
+ibus_dbus_server_setup (DBusServer *server)
+{
+    if (_server_setup_func != NULL)
+        (_server_setup_func) (server, _user_data);
+}
 

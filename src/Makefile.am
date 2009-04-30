@@ -67,6 +67,7 @@ ibus_public_h_sources = \
 	ibusenginedesc.h \
 	ibusobservedpath.h \
 	ibuscomponent.h \
+	ibusmainloop.h \
 	$(NULL)
 ibus_h_sources = \
 	ibusinternal.h \
@@ -102,6 +103,7 @@ ibus_c_sources = \
 	ibusenginedesc.c \
 	ibusobservedpath.c \
 	ibuscomponent.c \
+	ibusmainloop.c \
 	$(NULL)
 ibusincludedir = $(includedir)/ibus-1.0
 ibusinclude_HEADERS = \

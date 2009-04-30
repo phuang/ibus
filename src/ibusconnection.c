@@ -370,7 +370,7 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
                     (DBusHandleMessageFunction) _connection_handle_message_cb,
                     connection, NULL);
 
-    dbus_connection_setup (priv->connection, NULL);
+    ibus_dbus_connection_setup (priv->connection);
     g_warn_if_fail (result);
 }
 

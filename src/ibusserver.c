@@ -265,7 +265,7 @@ ibus_server_listen_internal (IBusServer  *server,
 
     dbus_server_set_auth_mechanisms (priv->server, NULL);
 
-    dbus_server_setup (priv->server, NULL);
+    ibus_dbus_server_setup (priv->server);
     return TRUE;
 }
 
