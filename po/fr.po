@@ -5,14 +5,15 @@
 #
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
+# Humbert Julien <julroy67@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-27 07:42+0800\n"
-"PO-Revision-Date: 2009-04-15 22:46+0200\n"
-"Last-Translator: Charles-Antoine Couret <cacouret@wanadoo.fr>\n"
-"Language-Team: French <fedora-trans-fr@redhat.com>\n"
+"PO-Revision-Date: 2009-05-05 13:53+0200\n"
+"Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
+"Language-Team: French <kde-francophone@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,7 +37,7 @@ msgstr "Autre"
 
 #: ../ui/gtk/panel.py:282
 msgid "Restart"
-msgstr "Redémarrer"
+msgstr "Redémarrer IBus"
 
 #: ../ui/gtk/panel.py:337
 msgid "No input method"
@@ -176,8 +177,8 @@ msgid ""
 "Horizontal\n"
 "Vertical"
 msgstr ""
-"Horizontal\n"
-"Vertical"
+"Horizontale\n"
+"Verticale"
 
 #: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -284,3 +285,5 @@ msgstr "Utiliser une police personnalisée"
 #: ../data/ibus.schemas.in.h:16
 msgid "Use custom font name for language panel"
 msgstr "Utiliser une police personnalisée pour le panneau de langue"
+
+
