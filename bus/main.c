@@ -159,7 +159,7 @@ main (gint argc, gchar **argv)
         uid_t uid = getuid ();
         struct passwd *pwd = getpwuid (uid);
 
-        if (pwd == NULL || strcmp (pwd->pw_name, username) != 0) {
+        if (pwd == NULL || g_strcmp0 (pwd->pw_name, username) != 0) {
             g_printerr ("Please run ibus-daemon with login user! Do not run ibus-daemon with sudo or su.\n");
             exit (-1);
         }
