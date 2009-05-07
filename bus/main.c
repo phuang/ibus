@@ -132,6 +132,17 @@ daemon (gint nochdir, gint noclose)
 }
 #endif
 
+static void
+_my_log_handler (const gchar    *log_domain,
+                 GLogLevelFlags  log_level,
+                 const gchar    *message,
+                 gpointer        user_data)
+{
+    if (verbose) {
+        g_log_default_handler (log_domain, log_level, message, user_data);
+    }
+}
+
 gint
 main (gint argc, gchar **argv)
 {
@@ -177,6 +188,11 @@ main (gint argc, gchar **argv)
     setpgrp ();
 
     g_type_init ();
+
+    g_log_set_handler (G_LOG_DOMAIN,
+        G_LOG_LEVEL_WARNING | G_LOG_LEVEL_DEBUG | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
+        _my_log_handler,
+        NULL);
 
     /* check if ibus-daemon is running in this session */
     bus = ibus_bus_new ();
