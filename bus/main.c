@@ -43,16 +43,16 @@ static gboolean verbose = FALSE;
 
 static const GOptionEntry entries[] =
 {
-    { "daemonize", 'd', 0, G_OPTION_ARG_NONE, &daemonize, "run ibus as background process.", NULL },
-    { "single", 's', 0, G_OPTION_ARG_NONE, &single, "do not execute panel and config module.", NULL },
-    { "xim", 'x', 0, G_OPTION_ARG_NONE, &xim, "execute ibus XIM server.", NULL },
-    { "desktop", 'n', 0, G_OPTION_ARG_STRING, &desktop, "specify the name of desktop session. [default=gnome]", "name" },
-    { "panel", 'p', 0, G_OPTION_ARG_STRING, &panel, "specify the cmdline of panel program.", "cmdline" },
-    { "config", 'c', 0, G_OPTION_ARG_STRING, &config, "specify the cmdline of config program.", "cmdline" },
-    { "address", 'a', 0, G_OPTION_ARG_STRING, &address, "specify the address of ibus daemon.", "address" },
-    { "replace", 'r', 0, G_OPTION_ARG_NONE, &replace, "if there is an old ibus-daemon is running, it will be replaced.", NULL },
-    { "re-scan", 't', 0, G_OPTION_ARG_NONE, &g_rescan, "force to re-scan components, and re-create registry cache.", NULL },
-    { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "verbose.", NULL },
+    { "daemonize", 'd', 0, G_OPTION_ARG_NONE,   &daemonize, "run ibus as background process.", NULL },
+    { "single",    's', 0, G_OPTION_ARG_NONE,   &single,    "do not execute panel and config module.", NULL },
+    { "xim",       'x', 0, G_OPTION_ARG_NONE,   &xim,       "execute ibus XIM server.", NULL },
+    { "desktop",   'n', 0, G_OPTION_ARG_STRING, &desktop,   "specify the name of desktop session. [default=gnome]", "name" },
+    { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program.", "cmdline" },
+    { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program.", "cmdline" },
+    { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
+    { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
+    { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
+    { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &verbose,   "verbose.", NULL },
     { NULL },
 };
 
