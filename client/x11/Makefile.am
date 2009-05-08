@@ -53,6 +53,7 @@ ibus_x11_CFLAGS = \
 
 noinst_HEADERS = \
 	gdk-private.h \
+	locales.h \
 	$(NULL)
 
 $(IMdkit):
@@ -61,3 +62,10 @@ $(IMdkit):
 $(libibus):
 	(cd $(top_builddir)/src; make)
 
+locales.h:
+	( \
+		locale -a | \
+		gawk -F _ '{ if (length($$1) <= 3) print $$1 }' | \
+		uniq | sort | \
+		xargs python -c 'import sys;print "#define LOCALES_STRING \"%s\"" % ",".join(sys.argv[1:])' \
+	 ) > $@

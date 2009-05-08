@@ -46,6 +46,7 @@
 
 #include <ibus.h>
 #include "gdk-private.h"
+#include "locales.h"
 
 struct _X11ICONN {
     GList        *clients;
@@ -102,6 +103,9 @@ static GHashTable     *_x11_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
 static gchar _server_name[128] = "ibus";
+#ifdef LOCALES_STRING
+static gchar _locale[1024] = LOCALES_STRING;
+#else
 static gchar _locale[1024] =
     "aa,af,am,an,ar,as,az,be,bg,bn,br,bs,"
     "ca,cs,cy,da,de,dz,el,en,es,et,eu,"
@@ -113,6 +117,7 @@ static gchar _locale[1024] =
     "se,si,sk,sl,so,sq,sr,ss,st,sv,"
     "ta,te,tg,th,ti,tl,tn,tr,ts,tt,"
     "uk,ur,uz,ve,vi,wa,xh,yi,zh,zu";
+#endif
 
 static gboolean _kill_daemon = FALSE;
 static gint     g_debug_level = 0;
@@ -999,7 +1004,8 @@ _print_usage (FILE *fp, gchar *name)
         "Usage:\n"
         " %s --help               Show this message\n"
         "    --server-name= -n    Setup xim sevrer name\n"
-        "    --locale= -l         Setup support locale\n"
+        "    --locale= -l         Setup support locales\n"
+        "    --locale-append= -a  Append locales into the default support locales\n"
         "    --kill-daemon -k     Kill ibus daemon when exit\n"
         "    --debug= -v          Setup debug level\n",
         name);
@@ -1026,15 +1032,16 @@ main (int argc, char **argv)
 
     while (1) {
         static struct option long_options [] = {
-            {"debug", 1, 0, 0},
-            {"server-name", 1, 0, 0},
-            {"locale", 1, 0, 0},
-            {"help", 0, 0, 0},
-            {"kill-daemon", 0, 0, 0},
-            {0, 0, 0, 0},
+            { "debug", 1, 0, 0},
+            { "server-name", 1, 0, 0},
+            { "locale", 1, 0, 0},
+            { "locale-append", 1, 0, 0},
+            { "help", 0, 0, 0},
+            { "kill-daemon", 0, 0, 0},
+            { 0, 0, 0, 0},
         };
 
-        c = getopt_long (argc, argv, "v:n:l:k",
+        c = getopt_long (argc, argv, "v:n:l:k:a",
             long_options, &option_index);
 
         if (c == -1) break;
@@ -1049,6 +1056,9 @@ main (int argc, char **argv)
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale") == 0) {
                 strncpy (_locale, optarg, sizeof (_locale));
+            }
+            else if (g_strcmp0 (long_options[option_index].name, "locale-append") == 0) {
+                strncat (_locale, optarg, sizeof (_locale));
             }
             else if (g_strcmp0 (long_options[option_index].name, "help") == 0) {
                 _print_usage (stdout, argv[0]);
@@ -1066,6 +1076,9 @@ main (int argc, char **argv)
             break;
         case 'l':
             strncpy (_locale, optarg, sizeof (_locale));
+            break;
+        case 'a':
+            strncat (_locale, optarg, sizeof (_locale));
             break;
         case 'k':
             _kill_daemon = TRUE;
