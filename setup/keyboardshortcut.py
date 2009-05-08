@@ -127,12 +127,16 @@ class KeyboardShortcutSelection(gtk.VBox):
             shortcuts = []
         model = self.__shortcut_view.get_model()
         model.clear()
+
+        added = []
         for shortcut in shortcuts:
-            model.insert(0, (shortcut,))
+            if shortcut not in added:
+                model.insert(-1, (shortcut,))
+                added.append(shortcut)
 
     def get_shortcuts(self):
         model = self.__shortcut_view.get_model()
-        return map(lambda i:i[0] , model)
+        return [i[0] for i in model]
 
     def add_shortcut(self, shortcut):
         model = self.__shortcut_view.get_model()
