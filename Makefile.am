@@ -91,3 +91,6 @@ clean-rpm:
 	$(RM) -r "`uname -i`"
 
 clean-local: clean-rpm
+
+git-tag:
+	git tag @PACKAGE_VERSION@
