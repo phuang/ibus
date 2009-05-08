@@ -103,21 +103,7 @@ static GHashTable     *_x11_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
 static gchar _server_name[128] = "ibus";
-#ifdef LOCALES_STRING
 static gchar _locale[1024] = LOCALES_STRING;
-#else
-static gchar _locale[1024] =
-    "aa,af,am,an,ar,as,az,be,bg,bn,br,bs,"
-    "ca,cs,cy,da,de,dz,el,en,es,et,eu,"
-    "fa,fi,fo,fr,fy,ga,gd,gl,gu,gv,"
-    "he,hi,hr,hu,hy,id,is,it,iw,ja,"
-    "ka,kk,kl,km,kn,ko,ku,kw,ky,lg,lo,lt,lv,"
-    "mg,mi,mk,ml,mn,mr,ms,mt,nb,ne,nl,nn,no,nr,"
-    "oc,om,or,pa,pl,pt,ro,ru,rw,"
-    "se,si,sk,sl,so,sq,sr,ss,st,sv,"
-    "ta,te,tg,th,ti,tl,tn,tr,ts,tt,"
-    "uk,ur,uz,ve,vi,wa,xh,yi,zh,zu";
-#endif
 
 static gboolean _kill_daemon = FALSE;
 static gint     g_debug_level = 0;
