@@ -1654,7 +1654,7 @@ bus_input_context_register_properties (BusInputContext *context,
         g_object_unref (priv->props);
     }
 
-    priv->props = (IBusPropList *) g_object_ref (props ? props : props_empty);
+    priv->props = (IBusPropList *) g_object_ref (props != NULL ? props : props_empty);
 
     if (priv->capabilities & IBUS_CAP_PROPERTY) {
         bus_input_context_send_signal (context,
