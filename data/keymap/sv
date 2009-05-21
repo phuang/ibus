@@ -1,0 +1,25 @@
+include common
+keycode   2 = shift : exclam
+keycode   3 = shift : quotedbl, altgr : at
+keycode   4 = shift : numbersign, altgr : sterling
+keycode   5 = shift : currency, altgr : dollar
+keycode   6 = shift : percent
+keycode   7 = shift : ampersand
+keycode   8 = shift : slash, altgr : braceleft
+keycode   9 = shift : parenleft, altgr : bracketleft
+keycode  10 = shift : parenright, altgr : bracketright
+keycode  11 = shift : equal, altgr : braceright
+keycode  12 = plus, shift : question, altgr : backslash
+keycode  13 = dead_acute, shift : dead_grave
+keycode  18 = altgr : EuroSign
+keycode  26 = aring, shift : Aring
+keycode  27 = dead_diaeresis, shift : dead_circumflex, altgr : dead_tilde
+keycode  39 = odiaeresis, shift : Odiaeresis
+keycode  40 = adiaeresis, shift : Adiaeresis
+keycode  41 = section, shift : onehalf
+keycode  43 = apostrophe, shift : asterisk
+keycode  50 = altgr : mu
+keycode  51 = comma, shift : semicolon
+keycode  52 = period, shift : colon
+keycode  53 = minus, shift : underscore
+keycode  86 = less, shift : greater, altgr : bar

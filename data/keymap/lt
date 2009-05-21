@@ -1,0 +1,23 @@
+include common
+keycode   2 = shift : exclam, altgr : aogonek
+keycode   3 = shift : at, altgr : ccaron
+keycode   4 = shift : numbersign, altgr : eogonek
+keycode   5 = shift : dollar, altgr : eabovedot
+keycode   6 = shift : percent, altgr : iogonek
+keycode   7 = shift : asciicircum, altgr : scaron
+keycode   8 = shift : ampersand, altgr : uogonek
+keycode   9 = shift : asterisk, altgr : umacron
+keycode  10 = shift : parenleft, altgr : doublelowquotemark
+keycode  11 = shift : parenright, altgr : leftdoublequotemark
+keycode  12 = minus, shift : underscore
+keycode  13 = equal, shift : plus, altgr : zcaron
+keycode  26 = bracketleft, shift : braceleft
+keycode  27 = bracketright, shift : braceright
+keycode  39 = semicolon, shift : colon
+keycode  40 = apostrophe, shift : quotedbl
+keycode  41 = grave, shift : asciitilde
+keycode  43 = backslash, shift : bar
+keycode  51 = comma, shift : less
+keycode  52 = period, shift : greater
+keycode  53 = slash, shift : question
+keycode  86 = endash, shift : EuroSign
