@@ -286,6 +286,7 @@ util/Makefile
 util/IMdkit/Makefile
 data/Makefile
 data/icons/Makefile
+data/keymaps/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/ibus/Makefile

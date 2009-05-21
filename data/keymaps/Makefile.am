@@ -19,30 +19,47 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-SUBDIRS = \
-	icons \
-	keymaps \
+keymaps = \
+	ar \
+	common \
+	da \
+	de \
+	de-ch \
+	en-gb \
+	en-us \
+	es \
+	et \
+	fi \
+	fo \
+	fr \
+	fr-be \
+	fr-ca \
+	fr-ch \
+	hr \
+	hu \
+	is \
+	it \
+	ja \
+	lt \
+	lv \
+	mk \
+	modifiers \
+	nl \
+	nl-be \
+	no \
+	pl \
+	pt \
+	pt-br \
+	ru \
+	sl \
+	sv \
+	th \
+	tr \
 	$(NULL)
 
-schemasdir = $(GCONF_SCHEMA_FILE_DIR)
-schemas_in_files = ibus.schemas.in
-schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-@INTLTOOL_SCHEMAS_RULE@
-
-install-data-local:
-if GCONF_SCHEMAS_INSTALL
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) \
-				--makefile-install-rule $(top_builddir)/data/$$p >&1 > /dev/null; \
-		done \
-	fi
-endif
+keymaps_DATA = $(keymaps)
+keymapsdir = $(pkgdatadir)/keymaps
 
 EXTRA_DIST = \
-	$(schemas_in_files) \
-	$(NULL)
-
-DISTCLEANFILES = \
-	$(schemas_DATA) \
+	$(keymaps) \
 	$(NULL)
