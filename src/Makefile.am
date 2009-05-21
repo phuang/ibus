@@ -50,6 +50,7 @@ ibus_public_h_sources = \
 	ibusfactory.h \
 	ibusengine.h \
 	ibustext.h \
+	ibuskeymap.h \
 	ibusattribute.h \
 	ibusproperty.h \
 	ibuslookuptable.h \
@@ -87,6 +88,7 @@ ibus_c_sources = \
 	ibusfactory.c \
 	ibusengine.c \
 	ibustext.c \
+	ibuskeymap.c \
 	ibusattribute.c \
 	ibusproperty.c \
 	ibuslookuptable.c \
