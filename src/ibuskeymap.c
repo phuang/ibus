@@ -101,8 +101,9 @@ ibus_keymap_parse_line (gchar  *str,
     } prefix [] = {
         { "keycode ", sizeof ("keycode ") - 1 },
         { "shift keycode ", sizeof ("shift keycode ") - 1 },
-        { "numlock keycode ", sizeof ("numlock keycode ") - 1},
         { "altgr keycode ", sizeof ("altgr keycode ") - 1},
+        { "shift altgr keycode ", sizeof ("shift altgr keycode ") - 1},
+        { "numlock keycode ", sizeof ("numlock keycode ") - 1},
     };
 
     p1 = str;
@@ -200,6 +201,22 @@ ibus_keymap_load (const gchar *name,
     return TRUE;
 }
 
+void
+ibus_keymap_fill (KEYMAP keymap)
+{
+    gint i, j;
+
+    for (i = 0; i < 256; i++) {
+        if (keymap[i][1] == 0)
+            keymap[i][1] = keymap[i][0];
+        if (keymap[i][2] == 0)
+            keymap[i][2] = keymap[i][0];
+        if (keymap[i][3] == 0)
+            keymap[i][3] = keymap[i][2];
+    }
+}
+
+
 IBusKeymap *
 ibus_keymap_new (const gchar *name)
 {
@@ -210,6 +227,9 @@ ibus_keymap_new (const gchar *name)
     if (!ibus_keymap_load (name, keymap->keymap)) {
         g_object_unref (keymap);
         keymap = NULL;
+    }
+    else {
+        ibus_keymap_fill (keymap->keymap);
     }
 
     return keymap;
@@ -229,16 +249,16 @@ ibus_keymap_get_keysym_for_keycode (IBusKeymap *keymap,
 
     if (keycode < 256) {
         gboolean is_upper;
-        is_upper = ((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK);
+        is_upper = (((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK)) != 0;
 
-        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][2] != 0)) {
-            keysym = keymap->keymap[keycode][2];
+        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][4] != 0)) {
+            keysym = keymap->keymap[keycode][4];
         }
-        else if ((((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK)) && keymap->keymap[keycode][1] != 0) {
-            keysym = keymap->keymap[keycode][1];
+        else if (state & IBUS_MOD5_MASK) {
+            keysym = keymap->keymap[keycode][is_upper ? 3: 2];
         }
         else {
-            keysym = keymap->keymap[keycode][0];
+            keysym = keymap->keymap[keycode][is_upper ? 1: 0];
         }
     }
 

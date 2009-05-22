@@ -14,7 +14,7 @@ int main()
 
     g_type_init ();
 
-    IBusKeymap *keymap = ibus_keymap_new ("en-us");
+    IBusKeymap *keymap = ibus_keymap_new ("ja");
 
     fd = open (KEYBOARDPATH, O_RDONLY);
 
@@ -24,22 +24,14 @@ int main()
         if (e.value != 0)
             continue;
 
-        g_debug ("=========================== %d =============================", e.code);
-        keyval = ibus_keymap_get_keysym_for_keycode (keymap, e.code, 0);
-        g_debug ("keycode = %d, keysym = %s (%d)", e.code, ibus_keyval_name (keyval), keyval);
-
-        keyval = ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_SHIFT_MASK);
-        g_debug ("shift keycode = %d, keysym = %s (%d)", e.code, ibus_keyval_name (keyval), keyval);
-
-        keyval = ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD2_MASK);
-        g_debug ("numlock keycode = %d, keysym = %s (%d)", e.code, ibus_keyval_name (keyval), keyval);
-
-        keyval = ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_SHIFT_MASK | IBUS_LOCK_MASK);
-        g_debug ("lock & shift keycode = %d, keysym = %s (%d)", e.code, ibus_keyval_name (keyval), keyval);
-
-        keyval = ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_LOCK_MASK);
-        g_debug ("lock keycode = %d, keysym = %s (%d)", e.code, ibus_keyval_name (keyval), keyval);
-
+        g_debug ("=========================================================================");
+        g_debug ("keycode = %d, %s %s %s %s %s", e.code,
+                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, 0)),
+                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_SHIFT_MASK)),
+                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD5_MASK)),
+                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD5_MASK | IBUS_SHIFT_MASK)),
+                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD2_MASK))
+        );
     }
 
     g_object_unref (keymap);
