@@ -49,7 +49,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusKeymap IBusKeymap;
 typedef struct _IBusKeymapClass IBusKeymapClass;
-typedef guint KEYMAP[256][3];
+typedef guint KEYMAP[256][4];
 
 /**
  * IBusKeymap:
@@ -77,6 +77,10 @@ GType            ibus_keymap_get_type               (void);
  * New an IBusKeymap.
  */
 IBusKeymap        *ibus_keymap_new                  (const gchar        *name);
+guint              ibus_keymap_get_keysym_for_keycode
+                                                    (IBusKeymap         *keymap,
+                                                     guint16             keycode,
+                                                     guint32             state);
 
 G_END_DECLS
 #endif

@@ -215,3 +215,32 @@ ibus_keymap_new (const gchar *name)
     return keymap;
 }
 
+
+guint32
+ibus_keymap_get_keysym_for_keycode (IBusKeymap *keymap,
+                                    guint16     keycode,
+                                    guint32     state)
+{
+    g_assert (IBUS_IS_KEYMAP (keymap));
+
+    guint32 keysym;
+
+    keysym = IBUS_VoidSymbol;
+
+    if (keycode < 256) {
+        gboolean is_upper;
+        is_upper = ((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK);
+
+        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][2] != 0)) {
+            keysym = keymap->keymap[keycode][2];
+        }
+        else if ((((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK)) && keymap->keymap[keycode][1] != 0) {
+            keysym = keymap->keymap[keycode][1];
+        }
+        else {
+            keysym = keymap->keymap[keycode][0];
+        }
+    }
+
+    return keysym;
+}
