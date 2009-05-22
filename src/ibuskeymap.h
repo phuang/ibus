@@ -49,7 +49,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusKeymap IBusKeymap;
 typedef struct _IBusKeymapClass IBusKeymapClass;
-typedef guint KEYMAP[256][4];
+typedef guint KEYMAP[256][5];
 
 /**
  * IBusKeymap:
