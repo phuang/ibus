@@ -14,7 +14,7 @@ int main()
 
     g_type_init ();
 
-    IBusKeymap *keymap = ibus_keymap_new ("ja");
+    IBusKeymap *keymap = ibus_keymap_new ("en-us");
 
     fd = open (KEYBOARDPATH, O_RDONLY);
 
