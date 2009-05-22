@@ -18,7 +18,8 @@ int main()
 
     fd = open (KEYBOARDPATH, O_RDONLY);
 
-    while (read (fd, &e, sizeof (e)) == sizeof (e)) {
+
+    while (fd >= 0 && read (fd, &e, sizeof (e)) == sizeof (e)) {
         if (e.type != EV_KEY)
             continue;
         if (e.value != 0)
