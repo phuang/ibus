@@ -97,8 +97,6 @@ struct _BusInputContextPrivate {
     IBusLookupTable *lookup_table;
     gboolean lookup_table_visible;
 
-    /* properties */
-    IBusPropList *props;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -557,7 +555,6 @@ bus_input_context_init (BusInputContext *context)
     priv->lookup_table_visible = FALSE;
 
     g_object_ref (props_empty);
-    priv->props = props_empty;
 }
 
 static void
@@ -588,11 +585,6 @@ bus_input_context_destroy (BusInputContext *context)
     if (priv->lookup_table) {
         g_object_unref (priv->lookup_table);
         priv->lookup_table = NULL;
-    }
-
-    if (priv->props) {
-        g_object_unref (priv->props);
-        priv->props = NULL;
     }
 
     if (priv->connection) {
@@ -1156,12 +1148,6 @@ bus_input_context_focus_in (BusInputContext *context)
     if (priv->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
 
-        if ((priv->capabilities & IBUS_CAP_PROPERTY) == 0) {
-            g_signal_emit (context,
-                           context_signals[REGISTER_PROPERTIES],
-                           0,
-                           priv->props);
-        }
         if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
             g_signal_emit (context,
                            context_signals[UPDATE_PREEDIT_TEXT],
@@ -1650,23 +1636,17 @@ bus_input_context_register_properties (BusInputContext *context,
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
-    if (priv->props) {
-        g_object_unref (priv->props);
-    }
-
-    priv->props = (IBusPropList *) g_object_ref (props != NULL ? props : props_empty);
-
     if (priv->capabilities & IBUS_CAP_PROPERTY) {
         bus_input_context_send_signal (context,
                                        "RegisterProperties",
-                                       IBUS_TYPE_PROP_LIST, &(priv->props),
+                                       IBUS_TYPE_PROP_LIST, &props,
                                        G_TYPE_INVALID);
     }
     else {
         g_signal_emit (context,
                        context_signals[REGISTER_PROPERTIES],
                        0,
-                       priv->props);
+                       props);
     }
 }
 
@@ -1679,14 +1659,6 @@ bus_input_context_update_property (BusInputContext *context,
 
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->props == props_empty) {
-        return;
-    }
-
-    if (!ibus_prop_list_update_property (priv->props, prop)) {
-        return;
-    }
 
     if (priv->capabilities & IBUS_CAP_PROPERTY) {
         bus_input_context_send_signal (context,
