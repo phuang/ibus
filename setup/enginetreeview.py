@@ -22,6 +22,7 @@
 import gtk
 import glib
 import gobject
+import pango
 import ibus
 
 from icon import load_icon
@@ -96,6 +97,12 @@ class EngineTreeView(gtk.TreeView):
         renderer.set_property("sensitive", True)
         language = ibus.get_language_name(engine.language)
         renderer.set_property("text", "%s - %s" % (language, engine.longname))
+        if self.__model.get_path(iter)[0] == 0:
+            #default engine
+            renderer.set_property("weight", pango.WEIGHT_BOLD)
+        else:
+            renderer.set_property("weight", pango.WEIGHT_NORMAL)
+
 
     def set_engines(self, engines):
         self.__model.clear()
