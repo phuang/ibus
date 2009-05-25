@@ -132,6 +132,14 @@ class EngineTreeView(gtk.TreeView):
         self.__engines.add(engine)
         self.scroll_to_cell(self.__model[0].path, None)
 
+    def append_engine(self, engine):
+        if engine == None or engine in self.__engines:
+            return
+        iter = self.__model.append(None)
+        self.__model.set(iter, 0, engine)
+        self.__engines.add(engine)
+        self.scroll_to_cell(self.__model[-1].path, None)
+
     def remove_engine(self):
         iter = self.get_selected_iter()
         if iter == None:

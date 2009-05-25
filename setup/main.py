@@ -177,7 +177,7 @@ class Setup(object):
 
         button = self.__xml.get_widget("button_engine_add")
         button.connect("clicked",
-                       lambda *args:self.__treeview.prepend_engine(self.__combobox.get_active_engine()))
+                       lambda *args:self.__treeview.append_engine(self.__combobox.get_active_engine()))
         button = self.__xml.get_widget("button_engine_remove")
         button.connect("clicked", lambda *args:self.__treeview.remove_engine())
         button = self.__xml.get_widget("button_engine_up")
