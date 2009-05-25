@@ -22,6 +22,7 @@
 import locale
 import gettext
 import os
+import signal
 import sys
 import time
 import gtk
@@ -361,9 +362,14 @@ class Setup(object):
     def __config_reloaded_cb(self, bus):
         pass
 
+    def __sigusr1_cb(self, *args):
+        self.__window.present()
+
     def run(self):
         self.__window.show_all()
+        signal.signal(signal.SIGUSR1, self.__sigusr1_cb)
         gtk.main()
 
 if __name__ == "__main__":
-    Setup().run()
+    setup = Setup()
+    setup.run()

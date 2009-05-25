@@ -404,6 +404,7 @@ class Panel(ibus.PanelBase):
         if self.__setup_pid != 0:
             pid, state = os.waitpid(self.__setup_pid, os.P_NOWAIT)
             if pid != self.__setup_pid:
+                os.kill(self.__setup_pid, signal.SIGUSR1)
                 return
             self.__setup_pid = 0
         self.__setup_pid = os.spawnl(os.P_NOWAIT, self.__setup_cmd, "ibus-setup")
