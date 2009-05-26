@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"POT-Creation-Date: 2009-05-26 07:38+0800\n"
 "PO-Revision-Date: 2009-04-06 12:04+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -51,23 +51,23 @@ msgstr "શ્ર્વેતા કોઠારી <swkothar@redhat.com>"
 msgid "Switch input method"
 msgstr "ઇનપુટ પદ્દતિને બદલો"
 
-#: ../setup/main.py:103
+#: ../setup/main.py:104
 msgid "trigger"
 msgstr "ટ્રીગર"
 
-#: ../setup/main.py:113
+#: ../setup/main.py:114
 msgid "next input method"
 msgstr "પછીની ઇનપુટ પદ્દતિ"
 
-#: ../setup/main.py:123
+#: ../setup/main.py:124
 msgid "previous input method"
 msgstr "પહેલાની ઇનપુટ પદ્દતિ"
 
-#: ../setup/main.py:204
+#: ../setup/main.py:205
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ડિમન એ શરૂ થયેલ નથી. શું તમે હવે તેને શરૂ કરવા ઇચ્છો છો?"
 
-#: ../setup/main.py:219
+#: ../setup/main.py:220
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -81,24 +81,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:235
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s માટે કિબોર્ડ ટૂંકાણોને પસંદ કરો"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "કિબોર્ડ ટૂંકાણો"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "કિ કોડ:"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "બદલનારો:"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:222
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -106,7 +106,7 @@ msgstr ""
 "મહેરબાની કરીને કીને દબાવો (અથવા કી સંયોજન).\n"
 "સંવાદ એ બંધ થયેલ હશે જ્યારે કી પ્રકાશિત થયેલ હોય તો."
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:224
 msgid "Please press a key (or a key combination)"
 msgstr "મહેરબાની કરીને કી ને દબાવો (અથવા કી સંયોજન)"
 
@@ -147,26 +147,32 @@ msgstr ""
 "\n"
 
 #: ../setup/setup.glade.h:12
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+
+#: ../setup/setup.glade.h:14
 msgid "About"
 msgstr "વિશે"
 
-#: ../setup/setup.glade.h:13
+#: ../setup/setup.glade.h:15
 msgid "Candidates orientation:"
 msgstr "ઉમેદવારોની દિશા:"
 
-#: ../setup/setup.glade.h:14
+#: ../setup/setup.glade.h:16
 msgid "Custom font:"
 msgstr "વૈવિધ્ય ફોન્ટ:"
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
 msgid "Enable or disable:"
 msgstr "સક્રિય અથવા નિષ્ક્રિય:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:18
 msgid "General"
 msgstr "સામાન્ય"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:19
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -174,15 +180,15 @@ msgstr ""
 "આડુ\n"
 "ઊભુ"
 
-#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus પસંદગીઓ"
 
-#: ../setup/setup.glade.h:20
+#: ../setup/setup.glade.h:22
 msgid "Input Methods"
 msgstr "ઇનપુટ પદ્દતિઓ"
 
-#: ../setup/setup.glade.h:21
+#: ../setup/setup.glade.h:23
 msgid ""
 "Never\n"
 "When active\n"
@@ -192,23 +198,23 @@ msgstr ""
 "જ્યારે સક્રિય હોય તો\n"
 "હંમેશા"
 
-#: ../setup/setup.glade.h:24
+#: ../setup/setup.glade.h:26
 msgid "Next input method:"
 msgstr "પછીની ઇનપુટ પદ્દતિ:"
 
-#: ../setup/setup.glade.h:25
+#: ../setup/setup.glade.h:27
 msgid "Previous input method:"
 msgstr "પહેલાંની ઇનપુટ પદ્દતિ:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:28
 msgid "Show language panel:"
 msgstr "ભાષા પેનલને બતાવો:"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:29
 msgid "Start ibus on login"
 msgstr "પ્રવેશ પર ibus ને શરૂ કરો"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:30
 msgid "Use custom font"
 msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 
@@ -278,6 +284,5 @@ msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 msgid "Use custom font name for language panel"
 msgstr "ભાષા પેનલ માટે વૈવિધેય ફોન્ટ નામ ને વાપરો"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
+#~ msgid "[Control+space]"
+#~ msgstr "[Control+space]"

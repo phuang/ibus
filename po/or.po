@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-08 11:23+0800\n"
+"POT-Creation-Date: 2009-05-26 07:38+0800\n"
 "PO-Revision-Date: 2009-04-08 00:30+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
@@ -53,23 +53,23 @@ msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 msgid "Switch input method"
 msgstr "ନିବେଶ ପ୍ରଣୀଳିକୁ ବଦଳାନ୍ତୁ"
 
-#: ../setup/main.py:103
+#: ../setup/main.py:104
 msgid "trigger"
 msgstr "ଟ୍ରିଗର"
 
-#: ../setup/main.py:113
+#: ../setup/main.py:114
 msgid "next input method"
 msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ"
 
-#: ../setup/main.py:123
+#: ../setup/main.py:124
 msgid "previous input method"
 msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ"
 
-#: ../setup/main.py:204
+#: ../setup/main.py:205
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ଡେମନଟି ଆରମ୍ଭ ହୋଇନାହିଁ। ଆପଣ ଏହାକୁ ବର୍ତ୍ତମାନ ଆରମ୍ଭ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?"
 
-#: ../setup/main.py:219
+#: ../setup/main.py:220
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -83,24 +83,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:235
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ପାଇଁ କିବୋର୍ଡ ସକ୍ଷିପ୍ତପଥ ବାଛନ୍ତୁ"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "କିବୋର୍ଡ ସକ୍ଷିପ୍ତପଥ"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "କି ସଂକେତ:"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "ରୂପାନ୍ତରକ:"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:222
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -108,7 +108,7 @@ msgstr ""
 "ଦୟାକରି ଗୋଟିଏ କି (କିମ୍ବା ଗୋଟିଏ କି ସଂଯୋଜନ) ଦବାନ୍ତୁ।\n"
 "କିକୁ ଛାଡ଼ିଦେଲାପରେ ସଂଳାପଟି ବନ୍ଦ ହୋଇଯିବ।"
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:224
 msgid "Please press a key (or a key combination)"
 msgstr "ଦୟାକରି ଗୋଟିଏ କି (କିମ୍ବା ଗୋଟିଏ କି ସଂଯୋଜନ) ଦବାନ୍ତୁ।"
 
@@ -149,26 +149,32 @@ msgstr ""
 "\n"
 
 #: ../setup/setup.glade.h:12
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+
+#: ../setup/setup.glade.h:14
 msgid "About"
 msgstr "ବିବରଣୀ"
 
-#: ../setup/setup.glade.h:13
+#: ../setup/setup.glade.h:15
 msgid "Candidates orientation:"
 msgstr "ପ୍ରାର୍ଥୀ ଅନୁସ୍ଥାପନ:"
 
-#: ../setup/setup.glade.h:14
+#: ../setup/setup.glade.h:16
 msgid "Custom font:"
 msgstr "ଇଚ୍ଛାରୂପୀ ଅକ୍ଷରରୂପ:"
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
 msgid "Enable or disable:"
 msgstr "ସକ୍ରିୟ ଅଥବା ନିଷ୍କ୍ରିୟ:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:18
 msgid "General"
 msgstr "ସାଧାରଣ"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:19
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -176,15 +182,15 @@ msgstr ""
 "ଭୂ-ସମାନ୍ତରାଳ\n"
 "ଭୂ-ଲମ୍ବ"
 
-#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 
-#: ../setup/setup.glade.h:20
+#: ../setup/setup.glade.h:22
 msgid "Input Methods"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀଗୁଡ଼ିକ"
 
-#: ../setup/setup.glade.h:21
+#: ../setup/setup.glade.h:23
 msgid ""
 "Never\n"
 "When active\n"
@@ -194,23 +200,23 @@ msgstr ""
 "ସକ୍ରିୟ ଥିବା ସମୟରେ\n"
 "ସର୍ବଦା"
 
-#: ../setup/setup.glade.h:24
+#: ../setup/setup.glade.h:26
 msgid "Next input method:"
 msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ:"
 
-#: ../setup/setup.glade.h:25
+#: ../setup/setup.glade.h:27
 msgid "Previous input method:"
 msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:28
 msgid "Show language panel:"
 msgstr "ଭାଷା ତାଲିକା ଦର୍ଶାନ୍ତୁ:"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:29
 msgid "Start ibus on login"
 msgstr "ଲଗଇନ ସମୟରେ ibus କୁ ଆରମ୍ଭ କରନ୍ତୁ"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:30
 msgid "Use custom font"
 msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ବ୍ୟବହାର କରନ୍ତୁ"
 

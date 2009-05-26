@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-06 11:45+0800\n"
+"POT-Creation-Date: 2009-05-26 07:38+0800\n"
 "PO-Revision-Date: 2009-04-14 15:04+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -52,23 +53,23 @@ msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 msgid "Switch input method"
 msgstr "ఇన్పుట్ పద్దతి మార్చుము"
 
-#: ../setup/main.py:103
+#: ../setup/main.py:104
 msgid "trigger"
 msgstr "బిస (ట్రిగ్గర్)"
 
-#: ../setup/main.py:113
+#: ../setup/main.py:114
 msgid "next input method"
 msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:123
+#: ../setup/main.py:124
 msgid "previous input method"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:204
+#: ../setup/main.py:205
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:219
+#: ../setup/main.py:220
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -82,24 +83,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:235
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును యెంపికచేయుము"
 
-#: ../setup/keyboardshortcut.py:53
+#: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
 msgstr "కీబోర్డు లఘువులు"
 
-#: ../setup/keyboardshortcut.py:61
+#: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
 msgstr "కీ కోడ్:"
 
-#: ../setup/keyboardshortcut.py:76
+#: ../setup/keyboardshortcut.py:80
 msgid "Modifiers:"
 msgstr "సవరణిలు:"
 
-#: ../setup/keyboardshortcut.py:206
+#: ../setup/keyboardshortcut.py:222
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -107,7 +108,7 @@ msgstr ""
 "దయచేసి వొక కీను వత్తండి (లేదా కీ మిశ్రమాన్ని).\n"
 "కీ వదిలినప్పుడు డైలాగు మూయబడుతుంది."
 
-#: ../setup/keyboardshortcut.py:208
+#: ../setup/keyboardshortcut.py:224
 msgid "Please press a key (or a key combination)"
 msgstr "దయచేసి కీను వత్తండి (లేదా కీ మిశ్రమాన్ని)"
 
@@ -148,26 +149,32 @@ msgstr ""
 "\n"
 
 #: ../setup/setup.glade.h:12
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+
+#: ../setup/setup.glade.h:14
 msgid "About"
 msgstr "గురించి"
 
-#: ../setup/setup.glade.h:13
+#: ../setup/setup.glade.h:15
 msgid "Candidates orientation:"
 msgstr "సభ్యుల దృక్పధము:"
 
-#: ../setup/setup.glade.h:14
+#: ../setup/setup.glade.h:16
 msgid "Custom font:"
 msgstr "మలచుకొనిన ఫాంటు:"
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
 msgid "Enable or disable:"
 msgstr "చేతనముచేయి లేదా అచేతనముచేయి:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:18
 msgid "General"
 msgstr "సాదారణ"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:19
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -175,15 +182,15 @@ msgstr ""
 "చదరముగా\n"
 "నిలువుగా"
 
-#: ../setup/setup.glade.h:19 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus అభీష్టములు"
 
-#: ../setup/setup.glade.h:20
+#: ../setup/setup.glade.h:22
 msgid "Input Methods"
 msgstr "ఇన్పుట్ పద్దతులు"
 
-#: ../setup/setup.glade.h:21
+#: ../setup/setup.glade.h:23
 msgid ""
 "Never\n"
 "When active\n"
@@ -193,23 +200,23 @@ msgstr ""
 "క్రియాశీలముగా వున్నప్పుడు\n"
 "ఎల్లప్పుడు"
 
-#: ../setup/setup.glade.h:24
+#: ../setup/setup.glade.h:26
 msgid "Next input method:"
 msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
 
-#: ../setup/setup.glade.h:25
+#: ../setup/setup.glade.h:27
 msgid "Previous input method:"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:28
 msgid "Show language panel:"
 msgstr "భాషా ప్యానల్ చూపుము:"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:29
 msgid "Start ibus on login"
 msgstr "లాగిన్‌నందు ibus ప్రారంభించుము"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:30
 msgid "Use custom font"
 msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
@@ -281,7 +288,5 @@ msgstr "మలచుకొనిన ఫాంటు వుపయోగించ�
 msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "[Control+space]"
-msgstr "[Control+space]"
-
+#~ msgid "[Control+space]"
+#~ msgstr "[Control+space]"
