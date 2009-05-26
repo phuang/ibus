@@ -1,14 +1,14 @@
-# translation of ibus.po to Gujarati
+# translation of ibus.master.gu.po to Gujarati
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Sweta Kothari <swkothar@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus\n"
+"Project-Id-Version: ibus.master.gu\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-26 07:38+0800\n"
-"PO-Revision-Date: 2009-04-06 12:04+0530\n"
+"PO-Revision-Date: 2009-05-26 11:50+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -151,6 +151,8 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
+"<small><i>મૂળભૂત ઇનપુટ પદ્દતિ એ યાદીમાં ઉપર છે.\n"
+"તમારે તેને બદલવા માટે ઉપર/નીચે બટનોને વાપરી શકો છો.</i></small>"
 
 #: ../setup/setup.glade.h:14
 msgid "About"
@@ -284,5 +286,3 @@ msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 msgid "Use custom font name for language panel"
 msgstr "ભાષા પેનલ માટે વૈવિધેય ફોન્ટ નામ ને વાપરો"
 
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"
