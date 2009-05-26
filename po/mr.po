@@ -1,14 +1,14 @@
-# translation of ibus.master.ibus.po to marathi
+# translation of ibus.master.mr.po to marathi
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ibus\n"
+"Project-Id-Version: ibus.master.mr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-26 07:38+0800\n"
-"PO-Revision-Date: 2009-04-06 13:54+0530\n"
+"PO-Revision-Date: 2009-05-26 14:10+0530\n"
 "Last-Translator: Sandeep Shedmake <sandeep.shedmake@gmail.com>\n"
 "Language-Team: marathi\n"
 "MIME-Version: 1.0\n"
@@ -151,6 +151,8 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
+"<small><i>यादीतील प्रथम इन्पुट पद्धती मुलभूत नुरूप आहे.\n"
+"बदलण्याकरीता तुम्ही वर/खाली बटणांचा वापर करू शकता.</i></small>"
 
 #: ../setup/setup.glade.h:14
 msgid "About"
@@ -284,5 +286,3 @@ msgstr "स्वपसंत फॉन्ट वापरा"
 msgid "Use custom font name for language panel"
 msgstr "भाषा पटल करीत स्वपसंत फॉन्ट नाव वापरा"
 
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"
