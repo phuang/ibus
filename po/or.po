@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-26 07:38+0800\n"
-"PO-Revision-Date: 2009-04-08 00:30+0530\n"
+"PO-Revision-Date: 2009-05-27 17:24+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 
@@ -153,6 +153,8 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
+"<small><i>ପୂର୍ବନିର୍ଦ୍ଧାରିତ ନିବେଶ ପଦ୍ଧତିଟି ତାଲିକା ଉପରେ ଅଛି।\n"
+"ଆପଣ ଉପର/ତଳ ବଟନକୁ ବ୍ୟାବହାର କରି ଏହାକୁ ପରିବର୍ତ୍ତନ କରିପାରିବେ।</i></small>"
 
 #: ../setup/setup.glade.h:14
 msgid "About"
@@ -268,8 +270,7 @@ msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ର
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Trigger Hotkey"
@@ -287,5 +288,3 @@ msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପକୁ ବ୍�
 msgid "Use custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"
