@@ -656,7 +656,7 @@ ibus_component_child_cb (GPid            pid,
 }
 
 gboolean
-ibus_component_start (IBusComponent *component)
+ibus_component_start (IBusComponent *component, gboolean verbose)
 {
     g_assert (IBUS_IS_COMPONENT (component));
 
@@ -667,6 +667,7 @@ ibus_component_start (IBusComponent *component)
     gchar **argv;
     gboolean retval;
     GError *error;
+    GSpawnFlags flags;
 
     error = NULL;
     if (!g_shell_parse_argv (component->exec, &argc, &argv, &error)) {
@@ -676,8 +677,12 @@ ibus_component_start (IBusComponent *component)
     }
 
     error = NULL;
+    flags = G_SPAWN_DO_NOT_REAP_CHILD;
+    if (!verbose) {
+        flags |= G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
+    }
     retval = g_spawn_async (NULL, argv, NULL,
-                            G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+                            flags,
                             NULL, NULL,
                             &(component->pid), &error);
     g_strfreev (argv)

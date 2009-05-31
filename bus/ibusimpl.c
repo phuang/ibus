@@ -64,6 +64,8 @@ static void     _factory_destroy_cb             (BusFactoryProxy      *factory,
 
 static IBusServiceClass  *parent_class = NULL;
 
+extern gboolean g_verbose;
+
 GType
 bus_ibus_impl_get_type (void)
 {
@@ -233,7 +235,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
 
         component = ibus_component_get_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
         if (component && !ibus_component_is_running (component)) {
-            ibus_component_start (component);
+            ibus_component_start (component, g_verbose);
         }
     }
 }
@@ -616,6 +618,7 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
     IBusComponent *comp;
     BusFactoryProxy *factory;
     BusEngineProxy *engine;
+    GTimeVal t1, t2;
 
     factory = bus_factory_proxy_get_from_engine (engine_desc);
 
@@ -625,24 +628,26 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
         g_assert (comp);
 
         if (!ibus_component_is_running (comp)) {
-            ibus_component_start (comp);
+            ibus_component_start (comp, g_verbose);
 
             gint time = 0;
-            while (time < G_USEC_PER_SEC * 3) {
+            g_get_current_time (&t1);
+            while (1) {
                 if (g_main_context_pending (NULL)) {
                     g_main_context_iteration (NULL, FALSE);
+                    factory = bus_factory_proxy_get_from_engine (engine_desc);
+                    if (factory != NULL) {
+                        break;
+                    }
                 }
-                else {
-                    g_usleep (50 * 1000);
-                    time += 50 * 1000;
-                }
-                factory = bus_factory_proxy_get_from_engine (engine_desc);
-                if (factory != NULL) {
+                g_get_current_time (&t2);
+                if (t2.tv_sec - t1.tv_sec >= 5)
                     break;
-                }
             }
         }
-        factory = bus_factory_proxy_get_from_engine (engine_desc);
+        else {
+            factory = bus_factory_proxy_get_from_engine (engine_desc);
+        }
     }
 
     if (factory == NULL) {

@@ -227,11 +227,13 @@ gboolean         ibus_component_check_modification
 /**
  * ibus_component_start:
  * @component: An IBusComponent.
+ * @verbose: if redirect the child output to /dev/null
  * @returns: TRUE if the component is started; FALSE otherwise.
  *
  * Whether the IBusComponent is started.
  */
-gboolean         ibus_component_start           (IBusComponent  *component);
+gboolean         ibus_component_start           (IBusComponent  *component,
+                                                 gboolean        verbose);
 
 /**
  * ibus_component_stop:

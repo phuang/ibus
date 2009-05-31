@@ -39,7 +39,7 @@ static gchar *config = "default";
 static gchar *desktop = "gnome";
 static gchar *address = "";
 gboolean g_rescan = FALSE;
-static gboolean verbose = FALSE;
+gboolean g_verbose = FALSE;
 
 static const GOptionEntry entries[] =
 {
@@ -52,7 +52,7 @@ static const GOptionEntry entries[] =
     { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
-    { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &verbose,   "verbose.", NULL },
+    { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
     { NULL },
 };
 
@@ -138,7 +138,7 @@ _my_log_handler (const gchar    *log_domain,
                  const gchar    *message,
                  gpointer        user_data)
 {
-    if (verbose) {
+    if (g_verbose) {
         g_log_default_handler (log_domain, log_level, message, user_data);
     }
 }
@@ -219,7 +219,7 @@ main (gint argc, gchar **argv)
         if (g_strcmp0 (config, "default") == 0) {
             IBusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_CONFIG);
-            if (component == NULL || !ibus_component_start (component)) {
+            if (component == NULL || !ibus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default config program\n");
                 exit (-1);
             }
@@ -232,7 +232,7 @@ main (gint argc, gchar **argv)
         if (g_strcmp0 (panel, "default") == 0) {
             IBusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
-            if (component == NULL || !ibus_component_start (component)) {
+            if (component == NULL || !ibus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default panel program\n");
                 exit (-1);
             }
