@@ -294,7 +294,8 @@ gboolean         ibus_connection_send               (IBusConnection     *connect
  * @path: The path to the object emitting the signal.
  * @interface: The interface the signal is emitted from.
  * @name: Name of the signal.
- * @first_arg_type: Type of first arg.
+ * @first_arg_type: Type of first argument.
+ * @...: Rest of arguments, NULL to mark the end.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
  * Send a wrapped D-Bus signal to an IBusConnection.
@@ -375,15 +376,16 @@ gboolean         ibus_connection_send_valist        (IBusConnection     *connect
  * ibus_connection_send_with_reply:
  * @connection: An IBusConnection.
  * @message: An IBusMessage.
- * @pending_return: Return location for a DBusPendingCall object, or NULL if connection is disconnected.
+ * @pending_return: Return location of a IBusPendingCall object, or NULL if connection is disconnected.
  * @timeout_milliseconds: timeout in milliseconds or -1 for default.
  * @returns: FALSE if no memory, TRUE otherwise.
  *
- * Queues an IBusMessage to send,  but also returns a DBusPendingCall used to receive a reply to the message.
+ * Queues an IBusMessage to send,  and returns a IBusPendingCall used to receive a reply to the message.
  * This function is a wrapper of dbus_connection_send_with_reply().
  *
  * @see_also: ibus_connection_send(), ibus_connection_send_with_reply_and_block(),
- * #DBusPendingCall, dbus_connection_send_with_reply()
+ * ibus_proxy_call_with_reply(),
+ * #IBusPendingCall, dbus_connection_send_with_reply()
  */
 gboolean         ibus_connection_send_with_reply    (IBusConnection     *connection,
                                                      IBusMessage        *message,
@@ -395,14 +397,15 @@ gboolean         ibus_connection_send_with_reply    (IBusConnection     *connect
  * @connection: An IBusConnection.
  * @message: An IBusMessage.
  * @timeout_milliseconds: timeout in milliseconds or -1 for default.
- * @error: Error is stored here; NULL to ignore error.
- * @returns: The message that is the reply or NULL with an error code if the function fails.
+ * @error: Returned error is stored here; NULL to ignore error.
+ * @returns: An IBusMessage that is the reply or NULL with an error code if the function fails.
  *
- * Sends an IBus message and blocks a certain time period while waiting for a reply.
- * If reply is not NULL,  signal <constant>ibus-message-sent</constant> is emitted.
+ * Sends an IBus message and blocks a certain time period while waiting for
+ * an IBusMessage as reply.
+ * If the IBusMessage is not NULL,  signal <constant>ibus-message-sent</constant> is emitted.
  *
  * @see_also: ibus_connection_send(), ibus_connection_send_with_reply(),
- * #DBusPendingCall, dbus_connection_send_with_reply_and_block()
+ * dbus_connection_send_with_reply_and_block()
  */
 IBusMessage     *ibus_connection_send_with_reply_and_block
                                                     (IBusConnection     *connection,
@@ -417,8 +420,9 @@ IBusMessage     *ibus_connection_send_with_reply_and_block
  * @path: The path to the object emitting the signal.
  * @interface: The interface the signal is emitted from.
  * @member: The name of the member function to be called.
- * @error: Error is stored here; NULL to ignore error.
- * @first_arg_type: Type of first arg.
+ * @error: Returned error is stored here; NULL to ignore error.
+ * @first_arg_type: Type of first argument.
+ * @...: Rest of arguments, NULL to mark the end.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
  * Invoke a member function by sending an IBusMessage.

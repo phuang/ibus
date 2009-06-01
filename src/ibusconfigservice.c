@@ -122,7 +122,7 @@ ibus_config_service_class_init (IBusConfigServiceClass *klass)
     /**
      * IBusConfigService:connection:
      *
-     * Connection of this IBusConfigServifce.
+     * Connection of this IBusConfigService.
      */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,

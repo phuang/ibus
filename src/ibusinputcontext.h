@@ -17,6 +17,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusinputcontext
+ * @short_description: IBus input context proxy object.
+ * @stability: Stable
+ *
+ * An IBusInputContext is a proxy object of InputContext.
+ * Clients call the IBusInputContext to invoke InputContext,
+ * through which invoke IBusEngine.
+ */
 #ifndef __IBUS_INPUT_CONTEXT_H_
 #define __IBUS_INPUT_CONTEXT_H_
 

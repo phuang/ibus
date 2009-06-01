@@ -55,6 +55,11 @@ G_BEGIN_DECLS
 typedef struct _IBusService IBusService;
 typedef struct _IBusServiceClass IBusServiceClass;
 
+/**
+ * IBusService:
+ *
+ * An opaque data type representing an IBusService.
+ */
 struct _IBusService {
     IBusObject parent;
     /* instance members */
@@ -84,19 +89,98 @@ struct _IBusServiceClass {
 
 
 GType            ibus_service_get_type          (void);
+
+/**
+ * ibus_service_new:
+ * @path: Object path.
+ * @returns: A newly allocated IBusService
+ *
+ * New an IBusService.
+ */
 IBusService     *ibus_service_new               (const gchar    *path);
+
+/**
+ * ibus_service_get_path:
+ * @service: An IBusService.
+ * @returns: The object path of @service
+ *
+ * Returns the object path of an IBusService.
+ */
 const gchar     *ibus_service_get_path          (IBusService    *service);
+
+/**
+ * ibus_service_handle_message:
+ * @service: An IBusService.
+ * @connection: Corresponding IBusCOnnection
+ * @message: IBusMessage to be handled.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Emit an IBusMessage on an IBusConnection.
+ */
 gboolean         ibus_service_handle_message    (IBusService    *service,
                                                  IBusConnection *connection,
                                                  IBusMessage    *message);
+
+/**
+ * ibus_service_add_to_connection:
+ * @service: An IBusService.
+ * @connection: Corresponding IBusCOnnection
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Add an IBus Service to an IBusConnection.
+ * This function also connects the service to the signal IBusConnection::destroy of the connection.
+ */
 gboolean         ibus_service_add_to_connection (IBusService    *service,
                                                  IBusConnection *connection);
+
+/**
+ * ibus_service_add_to_connection:
+ * @service: An IBusService.
+ * @connection: Corresponding IBusCOnnection
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Add an IBusService to an IBusConnection.
+ * This function also connects the service to the signal IBusConnection::destroy of the connection.
+ */
 GList           *ibus_service_get_connections   (IBusService    *service);
+
+/**
+ * ibus_service_remove_from_connection:
+ * @service: An IBusService.
+ * @connection: Corresponding IBusCOnnection
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Remove an IBusService from an IBusConnection.
+ * This function also disconnects the signal IBusConnection::destroy.
+ */
 gboolean         ibus_service_remove_from_connection
                                                 (IBusService    *service,
                                                  IBusConnection *connection);
+
+/**
+ * ibus_service_remove_from_all_connections:
+ * @service: An IBusService.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Remove an IBusService from all connections.
+ * This function also disconnects the signal IBusConnection::destroy.
+ */
 gboolean         ibus_service_remove_from_all_connections
                                                 (IBusService    *service);
+
+/**
+ * ibus_service_send_signal:
+ * @service: An IBusService.
+ * @interface: The interface the signal is emitted from.
+ * @name: Name of the signal.
+ * @first_arg_type: Type of first argument.
+ * @...: Rest of arguments, NULL to mark the end.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Send signal to all the IBusConnections of an IBusService.
+ *
+ * @see_also: ibus_connection_send_signal()
+ */
 gboolean         ibus_service_send_signal       (IBusService    *service,
                                                  const gchar    *interface,
                                                  const gchar    *name,

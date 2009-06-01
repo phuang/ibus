@@ -138,6 +138,11 @@ ibus_proxy_class_init (IBusProxyClass *klass)
     klass->ibus_signal = ibus_proxy_ibus_signal;
 
     /* install properties */
+    /**
+     * IBusProxy:name:
+     *
+     * The service name of the proxy object.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_NAME,
                     g_param_spec_string ("name",
@@ -146,6 +151,11 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         NULL,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+    /**
+     * IBusProxy:path:
+     *
+     * The path of the proxy object.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_PATH,
                     g_param_spec_string ("path",
@@ -154,7 +164,12 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         NULL,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-     g_object_class_install_property (gobject_class,
+    /**
+     * IBusProxy:interface:
+     *
+     * The interface of the proxy object.
+     */
+    g_object_class_install_property (gobject_class,
                     PROP_INTERFACE,
                     g_param_spec_string ("interface",
                         "interface",
@@ -162,6 +177,11 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         NULL,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
+    /**
+     * IBusProxy:connection:
+     *
+     * The connection of the proxy object.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION,
                     g_param_spec_object ("connection",
@@ -171,6 +191,19 @@ ibus_proxy_class_init (IBusProxyClass *klass)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
+    /**
+     * IBusProxy::ibus-signal:
+     * @proxy: An IBusProxy.
+     * @message: An message that contains the signal.
+     *
+     * Emitted when sending a signal.
+     * Implement the member function ibus_signal() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * Returns: TRUE if the path of @message is identical to IBusProxy:path and successfully handled.
+     *
+     * @see_also: ibus_proxy_handle_signal().
+     */
     proxy_signals[IBUS_SIGNAL] =
         g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),

@@ -66,6 +66,7 @@ IBusError       *ibus_error_new_from_text   (const gchar    *name,
  * ibus_error_new_from_printf:
  * @name: The error name.
  * @format_message: printf() formatted error message.
+ * @...: Formatting parameters.
  * @returns: A newly allocated IBusError.
  *
  * New an IBusError from error name and a printf-formatted message.

@@ -20,8 +20,8 @@
 /**
  * SECTION: ibusattribute
  * @short_description: Attributes of IBusText.
- * @stability: Stable
  * @see_also: #IBusText
+ * @stability: Stable
  *
  * An IBusAttribute represents an attribute that associate to IBusText.
  * It decorates preedit buffer and auxiliary text with underline, foreground and background colors.

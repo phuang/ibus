@@ -216,6 +216,17 @@ ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass)
     g_string_append (serializable_class->signature, "av");
 
     /* install signals */
+    /**
+     * IBusHotkeyProfile::trigger:
+     * @profile: An IBusHotkeyProfile.
+     * @event: An event in GQuark.
+     * @user_data: User data for callback.
+     *
+     * Emitted when a hotkey is pressed and the hotkey is in profile.
+     * Implement the member function trigger() in extended class to receive this signal.
+     *
+     * <note><para>The last parameter, user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
     profile_signals[TRIGGER] =
         g_signal_new (I_("trigger"),
             G_TYPE_FROM_CLASS (klass),

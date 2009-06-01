@@ -119,6 +119,11 @@ ibus_service_class_init (IBusServiceClass *klass)
     klass->ibus_signal = ibus_service_ibus_signal;
 
     /* install properties */
+    /**
+     * IBusService:path:
+     *
+     * The path of service object.
+     */
     g_object_class_install_property (
                     gobject_class,
                     PROP_PATH,
@@ -131,6 +136,17 @@ ibus_service_class_init (IBusServiceClass *klass)
                     );
 
     /* Install signals */
+    /**
+     * IBusService::ibus-message:
+     * @service: An IBusService.
+     * @connection: Corresponding IBusConnection.
+     * @message: An IBusMessage to be sent.
+     *
+     * Send an IBusMessage though the @connection.
+     *
+     * Returns: TRUE if succeed; FALSE otherwise.
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
     service_signals[IBUS_MESSAGE] =
         g_signal_new (I_("ibus-message"),
             G_TYPE_FROM_CLASS (klass),

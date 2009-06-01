@@ -130,9 +130,7 @@ typedef struct _IBusConfigServiceClass IBusConfigServiceClass;
  * An opaque data type representing a configure service.
  */
 struct _IBusConfigService {
-    /*< private >*/
     IBusService parent;
-
     /* instance members */
 };
 

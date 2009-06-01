@@ -142,7 +142,7 @@ IBusFactory     *ibus_factory_new               (IBusConnection *connection);
 
 /**
  * ibus_factory_add_engine:
- * @connection: An IBusConnection.
+ * @factory: An IBusFactory.
  * @engine_name: Name of an engine.
  * @engine_type: GType of an engine.
  *
@@ -154,7 +154,7 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
 
 /**
  * ibus_factory_get_info:
- * @factory: An IBusFactory
+ * @factory: An IBusFactory.
  * @returns: A corresponding IbusFactoryInfo.
  *
  * Get IBusFactoryInfo out of IBusFactory.

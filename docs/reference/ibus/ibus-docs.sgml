@@ -27,6 +27,7 @@
 	  radio boxes, and so on.
       </para>
       <xi:include href="xml/ibusattribute.xml"/>
+      <xi:include href="xml/ibushotkey.xml"/>
       <xi:include href="xml/ibuslookuptable.xml"/>
       <xi:include href="xml/ibusproperty.xml"/>
       <xi:include href="xml/ibustext.xml"/>
@@ -41,11 +42,10 @@
       <xi:include href="xml/ibusengine.xml"/>
       <xi:include href="xml/ibusenginedesc.xml"/>
       <xi:include href="xml/ibusfactory.xml"/>
-      <xi:include href="xml/ibushotkey.xml"/>
       <xi:include href="xml/ibuskeysyms.xml"/>
   </chapter>
   <chapter>
-      <title>Configure</title>
+      <title>Configuration</title>
       <para>
       </para>
       <xi:include href="xml/ibusconfig.xml"/>
