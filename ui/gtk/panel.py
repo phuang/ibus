@@ -396,9 +396,12 @@ class Panel(ibus.PanelBase):
             print >> sys.stderr, "Unknown command %s" % command
     
     def __sigchld_cb(self, sig, sf):
-        pid, status = os.wait()
-        if self.__setup_pid == pid:
-            self.__setup_pid = 0
+        try:
+            pid, status = os.wait()
+            if self.__setup_pid == pid:
+                self.__setup_pid = 0
+        except:
+            pass
 
     def __start_setup(self):
         if self.__setup_pid != 0:
