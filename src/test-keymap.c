@@ -2,19 +2,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include "ibus.h"
 
 #define KEYBOARDPATH "/dev/input/event3"
 
-int main()
+int main (int argc, char **argv)
 {
     gint fd;
     struct input_event e;
-    guint keyval;
 
     g_type_init ();
 
-    IBusKeymap *keymap = ibus_keymap_new ("ja");
+    IBusKeymap *keymap = ibus_keymap_new (argc > 1 ? argv[1] : "en-us");
 
     fd = open (KEYBOARDPATH, O_RDONLY);
 
@@ -27,11 +27,11 @@ int main()
 
         g_debug ("=========================================================================");
         g_debug ("keycode = %d, %s %s %s %s %s", e.code,
-                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, 0)),
-                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_SHIFT_MASK)),
-                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD5_MASK)),
-                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD5_MASK | IBUS_SHIFT_MASK)),
-                    ibus_keyval_name (ibus_keymap_get_keysym_for_keycode (keymap, e.code, IBUS_MOD2_MASK))
+                    ibus_keyval_name (ibus_keymap_lookup_keysym (keymap, e.code, 0)),
+                    ibus_keyval_name (ibus_keymap_lookup_keysym (keymap, e.code, IBUS_SHIFT_MASK)),
+                    ibus_keyval_name (ibus_keymap_lookup_keysym (keymap, e.code, IBUS_MOD5_MASK)),
+                    ibus_keyval_name (ibus_keymap_lookup_keysym (keymap, e.code, IBUS_MOD5_MASK | IBUS_SHIFT_MASK)),
+                    ibus_keyval_name (ibus_keymap_lookup_keysym (keymap, e.code, IBUS_MOD2_MASK))
         );
     }
 

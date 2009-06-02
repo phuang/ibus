@@ -76,6 +76,11 @@ gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
                                              guint32             keyval,
                                              guint32             state);
+gboolean     ibus_input_context_process_key_event2
+                                            (IBusInputContext   *context,
+                                             guint32             keyval,
+                                             guint32             keycode,
+                                             guint32             state);
 void         ibus_input_context_set_cursor_location
                                             (IBusInputContext   *context,
                                              gint32              x,

@@ -541,10 +541,20 @@ failed:
     return FALSE;
 }
 
+
 gboolean
 ibus_input_context_process_key_event (IBusInputContext *context,
                                       guint32           keyval,
                                       guint32           state)
+{
+    return ibus_input_context_process_key_event2 (context, keyval, 0, state);
+}
+
+gboolean
+ibus_input_context_process_key_event2 (IBusInputContext *context,
+                                       guint32           keyval,
+                                       guint32           keycode,
+                                       guint32           state)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
@@ -560,11 +570,12 @@ ibus_input_context_process_key_event (IBusInputContext *context,
         return FALSE;
 
     retval = ibus_proxy_call_with_reply ((IBusProxy *) context,
-                                         "ProcessKeyEvent",
+                                         "ProcessKeyEvent2",
                                          &pending,
                                          -1,
                                          &error,
                                          G_TYPE_UINT, &keyval,
+                                         G_TYPE_UINT, &keycode,
                                          G_TYPE_UINT, &state,
                                          G_TYPE_INVALID);
     if (!retval) {

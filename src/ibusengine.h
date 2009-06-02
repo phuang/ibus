@@ -120,12 +120,15 @@ struct _IBusEngineClass {
                                      guint           index,
                                      guint           button,
                                      guint           state);
-
-
+    gboolean    (* process_key_event2)
+                                    (IBusEngine     *engine,
+                                     guint           keyval,
+                                     guint           keycode,
+                                     guint           state);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];
+    gpointer pdummy[7];
 };
 
 GType        ibus_engine_get_type       (void);

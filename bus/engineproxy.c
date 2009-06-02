@@ -22,9 +22,6 @@
 #include <ibusmarshalers.h>
 #include "engineproxy.h"
 
-#define BUS_ENGINE_PROXY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_ENGINE_PROXY, BusEngineProxyPrivate))
-
 enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
@@ -46,15 +43,6 @@ enum {
     LAST_SIGNAL,
 };
 
-
-/* BusEngineProxyPriv */
-struct _BusEngineProxyPrivate {
-    gboolean enabled;
-    IBusEngineDesc *desc;
-
-    IBusPropList *prop_list;
-};
-typedef struct _BusEngineProxyPrivate BusEngineProxyPrivate;
 
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
@@ -112,10 +100,15 @@ bus_engine_proxy_new (const gchar    *path,
                                               "connection", connection,
                                               NULL);
 
-    BusEngineProxyPrivate *priv;
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
-    priv->desc = desc;
+    engine->desc = desc;
     g_object_ref (desc);
+    if (desc->layout != NULL && desc->layout[0] != '\0') {
+        engine->keymap = ibus_keymap_new (desc->layout);
+    }
+
+    if (engine->keymap == NULL) {
+        engine->keymap = ibus_keymap_new ("en-us");
+    }
 
     return engine;
 }
@@ -128,8 +121,6 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
 
     parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
-
-    g_type_class_add_private (klass, sizeof (BusEngineProxyPrivate));
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_real_destroy;
 
@@ -323,23 +314,18 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
-    BusEngineProxyPrivate *priv;
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
-
-    priv->enabled = FALSE;
-    priv->prop_list = NULL;
-    priv->desc = NULL;
+    engine->enabled = FALSE;
+    engine->prop_list = NULL;
+    engine->desc = NULL;
+    engine->keymap = NULL;
 }
 
 static void
 bus_engine_proxy_real_destroy (BusEngineProxy *engine)
 {
-    BusEngineProxyPrivate *priv;
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
-
-    if (priv->prop_list) {
-        g_object_unref (priv->prop_list);
-        priv->prop_list = NULL;
+    if (engine->prop_list) {
+        g_object_unref (engine->prop_list);
+        engine->prop_list = NULL;
     }
 
     if (ibus_proxy_get_connection ((IBusProxy *) engine)) {
@@ -348,9 +334,14 @@ bus_engine_proxy_real_destroy (BusEngineProxy *engine)
                          G_TYPE_INVALID);
     }
 
-    if (priv->desc) {
-        g_object_unref (priv->desc);
-        priv->desc = NULL;
+    if (engine->desc) {
+        g_object_unref (engine->desc);
+        engine->desc = NULL;
+    }
+
+    if (engine->keymap) {
+        g_object_unref (engine->keymap);
+        engine->keymap = NULL;
     }
 
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (engine));
@@ -364,7 +355,6 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
     g_assert (message != NULL);
 
     BusEngineProxy *engine;
-    BusEngineProxyPrivate *priv;
     IBusError *error;
     gint i;
 
@@ -386,7 +376,6 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
     };
 
     engine = BUS_ENGINE_PROXY (proxy);
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
 
     for (i = 0; ; i++) {
         if (signals[i].member == NULL)
@@ -482,20 +471,20 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
         gboolean retval;
 
-        if (priv->prop_list) {
-            g_object_unref (priv->prop_list);
-            priv->prop_list = NULL;
+        if (engine->prop_list) {
+            g_object_unref (engine->prop_list);
+            engine->prop_list = NULL;
         }
 
         retval = ibus_message_get_args (message,
                                         &error,
-                                        IBUS_TYPE_PROP_LIST, &priv->prop_list,
+                                        IBUS_TYPE_PROP_LIST, &engine->prop_list,
                                         G_TYPE_INVALID);
         if (!retval) {
-            priv->prop_list = NULL;
+            engine->prop_list = NULL;
             goto failed;
         }
-        g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, priv->prop_list);
+        g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, engine->prop_list);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
         IBusProperty *prop;
@@ -571,6 +560,7 @@ bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
 void
 bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                     guint           keyval,
+                                    guint           keycode,
                                     guint           state,
                                     GFunc           return_cb,
                                     gpointer        user_data)
@@ -582,6 +572,13 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     CallData *call_data;
     IBusError *error;
     gboolean retval;
+
+    if (keycode != 0 && engine->keymap != NULL) {
+        guint t = ibus_keymap_lookup_keysym (engine->keymap, keycode, state);
+        if (t != IBUS_VoidSymbol) {
+            keyval = t;
+        }
+    }
 
     retval = ibus_proxy_call_with_reply ((IBusProxy *) engine,
                                          "ProcessKeyEvent",
@@ -729,8 +726,5 @@ bus_engine_proxy_get_desc (BusEngineProxy *engine)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
-    BusEngineProxyPrivate *priv;
-    priv = BUS_ENGINE_PROXY_GET_PRIVATE (engine);
-
-    return priv->desc;
+    return engine->desc;
 }

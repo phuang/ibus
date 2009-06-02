@@ -49,6 +49,10 @@ typedef struct _BusEngineProxyClass BusEngineProxyClass;
 struct _BusEngineProxy {
     IBusProxy parent;
     /* instance members */
+    gboolean enabled;
+    IBusEngineDesc *desc;
+    IBusKeymap     *keymap;
+    IBusPropList *prop_list;
 };
 
 struct _BusEngineProxyClass {
@@ -63,6 +67,7 @@ BusEngineProxy  *bus_engine_proxy_new               (const gchar    *path,
 IBusEngineDesc  *bus_engine_proxy_get_desc          (BusEngineProxy *engine);
 void             bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                                      guint           keyval,
+                                                     guint           keycode,
                                                      guint           state,
                                                      GFunc           return_cn,
                                                      gpointer        user_data);

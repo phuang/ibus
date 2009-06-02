@@ -60,6 +60,7 @@ struct _IBusKeymap {
 
     /* members */
     /*< public >*/
+    gchar *name;
     KEYMAP keymap;
 };
 
@@ -77,8 +78,7 @@ GType            ibus_keymap_get_type               (void);
  * New an IBusKeymap.
  */
 IBusKeymap        *ibus_keymap_new                  (const gchar        *name);
-guint              ibus_keymap_get_keysym_for_keycode
-                                                    (IBusKeymap         *keymap,
+guint              ibus_keymap_lookup_keysym        (IBusKeymap         *keymap,
                                                      guint16             keycode,
                                                      guint32             state);
 

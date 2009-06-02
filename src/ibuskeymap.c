@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <glib/gstdio.h>
 #include "ibusshare.h"
 #include "ibuskeysyms.h"
 #include "ibuskeymap.h"
@@ -32,6 +33,7 @@ static void         ibus_keymap_destroy         (IBusKeymap             *keymap)
 static gboolean     ibus_keymap_load            (const gchar            *name,
                                                  KEYMAP                  keymap);
 static IBusObjectClass *parent_class = NULL;
+static GHashTable      *keymaps = NULL;
 
 GType
 ibus_keymap_get_type (void)
@@ -68,19 +70,23 @@ ibus_keymap_class_init (IBusKeymapClass *klass)
     parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_keymap_destroy;
-
 }
 
 static void
 ibus_keymap_init (IBusKeymap *keymap)
 {
+    keymap->name = NULL;
     memset (keymap->keymap, 0, sizeof (keymap->keymap));
 }
 
 static void
-ibus_keymap_destroy (IBusKeymap *text)
+ibus_keymap_destroy (IBusKeymap *keymap)
 {
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)text);
+    if (keymap->name != NULL) {
+        g_free (keymap->name);
+        keymap->name = NULL;
+    }
+    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)keymap);
 }
 
 #define SKIP_SPACE(p)   \
@@ -92,8 +98,8 @@ ibus_keymap_parse_line (gchar  *str,
 {
     gchar *p1, *p2;
     gint i;
-    gint keycode, keysym;
-    gchar keysym_name[256];
+    guint keycode;
+    guint keysym;
 
     const struct {
         const gchar *prefix;
@@ -130,9 +136,9 @@ ibus_keymap_parse_line (gchar  *str,
     if (i >= sizeof (prefix) / sizeof (prefix[0]))
         return FALSE;
 
-    keycode = (guint) strtol (p1, &p2, 10);
+    keycode = (guint) strtoul (p1, &p2, 10);
 
-    if (errno != 0)
+    if (keycode == 0 && p1 == p2)
         return FALSE;
 
     if (keycode < 0 || keycode > 255)
@@ -204,8 +210,7 @@ ibus_keymap_load (const gchar *name,
 void
 ibus_keymap_fill (KEYMAP keymap)
 {
-    gint i, j;
-
+    gint i;
     for (i = 0; i < 256; i++) {
         if (keymap[i][1] == 0)
             keymap[i][1] = keymap[i][0];
@@ -216,30 +221,53 @@ ibus_keymap_fill (KEYMAP keymap)
     }
 }
 
+static void
+_keymap_destroy_cb (IBusKeymap *keymap,
+                    gpointer    user_data)
+{
+    g_hash_table_remove (keymaps, keymap->name);
+}
 
 IBusKeymap *
 ibus_keymap_new (const gchar *name)
 {
+    g_assert (name != NULL);
+
     IBusKeymap *keymap;
 
-    keymap = g_object_new (IBUS_TYPE_KEYMAP, NULL);
+    if (keymaps == NULL) {
+        keymaps = g_hash_table_new_full (g_str_hash,
+                                         g_str_equal,
+                                         (GDestroyNotify) g_free,
+                                         (GDestroyNotify)  g_object_unref);
+    }
 
+    keymap = (IBusKeymap *) g_hash_table_lookup (keymaps, name);
+    if (keymap != NULL) {
+        g_object_ref (keymap);
+        return keymap;
+    }
+
+    keymap = g_object_new (IBUS_TYPE_KEYMAP, NULL);
     if (!ibus_keymap_load (name, keymap->keymap)) {
         g_object_unref (keymap);
-        keymap = NULL;
+        return NULL;
     }
-    else {
-        ibus_keymap_fill (keymap->keymap);
-    }
+
+    ibus_keymap_fill (keymap->keymap);
+    keymap->name = g_strdup (name);
+    g_hash_table_insert (keymaps, g_strdup (keymap->name), g_object_ref (keymap));
+
+    g_signal_connect (keymap, "destroy", G_CALLBACK (_keymap_destroy_cb), NULL);
 
     return keymap;
 }
 
 
 guint32
-ibus_keymap_get_keysym_for_keycode (IBusKeymap *keymap,
-                                    guint16     keycode,
-                                    guint32     state)
+ibus_keymap_lookup_keysym (IBusKeymap *keymap,
+                           guint16     keycode,
+                           guint32     state)
 {
     g_assert (IBUS_IS_KEYMAP (keymap));
 
