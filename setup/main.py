@@ -187,6 +187,22 @@ class Setup(object):
         button = self.__xml.get_widget("button_engine_down")
         button.connect("clicked", lambda *args:self.__treeview.move_down_engine())
 
+        button = self.__xml.get_widget("button_engine_help")
+        button.connect("clicked", self.__button_engine_help_cb)
+
+    def __button_engine_help_cb(self, button):
+        engine = self.__treeview.get_select_engine()
+        message = "Please select an input method!"
+        title = "Help"
+        if engine:
+            title = engine.get_longname()
+            message = engine.get_description()
+
+        dlg = gtk.MessageDialog(buttons=gtk.BUTTONS_CLOSE, message_format=message)
+        dlg.set_title(title)
+        dlg.run()
+        dlg.destroy()
+
     def __treeview_changed_cb(self, treeview):
         engines = self.__treeview.get_engines()
         engine_names = map(lambda e: e.name, engines)

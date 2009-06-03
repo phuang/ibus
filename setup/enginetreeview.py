@@ -128,7 +128,7 @@ class EngineTreeView(gtk.TreeView):
         iter = self.get_selected_iter()
         if iter == None:
             return None
-        row = self.__model.get(iter)
+        row = self.__model.get(iter, 0)
         return row[0]
 
     def prepend_engine(self, engine):
