@@ -483,8 +483,8 @@ Always</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <widget class="GtkButton" id="button_engine_help">
-                                    <property name="label" translatable="yes">gtk-help</property>
+                                  <widget class="GtkButton" id="button_engine_about">
+                                    <property name="label" translatable="yes">gtk-about</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
