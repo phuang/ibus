@@ -56,8 +56,11 @@ class CandidateArea(gtk.HBox):
             self.pack_start(VSeparator(), False, False, 0)
             self.pack_start(self.__vbox2, True, True, 4)
 
-        for i in xrange(1, 17):
-            label1 = Label("%d." % (i % 10))
+        for i in xrange(0, 16):
+            if i < 10:
+                label1 = Label("%d." % ((i + 1) % 10))
+            else:
+                label1 = Label("%c." % chr(97 + i - 10))
             label1.set_alignment(0.0, 0.5)
             label1.set_no_show_all(True)
 
@@ -84,7 +87,10 @@ class CandidateArea(gtk.HBox):
     def set_labels(self, labels):
         if not labels:
             for i in xrange(0, 16):
-                self.__labels[i][0].set_text("%d." % ((i +1) % 10))
+                if i < 10:
+                    self.__labels[i][0].set_text("%d." % ((i + 1) % 10))
+                else:
+                    self.__labels[i][0].set_text("%c." % chr(97 + i - 10))
                 self.__labels[i][0].set_property("attributes", None)
             return
 
