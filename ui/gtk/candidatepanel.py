@@ -56,7 +56,7 @@ class CandidateArea(gtk.HBox):
             self.pack_start(VSeparator(), False, False, 0)
             self.pack_start(self.__vbox2, True, True, 4)
 
-        for i in xrange(1, 11):
+        for i in xrange(1, 17):
             label1 = Label("%d." % (i % 10))
             label1.set_alignment(0.0, 0.5)
             label1.set_no_show_all(True)
@@ -80,6 +80,21 @@ class CandidateArea(gtk.HBox):
 
         self.__labels[0][0].show()
         self.__labels[0][1].show()
+
+    def set_labels(self, labels):
+        if not labels:
+            for i in xrange(0, 16):
+                self.__labels[i][0].set_text("%d." % ((i +1) % 10))
+                self.__labels[i][0].set_property("attributes", None)
+            return
+
+        i = 0
+        for text, attrs in labels:
+            self.__labels[i][0].set_text(text)
+            self.__labels[i][0].set_property("attributes", attrs)
+            i += 1
+            if i >= 16:
+                break
 
     def set_candidates(self, candidates, focus_candidate = 0, show_cursor = True):
         assert len(candidates) <= len(self.__labels)
@@ -304,6 +319,15 @@ class CandidatePanel(gtk.VBox):
         self.__aux_attrs = attrs
         self.__aux_label.set_attributes(attrs)
 
+    def __refresh_labels(self):
+        labels = self.__lookup_table.get_labels()
+        if labels:
+            labels = map(lambda x: (x.text, PangoAttrList(x.attributes, x.text)), labels)
+        else:
+            labels = None
+        self.__candidate_area.set_labels(labels)
+
+
     def __refresh_candidates(self):
         candidates = self.__lookup_table.get_candidates_in_current_page()
         candidates = map(lambda x: (x.text, PangoAttrList(x.attributes, x.text)), candidates)
@@ -323,6 +347,7 @@ class CandidatePanel(gtk.VBox):
 
         self.__lookup_table = lookup_table
         self.__refresh_candidates()
+        self.__refresh_labels()
 
     def show_lookup_table(self):
         self.__lookup_table_visible = True

@@ -29,7 +29,7 @@ from exception import *
 
 class LookupTable(Serializable):
     __NAME__ = "IBusLookupTable"
-    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, candidates=None):
+    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, candidates=None, labels=None):
         super(LookupTable, self).__init__()
         self.__cursor_pos = cursor_pos
         self.__cursor_visible = True
@@ -39,7 +39,7 @@ class LookupTable(Serializable):
         else:
             self.__candidates = candidates
         self.set_page_size(page_size)
-        self.set_labels(None)
+        self.set_labels(labels)
 
     def set_page_size(self, page_size):
         self.__page_size = page_size
@@ -56,7 +56,10 @@ class LookupTable(Serializable):
             return self.__page_size
 
     def set_labels(self, labels):
-        self.__labels = labels
+        if labels == None:
+            self.__labels = list()
+        else:
+            self.__labels = labels
 
     def get_labels(self):
         return self.__labels
@@ -159,6 +162,12 @@ class LookupTable(Serializable):
     def get_candidate(self, index):
         return self.__candidates[index]
 
+    def append_label(self, text):
+        self.__labels.append(text)
+
+    def get_label(self, index):
+        return self.__labels[index]
+
     def get_candidates_in_current_page(self):
         page = self.__cursor_pos / self.__page_size
         start_index = page * self.__page_size
@@ -182,6 +191,9 @@ class LookupTable(Serializable):
         struct.append(dbus.Boolean(self.__round))
         candidates = map(lambda c: serialize_object(c), self.__candidates)
         struct.append(dbus.Array(candidates, signature="v"))
+        labels = map(lambda c: serialize_object(c), self.__labels)
+        struct.append(dbus.Array(labels, signature="v"))
+
 
     def get_current_page_as_lookup_table(self):
         candidates = self.get_candidates_in_current_page()
@@ -189,7 +201,8 @@ class LookupTable(Serializable):
                            self.__cursor_pos % self.__page_size,
                            self.__cursor_visible,
                            self.__round,
-                           candidates)
+                           candidates,
+                           self.__labels)
 
     def deserialize(self, struct):
         super(LookupTable, self).deserialize(struct)
@@ -199,6 +212,7 @@ class LookupTable(Serializable):
         self.__cursor_visible = struct.pop(0)
         self.__round = struct.pop(0)
         self.__candidates = map(deserialize_object, struct.pop(0))
+        self.__labels = map(deserialize_object, struct.pop(0))
 
 
 serializable_register(LookupTable)

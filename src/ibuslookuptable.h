@@ -78,6 +78,7 @@ struct _IBusLookupTable {
     gboolean round;
 
     GArray *candidates;
+    GArray *labels;
 };
 
 struct _IBusLookupTableClass {
@@ -124,6 +125,30 @@ void                 ibus_lookup_table_append_candidate
 IBusText            *ibus_lookup_table_get_candidate
                                                 (IBusLookupTable    *table,
                                                  guint               index);
+
+/**
+ * ibus_lookup_table_append_label:
+ * @table: An IBusLookupTable.
+ * @text: candidate word/phrase to be appended (in IBusText format).
+ *
+ * Append a candidate word/phrase to IBusLookupTable.
+ */
+void                 ibus_lookup_table_append_label
+                                                (IBusLookupTable    *table,
+                                                 IBusText           *text);
+
+/**
+ * ibus_lookup_table_get_label:
+ * @table: An IBusLookupTable.
+ * @index: Index in the Lookup table.
+ * @returns: IBusText at the given index; NULL if no such IBusText.
+ *
+ * Return IBusText at the given index.
+ */
+IBusText            *ibus_lookup_table_get_label
+                                                (IBusLookupTable    *table,
+                                                 guint               index);
+
 
 /**
  * ibus_lookup_table_set_cursor_pos:

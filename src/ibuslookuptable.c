@@ -73,13 +73,14 @@ ibus_lookup_table_class_init (IBusLookupTableClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_lookup_table_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_lookup_table_copy;
 
-    g_string_append (serializable_class->signature, "uubbav");
+    g_string_append (serializable_class->signature, "uubbavav");
 }
 
 static void
 ibus_lookup_table_init (IBusLookupTable *table)
 {
     table->candidates = g_array_new (TRUE, TRUE, sizeof (IBusText *));
+    table->labels = g_array_new (TRUE, TRUE, sizeof (IBusText *));
 }
 
 static void
@@ -90,6 +91,16 @@ ibus_lookup_table_destroy (IBusLookupTable *table)
     if (table->candidates != NULL) {
         p = sp = (IBusText **) g_array_free (table->candidates, FALSE);
         table->candidates = NULL;
+        while (*p != NULL) {
+            g_object_unref (*p);
+            p ++;
+        }
+        g_free (sp);
+    }
+
+    if (table->labels != NULL) {
+        p = sp = (IBusText **) g_array_free (table->labels, FALSE);
+        table->labels = NULL;
         while (*p != NULL) {
             g_object_unref (*p);
             p ++;
@@ -125,6 +136,7 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
     retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->round);
     g_return_val_if_fail (retval, FALSE);
 
+    // append candidates
     retval = ibus_message_iter_open_container (iter,
                                                IBUS_TYPE_ARRAY,
                                                "v",
@@ -135,6 +147,27 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
         IBusText *text;
 
         text = ibus_lookup_table_get_candidate (table, i);
+        if (text == NULL)
+            break;
+
+        retval = ibus_message_iter_append (&array_iter, IBUS_TYPE_TEXT, &text);
+        g_return_val_if_fail (retval, FALSE);
+    }
+
+    retval = ibus_message_iter_close_container (iter, &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    // append labels
+    retval = ibus_message_iter_open_container (iter,
+                                               IBUS_TYPE_ARRAY,
+                                               "v",
+                                               &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    for (i = 0;; i++) {
+        IBusText *text;
+
+        text = ibus_lookup_table_get_label (table, i);
         if (text == NULL)
             break;
 
@@ -172,6 +205,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->round);
     g_return_val_if_fail (retval, FALSE);
 
+    // deserialize candidates
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
     g_return_val_if_fail (retval, FALSE);
 
@@ -181,6 +215,20 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         g_return_val_if_fail (retval, FALSE);
 
         ibus_lookup_table_append_candidate (table, text);
+    }
+
+    ibus_message_iter_next (iter);
+
+    // deserialize labels
+    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
+    g_return_val_if_fail (retval, FALSE);
+
+    while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
+        IBusText *text;
+        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
+        g_return_val_if_fail (retval, FALSE);
+
+        ibus_lookup_table_append_label (table, text);
     }
 
     ibus_message_iter_next (iter);
@@ -201,6 +249,7 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
     g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (dest), FALSE);
     g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (src), FALSE);
 
+    // copy candidates
     for (i = 0;; i++) {
         IBusText *text;
 
@@ -214,6 +263,20 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
         g_object_unref (text);
     }
 
+    // copy labels
+    for (i = 0;; i++) {
+        IBusText *text;
+
+        text = ibus_lookup_table_get_label (src, i);
+        if (text == NULL)
+            break;
+
+        text = (IBusText *) ibus_serializable_copy ((IBusSerializable *) text);
+
+        ibus_lookup_table_append_label (dest, text);
+        g_object_unref (text);
+    }
+
     return TRUE;
 }
 
@@ -224,6 +287,7 @@ ibus_lookup_table_new (guint page_size,
                        gboolean round)
 {
     g_assert (page_size > 0);
+    g_assert (page_size <= 16);
 
     IBusLookupTable *table;
 
@@ -260,6 +324,28 @@ ibus_lookup_table_get_candidate (IBusLookupTable *table,
     return g_array_index (table->candidates, IBusText *, index);
 }
 
+void
+ibus_lookup_table_append_label (IBusLookupTable *table,
+                                IBusText        *text)
+{
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    g_object_ref (text);
+    g_array_append_val (table->labels, text);
+}
+
+IBusText *
+ibus_lookup_table_get_label (IBusLookupTable *table,
+                             guint            index)
+{
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), NULL);
+
+    if (index >= table->labels->len)
+        return NULL;
+
+    return g_array_index (table->labels, IBusText *, index);
+}
 
 void
 ibus_lookup_table_clear (IBusLookupTable *table)
