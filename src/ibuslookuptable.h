@@ -90,7 +90,7 @@ GType                ibus_lookup_table_get_type (void);
 
 /**
  * ibus_lookup_table_new:
- * @page_size: number of candidate shown per page.
+ * @page_size: number of candidate shown per page, the max value is 16.
  * @cursor_pos: position index of cursor.
  * @cursor_visible: whether the cursor is visible.
  * @round: TRUE for lookup table wrap around.
