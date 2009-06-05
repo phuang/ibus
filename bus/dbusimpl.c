@@ -806,7 +806,7 @@ _connection_ibus_message_cb (BusConnection  *connection,
     const gchar *dest;
 
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
-        return;
+        return FALSE;
     }
     
     if (ibus_message_is_signal (message,

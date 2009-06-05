@@ -563,7 +563,7 @@ ibus_prop_list_update_property (IBusPropList *prop_list,
     gint i;
 
     for (i = 0; i < prop_list->properties->len; i ++) {
-        IBusProperty *prop = g_array_index (prop_list->properties, IBusPropList *, i);
+        IBusProperty *prop = g_array_index (prop_list->properties, IBusProperty *, i);
         if (ibus_property_update (prop, prop_update)) {
             return TRUE;
         }

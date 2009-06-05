@@ -714,7 +714,7 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
     }
 }
 
-
+/*
 static void
 _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 {
@@ -746,6 +746,7 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 
     IMForwardEvent (_xims, (XPointer) & fe);
 }
+*/
 
 static void
 _bus_disconnected_cb (IBusBus  *bus,

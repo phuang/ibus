@@ -57,11 +57,12 @@ static IBusHotkey   *ibus_hotkey_new                (guint                   key
                                                      guint                   modifiers);
 static IBusHotkey   *ibus_hotkey_copy               (const IBusHotkey       *src);
 static void          ibus_hotkey_free               (IBusHotkey             *hotkey);
+/*
 static gboolean      ibus_hotkey_serialize          (IBusHotkey             *hotkey,
                                                      IBusMessageIter        *iter);
 static gboolean      ibus_hotkey_deserialize        (IBusHotkey             *hotkey,
                                                      IBusMessageIter        *iter);
-
+*/
 static void          ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass);
 static void          ibus_hotkey_profile_init       (IBusHotkeyProfile      *profile);
 static void          ibus_hotkey_profile_destroy    (IBusHotkeyProfile      *profile);
@@ -93,6 +94,7 @@ ibus_hotkey_get_type (void)
     return type;
 }
 
+/*
 static gboolean
 ibus_hotkey_serialize (IBusHotkey      *hotkey,
                        IBusMessageIter *iter)
@@ -122,7 +124,7 @@ ibus_hotkey_deserialize (IBusHotkey      *hotkey,
 
     return TRUE;
 }
-
+*/
 
 static IBusHotkey *
 ibus_hotkey_new (guint keyval,

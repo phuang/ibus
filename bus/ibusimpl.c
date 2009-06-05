@@ -629,8 +629,6 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 
         if (!ibus_component_is_running (comp)) {
             ibus_component_start (comp, g_verbose);
-
-            gint time = 0;
             g_get_current_time (&t1);
             while (1) {
                 if (g_main_context_pending (NULL)) {

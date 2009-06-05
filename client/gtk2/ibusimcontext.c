@@ -241,8 +241,6 @@ _key_snooper_cb (GtkWidget   *widget,
 static void
 ibus_im_context_class_init     (IBusIMContextClass *klass)
 {
-    const gchar **p;
-
     GtkIMContextClass *im_context_class = GTK_IM_CONTEXT_CLASS (klass);
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 

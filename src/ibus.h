@@ -47,6 +47,7 @@
 #include <ibuscomponent.h>
 #include <ibusconfig.h>
 #include <ibusconfigservice.h>
+#include <ibusmainloop.h>
 
 #endif
 

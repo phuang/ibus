@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <unistd.h>
 #include "connection.h"
 #include "matchrule.h"
 
