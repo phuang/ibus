@@ -30,6 +30,7 @@ ui_gtk_PYTHON = \
 	panel.py \
 	propitem.py \
 	toolitem.py \
+	engineabout.py \
 	$(NULL)
 ui_gtkdir = $(pkgdatadir)/ui/gtk
 

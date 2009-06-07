@@ -36,7 +36,7 @@ from gtk import gdk
 from gtk import glade
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
-from icon import load_icon
+from engineabout import EngineAbout
 
 _  = lambda a : gettext.dgettext("ibus", a)
 N_ = lambda a : a
@@ -190,68 +190,11 @@ class Setup(object):
         button = self.__xml.get_widget("button_engine_about")
         button.connect("clicked", self.__button_engine_about_cb)
 
-    def __create_tags(self, text_buffer):
-        text_buffer.create_tag("heading",
-                        weight=pango.WEIGHT_BOLD,
-                        size = 16 * pango.SCALE)
-        text_buffer.create_tag("bold",
-                        weight=pango.WEIGHT_BOLD)
-        text_buffer.create_tag("italic",
-                        style=pango.STYLE_ITALIC)
-        text_buffer.create_tag("small",
-                        scale=pango.SCALE_SMALL)
-        text_buffer.create_tag("gray_foreground",
-                        foreground="dark gray")
-        text_buffer.create_tag("wrap_text",
-                        wrap_mode=gtk.WRAP_WORD)
-        text_buffer.create_tag("left_margin_16",
-                        left_margin=16)
-        text_buffer.create_tag("left_margin_32",
-                        left_margin=32)
-
     def __button_engine_about_cb(self, button):
         engine = self.__treeview.get_select_engine()
-        title = _("About")
-        dlg = gtk.Dialog(title, None, gtk.DIALOG_MODAL, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
-        dlg.set_icon_name("gtk-about")
-
-        # init ui
-        vbox =  dlg.get_content_area()
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        view = gtk.TextView()
-        view.set_size_request(400, 400)
-        view.set_editable(False)
-        sw.add(view)
-        sw.show_all()
-        vbox.pack_start(sw)
-
-        text_buffer = view.get_buffer()
-        self.__create_tags(text_buffer)
-
-        iter = text_buffer.get_iter_at_offset(0)
-        text_buffer.insert_with_tags_by_name(iter, "\n ",
-                                             "left_margin_16")
-        text_buffer.insert_pixbuf(iter, load_icon(engine.icon, gtk.ICON_SIZE_DIALOG))
-        text_buffer.insert_with_tags_by_name(iter, "\n%s\n" % engine.longname,
-                                             "heading", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("Language: %s\n") % ibus.get_language_name(engine.language),
-                                            "small", "bold", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("Author: %s\n") % engine.author,
-                                            "small", "bold", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("License: %s\n") % engine.license,
-                                            "small", "bold", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("Description:\n"),
-                                            "small", "bold", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, engine.description,
-                                            "wrap_text", "left_margin_32")
-
-        # text_buffer.insert_with_tags_by_name(iter, "\n\n\n Intiliggent Input Bus\n Peng Huang <shawn.p.huang@gmail.com>",
-        #                                     "small", "left_margin_16", "italic")
-
-        dlg.run()
-        dlg.destroy()
+        about = EngineAbout(engine)
+        about.run()
+        about.destroy()
 
     def __treeview_changed_cb(self, treeview):
         engines = self.__treeview.get_engines()

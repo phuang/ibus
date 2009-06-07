@@ -24,6 +24,7 @@ ibussetup_PYTHON = \
 	icon.py \
 	enginecombobox.py \
 	enginetreeview.py \
+	engineabout.py \
 	keyboardshortcut.py \
 	$(NULL)
 
