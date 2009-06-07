@@ -25,6 +25,7 @@ import gobject
 import ibus
 from handle import Handle
 from menu import menu_position
+from engineabout import EngineAbout
 from toolitem import ToolButton,\
     ToggleToolButton, \
     SeparatorToolItem, \
@@ -46,6 +47,11 @@ class LanguageBar(gtk.Toolbar):
             gobject.SIGNAL_RUN_LAST,
             gobject.TYPE_PYOBJECT,
             ()),
+        "show-engine-about" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_PYOBJECT,
+            ()),
+
         }
 
     def __init__ (self):
@@ -87,6 +93,12 @@ class LanguageBar(gtk.Toolbar):
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
         self.insert(self.__im_menu, -1)
 
+        self.__about_button = gtk.ToolButton(gtk.STOCK_ABOUT)
+        self.__about_button.set_no_show_all(True)
+        self.__about_button.set_tooltip_text(_("About the Input Method"))
+        self.__about_button.connect("clicked", self.__about_button_clicked_cb)
+        self.insert(self.__about_button, -1)
+
     def __im_menu_toggled_cb(self, widget):
         if self.__im_menu.get_active():
             menu = self.emit("get-im-menu")
@@ -96,6 +108,11 @@ class LanguageBar(gtk.Toolbar):
                 0,
                 gtk.get_current_event_time(),
                 widget)
+
+    def __about_button_clicked_cb(self, widget):
+        if self.__enabled:
+            self.emit("show-engine-about")
+
     def __im_menu_deactivate_cb(self, menu):
         self.__im_menu.set_active(False)
 
@@ -135,11 +152,13 @@ class LanguageBar(gtk.Toolbar):
     def set_enabled(self, enabled):
         self.__enabled = enabled
         if self.__enabled:
+            self.__about_button.show()
             self.__set_opacity(1.0)
             if self.__has_focus:
                 if self.__show in (1, 2):
                     self.show_all()
         else:
+            self.__about_button.hide()
             self.__set_opacity(0.5)
             if self.__show in (1, 0):
                 self.hide_all()
@@ -162,7 +181,7 @@ class LanguageBar(gtk.Toolbar):
     def register_properties(self, props):
         self.__remove_properties()
         # create new properties
-        for prop in props:
+        for i, prop in enumerate(props):
             if prop.type == ibus.PROP_TYPE_NORMAL:
                 item = ToolButton(prop = prop)
             elif prop.type == ibus.PROP_TYPE_TOGGLE:
@@ -187,7 +206,7 @@ class LanguageBar(gtk.Toolbar):
                 item.hide()
 
             self.__properties.append(item)
-            self.insert(item, -1)
+            self.insert(item, i + 2)
 
     def update_property(self, prop):
         map(lambda x: x.update_property(prop), self.__properties)

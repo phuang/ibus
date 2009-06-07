@@ -31,6 +31,7 @@ from os import path
 from ibus import interface
 from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
+from engineabout import EngineAbout
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
@@ -81,6 +82,8 @@ class Panel(ibus.PanelBase):
                         lambda widget, prop_name, prop_state: self.property_activate(prop_name, prop_state))
         self.__language_bar.connect("get-im-menu",
                         self.__get_im_menu_cb)
+        self.__language_bar.connect("show-engine-about",
+                        self.__show_engine_about_cb)
         self.__language_bar.focus_out()
         self.__language_bar.show_all()
 
@@ -346,6 +349,15 @@ class Panel(ibus.PanelBase):
     def __get_im_menu_cb(self, languagebar):
         menu = self.__create_im_menu()
         return menu
+
+    def __show_engine_about_cb(self, langiagebar):
+        try:
+            engine = self.__focus_ic.get_engine()
+            dlg = EngineAbout(engine)
+            dlg.run()
+            dlg.destroy()
+        except:
+            pass
 
     def __status_icon_popup_menu_cb(self, status_icon, button, active_time):
         menu = self.__create_sys_menu()
