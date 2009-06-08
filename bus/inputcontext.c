@@ -97,6 +97,9 @@ struct _BusInputContextPrivate {
     IBusLookupTable *lookup_table;
     gboolean lookup_table_visible;
 
+    /* filter release */
+    gboolean filter_release;
+
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -706,6 +709,7 @@ _ic_process_key_event (BusInputContext *context,
     retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, modifiers);
 
     if (retval) {
+        priv->filter_release = TRUE;
         reply = ibus_message_new_method_return (message);
         ibus_message_append_args (reply,
                                   G_TYPE_BOOLEAN, &retval,
@@ -2027,6 +2031,8 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     BusInputContextPrivate *priv;
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
+    gboolean retval = FALSE;
+
     static GQuark trigger;
     static GQuark next_factory;
     static GQuark prev_factory;
@@ -2037,6 +2043,17 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         trigger = g_quark_from_static_string ("trigger");
         next_factory = g_quark_from_static_string ("next-engine");
         prev_factory = g_quark_from_static_string ("prev-engine");
+    }
+
+    if (priv->filter_release){
+        if(modifiers & IBUS_RELEASE_MASK) {
+            /* filter release key event */
+            return TRUE;
+        }
+        else {
+            /* stop filter release key event */
+            priv->filter_release = FALSE;
+        }
     }
 
     event = ibus_hotkey_profile_filter_key_event (BUS_DEFAULT_HOTKEY_PROFILE,
@@ -2058,24 +2075,33 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
             bus_input_context_enable (context);
         }
 
-        return enabled != priv->enabled;
+        retval = (enabled != priv->enabled);
     }
     else if (event == next_factory) {
         if (priv->engine == NULL || priv->enabled == FALSE) {
-            return FALSE;
+            retval =  FALSE;
         }
-        g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
-        return TRUE;
+        else {
+            g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
+            retval = TRUE;
+        }
     }
     else if (event == prev_factory) {
         if (priv->engine == NULL || priv->enabled == FALSE) {
-            return FALSE;
+            retval = FALSE;
         }
-        g_signal_emit (context, context_signals[REQUEST_PREV_ENGINE], 0);
-        return TRUE;
+        else {
+            g_signal_emit (context, context_signals[REQUEST_PREV_ENGINE], 0);
+            retval = TRUE;
+        }
     }
-    else
-        return FALSE;
+
+    if (retval == TRUE) {
+        /* begine filter release key event */
+        priv->filter_release = TRUE;
+    }
+
+    return retval;
 }
 
 
