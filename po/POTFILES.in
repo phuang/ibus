@@ -47,9 +47,11 @@ ui/gtk/main.py
 ui/gtk/panel.py
 ui/gtk/propitem.py
 ui/gtk/languagebar.py
+ui/gtk/engineabout.py
 setup/main.py
 setup/keyboardshortcut.py
 setup/enginecombobox.py
+setup/engineabout.py
 setup/setup.glade
 setup/ibus-setup.desktop.in
 data/ibus.schemas.in
