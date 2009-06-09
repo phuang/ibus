@@ -71,6 +71,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/show_im_name</key>
+      <applyto>/desktop/ibus/panel/show_im_name</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Show IM Name</short>
+	    <long>Show IM name on language bar</long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/desktop/ibus/panel/use_custom_font</key>
       <applyto>/desktop/ibus/panel/use_custom_font</applyto>
       <owner>ibus</owner>
