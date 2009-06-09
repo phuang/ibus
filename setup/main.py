@@ -156,6 +156,12 @@ class Setup(object):
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
 
+        # show ime name
+        self.__checkbutton_show_im_name = self.__xml.get_widget("checkbutton_show_im_name")
+        self.__checkbutton_show_im_name.set_active(
+            self.__config.get_value("panel", "show_im_name", False))
+        self.__checkbutton_show_im_name.connect("toggled", self.__checkbutton_show_im_name_toggled_cb)
+
         # init engine page
         self.__engines = self.__bus.list_engines()
         self.__combobox = EngineComboBox(self.__engines)
@@ -364,6 +370,10 @@ class Setup(object):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
         self.__config.set_value("panel", "custom_font", font_name)
+
+    def __checkbutton_show_im_name_toggled_cb(self, button):
+        value = self.__checkbutton_show_im_name.get_active()
+        self.__config.set_value("panel", "show_im_name", value)
 
     def __config_value_changed_cb(self, bus, section, name, value):
         pass

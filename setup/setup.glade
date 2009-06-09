@@ -285,6 +285,18 @@ Always</property>
                                   </packing>
                                 </child>
                                 <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_show_im_name">
+                                    <property name="label" translatable="yes">Show input method name on language bar</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
                                   <widget class="GtkCheckButton" id="checkbutton_custom_font">
                                     <property name="label" translatable="yes">Use custom font</property>
                                     <property name="visible">True</property>
@@ -294,7 +306,7 @@ Always</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">2</property>
+                                    <property name="position">3</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -322,7 +334,7 @@ Always</property>
                                     </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">3</property>
+                                    <property name="position">4</property>
                                   </packing>
                                 </child>
                               </widget>

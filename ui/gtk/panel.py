@@ -103,6 +103,7 @@ class Panel(ibus.PanelBase):
         self.__config_load_lookup_table_orientation()
         self.__config_load_show()
         self.__config_load_custom_font()
+        self.__config_load_show_im_name()
         # self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
     def set_cursor_location(self, x, y, w, h):
@@ -177,6 +178,9 @@ class Panel(ibus.PanelBase):
         else:
             self.__status_icon.set_from_icon_name(icon_name)
 
+    def __set_im_name(self, name):
+        self.__language_bar.set_im_name(name)
+
     def focus_in(self, ic):
         self.reset()
         self.__focus_ic = ibus.InputContext(self.__bus, ic)
@@ -185,12 +189,15 @@ class Panel(ibus.PanelBase):
 
         if not enabled:
             self.__set_im_icon(self.__ibus_icon)
+            self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
             if engine:
                 self.__set_im_icon(engine.icon)
+                self.__set_im_name(engine.longname)
             else:
                 self.__set_im_icon(self.__ibus_icon)
+                self.__set_im_name(None)
         self.__language_bar.focus_in()
 
     def focus_out(self, ic):
@@ -199,6 +206,7 @@ class Panel(ibus.PanelBase):
         self.__language_bar.set_enabled(False)
         self.__language_bar.focus_out()
         self.__set_im_icon(self.__ibus_icon)
+        self.__set_im_name(None)
 
     def state_changed(self):
         if not self.__focus_ic:
@@ -210,12 +218,15 @@ class Panel(ibus.PanelBase):
         if enabled == False:
             self.reset()
             self.__set_im_icon(self.__ibus_icon)
+            self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
             if engine:
                 self.__set_im_icon(engine.icon)
+                self.__set_im_name(engine.longname)
             else:
                 self.__set_im_icon(self.__ibus_icon)
+                self.__set_im_name(None)
 
 
     def reset(self):
@@ -258,6 +269,10 @@ class Panel(ibus.PanelBase):
         settings = gtk.settings_get_default()
         gtk.rc_reset_styles(settings)
 
+    def __config_load_show_im_name(self):
+        value = self.__config.get_value("panel", "show_im_name", False)
+        self.__language_bar.set_show_im_name(value)
+
     def __config_value_changed_cb(self, bus, section, name, value):
         if section != "panel":
             return
@@ -267,6 +282,10 @@ class Panel(ibus.PanelBase):
             self.__config_load_show()
         elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
+        elif name == "show_im_name":
+            self.__config_load_show_im_name()
+        else:
+            print >> sys.stderr, "Unknown config item [%s]" % name
 
     def __config_reloaded_cb(self, bus):
         pass

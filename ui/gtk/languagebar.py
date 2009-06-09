@@ -23,6 +23,7 @@ import gtk
 import gtk.gdk as gdk
 import gobject
 import ibus
+import icon
 from handle import Handle
 from menu import menu_position
 from engineabout import EngineAbout
@@ -59,7 +60,9 @@ class LanguageBar(gtk.Toolbar):
         self.__show = 1
         self.__enabled = False
         self.__has_focus = False
-        self.set_style(gtk.TOOLBAR_ICONS)
+        self.__show_im_name = False
+        self.__im_name = None
+        self.set_style(gtk.TOOLBAR_BOTH_HORIZ)
         self.set_show_arrow(False)
         self.set_property("icon-size", ICON_SIZE)
         self.__create_ui()
@@ -87,8 +90,8 @@ class LanguageBar(gtk.Toolbar):
         handle.connect("move-end", self.__handle_move_end_cb)
 
         # create input methods menu
-        prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch input method"))
-        self.__im_menu = ToggleToolButton(prop)
+        # prop = ibus.Property(key = "", type = ibus.PROP_TYPE_TOGGLE, icon = "ibus", tooltip = _("Switch input method"))
+        self.__im_menu = gtk.ToggleToolButton()
         self.__im_menu.set_homogeneous(False)
         self.__im_menu.connect("toggled", self.__im_menu_toggled_cb)
         self.insert(self.__im_menu, -1)
@@ -144,7 +147,22 @@ class LanguageBar(gtk.Toolbar):
         self.__toplevel.resize(1, 1)
 
     def set_im_icon(self, icon_name):
-        self.__im_menu.set_icon_name(icon_name)
+        widget = icon.IconWidget(icon_name, 18)
+        self.__im_menu.set_icon_widget(widget)
+
+    def set_show_im_name(self, show):
+        self.__show_im_name = show
+        self.set_im_name(self.__im_name)
+        self.__im_menu.set_is_important(show)
+
+    def set_im_name(self, text):
+        self.__im_name = text
+        if text:
+            self.__im_menu.set_tooltip_text(text)
+            self.__im_menu.set_label(text)
+        else:
+            self.__im_menu.set_tooltip_text(_("Switch input method"))
+            self.__im_menu.set_label("")
 
     def reset(self):
         self.__remove_properties()
