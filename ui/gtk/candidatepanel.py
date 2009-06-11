@@ -152,6 +152,14 @@ class CandidatePanel(gtk.VBox):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             ()),
+        "page-up" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
+        "page-down" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            ()),
     }
 
     def __init__ (self):
@@ -222,14 +230,14 @@ class CandidatePanel(gtk.VBox):
 
         # create buttons
         self.__prev_button = gtk.Button()
-        self.__prev_button.connect("clicked", lambda x: self.emit("cursor-up"))
+        self.__prev_button.connect("clicked", lambda x: self.emit("page-up"))
         self.__prev_button.set_relief(gtk.RELIEF_NONE)
-        self.__tooltips.set_tip(self.__prev_button, "Previous candidate")
+        self.__tooltips.set_tip(self.__prev_button, "Previous page")
 
         self.__next_button = gtk.Button()
-        self.__next_button.connect("clicked", lambda x: self.emit("cursor-down"))
+        self.__next_button.connect("clicked", lambda x: self.emit("page-down"))
         self.__next_button.set_relief(gtk.RELIEF_NONE)
-        self.__tooltips.set_tip(self.__next_button, "Next candidate")
+        self.__tooltips.set_tip(self.__next_button, "Next page")
 
         self.__pack_all_widgets()
 
@@ -243,6 +251,7 @@ class CandidatePanel(gtk.VBox):
             image = gtk.Image()
             image.set_from_stock(gtk.STOCK_GO_DOWN, gtk.ICON_SIZE_MENU)
             self.__next_button.set_image(image)
+
             vbox = gtk.VBox()
             vbox.pack_start(self.__preedit_label, False, False, 0)
             vbox.pack_start(self.__aux_label, False, False, 0)

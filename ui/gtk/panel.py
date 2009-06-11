@@ -92,6 +92,11 @@ class Panel(ibus.PanelBase):
                         lambda widget: self.cursor_up())
         self.__candidate_panel.connect("cursor-down",
                         lambda widget: self.cursor_down())
+        self.__candidate_panel.connect("page-up",
+                        lambda widget: self.page_up())
+        self.__candidate_panel.connect("page-down",
+                        lambda widget: self.page_down())
+
 
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
