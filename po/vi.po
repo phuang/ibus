@@ -1,0 +1,288 @@
+# Vietnamese translations for data package.
+# Copyright (C) 2009 THE data'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the data package.
+# Le Quoc Tuan <mr.lequoctuan@gmail.com>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: data 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-26 07:38+0800\n"
+"PO-Revision-Date: 2009-06-12 12:41+0700\n"
+"Last-Translator: Le Quoc Tuan <mr.lequoctuan@gmail.com>\n"
+"Language-Team: Vietnamese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2
+#: ../ui/gtk/panel.py:97
+msgid "IBus input method framework"
+msgstr "Bộ gõ IBus"
+
+#: ../ibus/lang.py:40
+#: ../ui/gtk/panel.py:307
+#: ../ui/gtk/panel.py:308
+#: ../ui/gtk/panel.py:309
+#: ../ui/gtk/panel.py:310
+msgid "Other"
+msgstr "Khác"
+
+#: ../ui/gtk/panel.py:282
+msgid "Restart"
+msgstr "Khởi động lại"
+
+#: ../ui/gtk/panel.py:337
+msgid "No input method"
+msgstr "Không có bộ gõ"
+
+#: ../ui/gtk/panel.py:383
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus là một bộ gõ thông minh cho Linux/Unix."
+
+#: ../ui/gtk/panel.py:387
+msgid "translator-credits"
+msgstr "Lê Quốc Tuấn <mr.lequoctuan@gmail.com>"
+
+#. create input methods menu
+#: ../ui/gtk/languagebar.py:84
+msgid "Switch input method"
+msgstr "Chuyển bộ gõ"
+
+#: ../setup/main.py:104
+msgid "trigger"
+msgstr "Bật/tắt"
+
+#: ../setup/main.py:114
+msgid "next input method"
+msgstr "Bộ gõ kế tiếp"
+
+#: ../setup/main.py:124
+msgid "previous input method"
+msgstr "Bộ gõ trước"
+
+#: ../setup/main.py:205
+msgid "IBus daemon is not started. Do you want to start it now?"
+msgstr "IBus daemon chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
+
+#: ../setup/main.py:220
+msgid ""
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"IBus vừa được khởi động! Nếu bạn không thể dùng IBus, vui lòng thêm những dòng bên dưới vào $HOME/.bashrc, và đăng nhập lại.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:235
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "Chọn phím tắt cho %s"
+
+#: ../setup/keyboardshortcut.py:54
+msgid "Keyboard shortcuts"
+msgstr "Những phím tắt"
+
+#: ../setup/keyboardshortcut.py:65
+msgid "Key code:"
+msgstr "Mã phím:"
+
+#: ../setup/keyboardshortcut.py:80
+msgid "Modifiers:"
+msgstr "Phím bổ sung:"
+
+#: ../setup/keyboardshortcut.py:222
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"Vui lòng nhấn một phím (hoặc tổ hợp phím).\n"
+"Hộp thoại này sẽ được đống lại khi bạn thả phím ấn."
+
+#: ../setup/keyboardshortcut.py:224
+msgid "Please press a key (or a key combination)"
+msgstr "Vui lòng nhấn một phím (hoặc tổ hợp phím)"
+
+#: ../setup/enginecombobox.py:99
+msgid "Select an input method"
+msgstr "Chọn một bộ gõ"
+
+#: ../setup/setup.glade.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.glade.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Phông và kiểu</b>"
+
+#: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Phím tắt</b>"
+
+#: ../setup/setup.glade.h:4
+msgid "<b>Startup</b>"
+msgstr "<b>Khởi động</b>"
+
+#: ../setup/setup.glade.h:5
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Bộ gõ thông minh</small>\n"
+"Trang chủ: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.glade.h:12
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>Bộ gõ mặc định là bộ gõ đầu tiên trong danh sách.\n"
+"Bạn có thể dùng phím lên/xuống để thay đổi nó</i></small>"
+
+#: ../setup/setup.glade.h:14
+msgid "About"
+msgstr "Giới thiệu"
+
+#: ../setup/setup.glade.h:15
+msgid "Candidates orientation:"
+msgstr "Hướng danh sách từ ứng cử:"
+
+#: ../setup/setup.glade.h:16
+msgid "Custom font:"
+msgstr "Tùy biến phông:"
+
+#: ../setup/setup.glade.h:17
+msgid "Enable or disable:"
+msgstr "Bật hoặc tắt:"
+
+#: ../setup/setup.glade.h:18
+msgid "General"
+msgstr "Chung"
+
+#: ../setup/setup.glade.h:19
+msgid ""
+"Horizontal\n"
+"Vertical"
+msgstr ""
+"Ngang\n"
+"Dọc"
+
+#: ../setup/setup.glade.h:21
+#: ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "Tùy thích IBus"
+
+#: ../setup/setup.glade.h:22
+msgid "Input Methods"
+msgstr "Bộ gõ"
+
+#: ../setup/setup.glade.h:23
+msgid ""
+"Never\n"
+"When active\n"
+"Always"
+msgstr ""
+"Không bao giờ\n"
+"Khi hoạt động\n"
+"Luôn luôn"
+
+#: ../setup/setup.glade.h:26
+msgid "Next input method:"
+msgstr "Bộ gõ kế tiếp:"
+
+#: ../setup/setup.glade.h:27
+msgid "Previous input method:"
+msgstr "Bộ gõ trước:"
+
+#: ../setup/setup.glade.h:28
+msgid "Show language panel:"
+msgstr "Hiển thị thanh ngôn ngữ:"
+
+#: ../setup/setup.glade.h:29
+msgid "Start ibus on login"
+msgstr "Khởi động ibus khi đăng nhập"
+
+#: ../setup/setup.glade.h:30
+msgid "Use custom font"
+msgstr "Dùng phông chữ tùy biến"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Auto Hide"
+msgstr "Tự động ẩn"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Custom Font"
+msgstr "Tùy biến phông"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Custom font name for language panel"
+msgstr "Tùy biến phông cho thanh ngôn ngữ"
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Next Engine Hotkey"
+msgstr "Phím nóng cho bộ gõ kế tiếp"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Next engine hotkey for switch to next input method engine"
+msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp"
+
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of Lookup Table"
+msgstr "Hướng của bảng tra cứu"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
+msgstr "Hướng của bảng tra cứu. 0 = Ngang, 1 = Dọc"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload Engines"
+msgstr "Nạp trước bộ gõ"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Preload Engines during ibus starts up"
+msgstr "Nạp trước bộ gõ trong khi khởi động ibus"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "Prev Engine Hotkey"
+msgstr "Phím nóng cho bộ gõ trước"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Prev engine hotkey for switch to previous input method engine"
+msgstr "Phím nóng dùng để chuyển về bộ gõ trước"
+
+#: ../data/ibus.schemas.in.h:12
+msgid "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgstr "Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Trigger Hotkey"
+msgstr "Phím nóng bật/tắt"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Trigger hotkey for enable or disable input context"
+msgstr "Phím nóng bật/tắt dùng để bật hoặc tắt bộ gõ"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Use Custom Font"
+msgstr "Dùng phông tùy biến"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Use custom font name for language panel"
+msgstr "Dùng phông tùy biến cho thanh ngôn ngữ"
+
