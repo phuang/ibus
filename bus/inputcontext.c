@@ -1151,28 +1151,29 @@ bus_input_context_focus_in (BusInputContext *context)
 
     if (priv->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
-
-        if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
-            g_signal_emit (context,
-                           context_signals[UPDATE_PREEDIT_TEXT],
-                           0,
-                           priv->preedit_text,
-                           priv->preedit_cursor_pos,
-                           priv->preedit_visible);
-        }
-        if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
-            g_signal_emit (context,
-                           context_signals[UPDATE_AUXILIARY_TEXT],
-                           0,
-                           priv->auxiliary_text,
-                           priv->auxiliary_visible);
-        }
-        if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
-            g_signal_emit (context,
-                           context_signals[UPDATE_LOOKUP_TABLE],
-                           0,
-                           priv->lookup_table,
-                           priv->lookup_table_visible);
+        if (priv->engine && priv->enabled) {
+            if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_PREEDIT_TEXT],
+                               0,
+                               priv->preedit_text,
+                               priv->preedit_cursor_pos,
+                               priv->preedit_visible);
+            }
+            if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_AUXILIARY_TEXT],
+                               0,
+                               priv->auxiliary_text,
+                               priv->auxiliary_visible);
+            }
+            if (priv->lookup_table_visible && (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_LOOKUP_TABLE],
+                               0,
+                               priv->lookup_table,
+                               priv->lookup_table_visible);
+            }
         }
     }
 }
