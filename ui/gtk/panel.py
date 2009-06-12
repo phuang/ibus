@@ -96,6 +96,8 @@ class Panel(ibus.PanelBase):
                         lambda widget: self.page_up())
         self.__candidate_panel.connect("page-down",
                         lambda widget: self.page_down())
+        self.__candidate_panel.connect("candidate-clicked",
+                        lambda widget, index, button, state: self.candidate_clicked(index, button, state))
 
 
         self.__status_icon = gtk.StatusIcon()

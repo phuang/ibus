@@ -30,6 +30,7 @@ enum {
     PAGE_DOWN,
     CURSOR_UP,
     CURSOR_DOWN,
+    CANDIDATE_CLICKED,
     PROPERTY_ACTIVATE,
     PROPERTY_SHOW,
     PROPERTY_HIDE,
@@ -57,6 +58,11 @@ static void     bus_panel_proxy_page_up         (BusPanelProxy          *panel);
 static void     bus_panel_proxy_page_down       (BusPanelProxy          *panel);
 static void     bus_panel_proxy_cursor_up       (BusPanelProxy          *panel);
 static void     bus_panel_proxy_cursor_down     (BusPanelProxy          *panel);
+static void     bus_panel_proxy_candidate_clicked
+                                                (BusPanelProxy          *panel,
+                                                 guint                   index,
+                                                 guint                   button,
+                                                 guint                   state);
 static void     bus_panel_proxy_property_activate
                                                 (BusPanelProxy          *panel,
                                                  const gchar            *prop_name,
@@ -128,6 +134,7 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
     klass->cursor_up   = bus_panel_proxy_cursor_up;
     klass->cursor_down = bus_panel_proxy_cursor_down;
 
+    klass->candidate_clicked = bus_panel_proxy_candidate_clicked;
     klass->property_activate = bus_panel_proxy_property_activate;
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_panel_proxy_real_destroy;
@@ -170,6 +177,18 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
             NULL, NULL,
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+
+    panel_signals[CANDIDATE_CLICKED] =
+        g_signal_new (I_("candidate-clicked"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET(BusPanelProxyClass, candidate_clicked),
+            NULL, NULL,
+            ibus_marshal_VOID__UINT_UINT_UINT,
+            G_TYPE_NONE, 3,
+            G_TYPE_UINT,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
 
     panel_signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
@@ -266,7 +285,22 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
         }
     }
 
-    if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyActivate")) {
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "CandidateClicked")) {
+        guint index, button, state;
+        gboolean retval;
+
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &index,
+                                        G_TYPE_UINT, &button,
+                                        G_TYPE_UINT, &state,
+                                        G_TYPE_INVALID);
+        if (!retval)
+            goto failed;
+
+        g_signal_emit (panel, panel_signals[CANDIDATE_CLICKED], 0, index, button, state);
+    }
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyActivate")) {
         gchar *prop_name;
         gint prop_state;
         gboolean retval;
@@ -476,21 +510,31 @@ bus_panel_proxy_update_property (BusPanelProxy  *panel,
                      G_TYPE_INVALID);
 }
 
-static void
-bus_panel_proxy_page_up (BusPanelProxy *panel)
-{
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context) {
-        bus_input_context_page_up (priv->focused_context);
+#define DEFINE_FUNC(name)                                       \
+    static void                                                 \
+    bus_panel_proxy_##name (BusPanelProxy *panel)               \
+    {                                                           \
+        g_assert (BUS_IS_PANEL_PROXY (panel));                  \
+                                                                \
+        BusPanelProxyPrivate *priv;                             \
+        priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);             \
+                                                                \
+        if (priv->focused_context) {                            \
+            bus_input_context_##name (priv->focused_context);   \
+        }                                                       \
     }
-}
+
+DEFINE_FUNC(page_up)
+DEFINE_FUNC(page_down)
+DEFINE_FUNC(cursor_up)
+DEFINE_FUNC(cursor_down)
+#undef DEFINE_FUNC
 
 static void
-bus_panel_proxy_page_down (BusPanelProxy *panel)
+bus_panel_proxy_candidate_clicked (BusPanelProxy *panel,
+                                   guint          index,
+                                   guint          button,
+                                   guint          state)
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
@@ -498,32 +542,10 @@ bus_panel_proxy_page_down (BusPanelProxy *panel)
     priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
 
     if (priv->focused_context) {
-        bus_input_context_page_down (priv->focused_context);
-    }
-}
-static void
-bus_panel_proxy_cursor_up (BusPanelProxy *panel)
-{
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context) {
-        bus_input_context_cursor_up (priv->focused_context);
-    }
-}
-
-static void
-bus_panel_proxy_cursor_down (BusPanelProxy *panel)
-{
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context) {
-        bus_input_context_cursor_down (priv->focused_context);
+        bus_input_context_candidate_clicked (priv->focused_context,
+                                             index,
+                                             button,
+                                             state);
     }
 }
 

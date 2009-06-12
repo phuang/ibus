@@ -123,6 +123,9 @@ class IPanel(dbus.service.Object):
     @signal()
     def CursorUp(self): pass
 
+    @signal(signature="uuu")
+    def CandidateClicked(self, index, button, state): pass
+
     @signal()
     def CursorDown(self): pass
 

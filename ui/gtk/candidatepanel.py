@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import operator
 import gtk
 import gtk.gdk as gdk
 import gobject
@@ -26,24 +27,43 @@ import pango
 import ibus
 from ibus._gtk import PangoAttrList
 
-class Label(gtk.Label): pass
+class EventBox(gtk.EventBox):
+    def __init__(self):
+        super(EventBox, self).__init__()
+        self.connect("realize", self.__realize_cb)
+
+    def __realize_cb(self, widget):
+        widget.window.set_cursor(gdk.Cursor(gdk.HAND2))
+
+gobject.type_register(EventBox, "IBusEventBox")
+
+class Label(gtk.Label):
+    pass
 gobject.type_register(Label, "IBusPanelLabel")
 
 class HSeparator(gtk.HBox):
-    def __init__ (self):
-        gtk.HBox.__init__ (self)
+    def __init__(self):
+        super(HSeparator, self).__init__()
         self.pack_start(gtk.HSeparator(), True, True, 4)
 
 class VSeparator(gtk.VBox):
-    def __init__ (self):
-        gtk.VBox.__init__ (self)
+    def __init__(self):
+        super(VSeparator, self).__init__()
         self.pack_start(gtk.VSeparator(), True, True, 4)
 
 class CandidateArea(gtk.HBox):
+    __gsignals__ = {
+        "candidate-clicked" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT )),
+    }
+
     def __init__ (self, orientation):
         gtk.HBox.__init__ (self)
         self.__orientation = orientation
         self.__labels = []
+        self.__candidates = []
         self.__create_ui()
 
     def __create_ui(self):
@@ -56,41 +76,49 @@ class CandidateArea(gtk.HBox):
             self.pack_start(VSeparator(), False, False, 0)
             self.pack_start(self.__vbox2, True, True, 4)
 
-        for i in xrange(0, 16):
-            if i < 10:
-                label1 = Label("%d." % ((i + 1) % 10))
-            else:
-                label1 = Label("%c." % chr(97 + i - 10))
+        for i in range(0, 16):
+            label1 = Label("%c." % ("1234567890abcdef"[i]))
             label1.set_alignment(0.0, 0.5)
-            label1.set_no_show_all(True)
+            label1.show()
 
             label2 = Label()
             label2.set_alignment(0.0, 0.5)
-            label2.set_no_show_all(True)
+            label1.show()
 
             if self.__orientation == gtk.ORIENTATION_VERTICAL:
                 label1.set_property("xpad", 8)
                 label2.set_property("xpad", 8)
-                self.__vbox1.pack_start(label1, False, False, 2)
-                self.__vbox2.pack_start(label2, False, False, 2)
+                ebox1 = EventBox()
+                ebox1.set_no_show_all(True)
+                ebox1.add(label1)
+                ebox2 = EventBox()
+                ebox2.set_no_show_all(True)
+                ebox2.add(label2)
+                self.__vbox1.pack_start(ebox1, False, False, 2)
+                self.__vbox2.pack_start(ebox2, False, False, 2)
+                self.__candidates.append((ebox1, ebox2))
             else:
                 hbox = gtk.HBox()
+                hbox.show()
                 hbox.pack_start(label1, False, False, 1)
                 hbox.pack_start(label2, False, False, 1)
-                self.pack_start(hbox, False, False, 4)
+                ebox = EventBox()
+                ebox.set_no_show_all(True)
+                ebox.add(hbox)
+                self.pack_start(ebox, False, False, 4)
+                self.__candidates.append((ebox,))
 
             self.__labels.append((label1, label2))
 
-        self.__labels[0][0].show()
-        self.__labels[0][1].show()
+        cursor = gdk.Cursor(gdk.HAND1)
+        for i, ws in enumerate(self.__candidates):
+            for w in ws:
+                w.connect("button-press-event", lambda w, e, i:self.emit("candidate-clicked", i, e.button, e.state), i)
 
     def set_labels(self, labels):
         if not labels:
             for i in xrange(0, 16):
-                if i < 10:
-                    self.__labels[i][0].set_text("%d." % ((i + 1) % 10))
-                else:
-                    self.__labels[i][0].set_text("%c." % chr(97 + i - 10))
+                self.__labels[i][0].set_text("%c." % ("1234567890abcdef"[i]))
                 self.__labels[i][0].set_property("attributes", None)
             return
 
@@ -104,8 +132,7 @@ class CandidateArea(gtk.HBox):
 
     def set_candidates(self, candidates, focus_candidate = 0, show_cursor = True):
         assert len(candidates) <= len(self.__labels)
-        i = 0
-        for text, attrs in candidates:
+        for i, (text, attrs) in enumerate(candidates):
             if i == focus_candidate and show_cursor:
                 if attrs == None:
                     attrs = pango.AttrList()
@@ -118,21 +145,13 @@ class CandidateArea(gtk.HBox):
                 attrs.insert(attr)
 
             self.__labels[i][1].set_text(text)
-            self.__labels[i][1].set_property("attributes", attrs)
-            self.__labels[i][0].show()
             self.__labels[i][1].show()
+            self.__labels[i][1].set_property("attributes", attrs)
+            for w in self.__candidates[i]:
+                w.show()
 
-            i += 1
-
-        for label1, label2 in self.__labels[max(1, len(candidates)):]:
-            label1.hide()
-            label2.hide()
-
-        if len(candidates) == 0:
-            self.__labels[0][0].set_text("")
-            self.__labels[0][1].set_text("")
-        else:
-            self.__labels[0][0].set_text("1.")
+        for w in reduce(operator.add, self.__candidates[len(candidates):]):
+            w.hide()
 
 class CandidatePanel(gtk.VBox):
     __gproperties__ = {
@@ -160,6 +179,10 @@ class CandidatePanel(gtk.VBox):
             gobject.SIGNAL_RUN_FIRST,
             gobject.TYPE_NONE,
             ()),
+        "candidate-clicked" : (
+            gobject.SIGNAL_RUN_FIRST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
     }
 
     def __init__ (self):
@@ -222,6 +245,7 @@ class CandidatePanel(gtk.VBox):
         # create candidates area
         self.__candidate_area = CandidateArea(self.__orientation)
         self.__candidate_area.set_no_show_all(True)
+        self.__candidate_area.connect("candidate-clicked", lambda x, i, b, s: self.emit("candidate-clicked", i, b, s))
         self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
 
         # create state label

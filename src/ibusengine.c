@@ -42,6 +42,7 @@ enum {
     PROPERTY_ACTIVATE,
     PROPERTY_SHOW,
     PROPERTY_HIDE,
+    CANDIDATE_CLICKED,
     LAST_SIGNAL,
 };
 
@@ -98,6 +99,11 @@ static void     ibus_engine_page_up         (IBusEngine         *engine);
 static void     ibus_engine_page_down       (IBusEngine         *engine);
 static void     ibus_engine_cursor_up       (IBusEngine         *engine);
 static void     ibus_engine_cursor_down     (IBusEngine         *engine);
+static void     ibus_engine_candidate_clicked
+                                            (IBusEngine         *engine,
+                                             guint               index,
+                                             guint               button,
+                                             guint               state);
 static void     ibus_engine_property_activate
                                             (IBusEngine         *engine,
                                              const gchar        *prop_name,
@@ -182,6 +188,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     klass->page_down    = ibus_engine_page_down;
     klass->cursor_up    = ibus_engine_cursor_up;
     klass->cursor_down  = ibus_engine_cursor_down;
+    klass->candidate_clicked    = ibus_engine_candidate_clicked;
     klass->property_activate    = ibus_engine_property_activate;
     klass->property_show        = ibus_engine_property_show;
     klass->property_hide        = ibus_engine_property_hide;
@@ -383,7 +390,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * IBusEngine::page-up:
      * @engine: An IBusEngine.
      *
-     * Emitted when the page-up key is pressed.
+     * Emitted when the page-up button is pressed.
      * Implement the member function page_up() in extended class to receive this signal.
      *
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
@@ -402,7 +409,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * IBusEngine::page-down:
      * @engine: An IBusEngine.
      *
-     * Emitted when the page-down key is pressed.
+     * Emitted when the page-down button is pressed.
      * Implement the member function page_down() in extended class to receive this signal.
      *
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
@@ -421,7 +428,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * IBusEngine::cursor-up:
      * @engine: An IBusEngine.
      *
-     * Emitted when the up cursor key is pressed.
+     * Emitted when the up cursor button is pressed.
      * Implement the member function cursor_up() in extended class to receive this signal.
      *
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
@@ -440,7 +447,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * IBusEngine::cursor-down:
      * @engine: An IBusEngine.
      *
-     * Emitted when the down cursor key is pressed.
+     * Emitted when the down cursor button is pressed.
      * Implement the member function cursor_down() in extended class to receive this signal.
      *
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
@@ -454,6 +461,28 @@ ibus_engine_class_init (IBusEngineClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
+
+    /**
+     * IBusEngine::candidate-clicked:
+     * @engine: An IBusEngine.
+     *
+     * Emitted when candidate on lookup table is clicked.
+     * Implement the member function candidate_clicked() in extended class to receive this signal.
+     *
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
+    engine_signals[CANDIDATE_CLICKED] =
+        g_signal_new (I_("candidate-clicked"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, candidate_clicked),
+            NULL, NULL,
+            ibus_marshal_VOID__UINT_UINT_UINT,
+            G_TYPE_NONE,
+            3,
+            G_TYPE_UINT,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
 
     /**
      * IBusEngine::property-activate:
@@ -648,7 +677,6 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         return TRUE;
     }
 
-
     if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "ProcessKeyEvent")) {
         guint keyval, state;
         gboolean retval;
@@ -682,8 +710,46 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     _keypress_fail:
         error_message = ibus_message_new_error_printf (message,
                         DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (ubu) of method",
+                        "%s.%s: Can not match signature (uu) of method",
                         IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
+        ibus_connection_send (connection, error_message);
+        ibus_message_unref (error_message);
+        return TRUE;
+    }
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "CandidateClicked")) {
+        guint index, button, state;
+        gboolean retval;
+        IBusError *error = NULL;
+
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &index,
+                                        G_TYPE_UINT, &button,
+                                        G_TYPE_UINT, &state,
+                                        G_TYPE_INVALID);
+
+        if (!retval)
+            goto _candidate_clicked_fail;
+
+        retval = FALSE;
+        g_signal_emit (engine,
+                       engine_signals[CANDIDATE_CLICKED],
+                       0,
+                       index,
+                       button,
+                       state,
+                       &retval);
+
+        return_message = ibus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        ibus_message_unref (return_message);
+        return TRUE;
+
+    _candidate_clicked_fail:
+        error_message = ibus_message_new_error_printf (message,
+                        DBUS_ERROR_INVALID_ARGS,
+                        "%s.%s: Can not match signature (uuu) of method",
+                        IBUS_INTERFACE_ENGINE, "CandidateClicked");
         ibus_connection_send (connection, error_message);
         ibus_message_unref (error_message);
         return TRUE;
@@ -947,6 +1013,15 @@ static void
 ibus_engine_cursor_down (IBusEngine *engine)
 {
     // g_debug ("cursor-down");
+}
+
+static void
+ibus_engine_candidate_clicked (IBusEngine *engine,
+                               guint       index,
+                               guint       button,
+                               guint       state)
+{
+    // g_debug ("candidate-clicked");
 }
 
 static void

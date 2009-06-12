@@ -60,6 +60,10 @@ struct _BusPanelProxyClass {
     void (* page_down)          (BusPanelProxy   *panel);
     void (* cursor_up)          (BusPanelProxy   *panel);
     void (* cursor_down)        (BusPanelProxy   *panel);
+    void (* candidate_clicked)  (BusPanelProxy   *panel,
+                                 guint            index,
+                                 guint            button,
+                                 guint            state);
 
     void (* property_activate)  (BusPanelProxy   *panel,
                                  const gchar     *prop_name,

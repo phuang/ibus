@@ -71,6 +71,10 @@ void                 bus_input_context_page_up          (BusInputContext    *con
 void                 bus_input_context_page_down        (BusInputContext    *context);
 void                 bus_input_context_cursor_up        (BusInputContext    *context);
 void                 bus_input_context_cursor_down      (BusInputContext    *context);
+void                 bus_input_context_candidate_clicked(BusInputContext    *context,
+                                                         guint               index,
+                                                         guint               button,
+                                                         guint               state);
 void                 bus_input_context_set_engine       (BusInputContext    *context,
                                                          BusEngineProxy     *factory);
 BusEngineProxy      *bus_input_context_get_engine       (BusInputContext    *context);

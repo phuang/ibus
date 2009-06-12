@@ -1208,21 +1208,32 @@ bus_input_context_focus_out (BusInputContext *context)
     }
 }
 
-void
-bus_input_context_page_up (BusInputContext *context)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        bus_engine_proxy_page_up (priv->engine);
+#define DEFINE_FUNC(name)                                   \
+    void                                                    \
+    bus_input_context_##name (BusInputContext *context)     \
+    {                                                       \
+        g_assert (BUS_IS_INPUT_CONTEXT (context));          \
+                                                            \
+        BusInputContextPrivate *priv;                       \
+        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);     \
+                                                            \
+        if (priv->engine) {                                 \
+            bus_engine_proxy_##name (priv->engine);         \
+        }                                                   \
     }
-}
+
+DEFINE_FUNC(page_up)
+DEFINE_FUNC(page_down)
+DEFINE_FUNC(cursor_up)
+DEFINE_FUNC(cursor_down)
+
+#undef DEFINE_FUNC
 
 void
-bus_input_context_page_down (BusInputContext *context)
+bus_input_context_candidate_clicked (BusInputContext *context,
+                                     guint            index,
+                                     guint            button,
+                                     guint            state)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
@@ -1230,33 +1241,10 @@ bus_input_context_page_down (BusInputContext *context)
     priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     if (priv->engine) {
-        bus_engine_proxy_page_down (priv->engine);
-    }
-}
-
-void
-bus_input_context_cursor_up (BusInputContext *context)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        bus_engine_proxy_cursor_up (priv->engine);
-    }
-}
-
-void
-bus_input_context_cursor_down (BusInputContext *context)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        bus_engine_proxy_cursor_down (priv->engine);
+        bus_engine_proxy_candidate_clicked (priv->engine,
+                                            index,
+                                            button,
+                                            state);
     }
 }
 

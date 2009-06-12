@@ -74,6 +74,10 @@ class IEngine(dbus.service.Object):
     @method()
     def CursorDown(self): pass
 
+    @method(in_signature="uuu")
+    def CandidateClicked(self, index, button, state):
+        pass
+
     @method()
     def Enable(self): pass
 
@@ -96,8 +100,8 @@ class IEngine(dbus.service.Object):
     @signal(signature="v")
     def CommitText(self, text): pass
 
-    @signal(signature="ubu")
-    def ForwardKeyEvent(self, keyval, is_press, state): pass
+    @signal(signature="uu")
+    def ForwardKeyEvent(self, keyval, state): pass
 
     @signal(signature="vub")
     def UpdatePreeditText(self, text, cursor_pos, visible): pass

@@ -81,6 +81,10 @@ void             bus_engine_proxy_page_up           (BusEngineProxy *engine);
 void             bus_engine_proxy_page_down         (BusEngineProxy *engine);
 void             bus_engine_proxy_cursor_up         (BusEngineProxy *engine);
 void             bus_engine_proxy_cursor_down       (BusEngineProxy *engine);
+void             bus_engine_proxy_candidate_clicked (BusEngineProxy *engine,
+                                                     guint           index,
+                                                     guint           button,
+                                                     guint           state);
 void             bus_engine_proxy_enable            (BusEngineProxy *engine);
 void             bus_engine_proxy_disable           (BusEngineProxy *engine);
 void             bus_engine_proxy_property_activate (BusEngineProxy *engine,

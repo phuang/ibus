@@ -687,7 +687,8 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
 }
 
 #define DEFINE_FUNCTION(Name, name)                         \
-    void bus_engine_proxy_##name (BusEngineProxy *engine)   \
+    void                                                    \
+    bus_engine_proxy_##name (BusEngineProxy *engine)        \
     {                                                       \
         g_assert (BUS_IS_ENGINE_PROXY (engine));            \
         ibus_proxy_call ((IBusProxy *) engine,              \
@@ -707,6 +708,21 @@ DEFINE_FUNCTION (Disable, disable)
 
 #undef DEFINE_FUNCTION
 
+void
+bus_engine_proxy_candidate_clicked (BusEngineProxy *engine,
+                                    guint           index,
+                                    guint           button,
+                                    guint           state)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    ibus_proxy_call ((IBusProxy *) engine,
+                     "CandidateClicked",
+                     G_TYPE_UINT, &index,
+                     G_TYPE_UINT, &button,
+                     G_TYPE_UINT, &state,
+                     G_TYPE_INVALID);
+}
 
 IBusEngineDesc *
 bus_engine_proxy_get_desc (BusEngineProxy *engine)

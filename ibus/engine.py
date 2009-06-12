@@ -179,6 +179,9 @@ class EngineProxy(interface.IEngine):
     def CursorDown(self):
         return self.__engine.cursor_down()
 
+    def CandidateClicked(self, index, button, state):
+        return self.__engine.candidate_clicked(index, button, state)
+
     def Enable(self):
         return self.__engine.enable()
 

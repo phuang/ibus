@@ -115,10 +115,17 @@ struct _IBusEngineClass {
                                      const gchar    *prop_name);
     void        (* property_hide)   (IBusEngine     *engine,
                                      const gchar    *prop_name);
+    void        (* candidate_clicked)
+                                    (IBusEngine     *engine,
+                                     guint           index,
+                                     guint           button,
+                                     guint           state);
+
+
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[9];
+    gpointer pdummy[8];
 };
 
 GType        ibus_engine_get_type       (void);

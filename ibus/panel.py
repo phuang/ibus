@@ -142,6 +142,9 @@ class PanelBase(Object):
     def cursor_down(self):
         self.__proxy.CursorDown()
 
+    def candidate_clicked(self, index, button, state):
+        self.__proxy.CandidateClicked(index, button, state)
+
     def property_activate(self, prop_name, prop_state):
         prop_name = dbus.String(prop_name)
         prop_state = dbus.Int32(prop_state)
