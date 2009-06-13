@@ -28,7 +28,6 @@
 
 enum {
     PROCESS_KEY_EVENT,
-    PROCESS_KEY_EVENT2,
     FOCUS_IN,
     FOCUS_OUT,
     RESET,
@@ -79,10 +78,6 @@ static gboolean ibus_engine_ibus_message    (IBusEngine         *engine,
                                              IBusConnection     *connection,
                                              IBusMessage        *message);
 static gboolean ibus_engine_process_key_event
-                                            (IBusEngine         *engine,
-                                             guint               keyval,
-                                             guint               state);
-static gboolean ibus_engine_process_key_event2
                                             (IBusEngine         *engine,
                                              guint               keyval,
                                              guint               keycode,
@@ -185,7 +180,6 @@ ibus_engine_class_init (IBusEngineClass *klass)
     IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_engine_ibus_message;
 
     klass->process_key_event = ibus_engine_process_key_event;
-    klass->process_key_event2 = ibus_engine_process_key_event2;
     klass->focus_in     = ibus_engine_focus_in;
     klass->focus_out    = ibus_engine_focus_out;
     klass->reset        = ibus_engine_reset;
@@ -248,37 +242,12 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
             NULL, NULL,
-            ibus_marshal_BOOL__UINT_UINT,
-            G_TYPE_BOOLEAN,
-            2,
-            G_TYPE_UINT,
-            G_TYPE_UINT);
-
-    /* install signals */
-    /**
-     * IBusEngine::process-key-event2:
-     * @engine: An IBusEngine.
-     * @keyval: KeySym of the key press.
-     * @state: Key modifier flags
-     *
-     * Emitted when a key event is received.
-     * Implement the member function process_key_event() in extended class to receive this signal.
-     *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
-     */
-    engine_signals[PROCESS_KEY_EVENT2] =
-        g_signal_new (I_("process-key-event2"),
-            G_TYPE_FROM_CLASS (gobject_class),
-            G_SIGNAL_RUN_LAST,
-            G_STRUCT_OFFSET (IBusEngineClass, process_key_event2),
-            NULL, NULL,
             ibus_marshal_BOOL__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
             G_TYPE_UINT,
             G_TYPE_UINT,
             G_TYPE_UINT);
-
 
     /**
      * IBusEngine::focus-in:
@@ -711,45 +680,6 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     }
 
     if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "ProcessKeyEvent")) {
-        guint keyval, state;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &keyval,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto _keypress_fail;
-
-        retval = FALSE;
-        g_signal_emit (engine,
-                       engine_signals[PROCESS_KEY_EVENT],
-                       0,
-                       keyval,
-                       state,
-                       &retval);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_message_append_args (return_message,
-                                  G_TYPE_BOOLEAN, &retval,
-                                  G_TYPE_INVALID);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _keypress_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (uu) of method",
-                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "ProcessKeyEvent2")) {
         guint keyval, keycode, state;
         gboolean retval;
         IBusError *error = NULL;
@@ -766,7 +696,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 
         retval = FALSE;
         g_signal_emit (engine,
-                       engine_signals[PROCESS_KEY_EVENT2],
+                       engine_signals[PROCESS_KEY_EVENT],
                        0,
                        keyval,
                        keycode,
@@ -1013,17 +943,8 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 static gboolean
 ibus_engine_process_key_event (IBusEngine *engine,
                                guint       keyval,
+                               guint       keycode,
                                guint       state)
-{
-    // g_debug ("process-key-event (%d, %d)", keyval, state);
-    return FALSE;
-}
-
-static gboolean
-ibus_engine_process_key_event2 (IBusEngine *engine,
-                                guint       keyval,
-                                guint       keycode,
-                                guint       state)
 {
     return FALSE;
 }

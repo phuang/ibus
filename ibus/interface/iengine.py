@@ -42,8 +42,8 @@ class IEngine(dbus.service.Object):
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
 
-    @method(in_signature="uu", out_signature="b")
-    def ProcessKeyEvent(self, keyval, state):
+    @method(in_signature="uuu", out_signature="b")
+    def ProcessKeyEvent(self, keyval, keycode, state):
         pass
 
     @method(in_signature="iiii")

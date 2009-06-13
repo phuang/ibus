@@ -545,16 +545,8 @@ failed:
 gboolean
 ibus_input_context_process_key_event (IBusInputContext *context,
                                       guint32           keyval,
+                                      guint32           keycode,
                                       guint32           state)
-{
-    return ibus_input_context_process_key_event2 (context, keyval, 0, state);
-}
-
-gboolean
-ibus_input_context_process_key_event2 (IBusInputContext *context,
-                                       guint32           keyval,
-                                       guint32           keycode,
-                                       guint32           state)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
@@ -570,7 +562,7 @@ ibus_input_context_process_key_event2 (IBusInputContext *context,
         return FALSE;
 
     retval = ibus_proxy_call_with_reply ((IBusProxy *) context,
-                                         "ProcessKeyEvent2",
+                                         "ProcessKeyEvent",
                                          &pending,
                                          -1,
                                          &error,

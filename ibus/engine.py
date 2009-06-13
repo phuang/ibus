@@ -32,7 +32,7 @@ class EngineBase(object.Object):
         super(EngineBase, self).__init__()
         self.__proxy = EngineProxy (self, bus.get_dbusconn(), object_path)
 
-    def process_key_event(self, keyval, state):
+    def process_key_event(self, keyval, keycode, state):
         return False
 
     def focus_in(self):
@@ -149,8 +149,8 @@ class EngineProxy(interface.IEngine):
         super(EngineProxy, self).__init__(conn, object_path)
         self.__engine = engine
 
-    def ProcessKeyEvent(self, keyval, state):
-        return self.__engine.process_key_event(keyval, state)
+    def ProcessKeyEvent(self, keyval, keycode, state):
+        return self.__engine.process_key_event(keyval, keycode, state)
 
     def FocusIn(self):
         return self.__engine.focus_in()
