@@ -22,7 +22,7 @@
 # if not 1, append datestamp to the version number.
 m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [1])
+m4_define([ibus_minor_version], [2])
 m4_define([ibus_micro_version], [0])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
@@ -59,7 +59,7 @@ AC_SUBST(DATE_DISPLAY)
 # If only source code changed, lt_revision + 1
 # If any interface added, lt_age + 1
 # If any interfaces changed or removed, lt_current + 1
-m4_define([lt_current], [0])
+m4_define([lt_current], [1])
 m4_define([lt_revision], [0])
 m4_define([lt_age], [0])
 LT_VERSION_INFO="lt_current:lt_revision:lt_age"
