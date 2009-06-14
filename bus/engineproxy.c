@@ -586,6 +586,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
                                          -1,
                                          &error,
                                          G_TYPE_UINT, &keyval,
+                                         G_TYPE_UINT, &keycode,
                                          G_TYPE_UINT, &state,
                                          G_TYPE_INVALID);
     if (!retval) {
