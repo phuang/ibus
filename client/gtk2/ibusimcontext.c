@@ -216,11 +216,13 @@ _key_snooper_cb (GtkWidget   *widget,
     case GDK_KEY_RELEASE:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
+                                                       event->hardware_keycode - 8,
                                                        event->state | IBUS_RELEASE_MASK);
         break;
     case GDK_KEY_PRESS:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                        event->keyval,
+                                                       event->hardware_keycode - 8,
                                                        event->state);
         break;
     default:
@@ -419,11 +421,13 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
         case GDK_KEY_RELEASE:
             retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                            event->keyval,
+                                                           event->hardware_keycode - 8,
                                                            event->state | IBUS_RELEASE_MASK);
             break;
         case GDK_KEY_PRESS:
             retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
                                                            event->keyval,
+                                                           event->hardware_keycode - 8,
                                                            event->state);
             break;
         default:

@@ -50,6 +50,7 @@ ibus_public_h_sources = \
 	ibusfactory.h \
 	ibusengine.h \
 	ibustext.h \
+	ibuskeymap.h \
 	ibusattribute.h \
 	ibusproperty.h \
 	ibuslookuptable.h \
@@ -87,6 +88,7 @@ ibus_c_sources = \
 	ibusfactory.c \
 	ibusengine.c \
 	ibustext.c \
+	ibuskeymap.c \
 	ibusattribute.c \
 	ibusproperty.c \
 	ibuslookuptable.c \
@@ -125,6 +127,7 @@ libibus_la_CFLAGS = \
 	@GIO2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
+	-DIBUS_DATA_DIR=\"$(pkgdatadir)\" \
 	$(NULL)
 libibus_la_LDFLAGS = \
 	@X11_LIBS@ \
@@ -159,12 +162,14 @@ AM_LDFLAGS = \
 
 TESTS = \
 	test-text \
+	test-keymap \
 	test-keynames \
 	test-attribute \
 	test-lookuptable \
 	$(NULL)
 noinst_PROGRAMS = $(TESTS)
 test_text_DEPENDENCIES = $(DEPS)
+test_keymap_DEPENDENCIES = $(DEPS)
 test_keynames_DEPENDENCIES = $(DEPS)
 test_attribute_DEPENDENCIES = $(DEPS)
 test_lookuptable_DEPENDENCIES = $(DEPS)

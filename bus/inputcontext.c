@@ -116,6 +116,7 @@ static gboolean bus_input_context_ibus_message  (BusInputContext        *context
 static gboolean bus_input_context_filter_keyboard_shortcuts
                                                 (BusInputContext        *context,
                                                  guint                   keyval,
+                                                 guint                   keycode,
                                                  guint                   modifiers);
 static gboolean bus_input_context_send_signal   (BusInputContext        *context,
                                                  const gchar            *signal_name,
@@ -676,16 +677,16 @@ _ic_process_key_event_reply_cb (gpointer data,
 }
 
 static IBusMessage *
-_ic_process_key_event (BusInputContext *context,
-                       IBusMessage     *message,
-                       BusConnection   *connection)
+_ic_process_key_event  (BusInputContext *context,
+                        IBusMessage     *message,
+                        BusConnection   *connection)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
     IBusMessage *reply = NULL;
-    guint keyval, modifiers;
+    guint keyval, keycode, modifiers;
     gboolean retval;
     IBusError *error;
 
@@ -695,6 +696,7 @@ _ic_process_key_event (BusInputContext *context,
     retval = ibus_message_get_args (message,
                 &error,
                 G_TYPE_UINT, &keyval,
+                G_TYPE_UINT, &keycode,
                 G_TYPE_UINT, &modifiers,
                 G_TYPE_INVALID);
 
@@ -706,10 +708,9 @@ _ic_process_key_event (BusInputContext *context,
         return reply;
     }
 
-    retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, modifiers);
+    retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, keycode, modifiers);
 
     if (retval) {
-        priv->filter_release = TRUE;
         reply = ibus_message_new_method_return (message);
         ibus_message_append_args (reply,
                                   G_TYPE_BOOLEAN, &retval,
@@ -728,6 +729,7 @@ _ic_process_key_event (BusInputContext *context,
 
         bus_engine_proxy_process_key_event (priv->engine,
                                             keyval,
+                                            keycode,
                                             modifiers,
                                             (GFunc) _ic_process_key_event_reply_cb,
                                             call_data);
@@ -2013,6 +2015,7 @@ bus_input_context_get_engine (BusInputContext *context)
 static gboolean
 bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
                                              guint               keyval,
+                                             guint               keycode,
                                              guint               modifiers)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
@@ -2027,6 +2030,17 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     static GQuark prev_factory;
 
     GQuark event;
+
+    if (keycode != 0) {
+        IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
+        if (keymap != NULL) {
+            guint t = ibus_keymap_lookup_keysym (keymap,
+                                                 keycode,
+                                                 modifiers);
+            if (t != IBUS_VoidSymbol)
+                keyval = t;
+        }
+    }
 
     if (trigger == 0) {
         trigger = g_quark_from_static_string ("trigger");

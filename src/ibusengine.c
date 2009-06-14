@@ -80,6 +80,7 @@ static gboolean ibus_engine_ibus_message    (IBusEngine         *engine,
 static gboolean ibus_engine_process_key_event
                                             (IBusEngine         *engine,
                                              guint               keyval,
+                                             guint               keycode,
                                              guint               state);
 static void     ibus_engine_focus_in        (IBusEngine         *engine);
 static void     ibus_engine_focus_out       (IBusEngine         *engine);
@@ -241,9 +242,10 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
             NULL, NULL,
-            ibus_marshal_BOOL__UINT_UINT,
+            ibus_marshal_BOOL__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
-            2,
+            3,
+            G_TYPE_UINT,
             G_TYPE_UINT,
             G_TYPE_UINT);
 
@@ -678,24 +680,26 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     }
 
     if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "ProcessKeyEvent")) {
-        guint keyval, state;
+        guint keyval, keycode, state;
         gboolean retval;
         IBusError *error = NULL;
 
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_UINT, &keyval,
+                                        G_TYPE_UINT, &keycode,
                                         G_TYPE_UINT, &state,
                                         G_TYPE_INVALID);
 
         if (!retval)
-            goto _keypress_fail;
+            goto _keypress2_fail;
 
         retval = FALSE;
         g_signal_emit (engine,
                        engine_signals[PROCESS_KEY_EVENT],
                        0,
                        keyval,
+                       keycode,
                        state,
                        &retval);
 
@@ -707,15 +711,16 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (return_message);
         return TRUE;
 
-    _keypress_fail:
+    _keypress2_fail:
         error_message = ibus_message_new_error_printf (message,
                         DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (uu) of method",
-                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
+                        "%s.%s: Can not match signature (ubu) of method",
+                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent2");
         ibus_connection_send (connection, error_message);
         ibus_message_unref (error_message);
         return TRUE;
     }
+
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "CandidateClicked")) {
         guint index, button, state;
         gboolean retval;
@@ -938,9 +943,9 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 static gboolean
 ibus_engine_process_key_event (IBusEngine *engine,
                                guint       keyval,
+                               guint       keycode,
                                guint       state)
 {
-    // g_debug ("process-key-event (%d, %d)", keyval, state);
     return FALSE;
 }
 

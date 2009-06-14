@@ -485,6 +485,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->config = NULL;
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
+    ibus->keymap = ibus_keymap_new ("us");
 
     bus_ibus_impl_reload_config (ibus);
 
@@ -548,6 +549,11 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     if (ibus->hotkey_profile != NULL) {
         g_object_unref (ibus->hotkey_profile);
         ibus->hotkey_profile = NULL;
+    }
+
+    if (ibus->keymap != NULL) {
+        g_object_unref (ibus->keymap);
+        ibus->keymap = NULL;
     }
 
     bus_server_quit (BUS_DEFAULT_SERVER);
@@ -1169,6 +1175,15 @@ bus_ibus_impl_get_hotkey_profile (BusIBusImpl *ibus)
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     return ibus->hotkey_profile;
+}
+
+IBusKeymap *
+bus_ibus_impl_get_keymap (BusIBusImpl *ibus)
+{
+
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    return ibus->keymap;
 }
 
 BusRegistry *

@@ -176,10 +176,11 @@ class InputContext(object.Object):
         visible = args[1]
         self.emit("update-lookup-table", table, visible)
 
-    def process_key_event(self, keyval, modifiers):
+    def process_key_event(self, keyval, keycode, modifiers):
         keyval = dbus.UInt32(keyval)
+        keycode = dbus.UInt32(keycode)
         modifiers = dbus.UInt32(modifiers)
-        return self.__context.ProcessKeyEvent(keyval, modifiers)
+        return self.__context.ProcessKeyEvent(keyval, keycode, modifiers)
 
     def set_cursor_location(self, x, y, w, h):
         x = dbus.Int32(x)

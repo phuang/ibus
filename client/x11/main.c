@@ -463,7 +463,9 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     }
 
     if (ibus_input_context_process_key_event (x11ic->context,
-                event.keyval, event.state)) {
+                                              event.keyval,
+                                              event.hardware_keycode - 8,
+                                              event.state)) {
         if (! x11ic->has_preedit_area) {
             _xim_set_cursor_location (x11ic);
         }

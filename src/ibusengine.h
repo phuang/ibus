@@ -86,6 +86,7 @@ struct _IBusEngineClass {
     gboolean    (* process_key_event)
                                     (IBusEngine     *engine,
                                      guint           keyval,
+                                     guint           keycode,
                                      guint           state);
     void        (* focus_in)        (IBusEngine     *engine);
     void        (* focus_out)       (IBusEngine     *engine);
@@ -120,8 +121,6 @@ struct _IBusEngineClass {
                                      guint           index,
                                      guint           button,
                                      guint           state);
-
-
 
     /*< private >*/
     /* padding */
