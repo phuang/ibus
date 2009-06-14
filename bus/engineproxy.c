@@ -107,7 +107,7 @@ bus_engine_proxy_new (const gchar    *path,
     }
 
     if (engine->keymap == NULL) {
-        engine->keymap = ibus_keymap_new ("en-us");
+        engine->keymap = ibus_keymap_new ("us");
     }
 
     return engine;

@@ -26,7 +26,6 @@ keymaps = \
 	de \
 	de-ch \
 	en-gb \
-	en-us \
 	es \
 	et \
 	fi \
@@ -39,7 +38,7 @@ keymaps = \
 	hu \
 	is \
 	it \
-	ja \
+	jp \
 	lt \
 	lv \
 	mk \
@@ -55,6 +54,7 @@ keymaps = \
 	sv \
 	th \
 	tr \
+	us \
 	$(NULL)
 
 keymaps_DATA = $(keymaps)

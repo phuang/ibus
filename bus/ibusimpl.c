@@ -485,7 +485,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->config = NULL;
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
-    ibus->keymap = ibus_keymap_new ("en-us");
+    ibus->keymap = ibus_keymap_new ("us");
 
     bus_ibus_impl_reload_config (ibus);
 
