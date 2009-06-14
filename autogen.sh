@@ -2,6 +2,7 @@
 set -e
 set -x
 
+touch ChangeLog
 autopoint  --force || exit 1
 intltoolize --copy --force || exit 1
 libtoolize --automake --copy --force || exit 1
