@@ -2034,11 +2034,11 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     if (keycode != 0) {
         IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
         if (keymap != NULL) {
-            guint t = ibus_keymap_lookup_keysym (keymap,
+            guint tmp = ibus_keymap_lookup_keysym (keymap,
                                                  keycode,
                                                  modifiers);
-            if (t != IBUS_VoidSymbol)
-                keyval = t;
+            if (tmp != IBUS_VoidSymbol)
+                keyval = tmp;
         }
     }
 

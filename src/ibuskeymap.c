@@ -75,8 +75,15 @@ ibus_keymap_class_init (IBusKeymapClass *klass)
 static void
 ibus_keymap_init (IBusKeymap *keymap)
 {
+    gint i, j;
+
     keymap->name = NULL;
-    memset (keymap->keymap, 0, sizeof (keymap->keymap));
+
+    for (i = 0; i < 256; i++) {
+        for (j = 0; j < 5; j++) {
+            keymap->keymap[i][j] = IBUS_VoidSymbol;
+        }
+    }
 }
 
 static void
@@ -212,11 +219,11 @@ ibus_keymap_fill (KEYMAP keymap)
 {
     gint i;
     for (i = 0; i < 256; i++) {
-        if (keymap[i][1] == 0)
+        if (keymap[i][1] == IBUS_VoidSymbol)
             keymap[i][1] = keymap[i][0];
-        if (keymap[i][2] == 0)
+        if (keymap[i][2] == IBUS_VoidSymbol)
             keymap[i][2] = keymap[i][0];
-        if (keymap[i][3] == 0)
+        if (keymap[i][3] == IBUS_VoidSymbol)
             keymap[i][3] = keymap[i][2];
     }
 }
@@ -279,7 +286,7 @@ ibus_keymap_lookup_keysym (IBusKeymap *keymap,
         gboolean is_upper;
         is_upper = (((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK)) != 0;
 
-        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][4] != 0)) {
+        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][4] != IBUS_VoidSymbol)) {
             keysym = keymap->keymap[keycode][4];
         }
         else if (state & IBUS_MOD5_MASK) {
