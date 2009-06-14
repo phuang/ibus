@@ -19,41 +19,48 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+# keymaps = \
+# 	ar \
+# 	common \
+# 	da \
+# 	de \
+# 	de-ch \
+# 	en-gb \
+# 	es \
+# 	et \
+# 	fi \
+# 	fo \
+# 	fr \
+# 	fr-be \
+# 	fr-ca \
+# 	fr-ch \
+# 	hr \
+# 	hu \
+# 	is \
+# 	it \
+# 	jp \
+# 	lt \
+# 	lv \
+# 	mk \
+# 	modifiers \
+# 	nl \
+# 	nl-be \
+# 	no \
+# 	pl \
+# 	pt \
+# 	pt-br \
+# 	ru \
+# 	sl \
+# 	sv \
+# 	th \
+# 	tr \
+# 	us \
+# 	$(NULL)
+
 keymaps = \
-	ar \
 	common \
-	da \
-	de \
-	de-ch \
-	en-gb \
-	es \
-	et \
-	fi \
-	fo \
-	fr \
-	fr-be \
-	fr-ca \
-	fr-ch \
-	hr \
-	hu \
-	is \
-	it \
-	jp \
-	lt \
-	lv \
-	mk \
 	modifiers \
-	nl \
-	nl-be \
-	no \
-	pl \
-	pt \
-	pt-br \
-	ru \
-	sl \
-	sv \
-	th \
-	tr \
+	jp \
 	us \
 	$(NULL)
 
