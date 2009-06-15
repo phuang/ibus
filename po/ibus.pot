@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-26 07:38+0800\n"
+"POT-Creation-Date: 2009-06-15 15:12+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,53 +20,80 @@ msgstr ""
 msgid "IBus"
 msgstr ""
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:107
 msgid "IBus input method framework"
 msgstr ""
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
-#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:336 ../ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:338 ../ui/gtk/panel.py:339
 msgid "Other"
 msgstr ""
 
-#: ../ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:311
 msgid "Restart"
 msgstr ""
 
-#: ../ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:366
 msgid "No input method"
 msgstr ""
 
-#: ../ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:421
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr ""
 
-#: ../ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:425
 msgid "translator-credits"
 msgstr ""
 
-#. create input methods menu
-#: ../ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:101
+msgid "About the Input Method"
+msgstr ""
+
+#: ../ui/gtk/languagebar.py:164
 msgid "Switch input method"
 msgstr ""
 
-#: ../setup/main.py:104
+#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../setup/setup.glade.h:14
+msgid "About"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#, python-format
+msgid "Language: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#, python-format
+msgid "Kayboard layout: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#, python-format
+msgid "Author: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+msgid "Description:\n"
+msgstr ""
+
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr ""
 
-#: ../setup/main.py:114
+#: ../setup/main.py:118
 msgid "next input method"
 msgstr ""
 
-#: ../setup/main.py:124
+#: ../setup/main.py:130
 msgid "previous input method"
 msgstr ""
 
-#: ../setup/main.py:205
+#: ../setup/main.py:227
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr ""
 
-#: ../setup/main.py:220
+#: ../setup/main.py:242
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -75,7 +102,7 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 
-#: ../setup/main.py:235
+#: ../setup/main.py:257
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr ""
@@ -138,65 +165,121 @@ msgid ""
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
 
-#: ../setup/setup.glade.h:14
-msgid "About"
-msgstr ""
-
 #: ../setup/setup.glade.h:15
-msgid "Candidates orientation:"
+msgid "Add the selected input method into the enabled input methods"
 msgstr ""
 
 #: ../setup/setup.glade.h:16
-msgid "Custom font:"
+msgid "Candidates orientation:"
 msgstr ""
 
 #: ../setup/setup.glade.h:17
-msgid "Enable or disable:"
+msgid "Choice font for language bar and candidates"
 msgstr ""
 
 #: ../setup/setup.glade.h:18
-msgid "General"
+msgid "Custom font:"
 msgstr ""
 
 #: ../setup/setup.glade.h:19
+msgid "Enable or disable:"
+msgstr ""
+
+#: ../setup/setup.glade.h:20
+msgid "General"
+msgstr ""
+
+#: ../setup/setup.glade.h:21
 msgid ""
 "Horizontal\n"
 "Vertical"
 msgstr ""
 
-#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:23 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr ""
 
-#: ../setup/setup.glade.h:22
-msgid "Input Methods"
+#: ../setup/setup.glade.h:24
+msgid "Input Method"
 msgstr ""
 
-#: ../setup/setup.glade.h:23
+#: ../setup/setup.glade.h:25
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.glade.h:26
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
+#: ../setup/setup.glade.h:27
 msgid ""
 "Never\n"
 "When active\n"
 "Always"
 msgstr ""
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:30
 msgid "Next input method:"
 msgstr ""
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:31
 msgid "Previous input method:"
 msgstr ""
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.glade.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+
+#: ../setup/setup.glade.h:34
+msgid "Set the orientation of candidates in lookup table"
+msgstr ""
+
+#: ../setup/setup.glade.h:35
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:36
+msgid "Show information of the selected input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:37
+msgid "Show input method name on language bar"
+msgstr ""
+
+#: ../setup/setup.glade.h:38
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show language panel:"
 msgstr ""
 
-#: ../setup/setup.glade.h:29
+#: ../setup/setup.glade.h:40
 msgid "Start ibus on login"
 msgstr ""
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+
+#: ../setup/setup.glade.h:42
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr ""
+
+#: ../setup/setup.glade.h:43
 msgid "Use custom font"
+msgstr ""
+
+#: ../setup/setup.glade.h:44
+msgid "Use custom font for language bar and candidates"
+msgstr ""
+
+#: ../setup/setup.glade.h:45
+msgid "gtk-about"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:1
@@ -244,23 +327,31 @@ msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:12
+msgid "Show IM Name"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Show IM name on language bar"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger hotkey for enable or disable input context"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Use Custom Font"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr ""
