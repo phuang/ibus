@@ -48,7 +48,7 @@ class EngineTreeView(gtk.TreeView):
         self.set_headers_visible(True)
         self.set_reorderable(True)
 
-        self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
         self.set_model(self.__model)
         self.__model.connect("row-changed", self.__emit_changed_delay_cb, "row-changed")
         self.__model.connect("row-deleted", self.__emit_changed_delay_cb, "row-deleted")
@@ -57,7 +57,7 @@ class EngineTreeView(gtk.TreeView):
 
         # create im name & icon column
         column = gtk.TreeViewColumn(_("Input Method"))
-        column.set_min_width(200)
+        column.set_min_width(220)
 
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0)
@@ -73,9 +73,17 @@ class EngineTreeView(gtk.TreeView):
 
         # create im keyboard layout column
         renderer = gtk.CellRendererCombo()
+        model = gtk.ListStore(gobject.TYPE_STRING)
+        model.append(("us",))
+        model.append(("jp",))
         renderer.set_property("xalign", 0)
+        renderer.set_property("model", model)
+        renderer.set_property("text-column", 0)
+        renderer.set_property("has-entry", False)
+        renderer.set_property("editable", True)
+        renderer.connect("changed", self.__engine_layout_changed_cb)
 
-        column = gtk.TreeViewColumn(_("KBL"))
+        column = gtk.TreeViewColumn(_("Kbd"))
         column.set_expand(False)
         column.set_fixed_width(32)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
@@ -122,15 +130,21 @@ class EngineTreeView(gtk.TreeView):
 
     def __layout_cell_data_cb(self, celllayout, renderer, model, iter):
         engine = self.__model.get_value(iter, 0)
+        layout = self.__model.get_value(iter, 1)
         renderer.set_property("sensitive", True)
-        language = ibus.get_language_name(engine.language)
-        renderer.set_property("text", engine.layout)
+        if not layout:
+            layout = engine.layout
+        renderer.set_property("text", layout)
         if self.__model.get_path(iter)[0] == 0:
             #default engine
             renderer.set_property("weight", pango.WEIGHT_BOLD)
         else:
             renderer.set_property("weight", pango.WEIGHT_NORMAL)
 
+    def __engine_layout_changed_cb(self, combo, path, iter):
+        i = self.__model.get_iter(path)
+        layout = combo.get_property("model").get_value(iter, 0)
+        self.__model.set_value(i, 1, layout)
 
     def set_engines(self, engines):
         self.__model.clear()
