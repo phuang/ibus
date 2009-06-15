@@ -47,6 +47,7 @@
                                 <child>
                                   <widget class="GtkLabel" id="label7">
                                     <property name="visible">True</property>
+                                    <property name="tooltip" translatable="yes">Set the shortcut keys for turnning on or off input method</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Enable or disable:</property>
                                   </widget>
@@ -58,6 +59,7 @@
                                 <child>
                                   <widget class="GtkLabel" id="label8">
                                     <property name="visible">True</property>
+                                    <property name="tooltip" translatable="yes">The shortcut keys for switching to next input method in the list</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Next input method:</property>
                                   </widget>
@@ -72,6 +74,7 @@
                                   <widget class="GtkLabel" id="label9">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
+                                    <property name="tooltip" translatable="yes">The shortcut keys for switching to previous input method in the list</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Previous input method:</property>
                                   </widget>
@@ -228,6 +231,7 @@
                                     <child>
                                       <widget class="GtkLabel" id="label6">
                                         <property name="visible">True</property>
+                                        <property name="tooltip" translatable="yes">Set the orientation of candidates in lookup table</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Candidates orientation:</property>
                                         <property name="justify">right</property>
@@ -259,6 +263,7 @@ Vertical</property>
                                     <child>
                                       <widget class="GtkLabel" id="label10">
                                         <property name="visible">True</property>
+                                        <property name="tooltip" translatable="yes">Set the behavior of ibus how to show or hide language bar</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Show language panel:</property>
                                         <property name="justify">right</property>
@@ -290,6 +295,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="tooltip" translatable="yes">Show input method's name on language bar when check the checkbox</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
@@ -302,6 +308,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="tooltip" translatable="yes">Use custom font for language bar and candidates</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
@@ -315,6 +322,7 @@ Always</property>
                                     <child>
                                       <widget class="GtkLabel" id="label_custom_font">
                                         <property name="visible">True</property>
+                                        <property name="tooltip" translatable="yes">Choice font for language bar and candidates</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Custom font:</property>
                                       </widget>
@@ -444,6 +452,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip" translatable="yes">Add the selected input method into the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </widget>
                                   <packing>
@@ -458,6 +467,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip" translatable="yes">Remove the selected input method from the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </widget>
                                   <packing>
@@ -472,6 +482,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip" translatable="yes">Move up the selected input method in the enabled input methods list</property>
                                     <property name="use_stock">True</property>
                                   </widget>
                                   <packing>
@@ -486,6 +497,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip" translatable="yes">Move down the selected input method in the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </widget>
                                   <packing>
@@ -500,6 +512,7 @@ Always</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip" translatable="yes">Show information of the selected input method</property>
                                     <property name="use_stock">True</property>
                                   </widget>
                                   <packing>
@@ -570,7 +583,7 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
             <child>
               <widget class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Input Methods</property>
+                <property name="label" translatable="yes">Input Method</property>
               </widget>
               <packing>
                 <property name="position">1</property>
