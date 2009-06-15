@@ -46,7 +46,6 @@ msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
 #: ../ui/gtk/languagebar.py:101
-#, fuzzy
 msgid "About the Input Method"
 msgstr "关于输入法"
 
@@ -66,7 +65,7 @@ msgstr "语言: %s\n"
 
 #: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
 msgid "Kayboard layout: %s\n"
-msgstr "快捷键"
+msgstr "键盘: %s\n"
 
 #: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
 msgid "Author: %s\n"
@@ -74,7 +73,7 @@ msgstr "作者: %s\n"
 
 #: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
 msgid "Description:\n"
-msgstr "描述:"
+msgstr "描述:\n"
 
 #: ../setup/main.py:106
 msgid "trigger"
