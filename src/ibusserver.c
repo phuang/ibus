@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "ibusmainloop.h"
 #include "ibusserver.h"
 #include "ibusinternal.h"
 

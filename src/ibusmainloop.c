@@ -20,8 +20,8 @@
 #include "ibusmainloop.h"
 #include "ibusinternal.h"
 
-static DBusConnectionSetupFunc _connection_setup_func = dbus_connection_setup;
-static DBusServerSetupFunc _server_setup_func = dbus_server_setup;
+static DBusConnectionSetupFunc _connection_setup_func = (DBusConnectionSetupFunc) dbus_connection_setup;
+static DBusServerSetupFunc _server_setup_func = (DBusServerSetupFunc) dbus_server_setup;
 static gpointer _user_data = NULL;
 
 void
