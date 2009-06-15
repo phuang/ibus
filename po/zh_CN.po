@@ -64,10 +64,12 @@ msgid "Language: %s\n"
 msgstr "语言: %s\n"
 
 #: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#, python-format
 msgid "Kayboard layout: %s\n"
 msgstr "键盘: %s\n"
 
 #: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#, python-format
 msgid "Author: %s\n"
 msgstr "作者: %s\n"
 
@@ -105,6 +107,7 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #: ../setup/main.py:257
+#, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
 
@@ -178,7 +181,7 @@ msgstr ""
 
 #: ../setup/setup.glade.h:15
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
+msgstr "添加输入法到启动"
 
 #: ../setup/setup.glade.h:16
 msgid "Candidates orientation:"
@@ -344,7 +347,7 @@ msgstr "切换上一个引擎快捷键"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Show IM Name"
-msgstr ""
+msgstr "显示输入法名字"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Show IM name on language bar"
