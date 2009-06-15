@@ -99,7 +99,9 @@ class Setup(object):
 
         button = self.__xml.get_widget("button_trigger")
         entry = self.__xml.get_widget("entry_trigger")
-        entry.set_text("; ".join(shortcuts))
+        text = "; ".join(shortcuts)
+        entry.set_text(text)
+        entry.set_tooltip_text(text)
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("trigger"), "general/hotkey", "trigger", entry)
 
@@ -109,7 +111,9 @@ class Setup(object):
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_next_engine")
         entry = self.__xml.get_widget("entry_next_engine")
-        entry.set_text("; ".join(shortcuts))
+        text = "; ".join(shortcuts)
+        entry.set_text(text)
+        entry.set_tooltip_text(text)
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("next input method"), "general/hotkey", "next_engine", entry)
 
@@ -119,7 +123,9 @@ class Setup(object):
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
         button = self.__xml.get_widget("button_prev_engine")
         entry = self.__xml.get_widget("entry_prev_engine")
-        entry.set_text("; ".join(shortcuts))
+        text = "; ".join(shortcuts)
+        entry.set_text(text)
+        entry.set_tooltip_text(text)
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("previous input method"), "general/hotkey", "prev_engine", entry)
 
@@ -198,9 +204,10 @@ class Setup(object):
 
     def __button_engine_about_cb(self, button):
         engine = self.__treeview.get_select_engine()
-        about = EngineAbout(engine)
-        about.run()
-        about.destroy()
+        if engine:
+            about = EngineAbout(engine)
+            about.run()
+            about.destroy()
 
     def __treeview_changed_cb(self, treeview):
         engines = self.__treeview.get_engines()
@@ -261,7 +268,9 @@ class Setup(object):
         if id != gtk.RESPONSE_OK:
             return
         self.__config.set_list(section, _name, shortcuts, "s")
-        entry.set_text("; ".join(shortcuts))
+        text = "; ".join(shortcuts)
+        entry.set_text(text)
+        entry.set_tooltip_text(text)
 
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):

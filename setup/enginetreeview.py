@@ -27,6 +27,10 @@ import ibus
 
 from icon import load_icon
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 class EngineTreeView(gtk.TreeView):
     __gsignals__ = {
         'changed' : (
@@ -39,8 +43,10 @@ class EngineTreeView(gtk.TreeView):
         super(EngineTreeView, self).__init__()
 
         self.__engines = set([])
-
         self.__changed = False
+
+        self.set_headers_visible(True)
+        self.set_reorderable(True)
 
         self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT)
         self.set_model(self.__model)
@@ -49,9 +55,9 @@ class EngineTreeView(gtk.TreeView):
         self.__model.connect("row-inserted", self.__emit_changed_delay_cb, "row-inserted")
         self.__model.connect("rows-reordered", self.__emit_changed_delay_cb, "rows-reordered")
 
-        self.set_headers_visible(False)
-
-        column = gtk.TreeViewColumn()
+        # create im name & icon column
+        column = gtk.TreeViewColumn(_("Input Method"))
+        column.set_min_width(200)
 
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0)
@@ -60,11 +66,22 @@ class EngineTreeView(gtk.TreeView):
 
         renderer = gtk.CellRendererText()
         renderer.set_property("xalign", 0)
+        renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
         column.pack_start(renderer, True)
         column.set_cell_data_func(renderer, self.__name_cell_data_cb)
-        self.append_column (column)
+        self.append_column(column)
 
-        self.set_reorderable(True)
+        # create im keyboard layout column
+        renderer = gtk.CellRendererCombo()
+        renderer.set_property("xalign", 0)
+
+        column = gtk.TreeViewColumn(_("KBL"))
+        column.set_expand(False)
+        column.set_fixed_width(32)
+        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.pack_start(renderer, False)
+        column.set_cell_data_func(renderer, self.__layout_cell_data_cb)
+        self.append_column (column)
 
         self.set_engines(engines)
 
@@ -97,6 +114,17 @@ class EngineTreeView(gtk.TreeView):
         renderer.set_property("sensitive", True)
         language = ibus.get_language_name(engine.language)
         renderer.set_property("text", "%s - %s" % (language, engine.longname))
+        if self.__model.get_path(iter)[0] == 0:
+            # default engine
+            renderer.set_property("weight", pango.WEIGHT_BOLD)
+        else:
+            renderer.set_property("weight", pango.WEIGHT_NORMAL)
+
+    def __layout_cell_data_cb(self, celllayout, renderer, model, iter):
+        engine = self.__model.get_value(iter, 0)
+        renderer.set_property("sensitive", True)
+        language = ibus.get_language_name(engine.language)
+        renderer.set_property("text", engine.layout)
         if self.__model.get_path(iter)[0] == 0:
             #default engine
             renderer.set_property("weight", pango.WEIGHT_BOLD)
