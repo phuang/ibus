@@ -98,5 +98,5 @@ keycode 115 = backslash
     shift keycode 115 = underscore
 keycode 121 = Henkan_Mode
 keycode 123 = Muhenkan
-keycode 125 = yen
-    shift keycode 125 = bar
+keycode 124 = yen
+    shift keycode 124 = bar
