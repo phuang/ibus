@@ -13,4 +13,4 @@ automake --add-missing --copy --force || exit 1
 autoconf --force || exit 1
 export CFLAGS="-Wall -g -O0 -Wl,--no-undefined"
 export CXXFLAGS="$CFLAGS"
-./configure --enable-maintainer-mode $* || exit 1
+./configure --enable-maintainer-mode --enable-gtk-doc $* || exit 1
