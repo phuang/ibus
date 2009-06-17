@@ -56,7 +56,6 @@ EXTRA_DIST = \
 noinst_DIST = \
 	$(NULL)
 
-
 DISTCLEANFILES = \
 	po/stamp-it \
 	$(NULL)
