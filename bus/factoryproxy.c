@@ -172,21 +172,35 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     g_assert (BUS_IS_FACTORY_PROXY (factory));
     g_assert (IBUS_IS_ENGINE_DESC (desc));
 
+    IBusPendingCall *pending = NULL;
     IBusMessage *reply_message;
     IBusError *error;
     BusEngineProxy *engine;
     gchar *object_path;
+    gboolean retval;
 
     if (g_list_find (factory->component->engines, desc) == NULL) {
         return NULL;
     }
 
-    reply_message = ibus_proxy_call_with_reply_and_block ((IBusProxy *) factory,
-                                                          "CreateEngine",
-                                                          -1,
-                                                          &error,
-                                                          G_TYPE_STRING, &(desc->name),
-                                                          G_TYPE_INVALID);
+    retval = ibus_proxy_call_with_reply ((IBusProxy *) factory,
+                                         "CreateEngine",
+                                         &pending,
+                                         -1,
+                                         &error,
+                                         G_TYPE_STRING, &(desc->name),
+                                         G_TYPE_INVALID);
+
+    if (!retval) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        return NULL;
+    }
+
+    ibus_pending_call_wait (pending);
+    reply_message = ibus_pending_call_steal_reply (pending);
+    ibus_pending_call_unref (pending);
+
     if (reply_message == NULL) {
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
