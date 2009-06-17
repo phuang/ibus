@@ -59,8 +59,11 @@ static void     bus_ibus_impl_set_trigger       (BusIBusImpl        *ibus,
 static void     bus_ibus_impl_set_preload_engines
                                                 (BusIBusImpl        *ibus,
                                                  GValue             *value);
-static void     _factory_destroy_cb             (BusFactoryProxy      *factory,
-                                                 BusIBusImpl          *ibus);
+static void     bus_ibus_impl_set_use_sys_layout
+                                                (BusIBusImpl        *ibus,
+                                                 GValue             *value);
+static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
+                                                 BusIBusImpl        *ibus);
 
 static IBusServiceClass  *parent_class = NULL;
 
@@ -240,6 +243,15 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     }
 }
 
+static void
+bus_ibus_impl_set_use_sys_layout (BusIBusImpl *ibus,
+                                  GValue      *value)
+{
+    if (value != NULL && G_VALUE_TYPE (value) == G_TYPE_BOOLEAN) {
+        ibus->use_sys_layout = g_value_get_boolean (value);
+    }
+}
+
 static gint
 _engine_desc_cmp (IBusEngineDesc *desc1,
                   IBusEngineDesc *desc2)
@@ -320,6 +332,7 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
         { "general/hotkey", "next_engine", bus_ibus_impl_set_next_engine },
         { "general/hotkey", "prev_engine", bus_ibus_impl_set_prev_engine },
         { "general", "preload_engines", bus_ibus_impl_set_preload_engines },
+        { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { NULL, NULL, NULL },
     };
 
@@ -362,6 +375,7 @@ _config_value_changed_cb (IBusConfig  *config,
         { "general/hotkey", "next_engine", bus_ibus_impl_set_next_engine },
         { "general/hotkey", "prev_engine", bus_ibus_impl_set_prev_engine },
         { "general", "preload_engines",    bus_ibus_impl_set_preload_engines },
+        { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { NULL, NULL, NULL },
     };
 
@@ -486,6 +500,8 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_new ("us");
+
+    ibus->use_sys_layout = FALSE;
 
     bus_ibus_impl_reload_config (ibus);
 

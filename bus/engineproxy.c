@@ -20,6 +20,7 @@
 
 #include <ibusinternal.h>
 #include <ibusmarshalers.h>
+#include "ibusimpl.h"
 #include "engineproxy.h"
 
 enum {
@@ -573,7 +574,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     IBusError *error;
     gboolean retval;
 
-    if (keycode != 0 && engine->keymap != NULL) {
+    if (keycode != 0 && !BUS_DEFAULT_IBUS->use_sys_layout && engine->keymap != NULL) {
         guint t = ibus_keymap_lookup_keysym (engine->keymap, keycode, state);
         if (t != IBUS_VoidSymbol) {
             keyval = t;

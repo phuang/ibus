@@ -71,6 +71,8 @@ struct _BusIBusImpl {
     GList *register_engine_list;
     GList *component_list;
 
+    gboolean use_sys_layout;
+
     BusRegistry     *registry;
 
     BusInputContext *focused_context;

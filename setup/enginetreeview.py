@@ -142,6 +142,7 @@ class EngineTreeView(gtk.TreeView):
             renderer.set_property("weight", pango.WEIGHT_NORMAL)
 
     def __engine_layout_changed_cb(self, combo, path, iter):
+        return
         i = self.__model.get_iter(path)
         layout = combo.get_property("model").get_value(iter, 0)
         self.__model.set_value(i, 1, layout)

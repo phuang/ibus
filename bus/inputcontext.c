@@ -2031,7 +2031,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
 
     GQuark event;
 
-    if (keycode != 0) {
+    if (keycode != 0 && !BUS_DEFAULT_IBUS->use_sys_layout) {
         IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
         if (keymap != NULL) {
             guint tmp = ibus_keymap_lookup_keysym (keymap,
