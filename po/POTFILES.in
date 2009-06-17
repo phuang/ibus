@@ -52,6 +52,7 @@ setup/main.py
 setup/keyboardshortcut.py
 setup/enginecombobox.py
 setup/engineabout.py
+setup/enginetreeview.py
 setup/setup.glade
 setup/ibus-setup.desktop.in
 data/ibus.schemas.in
