@@ -7,6 +7,6 @@ SHORT_DESC="IBus"
 GTK_IM_MODULE=ibus
 # QT_IM_MODULE=ibus
 
-if [ -z "$IBUS_SESSION_ID" ]; then
-  export IBUS_SESSION_ID=`mktemp -u XXXXXXXX`
-fi
+# if [ -z "$IBUS_SESSION_ID" ]; then
+#   export IBUS_SESSION_ID=`mktemp -u XXXXXXXX`
+# fi
