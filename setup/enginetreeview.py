@@ -45,7 +45,7 @@ class EngineTreeView(gtk.TreeView):
         self.__engines = set([])
         self.__changed = False
 
-        self.set_headers_visible(True)
+        # self.set_headers_visible(True)
         self.set_reorderable(True)
 
         self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
@@ -76,6 +76,7 @@ class EngineTreeView(gtk.TreeView):
         model = gtk.ListStore(gobject.TYPE_STRING)
         model.append(("us",))
         model.append(("jp",))
+        model.append(("xkb",))
         renderer.set_property("xalign", 0)
         renderer.set_property("model", model)
         renderer.set_property("text-column", 0)
@@ -89,7 +90,7 @@ class EngineTreeView(gtk.TreeView):
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         column.pack_start(renderer, False)
         column.set_cell_data_func(renderer, self.__layout_cell_data_cb)
-        self.append_column (column)
+        # self.append_column(column)
 
         self.set_engines(engines)
 
