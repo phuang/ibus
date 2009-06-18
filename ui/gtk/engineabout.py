@@ -61,7 +61,7 @@ class EngineAbout(gtk.Dialog):
                                              "heading", "left_margin_16")
         text_buffer.insert_with_tags_by_name(iter, _("Language: %s\n") % ibus.get_language_name(self.__engine_desc.language),
                                             "small", "bold", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("Kayboard layout: %s\n") % self.__engine_desc.layout,
+        text_buffer.insert_with_tags_by_name(iter, _("Keyboard layout: %s\n") % self.__engine_desc.layout,
                                             "small", "bold", "left_margin_16")
         text_buffer.insert_with_tags_by_name(iter, _("Author: %s\n") % self.__engine_desc.author,
                                             "small", "bold", "left_margin_16")
