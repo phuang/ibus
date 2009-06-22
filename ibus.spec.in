@@ -88,7 +88,7 @@ This package contains ibus im module for gtk2
 # Group:      System Environment/Libraries
 # Requires:   %{name} = %{version}-%{release}
 # Requires:   qt >= 4.4.2
-# 
+#
 # %description qt
 # This package contains ibus im module for qt4
 
@@ -184,10 +184,10 @@ fi
 /sbin/ldconfig
 
 %post gtk
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{host} || :
 
 %postun gtk
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{host} || :
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)

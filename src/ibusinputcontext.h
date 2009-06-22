@@ -22,9 +22,12 @@
  * @short_description: IBus input context proxy object.
  * @stability: Stable
  *
- * An IBusInputContext is a proxy object of InputContext.
- * Clients call the IBusInputContext to invoke InputContext,
- * through which invoke IBusEngine.
+ * An IBusInputContext is a proxy object of BusInputContext,
+ * which manages the context for input methods that supports
+ * text input in various natural languages.
+ *
+ * Clients call the IBusInputContext to invoke BusInputContext,
+ * through which invokes IBusEngine.
  */
 #ifndef __IBUS_INPUT_CONTEXT_H_
 #define __IBUS_INPUT_CONTEXT_H_
@@ -54,6 +57,11 @@ G_BEGIN_DECLS
 typedef struct _IBusInputContext IBusInputContext;
 typedef struct _IBusInputContextClass IBusInputContextClass;
 
+/**
+ * IBusInputContext:
+ *
+ * An opaque data type representing an IBusInputContext.
+ */
 struct _IBusInputContext {
   IBusProxy parent;
   /* instance members */
@@ -69,25 +77,107 @@ struct _IBusInputContextClass {
 };
 
 GType        ibus_input_context_get_type    (void);
+
+/**
+ * ibus_input_context_new:
+ * @path: The path to the object that emitting the signal.
+ * @connection: An IBusConnection.
+ * @returns: A newly allocated IBusInputContext.
+ *
+ * New an IBusInputContext.
+ */
 IBusInputContext
             *ibus_input_context_new         (const gchar        *path,
                                              IBusConnection     *connection);
+/**
+ * ibus_input_context_process_key_event:
+ * @context: An IBusInputContext.
+ * @keyval: Key symbol of a key event.
+ * @keycode: Keycode of a key event.
+ * @state: Key modifier flags.
+ * @returns: TRUE for successfully process the key; FALSE otherwise.
+ * @see_also: IBusEngine::process-key-event
+ *
+ * Pass the key event to input method engine.
+ *
+ * Key symbols are characters/symbols produced by key press, for example,
+ * pressing "s" generates key symbol "s"; pressing shift-"s" generates key symbol "S".
+ * Same key on keyboard may produce different key symbols on different keyboard layout.
+ * e.g., "s" key on QWERTY keyboard produces "o" in DVORAK layout.
+ *
+ * Unlike key symbol, keycode is only determined by the location of the key, and
+ * irrelevant of the keyboard layout.
+ *
+ * Briefly speaking, input methods that expect certain keyboard layout should use
+ * keycode; otherwise keyval is sufficient.
+ * For example, Chewing, Cangjie, Wubi expect an en-US QWERTY keyboard, these should
+ * use keycode; while pinyin can rely on keyval only, as it is less sensitive to
+ * the keyboard layout change, DVORAK users can still use DVORAK layout to input pinyin.
+ *
+ * Use ibus_keymap_lookup_keysym() to convert keycode to keysym in given keyboard layout.
+ *
+ */
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
                                              guint32             keyval,
                                              guint32             keycode,
                                              guint32             state);
+
+/**
+ * ibus_input_context_set_cursor_location:
+ * @context: An IBusInputContext.
+ * @x: X coordinate of the cursor.
+ * @y: Y coordinate of the cursor.
+ * @w: Width of the cursor.
+ * @h: Height of the cursor.
+ * @see_also: IBusEngine::set-cursor-location
+ *
+ * Set the cursor location of IBus input context.
+ */
 void         ibus_input_context_set_cursor_location
                                             (IBusInputContext   *context,
                                              gint32              x,
                                              gint32              y,
                                              gint32              w,
                                              gint32              h);
+/**
+ * ibus_input_context_set_capabilities:
+ * @context: An IBusInputContext.
+ * @capabilities: Capabilities flags of IBusEngine, see #IBusCapabilite
+ * @see_also: IBusEngine::set_capabilities
+ *
+ * Set the capabilities flags of client application.
+ */
 void         ibus_input_context_set_capabilities
                                             (IBusInputContext   *context,
                                              guint32             capabilites);
+
+/**
+ * ibus_input_context_focus_in:
+ * @context: An IBusInputContext.
+ * @see_also: IBusEngine::focus_in.
+ *
+ * Invoked when the client application get focus.
+ */
 void         ibus_input_context_focus_in    (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_focus_out:
+ * @context: An IBusInputContext.
+ * @see_also: IBusEngine::focus_out.
+ *
+ * Invoked when the client application get focus.
+ */
 void         ibus_input_context_focus_out   (IBusInputContext   *context);
+
+
+/**
+ * ibus_input_context_focus_out:
+ * @context: An IBusInputContext.
+ * @see_also: IBusEngine::reset.
+ *
+ * Invoked when the IME is reset.
+ */
 void         ibus_input_context_reset       (IBusInputContext   *context);
 void         ibus_input_context_enable      (IBusInputContext   *context);
 void         ibus_input_context_disable     (IBusInputContext   *context);

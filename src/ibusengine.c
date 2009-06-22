@@ -228,11 +228,18 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::process-key-event:
      * @engine: An IBusEngine.
-     * @keyval: KeySym of the key press.
-     * @state: Key modifier flags
+     * @keyval: Key symbol of the key press.
+     * @keycode: KeyCode of the key press.
+     * @state: Key modifier flags.
      *
      * Emitted when a key event is received.
      * Implement the member function process_key_event() in extended class to receive this signal.
+     * Both the key symbol and keycode are passed to the member function.
+     * See ibus_input_context_process_key_event() for further explanation of
+     * key symbol, keycode and which to use.
+     *
+     * Returns: TRUE for successfully process the key; FALSE otherwise.
+     * See also:  ibus_input_context_process_key_event().
      *
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
@@ -256,6 +263,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the client application get the focus.
      * Implement the member function focus_in() in extended class to receive this signal.
      *
+     * See also: ibus_input_context_focus_in()
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[FOCUS_IN] =
@@ -275,6 +283,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the client application  lost the focus.
      * Implement the member function focus_out() in extended class to receive this signal.
      *
+     * See also: ibus_input_context_focus_out()
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[FOCUS_OUT] =
@@ -347,10 +356,15 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::set-cursor-location:
      * @engine: An IBusEngine.
+     * @x: X coordinate of the cursor.
+     * @y: Y coordinate of the cursor.
+     * @w: Width of the cursor.
+     * @h: Height of the cursor.
      *
      * Emitted when the location of IME is set.
      * Implement the member function set_cursor_location() in extended class to receive this signal.
      *
+     * See also:  ibus_input_context_set_cursor_location().
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[SET_CURSOR_LOCATION] =
@@ -375,6 +389,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the client application capabilities is set.
      * Implement the member function set_capabilities() in extended class to receive this signal.
      *
+     * See also:  ibus_input_context_set_capabilities().
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[SET_CAPABILITIES] =
