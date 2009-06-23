@@ -22,9 +22,6 @@
 #include <ibusmarshalers.h>
 #include "panelproxy.h"
 
-#define BUS_PANEL_PROXY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_PANEL_PROXY, BusPanelProxyPrivate))
-
 enum {
     PAGE_UP,
     PAGE_DOWN,
@@ -36,13 +33,6 @@ enum {
     PROPERTY_HIDE,
     LAST_SIGNAL,
 };
-
-
-/* BusPanelProxyPriv */
-struct _BusPanelProxyPrivate {
-    BusInputContext *focused_context;
-};
-typedef struct _BusPanelProxyPrivate BusPanelProxyPrivate;
 
 static guint    panel_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
@@ -126,8 +116,6 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
 
 
     parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
-
-    g_type_class_add_private (klass, sizeof (BusPanelProxyPrivate));
 
     klass->page_up     = bus_panel_proxy_page_up;
     klass->page_down   = bus_panel_proxy_page_down;
@@ -226,27 +214,21 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
 static void
 bus_panel_proxy_init (BusPanelProxy *panel)
 {
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    priv->focused_context = NULL;
+    panel->focused_context = NULL;
 }
 
 static void
 bus_panel_proxy_real_destroy (BusPanelProxy *panel)
 {
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
     if (ibus_proxy_get_connection ((IBusProxy *)panel) != NULL) {
         ibus_proxy_call ((IBusProxy *) panel,
                          "Destroy",
                          G_TYPE_INVALID);
     }
 
-    if (priv->focused_context) {
-        bus_panel_proxy_focus_out (panel, priv->focused_context);
-        priv->focused_context = NULL;
+    if (panel->focused_context) {
+        bus_panel_proxy_focus_out (panel, panel->focused_context);
+        panel->focused_context = NULL;
     }
 
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (panel));
@@ -358,17 +340,14 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context == context)
+    if (panel->focused_context == context)
         return;
 
-    if (priv->focused_context != NULL)
-        bus_panel_proxy_focus_out (panel, priv->focused_context);
+    if (panel->focused_context != NULL)
+        bus_panel_proxy_focus_out (panel, panel->focused_context);
 
     g_object_ref (context);
-    priv->focused_context = context;
+    panel->focused_context = context;
 
     const gchar *path = ibus_service_get_path ((IBusService *)context);
 
@@ -394,10 +373,7 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_assert (priv->focused_context == context);
+    g_assert (panel->focused_context == context);
 
     /* uninstall signal handlers */
     gint i;
@@ -414,8 +390,8 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
                      IBUS_TYPE_OBJECT_PATH, &path,
                      G_TYPE_INVALID);
 
-    g_object_unref (priv->focused_context);
-    priv->focused_context = NULL;
+    g_object_unref (panel->focused_context);
+    panel->focused_context = NULL;
 }
 
 void
@@ -516,11 +492,8 @@ bus_panel_proxy_update_property (BusPanelProxy  *panel,
     {                                                           \
         g_assert (BUS_IS_PANEL_PROXY (panel));                  \
                                                                 \
-        BusPanelProxyPrivate *priv;                             \
-        priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);             \
-                                                                \
-        if (priv->focused_context) {                            \
-            bus_input_context_##name (priv->focused_context);   \
+        if (panel->focused_context) {                           \
+            bus_input_context_##name (panel->focused_context);  \
         }                                                       \
     }
 
@@ -538,11 +511,8 @@ bus_panel_proxy_candidate_clicked (BusPanelProxy *panel,
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context) {
-        bus_input_context_candidate_clicked (priv->focused_context,
+    if (panel->focused_context) {
+        bus_input_context_candidate_clicked (panel->focused_context,
                                              index,
                                              button,
                                              state);
@@ -556,11 +526,8 @@ bus_panel_proxy_property_activate (BusPanelProxy *panel,
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    if (priv->focused_context) {
-        bus_input_context_property_activate (priv->focused_context, prop_name, prop_state);
+    if (panel->focused_context) {
+        bus_input_context_property_activate (panel->focused_context, prop_name, prop_state);
     }
 }
 
@@ -598,10 +565,7 @@ _context_set_cursor_location_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_set_cursor_location (panel, x, y, w, h);
 }
@@ -617,10 +581,7 @@ _context_update_preedit_text_cb (BusInputContext *context,
     g_assert (text != NULL);
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_update_preedit_text (panel,
                                          text,
@@ -637,10 +598,7 @@ _context_update_auxiliary_text_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_update_auxiliary_text (panel,
                                            text,
@@ -656,10 +614,7 @@ _context_update_lookup_table_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_update_lookup_table (panel,
                                          table,
@@ -674,10 +629,7 @@ _context_register_properties_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_register_properties (panel,
                                          prop_list);
@@ -691,10 +643,7 @@ _context_update_property_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_return_if_fail (priv->focused_context == context);
+    g_return_if_fail (panel->focused_context == context);
 
     bus_panel_proxy_update_property (panel,
                                      prop);
@@ -708,10 +657,7 @@ _context_destroy_cb (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
-    BusPanelProxyPrivate *priv;
-    priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);
-
-    g_assert (context == priv->focused_context);
+    g_assert (context == panel->focused_context);
 
     bus_panel_proxy_focus_out (panel, context);
 }
@@ -724,10 +670,7 @@ _context_destroy_cb (BusInputContext *context,
         g_assert (BUS_IS_INPUT_CONTEXT (context));              \
         g_assert (BUS_IS_PANEL_PROXY (panel));                  \
                                                                 \
-        BusPanelProxyPrivate *priv;                             \
-        priv = BUS_PANEL_PROXY_GET_PRIVATE (panel);             \
-                                                                \
-        g_return_if_fail (priv->focused_context == context);    \
+        g_return_if_fail (panel->focused_context == context);   \
                                                                 \
         bus_panel_proxy_##name (panel);                         \
     }

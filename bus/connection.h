@@ -46,8 +46,13 @@ typedef struct _BusConnection BusConnection;
 typedef struct _BusConnectionClass BusConnectionClass;
 
 struct _BusConnection {
-  IBusConnection parent;
-  /* instance members */
+    IBusConnection parent;
+
+    /* instance members */
+    gchar *unique_name;
+    /* list for well known names */
+    GList  *names;
+    GList  *rules;
 };
 
 struct _BusConnectionClass {

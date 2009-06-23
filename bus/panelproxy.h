@@ -48,8 +48,10 @@ typedef struct _BusPanelProxy BusPanelProxy;
 typedef struct _BusPanelProxyClass BusPanelProxyClass;
 
 struct _BusPanelProxy {
-  IBusProxy parent;
-  /* instance members */
+    IBusProxy parent;
+
+    /* instance members */
+    BusInputContext *focused_context;
 };
 
 struct _BusPanelProxyClass {

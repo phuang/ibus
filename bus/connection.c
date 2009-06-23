@@ -27,10 +27,6 @@
 
 /* BusConnectionPriv */
 struct _BusConnectionPrivate {
-    gchar *unique_name;
-    /* list for well known names */
-    GList  *names;
-    GList  *rules;
 };
 typedef struct _BusConnectionPrivate BusConnectionPrivate;
 
@@ -94,8 +90,6 @@ bus_connection_class_init (BusConnectionClass *klass)
 
     parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
-    g_type_class_add_private (klass, sizeof (BusConnectionPrivate));
-
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
 
     ibus_connection_class->authenticate_unix_user = bus_connection_authenticate_unix_user;
@@ -107,34 +101,27 @@ bus_connection_class_init (BusConnectionClass *klass)
 static void
 bus_connection_init (BusConnection *connection)
 {
-    BusConnectionPrivate *priv;
-
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-
-    priv->unique_name = NULL;
-    priv->names = NULL;
+    connection->unique_name = NULL;
+    connection->names = NULL;
 }
 
 static void
 bus_connection_destroy (BusConnection *connection)
 {
     GList *name;
-    BusConnectionPrivate *priv;
 
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (connection));
 
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-
-    if (priv->unique_name) {
-        g_free (priv->unique_name);
-        priv->unique_name = NULL;
+    if (connection->unique_name) {
+        g_free (connection->unique_name);
+        connection->unique_name = NULL;
     }
 
-    for (name = priv->names; name != NULL; name = name->next) {
+    for (name = connection->names; name != NULL; name = name->next) {
         g_free (name->data);
     }
-    g_list_free (priv->names);
-    priv->names = NULL;
+    g_list_free (connection->names);
+    connection->names = NULL;
 }
 
 static gboolean
@@ -180,29 +167,21 @@ bus_connection_dbus_signal  (BusConnection  *connection,
 const gchar *
 bus_connection_get_unique_name (BusConnection   *connection)
 {
-    BusConnectionPrivate *priv;
-
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-    return priv->unique_name;
+    return connection->unique_name;
 }
 
 void
 bus_connection_set_unique_name (BusConnection   *connection,
                                 const gchar     *name)
 {
-    BusConnectionPrivate *priv;
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-    g_assert (priv->unique_name == NULL);
-    priv->unique_name = g_strdup (name);
+    g_assert (connection->unique_name == NULL);
+    connection->unique_name = g_strdup (name);
 }
 
 const GList *
 bus_connection_get_names (BusConnection   *connection)
 {
-    BusConnectionPrivate *priv;
-
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-    return priv->names;
+    return connection->names;
 }
 
 const gchar *
@@ -210,11 +189,9 @@ bus_connection_add_name (BusConnection     *connection,
                           const gchar       *name)
 {
     gchar *new_name;
-    BusConnectionPrivate *priv;
 
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
     new_name = g_strdup (name);
-    priv->names = g_list_append (priv->names, new_name);
+    connection->names = g_list_append (connection->names, new_name);
 
     return new_name;
 }
@@ -223,16 +200,13 @@ gboolean
 bus_connection_remove_name (BusConnection     *connection,
                              const gchar       *name)
 {
-    BusConnectionPrivate *priv;
     GList *link;
 
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
-
-    link = g_list_find_custom (priv->names, name, (GCompareFunc) g_strcmp0);
+    link = g_list_find_custom (connection->names, name, (GCompareFunc) g_strcmp0);
 
     if (link) {
         g_free (link->data);
-        priv->names = g_list_delete_link (priv->names, link);
+        connection->names = g_list_delete_link (connection->names, link);
         return TRUE;
     }
     return FALSE;
@@ -247,22 +221,19 @@ bus_connection_add_match (BusConnection  *connection,
 
     BusMatchRule *p;
     GList *link;
-    BusConnectionPrivate *priv;
-
-    priv = BUS_CONNECTION_GET_PRIVATE (connection);
 
     p = bus_match_rule_new (rule);
     if (p == NULL)
         return FALSE;
 
-    for (link = priv->rules; link != NULL; link = link->next) {
+    for (link = connection->rules; link != NULL; link = link->next) {
         if (bus_match_rule_is_equal (p, (BusMatchRule *)link->data)) {
             g_object_unref (p);
             return TRUE;
         }
     }
 
-    priv->rules = g_list_append (priv->rules, p);
+    connection->rules = g_list_append (connection->rules, p);
     return TRUE;
 
 }

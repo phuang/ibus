@@ -25,9 +25,6 @@
 #include "engineproxy.h"
 #include "factoryproxy.h"
 
-#define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
-
 enum {
     PROCESS_KEY_EVENT,
     SET_CURSOR_LOCATION,
@@ -59,47 +56,6 @@ enum {
 
 enum {
     PROP_0,
-};
-
-
-/* IBusInputContextPriv */
-struct _BusInputContextPrivate {
-    BusConnection *connection;
-    BusEngineProxy *engine;
-    gchar *client;
-
-    gboolean has_focus;
-    gboolean enabled;
-
-    /* capabilities */
-    guint capabilities;
-
-    /* cursor location */
-    gint x;
-    gint y;
-    gint w;
-    gint h;
-
-    /* prev key event */
-    guint prev_keyval;
-    guint prev_modifiers;
-
-    /* preedit text */
-    IBusText *preedit_text;
-    guint     preedit_cursor_pos;
-    gboolean  preedit_visible;
-
-    /* auxiliary text */
-    IBusText *auxiliary_text;
-    gboolean  auxiliary_visible;
-
-    /* lookup table */
-    IBusLookupTable *lookup_table;
-    gboolean lookup_table_visible;
-
-    /* filter release */
-    gboolean filter_release;
-
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -218,7 +174,6 @@ bus_input_context_new (BusConnection    *connection,
 
     BusInputContext *context;
     gchar *path;
-    BusInputContextPrivate *priv;
 
     path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
 
@@ -227,18 +182,16 @@ bus_input_context_new (BusConnection    *connection,
                                                 NULL);
     g_free (path);
 
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
 #if 0
     ibus_service_add_to_connection (IBUS_SERVICE (context),
                                  IBUS_CONNECTION (connection));
 #endif
 
     g_object_ref (connection);
-    priv->connection = connection;
-    priv->client = g_strdup (client);
+    context->connection = connection;
+    context->client = g_strdup (client);
 
-    g_signal_connect (priv->connection,
+    g_signal_connect (context->connection,
                       "destroy",
                       (GCallback) _connection_destroy_cb,
                       context);
@@ -252,8 +205,6 @@ bus_input_context_class_init (BusInputContextClass *klass)
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
-
-    g_type_class_add_private (klass, sizeof (BusInputContextPrivate));
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
@@ -526,37 +477,34 @@ bus_input_context_class_init (BusInputContextClass *klass)
 static void
 bus_input_context_init (BusInputContext *context)
 {
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    context->connection = NULL;
+    context->client = NULL;
+    context->engine = NULL;
+    context->has_focus = FALSE;
+    context->enabled = FALSE;
 
-    priv->connection = NULL;
-    priv->client = NULL;
-    priv->engine = NULL;
-    priv->has_focus = FALSE;
-    priv->enabled = FALSE;
+    context->prev_keyval = IBUS_VoidSymbol;
+    context->prev_modifiers = 0;
 
-    priv->prev_keyval = IBUS_VoidSymbol;
-    priv->prev_modifiers = 0;
+    context->capabilities = 0;
 
-    priv->capabilities = 0;
-
-    priv->x = 0;
-    priv->y = 0;
-    priv->w = 0;
-    priv->h = 0;
+    context->x = 0;
+    context->y = 0;
+    context->w = 0;
+    context->h = 0;
 
     g_object_ref (text_empty);
-    priv->preedit_text = text_empty;
-    priv->preedit_cursor_pos = 0;
-    priv->preedit_visible = FALSE;
+    context->preedit_text = text_empty;
+    context->preedit_cursor_pos = 0;
+    context->preedit_visible = FALSE;
 
     g_object_ref (text_empty);
-    priv->auxiliary_text = text_empty;
-    priv->auxiliary_visible = FALSE;
+    context->auxiliary_text = text_empty;
+    context->auxiliary_visible = FALSE;
 
     g_object_ref (lookup_table_empty);
-    priv->lookup_table = lookup_table_empty;
-    priv->lookup_table_visible = FALSE;
+    context->lookup_table = lookup_table_empty;
+    context->lookup_table_visible = FALSE;
 
     g_object_ref (props_empty);
 }
@@ -564,44 +512,41 @@ bus_input_context_init (BusInputContext *context)
 static void
 bus_input_context_destroy (BusInputContext *context)
 {
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->has_focus) {
+    if (context->has_focus) {
         bus_input_context_focus_out (context);
-        priv->has_focus = FALSE;
+        context->has_focus = FALSE;
     }
 
-    if (priv->engine) {
+    if (context->engine) {
         bus_input_context_unset_engine (context);
     }
 
-    if (priv->preedit_text) {
-        g_object_unref (priv->preedit_text);
-        priv->preedit_text = NULL;
+    if (context->preedit_text) {
+        g_object_unref (context->preedit_text);
+        context->preedit_text = NULL;
     }
 
-    if (priv->auxiliary_text) {
-        g_object_unref (priv->auxiliary_text);
-        priv->auxiliary_text = NULL;
+    if (context->auxiliary_text) {
+        g_object_unref (context->auxiliary_text);
+        context->auxiliary_text = NULL;
     }
 
-    if (priv->lookup_table) {
-        g_object_unref (priv->lookup_table);
-        priv->lookup_table = NULL;
+    if (context->lookup_table) {
+        g_object_unref (context->lookup_table);
+        context->lookup_table = NULL;
     }
 
-    if (priv->connection) {
-        g_signal_handlers_disconnect_by_func (priv->connection,
+    if (context->connection) {
+        g_signal_handlers_disconnect_by_func (context->connection,
                                          (GCallback) _connection_destroy_cb,
                                          context);
-        g_object_unref (priv->connection);
-        priv->connection = NULL;
+        g_object_unref (context->connection);
+        context->connection = NULL;
     }
 
-    if (priv->client) {
-        g_free (priv->client);
-        priv->client = NULL;
+    if (context->client) {
+        g_free (context->client);
+        context->client = NULL;
     }
 
     IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (context));
@@ -660,15 +605,12 @@ _ic_process_key_event_reply_cb (gpointer data,
     retval = (gboolean) GPOINTER_TO_INT (data);
     call_data = (CallData *) user_data;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (call_data->context);
-
-
     reply = ibus_message_new_method_return (call_data->message);
     ibus_message_append_args (reply,
                               G_TYPE_BOOLEAN, &retval,
                               G_TYPE_INVALID);
-    ibus_connection_send ((IBusConnection *)priv->connection, reply);
+
+    ibus_connection_send ((IBusConnection *)call_data->context->connection, reply);
 
     g_object_unref (call_data->context);
     ibus_message_unref (call_data->message);
@@ -689,9 +631,6 @@ _ic_process_key_event  (BusInputContext *context,
     guint keyval, keycode, modifiers;
     gboolean retval;
     IBusError *error;
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     retval = ibus_message_get_args (message,
                 &error,
@@ -716,7 +655,7 @@ _ic_process_key_event  (BusInputContext *context,
                                   G_TYPE_BOOLEAN, &retval,
                                   G_TYPE_INVALID);
     }
-    else if (priv->enabled && priv->engine) {
+    else if (context->enabled && context->engine) {
         CallData *call_data;
 
         call_data = g_slice_new (CallData);
@@ -727,7 +666,7 @@ _ic_process_key_event  (BusInputContext *context,
         call_data->context = context;
         call_data->message = message;
 
-        bus_engine_proxy_process_key_event (priv->engine,
+        bus_engine_proxy_process_key_event (context->engine,
                                             keyval,
                                             keycode,
                                             modifiers,
@@ -757,9 +696,6 @@ _ic_set_cursor_location (BusInputContext  *context,
     gboolean retval;
     IBusError *error;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
     retval = ibus_message_get_args (message, &error,
                 G_TYPE_INT, &x,
                 G_TYPE_INT, &y,
@@ -775,16 +711,16 @@ _ic_set_cursor_location (BusInputContext  *context,
         return reply;
     }
 
-    priv->x = x;
-    priv->y = y;
-    priv->h = h;
-    priv->w = w;
+    context->x = x;
+    context->y = y;
+    context->h = h;
+    context->w = w;
 
-    if (priv->engine) {
-        bus_engine_proxy_set_cursor_location (priv->engine, x, y, w, h);
+    if (context->engine) {
+        bus_engine_proxy_set_cursor_location (context->engine, x, y, w, h);
     }
 
-    if (priv->capabilities & IBUS_CAP_FOCUS) {
+    if (context->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context,
                        context_signals[SET_CURSOR_LOCATION],
                        0,
@@ -845,12 +781,8 @@ _ic_reset (BusInputContext  *context,
 
     IBusMessage *reply;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-
-    if (priv->engine) {
-        bus_engine_proxy_reset (priv->engine);
+    if (context->engine) {
+        bus_engine_proxy_reset (context->engine);
     }
 
     reply = ibus_message_new_method_return (message);
@@ -871,10 +803,6 @@ _ic_set_capabilities (BusInputContext  *context,
     gboolean retval;
     IBusError *error;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-
     retval = ibus_message_get_args (message,
                 &error,
                 G_TYPE_UINT, &caps,
@@ -888,11 +816,11 @@ _ic_set_capabilities (BusInputContext  *context,
         return reply;
     }
 
-    if (priv->capabilities != caps) {
-        priv->capabilities = caps;
+    if (context->capabilities != caps) {
+        context->capabilities = caps;
 
-        if (priv->engine) {
-            bus_engine_proxy_set_capabilities (priv->engine, caps);
+        if (context->engine) {
+            bus_engine_proxy_set_capabilities (context->engine, caps);
         }
     }
 
@@ -945,12 +873,9 @@ _ic_is_enabled (BusInputContext *context,
 
     IBusMessage *reply;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
     reply = ibus_message_new_method_return (message);
     ibus_message_append_args (reply,
-            G_TYPE_BOOLEAN, &priv->enabled,
+            G_TYPE_BOOLEAN, &context->enabled,
             G_TYPE_INVALID);
 
     return reply;
@@ -970,9 +895,6 @@ _ic_set_engine (BusInputContext  *context,
     IBusError *error;
     gchar *engine_name;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
     retval = ibus_message_get_args (message,
                                     &error,
                                     G_TYPE_STRING, &engine_name,
@@ -987,7 +909,7 @@ _ic_set_engine (BusInputContext  *context,
 
     g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, engine_name);
 
-    if (priv->engine == NULL) {
+    if (context->engine == NULL) {
         reply = ibus_message_new_error_printf (message,
                                                "org.freedesktop.IBus.NoEngine",
                                                "can not find engine with name %s",
@@ -1013,11 +935,8 @@ _ic_get_engine (BusInputContext  *context,
     IBusMessage *reply;
     IBusEngineDesc *desc;
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        desc = bus_engine_proxy_get_desc (priv->engine);
+    if (context->engine) {
+        desc = bus_engine_proxy_get_desc (context->engine);
         if (desc != NULL) {
             reply = ibus_message_new_method_return (message);
             ibus_message_append_args (reply,
@@ -1128,10 +1047,7 @@ bus_input_context_has_focus (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    return priv->has_focus;
+    return context->has_focus;
 }
 
 void
@@ -1139,42 +1055,39 @@ bus_input_context_focus_in (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->has_focus)
+    if (context->has_focus)
         return;
 
-    priv->has_focus = TRUE;
+    context->has_focus = TRUE;
 
-    if (priv->engine && priv->enabled) {
-        bus_engine_proxy_focus_in (priv->engine);
+    if (context->engine && context->enabled) {
+        bus_engine_proxy_focus_in (context->engine);
     }
 
-    if (priv->capabilities & IBUS_CAP_FOCUS) {
+    if (context->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
-        if (priv->engine && priv->enabled) {
-            if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
+        if (context->engine && context->enabled) {
+            if (context->preedit_visible && (context->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
                 g_signal_emit (context,
                                context_signals[UPDATE_PREEDIT_TEXT],
                                0,
-                               priv->preedit_text,
-                               priv->preedit_cursor_pos,
-                               priv->preedit_visible);
+                               context->preedit_text,
+                               context->preedit_cursor_pos,
+                               context->preedit_visible);
             }
-            if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
+            if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
                 g_signal_emit (context,
                                context_signals[UPDATE_AUXILIARY_TEXT],
                                0,
-                               priv->auxiliary_text,
-                               priv->auxiliary_visible);
+                               context->auxiliary_text,
+                               context->auxiliary_visible);
             }
-            if (priv->lookup_table_visible && (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
+            if (context->lookup_table_visible && (context->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
                 g_signal_emit (context,
                                context_signals[UPDATE_LOOKUP_TABLE],
                                0,
-                               priv->lookup_table,
-                               priv->lookup_table_visible);
+                               context->lookup_table,
+                               context->lookup_table_visible);
             }
         }
     }
@@ -1185,26 +1098,23 @@ bus_input_context_focus_out (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!priv->has_focus)
+    if (!context->has_focus)
         return;
 
-    priv->has_focus = FALSE;
+    context->has_focus = FALSE;
 
-    if (priv->engine && priv->enabled) {
-        bus_engine_proxy_focus_out (priv->engine);
+    if (context->engine && context->enabled) {
+        bus_engine_proxy_focus_out (context->engine);
     }
 
-    if (priv->capabilities & IBUS_CAP_FOCUS) {
-        if (priv->preedit_visible && (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
+    if (context->capabilities & IBUS_CAP_FOCUS) {
+        if (context->preedit_visible && (context->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
             g_signal_emit (context, context_signals[HIDE_PREEDIT_TEXT], 0);
         }
-        if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
+        if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
             g_signal_emit (context, context_signals[HIDE_AUXILIARY_TEXT], 0);
         }
-        if (priv->auxiliary_visible && (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
+        if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
             g_signal_emit (context, context_signals[HIDE_LOOKUP_TABLE], 0);
         }
         g_signal_emit (context, context_signals[FOCUS_OUT], 0);
@@ -1217,11 +1127,9 @@ bus_input_context_focus_out (BusInputContext *context)
     {                                                       \
         g_assert (BUS_IS_INPUT_CONTEXT (context));          \
                                                             \
-        BusInputContextPrivate *priv;                       \
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);     \
                                                             \
-        if (priv->engine) {                                 \
-            bus_engine_proxy_##name (priv->engine);         \
+        if (context->engine) {                              \
+            bus_engine_proxy_##name (context->engine);      \
         }                                                   \
     }
 
@@ -1240,11 +1148,8 @@ bus_input_context_candidate_clicked (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        bus_engine_proxy_candidate_clicked (priv->engine,
+    if (context->engine) {
+        bus_engine_proxy_candidate_clicked (context->engine,
                                             index,
                                             button,
                                             state);
@@ -1258,11 +1163,8 @@ bus_input_context_property_activate (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        bus_engine_proxy_property_activate (priv->engine, prop_name, prop_state);
+    if (context->engine) {
+        bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
     }
 }
 
@@ -1274,32 +1176,29 @@ bus_input_context_update_preedit_text (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->preedit_text) {
-        g_object_unref (priv->preedit_text);
+    if (context->preedit_text) {
+        g_object_unref (context->preedit_text);
     }
 
-    priv->preedit_text = (IBusText *) g_object_ref (text ? text : text_empty);
-    priv->preedit_cursor_pos = cursor_pos;
-    priv->preedit_visible = visible;
+    context->preedit_text = (IBusText *) g_object_ref (text ? text : text_empty);
+    context->preedit_cursor_pos = cursor_pos;
+    context->preedit_visible = visible;
 
-    if (priv->capabilities & IBUS_CAP_PREEDIT_TEXT) {
+    if (context->capabilities & IBUS_CAP_PREEDIT_TEXT) {
         bus_input_context_send_signal (context,
                                        "UpdatePreeditText",
-                                       IBUS_TYPE_TEXT, &(priv->preedit_text),
-                                       G_TYPE_UINT, &(priv->preedit_cursor_pos),
-                                       G_TYPE_BOOLEAN, &(priv->preedit_visible),
+                                       IBUS_TYPE_TEXT, &(context->preedit_text),
+                                       G_TYPE_UINT, &(context->preedit_cursor_pos),
+                                       G_TYPE_BOOLEAN, &(context->preedit_visible),
                                        G_TYPE_INVALID);
     }
     else {
         g_signal_emit (context,
                        context_signals[UPDATE_PREEDIT_TEXT],
                        0,
-                       priv->preedit_text,
-                       priv->preedit_cursor_pos,
-                       priv->preedit_visible);
+                       context->preedit_text,
+                       context->preedit_cursor_pos,
+                       context->preedit_visible);
     }
 }
 
@@ -1308,16 +1207,13 @@ bus_input_context_show_preedit_text (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->preedit_visible) {
+    if (context->preedit_visible) {
         return;
     }
 
-    priv->preedit_visible = TRUE;
+    context->preedit_visible = TRUE;
 
-    if ((priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
+    if ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
         bus_input_context_send_signal (context,
                                        "ShowPreeditText",
                                        G_TYPE_INVALID);
@@ -1334,16 +1230,13 @@ bus_input_context_hide_preedit_text (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!priv->preedit_visible) {
+    if (!context->preedit_visible) {
         return;
     }
 
-    priv->preedit_visible = FALSE;
+    context->preedit_visible = FALSE;
 
-    if ((priv->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
+    if ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
         bus_input_context_send_signal (context,
                                        "HidePreeditText",
                                        G_TYPE_INVALID);
@@ -1362,29 +1255,26 @@ bus_input_context_update_auxiliary_text (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->auxiliary_text) {
-        g_object_unref (priv->auxiliary_text);
+    if (context->auxiliary_text) {
+        g_object_unref (context->auxiliary_text);
     }
 
-    priv->auxiliary_text = (IBusText *) g_object_ref (text ? text : text_empty);
-    priv->auxiliary_visible = visible;
+    context->auxiliary_text = (IBusText *) g_object_ref (text ? text : text_empty);
+    context->auxiliary_visible = visible;
 
-    if (priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) {
+    if (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) {
         bus_input_context_send_signal (context,
                                        "UpdateAuxiliaryText",
-                                       IBUS_TYPE_TEXT, &(priv->auxiliary_text),
-                                       G_TYPE_BOOLEAN, &(priv->auxiliary_visible),
+                                       IBUS_TYPE_TEXT, &(context->auxiliary_text),
+                                       G_TYPE_BOOLEAN, &(context->auxiliary_visible),
                                        G_TYPE_INVALID);
     }
     else {
         g_signal_emit (context,
                        context_signals[UPDATE_AUXILIARY_TEXT],
                        0,
-                       priv->auxiliary_text,
-                       priv->auxiliary_visible);
+                       context->auxiliary_text,
+                       context->auxiliary_visible);
     }
 }
 
@@ -1393,16 +1283,13 @@ bus_input_context_show_auxiliary_text (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->auxiliary_visible) {
+    if (context->auxiliary_visible) {
         return;
     }
 
-    priv->auxiliary_visible = TRUE;
+    context->auxiliary_visible = TRUE;
 
-    if ((priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == IBUS_CAP_AUXILIARY_TEXT) {
+    if ((context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == IBUS_CAP_AUXILIARY_TEXT) {
         bus_input_context_send_signal (context,
                                        "ShowAuxiliaryText",
                                        G_TYPE_INVALID);
@@ -1419,16 +1306,13 @@ bus_input_context_hide_auxiliary_text (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!priv->auxiliary_visible) {
+    if (!context->auxiliary_visible) {
         return;
     }
 
-    priv->auxiliary_visible = FALSE;
+    context->auxiliary_visible = FALSE;
 
-    if ((priv->capabilities & IBUS_CAP_AUXILIARY_TEXT) == IBUS_CAP_AUXILIARY_TEXT) {
+    if ((context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == IBUS_CAP_AUXILIARY_TEXT) {
         bus_input_context_send_signal (context,
                                        "HideAuxiliaryText",
                                        G_TYPE_INVALID);
@@ -1447,29 +1331,26 @@ bus_input_context_update_lookup_table (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->lookup_table) {
-        g_object_unref (priv->lookup_table);
+    if (context->lookup_table) {
+        g_object_unref (context->lookup_table);
     }
 
-    priv->lookup_table = (IBusLookupTable *) g_object_ref (table ? table : lookup_table_empty);
-    priv->lookup_table_visible = visible;
+    context->lookup_table = (IBusLookupTable *) g_object_ref (table ? table : lookup_table_empty);
+    context->lookup_table_visible = visible;
 
-    if (priv->capabilities & IBUS_CAP_LOOKUP_TABLE) {
+    if (context->capabilities & IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "UpdateLookupTable",
-                                       IBUS_TYPE_LOOKUP_TABLE, &(priv->lookup_table),
-                                       G_TYPE_BOOLEAN, &(priv->lookup_table_visible),
+                                       IBUS_TYPE_LOOKUP_TABLE, &(context->lookup_table),
+                                       G_TYPE_BOOLEAN, &(context->lookup_table_visible),
                                        G_TYPE_INVALID);
     }
     else {
         g_signal_emit (context,
                        context_signals[UPDATE_LOOKUP_TABLE],
                        0,
-                       priv->lookup_table,
-                       priv->lookup_table_visible);
+                       context->lookup_table,
+                       context->lookup_table_visible);
     }
 }
 
@@ -1478,16 +1359,13 @@ bus_input_context_show_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->lookup_table_visible) {
+    if (context->lookup_table_visible) {
         return;
     }
 
-    priv->lookup_table_visible = TRUE;
+    context->lookup_table_visible = TRUE;
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "ShowLookupTable",
                                        G_TYPE_INVALID);
@@ -1504,16 +1382,13 @@ bus_input_context_hide_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!priv->lookup_table_visible) {
+    if (!context->lookup_table_visible) {
         return;
     }
 
-    priv->lookup_table_visible = FALSE;
+    context->lookup_table_visible = FALSE;
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "HideLookupTable",
                                        G_TYPE_INVALID);
@@ -1530,14 +1405,11 @@ bus_input_context_page_up_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!ibus_lookup_table_page_up (priv->lookup_table)) {
+    if (!ibus_lookup_table_page_up (context->lookup_table)) {
         return;
     }
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "PageUpLookupTable",
                                        G_TYPE_INVALID);
@@ -1554,14 +1426,11 @@ bus_input_context_page_down_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!ibus_lookup_table_page_down (priv->lookup_table)) {
+    if (!ibus_lookup_table_page_down (context->lookup_table)) {
         return;
     }
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "PageDownLookupTable",
                                        G_TYPE_INVALID);
@@ -1578,14 +1447,11 @@ bus_input_context_cursor_up_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!ibus_lookup_table_cursor_up (priv->lookup_table)) {
+    if (!ibus_lookup_table_cursor_up (context->lookup_table)) {
         return;
     }
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "CursorUpLookupTable",
                                        G_TYPE_INVALID);
@@ -1602,14 +1468,11 @@ bus_input_context_cursor_down_lookup_table (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (!ibus_lookup_table_cursor_down (priv->lookup_table)) {
+    if (!ibus_lookup_table_cursor_down (context->lookup_table)) {
         return;
     }
 
-    if ((priv->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
+    if ((context->capabilities & IBUS_CAP_LOOKUP_TABLE) == IBUS_CAP_LOOKUP_TABLE) {
         bus_input_context_send_signal (context,
                                        "CursorDownLookupTable",
                                        G_TYPE_INVALID);
@@ -1628,10 +1491,7 @@ bus_input_context_register_properties (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (IBUS_IS_PROP_LIST (props));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+    if (context->capabilities & IBUS_CAP_PROPERTY) {
         bus_input_context_send_signal (context,
                                        "RegisterProperties",
                                        IBUS_TYPE_PROP_LIST, &props,
@@ -1652,10 +1512,7 @@ bus_input_context_update_property (BusInputContext *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (IBUS_IS_PROPERTY (prop));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->capabilities & IBUS_CAP_PROPERTY) {
+    if (context->capabilities & IBUS_CAP_PROPERTY) {
         bus_input_context_send_signal (context,
                                        "UpdateProperty",
                                        IBUS_TYPE_PROPERTY, &prop,
@@ -1676,10 +1533,7 @@ _engine_destroy_cb (BusEngineProxy  *engine,
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_unset_engine (context);
     bus_input_context_disable (context);
@@ -1694,10 +1548,7 @@ _engine_commit_text_cb (BusEngineProxy  *engine,
     g_assert (text != NULL);
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_send_signal (context,
                                    "CommitText",
@@ -1715,10 +1566,7 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_send_signal (context,
                                    "ForwardKeyEvent",
@@ -1739,10 +1587,7 @@ _engine_update_preedit_text_cb (BusEngineProxy  *engine,
     g_assert (IBUS_IS_TEXT (text));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_update_preedit_text (context, text, cursor_pos, visible);
 }
@@ -1757,10 +1602,7 @@ _engine_update_auxiliary_text_cb (BusEngineProxy   *engine,
     g_assert (IBUS_IS_TEXT (text));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_update_auxiliary_text (context, text, visible);
 }
@@ -1775,10 +1617,7 @@ _engine_update_lookup_table_cb (BusEngineProxy   *engine,
     g_assert (IBUS_IS_LOOKUP_TABLE (table));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_update_lookup_table (context, table, visible);
 }
@@ -1792,10 +1631,7 @@ _engine_register_properties_cb (BusEngineProxy  *engine,
     g_assert (IBUS_IS_PROP_LIST (props));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_register_properties (context, props);
 }
@@ -1809,10 +1645,7 @@ _engine_update_property_cb (BusEngineProxy  *engine,
     g_assert (IBUS_IS_PROPERTY (prop));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->engine == engine);
+    g_assert (context->engine == engine);
 
     bus_input_context_update_property (context, prop);
 }
@@ -1825,10 +1658,7 @@ _engine_update_property_cb (BusEngineProxy  *engine,
         g_assert (BUS_IS_ENGINE_PROXY (engine));                \
         g_assert (BUS_IS_INPUT_CONTEXT (context));              \
                                                                 \
-        BusInputContextPrivate *priv;                           \
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);         \
-                                                                \
-        g_assert (priv->engine == engine);                      \
+        g_assert (context->engine == engine);                   \
                                                                 \
         bus_input_context_##name (context);                     \
 }
@@ -1850,27 +1680,24 @@ bus_input_context_enable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine == NULL) {
+    if (context->engine == NULL) {
             g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
     }
 
-    if (priv->engine == NULL)
+    if (context->engine == NULL)
         return;
 
-    priv->enabled = TRUE;
+    context->enabled = TRUE;
 
-    bus_engine_proxy_enable (priv->engine);
+    bus_engine_proxy_enable (context->engine);
     bus_input_context_send_signal (context,
                                    "Enabled",
                                    G_TYPE_INVALID);
     g_signal_emit (context,
                    context_signals[ENABLED],
                    0);
-    if (priv->has_focus) {
-        bus_engine_proxy_focus_in (priv->engine);
+    if (context->has_focus) {
+        bus_engine_proxy_focus_in (context->engine);
     }
 }
 
@@ -1879,14 +1706,11 @@ bus_input_context_disable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine) {
-        if (priv->has_focus) {
-            bus_engine_proxy_focus_out (priv->engine);
+    if (context->engine) {
+        if (context->has_focus) {
+            bus_engine_proxy_focus_out (context->engine);
         }
-        bus_engine_proxy_disable (priv->engine);
+        bus_engine_proxy_disable (context->engine);
     }
 
     bus_input_context_send_signal (context,
@@ -1896,7 +1720,7 @@ bus_input_context_disable (BusInputContext *context)
                    context_signals[DISABLED],
                    0);
 
-    priv->enabled = FALSE;
+    context->enabled = FALSE;
 }
 
 gboolean
@@ -1904,10 +1728,7 @@ bus_input_context_is_enabled (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    return priv->enabled;
+    return context->enabled;
 }
 
 const static struct {
@@ -1940,23 +1761,20 @@ bus_input_context_unset_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
     bus_input_context_register_properties (context, props_empty);
     bus_input_context_update_preedit_text (context, text_empty, 0, FALSE);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
 
-    if (priv->engine) {
+    if (context->engine) {
         gint i;
         for (i = 0; signals[i].name != NULL; i++) {
-            g_signal_handlers_disconnect_by_func (priv->engine, signals[i].callback, context);
+            g_signal_handlers_disconnect_by_func (context->engine, signals[i].callback, context);
         }
         /* we destroy the engine */
-        ibus_object_destroy ((IBusObject *) priv->engine);
-        g_object_unref (priv->engine);
-        priv->engine = NULL;
+        ibus_object_destroy ((IBusObject *) context->engine);
+        g_object_unref (context->engine);
+        context->engine = NULL;
     }
 
 }
@@ -1967,10 +1785,7 @@ bus_input_context_set_engine (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    if (priv->engine != NULL) {
+    if (context->engine != NULL) {
         bus_input_context_unset_engine (context);
     }
 
@@ -1979,20 +1794,20 @@ bus_input_context_set_engine (BusInputContext *context,
     }
     else {
         gint i;
-        priv->engine = engine;
-        g_object_ref (priv->engine);
+        context->engine = engine;
+        g_object_ref (context->engine);
 
         for (i = 0; signals[i].name != NULL; i++) {
-            g_signal_connect (priv->engine,
+            g_signal_connect (context->engine,
                               signals[i].name,
                               signals[i].callback,
                               context);
         }
-        bus_engine_proxy_set_cursor_location (priv->engine, priv->x, priv->y, priv->w, priv->h);
-        if (priv->enabled) {
-            bus_engine_proxy_enable (priv->engine);
-            if (priv->has_focus) {
-                bus_engine_proxy_focus_in (priv->engine);
+        bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
+        if (context->enabled) {
+            bus_engine_proxy_enable (context->engine);
+            if (context->has_focus) {
+                bus_engine_proxy_focus_in (context->engine);
             }
         }
     }
@@ -2006,10 +1821,7 @@ bus_input_context_get_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    return priv->engine;
+    return context->engine;
 }
 
 static gboolean
@@ -2019,9 +1831,6 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
                                              guint               modifiers)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    BusInputContextPrivate *priv;
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
 
     gboolean retval = FALSE;
 
@@ -2048,40 +1857,40 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         prev_factory = g_quark_from_static_string ("prev-engine");
     }
 
-    if (priv->filter_release){
+    if (context->filter_release){
         if(modifiers & IBUS_RELEASE_MASK) {
             /* filter release key event */
             return TRUE;
         }
         else {
             /* stop filter release key event */
-            priv->filter_release = FALSE;
+            context->filter_release = FALSE;
         }
     }
 
     event = ibus_hotkey_profile_filter_key_event (BUS_DEFAULT_HOTKEY_PROFILE,
                                                   keyval,
                                                   modifiers,
-                                                  priv->prev_keyval,
-                                                  priv->prev_modifiers,
+                                                  context->prev_keyval,
+                                                  context->prev_modifiers,
                                                   0);
-    priv->prev_keyval = keyval;
-    priv->prev_modifiers = modifiers;
+    context->prev_keyval = keyval;
+    context->prev_modifiers = modifiers;
 
     if (event == trigger) {
-        gboolean enabled = priv->enabled;
+        gboolean enabled = context->enabled;
 
-        if (priv->enabled) {
+        if (context->enabled) {
             bus_input_context_disable (context);
         }
         else {
             bus_input_context_enable (context);
         }
 
-        retval = (enabled != priv->enabled);
+        retval = (enabled != context->enabled);
     }
     else if (event == next_factory) {
-        if (priv->engine == NULL || priv->enabled == FALSE) {
+        if (context->engine == NULL || context->enabled == FALSE) {
             retval =  FALSE;
         }
         else {
@@ -2090,7 +1899,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         }
     }
     else if (event == prev_factory) {
-        if (priv->engine == NULL || priv->enabled == FALSE) {
+        if (context->engine == NULL || context->enabled == FALSE) {
             retval = FALSE;
         }
         else {
@@ -2101,7 +1910,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
 
     if (retval == TRUE) {
         /* begine filter release key event */
-        priv->filter_release = TRUE;
+        context->filter_release = TRUE;
     }
 
     return retval;
@@ -2116,15 +1925,11 @@ bus_input_context_send_signal (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (signal_name != NULL);
+    g_assert (context->connection != NULL);
 
     va_list args;
     gboolean retval;
     IBusMessage *message;
-    BusInputContextPrivate *priv;
-
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-
-    g_assert (priv->connection != NULL);
 
     message = ibus_message_new_signal (ibus_service_get_path ((IBusService *)context),
                                        IBUS_INTERFACE_INPUT_CONTEXT,
@@ -2136,7 +1941,7 @@ bus_input_context_send_signal (BusInputContext *context,
     ibus_message_append_args_valist (message, first_arg_type, args);
     va_end (args);
 
-    retval = ibus_connection_send ((IBusConnection *)priv->connection, message);
+    retval = ibus_connection_send ((IBusConnection *)context->connection, message);
     ibus_message_unref (message);
 
     return retval;
