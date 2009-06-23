@@ -39,6 +39,7 @@ ibus_built_sources = \
 	$(NULL)
 ibus_public_h_sources = \
 	ibus.h \
+	ibusversion.h \
 	ibusshare.h \
 	ibusdebug.h \
 	ibusobject.h \
@@ -205,6 +206,7 @@ ibusmarshalers.c: ibusmarshalers.list
 	&& rm -f xgen-gmc
 
 EXTRA_DIST = \
+	ibusversion.h.in \
 	ibusmarshalers.list \
 	ibusenumtypes.h.template \
 	ibusenumtypes.c.template \
@@ -214,4 +216,8 @@ CLEANFILES = \
 	$(BUILT_SOURCES) \
 	stamp-ibusmarshalers.h \
 	stamp-ibusenumtypes.h \
+	$(NULL)
+
+DISTCLEANFILES = \
+	ibusversion.h \
 	$(NULL)
