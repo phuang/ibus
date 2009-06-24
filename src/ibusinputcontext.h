@@ -96,7 +96,6 @@ IBusInputContext
  * @keycode: Keycode of a key event.
  * @state: Key modifier flags.
  * @returns: TRUE for successfully process the key; FALSE otherwise.
- * @see_also: IBusEngine::process-key-event
  *
  * Pass the key event to input method engine.
  *
@@ -116,6 +115,7 @@ IBusInputContext
  *
  * Use ibus_keymap_lookup_keysym() to convert keycode to keysym in given keyboard layout.
  *
+ * @see_also: #IBusEngine::process-key-event
  */
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
@@ -130,9 +130,10 @@ gboolean     ibus_input_context_process_key_event
  * @y: Y coordinate of the cursor.
  * @w: Width of the cursor.
  * @h: Height of the cursor.
- * @see_also: IBusEngine::set-cursor-location
  *
  * Set the cursor location of IBus input context.
+ *
+ * @see_also: #IBusEngine::set-cursor-location
  */
 void         ibus_input_context_set_cursor_location
                                             (IBusInputContext   *context,
@@ -144,9 +145,10 @@ void         ibus_input_context_set_cursor_location
  * ibus_input_context_set_capabilities:
  * @context: An IBusInputContext.
  * @capabilities: Capabilities flags of IBusEngine, see #IBusCapabilite
- * @see_also: IBusEngine::set_capabilities
  *
  * Set the capabilities flags of client application.
+ *
+ * @see_also: #IBusEngine::set-capabilities
  */
 void         ibus_input_context_set_capabilities
                                             (IBusInputContext   *context,
@@ -155,31 +157,52 @@ void         ibus_input_context_set_capabilities
 /**
  * ibus_input_context_focus_in:
  * @context: An IBusInputContext.
- * @see_also: IBusEngine::focus_in.
  *
  * Invoked when the client application get focus.
+ *
+ * @see_also: #IBusEngine::focus_in.
  */
 void         ibus_input_context_focus_in    (IBusInputContext   *context);
 
 /**
  * ibus_input_context_focus_out:
  * @context: An IBusInputContext.
- * @see_also: IBusEngine::focus_out.
  *
  * Invoked when the client application get focus.
+ *
+ * @see_also: #IBusEngine::focus_out.
  */
 void         ibus_input_context_focus_out   (IBusInputContext   *context);
 
 
 /**
- * ibus_input_context_focus_out:
+ * ibus_input_context_reset:
  * @context: An IBusInputContext.
- * @see_also: IBusEngine::reset.
  *
  * Invoked when the IME is reset.
+ *
+ * @see_also: #IBusEngine::reset
  */
 void         ibus_input_context_reset       (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_enable:
+ * @context: An IBusInputContext.
+ *
+ * Invoked when the IME is enabled, either by IME switch hotkey or select from the menu.
+ *
+ * @see_also: #IBusEngine::enable
+ */
 void         ibus_input_context_enable      (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_disable:
+ * @context: An IBusInputContext.
+ *
+ * Invoked when the IME is disabled, either by IME switch hotkey or select from the menu.
+ *
+ * @see_also: #IBusEngine::disable
+ */
 void         ibus_input_context_disable     (IBusInputContext   *context);
 
 G_END_DECLS

@@ -64,9 +64,14 @@ typedef struct _IBusLookupTableClass IBusLookupTableClass;
  * @cursor_pos: position index of cursor.
  * @cursor_visible: whether the cursor is visible.
  * @round: TRUE for lookup table wrap around.
- * @candidates: Candidate words/phrases/
+ * @candidates: Candidate words/phrases.
+ * @labels: Candidate labels which identify individual candidates in the same page. Default is 1, 2, 3, 4 ...
  *
  * An IBusLookuptable stores the candidate words or phrases for users to choose from.
+ * Note that some input methods allow you to select candidate by pressing non-numeric
+ * keys such as "asdfghjkl;".
+ * Developers of these input methods should change the labels with
+ * ibus_lookup_table_append_label().
  */
 struct _IBusLookupTable {
     IBusSerializable parent;
@@ -129,9 +134,11 @@ IBusText            *ibus_lookup_table_get_candidate
 /**
  * ibus_lookup_table_append_label:
  * @table: An IBusLookupTable.
- * @text: candidate word/phrase to be appended (in IBusText format).
+ * @text: A candidate label to be appended (in IBusText format).
  *
  * Append a candidate word/phrase to IBusLookupTable.
+ * This function is needed if the input method select candidate with
+ * non-numeric keys such as "asdfghjkl;".
  */
 void                 ibus_lookup_table_append_label
                                                 (IBusLookupTable    *table,

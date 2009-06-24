@@ -128,6 +128,13 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
     proxy_class->ibus_signal = ibus_input_context_ibus_signal;
 
     /* install signals */
+    /**
+     * IBusInputContext::enabled:
+     * @context: An IBusContext.
+     *
+     * Emitted when an IME is enabled.
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
     context_signals[ENABLED] =
         g_signal_new (I_("enabled"),
             G_TYPE_FROM_CLASS (klass),
@@ -137,6 +144,13 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::disabled:
+     * @context: An IBusContext.
+     *
+     * Emitted when an IME is disabled.
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
     context_signals[DISABLED] =
         g_signal_new (I_("disabled"),
             G_TYPE_FROM_CLASS (klass),
@@ -146,6 +160,14 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::commit_text:
+     * @context: An IBusContext.
+     * @text: Text to be committed.
+     *
+     * Emitted when the text is going to be committed.
+     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     */
     context_signals[COMMIT_TEXT] =
         g_signal_new (I_("commit-text"),
             G_TYPE_FROM_CLASS (klass),

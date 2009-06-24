@@ -303,6 +303,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the IME is reset.
      * Implement the member function reset() in extended class to receive this signal.
      *
+     * See also:  ibus_input_context_reset().
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[RESET] =
@@ -322,6 +323,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the IME is enabled.
      * Implement the member function set_enable() in extended class to receive this signal.
      *
+     * See also:  ibus_input_context_enable().
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[ENABLE] =
@@ -341,6 +343,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the IME is disabled.
      * Implement the member function set_disable() in extended class to receive this signal.
      *
+     * See also:  ibus_input_context_disable().
      * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     engine_signals[DISABLE] =
