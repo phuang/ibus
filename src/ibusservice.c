@@ -145,7 +145,7 @@ ibus_service_class_init (IBusServiceClass *klass)
      * Send an IBusMessage though the @connection.
      *
      * Returns: TRUE if succeed; FALSE otherwise.
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     service_signals[IBUS_MESSAGE] =
         g_signal_new (I_("ibus-message"),

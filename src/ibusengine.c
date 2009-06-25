@@ -241,7 +241,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Returns: TRUE for successfully process the key; FALSE otherwise.
      * See also:  ibus_input_context_process_key_event().
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PROCESS_KEY_EVENT] =
         g_signal_new (I_("process-key-event"),
@@ -264,7 +264,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function focus_in() in extended class to receive this signal.
      *
      * See also: ibus_input_context_focus_in()
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
@@ -284,7 +284,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function focus_out() in extended class to receive this signal.
      *
      * See also: ibus_input_context_focus_out()
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
@@ -304,7 +304,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function reset() in extended class to receive this signal.
      *
      * See also:  ibus_input_context_reset().
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[RESET] =
         g_signal_new (I_("reset"),
@@ -324,7 +324,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function set_enable() in extended class to receive this signal.
      *
      * See also:  ibus_input_context_enable().
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[ENABLE] =
         g_signal_new (I_("enable"),
@@ -344,7 +344,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function set_disable() in extended class to receive this signal.
      *
      * See also:  ibus_input_context_disable().
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[DISABLE] =
         g_signal_new (I_("disable"),
@@ -368,7 +368,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function set_cursor_location() in extended class to receive this signal.
      *
      * See also:  ibus_input_context_set_cursor_location().
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
@@ -393,7 +393,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Implement the member function set_capabilities() in extended class to receive this signal.
      *
      * See also:  ibus_input_context_set_capabilities().
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[SET_CAPABILITIES] =
         g_signal_new (I_("set-capabilities"),
@@ -413,7 +413,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the page-up button is pressed.
      * Implement the member function page_up() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PAGE_UP] =
         g_signal_new (I_("page-up"),
@@ -432,7 +432,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the page-down button is pressed.
      * Implement the member function page_down() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PAGE_DOWN] =
         g_signal_new (I_("page-down"),
@@ -451,7 +451,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the up cursor button is pressed.
      * Implement the member function cursor_up() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[CURSOR_UP] =
         g_signal_new (I_("cursor-up"),
@@ -470,7 +470,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when the down cursor button is pressed.
      * Implement the member function cursor_down() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[CURSOR_DOWN] =
         g_signal_new (I_("cursor-down"),
@@ -489,7 +489,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when candidate on lookup table is clicked.
      * Implement the member function candidate_clicked() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[CANDIDATE_CLICKED] =
         g_signal_new (I_("candidate-clicked"),
@@ -511,7 +511,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when a property is activated or change changed.
      * Implement the member function property_activate() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PROPERTY_ACTIVATE] =
         g_signal_new (I_("property-activate"),
@@ -532,7 +532,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when a property is shown.
      * Implement the member function property_side() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PROPERTY_SHOW] =
         g_signal_new (I_("property-show"),
@@ -552,7 +552,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Emitted when a property is hidden.
      * Implement the member function property_hide() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[PROPERTY_HIDE] =
         g_signal_new (I_("property-hide"),

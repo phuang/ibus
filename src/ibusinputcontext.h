@@ -152,7 +152,7 @@ void         ibus_input_context_set_cursor_location
  */
 void         ibus_input_context_set_capabilities
                                             (IBusInputContext   *context,
-                                             guint32             capabilites);
+                                             guint32             capabilities);
 
 /**
  * ibus_input_context_focus_in:

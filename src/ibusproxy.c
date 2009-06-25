@@ -199,7 +199,7 @@ ibus_proxy_class_init (IBusProxyClass *klass)
      * Emitted when sending a signal.
      * Implement the member function ibus_signal() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      * Returns: TRUE if the path of @message is identical to IBusProxy:path and successfully handled.
      *
      * @see_also: ibus_proxy_handle_signal().

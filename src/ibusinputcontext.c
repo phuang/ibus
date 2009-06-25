@@ -130,10 +130,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
     /* install signals */
     /**
      * IBusInputContext::enabled:
-     * @context: An IBusContext.
+     * @context: An IBusInputContext.
      *
      * Emitted when an IME is enabled.
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     context_signals[ENABLED] =
         g_signal_new (I_("enabled"),
@@ -146,10 +145,9 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
 
     /**
      * IBusInputContext::disabled:
-     * @context: An IBusContext.
+     * @context: An IBusInputContext.
      *
      * Emitted when an IME is disabled.
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     context_signals[DISABLED] =
         g_signal_new (I_("disabled"),
@@ -161,12 +159,11 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_TYPE_NONE, 0);
 
     /**
-     * IBusInputContext::commit_text:
-     * @context: An IBusContext.
+     * IBusInputContext::commit-text:
+     * @context: An IBusInputContext.
      * @text: Text to be committed.
      *
      * Emitted when the text is going to be committed.
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
      */
     context_signals[COMMIT_TEXT] =
         g_signal_new (I_("commit-text"),
@@ -179,6 +176,15 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             1,
             IBUS_TYPE_TEXT);
 
+    /**
+     * IBusInputContext::forward-key-event:
+     * @context: An IBusInputContext.
+     * @keyval: Key symbol of the keyboard event.
+     * @keycode: Key symbol of the keyboard event.
+     * @modifiers: Key modifier flags.
+     *
+     * Emitted to forward key event from IME to client of IME.
+     */
     context_signals[FORWARD_KEY_EVENT] =
         g_signal_new (I_("forward-key-event"),
             G_TYPE_FROM_CLASS (klass),
@@ -192,6 +198,15 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_TYPE_UINT,
             G_TYPE_UINT);
 
+    /**
+     * IBusInputContext::update-preedit-text:
+     * @context: An IBusInputContext.
+     * @text: Text to be updated.
+     * @cursor_pos: Cursor position.
+     * @visible: Whether the update is visible.
+     *
+     * Emitted to update preedit text.
+     */
     context_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -205,6 +220,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_TYPE_UINT,
             G_TYPE_BOOLEAN);
 
+    /**
+     * IBusInputContext::show-preedit-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to show preedit text.
+     */
     context_signals[SHOW_PREEDIT_TEXT] =
         g_signal_new (I_("show-preedit-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -214,6 +235,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::hide-preedit-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to hide preedit text.
+     */
     context_signals[HIDE_PREEDIT_TEXT] =
         g_signal_new (I_("hide-preedit-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -223,6 +250,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::update-auxiliary-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to hide auxilary text.
+     */
     context_signals[UPDATE_AUXILIARY_TEXT] =
         g_signal_new (I_("update-auxiliary-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -234,6 +267,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             IBUS_TYPE_TEXT,
             G_TYPE_BOOLEAN);
 
+    /**
+     * IBusInputContext::show-auxiliary-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to show auxiliary text.
+     */
     context_signals[SHOW_AUXILIARY_TEXT] =
         g_signal_new (I_("show-auxiliary-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -243,6 +282,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::hide-auxiliary-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to hide auxiliary text.
+     */
     context_signals[HIDE_AUXILIARY_TEXT] =
         g_signal_new (I_("hide-auxiliary-text"),
             G_TYPE_FROM_CLASS (klass),
@@ -252,6 +297,14 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::update-lookup-table:
+     * @context: An IBusInputContext.
+     * @table: An IBusLookupTable to be updated.
+     * @visible: Whether the table should be visible.
+     *
+     * Emitted to update lookup table.
+     */
     context_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -263,6 +316,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             IBUS_TYPE_LOOKUP_TABLE,
             G_TYPE_BOOLEAN);
 
+    /**
+     * IBusInputContext::show-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to show lookup table.
+     */
     context_signals[SHOW_LOOKUP_TABLE] =
         g_signal_new (I_("show-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -272,6 +331,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::hide-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to hide lookup table.
+     */
     context_signals[HIDE_LOOKUP_TABLE] =
         g_signal_new (I_("hide-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -281,6 +346,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::page-up-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to view the previous page of lookup table.
+     */
     context_signals[PAGE_UP_LOOKUP_TABLE] =
         g_signal_new (I_("page-up-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -290,6 +361,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::page-down-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to view the next page of lookup table.
+     */
     context_signals[PAGE_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("page-down-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -299,6 +376,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::cursor-up-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to select previous candidate of lookup table.
+     */
     context_signals[CURSOR_UP_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-up-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -308,6 +391,12 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 
+    /**
+     * IBusInputContext::cursor-down-lookup-table:
+     * @context: An IBusInputContext.
+     *
+     * Emitted to select next candidate of lookup table.
+     */
     context_signals[CURSOR_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-down-lookup-table"),
             G_TYPE_FROM_CLASS (klass),
@@ -318,6 +407,13 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusInputContext::register-properties:
+     * @context: An IBusInputContext.
+     * @props: An IBusPropList that contains properties.
+     *
+     * Emitted to register the properties in @props.
+     */
     context_signals[REGISTER_PROPERTIES] =
         g_signal_new (I_("register-properties"),
             G_TYPE_FROM_CLASS (klass),
@@ -329,6 +425,13 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             1,
             IBUS_TYPE_PROP_LIST);
 
+    /**
+     * IBusInputContext::update-property:
+     * @context: An IBusInputContext.
+     * @prop: The IBusProperty to be updated.
+     *
+     * Emitted to update the property @prop.
+     */
     context_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
             G_TYPE_FROM_CLASS (klass),

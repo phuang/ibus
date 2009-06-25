@@ -1,0 +1,36 @@
+include dvorak-common
+keycode 2 = 1
+    shift keycode 2 = exclam
+keycode 3 = 2
+    shift keycode 3 = at
+keycode 4 = 3
+    shift keycode 4 = numbersign
+keycode 5 = 4
+    shift keycode 5 = dollar
+keycode 6 = 5
+    shift keycode 6 = percent
+keycode 7 = 6
+    shift keycode 7 = asciicircum
+keycode 8 = 7
+    shift keycode 8 = ampersand
+keycode 9 = 8
+    shift keycode 9 = asterisk
+keycode 10 = 9
+    shift keycode 10 = parenleft
+keycode 11 = 0
+    shift keycode 11 = parenright
+keycode 12 = bracketleft
+    shift keycode 12 = braceleft
+keycode 13 = bracketright
+    shift keycode 13 = braceright
+keycode 16 = apostrophe
+    shift keycode 16 = quotedbl
+keycode 26 = slash
+    shift keycode 26 = question
+keycode 27 = equal
+    shift keycode 27 = plus
+keycode 41 = grave
+    shift keycode 41 = asciitilde
+keycode 44 = semicolon
+    shift keycode 44 = colon
+

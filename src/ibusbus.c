@@ -112,7 +112,7 @@ ibus_bus_class_init (IBusBusClass *klass)
      *
      * Emitted when IBusBus is connected.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[CONNECTED] =
         g_signal_new (I_("connected"),
@@ -129,7 +129,7 @@ ibus_bus_class_init (IBusBusClass *klass)
      *
      * Emitted when IBusBus is disconnected.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),

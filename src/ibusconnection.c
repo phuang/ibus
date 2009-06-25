@@ -126,7 +126,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
      * Emitted when sending an ibus-message.
      * Implement the member function ibus_message() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      *
      * Returns: TRUE if succeed; FALSE otherwise.
      */
@@ -148,7 +148,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
      * Emitted when sending an ibus-message.
      * Implement the member function ibus_message() in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      *
      * Returns: TRUE if succeed; FALSE otherwise.
      */
@@ -170,7 +170,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
      * Emitted when sending an ibus-signal.
      * Implement the member function ibus_signal() function in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      *
      * Returns: TRUE if succeed; FALSE otherwise.
      */
@@ -192,7 +192,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
      * Emitted when an ibus-message is sent.
      * Implement the member function ibus_message_sent() function in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     connection_signals[IBUS_MESSAGE_SENT] =
         g_signal_new (I_("ibus-message-sent"),
@@ -211,7 +211,7 @@ ibus_connection_class_init (IBusConnectionClass *klass)
      * Emitted when an ibus-message is disconnected.
      * Implement the member function disconnected() function in extended class to receive this signal.
      *
-     * <note><para>@user_data is not actually a valid parameter. It is displayed because of GtkDoc bug.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      *
      */
     connection_signals[DISCONNECTED] =
