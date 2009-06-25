@@ -1560,6 +1560,7 @@ _engine_commit_text_cb (BusEngineProxy  *engine,
 static void
 _engine_forward_key_event_cb (BusEngineProxy    *engine,
                               guint              keyval,
+                              guint              keycode,
                               guint              state,
                               BusInputContext   *context)
 {
@@ -1571,6 +1572,7 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
     bus_input_context_send_signal (context,
                                    "ForwardKeyEvent",
                                    G_TYPE_UINT,  &keyval,
+                                   G_TYPE_UINT,  &keycode,
                                    G_TYPE_UINT,  &state,
                                    G_TYPE_INVALID);
 

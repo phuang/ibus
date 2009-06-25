@@ -268,6 +268,7 @@ void         ibus_engine_hide_lookup_table
  * ibus_engine_forward_key_event:
  * @engine: An IBusEngine.
  * @keyval: KeySym.
+ * @keycode: keyboard scancode.
  * @state: Key modifier flags.
  *
  * Forward the key event.
@@ -275,6 +276,7 @@ void         ibus_engine_hide_lookup_table
 void         ibus_engine_forward_key_event
                                         (IBusEngine         *engine,
                                          guint               keyval,
+                                         guint               keycode,
                                          guint               state);
 
 /**

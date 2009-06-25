@@ -163,9 +163,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__UINT_UINT,
+            ibus_marshal_VOID__UINT_UINT_UINT,
             G_TYPE_NONE,
-            2,
+            3,
+            G_TYPE_UINT,
             G_TYPE_UINT,
             G_TYPE_UINT);
 
@@ -426,12 +427,14 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                      IBUS_INTERFACE_INPUT_CONTEXT,
                                      "ForwardKeyEvent")) {
         guint32 keyval;
+        guint32 keycode;
         guint32 state;
         gboolean retval;
 
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_UINT, &keyval,
+                                        G_TYPE_UINT, &keycode,
                                         G_TYPE_UINT, &state,
                                         G_TYPE_INVALID);
 
@@ -441,6 +444,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        context_signals[FORWARD_KEY_EVENT],
                        0,
                        keyval,
+                       keycode,
                        state | IBUS_FORWARD_MASK);
     }
     else if (ibus_message_is_signal (message,

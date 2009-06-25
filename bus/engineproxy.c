@@ -145,9 +145,10 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__UINT_UINT,
+            ibus_marshal_VOID__UINT_UINT_UINT,
             G_TYPE_NONE,
-            2,
+            3,
+            G_TYPE_UINT,
             G_TYPE_UINT,
             G_TYPE_UINT);
 
@@ -401,19 +402,25 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_object_unref (text);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
-        guint keyval;
-        guint states;
+        guint32 keyval;
+        guint32 keycode;
+        guint32 states;
         gboolean retval;
 
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_UINT, &keyval,
+                                        G_TYPE_UINT, &keycode,
                                         G_TYPE_UINT, &states,
                                         G_TYPE_INVALID);
 
         if (!retval)
             goto failed;
-        g_signal_emit (engine, engine_signals[FORWARD_KEY_EVENT], keyval, states);
+        g_signal_emit (engine,
+                       engine_signals[FORWARD_KEY_EVENT],
+                       keyval,
+                       keycode,
+                       states);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreeditText")) {
         IBusText *text;

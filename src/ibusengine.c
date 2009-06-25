@@ -1199,11 +1199,13 @@ void ibus_engine_hide_lookup_table (IBusEngine *engine)
 
 void ibus_engine_forward_key_event (IBusEngine      *engine,
                                     guint            keyval,
+                                    guint            keycode,
                                     guint            state)
 {
     _send_signal (engine,
                   "ForwardKeyEvent",
                   G_TYPE_UINT, &keyval,
+                  G_TYPE_UINT, &keycode,
                   G_TYPE_UINT, &state,
                   G_TYPE_INVALID);
 }
