@@ -110,7 +110,6 @@ class CandidateArea(gtk.HBox):
 
             self.__labels.append((label1, label2))
 
-        cursor = gdk.Cursor(gdk.HAND1)
         for i, ws in enumerate(self.__candidates):
             for w in ws:
                 w.connect("button-press-event", lambda w, e, i:self.emit("candidate-clicked", i, e.button, e.state), i)
