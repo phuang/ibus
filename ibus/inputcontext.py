@@ -32,6 +32,7 @@ import common
 import serializable
 
 class InputContext(object.Object):
+    __gtype_name__ = "IBusInputContext"
     __gsignals__ = {
         "commit-text" : (
             gobject.SIGNAL_RUN_LAST,

@@ -26,6 +26,7 @@ __all__ = (
 import gobject
 
 class Object(gobject.GObject):
+    __gtype_name__ = "IBusObject"
     __gsignals__ = {
         'destroy' : (
             gobject.SIGNAL_RUN_LAST,
@@ -54,4 +55,3 @@ class Object(gobject.GObject):
         map(self.disconnect, self.__handlers)
         self.__handlers = []
 
-gobject.type_register(Object)

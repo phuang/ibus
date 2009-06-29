@@ -28,6 +28,7 @@ from exception import IBusException
 from serializable import *
 
 class ObservedPath(Serializable):
+    __gtype_name__ = "IBusObservedPath"
     __NAME__ = "IBusObservedPath"
     def __init__ (self, path="", mtime=0):
         super(ObservedPath, self).__init__()

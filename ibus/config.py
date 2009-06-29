@@ -65,6 +65,7 @@ class ConfigProxy(interface.IConfig):
         self.__config.destroy()
 
 class Config(object.Object):
+    __gtype_name__ = "IBusConfig"
     __gsignals__ = {
         "reloaded" : (
             gobject.SIGNAL_RUN_LAST,
@@ -139,4 +140,3 @@ class Config(object.Object):
     def set_list(self, section, name, value, signature):
         return self.set_value(section, name, dbus.Array(value, signature=signature))
 
-gobject.type_register(Config)

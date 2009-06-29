@@ -56,6 +56,7 @@ def deserialize_object(v):
     return v
 
 class Serializable(Object):
+    __gtype_name__ = "IBusSerializable"
     __NAME__ = "IBusSerializable"
     def __init__(self):
         super(Serializable, self).__init__()
@@ -78,4 +79,3 @@ class Serializable(Object):
         super(Serializable, self).do_destroy()
 
 __serializable_name_dict["IBusSerializable"] = Serializable
-gobject.type_register(Serializable)

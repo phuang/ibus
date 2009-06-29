@@ -59,6 +59,7 @@ def _to_text(text):
     return Text(text)
 
 class Property(Serializable):
+    __gtype_name__ = "IBusProperty"
     __NAME__ = "IBusProperty"
     def __init__(self, key="", type=PROP_TYPE_NORMAL, label=u"", icon=u"", tooltip=u"",
                  sensitive=True, visible=True, state=PROP_STATE_UNCHECKED):
@@ -176,6 +177,7 @@ class Property(Serializable):
 serializable_register(Property)
 
 class PropList(Serializable):
+    __gtype_name__ = "IBusPropList"
     __NAME__ = "IBusPropList"
     def __init__(self):
         super(PropList, self).__init__()

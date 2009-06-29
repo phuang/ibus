@@ -28,6 +28,7 @@ from exception import IBusException
 from serializable import *
 
 class EngineDesc(Serializable):
+    __gtype_name__ = "IBusEngineDesc"
     __NAME__ = "IBusEngineDesc"
     def __init__ (self, name="", longname="", description="", language="", license="", author="", icon="", layout=""):
         super(EngineDesc, self).__init__()

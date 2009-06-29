@@ -29,6 +29,7 @@ from serializable import *
 from attribute import AttrList
 
 class Text(Serializable):
+    __gtype_name__ = "IBusText"
     __NAME__ = "IBusText"
     def __init__ (self, text="", attrs=None):
         super(Text, self).__init__()

@@ -49,6 +49,7 @@ ATTR_UNDERLINE_DOUBLE = 2
 ATTR_UNDERLINE_LOW = 3
 
 class Attribute(Serializable):
+    __gtype_name__ = "IBusAttribute"
     __NAME__ = "IBusAttribute"
     def __init__ (self, type=0, value=0, start_index=0, end_index=0):
         super(Attribute, self).__init__()
@@ -112,6 +113,7 @@ def RGB (r, g, b):
     return ARGB (255, r, g, b)
 
 class AttrList(Serializable):
+    __gtype_name__ = "IBusAttrList"
     __NAME__ = "IBusAttrList"
     def __init__ (self, attrs = []):
         super(AttrList, self).__init__()
