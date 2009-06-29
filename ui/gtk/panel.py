@@ -266,7 +266,7 @@ class Panel(ibus.PanelBase):
         font_name = unicode(font_name, "utf-8")
         custom_font =  self.__config.get_value("panel", "custom_font", font_name)
         style_string = 'style "custom-font" { font_name="%s" }\n' \
-            'class "IBusPanelLabel" style "custom-font"\n'
+            'class "IBusCandidateLabel" style "custom-font"\n'
         if use_custom_font:
             style_string = style_string % custom_font
             gtk.rc_parse_string(style_string)

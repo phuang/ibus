@@ -37,7 +37,7 @@ class EventBox(gtk.EventBox):
         widget.window.set_cursor(gdk.Cursor(gdk.HAND2))
 
 class Label(gtk.Label):
-    __gtype_name__ = "IBusPanelLabel"
+    __gtype_name__ = "IBusCandidateLabel"
 
 class HSeparator(gtk.HBox):
     __gtype_name__ = "IBusHSeparator"
