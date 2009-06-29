@@ -28,6 +28,7 @@ import icon
 from menu import *
 
 class ToolButton(gtk.ToolButton, PropItem):
+    __gtype_name__ = "IBusToolButton"
     __gsignals__ = {
         "property-activate" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -82,6 +83,7 @@ class ToolButton(gtk.ToolButton, PropItem):
 
 
 class ToggleToolButton(gtk.ToggleToolButton, PropItem):
+    __gtype_name__ = "IBusToggleToolButton"
     __gsignals__ = {
         "property-activate" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -139,12 +141,14 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
         self.emit("property-activate", self._prop.key, self._prop.state)
 
 class SeparatorToolItem(gtk.SeparatorToolItem, PropItem):
+    __gtype_name__ = "IBusSeparatorToolItem"
     def __init__ (self, prop):
         gtk.SeparatorToolItem.__init__(self)
         self.set_homogeneous(False)
         PropItem.__init__(self, prop)
 
 class MenuToolButton(ToggleToolButton):
+    __gtype_name__ = "IBusMenuToolButton"
     # __gsignals__ = {
     #        "property-activate" : (
     #            gobject.SIGNAL_RUN_FIRST,
@@ -166,7 +170,4 @@ class MenuToolButton(ToggleToolButton):
         if self.get_active():
             self._menu.popup(0, gtk.get_current_event_time(), self)
 
-gobject.type_register(ToolButton, "ToolButton")
-gobject.type_register(ToggleToolButton, "IBusToggleToolButton")
-gobject.type_register(MenuToolButton, "MenuToolButton")
 

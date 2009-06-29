@@ -53,6 +53,7 @@ gtk.about_dialog_set_url_hook(url_hook, None)
 gtk.about_dialog_set_email_hook(email_hook, None)
 
 class Panel(ibus.PanelBase):
+    __gtype_name__ = "IBusPanel"
     def __init__ (self, bus):
         super(Panel, self).__init__(bus)
         self.__bus = bus
@@ -450,4 +451,3 @@ class Panel(ibus.PanelBase):
             self.__setup_pid = 0
         self.__setup_pid = os.spawnl(os.P_NOWAIT, self.__setup_cmd, "ibus-setup")
 
-gobject.type_register(Panel, "IBusPanel")

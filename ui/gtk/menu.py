@@ -26,6 +26,7 @@ import icon
 from propitem import PropItem
 
 class Menu (gtk.Menu, PropItem):
+    __gtype_name__ = "IBusMenu"
     __gsignals__ = {
     "property-activate" : (
         gobject.SIGNAL_RUN_FIRST,
@@ -84,6 +85,7 @@ class Menu (gtk.Menu, PropItem):
 
 
 class ImageMenuItem (gtk.ImageMenuItem, PropItem):
+    __gtype_name__ = "IBusImageMenuItem"
     __gsignals__ = {
     "property-activate" : (
         gobject.SIGNAL_RUN_FIRST,
@@ -120,6 +122,7 @@ class ImageMenuItem (gtk.ImageMenuItem, PropItem):
 
 
 class CheckMenuItem (gtk.CheckMenuItem, PropItem):
+    __gtype_name__ = "IBusCheckMenuItem"
     __gsignals__ = {
     "property-activate" : (
         gobject.SIGNAL_RUN_FIRST,
@@ -159,6 +162,7 @@ class CheckMenuItem (gtk.CheckMenuItem, PropItem):
 
 
 class RadioMenuItem (gtk.RadioMenuItem, PropItem):
+    __gtype_name__ = "IBusRadioMenuItem"
     __gsignals__ = {
     "property-activate" : (
         gobject.SIGNAL_RUN_FIRST,
@@ -197,6 +201,7 @@ class RadioMenuItem (gtk.RadioMenuItem, PropItem):
         self.emit ("property-activate", self._prop.key, self._prop.state)
 
 class SeparatorMenuItem (gtk.SeparatorMenuItem, PropItem):
+    __gtype_name__ = "IBusSeparatorMenuItem"
     __gsignals__ = {
     "property-activate" : (
         gobject.SIGNAL_RUN_FIRST,
@@ -205,11 +210,6 @@ class SeparatorMenuItem (gtk.SeparatorMenuItem, PropItem):
     }
 
 
-gobject.type_register (Menu, "IBusMenu")
-gobject.type_register (ImageMenuItem, "IBusImageMenuItem")
-gobject.type_register (CheckMenuItem, "IBusCheckMenuItem")
-gobject.type_register (RadioMenuItem, "IBusRadioMenuItem")
-gobject.type_register (SeparatorMenuItem, "IBusSeparatorMenuItem")
 
 def menu_position (menu, button):
     screen = button.get_screen ()

@@ -28,6 +28,7 @@ import ibus
 from ibus._gtk import PangoAttrList
 
 class EventBox(gtk.EventBox):
+    __gtype_name__ = "IBusEventBox"
     def __init__(self):
         super(EventBox, self).__init__()
         self.connect("realize", self.__realize_cb)
@@ -35,23 +36,23 @@ class EventBox(gtk.EventBox):
     def __realize_cb(self, widget):
         widget.window.set_cursor(gdk.Cursor(gdk.HAND2))
 
-gobject.type_register(EventBox, "IBusEventBox")
-
 class Label(gtk.Label):
-    pass
-gobject.type_register(Label, "IBusPanelLabel")
+    __gtype_name__ = "IBusPanelLabel"
 
 class HSeparator(gtk.HBox):
+    __gtype_name__ = "IBusHSeparator"
     def __init__(self):
         super(HSeparator, self).__init__()
         self.pack_start(gtk.HSeparator(), True, True, 4)
 
 class VSeparator(gtk.VBox):
+    __gtype_name__ = "IBusVSeparator"
     def __init__(self):
         super(VSeparator, self).__init__()
         self.pack_start(gtk.VSeparator(), True, True, 4)
 
 class CandidateArea(gtk.HBox):
+    __gtype_name__ = "IBusCandidateArea"
     __gsignals__ = {
         "candidate-clicked" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -59,8 +60,9 @@ class CandidateArea(gtk.HBox):
             (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT )),
     }
 
-    def __init__ (self, orientation):
-        gtk.HBox.__init__ (self)
+    def __init__(self, orientation):
+        super(CandidateArea, self).__init__()
+        self.set_name("IBusCandidateArea")
         self.__orientation = orientation
         self.__labels = []
         self.__candidates = []
@@ -153,6 +155,7 @@ class CandidateArea(gtk.HBox):
             w.hide()
 
 class CandidatePanel(gtk.VBox):
+    __gtype_name__ = "IBusCandidate"
     __gproperties__ = {
         'orientation' : (gtk.Orientation,        # type
         'orientation of candidates',            # nick name
@@ -184,8 +187,9 @@ class CandidatePanel(gtk.VBox):
             (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
     }
 
-    def __init__ (self):
-        gtk.VBox.__init__ (self)
+    def __init__(self):
+        super(CandidatePanel, self).__init__()
+        self.set_name("IBusCandidate")
         self.__tooltips = gtk.Tooltips()
 
         self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
@@ -538,5 +542,11 @@ class CandidatePanel(gtk.VBox):
     def move(self, x, y):
         self.__toplevel.move(x, y)
 
-gobject.type_register(CandidatePanel, "IBusCandidate")
-
+if __name__ == "__main__":
+    table = ibus.LookupTable()
+    table.append_candidate(ibus.Text("AAA"))
+    table.append_candidate(ibus.Text("BBB"))
+    cp = CandidatePanel()
+    cp.show_all()
+    cp.update_lookup_table(table, True)
+    gtk.main()

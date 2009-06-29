@@ -39,6 +39,7 @@ N_ = lambda a : a
 ICON_SIZE = gtk.ICON_SIZE_MENU
 
 class LanguageBar(gtk.Toolbar):
+    __gtype_name__ = "IBusLanguageBar"
     __gsignals__ = {
         "property-activate" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -259,5 +260,4 @@ class LanguageBar(gtk.Toolbar):
         else:
             self.show_all()
 
-gobject.type_register(LanguageBar, "IBusLanguageBar")
 

@@ -24,6 +24,7 @@ import gtk.gdk as gdk
 import gobject
 
 class Handle(gtk.EventBox):
+    __gtype_name__ = "IBusHandle"
     __gsignals__ = {
         "move-begin" : (
             gobject.SIGNAL_RUN_LAST,
@@ -116,7 +117,4 @@ class Handle(gtk.EventBox):
                     10, self.allocation.height,
                     gtk.ORIENTATION_VERTICAL)
         return True
-
-gobject.type_register(Handle, "IBusHandle")
-
 
