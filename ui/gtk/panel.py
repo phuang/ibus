@@ -54,7 +54,7 @@ gtk.about_dialog_set_email_hook(email_hook, None)
 
 class Panel(ibus.PanelBase):
     __gtype_name__ = "IBusPanel"
-    def __init__ (self, bus):
+    def __init__(self, bus):
         super(Panel, self).__init__(bus)
         self.__bus = bus
         self.__config = self.__bus.get_config()
@@ -345,9 +345,9 @@ class Panel(ibus.PanelBase):
                 engine = tmp[lang][0]
                 item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
                 if engine.icon:
-                    item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                    item.set_image(_icon.IconWidget(engine.icon, size[0]))
                 else:
-                    item.set_image (_icon.IconWidget("engine-default", size[0]))
+                    item.set_image(_icon.IconWidget("engine-default", size[0]))
                 item.connect("activate", self.__im_menu_item_activate_cb, engine)
                 menu.add(item)
             else:
@@ -358,16 +358,16 @@ class Panel(ibus.PanelBase):
                 for engine in tmp[lang]:
                     item = gtk.ImageMenuItem(engine.longname)
                     if engine.icon:
-                        item.set_image (_icon.IconWidget(engine.icon, size[0]))
+                        item.set_image(_icon.IconWidget(engine.icon, size[0]))
                     else:
-                        item.set_image (_icon.IconWidget("engine-default", size[0]))
+                        item.set_image(_icon.IconWidget("engine-default", size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, engine)
                     submenu.add(item)
 
         item = gtk.ImageMenuItem(_("No input method"))
-        item.set_image (_icon.IconWidget("gtk-close", size[0]))
+        item.set_image(_icon.IconWidget("gtk-close", size[0]))
         item.connect("activate", self.__im_menu_item_activate_cb, None)
-        menu.add (item)
+        menu.add(item)
 
         menu.show_all()
         menu.set_take_focus(False)

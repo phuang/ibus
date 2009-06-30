@@ -2,12 +2,12 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright(c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2 of the License, or(at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,11 +20,11 @@
 # Boston, MA  02111-1307  USA
 
 class PropItem:
-    def __init__ (self, prop):
+    def __init__(self, prop):
         self._prop = prop
         self._sub_items = []
 
-    def update_property (self, prop):
+    def update_property(self, prop):
         if self._prop == None:
             return False
 
@@ -32,31 +32,31 @@ class PropItem:
 
         if self._prop.key == prop.key and self._prop.type == prop.type:
             self._prop = prop
-            self.property_changed ()
+            self.property_changed()
             retval =  True
 
-        if any (map (lambda i: i.update_property (prop), self._sub_items)):
+        if any(map(lambda i: i.update_property(prop), self._sub_items)):
             retval = True
 
         return retval
 
-    def set_prop_label (self, label):
+    def set_prop_label(self, label):
         self._prop.label = label
-        self.property_changed ()
+        self.property_changed()
 
-    def set_icon (self, icon):
+    def set_icon(self, icon):
         self._prop.icon = icon
-        self.property_changed ()
+        self.property_changed()
 
-    def set_tooltip (self, tooltip):
+    def set_tooltip(self, tooltip):
         self._prop.tooltip = tooltip
-        self.property_changed ()
+        self.property_changed()
 
-    def set_state (self, state):
+    def set_state(self, state):
         self._prop.state = state
-        self.property_changed ()
+        self.property_changed()
 
-    def property_changed (self):
+    def property_changed(self):
         pass
 
 

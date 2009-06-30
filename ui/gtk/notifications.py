@@ -35,7 +35,7 @@ _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
 class Notifications(ibus.NotificationsBase):
-    def __init__ (self, bus):
+    def __init__(self, bus):
         super(Notifications, self).__init__(bus)
         self.__bus = bus
         try:

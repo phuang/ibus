@@ -37,9 +37,9 @@ class ToolButton(gtk.ToolButton, PropItem):
         }
 
     def __init__(self, prop):
-        gtk.ToolButton.__init__ (self, label = prop.label.text)
+        gtk.ToolButton.__init__(self, label = prop.label.text)
         self.set_homogeneous(False)
-        PropItem.__init__ (self, prop)
+        PropItem.__init__(self, prop)
         self.property_changed()
 
     def set_icon_name(self, icon_name):
@@ -91,10 +91,10 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
             (gobject.TYPE_STRING, gobject.TYPE_INT)),
         }
 
-    def __init__ (self, prop):
-        gtk.ToggleToolButton.__init__ (self)
+    def __init__(self, prop):
+        gtk.ToggleToolButton.__init__(self)
         self.set_homogeneous(False)
-        PropItem.__init__ (self, prop)
+        PropItem.__init__(self, prop)
         self.property_changed()
 
     def set_icon_name(self, icon_name):
@@ -156,7 +156,7 @@ class MenuToolButton(ToggleToolButton):
     #            (gobject.TYPE_STRING, gobject.TYPE_INT)),
     #        }
 
-    def __init__ (self, prop):
+    def __init__(self, prop):
         super(MenuToolButton, self).__init__(prop)
         self._menu = Menu(prop)
         self._menu.connect("deactivate", lambda m: self.set_active(False))
