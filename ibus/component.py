@@ -121,8 +121,6 @@ class Component(Serializable):
         self.__observed_paths = map(deserialize_object, struct.pop(0))
         self.__engines = map(deserialize_object, struct.pop(0))
 
-serializable_register(Component)
-
 def test():
     text = Component("Hello", "", "", "", "", "", "", "")
     value = serialize_object(text)

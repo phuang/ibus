@@ -96,8 +96,6 @@ class EngineDesc(Serializable):
         self.__icon = struct.pop(0)
         self.__layout = struct.pop(0)
 
-serializable_register(EngineDesc)
-
 def test():
     engine = EngineDesc("Hello", "", "", "", "", "", "", "")
     value = serialize_object(engine)

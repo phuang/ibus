@@ -58,8 +58,6 @@ class Text(Serializable):
         self.__text = struct.pop(0)
         self.__attrs = deserialize_object(struct.pop(0))
 
-serializable_register(Text)
-
 def test():
     text = Text("Hello")
     value = serialize_object(text)

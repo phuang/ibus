@@ -130,5 +130,3 @@ class FactoryInfo(Serializable):
         self.__authors = struct.pop(0)
         self.__credits = struct.pop(0)
 
-serializable_register(FactoryInfo)
-

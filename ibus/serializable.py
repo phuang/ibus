@@ -20,7 +20,6 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-        "serializable_register",
         "Serializable",
         "serialize_object",
         "deserialize_object",
@@ -33,8 +32,8 @@ import gobject
 __serializable_name_dict = dict()
 
 def serializable_register(classobj):
-    if not issubclass(classobj, Serializable):
-        raise "%s is not a sub-class of Serializable" % str(classobj)
+    # if not issubclass(classobj, Serializable):
+    #     raise "%s is not a sub-class of Serializable" % str(classobj)
     __serializable_name_dict[classobj.__NAME__] = classobj
 
 def serialize_object(o):
@@ -55,7 +54,14 @@ def deserialize_object(v):
         return o
     return v
 
+class SerializableMeta(gobject.GObjectMeta):
+    def __init__(cls, name, bases, dict_):
+        super(SerializableMeta, cls).__init__(name, bases, dict_)
+        if "__NAME__" in cls.__dict__:
+            serializable_register(cls)
+
 class Serializable(Object):
+    __metaclass__ = SerializableMeta
     __gtype_name__ = "IBusSerializable"
     __NAME__ = "IBusSerializable"
     def __init__(self):

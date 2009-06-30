@@ -174,8 +174,6 @@ class Property(Serializable):
 
         self.__sub_props = deserialize_object(props)
 
-serializable_register(Property)
-
 class PropList(Serializable):
     __gtype_name__ = "IBusPropList"
     __NAME__ = "IBusPropList"
@@ -219,8 +217,6 @@ class PropList(Serializable):
 
     def __getitem__(self, i):
         return self.__props.__getitem__(i)
-
-serializable_register(PropList)
 
 def test():
     props = PropList()

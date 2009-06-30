@@ -215,9 +215,6 @@ class LookupTable(Serializable):
         self.__candidates = map(deserialize_object, struct.pop(0))
         self.__labels = map(deserialize_object, struct.pop(0))
 
-
-serializable_register(LookupTable)
-
 def test():
     t = LookupTable()
     # attrs = AttrList()

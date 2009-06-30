@@ -54,8 +54,6 @@ class ObservedPath(Serializable):
         self.__path = struct.pop(0)
         self.__mtime = struct.pop(0)
 
-serializable_register(ObservedPath)
-
 def test():
     op = ObservedPath("/tmp", 111)
     value = serialize_object(op)

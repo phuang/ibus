@@ -92,8 +92,6 @@ class Attribute(Serializable):
         self.__start_index = struct.pop(0)
         self.__end_index = struct.pop(0)
 
-serializable_register(Attribute)
-
 class AttributeUnderline (Attribute):
     def __init__(self, value, start_index, end_index):
         Attribute.__init__ (self, ATTR_TYPE_UNDERLINE, value, start_index, end_index)
@@ -138,8 +136,6 @@ class AttrList(Serializable):
 
     def __iter__ (self):
         return self._attrs.__iter__ ()
-
-serializable_register(AttrList)
 
 def test():
     attr_list = AttrList()
