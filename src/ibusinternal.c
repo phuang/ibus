@@ -26,14 +26,17 @@
 
 /**
  * IBusMessageQueue:
+ * @source: The parent GSource.
+ * @connection: The connection to dispatch.
+ *
  * A GSource subclass for dispatching DBusConnection messages.
  * We need this on top of the IO handlers, because sometimes
  * there are messages to dispatch queued up but no IO pending.
  */
 typedef struct
 {
-    GSource source; /**< the parent GSource */
-    DBusConnection *connection; /**< the connection to dispatch */
+    GSource source;
+    DBusConnection *connection;
 } IBusMessageQueue;
 
 static gboolean message_queue_prepare  (GSource     *source,
@@ -84,6 +87,16 @@ message_queue_dispatch (GSource     *source,
     return TRUE;
 }
 
+/**
+ * ConnectionSetup:
+ * @context: The main context.
+ * @ios: All IOHandler.
+ * @timeouts: All TimeoutHandler.
+ * @connection: NULL if this is really for a server not a connection.
+ * @message_queue_source: IBusMessageQueue.
+ *
+ */
+GSource *message_queue_source; /**< IBusMessageQueue */
 typedef struct
 {
     GMainContext *context;      /**< the main context */
@@ -510,7 +523,7 @@ connection_setup_new_from_old (GMainContext    *context,
 
 /** @} */ /* End of GLib bindings internals */
 
-/** @addtogroup IBusLib
+/* @addtogroup IBusLib
  * @{
  */
 

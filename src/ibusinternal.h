@@ -17,6 +17,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusinternal
+ * @short_description: IBus housekeeping functions.
+ * @stability: Stable
+ *
+ * This section contain several IBus house keeping functions.
+ */
 #ifndef __IBUS_INTERNEL_H_
 #define __IBUS_INTERNEL_H_
 

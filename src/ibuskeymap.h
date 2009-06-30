@@ -19,7 +19,20 @@
  */
 /**
  * SECTION: ibuskeymap
- * @short_description: Keymap with decorating information.
+ * @short_description: Keyboard mapping handling.
+ * @stability: Stable
+ * @see_also: #IBusComponent, #IBusEngineDesc
+ *
+ * An IBusKeymap defines the mapping between keyboard scancodes and
+ * keyboard symbols such as numbers, alphabets, and punctuation marks.
+ *
+ * Some input methods assume certain keyboard layout
+ * (such as Chewing and Wubi requires an US-QWERTY layout),
+ * and expect key symbols to be arranged in that order.
+ * These input methods should new an IBusKeymap
+ * instance and define the keyboard layout.
+ * Then ibus_keymap_lookup_keysym() can
+ * convert scancodes back to the key symbols.
  *
  */
 
