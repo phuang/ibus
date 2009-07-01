@@ -30,7 +30,7 @@ from enginedesc import *
 from observedpath import *
 
 class Component(Serializable):
-    __gtype_name__ = "IBusComponent"
+    __gtype_name__ = "PYIBusComponent"
     __NAME__ = "IBusComponent"
     def __init__ (self, name="", description="", version="", license="", author="", homepage="", _exec="", textdomain=""):
         super(Component, self).__init__()

@@ -62,7 +62,7 @@ class SerializableMeta(gobject.GObjectMeta):
 
 class Serializable(Object):
     __metaclass__ = SerializableMeta
-    __gtype_name__ = "IBusSerializable"
+    __gtype_name__ = "PYIBusSerializable"
     __NAME__ = "IBusSerializable"
     def __init__(self):
         super(Serializable, self).__init__()

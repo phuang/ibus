@@ -65,7 +65,7 @@ class ConfigProxy(interface.IConfig):
         self.__config.destroy()
 
 class Config(object.Object):
-    __gtype_name__ = "IBusConfig"
+    __gtype_name__ = "PYIBusConfig"
     __gsignals__ = {
         "reloaded" : (
             gobject.SIGNAL_RUN_LAST,

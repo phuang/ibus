@@ -26,7 +26,7 @@ __all__ = (
 import gobject
 
 class Object(gobject.GObject):
-    __gtype_name__ = "IBusObject"
+    __gtype_name__ = "PYIBusObject"
     __gsignals__ = {
         'destroy' : (
             gobject.SIGNAL_RUN_LAST,

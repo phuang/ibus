@@ -74,7 +74,7 @@ class EngineFactoryProxy(interface.IEngineFactory):
         self.remove_from_connection ()
 
 class FactoryInfo(Serializable):
-    __gtype_name__ = "IBusFactoryInfo"
+    __gtype_name__ = "PYIBusFactoryInfo"
     __NAME__ = "IBusFactoryInfo"
     def __init__ (self, path=None, name=None, lang=None, icon=None, authors=None, credits=None):
         super(FactoryInfo, self).__init__()

@@ -36,7 +36,7 @@ import config
 dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
 
 class Bus(object.Object):
-    __gtype_name__ = "IBusBus"
+    __gtype_name__ = "PYIBusBus"
     __gsignals__ = {
         "disconnected" : (
             gobject.SIGNAL_RUN_LAST,

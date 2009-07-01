@@ -28,7 +28,7 @@ from serializable import *
 from exception import *
 
 class LookupTable(Serializable):
-    __gtype_name__ = "IBusLookupTable"
+    __gtype_name__ = "PYIBusLookupTable"
     __NAME__ = "IBusLookupTable"
     def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, candidates=None, labels=None):
         super(LookupTable, self).__init__()
