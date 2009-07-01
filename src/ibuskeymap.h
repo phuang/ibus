@@ -62,11 +62,21 @@ G_BEGIN_DECLS
 
 typedef struct _IBusKeymap IBusKeymap;
 typedef struct _IBusKeymapClass IBusKeymapClass;
+
+/**
+ * KEYMAP:
+ *
+ * Data structure for storing keymap.
+ */
 typedef guint KEYMAP[256][5];
 
 /**
  * IBusKeymap:
+ * @name: The name of the keymap, such as 'us', 'jp'.
+ * @keymap: Keymap table. IME developers normally don have to touch this.
+ *
  * A keymap object in IBus.
+ *
  */
 struct _IBusKeymap {
     IBusObject parent;
@@ -85,12 +95,25 @@ GType            ibus_keymap_get_type               (void);
 
 /**
  * ibus_keymap_new:
- * @name: keymap name.
- * @returns: A newly allocated IBusKeymap.
+ * @name: The keymap file to be loaded, such as 'us', 'jp'.
+ * @returns: A newly allocated IBusKeymap; or NULL if failed.
  *
  * New an IBusKeymap.
+ *
+ * This function loads the keymap file specified in @name
+ * in the IBUS_DATA_DIR/keymaps directory.
  */
 IBusKeymap        *ibus_keymap_new                  (const gchar        *name);
+
+/**
+ * ibus_keymap_lookup_keysym:
+ * @keymap: An IBusKeymap.
+ * @keycode: A scancode to be converted.
+ * @state: Modifier flags(such as Ctrl, Shift).
+ * @return Corresponding keysym.
+ *
+ * Convert the scancode to keysym, given the keymap.
+ */
 guint              ibus_keymap_lookup_keysym        (IBusKeymap         *keymap,
                                                      guint16             keycode,
                                                      guint32             state);
