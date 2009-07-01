@@ -144,8 +144,10 @@ class KeyboardShortcutSelection(gtk.VBox):
             return
         if shortcut in self.get_shortcuts():
             return
-        model.insert(-1, (shortcut,))
-        self.__update_add_and_apply_buttons()
+        iter = model.insert(-1, (shortcut,))
+        self.__add_button.set_sensitive(False)
+        path = model.get_path(iter)
+        self.__shortcut_view.set_cursor(path)
 
     def __get_shortcut_from_buttons(self):
         modifiers = []
