@@ -19,8 +19,9 @@
  */
 /**
  * SECTION: ibusinternal
- * @short_description: IBus housekeeping functions.
+ * @short_description: IBus DBus setting functions for internal use.
  * @stability: Stable
+ * @see_also: #IBusMainLoop
  *
  * This section contain several IBus house keeping functions.
  */
@@ -32,8 +33,38 @@
 
 #define I_(string) g_intern_static_string (string)
 
+/**
+ * dbus_server_setup:
+ * @server: the server
+ * @context: the #GMainContext or #NULL for default
+ *
+ * Sets the watch and timeout functions of a #DBusServer
+ * to integrate the server with the GLib main loop.
+ * In most cases the context argument should be #NULL.
+ *
+ * If called twice for the same context, does nothing the second
+ * time. If called once with context A and once with context B,
+ * context B replaces context A as the context monitoring the
+ * connection.
+ */
 void    dbus_server_setup       (DBusServer     *server,
                                  GMainContext   *context);
+
+/**
+ * dbus_connection_setup:
+ * @connection: the connection
+ * @context: the #GMainContext or #NULL for default context
+ *
+ * Sets the watch and timeout functions of a #DBusConnection
+ * to integrate the connection with the GLib main loop.
+ * Pass in #NULL for the #GMainContext unless you're
+ * doing something specialized.
+ *
+ * If called twice for the same context, does nothing the second
+ * time. If called once with context A and once with context B,
+ * context B replaces context A as the context monitoring the
+ * connection.
+ */
 void    dbus_connection_setup   (DBusConnection *connection,
                                  GMainContext   *context);
 

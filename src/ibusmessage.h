@@ -17,6 +17,17 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusmessage
+ * @short_description: A DBusMessage in IBus.
+ * @stability: Stable
+ *
+ * An IBusMessage is essentially a DBusMessage, which representing a message received from or to
+ * be sent to another application.
+ *
+ * Besides DBusMessage functions, An IBusMessage can be manipulated
+ * with its own specific functions, which are defined in this section.
+ */
 #ifndef __IBUS_MESSAGE_H_
 #define __IBUS_MESSAGE_H_
 
@@ -33,7 +44,18 @@
 
 G_BEGIN_DECLS
 
+/**
+ * IBusMessage:
+ *
+ * An opaque data structure that represents IBusMessage.
+ */
 typedef DBusMessage IBusMessage;
+
+/**
+ * IBusMessageIter:
+ *
+ * An opaque data structure that represents IBusMessageIter.
+ */
 typedef DBusMessageIter IBusMessageIter;
 
 GType            ibus_type_get_object_path      (void);
@@ -42,7 +64,37 @@ GType            ibus_type_get_struct           (void);
 GType            ibus_type_get_dict_entry       (void);
 GType            ibus_type_get_variant          (void);
 
+/**
+ * ibus_message_new:
+ * @message_type: Type of the message.
+ * @returns: A newly allocated IBusMessage according to @message_type.
+ *
+ * New an IBusMessage.
+ * Valid D-Bus message types include:
+ * <itemizedlist>
+ *     <listitem>
+ *         <para>#DBUS_MESSAGE_TYPE_METHOD_CALL</para>
+ *     </listitem>
+ *     <listitem>
+ *         <para>#DBUS_MESSAGE_TYPE_METHOD_RETURN</para>
+ *     </listitem>
+ *     <listitem>
+ *         <para>#DBUS_MESSAGE_TYPE_METHOD_ERROR</para>
+ *     </listitem>
+ *     <listitem>
+ *         <para>#DBUS_MESSAGE_TYPE_METHOD_SIGNAL</para>
+ *     </listitem>
+ * </itemizedlist>
+ * These are defined in dbus-protocol.h in D-Bus.
+ */
 IBusMessage     *ibus_message_new               (gint                message_type);
+
+/**
+ * ibus_message_ref:
+ * @message An IBusMessage
+ *
+ * ncrements the reference count of an IBusMessage.
+ */
 IBusMessage     *ibus_message_ref               (IBusMessage        *message);
 void             ibus_message_unref             (IBusMessage        *message);
 IBusMessage     *ibus_message_new_method_call   (const gchar        *destination,

@@ -16,6 +16,19 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibuskeysyms
+ * @short_description: Key symbol definition.
+ * @stability: Stable
+ * @see_also: #IBusKeymap, #IBusHotkeyProfile
+ *
+ * This section defines the key symbols (keysym) used in IBus.
+ * Those keysym data is converted from keysymdef.h in
+ * FreeDesktop.
+ *
+ * Most of the key symbols are not explicit documented,
+ * because they are self-explaining.
+ */
 
 #ifndef __IBUS_KEYSYMS_H__
 #define __IBUS_KEYSYMS_H__
@@ -32,18 +45,80 @@
 #define IBUS_Sys_Req 0xff15
 #define IBUS_Escape 0xff1b
 #define IBUS_Delete 0xffff
+
+
+/**
+ * IBUS_Multi_key:
+ *
+ * Key for composing characters.
+ * A.k.a. Compose Key.
+ */
 #define IBUS_Multi_key 0xff20
+
+/**
+ * IBUS_Codeinput:
+ *
+ * International and multi-key character composition.
+ */
 #define IBUS_Codeinput 0xff37
 #define IBUS_SingleCandidate 0xff3c
 #define IBUS_MultipleCandidate 0xff3d
 #define IBUS_PreviousCandidate 0xff3e
+
+/**
+ * IBUS_Kanji:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Kanji 0xff21
+
+/**
+ * IBUS_Muhenkan:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Muhenkan 0xff22
+
+/**
+ * IBUS_Henkan_Mode:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Henkan_Mode 0xff23
+
+/**
+ * IBUS_Henkan:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Henkan 0xff23
+
+/**
+ * IBUS_Romaji:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Romaji 0xff24
+
+/**
+ * IBUS_Hiragana:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Hiragana 0xff25
+
+/**
+ * IBUS_Katakana:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Katakana 0xff26
+
+/**
+ * IBUS_Hiragana_Katakana:
+ *
+ * Japanese keyboard support.
+ */
 #define IBUS_Hiragana_Katakana 0xff27
 #define IBUS_Zenkaku 0xff28
 #define IBUS_Hankaku 0xff29

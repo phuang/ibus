@@ -76,7 +76,6 @@ typedef guint KEYMAP[256][5];
  * @keymap: Keymap table. IME developers normally don have to touch this.
  *
  * A keymap object in IBus.
- *
  */
 struct _IBusKeymap {
     IBusObject parent;
@@ -110,7 +109,7 @@ IBusKeymap        *ibus_keymap_new                  (const gchar        *name);
  * @keymap: An IBusKeymap.
  * @keycode: A scancode to be converted.
  * @state: Modifier flags(such as Ctrl, Shift).
- * @return Corresponding keysym.
+ * @returns: Corresponding keysym.
  *
  * Convert the scancode to keysym, given the keymap.
  */
