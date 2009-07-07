@@ -78,8 +78,8 @@ typedef guint KEYMAP[256][5];
  * A keymap object in IBus.
  */
 struct _IBusKeymap {
+    /*< private >*/
     IBusObject parent;
-
     /* members */
     /*< public >*/
     gchar *name;

@@ -42,6 +42,7 @@
       <xi:include href="xml/ibusengine.xml"/>
       <xi:include href="xml/ibusenginedesc.xml"/>
       <xi:include href="xml/ibusfactory.xml"/>
+      <xi:include href="xml/ibuskeymap.xml"/>
       <xi:include href="xml/ibuskeysyms.xml"/>
   </chapter>
   <chapter>

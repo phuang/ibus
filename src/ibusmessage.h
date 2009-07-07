@@ -92,6 +92,7 @@ IBusMessage     *ibus_message_new               (gint                message_typ
 /**
  * ibus_message_ref:
  * @message: An IBusMessage.
+ * @returns: The IBusMessage.
  *
  * Increments the reference count of an IBusMessage.
  */
@@ -161,7 +162,7 @@ IBusMessage     *ibus_message_new_error         (IBusMessage        *reply_to,
  * ibus_message_new_error_printf:
  * @reply_to: The IBusMessage being replied to.
  * @error_name: Name of the error.
- * @error_message: Error format string as in printf() format.
+ * @error_format: Error format string as in printf() format.
  * @...: Format arguments, as in printf().
  * @returns: A newly allocate IBusMessage with the error information; or %NULL if memory cannot be allocated.
  *
@@ -196,8 +197,8 @@ IBusMessage     *ibus_message_new_signal        (const gchar        *path,
  * @message: An IBusMessage.
  * @interface: 	The interface to check. Cannot be %NULL.
  * @method: The method to check. Cannot be %NULL.
- * @returns: TRUE if @message is DBUS_MESSAGE_TYPE_METHOD_CALL and the invoked method is matched with @method;
- *           FALSE otherwise.
+ * @returns: %TRUE if @message is DBUS_MESSAGE_TYPE_METHOD_CALL and the invoked method is matched with @method;
+ *           %FALSE otherwise.
  *
  * Checks whether the message is a method call with the given interface and member fields.
  *
@@ -213,8 +214,8 @@ gboolean         ibus_message_is_method_call    (IBusMessage        *message,
  * ibus_message_is_error:
  * @message: An IBusMessage.
  * @error_name: Name of the error to check.
- * @returns: TRUE if @message is DBUS_MESSAGE_TYPE_ERROR and the error name is matched with @error_name;
- *           FALSE otherwise.
+ * @returns: %TRUE if @message is DBUS_MESSAGE_TYPE_ERROR and the error name is matched with @error_name;
+ *           %FALSE otherwise.
  *
  * Checks whether the message is an error reply with the given error name.
  * If the message is not DBUS_MESSAGE_TYPE_ERROR, or has a different name, returns FALSE.
@@ -227,11 +228,11 @@ gboolean         ibus_message_is_error          (IBusMessage        *message,
  * @message: An IBusMessage.
  * @interface: The interface to checked. Cannot be %NULL.
  * @signal_name: The signal name to check.
- * @returns: TRUE if @message is DBUS_MESSAGE_SIGNAL and the signal name is matched with @signal_name;
- *           FALSE otherwise.
+ * @returns: %TRUE if @message is %DBUS_MESSAGE_SIGNAL and the signal name is matched with @signal_name;
+ *           %FALSE otherwise.
  *
  * Checks whether the message is a signal with the given interface and member fields.
- * If the message is not DBUS_MESSAGE_TYPE_SIGNAL, or has a different interface or member field, returns FALSE.
+ * If the message is not %DBUS_MESSAGE_TYPE_SIGNAL, or has a different interface or member field, returns %FALSE.
  */
 gboolean         ibus_message_is_signal         (IBusMessage        *message,
                                                  const gchar        *interface,
@@ -241,7 +242,7 @@ gboolean         ibus_message_is_signal         (IBusMessage        *message,
  * ibus_message_set_destination:
  * @message: An IBusMessage.
  * @destination: Destination to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the message's destination.
  *
@@ -257,7 +258,7 @@ gboolean         ibus_message_set_destination   (IBusMessage        *message,
  * ibus_message_set_sender:
  * @message: An IBusMessage.
  * @sender: Sender to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the message sender.
  *
@@ -273,7 +274,7 @@ gboolean         ibus_message_set_sender        (IBusMessage        *message,
  * ibus_message_set_error_name:
  * @message: An IBusMessage.
  * @error_name: Error name to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the name of the error (%DBUS_MESSAGE_TYPE_ERROR).
  *
@@ -288,7 +289,7 @@ gboolean         ibus_message_set_error_name    (IBusMessage        *message,
  * ibus_message_set_interface:
  * @message: An IBusMessage.
  * @interface: Interface to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the interface this message is being sent to
  * (for %DBUS_MESSAGE_TYPE_METHOD_CALL) or the interface
@@ -303,7 +304,7 @@ gboolean         ibus_message_set_interface     (IBusMessage        *message,
  * ibus_message_set_member:
  * @message: An IBusMessage.
  * @member: Member to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the interface member being invoked (%DBUS_MESSAGE_TYPE_METHOD_CALL)
  * or emitted (%DBUS_MESSAGE_TYPE_SIGNAL).
@@ -317,7 +318,7 @@ gboolean         ibus_message_set_member        (IBusMessage        *message,
  * ibus_message_set_path:
  * @message: An IBusMessage.
  * @path: Path to set; or %NULL to unset.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the object path this message is being sent to (for $DBUS_MESSAGE_TYPE_METHOD_CALL)
  * or the one a signal is being emitted from (for %DBUS_MESSAGE_TYPE_SIGNAL).
@@ -330,7 +331,7 @@ gboolean         ibus_message_set_path          (IBusMessage        *message,
 /**
  * ibus_message_set_no_reply:
  * @message: An IBusMessage.
- * @no_reply: TRUE if no reply is desired.
+ * @no_reply: %TRUE if no reply is desired.
  *
  * Sets a flag indicating that the message does not want a reply;
  * if this flag is set, the other end of the connection may (but is not required to)
@@ -351,7 +352,7 @@ void             ibus_message_set_no_reply      (IBusMessage        *message,
  * ibus_message_set_reply_serial:
  * @message: An IBusMessage.
  * @reply_serial: The serial to be replied.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Sets the reply serial of a message (the serial of the message this is a reply to).
  */
@@ -382,7 +383,7 @@ const gchar     *ibus_message_get_destination   (IBusMessage        *message);
 /**
  * ibus_message_get_sender:
  * @message: An IBusMessage.
- * @returns: Sender of the IBusMessage; NULL if unknown or inapplicable.
+ * @returns: Sender of the IBusMessage; %NULL if unknown or inapplicable.
  *
  * Gets the unique name of the connection which originated this message,
  * or %NULL if unknown or inapplicable.
@@ -400,7 +401,7 @@ const gchar     *ibus_message_get_sender        (IBusMessage        *message);
 /**
  * ibus_message_get_error_name:
  * @message: An IBusMessage.
- * @returns: Error name of the IBusMessage; NULL if none.
+ * @returns: Error name of the IBusMessage; %NULL if none.
  *
  * Gets the error name (%DBUS_MESSAGE_TYPE_ERROR only) or %NULL if none.
  *
@@ -412,7 +413,7 @@ const gchar     *ibus_message_get_error_name    (IBusMessage        *message);
 /**
  * ibus_message_get_error_message:
  * @message: An IBusMessage.
- * @returns: Error message of the IBusMessage; NULL if none.
+ * @returns: Error message of the IBusMessage; %NULL if none.
  *
  * Gets the error message (%DBUS_MESSAGE_TYPE_ERROR only) or %NULL if none.
  *
@@ -424,7 +425,7 @@ const gchar     *ibus_message_get_error_message (IBusMessage        *message);
 /**
  * ibus_message_get_interface:
  * @message: An IBusMessage.
- * @returns: Interface name of the IBusMessage; NULL if none.
+ * @returns: Interface name of the IBusMessage; %NULL if none.
  *
  * Gets the interface this message is being sent to (for %DBUS_MESSAGE_TYPE_METHOD_CALL)
  * or being emitted from (for %DBUS_MESSAGE_TYPE_SIGNAL).
@@ -439,7 +440,7 @@ const gchar     *ibus_message_get_interface     (IBusMessage        *message);
 /**
  * ibus_message_get_member:
  * @message: An IBusMessage.
- * @returns: Member name of the IBusMessage; NULL if none.
+ * @returns: Member name of the IBusMessage; %NULL if none.
  *
  * Gets the interface member being invoked (%DBUS_MESSAGE_TYPE_METHOD_CALL)
  * or emitted (%DBUS_MESSAGE_TYPE_SIGNAL).
@@ -454,7 +455,7 @@ const gchar     *ibus_message_get_member        (IBusMessage        *message);
 /**
  * ibus_message_get_path:
  * @message: An IBusMessage.
- * @returns: Object path of the IBusMessage; NULL if none.
+ * @returns: Object path of the IBusMessage; %NULL if none.
  *
  * Gets the object path this message is being sent to (for %DBUS_MESSAGE_TYPE_METHOD_CALL)
  * or being emitted from (for %DBUS_MESSAGE_TYPE_SIGNAL).
@@ -471,7 +472,7 @@ const gchar     *ibus_message_get_path          (IBusMessage        *message);
 /**
  * ibus_message_get_no_reply:
  * @message: An IBusMessage.
- * @returns: TRUE if the message does not expect a reply; FALSE otherwise.
+ * @returns: %TRUE if the message does not expect a reply; %FALSE otherwise.
  *
  * Returns TRUE if the message does not expect a reply.
  */
@@ -507,8 +508,7 @@ guint32          ibus_message_get_serial        (IBusMessage        *message);
  * @message: An IBusMessage.
  * @first_arg_type: Type of the first argument.
  * @...: Rest of arguments.
- * @returns: TRUE if succeed; FALSE otherwise.
- * @see_also: ibus_message_append_args_valist().
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Appends fields to a message given a variable argument list.
  *
@@ -554,6 +554,8 @@ guint32          ibus_message_get_serial        (IBusMessage        *message);
  * If you don't do this then libdbus won't know to stop and will read invalid memory.
  *
  * String/signature/path arrays should be passed in as "const char*** address_of_array" and "int n_elements"
+ *
+ * @see_also: ibus_message_append_args_valist().
  */
 gboolean         ibus_message_append_args       (IBusMessage        *message,
                                                  GType               first_arg_type,
@@ -564,7 +566,7 @@ gboolean         ibus_message_append_args       (IBusMessage        *message,
  * @message: An IBusMessage.
  * @first_arg_type: Type of the first argument.
  * @va_args: Rest of arguments.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  * @see_also: ibus_message_append_args().
  *
  * Like ibus_message_append_args() but takes a va_list for use by language bindings.
@@ -579,8 +581,7 @@ gboolean         ibus_message_append_args_valist(IBusMessage        *message,
  * @error: Error to be filled in on failure.
  * @first_arg_type: Type of the first argument.
  * @...: Rest of arguments.
- * @returns: TRUE if succeed; FALSE otherwise.
- * @see_also: ibus_message_append_args(), ibus_message_get_args_valist().
+ * @returns: %TRUE if succeed; F%ALSE otherwise.
  *
  * Gets arguments from a message given a variable argument list.
  *
@@ -604,6 +605,8 @@ gboolean         ibus_message_append_args_valist(IBusMessage        *message,
  *
  * If more arguments than requested are present,
  * the requested arguments are returned and the extra arguments are ignored.
+ *
+ * @see_also: ibus_message_append_args(), ibus_message_get_args_valist().
  */
 gboolean         ibus_message_get_args          (IBusMessage        *message,
                                                  IBusError          **error,
@@ -615,10 +618,11 @@ gboolean         ibus_message_get_args          (IBusMessage        *message,
  * @message: An IBusMessage.
  * @first_arg_type: Type of the first argument.
  * @va_args: Rest of arguments.
- * @returns: TRUE if succeed; FALSE otherwise.
- * @see_also: ibus_message_append_args_valist(), ibus_message_get_args().
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Like ibus_message_get_args but takes a va_list for use by language bindings.
+ *
+ * @see_also: ibus_message_append_args_valist(), ibus_message_get_args().
  */
 gboolean         ibus_message_get_args_valist   (IBusMessage        *message,
                                                  IBusError          **error,
@@ -639,7 +643,7 @@ void             ibus_message_iter_init_append  (IBusMessage        *message,
  * @iter: An IBusMessageIter.
  * @type: The type of the value.
  * @value: The pointer to the value.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Appends a basic-typed value to the message.
  *
@@ -656,7 +660,7 @@ gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
  * ibus_message_iter_init:
  * @message: An IBusMessage.
  * @iter: An IBusMessageIter.
- * @returns: TRUE if succeed; FALSE if the message has no arguments.
+ * @returns: %TRUE if succeed; %FALSE if the message has no arguments.
  *
  * Initializes an #IBusMessageIter for reading the arguments of the message passed in.
  *
@@ -672,7 +676,7 @@ gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
  *    </programlisting>
  * </informalexample>
  *
- * UBusMessageIter contains no allocated memory;
+ * IBusMessageIter contains no allocated memory;
  * it need not be freed, and can be copied by assignment or memcpy().
  */
 gboolean         ibus_message_iter_init         (IBusMessage        *message,
@@ -682,36 +686,198 @@ gboolean         ibus_message_iter_init         (IBusMessage        *message,
  * ibus_message_iter_peak:
  * @iter: An IBusMessageIter. Cannot be %NULL.
  * @type: The type of the value. Cannot be %NULL.
- * @value: Peeked value stores here. Cannot be %NULL.
- * @returns: TRUE if succeed; FALSE if insufficient memory.
+ * @value: Result value stores here. Cannot be %NULL.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
  *
  * Peeks a value from an IBusMessageIter using dbus_message_iter_get_arg_type().
  * Returns FALSE if type mismatch or no such type.
+ * @see_also: ibus_message_iter_get().
  */
 gboolean         ibus_message_iter_peek         (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gpointer            value);
+
+/**
+ * ibus_message_iter_get_basic:
+ * @iter: An IBusMessageIter.
+ * @value: Result value stores here. Cannot be %NULL.
+ *
+ * Reads a basic-typed value from the message iterator.
+ *
+ * Basic types are the non-containers such as integer and string.
+ *
+ * The value argument should be the address of a location to store the returned value.
+ * So for int32 it should be a "dbus_int32_t*" and for string a "const char**".
+ * The returned value is by reference and should not be freed.
+ *
+ * Be sure you have somehow checked that dbus_message_iter_get_arg_type() matches the type you are expecting,
+ * or you'll crash when you try to use an integer as a string or something.
+ *
+ * To read any container type (array, struct, dict) you will need to recurse into the container with
+ * dbus_message_iter_recurse().
+ * If the container is an array of fixed-length values,
+ * you can get all the array elements at once with dbus_message_iter_get_fixed_array().
+ * Otherwise, you have to iterate over the container's contents one value at a time.
+ *
+ * All basic-typed values are guaranteed to fit in 8 bytes. So you can write code like this:
+ * <informalexample>
+ *    <programlisting>
+ *     dbus_uint64_t value;
+ *     int type;
+ *     dbus_message_iter_get_basic (&read_iter, &value);
+ *     type = dbus_message_iter_get_arg_type (&read_iter);
+ *     dbus_message_iter_append_basic (&write_iter, type, &value);
+ *    </programlisting>
+ * </informalexample>
+ *
+ * On some really obscure platforms dbus_uint64_t might not exist,
+ * if you need to worry about this you will know.
+ * dbus_uint64_t is just one example of a type that's large enough to hold any possible value,
+ * you could use a struct or char[8] instead if you like.
+ */
 void             ibus_message_iter_get_basic    (IBusMessageIter    *iter,
                                                  gpointer            value);
+
+/**
+ * ibus_message_iter_get:
+ * @iter: An IBusMessageIter.
+ * @type: The type of the value. Cannot be %NULL.
+ * @value: Result value stores here. Cannot be %NULL.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
+ *
+ * Gets an value from an IBusMessageIter, then move on to the next element.
+ *
+ * @see_also: ibus_message_iter_peek().
+ */
 gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gpointer            value);
+
+/**
+ * ibus_message_iter_next:
+ * @iter: An IBusMessageIter.
+ * @returns: %TRUE if the iterator moves forward successfully; %FALSE if next element does not exist.
+ *
+ * Moves the iterator to the next field, if any.
+ *
+ * If there's no next field, returns %FALSE. If the iterator moves forward, returns %TRUE.
+ */
 gboolean         ibus_message_iter_next         (IBusMessageIter    *iter);
+
+/**
+ * ibus_message_iter_has_next:
+ * @iter: An IBusMessageIter.
+ * @returns: %TRUE if next element exists; %FALSE otherwise.
+ *
+ * Checks if an iterator has any more fields.
+ */
 gboolean         ibus_message_iter_has_next     (IBusMessageIter    *iter);
+
+/**
+ * ibus_message_iter_open_container:
+ * @iter: An IBusMessageIter.
+ * @type: The type of the value.
+ * @contained_signature: The type of container contents.
+ * @sub: Sub-iterator to initialize.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
+ *
+ * Appends a container-typed value to the message;
+ * you are required to append the contents of the container using the returned sub-iterator,
+ * and then call dbus_message_iter_close_container().
+ *
+ * Container types are for example struct, variant, and array.
+ * For variants, the contained_signature should be the type of the single value inside the variant.
+ * For structs and dict entries, contained_signature should be %NULL;
+ * it will be set to whatever types you write into the struct.
+ * For arrays, contained_signature should be the type of the array elements.
+ */
 gboolean         ibus_message_iter_open_container
                                                 (IBusMessageIter    *iter,
                                                  GType               type,
                                                  const gchar        *contained_signature,
                                                  IBusMessageIter    *sub);
+
+/**
+ * ibus_message_iter_close_container:
+ * @iter: An IBusMessageIter.
+ * @sub: Sub-iterator to close.
+ * @returns: %TRUE if succeed; %FALSE if insufficient memory.
+ *
+ * Closes a container-typed value appended to the message;
+ * may write out more information to the message known only after the entire container is written,
+ * and may free resources created by dbus_message_iter_open_container().
+ */
 gboolean         ibus_message_iter_close_container
                                                 (IBusMessageIter    *iter,
                                                  IBusMessageIter    *sub);
+
+/**
+ * ibus_message_iter_recurse:
+ * @iter: An IBusMessageIter.
+ * @type: The type of the value.
+ * @sub: Sub-iterator to initialize.
+ * @returns:  %TRUE if succeed; %FALSE if insufficient memory.
+ *
+ * Recurses into a container value when reading values from a message,
+ * initializing a sub-iterator to use for traversing the child values of the container.
+ *
+ * Note that this recurses into a value, not a type, so you can only recurse if the value exists.
+ * The main implication of this is that if you have for example an empty array of array of int32,
+ * you can recurse into the outermost array, but it will have no values, so you won't be able to recurse further.
+ * There's no array of int32 to recurse into.
+ *
+ * If a container is an array of fixed-length types, it is much more efficient to use
+ *  dbus_message_iter_get_fixed_array() to get the whole array in one shot,
+ *  rather than individually walking over the array elements.
+ *
+ * Be sure you have somehow checked that dbus_message_iter_get_arg_type()
+ * matches the type you are expecting to recurse into.
+ * Results of this function are undefined if there is no container to recurse into at the current iterator position.
+ */
 gboolean         ibus_message_iter_recurse      (IBusMessageIter    *iter,
                                                  GType               type,
                                                  IBusMessageIter    *sub);
+
+/**
+ * ibus_message_iter_get_arg_type:
+ * @iter: An IBusMessageIter.
+ * @returns:  The argument type.
+ *
+ * Returns the argument type of the argument that the message iterator points to.
+ *
+ * If the iterator is at the end of the message, returns %DBUS_TYPE_INVALID.
+ * You can thus write a loop as follows:
+ * <informalexample>
+ *    <programlisting>
+ *     dbus_message_iter_init (&iter);
+ *     while ((current_type = dbus_message_iter_get_arg_type (&iter)) != DBUS_TYPE_INVALID)
+ *     dbus_message_iter_next (&iter);
+ *    </programlisting>
+ * </informalexample>
+ */
 GType            ibus_message_iter_get_arg_type (IBusMessageIter    *iter);
+
+/**
+ * ibus_message_iter_get_element_type:
+ * @iter: An IBusMessageIter.
+ * @returns:  The argument type.
+ *
+ * Returns the element type of the array that the message iterator points to.
+ * Note that you need to check that the iterator points to an array prior to using this function.
+ */
 GType            ibus_message_iter_get_element_type
                                                 (IBusMessageIter    *iter);
+
+/**
+ * ibus_message_to_string:
+ * @message: An IBusMessage.
+ * @returns: A string which shows the information of the message.
+ *
+ * Produces a pretty formatted string which show the information of the IBusMessage.
+ * This string is suitable for debugging information print out.
+ *
+ * Free the string by g_free() after use.
+ */
 gchar           *ibus_message_to_string         (IBusMessage *message);
 
 G_END_DECLS
