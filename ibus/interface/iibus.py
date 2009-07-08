@@ -69,6 +69,6 @@ class IIBus(dbus.service.Object):
     @method(in_signature="b")
     def Exit(self, restart, dbusconn): pass
 
-    @method(in_signature="v" out_signature="v")
+    @method(in_signature="v", out_signature="v")
     def Ping(self, data, dbusconn): pass
 
