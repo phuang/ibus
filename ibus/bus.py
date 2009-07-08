@@ -129,6 +129,15 @@ class Bus(object.Object):
     def exit(self, restart):
         return self.__ibus.Exit(restart)
 
+    def ping(self, data):
+        flag = isinstance(data, serializable.Serializable):
+        if flag:
+            data = serializable.serialize_object(data)
+        data = self.__ibus.Ping(data)
+        if flag:
+            data = serializable.deserialize_object(data)
+        return data
+
     def get_config(self):
         try:
             return self.__config

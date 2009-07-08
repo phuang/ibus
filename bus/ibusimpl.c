@@ -1106,6 +1106,25 @@ _ibus_exit (BusIBusImpl     *ibus,
     return NULL;
 }
 
+static IBusMessage *
+_ibus_ping (BusIBusImpl     *ibus,
+            IBusMessage     *message,
+            BusConnection   *connection)
+{
+    IBusMessage *reply;
+    IBusMessageIter src, dst;
+    gboolean retval;
+
+    reply = ibus_message_new_method_return (message);
+
+    ibus_message_iter_init (message, &src);
+    ibus_message_iter_init_append (reply, &dst);
+
+    ibus_message_iter_copy_data (&dst, &src);
+
+    return reply;
+}
+
 static gboolean
 bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
                             BusConnection   *connection,
@@ -1133,6 +1152,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "ListEngines",           _ibus_list_engines },
         { IBUS_INTERFACE_IBUS, "ListActiveEngines",     _ibus_list_active_engines },
         { IBUS_INTERFACE_IBUS, "Exit",                  _ibus_exit },
+        { IBUS_INTERFACE_IBUS, "Ping",                  _ibus_ping },
         { NULL, NULL, NULL }
     };
 

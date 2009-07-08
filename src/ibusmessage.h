@@ -719,6 +719,9 @@ gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gconstpointer       value);
 
+gboolean         ibus_message_iter_copy_data    (IBusMessageIter    *dst,
+                                                 IBusMessageIter    *src);
+
 /**
  * ibus_message_iter_init:
  * @message: An IBusMessage.

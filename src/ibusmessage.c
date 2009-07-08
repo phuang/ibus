@@ -503,17 +503,17 @@ ibus_message_iter_append (IBusMessageIter *iter,
             v = * (guint *)value;
             return dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT32, &v);
         }
-    case G_TYPE_ULONG:
-        {
-            dbus_uint64_t v;
-            v = * (gulong *)value;
-            return dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT64, &v);
-        }
     case G_TYPE_LONG:
         {
             dbus_int64_t v;
             v = * (glong *)value;
             return dbus_message_iter_append_basic (iter, DBUS_TYPE_INT64, &v);
+        }
+    case G_TYPE_ULONG:
+        {
+            dbus_uint64_t v;
+            v = * (gulong *)value;
+            return dbus_message_iter_append_basic (iter, DBUS_TYPE_UINT64, &v);
         }
     case G_TYPE_BOOLEAN:
         {
@@ -569,6 +569,155 @@ ibus_message_iter_append (IBusMessageIter *iter,
     }
 
     return FALSE;
+}
+
+static gboolean
+gtype_is_basic (GType type)
+{
+    switch (type) {
+    case G_TYPE_CHAR:
+    case G_TYPE_INT:
+    case G_TYPE_UINT:
+    case G_TYPE_INT64:
+    case G_TYPE_UINT64:
+    case G_TYPE_BOOLEAN:
+    case G_TYPE_DOUBLE:
+    case G_TYPE_STRING:
+        return TRUE;
+    default:
+        if (type == IBUS_TYPE_OBJECT_PATH)
+            return TRUE;
+        return FALSE;
+    }
+}
+
+gboolean
+ibus_message_iter_copy_data (IBusMessageIter *dst,
+                             IBusMessageIter *src)
+{
+    GType type;
+    gconstpointer value;
+    gboolean retval;
+
+    type = ibus_message_iter_get_arg_type (src);
+
+    g_return_val_if_fail (type != G_TYPE_INVALID, FALSE);
+
+    if (gtype_is_basic (type)) {
+        ibus_message_iter_get_basic (src, &value);
+        retval = ibus_message_iter_append (dst, type, value);
+        g_return_val_if_fail (retval, FALSE);
+        return TRUE;
+    }
+
+    if (type == IBUS_TYPE_VARIANT) {
+        IBusMessageIter subdst, subsrc;
+        gchar *signature;
+
+        retval = ibus_message_iter_recurse (src, IBUS_TYPE_VARIANT, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        signature = dbus_message_iter_get_signature (src);
+        g_return_val_if_fail (signature != NULL, FALSE);
+        retval = ibus_message_iter_open_container (dst,
+                                                   IBUS_TYPE_VARIANT,
+                                                   signature,
+                                                   &subdst);
+        dbus_free (signature);
+        g_return_val_if_fail (retval, FALSE);
+
+        retval = ibus_message_iter_copy_data (&subdst, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        retval = ibus_message_iter_close_container (dst, &subdst);
+        g_return_val_if_fail (retval, FALSE);
+
+        dbus_message_iter_next (src);
+        return TRUE;
+    }
+    else if (type == IBUS_TYPE_ARRAY) {
+        IBusMessageIter subdst, subsrc;
+        gchar *signature;
+
+        retval = ibus_message_iter_recurse (src, IBUS_TYPE_ARRAY, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        signature = dbus_message_iter_get_signature (src);
+        g_return_val_if_fail (signature != NULL, FALSE);
+        retval = ibus_message_iter_open_container (dst,
+                                                   IBUS_TYPE_ARRAY,
+                                                   signature,
+                                                   &subdst);
+        dbus_free (signature);
+        g_return_val_if_fail (retval, FALSE);
+
+        do {
+            retval = ibus_message_iter_copy_data (&subdst, &subsrc);
+            g_return_val_if_fail (retval, FALSE);
+        } while (ibus_message_iter_next (&subsrc));
+
+        retval = ibus_message_iter_close_container (dst, &subdst);
+        g_return_val_if_fail (retval, FALSE);
+
+        dbus_message_iter_next (src);
+        return TRUE;
+    }
+    else if (type == IBUS_TYPE_STRUCT) {
+        IBusMessageIter subdst, subsrc;
+        gchar *signature;
+
+        retval = ibus_message_iter_recurse (src, IBUS_TYPE_STRUCT, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        signature = dbus_message_iter_get_signature (src);
+        g_return_val_if_fail (signature != NULL, FALSE);
+        retval = ibus_message_iter_open_container (dst,
+                                                   IBUS_TYPE_STRUCT,
+                                                   signature,
+                                                   &subdst);
+        dbus_free (signature);
+        g_return_val_if_fail (retval, FALSE);
+
+        do {
+            retval = ibus_message_iter_copy_data (&subdst, &subsrc);
+            g_return_val_if_fail (retval, FALSE);
+        } while (ibus_message_iter_next (&subsrc));
+
+        retval = ibus_message_iter_close_container (dst, &subdst);
+        g_return_val_if_fail (retval, FALSE);
+
+        dbus_message_iter_next (src);
+        return TRUE;
+    }
+    else if (type == IBUS_TYPE_DICT_ENTRY) {
+        IBusMessageIter subdst, subsrc;
+
+        retval = ibus_message_iter_recurse (src, IBUS_TYPE_DICT_ENTRY, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        retval = ibus_message_iter_open_container (dst,
+                                                   IBUS_TYPE_DICT_ENTRY,
+                                                   NULL,
+                                                   &subdst);
+        g_return_val_if_fail (retval, FALSE);
+
+        /* copy key */
+        retval = ibus_message_iter_copy_data (&subdst, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        /* copy value */
+        retval = ibus_message_iter_copy_data (&subdst, &subsrc);
+        g_return_val_if_fail (retval, FALSE);
+
+        retval = ibus_message_iter_close_container (dst, &subdst);
+        g_return_val_if_fail (retval, FALSE);
+
+        dbus_message_iter_next (src);
+        return TRUE;
+    }
+
+    return FALSE;
+
 }
 
 gboolean
