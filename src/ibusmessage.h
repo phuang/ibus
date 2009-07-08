@@ -36,10 +36,39 @@
 #include <dbus/dbus.h>
 #include "ibuserror.h"
 
+/**
+ * IBUS_TYPE_OBJECT_PATH:
+ *
+ * Type of object path.
+ */
 #define IBUS_TYPE_OBJECT_PATH   (ibus_type_get_object_path ())
+
+/**
+ * IBUS_TYPE_ARRAY:
+ *
+ * Type of IBusArray.
+ */
 #define IBUS_TYPE_ARRAY         (ibus_type_get_array ())
+
+/**
+ * IBUS_TYPE_STRUCT:
+ *
+ * Type of IBusStruct.
+ */
 #define IBUS_TYPE_STRUCT        (ibus_type_get_struct ())
+
+/**
+ * IBUS_TYPE_DICT_ENTRY:
+ *
+ * Type of IBusDictEntry.
+ */
 #define IBUS_TYPE_DICT_ENTRY    (ibus_type_get_dict_entry ())
+
+/**
+ * IBUS_TYPE_VARIANT:
+ *
+ * Type of IBusVariant.
+ */
 #define IBUS_TYPE_VARIANT       (ibus_type_get_variant ())
 
 G_BEGIN_DECLS
@@ -58,10 +87,44 @@ typedef DBusMessage IBusMessage;
  */
 typedef DBusMessageIter IBusMessageIter;
 
+/**
+ * ibus_type_get_object_path:
+ * @returns: Type of object path.
+ *
+ * Gets the type of object path.
+ */
 GType            ibus_type_get_object_path      (void);
+
+/**
+ * ibus_type_get_array:
+ * @returns: Type of IBusArray.
+ *
+ * Gets the type of IBusArray.
+ */
 GType            ibus_type_get_array            (void);
+
+/**
+ * ibus_type_get_struct:
+ * @returns: Type of IBusStruct.
+ *
+ * Gets the type of IBusStruct.
+ */
 GType            ibus_type_get_struct           (void);
+
+/**
+ * ibus_type_get_dict_entry:
+ * @returns: Type of IBusDictEntry.
+ *
+ * Gets the type of IBusDictEntry.
+ */
 GType            ibus_type_get_dict_entry       (void);
+
+/**
+ * ibus_type_get_variant:
+ * @returns: Type of IBusVariant.
+ *
+ * Gets the type of IBusVariant.
+ */
 GType            ibus_type_get_variant          (void);
 
 /**
