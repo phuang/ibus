@@ -138,6 +138,9 @@ class Bus(object.Object):
             data = serializable.deserialize_object(data)
         return data
 
+    def introspect_ibus(self):
+        return self.__ibus.Introspect()
+
     def get_config(self):
         try:
             return self.__config
