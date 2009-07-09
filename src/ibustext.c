@@ -133,6 +133,7 @@ ibus_text_deserialize (IBusText        *text,
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     text->is_static = FALSE;
     text->text = g_strdup (str);
@@ -144,6 +145,7 @@ ibus_text_deserialize (IBusText        *text,
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_ATTR_LIST, &text->attrs);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 }

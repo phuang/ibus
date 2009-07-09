@@ -135,15 +135,19 @@ ibus_attribute_deserialize (IBusAttribute   *attr,
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->type);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->value);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->start_index);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->end_index);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 
@@ -354,8 +358,8 @@ ibus_attr_list_deserialize (IBusAttrList    *attr_list,
         IBusAttribute *attr;
 
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_ATTRIBUTE, &attr);
-
         g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
 
         ibus_attr_list_append (attr_list, attr);
     }

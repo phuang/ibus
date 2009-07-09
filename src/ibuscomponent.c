@@ -234,41 +234,53 @@ ibus_component_deserialize (IBusComponent   *component,
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->name = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->description = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->version = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->license = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->author = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->homepage = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->exec = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     component->textdomain = g_strdup (str);
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
     g_return_val_if_fail (retval, FALSE);
     while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
         IBusObservedPath *path;
+
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_OBSERVED_PATH, &path);
+        g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
+
         component->observed_paths = g_list_append (component->observed_paths, path);
     }
     ibus_message_iter_next (iter);
@@ -278,7 +290,11 @@ ibus_component_deserialize (IBusComponent   *component,
 
     while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
         IBusEngineDesc *engine;
+
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_ENGINE_DESC, &engine);
+        g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
+
         ibus_component_add_engine (component, engine);
     }
     ibus_message_iter_next (iter);

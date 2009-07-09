@@ -398,26 +398,32 @@ ibus_factory_info_deserialize (IBusFactoryInfo *info,
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_OBJECT_PATH, &info->path);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->path = g_strdup (info->path);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &info->name);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->name = g_strdup (info->name);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &info->lang);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->lang = g_strdup (info->lang);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &info->icon);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->icon = g_strdup (info->icon);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &info->authors);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->authors = g_strdup (info->authors);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &info->credits);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     info->credits = g_strdup (info->credits);
 
     return TRUE;

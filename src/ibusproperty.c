@@ -174,32 +174,41 @@ ibus_property_deserialize (IBusProperty    *prop,
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &p);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     prop->key = g_strdup (p);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &prop->type);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_TEXT, &prop->label);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &p);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     prop->icon = g_strdup (p);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_TEXT, &prop->tooltip);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &prop->sensitive);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &prop->visible);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &prop->state);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 }
@@ -478,6 +487,7 @@ ibus_prop_list_deserialize (IBusPropList    *prop_list,
     while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_PROPERTY, &object);
         g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
 
         ibus_prop_list_append (prop_list, (IBusProperty *)object);
         g_object_unref (object);

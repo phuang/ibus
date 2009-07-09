@@ -175,34 +175,42 @@ ibus_engine_desc_deserialize (IBusEngineDesc  *desc,
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->name = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->longname = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->description = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->language = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->license = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->author = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->icon = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     desc->layout = g_strdup (str);
 
     return TRUE;

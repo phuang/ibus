@@ -133,7 +133,7 @@ class Bus(object.Object):
         flag = isinstance(data, serializable.Serializable)
         if flag:
             data = serializable.serialize_object(data)
-        data = self.__ibus.Ping(data)
+        data = self.__ibus.Ping(data, dbus_interface="org.freedesktop.IBus")
         if flag:
             data = serializable.deserialize_object(data)
         return data

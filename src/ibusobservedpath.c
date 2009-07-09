@@ -144,10 +144,12 @@ ibus_observed_path_deserialize (IBusObservedPath *path,
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
     path->path = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_LONG, &(path->mtime));
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 }

@@ -240,6 +240,7 @@ _g_value_deserialize (IBusMessageIter *iter)
         IBusSerializable *object;
         retval = ibus_message_iter_get (iter, IBUS_TYPE_SERIALIZABLE, &object);
         g_return_val_if_fail (retval, NULL);
+        ibus_message_iter_next (iter);
 
         value = g_slice_new0 (GValue);
         g_value_init (value, G_OBJECT_TYPE (object));
@@ -254,6 +255,7 @@ _g_value_deserialize (IBusMessageIter *iter)
         {                                                       \
             g##_type v;                                         \
             ibus_message_iter_get_basic (&variant_iter, &v);    \
+            ibus_message_iter_next (&variant_iter);             \
             value = g_slice_new0 (GValue);                      \
             g_value_init (value, G_TYPE_##TYPE);                \
             g_value_set_##_type (value, v);                     \
@@ -352,6 +354,7 @@ ibus_serializable_real_deserialize (IBusSerializable *object,
                                         G_TYPE_STRING,
                                         &name);
         g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&dict_entry);
 
         value = _g_value_deserialize (&dict_entry);
         g_return_val_if_fail (value != NULL, FALSE);
@@ -561,6 +564,7 @@ ibus_serializable_deserialize (IBusMessageIter *iter)
 
     retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &type_name);
     g_return_val_if_fail (retval, NULL);
+    ibus_message_iter_next (&sub_iter);
 
     type = g_type_from_name (type_name);
 

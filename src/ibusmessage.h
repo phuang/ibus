@@ -749,21 +749,6 @@ gboolean         ibus_message_iter_init         (IBusMessage        *message,
                                                  IBusMessageIter    *iter);
 
 /**
- * ibus_message_iter_peak:
- * @iter: An IBusMessageIter. Cannot be %NULL.
- * @type: The type of the value. Cannot be %NULL.
- * @value: Result value stores here. Cannot be %NULL.
- * @returns: %TRUE if succeed; %FALSE if insufficient memory.
- *
- * Peeks a value from an IBusMessageIter using dbus_message_iter_get_arg_type().
- * Returns FALSE if type mismatch or no such type.
- * @see_also: ibus_message_iter_get().
- */
-gboolean         ibus_message_iter_peek         (IBusMessageIter    *iter,
-                                                 GType               type,
-                                                 gpointer            value);
-
-/**
  * ibus_message_iter_get_basic:
  * @iter: An IBusMessageIter.
  * @value: Result value stores here. Cannot be %NULL.
@@ -813,7 +798,6 @@ void             ibus_message_iter_get_basic    (IBusMessageIter    *iter,
  *
  * Gets an value from an IBusMessageIter, then move on to the next element.
  *
- * @see_also: ibus_message_iter_peek().
  */
 gboolean         ibus_message_iter_get          (IBusMessageIter    *iter,
                                                  GType               type,

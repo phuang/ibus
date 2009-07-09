@@ -68,17 +68,23 @@ class Serializable(Object):
         super(Serializable, self).__init__()
         self.__attachments = dict()
 
+    def set_attachment(self, name, value):
+        self.__attachments[name] = value
+
+    def get_attachment(self, name):
+        return self.__attachments.get(name, None)
+
     def serialize(self, struct):
         d = dbus.Dictionary(signature="sv")
         for k, v in self.__attachments.items():
-            d[k] = serialize(v)
+            d[k] = serialize_object(v)
         struct.append(d)
 
     def deserialize(self, struct):
         d = struct.pop(0)
         self.__attachments = dict()
         for k, v in d.items():
-            self.__atachments[k] = deserialize(v)
+            self.__attachments[k] = deserialize_object(v)
 
     def do_destroy(self):
         self.__attachments = None

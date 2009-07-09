@@ -118,9 +118,11 @@ ibus_hotkey_deserialize (IBusHotkey      *hotkey,
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &hotkey->keyval);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &hotkey->modifiers);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 }

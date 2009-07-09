@@ -595,6 +595,10 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "    <method name=\"GetAddress\">\n"
         "      <arg direction=\"out\" type=\"s\"/>\n"
         "    </method>\n"
+        "    <method name=\"Ping\">\n"
+        "      <arg direction=\"in\" type=\"v\"/>\n"
+        "      <arg direction=\"out\" type=\"v\"/>\n"
+        "    </method>\n"
         "  </interface>\n"
         "</node>\n";
 
@@ -1113,7 +1117,6 @@ _ibus_ping (BusIBusImpl     *ibus,
 {
     IBusMessage *reply;
     IBusMessageIter src, dst;
-    gboolean retval;
 
     reply = ibus_message_new_method_return (message);
 
@@ -1144,7 +1147,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
     } handlers[] =  {
         /* Introspectable interface */
         { DBUS_INTERFACE_INTROSPECTABLE,
-                               "Introspect", _ibus_introspect },
+                               "Introspect",            _ibus_introspect },
         /* IBus interface */
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
@@ -1159,24 +1162,27 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
-    for (i = 0; handlers[i].interface != NULL; i++) {
-        if (ibus_message_is_method_call (message,
-                                         handlers[i].interface,
-                                         handlers[i].name)) {
+    if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
+        g_debug ("message = %s", ibus_message_get_member (message));
+        for (i = 0; handlers[i].interface != NULL; i++) {
+            if (ibus_message_is_method_call (message,
+                                             handlers[i].interface,
+                                             handlers[i].name)) {
 
-            reply_message = handlers[i].handler (ibus, message, connection);
-            if (reply_message) {
+                reply_message = handlers[i].handler (ibus, message, connection);
+                if (reply_message) {
 
-                ibus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
-                ibus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
-                ibus_message_set_no_reply (reply_message, TRUE);
+                    ibus_message_set_sender (reply_message, DBUS_SERVICE_DBUS);
+                    ibus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
+                    ibus_message_set_no_reply (reply_message, TRUE);
 
-                ibus_connection_send ((IBusConnection *) connection, reply_message);
-                ibus_message_unref (reply_message);
+                    ibus_connection_send ((IBusConnection *) connection, reply_message);
+                    ibus_message_unref (reply_message);
+                }
+
+                g_signal_stop_emission_by_name (ibus, "ibus-message");
+                return TRUE;
             }
-
-            g_signal_stop_emission_by_name (ibus, "ibus-message");
-            return TRUE;
         }
     }
 

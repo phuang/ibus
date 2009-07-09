@@ -195,15 +195,19 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->page_size);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->cursor_pos);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->round);
     g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     // deserialize candidates
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
@@ -213,6 +217,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         IBusText *text;
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
         g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
 
         ibus_lookup_table_append_candidate (table, text);
     }
@@ -227,6 +232,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         IBusText *text;
         retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
         g_return_val_if_fail (retval, FALSE);
+        ibus_message_iter_next (&array_iter);
 
         ibus_lookup_table_append_label (table, text);
     }
