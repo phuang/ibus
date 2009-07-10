@@ -598,7 +598,7 @@ _ibus_introspect (BusInputContext   *context,
         "    <method name=\"GetEngine\">\n"
         "      <arg name=\"desc\" direction=\"out\" type=\"v\"/>\n"
         "    </method>\n"
-        "    <method name=\"Destroy\">\n"
+        "    <method name=\"Destroy\"/>\n"
 
         /* signals */
         "    <signal name=\"CommitText\">\n"

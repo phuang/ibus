@@ -227,6 +227,9 @@ class InputContext(object.Object):
     def set_engine(self, engine):
         return self.__context.SetEngine(engine.name)
 
+    def introspect(self):
+        return self.__context.Introspect()
+
 
 def test():
     import gtk
