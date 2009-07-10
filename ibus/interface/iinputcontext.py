@@ -42,8 +42,8 @@ class IInputContext(dbus.service.Object):
         dbus.service.signal(dbus_interface=IBUS_IFACE_INPUT_CONTEXT, \
                             **args)
 
-    @async_method(in_signature="uu", out_signature="b")
-    def ProcessKeyEvent(self, keyval, state, reply_cb, error_cb): pass
+    @async_method(in_signature="uuu", out_signature="b")
+    def ProcessKeyEvent(self, keyval, keycode, state, reply_cb, error_cb): pass
 
     @method(in_signature="iiii")
     def SetCursorLocation(self, x, y, w, h): pass
@@ -70,7 +70,7 @@ class IInputContext(dbus.service.Object):
     def SetCapabilities(self, caps): pass
 
     @method(out_signature="v")
-    def GetEngineDesc(self): pass
+    def GetEngine(self): pass
 
     @method(in_signature="s")
     def SetEngine(self, engine_name): pass
@@ -88,8 +88,8 @@ class IInputContext(dbus.service.Object):
     @signal()
     def Disabled(self): pass
 
-    @signal(signature="uu")
-    def ForwardKeyEvent(self, keyval, state): pass
+    @signal(signature="uuu")
+    def ForwardKeyEvent(self, keyval, keycode, state): pass
 
     @signal(signature="vub")
     def UpdatePreeditText(self, text, cursor_pos, visible): pass
