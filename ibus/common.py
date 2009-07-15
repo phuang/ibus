@@ -20,7 +20,6 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-        "IBUS_SOCKET_FILE",
         "IBUS_IFACE_IBUS",
         "IBUS_SERVICE_IBUS",
         "IBUS_PATH_IBUS",
@@ -42,7 +41,8 @@ __all__ = (
         "main",
         "main_quit",
         "main_iteration",
-        "get_address"
+        "get_address",
+        "get_socket_path"
     )
 
 import os
@@ -50,46 +50,56 @@ import sys
 from xdg import BaseDirectory
 import ctypes
 
-__display = os.environ["DISPLAY"]
-__hostname, __display_screen = __display.split(":", 1)
-if not __hostname.strip():
-    __hostname = "unix"
-__display_number = __display_screen.split(".")[0]
+# __display = os.environ["DISPLAY"]
+# __hostname, __display_screen = __display.split(":", 1)
+# if not __hostname.strip():
+#     __hostname = "unix"
+# __display_number = __display_screen.split(".")[0]
+# 
+# __username = None
+# try:
+#     __username = os.getlogin()
+# except:
+#     pass
+# if not __username:
+#     __username = os.getenv ("LOGNAME")
+# if not __username:
+#     __username = os.getenv ("USER")
+# if not __username:
+#     __username = os.getenv ("LNAME")
+# if not __username:
+#     __username = os.getenv ("USERNAME")
+# libibus = ctypes.CDLL("libibus.so")
+# id = ctypes.c_char_p(libibus.ibus_get_local_machine_id()).value
+# 
+# IBUS_SOCKET_FILE = os.path.join(BaseDirectory.xdg_config_home,
+#                                 "ibus", "bus",
+#                                 "%s-%s-%s"% (id, __hostname, __display_number))
+# def get_address():
+#     libibus = ctypes.CDLL("libibus.so")
+#     address = ctypes.c_char_p(libibus.ibus_get_address()).value
+#     return address
+# 
+#     address = os.getenv("IBUS_ADDRESS")
+#     if address:
+#         return address
+#     try:
+#         for l in file(IBUS_SOCKET_FILE):
+#             if not l.startswith("IBUS_ADDRESS="):
+#                 continue
+#             address = l[13:]
+#             address = address.strip()
+#             break
+#     except:
+#         return None
+#     return address
 
-__username = None
-try:
-    __username = os.getlogin()
-except:
-    pass
-if not __username:
-    __username = os.getenv ("LOGNAME")
-if not __username:
-    __username = os.getenv ("USER")
-if not __username:
-    __username = os.getenv ("LNAME")
-if not __username:
-    __username = os.getenv ("USERNAME")
+libibus = ctypes.CDLL("libibus.so")
+get_address = libibus.ibus_get_address
+get_address.restype=ctypes.c_char_p
 
-libdbus = ctypes.CDLL("libdbus-1.so")
-id = ctypes.c_char_p(libdbus.dbus_get_local_machine_id()).value
-
-IBUS_SOCKET_FILE = os.path.join(BaseDirectory.xdg_config_home,
-                                "ibus", "bus",
-                                "%s-%s-%s"% (id, __hostname, __display_number))
-def get_address():
-    address = os.getenv("IBUS_ADDRESS")
-    if address:
-        return address
-    try:
-        for l in file(IBUS_SOCKET_FILE):
-            if not l.startswith("IBUS_ADDRESS="):
-                continue
-            address = l[13:]
-            address = address.strip()
-            break
-    except:
-        return None
-    return address
+get_socket_path = libibus.ibus_get_socket_path
+get_socket_path.restype=ctypes.c_char_p
 
 # __session_id = os.getenv ("IBUS_SESSION_ID")
 # 

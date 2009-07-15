@@ -197,7 +197,7 @@ ibus_get_socket_path (void)
 const gchar *
 ibus_get_address (void)
 {
-    const gchar *address;
+    const gchar *address = NULL;
     static gchar buffer[1024];
     FILE *pf;
 
