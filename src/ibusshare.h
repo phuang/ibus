@@ -45,6 +45,8 @@
 
 G_BEGIN_DECLS
 
+const gchar     *ibus_get_local_machine_id
+                                        (void);
 void             ibus_set_display       (const gchar    *display);
 const gchar     *ibus_get_address       (void);
 const gchar     *ibus_get_user_name     (void);

@@ -26,6 +26,20 @@
 
 static gchar *_display = NULL;
 
+const gchar *
+ibus_get_local_machine_id (void)
+{
+    static gchar *machine_id = NULL;
+
+    if (machine_id == NULL) {
+        gchar *id = dbus_get_local_machine_id ();
+        machine_id = g_strdup (id);
+        dbus_free (id);
+    }
+
+    return machine_id;
+}
+
 void
 ibus_set_display (const gchar *display)
 {
