@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include <dbus/dbus.h>
 #include "ibusshare.h"
 
 static gchar *_display = NULL;
@@ -178,9 +179,16 @@ ibus_get_socket_path (void)
         if (hostname[0] == '\0')
             hostname = "unix";
 
-        path = g_strdup_printf (
-            "%s/ibus-%s-%s",
-            folder, hostname, displaynumber);
+        p = g_strdup_printf ("%s-%s-%s",
+                             ibus_get_local_machine_id (),
+                             hostname,
+                             displaynumber);
+        path = g_build_path (G_DIR_SEPARATOR_S,
+                             g_get_user_config_dir (),
+                             "ibus" G_DIR_SEPARATOR_S "bus",
+                             p,
+                             NULL);
+        g_free (p);
         g_free (display);
     }
     return path;
@@ -189,14 +197,56 @@ ibus_get_socket_path (void)
 const gchar *
 ibus_get_address (void)
 {
-    static gchar *address = NULL;
+    const gchar *address;
+    static gchar buffer[1024];
+    FILE *pf;
 
-    if (address == NULL) {
-        address = g_strdup_printf (
-            "unix:path=%s",
-            ibus_get_socket_path ());
+    /* get address from evn variable */
+    address = g_getenv ("IBUS_ADDRESS");
+    if (address)
+        return address;
+
+    /* read address from ~/.config/ibus/bus/soketfile */
+    pf = fopen (ibus_get_socket_path (), "r");
+    if (pf == NULL)
+        return NULL;
+
+    while (!feof (pf)) {
+        gchar *p = buffer;
+        if (fgets (buffer, sizeof (buffer), pf) == NULL)
+            break;
+        if (p[0] == '#')
+            continue;
+        if (strncmp (p, "IBUS_ADDRESS=", sizeof ("IBUS_ADDRESS=") - 1) != 0)
+            continue;
+        address = p + sizeof ("IBUS_ADDRESS=") - 1;
+        for (p = address; *p != '\n' && *p != '\0'; p++);
+        if (*p == '\n')
+            *p = '\0';
+        break;
     }
+
+    close (pf);
     return address;
+}
+
+void
+ibus_write_address (const gchar *address)
+{
+    FILE *pf;
+    gchar *path;
+    g_return_if_fail (address != NULL);
+
+    path = g_path_get_dirname (ibus_get_socket_path ());
+    g_mkdir_with_parents (path, 0700);
+    g_free (path);
+
+    pf = fopen (ibus_get_socket_path (), "w");
+    g_return_if_fail (pf != NULL);
+
+    fprintf (pf, "# This file is created by ibus-daemon, please do not modify it\n");
+    fprintf (pf, "IBUS_ADDRESS=%s\n", address);
+    fclose (pf);
 }
 
 void

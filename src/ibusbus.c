@@ -186,6 +186,7 @@ ibus_bus_connect (IBusBus *bus)
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
+#if 0
     socket_path = ibus_get_socket_path ();
 
     if (stat (socket_path, &buf) != 0) {
@@ -200,8 +201,10 @@ ibus_bus_connect (IBusBus *bus)
     if (priv->connection != NULL) {
         ibus_object_destroy ((IBusObject *) priv->connection);
     }
-
-    priv->connection = ibus_connection_open (ibus_get_address ());
+#endif
+    if (ibus_get_address () != NULL) {
+        priv->connection = ibus_connection_open (ibus_get_address ());
+    }
 
     if (priv->connection) {
         ibus_bus_hello (bus);
@@ -224,16 +227,11 @@ _changed_cb (GFileMonitor       *monitor,
              GFileMonitorEvent   event_type,
              IBusBus            *bus)
 {
-    static GFile *socket_file = NULL;
-
-    if (socket_file == NULL) {
-        socket_file = g_file_new_for_path (ibus_get_socket_path ());
-    }
-
-    if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
-        if (g_file_equal (file, socket_file)) {
-            ibus_bus_connect (bus);
-        }
+    // g_debug ("changed %x", event_type);
+    if (ibus_bus_is_connected (bus))
+        return;
+    if (event_type == G_FILE_MONITOR_EVENT_CHANGED) {
+        ibus_bus_connect (bus);
     }
 }
 
@@ -251,7 +249,7 @@ ibus_bus_init (IBusBus *bus)
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
 
-    path = ibus_get_socket_folder ();
+    path = ibus_get_socket_path ();
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != ibus_get_daemon_uid ()) {
@@ -270,7 +268,7 @@ ibus_bus_init (IBusBus *bus)
 
 
     file = g_file_new_for_path (path);
-    priv->monitor = g_file_monitor_directory (file, 0, NULL, NULL);
+    priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
 
     g_signal_connect (priv->monitor, "changed", (GCallback) _changed_cb, bus);
 

@@ -20,7 +20,7 @@
 # Boston, MA  02111-1307  USA
 
 __all__ = (
-        "IBUS_ADDR",
+        "IBUS_SOCKET_FILE",
         "IBUS_IFACE_IBUS",
         "IBUS_SERVICE_IBUS",
         "IBUS_PATH_IBUS",
@@ -41,11 +41,14 @@ __all__ = (
         "CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT",
         "main",
         "main_quit",
-        "main_iteration"
+        "main_iteration",
+        "get_address"
     )
 
 import os
 import sys
+from xdg import BaseDirectory
+import ctypes
 
 __display = os.environ["DISPLAY"]
 __hostname, __display_screen = __display.split(":", 1)
@@ -67,12 +70,33 @@ if not __username:
 if not __username:
     __username = os.getenv ("USERNAME")
 
-__session_id = os.getenv ("IBUS_SESSION_ID")
+libdbus = ctypes.CDLL("libdbus-1.so")
+id = ctypes.c_char_p(libdbus.dbus_get_local_machine_id()).value
 
-IBUS_ADDR = "unix:path=/tmp/ibus-%s%s/ibus-%s-%s" % (__username,
-                                                     "-" + __session_id if __session_id else "",
-                                                     __hostname,
-                                                     __display_number)
+IBUS_SOCKET_FILE = os.path.join(BaseDirectory.xdg_config_home,
+                                "ibus", "bus",
+                                "%s-%s-%s"% (id, __hostname, __display_number))
+def get_address():
+    address = os.getenv("IBUS_ADDRESS")
+    if address:
+        return address
+    try:
+        for l in file(IBUS_SOCKET_FILE):
+            if not l.startswith("IBUS_ADDRESS="):
+                continue
+            address = l[13:]
+            address = address.strip()
+            break
+    except:
+        return None
+    return address
+
+# __session_id = os.getenv ("IBUS_SESSION_ID")
+# 
+# IBUS_ADDR = "unix:path=/tmp/ibus-%s%s/ibus-%s-%s" % (__username,
+#                                                      "-" + __session_id if __session_id else "",
+#                                                      __hostname,
+#                                                      __display_number)
 # IBUS_ADDR  = "tcp:host=localhost,port=7799"
 
 IBUS_IFACE_IBUS     = "org.freedesktop.IBus"
