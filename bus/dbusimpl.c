@@ -205,6 +205,7 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"out\" type=\"u\"/>\n"
         "    </method>\n"
+#if 0
         "    <method name=\"StartServiceByName\">\n"
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"in\" type=\"u\"/>\n"
@@ -213,6 +214,7 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "    <method name=\"UpdateActivationEnvironment\">\n"
         "      <arg direction=\"in\" type=\"a{ss}\"/>\n"
         "    </method>\n"
+#endif
         "    <method name=\"NameHasOwner\">\n"
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"out\" type=\"b\"/>\n"
@@ -220,9 +222,11 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "    <method name=\"ListNames\">\n"
         "      <arg direction=\"out\" type=\"as\"/>\n"
         "    </method>\n"
+#if 0
         "    <method name=\"ListActivatableNames\">\n"
         "      <arg direction=\"out\" type=\"as\"/>\n"
         "    </method>\n"
+#endif
         "    <method name=\"AddMatch\">\n"
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "    </method>\n"
@@ -233,6 +237,7 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"out\" type=\"s\"/>\n"
         "    </method>\n"
+#if 0
         "    <method name=\"ListQueuedOwners\">\n"
         "      <arg direction=\"in\" type=\"s\"/>\n"
         "      <arg direction=\"out\" type=\"as\"/>\n"
@@ -255,6 +260,7 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "    </method>\n"
         "    <method name=\"ReloadConfig\">\n"
         "    </method>\n"
+#endif
         "    <method name=\"GetId\">\n"
         "      <arg direction=\"out\" type=\"s\"/>\n"
         "    </method>\n"
@@ -263,12 +269,14 @@ _dbus_introspect (BusDBusImpl     *dbus,
         "      <arg type=\"s\"/>\n"
         "      <arg type=\"s\"/>\n"
         "    </signal>\n"
+#if 0
         "    <signal name=\"NameLost\">\n"
         "      <arg type=\"s\"/>\n"
         "    </signal>\n"
         "    <signal name=\"NameAcquired\">\n"
         "      <arg type=\"s\"/>\n"
         "    </signal>\n"
+#endif
         "  </interface>\n"
         "</node>\n";
 
