@@ -141,6 +141,9 @@ class Bus(object.Object):
     def introspect_ibus(self):
         return self.__ibus.Introspect()
 
+    def introspect_dbus(self):
+        return self.__dbus.Introspect()
+
     def get_config(self):
         try:
             return self.__config
