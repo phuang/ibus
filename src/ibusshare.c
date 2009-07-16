@@ -21,6 +21,7 @@
 #include <glib-object.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <pwd.h>
 #include <dbus/dbus.h>
 #include "ibusshare.h"
