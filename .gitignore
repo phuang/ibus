@@ -4,6 +4,7 @@
 *.loT
 *.o
 *.so
+*.bak
 *~
 tags
 TAGS
@@ -38,4 +39,8 @@ ibus.spec
 ibus-1.0.pc
 i386
 x86_64
-
+ChangeLog
+intltool-extract.in
+intltool-merge.in
+intltool-update.in
+.*

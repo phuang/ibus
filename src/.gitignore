@@ -8,6 +8,10 @@ test-lookuptable
 test-proxy
 test-server
 test-text
+test-keymap
 stamp-ibusenumtypes.h
 stamp-ibusmarshalers.h
 keysymdef.h
+ibusenumtypes.c
+ibusenumtypes.h
+ibusversion.h

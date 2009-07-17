@@ -13,3 +13,5 @@ remove-potcdate.sed
 remove-potcdate.sin
 *.gmo
 stamp-po
+ibus.pot
+stamp-it
