@@ -89,25 +89,36 @@ bus_server_listen (BusServer *server)
         NULL
     };
 
-    // const gchar *address = "unix:abstract=/tmp/ibus-c"
-    const gchar *address;
+    const gchar *address = "unix:tmpdir=/tmp/";
     const gchar *path;
     gboolean retval;
 
+#if 0
     path = ibus_get_socket_folder ();
     mkdir (path, 0700);
     chmod (path, 0700);
 
     address = ibus_get_address ();
+#endif
 
     retval = ibus_server_listen (IBUS_SERVER (server), address);
+
+#if 0
     chmod (ibus_get_socket_path (), 0600);
+#endif
+
     ibus_server_set_auth_mechanisms ((IBusServer *)server, mechanisms);
 
     if (!retval) {
+#if 0
         g_printerr ("Can not listen on %s! Please try remove directory %s and run again.", address, path);
+#else
+        g_printerr ("Can not listen on %s!", address);
+#endif
         exit (-1);
     }
+
+    ibus_write_address (ibus_server_get_address (IBUS_SERVER (server)));
 
     return retval;
 }

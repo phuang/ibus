@@ -52,7 +52,7 @@ class Bus(object.Object):
 
     def __init__(self):
         super(Bus, self).__init__()
-        self.__dbusconn = dbus.connection.Connection(common.IBUS_ADDR)
+        self.__dbusconn = dbus.connection.Connection(common.get_address())
         self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
                                                  dbus.BUS_DAEMON_PATH)
         self.__unique_name = self.hello()
@@ -108,7 +108,7 @@ class Bus(object.Object):
         return self.__dbusconn
 
     def get_address(self):
-        return common.IBUS_ADDR
+        return common.get_address()
 
     # define ibus methods
     def register_component(self, component):
@@ -140,6 +140,9 @@ class Bus(object.Object):
 
     def introspect_ibus(self):
         return self.__ibus.Introspect()
+
+    def introspect_dbus(self):
+        return self.__dbus.Introspect()
 
     def get_config(self):
         try:

@@ -45,8 +45,11 @@
 
 G_BEGIN_DECLS
 
+const gchar     *ibus_get_local_machine_id
+                                        (void);
 void             ibus_set_display       (const gchar    *display);
 const gchar     *ibus_get_address       (void);
+void             ibus_write_address     (const gchar    *address);
 const gchar     *ibus_get_user_name     (void);
 glong            ibus_get_daemon_uid    (void);
 const gchar     *ibus_get_socket_path   (void);
