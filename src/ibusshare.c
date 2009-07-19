@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <pwd.h>
 #include <dbus/dbus.h>
 #include "ibusshare.h"
@@ -221,13 +222,13 @@ ibus_get_address (void)
         if (strncmp (p, "IBUS_ADDRESS=", sizeof ("IBUS_ADDRESS=") - 1) != 0)
             continue;
         address = p + sizeof ("IBUS_ADDRESS=") - 1;
-        for (p = address; *p != '\n' && *p != '\0'; p++);
+        for (p = (gchar *)address; *p != '\n' && *p != '\0'; p++);
         if (*p == '\n')
             *p = '\0';
         break;
     }
 
-    close (pf);
+    fclose (pf);
     return address;
 }
 
