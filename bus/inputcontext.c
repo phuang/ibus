@@ -586,7 +586,7 @@ _ibus_introspect (BusInputContext   *context,
         "    <method name=\"Reset\"/>\n"
         "    <method name=\"Enable\"/>\n"
         "    <method name=\"Disable\"/>\n"
-        "    <method name=\"IsEnable\">\n"
+        "    <method name=\"IsEnabled\">\n"
         "      <arg name=\"enable\" direction=\"out\" type=\"b\"/>\n"
         "    </method>\n"
         "    <method name=\"SetCapabilities\">\n"
