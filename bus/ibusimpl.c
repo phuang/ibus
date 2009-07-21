@@ -600,7 +600,7 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "      <arg name=\"context\" direction=\"out\" type=\"o\"/>\n"
         "    </method>\n"
         "    <method name=\"RegisterComponent\">\n"
-        "      <arg name=\"components\" direction=\"in\" type=\"av\"/>\n"
+        "      <arg name=\"components\" direction=\"in\" type=\"v\"/>\n"
         "    </method>\n"
         "    <method name=\"ListEngines\">\n"
         "      <arg name=\"engines\" direction=\"out\" type=\"av\"/>\n"
