@@ -33,7 +33,6 @@ _from_dbus_value (IBusMessageIter   *iter,
     type = ibus_message_iter_get_arg_type (iter);
     if (type == IBUS_TYPE_VARIANT) {
         ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &sub_iter);
-        ibus_message_iter_next (iter);
         iter = &sub_iter;
         type = ibus_message_iter_get_arg_type (iter);
     }
@@ -100,17 +99,17 @@ _from_dbus_value (IBusMessageIter   *iter,
             ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &sub_iter);
             while (ibus_message_iter_get_arg_type (&sub_iter) != G_TYPE_INVALID) {
                 _from_dbus_value (&sub_iter, &v);
+                ibus_message_iter_next (&sub_iter);
                 g_value_array_append (array, &v);
                 g_value_unset (&v);
             }
             g_value_take_boxed (value, array);
-            ibus_message_iter_next (iter);
             break;
         }
 
         g_debug ("type=%s", g_type_name (type));
 
-        g_assert_not_reached();
+        g_assert_not_reached ();
     }
 }
 

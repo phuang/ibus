@@ -734,8 +734,8 @@ ibus_message_iter_get_basic (IBusMessageIter *iter,
 
 gboolean
 ibus_message_iter_get (IBusMessageIter *iter,
-                        GType            type,
-                        gpointer         value)
+                       GType            type,
+                       gpointer         value)
 {
     g_assert (iter != NULL);
     g_assert (type != G_TYPE_INVALID);
