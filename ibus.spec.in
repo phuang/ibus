@@ -100,8 +100,7 @@ Requires:   glib2-devel
 Requires:   dbus-devel
 
 %description devel
-The ibus-devel package contains the header files and developer
-docs for ibus.
+The ibus-devel package contains the header files for ibus.
 
 %package devel-docs
 Summary:    Developer documents for ibus
