@@ -67,8 +67,17 @@ typedef struct _IBusKeymapClass IBusKeymapClass;
  * KEYMAP:
  *
  * Data structure for storing keymap.
+ * keymap[.][i]
+ * i:
+ *  0 - without modifer
+ *  1 - shift
+ *  2 - caplock
+ *  3 - shift caplock
+ *  4 - altgr
+ *  5 - shift altgr
+ *  6 - numlock
  */
-typedef guint KEYMAP[256][5];
+typedef guint KEYMAP[256][7];
 
 /**
  * IBusKeymap:

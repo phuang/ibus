@@ -114,6 +114,8 @@ ibus_keymap_parse_line (gchar  *str,
     } prefix [] = {
         { "keycode ", sizeof ("keycode ") - 1 },
         { "shift keycode ", sizeof ("shift keycode ") - 1 },
+        { "capslock keycode ", sizeof ("capslock keycode ") - 1 },
+        { "shift capslock keycode ", sizeof ("shift capslock keycode ") - 1 },
         { "altgr keycode ", sizeof ("altgr keycode ") - 1},
         { "shift altgr keycode ", sizeof ("shift altgr keycode ") - 1},
         { "numlock keycode ", sizeof ("numlock keycode ") - 1},
@@ -160,15 +162,26 @@ ibus_keymap_parse_line (gchar  *str,
     if (*p1++ != ' ')
         return FALSE;
 
-    for (p2 = p1; *p2 != '\n'; p2++);
-    *p2 = '\0';
+    for (p2 = p1; *p2 != '\n' && *p2 != ' '; p2++);
+    *p2 = '\0'; p2++;
 
     keysym = ibus_keyval_from_name (p1);
 
     if (keysym == IBUS_VoidSymbol)
         return FALSE;
 
-    keymap[keycode][i] = keysym;
+    if (i == 0 &&
+        strncmp (p2, "addupper", sizeof ("addupper") - 1) == 0 &&
+        g_ascii_isalpha (*p1)) {
+        gchar buf[] = "a";
+        buf[0] = g_ascii_toupper(*p1);
+        keymap[keycode][0] = keymap[keycode][3] = keysym;
+        keymap[keycode][1] = keymap[keycode][2] = ibus_keyval_from_name (buf);
+
+    }
+    else {
+        keymap[keycode][i] = keysym;
+    }
 
     return TRUE;
 }
@@ -219,12 +232,25 @@ ibus_keymap_fill (KEYMAP keymap)
 {
     gint i;
     for (i = 0; i < 256; i++) {
+        /* fill shift */
         if (keymap[i][1] == IBUS_VoidSymbol)
             keymap[i][1] = keymap[i][0];
+
+        /* fill capslock */
         if (keymap[i][2] == IBUS_VoidSymbol)
             keymap[i][2] = keymap[i][0];
+
+        /* fill shift capslock */
         if (keymap[i][3] == IBUS_VoidSymbol)
-            keymap[i][3] = keymap[i][2];
+            keymap[i][3] = keymap[i][1];
+
+        /* fill altgr */
+        if (keymap[i][4] == IBUS_VoidSymbol)
+            keymap[i][4] = keymap[i][0];
+
+        /* fill shift altgr */
+        if (keymap[i][5] == IBUS_VoidSymbol)
+            keymap[i][5] = keymap[i][1];
     }
 }
 
@@ -278,24 +304,32 @@ ibus_keymap_lookup_keysym (IBusKeymap *keymap,
 {
     g_assert (IBUS_IS_KEYMAP (keymap));
 
-    guint32 keysym;
-
-    keysym = IBUS_VoidSymbol;
-
     if (keycode < 256) {
-        gboolean is_upper;
-        is_upper = (((state & IBUS_SHIFT_MASK) == IBUS_SHIFT_MASK) ^ ((state & IBUS_LOCK_MASK) == IBUS_LOCK_MASK)) != 0;
+        /* numlock */
+        if (state & IBUS_MOD2_MASK && keymap->keymap[keycode][6] != IBUS_VoidSymbol)
+            return keymap->keymap[keycode][6];
 
-        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][4] != IBUS_VoidSymbol)) {
-            keysym = keymap->keymap[keycode][4];
-        }
-        else if (state & IBUS_MOD5_MASK) {
-            keysym = keymap->keymap[keycode][is_upper ? 3: 2];
-        }
-        else {
-            keysym = keymap->keymap[keycode][is_upper ? 1: 0];
+        state &= IBUS_SHIFT_MASK | IBUS_LOCK_MASK | IBUS_MOD5_MASK;
+
+        switch (state) {
+        case 0:
+            return keymap->keymap[keycode][0];
+        case IBUS_SHIFT_MASK:
+            return keymap->keymap[keycode][1];
+        case IBUS_LOCK_MASK:
+            return keymap->keymap[keycode][2];
+        case IBUS_SHIFT_MASK | IBUS_LOCK_MASK:
+            return keymap->keymap[keycode][3];
+        case IBUS_MOD5_MASK:
+        case IBUS_MOD5_MASK | IBUS_LOCK_MASK:
+            return keymap->keymap[keycode][4];
+        case IBUS_MOD5_MASK | IBUS_SHIFT_MASK:
+        case IBUS_MOD5_MASK | IBUS_LOCK_MASK | IBUS_SHIFT_MASK:
+            return keymap->keymap[keycode][5];
+        default:
+            break;
         }
     }
 
-    return keysym;
+    return IBUS_VoidSymbol;
 }
