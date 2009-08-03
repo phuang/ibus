@@ -17,6 +17,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusobservedpath
+ * @short_description: Path object of IBus.
+ * @stability: Stable
+ *
+ * IBusObservedPath provides methods for file path manipulation,
+ * such as monitor modification, directory tree traversal.
+ */
+
 #ifndef __IBUS_OBSERVED_PATH_H_
 #define __IBUS_OBSERVED_PATH_H_
 
@@ -46,6 +55,15 @@ G_BEGIN_DECLS
 typedef struct _IBusObservedPath IBusObservedPath;
 typedef struct _IBusObservedPathClass IBusObservedPathClass;
 
+/**
+ * IBusObservedPath:
+ * @path: Path to be handled.
+ * @mtime: Modified time.
+ * @is_dir: Whether the file is the path directory.
+ * @is_exist: Whether the file exists.
+ *
+ * Data structure of IBusObservedPath.
+ */
 struct _IBusObservedPath {
     IBusSerializable parent;
     /* instance members */
@@ -64,12 +82,58 @@ struct _IBusObservedPathClass {
 };
 
 GType                ibus_observed_path_get_type            (void);
+
+/**
+ * ibus_observed_path_new_from_xml_node:
+ * @node: An XML node that contain path.
+ * @fill_stat: Auto-fill the path status.
+ * @returns: A newly allocated IBusObservedPath.
+ *
+ * New an IBusObservedPath from an XML node.
+ */
 IBusObservedPath    *ibus_observed_path_new_from_xml_node   (XMLNode            *node,
                                                              gboolean            fill_stat);
+
+/**
+ * ibus_observed_path_new:
+ * @path: The path string.
+ * @fill_stat: Auto-fill the path status.
+ * @returns: A newly allocated IBusObservedPath.
+ *
+ * New an IBusObservedPath from an XML node.
+ */
 IBusObservedPath    *ibus_observed_path_new                 (const gchar        *path,
                                                              gboolean            fill_stat);
+
+/**
+ * ibus_observed_path_traverse:
+ * @path: An IBusObservedPath.
+ * @returns: A newly allocate GList which holds content in path; NULL if @path is not directory.
+ *
+ * Recursively traverse the path and put the files and subdirectory in to a newly allocated
+ * GLists, if the @path is a directory. Otherwise returns NULL.
+ */
 GList               *ibus_observed_path_traverse            (IBusObservedPath   *path);
+
+/**
+ * ibus_observed_path_check_modification:
+ * @path: An IBusObservedPath.
+ * @returns: TRUE if mtime is changed; FALSE otherwise.
+ *
+ * Checks whether the path is modified by comparing the mtime in object and mtime in file system.
+ * Returns TRUE if imtime is changed, otherwise FALSE.
+ */
 gboolean             ibus_observed_path_check_modification  (IBusObservedPath   *path);
+
+/**
+ * ibus_observed_path_output:
+ * @path: An IBusObservedPath.
+ * @output: Path is appended to.
+ * @indent: number of indent.
+ *
+ * Append the observed path to a string with following format:
+ * &lt;path mtime="<i>modified time</i>" &gt;<i>path</i>&lt;/path&gt;
+ */
 void                 ibus_observed_path_output              (IBusObservedPath   *path,
                                                              GString            *output,
                                                              gint                indent);

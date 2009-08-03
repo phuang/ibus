@@ -19,10 +19,10 @@
  */
 /**
  * SECTION: ibusobject
- * @short_description: Base Object of IBus.
+ * @short_description: Base object of IBus.
  * @stability: Stable
  *
- * IBus Object is the base object for all objects in IBus.
+ * IBusObject is the base object for all objects in IBus.
  */
 #ifndef __IBUS_OBJECT_H_
 #define __IBUS_OBJECT_H_
@@ -100,7 +100,26 @@ struct _IBusObjectClass {
 };
 
 GType           ibus_object_get_type            (void);
+
+/**
+ * ibus_object_new:
+ * @returns: A newly allocated IBusObject
+ *
+ * New an IBusObject.
+ */
 IBusObject     *ibus_object_new                 (void);
+
+/**
+ * ibus_object_destroy:
+ * @object: an #IBusObject to destroy.
+ *
+ * Emit the "destory" signal notifying all reference holders that they should
+ * release the #IBusObject.
+ *
+ * The memory for the object itself won't be deleted until its reference count
+ * actually drops to 0; ibus_object_destroy merely asks reference holders to
+ * release their references. It does not free the object.
+ */
 void            ibus_object_destroy             (IBusObject     *object);
 
 G_END_DECLS
