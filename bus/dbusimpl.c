@@ -634,7 +634,9 @@ _dbus_request_name (BusDBusImpl     *dbus,
         return reply_message;
     }
 
-    if (g_hash_table_lookup (dbus->names, name) != NULL) {
+    if (g_strcmp0 (name, "org.freedesktop.DBus") == 0 ||
+        g_strcmp0 (name, "org.freedesktop.IBus") == 0 ||
+        g_hash_table_lookup (dbus->names, name) != NULL) {
         reply_message = ibus_message_new_error_printf (message,
                                                        DBUS_ERROR_FAILED,
                                                        "Name %s has owner",
