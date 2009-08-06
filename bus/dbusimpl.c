@@ -634,8 +634,8 @@ _dbus_request_name (BusDBusImpl     *dbus,
         return reply_message;
     }
 
-    if (g_strcmp0 (name, "org.freedesktop.DBus") == 0 ||
-        g_strcmp0 (name, "org.freedesktop.IBus") == 0 ||
+    if (g_strcmp0 (name, DBUS_SERVICE_DBUS) == 0 ||
+        g_strcmp0 (name, IBUS_SERVICE_IBUS) == 0 ||
         g_hash_table_lookup (dbus->names, name) != NULL) {
         reply_message = ibus_message_new_error_printf (message,
                                                        DBUS_ERROR_FAILED,
