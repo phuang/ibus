@@ -155,7 +155,7 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
     }
     g_list_free (dbus->rules);
     dbus->rules = NULL;
-    
+
     for (p = dbus->connections; p != NULL; p = p->next) {
         BusConnection *connection = BUS_CONNECTION (p->data);
         g_signal_handlers_disconnect_by_func (connection, _connection_destroy_cb, dbus);
@@ -363,17 +363,17 @@ _dbus_list_names (BusDBusImpl       *dbus,
     ibus_message_iter_init_append (reply_message, &iter);
     ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "s", &sub_iter);
 
-    // append unique names
-    names = g_hash_table_get_keys (dbus->unique_names);
-
+    // append well-known names
+    names = g_hash_table_get_keys (dbus->names);
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
         ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
     }
     g_list_free (names);
 
-    // append well-known names
-    names = g_hash_table_get_keys (dbus->names);
+    // append unique names
+    names = g_hash_table_get_keys (dbus->unique_names);
+
     names = g_list_sort (names, (GCompareFunc) g_strcmp0);
     for (name = names; name != NULL; name = name->next) {
         ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &(name->data));
@@ -818,7 +818,7 @@ _connection_ibus_message_cb (BusConnection  *connection,
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
         return FALSE;
     }
-    
+
     if (ibus_message_is_signal (message,
                                 DBUS_INTERFACE_LOCAL,
                                 "Disconnected")) {
@@ -1119,7 +1119,7 @@ bus_dbus_impl_register_object (BusDBusImpl *dbus,
     g_assert (IBUS_IS_SERVICE (object));
 
     const gchar *path;
-    
+
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
         return FALSE;
     }
@@ -1146,7 +1146,7 @@ bus_dbus_impl_unregister_object (BusDBusImpl *dbus,
     g_assert (IBUS_IS_SERVICE (object));
 
     const gchar *path;
-    
+
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
         return FALSE;
     }
