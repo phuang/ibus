@@ -360,7 +360,7 @@ _dbus_list_names (BusDBusImpl       *dbus,
 
     reply_message = ibus_message_new_method_return (message);
 
-    ibus_message_iter_init_append (message, &iter);
+    ibus_message_iter_init_append (reply_message, &iter);
     ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "s", &sub_iter);
 
     // append unique names
