@@ -357,11 +357,18 @@ _dbus_list_names (BusDBusImpl       *dbus,
     IBusMessage *reply_message;
     IBusMessageIter iter, sub_iter;
     GList *name, *names;
+    gchar *v;
 
     reply_message = ibus_message_new_method_return (message);
 
     ibus_message_iter_init_append (reply_message, &iter);
     ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "s", &sub_iter);
+
+    v = DBUS_SERVICE_DBUS;
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &v);
+
+    v = IBUS_SERVICE_IBUS;
+    ibus_message_iter_append (&sub_iter, G_TYPE_STRING, &v);
 
     // append well-known names
     names = g_hash_table_get_keys (dbus->names);
