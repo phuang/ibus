@@ -1502,15 +1502,13 @@ __name_to_keycode = {}
 __keycode_to_name = {}
 for key, value in vars().items():
     if key.startswith("__") or \
-       key in ("name_to_keycode", "keycode_to_name"):
+       key in ("name_to_keycode", "keycode_to_name", "VoidSymbol"):
         continue
     __name_to_keycode[key] = value
     __keycode_to_name[value] = key
 
 def name_to_keycode(name):
-    if __name_to_keycode.has_key(name):
-        return __name_to_keycode[name]
-    return None
+    return __name_to_keycode.get(name, VoidSymbol)
 
 def keycode_to_name(code):
     if __keycode_to_name.has_key(code):
