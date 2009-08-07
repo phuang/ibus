@@ -774,14 +774,22 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
     ibusimcontext->preedit_visible = visible;
 
     if (ibusimcontext->preedit_visible) {
-        if (flag)
+        if (flag) {
+            /* invisible => visible */
             g_signal_emit (ibusimcontext, _signal_preedit_start_id, 0);
+        }
         g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
     }
     else {
-        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
-        if (flag)
+        if (flag) {
+            /* visible => invisible */
+            g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
             g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
+        }
+        else {
+            /* still invisible */
+            /* do nothing */
+        }
     }
 }
 
