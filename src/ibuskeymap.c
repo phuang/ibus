@@ -75,8 +75,7 @@ ibus_keymap_class_init (IBusKeymapClass *klass)
 static void
 ibus_keymap_init (IBusKeymap *keymap)
 {
-    gint i, j;
-
+    gint i;
     keymap->name = NULL;
     for (i = 0; i < sizeof (keymap->keymap) / sizeof (guint); i++) {
         ((guint *)keymap->keymap)[i] = IBUS_VoidSymbol;

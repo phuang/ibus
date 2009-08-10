@@ -180,9 +180,6 @@ _connection_destroy_cb (IBusConnection  *connection,
 static void
 ibus_bus_connect (IBusBus *bus)
 {
-    const gchar *socket_path;
-    struct stat buf;
-
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
