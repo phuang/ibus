@@ -1179,7 +1179,6 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
-        g_debug ("Member = %s", ibus_message_get_member (message));
         for (i = 0; handlers[i].interface != NULL; i++) {
             if (ibus_message_is_method_call (message,
                                              handlers[i].interface,
