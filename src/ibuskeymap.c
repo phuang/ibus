@@ -78,11 +78,8 @@ ibus_keymap_init (IBusKeymap *keymap)
     gint i, j;
 
     keymap->name = NULL;
-
-    for (i = 0; i < 256; i++) {
-        for (j = 0; j < 5; j++) {
-            keymap->keymap[i][j] = IBUS_VoidSymbol;
-        }
+    for (i = 0; i < sizeof (keymap->keymap) / sizeof (guint); i++) {
+        ((guint *)keymap->keymap)[i] = IBUS_VoidSymbol;
     }
 }
 
@@ -306,8 +303,9 @@ ibus_keymap_lookup_keysym (IBusKeymap *keymap,
 
     if (keycode < 256) {
         /* numlock */
-        if (state & IBUS_MOD2_MASK && keymap->keymap[keycode][6] != IBUS_VoidSymbol)
+        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][6] != IBUS_VoidSymbol)) {
             return keymap->keymap[keycode][6];
+        }
 
         state &= IBUS_SHIFT_MASK | IBUS_LOCK_MASK | IBUS_MOD5_MASK;
 
