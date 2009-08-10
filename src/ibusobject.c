@@ -38,7 +38,8 @@ static guint            object_signals[LAST_SIGNAL] = { 0 };
 
 #define DEBUG_MEMORY
 #ifdef DEBUG_MEMORY
-static GHashTable      *count_table;
+static GHashTable      *_count_table;
+static guint            _count = 0;
 #endif
 
 /* functions prototype */
@@ -120,7 +121,7 @@ ibus_object_class_init     (IBusObjectClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
 #ifdef DEBUG_MEMORY
-    count_table = g_hash_table_new (g_direct_hash, g_direct_equal);
+    _count_table = g_hash_table_new (g_direct_hash, g_direct_equal);
 #endif
 
 }
@@ -147,10 +148,13 @@ ibus_object_constructor (GType                   type,
 
 #ifdef DEBUG_MEMORY
     if (object != NULL) {
-        guint count = GPOINTER_TO_UINT (g_hash_table_lookup (count_table, (gpointer) type));
-        g_hash_table_replace (count_table, (gpointer) type, GUINT_TO_POINTER (++count));
+        guint count;
+        _count ++;
 
-        g_debug ("new %s, count = %d", g_type_name (type), count);
+        count = GPOINTER_TO_UINT (g_hash_table_lookup (_count_table, (gpointer) type));
+        g_hash_table_replace (_count_table, (gpointer) type, GUINT_TO_POINTER (++count));
+
+        g_debug ("new %s, count = %d, all = %d", g_type_name (type), count, _count);
     }
 #endif
 
@@ -179,9 +183,10 @@ ibus_object_finalize (IBusObject *obj)
 #ifdef DEBUG_MEMORY 
     guint count;
 
-    count = GPOINTER_TO_UINT (g_hash_table_lookup (count_table, (gpointer)G_OBJECT_TYPE (obj)));
-    g_hash_table_replace (count_table, (gpointer)G_OBJECT_TYPE (obj), GUINT_TO_POINTER (--count));
-    g_debug ("Finalize %s, count = %d", G_OBJECT_TYPE_NAME (obj), count);
+    _count --;
+    count = GPOINTER_TO_UINT (g_hash_table_lookup (_count_table, (gpointer)G_OBJECT_TYPE (obj)));
+    g_hash_table_replace (_count_table, (gpointer)G_OBJECT_TYPE (obj), GUINT_TO_POINTER (--count));
+    g_debug ("Finalize %s, count = %d, all = %d", G_OBJECT_TYPE_NAME (obj), count, _count);
 #endif
 
     G_OBJECT_CLASS(parent_class)->finalize (G_OBJECT (obj));
