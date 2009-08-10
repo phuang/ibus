@@ -25,6 +25,7 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <signal.h>
 #include "server.h"
 #include "ibusimpl.h"
 
@@ -39,6 +40,7 @@ static gchar *config = "default";
 static gchar *desktop = "gnome";
 static gchar *address = "";
 gboolean g_rescan = FALSE;
+gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
 
 static const GOptionEntry entries[] =
@@ -52,6 +54,7 @@ static const GOptionEntry entries[] =
     { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
+    { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
     { NULL },
 };
@@ -143,6 +146,12 @@ _my_log_handler (const gchar    *log_domain,
     }
 }
 
+static void
+_sig_usr2_handler (int sig)
+{
+    g_mem_profile ();
+}
+
 gint
 main (gint argc, gchar **argv)
 {
@@ -162,6 +171,11 @@ main (gint argc, gchar **argv)
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_printerr ("Option parsing failed: %s\n", error->message);
         exit (-1);
+    }
+
+    if (g_mempro) {
+        g_mem_set_vtable (glib_mem_profiler_table);
+        signal (SIGUSR2, _sig_usr2_handler);
     }
 
     /* check uid */
