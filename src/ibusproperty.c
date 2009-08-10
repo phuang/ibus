@@ -97,15 +97,17 @@ ibus_property_init (IBusProperty *prop)
     prop->sensitive = FALSE;
     prop->visible = FALSE;
     prop->state = 0;
+
+    prop->sub_props = NULL;
 }
 
 static void
 ibus_property_destroy (IBusProperty *prop)
 {
     g_free (prop->key);
-    g_free (prop->icon);
-
     prop->key = NULL;
+
+    g_free (prop->icon);
     prop->icon = NULL;
 
     if (prop->label) {
@@ -116,6 +118,11 @@ ibus_property_destroy (IBusProperty *prop)
     if (prop->tooltip) {
         g_object_unref (prop->tooltip);
         prop->tooltip = NULL;
+    }
+
+    if (prop->sub_props) {
+        g_object_unref (prop->sub_props);
+        prop->sub_props = NULL;
     }
 
     IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)prop);
@@ -427,14 +434,16 @@ ibus_prop_list_init (IBusPropList *prop_list)
 static void
 ibus_prop_list_destroy (IBusPropList *prop_list)
 {
-    IBusProperty **ps, **p;
-    p = ps = (IBusProperty **) g_array_free (prop_list->properties, FALSE);
+    IBusProperty **p;
+    gint i;
 
-    while (*p != NULL) {
-        g_object_unref (*p);
-        p ++;
+    p = (IBusProperty **) g_array_free (prop_list->properties, FALSE);
+
+    while (p[i] != NULL) {
+        g_object_unref (p[i]);
+        i ++;
     }
-    g_free (ps);
+    g_free (p);
 
     IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *) prop_list);
 }
