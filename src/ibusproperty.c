@@ -118,6 +118,11 @@ ibus_property_destroy (IBusProperty *prop)
         prop->tooltip = NULL;
     }
 
+    if (prop->sub_props) {
+        g_object_unref (prop->sub_props);
+        prop->sub_props = NULL;
+    }
+
     IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)prop);
 }
 

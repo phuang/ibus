@@ -215,6 +215,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         g_return_val_if_fail (retval, FALSE);
 
         ibus_lookup_table_append_candidate (table, text);
+        g_object_unref (text);
     }
 
     ibus_message_iter_next (iter);
@@ -229,6 +230,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         g_return_val_if_fail (retval, FALSE);
 
         ibus_lookup_table_append_label (table, text);
+        g_object_unref (text);
     }
 
     ibus_message_iter_next (iter);
