@@ -270,17 +270,17 @@ ibus_hotkey_profile_destroy (IBusHotkeyProfile *profile)
 
     /* free events */
     if (priv->events) {
-        IBusHotkeyEvent *p;
+        IBusHotkeyEvent **p;
         gint i;
-        p = (IBusHotkeyEvent *)g_array_free (priv->events, FALSE);
+        p = (IBusHotkeyEvent **)g_array_free (priv->events, FALSE);
         priv->events = NULL;
 
-        while (i = 0; p[i] != NULL; i++) {
-            if (p->event != 0) {
+        for (i = 0; p[i] != NULL; i++) {
+            if (p[i]->event != 0) {
                 /* free the hotkeys list, but do not free data in the list
                  * The datas will be free in g_tree_destroy
                  * */
-                g_list_free (p->hotkeys);
+                g_list_free (p[i]->hotkeys);
             }
         }
         g_free (p);
