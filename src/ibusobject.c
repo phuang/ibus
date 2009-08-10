@@ -36,7 +36,7 @@ struct _IBusObjectPrivate {
 
 static guint            object_signals[LAST_SIGNAL] = { 0 };
 
-#define DEBUG_MEMORY
+// #define DEBUG_MEMORY
 #ifdef DEBUG_MEMORY
 static GHashTable      *_count_table;
 static guint            _count = 0;
