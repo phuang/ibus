@@ -86,26 +86,26 @@ ibus_lookup_table_init (IBusLookupTable *table)
 static void
 ibus_lookup_table_destroy (IBusLookupTable *table)
 {
-    IBusText **sp, **p;
+    IBusText **p;
+    gint i;
 
     if (table->candidates != NULL) {
-        p = sp = (IBusText **) g_array_free (table->candidates, FALSE);
+        p = (IBusText **) g_array_free (table->candidates, FALSE);
         table->candidates = NULL;
-        while (*p != NULL) {
-            g_object_unref (*p);
-            p ++;
+
+        for (i = 0; p[i] != NULL; i++) {
+            g_object_unref (p[i]);
         }
-        g_free (sp);
+        g_free (p);
     }
 
     if (table->labels != NULL) {
-        p = sp = (IBusText **) g_array_free (table->labels, FALSE);
+        p = (IBusText **) g_array_free (table->labels, FALSE);
         table->labels = NULL;
-        while (*p != NULL) {
-            g_object_unref (*p);
-            p ++;
+        for (i = 0; p[i] != NULL; i++) {
+            g_object_unref (p[i]);
         }
-        g_free (sp);
+        g_free (p);
     }
 
     IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *) table);
