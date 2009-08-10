@@ -268,23 +268,29 @@ ibus_hotkey_profile_destroy (IBusHotkeyProfile *profile)
     IBusHotkeyProfilePrivate *priv;
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
+    /* free events */
+    if (priv->events) {
+        IBusHotkeyEvent *p;
+        gint i;
+        p = (IBusHotkeyEvent *)g_array_free (priv->events, FALSE);
+        priv->events = NULL;
+
+        while (i = 0; p[i] != NULL; i++) {
+            if (p->event != 0) {
+                /* free the hotkeys list, but do not free data in the list
+                 * The datas will be free in g_tree_destroy
+                 * */
+                g_list_free (p->hotkeys);
+            }
+        }
+        g_free (p);
+    }
+
     if (priv->hotkeys) {
         g_tree_destroy (priv->hotkeys);
         priv->hotkeys = NULL;
     }
 
-    if (priv->events) {
-        IBusHotkeyEvent *events, *p;
-        p = events = (IBusHotkeyEvent *)g_array_free (priv->events, FALSE);
-        priv->events = NULL;
-
-        while (p->event != 0) {
-            if (p->hotkeys)
-                g_list_free (p->hotkeys);
-            p ++;
-        }
-        g_free (events);
-    }
     IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)profile);
 }
 
@@ -363,8 +369,8 @@ ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile *profile,
 
     g_tree_insert (priv->hotkeys, (gpointer) hotkey, GUINT_TO_POINTER (event));
 
-    gint i;
     IBusHotkeyEvent *p = NULL;
+    gint i;
     for ( i = 0; i < priv->events->len; i++) {
         p = &g_array_index (priv->events, IBusHotkeyEvent, i);
         if (p->event == event)
