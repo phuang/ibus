@@ -439,9 +439,8 @@ ibus_prop_list_destroy (IBusPropList *prop_list)
 
     p = (IBusProperty **) g_array_free (prop_list->properties, FALSE);
 
-    while (p[i] != NULL) {
+    for (i = 0; p[i] != NULL; i++) {
         g_object_unref (p[i]);
-        i ++;
     }
     g_free (p);
 
