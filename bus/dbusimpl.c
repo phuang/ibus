@@ -1088,12 +1088,6 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
 
     dbus_message_set_data (message, data_slot, (gpointer) TRUE, NULL);
 
-#if 0
-    if (g_strcmp0 (ibus_message_get_member (message), "ValueChanged") == 0) {
-        g_debug ("Dispatch ValueChanged");
-    }
-#endif
-
     for (link = dbus->rules; link != NULL; link = link->next) {
         GList *list = bus_match_rule_get_recipients (BUS_MATCH_RULE (link->data),
                                                      message);
