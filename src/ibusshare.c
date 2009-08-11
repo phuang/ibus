@@ -19,6 +19,7 @@
  */
 
 #include <glib-object.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -226,6 +227,7 @@ ibus_write_address (const gchar *address)
 
     fprintf (pf, "# This file is created by ibus-daemon, please do not modify it\n");
     fprintf (pf, "IBUS_ADDRESS=%s\n", address);
+    fprintf (pf, "IBUS_DAEMON_PID=%d\n", getpid ());
     fclose (pf);
 }
 
