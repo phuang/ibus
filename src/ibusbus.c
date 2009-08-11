@@ -247,11 +247,18 @@ ibus_bus_init (IBusBus *bus)
     priv->watch_dbus_signal = FALSE;
 
     path = ibus_get_socket_path ();
+    path = g_path_get_dirname (path);
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != ibus_get_daemon_uid ()) {
             g_warning ("The owner of %s is not %s!", path, ibus_get_user_name ());
             return;
+        }
+    }
+    else {
+        if (getuid () == ibus_get_daemon_uid ()) {
+            mkdir (path, 0700);
+            chmod (path, 0700);
         }
     }
     ibus_bus_connect (bus);
@@ -263,6 +270,7 @@ ibus_bus_init (IBusBus *bus)
     g_signal_connect (priv->monitor, "changed", (GCallback) _changed_cb, bus);
 
     g_object_unref (file);
+    g_free (path);
 }
 
 static void
