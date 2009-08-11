@@ -238,6 +238,7 @@ ibus_write_address (const gchar *address)
     g_mkdir_with_parents (path, 0700);
     g_free (path);
 
+    g_unlink (ibus_get_socket_path ());
     pf = fopen (ibus_get_socket_path (), "w");
     g_return_if_fail (pf != NULL);
 
