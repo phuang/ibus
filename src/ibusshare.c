@@ -179,6 +179,7 @@ const gchar *
 ibus_get_address (void)
 {
     const gchar *address = NULL;
+    pid_t pid = -1;
     static gchar buffer[1024];
     FILE *pf;
 
@@ -189,25 +190,40 @@ ibus_get_address (void)
 
     /* read address from ~/.config/ibus/bus/soketfile */
     pf = fopen (ibus_get_socket_path (), "r");
-    if (pf == NULL)
+    if (pf == NULL) {
         return NULL;
+    }
 
     while (!feof (pf)) {
         gchar *p = buffer;
         if (fgets (buffer, sizeof (buffer), pf) == NULL)
             break;
+
+        /* skip comment line */
         if (p[0] == '#')
             continue;
-        if (strncmp (p, "IBUS_ADDRESS=", sizeof ("IBUS_ADDRESS=") - 1) != 0)
+        /* parse IBUS_ADDRESS */
+        if (strncmp (p, "IBUS_ADDRESS=", sizeof ("IBUS_ADDRESS=") - 1) == 0) {
+            address = p + sizeof ("IBUS_ADDRESS=") - 1;
+            for (p = (gchar *)address; *p != '\n' && *p != '\0'; p++);
+            if (*p == '\n')
+                *p = '\0';
             continue;
-        address = p + sizeof ("IBUS_ADDRESS=") - 1;
-        for (p = (gchar *)address; *p != '\n' && *p != '\0'; p++);
-        if (*p == '\n')
-            *p = '\0';
-        break;
+        }
+
+        /* parse IBUS_DAEMON_PID */
+        if (strncmp (p, "IBUS_DAEMON_PID=", sizeof ("IBUS_DAEMON_PID=") - 1) == 0) {
+            pid = atoi(p + sizeof ("IBUS_DAEMON_PID=") - 1);
+            continue;
+        }
+
+    }
+    fclose (pf);
+
+    if (pid == -1 || kill (pid, 0) != 0) {
+        return NULL;
     }
 
-    fclose (pf);
     return address;
 }
 
