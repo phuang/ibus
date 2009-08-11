@@ -244,7 +244,7 @@ ibus_write_address (const gchar *address)
 
     fprintf (pf, "# This file is created by ibus-daemon, please do not modify it\n");
     fprintf (pf, "IBUS_ADDRESS=%s\n", address);
-    fprintf (pf, "IBUS_DAEMON_PID=%d\n", getpid ());
+    fprintf (pf, "IBUS_DAEMON_PID=%ld\n", getpid ());
     fclose (pf);
 }
 
