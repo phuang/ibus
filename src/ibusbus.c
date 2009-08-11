@@ -255,12 +255,15 @@ ibus_bus_init (IBusBus *bus)
             return;
         }
     }
+#if 0
     else {
         if (getuid () == ibus_get_daemon_uid ()) {
             mkdir (path, 0700);
             chmod (path, 0700);
         }
     }
+#endif
+
     ibus_bus_connect (bus);
 
 
