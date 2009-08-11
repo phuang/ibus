@@ -115,25 +115,6 @@ ibus_get_session_id (void)
 }
 
 const gchar *
-ibus_get_socket_folder (void)
-{
-    static gchar *folder = NULL;
-
-    if (folder == NULL) {
-        const gchar *session = ibus_get_session_id ();
-        if (session && session[0] != '\0') {
-            folder = g_strdup_printf ("/tmp/ibus-%s-%s",
-                ibus_get_user_name (), session);
-        }
-        else {
-            folder = g_strdup_printf ("/tmp/ibus-%s",
-                ibus_get_user_name ());
-        }
-    }
-    return folder;
-}
-
-const gchar *
 ibus_get_socket_path (void)
 {
     static gchar *path = NULL;
@@ -143,7 +124,6 @@ ibus_get_socket_path (void)
         gchar *display;
         gchar *displaynumber = "0";
         gchar *screennumber = "0";
-        const gchar *folder= NULL;
         gchar *p;
 
         if (_display == NULL) {
@@ -175,8 +155,6 @@ ibus_get_socket_path (void)
                 screennumber = p;
             }
         }
-
-        folder = ibus_get_socket_folder ();
 
         if (hostname[0] == '\0')
             hostname = "unix";

@@ -53,7 +53,6 @@ void             ibus_write_address     (const gchar    *address);
 const gchar     *ibus_get_user_name     (void);
 glong            ibus_get_daemon_uid    (void);
 const gchar     *ibus_get_socket_path   (void);
-const gchar     *ibus_get_socket_folder (void);
 
 const gchar     *ibus_keyval_name       (guint           keyval);
 guint            ibus_keyval_from_name  (const gchar    *keyval_name);
