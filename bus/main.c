@@ -209,20 +209,22 @@ main (gint argc, gchar **argv)
         NULL);
 
     /* check if ibus-daemon is running in this session */
-    bus = ibus_bus_new ();
+    if (ibus_get_address () != NULL) {
+        bus = ibus_bus_new ();
 
-    if (ibus_bus_is_connected (bus)) {
-        if (!replace) {
-            g_printerr ("current session already has an ibus-daemon.\n");
-            exit (-1);
+        if (ibus_bus_is_connected (bus)) {
+            if (!replace) {
+                g_printerr ("current session already has an ibus-daemon.\n");
+                exit (-1);
+            }
+            ibus_bus_exit (bus, FALSE);
+            while (ibus_bus_is_connected (bus)) {
+                g_main_context_iteration (NULL, TRUE);
+            }
         }
-        ibus_bus_exit (bus, FALSE);
-        while (ibus_bus_is_connected (bus)) {
-            g_main_context_iteration (NULL, TRUE);
-        }
+        g_object_unref (bus);
+        bus = NULL;
     }
-    g_object_unref (bus);
-    bus = NULL;
 
     /* create ibus server */
     server = bus_server_get_default ();
