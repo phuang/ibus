@@ -236,7 +236,7 @@ static void
 ibus_bus_init (IBusBus *bus)
 {
     struct stat buf;
-    const gchar *path;
+    gchar *path;
     GFile *file;
 
     IBusBusPrivate *priv;
@@ -246,8 +246,7 @@ ibus_bus_init (IBusBus *bus)
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
 
-    path = ibus_get_socket_path ();
-    path = g_path_get_dirname (path);
+    path = g_path_get_dirname (ibus_get_socket_path ());
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != ibus_get_daemon_uid ()) {

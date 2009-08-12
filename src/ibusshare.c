@@ -18,6 +18,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <glib-object.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -178,7 +180,7 @@ ibus_get_socket_path (void)
 const gchar *
 ibus_get_address (void)
 {
-    static const gchar *address = NULL;
+    static gchar *address = NULL;
     pid_t pid = -1;
     static gchar buffer[1024];
     FILE *pf;
@@ -190,9 +192,8 @@ ibus_get_address (void)
     }
 
     /* get address from evn variable */
-    address = g_getenv ("IBUS_ADDRESS");
+    address = g_strdup (g_getenv ("IBUS_ADDRESS"));
     if (address) {
-        address = g_strdup (address);
         return address;
     }
 

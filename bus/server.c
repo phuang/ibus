@@ -90,7 +90,6 @@ bus_server_listen (BusServer *server)
     };
 
     const gchar *address = "unix:tmpdir=/tmp/";
-    const gchar *path;
     gboolean retval;
 
 #if 0
