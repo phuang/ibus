@@ -242,9 +242,11 @@ ibus_write_address (const gchar *address)
     pf = fopen (ibus_get_socket_path (), "w");
     g_return_if_fail (pf != NULL);
 
-    fprintf (pf, "# This file is created by ibus-daemon, please do not modify it\n");
-    fprintf (pf, "IBUS_ADDRESS=%s\n", address);
-    fprintf (pf, "IBUS_DAEMON_PID=%ld\n", getpid ());
+    fprintf (pf,
+        "# This file is created by ibus-daemon, please do not modify it\n"
+        "IBUS_ADDRESS=%s\n"
+        "IBUS_DAEMON_PID=%ld\n",
+        address, (glong) getpid ());
     fclose (pf);
 }
 
