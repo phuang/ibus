@@ -178,15 +178,23 @@ ibus_get_socket_path (void)
 const gchar *
 ibus_get_address (void)
 {
-    const gchar *address = NULL;
+    static const gchar *address = NULL;
     pid_t pid = -1;
     static gchar buffer[1024];
     FILE *pf;
 
+    /* free address */
+    if (address != NULL) {
+        g_free (address);
+        address = NULL;
+    }
+
     /* get address from evn variable */
     address = g_getenv ("IBUS_ADDRESS");
-    if (address)
+    if (address) {
+        address = g_strdup (address);
         return address;
+    }
 
     /* read address from ~/.config/ibus/bus/soketfile */
     pf = fopen (ibus_get_socket_path (), "r");
@@ -208,6 +216,7 @@ ibus_get_address (void)
             for (p = (gchar *)address; *p != '\n' && *p != '\0'; p++);
             if (*p == '\n')
                 *p = '\0';
+            address = g_strdup (address);
             continue;
         }
 
