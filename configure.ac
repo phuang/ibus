@@ -134,26 +134,26 @@ AM_GCONF_SOURCE_2
 # PATH=$old_path
 
 # Check for Qt4
-PKG_CHECK_MODULES(QT,
-    [QtCore >= 4.4.0 QtDBus >= 4.4.0],
-    [IBUS_HAS_QT4=yes],
-    [IBUS_HAS_QT4=no]
-)
-
-if test x"$IBUS_HAS_QT4" == x"yes"; then
-    QMAKE=`$PKG_CONFIG --variable=qmake Qt`
-    if test x"$QMAKE" == x""; then
-        AC_PATH_PROG(QMAKE, qmake-qt4)
-    fi
-    if test x"$QMAKE" == x""; then
-        AC_PATH_PROG(QMAKE, qmake)
-    fi
-    if test x"$QMAKE" == x""; then
-        IBUS_HAS_QT4=no
-        AC_MSG_WARN([Can not find qmake.])
-    fi
-    AC_SUBST(QMAKE)
-fi
+# PKG_CHECK_MODULES(QT,
+#     [QtCore >= 4.4.0 QtDBus >= 4.4.0],
+#     [IBUS_HAS_QT4=yes],
+#     [IBUS_HAS_QT4=no]
+# )
+# 
+# if test x"$IBUS_HAS_QT4" == x"yes"; then
+#     QMAKE=`$PKG_CONFIG --variable=qmake Qt`
+#     if test x"$QMAKE" == x""; then
+#         AC_PATH_PROG(QMAKE, qmake-qt4)
+#     fi
+#     if test x"$QMAKE" == x""; then
+#         AC_PATH_PROG(QMAKE, qmake)
+#     fi
+#     if test x"$QMAKE" == x""; then
+#         IBUS_HAS_QT4=no
+#         AC_MSG_WARN([Can not find qmake.])
+#     fi
+#     AC_SUBST(QMAKE)
+# fi
 
 # Check for x11
 PKG_CHECK_MODULES(X11, [
@@ -206,17 +206,17 @@ AC_ARG_WITH(gtk-im-module-dir,
 )
 AC_SUBST(GTK_IM_MODULEDIR)
 
-AC_ARG_ENABLE(qt4-immodule,
-    AS_HELP_STRING([--disable-qt4-immodule],
-        [do not build qt4 immodule]),
-    [enable_qt4=$enableval],
-    [enable_qt4=yes],
-)
-if test x"$IBUS_HAS_QT4" != x"yes"; then
-    enable_qt4=no
-fi
-enable_qt4=no
-AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
+# AC_ARG_ENABLE(qt4-immodule,
+#     AS_HELP_STRING([--disable-qt4-immodule],
+#         [do not build qt4 immodule]),
+#     [enable_qt4=$enableval],
+#     [enable_qt4=yes],
+# )
+# if test x"$IBUS_HAS_QT4" != x"yes"; then
+#     enable_qt4=no
+# fi
+# enable_qt4=no
+# AM_CONDITIONAL(IBUS_BUILD_QT4, [test x"$enable_qt4" = x"yes" ])
 
 # check for dbus-python
 AC_ARG_ENABLE(dbus-python-check,
@@ -274,7 +274,6 @@ gconf/Makefile
 gconf/gconf.xml.in
 client/Makefile
 client/gtk2/Makefile
-client/qt4/Makefile
 client/x11/Makefile
 setup/Makefile
 setup/ibus-setup
@@ -302,7 +301,6 @@ Build options:
   Build shared libs        $enable_shared
   Build static libs        $enable_static
   Gtk immodule dir         $GTK_IM_MODULEDIR
-  Enable Qt4 IM module     $enable_qt4
   Build document           $enable_gtk_doc
 ])
 
