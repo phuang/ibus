@@ -88,13 +88,13 @@ ibus_daemon_LDADD = \
 	$(AM_LDFLAGS) \
 	$(NULL)
 
-test_registry_SOURCES = \
-	registry.c \
-	registry.h \
-	factoryproxy.c \
-	factoryproxy.h \
-	test-registry.c \
-	$(NULL)
+# test_registry_SOURCES = \
+# 	registry.c \
+# 	registry.h \
+# 	factoryproxy.c \
+# 	factoryproxy.h \
+# 	test-registry.c \
+# 	$(NULL)
 
 test_matchrule_SOURCES = \
 	connection.c \
