@@ -30,7 +30,7 @@ static const GtkIMContextInfo ibus_im_info = {
     "IBus (Intelligent Input Bus)",
     "ibus",
     IBUS_LOCALDIR,
-    "ja:ko:zh"
+    "ja:ko:zh:*"
 };
 
 static const GtkIMContextInfo *info_list[] = {
