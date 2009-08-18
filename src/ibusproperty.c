@@ -270,39 +270,21 @@ ibus_property_new (const gchar   *key,
     g_return_val_if_fail (type >= PROP_TYPE_NORMAL &&
                           type <= PROP_TYPE_SEPARATOR,
                           NULL);
-    g_return_val_if_fail (label == NULL || IBUS_IS_TEXT (label), NULL);
-    g_return_val_if_fail (tooltip == NULL || IBUS_IS_TEXT (tooltip), NULL);
-    g_return_val_if_fail (state == PROP_STATE_UNCHECKED ||
-                          state == PROP_STATE_CHECKED ||
-                          state == PROP_STATE_INCONSISTENT,
-                          NULL);
 
     IBusProperty *prop;
 
     prop = (IBusProperty *)g_object_new (IBUS_TYPE_PROPERTY, NULL);
 
     prop->key = g_strdup (key);
-    prop->icon = g_strdup (icon != NULL ? icon : "");
     prop->type = type;
-
-    if (label)
-        prop->label = (IBusText *) g_object_ref (label);
-    else
-        prop->label = ibus_text_new_from_static_string ("");
-
-    if (tooltip)
-        prop->tooltip = (IBusText *) g_object_ref (tooltip);
-    else
-        prop->tooltip = ibus_text_new_from_static_string ("");
-
-    prop->sensitive = sensitive;
-    prop->visible = visible;
-    prop->state = state;
-
-    if (prop_list)
-        prop->sub_props = g_object_ref (prop_list);
-    else
-        prop->sub_props = ibus_prop_list_new ();
+    
+    ibus_property_set_label (prop, label);
+    ibus_property_set_icon (prop, icon);
+    ibus_property_set_tooltip (prop, tooltip);
+    ibus_property_set_sensitive (prop, sensitive);
+    ibus_property_set_visible (prop, visible);
+    ibus_property_set_state (prop, state);
+    ibus_property_set_sub_props (prop, prop_list);
 
     return prop;
 }
@@ -312,16 +294,56 @@ ibus_property_set_label (IBusProperty *prop,
                          IBusText     *label)
 {
     g_assert (IBUS_IS_PROPERTY (prop));
+    g_return_val_if_fail (label == NULL || IBUS_IS_TEXT (label), NULL);
 
     if (prop->label) {
         g_object_unref (prop->label);
     }
 
     if (label == NULL) {
-        label = ibus_text_new_from_static_string ("");
+        prop->label = ibus_text_new_from_static_string ("");
+    }
+    else {
+        prop->label = g_object_ref (label);
+    }
+}
+
+void
+ibus_property_set_icon (IBusProperty *prop,
+                        const gchar  *icon)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+
+    g_free (prop->icon);
+    prop->icon = NULL;
+    prop->icon = g_strdup (icon != NULL ? icon : "");
+}
+
+void
+ibus_property_set_tooltip (IBusProperty *prop,
+                           IBusText     *tooltip)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+    g_return_val_if_fail (tooltip == NULL || IBUS_IS_TEXT (tooltip), NULL);
+
+    if (prop->tooltip) {
+        g_object_unref (prop->tooltip);
     }
 
-    prop->label = g_object_ref (label);
+    if (tooltip == NULL) {
+        prop->tooltip = ibus_text_new_from_static_string ("");
+    }
+    else {
+        prop->tooltip = g_object_ref (tooltip);
+    }
+}
+
+void
+ibus_property_set_sensitive (IBusProperty *prop,
+                             gboolean      sensitive)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+    prop->sensitive = sensitive;
 }
 
 void
@@ -330,6 +352,19 @@ ibus_property_set_visible (IBusProperty *prop,
 {
     g_assert (IBUS_IS_PROPERTY (prop));
     prop->visible = visible;
+}
+
+void
+ibus_property_set_state (IBusProperty  *prop,
+                         IBusPropState  state)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+    g_return_val_if_fail (state == PROP_STATE_UNCHECKED ||
+                          state == PROP_STATE_CHECKED ||
+                          state == PROP_STATE_INCONSISTENT,
+                          NULL);
+
+    prop->state = state;
 }
 
 void

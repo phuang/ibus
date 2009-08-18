@@ -216,6 +216,36 @@ void             ibus_property_set_label    (IBusProperty   *prop,
                                              IBusText       *label);
 
 /**
+ * ibus_property_set_icon:
+ * @prop: An IBusProperty.
+ * @icon: Icon shown in UI. It could be a full path of an icon file or an icon name. 
+ *
+ * Set the icon of IBusProperty.
+ */
+void             ibus_property_set_icon     (IBusProperty   *prop,
+                                             const gchar    *icon);
+
+/**
+ * ibus_property_set_tooltip:
+ * @prop: An IBusProperty.
+ * @tooltip: Text of the tooltip.
+ *
+ * Set the tooltip of IBusProperty.
+ */
+void             ibus_property_set_tooltip  (IBusProperty   *prop,
+                                             IBusText       *tooltip);
+
+/**
+ * ibus_property_set_sensitive:
+ * @prop: An IBusProperty.
+ * @sensitive: Whether the IBusProperty is sensitive.
+ *
+ * Set whether the IBusProperty is sensitive.
+ */
+void             ibus_property_set_sensitive(IBusProperty   *prop,
+                                             gboolean        sensitive);
+
+/**
  * ibus_property_set_visible:
  * @prop: An IBusProperty.
  * @visible: Whether the IBusProperty is visible.
@@ -224,6 +254,17 @@ void             ibus_property_set_label    (IBusProperty   *prop,
  */
 void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
+
+/**
+ * ibus_property_set_state:
+ * @prop: An IBusProperty.
+ * @state: The state of the IBusProperty.
+ *
+ * Set the state of the IBusProperty.
+ */
+void             ibus_property_set_state    (IBusProperty   *prop,
+                                             IBusPropState   state);
+
 
 /**
  * ibus_property_set_sub_props:
