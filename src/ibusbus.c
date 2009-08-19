@@ -266,7 +266,7 @@ ibus_bus_init (IBusBus *bus)
     ibus_bus_connect (bus);
 
 
-    file = g_file_new_for_path (path);
+    file = g_file_new_for_path (ibus_get_socket_path ());
     priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
 
     g_signal_connect (priv->monitor, "changed", (GCallback) _changed_cb, bus);
