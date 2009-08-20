@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-26 07:38+0800\n"
+"POT-Creation-Date: 2009-08-19 08:40+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Domingo Becker <domingobecker@gmail.com>\n"
 "Language-Team: Fedora Spanish <fedora-trans-es@redhat.com>\n"
@@ -15,70 +15,101 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+#: ../bus/ibus.desktop.in.h:2
+#: ../ui/gtk/panel.py:108
 msgid "IBus input method framework"
 msgstr "Marco de trabajo para métodos de entrada IBus"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
-#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+#: ../ibus/lang.py:40
+#: ../ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:338
+#: ../ui/gtk/panel.py:339
+#: ../ui/gtk/panel.py:340
 msgid "Other"
 msgstr "Otro"
 
-#: ../ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:312
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: ../ui/gtk/panel.py:337
+#: ../ui/gtk/panel.py:367
 msgid "No input method"
 msgstr "Ningún método de entrada"
 
-#: ../ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:422
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus es un bus de entrada inteligente para Linux/Unix."
 
-#: ../ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:426
 msgid "translator-credits"
 msgstr "Domingo Becker, <domingobecker@gmail.com>, 2009"
 
-#. create input methods menu
-#: ../ui/gtk/languagebar.py:84
-#, fuzzy
+#: ../ui/gtk/languagebar.py:102
+msgid "About the Input Method"
+msgstr "Acerca del Método de Entrada"
+
+#: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
 msgstr "Cambiar método de entrada"
 
-#: ../setup/main.py:104
+#: ../ui/gtk/engineabout.py:34
+#: ../setup/engineabout.py:34
+#: ../setup/setup.glade.h:15
+msgid "About"
+msgstr "Acerca de"
+
+#: ../ui/gtk/engineabout.py:62
+#: ../setup/engineabout.py:62
+#, python-format
+msgid "Language: %s\n"
+msgstr "Idioma: %s\n"
+
+#: ../ui/gtk/engineabout.py:64
+#: ../setup/engineabout.py:64
+#, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "Diseño del teclado: %s\n"
+
+#: ../ui/gtk/engineabout.py:66
+#: ../setup/engineabout.py:66
+#, python-format
+msgid "Author: %s\n"
+msgstr "Autor: %s\n"
+
+#: ../ui/gtk/engineabout.py:68
+#: ../setup/engineabout.py:68
+msgid "Description:\n"
+msgstr "Descripción:\n"
+
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr "activador"
 
-#: ../setup/main.py:114
-#, fuzzy
+#: ../setup/main.py:118
 msgid "next input method"
 msgstr "siguiente método de entrada"
 
-#: ../setup/main.py:124
-#, fuzzy
+#: ../setup/main.py:130
 msgid "previous input method"
 msgstr "método de entrada anterior"
 
-#: ../setup/main.py:205
+#: ../setup/main.py:233
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "El demonio IBUS no fue iniciado. ¿Desea iniciarlo ahora?"
 
-#: ../setup/main.py:220
+#: ../setup/main.py:248
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"¡IBus ha sido iniciado! Si no puede usar IBus, por favor, agregue las "
-"siguientes líneas a $HOME/.bashrc, y reingrese a su escritorio.\n"
+"¡IBus ha sido iniciado! Si no puede usar IBus, por favor, agregue las siguientes líneas a $HOME/.bashrc, y reingrese a su escritorio.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:263
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccione la tecla de atajo para %s"
@@ -95,7 +126,7 @@ msgstr "Código clave:"
 msgid "Modifiers:"
 msgstr "Modificadores:"
 
-#: ../setup/keyboardshortcut.py:222
+#: ../setup/keyboardshortcut.py:227
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -103,13 +134,23 @@ msgstr ""
 "Por favor, presione una tecla (o una combinación de tecla).\n"
 "El diálogo será cerrado cuando la tecla sea soltada."
 
-#: ../setup/keyboardshortcut.py:224
+#: ../setup/keyboardshortcut.py:229
 msgid "Please press a key (or a key combination)"
 msgstr "Por favor, presione una tecla (o combinación de teclas)"
 
 #: ../setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "Seleccione un método de entrada"
+
+#. create im name & icon column
+#: ../setup/enginetreeview.py:59
+#: ../setup/setup.glade.h:26
+msgid "Input Method"
+msgstr "Métodos de Entrada"
+
+#: ../setup/enginetreeview.py:87
+msgid "Kbd"
+msgstr "Kbd"
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -120,14 +161,18 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>Fuente y Estilo</b>"
 
 #: ../setup/setup.glade.h:3
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>Diseño del Teclado</b>"
+
+#: ../setup/setup.glade.h:4
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Atajos de teclado</b>"
 
-#: ../setup/setup.glade.h:4
+#: ../setup/setup.glade.h:5
 msgid "<b>Startup</b>"
 msgstr "<b>Inicio</b>"
 
-#: ../setup/setup.glade.h:5
+#: ../setup/setup.glade.h:6
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -143,33 +188,43 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.glade.h:12
+#: ../setup/setup.glade.h:13
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
+"<small><i>El método de entrada determinado está al comienzo de la lista.\n"
+"Puede usar los botones arriba/abajo para cambiarlo.</i></small>"
 
-#: ../setup/setup.glade.h:14
-msgid "About"
-msgstr "Acerca de"
+#: ../setup/setup.glade.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr "Agregar el método de entrada seleccionado a los métodos de entrada habilitados"
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
 msgstr "Orientaciones candidato:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:19
+msgid "Choice font for language bar and candidates"
+msgstr "Fuente elegida para la barra de idioma y candidatos"
+
+#: ../setup/setup.glade.h:20
 msgid "Custom font:"
 msgstr "Fuente personalizada:"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:21
 msgid "Enable or disable:"
 msgstr "Habilitar o deshabilitar:"
 
-#: ../setup/setup.glade.h:18
+#: ../setup/setup.glade.h:22
 msgid "General"
 msgstr "General"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:23
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -177,15 +232,20 @@ msgstr ""
 "Horizontal\n"
 "Vertical"
 
-#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:25
+#: ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "Preferencias de IBus"
 
-#: ../setup/setup.glade.h:22
-msgid "Input Methods"
-msgstr "Métodos de entrada"
+#: ../setup/setup.glade.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr "Mover abajo el método de entrada seleccionado en los métodos de entrada habilitados"
 
-#: ../setup/setup.glade.h:23
+#: ../setup/setup.glade.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr "Mover arriba el método de entrada seleccionado en la lista de métodos de entrada habilitados"
+
+#: ../setup/setup.glade.h:29
 msgid ""
 "Never\n"
 "When active\n"
@@ -195,26 +255,77 @@ msgstr ""
 "Cuando esté activo\n"
 "Siempre"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:32
 msgid "Next input method:"
 msgstr "Siguiente método de entrada:"
 
-#: ../setup/setup.glade.h:27
-#, fuzzy
+#: ../setup/setup.glade.h:33
 msgid "Previous input method:"
 msgstr "Método de entrada anterior:"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:34
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "Eliminar el método de entrada seleccionado de los métodos de entrada habilitados"
+
+#: ../setup/setup.glade.h:35
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "Configurar el comportamiento de ibus sobre cómo mostrar u ocultar la barra de idiomas"
+
+#: ../setup/setup.glade.h:36
+msgid "Set the orientation of candidates in lookup table"
+msgstr "Poner la orientación de la tabla de búsqueda de candidatos"
+
+#: ../setup/setup.glade.h:37
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr "Poner las teclas abreviadas para encender o apagar los métodos de entrada"
+
+#: ../setup/setup.glade.h:38
+msgid "Show information of the selected input method"
+msgstr "Mostrar información sobre el método de entrada seleccionado"
+
+#: ../setup/setup.glade.h:39
+msgid "Show input method name on language bar"
+msgstr "Mostrar el nombre del método de entrada en la barra de idioma"
+
+#: ../setup/setup.glade.h:40
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "Mostrar el nombre del método de entrada en la barra de idioma cuando se marque la casilla"
+
+#: ../setup/setup.glade.h:41
 msgid "Show language panel:"
 msgstr "Mostrar el panel de idioma:"
 
-#: ../setup/setup.glade.h:29
+#: ../setup/setup.glade.h:42
 msgid "Start ibus on login"
 msgstr "Iniciar ibus al ingresar"
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:43
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "Tecla programada para cambiar al siguiente método de entrada en la lista"
+
+#: ../setup/setup.glade.h:44
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "Tecla programada para cambiar al método de entrada anterior en la lista"
+
+#: ../setup/setup.glade.h:45
 msgid "Use custom font"
 msgstr "Usar fuente personalizada"
+
+#: ../setup/setup.glade.h:46
+msgid "Use custom font for language bar and candidates"
+msgstr "Usar fuente personalizada para la barra de idiomas y candidatos"
+
+#: ../setup/setup.glade.h:47
+msgid "Use system keyboard layout (XKB) setting"
+msgstr "Usar la configuración de diseño del teclado del sistema (XKB)"
+
+#: ../setup/setup.glade.h:48
+msgid "Use system keyboard layout setting"
+msgstr "Usar la configuración de diseño del teclado del sistema"
+
+#: ../setup/setup.glade.h:49
+msgid "gtk-about"
+msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -234,8 +345,7 @@ msgstr "Tecla para la Siguiente Máquina"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
-"Tecla programada para cambiar a la siguiente máquina de método de entrada"
+msgstr "Tecla programada para cambiar a la siguiente máquina de método de entrada"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
@@ -259,33 +369,44 @@ msgstr "Tecla para Máquina Anterior"
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
-"Tecla programada para cambiar a la máquina de método de entrada anterior"
+msgstr "Tecla programada para cambiar a la máquina de método de entrada anterior"
 
 #: ../data/ibus.schemas.in.h:12
-msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
-msgstr ""
-"El comportamiento del panel de idioma. 0 = Siempre oculto, 1 = Auto ocultar, "
-"2 = mostrar siempre"
+msgid "Show IM Name"
+msgstr "Mostrar Nombre de ME"
 
 #: ../data/ibus.schemas.in.h:13
+msgid "Show IM name on language bar"
+msgstr "Mostrar nombre de ME en la barra de idioma"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgstr "El comportamiento del panel de idioma. 0 = Siempre oculto, 1 = Auto ocultar, 2 = mostrar siempre"
+
+#: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
 msgstr "Tecla Disparadora"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
-"Tecla de activación para habilitar o deshabilitar el contexto de entrada"
+msgstr "Tecla de activación para habilitar o deshabilitar el contexto de entrada"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Use Custom Font"
 msgstr "Usar Fuente Personalizada"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "Usar nombre de fuente personalizada para el panel de idioma"
 
+#: ../data/ibus.schemas.in.h:19
+msgid "Use system keyboard (XKB) layout setting"
+msgstr "Usar configuración de diseño del teclado del sistema (XKB)"
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
+msgstr "Usar el diseño del teclado del sistema"
+
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"
+
