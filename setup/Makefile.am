@@ -58,6 +58,7 @@ DISTCLEANFILES = \
 test:
 	$(ENV) \
 		PYTHONPATH=$(top_srcdir) \
-		IBUS_PREFIX="/usr" \
+		IBUS_PREFIX="@prefix@" \
+		IBUS_LOCALEDIR="@localedir@" \
 		$(PYTHON) \
 		$(srcdir)/main.py

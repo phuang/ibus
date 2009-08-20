@@ -19,7 +19,6 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-import locale
 import gettext
 import os
 import signal
@@ -69,7 +68,10 @@ class Setup(object):
 
     def __init__(self):
         super(Setup, self).__init__()
-        locale.bind_textdomain_codeset("ibus", "UTF-8")
+        localedir = os.getenv("IBUS_LOCALEDIR")
+        gettext.bindtextdomain("ibus", localedir)
+        glade.bindtextdomain("ibus", localedir)
+        gettext.bind_textdomain_codeset("ibus", "UTF-8")
         glade.textdomain("ibus")
         glade_file = path.join(path.dirname(__file__), "./setup.glade")
         self.__xml = glade.XML(glade_file)
