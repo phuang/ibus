@@ -1,9 +1,18 @@
-#include <linux/input.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include "ibus.h"
+
+#ifndef __linux__
+/* the test is supported only on linux */
+int main (int argc, char **argv)
+{
+    return 3;
+}
+#else
+
+#include <linux/input.h>
 
 #define KEYBOARDPATH "/dev/input/event4"
 
@@ -42,3 +51,4 @@ int main (int argc, char **argv)
 	return 0;
 
 }
+#endif
