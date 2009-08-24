@@ -132,7 +132,7 @@ gboolean             ibus_observed_path_check_modification  (IBusObservedPath   
  * @indent: number of indent.
  *
  * Append the observed path to a string with following format:
- * &lt;path mtime="<i>modified time</i>" &gt;<i>path</i>&lt;/path&gt;
+ * &lt;path mtime="&lt;i&gt;modified time&lt;/i&gt;" &gt;&lt;i&gt;path&lt;/i&gt;&lt;/path&gt;
  */
 void                 ibus_observed_path_output              (IBusObservedPath   *path,
                                                              GString            *output,

@@ -78,7 +78,7 @@ typedef struct _IBusObjectClass IBusObjectClass;
  * IBusObject:
  *
  * All the fields in the <structname>IBusObject</structname> structure are
- * prtivate to the #IBusObject and should never be accessed directly.
+ * private to the #IBusObject and should never be accessed directly.
  */
 struct _IBusObject {
   GObject parent;

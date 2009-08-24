@@ -78,13 +78,6 @@ ibus_serializable_get_type (void)
     return type;
 }
 
-/**
- * ibus_serializable_new:
- *
- * Creates a new instance of an #IBusSerializable.
- *
- * Returns: a new instance of #IBusSerializable.
- */
 IBusSerializable *
 ibus_serializable_new (void)
 {

@@ -48,16 +48,58 @@
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_ATTRIBUTE, IBusAttributeClass))
 
 /* define IBusAttrList macros */
+/**
+ * IBUS_TYPE_ATTR_LIST:
+ *
+ * Return GType of IBus attribute list.
+ */
 #define IBUS_TYPE_ATTR_LIST             \
     (ibus_attr_list_get_type ())
+
+/**
+ * IBUS_ATTR_LIST:
+ * @obj: An object which is subject to casting.
+ *
+ * Casts an IBUS_ATTR_LIST or derived pointer into a (IBusAttrList*) pointer.
+ * Depending on the current debugging level, this function may invoke
+ * certain runtime checks to identify invalid casts.
+ */
 #define IBUS_ATTR_LIST(obj)             \
     (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_ATTR_LIST, IBusAttrList))
+
+/**
+ * IBUS_ATTR_LIST_CLASS:
+ * @klass: A class to be casted.
+ *
+ * Casts a derived IBusAttrListClass structure into a IBusAttrListClass structure.
+ */
 #define IBUS_ATTR_LIST_CLASS(klass)     \
     (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_ATTR_LIST, IBusAttrListClass))
+
+/**
+ * IBUS_IS_ATTR_LIST:
+ * @obj: Instance to check for being a IBUS_ATTR_LIST.
+ *
+ * Checks whether a valid GTypeInstance pointer is of type IBUS_ATTR_LIST.
+ */
 #define IBUS_IS_ATTR_LIST(obj)          \
     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_ATTR_LIST))
+
+/**
+ * IBUS_IS_ATTR_LIST_CLASS:
+ * @klass: A class to be checked.
+ *
+ * Checks whether class "is a" valid IBusAttrListClass structure of type IBUS_ATTR_LIST or derived.
+ */
 #define IBUS_IS_ATTR_LIST_CLASS(klass)  \
     (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_ATTR_LIST))
+
+/**
+ * IBUS_ATTR_LIST_GET_CLASS:
+ * @obj: An object.
+ *
+ * Get the class of a given object and cast the class to IBusAttrListClass.
+ */
 #define IBUS_ATTR_LIST_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_ATTR_LIST, IBusAttrListClass))
 
@@ -67,7 +109,7 @@
  * @IBUS_ATTR_TYPE_FOREGROUND: Foreground color.
  * @IBUS_ATTR_TYPE_BACKGROUND: Background color.
  *
- * Type of IBusText attribute.
+ * Type enumeration of IBusText attribute.
  */
 typedef enum {
     IBUS_ATTR_TYPE_UNDERLINE    = 1,
