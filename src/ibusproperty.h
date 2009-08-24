@@ -41,9 +41,6 @@ G_BEGIN_DECLS
 /*
  * Type macros.
  */
-#define IBUS_TYPE_PROPERTY          (ibus_property_get_type ())
-#define IBUS_TYPE_PROP_LIST         (ibus_prop_list_get_type ())
-
 /* define IBusProperty macros */
 #define IBUS_TYPE_PROPERTY             \
     (ibus_property_get_type ())
@@ -59,16 +56,59 @@ G_BEGIN_DECLS
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROPERTY, IBusPropertyClass))
 
 /* define IBusPropList macros */
+/**
+ * IBUS_TYPE_PROP_LIST:
+ * @returns: IBusPropList GType.
+ *
+ * Returns GType of IBus property list.
+ */
 #define IBUS_TYPE_PROP_LIST             \
     (ibus_prop_list_get_type ())
+
+/**
+ * IBUS_PROP_LIST:
+ * @obj: An object which is subject to casting.
+ *
+ * Casts an IBUS_PROP_LIST or derived pointer into a (IBusPropList*) pointer.
+ * Depending on the current debugging level, this function may invoke
+ * certain runtime checks to identify invalid casts.
+ */
 #define IBUS_PROP_LIST(obj)             \
     (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_PROP_LIST, IBusPropList))
+
+/**
+ * IBUS_PROP_LIST_CLASS:
+ * @klass: A class to be casted.
+ *
+ * Casts a derived IBusPropListClass structure into a IBusPropListClass structure.
+ */
 #define IBUS_PROP_LIST_CLASS(klass)     \
     (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_PROP_LIST, IBusPropListClass))
+
+/**
+ * IBUS_IS_PROP_LIST:
+ * @obj: Instance to check for being a IBUS_PROP_LIST.
+ *
+ * Checks whether a valid GTypeInstance pointer is of type IBUS_PROP_LIST.
+ */
 #define IBUS_IS_PROP_LIST(obj)          \
     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_PROP_LIST))
+
+/**
+ * IBUS_IS_PROP_LIST_CLASS:
+ * @klass: A class to be checked.
+ *
+ * Checks whether class "is a" valid IBusPropListClass structure of type IBUS_PROP_LIST or derived.
+ */
 #define IBUS_IS_PROP_LIST_CLASS(klass)  \
     (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_PROP_LIST))
+
+/**
+ * IBUS_PROP_LIST_GET_CLASS:
+ * @obj: An object.
+ *
+ * Get the class of a given object and cast the class to IBusPropListClass.
+ */
 #define IBUS_PROP_LIST_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROP_LIST, IBusPropListClass))
 
@@ -81,7 +121,7 @@ G_BEGIN_DECLS
  * items.
  * @PROP_TYPE_SEPARATOR: A separator for menu.
  *
- * Type of IBusProperty.
+ * Type enumeration of IBusProperty.
  */
 typedef enum {
     PROP_TYPE_NORMAL = 0,
@@ -165,7 +205,7 @@ struct _IBusPropertyClass {
  * IBusPropList:
  * @properties: GArray that holds IBusProperties.
  *
- * A GArray of IBusProperties.
+ * An array of IBusProperties.
  */
 struct _IBusPropList {
     IBusSerializable parent;
@@ -183,12 +223,12 @@ GType            ibus_property_get_type     ();
 /**
  * ibus_property_new:
  * @key: Unique Identity for the IBusProperty.
- * @icon: Icon file for the IBusProperty.
+ * @type: IBusPropType of IBusProperty.
  * @label: Text shown in UI.
+ * @icon: Icon file for the IBusProperty.
  * @tooltip: Message shown if mouse hovered the  IBusProperty.
  * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
  * @visible: Whether the IBusProperty is visible.
- * @type: IBusPropType of IBusProperty.
  * @state: IBusPropState of IBusProperty.
  * @prop_list: IBusPropList that contains sub IBusProperties.
  * @returns: A newly allocated IBusProperty.
@@ -218,7 +258,7 @@ void             ibus_property_set_label    (IBusProperty   *prop,
 /**
  * ibus_property_set_icon:
  * @prop: An IBusProperty.
- * @icon: Icon shown in UI. It could be a full path of an icon file or an icon name. 
+ * @icon: Icon shown in UI. It could be a full path of an icon file or an icon name.
  *
  * Set the icon of IBusProperty.
  */

@@ -112,6 +112,16 @@ ibus_object_class_init     (IBusObjectClass *klass)
     klass->destroy = ibus_object_real_destroy;
 
     /* install signals */
+    /**
+     * IBusObject::destroy:
+     * @object: An IBusObject.
+     *
+     * Destroy and free an IBusObject
+     *
+     * See also:  ibus_object_destroy().
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
     object_signals[DESTROY] =
         g_signal_new (I_("destroy"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -198,17 +208,6 @@ ibus_object_real_destroy (IBusObject *obj)
     g_signal_handlers_destroy (obj);
 }
 
-/**
- * ibus_object_destroy:
- * @object: an #IBusObject to destroy.
- *
- * Emit the "destory" signal notifying all reference holders that they should
- * release the #IBusObject.
- *
- * The memory for the object itself won't be deleted until its reference count
- * actually drops to 0; ibus_object_destroy merely asks reference holders to
- * release their references. it does not free the object.
- */
 void
 ibus_object_destroy (IBusObject *obj)
 {
