@@ -364,7 +364,7 @@ class Panel(ibus.PanelBase):
                     item.connect("activate", self.__im_menu_item_activate_cb, engine)
                     submenu.add(item)
 
-        item = gtk.ImageMenuItem(_("No input method"))
+        item = gtk.ImageMenuItem(_("Turn off input method"))
         item.set_image(_icon.IconWidget("gtk-close", size[0]))
         item.connect("activate", self.__im_menu_item_activate_cb, None)
         menu.add(item)
