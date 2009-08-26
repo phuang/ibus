@@ -37,7 +37,7 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
-ICON_KEYBOARD = "ibus-keyboard"
+ICON_OFF = "ibus-off"
 ICON_ENGINE = "ibus-engine"
 
 def show_uri(screen, link):
@@ -106,7 +106,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
-        self.__status_icon.set_from_icon_name(ICON_KEYBOARD)
+        self.__status_icon.set_from_icon_name(ICON_OFF)
         self.__status_icon.set_tooltip(_("IBus input method framework"))
         self.__status_icon.set_visible(True)
 
@@ -198,7 +198,7 @@ class Panel(ibus.PanelBase):
         self.__language_bar.set_enabled(enabled)
 
         if not enabled:
-            self.__set_im_icon(ICON_KEYBOARD)
+            self.__set_im_icon(ICON_OFF)
             self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
@@ -206,7 +206,7 @@ class Panel(ibus.PanelBase):
                 self.__set_im_icon(engine.icon)
                 self.__set_im_name(engine.longname)
             else:
-                self.__set_im_icon(ICON_KEYBOARD)
+                self.__set_im_icon(ICON_OFF)
                 self.__set_im_name(None)
         self.__language_bar.focus_in()
 
@@ -215,7 +215,7 @@ class Panel(ibus.PanelBase):
         self.__focus_ic = None
         self.__language_bar.set_enabled(False)
         self.__language_bar.focus_out()
-        self.__set_im_icon(ICON_KEYBOARD)
+        self.__set_im_icon(ICON_OFF)
         self.__set_im_name(None)
 
     def state_changed(self):
@@ -227,7 +227,7 @@ class Panel(ibus.PanelBase):
 
         if enabled == False:
             self.reset()
-            self.__set_im_icon(ICON_KEYBOARD)
+            self.__set_im_icon(ICON_OFF)
             self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
@@ -235,7 +235,7 @@ class Panel(ibus.PanelBase):
                 self.__set_im_icon(engine.icon)
                 self.__set_im_name(engine.longname)
             else:
-                self.__set_im_icon(ICON_KEYBOARD)
+                self.__set_im_icon(ICON_OFF)
                 self.__set_im_name(None)
 
 
