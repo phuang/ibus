@@ -37,6 +37,9 @@ from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
+ICON_KEYBOARD = "ibus-keyboard"
+ICON_ENGINE = "ibus-engine"
+
 def show_uri(screen, link):
     try:
         gtk.show_uri(screen, link, 0)
@@ -62,8 +65,7 @@ class Panel(ibus.PanelBase):
         self.__setup_pid = 0
         self.__prefix = os.getenv("IBUS_PREFIX")
         self.__data_dir = path.join(self.__prefix, "share", "ibus")
-        self.__icons_dir = path.join(self.__data_dir, "icons")
-        self.__ibus_icon = path.join(self.__icons_dir, "ibus.svg")
+        # self.__icons_dir = path.join(self.__data_dir, "icons")
         self.__setup_cmd = path.join(self.__prefix, "bin", "ibus-setup")
 
         # hanlder signal
@@ -75,8 +77,8 @@ class Panel(ibus.PanelBase):
         # self.__bus.config_add_watch("panel")
 
         # add icon search path
-        icon_theme = gtk.icon_theme_get_default()
-        icon_theme.prepend_search_path(self.__icons_dir)
+        # icon_theme = gtk.icon_theme_get_default()
+        # icon_theme.prepend_search_path(self.__icons_dir)
 
         self.__language_bar = LanguageBar()
         self.__language_bar.connect("property-activate",
@@ -104,7 +106,7 @@ class Panel(ibus.PanelBase):
         self.__status_icon = gtk.StatusIcon()
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
-        self.__status_icon.set_from_file(self.__ibus_icon)
+        self.__status_icon.set_from_icon_name(ICON_KEYBOARD)
         self.__status_icon.set_tooltip(_("IBus input method framework"))
         self.__status_icon.set_visible(True)
 
@@ -179,7 +181,7 @@ class Panel(ibus.PanelBase):
 
     def __set_im_icon(self, icon_name):
         if not icon_name:
-            icon_name = "engine-default"
+            icon_name = ICON_ENGINE
         self.__language_bar.set_im_icon(icon_name)
         if icon_name.startswith("/"):
             self.__status_icon.set_from_file(icon_name)
@@ -196,7 +198,7 @@ class Panel(ibus.PanelBase):
         self.__language_bar.set_enabled(enabled)
 
         if not enabled:
-            self.__set_im_icon(self.__ibus_icon)
+            self.__set_im_icon(ICON_KEYBOARD)
             self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
@@ -204,7 +206,7 @@ class Panel(ibus.PanelBase):
                 self.__set_im_icon(engine.icon)
                 self.__set_im_name(engine.longname)
             else:
-                self.__set_im_icon(self.__ibus_icon)
+                self.__set_im_icon(ICON_KEYBOARD)
                 self.__set_im_name(None)
         self.__language_bar.focus_in()
 
@@ -213,7 +215,7 @@ class Panel(ibus.PanelBase):
         self.__focus_ic = None
         self.__language_bar.set_enabled(False)
         self.__language_bar.focus_out()
-        self.__set_im_icon(self.__ibus_icon)
+        self.__set_im_icon(ICON_KEYBOARD)
         self.__set_im_name(None)
 
     def state_changed(self):
@@ -225,7 +227,7 @@ class Panel(ibus.PanelBase):
 
         if enabled == False:
             self.reset()
-            self.__set_im_icon(self.__ibus_icon)
+            self.__set_im_icon(ICON_KEYBOARD)
             self.__set_im_name(None)
         else:
             engine = self.__focus_ic.get_engine()
@@ -233,7 +235,7 @@ class Panel(ibus.PanelBase):
                 self.__set_im_icon(engine.icon)
                 self.__set_im_name(engine.longname)
             else:
-                self.__set_im_icon(self.__ibus_icon)
+                self.__set_im_icon(ICON_KEYBOARD)
                 self.__set_im_name(None)
 
 
@@ -347,7 +349,7 @@ class Panel(ibus.PanelBase):
                 if engine.icon:
                     item.set_image(_icon.IconWidget(engine.icon, size[0]))
                 else:
-                    item.set_image(_icon.IconWidget("engine-default", size[0]))
+                    item.set_image(_icon.IconWidget(ICON_ENGINE, size[0]))
                 item.connect("activate", self.__im_menu_item_activate_cb, engine)
                 menu.add(item)
             else:
@@ -360,7 +362,7 @@ class Panel(ibus.PanelBase):
                     if engine.icon:
                         item.set_image(_icon.IconWidget(engine.icon, size[0]))
                     else:
-                        item.set_image(_icon.IconWidget("engine-default", size[0]))
+                        item.set_image(_icon.IconWidget(ICON_ENGINE, size[0]))
                     item.connect("activate", self.__im_menu_item_activate_cb, engine)
                     submenu.add(item)
 

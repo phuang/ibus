@@ -20,12 +20,6 @@
 # Boston, MA  02111-1307  USA
 
 icons_DATA = \
-	engine-default.svg \
-	ibus-help.png \
-	ibus-keyboard.svg \
-	ibus-locale.svg \
-	ibus-zh.svg \
-	ibus.svg \
 	$(NULL)
 
 iconsdir = $(pkgdatadir)/icons
@@ -33,16 +27,13 @@ iconsdir = $(pkgdatadir)/icons
 sysicons_DATA = \
 	ibus.svg \
 	ibus-setup.svg \
+	ibus-keyboard.svg \
+	ibus-engine.svg \
 	$(NULL)
 
 sysiconsdir = $(datadir)/pixmaps
 
 EXTRA_DIST = \
-	engine-default.svg \
-	ibus-help.png \
-	ibus-keyboard.svg \
-	ibus-locale.svg \
-	ibus-zh.svg \
-	ibus-setup.svg \
-	ibus.svg \
+	$(icons_DATA) \
+	$(sysicons_DATA) \
 	$(NULL)
