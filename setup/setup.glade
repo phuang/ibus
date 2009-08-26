@@ -623,11 +623,11 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
                                     <property name="spacing">6</property>
                                     <child>
                                       <widget class="GtkCheckButton" id="checkbutton_use_sys_layout">
-                                        <property name="label" translatable="yes">Use system keyboard layout setting</property>
+                                        <property name="label" translatable="yes">Use system keyboard layout</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="tooltip" translatable="yes">Use system keyboard layout (XKB) setting</property>
+                                        <property name="tooltip" translatable="yes">Use system keyboard (XKB) layout</property>
                                         <property name="draw_indicator">True</property>
                                       </widget>
                                       <packing>

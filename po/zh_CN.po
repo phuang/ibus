@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 11:02+0800\n"
+"POT-Creation-Date: 2009-08-26 17:24+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -20,28 +20,28 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus输入法框架"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
-#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
 msgid "Other"
 msgstr "其他"
 
-#: ../ui/gtk/panel.py:312
+#: ../ui/gtk/panel.py:314
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../ui/gtk/panel.py:367
+#: ../ui/gtk/panel.py:369
 msgid "Turn off input method"
 msgstr "关闭输入法"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:424
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus is an intelligent input bus for Linux/Unix."
 
-#: ../ui/gtk/panel.py:426
+#: ../ui/gtk/panel.py:428
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -64,6 +64,7 @@ msgid "Language: %s\n"
 msgstr "语言: %s\n"
 
 #: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "键盘: %s\n"
 
@@ -310,12 +311,12 @@ msgid "Use custom font for language bar and candidates"
 msgstr "使用自定义字体显示语言栏和候选词"
 
 #: ../setup/setup.glade.h:47
-msgid "Use system keyboard layout (XKB) setting"
-msgstr ""
+msgid "Use system keyboard (XKB) layout"
+msgstr "使用系统键盘（XKB）布局"
 
-#: ../setup/setup.glade.h:48
-msgid "Use system keyboard layout setting"
-msgstr ""
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
+msgstr "使用系统键盘布局"
 
 #: ../setup/setup.glade.h:49
 msgid "gtk-about"
@@ -396,12 +397,9 @@ msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
 
 #: ../data/ibus.schemas.in.h:19
+#, fuzzy
 msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard layout"
-msgstr ""
+msgstr "使用系统键盘（XKB）布局"
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

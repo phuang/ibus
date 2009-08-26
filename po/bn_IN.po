@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 11:02+0800\n"
+"POT-Creation-Date: 2009-08-26 17:24+0800\n"
 "PO-Revision-Date: 2009-05-26 11:28+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@fedoraproject.org>\n"
 "Language-Team: Bengali INDIA <fedora-trans-bn_in@redhat.com>\n"
@@ -21,29 +21,29 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus ইনপুট পদ্ধতির পরিকাঠামো"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
-#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: ../ui/gtk/panel.py:312
+#: ../ui/gtk/panel.py:314
 msgid "Restart"
 msgstr "পুনরারম্ভ"
 
-#: ../ui/gtk/panel.py:367
+#: ../ui/gtk/panel.py:369
 #, fuzzy
 msgid "Turn off input method"
 msgstr "ইনপুট পদ্ধতি অনুপস্থিত"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:424
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix-র সাথে ব্যবহারযোগ্য বুদ্ধিবিশিষ্ট ইনপুট বাস হল IBus"
 
-#: ../ui/gtk/panel.py:426
+#: ../ui/gtk/panel.py:428
 msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
@@ -324,11 +324,11 @@ msgid "Use custom font for language bar and candidates"
 msgstr "ভাষার প্যানেলের জন্য স্বনির্ধারিত ফন্টের নাম ব্যবহার করা হবে"
 
 #: ../setup/setup.glade.h:47
-msgid "Use system keyboard layout (XKB) setting"
+msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../setup/setup.glade.h:48
-msgid "Use system keyboard layout setting"
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
 msgstr ""
 
 #: ../setup/setup.glade.h:49
@@ -414,8 +414,4 @@ msgstr "ভাষার প্যানেলের জন্য স্বনি
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard layout"
 msgstr ""

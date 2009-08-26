@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 11:02+0800\n"
+"POT-Creation-Date: 2009-08-26 17:24+0800\n"
 "PO-Revision-Date: 2009-07-14 13:01+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -21,29 +21,29 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
-#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
 msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
-#: ../ui/gtk/panel.py:312
+#: ../ui/gtk/panel.py:314
 msgid "Restart"
 msgstr "വീണ്ടും ആരംഭിക്കുക"
 
-#: ../ui/gtk/panel.py:367
+#: ../ui/gtk/panel.py:369
 #, fuzzy
 msgid "Turn off input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ലഭ്യമല്ല"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:424
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "ലിനക്സ്/യുണിക്സിനുള്ള ഇന്റലിജന്റ് ഇന്‍പുട്ട് ബസാണു് IBus."
 
-#: ../ui/gtk/panel.py:426
+#: ../ui/gtk/panel.py:428
 msgid "translator-credits"
 msgstr "അനി പീറ്റര്‍ <apeter@redhat.com>"
 
@@ -317,12 +317,13 @@ msgid "Use custom font for language bar and candidates"
 msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
 
 #: ../setup/setup.glade.h:47
-msgid "Use system keyboard layout (XKB) setting"
-msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃകാ (XKB) സജ്ജീകരണം ഉപയോഗിക്കുക"
+#, fuzzy
+msgid "Use system keyboard (XKB) layout"
+msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
 
-#: ../setup/setup.glade.h:48
-msgid "Use system keyboard layout setting"
-msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃകാ സജ്ജീകരണം ഉപയോഗിക്കുക"
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
+msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
 
 #: ../setup/setup.glade.h:49
 msgid "gtk-about"
@@ -409,6 +410,8 @@ msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്�
 msgid "Use system keyboard (XKB) layout setting"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് (XKB) മാതൃകാ സജ്ജീകരണം ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard layout"
-msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
+#~ msgid "Use system keyboard layout (XKB) setting"
+#~ msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃകാ (XKB) സജ്ജീകരണം ഉപയോഗിക്കുക"
+
+#~ msgid "Use system keyboard layout setting"
+#~ msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃകാ സജ്ജീകരണം ഉപയോഗിക്കുക"

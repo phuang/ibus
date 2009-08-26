@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 11:02+0800\n"
+"POT-Creation-Date: 2009-08-26 17:24+0800\n"
 "PO-Revision-Date: 2009-05-27 17:24+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
@@ -24,29 +24,29 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
-#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
 msgid "Other"
 msgstr "ଅନ୍ୟାନ୍ୟ"
 
-#: ../ui/gtk/panel.py:312
+#: ../ui/gtk/panel.py:314
 msgid "Restart"
 msgstr "ପୁନଃଚାଳନ"
 
-#: ../ui/gtk/panel.py:367
+#: ../ui/gtk/panel.py:369
 #, fuzzy
 msgid "Turn off input method"
 msgstr "କୌଣସି ନିବେଶ ପ୍ରଣୀଳୀ ନାହିଁ"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:424
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ହେଉଛି Linux/Unix ପାଇଁ ଗୋଟିଏ ବୁଦ୍ଧିମାନ ନିବେଶ ପରିପଥ।"
 
-#: ../ui/gtk/panel.py:426
+#: ../ui/gtk/panel.py:428
 msgid "translator-credits"
 msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
@@ -326,11 +326,11 @@ msgid "Use custom font for language bar and candidates"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:47
-msgid "Use system keyboard layout (XKB) setting"
+msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../setup/setup.glade.h:48
-msgid "Use system keyboard layout setting"
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
 msgstr ""
 
 #: ../setup/setup.glade.h:49
@@ -415,8 +415,4 @@ msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତା
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard layout"
 msgstr ""

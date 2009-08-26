@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 11:02+0800\n"
+"POT-Creation-Date: 2009-08-26 17:24+0800\n"
 "PO-Revision-Date: 2009-04-07 06:38+1000\n"
 "Last-Translator: Caius 'kaio' Chance <k@kaio.me>\n"
 "Language-Team: Caius 'kaio' Chance <k@kaio.me>\n"
@@ -20,29 +20,29 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus輸入法框架"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
-#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
+#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
 msgid "Other"
 msgstr "其他"
 
-#: ../ui/gtk/panel.py:312
+#: ../ui/gtk/panel.py:314
 msgid "Restart"
 msgstr "重新啟動"
 
-#: ../ui/gtk/panel.py:367
+#: ../ui/gtk/panel.py:369
 #, fuzzy
 msgid "Turn off input method"
 msgstr "無輸入法"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:424
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus 為 Linux/Unix上的智能輸入法框架。"
 
-#: ../ui/gtk/panel.py:426
+#: ../ui/gtk/panel.py:428
 msgid "translator-credits"
 msgstr "Caius 'kaio' Chance <k@kaio.me>"
 
@@ -319,11 +319,11 @@ msgid "Use custom font for language bar and candidates"
 msgstr "語言面板是否使用自訂字體"
 
 #: ../setup/setup.glade.h:47
-msgid "Use system keyboard layout (XKB) setting"
+msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../setup/setup.glade.h:48
-msgid "Use system keyboard layout setting"
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
 msgstr ""
 
 #: ../setup/setup.glade.h:49
@@ -407,8 +407,4 @@ msgstr "語言面板是否使用自訂字體"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard layout"
 msgstr ""
