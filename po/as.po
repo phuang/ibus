@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-26 07:38+0800\n"
+"POT-Creation-Date: 2009-08-26 11:02+0800\n"
 "PO-Revision-Date: 2009-05-26 15:19+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
@@ -20,53 +20,82 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
 msgid "IBus input method framework"
 msgstr "IBus input method framework"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
-#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
+#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
 msgid "Other"
 msgstr "অন্য"
 
-#: ../ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:312
 msgid "Restart"
 msgstr "পুনৰাৰম্ভ"
 
-#: ../ui/gtk/panel.py:337
-msgid "No input method"
+#: ../ui/gtk/panel.py:367
+#, fuzzy
+msgid "Turn off input method"
 msgstr "কোনো নিবেশ পদ্ধতি নাই"
 
-#: ../ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:422
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus এটা Linux/Unix ৰ কাৰণে বুদ্ধিমান নিবেশ bus ।"
 
-#: ../ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:426
 msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
-#. create input methods menu
-#: ../ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:102
+#, fuzzy
+msgid "About the Input Method"
+msgstr "নিবেশ পদ্ধতি"
+
+#: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
 msgstr "নিবেশ পদ্ধতি সলনি কৰক"
 
-#: ../setup/main.py:104
+#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../setup/setup.glade.h:15
+msgid "About"
+msgstr "বিষয়ে"
+
+#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#, python-format
+msgid "Language: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#, fuzzy, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "কীবৰ্ডৰ চমুপথবোৰ"
+
+#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#, python-format
+msgid "Author: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+msgid "Description:\n"
+msgstr ""
+
+#: ../setup/main.py:108
 msgid "trigger"
 msgstr "ট্ৰিগাৰ"
 
-#: ../setup/main.py:114
+#: ../setup/main.py:120
 msgid "next input method"
 msgstr "পিছৰ নিবেশ পদ্ধতি"
 
-#: ../setup/main.py:124
+#: ../setup/main.py:132
 msgid "previous input method"
 msgstr "আগৰ নিবেশ পদ্ধতি"
 
-#: ../setup/main.py:205
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ডেমন আৰম্ভ কৰা হোৱা নাই । আপুনি ইয়াক এতিয়া আৰম্ভ কৰিব বিচাৰে নেকি ?"
 
-#: ../setup/main.py:220
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -80,7 +109,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ৰ কাৰণে চাবিফলকৰ চমুপথ নিৰ্ব্বাচন কৰক"
@@ -97,7 +126,7 @@ msgstr "চাবিৰ কোড:"
 msgid "Modifiers:"
 msgstr "পৰিবৰ্তক:"
 
-#: ../setup/keyboardshortcut.py:222
+#: ../setup/keyboardshortcut.py:227
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -105,13 +134,23 @@ msgstr ""
 "অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ) ।\n"
 "চাবি এৰিলে সম্বাদ বন্ধ হ'ব ।"
 
-#: ../setup/keyboardshortcut.py:224
+#: ../setup/keyboardshortcut.py:229
 msgid "Please press a key (or a key combination)"
 msgstr "অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ)"
 
 #: ../setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "এটা নিবেশ পদ্ধতি নিৰ্ব্বাচন কৰক"
+
+#. create im name & icon column
+#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#, fuzzy
+msgid "Input Method"
+msgstr "নিবেশ পদ্ধতি"
+
+#: ../setup/enginetreeview.py:87
+msgid "Kbd"
+msgstr ""
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -122,14 +161,19 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ফন্ট আৰু শৈলী</b>"
 
 #: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Shortcuts</b>"
+#, fuzzy
+msgid "<b>Keyboard Layout</b>"
 msgstr "<b>কীবৰ্ডৰ চমুপথবোৰ</b>"
 
 #: ../setup/setup.glade.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>কীবৰ্ডৰ চমুপথবোৰ</b>"
+
+#: ../setup/setup.glade.h:5
 msgid "<b>Startup</b>"
 msgstr "<b>ষ্টাৰ্টআপ</b>"
 
-#: ../setup/setup.glade.h:5
+#: ../setup/setup.glade.h:6
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -145,7 +189,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.glade.h:12
+#: ../setup/setup.glade.h:13
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
@@ -153,27 +197,36 @@ msgstr ""
 "<small><i>অবিকল্পিত নিবেশ পদ্ধতি তালিকাৰ ওপৰৰ প্ৰথমত ।\n"
 "তাক সলনি কৰিবলৈ আপুনি ওপৰ/তল বুটাম ব্যৱহাৰ কৰিব পাৰে ।</i></small>"
 
-#: ../setup/setup.glade.h:14
-msgid "About"
-msgstr "বিষয়ে"
+#: ../setup/setup.glade.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
+msgid "Advanced"
+msgstr ""
+
+#: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
 msgstr "প্ৰাৰ্থীৰ দিশ:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:19
+#, fuzzy
+msgid "Choice font for language bar and candidates"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+
+#: ../setup/setup.glade.h:20
 msgid "Custom font:"
 msgstr "স্বনিৰ্বাচিত ফন্ট:"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:21
 msgid "Enable or disable:"
 msgstr "সক্ৰিয় বা নিষ্ক্ৰিয় কৰক:"
 
-#: ../setup/setup.glade.h:18
+#: ../setup/setup.glade.h:22
 msgid "General"
 msgstr "সাধাৰণ"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:23
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -181,15 +234,19 @@ msgstr ""
 "অনুভূমিক\n"
 "উলম্ব"
 
-#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus পছন্দ"
 
-#: ../setup/setup.glade.h:22
-msgid "Input Methods"
-msgstr "নিবেশ পদ্ধতি"
+#: ../setup/setup.glade.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
 
-#: ../setup/setup.glade.h:23
+#: ../setup/setup.glade.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
+#: ../setup/setup.glade.h:29
 msgid ""
 "Never\n"
 "When active\n"
@@ -199,25 +256,82 @@ msgstr ""
 "যেতিয়া সক্ৰিয়\n"
 "সদায়"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:32
 msgid "Next input method:"
 msgstr "পিছৰ নিবেশ পদ্ধতি:"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:33
 msgid "Previous input method:"
 msgstr "আগৰ নিবেশ পদ্ধতি"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:34
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.glade.h:35
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+
+#: ../setup/setup.glade.h:36
+#, fuzzy
+msgid "Set the orientation of candidates in lookup table"
+msgstr "লুকআপ টেবুলৰ দিশ"
+
+#: ../setup/setup.glade.h:37
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:38
+msgid "Show information of the selected input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+
+#: ../setup/setup.glade.h:40
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+
+#: ../setup/setup.glade.h:41
 msgid "Show language panel:"
 msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
 
-#: ../setup/setup.glade.h:29
+#: ../setup/setup.glade.h:42
 msgid "Start ibus on login"
 msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:43
+#, fuzzy
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "পিছৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+
+#: ../setup/setup.glade.h:44
+#, fuzzy
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+
+#: ../setup/setup.glade.h:45
 msgid "Use custom font"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
+
+#: ../setup/setup.glade.h:46
+#, fuzzy
+msgid "Use custom font for language bar and candidates"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
+
+#: ../setup/setup.glade.h:47
+msgid "Use system keyboard layout (XKB) setting"
+msgstr ""
+
+#: ../setup/setup.glade.h:48
+msgid "Use system keyboard layout setting"
+msgstr ""
+
+#: ../setup/setup.glade.h:49
+msgid "gtk-about"
+msgstr ""
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -264,27 +378,44 @@ msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
 
 #: ../data/ibus.schemas.in.h:12
+msgid "Show IM Name"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+#, fuzzy
+msgid "Show IM name on language bar"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 "ভাষাৰ পেনেলৰ আচৰণ । ০ = সদায় লুকাওক, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় দেখুৱাওক"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
 msgstr "ট্ৰিগাৰ Hotkey"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "ট্ৰিগাৰ Hotkey নিবেশ সনদৰ্ভ সক্ৰিয় বা নিষ্ক্ৰিয় কৰিবলৈ"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Use Custom Font"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
+
+#: ../data/ibus.schemas.in.h:19
+msgid "Use system keyboard (XKB) layout setting"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
+msgstr ""
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-26 07:38+0800\n"
+"POT-Creation-Date: 2009-08-26 11:02+0800\n"
 "PO-Revision-Date: 2009-06-08 17:55+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
@@ -21,53 +21,82 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:97
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:108
 msgid "IBus input method framework"
 msgstr "IBus ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಫ್ರೇಮ್‌ವರ್ಕ್"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:307 ../ui/gtk/panel.py:308
-#: ../ui/gtk/panel.py:309 ../ui/gtk/panel.py:310
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:337 ../ui/gtk/panel.py:338
+#: ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
 msgid "Other"
 msgstr "ಇತರೆ"
 
-#: ../ui/gtk/panel.py:282
+#: ../ui/gtk/panel.py:312
 msgid "Restart"
 msgstr "ಪುನರಾರಂಭಿಸು"
 
-#: ../ui/gtk/panel.py:337
-msgid "No input method"
+#: ../ui/gtk/panel.py:367
+#, fuzzy
+msgid "Turn off input method"
 msgstr "ಯಾವುದೆ ಇನ್‌ಪುಟ್ ವಿಧಾನವಿಲ್ಲ"
 
-#: ../ui/gtk/panel.py:383
+#: ../ui/gtk/panel.py:422
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ಎನ್ನುವುದು Linux/Unix ಗಾಗಿನ ಒಂದು ಚತುರ ಇನ್‌ಪುಟ್ ಬಸ್."
 
-#: ../ui/gtk/panel.py:387
+#: ../ui/gtk/panel.py:426
 msgid "translator-credits"
 msgstr "ಶಂಕರ್ ಪ್ರಸಾದ್ <svenkate@redhat.com>"
 
-#. create input methods menu
-#: ../ui/gtk/languagebar.py:84
+#: ../ui/gtk/languagebar.py:102
+#, fuzzy
+msgid "About the Input Method"
+msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳು"
+
+#: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸು"
 
-#: ../setup/main.py:104
+#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../setup/setup.glade.h:15
+msgid "About"
+msgstr "ಇದರ ಬಗ್ಗೆ"
+
+#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#, python-format
+msgid "Language: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#, fuzzy, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ಗಳು"
+
+#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#, python-format
+msgid "Author: %s\n"
+msgstr ""
+
+#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+msgid "Description:\n"
+msgstr ""
+
+#: ../setup/main.py:108
 msgid "trigger"
 msgstr "ಟ್ರಿಗರ್"
 
-#: ../setup/main.py:114
+#: ../setup/main.py:120
 msgid "next input method"
 msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
-#: ../setup/main.py:124
+#: ../setup/main.py:132
 msgid "previous input method"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
-#: ../setup/main.py:205
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ಡೀಮನ್ ಇನ್ನೂ ಸಹ ಆರಂಭಗೊಂಡಿಲ್ಲ. ನೀವದನ್ನು ಈಗಲೆ ಆರಂಭಿಸಲು ಬಯಸುತ್ತೀರೆ?"
 
-#: ../setup/main.py:220
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -81,7 +110,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ಗಾಗಿ ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
@@ -98,7 +127,7 @@ msgstr "ಕೀಲಿ ಸಂಕೇತ:"
 msgid "Modifiers:"
 msgstr "ಮಾರ್ಪಡಕಗಳು:"
 
-#: ../setup/keyboardshortcut.py:222
+#: ../setup/keyboardshortcut.py:227
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -106,13 +135,23 @@ msgstr ""
 "ದಯವಿಟ್ಟು ಒಂದು ಕೀಲಿಯನ್ನು (ಅಥವ ಒಂದು ಕೀಲಿ ಸಂಯೋಜನೆಯನ್ನು) ಒತ್ತಿ.\n"
 "ಕೀಲಿಯನ್ನು ಬಿಟ್ಟಾಗ ಸಂವಾದವು ಮುಚ್ಚಲ್ಪಡುತ್ತದೆ."
 
-#: ../setup/keyboardshortcut.py:224
+#: ../setup/keyboardshortcut.py:229
 msgid "Please press a key (or a key combination)"
 msgstr "ದಯವಿಟ್ಟು ಒಂದು ಕೀಲಿಯನ್ನು (ಅಥವ ಒಂದು ಕೀಲಿ ಸಂಯೋಜನೆಯನ್ನು) ಒತ್ತಿ"
 
 #: ../setup/enginecombobox.py:99
 msgid "Select an input method"
 msgstr "ಒಂದು ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
+
+#. create im name & icon column
+#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#, fuzzy
+msgid "Input Method"
+msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳು"
+
+#: ../setup/enginetreeview.py:87
+msgid "Kbd"
+msgstr ""
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -123,14 +162,19 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ಅಕ್ಷರಶೈಲಿ ಹಾಗು ವಿನ್ಯಾಸ</b>"
 
 #: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Shortcuts</b>"
+#, fuzzy
+msgid "<b>Keyboard Layout</b>"
 msgstr "<b>ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ಗಳು</b>"
 
 #: ../setup/setup.glade.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ಗಳು</b>"
+
+#: ../setup/setup.glade.h:5
 msgid "<b>Startup</b>"
 msgstr "<b>ಆರಂಭ</b>"
 
-#: ../setup/setup.glade.h:5
+#: ../setup/setup.glade.h:6
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -146,7 +190,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.glade.h:12
+#: ../setup/setup.glade.h:13
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
@@ -154,27 +198,36 @@ msgstr ""
 "<small><i>ಪೂರ್ವನಿಯೋಜಿತ ಇನ್‌ಪುಟ್‌ ವಿಧಾನವು ಪಟ್ಟಿಯ ಮೇಲ್ಬಾಗದಲ್ಲಿದೆ.\n"
 "ಅದನ್ನು ಬದಲಾಯಿಸಲು ನೀವು up/down ಗುಂಡಿಗಳನ್ನು ಬಳಸಬಹುದು.</i></small>"
 
-#: ../setup/setup.glade.h:14
-msgid "About"
-msgstr "ಇದರ ಬಗ್ಗೆ"
+#: ../setup/setup.glade.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
 
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.glade.h:17
+msgid "Advanced"
+msgstr ""
+
+#: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
 msgstr "ಅಬ್ಯರ್ಥಿಗಳ ಹೊಂದಿಕೆ:"
 
-#: ../setup/setup.glade.h:16
+#: ../setup/setup.glade.h:19
+#, fuzzy
+msgid "Choice font for language bar and candidates"
+msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿನ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರು"
+
+#: ../setup/setup.glade.h:20
 msgid "Custom font:"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ:"
 
-#: ../setup/setup.glade.h:17
+#: ../setup/setup.glade.h:21
 msgid "Enable or disable:"
 msgstr "ಶಕ್ತಗೊಂಡ ಅಥವ ಅಶಕ್ತಗೊಂಡ:"
 
-#: ../setup/setup.glade.h:18
+#: ../setup/setup.glade.h:22
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
-#: ../setup/setup.glade.h:19
+#: ../setup/setup.glade.h:23
 msgid ""
 "Horizontal\n"
 "Vertical"
@@ -182,15 +235,19 @@ msgstr ""
 "ಅಡ್ಡ\n"
 "ಲಂಬ"
 
-#: ../setup/setup.glade.h:21 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus ಆದ್ಯತೆಗಳು"
 
-#: ../setup/setup.glade.h:22
-msgid "Input Methods"
-msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನಗಳು"
+#: ../setup/setup.glade.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
 
-#: ../setup/setup.glade.h:23
+#: ../setup/setup.glade.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
+#: ../setup/setup.glade.h:29
 msgid ""
 "Never\n"
 "When active\n"
@@ -200,25 +257,82 @@ msgstr ""
 "ಸಕ್ರಿಯವಾಗಿದ್ದಾಗ\n"
 "ಯಾವಾಗಲೂ"
 
-#: ../setup/setup.glade.h:26
+#: ../setup/setup.glade.h:32
 msgid "Next input method:"
 msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
-#: ../setup/setup.glade.h:27
+#: ../setup/setup.glade.h:33
 msgid "Previous input method:"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
-#: ../setup/setup.glade.h:28
+#: ../setup/setup.glade.h:34
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.glade.h:35
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+
+#: ../setup/setup.glade.h:36
+#, fuzzy
+msgid "Set the orientation of candidates in lookup table"
+msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ"
+
+#: ../setup/setup.glade.h:37
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:38
+msgid "Show information of the selected input method"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿನ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರು"
+
+#: ../setup/setup.glade.h:40
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+
+#: ../setup/setup.glade.h:41
 msgid "Show language panel:"
 msgstr "ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು:"
 
-#: ../setup/setup.glade.h:29
+#: ../setup/setup.glade.h:42
 msgid "Start ibus on login"
 msgstr "ಪ್ರವೇಶಿಸಿದಾಗ ibus ಅನ್ನು ಆರಂಭಿಸು"
 
-#: ../setup/setup.glade.h:30
+#: ../setup/setup.glade.h:43
+#, fuzzy
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ ಎಂಜಿನ್‌ಗೆ ಬದಲಾಯಿಸಲು ಮುಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
+
+#: ../setup/setup.glade.h:44
+#, fuzzy
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ ಎಂಜಿನ್‌ಗೆ ಬದಲಾಯಿಸಲು ಹಿಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
+
+#: ../setup/setup.glade.h:45
 msgid "Use custom font"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
+
+#: ../setup/setup.glade.h:46
+#, fuzzy
+msgid "Use custom font for language bar and candidates"
+msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರನ್ನು ಬಳಸಿ"
+
+#: ../setup/setup.glade.h:47
+msgid "Use system keyboard layout (XKB) setting"
+msgstr ""
+
+#: ../setup/setup.glade.h:48
+msgid "Use system keyboard layout setting"
+msgstr ""
+
+#: ../setup/setup.glade.h:49
+msgid "gtk-about"
+msgstr ""
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -265,24 +379,41 @@ msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ ಎಂಜಿನ್‌ಗೆ ಬದಲಾಯಿಸಲು ಹಿಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
 
 #: ../data/ibus.schemas.in.h:12
+msgid "Show IM Name"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+#, fuzzy
+msgid "Show IM name on language bar"
+msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿನ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರು"
+
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr "ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಯಾವಾಗಲೂ ಅಡಗಿಸು, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
+msgstr ""
+"ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಯಾವಾಗಲೂ ಅಡಗಿಸು, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
 msgstr "ಟ್ರಿಗರ್ ಹಾಟ್‌ಕೀಲಿ"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "ಇನ್‌ಪುಟ್ ಸನ್ನಿವೇಶವನ್ನು ಶಕ್ತಗೊಳಿಸಲು ಅಥವ ಅಶಕ್ತಗೊಳಿಸಲು ಟ್ರಿಗರ್ ಹಾಟ್‌ಕೀಲಿ"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Use Custom Font"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರನ್ನು ಬಳಸಿ"
 
+#: ../data/ibus.schemas.in.h:19
+msgid "Use system keyboard (XKB) layout setting"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Use system keyboard layout"
+msgstr ""

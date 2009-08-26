@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-24 14:39+0000\n"
+"POT-Creation-Date: 2009-08-26 11:02+0800\n"
 "PO-Revision-Date: 2009-08-24 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -47,7 +47,8 @@ msgid "Restart"
 msgstr "Reinicia"
 
 #: ../ui/gtk/panel.py:367
-msgid "No input method"
+#, fuzzy
+msgid "Turn off input method"
 msgstr "Cap mètode d'entrada"
 
 #: ../ui/gtk/panel.py:422
