@@ -116,12 +116,15 @@ class InputContext(object.Object):
         ),
     }
 
-    def __init__(self, bus, path):
+    def __init__(self, bus, path, watch_signals=False):
         super(InputContext, self).__init__()
 
         self.__bus = bus
         self.__context = bus.get_dbusconn().get_object(common.IBUS_SERVICE_IBUS, path)
         self.__signal_matches = []
+
+        if not watch_signals:
+            return
 
         m = self.__context.connect_to_signal("CommitText", self.__commit_text_cb)
         self.__signal_matches.append(m)
@@ -212,7 +215,13 @@ class InputContext(object.Object):
         caps = dbus.UInt32(caps)
         return self.__context.SetCapabilities(caps)
 
+    def detach_signals(self):
+        for m in self.__signal_matchs:
+            m.remove()
+        del self.__signal_matchs[:]
+
     def destroy(self):
+        self.detach_signals()
         self.__context.Destroy()
         super(InputContext, self).destroy()
 
@@ -229,6 +238,7 @@ class InputContext(object.Object):
 
     def introspect(self):
         return self.__context.Introspect()
+
 
 
 def test():
