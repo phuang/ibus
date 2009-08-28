@@ -362,6 +362,7 @@ ibus_attr_list_deserialize (IBusAttrList    *attr_list,
         ibus_message_iter_next (&array_iter);
 
         ibus_attr_list_append (attr_list, attr);
+        g_object_unref (attr);
     }
 
     ibus_message_iter_next (iter);
@@ -417,6 +418,7 @@ ibus_attr_list_append (IBusAttrList  *attr_list,
     g_return_if_fail (IBUS_IS_ATTR_LIST (attr_list));
     g_return_if_fail (IBUS_IS_ATTRIBUTE (attr));
 
+    g_object_ref (attr);
     g_array_append_val (attr_list->attributes, attr);
 }
 

@@ -241,7 +241,7 @@ ibus_text_new_from_printf (const gchar *format,
         return NULL;
 
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
-
+    text->is_static = FALSE;
     text->text = (gchar *)str;
 
     return text;
@@ -259,6 +259,7 @@ ibus_text_new_from_unichar (gunichar c)
 
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
+    text->is_static = FALSE;
     text->text = (gchar *)g_malloc (12);
     len = g_unichar_to_utf8 (c, text->text);
     text->text[len] =  0;
@@ -275,17 +276,23 @@ ibus_text_append_attribute (IBusText *text,
 {
     g_assert (IBUS_IS_TEXT (text));
 
+    IBusAttribute *attr;
+
     if (end_index < 0) {
         end_index  += g_utf8_strlen(text->text, -1) + 1;
     }
 
-    if (end_index <= 0)
+    if (end_index <= 0) {
         return;
+    }
 
-    if (text->attrs == NULL)
+    if (text->attrs == NULL) {
         text->attrs = ibus_attr_list_new ();
+    }
 
-    ibus_attr_list_append (text->attrs, ibus_attribute_new (type, value, start_index, end_index));
+    attr = ibus_attribute_new (type, value, start_index, end_index);
+    ibus_attr_list_append (text->attrs, attr);
+    g_object_unref (attr);
 }
 
 guint
