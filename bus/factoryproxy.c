@@ -23,6 +23,8 @@
 #include "dbusimpl.h"
 #include "factoryproxy.h"
 
+#define REPLY_TIMEOUT (-1)
+
 /* functions prototype */
 static void      bus_factory_proxy_class_init   (BusFactoryProxyClass   *klass);
 static void      bus_factory_proxy_init         (BusFactoryProxy        *factory);
@@ -186,7 +188,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     retval = ibus_proxy_call_with_reply ((IBusProxy *) factory,
                                          "CreateEngine",
                                          &pending,
-                                         -1,
+                                         REPLY_TIMEOUT,
                                          &error,
                                          G_TYPE_STRING, &(desc->name),
                                          G_TYPE_INVALID);

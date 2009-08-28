@@ -23,6 +23,8 @@
 #include "ibusimpl.h"
 #include "engineproxy.h"
 
+#define PROCESS_KEY_EVENT_TIMEOUT (10000)
+
 enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
@@ -590,7 +592,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     retval = ibus_proxy_call_with_reply ((IBusProxy *) engine,
                                          "ProcessKeyEvent",
                                          &pending,
-                                         -1,
+                                         PROCESS_KEY_EVENT_TIMEOUT,
                                          &error,
                                          G_TYPE_UINT, &keyval,
                                          G_TYPE_UINT, &keycode,
