@@ -398,8 +398,14 @@ class Panel(ibus.PanelBase):
 
     def __status_icon_activate_cb(self, status_icon):
         if not self.__focus_ic:
-            return
-        menu = self.__create_im_menu()
+            menu = gtk.Menu()
+            item = gtk.ImageMenuItem(_("No input window"))
+            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+            item.set_image(_icon.IconWidget("gtk-info", size[0]))
+            menu.add(item)
+            menu.show_all()
+        else:
+            menu = self.__create_im_menu()
         menu.popup(None, None,
                 gtk.status_icon_position_menu,
                 0,
