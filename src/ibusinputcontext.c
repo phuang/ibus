@@ -725,7 +725,6 @@ ibus_input_context_process_key_event (IBusInputContext *context,
         retval = FALSE;
     }
     else {
-
         if (!ibus_message_get_args (reply_message,
                                     &error,
                                     G_TYPE_BOOLEAN, &retval,
