@@ -216,9 +216,9 @@ class InputContext(object.Object):
         return self.__context.SetCapabilities(caps)
 
     def detach_signals(self):
-        for m in self.__signal_matchs:
+        for m in self.__signal_matches:
             m.remove()
-        del self.__signal_matchs[:]
+        del self.__signal_matches[:]
 
     def destroy(self):
         self.detach_signals()
