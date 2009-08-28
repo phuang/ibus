@@ -294,7 +294,7 @@ ibus_property_set_label (IBusProperty *prop,
                          IBusText     *label)
 {
     g_assert (IBUS_IS_PROPERTY (prop));
-    g_return_val_if_fail (label == NULL || IBUS_IS_TEXT (label), NULL);
+    g_return_if_fail (label == NULL || IBUS_IS_TEXT (label));
 
     if (prop->label) {
         g_object_unref (prop->label);
@@ -324,7 +324,7 @@ ibus_property_set_tooltip (IBusProperty *prop,
                            IBusText     *tooltip)
 {
     g_assert (IBUS_IS_PROPERTY (prop));
-    g_return_val_if_fail (tooltip == NULL || IBUS_IS_TEXT (tooltip), NULL);
+    g_return_if_fail (tooltip == NULL || IBUS_IS_TEXT (tooltip));
 
     if (prop->tooltip) {
         g_object_unref (prop->tooltip);
@@ -359,10 +359,9 @@ ibus_property_set_state (IBusProperty  *prop,
                          IBusPropState  state)
 {
     g_assert (IBUS_IS_PROPERTY (prop));
-    g_return_val_if_fail (state == PROP_STATE_UNCHECKED ||
-                          state == PROP_STATE_CHECKED ||
-                          state == PROP_STATE_INCONSISTENT,
-                          NULL);
+    g_return_if_fail (state == PROP_STATE_UNCHECKED ||
+                      state == PROP_STATE_CHECKED ||
+                      state == PROP_STATE_INCONSISTENT);
 
     prop->state = state;
 }
