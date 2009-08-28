@@ -263,7 +263,7 @@ IBusAttrList        *ibus_attr_list_new         ();
  * @attr_list: An IBusAttrList instance.
  * @attr: The IBusAttribute instance to be appended.
  *
- * Append an IBusAttribute to IBusAttrList.
+ * Append an IBusAttribute to IBusAttrList, and increase reference.
  */
 void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
                                                  IBusAttribute  *attr);
@@ -273,7 +273,7 @@ void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
  * @index: Index of the @attr_list.
  * @returns: IBusAttribute at given index, NULL if no such IBusAttribute.
  *
- * Returns IBusAttribute at given index.
+ * Returns IBusAttribute at given index. Borrowed reference.
  */
 IBusAttribute       *ibus_attr_list_get         (IBusAttrList   *attr_list,
                                                  guint           index);

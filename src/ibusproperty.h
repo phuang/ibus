@@ -345,7 +345,7 @@ IBusPropList    *ibus_prop_list_new         ();
  * @prop_list: An IBusPropList.
  * @prop: IBusProperty to be append to @prop_list.
  *
- * Append an IBusProperty to an IBusPropList.
+ * Append an IBusProperty to an IBusPropList, and increase reference.
  */
 void             ibus_prop_list_append      (IBusPropList   *prop_list,
                                              IBusProperty   *prop);
@@ -356,7 +356,7 @@ void             ibus_prop_list_append      (IBusPropList   *prop_list,
  * @index: Index of an IBusPropList.
  * @returns: IBusProperty at given index, NULL if no such IBusProperty.
  *
- * Returns IBusProperty at given index.
+ * Returns IBusProperty at given index. Borrowed reference.
  */
 IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
                                              guint           index);

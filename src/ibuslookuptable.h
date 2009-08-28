@@ -113,7 +113,7 @@ IBusLookupTable     *ibus_lookup_table_new      (guint               page_size,
  * @table: An IBusLookupTable.
  * @text: candidate word/phrase to be appended (in IBusText format).
  *
- * Append a candidate word/phrase to IBusLookupTable.
+ * Append a candidate word/phrase to IBusLookupTable, and increase reference.
  */
 void                 ibus_lookup_table_append_candidate
                                                 (IBusLookupTable    *table,
@@ -125,7 +125,7 @@ void                 ibus_lookup_table_append_candidate
  * @index: Index in the Lookup table.
  * @returns: IBusText at the given index; NULL if no such IBusText.
  *
- * Return IBusText at the given index.
+ * Return IBusText at the given index. Borrowed reference.
  */
 IBusText            *ibus_lookup_table_get_candidate
                                                 (IBusLookupTable    *table,
@@ -136,7 +136,7 @@ IBusText            *ibus_lookup_table_get_candidate
  * @table: An IBusLookupTable.
  * @text: A candidate label to be appended (in IBusText format).
  *
- * Append a candidate word/phrase to IBusLookupTable.
+ * Append a candidate word/phrase to IBusLookupTable, and increase reference.
  * This function is needed if the input method select candidate with
  * non-numeric keys such as "asdfghjkl;".
  */
@@ -150,7 +150,7 @@ void                 ibus_lookup_table_append_label
  * @index: Index in the Lookup table.
  * @returns: IBusText at the given index; NULL if no such IBusText.
  *
- * Return IBusText at the given index.
+ * Return IBusText at the given index. Borrowed reference.
  */
 IBusText            *ibus_lookup_table_get_label
                                                 (IBusLookupTable    *table,
