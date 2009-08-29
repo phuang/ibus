@@ -537,20 +537,17 @@ bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
 {
     IBusMessage *reply_message;
     IBusError *error;
-    gboolean retval;
+    gboolean retval = FALSE;
 
     reply_message = dbus_pending_call_steal_reply (pending);
 
     if (reply_message == NULL) {
-        call_data->func(FALSE, call_data->user_data);
-        return;
+        goto _out;
     }
     else if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
         g_warning ("%s: %s", error->name, error->message);
-        ibus_message_unref (reply_message);
         ibus_error_free (error);
-        call_data->func(FALSE, call_data->user_data);
-        return;
+        goto _out;
     }
 
     if (!ibus_message_get_args (reply_message,
@@ -558,12 +555,14 @@ bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
                                 G_TYPE_BOOLEAN, &retval,
                                 G_TYPE_INVALID)) {
         g_warning ("%s: %s", error->name, error->message);
-        ibus_message_unref (reply_message);
         ibus_error_free (error);
-        call_data->func (GINT_TO_POINTER (FALSE), call_data->user_data);
-        return;
+        goto _out;
     }
 
+_out:
+    if (reply_message) {
+        ibus_message_unref (reply_message);
+    }
     call_data->func (GINT_TO_POINTER (retval), call_data->user_data);
     g_slice_free (CallData, call_data);
 }
