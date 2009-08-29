@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-28 16:57+0800\n"
+"POT-Creation-Date: 2009-08-29 08:13+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -314,7 +314,7 @@ msgstr "使用自定义字体"
 msgid "Use custom font for language bar and candidates"
 msgstr "使用自定义字体显示语言栏和候选词"
 
-#: ../setup/setup.glade.h:47
+#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
@@ -400,10 +400,3 @@ msgstr "使用自定义字体"
 msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:19
-#, fuzzy
-msgid "Use system keyboard (XKB) layout setting"
-msgstr "使用系统键盘（XKB）布局"
-
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"

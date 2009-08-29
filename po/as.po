@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 17:24+0800\n"
+"POT-Creation-Date: 2009-08-29 08:13+0800\n"
 "PO-Revision-Date: 2009-05-26 15:19+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
@@ -38,11 +38,15 @@ msgstr "পুনৰাৰম্ভ"
 msgid "Turn off input method"
 msgstr "কোনো নিবেশ পদ্ধতি নাই"
 
-#: ../ui/gtk/panel.py:424
+#: ../ui/gtk/panel.py:402
+msgid "No input window"
+msgstr ""
+
+#: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus এটা Linux/Unix ৰ কাৰণে বুদ্ধিমান নিবেশ bus ।"
 
-#: ../ui/gtk/panel.py:428
+#: ../ui/gtk/panel.py:434
 msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
@@ -321,7 +325,7 @@ msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ 
 msgid "Use custom font for language bar and candidates"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
 
-#: ../setup/setup.glade.h:47
+#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
@@ -408,10 +412,6 @@ msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

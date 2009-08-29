@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-28 16:57+0800\n"
+"POT-Creation-Date: 2009-08-29 08:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Use custom font for language bar and candidates"
 msgstr ""
 
-#: ../setup/setup.glade.h:47
+#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
@@ -379,8 +379,4 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Use system keyboard (XKB) layout setting"
 msgstr ""

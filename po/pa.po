@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 17:24+0800\n"
+"POT-Creation-Date: 2009-08-29 08:13+0800\n"
 "PO-Revision-Date: 2009-05-31 07:46+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -39,11 +39,15 @@ msgstr "ਮੁੜ-ਚਾਲੂ"
 msgid "Turn off input method"
 msgstr "ਕੋਈ ਇੰਪੁੱਟ ਢੰਗ ਨਹੀਂ"
 
-#: ../ui/gtk/panel.py:424
+#: ../ui/gtk/panel.py:402
+msgid "No input window"
+msgstr ""
+
+#: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: ../ui/gtk/panel.py:428
+#: ../ui/gtk/panel.py:434
 msgid "translator-credits"
 msgstr ""
 "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ <aalam@users.sf.net> 2008, 2009\n"
@@ -323,7 +327,7 @@ msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 msgid "Use custom font for language bar and candidates"
 msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ ਨਾਂ ਵਰਤੋਂ"
 
-#: ../setup/setup.glade.h:47
+#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
@@ -409,10 +413,6 @@ msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ ਨਾਂ ਵਰਤੋਂ"
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

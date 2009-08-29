@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-26 17:24+0800\n"
+"POT-Creation-Date: 2009-08-29 08:13+0800\n"
 "PO-Revision-Date: 2009-05-26 11:50+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -39,11 +39,15 @@ msgstr "ફરી શરી કરો"
 msgid "Turn off input method"
 msgstr "ઇનપુટ પદ્દતિ નથી"
 
-#: ../ui/gtk/panel.py:424
+#: ../ui/gtk/panel.py:402
+msgid "No input window"
+msgstr ""
+
+#: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus એ Linux/Unix માટે હોશિયાર ઇનપુટ બસ છે."
 
-#: ../ui/gtk/panel.py:428
+#: ../ui/gtk/panel.py:434
 msgid "translator-credits"
 msgstr "શ્ર્વેતા કોઠારી <swkothar@redhat.com>"
 
@@ -322,7 +326,7 @@ msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 msgid "Use custom font for language bar and candidates"
 msgstr "ભાષા પેનલ માટે વૈવિધેય ફોન્ટ નામ ને વાપરો"
 
-#: ../setup/setup.glade.h:47
+#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
@@ -408,7 +412,3 @@ msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ભાષા પેનલ માટે વૈવિધેય ફોન્ટ નામ ને વાપરો"
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Use system keyboard (XKB) layout setting"
-msgstr ""
