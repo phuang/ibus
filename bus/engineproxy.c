@@ -608,6 +608,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     ibus_pending_call_unref (pending);
 
     if (!retval) {
+        g_slice_free (CallData, call_data);
         g_warning ("%s : ProcessKeyEvent", DBUS_ERROR_NO_MEMORY);
         return_cb (GINT_TO_POINTER (FALSE), user_data);
         return;
