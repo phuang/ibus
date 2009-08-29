@@ -89,7 +89,7 @@
       <default>false</default>
       <locale name="C">
         <short>Use system keyboard layout</short>
-	    <long>Use system keyboard (XKB) layout setting</long>
+	    <long>Use system keyboard (XKB) layout</long>
       </locale>
     </schema>
     <schema>
