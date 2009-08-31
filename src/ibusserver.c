@@ -130,6 +130,11 @@ ibus_server_class_init (IBusServerClass *klass)
     klass->new_connection = ibus_server_new_connection;
 
     /* install properties */
+    /**
+     * IBusServer:connection-type:
+     *
+     * The connection type of server object.
+     */
     g_object_class_install_property (gobject_class,
                     PROP_CONNECTION_TYPE,
                     g_param_spec_gtype ("connection-type",
@@ -139,6 +144,19 @@ ibus_server_class_init (IBusServerClass *klass)
                         G_PARAM_READWRITE));
 
     /* install signals */
+    /**
+     * IBusServer::new-connection:
+     * @server: An IBusServer.
+     * @connection: The corresponding IBusConnection.
+     *
+     * Emitted when a new connection is coming in.
+     * In this handler, IBus could add a reference and continue processing the connection.
+     * If no reference is added, the new connection will be released and closed after this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     *
+     * See also: IBusNewConnectionFunc().
+     */
     server_signals[NEW_CONNECTION] =
         g_signal_new (I_("new-connection"),
             G_TYPE_FROM_CLASS (klass),

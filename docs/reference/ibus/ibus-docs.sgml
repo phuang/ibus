@@ -3,26 +3,50 @@
                "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
-    <title>iBus Reference Manual</title>
+    <title>IBus Reference Manual</title>
     <releaseinfo>
-      iBus 1.1.0 reference manual.
+      Intelligent Input Bus (IBus) 1.2.0 reference manual.
       The latest version of this documentation can be found on-line at
       <ulink role="online-location" url="http://code.google.com/p/ibus">http://code.google.com/p/ibus</ulink>.
     </releaseinfo>
   </bookinfo>
 
   <chapter>
-      <title>API Overviews</title>
-      <para>The iBus API consists 3 parts:
-	  <emphasis>User interfaces</emphasis> for objects and services which
-	  are relateed to iBus UI such as language bar;
-          <emphasis>Input method engine</emphasis> for input method main logic and input/output handling;
-	  <emphasis>Configure</emphasis> for services for save, load and listening configures.
+      <title>Overview</title>
+      <para>This manual is the API specification for the IBus.
+	    IBus is built upon GObject and D-Bus,
+	    so you may find that modules are named as classes and objects in the sense of GObject,
+	    and may D-Bus wrapper API.</para>
+
+      <para>According to the puroposes of modules, we categorized them into 4 parts:</para>
+      <variablelist>
+	  <varlistentry>
+	      <term>Panel</term>
+	      <listitem><para>A IBus-panel is an UI which provides UI components such as language bar,
+		      property buttons and so on.</para></listitem>
+	  </varlistentry>
+	  <varlistentry>
+	      <term>Input method engine (IME)</term>
+	      <listitem><para>An Input method engine is an implementation of certain input method.
+		      Here lists essential classes and functions for input method engine building,
+		      such as engine specification, and class abstracts.</para></listitem>
+	  </varlistentry>
+	  <varlistentry>
+	      <term>Communication and Configuration</term>
+	      <listitem><para>Here lists the service communication functions and
+		      functions that handling configuration like save, load, and listening.</para></listitem>
+	  </varlistentry>
+	  <varlistentry>
+	      <term>Internal</term>
+	      <listitem><para>Definition and functions for IBus internal use..</para></listitem>
+	  </varlistentry>
+      </variablelist>
+      <para>Normally input method developers need only to read the first 2 parts and IBusConfig from the 3rd part.
       </para>
   </chapter>
   <chapter>
-      <title>User Interfaces</title>
-      <para>These APIs directly related to User interfaces, such as
+      <title>Panel (User Interfaces)</title>
+      <para>These API pages directly related to user interfaces, such as
 	  pre-edit buffer, auxiliary text, language bar, button,
 	  radio boxes, and so on.
       </para>
@@ -34,45 +58,48 @@
   </chapter>
   <chapter>
       <title>Input method engine</title>
-      <para>
-      </para>
-      <xi:include href="xml/ibusbus.xml"/>
+      <para>An Input method engine is an implementation of certain input method.
+	  Here lists essential classes and functions for input method engine building,
+	  such as engine specification, and class abstracts.</para>
       <xi:include href="xml/ibuscomponent.xml"/>
-      <xi:include href="xml/ibusconnection.xml"/>
       <xi:include href="xml/ibusengine.xml"/>
       <xi:include href="xml/ibusenginedesc.xml"/>
       <xi:include href="xml/ibusfactory.xml"/>
+      <xi:include href="xml/ibusinputcontext.xml"/>
       <xi:include href="xml/ibuskeymap.xml"/>
       <xi:include href="xml/ibuskeysyms.xml"/>
   </chapter>
   <chapter>
-      <title>Configuration</title>
-      <para>
-      </para>
+      <title>Communication and Configuration</title>
+      <para>Here lists the service communication functions and
+	  functions that handling configuration like save, load, and listening.</para>
+      <xi:include href="xml/ibusbus.xml"/>
       <xi:include href="xml/ibusconfig.xml"/>
       <xi:include href="xml/ibusconfigservice.xml"/>
+      <xi:include href="xml/ibusconnection.xml"/>
+      <xi:include href="xml/ibusmainloop.xml"/>
+      <xi:include href="xml/ibusmessage.xml"/>
+      <xi:include href="xml/ibusobservedpath.xml"/>
+      <xi:include href="xml/ibuspendingcall.xml"/>
+      <xi:include href="xml/ibusproxy.xml"/>
+      <xi:include href="xml/ibusserializable.xml"/>
+      <xi:include href="xml/ibusservice.xml"/>
       <xi:include href="xml/ibusxml.xml"/>
   </chapter>
   <chapter>
-      <title>Others</title>
+      <title>Internal</title>
       <para>
       </para>
       <xi:include href="xml/ibusdebug.xml"/>
       <xi:include href="xml/ibusenumtypes.xml"/>
       <xi:include href="xml/ibuserror.xml"/>
-      <xi:include href="xml/ibusinputcontext.xml"/>
       <xi:include href="xml/ibusinternal.xml"/>
       <xi:include href="xml/ibusmarshalers.xml"/>
-      <xi:include href="xml/ibusmessage.xml"/>
       <xi:include href="xml/ibusobject.xml"/>
-      <xi:include href="xml/ibusobservedpath.xml"/>
-      <xi:include href="xml/ibuspendingcall.xml"/>
-      <xi:include href="xml/ibusproxy.xml"/>
       <xi:include href="xml/ibusserver.xml"/>
-      <xi:include href="xml/ibusservice.xml"/>
-      <xi:include href="xml/ibusserializable.xml"/>
       <xi:include href="xml/ibusshare.xml"/>
       <xi:include href="xml/ibustypes.xml"/>
+      <xi:include href="xml/ibusversion.xml"/>
       <xi:include href="xml/keyname-table.xml"/>
   </chapter>
 </book>

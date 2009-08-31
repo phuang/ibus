@@ -92,7 +92,7 @@ void    ibus_mainloop_setup         (DBusConnectionSetupFunc      connection_fun
 void    ibus_dbus_server_setup      (DBusServer                  *server);
 
 /**
- * dbus_connection_setup:
+ * ibus_dbus_connection_setup:
  * @connection: A DBusConnection.
  *
  * Sets the watch and timeout functions of a #DBusConnection
