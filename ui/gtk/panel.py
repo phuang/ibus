@@ -433,6 +433,7 @@ class Panel(ibus.PanelBase):
             about_dialog.set_documenters(["Huang Peng <shawn.p.huang@gmail.com>"])
             about_dialog.set_translator_credits(_("translator-credits"))
             about_dialog.set_logo_icon_name("ibus")
+            about_dialog.set_icon_name("ibus")
             about_dialog.run()
             about_dialog.destroy()
         elif command == gtk.STOCK_QUIT: 
