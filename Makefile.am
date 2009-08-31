@@ -21,7 +21,6 @@
 
 SUBDIRS = 		\
 	src 		\
-	bindings	\
 	gconf 		\
 	ibus 		\
 	ui 			\

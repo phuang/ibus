@@ -280,8 +280,6 @@ setup/ibus-setup
 src/Makefile
 src/ibusversion.h
 bus/Makefile
-bindings/Makefile
-bindings/python/Makefile
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
