@@ -1504,6 +1504,8 @@ for key, value in vars().items():
     if key.startswith("__") or \
        key in ("name_to_keycode", "keycode_to_name", "VoidSymbol"):
         continue
+    if key.startswith("_"):
+        key = key[1:]
     __name_to_keycode[key] = value
     __keycode_to_name[value] = key
 
