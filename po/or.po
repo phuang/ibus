@@ -7,15 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
-"PO-Revision-Date: 2009-05-27 17:24+0530\n"
+"POT-Creation-Date: 2009-09-01 02:37+0000\n"
+"PO-Revision-Date: 2009-09-02 17:31+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
+"\n"
+"\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -38,13 +41,12 @@ msgid "Restart"
 msgstr "ପୁନଃଚାଳନ"
 
 #: ../ui/gtk/panel.py:369
-#, fuzzy
 msgid "Turn off input method"
-msgstr "କୌଣସି ନିବେଶ ପ୍ରଣୀଳୀ ନାହିଁ"
+msgstr "ନିବେଶ ପ୍ରଣୀଳୀକୁ ବନ୍ଦ କରନ୍ତୁ"
 
 #: ../ui/gtk/panel.py:402
 msgid "No input window"
-msgstr ""
+msgstr "କୌଣସି ନିବେଶ ୱିଣ୍ଡୋ ନାହିଁ"
 
 #: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
@@ -55,9 +57,8 @@ msgid "translator-credits"
 msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
 #: ../ui/gtk/languagebar.py:102
-#, fuzzy
 msgid "About the Input Method"
-msgstr "ନିବେଶ ପ୍ରଣାଳୀଗୁଡ଼ିକ"
+msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
 #: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
@@ -71,21 +72,21 @@ msgstr "ବିବରଣୀ"
 #: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
 #, python-format
 msgid "Language: %s\n"
-msgstr ""
+msgstr "ଭାଷା: %s\n"
 
 #: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
-#, fuzzy, python-format
+#, python-format
 msgid "Keyboard layout: %s\n"
-msgstr "କିବୋର୍ଡ ସକ୍ଷିପ୍ତପଥ"
+msgstr "କିବୋର୍ଡ ବିନ୍ୟାସ: %s\n"
 
 #: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
 #, python-format
 msgid "Author: %s\n"
-msgstr ""
+msgstr "ଲେଖକ: %s\n"
 
 #: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
 msgid "Description:\n"
-msgstr ""
+msgstr "ବର୍ଣ୍ଣନା:\n"
 
 #: ../setup/main.py:108
 msgid "trigger"
@@ -152,13 +153,12 @@ msgstr "ଗୋଟିଏ ନିବେଶ ପ୍ରଣୀଳୀ ବାଛନ୍ତ
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
-#, fuzzy
 msgid "Input Method"
-msgstr "ନିବେଶ ପ୍ରଣାଳୀଗୁଡ଼ିକ"
+msgstr "ନିବେଶ ପ୍ରଣାଳୀ"
 
 #: ../setup/enginetreeview.py:87
 msgid "Kbd"
-msgstr ""
+msgstr "Kbd"
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -169,9 +169,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ଅକ୍ଷରରୂପ ଏବଂ ଶୈଳୀ</b>"
 
 #: ../setup/setup.glade.h:3
-#, fuzzy
 msgid "<b>Keyboard Layout</b>"
-msgstr "<b>କିବୋର୍ଡ ସଂକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ</b>"
+msgstr "<b>କିବୋର୍ଡ ବିନ୍ୟାସ</b>"
 
 #: ../setup/setup.glade.h:4
 msgid "<b>Keyboard Shortcuts</b>"
@@ -207,20 +206,19 @@ msgstr ""
 
 #: ../setup/setup.glade.h:16
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
+msgstr "ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ ନିବେଶ ପ୍ରଣାଳୀରେ ଯୋଗକରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:17
 msgid "Advanced"
-msgstr ""
+msgstr "ଉନ୍ନତ"
 
 #: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
 msgstr "ପ୍ରାର୍ଥୀ ଅନୁସ୍ଥାପନ:"
 
 #: ../setup/setup.glade.h:19
-#, fuzzy
 msgid "Choice font for language bar and candidates"
-msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମ"
+msgstr "ଭାଷା ତାଲିକା ପଟି ଏବଂ ବ୍ୟକ୍ତି ପାଇଁ ଅକ୍ଷରରୂପ ବାଛନ୍ତୁ"
 
 #: ../setup/setup.glade.h:20
 msgid "Custom font:"
@@ -248,11 +246,11 @@ msgstr "IBus ପସନ୍ଦ"
 
 #: ../setup/setup.glade.h:27
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
+msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତିଗୁଡ଼ିକରେ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ ତଳକୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
 #: ../setup/setup.glade.h:28
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
+msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତି ତାଲିକାରେ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
 #: ../setup/setup.glade.h:29
 msgid ""
@@ -274,33 +272,31 @@ msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ:"
 
 #: ../setup/setup.glade.h:34
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
+msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତିରୁ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ କାଢ଼ିଦିଅନ୍ତୁ"
 
 #: ../setup/setup.glade.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
+msgstr "ଭାଷା ସୂଚକକୁ ଦର୍ଶାଇବା ଅଥବା ଲୁଚାଇବା ପାଇଁ ibus ର ଆଚରଣକୁ ସେଟକରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:36
-#, fuzzy
 msgid "Set the orientation of candidates in lookup table"
-msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ"
+msgstr "ଅବଲୋକନ ସାରଣୀରେ ବ୍ୟକ୍ତିମାନଙ୍କର ଅନୁସ୍ଥାପନ ସେଟକରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:37
 msgid "Set the shortcut keys for turnning on or off input method"
-msgstr ""
+msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅନ କିମ୍ବା ଅଫ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକୁ ସେଟକରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:38
 msgid "Show information of the selected input method"
-msgstr ""
+msgstr "ବଚ୍ଛିତ ନିବେଶ ପଦ୍ଧତିର ସୂଚନା ଦର୍ଶାନ୍ତୁ"
 
 #: ../setup/setup.glade.h:39
-#, fuzzy
 msgid "Show input method name on language bar"
-msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମ"
+msgstr "ଭାଷା ତାଲିକା ପାଇଁ ନିବେଶ ପଦ୍ଧତି ନାମ ଦର୍ଶାନ୍ତୁ"
 
 #: ../setup/setup.glade.h:40
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
+msgstr "ନିବେଶ ପଦ୍ଧତି ନାମକୁ ଭାଷା ସୂଚକରେ ଦର୍ଶାନ୍ତୁ ଯେତେବେଳେ ଯାଞ୍ଚବାକ୍ସକୁ ଯାଞ୍ଚକରୁଛନ୍ତି"
 
 #: ../setup/setup.glade.h:41
 msgid "Show language panel:"
@@ -311,35 +307,32 @@ msgid "Start ibus on login"
 msgstr "ଲଗଇନ ସମୟରେ ibus କୁ ଆରମ୍ଭ କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:43
-#, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ରକୁ ବଦଳାଇବା ପାଇଁ ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ହଟ କି"
+msgstr "ତାଲିକାରେ ପରବର୍ତ୍ତୀ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
 #: ../setup/setup.glade.h:44
-#, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ର ପାଇଁ ପୂର୍ବ ଯନ୍ତ୍ର ହଟ କି"
+msgstr "ତାଲିକାରେ ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
 #: ../setup/setup.glade.h:45
 msgid "Use custom font"
 msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:46
-#, fuzzy
 msgid "Use custom font for language bar and candidates"
-msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକା ଏବଂ ପ୍ରାର୍ଥୀମାନଙ୍କପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
-msgstr ""
+msgstr "ତନ୍ତ୍ର କିବୋର୍ଡ (XKB) ବିନ୍ୟାସକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard layout"
-msgstr ""
+msgstr "ତନ୍ତ୍ର କିବୋର୍ଡ ବିନ୍ୟାସକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../setup/setup.glade.h:49
 msgid "gtk-about"
-msgstr ""
+msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -387,19 +380,17 @@ msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ର
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Show IM Name"
-msgstr ""
+msgstr "IM ନାମ ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:13
-#, fuzzy
 msgid "Show IM name on language bar"
-msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମ"
+msgstr "ଭାଷା ତାଲିକା ପଟିରେ IM ନାମ ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
@@ -416,3 +407,4 @@ msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପକୁ ବ୍�
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
+
