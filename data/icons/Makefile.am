@@ -30,10 +30,45 @@ sysicons_DATA = \
 	ibus-off.svg \
 	ibus-engine.svg \
 	$(NULL)
-
 sysiconsdir = $(datadir)/pixmaps
+
+hicolor_icon_16_DATA = \
+	16/ibus-off.png \
+	$(NULL)
+hicolor_icon_16dir= $(datadir)/icons/hicolor/16x16/status/
+
+hicolor_icon_22_DATA = \
+	22/ibus-off.png \
+	$(NULL)
+hicolor_icon_22dir= $(datadir)/icons/hicolor/22x22/status/
+
+hicolor_icon_24_DATA = \
+	24/ibus-off.png \
+	$(NULL)
+hicolor_icon_24dir= $(datadir)/icons/hicolor/24x24/status/
+
+hicolor_icon_32_DATA = \
+	32/ibus-off.png \
+	$(NULL)
+hicolor_icon_32dir= $(datadir)/icons/hicolor/32x32/status/
+
+hicolor_icon_48_DATA = \
+	48/ibus-off.png \
+	$(NULL)
+hicolor_icon_48dir= $(datadir)/icons/hicolor/48x48/status/
+
+hicolor_icon_scalable_DATA = \
+	scalable/ibus-off.svg \
+	$(NULL)
+hicolor_icon_scalabledir= $(datadir)/icons/hicolor/scalable/status/
 
 EXTRA_DIST = \
 	$(icons_DATA) \
 	$(sysicons_DATA) \
+	$(hicolor_icon_16_DATA) \
+	$(hicolor_icon_22_DATA) \
+	$(hicolor_icon_24_DATA) \
+	$(hicolor_icon_32_DATA) \
+	$(hicolor_icon_48_DATA) \
+	$(hicolor_icon_scalable_DATA) \
 	$(NULL)

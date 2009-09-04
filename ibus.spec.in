@@ -150,7 +150,13 @@ desktop-file-install --delete-original          \
 rm -rf $RPM_BUILD_ROOT
 
 %post
-update-desktop-database -q
+# recreate icon cache
+touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+
+update-desktop-database -q || :
+
 %{_sbindir}/alternatives --install %{_sysconfdir}/X11/xinit/xinputrc xinputrc %{_xinputconf} 83 || :
 
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
@@ -169,7 +175,13 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %postun
-update-desktop-database -q
+# recreate icon cache
+touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
+  %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+
+update-desktop-database -q || :
+
 if [ "$1" = "0" ]; then
   %{_sbindir}/alternatives --remove xinputrc %{_xinputconf} || :
   # if alternative was set to manual, reset to auto
@@ -199,6 +211,7 @@ fi
 %{_datadir}/ibus/*
 %{_datadir}/applications/*
 %{_datadir}/pixmaps/*
+%{_datadir}/icons/hicolor/*/status/*
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-ui-gtk
 %{_libexecdir}/ibus-x11
