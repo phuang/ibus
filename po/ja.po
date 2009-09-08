@@ -40,7 +40,7 @@ msgstr "インプットメソッドをオフにする"
 
 #: ../ui/gtk/panel.py:402
 msgid "No input window"
-msgstr ""
+msgstr "入力ウィンドウがありません"
 
 #: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
@@ -53,9 +53,8 @@ msgstr ""
 "IWAI, Masaharu <iwai@alib.jp>"
 
 #: ../ui/gtk/languagebar.py:102
-#, fuzzy
 msgid "About the Input Method"
-msgstr "インプットメソッド"
+msgstr "インプットメソッドについて"
 
 #: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
