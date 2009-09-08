@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the ibus package.
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # IWAI, Masaharu <iwai@alib.jp>, 2009
+# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2009.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-03 10:38+0900\n"
-"PO-Revision-Date: 2009-04-11 03:13+0900\n"
-"Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
+"POT-Creation-Date: 2009-09-08 04:30+0000\n"
+"PO-Revision-Date: 2009-09-08 17:31+0900\n"
+"Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +51,8 @@ msgstr "IBus は、Linux/Unix のためのインテリジェントなインプ�
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
-"IWAI, Masaharu <iwai@alib.jp>"
+"IWAI, Masaharu <iwai@alib.jp>\n"
+"日向原 龍一 <hyu_gabaru@yahoo.co.jp>"
 
 #: ../ui/gtk/languagebar.py:102
 msgid "About the Input Method"
@@ -154,7 +156,7 @@ msgstr "インプットメソッド"
 
 #: ../setup/enginetreeview.py:87
 msgid "Kbd"
-msgstr ""
+msgstr "Kbd"
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -295,8 +297,8 @@ msgstr "言語バーにインプットメソッド名を表示する"
 #: ../setup/setup.glade.h:40
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
-"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を"
-"表示します"
+"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
+"示します"
 
 #: ../setup/setup.glade.h:41
 msgid "Show language panel:"
@@ -312,7 +314,8 @@ msgstr "リストの中で次のインプットメソッドに切り替えるた
 
 #: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "リストの中で前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr ""
+"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.glade.h:45
 msgid "Use custom font"
@@ -336,7 +339,7 @@ msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
-msgstr ""
+msgstr "自動的に隠す"
 
 #: ../data/ibus.schemas.in.h:2
 msgid "Custom Font"
@@ -344,64 +347,63 @@ msgstr "カスタムフォント"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr ""
+msgstr "言語パネル用のカスタムフォント名"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next Engine Hotkey"
-msgstr "次のエンジン"
+msgstr "次のエンジンへのホットキー"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine hotkey for switch to next input method engine"
 msgstr ""
+"次のインプットメソッドエンジンへの切り替え用の次のエンジンへのホットキー"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
-msgstr ""
+msgstr "検索テーブルの方位"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr ""
+msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines"
-msgstr ""
+msgstr "エンジンのプリロード"
 
 #: ../data/ibus.schemas.in.h:9
 msgid "Preload Engines during ibus starts up"
-msgstr ""
+msgstr "ibus の開始中にエンジンをプリロード"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "Prev Engine Hotkey"
-msgstr "前のエンジン"
+msgstr "前のエンジンへのホットキー"
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
 msgstr ""
+"ひとつ前のインプットメソッドエンジンへの切り替え用の前のエンジンへのホットキー"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Show IM Name"
-msgstr ""
+msgstr "IM 名の表示"
 
 #: ../data/ibus.schemas.in.h:13
-#, fuzzy
 msgid "Show IM name on language bar"
-msgstr "言語パネルの表示:"
+msgstr "言語バーでの IM 名の表示"
 
 #: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
+msgstr "言語パネルの動作。0 = 常に隠す、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:15
 msgid "Trigger Hotkey"
-msgstr ""
+msgstr "トリガーホットキー"
 
 #: ../data/ibus.schemas.in.h:16
 msgid "Trigger hotkey for enable or disable input context"
-msgstr ""
+msgstr "入力コンテンツを有効や無効にするためのトリガーホットキー"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "Use Custom Font"
