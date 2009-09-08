@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Runa Bhattacharjee <runab@fedoraproject.org>, 2009.
+# Runa Bhattacharjee <runab@redhat.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
-"PO-Revision-Date: 2009-05-26 11:28+0530\n"
-"Last-Translator: Runa Bhattacharjee <runab@fedoraproject.org>\n"
-"Language-Team: Bengali INDIA <fedora-trans-bn_in@redhat.com>\n"
+"POT-Creation-Date: 2009-09-02 02:37+0000\n"
+"PO-Revision-Date: 2009-09-02 12:29+0530\n"
+"Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
+"Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,13 +36,12 @@ msgid "Restart"
 msgstr "পুনরারম্ভ"
 
 #: ../ui/gtk/panel.py:369
-#, fuzzy
 msgid "Turn off input method"
-msgstr "ইনপুট পদ্ধতি অনুপস্থিত"
+msgstr "ইনপুট পদ্ধতি বন্ধ করুন"
 
 #: ../ui/gtk/panel.py:402
 msgid "No input window"
-msgstr ""
+msgstr "ইনপুটের উদ্দেশ্যে উইন্ডো অনুপস্থিত"
 
 #: ../ui/gtk/panel.py:430
 msgid "IBus is an intelligent input bus for Linux/Unix."
@@ -52,9 +52,8 @@ msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
 #: ../ui/gtk/languagebar.py:102
-#, fuzzy
 msgid "About the Input Method"
-msgstr "ইনপুট পদ্ধতি"
+msgstr "ইনপুট পদ্ধতি পরিচিতি"
 
 #: ../ui/gtk/languagebar.py:165
 msgid "Switch input method"
@@ -68,21 +67,21 @@ msgstr "পরিচিতি"
 #: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
 #, python-format
 msgid "Language: %s\n"
-msgstr ""
+msgstr "ভাষা: %s\n"
 
 #: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
-#, fuzzy, python-format
+#, python-format
 msgid "Keyboard layout: %s\n"
-msgstr "কি-বোর্ড শর্ট-কাট"
+msgstr "কি-বোর্ড বিন্যাস: %s\n"
 
 #: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
 #, python-format
 msgid "Author: %s\n"
-msgstr ""
+msgstr "নির্মাতা: %s\n"
 
 #: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
 msgid "Description:\n"
-msgstr ""
+msgstr "বিবরণ:\n"
 
 #: ../setup/main.py:108
 msgid "trigger"
@@ -149,13 +148,12 @@ msgstr "একটি ইনপুট পদ্ধতি নির্বাচন
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
-#, fuzzy
 msgid "Input Method"
 msgstr "ইনপুট পদ্ধতি"
 
 #: ../setup/enginetreeview.py:87
 msgid "Kbd"
-msgstr ""
+msgstr "Kbd"
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -166,9 +164,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ফন্ট ও বিন্যাস</b>"
 
 #: ../setup/setup.glade.h:3
-#, fuzzy
 msgid "<b>Keyboard Layout</b>"
-msgstr "<b>কি-বোর্ড শর্ট-কাট</b>"
+msgstr "<b>কি-বোর্ডের বিন্যাস</b>"
 
 #: ../setup/setup.glade.h:4
 msgid "<b>Keyboard Shortcuts</b>"
@@ -205,20 +202,19 @@ msgstr ""
 
 #: ../setup/setup.glade.h:16
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
+msgstr "নির্বাচিত ইনপুট পদ্ধতিটি, সক্রিয় ইনপুট পদ্ধতির তালিকা যোগ করা হবে"
 
 #: ../setup/setup.glade.h:17
 msgid "Advanced"
-msgstr ""
+msgstr "উন্নত"
 
 #: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
 msgstr "নির্বাচিত বস্তুর দিশা:"
 
 #: ../setup/setup.glade.h:19
-#, fuzzy
 msgid "Choice font for language bar and candidates"
-msgstr "ভাষার প্যানেলের জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের নাম"
+msgstr "ভাষার বার ও এর মধ্যে প্রদর্শিত প্রযোজ্য বিকল্পগুলির জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের নাম"
 
 #: ../setup/setup.glade.h:20
 msgid "Custom font:"
@@ -246,11 +242,11 @@ msgstr "IBus সংক্রান্ত পছন্দ"
 
 #: ../setup/setup.glade.h:27
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
+msgstr "নির্বাচিত ইনপুট পদ্ধতিটি, সক্রিয় ইনপুট পদ্ধতির তালিকায় নীচে স্থানান্তর করা হবে"
 
 #: ../setup/setup.glade.h:28
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
+msgstr "নির্বাচিত ইনপুট পদ্ধতিটি, সক্রিয় ইনপুট পদ্ধতির তালিকায় উপরে স্থানান্তর করা হবে"
 
 #: ../setup/setup.glade.h:29
 msgid ""
@@ -272,33 +268,31 @@ msgstr "পূর্ববর্তী ইনপুট পদ্ধতি:"
 
 #: ../setup/setup.glade.h:34
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
+msgstr "সক্রিয় ইনপুট পদ্ধতির তালিকা থেকে নির্বাচিত ইনপুট পদ্ধতিটি মুছে ফেলা হবে"
 
 #: ../setup/setup.glade.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
+msgstr "ভাষার বার প্রদর্শন ও আড়াল করার উদ্দেশ্যে ibus-র আচরণ নির্ধারণ করুন"
 
 #: ../setup/setup.glade.h:36
-#, fuzzy
 msgid "Set the orientation of candidates in lookup table"
-msgstr "লুক-আপ টেবিলের দিশা"
+msgstr "লুক-আপ টেবিলের মধ্যে প্রযোজ্য বিকল্পগুলির দিশা নির্ধারণ করুন"
 
 #: ../setup/setup.glade.h:37
 msgid "Set the shortcut keys for turnning on or off input method"
-msgstr ""
+msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ করার জন্য প্রয়োজনীয় শর্ট-কাট কি নির্ধারণ করুন"
 
 #: ../setup/setup.glade.h:38
 msgid "Show information of the selected input method"
-msgstr ""
+msgstr "নির্বাচিত ইনপুট পদ্ধতি সংক্রান্ত তথ্য প্রদর্শন করা হবে"
 
 #: ../setup/setup.glade.h:39
-#, fuzzy
 msgid "Show input method name on language bar"
-msgstr "ভাষার প্যানেলের জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের নাম"
+msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../setup/setup.glade.h:40
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
+msgstr "চেকবক্স নির্বাচিত হলে, ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../setup/setup.glade.h:41
 msgid "Show language panel:"
@@ -309,35 +303,32 @@ msgid "Start ibus on login"
 msgstr "লগ-ইন করার সময় ibus আরম্ভ করা হবে"
 
 #: ../setup/setup.glade.h:43
-#, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "পরবর্তী ইনপুট পদ্ধতির ইঞ্জিনে পরিবর্তনের জন্য পরবর্তী ইঞ্জিনের জন্য হট-কি"
+msgstr "তালিকায় উপস্থিত পরবর্তী ইনপুট পদ্ধতিতে পরিবর্তনের জন্য প্রযোজ্য শর্ট-কাট কি"
 
 #: ../setup/setup.glade.h:44
-#, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "পূর্ববর্তী ইনপুট পদ্ধতির ইঞ্জিনে পরিবর্তনের জন্য পূর্ববর্তী ইঞ্জিনের জন্য হট-কি"
+msgstr "তালিকায় উপস্থিত পূর্ববর্তী ইনপুট পদ্ধতিতে পরিবর্তনের জন্য প্রযোজ্য শর্ট-কাট কি"
 
 #: ../setup/setup.glade.h:45
 msgid "Use custom font"
 msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
 #: ../setup/setup.glade.h:46
-#, fuzzy
 msgid "Use custom font for language bar and candidates"
-msgstr "ভাষার প্যানেলের জন্য স্বনির্ধারিত ফন্টের নাম ব্যবহার করা হবে"
+msgstr "ভাষার বার ও এর মধ্যে প্রদর্শিত প্রযোজ্য বিকল্পগুলির জন্য স্বনির্ধারিত ফন্ট ব্যবহার করা হবে"
 
 #: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
 msgid "Use system keyboard (XKB) layout"
-msgstr ""
+msgstr "সিস্টেম কি-বোর্ড (XKB) বিন্যাস প্রয়োগ করা হবে"
 
 #: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard layout"
-msgstr ""
+msgstr "সিস্টেম কি-বোর্ড বিন্যাস প্রয়োগ করা হবে"
 
 #: ../setup/setup.glade.h:49
 msgid "gtk-about"
-msgstr ""
+msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -385,12 +376,11 @@ msgstr "পূর্ববর্তী ইনপুট পদ্ধতির ই
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Show IM Name"
-msgstr ""
+msgstr "ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:13
-#, fuzzy
 msgid "Show IM name on language bar"
-msgstr "ভাষার প্যানেলের জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের নাম"
+msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:14
 msgid ""
@@ -415,3 +405,4 @@ msgstr "স্বনির্ধারিত ফন্ট ব্যবহার 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "ভাষার প্যানেলের জন্য স্বনির্ধারিত ফন্টের নাম ব্যবহার করা হবে"
+
