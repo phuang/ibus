@@ -91,13 +91,12 @@ class EngineAbout(gtk.Dialog):
                         left_margin=32)
 
     def __load_icon(self, icon):
-        pixbuf = gdk.pixbuf_new_from_file(icon)
-        w, h = pixbuf.get_width(), pixbuf.get_height()
-        rate = max(w, h) / float(48)
-        w = int(w / rate)
-        h = int(h / rate)
-        pixbuf = pixbuf.scale_simple(w, h, gdk.INTERP_BILINEAR)
+        try:
+            pixbuf = gdk.pixbuf_new_from_file_at_scale(icon, 48, 48, True)
+        except:
+            theme = gtk.icon_theme_get_default()
+            icon = theme.lookup_icon("ibus", 48, 0)
+            if icon == None:
+                icon = theme.lookup_icon("gtk-missing-image", 48, 0)
+            pixbuf = icon.load_icon()
         return pixbuf
-
-
-
