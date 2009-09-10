@@ -170,4 +170,7 @@ class MenuToolButton(ToggleToolButton):
         if self.get_active():
             self._menu.popup(0, gtk.get_current_event_time(), self)
 
-
+    def destroy(self):
+        self._menu.destroy()
+        self._menu = None
+        super(MenuToolButton, self).destroy()
