@@ -81,7 +81,7 @@ typedef struct _IBusObjectClass IBusObjectClass;
  * private to the #IBusObject and should never be accessed directly.
  */
 struct _IBusObject {
-  GObject parent;
+  GInitiallyUnowned parent;
   /* instance members */
   guint32 flags;
 };
@@ -89,7 +89,7 @@ struct _IBusObject {
 typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
 
 struct _IBusObjectClass {
-    GObjectClass parent;
+    GInitiallyUnownedClass parent;
 
     /* signals */
     void (* destroy)        (IBusObject   *object);

@@ -74,7 +74,7 @@ ibus_object_get_type (void)
     };
 
     if (type == 0) {
-        type = g_type_register_static (G_TYPE_OBJECT,
+        type = g_type_register_static (G_TYPE_INITIALLY_UNOWNED,
                     "IBusObject",
                     &type_info,
                     G_TYPE_FLAG_ABSTRACT);
