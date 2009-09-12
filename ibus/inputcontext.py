@@ -173,7 +173,7 @@ class InputContext(object.Object):
     def __update_auxiliary_text_cb(self, *args):
         text = serializable.deserialize_object(args[0])
         visible = args[1]
-        self.emit("update-auxiliray-text", text, visible)
+        self.emit("update-auxiliary-text", text, visible)
 
     def __update_lookup_table_cb(self, *args):
         table = serializable.deserialize_object(args[0])
