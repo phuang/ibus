@@ -123,6 +123,7 @@ typedef enum {
  * @IBUS_ATTR_UNDERLINE_SINGLE: Single underline.
  * @IBUS_ATTR_UNDERLINE_DOUBLE: Double underline.
  * @IBUS_ATTR_UNDERLINE_LOW: Low underline ? %FIXME
+ * @IBUS_ATTR_UNDERLINE_ERROR: Error underline
  *
  * Type of IBusText attribute.
  */
@@ -131,6 +132,7 @@ typedef enum {
     IBUS_ATTR_UNDERLINE_SINGLE  = 1,
     IBUS_ATTR_UNDERLINE_DOUBLE  = 2,
     IBUS_ATTR_UNDERLINE_LOW     = 3,
+    IBUS_ATTR_UNDERLINE_ERROR   = 4,
 } IBusAttrUnderline;
 
 G_BEGIN_DECLS

@@ -27,6 +27,7 @@ __all__ = (
         "ATTR_UNDERLINE_SINGLE",
         "ATTR_UNDERLINE_DOUBLE",
         "ATTR_UNDERLINE_LOW",
+        "ATTR_UNDERLINE_ERROR",
         "Attribute",
         "AttributeUnderline",
         "AttributeForeground",
@@ -47,6 +48,7 @@ ATTR_UNDERLINE_NONE = 0
 ATTR_UNDERLINE_SINGLE = 1
 ATTR_UNDERLINE_DOUBLE = 2
 ATTR_UNDERLINE_LOW = 3
+ATTR_UNDERLINE_ERROR = 4
 
 class Attribute(Serializable):
     __gtype_name__ = "PYIBusAttribute"
