@@ -769,6 +769,25 @@ ibus_message_iter_get (IBusMessageIter *iter,
             *(guint *) value = (guint) v;
             return TRUE;
         }
+    case G_TYPE_LONG:
+        {
+            dbus_int64_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_INT32)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(glong *) value = (glong) v;
+            return TRUE;
+        }
+    case G_TYPE_ULONG:
+        {
+            dbus_uint64_t v;
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_UINT32)
+                return FALSE;
+            dbus_message_iter_get_basic (iter, &v);
+            *(gulong *) value = (gulong) v;
+            return TRUE;
+        }
+
     case G_TYPE_BOOLEAN:
         {
             dbus_bool_t v;
