@@ -222,7 +222,7 @@ msgstr "开关"
 
 #: ../setup/setup.glade.h:22
 msgid "General"
-msgstr "通用"
+msgstr "常规"
 
 #: ../setup/setup.glade.h:23
 msgid ""
