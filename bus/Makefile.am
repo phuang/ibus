@@ -32,6 +32,7 @@ AM_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
+	-DBINDIR=\"@bindir@\" \
 	$(INCLUDES) \
 	$(NULL)
 AM_LDFLAGS = \
