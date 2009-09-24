@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
+"POT-Creation-Date: 2009-09-24 15:44+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -150,7 +150,7 @@ msgstr "输入法"
 
 #: ../setup/enginetreeview.py:87
 msgid "Kbd"
-msgstr ""
+msgstr "Kbd"
 
 #: ../setup/setup.glade.h:1
 msgid "..."
@@ -202,7 +202,7 @@ msgstr "添加输入法到启动"
 
 #: ../setup/setup.glade.h:17
 msgid "Advanced"
-msgstr ""
+msgstr "高级"
 
 #: ../setup/setup.glade.h:18
 msgid "Candidates orientation:"
@@ -324,7 +324,7 @@ msgstr "使用系统键盘布局"
 
 #: ../setup/setup.glade.h:49
 msgid "gtk-about"
-msgstr ""
+msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -399,4 +399,3 @@ msgstr "使用自定义字体"
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
-
