@@ -254,13 +254,13 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
 {
     g_string_append_indent (output, indent);
     g_string_append (output, "<engine>\n");
-#define OUTPUT_ENTRY(field, element)                                    \
-    {                                                                   \
-        gchar *escape_text = g_markup_escape_text (desc->field, -1);    \
-        g_string_append_indent (output, indent + 1);                    \
-        g_string_append_printf (output, "<"element">%s</"element">\n",  \
-                                escape_text);                           \
-        g_free (escape_text);                                           \
+#define OUTPUT_ENTRY(field, element)                                                    \
+    {                                                                                   \
+        gchar *escape_text = g_markup_escape_text (desc->field ? desc->field : "", -1); \
+        g_string_append_indent (output, indent + 1);                                    \
+        g_string_append_printf (output, "<"element">%s</"element">\n",                  \
+                                escape_text);                                           \
+        g_free (escape_text);                                                           \
     }
 #define OUTPUT_ENTRY_1(name) OUTPUT_ENTRY(name, #name)
     OUTPUT_ENTRY_1(name);
