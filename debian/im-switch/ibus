@@ -1,6 +1,0 @@
-XIM=ibus
-XIM_PROGRAM=/usr/bin/ibus
-XIM_ARGS=""
-GTK_IM_MODULE=ibus
-QT_IM_MODULE=ibus
-DEPENDS="ibus"

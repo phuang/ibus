@@ -1,0 +1,4 @@
+debian/tmp/usr/include/*
+debian/tmp/usr/lib/libibus.so
+debian/tmp/usr/lib/libibus.a
+debian/tmp/usr/lib/pkgconfig/*
