@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "registry.h"
+#include "option.h"
 
 enum {
     LAST_SIGNAL,
@@ -89,8 +90,6 @@ bus_registry_init (BusRegistry *registry)
     registry->components = NULL;
     registry->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
     
-    extern gboolean g_rescan;
-
     if (g_rescan ||
         bus_registry_load_cache (registry) == FALSE ||
         bus_registry_check_modification (registry)) {

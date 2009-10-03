@@ -22,8 +22,7 @@
 #include <ibusmarshalers.h>
 #include "dbusimpl.h"
 #include "factoryproxy.h"
-
-#define REPLY_TIMEOUT (-1)
+#include "option.h"
 
 /* functions prototype */
 static void      bus_factory_proxy_class_init   (BusFactoryProxyClass   *klass);
@@ -188,7 +187,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     retval = ibus_proxy_call_with_reply ((IBusProxy *) factory,
                                          "CreateEngine",
                                          &pending,
-                                         REPLY_TIMEOUT,
+                                         g_dbus_timeout,
                                          &error,
                                          G_TYPE_STRING, &(desc->name),
                                          G_TYPE_INVALID);
@@ -204,12 +203,20 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     ibus_pending_call_unref (pending);
 
     if (reply_message == NULL) {
+        IBusObject *connection;
+        connection = (IBusObject *) ibus_proxy_get_connection ((IBusProxy *)factory);
+        ibus_object_destroy (connection);
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         return NULL;
     }
 
     if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
+        if (g_strcmp0 (error->name, DBUS_ERROR_NO_REPLY) == 0) {
+            IBusObject *connection;
+            connection = (IBusObject *) ibus_proxy_get_connection ((IBusProxy *)factory);
+            ibus_object_destroy (connection);
+        }
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         ibus_message_unref (reply_message);

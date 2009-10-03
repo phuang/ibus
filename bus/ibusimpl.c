@@ -33,7 +33,7 @@
 #include "factoryproxy.h"
 #include "panelproxy.h"
 #include "inputcontext.h"
-
+#include "option.h"
 
 enum {
     LAST_SIGNAL,
@@ -66,8 +66,6 @@ static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
                                                  BusIBusImpl        *ibus);
 
 static IBusServiceClass  *parent_class = NULL;
-
-extern gboolean g_verbose;
 
 GType
 bus_ibus_impl_get_type (void)

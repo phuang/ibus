@@ -22,8 +22,7 @@
 #include <ibusmarshalers.h>
 #include "ibusimpl.h"
 #include "engineproxy.h"
-
-#define PROCESS_KEY_EVENT_TIMEOUT (10000)
+#include "option.h"
 
 enum {
     COMMIT_TEXT,
@@ -528,7 +527,8 @@ failed:
 typedef struct {
     GFunc    func;
     gpointer user_data;
-}CallData;
+    BusEngineProxy *engine;
+} CallData;
 
 static void
 bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
@@ -541,9 +541,19 @@ bus_engine_proxy_process_key_event_reply_cb (IBusPendingCall *pending,
     reply_message = dbus_pending_call_steal_reply (pending);
 
     if (reply_message == NULL) {
+        /* reply timeout */
+        IBusObject *connection;
+        connection = (IBusObject *) ibus_proxy_get_connection ((IBusProxy *)call_data->engine);
+        ibus_object_destroy (connection);
         goto _out;
     }
     else if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
+        if (g_strcmp0 (error->name, DBUS_ERROR_NO_REPLY) == 0) {
+            /* reply timeout */
+            IBusObject *connection;
+            connection = (IBusObject *) ibus_proxy_get_connection ((IBusProxy *)call_data->engine);
+            ibus_object_destroy (connection);
+        }
         g_warning ("%s: %s", error->name, error->message);
         ibus_error_free (error);
         goto _out;
@@ -562,6 +572,7 @@ _out:
     if (reply_message) {
         ibus_message_unref (reply_message);
     }
+    g_object_unref (call_data->engine);
     call_data->func (GINT_TO_POINTER (retval), call_data->user_data);
     g_slice_free (CallData, call_data);
 }
@@ -592,7 +603,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     retval = ibus_proxy_call_with_reply ((IBusProxy *) engine,
                                          "ProcessKeyEvent",
                                          &pending,
-                                         PROCESS_KEY_EVENT_TIMEOUT,
+                                         g_dbus_timeout,
                                          &error,
                                          G_TYPE_UINT, &keyval,
                                          G_TYPE_UINT, &keycode,
@@ -608,6 +619,8 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     call_data = g_slice_new0 (CallData);
     call_data->func = return_cb;
     call_data->user_data = user_data;
+    g_object_ref (engine);
+    call_data->engine = engine;
 
     retval = ibus_pending_call_set_notify (pending,
                                            (IBusPendingCallNotifyFunction) bus_engine_proxy_process_key_event_reply_cb,
@@ -616,6 +629,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy *engine,
     ibus_pending_call_unref (pending);
 
     if (!retval) {
+        g_object_unref (call_data->engine);
         g_slice_free (CallData, call_data);
         g_warning ("%s : ProcessKeyEvent", DBUS_ERROR_NO_MEMORY);
         return_cb (GINT_TO_POINTER (FALSE), user_data);

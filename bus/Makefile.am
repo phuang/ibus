@@ -81,6 +81,7 @@ ibus_daemon_SOURCES = \
 	matchrule.h \
 	registry.c \
 	registry.h \
+	option.h \
 	$(NULL)
 ibus_daemon_CFLAGS = \
 	$(AM_CFLAGS) \
@@ -115,4 +116,4 @@ $(libibus):
 	$(MAKE) -C $(top_builddir)/src
 
 test: ibus-daemon
-	$(builddir)/ibus-daemon
+	$(builddir)/ibus-daemon -v
