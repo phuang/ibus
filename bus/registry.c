@@ -154,10 +154,7 @@ bus_registry_load (BusRegistry *registry)
 
     g_free (dirname);
 
-    homedir = (gchar *) g_getenv ("HOME");
-    if (!homedir)
-        homedir = (gchar *) g_get_home_dir ();
-    dirname = g_build_filename (homedir, ".ibus", "component", NULL);
+    dirname = g_build_filename (g_get_home_dir (), ".ibus", "component", NULL);
 
     path = ibus_observed_path_new (dirname, TRUE);
     registry->observed_paths = g_list_append (registry->observed_paths, path);
@@ -187,7 +184,7 @@ bus_registry_load_cache (BusRegistry *registry)
     XMLNode *node;
     GList *p;
 
-    filename = g_build_filename (g_get_user_cache_dir (), "ibus", "registry.xml", NULL);
+    filename = g_build_filename (g_get_home_dir (), ".ibus", "bus", "registry.xml", NULL);
     node = ibus_xml_parse_file (filename);
     g_free (filename);
 
@@ -262,7 +259,7 @@ bus_registry_save_cache (BusRegistry *registry)
     GList *p;
     FILE *pf;
 
-    cachedir = g_build_filename (g_get_user_cache_dir (), "ibus", NULL);
+    cachedir = g_build_filename (g_get_home_dir (), ".ibus", "bus", NULL);
     filename = g_build_filename (cachedir, "registry.xml", NULL);
     g_mkdir_with_parents (cachedir, 0775);
     pf = g_fopen (filename, "w");

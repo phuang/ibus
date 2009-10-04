@@ -166,11 +166,11 @@ ibus_get_socket_path (void)
                              ibus_get_local_machine_id (),
                              hostname,
                              displaynumber);
-        path = g_build_path (G_DIR_SEPARATOR_S,
-                             g_get_user_config_dir (),
-                             "ibus" G_DIR_SEPARATOR_S "bus",
-                             p,
-                             NULL);
+        path = g_build_filename (g_get_home_dir (),
+                                 ".ibus",
+                                 "bus",
+                                 p,
+                                 NULL);
         g_free (p);
         g_free (display);
     }
