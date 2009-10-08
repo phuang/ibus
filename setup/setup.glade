@@ -11,6 +11,7 @@
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">12</property>
         <child>
           <widget class="GtkNotebook" id="notebook1">
@@ -26,6 +27,7 @@
                 <child>
                   <widget class="GtkVBox" id="vbox5">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="spacing">18</property>
                     <child>
                       <widget class="GtkFrame" id="frame3">
@@ -223,6 +225,7 @@
                             <child>
                               <widget class="GtkVBox" id="vbox6">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <property name="spacing">6</property>
                                 <child>
                                   <widget class="GtkHBox" id="hbox2">
@@ -290,6 +293,20 @@ Always</property>
                                   </packing>
                                 </child>
                                 <child>
+                                  <widget class="GtkCheckButton" id="checkbutton_show_icon_on_systray">
+                                    <property name="label" translatable="yes">Show icon on system tray</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">Show input method's name on language bar when check the checkbox</property>
+                                    <property name="draw_indicator">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                                <child>
                                   <widget class="GtkCheckButton" id="checkbutton_show_im_name">
                                     <property name="label" translatable="yes">Show input method name on language bar</property>
                                     <property name="visible">True</property>
@@ -299,7 +316,7 @@ Always</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">2</property>
+                                    <property name="position">3</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -313,7 +330,7 @@ Always</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>
                                   <packing>
-                                    <property name="position">3</property>
+                                    <property name="position">4</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -342,7 +359,7 @@ Always</property>
                                     </child>
                                   </widget>
                                   <packing>
-                                    <property name="position">4</property>
+                                    <property name="position">5</property>
                                   </packing>
                                 </child>
                               </widget>
@@ -444,6 +461,7 @@ Always</property>
                             <child>
                               <widget class="GtkVButtonBox" id="vbuttonbox1">
                                 <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
                                 <property name="spacing">5</property>
                                 <property name="layout_style">start</property>
                                 <child>
@@ -508,7 +526,7 @@ Always</property>
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="button_engine_about">
-                                    <property name="label" translatable="yes">gtk-about</property>
+                                    <property name="label">gtk-about</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>

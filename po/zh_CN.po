@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-24 15:44+0800\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -24,28 +24,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus输入法框架"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "其他"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "关闭输入法"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "没有输入窗口"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus is an intelligent input bus for Linux/Unix."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
@@ -93,11 +93,11 @@ msgstr "下一入法"
 msgid "previous input method"
 msgstr "前一入法"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus守护进程没有启动，您是否想现在启动它？"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -110,7 +110,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
@@ -278,53 +278,53 @@ msgstr "设置候选词表方向"
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "设置打开关闭输入法的快捷键"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr "在系统托盘上显示图标"
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "显示选中输入法的信息"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "在语言栏上显示输入法的名字"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "显示语言栏:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "启动桌面时自动启动IBus"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "切换下一个引擎快捷键"
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "切换上一个引擎快捷键"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "使用自定义字体显示语言栏和候选词"
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "使用系统键盘布局"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -378,24 +378,27 @@ msgstr "显示输入法名字"
 msgid "Show IM name on language bar"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "语言栏行为。0 = 总是隐藏，1 = 自动隐藏，2 = 总是显示。"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
+
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"

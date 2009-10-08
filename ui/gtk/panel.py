@@ -113,6 +113,7 @@ class Panel(ibus.PanelBase):
         self.__config_load_lookup_table_orientation()
         self.__config_load_show()
         self.__config_load_custom_font()
+        self.__config_load_show_icon_on_systray()
         self.__config_load_show_im_name()
         # self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
@@ -279,6 +280,10 @@ class Panel(ibus.PanelBase):
         settings = gtk.settings_get_default()
         gtk.rc_reset_styles(settings)
 
+    def __config_load_show_icon_on_systray(self):
+        value = self.__config.get_value("panel", "show_icon_on_systray", True)
+        self.__status_icon.set_visible(True if value else False)
+
     def __config_load_show_im_name(self):
         value = self.__config.get_value("panel", "show_im_name", False)
         self.__language_bar.set_show_im_name(value)
@@ -292,6 +297,8 @@ class Panel(ibus.PanelBase):
             self.__config_load_show()
         elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
+        elif name == "show_icon_on_systray":
+            self.__config_load_show_icon_on_systray()
         elif name == "show_im_name":
             self.__config_load_show_im_name()
         else:

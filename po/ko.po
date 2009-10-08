@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-10 14:06+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -25,28 +25,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus 입력 방식 프레임워크  "
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "기타  "
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "재시작  "
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "입력 방식 해제  "
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "입력 창이 없음  "
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus는 Linux/Unix를 위한 지능형 입력 버스입니다. "
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "김은주 (eukim@redhat.com)  "
 
@@ -94,11 +94,11 @@ msgstr "다음 입력 방식   "
 msgid "previous input method"
 msgstr "이전 입력 방식  "
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Bus 데몬이 시작되지 않았습니다. 지금 시작하시겠습니까?  "
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -106,12 +106,13 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus를 시작했습니다! IBus를 사용할 수 없는 경우, 다음을 $HOME/.bashrc에 추가하고 다시 로그인하십시오.\n"
+"IBus를 시작했습니다! IBus를 사용할 수 없는 경우, 다음을 $HOME/.bashrc에 추가"
+"하고 다시 로그인하십시오.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus "
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s의 키보드 단축키를 선택   "
@@ -279,53 +280,53 @@ msgstr "룩업 테이블에서 후보 창의 방향 설정  "
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "입력 방식을 활성 또는 해제하기 위한 단축키 설정  "
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "선택한 입력 방식의 정보 표시  "
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "입력 도구 모음에 있는 입력 방식 이름 표시   "
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "확인란을 선택하면 입력 도구 모음에 있는 입력 방식의 이름 표시   "
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "언어 패널 표시:  "
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "로그인 시 ibus 시작  "
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키  "
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축키   "
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "사용자 정의 글꼴 사용  "
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "입력 도구 모음 및 후보에 대해 사용자 정의 글꼴 사용   "
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "시스템 키보드 (XKB) 레이아웃 사용  "
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "시스템 키보드 레이아웃 사용  "
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -379,25 +380,27 @@ msgstr "IM 이름 표시  "
 msgid "Show IM name on language bar"
 msgstr "도구 모음에 있는 IM 이름 표시   "
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "언어 패널의 동작 0 = 항상 숨기기, 1 = 자동 숨기기, 2 = 항상 표시  "
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "트리거 핫키  "
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "활성화 또는 비활성화 입력 문맥 용 트리거 핫키  "
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "사용자 정의 글꼴 사용  "
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "언어 패널 용 사용자 정의 글꼴 이름 사용  "
 
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"

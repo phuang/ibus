@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-08 14:36+0000\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-09 15:52+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -28,28 +29,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus ఇన్పుట్ పద్దతి ఆకృతి"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "ఇతర"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "పునఃప్రారంభము"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "ఇన్పుట్ పద్దతి ఆఫ్ చేయుము"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "ఇన్పుట్ విండో లేదు"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus అనునది Linux/Unix కొరకు తెలివైన ఇన్పుట్ బస్."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 
@@ -97,11 +98,11 @@ msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 msgid "previous input method"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -115,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును యెంపికచేయుము"
@@ -283,53 +284,53 @@ msgstr "లుకప్ పట్టికనందు కాండిడేట�
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "ఎంపికచేసిన యిన్పుట్ పద్దతి యొక్క సమాచారమును చూపుము"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "చెక్‌బాక్సు చెక్ చేసినప్పుడు భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "భాషా ప్యానల్ చూపుము:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "లాగిన్‌నందు ibus ప్రారంభించుము"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "జాబితానందలి ముందరి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "భాషా పట్టీ మరియు కాండిడేట్ల కొరకు మలచుకొనిన ఫాంటు వుపయోగించుము"
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "సిస్టమ్ కీబోర్డు (XKB) నమూనా వుపయోగించుము"
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "సిస్టమ్ కీబోర్డు నమూనా వుపయోగించుము"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -383,7 +384,7 @@ msgstr "IM నామము చూపుము"
 msgid "Show IM name on language bar"
 msgstr "భాషా పట్టీపై IM నామము చూపుము"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -391,19 +392,21 @@ msgstr ""
 "భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = ఎల్లప్పుడూ మరుగునవుంచు, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = "
 "ఎల్లప్పుడూ "
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "బిస హాట్‌కీ"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "ఇన్పుట్ సందర్భమును చేతనము చేయుటకు లేదా అచేతనము చేయుటకు బిస హాట్‌కీ"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
 
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"

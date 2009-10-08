@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-19 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -37,28 +37,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "Entorn de mètodes d'entrada IBus"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "Altres"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "Reinicia"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "Inhabilita el mètode d'entrada"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "Cap finestra d'entrada"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus és un bus d'entrada intel·ligent per a Linux/Unix."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr ""
 "Oscar Osta Pueyo <oostap@gmail.com>, 2009\n"
@@ -109,11 +109,11 @@ msgstr "següent mètode d'entrada"
 msgid "previous input method"
 msgstr "anterior mètode d'entrada"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "El dimoni IBus no està iniciat. Voleu iniciar-lo ara?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -127,7 +127,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccioneu la drecera de teclat per a %s"
@@ -298,57 +298,57 @@ msgid "Set the shortcut keys for turnning on or off input method"
 msgstr ""
 "Estableix les dreceres de teclat per activar o desactivar el mètode d'entrada"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "Mostra la informació del mètode d'entrada seleccionat"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Mostra el nom del mètode a la barra d'idioma quan s'activi l'opció"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "Mostra el quadre d'idiomes:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "Inicia l'ibus en entrar"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 "La drecera de teclat per canviar al següent mètode d'entrada de la llista"
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "La drecera de teclat per canviar a l'anterior mètode d'entrada de la llista"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "Empra un tipus de lletra personalitzat"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr ""
 "Empra un tipus de lletra personalitzat per a la barra d'idioma i els "
 "candidats"
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "Utilitza la disposició de teclat del sistema (XKB)"
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "Utilitza la disposició de teclat del sistema"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -402,7 +402,7 @@ msgstr "Mostra el nom del mètode d'entrada"
 msgid "Show IM name on language bar"
 msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -410,21 +410,24 @@ msgstr ""
 "Comportament del quadre d'idiomes. 0 = Sempre ocult, 1 = Ocultar "
 "automàticament, 2 = Sempre visible"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "Tecla d'activació"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "Tecla per activar o desactivar el context d'entrada"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "Empra el tipus de lletra personalitzat"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "Empra el tipus de lletra personalitzat per al quadre d'idiomes"
+
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"
 
 #~ msgid "Use system keyboard (XKB) layout setting"
 #~ msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-29 08:13+0800\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-01 10:46+0700\n"
 "Last-Translator: Le Quoc Tuan <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -20,36 +20,32 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2
-#: ../ui/gtk/panel.py:110
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "Bộ gõ IBus"
 
-#: ../ibus/lang.py:40
-#: ../ui/gtk/panel.py:339
-#: ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341
-#: ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "Khác"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "Khởi động lại"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "Không dùng bộ gõ"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "Không có cửa sổ nhập"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus là một bộ gõ thông minh cho Linux/Unix."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "Lê Quốc Tuấn <mr.lequoctuan@gmail.com>"
 
@@ -61,32 +57,27 @@ msgstr "Giới thiệu bộ gõ"
 msgid "Switch input method"
 msgstr "Chuyển bộ gõ"
 
-#: ../ui/gtk/engineabout.py:34
-#: ../setup/engineabout.py:34
+#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
 #: ../setup/setup.glade.h:15
 msgid "About"
 msgstr "Giới thiệu"
 
-#: ../ui/gtk/engineabout.py:62
-#: ../setup/engineabout.py:62
+#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
 #, python-format
 msgid "Language: %s\n"
 msgstr "Ngôn ngữ: %s\n"
 
-#: ../ui/gtk/engineabout.py:64
-#: ../setup/engineabout.py:64
+#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Bố trí bàn phím: %s\n"
 
-#: ../ui/gtk/engineabout.py:66
-#: ../setup/engineabout.py:66
+#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
 #, python-format
 msgid "Author: %s\n"
 msgstr "Tác giả: %s\n"
 
-#: ../ui/gtk/engineabout.py:68
-#: ../setup/engineabout.py:68
+#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
 msgid "Description:\n"
 msgstr "Mô tả:\n"
 
@@ -102,23 +93,26 @@ msgstr "Bộ gõ kế tiếp"
 msgid "previous input method"
 msgstr "Bộ gõ trước"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "IBus daemon chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
+msgstr ""
+"IBus daemon chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus vừa được khởi động! Nếu bạn không thể dùng IBus, vui lòng thêm những dòng bên dưới vào $HOME/.bashrc, và đăng nhập lại.\n"
+"IBus vừa được khởi động! Nếu bạn không thể dùng IBus, vui lòng thêm những "
+"dòng bên dưới vào $HOME/.bashrc, và đăng nhập lại.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Chọn phím tắt cho %s"
@@ -152,8 +146,7 @@ msgid "Select an input method"
 msgstr "Chọn một bộ gõ"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59
-#: ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
 msgid "Input Method"
 msgstr "Bộ gõ"
 
@@ -241,8 +234,7 @@ msgstr ""
 "Ngang\n"
 "Dọc"
 
-#: ../setup/setup.glade.h:25
-#: ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "Tùy thích IBus"
 
@@ -288,55 +280,53 @@ msgstr "Đặt hướng của từ gợi ý trong bảng tra cứu"
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "Đặt phím tắt để bật hoặc tắt bộ gõ"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "Hiển thị thông tin về bộ gõ đã chọn"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "Hiển thị tên bộ gõ trên thanh ngôn ngữ"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Hiển thị tên của bộ gõ trên thanh ngôn ngữ khi đánh dấu vào ô kiểm"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "Hiển thị thanh ngôn ngữ:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "Khởi động ibus khi đăng nhập"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp trong danh sách"
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Phím nóng dùng để chuyển về bộ gõ trước trong danh sách"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "Dùng phông chữ tùy biến"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ và từ gợi ý"
 
-#: ../setup/setup.glade.h:47
-#: ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "Dùng kiểu bố trí bàn phím hệ thống (XKB)"
 
-#: ../setup/setup.glade.h:48
-#: ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "Dùng kiểu bố trí bàn phím của hệ thống"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -390,23 +380,28 @@ msgstr "Hiển thị tên bộ gõ"
 msgid "Show IM name on language bar"
 msgstr "Hiển thị tên IM trên thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:14
-msgid "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show"
-msgstr "Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
-
 #: ../data/ibus.schemas.in.h:15
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+"Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
+
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "Phím nóng bật/tắt"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr "Phím nóng bật/tắt dùng để bật hoặc tắt bộ gõ"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "Dùng phông tùy biến"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ"
 
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"

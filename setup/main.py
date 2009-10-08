@@ -164,6 +164,12 @@ class Setup(object):
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
 
+        # show icon on systray
+        self.__checkbutton_show_icon_on_systray = self.__xml.get_widget("checkbutton_show_icon_on_systray")
+        self.__checkbutton_show_icon_on_systray.set_active(
+            self.__config.get_value("panel", "show_icon_on_systray", True))
+        self.__checkbutton_show_icon_on_systray.connect("toggled", self.__checkbutton_show_icon_on_systray_toggled_cb)
+
         # show ime name
         self.__checkbutton_show_im_name = self.__xml.get_widget("checkbutton_show_im_name")
         self.__checkbutton_show_im_name.set_active(
@@ -387,6 +393,10 @@ class Setup(object):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
         self.__config.set_value("panel", "custom_font", font_name)
+
+    def __checkbutton_show_icon_on_systray_toggled_cb(self, button):
+        value = self.__checkbutton_show_icon_on_systray.get_active()
+        self.__config.set_value("panel", "show_icon_on_systray", value)
 
     def __checkbutton_show_im_name_toggled_cb(self, button):
         value = self.__checkbutton_show_im_name.get_active()

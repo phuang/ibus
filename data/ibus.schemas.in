@@ -71,6 +71,17 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/show_icon_on_systray</key>
+      <applyto>/desktop/ibus/panel/show_icon_on_systray</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Show icon on system tray</short>
+	    <long>Show icon on system tray</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/panel/show_im_name</key>
       <applyto>/desktop/ibus/panel/show_im_name</applyto>
       <owner>ibus</owner>

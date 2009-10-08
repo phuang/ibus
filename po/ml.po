@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-03 02:39+0000\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-03 11:08+0530\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
-"Language-Team:  Swathantra Malayalam Computing|സ്വതന്ത്ര മലയാളം കമ്പ്യൂട്ടിങ്  <smc-discuss@googlegroups.com>\n"
+"Language-Team:  Swathantra Malayalam Computing|സ്വതന്ത്ര മലയാളം കമ്പ്യൂട്ടിങ്  <smc-"
+"discuss@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,28 +26,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "വീണ്ടും ആരംഭിക്കുക"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓഫ് ചെയ്യുക"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "ഇന്‍പുട്ട് ജാലകം ലഭ്യമല്ല"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "ലിനക്സ്/യുണിക്സിനുള്ള ഇന്റലിജന്റ് ഇന്‍പുട്ട് ബസാണു് IBus."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "അനി പീറ്റര്‍ <apeter@redhat.com>"
 
@@ -94,11 +95,11 @@ msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്"
 msgid "previous input method"
 msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ഡെമണ്‍ ആരംഭിച്ചിട്ടില്ല. നിങ്ങള്‍ക്കിതു് ഉടന്‍ ആരംഭിക്കണമോ?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +113,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-നുള്ള കീബോര്‍ഡ് എളുപ്പവഴി തെരഞ്ഞെടുക്കുക"
@@ -280,55 +281,56 @@ msgstr "ലുക്കപ്പ് പട്ടികയില്‍ ലഭ്�
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓണ്‍ അല്ലെങ്കില്‍ ഓഫ് ചെയ്യുന്നതിനുള്ള എളുപ്പവളികള്‍ സജ്ജമാക്കുക"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "തെരഞ്ഞെടുത്ത ഇന്‍പുട്ട് മെഥേഡിനെപ്പറ്റിയുള്ള വിവരങ്ങള്‍ കാണിക്കുക"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "ചെക്ക്ബോക്സ് ചെക്ക് ചെയ്യുമ്പോള്‍ ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "പ്രവേശിക്കുമ്പോള്‍ തന്നെ ibus ആരംഭിക്കുക"
 
-#: ../setup/setup.glade.h:43
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
-
 #: ../setup/setup.glade.h:44
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+"അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
+
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള "
 "എളുപ്പവഴി"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് (XKB) മാതൃക ഉപയോഗിക്കുക"
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -372,7 +374,8 @@ msgstr "തൊട്ടു് മുമ്പുള്ള സംവിധാന�
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+msgstr ""
+"മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Show IM Name"
@@ -382,25 +385,29 @@ msgstr "IM പേരു് കാണിക്കുക"
 msgid "Show IM name on language bar"
 msgstr "ഭാഷയുടെ പാനലില്‍ IM പേരു് കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr "ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = എപ്പോഴും അദൃശ്യം, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും കാണിക്കുക"
+msgstr ""
+"ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = എപ്പോഴും അദൃശ്യം, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
 
-#: ../data/ibus.schemas.in.h:16
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "ഇന്‍പുട്ട് കോണ്‍ടെക്സ്റ്റ് സജ്ജമാക്കുകയോ നിര്‍ജ്ജീവമാക്കുകയോ ചെയ്യുന്നതിനായി ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
-
 #: ../data/ibus.schemas.in.h:17
+msgid "Trigger hotkey for enable or disable input context"
+msgstr ""
+"ഇന്‍പുട്ട് കോണ്‍ടെക്സ്റ്റ് സജ്ജമാക്കുകയോ നിര്‍ജ്ജീവമാക്കുകയോ ചെയ്യുന്നതിനായി ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
+
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
 
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"

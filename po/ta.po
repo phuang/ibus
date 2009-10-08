@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-31 16:46+0000\n"
+"POT-Creation-Date: 2009-10-09 07:31+0800\n"
 "PO-Revision-Date: 2009-09-01 11:24+0530\n"
 "Last-Translator: I. Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
@@ -27,28 +27,28 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:339 ../ui/gtk/panel.py:340
-#: ../ui/gtk/panel.py:341 ../ui/gtk/panel.py:342
+#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
+#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
 msgid "Other"
 msgstr "வேறு"
 
-#: ../ui/gtk/panel.py:314
+#: ../ui/gtk/panel.py:321
 msgid "Restart"
 msgstr "மறுதுவக்கம்"
 
-#: ../ui/gtk/panel.py:369
+#: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
 msgstr "உள்ளீடு முறையை நிறுத்து"
 
-#: ../ui/gtk/panel.py:402
+#: ../ui/gtk/panel.py:409
 msgid "No input window"
 msgstr "உள்ளீடு சாளரம் இல்லை"
 
-#: ../ui/gtk/panel.py:430
+#: ../ui/gtk/panel.py:437
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus Linux/Unixக்கான உள்ளிடு பஸ்."
 
-#: ../ui/gtk/panel.py:434
+#: ../ui/gtk/panel.py:441
 msgid "translator-credits"
 msgstr "I. Felix <ifelix@redhat.com>"
 
@@ -96,11 +96,11 @@ msgstr "அடுத்த உள்ளீடு முறை"
 msgid "previous input method"
 msgstr "முந்தைய உள்ளீடு முறை"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus daemon துவக்கப்படவில்லை. இப்போது துவக்க வேண்டுமா?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:256
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -114,7 +114,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:271
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%sக்கான விசைப்பலகை குறுக்குவழியை தேர்ந்தெடு"
@@ -246,7 +246,8 @@ msgstr "செயல்படுத்தப்பட்ட உள்ளீட�
 
 #: ../setup/setup.glade.h:28
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
+msgstr ""
+"செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
 
 #: ../setup/setup.glade.h:29
 msgid ""
@@ -282,53 +283,53 @@ msgstr "காணும் அட்டவணையில் நபர்கள�
 msgid "Set the shortcut keys for turnning on or off input method"
 msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
 
-#: ../setup/setup.glade.h:38
+#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.glade.h:39
 msgid "Show information of the selected input method"
 msgstr "தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையின் தகவலை காட்டு"
 
-#: ../setup/setup.glade.h:39
+#: ../setup/setup.glade.h:40
 msgid "Show input method name on language bar"
 msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
 
-#: ../setup/setup.glade.h:40
+#: ../setup/setup.glade.h:41
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "சோதனை பெட்டியை சோதிக்கும் போது உள்ளீடு முறை பெயரை மொழி பட்டையில் காட்டு "
 
-#: ../setup/setup.glade.h:41
+#: ../setup/setup.glade.h:42
 msgid "Show language panel:"
 msgstr "மொழி பலகத்தை காட்டு:"
 
-#: ../setup/setup.glade.h:42
+#: ../setup/setup.glade.h:43
 msgid "Start ibus on login"
 msgstr "புகுபதிவில் ibusஐ துவக்கு"
 
-#: ../setup/setup.glade.h:43
+#: ../setup/setup.glade.h:44
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "பட்டியலில் அடுத்த உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../setup/setup.glade.h:44
+#: ../setup/setup.glade.h:45
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "பட்டியலில் முந்தைய உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../setup/setup.glade.h:45
+#: ../setup/setup.glade.h:46
 msgid "Use custom font"
 msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
 
-#: ../setup/setup.glade.h:46
+#: ../setup/setup.glade.h:47
 msgid "Use custom font for language bar and candidates"
 msgstr "மொழி பட்டை மற்றும் நபர்களுக்கான தனிபயன் எழுத்துருவை பயன்படுத்து"
 
-#: ../setup/setup.glade.h:47 ../data/ibus.schemas.in.h:19
+#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
 msgid "Use system keyboard (XKB) layout"
 msgstr "கணினி விசைப்பலகை (XKB) அமைப்பை பயன்படுத்து"
 
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
+#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
 msgid "Use system keyboard layout"
 msgstr "கணினி விசைப்பலகை அமைப்பை பயன்படுத்து"
-
-#: ../setup/setup.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -382,27 +383,29 @@ msgstr "IM பெயரை காட்டு"
 msgid "Show IM name on language bar"
 msgstr "மொழி பலகத்தில் IM பெயரை காட்டு"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "மொழி பலகத்தின் பண்புகள். 0 = எப்போதும் மறை, 1 = தானாக மறை, 2 = எப்போதும் காட்டு"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid "Trigger Hotkey"
 msgstr "ட்ரிகர் குறுக்குவிசை"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:17
 msgid "Trigger hotkey for enable or disable input context"
 msgstr ""
 "உள்ளீடு சூழலை செயல்படுத்த அல்லது செயல் நீக்க ட்ரிகர் குறுக்குவிசையை செயல்படுத்து அல்லது "
 "செயல்நீக்கு"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "மொழி பலகத்தில் தனிபயன் எழுத்துரு பெயர்"
 
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"
