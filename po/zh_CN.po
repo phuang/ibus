@@ -22,7 +22,7 @@ msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
-msgstr "IBus输入法框架"
+msgstr "IBus 输入法框架"
 
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
 #: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
@@ -95,7 +95,7 @@ msgstr "前一入法"
 
 #: ../setup/main.py:241
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "IBus守护进程没有启动，您是否想现在启动它？"
+msgstr "IBus 守护进程没有启动，您是否想现在启动它？"
 
 #: ../setup/main.py:256
 msgid ""
@@ -105,7 +105,7 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus已经被成功启动！如果你不能正常使用IBus，请将下面代码加入到$HOME/.bashrc"
+"IBus 已经被成功启动！如果你不能正常使用IBus，请将下面代码加入到$HOME/.bashrc"
 "中，并重新登录桌面。  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -234,7 +234,7 @@ msgstr ""
 
 #: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
-msgstr "IBus设置"
+msgstr "IBus 设置"
 
 #: ../setup/setup.glade.h:27
 msgid "Move down the selected input method in the enabled input methods"
