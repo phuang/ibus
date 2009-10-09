@@ -166,8 +166,8 @@ ibus_get_socket_path (void)
                              ibus_get_local_machine_id (),
                              hostname,
                              displaynumber);
-        path = g_build_filename (g_get_home_dir (),
-                                 ".ibus",
+        path = g_build_filename (g_get_user_config_dir (),
+                                 "ibus",
                                  "bus",
                                  p,
                                  NULL);
