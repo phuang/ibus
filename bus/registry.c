@@ -184,7 +184,7 @@ bus_registry_load_cache (BusRegistry *registry)
     XMLNode *node;
     GList *p;
 
-    filename = g_build_filename (g_get_user_cache_dir (), ".ibus", "bus", "registry.xml", NULL);
+    filename = g_build_filename (g_get_user_cache_dir (), "ibus", "bus", "registry.xml", NULL);
     node = ibus_xml_parse_file (filename);
     g_free (filename);
 
