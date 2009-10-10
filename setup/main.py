@@ -72,7 +72,8 @@ class Setup(object):
         gettext.bindtextdomain("ibus", localedir)
         gettext.bind_textdomain_codeset("ibus", "UTF-8")
         gtk_builder_file = path.join(path.dirname(__file__), "./setup.ui")
-        self.__builder = gtk.Builder();
+        self.__builder = gtk.Builder()
+        self.__builder.set_translation_domain("ibus")
         self.__builder.add_from_file(gtk_builder_file);
         self.__bus = None
         self.__init_bus()

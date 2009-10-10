@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <interface>
+  <requires lib="gtk+" version="2.14"/>
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkListStore" id="model1">
     <columns>
+      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -15,6 +18,7 @@
   </object>
   <object class="GtkListStore" id="model2">
     <columns>
+      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -29,8 +33,6 @@
       </row>
     </data>
   </object>
-  <!-- interface-requires gtk+ 2.16 -->
-  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window_preferences">
     <property name="border_width">12</property>
     <property name="title" translatable="yes">IBus Preferences</property>
@@ -78,7 +80,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label7">
                                     <property name="visible">True</property>
-                                    <property name="tooltip-text" translatable="yes">Set the shortcut keys for turnning on or off input method</property>
+                                    <property name="tooltip_text" translatable="yes">Set the shortcut keys for turnning on or off input method</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Enable or disable:</property>
                                   </object>
@@ -90,7 +92,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label8">
                                     <property name="visible">True</property>
-                                    <property name="tooltip-text" translatable="yes">The shortcut keys for switching to next input method in the list</property>
+                                    <property name="tooltip_text" translatable="yes">The shortcut keys for switching to next input method in the list</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Next input method:</property>
                                   </object>
@@ -105,7 +107,7 @@
                                   <object class="GtkLabel" id="label9">
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
-                                    <property name="tooltip-text" translatable="yes">The shortcut keys for switching to previous input method in the list</property>
+                                    <property name="tooltip_text" translatable="yes">The shortcut keys for switching to previous input method in the list</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Previous input method:</property>
                                   </object>
@@ -260,7 +262,7 @@
                                     <child>
                                       <object class="GtkLabel" id="label6">
                                         <property name="visible">True</property>
-                                        <property name="tooltip-text" translatable="yes">Set the orientation of candidates in lookup table</property>
+                                        <property name="tooltip_text" translatable="yes">Set the orientation of candidates in lookup table</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Candidates orientation:</property>
                                         <property name="justify">right</property>
@@ -297,7 +299,7 @@
                                     <child>
                                       <object class="GtkLabel" id="label10">
                                         <property name="visible">True</property>
-                                        <property name="tooltip-text" translatable="yes">Set the behavior of ibus how to show or hide language bar</property>
+                                        <property name="tooltip_text" translatable="yes">Set the behavior of ibus how to show or hide language bar</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Show language panel:</property>
                                         <property name="justify">right</property>
@@ -334,7 +336,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip-text" translatable="yes">Show input method's name on language bar when check the checkbox</property>
+                                    <property name="tooltip_text" translatable="yes">Show input method's name on language bar when check the checkbox</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -347,7 +349,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="tooltip-text" translatable="yes">Show input method's name on language bar when check the checkbox</property>
+                                    <property name="tooltip_text" translatable="yes">Show input method's name on language bar when check the checkbox</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -360,7 +362,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="tooltip-text" translatable="yes">Use custom font for language bar and candidates</property>
+                                    <property name="tooltip_text" translatable="yes">Use custom font for language bar and candidates</property>
                                     <property name="use_underline">True</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
@@ -374,7 +376,7 @@
                                     <child>
                                       <object class="GtkLabel" id="label_custom_font">
                                         <property name="visible">True</property>
-                                        <property name="tooltip-text" translatable="yes">Choice font for language bar and candidates</property>
+                                        <property name="tooltip_text" translatable="yes">Choice font for language bar and candidates</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Custom font:</property>
                                       </object>
@@ -501,7 +503,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip-text" translatable="yes">Add the selected input method into the enabled input methods</property>
+                                    <property name="tooltip_text" translatable="yes">Add the selected input method into the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -516,7 +518,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip-text" translatable="yes">Remove the selected input method from the enabled input methods</property>
+                                    <property name="tooltip_text" translatable="yes">Remove the selected input method from the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -531,7 +533,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip-text" translatable="yes">Move up the selected input method in the enabled input methods list</property>
+                                    <property name="tooltip_text" translatable="yes">Move up the selected input method in the enabled input methods list</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -546,7 +548,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip-text" translatable="yes">Move down the selected input method in the enabled input methods</property>
+                                    <property name="tooltip_text" translatable="yes">Move down the selected input method in the enabled input methods</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -561,7 +563,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip-text" translatable="yes">Show information of the selected input method</property>
+                                    <property name="tooltip_text" translatable="yes">Show information of the selected input method</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -625,6 +627,9 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label2">
@@ -672,7 +677,7 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="tooltip-text" translatable="yes">Use system keyboard (XKB) layout</property>
+                                        <property name="tooltip_text" translatable="yes">Use system keyboard (XKB) layout</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
@@ -714,6 +719,9 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label14">
@@ -728,6 +736,7 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="no_show_all">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <placeholder/>
                 </child>
@@ -785,6 +794,9 @@ Homepage: http://code.google.com/p/ibus
                   </packing>
                 </child>
               </object>
+              <packing>
+                <property name="position">3</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label3">
