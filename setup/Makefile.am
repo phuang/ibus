@@ -29,7 +29,7 @@ ibussetup_PYTHON = \
 	$(NULL)
 
 ibussetup_DATA = \
-	setup.glade \
+	setup.ui \
 	$(NULL)
 
 bin_SCRIPTS = ibus-setup
@@ -47,7 +47,7 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	ibus-setup.in \
-	setup.glade \
+	setup.ui \
 	$(desktop_in_files) \
 	$(NULL)
 
