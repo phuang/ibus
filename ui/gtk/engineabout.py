@@ -95,7 +95,7 @@ class EngineAbout(gtk.Dialog):
             pixbuf = gdk.pixbuf_new_from_file_at_scale(icon, 48, 48, True)
         except:
             theme = gtk.icon_theme_get_default()
-            icon = theme.lookup_icon("ibus", 48, 0)
+            icon = theme.lookup_icon("ibus-engine", 48, 0)
             if icon == None:
                 icon = theme.lookup_icon("gtk-missing-image", 48, 0)
             pixbuf = icon.load_icon()
