@@ -32,7 +32,6 @@ import keyboardshortcut
 from os import path
 from xdg import BaseDirectory
 from gtk import gdk
-# from gtk import glade
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
