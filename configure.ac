@@ -48,6 +48,7 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
+IT_PROG_INTLTOOL([0.35.0])
 
 # For dislpay Date
 m4_define(ibus_maybe_datedisplay,
@@ -115,7 +116,6 @@ AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
 if test x"$GCONFTOOL" = xno; then
     AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
 fi
-IT_PROG_INTLTOOL([0.40.0])
 
 AM_GCONF_SOURCE_2
 
@@ -186,17 +186,15 @@ AC_SUBST(PYTHON_INCLUDES)
 AC_SUBST(PYTHON_LIBS)
 
 #
-REBUILD = #
-AC_SUBST(REBUILD)
+# REBUILD = \#
+# AC_SUBST(REBUILD)
 
 # define GETTEXT_* variables
 GETTEXT_PACKAGE=ibus
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define to the read-only architecture-independent data directory.])
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.16.1)
-
+AM_GLIB_GNU_GETTEXT
 
 # define configure arguments
 AC_ARG_WITH(gtk-im-module-dir,

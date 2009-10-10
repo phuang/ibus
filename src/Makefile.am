@@ -178,13 +178,13 @@ test_lookuptable_DEPENDENCIES = $(DEPS)
 # gen enum types
 ibusenumtypes.h: stamp-ibusenumtypes.h
 	@true
-stamp-ibusenumtypes.h: @REBUILD@ $(ibus_public_h_sources) ibusenumtypes.h.template
+stamp-ibusenumtypes.h: $(ibus_public_h_sources) ibusenumtypes.h.template
 	( cd $(srcdir) && $(GLIB_MKENUMS) --template ibusenumtypes.h.template \
 	$(ibus_public_h_sources) ) | sed 's/i_bus_/ibus_/g' | sed 's/I_TYPE_BUS_/IBUS_TYPE_/g' >> xgen-geth \
 	&& (cmp -s xgen-geth ibusenumtypes.h || cp xgen-geth ibusenumtypes.h ) \
 	&& rm -f xgen-geth \
 	&& echo timestamp > $(@F)
-ibusenumtypes.c: @REBUILD@ $(ibus_public_h_sources) ibusenumtypes.c.template
+ibusenumtypes.c: $(ibus_public_h_sources) ibusenumtypes.c.template
 	( cd $(srcdir) && $(GLIB_MKENUMS) --template ibusenumtypes.c.template \
 	$(ibus_public_h_sources) ) | sed 's/i_bus_/ibus_/g' | sed 's/I_TYPE_BUS_/IBUS_TYPE_/g' > xgen-getc \
 	&& cp xgen-getc ibusenumtypes.c  \
