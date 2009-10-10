@@ -32,7 +32,7 @@ import keyboardshortcut
 from os import path
 from xdg import BaseDirectory
 from gtk import gdk
-from gtk import glade
+# from gtk import glade
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
@@ -70,25 +70,24 @@ class Setup(object):
         super(Setup, self).__init__()
         localedir = os.getenv("IBUS_LOCALEDIR")
         gettext.bindtextdomain("ibus", localedir)
-        glade.bindtextdomain("ibus", localedir)
         gettext.bind_textdomain_codeset("ibus", "UTF-8")
-        glade.textdomain("ibus")
-        glade_file = path.join(path.dirname(__file__), "./setup.glade")
-        self.__xml = glade.XML(glade_file)
+        gtk_builder_file = path.join(path.dirname(__file__), "./setup.ui")
+        self.__builder = gtk.Builder();
+        self.__builder.add_from_file(gtk_builder_file);
         self.__bus = None
         self.__init_bus()
         self.__init_ui()
 
     def __init_ui(self):
         # add icon search path
-        self.__window = self.__xml.get_widget("window_preferences")
+        self.__window = self.__builder.get_object("window_preferences")
         self.__window.connect("delete-event", gtk.main_quit)
 
-        self.__button_close = self.__xml.get_widget("button_close")
+        self.__button_close = self.__builder.get_object("button_close")
         self.__button_close.connect("clicked", gtk.main_quit)
 
         # auto start ibus
-        self.__checkbutton_auto_start = self.__xml.get_widget("checkbutton_auto_start")
+        self.__checkbutton_auto_start = self.__builder.get_object("checkbutton_auto_start")
         self.__checkbutton_auto_start.set_active(self.__is_auto_start())
         self.__checkbutton_auto_start.connect("toggled", self.__checkbutton_auto_start_toggled_cb)
 
@@ -99,8 +98,8 @@ class Setup(object):
                         "general/hotkey", "trigger",
                         ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
 
-        button = self.__xml.get_widget("button_trigger")
-        entry = self.__xml.get_widget("entry_trigger")
+        button = self.__builder.get_object("button_trigger")
+        entry = self.__builder.get_object("entry_trigger")
         text = "; ".join(shortcuts)
         entry.set_text(text)
         entry.set_tooltip_text(text)
@@ -111,8 +110,8 @@ class Setup(object):
         shortcuts = self.__config.get_value(
                         "general/hotkey", "next_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
-        button = self.__xml.get_widget("button_next_engine")
-        entry = self.__xml.get_widget("entry_next_engine")
+        button = self.__builder.get_object("button_next_engine")
+        entry = self.__builder.get_object("entry_next_engine")
         text = "; ".join(shortcuts)
         entry.set_text(text)
         entry.set_tooltip_text(text)
@@ -123,8 +122,8 @@ class Setup(object):
         shortcuts = self.__config.get_value(
                         "general/hotkey", "prev_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
-        button = self.__xml.get_widget("button_prev_engine")
-        entry = self.__xml.get_widget("entry_prev_engine")
+        button = self.__builder.get_object("button_prev_engine")
+        entry = self.__builder.get_object("entry_prev_engine")
         text = "; ".join(shortcuts)
         entry.set_text(text)
         entry.set_tooltip_text(text)
@@ -132,26 +131,26 @@ class Setup(object):
                     N_("previous input method"), "general/hotkey", "prev_engine", entry)
 
         # lookup table orientation
-        self.__combobox_lookup_table_orientation = self.__xml.get_widget("combobox_lookup_table_orientation")
+        self.__combobox_lookup_table_orientation = self.__builder.get_object("combobox_lookup_table_orientation")
         self.__combobox_lookup_table_orientation.set_active(
             self.__config.get_value("panel", "lookup_table_orientation", 0))
         self.__combobox_lookup_table_orientation.connect("changed",
             self.__combobox_lookup_table_orientation_changed_cb)
 
         # auto hide
-        self.__combobox_panel_show = self.__xml.get_widget("combobox_panel_show")
+        self.__combobox_panel_show = self.__builder.get_object("combobox_panel_show")
         self.__combobox_panel_show.set_active(
             self.__config.get_value("panel", "show", 1))
         self.__combobox_panel_show.connect("changed", self.__combobox_panel_show_changed_cb)
 
         # custom font
-        self.__checkbutton_custom_font = self.__xml.get_widget("checkbutton_custom_font")
+        self.__checkbutton_custom_font = self.__builder.get_object("checkbutton_custom_font")
         self.__checkbutton_custom_font.set_active(
             self.__config.get_value("panel", "use_custom_font", False))
         self.__checkbutton_custom_font.connect("toggled", self.__checkbutton_custom_font_toggled_cb)
 
-        self.__label_custom_font = self.__xml.get_widget("label_custom_font")
-        self.__fontbutton_custom_font = self.__xml.get_widget("fontbutton_custom_font")
+        self.__label_custom_font = self.__builder.get_object("label_custom_font")
+        self.__fontbutton_custom_font = self.__builder.get_object("fontbutton_custom_font")
         if self.__config.get_value("panel", "use_custom_font", False):
             self.__label_custom_font.set_sensitive(True)
             self.__fontbutton_custom_font.set_sensitive(True)
@@ -164,20 +163,14 @@ class Setup(object):
         self.__fontbutton_custom_font.connect("notify::font-name", self.__fontbutton_custom_font_notify_cb)
         self.__fontbutton_custom_font.set_font_name(font_name)
 
-        # show icon on systray
-        self.__checkbutton_show_icon_on_systray = self.__xml.get_widget("checkbutton_show_icon_on_systray")
-        self.__checkbutton_show_icon_on_systray.set_active(
-            self.__config.get_value("panel", "show_icon_on_systray", True))
-        self.__checkbutton_show_icon_on_systray.connect("toggled", self.__checkbutton_show_icon_on_systray_toggled_cb)
-
         # show ime name
-        self.__checkbutton_show_im_name = self.__xml.get_widget("checkbutton_show_im_name")
+        self.__checkbutton_show_im_name = self.__builder.get_object("checkbutton_show_im_name")
         self.__checkbutton_show_im_name.set_active(
             self.__config.get_value("panel", "show_im_name", False))
         self.__checkbutton_show_im_name.connect("toggled", self.__checkbutton_show_im_name_toggled_cb)
 
         # use system keyboard layout setting
-        self.__checkbutton_use_sys_layout = self.__xml.get_widget("checkbutton_use_sys_layout")
+        self.__checkbutton_use_sys_layout = self.__builder.get_object("checkbutton_use_sys_layout")
         self.__checkbutton_use_sys_layout.set_active(
             self.__config.get_value("general", "use_system_keyboard_layout", False))
         self.__checkbutton_use_sys_layout.connect("toggled", self.__checkbutton_use_sys_layout_toggled_cb)
@@ -186,7 +179,7 @@ class Setup(object):
         self.__engines = self.__bus.list_engines()
         self.__combobox = EngineComboBox(self.__engines)
         self.__combobox.show()
-        self.__xml.get_widget("alignment_engine_combobox").add(self.__combobox)
+        self.__builder.get_object("alignment_engine_combobox").add(self.__combobox)
 
         tmp_dict = {}
         for e in self.__engines:
@@ -198,22 +191,22 @@ class Setup(object):
                 engines.append(tmp_dict[n])
         self.__treeview = EngineTreeView(engines)
         self.__treeview.show()
-        self.__xml.get_widget("scrolledwindow_engine_treeview").add(self.__treeview)
+        self.__builder.get_object("scrolledwindow_engine_treeview").add(self.__treeview)
 
         self.__treeview.connect("changed", self.__treeview_changed_cb)
 
-        button = self.__xml.get_widget("button_engine_add")
+        button = self.__builder.get_object("button_engine_add")
         button.connect("clicked",
                        lambda *args:self.__treeview.append_engine(self.__combobox.get_active_engine()))
-        button = self.__xml.get_widget("button_engine_remove")
+        button = self.__builder.get_object("button_engine_remove")
         button.connect("clicked", lambda *args:self.__treeview.remove_engine())
-        button = self.__xml.get_widget("button_engine_up")
+        button = self.__builder.get_object("button_engine_up")
         button.connect("clicked", lambda *args:self.__treeview.move_up_engine())
 
-        button = self.__xml.get_widget("button_engine_down")
+        button = self.__builder.get_object("button_engine_down")
         button.connect("clicked", lambda *args:self.__treeview.move_down_engine())
 
-        button = self.__xml.get_widget("button_engine_about")
+        button = self.__builder.get_object("button_engine_about")
         button.connect("clicked", self.__button_engine_about_cb)
 
     def __button_engine_about_cb(self, button):
@@ -393,10 +386,6 @@ class Setup(object):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
         self.__config.set_value("panel", "custom_font", font_name)
-
-    def __checkbutton_show_icon_on_systray_toggled_cb(self, button):
-        value = self.__checkbutton_show_icon_on_systray.get_active()
-        self.__config.set_value("panel", "show_icon_on_systray", value)
 
     def __checkbutton_show_im_name_toggled_cb(self, button):
         value = self.__checkbutton_show_im_name.get_active()
