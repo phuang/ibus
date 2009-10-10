@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-09 07:31+0800\n"
+"POT-Creation-Date: 2009-10-10 13:30+0800\n"
 "PO-Revision-Date: 2009-09-09 15:52+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -63,7 +63,7 @@ msgid "Switch input method"
 msgstr "ఇన్పుట్ పద్దతి మార్చుము"
 
 #: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "గురించి"
 
@@ -98,11 +98,11 @@ msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 msgid "previous input method"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:241
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:256
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -116,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:271
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును యెంపికచేయుము"
@@ -150,7 +150,7 @@ msgid "Select an input method"
 msgstr "ఇన్పుట్ పద్దతిని యెంపికచేయుము"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "ఇన్పుట్ పద్దతి"
 
@@ -158,179 +158,9 @@ msgstr "ఇన్పుట్ పద్దతి"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/setup.glade.h:1
-msgid "..."
-msgstr "..."
-
-#: ../setup/setup.glade.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>ఫాంటు మరియు శైలి</b>"
-
-#: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>కీబోర్డు నమూనా</b>"
-
-#: ../setup/setup.glade.h:4
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>కీబోర్డు లఘువులు</b>"
-
-#: ../setup/setup.glade.h:5
-msgid "<b>Startup</b>"
-msgstr "<b>ప్రారంభము</b>"
-
-#: ../setup/setup.glade.h:6
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>తెలివైన ఇన్పుట్ బస్</small>\n"
-"నివాసపుట: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.glade.h:13
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>జాబితాలో పైన వున్నది అప్రమేయ యిన్పుట్ విధానం అవుతుంది.\n"
-"దానిని మార్చుటకు మీరు పైకి/క్రిందకు బటన్సును వుపయోగించవచ్చు.</i></small>"
-
-#: ../setup/setup.glade.h:16
-msgid "Add the selected input method into the enabled input methods"
-msgstr "ఎంపికైన ఇన్పుట్ పద్దతిని చేతనమైన యిన్పుట్ పద్దతులలోనికి జతచేయుము"
-
-#: ../setup/setup.glade.h:17
-msgid "Advanced"
-msgstr "అధునాతన"
-
-#: ../setup/setup.glade.h:18
-msgid "Candidates orientation:"
-msgstr "సభ్యుల దృక్పధము:"
-
-#: ../setup/setup.glade.h:19
-msgid "Choice font for language bar and candidates"
-msgstr "భాషా పట్టీ మరియు కాండిడేట్లకొరకు యెంచుకొనిన ఫాంటు"
-
-#: ../setup/setup.glade.h:20
-msgid "Custom font:"
-msgstr "మలచుకొనిన ఫాంటు:"
-
-#: ../setup/setup.glade.h:21
-msgid "Enable or disable:"
-msgstr "చేతనముచేయి లేదా అచేతనముచేయి:"
-
-#: ../setup/setup.glade.h:22
-msgid "General"
-msgstr "సాదారణ"
-
-#: ../setup/setup.glade.h:23
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"చదరముగా\n"
-"నిలువుగా"
-
-#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
 msgid "IBus Preferences"
 msgstr "IBus అభీష్టములు"
-
-#: ../setup/setup.glade.h:27
-msgid "Move down the selected input method in the enabled input methods"
-msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని క్రిందకి కదుపుము"
-
-#: ../setup/setup.glade.h:28
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని పైకి కదుపుము"
-
-#: ../setup/setup.glade.h:29
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"ఎప్పటికివద్దు\n"
-"క్రియాశీలముగా వున్నప్పుడు\n"
-"ఎల్లప్పుడు"
-
-#: ../setup/setup.glade.h:32
-msgid "Next input method:"
-msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
-
-#: ../setup/setup.glade.h:33
-msgid "Previous input method:"
-msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
-
-#: ../setup/setup.glade.h:34
-msgid "Remove the selected input method from the enabled input methods"
-msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని తీసివేయుము"
-
-#: ../setup/setup.glade.h:35
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "భాషా పట్టీని యెలా చూపాలి మరియు దాయాలి అనేదానికి ibus ప్రవర్తనను అమర్చుము"
-
-#: ../setup/setup.glade.h:36
-msgid "Set the orientation of candidates in lookup table"
-msgstr "లుకప్ పట్టికనందు కాండిడేట్ల సర్దుబాటును అమర్చుము"
-
-#: ../setup/setup.glade.h:37
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
-
-#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../setup/setup.glade.h:39
-msgid "Show information of the selected input method"
-msgstr "ఎంపికచేసిన యిన్పుట్ పద్దతి యొక్క సమాచారమును చూపుము"
-
-#: ../setup/setup.glade.h:40
-msgid "Show input method name on language bar"
-msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
-
-#: ../setup/setup.glade.h:41
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr "చెక్‌బాక్సు చెక్ చేసినప్పుడు భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
-
-#: ../setup/setup.glade.h:42
-msgid "Show language panel:"
-msgstr "భాషా ప్యానల్ చూపుము:"
-
-#: ../setup/setup.glade.h:43
-msgid "Start ibus on login"
-msgstr "లాగిన్‌నందు ibus ప్రారంభించుము"
-
-#: ../setup/setup.glade.h:44
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
-
-#: ../setup/setup.glade.h:45
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "జాబితానందలి ముందరి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
-
-#: ../setup/setup.glade.h:46
-msgid "Use custom font"
-msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
-
-#: ../setup/setup.glade.h:47
-msgid "Use custom font for language bar and candidates"
-msgstr "భాషా పట్టీ మరియు కాండిడేట్ల కొరకు మలచుకొనిన ఫాంటు వుపయోగించుము"
-
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard (XKB) layout"
-msgstr "సిస్టమ్ కీబోర్డు (XKB) నమూనా వుపయోగించుము"
-
-#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
-msgid "Use system keyboard layout"
-msgstr "సిస్టమ్ కీబోర్డు నమూనా వుపయోగించుము"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -384,6 +214,10 @@ msgstr "IM నామము చూపుము"
 msgid "Show IM name on language bar"
 msgstr "భాషా పట్టీపై IM నామము చూపుము"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+msgid "Show icon on system tray"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
@@ -407,6 +241,181 @@ msgstr "మలచుకొనిన ఫాంటు వుపయోగించ�
 #: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
+
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+msgid "Use system keyboard (XKB) layout"
+msgstr "సిస్టమ్ కీబోర్డు (XKB) నమూనా వుపయోగించుము"
+
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+msgid "Use system keyboard layout"
+msgstr "సిస్టమ్ కీబోర్డు నమూనా వుపయోగించుము"
+
+#: ../setup/setup.ui.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>ఫాంటు మరియు శైలి</b>"
+
+#: ../setup/setup.ui.h:3
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>కీబోర్డు నమూనా</b>"
+
+#: ../setup/setup.ui.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>కీబోర్డు లఘువులు</b>"
+
+#: ../setup/setup.ui.h:5
+msgid "<b>Startup</b>"
+msgstr "<b>ప్రారంభము</b>"
+
+#: ../setup/setup.ui.h:6
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>తెలివైన ఇన్పుట్ బస్</small>\n"
+"నివాసపుట: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.ui.h:13
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>జాబితాలో పైన వున్నది అప్రమేయ యిన్పుట్ విధానం అవుతుంది.\n"
+"దానిని మార్చుటకు మీరు పైకి/క్రిందకు బటన్సును వుపయోగించవచ్చు.</i></small>"
+
+#: ../setup/setup.ui.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr "ఎంపికైన ఇన్పుట్ పద్దతిని చేతనమైన యిన్పుట్ పద్దతులలోనికి జతచేయుము"
+
+#: ../setup/setup.ui.h:17
+msgid "Advanced"
+msgstr "అధునాతన"
+
+#: ../setup/setup.ui.h:18
+msgid "Always"
+msgstr ""
+
+#: ../setup/setup.ui.h:19
+msgid "Candidates orientation:"
+msgstr "సభ్యుల దృక్పధము:"
+
+#: ../setup/setup.ui.h:20
+msgid "Choice font for language bar and candidates"
+msgstr "భాషా పట్టీ మరియు కాండిడేట్లకొరకు యెంచుకొనిన ఫాంటు"
+
+#: ../setup/setup.ui.h:21
+msgid "Custom font:"
+msgstr "మలచుకొనిన ఫాంటు:"
+
+#: ../setup/setup.ui.h:22
+msgid "Enable or disable:"
+msgstr "చేతనముచేయి లేదా అచేతనముచేయి:"
+
+#: ../setup/setup.ui.h:23
+msgid "General"
+msgstr "సాదారణ"
+
+#: ../setup/setup.ui.h:24
+#, fuzzy
+msgid "Horizontal"
+msgstr ""
+"చదరముగా\n"
+"నిలువుగా"
+
+#: ../setup/setup.ui.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని క్రిందకి కదుపుము"
+
+#: ../setup/setup.ui.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని పైకి కదుపుము"
+
+#: ../setup/setup.ui.h:29
+msgid "Never"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Next input method:"
+msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
+
+#: ../setup/setup.ui.h:31
+msgid "Previous input method:"
+msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
+
+#: ../setup/setup.ui.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని తీసివేయుము"
+
+#: ../setup/setup.ui.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "భాషా పట్టీని యెలా చూపాలి మరియు దాయాలి అనేదానికి ibus ప్రవర్తనను అమర్చుము"
+
+#: ../setup/setup.ui.h:34
+msgid "Set the orientation of candidates in lookup table"
+msgstr "లుకప్ పట్టికనందు కాండిడేట్ల సర్దుబాటును అమర్చుము"
+
+#: ../setup/setup.ui.h:35
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
+
+#: ../setup/setup.ui.h:37
+msgid "Show information of the selected input method"
+msgstr "ఎంపికచేసిన యిన్పుట్ పద్దతి యొక్క సమాచారమును చూపుము"
+
+#: ../setup/setup.ui.h:38
+msgid "Show input method name on language bar"
+msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
+
+#: ../setup/setup.ui.h:39
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "చెక్‌బాక్సు చెక్ చేసినప్పుడు భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
+
+#: ../setup/setup.ui.h:40
+msgid "Show language panel:"
+msgstr "భాషా ప్యానల్ చూపుము:"
+
+#: ../setup/setup.ui.h:41
+msgid "Start ibus on login"
+msgstr "లాగిన్‌నందు ibus ప్రారంభించుము"
+
+#: ../setup/setup.ui.h:42
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
+
+#: ../setup/setup.ui.h:43
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "జాబితానందలి ముందరి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
+
+#: ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
+
+#: ../setup/setup.ui.h:45
+msgid "Use custom font for language bar and candidates"
+msgstr "భాషా పట్టీ మరియు కాండిడేట్ల కొరకు మలచుకొనిన ఫాంటు వుపయోగించుము"
+
+#: ../setup/setup.ui.h:48
+msgid "Vertical"
+msgstr ""
+
+#: ../setup/setup.ui.h:49
+#, fuzzy
+msgid "When active"
+msgstr ""
+"ఎప్పటికివద్దు\n"
+"క్రియాశీలముగా వున్నప్పుడు\n"
+"ఎల్లప్పుడు"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"

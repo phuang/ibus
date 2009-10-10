@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-09 07:31+0800\n"
+"POT-Creation-Date: 2009-10-10 13:30+0800\n"
 "PO-Revision-Date: 2009-06-11 17:58+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -63,7 +63,7 @@ msgid "Switch input method"
 msgstr "Skift inddatametode"
 
 #: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "Om"
 
@@ -98,11 +98,11 @@ msgstr "næste inddatametode"
 msgid "previous input method"
 msgstr "forrige inddatametode"
 
-#: ../setup/main.py:241
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus-dæmonen er ikke startet. Vil du starte den nu?"
 
-#: ../setup/main.py:256
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -116,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:271
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Vælg tastaturgenveje til %s"
@@ -150,7 +150,7 @@ msgid "Select an input method"
 msgstr "Vælg en inddatametode"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
 #, fuzzy
 msgid "Input Method"
 msgstr "Inddatametoder"
@@ -159,188 +159,9 @@ msgstr "Inddatametoder"
 msgid "Kbd"
 msgstr ""
 
-#: ../setup/setup.glade.h:1
-msgid "..."
-msgstr "..."
-
-#: ../setup/setup.glade.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>Skrifttype og stil</b>"
-
-#: ../setup/setup.glade.h:3
-#, fuzzy
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>Tastaturgenveje</b>"
-
-#: ../setup/setup.glade.h:4
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>Tastaturgenveje</b>"
-
-#: ../setup/setup.glade.h:5
-msgid "<b>Startup</b>"
-msgstr "<b>Opstart</b>"
-
-#: ../setup/setup.glade.h:6
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>Den intelligente inddatabus</small>\n"
-"Netsted: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.glade.h:13
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>Standard inputmetoden er den øverste i listen.\n"
-"Du kan bruge op/ned-knapperne for at ændre det.</i></small>"
-
-#: ../setup/setup.glade.h:16
-msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-
-#: ../setup/setup.glade.h:17
-msgid "Advanced"
-msgstr ""
-
-#: ../setup/setup.glade.h:18
-msgid "Candidates orientation:"
-msgstr "Orientering for kandidater:"
-
-#: ../setup/setup.glade.h:19
-#, fuzzy
-msgid "Choice font for language bar and candidates"
-msgstr "Tilpasset skrifttypenavn til sprogpanel"
-
-#: ../setup/setup.glade.h:20
-msgid "Custom font:"
-msgstr "Tilpasset skrifttype:"
-
-#: ../setup/setup.glade.h:21
-msgid "Enable or disable:"
-msgstr "Aktivér eller deaktivér:"
-
-#: ../setup/setup.glade.h:22
-msgid "General"
-msgstr "Generelt"
-
-#: ../setup/setup.glade.h:23
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"Vandret\n"
-"Lodret"
-
-#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
 msgid "IBus Preferences"
 msgstr "Indstillinger for IBus"
-
-#: ../setup/setup.glade.h:27
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-
-#: ../setup/setup.glade.h:28
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-
-#: ../setup/setup.glade.h:29
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"Aldrig\n"
-"Hvis aktiv\n"
-"Altid"
-
-#: ../setup/setup.glade.h:32
-msgid "Next input method:"
-msgstr "Næste inddatametode:"
-
-#: ../setup/setup.glade.h:33
-msgid "Previous input method:"
-msgstr "Forrige inddatametode:"
-
-#: ../setup/setup.glade.h:34
-msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-
-#: ../setup/setup.glade.h:35
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
-
-#: ../setup/setup.glade.h:36
-#, fuzzy
-msgid "Set the orientation of candidates in lookup table"
-msgstr "Orientering af opslagstabel"
-
-#: ../setup/setup.glade.h:37
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr ""
-
-#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../setup/setup.glade.h:39
-msgid "Show information of the selected input method"
-msgstr ""
-
-#: ../setup/setup.glade.h:40
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "Tilpasset skrifttypenavn til sprogpanel"
-
-#: ../setup/setup.glade.h:41
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-
-#: ../setup/setup.glade.h:42
-msgid "Show language panel:"
-msgstr "Vis sprogpanel:"
-
-#: ../setup/setup.glade.h:43
-msgid "Start ibus on login"
-msgstr "Start ibus ved logind"
-
-#: ../setup/setup.glade.h:44
-#, fuzzy
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"Næste tastaturgenvej til motor til skift af næste motor for inddatametode"
-
-#: ../setup/setup.glade.h:45
-#, fuzzy
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
-
-#: ../setup/setup.glade.h:46
-msgid "Use custom font"
-msgstr "Brug tilpasset skrifttype"
-
-#: ../setup/setup.glade.h:47
-#, fuzzy
-msgid "Use custom font for language bar and candidates"
-msgstr "Brug tilpasset skrifttypenavn til sprogpanel"
-
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard (XKB) layout"
-msgstr ""
-
-#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
-msgid "Use system keyboard layout"
-msgstr ""
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -397,6 +218,10 @@ msgstr ""
 msgid "Show IM name on language bar"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+msgid "Show icon on system tray"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
@@ -420,6 +245,193 @@ msgstr "Brug tilpasset skrifttype"
 #: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "Brug tilpasset skrifttypenavn til sprogpanel"
+
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+msgid "Use system keyboard (XKB) layout"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+msgid "Use system keyboard layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>Skrifttype og stil</b>"
+
+#: ../setup/setup.ui.h:3
+#, fuzzy
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>Tastaturgenveje</b>"
+
+#: ../setup/setup.ui.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Tastaturgenveje</b>"
+
+#: ../setup/setup.ui.h:5
+msgid "<b>Startup</b>"
+msgstr "<b>Opstart</b>"
+
+#: ../setup/setup.ui.h:6
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Den intelligente inddatabus</small>\n"
+"Netsted: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.ui.h:13
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>Standard inputmetoden er den øverste i listen.\n"
+"Du kan bruge op/ned-knapperne for at ændre det.</i></small>"
+
+#: ../setup/setup.ui.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:17
+msgid "Advanced"
+msgstr ""
+
+#: ../setup/setup.ui.h:18
+msgid "Always"
+msgstr ""
+
+#: ../setup/setup.ui.h:19
+msgid "Candidates orientation:"
+msgstr "Orientering for kandidater:"
+
+#: ../setup/setup.ui.h:20
+#, fuzzy
+msgid "Choice font for language bar and candidates"
+msgstr "Tilpasset skrifttypenavn til sprogpanel"
+
+#: ../setup/setup.ui.h:21
+msgid "Custom font:"
+msgstr "Tilpasset skrifttype:"
+
+#: ../setup/setup.ui.h:22
+msgid "Enable or disable:"
+msgstr "Aktivér eller deaktivér:"
+
+#: ../setup/setup.ui.h:23
+msgid "General"
+msgstr "Generelt"
+
+#: ../setup/setup.ui.h:24
+#, fuzzy
+msgid "Horizontal"
+msgstr ""
+"Vandret\n"
+"Lodret"
+
+#: ../setup/setup.ui.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
+#: ../setup/setup.ui.h:29
+msgid "Never"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Next input method:"
+msgstr "Næste inddatametode:"
+
+#: ../setup/setup.ui.h:31
+msgid "Previous input method:"
+msgstr "Forrige inddatametode:"
+
+#: ../setup/setup.ui.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+
+#: ../setup/setup.ui.h:34
+#, fuzzy
+msgid "Set the orientation of candidates in lookup table"
+msgstr "Orientering af opslagstabel"
+
+#: ../setup/setup.ui.h:35
+#, fuzzy
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr ""
+"Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
+
+#: ../setup/setup.ui.h:37
+msgid "Show information of the selected input method"
+msgstr ""
+
+#: ../setup/setup.ui.h:38
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "Tilpasset skrifttypenavn til sprogpanel"
+
+#: ../setup/setup.ui.h:39
+#, fuzzy
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "Tilpasset skrifttypenavn til sprogpanel"
+
+#: ../setup/setup.ui.h:40
+msgid "Show language panel:"
+msgstr "Vis sprogpanel:"
+
+#: ../setup/setup.ui.h:41
+msgid "Start ibus on login"
+msgstr "Start ibus ved logind"
+
+#: ../setup/setup.ui.h:42
+#, fuzzy
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+"Næste tastaturgenvej til motor til skift af næste motor for inddatametode"
+
+#: ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr ""
+"Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
+
+#: ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "Brug tilpasset skrifttype"
+
+#: ../setup/setup.ui.h:45
+#, fuzzy
+msgid "Use custom font for language bar and candidates"
+msgstr "Brug tilpasset skrifttypenavn til sprogpanel"
+
+#: ../setup/setup.ui.h:48
+msgid "Vertical"
+msgstr ""
+
+#: ../setup/setup.ui.h:49
+#, fuzzy
+msgid "When active"
+msgstr ""
+"Aldrig\n"
+"Hvis aktiv\n"
+"Altid"
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

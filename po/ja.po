@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-09 07:31+0800\n"
+"POT-Creation-Date: 2009-10-10 13:30+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -63,7 +63,7 @@ msgid "Switch input method"
 msgstr "インプットメソッドがありません"
 
 #: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "情報"
 
@@ -98,11 +98,11 @@ msgstr "次のインプットメソッド"
 msgid "previous input method"
 msgstr "ひとつ前のインプットメソッド"
 
-#: ../setup/main.py:241
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus デーモンが動いていません。起動しますか？"
 
-#: ../setup/main.py:256
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -116,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:271
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
@@ -150,7 +150,7 @@ msgid "Select an input method"
 msgstr "インプットメソッドの選択"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "インプットメソッド"
 
@@ -158,184 +158,9 @@ msgstr "インプットメソッド"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/setup.glade.h:1
-msgid "..."
-msgstr "..."
-
-#: ../setup/setup.glade.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>フォントとスタイル</b>"
-
-#: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>キーボードレイアウト</b>"
-
-#: ../setup/setup.glade.h:4
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>キーボードショートカット</b>"
-
-#: ../setup/setup.glade.h:5
-msgid "<b>Startup</b>"
-msgstr "<b>スタートアップ</b>"
-
-#: ../setup/setup.glade.h:6
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>インテリジェントなインプットバス</small>\n"
-"ホームページ: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.glade.h:13
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>デフォルトのインプットメソッドはリストの中で一番上のものです。\n"
-"「上へ/下へ」ボタンを使ってデフォルトを変更できます。</i></small>"
-
-#: ../setup/setup.glade.h:16
-msgid "Add the selected input method into the enabled input methods"
-msgstr "選択したインプットメソッドを有効なインプットメソッドへ追加します"
-
-#: ../setup/setup.glade.h:17
-msgid "Advanced"
-msgstr "詳細"
-
-#: ../setup/setup.glade.h:18
-msgid "Candidates orientation:"
-msgstr "候補ウィンドウの向き:"
-
-#: ../setup/setup.glade.h:19
-msgid "Choice font for language bar and candidates"
-msgstr "言語バーと候補用にフォントを選択します"
-
-#: ../setup/setup.glade.h:20
-msgid "Custom font:"
-msgstr "カスタムフォント:"
-
-#: ../setup/setup.glade.h:21
-msgid "Enable or disable:"
-msgstr "切り替え"
-
-#: ../setup/setup.glade.h:22
-msgid "General"
-msgstr "一般"
-
-#: ../setup/setup.glade.h:23
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"横\n"
-"縦"
-
-#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
 msgid "IBus Preferences"
 msgstr "IBus の設定"
-
-#: ../setup/setup.glade.h:27
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
-
-#: ../setup/setup.glade.h:28
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
-
-#: ../setup/setup.glade.h:29
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"表示しない\n"
-"有効なときだけ表示する\n"
-"常に表示する"
-
-#: ../setup/setup.glade.h:32
-msgid "Next input method:"
-msgstr "次のインプットメソッド:"
-
-#: ../setup/setup.glade.h:33
-msgid "Previous input method:"
-msgstr "ひとつ前のインプットメソッド:"
-
-#: ../setup/setup.glade.h:34
-msgid "Remove the selected input method from the enabled input methods"
-msgstr "選択したインプットメソッドを有効なインプットメソッドから削除します"
-
-#: ../setup/setup.glade.h:35
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "言語バーをどのように表示するもしくは隠すかの ibus の動作を設定します"
-
-#: ../setup/setup.glade.h:36
-msgid "Set the orientation of candidates in lookup table"
-msgstr "ルックアップテーブルの中で候補ウィンドウの向きを設定します"
-
-#: ../setup/setup.glade.h:37
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
-
-#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../setup/setup.glade.h:39
-msgid "Show information of the selected input method"
-msgstr "選択したインプットメソッドの情報を表示します"
-
-#: ../setup/setup.glade.h:40
-msgid "Show input method name on language bar"
-msgstr "言語バーにインプットメソッド名を表示する"
-
-#: ../setup/setup.glade.h:41
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
-"示します"
-
-#: ../setup/setup.glade.h:42
-msgid "Show language panel:"
-msgstr "言語パネルの表示:"
-
-#: ../setup/setup.glade.h:43
-msgid "Start ibus on login"
-msgstr "ログイン時に IBus を起動"
-
-#: ../setup/setup.glade.h:44
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
-
-#: ../setup/setup.glade.h:45
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
-
-#: ../setup/setup.glade.h:46
-msgid "Use custom font"
-msgstr "カスタムフォントを使う"
-
-#: ../setup/setup.glade.h:47
-msgid "Use custom font for language bar and candidates"
-msgstr "言語バーと候補用にカスタムフォントを使用します"
-
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard (XKB) layout"
-msgstr "システムキーボード (XKB) レイアウトを使用する"
-
-#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
-msgid "Use system keyboard layout"
-msgstr "システムキーボードレイアウトを使用する"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -392,6 +217,10 @@ msgstr "IM 名の表示"
 msgid "Show IM name on language bar"
 msgstr "言語バーでの IM 名の表示"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+msgid "Show icon on system tray"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
@@ -413,6 +242,186 @@ msgstr "カスタムフォントを使う"
 #: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "言語パネル用にカスタムフォント名を使用する"
+
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+msgid "Use system keyboard (XKB) layout"
+msgstr "システムキーボード (XKB) レイアウトを使用する"
+
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+msgid "Use system keyboard layout"
+msgstr "システムキーボードレイアウトを使用する"
+
+#: ../setup/setup.ui.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>フォントとスタイル</b>"
+
+#: ../setup/setup.ui.h:3
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>キーボードレイアウト</b>"
+
+#: ../setup/setup.ui.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>キーボードショートカット</b>"
+
+#: ../setup/setup.ui.h:5
+msgid "<b>Startup</b>"
+msgstr "<b>スタートアップ</b>"
+
+#: ../setup/setup.ui.h:6
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>インテリジェントなインプットバス</small>\n"
+"ホームページ: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.ui.h:13
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>デフォルトのインプットメソッドはリストの中で一番上のものです。\n"
+"「上へ/下へ」ボタンを使ってデフォルトを変更できます。</i></small>"
+
+#: ../setup/setup.ui.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr "選択したインプットメソッドを有効なインプットメソッドへ追加します"
+
+#: ../setup/setup.ui.h:17
+msgid "Advanced"
+msgstr "詳細"
+
+#: ../setup/setup.ui.h:18
+msgid "Always"
+msgstr ""
+
+#: ../setup/setup.ui.h:19
+msgid "Candidates orientation:"
+msgstr "候補ウィンドウの向き:"
+
+#: ../setup/setup.ui.h:20
+msgid "Choice font for language bar and candidates"
+msgstr "言語バーと候補用にフォントを選択します"
+
+#: ../setup/setup.ui.h:21
+msgid "Custom font:"
+msgstr "カスタムフォント:"
+
+#: ../setup/setup.ui.h:22
+msgid "Enable or disable:"
+msgstr "切り替え"
+
+#: ../setup/setup.ui.h:23
+msgid "General"
+msgstr "一般"
+
+#: ../setup/setup.ui.h:24
+#, fuzzy
+msgid "Horizontal"
+msgstr ""
+"横\n"
+"縦"
+
+#: ../setup/setup.ui.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+
+#: ../setup/setup.ui.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+
+#: ../setup/setup.ui.h:29
+msgid "Never"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Next input method:"
+msgstr "次のインプットメソッド:"
+
+#: ../setup/setup.ui.h:31
+msgid "Previous input method:"
+msgstr "ひとつ前のインプットメソッド:"
+
+#: ../setup/setup.ui.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "選択したインプットメソッドを有効なインプットメソッドから削除します"
+
+#: ../setup/setup.ui.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "言語バーをどのように表示するもしくは隠すかの ibus の動作を設定します"
+
+#: ../setup/setup.ui.h:34
+msgid "Set the orientation of candidates in lookup table"
+msgstr "ルックアップテーブルの中で候補ウィンドウの向きを設定します"
+
+#: ../setup/setup.ui.h:35
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
+
+#: ../setup/setup.ui.h:37
+msgid "Show information of the selected input method"
+msgstr "選択したインプットメソッドの情報を表示します"
+
+#: ../setup/setup.ui.h:38
+msgid "Show input method name on language bar"
+msgstr "言語バーにインプットメソッド名を表示する"
+
+#: ../setup/setup.ui.h:39
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
+"示します"
+
+#: ../setup/setup.ui.h:40
+msgid "Show language panel:"
+msgstr "言語パネルの表示:"
+
+#: ../setup/setup.ui.h:41
+msgid "Start ibus on login"
+msgstr "ログイン時に IBus を起動"
+
+#: ../setup/setup.ui.h:42
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
+
+#: ../setup/setup.ui.h:43
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr ""
+"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+
+#: ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "カスタムフォントを使う"
+
+#: ../setup/setup.ui.h:45
+msgid "Use custom font for language bar and candidates"
+msgstr "言語バーと候補用にカスタムフォントを使用します"
+
+#: ../setup/setup.ui.h:48
+msgid "Vertical"
+msgstr ""
+
+#: ../setup/setup.ui.h:49
+#, fuzzy
+msgid "When active"
+msgstr ""
+"表示しない\n"
+"有効なときだけ表示する\n"
+"常に表示する"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"

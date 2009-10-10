@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-09 07:31+0800\n"
+"POT-Creation-Date: 2009-10-10 13:30+0800\n"
 "PO-Revision-Date: 2009-04-07 21:59+0800\n"
 "Last-Translator: Ding-Yi Chen <dchen@redhat.com>\n"
 "Language-Team: Ding-Yi Chen <dchen@redhat.com>\n"
@@ -58,7 +58,7 @@ msgid "Switch input method"
 msgstr "切換輸入法"
 
 #: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "關於"
 
@@ -93,11 +93,11 @@ msgstr "下一輸入法"
 msgid "previous input method"
 msgstr "前一輸入法"
 
-#: ../setup/main.py:241
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus daemon 没有啟動，您是否想現在啟動它？"
 
-#: ../setup/main.py:256
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -111,7 +111,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:271
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "選%s的熱鍵"
@@ -145,7 +145,7 @@ msgid "Select an input method"
 msgstr " 選擇輸入法"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "輸入法"
 
@@ -153,179 +153,9 @@ msgstr "輸入法"
 msgid "Kbd"
 msgstr "鍵盤"
 
-#: ../setup/setup.glade.h:1
-msgid "..."
-msgstr "..."
-
-#: ../setup/setup.glade.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>字體與風格</b>"
-
-#: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>鍵盤配置</b>"
-
-#: ../setup/setup.glade.h:4
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>熱鍵</b>"
-
-#: ../setup/setup.glade.h:5
-msgid "<b>Startup</b>"
-msgstr "<b>啟動</b>"
-
-#: ../setup/setup.glade.h:6
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>智慧型輸入框架</small>\n"
-"首頁: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.glade.h:13
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>輸入法列表頂端即為預設的輸入法。\n"
-"請用上/下 按鈕來改變順序。</i></small>"
-
-#: ../setup/setup.glade.h:16
-msgid "Add the selected input method into the enabled input methods"
-msgstr "把所選的輸入法加入列表"
-
-#: ../setup/setup.glade.h:17
-msgid "Advanced"
-msgstr "進階"
-
-#: ../setup/setup.glade.h:18
-msgid "Candidates orientation:"
-msgstr "候選詞排列方向:"
-
-#: ../setup/setup.glade.h:19
-msgid "Choice font for language bar and candidates"
-msgstr "自訂語言面板及候選字字體"
-
-#: ../setup/setup.glade.h:20
-msgid "Custom font:"
-msgstr "自訂字體:"
-
-#: ../setup/setup.glade.h:21
-msgid "Enable or disable:"
-msgstr "開關："
-
-#: ../setup/setup.glade.h:22
-msgid "General"
-msgstr "通用"
-
-#: ../setup/setup.glade.h:23
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"水平\n"
-"垂直"
-
-#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
 msgid "IBus Preferences"
 msgstr "IBus偏好設定"
-
-#: ../setup/setup.glade.h:27
-msgid "Move down the selected input method in the enabled input methods"
-msgstr "下移所選的輸入法"
-
-#: ../setup/setup.glade.h:28
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr "上移所選的輸入法"
-
-#: ../setup/setup.glade.h:29
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"從不\n"
-"啟動時\n"
-"總是"
-
-#: ../setup/setup.glade.h:32
-msgid "Next input method:"
-msgstr "下一輸入法:"
-
-#: ../setup/setup.glade.h:33
-msgid "Previous input method:"
-msgstr "前一輸入法:"
-
-#: ../setup/setup.glade.h:34
-msgid "Remove the selected input method from the enabled input methods"
-msgstr "將輸入法從候選輸入法列表移除移除"
-
-#: ../setup/setup.glade.h:35
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "語言面板顯示/隱藏行為設定"
-
-#: ../setup/setup.glade.h:36
-msgid "Set the orientation of candidates in lookup table"
-msgstr "候選字詞表排列方向"
-
-#: ../setup/setup.glade.h:37
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "開啟或關閉輸入法熱鍵"
-
-#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../setup/setup.glade.h:39
-msgid "Show information of the selected input method"
-msgstr "顯示所選輸入法資訊"
-
-#: ../setup/setup.glade.h:40
-msgid "Show input method name on language bar"
-msgstr "自訂語言面板"
-
-#: ../setup/setup.glade.h:41
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr "選取時顯示在語言面板上輸入法名稱"
-
-#: ../setup/setup.glade.h:42
-msgid "Show language panel:"
-msgstr "顯示語言面板:"
-
-#: ../setup/setup.glade.h:43
-msgid "Start ibus on login"
-msgstr "啟動桌面時自動啟動IBus"
-
-#: ../setup/setup.glade.h:44
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "「下一個引擎」熱鍵"
-
-#: ../setup/setup.glade.h:45
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "「上一個引擎」熱鍵"
-
-#: ../setup/setup.glade.h:46
-msgid "Use custom font"
-msgstr "使用自訂字體"
-
-#: ../setup/setup.glade.h:47
-msgid "Use custom font for language bar and candidates"
-msgstr "語言面板是否使用自訂字體"
-
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard (XKB) layout"
-msgstr "使用系統鍵盤(XKB)配置"
-
-#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
-msgid "Use system keyboard layout"
-msgstr "使用系統鍵盤配置"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -379,6 +209,10 @@ msgstr "顯示輸入法名"
 msgid "Show IM name on language bar"
 msgstr "在語言面板顯示輸入法名"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+msgid "Show icon on system tray"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
@@ -401,5 +235,171 @@ msgstr "使用自訂字體"
 msgid "Use custom font name for language panel"
 msgstr "語言面板是否使用自訂字體"
 
-#~ msgid "gtk-about"
-#~ msgstr "關於"
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+msgid "Use system keyboard (XKB) layout"
+msgstr "使用系統鍵盤(XKB)配置"
+
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+msgid "Use system keyboard layout"
+msgstr "使用系統鍵盤配置"
+
+#: ../setup/setup.ui.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>字體與風格</b>"
+
+#: ../setup/setup.ui.h:3
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>鍵盤配置</b>"
+
+#: ../setup/setup.ui.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>熱鍵</b>"
+
+#: ../setup/setup.ui.h:5
+msgid "<b>Startup</b>"
+msgstr "<b>啟動</b>"
+
+#: ../setup/setup.ui.h:6
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>智慧型輸入框架</small>\n"
+"首頁: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.ui.h:13
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>輸入法列表頂端即為預設的輸入法。\n"
+"請用上/下 按鈕來改變順序。</i></small>"
+
+#: ../setup/setup.ui.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr "把所選的輸入法加入列表"
+
+#: ../setup/setup.ui.h:17
+msgid "Advanced"
+msgstr "進階"
+
+#: ../setup/setup.ui.h:18
+msgid "Always"
+msgstr "總是"
+
+#: ../setup/setup.ui.h:19
+msgid "Candidates orientation:"
+msgstr "候選詞排列方向:"
+
+#: ../setup/setup.ui.h:20
+msgid "Choice font for language bar and candidates"
+msgstr "自訂語言面板及候選字字體"
+
+#: ../setup/setup.ui.h:21
+msgid "Custom font:"
+msgstr "自訂字體:"
+
+#: ../setup/setup.ui.h:22
+msgid "Enable or disable:"
+msgstr "開關："
+
+#: ../setup/setup.ui.h:23
+msgid "General"
+msgstr "通用"
+
+#: ../setup/setup.ui.h:24
+msgid "Horizontal"
+msgstr "水平"
+
+#: ../setup/setup.ui.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr "下移所選的輸入法"
+
+#: ../setup/setup.ui.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr "上移所選的輸入法"
+
+#: ../setup/setup.ui.h:29
+msgid "Never"
+msgstr "從不"
+
+#: ../setup/setup.ui.h:30
+msgid "Next input method:"
+msgstr "下一輸入法:"
+
+#: ../setup/setup.ui.h:31
+msgid "Previous input method:"
+msgstr "前一輸入法:"
+
+#: ../setup/setup.ui.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "將輸入法從候選輸入法列表移除移除"
+
+#: ../setup/setup.ui.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "語言面板顯示/隱藏行為設定"
+
+#: ../setup/setup.ui.h:34
+msgid "Set the orientation of candidates in lookup table"
+msgstr "候選字詞表排列方向"
+
+#: ../setup/setup.ui.h:35
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr "開啟或關閉輸入法熱鍵"
+
+#: ../setup/setup.ui.h:37
+msgid "Show information of the selected input method"
+msgstr "顯示所選輸入法資訊"
+
+#: ../setup/setup.ui.h:38
+msgid "Show input method name on language bar"
+msgstr "自訂語言面板"
+
+#: ../setup/setup.ui.h:39
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "選取時顯示在語言面板上輸入法名稱"
+
+#: ../setup/setup.ui.h:40
+msgid "Show language panel:"
+msgstr "顯示語言面板:"
+
+#: ../setup/setup.ui.h:41
+msgid "Start ibus on login"
+msgstr "啟動桌面時自動啟動IBus"
+
+#: ../setup/setup.ui.h:42
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "「下一個引擎」熱鍵"
+
+#: ../setup/setup.ui.h:43
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "「上一個引擎」熱鍵"
+
+#: ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "使用自訂字體"
+
+#: ../setup/setup.ui.h:45
+msgid "Use custom font for language bar and candidates"
+msgstr "語言面板是否使用自訂字體"
+
+#: ../setup/setup.ui.h:48
+msgid "Vertical"
+msgstr "垂直"
+
+#: ../setup/setup.ui.h:49
+msgid "When active"
+msgstr "啟動時"
+

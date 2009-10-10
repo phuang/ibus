@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-09 07:31+0800\n"
+"POT-Creation-Date: 2009-10-10 13:30+0800\n"
 "PO-Revision-Date: 2009-09-03 15:52+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -59,7 +59,7 @@ msgid "Switch input method"
 msgstr "ઇનપુટ પદ્દતિને બદલો"
 
 #: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
-#: ../setup/setup.glade.h:15
+#: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "વિશે"
 
@@ -94,11 +94,11 @@ msgstr "પછીની ઇનપુટ પદ્દતિ"
 msgid "previous input method"
 msgstr "પહેલાની ઇનપુટ પદ્દતિ"
 
-#: ../setup/main.py:241
+#: ../setup/main.py:235
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ડિમન એ શરૂ થયેલ નથી. શું તમે હવે તેને શરૂ કરવા ઇચ્છો છો?"
 
-#: ../setup/main.py:256
+#: ../setup/main.py:250
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +112,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:271
+#: ../setup/main.py:265
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s માટે કિબોર્ડ ટૂંકાણોને પસંદ કરો"
@@ -146,7 +146,7 @@ msgid "Select an input method"
 msgstr "ઇનપુટ પદ્દતિને પસંદ કરો"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.glade.h:26
+#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "ઇનપુટ પદ્દતિ"
 
@@ -154,179 +154,9 @@ msgstr "ઇનપુટ પદ્દતિ"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/setup.glade.h:1
-msgid "..."
-msgstr "..."
-
-#: ../setup/setup.glade.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>ફોન્ટ અને શૈલીઓ</b>"
-
-#: ../setup/setup.glade.h:3
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>કિબોર્ડ લેઆઉટ</b>"
-
-#: ../setup/setup.glade.h:4
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>કિબોર્ડ ટૂંકાણો</b>"
-
-#: ../setup/setup.glade.h:5
-msgid "<b>Startup</b>"
-msgstr "<b>શરૂઆત કરો</b>"
-
-#: ../setup/setup.glade.h:6
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>હોશિયાર ઇનપુટ બસ</small>\n"
-"ઘરપાનું: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.glade.h:13
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>મૂળભૂત ઇનપુટ પદ્દતિ એ યાદીમાં ઉપર છે.\n"
-"તમારે તેને બદલવા માટે ઉપર/નીચે બટનોને વાપરી શકો છો.</i></small>"
-
-#: ../setup/setup.glade.h:16
-msgid "Add the selected input method into the enabled input methods"
-msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓમાં પસંદ થયેલ ઇનપુટ પદ્દતિને ઉમેરો"
-
-#: ../setup/setup.glade.h:17
-msgid "Advanced"
-msgstr "ઉન્નત"
-
-#: ../setup/setup.glade.h:18
-msgid "Candidates orientation:"
-msgstr "ઉમેદવારોની દિશા:"
-
-#: ../setup/setup.glade.h:19
-msgid "Choice font for language bar and candidates"
-msgstr "ભાષા પેનલ અને સભ્યો માટે ફોન્ટ પસંદ કરો"
-
-#: ../setup/setup.glade.h:20
-msgid "Custom font:"
-msgstr "વૈવિધ્ય ફોન્ટ:"
-
-#: ../setup/setup.glade.h:21
-msgid "Enable or disable:"
-msgstr "સક્રિય અથવા નિષ્ક્રિય:"
-
-#: ../setup/setup.glade.h:22
-msgid "General"
-msgstr "સામાન્ય"
-
-#: ../setup/setup.glade.h:23
-msgid ""
-"Horizontal\n"
-"Vertical"
-msgstr ""
-"આડુ\n"
-"ઊભુ"
-
-#: ../setup/setup.glade.h:25 ../setup/ibus-setup.desktop.in.h:1
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
 msgid "IBus Preferences"
 msgstr "IBus પસંદગીઓ"
-
-#: ../setup/setup.glade.h:27
-msgid "Move down the selected input method in the enabled input methods"
-msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓમાં પસંદ થયેલ ઇનપુટ પદ્દતિને નીચે ખસેડો"
-
-#: ../setup/setup.glade.h:28
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓ યાદીમાં પસંદ થયેલ ઇનપુટ પદ્દતિને ઉપર ખસેડો"
-
-#: ../setup/setup.glade.h:29
-msgid ""
-"Never\n"
-"When active\n"
-"Always"
-msgstr ""
-"કદી નહિં\n"
-"જ્યારે સક્રિય હોય તો\n"
-"હંમેશા"
-
-#: ../setup/setup.glade.h:32
-msgid "Next input method:"
-msgstr "પછીની ઇનપુટ પદ્દતિ:"
-
-#: ../setup/setup.glade.h:33
-msgid "Previous input method:"
-msgstr "પહેલાંની ઇનપુટ પદ્દતિ:"
-
-#: ../setup/setup.glade.h:34
-msgid "Remove the selected input method from the enabled input methods"
-msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓ માંથી પસંદ થયેલ ઇનપુટ પદ્દતિને દૂર કરો"
-
-#: ../setup/setup.glade.h:35
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "ભાષા પેનલને કેવી રીતે બતાવવી અથવા છુપાડવી તે માટે ibus નાં વર્ણતૂકને સુયોજિત કરો"
-
-#: ../setup/setup.glade.h:36
-msgid "Set the orientation of candidates in lookup table"
-msgstr "કોષ્ટક જોવામાં સભ્યોની દિશાને સુયોજિત કરો"
-
-#: ../setup/setup.glade.h:37
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "ઇનપુટ પદ્દતિને ચાલુ કરવા અથવા બંધ કરવા માટે ટૂંકાણ કીઓને સુયોજિત કરો"
-
-#: ../setup/setup.glade.h:38 ../data/ibus.schemas.in.h:14
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../setup/setup.glade.h:39
-msgid "Show information of the selected input method"
-msgstr "પસંદ થયેલ ઇનપુટ પદ્દતિની જાણકારીને બતાવો"
-
-#: ../setup/setup.glade.h:40
-msgid "Show input method name on language bar"
-msgstr "ભાષા પેનલ પર ઇનપુટ પદ્દતિ નામને બતાવો"
-
-#: ../setup/setup.glade.h:41
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr "જ્યારે ચેકબોક્સને ચકાસતા હોય ત્યારે ભાષા પેનલ પર ઇનપુટ પદ્દતિનાં નામને બતાવો"
-
-#: ../setup/setup.glade.h:42
-msgid "Show language panel:"
-msgstr "ભાષા પેનલને બતાવો:"
-
-#: ../setup/setup.glade.h:43
-msgid "Start ibus on login"
-msgstr "પ્રવેશ પર ibus ને શરૂ કરો"
-
-#: ../setup/setup.glade.h:44
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "યાદીમાં પછીની ઇનપુટ પદ્દતિને ખસેડવા માટે ટૂંકાણ કીઓ"
-
-#: ../setup/setup.glade.h:45
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "યાદીમાં પહેલાંની ઇનપુટ પદ્દતિને ખસેડવા માટે ટૂંકાણ કીઓ"
-
-#: ../setup/setup.glade.h:46
-msgid "Use custom font"
-msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
-
-#: ../setup/setup.glade.h:47
-msgid "Use custom font for language bar and candidates"
-msgstr "ભાષા પેનલ અને સભ્યો માટે વૈવિધ્ય ફોન્ટ નામ ને વાપરો"
-
-#: ../setup/setup.glade.h:48 ../data/ibus.schemas.in.h:20
-msgid "Use system keyboard (XKB) layout"
-msgstr "સિસ્ટમ કિબોર્ડ (XKB) લેઆઉટને વાપરો"
-
-#: ../setup/setup.glade.h:49 ../data/ibus.schemas.in.h:21
-msgid "Use system keyboard layout"
-msgstr "સિસ્ટમ કિબોર્ડ લેઆઉટને વાપરો"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto Hide"
@@ -380,6 +210,10 @@ msgstr "IM નામ ને બતાવો"
 msgid "Show IM name on language bar"
 msgstr "ભાષા પેનલ પર IM નામ ને બતાવો"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+msgid "Show icon on system tray"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
@@ -401,6 +235,181 @@ msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 #: ../data/ibus.schemas.in.h:19
 msgid "Use custom font name for language panel"
 msgstr "ભાષા પેનલ માટે વૈવિધેય ફોન્ટ નામ ને વાપરો"
+
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+msgid "Use system keyboard (XKB) layout"
+msgstr "સિસ્ટમ કિબોર્ડ (XKB) લેઆઉટને વાપરો"
+
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+msgid "Use system keyboard layout"
+msgstr "સિસ્ટમ કિબોર્ડ લેઆઉટને વાપરો"
+
+#: ../setup/setup.ui.h:1
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:2
+msgid "<b>Font and Style</b>"
+msgstr "<b>ફોન્ટ અને શૈલીઓ</b>"
+
+#: ../setup/setup.ui.h:3
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>કિબોર્ડ લેઆઉટ</b>"
+
+#: ../setup/setup.ui.h:4
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>કિબોર્ડ ટૂંકાણો</b>"
+
+#: ../setup/setup.ui.h:5
+msgid "<b>Startup</b>"
+msgstr "<b>શરૂઆત કરો</b>"
+
+#: ../setup/setup.ui.h:6
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>હોશિયાર ઇનપુટ બસ</small>\n"
+"ઘરપાનું: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+
+#: ../setup/setup.ui.h:13
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>મૂળભૂત ઇનપુટ પદ્દતિ એ યાદીમાં ઉપર છે.\n"
+"તમારે તેને બદલવા માટે ઉપર/નીચે બટનોને વાપરી શકો છો.</i></small>"
+
+#: ../setup/setup.ui.h:16
+msgid "Add the selected input method into the enabled input methods"
+msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓમાં પસંદ થયેલ ઇનપુટ પદ્દતિને ઉમેરો"
+
+#: ../setup/setup.ui.h:17
+msgid "Advanced"
+msgstr "ઉન્નત"
+
+#: ../setup/setup.ui.h:18
+msgid "Always"
+msgstr ""
+
+#: ../setup/setup.ui.h:19
+msgid "Candidates orientation:"
+msgstr "ઉમેદવારોની દિશા:"
+
+#: ../setup/setup.ui.h:20
+msgid "Choice font for language bar and candidates"
+msgstr "ભાષા પેનલ અને સભ્યો માટે ફોન્ટ પસંદ કરો"
+
+#: ../setup/setup.ui.h:21
+msgid "Custom font:"
+msgstr "વૈવિધ્ય ફોન્ટ:"
+
+#: ../setup/setup.ui.h:22
+msgid "Enable or disable:"
+msgstr "સક્રિય અથવા નિષ્ક્રિય:"
+
+#: ../setup/setup.ui.h:23
+msgid "General"
+msgstr "સામાન્ય"
+
+#: ../setup/setup.ui.h:24
+#, fuzzy
+msgid "Horizontal"
+msgstr ""
+"આડુ\n"
+"ઊભુ"
+
+#: ../setup/setup.ui.h:27
+msgid "Move down the selected input method in the enabled input methods"
+msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓમાં પસંદ થયેલ ઇનપુટ પદ્દતિને નીચે ખસેડો"
+
+#: ../setup/setup.ui.h:28
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓ યાદીમાં પસંદ થયેલ ઇનપુટ પદ્દતિને ઉપર ખસેડો"
+
+#: ../setup/setup.ui.h:29
+msgid "Never"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Next input method:"
+msgstr "પછીની ઇનપુટ પદ્દતિ:"
+
+#: ../setup/setup.ui.h:31
+msgid "Previous input method:"
+msgstr "પહેલાંની ઇનપુટ પદ્દતિ:"
+
+#: ../setup/setup.ui.h:32
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "સક્રિય થયેલ ઇનપુટ પદ્દતિઓ માંથી પસંદ થયેલ ઇનપુટ પદ્દતિને દૂર કરો"
+
+#: ../setup/setup.ui.h:33
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "ભાષા પેનલને કેવી રીતે બતાવવી અથવા છુપાડવી તે માટે ibus નાં વર્ણતૂકને સુયોજિત કરો"
+
+#: ../setup/setup.ui.h:34
+msgid "Set the orientation of candidates in lookup table"
+msgstr "કોષ્ટક જોવામાં સભ્યોની દિશાને સુયોજિત કરો"
+
+#: ../setup/setup.ui.h:35
+msgid "Set the shortcut keys for turnning on or off input method"
+msgstr "ઇનપુટ પદ્દતિને ચાલુ કરવા અથવા બંધ કરવા માટે ટૂંકાણ કીઓને સુયોજિત કરો"
+
+#: ../setup/setup.ui.h:37
+msgid "Show information of the selected input method"
+msgstr "પસંદ થયેલ ઇનપુટ પદ્દતિની જાણકારીને બતાવો"
+
+#: ../setup/setup.ui.h:38
+msgid "Show input method name on language bar"
+msgstr "ભાષા પેનલ પર ઇનપુટ પદ્દતિ નામને બતાવો"
+
+#: ../setup/setup.ui.h:39
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "જ્યારે ચેકબોક્સને ચકાસતા હોય ત્યારે ભાષા પેનલ પર ઇનપુટ પદ્દતિનાં નામને બતાવો"
+
+#: ../setup/setup.ui.h:40
+msgid "Show language panel:"
+msgstr "ભાષા પેનલને બતાવો:"
+
+#: ../setup/setup.ui.h:41
+msgid "Start ibus on login"
+msgstr "પ્રવેશ પર ibus ને શરૂ કરો"
+
+#: ../setup/setup.ui.h:42
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "યાદીમાં પછીની ઇનપુટ પદ્દતિને ખસેડવા માટે ટૂંકાણ કીઓ"
+
+#: ../setup/setup.ui.h:43
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "યાદીમાં પહેલાંની ઇનપુટ પદ્દતિને ખસેડવા માટે ટૂંકાણ કીઓ"
+
+#: ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
+
+#: ../setup/setup.ui.h:45
+msgid "Use custom font for language bar and candidates"
+msgstr "ભાષા પેનલ અને સભ્યો માટે વૈવિધ્ય ફોન્ટ નામ ને વાપરો"
+
+#: ../setup/setup.ui.h:48
+msgid "Vertical"
+msgstr ""
+
+#: ../setup/setup.ui.h:49
+#, fuzzy
+msgid "When active"
+msgstr ""
+"કદી નહિં\n"
+"જ્યારે સક્રિય હોય તો\n"
+"હંમેશા"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"
