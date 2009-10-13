@@ -289,9 +289,7 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
 
 #define PARSE_ENTRY(field_name, element_name)                   \
         if (g_strcmp0 (sub_node->name, element_name) == 0) {    \
-            if (desc->field_name != NULL) {                     \
-                g_free (desc->field_name);                      \
-            }                                                   \
+            g_free (desc->field_name);                          \
             desc->field_name = g_strdup (sub_node->text);       \
             continue;                                           \
         }

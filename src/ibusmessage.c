@@ -525,7 +525,7 @@ ibus_message_iter_append (IBusMessageIter *iter,
     case G_TYPE_STRING:
         {
             const gchar *v;
-            v = * (gchar **)value;
+            v = *(gchar **)value != NULL ? * (gchar **)value : "";
             return dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &v);
         }
     case G_TYPE_INT64:
