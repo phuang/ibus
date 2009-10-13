@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 13:30+0800\n"
+"POT-Creation-Date: 2009-10-13 08:29+0800\n"
 "PO-Revision-Date: 2009-09-09 15:52+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -86,23 +86,23 @@ msgstr "మూలకర్త: %s\n"
 msgid "Description:\n"
 msgstr "వివరణ:\n"
 
-#: ../setup/main.py:108
+#: ../setup/main.py:107
 msgid "trigger"
 msgstr "బిస (ట్రిగ్గర్)"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:119
 msgid "next input method"
 msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:132
+#: ../setup/main.py:131
 msgid "previous input method"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:234
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:249
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -116,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:264
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును యెంపికచేయుము"

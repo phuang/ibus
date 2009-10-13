@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iBus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 13:30+0800\n"
+"POT-Creation-Date: 2009-10-13 08:29+0800\n"
 "PO-Revision-Date: 2009-04-17 11:32+0100\n"
 "Last-Translator: Fabian Affolter <fab@fedoraproject.org>\n"
 "Language-Team: Gemran <fedora-trans-de@redhat.com>\n"
@@ -83,23 +83,23 @@ msgstr ""
 msgid "Description:\n"
 msgstr ""
 
-#: ../setup/main.py:108
+#: ../setup/main.py:107
 msgid "trigger"
 msgstr "trigger"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:119
 msgid "next input method"
 msgstr "Nächste Eingabemethode"
 
-#: ../setup/main.py:132
+#: ../setup/main.py:131
 msgid "previous input method"
 msgstr "Vorherige Eingabemethode"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:234
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr ""
 
-#: ../setup/main.py:250
+#: ../setup/main.py:249
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -108,7 +108,7 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 
-#: ../setup/main.py:265
+#: ../setup/main.py:264
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 13:30+0800\n"
+"POT-Creation-Date: 2009-10-13 08:29+0800\n"
 "PO-Revision-Date: 2009-09-02 12:29+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -83,23 +83,23 @@ msgstr "নির্মাতা: %s\n"
 msgid "Description:\n"
 msgstr "বিবরণ:\n"
 
-#: ../setup/main.py:108
+#: ../setup/main.py:107
 msgid "trigger"
 msgstr "ট্রিগার"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:119
 msgid "next input method"
 msgstr "পরবর্তী ইনপুট পদ্ধতি"
 
-#: ../setup/main.py:132
+#: ../setup/main.py:131
 msgid "previous input method"
 msgstr "পূর্ববর্তী ইনপুট পদ্ধতি"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:234
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ডেমন আরম্ভ করা হয়নি। এটি এখন আরম্ভ করা হবে কি?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:249
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -113,7 +113,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:264
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-র জন্য কি-বোর্ড শর্ট-কাট ধার্য করুন"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 13:30+0800\n"
+"POT-Creation-Date: 2009-10-13 08:29+0800\n"
 "PO-Revision-Date: 2009-04-11 10:58+0200\n"
 "Last-Translator: Sulyok Péter <peti@fedoraproject.org>\n"
 "Language-Team: Hungarian <fedora-trans-hu@redhat.com>\n"
@@ -82,23 +82,23 @@ msgstr ""
 msgid "Description:\n"
 msgstr ""
 
-#: ../setup/main.py:108
+#: ../setup/main.py:107
 msgid "trigger"
 msgstr "ravasz"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:119
 msgid "next input method"
 msgstr "következő bevitel eljárás"
 
-#: ../setup/main.py:132
+#: ../setup/main.py:131
 msgid "previous input method"
 msgstr "előző bevitel eljárás"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:234
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Az IBus szolgáltatás áll. Beindítja?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:249
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +112,7 @@ msgstr ""
 "  export QT_IM_MODULE=ibussorokat a $HOME/.bashrc fájlhoz, majd lépjen be "
 "újra."
 
-#: ../setup/main.py:265
+#: ../setup/main.py:264
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s gyorsbillentyűjének kiválasztása"

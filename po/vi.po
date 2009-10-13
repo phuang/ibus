@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-10 13:30+0800\n"
+"POT-Creation-Date: 2009-10-13 08:29+0800\n"
 "PO-Revision-Date: 2009-09-01 10:46+0700\n"
 "Last-Translator: Le Quoc Tuan <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -81,24 +81,24 @@ msgstr "Tác giả: %s\n"
 msgid "Description:\n"
 msgstr "Mô tả:\n"
 
-#: ../setup/main.py:108
+#: ../setup/main.py:107
 msgid "trigger"
 msgstr "Bật/tắt"
 
-#: ../setup/main.py:120
+#: ../setup/main.py:119
 msgid "next input method"
 msgstr "Bộ gõ kế tiếp"
 
-#: ../setup/main.py:132
+#: ../setup/main.py:131
 msgid "previous input method"
 msgstr "Bộ gõ trước"
 
-#: ../setup/main.py:235
+#: ../setup/main.py:234
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr ""
 "IBus daemon chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
 
-#: ../setup/main.py:250
+#: ../setup/main.py:249
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +112,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:265
+#: ../setup/main.py:264
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Chọn phím tắt cho %s"
