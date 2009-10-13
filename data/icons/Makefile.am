@@ -25,42 +25,41 @@ icons_DATA = \
 iconsdir = $(pkgdatadir)/icons
 
 sysicons_DATA = \
-	ibus.svg \
-	ibus-setup.svg \
-	ibus-off.svg \
-	ibus-engine.svg \
 	$(NULL)
 sysiconsdir = $(datadir)/pixmaps
 
 hicolor_icon_16_DATA = \
-	16/ibus-off.png \
+	16/ibus-keyboard.png \
 	$(NULL)
-hicolor_icon_16dir= $(datadir)/icons/hicolor/16x16/status/
+hicolor_icon_16dir= $(datadir)/icons/hicolor/16x16/apps/
 
 hicolor_icon_22_DATA = \
-	22/ibus-off.png \
+	22/ibus-keyboard.png \
 	$(NULL)
-hicolor_icon_22dir= $(datadir)/icons/hicolor/22x22/status/
+hicolor_icon_22dir= $(datadir)/icons/hicolor/22x22/apps/
 
 hicolor_icon_24_DATA = \
-	24/ibus-off.png \
+	24/ibus-keyboard.png \
 	$(NULL)
-hicolor_icon_24dir= $(datadir)/icons/hicolor/24x24/status/
+hicolor_icon_24dir= $(datadir)/icons/hicolor/24x24/apps/
 
 hicolor_icon_32_DATA = \
-	32/ibus-off.png \
+	32/ibus-keyboard.png \
 	$(NULL)
-hicolor_icon_32dir= $(datadir)/icons/hicolor/32x32/status/
+hicolor_icon_32dir= $(datadir)/icons/hicolor/32x32/apps/
 
 hicolor_icon_48_DATA = \
-	48/ibus-off.png \
+	48/ibus-keyboard.png \
 	$(NULL)
-hicolor_icon_48dir= $(datadir)/icons/hicolor/48x48/status/
+hicolor_icon_48dir= $(datadir)/icons/hicolor/48x48/apps/
 
 hicolor_icon_scalable_DATA = \
-	scalable/ibus-off.svg \
+	scalable/ibus.svg \
+	scalable/ibus-setup.svg \
+	scalable/ibus-engine.svg \
+	scalable/ibus-keyboard.svg \
 	$(NULL)
-hicolor_icon_scalabledir= $(datadir)/icons/hicolor/scalable/status/
+hicolor_icon_scalabledir= $(datadir)/icons/hicolor/scalable/apps/
 
 EXTRA_DIST = \
 	$(icons_DATA) \

@@ -210,8 +210,7 @@ fi
 %{_bindir}/ibus-setup
 %{_datadir}/ibus/*
 %{_datadir}/applications/*
-%{_datadir}/pixmaps/*
-%{_datadir}/icons/hicolor/*/status/*
+%{_datadir}/icons/hicolor/*/apps/*
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-ui-gtk
 %{_libexecdir}/ibus-x11
