@@ -315,8 +315,7 @@ ibus_property_set_icon (IBusProperty *prop,
     g_assert (IBUS_IS_PROPERTY (prop));
 
     g_free (prop->icon);
-    prop->icon = NULL;
-    prop->icon = g_strdup (icon != NULL ? icon : "");
+    prop->icon = g_strdup (icon);
 }
 
 void
