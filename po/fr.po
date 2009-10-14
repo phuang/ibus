@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-13 08:29+0800\n"
-"PO-Revision-Date: 2009-08-30 17:51+0200\n"
+"PO-Revision-Date: 2009-10-13 11:12+0200\n"
 "Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-francophone@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Redémarrer IBus"
 
 #: ../ui/gtk/panel.py:376
 msgid "Turn off input method"
-msgstr "Désactiver la méthide d'entrée"
+msgstr "Désactiver la méthode d'entrée"
 
 #: ../ui/gtk/panel.py:409
 msgid "No input window"
@@ -111,7 +111,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus est démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter les "
+"IBus a été démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter "
+"les "
 "lignes suivantes dans le fichier $HOME/.bashrc, et veuillez vous "
 "reconnecter.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -218,7 +219,7 @@ msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "Afficher l'icône dans la boîte à miniatures"
 
 #: ../data/ibus.schemas.in.h:15
 msgid ""
@@ -307,7 +308,7 @@ msgstr "Avancé"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "Toujours"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -331,11 +332,8 @@ msgid "General"
 msgstr "Général"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"Horizontale\n"
-"Verticale"
+msgstr "Horizontale"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -351,7 +349,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "Jamais"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -421,12 +419,10 @@ msgstr ""
 
 #: ../setup/setup.ui.h:48
 msgid "Vertical"
-msgstr ""
+msgstr "Verticale"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"Jamais\n"
-"Uniquement lorsque actif\n"
-"Toujours"
+msgstr "Uniquement lorsque active"
+
+
