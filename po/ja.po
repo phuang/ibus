@@ -330,9 +330,7 @@ msgstr "一般"
 #: ../setup/setup.ui.h:24
 #, fuzzy
 msgid "Horizontal"
-msgstr ""
-"横\n"
-"縦"
+msgstr "横"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -412,8 +410,9 @@ msgid "Use custom font for language bar and candidates"
 msgstr "言語バーと候補用にカスタムフォントを使用します"
 
 #: ../setup/setup.ui.h:48
+#, fuzzy
 msgid "Vertical"
-msgstr ""
+msgstr "縦"
 
 #: ../setup/setup.ui.h:49
 #, fuzzy
