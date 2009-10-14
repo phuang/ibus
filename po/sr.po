@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -99,11 +99,11 @@ msgstr "Следећа метода уноса"
 msgid "previous input method"
 msgstr "Претходна метода уноса"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus демон није покренут. Да ли желите да га сада покренете?"
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -117,7 +117,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Изаберите пречицу тастатуре за %s"
@@ -177,52 +177,45 @@ msgid "Custom font name for language panel"
 msgstr "Назив прилагођеног фонта за језички панел"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "Пречица следећег погона"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr "Оријентација референтне табеле"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Оријентација референтне табеле. 0 = водоравно, 1 = усправно"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "Унапред учитај погоне"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "Унапред учитај погоне током ibus покретања"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "Пречица претходног погона"
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
-"Пречица претходног погона за пребацивање на претходни погон методе уноса"
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 #, fuzzy
 msgid "Show IM name on language bar"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -230,27 +223,35 @@ msgstr ""
 "Понашање језичког панела. 0 = увек сакривен, 1 = самостално сакривање, 2 = "
 "увек приказан"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#, fuzzy
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for turnning input method on or off"
+msgstr ""
+"Пречица претходног погона за пребацивање на претходни погон методе уноса"
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "Пречица окидача"
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "Пречица окидача за укључивање или искључивање контекста уноса"
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "Користи прилагођени фонт"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "Користи прилагођени фонт за језички панел"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr ""
 
@@ -371,40 +372,29 @@ msgstr ""
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Оријентација референтне табеле"
 
-#: ../setup/setup.ui.h:35
-#, fuzzy
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr ""
-"Пречица претходног погона за пребацивање на претходни погон методе уноса"
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 #, fuzzy
 msgid "Show input method name on language bar"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "Прикажи језички панел:"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "Покрени ibus при пријави"
 
 #: ../setup/setup.ui.h:42
-#, fuzzy
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
-
-#: ../setup/setup.ui.h:43
 #, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
@@ -430,6 +420,17 @@ msgstr ""
 "Никад\n"
 "Када је активно\n"
 "Увек"
+
+#~ msgid "Next engine hotkey for switch to next input method engine"
+#~ msgstr ""
+#~ "Пречица следећег погона за пребацивање на следећи погон методе уноса"
+
+#~ msgid "Prev engine hotkey for switch to previous input method engine"
+#~ msgstr ""
+#~ "Пречица претходног погона за пребацивање на претходни погон методе уноса"
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "Пречица окидача за укључивање или искључивање контекста уноса"
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

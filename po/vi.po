@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-09-01 10:46+0700\n"
 "Last-Translator: Le Quoc Tuan <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -93,12 +93,12 @@ msgstr "Bộ gõ kế tiếp"
 msgid "previous input method"
 msgstr "Bộ gõ trước"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr ""
 "IBus daemon chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +112,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Chọn phím tắt cho %s"
@@ -171,77 +171,77 @@ msgid "Custom font name for language panel"
 msgstr "Tùy biến phông cho thanh ngôn ngữ"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "Phím nóng cho bộ gõ kế tiếp"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr "Hướng của bảng tra cứu"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Hướng của bảng tra cứu. 0 = Ngang, 1 = Dọc"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "Nạp trước bộ gõ"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "Nạp trước bộ gõ trong khi khởi động ibus"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "Phím nóng cho bộ gõ trước"
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr "Phím nóng dùng để chuyển về bộ gõ trước"
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr "Hiển thị tên bộ gõ"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 msgid "Show IM name on language bar"
 msgstr "Hiển thị tên IM trên thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 "Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp trong danh sách"
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for turnning input method on or off"
+msgstr "Đặt phím tắt để bật hoặc tắt bộ gõ"
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "Phím nóng bật/tắt"
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "Phím nóng bật/tắt dùng để bật hoặc tắt bộ gõ"
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "Dùng phông tùy biến"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr "Dùng kiểu bố trí bàn phím hệ thống (XKB)"
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr "Dùng kiểu bố trí bàn phím của hệ thống"
 
@@ -360,35 +360,27 @@ msgstr "Đặt cách mà bộ gõ hiển thị hay ẩn thanh ngôn ngữ"
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Đặt hướng của từ gợi ý trong bảng tra cứu"
 
-#: ../setup/setup.ui.h:35
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "Đặt phím tắt để bật hoặc tắt bộ gõ"
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr "Hiển thị thông tin về bộ gõ đã chọn"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
 msgstr "Hiển thị tên bộ gõ trên thanh ngôn ngữ"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Hiển thị tên của bộ gõ trên thanh ngôn ngữ khi đánh dấu vào ô kiểm"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "Hiển thị thanh ngôn ngữ:"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "Khởi động ibus khi đăng nhập"
 
 #: ../setup/setup.ui.h:42
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp trong danh sách"
-
-#: ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Phím nóng dùng để chuyển về bộ gõ trước trong danh sách"
 
@@ -411,6 +403,15 @@ msgstr ""
 "Không bao giờ\n"
 "Khi hoạt động\n"
 "Luôn luôn"
+
+#~ msgid "Next engine hotkey for switch to next input method engine"
+#~ msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp"
+
+#~ msgid "Prev engine hotkey for switch to previous input method engine"
+#~ msgstr "Phím nóng dùng để chuyển về bộ gõ trước"
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "Phím nóng bật/tắt dùng để bật hoặc tắt bộ gõ"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"

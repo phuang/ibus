@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-09-09 15:52+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -98,11 +98,11 @@ msgstr "తరువాతి ఇన్పుట్ పద్దతి"
 msgid "previous input method"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -116,7 +116,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును యెంపికచేయుము"
@@ -175,50 +175,44 @@ msgid "Custom font name for language panel"
 msgstr "భాష ప్యానల్ కొరకు మలచుకొనిన ఫాంటు నామము"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "తరువాతి యింజన్ హాట్‌కీ"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr "తరువాతి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు తరువాతి యింజన్ హాట్‌కీ"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr "లుకప్ పట్టిక సర్దుబాటు"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "లుకప్ పట్టిక సర్దుబాటు. 0 = చదరముగా, 1 = నిలువుగా"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "ముందుగా లోడైన యింజన్లు"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus ప్రారంభమునందు ముందుగా లోడైన యింజన్లు"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "మునుపటి యింజన్ హాట్‌కీ"
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr "మునుపటి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు మునుపటి యింజన్ హాట్‌కీ"
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr "IM నామము చూపుము"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 msgid "Show IM name on language bar"
 msgstr "భాషా పట్టీపై IM నామము చూపుము"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -226,27 +220,33 @@ msgstr ""
 "భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = ఎల్లప్పుడూ మరుగునవుంచు, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = "
 "ఎల్లప్పుడూ "
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for turnning input method on or off"
+msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "బిస హాట్‌కీ"
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "ఇన్పుట్ సందర్భమును చేతనము చేయుటకు లేదా అచేతనము చేయుటకు బిస హాట్‌కీ"
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr "సిస్టమ్ కీబోర్డు (XKB) నమూనా వుపయోగించుము"
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr "సిస్టమ్ కీబోర్డు నమూనా వుపయోగించుము"
 
@@ -365,35 +365,27 @@ msgstr "భాషా పట్టీని యెలా చూపాలి మ�
 msgid "Set the orientation of candidates in lookup table"
 msgstr "లుకప్ పట్టికనందు కాండిడేట్ల సర్దుబాటును అమర్చుము"
 
-#: ../setup/setup.ui.h:35
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr "ఎంపికచేసిన యిన్పుట్ పద్దతి యొక్క సమాచారమును చూపుము"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
 msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "చెక్‌బాక్సు చెక్ చేసినప్పుడు భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "భాషా ప్యానల్ చూపుము:"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "లాగిన్‌నందు ibus ప్రారంభించుము"
 
 #: ../setup/setup.ui.h:42
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
-
-#: ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "జాబితానందలి ముందరి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
@@ -416,6 +408,15 @@ msgstr ""
 "ఎప్పటికివద్దు\n"
 "క్రియాశీలముగా వున్నప్పుడు\n"
 "ఎల్లప్పుడు"
+
+#~ msgid "Next engine hotkey for switch to next input method engine"
+#~ msgstr "తరువాతి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు తరువాతి యింజన్ హాట్‌కీ"
+
+#~ msgid "Prev engine hotkey for switch to previous input method engine"
+#~ msgstr "మునుపటి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు మునుపటి యింజన్ హాట్‌కీ"
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "ఇన్పుట్ సందర్భమును చేతనము చేయుటకు లేదా అచేతనము చేయుటకు బిస హాట్‌కీ"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"

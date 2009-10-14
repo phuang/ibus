@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-09-01 16:30+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
@@ -97,11 +97,11 @@ msgstr "पुढिल इंपुट पद्धत"
 msgid "previous input method"
 msgstr "मागील इंपुट पद्धत"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus डिमन सुरू केले गेले नाही. तुम्हाला आता सुरू करायचे?"
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -115,7 +115,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s करीता कळफलक शार्टकट निवडा"
@@ -174,76 +174,76 @@ msgid "Custom font name for language panel"
 msgstr "भाषा पटल करीता स्वपसंत फॉन्ट नाव"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "पुढील इंजिनची हॉटकि"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr "पुढचे इंपुट पद्धत इंजिन वापरण्याकरीता पुढिल इंजिन हॉटकि"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr "लुकअप टेबलचे निर्देशन"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "लुकअप टेबलचे निर्देशन. 0 = Horizontal, 1 = Vertical"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "इंजिन पूर्व दाखल करा"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus सुरू होतेवेळी इंजिन पूर्व दाखल करा"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "मागील इंचिनचे हॉटकि"
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr "मागील इंपुट पद्धत इंजिन वापरण्याकरीता मागील इंजिनचे हॉटकि"
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr "IM नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 msgid "Show IM name on language bar"
 msgstr "भाषा पट्टी करीता IM नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always show"
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for turnning input method on or off"
+msgstr "इंपुट पद्धत सुरू किंवा बंद करण्यासाठी शार्टकट किज् ठरवा"
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "हॉटकि निर्माण करा"
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "इनपुट संदर्भ कार्यान्वीत किंवा अकार्यान्वीत करण्याकरीता हॉटकि निर्माण करा"
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "स्वपसंत फॉन्ट वापरा"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "भाषा पटल करीत स्वपसंत फॉन्ट नाव वापरा"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr "प्रणाली कळफलक (XKB) मांडणीचा वापर करा"
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr "प्रणाली कळफलक मांडणीचा वापर करा"
 
@@ -362,35 +362,27 @@ msgstr "भाषा पट्टी कसे दाखवायचे कि�
 msgid "Set the orientation of candidates in lookup table"
 msgstr "लुकअप टेबल मधील घटकांचे निर्देशन ठरवा"
 
-#: ../setup/setup.ui.h:35
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "इंपुट पद्धत सुरू किंवा बंद करण्यासाठी शार्टकट किज् ठरवा"
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr "नीवडलेल्या इंपुट पद्धत विषयी माहिती दाखवा"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "चेकबॉक्स नीवडल्यानंतर भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "भाषा पटल दाखवा:"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "प्रवेशवेळी ibus सुरू करा"
 
 #: ../setup/setup.ui.h:42
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
-
-#: ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "सूचीतील मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
@@ -413,6 +405,15 @@ msgstr ""
 "कधिच नाही\n"
 "सक्रीय असल्यास\n"
 "नेहमी"
+
+#~ msgid "Next engine hotkey for switch to next input method engine"
+#~ msgstr "पुढचे इंपुट पद्धत इंजिन वापरण्याकरीता पुढिल इंजिन हॉटकि"
+
+#~ msgid "Prev engine hotkey for switch to previous input method engine"
+#~ msgstr "मागील इंपुट पद्धत इंजिन वापरण्याकरीता मागील इंजिनचे हॉटकि"
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "इनपुट संदर्भ कार्यान्वीत किंवा अकार्यान्वीत करण्याकरीता हॉटकि निर्माण करा"
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-04-06 11:45+0800\n"
 "Last-Translator: Muayyad Alsadi <alsadi@ojuba.org>\n"
 "Language-Team: Arabic <AR@li.org>\n"
@@ -95,11 +95,11 @@ msgstr "طريقة الإدخال التالية"
 msgid "previous input method"
 msgstr "طريقة الإدخال السابقة"
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "خادم IBUS لم يبدأ من قبل. هل تريد تشغيله الآن؟"
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -108,7 +108,7 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "اختر الاختصار ل %s"
@@ -168,77 +168,76 @@ msgid "Custom font name for language panel"
 msgstr "اسم الخط المخصص للوحة اللغة"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "مفتاح المحرك التالي"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "المحركات المحملة مسبقا"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "المحركات المحملة مسبقا عند بدء ibus"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "مفتاح المحرك السابق"
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 #, fuzzy
 msgid "Show IM name on language bar"
 msgstr "اسم الخط المخصص للوحة اللغة"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+msgid "The shortcut keys for turnning input method on or off"
+msgstr ""
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "مفتاح الزناد"
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "مفتاح الزناد لتفعيل وتثبيط سياق الإدخال"
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "استخدم خط مخصص"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "استخدم خط مخصص في لوحة اللغة"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr ""
 
@@ -357,37 +356,29 @@ msgstr ""
 msgid "Set the orientation of candidates in lookup table"
 msgstr ""
 
-#: ../setup/setup.ui.h:35
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr ""
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 #, fuzzy
 msgid "Show input method name on language bar"
 msgstr "اسم الخط المخصص للوحة اللغة"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "اسم الخط المخصص للوحة اللغة"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "إظهار لوحة اللغات:"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "بدء ibus عند الولوج"
 
 #: ../setup/setup.ui.h:42
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-
-#: ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 
@@ -411,6 +402,9 @@ msgstr ""
 "أبدا\n"
 "عند التفعيل\n"
 "دائما"
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "مفتاح الزناد لتفعيل وتثبيط سياق الإدخال"
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Control+space]"

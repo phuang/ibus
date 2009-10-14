@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 08:29+0800\n"
+"POT-Creation-Date: 2009-10-14 13:10+0800\n"
 "PO-Revision-Date: 2009-09-10 14:06+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -94,11 +94,11 @@ msgstr "다음 입력 방식   "
 msgid "previous input method"
 msgstr "이전 입력 방식  "
 
-#: ../setup/main.py:234
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Bus 데몬이 시작되지 않았습니다. 지금 시작하시겠습니까?  "
 
-#: ../setup/main.py:249
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +112,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus "
 
-#: ../setup/main.py:264
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s의 키보드 단축키를 선택   "
@@ -171,76 +171,76 @@ msgid "Custom font name for language panel"
 msgstr "언어 패널 용 사용자 정의 글꼴 이름  "
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Hotkey"
+#, fuzzy
+msgid "Next Engine Shortcut Keys"
 msgstr "다음 엔진 핫키   "
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Next engine hotkey for switch to next input method engine"
-msgstr "다음 입력 방식 엔진으로 전환하기 위한 다음 엔진 핫키  "
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table"
 msgstr "룩업 테이블의 방향  "
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "룩업 테이블의 방향. 0 = 가로, 1 = 세로  "
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines"
 msgstr "엔진 미리로드  "
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus 시작 시 엔진 미리로드  "
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Prev Engine Hotkey"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Prev Engine Shortcut Keys"
 msgstr "이전 엔진 핫키  "
 
-#: ../data/ibus.schemas.in.h:11
-msgid "Prev engine hotkey for switch to previous input method engine"
-msgstr "이전 입력 방식 엔진으로 전환하기 위한 이전 엔진 핫키  "
-
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:10
 msgid "Show IM Name"
 msgstr "IM 이름 표시  "
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:11
 msgid "Show IM name on language bar"
 msgstr "도구 모음에 있는 IM 이름 표시   "
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:36
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:13
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "언어 패널의 동작 0 = 항상 숨기기, 1 = 자동 숨기기, 2 = 항상 표시  "
 
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키  "
+
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#, fuzzy
+msgid "The shortcut keys for turnning input method on or off"
+msgstr "입력 방식을 활성 또는 해제하기 위한 단축키 설정  "
+
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Hotkey"
+#, fuzzy
+msgid "Trigger Shortcut Keys"
 msgstr "트리거 핫키  "
 
 #: ../data/ibus.schemas.in.h:17
-msgid "Trigger hotkey for enable or disable input context"
-msgstr "활성화 또는 비활성화 입력 문맥 용 트리거 핫키  "
-
-#: ../data/ibus.schemas.in.h:18
 msgid "Use Custom Font"
 msgstr "사용자 정의 글꼴 사용  "
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
 msgstr "언어 패널 용 사용자 정의 글꼴 이름 사용  "
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
 msgid "Use system keyboard (XKB) layout"
 msgstr "시스템 키보드 (XKB) 레이아웃 사용  "
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
 msgid "Use system keyboard layout"
 msgstr "시스템 키보드 레이아웃 사용  "
 
@@ -359,35 +359,27 @@ msgstr "입력 도구 모음을 표시 또는 숨기는 방법에 대한 ibus �
 msgid "Set the orientation of candidates in lookup table"
 msgstr "룩업 테이블에서 후보 창의 방향 설정  "
 
-#: ../setup/setup.ui.h:35
-msgid "Set the shortcut keys for turnning on or off input method"
-msgstr "입력 방식을 활성 또는 해제하기 위한 단축키 설정  "
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
 msgstr "선택한 입력 방식의 정보 표시  "
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
 msgstr "입력 도구 모음에 있는 입력 방식 이름 표시   "
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "확인란을 선택하면 입력 도구 모음에 있는 입력 방식의 이름 표시   "
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Show language panel:"
 msgstr "언어 패널 표시:  "
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
 msgstr "로그인 시 ibus 시작  "
 
 #: ../setup/setup.ui.h:42
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키  "
-
-#: ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축키   "
 
@@ -410,6 +402,15 @@ msgstr ""
 "숨기기\n"
 "활성화된 경우에만 표시\n"
 "항상 표시   "
+
+#~ msgid "Next engine hotkey for switch to next input method engine"
+#~ msgstr "다음 입력 방식 엔진으로 전환하기 위한 다음 엔진 핫키  "
+
+#~ msgid "Prev engine hotkey for switch to previous input method engine"
+#~ msgstr "이전 입력 방식 엔진으로 전환하기 위한 이전 엔진 핫키  "
+
+#~ msgid "Trigger hotkey for enable or disable input context"
+#~ msgstr "활성화 또는 비활성화 입력 문맥 용 트리거 핫키  "
 
 #~ msgid "gtk-about"
 #~ msgstr "gtk-about"
