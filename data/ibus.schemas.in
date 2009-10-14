@@ -20,8 +20,8 @@
       <list_type>string</list_type>
       <default>[Control+space,Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
       <locale name="C">
-        <short>Trigger Hotkey</short>
-	    <long>Trigger hotkey for enable or disable input context</long>
+        <short>Trigger Shortcut Keys</short>
+	    <long>The shortcut keys for turnning input method on or off</long>
       </locale>
     </schema>
     <schema>
@@ -32,8 +32,8 @@
       <list_type>string</list_type>
       <default>[Alt+Shift_L]</default>
       <locale name="C">
-        <short>Next Engine Hotkey</short>
-	    <long>Next engine hotkey for switch to next input method engine</long>
+        <short>Next Engine Shortcut Keys</short>
+	    <long>The shortcut keys for switching to next input method in the list</long>
       </locale>
     </schema>
     <schema>
@@ -44,8 +44,8 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-        <short>Prev Engine Hotkey</short>
-	    <long>Prev engine hotkey for switch to previous input method engine</long>
+        <short>Prev Engine Shortcut Keys</short>
+	    <long>The shortcut keys for switching to next input method in the list</long>
       </locale>
     </schema>
     <schema>

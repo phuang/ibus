@@ -80,7 +80,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label7">
                                     <property name="visible">True</property>
-                                    <property name="tooltip_text" translatable="yes">Set the shortcut keys for turnning on or off input method</property>
+                                    <property name="tooltip_text" translatable="yes">The shortcut keys for turnning input method on or off</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Enable or disable:</property>
                                   </object>
