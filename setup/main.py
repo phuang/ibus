@@ -97,12 +97,10 @@ class Setup(object):
         shortcuts = self.__config.get_value(
                         "general/hotkey", "trigger",
                         ibus.CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT)
-
         button = self.__builder.get_object("button_trigger")
         entry = self.__builder.get_object("entry_trigger")
-        text = "; ".join(shortcuts)
-        entry.set_text(text)
-        entry.set_tooltip_text(text)
+        entry.set_text("; ".join(shortcuts))
+        entry.set_tooltip_text("\n".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("trigger"), "general/hotkey", "trigger", entry)
 
@@ -112,9 +110,8 @@ class Setup(object):
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         button = self.__builder.get_object("button_next_engine")
         entry = self.__builder.get_object("entry_next_engine")
-        text = "; ".join(shortcuts)
-        entry.set_text(text)
-        entry.set_tooltip_text(text)
+        entry.set_text("; ".join(shortcuts))
+        entry.set_tooltip_text("\n".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("next input method"), "general/hotkey", "next_engine", entry)
 
@@ -124,9 +121,8 @@ class Setup(object):
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
         button = self.__builder.get_object("button_prev_engine")
         entry = self.__builder.get_object("entry_prev_engine")
-        text = "; ".join(shortcuts)
-        entry.set_text(text)
-        entry.set_tooltip_text(text)
+        entry.set_text("; ".join(shortcuts))
+        entry.set_tooltip_text("\n".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                     N_("previous input method"), "general/hotkey", "prev_engine", entry)
 
