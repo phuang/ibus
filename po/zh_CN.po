@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -157,11 +157,11 @@ msgid "IBus Preferences"
 msgstr "IBus 设置"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+msgid "Auto hide"
 msgstr "自动隐藏"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
+msgid "Custom font"
 msgstr "自定义字体:"
 
 #: ../data/ibus.schemas.in.h:3
@@ -169,40 +169,40 @@ msgid "Custom font name for language panel"
 msgstr "自定义语言栏字体"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "下一个引擎快捷键"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "候选词表方向"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "候选词表方向。0 = 水平，1 = 竖直。"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "预加载引擎"
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of lookup table"
+msgstr "候选词表方向"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus启动时预加载的引擎"
 
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload engines"
+msgstr "预加载引擎"
+
 #: ../data/ibus.schemas.in.h:9
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "上一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "显示输入法名字"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "在语言栏上显示输入法名字"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr "在系统托盘上显示图标"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Show input method name"
+msgstr "在语言栏上显示输入法名字"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "在语言栏上显示输入法名字"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -215,15 +215,15 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr "切换下一个引擎快捷键"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "打开关闭输入法的快捷键"
 
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "使用自定义字体"
 
 #: ../data/ibus.schemas.in.h:18
@@ -299,16 +299,16 @@ msgid "Candidates orientation:"
 msgstr "候选词排列方向:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "选择语言栏和候选词的字体"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "自定义字体:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "开关"
+
+#: ../setup/setup.ui.h:22
+msgid "Font for language bar and candidates"
+msgstr "选择语言栏和候选词的字体"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -354,10 +354,6 @@ msgstr "设置候选词表方向"
 msgid "Show information of the selected input method"
 msgstr "显示选中输入法的信息"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "在语言栏上显示输入法名字"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "在语言栏上显示输入法的名字"
@@ -374,10 +370,6 @@ msgstr "启动桌面时自动启动IBus"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "切换上一个引擎快捷键"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "使用自定义字体"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "使用自定义字体显示语言栏和候选词"
@@ -389,4 +381,3 @@ msgstr "竖直"
 #: ../setup/setup.ui.h:49
 msgid "When active"
 msgstr "活动时"
-

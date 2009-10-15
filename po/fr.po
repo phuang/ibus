@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-10-13 11:12+0200\n"
 "Last-Translator: Humbert Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-francophone@kde.org>\n"
@@ -165,12 +165,14 @@ msgid "IBus Preferences"
 msgstr "Préférences d'IBus"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "Cacher automatiquement"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "Police personnalisée"
+#, fuzzy
+msgid "Custom font"
+msgstr "Police personnalisée :"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -178,41 +180,44 @@ msgstr "Police personnalisée pour le panneau de langue"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "Passer au moteur suivant"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "Orientation de la table"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientation de la table. 0 = Horizontale, 1 = Verticale"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "Précharger les moteurs"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "Orientation de la table"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "Précharger les moteurs lors du démarrage d'iBus"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "Précharger les moteurs"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "Revenir au moteur précédant"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "Afficher le nom de la méthode d'entrée"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr "Afficher l'icône dans la boîte à miniatures"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -228,18 +233,18 @@ msgstr "Raccourci clavier pour passer à méthode d'entrée suivante"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 "Sélection des raccourcis claviers pour activer ou désactiver la méthode "
 "d'entrée"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "Raccourci clavier déclencheur"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "Utiliser une police personnalisée"
 
 #: ../data/ibus.schemas.in.h:18
@@ -316,17 +321,18 @@ msgid "Candidates orientation:"
 msgstr "Orientations :"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr ""
-"Choix d'une police personnalisée pour la barre de langue et les candidats"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "Police personnalisée :"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "Activer ou désactiver :"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr ""
+"Choix d'une police personnalisée pour la barre de langue et les candidats"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -377,10 +383,6 @@ msgstr "Sélection de l'orientation de la table des candidats"
 msgid "Show information of the selected input method"
 msgstr "Afficher les informations de la méthode d'entrée selectionnée"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
@@ -399,10 +401,6 @@ msgstr "Démarrer IBus lors de la connexion"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Raccourci clavier pour revenir à la méthode d'entrée précédente"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "Utiliser une police personnalisée"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr ""
@@ -415,6 +413,18 @@ msgstr "Verticale"
 #: ../setup/setup.ui.h:49
 msgid "When active"
 msgstr "Uniquement lorsque active"
+
+#~ msgid "Custom Font"
+#~ msgstr "Police personnalisée"
+
+#~ msgid "Show IM Name"
+#~ msgstr "Afficher le nom de la méthode d'entrée"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "Utiliser une police personnalisée"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "Raccourci clavier pour passer au moteur de méthode d'entrée suivant"

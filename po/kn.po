@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-07 15:12+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <en@li.org>\n"
@@ -159,12 +159,14 @@ msgid "IBus Preferences"
 msgstr "IBus ಆದ್ಯತೆಗಳು"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "ಸ್ವಯಂ ಅಡಗಿಸುವಿಕೆ"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ"
+#, fuzzy
+msgid "Custom font"
+msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -172,41 +174,44 @@ msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿನ ಇಚ್ಛೆಯ ಅಕ
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "ಮುಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ. 0 = ಅಡ್ಡಲಾಗಿ, 1 = ಲಂಬವಾಗಿ"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "ಮೊದಲೆ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus ಆರಂಭಗೊಂಡಾಗ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "ಮೊದಲೆ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "ಹಿಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "IM ಹೆಸರನ್ನು ತೋರಿಸು"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "IM ಹೆಸರು ಅಥವ ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -221,16 +226,16 @@ msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಮುಂದಿನ ಇನ್‌ಪು�
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳನ್ನು ಆಫ್ ಹಾಗು ಆನ್ ಮಾಡಲು ಶಾರ್ಟ್-ಕೀಲಿಗಳನ್ನು ಹೊಂದಿಸಿ"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "ಟ್ರಿಗರ್ ಹಾಟ್‌ಕೀಲಿ"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
 
 #: ../data/ibus.schemas.in.h:18
@@ -306,16 +311,17 @@ msgid "Candidates orientation:"
 msgstr "ಅಬ್ಯರ್ಥಿಗಳ ಹೊಂದಿಕೆ:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "ಭಾಷೆಯ ಫಲಕ ಹಾಗು ಅಭ್ಯರ್ಥಿಗಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "ಶಕ್ತಗೊಂಡ ಅಥವ ಅಶಕ್ತಗೊಂಡ:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "ಭಾಷೆಯ ಫಲಕ ಹಾಗು ಅಭ್ಯರ್ಥಿಗಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -368,10 +374,6 @@ msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ�
 msgid "Show information of the selected input method"
 msgstr "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಮಾಹಿತಿಯನ್ನು ತೋರಿಸು"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "ಗುರುತುಚೌಕದಲ್ಲಿ ಗುರುತು ಹಾಕಿದಾಗ ಭಾಷಾ ಪಟ್ಟಿಯಲ್ಲಿ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
@@ -388,10 +390,6 @@ msgstr "ಪ್ರವೇಶಿಸಿದಾಗ ibus ಅನ್ನು ಆರಂಭ�
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನಕ್ಕೆ ಬದಲಾಯಿಸಲು ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಗಳು"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "ಭಾಷೆಯ ಫಲಕ ಹಾಗು ಅಭ್ಯರ್ಥಿಗಳಿಗಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
@@ -407,6 +405,18 @@ msgstr ""
 "ಎಂದಿಗೂ ಬೇಡ\n"
 "ಸಕ್ರಿಯವಾಗಿದ್ದಾಗ\n"
 "ಯಾವಾಗಲೂ"
+
+#~ msgid "Custom Font"
+#~ msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ"
+
+#~ msgid "Show IM Name"
+#~ msgstr "IM ಹೆಸರನ್ನು ತೋರಿಸು"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "IM ಹೆಸರು ಅಥವ ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ ಎಂಜಿನ್‌ಗೆ ಬದಲಾಯಿಸಲು ಮುಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"

@@ -8,7 +8,7 @@
       <type>list</type>
       <list_type>string</list_type>
       <locale name="C">
-        <short>Preload Engines</short>
+        <short>Preload engines</short>
 	    <long>Preload Engines during ibus starts up</long>
       </locale>
     </schema>
@@ -20,8 +20,8 @@
       <list_type>string</list_type>
       <default>[Control+space,Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
       <locale name="C">
-        <short>Trigger Shortcut Keys</short>
-	    <long>The shortcut keys for turnning input method on or off</long>
+        <short>Trigger shortcut keys</short>
+	    <long>The shortcut keys for turning input method on or off</long>
       </locale>
     </schema>
     <schema>
@@ -32,7 +32,7 @@
       <list_type>string</list_type>
       <default>[Alt+Shift_L]</default>
       <locale name="C">
-        <short>Next Engine Shortcut Keys</short>
+        <short>Next engine shortcut keys</short>
 	    <long>The shortcut keys for switching to next input method in the list</long>
       </locale>
     </schema>
@@ -44,7 +44,7 @@
       <list_type>string</list_type>
       <default>[]</default>
       <locale name="C">
-        <short>Prev Engine Shortcut Keys</short>
+        <short>Prev engine shortcut keys</short>
 	    <long>The shortcut keys for switching to next input method in the list</long>
       </locale>
     </schema>
@@ -55,7 +55,7 @@
       <type>int</type>
       <default>1</default>
       <locale name="C">
-        <short>Auto Hide</short>
+        <short>Auto hide</short>
 	    <long>The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
@@ -66,7 +66,7 @@
       <type>int</type>
       <default>1</default>
       <locale name="C">
-        <short>Orientation of Lookup Table</short>
+        <short>Orientation of lookup table</short>
 	    <long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
       </locale>
     </schema>
@@ -88,8 +88,8 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-        <short>Show IM Name</short>
-	    <long>Show IM name on language bar</long>
+        <short>Show input method name</short>
+	    <long>Show input method name on language bar</long>
       </locale>
     </schema>
     <schema>
@@ -110,7 +110,7 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-        <short>Use Custom Font</short>
+        <short>Use custom font</short>
 	    <long>Use custom font name for language panel</long>
       </locale>
     </schema>
@@ -121,7 +121,7 @@
       <type>string</type>
       <default>Sans 10</default>
       <locale name="C">
-        <short>Custom Font</short>
+        <short>Custom font</short>
 	    <long>Custom font name for language panel</long>
       </locale>
     </schema>

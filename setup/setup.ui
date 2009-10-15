@@ -80,7 +80,7 @@
                                 <child>
                                   <object class="GtkLabel" id="label7">
                                     <property name="visible">True</property>
-                                    <property name="tooltip_text" translatable="yes">The shortcut keys for turnning input method on or off</property>
+                                    <property name="tooltip_text" translatable="yes">The shortcut keys for turning input method on or off</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Enable or disable:</property>
                                   </object>
@@ -336,7 +336,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_text" translatable="yes">Show input method's name on language bar when check the checkbox</property>
+                                    <property name="tooltip_text" translatable="yes">Show icon on system tray</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
@@ -376,7 +376,7 @@
                                     <child>
                                       <object class="GtkLabel" id="label_custom_font">
                                         <property name="visible">True</property>
-                                        <property name="tooltip_text" translatable="yes">Choice font for language bar and candidates</property>
+                                        <property name="tooltip_text" translatable="yes">Font for language bar and candidates</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Custom font:</property>
                                       </object>

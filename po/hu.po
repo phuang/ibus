@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-04-11 10:58+0200\n"
 "Last-Translator: Sulyok Péter <peti@fedoraproject.org>\n"
 "Language-Team: Hungarian <fedora-trans-hu@redhat.com>\n"
@@ -160,12 +160,14 @@ msgid "IBus Preferences"
 msgstr "IBus beállítás"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "Önműködő rejtés"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "Saját betű"
+#, fuzzy
+msgid "Custom font"
+msgstr "Saját betű:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -173,42 +175,45 @@ msgstr "Saját betű neve a nyelv panelen"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "Következő eljárás gyorsbillentyű"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "Kereső táblázat iránya"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Kereső táblázat iránya. 0 = vízszintes, 1 = függőleges"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "Eljárások előtöltése"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "Kereső táblázat iránya"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "Eljárások előre betöltése ibus indulásakor"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "Eljárások előtöltése"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "Előző eljárás gyorsbillentyű"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+msgid "Show icon on system tray"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:11
 #, fuzzy
-msgid "Show IM name on language bar"
+msgid "Show input method name"
 msgstr "Saját betű neve a nyelv panelen"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
-msgid "Show icon on system tray"
-msgstr ""
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "Saját betű neve a nyelv panelen"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -226,16 +231,16 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "Ravasz gyorsbillentyű"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "Saját betű használata"
 
 #: ../data/ibus.schemas.in.h:18
@@ -310,17 +315,17 @@ msgid "Candidates orientation:"
 msgstr "Jelöltek iránya:"
 
 #: ../setup/setup.ui.h:20
-#, fuzzy
-msgid "Choice font for language bar and candidates"
-msgstr "Saját betű neve a nyelv panelen"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "Saját betű:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "Engedés vagy tiltás"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "Saját betű neve a nyelv panelen"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -370,11 +375,6 @@ msgstr "Kereső táblázat iránya"
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:37
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "Saját betű neve a nyelv panelen"
-
 #: ../setup/setup.ui.h:38
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
@@ -393,10 +393,6 @@ msgstr "Belépve ibus indítása"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "Saját betű használata"
-
 #: ../setup/setup.ui.h:45
 #, fuzzy
 msgid "Use custom font for language bar and candidates"
@@ -413,6 +409,16 @@ msgstr ""
 "soha\n"
 "aktívan\n"
 "mindig"
+
+#~ msgid "Custom Font"
+#~ msgstr "Saját betű"
+
+#, fuzzy
+#~ msgid "Show IM name on language bar"
+#~ msgstr "Saját betű neve a nyelv panelen"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "Saját betű használata"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr ""

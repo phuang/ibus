@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-01 10:46+0700\n"
 "Last-Translator: Le Quoc Tuan <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -159,12 +159,14 @@ msgid "IBus Preferences"
 msgstr "Tùy thích IBus"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "Tự động ẩn"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "Tùy biến phông"
+#, fuzzy
+msgid "Custom font"
+msgstr "Tùy biến phông:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -172,41 +174,44 @@ msgstr "Tùy biến phông cho thanh ngôn ngữ"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "Phím nóng cho bộ gõ kế tiếp"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "Hướng của bảng tra cứu"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Hướng của bảng tra cứu. 0 = Ngang, 1 = Dọc"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "Nạp trước bộ gõ"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "Hướng của bảng tra cứu"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "Nạp trước bộ gõ trong khi khởi động ibus"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "Nạp trước bộ gõ"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "Phím nóng cho bộ gõ trước"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "Hiển thị tên bộ gõ"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "Hiển thị tên IM trên thanh ngôn ngữ"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "Hiển thị tên bộ gõ trên thanh ngôn ngữ"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "Hiển thị tên bộ gõ trên thanh ngôn ngữ"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -221,17 +226,17 @@ msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp trong danh 
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "Đặt phím tắt để bật hoặc tắt bộ gõ"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "Phím nóng bật/tắt"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
-msgstr "Dùng phông tùy biến"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "Dùng phông chữ tùy biến"
 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
@@ -306,16 +311,17 @@ msgid "Candidates orientation:"
 msgstr "Hướng danh sách từ ứng cử:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "Chọn phông cho thanh ngôn ngữ và từ gợi ý"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "Tùy biến phông:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "Bật hoặc tắt:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "Chọn phông cho thanh ngôn ngữ và từ gợi ý"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -364,10 +370,6 @@ msgstr "Đặt hướng của từ gợi ý trong bảng tra cứu"
 msgid "Show information of the selected input method"
 msgstr "Hiển thị thông tin về bộ gõ đã chọn"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "Hiển thị tên bộ gõ trên thanh ngôn ngữ"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Hiển thị tên của bộ gõ trên thanh ngôn ngữ khi đánh dấu vào ô kiểm"
@@ -384,10 +386,6 @@ msgstr "Khởi động ibus khi đăng nhập"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Phím nóng dùng để chuyển về bộ gõ trước trong danh sách"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "Dùng phông chữ tùy biến"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ và từ gợi ý"
@@ -403,6 +401,18 @@ msgstr ""
 "Không bao giờ\n"
 "Khi hoạt động\n"
 "Luôn luôn"
+
+#~ msgid "Custom Font"
+#~ msgstr "Tùy biến phông"
+
+#~ msgid "Show IM Name"
+#~ msgstr "Hiển thị tên bộ gõ"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "Hiển thị tên IM trên thanh ngôn ngữ"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "Dùng phông tùy biến"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "Phím nóng dùng để chuyển đến bộ gõ kế tiếp"

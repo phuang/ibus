@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-05-26 15:19+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
@@ -161,12 +161,14 @@ msgid "IBus Preferences"
 msgstr "IBus পছন্দ"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "স্বয়ংক্ৰিয়ভাবে লুকাওক"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "স্বনিৰ্বাচিত ফন্ট"
+#, fuzzy
+msgid "Custom font"
+msgstr "স্বনিৰ্বাচিত ফন্ট:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -174,42 +176,45 @@ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্ব
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "পিছৰ কলঘৰৰ Hotkey"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "লুকআপ টেবুলৰ দিশ"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুকআপ টেবুলৰ দিশ । ০ = অনুভূমিক, ১ = উলম্ব"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "পূৰ্বে কলঘৰ তুলি লওক"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "লুকআপ টেবুলৰ দিশ"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus আৰম্ভৰ পূৰ্বে কলঘৰ তুলি লওক"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "পূৰ্বে কলঘৰ তুলি লওক"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "আগৰ কলঘৰৰ Hotkey"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+msgid "Show icon on system tray"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:11
 #, fuzzy
-msgid "Show IM name on language bar"
+msgid "Show input method name"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
-msgid "Show icon on system tray"
-msgstr ""
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -225,16 +230,16 @@ msgstr "পিছৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কল�
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "ট্ৰিগাৰ Hotkey"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
 
 #: ../data/ibus.schemas.in.h:18
@@ -311,17 +316,17 @@ msgid "Candidates orientation:"
 msgstr "প্ৰাৰ্থীৰ দিশ:"
 
 #: ../setup/setup.ui.h:20
-#, fuzzy
-msgid "Choice font for language bar and candidates"
-msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "স্বনিৰ্বাচিত ফন্ট:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "সক্ৰিয় বা নিষ্ক্ৰিয় কৰক:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -371,11 +376,6 @@ msgstr "লুকআপ টেবুলৰ দিশ"
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:37
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
-
 #: ../setup/setup.ui.h:38
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
@@ -394,10 +394,6 @@ msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
-
 #: ../setup/setup.ui.h:45
 #, fuzzy
 msgid "Use custom font for language bar and candidates"
@@ -414,6 +410,16 @@ msgstr ""
 "কেতিয়াও নহয়\n"
 "যেতিয়া সক্ৰিয়\n"
 "সদায়"
+
+#~ msgid "Custom Font"
+#~ msgstr "স্বনিৰ্বাচিত ফন্ট"
+
+#, fuzzy
+#~ msgid "Show IM name on language bar"
+#~ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "পিছৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"

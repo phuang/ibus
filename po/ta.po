@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-01 11:24+0530\n"
 "Last-Translator: I. Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
@@ -161,12 +161,14 @@ msgid "IBus Preferences"
 msgstr "IBus முன்னுரிமைகள்"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "தானாக மறை"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "தனிபயன் எழுத்துரு"
+#, fuzzy
+msgid "Custom font"
+msgstr "தனிபயன் எழுத்துரு:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -174,41 +176,44 @@ msgstr "தனிபயன் எழுத்துரு பெயர் மொ
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "அடுத்த இயந்திர குறுக்குவிசை"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "காணும் அட்டவணையின் திசை"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "காணும் அட்டவணையின் திசை. 0 = கிடைமட்டம், 1 = செங்குத்து"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "முன்ஏற்றப்பட்ட இயந்திரங்கள்"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "காணும் அட்டவணையின் திசை"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus துவங்கும் போது முன்னேற்றப்பட்ட எந்திரங்கள் "
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "முன்ஏற்றப்பட்ட இயந்திரங்கள்"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "முந்தைய இயந்திர குறுக்குவிசை"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "IM பெயரை காட்டு"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "மொழி பலகத்தில் IM பெயரை காட்டு"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -222,16 +227,16 @@ msgstr "பட்டியலில் அடுத்த உள்ளீடு 
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "ட்ரிகர் குறுக்குவிசை"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
 
 #: ../data/ibus.schemas.in.h:18
@@ -307,16 +312,17 @@ msgid "Candidates orientation:"
 msgstr "கேண்டிடேட் சார்ந்து:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "மொழி பட்டை மற்றும் நபர்களுக்கு எழுத்துரு தேர்வு"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "தனிபயன் எழுத்துரு:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "செயல்படுத்து அல்லது செயல்நீக்கு:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "மொழி பட்டை மற்றும் நபர்களுக்கு எழுத்துரு தேர்வு"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -366,10 +372,6 @@ msgstr "காணும் அட்டவணையில் நபர்கள�
 msgid "Show information of the selected input method"
 msgstr "தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையின் தகவலை காட்டு"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "சோதனை பெட்டியை சோதிக்கும் போது உள்ளீடு முறை பெயரை மொழி பட்டையில் காட்டு "
@@ -386,10 +388,6 @@ msgstr "புகுபதிவில் ibusஐ துவக்கு"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "பட்டியலில் முந்தைய உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "மொழி பட்டை மற்றும் நபர்களுக்கான தனிபயன் எழுத்துருவை பயன்படுத்து"
@@ -405,6 +403,18 @@ msgstr ""
 "ஒருபோதும்\n"
 "செயலிலிருக்கும் போது\n"
 "எப்போதும்"
+
+#~ msgid "Custom Font"
+#~ msgstr "தனிபயன் எழுத்துரு"
+
+#~ msgid "Show IM Name"
+#~ msgstr "IM பெயரை காட்டு"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "மொழி பலகத்தில் IM பெயரை காட்டு"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "அடுத்த உள்ளீடு முறை இயந்திரத்தை மாற்றும் போது அடுத்த இயந்திர குறுக்குவிசை "

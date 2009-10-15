@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-04-07 21:59+0800\n"
 "Last-Translator: Ding-Yi Chen <dchen@redhat.com>\n"
 "Language-Team: Ding-Yi Chen <dchen@redhat.com>\n"
@@ -158,11 +158,11 @@ msgid "IBus Preferences"
 msgstr "IBus偏好設定"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+msgid "Auto hide"
 msgstr "自動隱藏"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
+msgid "Custom font"
 msgstr "自訂字體"
 
 #: ../data/ibus.schemas.in.h:3
@@ -170,42 +170,40 @@ msgid "Custom font name for language panel"
 msgstr "自訂語言面板"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "「下一個引擎」熱鍵"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "候選字詞表排列方向"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "候選字詞表排列方向。0 = 水平，1 = 垂直"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "預載引擎"
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of lookup table"
+msgstr "候選字詞表排列方向"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus啟動時預先載入的引擎"
 
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload engines"
+msgstr "預載引擎"
+
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "「上一個引擎」熱鍵"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "顯示輸入法名"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "在語言面板顯示輸入法名"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Show input method name"
+msgstr "自訂語言面板"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "自訂語言面板"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -218,17 +216,15 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr "「下一個引擎」熱鍵"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "開啟或關閉輸入法熱鍵"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "觸發熱鍵"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "使用自訂字體"
 
 #: ../data/ibus.schemas.in.h:18
@@ -304,16 +300,16 @@ msgid "Candidates orientation:"
 msgstr "候選詞排列方向:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "自訂語言面板及候選字字體"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "自訂字體:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "開關："
+
+#: ../setup/setup.ui.h:22
+msgid "Font for language bar and candidates"
+msgstr "自訂語言面板及候選字字體"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -359,10 +355,6 @@ msgstr "候選字詞表排列方向"
 msgid "Show information of the selected input method"
 msgstr "顯示所選輸入法資訊"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "自訂語言面板"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "選取時顯示在語言面板上輸入法名稱"
@@ -379,10 +371,6 @@ msgstr "啟動桌面時自動啟動IBus"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "「上一個引擎」熱鍵"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "使用自訂字體"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "語言面板是否使用自訂字體"
@@ -394,12 +382,3 @@ msgstr "垂直"
 #: ../setup/setup.ui.h:49
 msgid "When active"
 msgstr "啟動時"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr "熱鍵用來切換下一個引擎"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr "熱鍵用來切換上一個引擎"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "輸入法觸發熱鍵"

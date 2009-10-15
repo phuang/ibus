@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-25 06:41+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -160,12 +160,14 @@ msgid "IBus Preferences"
 msgstr "IBus ਪਸੰਦ"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "ਆਟੋਮੈਟਿਕ ਓਹਲੇ"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ"
+#, fuzzy
+msgid "Custom font"
+msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -173,41 +175,44 @@ msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ �
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "ਅਗਲਾ ਇੰਜਣ ਹਾਟ-ਕੀ"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "ਖੋਜ ਟੇਬਲ ਦੀ ਸਥਿਤੀ"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "ਖੋਜ ਟੇਬਲ ਦੀ ਸਥਿਤੀ। 0 = ਹਰੀਜੱਟਲ, 1 =ਵਰਟੀਕਲ"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "ਪ੍ਰੀ-ਲੋਡ ਇੰਜਣ"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "ਖੋਜ ਟੇਬਲ ਦੀ ਸਥਿਤੀ"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus ਸ਼ੁਰੂ ਹੋਣ ਸਮੇਂ ਪਹਿਲਾਂ ਲੋਡ ਕੀਤੇ ਇੰਜਣ"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "ਪ੍ਰੀ-ਲੋਡ ਇੰਜਣ"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "ਪਿਛਲਾ ਇੰਜਣ ਹਾਟਕੀ"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "IM ਨਾਂ ਵੇਖੋ"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ IM ਨਾਂ ਵੇਖੋ"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ ਇੰਪੁੱਟ ਨਾਂ ਵੇਖੋ"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ ਇੰਪੁੱਟ ਨਾਂ ਵੇਖੋ"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -221,16 +226,16 @@ msgstr "ਲਿਸਟ ਵਿੱਚ ਅਗਲਾ ਇੰਪੁੱਟ ਢੰਗ ਬ�
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "ਇੰਪੁੱਟ ਢੰਗ ਬੰਦ ਕਰਨ ਜਾਂ ਚਾਲੂ ਕਰਨ ਲਈ ਸ਼ਾਰਟਕੱਟ ਸਵਿੱਚਾਂ ਸੈੱਟ ਕਰੋ"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "ਟਰਿੱਗਰ ਹਾਟਕੀ"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
 #: ../data/ibus.schemas.in.h:18
@@ -306,16 +311,17 @@ msgid "Candidates orientation:"
 msgstr "ਉਮੀਦਵਾਰ ਸਥਿਤੀ:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਅਤੇ ਉਮੀਦਵਾਰ ਲਈ ਫੋਂਟ ਚੋਣ"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "ਚਾਲੂ ਜਾਂ ਬੰਦ:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਅਤੇ ਉਮੀਦਵਾਰ ਲਈ ਫੋਂਟ ਚੋਣ"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -364,10 +370,6 @@ msgstr "ਖੋਜ ਟੇਬਲ ਵਿੱਚ ਉਮੀਦਵਾਰ ਦੀ ਸਥ�
 msgid "Show information of the selected input method"
 msgstr "ਚੁਣੇ ਇੰਪੁੱਟ ਢੰਗ ਬਾਰੇ ਜਾਣਕਾਰੀ ਵੇਖੋ"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ ਇੰਪੁੱਟ ਨਾਂ ਵੇਖੋ"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "ਜਦੋਂ ਚੈੱਕ ਬਾਕਸ ਚੁਣਿਆ ਹੋਵੇ ਤਾਂ ਇੰਪੁੱਟ ਢੰਗ ਨਾਂ ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ ਵੇਖੋ"
@@ -384,10 +386,6 @@ msgstr "ਲਾਗਇਨ ਸਮੇਂ ibus ਚਲਾਉ"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "ਲਿਸਟ ਵਿੱਚ ਪਿਛਲਾ ਇੰਪੁੱਟ ਢੰਗ ਬਦਲਣ ਲਈ ਸ਼ਾਰਟਕੱਟ ਸਵਿੱਚ"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਅਤੇ ਉਮੀਦਵਾਰ ਲਈ ਕਸਟਮ ਫੋਂਟ"
@@ -403,6 +401,18 @@ msgstr ""
 "ਕਦੇ ਨਹੀਂ\n"
 "ਜਦੋਂ ਐਕਟਿਵ\n"
 "ਹਮੇਸ਼ਾ"
+
+#~ msgid "Custom Font"
+#~ msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ"
+
+#~ msgid "Show IM Name"
+#~ msgstr "IM ਨਾਂ ਵੇਖੋ"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "ਭਾਸ਼ਾ ਪੱਟੀ ਉੱਤੇ IM ਨਾਂ ਵੇਖੋ"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "ਪਸੰਦੀਦਾ ਫੋਂਟ ਵਰਤੋਂ"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "ਅਗਲੇ ਇੰਪੁੱਟ ਢੰਗ ਇੰਜਣ ਲਈ ਬਦਲਣ ਵਾਸਤੇ ਅਗਲਾ ਇੰਜਣ ਹਾਟ-ਕੀ"

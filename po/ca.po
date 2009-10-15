@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-19 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -174,12 +174,14 @@ msgid "IBus Preferences"
 msgstr "Prefèrencies de l'IBus"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "Oculta automàticament"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "Tipus de lletra personalitzat"
+#, fuzzy
+msgid "Custom font"
+msgstr "Tipus de lletra personalitzada:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -187,41 +189,44 @@ msgstr "Tipus de lletra personalitzat per al quadre d'idiomes"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "Tecla del mètode següent"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "Orientació de la taula de cerca"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientació de la taula de cerca. 0 = Horitzontal, 1 = Vertical"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "Carrega a l'inici"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "Orientació de la taula de cerca"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "Carrega els mètodes d'entrada a l'inici"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "Carrega a l'inici"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "Tecla del mètode anterior"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "Mostra el nom del mètode d'entrada"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -238,18 +243,18 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 "Estableix les dreceres de teclat per activar o desactivar el mètode d'entrada"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "Tecla d'activació"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
-msgstr "Empra el tipus de lletra personalitzat"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "Empra un tipus de lletra personalitzat"
 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
@@ -325,16 +330,17 @@ msgid "Candidates orientation:"
 msgstr "Orientació dels candidats:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "Escolliu el tipus de lletra per a la barra d'idioma i els candidats"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "Tipus de lletra personalitzada:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "Activa o desactiva:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "Escolliu el tipus de lletra per a la barra d'idioma i els candidats"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -384,10 +390,6 @@ msgstr "Estableix l'orientació dels candidats a la taula de cerca"
 msgid "Show information of the selected input method"
 msgstr "Mostra la informació del mètode d'entrada seleccionat"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Mostra el nom del mètode a la barra d'idioma quan s'activi l'opció"
@@ -404,10 +406,6 @@ msgstr "Inicia l'ibus en entrar"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "La drecera de teclat per canviar a l'anterior mètode d'entrada de la llista"
-
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "Empra un tipus de lletra personalitzat"
 
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
@@ -426,6 +424,18 @@ msgstr ""
 "Mai\n"
 "Quan s'activa\n"
 "Sempre"
+
+#~ msgid "Custom Font"
+#~ msgstr "Tipus de lletra personalitzat"
+
+#~ msgid "Show IM Name"
+#~ msgstr "Mostra el nom del mètode d'entrada"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "Empra el tipus de lletra personalitzat"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "Tecla ràpida per canviar al següent mètode d'entrada"

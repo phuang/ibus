@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -163,11 +163,11 @@ msgid "IBus Preferences"
 msgstr "IBus の設定"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+msgid "Auto hide"
 msgstr "自動的に隠す"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
+msgid "Custom font"
 msgstr "カスタムフォント"
 
 #: ../data/ibus.schemas.in.h:3
@@ -176,41 +176,44 @@ msgstr "言語パネル用のカスタムフォント名"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "次のエンジンへのホットキー"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "検索テーブルの方位"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "エンジンのプリロード"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "検索テーブルの方位"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus の開始中にエンジンをプリロード"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "エンジンのプリロード"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "前のエンジンへのホットキー"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "IM 名の表示"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "言語バーでの IM 名の表示"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "言語バーにインプットメソッド名を表示する"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "言語バーにインプットメソッド名を表示する"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -224,16 +227,16 @@ msgstr "リストの中で次のインプットメソッドに切り替えるた
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "トリガーホットキー"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
 #: ../data/ibus.schemas.in.h:18
@@ -309,16 +312,17 @@ msgid "Candidates orientation:"
 msgstr "候補ウィンドウの向き:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr "言語バーと候補用にフォントを選択します"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "カスタムフォント:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "切り替え"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr "言語バーと候補用にフォントを選択します"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -367,10 +371,6 @@ msgstr "ルックアップテーブルの中で候補ウィンドウの向きを
 msgid "Show information of the selected input method"
 msgstr "選択したインプットメソッドの情報を表示します"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "言語バーにインプットメソッド名を表示する"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
@@ -390,10 +390,6 @@ msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "カスタムフォントを使う"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr "言語バーと候補用にカスタムフォントを使用します"
@@ -410,6 +406,18 @@ msgstr ""
 "表示しない\n"
 "有効なときだけ表示する\n"
 "常に表示する"
+
+#~ msgid "Custom Font"
+#~ msgstr "カスタムフォント"
+
+#~ msgid "Show IM Name"
+#~ msgstr "IM 名の表示"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "言語バーでの IM 名の表示"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "カスタムフォントを使う"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr ""

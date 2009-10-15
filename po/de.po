@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: iBus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-04-17 11:32+0100\n"
 "Last-Translator: Fabian Affolter <fab@fedoraproject.org>\n"
 "Language-Team: Gemran <fedora-trans-de@redhat.com>\n"
@@ -157,54 +157,56 @@ msgid "IBus Preferences"
 msgstr "IBus-Einstellungen"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "Automatisch verstecken"
 
 #: ../data/ibus.schemas.in.h:2
 #, fuzzy
-msgid "Custom Font"
-msgstr "&Schriftart:"
+msgid "Custom font"
+msgstr "Benutzerdefinierte Schriftart:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
+#: ../data/ibus.schemas.in.h:6
+msgid "Orientation of lookup table"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:9
-msgid "Prev Engine Shortcut Keys"
+#: ../data/ibus.schemas.in.h:8
+msgid "Preload engines"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
+#: ../data/ibus.schemas.in.h:9
+msgid "Prev engine shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+msgid "Show icon on system tray"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:11
 #, fuzzy
-msgid "Show IM name on language bar"
+msgid "Show input method name"
 msgstr "Zeige Sprach-Panel:"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
-msgid "Show icon on system tray"
-msgstr ""
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#, fuzzy
+msgid "Show input method name on language bar"
+msgstr "Zeige Sprach-Panel:"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -217,15 +219,16 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:16
-msgid "Trigger Shortcut Keys"
-msgstr ""
+#, fuzzy
+msgid "Trigger shortcut keys"
+msgstr "Tastatureingabe aufnehmen"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
 msgstr "Benutze benutzerdefinierte Schriftart"
 
 #: ../data/ibus.schemas.in.h:18
@@ -301,16 +304,16 @@ msgid "Candidates orientation:"
 msgstr ""
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr ""
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "Benutzerdefinierte Schriftart:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "Aktivieren oder deaktivieren:"
+
+#: ../setup/setup.ui.h:22
+msgid "Font for language bar and candidates"
+msgstr ""
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -359,11 +362,6 @@ msgstr ""
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:37
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "Zeige Sprach-Panel:"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
@@ -380,10 +378,6 @@ msgstr "Starte ibus bei der Anmeldung"
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "Benutze benutzerdefinierte Schriftart"
-
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
 msgstr ""
@@ -399,6 +393,17 @@ msgstr ""
 "Niemals\n"
 "Wenn aktiv\n"
 "Immer"
+
+#, fuzzy
+#~ msgid "Custom Font"
+#~ msgstr "&Schriftart:"
+
+#, fuzzy
+#~ msgid "Show IM name on language bar"
+#~ msgstr "Zeige Sprach-Panel:"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "Benutze benutzerdefinierte Schriftart"
 
 #~ msgid "[Control+space]"
 #~ msgstr "[Ctrl+Leertaste]"

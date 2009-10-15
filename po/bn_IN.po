@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-14 13:10+0800\n"
+"POT-Creation-Date: 2009-10-16 07:20+0800\n"
 "PO-Revision-Date: 2009-09-02 12:29+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -160,12 +160,14 @@ msgid "IBus Preferences"
 msgstr "IBus সংক্রান্ত পছন্দ"
 
 #: ../data/ibus.schemas.in.h:1
-msgid "Auto Hide"
+#, fuzzy
+msgid "Auto hide"
 msgstr "স্বয়ংক্রিয়ভাবে আড়াল করা হবে"
 
 #: ../data/ibus.schemas.in.h:2
-msgid "Custom Font"
-msgstr "স্বনির্ধারিত ফন্ট"
+#, fuzzy
+msgid "Custom font"
+msgstr "স্বনির্ধারিত ফন্ট:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -173,41 +175,44 @@ msgstr "ভাষার প্যানেলের জন্য ব্যবহ
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
-msgid "Next Engine Shortcut Keys"
+msgid "Next engine shortcut keys"
 msgstr "পরবর্তী ইঞ্জিনের জন্য হট-কি"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Orientation of Lookup Table"
-msgstr "লুক-আপ টেবিলের দিশা"
-
-#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুক-আপ টেবিলের দিশা। 0 (০) = অনুভুমিক, 1 (১) = উল্লম্ব"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Preload Engines"
-msgstr "ইঞ্জিন পূর্বে লোড করা হবে"
+#: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Orientation of lookup table"
+msgstr "লুক-আপ টেবিলের দিশা"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:7
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus আরম্ভের সময় ইঞ্জিনগুলি পূর্বে লোড করা হবে"
 
+#: ../data/ibus.schemas.in.h:8
+#, fuzzy
+msgid "Preload engines"
+msgstr "ইঞ্জিন পূর্বে লোড করা হবে"
+
 #: ../data/ibus.schemas.in.h:9
 #, fuzzy
-msgid "Prev Engine Shortcut Keys"
+msgid "Prev engine shortcut keys"
 msgstr "পূর্ববর্তী ইঞ্জিনের হট-কি"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Show IM Name"
-msgstr "ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Show IM name on language bar"
-msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
-
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
 msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Show input method name"
+msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+msgid "Show input method name on language bar"
+msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -223,17 +228,17 @@ msgstr "তালিকায় উপস্থিত পরবর্তী ইন
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
 #, fuzzy
-msgid "The shortcut keys for turnning input method on or off"
+msgid "The shortcut keys for turning input method on or off"
 msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ করার জন্য প্রয়োজনীয় শর্ট-কাট কি নির্ধারণ করুন"
 
 #: ../data/ibus.schemas.in.h:16
 #, fuzzy
-msgid "Trigger Shortcut Keys"
+msgid "Trigger shortcut keys"
 msgstr "ট্রিগারের হট-কি"
 
-#: ../data/ibus.schemas.in.h:17
-msgid "Use Custom Font"
-msgstr "স্বনির্ধারিত ফন্ট ব্যবহার করা হবে"
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+msgid "Use custom font"
+msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
 #: ../data/ibus.schemas.in.h:18
 msgid "Use custom font name for language panel"
@@ -309,18 +314,19 @@ msgid "Candidates orientation:"
 msgstr "নির্বাচিত বস্তুর দিশা:"
 
 #: ../setup/setup.ui.h:20
-msgid "Choice font for language bar and candidates"
-msgstr ""
-"ভাষার বার ও এর মধ্যে প্রদর্শিত প্রযোজ্য বিকল্পগুলির জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের "
-"নাম"
-
-#: ../setup/setup.ui.h:21
 msgid "Custom font:"
 msgstr "স্বনির্ধারিত ফন্ট:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:21
 msgid "Enable or disable:"
 msgstr "সক্রিয় অথা নিষ্ক্রিয় করুন:"
+
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Font for language bar and candidates"
+msgstr ""
+"ভাষার বার ও এর মধ্যে প্রদর্শিত প্রযোজ্য বিকল্পগুলির জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের "
+"নাম"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
@@ -369,10 +375,6 @@ msgstr "লুক-আপ টেবিলের মধ্যে প্রযো�
 msgid "Show information of the selected input method"
 msgstr "নির্বাচিত ইনপুট পদ্ধতি সংক্রান্ত তথ্য প্রদর্শন করা হবে"
 
-#: ../setup/setup.ui.h:37
-msgid "Show input method name on language bar"
-msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
-
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "চেকবক্স নির্বাচিত হলে, ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
@@ -388,10 +390,6 @@ msgstr "লগ-ইন করার সময় ibus আরম্ভ করা হ�
 #: ../setup/setup.ui.h:42
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "তালিকায় উপস্থিত পূর্ববর্তী ইনপুট পদ্ধতিতে পরিবর্তনের জন্য প্রযোজ্য শর্ট-কাট কি"
-
-#: ../setup/setup.ui.h:44
-msgid "Use custom font"
-msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
 #: ../setup/setup.ui.h:45
 msgid "Use custom font for language bar and candidates"
@@ -410,6 +408,18 @@ msgstr ""
 "কখনো নয়\n"
 "সক্রিয় অবস্থায়\n"
 "সর্বদা"
+
+#~ msgid "Custom Font"
+#~ msgstr "স্বনির্ধারিত ফন্ট"
+
+#~ msgid "Show IM Name"
+#~ msgstr "ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
+
+#~ msgid "Show IM name on language bar"
+#~ msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
+
+#~ msgid "Use Custom Font"
+#~ msgstr "স্বনির্ধারিত ফন্ট ব্যবহার করা হবে"
 
 #~ msgid "Next engine hotkey for switch to next input method engine"
 #~ msgstr "পরবর্তী ইনপুট পদ্ধতির ইঞ্জিনে পরিবর্তনের জন্য পরবর্তী ইঞ্জিনের জন্য হট-কি"
