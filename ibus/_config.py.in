@@ -25,11 +25,16 @@ __all__ = (
     "get_license"
 )
 
+import gettext
+
+_ = lambda a: gettext.dgettext("ibus", a)
+
 def get_version():
-	return "@PACKAGE_VERSION@"
+	return '@PACKAGE_VERSION@'
 
 def get_copyright():
-    return "Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>"
+    return _('''Copyright (c) 2007-2009 Peng Huang
+Copying (c) 2007-2009 Red Hat, Inc.''')
 
 def get_license():
-    return "LGPL"
+    return 'LGPL'

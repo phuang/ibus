@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-16 07:20+0800\n"
+"POT-Creation-Date: 2009-10-23 13:59+0800\n"
 "PO-Revision-Date: 2009-09-03 15:52+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -24,6 +24,12 @@ msgstr "IBus"
 #: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
 msgid "IBus input method framework"
 msgstr "IBus ઇનપુટ પદ્દતિ ફ્રેમવર્ક"
+
+#: ../ibus/_config.py:36
+msgid ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copying (c) 2007-2009 Red Hat, Inc."
+msgstr ""
 
 #: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
 #: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
@@ -82,23 +88,23 @@ msgstr "લેખક: %s\n"
 msgid "Description:\n"
 msgstr "વર્ણન:\n"
 
-#: ../setup/main.py:107
+#: ../setup/main.py:105
 msgid "trigger"
 msgstr "ટ્રીગર"
 
-#: ../setup/main.py:119
+#: ../setup/main.py:116
 msgid "next input method"
 msgstr "પછીની ઇનપુટ પદ્દતિ"
 
-#: ../setup/main.py:131
+#: ../setup/main.py:127
 msgid "previous input method"
 msgstr "પહેલાની ઇનપુટ પદ્દતિ"
 
-#: ../setup/main.py:240
+#: ../setup/main.py:236
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ડિમન એ શરૂ થયેલ નથી. શું તમે હવે તેને શરૂ કરવા ઇચ્છો છો?"
 
-#: ../setup/main.py:255
+#: ../setup/main.py:251
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -112,7 +118,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:270
+#: ../setup/main.py:266
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s માટે કિબોર્ડ ટૂંકાણોને પસંદ કરો"

@@ -1,6 +1,6 @@
 /* vim:set et sts=4: */
 /* ibus
- * Copyright (C) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+ * Copyright (C) 2007-2009 Peng Huang <shawn.p.huang@gmail.com>
  *
  * main.c:
  *

@@ -2,7 +2,7 @@
 #
 # ibus - The Input Bus
 #
-# Copyright(c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright(c) 2007-2009 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -436,8 +436,8 @@ class Panel(ibus.PanelBase):
             about_dialog.set_license(ibus.get_license())
             about_dialog.set_comments(_("IBus is an intelligent input bus for Linux/Unix."))
             about_dialog.set_website("http://code.google.com/p/ibus")
-            about_dialog.set_authors(["Huang Peng <shawn.p.huang@gmail.com>"])
-            about_dialog.set_documenters(["Huang Peng <shawn.p.huang@gmail.com>"])
+            about_dialog.set_authors(["Peng Huang <shawn.p.huang@gmail.com>"])
+            about_dialog.set_documenters(["Peng Huang <shawn.p.huang@gmail.com>"])
             about_dialog.set_translator_credits(_("translator-credits"))
             about_dialog.set_logo_icon_name("ibus")
             about_dialog.set_icon_name("ibus")
