@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 13:59+0800\n"
+"POT-Creation-Date: 2009-10-23 15:56+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -21,95 +21,95 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
 msgid "IBus input method framework"
 msgstr "IBus радни оквир методе уноса"
 
-#: ../ibus/_config.py:36
+#: ../ibus/_config.py:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
-#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
+#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
 msgid "Other"
 msgstr "Друго"
 
-#: ../ui/gtk/panel.py:321
+#: ../ui/gtk/panel.py:322
 msgid "Restart"
 msgstr "Покрени поново"
 
-#: ../ui/gtk/panel.py:376
+#: ../ui/gtk/panel.py:377
 #, fuzzy
 msgid "Turn off input method"
 msgstr "Нема методе уноса"
 
-#: ../ui/gtk/panel.py:409
+#: ../ui/gtk/panel.py:410
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:437
+#: ../ui/gtk/panel.py:438
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus је интелигентна магистрала уноса за Linux/Unix."
 
-#: ../ui/gtk/panel.py:441
+#: ../ui/gtk/panel.py:442
 msgid "translator-credits"
 msgstr "Serbian <fedora-trans-sr@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:102
+#: ../ui/gtk/languagebar.py:103
 #, fuzzy
 msgid "About the Input Method"
 msgstr "Методе уноса"
 
-#: ../ui/gtk/languagebar.py:165
+#: ../ui/gtk/languagebar.py:166
 #, fuzzy
 msgid "Switch input method"
 msgstr "Нема методе уноса"
 
-#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
 #: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "О програму"
 
-#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
 msgstr ""
 
-#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, fuzzy, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Пречице тастатуре"
 
-#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
 msgstr ""
 
-#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
 msgstr ""
 
-#: ../setup/main.py:105
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr "окидач"
 
-#: ../setup/main.py:116
+#: ../setup/main.py:117
 #, fuzzy
 msgid "next input method"
 msgstr "Следећа метода уноса"
 
-#: ../setup/main.py:127
+#: ../setup/main.py:128
 #, fuzzy
 msgid "previous input method"
 msgstr "Претходна метода уноса"
 
-#: ../setup/main.py:236
+#: ../setup/main.py:237
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus демон није покренут. Да ли желите да га сада покренете?"
 
-#: ../setup/main.py:251
+#: ../setup/main.py:252
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -123,24 +123,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:266
+#: ../setup/main.py:267
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Изаберите пречицу тастатуре за %s"
 
-#: ../setup/keyboardshortcut.py:54
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "Пречице тастатуре"
 
-#: ../setup/keyboardshortcut.py:65
+#: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
 msgstr "Код тастера:"
 
-#: ../setup/keyboardshortcut.py:80
+#: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
 msgstr "Модификатори:"
 
-#: ../setup/keyboardshortcut.py:227
+#: ../setup/keyboardshortcut.py:228
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -148,21 +148,21 @@ msgstr ""
 "Притисните тастер (или комбинацију тастера).\n"
 "Прозорче ће бити затворено када се тастер отпусти."
 
-#: ../setup/keyboardshortcut.py:229
+#: ../setup/keyboardshortcut.py:230
 msgid "Please press a key (or a key combination)"
 msgstr "Притисните тастер (или комбинацију тастера)"
 
-#: ../setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:100
 msgid "Select an input method"
 msgstr "Изаберите методу уноса"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
 #, fuzzy
 msgid "Input Method"
 msgstr "Методе уноса"
 
-#: ../setup/enginetreeview.py:87
+#: ../setup/enginetreeview.py:88
 msgid "Kbd"
 msgstr ""
 

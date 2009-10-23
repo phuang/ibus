@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 13:59+0800\n"
+"POT-Creation-Date: 2009-10-23 15:56+0800\n"
 "PO-Revision-Date: 2009-10-03 17:05+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <fedora-trans-pl@redhat.com>\n"
@@ -17,90 +17,90 @@ msgstr ""
 msgid "IBus"
 msgstr "iBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
 msgid "IBus input method framework"
 msgstr "Struktura metody wprowadzania iBus"
 
-#: ../ibus/_config.py:36
+#: ../ibus/_config.py:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
-#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
+#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
 msgid "Other"
 msgstr "Inne"
 
-#: ../ui/gtk/panel.py:321
+#: ../ui/gtk/panel.py:322
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
-#: ../ui/gtk/panel.py:376
+#: ../ui/gtk/panel.py:377
 msgid "Turn off input method"
 msgstr "Wyłącz metodę wprowadzania"
 
-#: ../ui/gtk/panel.py:409
+#: ../ui/gtk/panel.py:410
 msgid "No input window"
 msgstr "Brak okna wprowadzania"
 
-#: ../ui/gtk/panel.py:437
+#: ../ui/gtk/panel.py:438
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "iBus jest inteligentną magistralą wprowadzania dla Linuksa/Uniksa."
 
-#: ../ui/gtk/panel.py:441
+#: ../ui/gtk/panel.py:442
 msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
-#: ../ui/gtk/languagebar.py:102
+#: ../ui/gtk/languagebar.py:103
 msgid "About the Input Method"
 msgstr "O metodzie wprowadzania"
 
-#: ../ui/gtk/languagebar.py:165
+#: ../ui/gtk/languagebar.py:166
 msgid "Switch input method"
 msgstr "Przełącz metodę wprowadzania"
 
-#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
 #: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "O programie"
 
-#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
 msgstr "Język: %s\n"
 
-#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Układ klawiatury: %s\n"
 
-#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
 msgstr "Opis:\n"
 
-#: ../setup/main.py:105
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr "przełącznik"
 
-#: ../setup/main.py:116
+#: ../setup/main.py:117
 msgid "next input method"
 msgstr "następna metoda wprowadzania"
 
-#: ../setup/main.py:127
+#: ../setup/main.py:128
 msgid "previous input method"
 msgstr "poprzednia metoda wprowadzania"
 
-#: ../setup/main.py:236
+#: ../setup/main.py:237
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Demon iBus nie jest uruchomiony. Uruchomić go teraz?"
 
-#: ../setup/main.py:251
+#: ../setup/main.py:252
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -114,24 +114,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:266
+#: ../setup/main.py:267
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Proszę wybrać skrót klawiszowy dla %s"
 
-#: ../setup/keyboardshortcut.py:54
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "Skróty klawiszowe"
 
-#: ../setup/keyboardshortcut.py:65
+#: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
 msgstr "Kod klawisza:"
 
-#: ../setup/keyboardshortcut.py:80
+#: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
 msgstr "Modyfikatory:"
 
-#: ../setup/keyboardshortcut.py:227
+#: ../setup/keyboardshortcut.py:228
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -139,20 +139,20 @@ msgstr ""
 "Proszę nacisnąć klawisz (lub kombinację klawiszy).\n"
 "Okno dialogowe zostanie zamknięte po zwolnieniu klawisza."
 
-#: ../setup/keyboardshortcut.py:229
+#: ../setup/keyboardshortcut.py:230
 msgid "Please press a key (or a key combination)"
 msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy)"
 
-#: ../setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:100
 msgid "Select an input method"
 msgstr "Wybór metodę wprowadzania"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "Metoda wprowadzania"
 
-#: ../setup/enginetreeview.py:87
+#: ../setup/enginetreeview.py:88
 msgid "Kbd"
 msgstr "KBD"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 13:59+0800\n"
+"POT-Creation-Date: 2009-10-23 15:56+0800\n"
 "PO-Revision-Date: 2009-09-02 12:29+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -22,90 +22,90 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
 msgid "IBus input method framework"
 msgstr "IBus ইনপুট পদ্ধতির পরিকাঠামো"
 
-#: ../ibus/_config.py:36
+#: ../ibus/_config.py:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
-#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
+#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: ../ui/gtk/panel.py:321
+#: ../ui/gtk/panel.py:322
 msgid "Restart"
 msgstr "পুনরারম্ভ"
 
-#: ../ui/gtk/panel.py:376
+#: ../ui/gtk/panel.py:377
 msgid "Turn off input method"
 msgstr "ইনপুট পদ্ধতি বন্ধ করুন"
 
-#: ../ui/gtk/panel.py:409
+#: ../ui/gtk/panel.py:410
 msgid "No input window"
 msgstr "ইনপুটের উদ্দেশ্যে উইন্ডো অনুপস্থিত"
 
-#: ../ui/gtk/panel.py:437
+#: ../ui/gtk/panel.py:438
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix-র সাথে ব্যবহারযোগ্য বুদ্ধিবিশিষ্ট ইনপুট বাস হল IBus"
 
-#: ../ui/gtk/panel.py:441
+#: ../ui/gtk/panel.py:442
 msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
-#: ../ui/gtk/languagebar.py:102
+#: ../ui/gtk/languagebar.py:103
 msgid "About the Input Method"
 msgstr "ইনপুট পদ্ধতি পরিচিতি"
 
-#: ../ui/gtk/languagebar.py:165
+#: ../ui/gtk/languagebar.py:166
 msgid "Switch input method"
 msgstr "ইনপুট পদ্ধতি পরিবর্তন করুন"
 
-#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
 #: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "পরিচিতি"
 
-#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
 msgstr "ভাষা: %s\n"
 
-#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "কি-বোর্ড বিন্যাস: %s\n"
 
-#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
 msgstr "নির্মাতা: %s\n"
 
-#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
 msgstr "বিবরণ:\n"
 
-#: ../setup/main.py:105
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr "ট্রিগার"
 
-#: ../setup/main.py:116
+#: ../setup/main.py:117
 msgid "next input method"
 msgstr "পরবর্তী ইনপুট পদ্ধতি"
 
-#: ../setup/main.py:127
+#: ../setup/main.py:128
 msgid "previous input method"
 msgstr "পূর্ববর্তী ইনপুট পদ্ধতি"
 
-#: ../setup/main.py:236
+#: ../setup/main.py:237
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ডেমন আরম্ভ করা হয়নি। এটি এখন আরম্ভ করা হবে কি?"
 
-#: ../setup/main.py:251
+#: ../setup/main.py:252
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -119,24 +119,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:266
+#: ../setup/main.py:267
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-র জন্য কি-বোর্ড শর্ট-কাট ধার্য করুন"
 
-#: ../setup/keyboardshortcut.py:54
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "কি-বোর্ড শর্ট-কাট"
 
-#: ../setup/keyboardshortcut.py:65
+#: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
 msgstr "কি-র কোড:"
 
-#: ../setup/keyboardshortcut.py:80
+#: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
 msgstr "পরিবর্তক:"
 
-#: ../setup/keyboardshortcut.py:227
+#: ../setup/keyboardshortcut.py:228
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -144,20 +144,20 @@ msgstr ""
 "অনুগ্রহ করে কোনো কি (অথবা কি সংকলন) টিপুন।\n"
 "কি মুক্ত করা হলে এই ডায়লগ বক্সটি বন্ধ করা হবে।"
 
-#: ../setup/keyboardshortcut.py:229
+#: ../setup/keyboardshortcut.py:230
 msgid "Please press a key (or a key combination)"
 msgstr "অনুগ্রহ করে একটি কি (অথবা কি সংকলন) টিপুন"
 
-#: ../setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:100
 msgid "Select an input method"
 msgstr "একটি ইনপুট পদ্ধতি নির্বাচন করুন"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "ইনপুট পদ্ধতি"
 
-#: ../setup/enginetreeview.py:87
+#: ../setup/enginetreeview.py:88
 msgid "Kbd"
 msgstr "Kbd"
 

@@ -49,7 +49,8 @@ die "Could not open file ibuskeysyms.h: $!\n" unless open(OUT_IBUSKEYSYMS, ">:ut
 
 print OUT_IBUSKEYSYMS<<EOF;
 /* ibus - The Input Bus
- * Copyright (C) 2008-2009 Huang Peng <shawn.p.huang\@gmail.com>
+ * Copyright (C) 2008-2009 Peng Huang <shawn.p.huang\@gmail.com>
+ * Copyright (C) 2008-2009 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

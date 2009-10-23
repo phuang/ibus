@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 13:59+0800\n"
+"POT-Creation-Date: 2009-10-23 15:56+0800\n"
 "PO-Revision-Date: 2009-09-03 11:08+0530\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team:  Swathantra Malayalam Computing|സ്വതന്ത്ര മലയാളം കമ്പ്യൂട്ടിങ്  <smc-"
@@ -22,90 +22,90 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:110
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
 msgid "IBus input method framework"
 msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
 
-#: ../ibus/_config.py:36
+#: ../ibus/_config.py:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:40 ../ui/gtk/panel.py:346 ../ui/gtk/panel.py:347
-#: ../ui/gtk/panel.py:348 ../ui/gtk/panel.py:349
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
+#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
 msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
-#: ../ui/gtk/panel.py:321
+#: ../ui/gtk/panel.py:322
 msgid "Restart"
 msgstr "വീണ്ടും ആരംഭിക്കുക"
 
-#: ../ui/gtk/panel.py:376
+#: ../ui/gtk/panel.py:377
 msgid "Turn off input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓഫ് ചെയ്യുക"
 
-#: ../ui/gtk/panel.py:409
+#: ../ui/gtk/panel.py:410
 msgid "No input window"
 msgstr "ഇന്‍പുട്ട് ജാലകം ലഭ്യമല്ല"
 
-#: ../ui/gtk/panel.py:437
+#: ../ui/gtk/panel.py:438
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "ലിനക്സ്/യുണിക്സിനുള്ള ഇന്റലിജന്റ് ഇന്‍പുട്ട് ബസാണു് IBus."
 
-#: ../ui/gtk/panel.py:441
+#: ../ui/gtk/panel.py:442
 msgid "translator-credits"
 msgstr "അനി പീറ്റര്‍ <apeter@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:102
+#: ../ui/gtk/languagebar.py:103
 msgid "About the Input Method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് സംബന്ധിച്ചു്"
 
-#: ../ui/gtk/languagebar.py:165
+#: ../ui/gtk/languagebar.py:166
 msgid "Switch input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് മാറ്റുക"
 
-#: ../ui/gtk/engineabout.py:34 ../setup/engineabout.py:34
+#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
 #: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "സംബന്ധിച്ചു്"
 
-#: ../ui/gtk/engineabout.py:62 ../setup/engineabout.py:62
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
 msgstr "ഭാഷ: %s\n"
 
-#: ../ui/gtk/engineabout.py:64 ../setup/engineabout.py:64
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "കീബോര്‍ഡ് മാതൃക: %s\n"
 
-#: ../ui/gtk/engineabout.py:66 ../setup/engineabout.py:66
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
 msgstr "രചയിതാവു്: %s\n"
 
-#: ../ui/gtk/engineabout.py:68 ../setup/engineabout.py:68
+#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
 msgstr "വിവരണം:\n"
 
-#: ../setup/main.py:105
+#: ../setup/main.py:106
 msgid "trigger"
 msgstr "ട്രിഗ്ഗര്‍ ചെയ്യുക"
 
-#: ../setup/main.py:116
+#: ../setup/main.py:117
 msgid "next input method"
 msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്"
 
-#: ../setup/main.py:127
+#: ../setup/main.py:128
 msgid "previous input method"
 msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്"
 
-#: ../setup/main.py:236
+#: ../setup/main.py:237
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ഡെമണ്‍ ആരംഭിച്ചിട്ടില്ല. നിങ്ങള്‍ക്കിതു് ഉടന്‍ ആരംഭിക്കണമോ?"
 
-#: ../setup/main.py:251
+#: ../setup/main.py:252
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -119,24 +119,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:266
+#: ../setup/main.py:267
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-നുള്ള കീബോര്‍ഡ് എളുപ്പവഴി തെരഞ്ഞെടുക്കുക"
 
-#: ../setup/keyboardshortcut.py:54
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "കീബോര്‍ഡ് എളുപ്പവഴികള്‍"
 
-#: ../setup/keyboardshortcut.py:65
+#: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
 msgstr "കീ കോഡ്:"
 
-#: ../setup/keyboardshortcut.py:80
+#: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
 msgstr "മോഡിഫയറുകള്‍:"
 
-#: ../setup/keyboardshortcut.py:227
+#: ../setup/keyboardshortcut.py:228
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -144,20 +144,20 @@ msgstr ""
 "ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്).\n"
 "കീ റിലീസ് ചെയ്യുമ്പോള്‍ ഡയലോഗ് അടയ്ക്കുന്നു."
 
-#: ../setup/keyboardshortcut.py:229
+#: ../setup/keyboardshortcut.py:230
 msgid "Please press a key (or a key combination)"
 msgstr "ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്)"
 
-#: ../setup/enginecombobox.py:99
+#: ../setup/enginecombobox.py:100
 msgid "Select an input method"
 msgstr "ഒരു ഇന്‍പുട്ട് മെഥേഡ് തെരഞ്ഞെടുക്കുക"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:59 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
 msgid "Input Method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ്"
 
-#: ../setup/enginetreeview.py:87
+#: ../setup/enginetreeview.py:88
 msgid "Kbd"
 msgstr "Kbd"
 
