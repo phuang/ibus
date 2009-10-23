@@ -1,6 +1,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input IBus
  * Copyright (C) 2008-2009 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2009 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
