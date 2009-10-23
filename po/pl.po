@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-23 15:56+0800\n"
-"PO-Revision-Date: 2009-10-03 17:05+0200\n"
+"PO-Revision-Date: 2009-10-23 23:16+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <fedora-trans-pl@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copying (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
 #: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
@@ -161,30 +163,26 @@ msgid "IBus Preferences"
 msgstr "Preferencje programu iBus"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "Automatyczne ukrywanie"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "Własna czcionka:"
+msgstr "Własna czcionka"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "Nazwa własnej czcionki dla panelu języków"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "Klawisz skrótu następnego mechanizmu"
+msgstr "Klawisze skrótów następnego mechanizmu"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientacja tablicy wyszukiwania. 0 = pozioma, 1 = pionowa"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "Orientacja tablicy wyszukiwania"
 
@@ -193,27 +191,24 @@ msgid "Preload Engines during ibus starts up"
 msgstr "Wczytanie mechanizmów podczas uruchamiania programu iBus"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload engines"
 msgstr "Wcześniejsze wczytanie mechanizmów"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "Klawisz skrótu poprzedniego mechanizmu"
+msgstr "Klawisze skrótów poprzedniego mechanizmu"
 
 #: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "Wyświetlanie ikony w obszarze powiadamiania"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Show input method name"
-msgstr "Wyświetlenie nazwy metody wprowadzania na panelu języków"
+msgstr "Wyświetlanie nazwy metody wprowadzania"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
-msgstr "Wyświetlenie nazwy metody wprowadzania na panelu języków"
+msgstr "Wyświetlanie nazwy metody wprowadzania na panelu języków"
 
 #: ../data/ibus.schemas.in.h:13
 msgid ""
@@ -229,16 +224,12 @@ msgstr ""
 "Klawisz skrótu do przełączenia na następną metodę wprowadzania na liście"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
-msgstr ""
-"Ustawienie skrótów klawiszowych do włączania lub wyłączania metody "
-"wprowadzania"
+msgstr "Klawisze skrótów do włączania lub wyłączania metody wprowadzania"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "Klawisz skrótu przełącznika"
+msgstr "Klawisze skrótów przełącznika"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
 msgid "Use custom font"
@@ -310,7 +301,7 @@ msgstr "Zaawansowane"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "Zawsze"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -325,20 +316,16 @@ msgid "Enable or disable:"
 msgstr "Włączenie lub wyłączenie:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Font for language bar and candidates"
-msgstr "Wybór czcionki dla panela języków i kandydatów"
+msgstr "Czcionka dla panela języków i kandydatów"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
 msgstr "Ogólne"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"Poziome\n"
-"Pionowe"
+msgstr "Poziomo"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -354,7 +341,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "Nigdy"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -380,17 +367,17 @@ msgstr "Ustawienie orientacji kandydatów w tablicy wyszukiwania"
 
 #: ../setup/setup.ui.h:36
 msgid "Show information of the selected input method"
-msgstr "Wyświetlenie informacji o wybranej metodzie wprowadzania"
+msgstr "Wyświetlanie informacji o wybranej metodzie wprowadzania"
 
 #: ../setup/setup.ui.h:38
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
-"Wyświetlenie nazwy metody wprowadzania na panelu języków podczas zaznaczania "
+"Wyświetlanie nazwy metody wprowadzania na panelu języków podczas zaznaczania "
 "pola wyboru"
 
 #: ../setup/setup.ui.h:39
 msgid "Show language panel:"
-msgstr "Wyświetlenie panelu języków:"
+msgstr "Wyświetlanie panelu języków:"
 
 #: ../setup/setup.ui.h:40
 msgid "Start ibus on login"
@@ -407,42 +394,8 @@ msgstr "Nazwa własnej czcionki w panelu języków i kandydatów"
 
 #: ../setup/setup.ui.h:48
 msgid "Vertical"
-msgstr ""
+msgstr "Pionowo"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"Nigdy\n"
-"W czasie aktywności\n"
-"Zawsze"
-
-#~ msgid "Custom Font"
-#~ msgstr "Własna czcionka"
-
-#~ msgid "Show IM Name"
-#~ msgstr "Wyświetlanie nazwy metody wprowadzania"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "Wyświetlanie nazwy metody wprowadzania na panelu języków"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "Użycie własnej czcionki"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr ""
-#~ "Klawisz skrótu następnego mechanizmu do przełączenia na następny "
-#~ "mechanizm metody wprowadzania"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr ""
-#~ "Klawisz skrótu poprzedniego mechanizmu do przełączenia na poprzedni "
-#~ "mechanizm metody wprowadzania"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr ""
-#~ "Klawisz skrótu przełącznika do włączenia lub wyłączenia kontekstu "
-#~ "wprowadzania"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
+msgstr "W czasie aktywności"
