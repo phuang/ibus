@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 15:56+0800\n"
+"POT-Creation-Date: 2009-10-24 11:23+0800\n"
 "PO-Revision-Date: 2009-09-02 12:29+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -26,7 +26,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus ইনপুট পদ্ধতির পরিকাঠামো"
 
-#: ../ibus/_config.py:37
+#: ../ibus/_config.py.in:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."

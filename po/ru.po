@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-23 15:56+0800\n"
+"POT-Creation-Date: 2009-10-24 11:23+0800\n"
 "PO-Revision-Date: 2009-10-14 09:39+0300\n"
 "Last-Translator: Alexey Kotlyarov <koterpillar@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -25,7 +25,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "Система методов ввода IBus"
 
-#: ../ibus/_config.py:37
+#: ../ibus/_config.py.in:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."

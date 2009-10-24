@@ -16,7 +16,7 @@ bus/inputcontext.c
 bus/panelproxy.c
 ibus/bus.py
 ibus/__init__.py
-ibus/_config.py
+ibus/_config.py.in
 ibus/common.py
 ibus/utility.py
 ibus/keysyms.py
