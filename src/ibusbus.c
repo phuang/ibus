@@ -227,7 +227,8 @@ _changed_cb (GFileMonitor       *monitor,
     // g_debug ("changed %x", event_type);
     if (ibus_bus_is_connected (bus))
         return;
-    if (event_type == G_FILE_MONITOR_EVENT_CHANGED) {
+    if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
+        event_type == G_FILE_MONITOR_EVENT_DELETED) {
         ibus_bus_connect (bus);
     }
 }
