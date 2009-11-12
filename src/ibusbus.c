@@ -227,7 +227,7 @@ _changed_cb (GFileMonitor       *monitor,
 {
     if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
         event_type != G_FILE_MONITOR_EVENT_CREATED &&
-        event_type != G_FILE_MONITOR_EVENT_DELETED &&)
+        event_type != G_FILE_MONITOR_EVENT_DELETED)
         return;
 
     if (ibus_bus_is_connected (bus))
