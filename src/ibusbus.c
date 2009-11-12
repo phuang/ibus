@@ -225,13 +225,15 @@ _changed_cb (GFileMonitor       *monitor,
              GFileMonitorEvent   event_type,
              IBusBus            *bus)
 {
-    // g_debug ("changed %x", event_type);
+    if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
+        event_type != G_FILE_MONITOR_EVENT_CREATED &&
+        event_type != G_FILE_MONITOR_EVENT_DELETED &&)
+        return;
+
     if (ibus_bus_is_connected (bus))
         return;
-    if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
-        event_type == G_FILE_MONITOR_EVENT_DELETED) {
-        ibus_bus_connect (bus);
-    }
+    
+    ibus_bus_connect (bus);
 }
 
 static void
