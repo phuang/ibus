@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-24 11:23+0800\n"
-"PO-Revision-Date: 2009-09-01 11:24+0530\n"
+"PO-Revision-Date: 2009-11-13 16:25+0530\n"
 "Last-Translator: I. Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
+"\n"
 "\n"
 "\n"
 
@@ -32,6 +33,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copying (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
 #: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
@@ -167,21 +170,18 @@ msgid "IBus Preferences"
 msgstr "IBus முன்னுரிமைகள்"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "தானாக மறை"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "தனிபயன் எழுத்துரு:"
+msgstr "தனிபயன் எழுத்துரு"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "தனிபயன் எழுத்துரு பெயர் மொழி பலகத்துக்கு"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next engine shortcut keys"
 msgstr "அடுத்த இயந்திர குறுக்குவிசை"
 
@@ -190,7 +190,6 @@ msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "காணும் அட்டவணையின் திசை. 0 = கிடைமட்டம், 1 = செங்குத்து"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "காணும் அட்டவணையின் திசை"
 
@@ -199,23 +198,20 @@ msgid "Preload Engines during ibus starts up"
 msgstr "ibus துவங்கும் போது முன்னேற்றப்பட்ட எந்திரங்கள் "
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload engines"
 msgstr "முன்ஏற்றப்பட்ட இயந்திரங்கள்"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "முந்தைய இயந்திர குறுக்குவிசை"
+msgstr "முந்தைய இயந்திர குறுக்குவிசைகள்"
 
 #: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "கணினி தட்டில் சின்னத்தை காட்டு"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Show input method name"
-msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
+msgstr "உள்ளீடு முறையின் பெயரை காட்டு"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
@@ -232,12 +228,10 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr "பட்டியலில் அடுத்த உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid "Trigger shortcut keys"
 msgstr "ட்ரிகர் குறுக்குவிசை"
 
@@ -311,7 +305,7 @@ msgstr "கூடுதல்"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "எப்போதும்"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -326,7 +320,6 @@ msgid "Enable or disable:"
 msgstr "செயல்படுத்து அல்லது செயல்நீக்கு:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Font for language bar and candidates"
 msgstr "மொழி பட்டை மற்றும் நபர்களுக்கு எழுத்துரு தேர்வு"
 
@@ -335,11 +328,8 @@ msgid "General"
 msgstr "பொது"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"கிடைமட்டம்\n"
-"செங்குத்து"
+msgstr "கிடைமட்டம்"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -347,12 +337,11 @@ msgstr "செயல்படுத்தப்பட்ட உள்ளீட�
 
 #: ../setup/setup.ui.h:28
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
+msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "ஒருபோதும்"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -400,38 +389,9 @@ msgstr "மொழி பட்டை மற்றும் நபர்களு
 
 #: ../setup/setup.ui.h:48
 msgid "Vertical"
-msgstr ""
+msgstr "செங்குத்து"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"ஒருபோதும்\n"
-"செயலிலிருக்கும் போது\n"
-"எப்போதும்"
+msgstr "செயலிலிருக்கும் போது"
 
-#~ msgid "Custom Font"
-#~ msgstr "தனிபயன் எழுத்துரு"
-
-#~ msgid "Show IM Name"
-#~ msgstr "IM பெயரை காட்டு"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "மொழி பலகத்தில் IM பெயரை காட்டு"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr "அடுத்த உள்ளீடு முறை இயந்திரத்தை மாற்றும் போது அடுத்த இயந்திர குறுக்குவிசை "
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr "முந்தைய உள்ளீடு முறை இயந்திரத்தை மாற்றும் போது முந்தைய இயந்திர குறுக்குவிசை "
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr ""
-#~ "உள்ளீடு சூழலை செயல்படுத்த அல்லது செயல் நீக்க ட்ரிகர் குறுக்குவிசையை செயல்படுத்து அல்லது "
-#~ "செயல்நீக்கு"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
