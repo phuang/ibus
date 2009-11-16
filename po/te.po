@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-24 11:23+0800\n"
-"PO-Revision-Date: 2009-09-09 15:52+0530\n"
+"PO-Revision-Date: 2009-11-12 12:49+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -34,6 +34,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"కాపీరైట్ (c) 2007-2009 Peng Huang\n"
+"కాపీరైట్ (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
 #: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
@@ -169,30 +171,26 @@ msgid "IBus Preferences"
 msgstr "IBus అభీష్టములు"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "స్వయంచాలకంగా మరుగునవుంచు"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "మలచుకొనిన ఫాంటు:"
+msgstr "మలచుకొనిన ఫాంటు"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "భాష ప్యానల్ కొరకు మలచుకొనిన ఫాంటు నామము"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "తరువాతి యింజన్ హాట్‌కీ"
+msgstr "తరువాతి యింజన్‌కు లఘువులు"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "లుకప్ పట్టిక సర్దుబాటు. 0 = చదరముగా, 1 = నిలువుగా"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "లుకప్ పట్టిక సర్దుబాటు"
 
@@ -201,23 +199,20 @@ msgid "Preload Engines during ibus starts up"
 msgstr "ibus ప్రారంభమునందు ముందుగా లోడైన యింజన్లు"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload engines"
 msgstr "ముందుగా లోడైన యింజన్లు"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "మునుపటి యింజన్ హాట్‌కీ"
+msgstr "మునుపటి యింజన్ లఘువులు"
 
 #: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "సిస్టమ్ ట్రే నందు ప్రతిమను చూపుము"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Show input method name"
-msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
+msgstr "యిన్పుట్ పద్దతి నామమును చూపుము"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
@@ -236,14 +231,12 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
-msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువు కీలను అమర్చుము"
+msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుటకు లేదా ఆఫ్ చేయుటకు లఘువులు"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "బిస హాట్‌కీ"
+msgstr "లఘవులను నొక్కుము"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
 msgid "Use custom font"
@@ -315,7 +308,7 @@ msgstr "అధునాతన"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "ఎల్లప్పుడు"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -330,20 +323,16 @@ msgid "Enable or disable:"
 msgstr "చేతనముచేయి లేదా అచేతనముచేయి:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Font for language bar and candidates"
-msgstr "భాషా పట్టీ మరియు కాండిడేట్లకొరకు యెంచుకొనిన ఫాంటు"
+msgstr "భాషా పట్టీ మరియు కాండిడేట్ల కొరకు ఫాంటు"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
 msgstr "సాదారణ"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"చదరముగా\n"
-"నిలువుగా"
+msgstr "అడ్డముగా"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -355,7 +344,7 @@ msgstr "చేతనమైన యిన్పుట్ పద్దతులల�
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "ఎప్పటికివద్దు"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -403,36 +392,9 @@ msgstr "భాషా పట్టీ మరియు కాండిడేట్
 
 #: ../setup/setup.ui.h:48
 msgid "Vertical"
-msgstr ""
+msgstr "వెర్టికల్"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"ఎప్పటికివద్దు\n"
-"క్రియాశీలముగా వున్నప్పుడు\n"
-"ఎల్లప్పుడు"
+msgstr "క్రియాశీలముగా వున్నప్పుడు"
 
-#~ msgid "Custom Font"
-#~ msgstr "మలచుకొనిన ఫాంటు"
-
-#~ msgid "Show IM Name"
-#~ msgstr "IM నామము చూపుము"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "భాషా పట్టీపై IM నామము చూపుము"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr "తరువాతి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు తరువాతి యింజన్ హాట్‌కీ"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr "మునుపటి ఇన్పుట్ పద్దతి యింజనుకు మారుటకు మునుపటి యింజన్ హాట్‌కీ"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "ఇన్పుట్ సందర్భమును చేతనము చేయుటకు లేదా అచేతనము చేయుటకు బిస హాట్‌కీ"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
