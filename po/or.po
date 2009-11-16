@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-10-24 11:23+0800\n"
-"PO-Revision-Date: 2009-09-02 17:31+0530\n"
+"PO-Revision-Date: 2009-11-14 15:22+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms:  nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -37,6 +37,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copying (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
 #: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
@@ -172,30 +174,26 @@ msgid "IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "ଇଚ୍ଛାରୂପୀ ଅକ୍ଷରରୂପ:"
+msgstr "ଇଚ୍ଛାରୂପୀ ଅକ୍ଷରରୂପ"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମ"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ହଟ କି"
+msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ। 0 = ଭୂ-ସମାନ୍ତର, 1 = ଭୂ-ଲମ୍ବ"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ"
 
@@ -204,23 +202,20 @@ msgid "Preload Engines during ibus starts up"
 msgstr "ibus ଆରମ୍ଭ ସମୟରେ ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload engines"
-msgstr "ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
+msgstr "ଯନ୍ତ୍ରକୁ ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "ପୂର୍ବ ଯନ୍ତ୍ର ହଟ କି"
+msgstr "ପୂର୍ବ ଯନ୍ତ୍ରର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "ତନ୍ତ୍ର ଟ୍ରେରେ ଚିତ୍ରସଂକେତଗୁଡ଼ିକୁ ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Show input method name"
-msgstr "ଭାଷା ତାଲିକା ପାଇଁ ନିବେଶ ପଦ୍ଧତି ନାମ ଦର୍ଶାନ୍ତୁ"
+msgstr "ନିବେଶ ପଦ୍ଧତି ନାମ ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
@@ -230,22 +225,19 @@ msgstr "ଭାଷା ତାଲିକା ପାଇଁ ନିବେଶ ପଦ୍�
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "ତାଲିକାରେ ପରବର୍ତ୍ତୀ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
-msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅନ କିମ୍ବା ଅଫ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକୁ ସେଟକରନ୍ତୁ"
+msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅନ କିମ୍ବା ଅଫ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "ହଟ କିକୁ ଟ୍ରିଗର କରନ୍ତୁ"
+msgstr "ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକୁ ଟ୍ରିଗର କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
 msgid "Use custom font"
@@ -317,7 +309,7 @@ msgstr "ଉନ୍ନତ"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "ସର୍ବଦା"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -332,20 +324,16 @@ msgid "Enable or disable:"
 msgstr "ସକ୍ରିୟ ଅଥବା ନିଷ୍କ୍ରିୟ:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Font for language bar and candidates"
-msgstr "ଭାଷା ତାଲିକା ପଟି ଏବଂ ବ୍ୟକ୍ତି ପାଇଁ ଅକ୍ଷରରୂପ ବାଛନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକା ପଟି ଏବଂ ବ୍ୟକ୍ତି ପାଇଁ ଅକ୍ଷରରୂପ"
 
 #: ../setup/setup.ui.h:23
 msgid "General"
 msgstr "ସାଧାରଣ"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"ଭୂ-ସମାନ୍ତରାଳ\n"
-"ଭୂ-ଲମ୍ବ"
+msgstr "ଭୂ-ସମାନ୍ତରାଳ"
 
 #: ../setup/setup.ui.h:27
 msgid "Move down the selected input method in the enabled input methods"
@@ -357,7 +345,7 @@ msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତି ତାଲିକା
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "କଦାପି ନୁହଁ"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -405,36 +393,9 @@ msgstr "ଭାଷା ତାଲିକା ଏବଂ ପ୍ରାର୍ଥୀମା
 
 #: ../setup/setup.ui.h:48
 msgid "Vertical"
-msgstr ""
+msgstr "ଭୂଲମ୍ବ"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"କଦାପି ନୁହଁ\n"
-"ସକ୍ରିୟ ଥିବା ସମୟରେ\n"
-"ସର୍ବଦା"
+msgstr "ସକ୍ରିୟ ଥିବା ସମୟରେ"
 
-#~ msgid "Custom Font"
-#~ msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ"
-
-#~ msgid "Show IM Name"
-#~ msgstr "IM ନାମ ଦର୍ଶାନ୍ତୁ"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "ଭାଷା ତାଲିକା ପଟିରେ IM ନାମ ଦର୍ଶାନ୍ତୁ"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପକୁ ବ୍ୟବହାର କରନ୍ତୁ"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ରକୁ ବଦଳାଇବା ପାଇଁ ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ହଟ କି"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ ଯନ୍ତ୍ର ପାଇଁ ପୂର୍ବ ଯନ୍ତ୍ର ହଟ କି"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "ହଟ କିକୁ ଟ୍ରିଗର କରନ୍ତୁ ଅଥବା ନିବେଶ ପ୍ରସଙ୍ଗକୁ ସକ୍ରିୟ କିମ୍ବା ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
