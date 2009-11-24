@@ -402,7 +402,6 @@ static void
 ibus_bus_unwatch_dbus_signal (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
-    g_assert (ibus_bus_is_connected (bus));
 
     const gchar *rule;
 
@@ -448,7 +447,6 @@ ibus_bus_call (IBusBus      *bus,
                ...)
 {
     g_assert (IBUS_IS_BUS (bus));
-    g_assert (ibus_bus_is_connected (bus));
     g_assert (name != NULL);
     g_assert (path != NULL);
     g_assert (interface != NULL);
@@ -460,6 +458,8 @@ ibus_bus_call (IBusBus      *bus,
     GType type;
     gboolean retval;
     IBusBusPrivate *priv;
+
+    g_return_val_if_fail (ibus_bus_is_connected (bus), FALSE);
 
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
@@ -597,8 +597,6 @@ gboolean
 ibus_bus_name_has_owner (IBusBus        *bus,
                          const gchar    *name)
 {
-    g_assert (IBUS_IS_BUS (bus));
-
     gboolean retval;
     gboolean result;
 
