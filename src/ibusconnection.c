@@ -756,11 +756,10 @@ ibus_connection_call (IBusConnection     *connection,
     g_assert (path != NULL);
     g_assert (interface != NULL);
     g_assert (member != NULL);
+    g_return_val_if_fail (ibus_connection_is_connected (connection), FALSE);
 
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
-
-    g_return_val_if_fail (ibus_connection_is_connected (connection), FALSE);
 
     IBusMessage *message, *reply;
     IBusError *tmp_error;
