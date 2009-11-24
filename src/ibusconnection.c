@@ -760,7 +760,7 @@ ibus_connection_call (IBusConnection     *connection,
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);
 
-    g_assert (dbus_connection_get_is_connected (priv->connection));
+    g_return_val_if_fail (ibus_connection_is_connected (connection), FALSE);
 
     IBusMessage *message, *reply;
     IBusError *tmp_error;
@@ -825,7 +825,7 @@ void
 ibus_connection_flush (IBusConnection *connection)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
-    g_assert (ibus_connection_is_connected (connection));
+    g_return_if_fail (ibus_connection_is_connected (connection));
 
     IBusConnectionPrivate *priv;
 
