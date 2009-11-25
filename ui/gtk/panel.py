@@ -421,6 +421,8 @@ class Panel(ibus.PanelBase):
                 self.__status_icon)
 
     def __im_menu_item_activate_cb(self, item, engine):
+        if not self.__focus_ic:
+            return
         if engine:
             self.__focus_ic.set_engine(engine)
         else:
