@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-24 11:23+0800\n"
+"POT-Creation-Date: 2009-11-27 17:22+0900\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -49,11 +49,11 @@ msgstr "インプットメソッドをオフにする"
 msgid "No input window"
 msgstr "入力ウィンドウがありません"
 
-#: ../ui/gtk/panel.py:438
+#: ../ui/gtk/panel.py:440
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk/panel.py:442
+#: ../ui/gtk/panel.py:444
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
@@ -181,16 +181,14 @@ msgid "Custom font name for language panel"
 msgstr "言語パネル用のカスタムフォント名"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "次のエンジンへのホットキー"
+msgstr "次のエンジンへのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "検索テーブルの方位"
 
@@ -199,23 +197,20 @@ msgid "Preload Engines during ibus starts up"
 msgstr "ibus の開始中にエンジンをプリロード"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "Preload engines"
 msgstr "エンジンのプリロード"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "前のエンジンへのホットキー"
+msgstr "前のエンジンへのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "システムトレイにアイコンを表示する"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Show input method name"
-msgstr "言語バーにインプットメソッド名を表示する"
+msgstr "インプットメソッド名を表示する"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
 msgid "Show input method name on language bar"
@@ -232,14 +227,12 @@ msgid "The shortcut keys for switching to next input method in the list"
 msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "トリガーホットキー"
+msgstr "トリガーショートカットキー"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
 msgid "Use custom font"
@@ -311,7 +304,7 @@ msgstr "詳細"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "常に表示する"
 
 #: ../setup/setup.ui.h:19
 msgid "Candidates orientation:"
@@ -326,7 +319,6 @@ msgid "Enable or disable:"
 msgstr "切り替え"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Font for language bar and candidates"
 msgstr "言語バーと候補用にフォントを選択します"
 
@@ -335,7 +327,6 @@ msgid "General"
 msgstr "一般"
 
 #: ../setup/setup.ui.h:24
-#, fuzzy
 msgid "Horizontal"
 msgstr "横"
 
@@ -351,7 +342,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:29
 msgid "Never"
-msgstr ""
+msgstr "表示しない"
 
 #: ../setup/setup.ui.h:30
 msgid "Next input method:"
@@ -401,17 +392,12 @@ msgid "Use custom font for language bar and candidates"
 msgstr "言語バーと候補用にカスタムフォントを使用します"
 
 #: ../setup/setup.ui.h:48
-#, fuzzy
 msgid "Vertical"
 msgstr "縦"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "When active"
-msgstr ""
-"表示しない\n"
-"有効なときだけ表示する\n"
-"常に表示する"
+msgstr "アクティブであるとき"
 
 #~ msgid "Custom Font"
 #~ msgstr "カスタムフォント"
