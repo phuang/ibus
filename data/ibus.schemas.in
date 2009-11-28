@@ -60,6 +60,39 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/x</key>
+      <applyto>/desktop/ibus/panel/x</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>-1</default>
+      <locale name="C">
+        <short>Position of panel</short>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/y</key>
+      <applyto>/desktop/ibus/panel/y</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>-1</default>
+      <locale name="C">
+        <short>Position of panel</short>
+      </locale>
+    </schema>
+    <!--
+    <schema>
+      <key>/schemas/desktop/ibus/panel/position</key>
+      <applyto>/desktop/ibus/panel/position</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>3</default>
+      <locale name="C">
+        <short>Panel position</short>
+	    <long>The position of the language panel. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom</long>
+      </locale>
+    </schema>
+    -->
+    <schema>
       <key>/schemas/desktop/ibus/panel/lookup_table_orientation</key>
       <applyto>/desktop/ibus/panel/lookup_table_orientation</applyto>
       <owner>ibus</owner>

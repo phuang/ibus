@@ -54,7 +54,10 @@ class LanguageBar(gtk.Toolbar):
             gobject.SIGNAL_RUN_LAST,
             gobject.TYPE_PYOBJECT,
             ()),
-
+        "position-changed" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_INT, gobject.TYPE_INT)),
         }
 
     def __init__ (self):
@@ -80,8 +83,7 @@ class LanguageBar(gtk.Toolbar):
         except:
             w, h = root.get_size()
             self.__work_area = 0, 0, w, h
-        self.__position = self.__work_area[0] + self.__work_area[2] - 20, self.__work_area[1] + self.__work_area[3] - 20
-        self.__toplevel.move(*self.__position)
+        self.set_position(-1, -1)
 
     def __create_ui(self):
         # create move handle
@@ -125,10 +127,11 @@ class LanguageBar(gtk.Toolbar):
         x, y = self.__toplevel.get_position()
         w, h = self.__toplevel.get_size()
         self.__position = x + w, y + h
+        self.emit("position-changed", *self.__position)
 
     def __toplevel_size_allocate_cb(self, toplevel, allocation):
         x, y = self.__position
-        if x - self.__work_area[0] >= self.__work_area[2] - 80:
+        if x - self.__work_area[0] >= self.__work_area[2] - 80 or True:
             self.__toplevel.move(x - allocation.width, y - allocation.height)
 
     def __remove_properties(self):
@@ -194,6 +197,19 @@ class LanguageBar(gtk.Toolbar):
             self.focus_in()
         else:
             self.focus_out()
+
+    def set_position(self, x, y):
+        if x < 0 or y < 0:
+            x = self.__work_area[0] + self.__work_area[2] - 20
+            y = self.__work_area[1] + self.__work_area[3] - 20
+        if x > self.__work_area[2]:
+            x = self.__work_area[0] + self.__work_area[2] - 20
+        if y > self.__work_area[3]:
+            y = self.__work_area[1] + self.__work_area[3] - 20
+
+        self.__position = x, y
+        w, h = self.__toplevel.get_size()
+        self.__toplevel.move(self.__position[0] - w, self.__position[1] - h)
 
     def get_show(self):
         return self.__show

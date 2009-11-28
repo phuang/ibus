@@ -88,6 +88,8 @@ class Panel(ibus.PanelBase):
                         self.__get_im_menu_cb)
         self.__language_bar.connect("show-engine-about",
                         self.__show_engine_about_cb)
+        self.__language_bar.connect("position-changed",
+                        self.__position_changed_cb)
         self.__language_bar.focus_out()
         self.__language_bar.show_all()
 
@@ -113,6 +115,7 @@ class Panel(ibus.PanelBase):
 
         self.__config_load_lookup_table_orientation()
         self.__config_load_show()
+        self.__config_load_position()
         self.__config_load_custom_font()
         self.__config_load_show_icon_on_systray()
         self.__config_load_show_im_name()
@@ -264,6 +267,12 @@ class Panel(ibus.PanelBase):
         show = self.__config.get_value("panel", "show", 1)
         self.__language_bar.set_show(show)
 
+    def __config_load_position(self):
+        position = self.__config.get_value("panel", "position", 3)
+        x = self.__config.get_value("panel", "x", -1)
+        y = self.__config.get_value("panel", "y", -1)
+        self.__language_bar.set_position(x, y)
+
     def __config_load_custom_font(self):
         use_custom_font = self.__config.get_value("panel", "use_custom_font", False)
         font_name = gtk.settings_get_default().get_property("gtk-font-name")
@@ -296,6 +305,8 @@ class Panel(ibus.PanelBase):
             self.__config_load_lookup_table_orientation()
         elif name == "show":
             self.__config_load_show()
+        # elif name == "position":
+        #     self.__config_load_position()
         elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
         elif name == "show_icon_on_systray":
@@ -387,7 +398,7 @@ class Panel(ibus.PanelBase):
         menu = self.__create_im_menu()
         return menu
 
-    def __show_engine_about_cb(self, langiagebar):
+    def __show_engine_about_cb(self, langagebar):
         try:
             engine = self.__focus_ic.get_engine()
             dlg = EngineAbout(engine)
@@ -395,6 +406,10 @@ class Panel(ibus.PanelBase):
             dlg.destroy()
         except:
             pass
+
+    def __position_changed_cb(self, langagebar, x, y):
+        self.__config.set_value("panel", "x", x)
+        self.__config.set_value("panel", "y", y)
 
     def __status_icon_popup_menu_cb(self, status_icon, button, active_time):
         menu = self.__create_sys_menu()
