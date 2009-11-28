@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-24 11:23+0800\n"
+"POT-Creation-Date: 2009-11-28 15:44+0800\n"
 "PO-Revision-Date: 2009-09-10 14:06+1000\n"
 "Last-Translator: Eunju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
 msgstr "IBus 입력 방식 프레임워크  "
 
@@ -31,36 +31,36 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
-#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
+#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 msgid "Other"
 msgstr "기타  "
 
-#: ../ui/gtk/panel.py:322
+#: ../ui/gtk/panel.py:333
 msgid "Restart"
 msgstr "재시작  "
 
-#: ../ui/gtk/panel.py:377
+#: ../ui/gtk/panel.py:388
 msgid "Turn off input method"
 msgstr "입력 방식 해제  "
 
-#: ../ui/gtk/panel.py:410
+#: ../ui/gtk/panel.py:425
 msgid "No input window"
 msgstr "입력 창이 없음  "
 
-#: ../ui/gtk/panel.py:438
+#: ../ui/gtk/panel.py:455
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus는 Linux/Unix를 위한 지능형 입력 버스입니다. "
 
-#: ../ui/gtk/panel.py:442
+#: ../ui/gtk/panel.py:459
 msgid "translator-credits"
 msgstr "김은주 (eukim@redhat.com)  "
 
-#: ../ui/gtk/languagebar.py:103
+#: ../ui/gtk/languagebar.py:105
 msgid "About the Input Method"
 msgstr "입력 방식 정보  "
 
-#: ../ui/gtk/languagebar.py:166
+#: ../ui/gtk/languagebar.py:169
 msgid "Switch input method"
 msgstr "입력 방식 전환  "
 
@@ -100,11 +100,11 @@ msgstr "다음 입력 방식   "
 msgid "previous input method"
 msgstr "이전 입력 방식  "
 
-#: ../setup/main.py:237
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Bus 데몬이 시작되지 않았습니다. 지금 시작하시겠습니까?  "
 
-#: ../setup/main.py:252
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -118,7 +118,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus "
 
-#: ../setup/main.py:267
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s의 키보드 단축키를 선택   "
@@ -152,7 +152,7 @@ msgid "Select an input method"
 msgstr "입력 방식을 선택합니다  "
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
 msgid "Input Method"
 msgstr "입력 방식  "
 
@@ -160,7 +160,7 @@ msgstr "입력 방식  "
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus 환경 설정  "
 
@@ -180,78 +180,89 @@ msgstr "언어 패널 용 사용자 정의 글꼴 이름  "
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
+msgid "Language panel position"
+msgstr "언어 패널 표시:  "
+
+#: ../data/ibus.schemas.in.h:5
+#, fuzzy
 msgid "Next engine shortcut keys"
 msgstr "다음 엔진 핫키   "
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "룩업 테이블의 방향. 0 = 가로, 1 = 세로  "
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "룩업 테이블의 방향  "
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus 시작 시 엔진 미리로드  "
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Preload engines"
 msgstr "엔진 미리로드  "
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "이전 엔진 핫키  "
 
-#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Show input method name"
 msgstr "입력 도구 모음에 있는 입력 방식 이름 표시   "
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 msgid "Show input method name on language bar"
 msgstr "입력 도구 모음에 있는 입력 방식 이름 표시   "
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "언어 패널의 동작 0 = 항상 숨기기, 1 = 자동 숨기기, 2 = 항상 표시  "
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:15
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키  "
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr "입력 방식을 활성 또는 해제하기 위한 단축키 설정  "
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 #, fuzzy
 msgid "Trigger shortcut keys"
 msgstr "트리거 핫키  "
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
 msgstr "사용자 정의 글꼴 사용  "
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Use custom font name for language panel"
 msgstr "언어 패널 용 사용자 정의 글꼴 이름 사용  "
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
 msgstr "시스템 키보드 (XKB) 레이아웃 사용  "
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
 msgstr "시스템 키보드 레이아웃 사용  "
 
@@ -312,100 +323,127 @@ msgid "Always"
 msgstr ""
 
 #: ../setup/setup.ui.h:19
+msgid "Bottom left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:20
+msgid "Bottom right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "후보 창의 방향:  "
 
-#: ../setup/setup.ui.h:20
-msgid "Custom font:"
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Custom"
 msgstr "사용자 정의 글꼴:  "
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
 msgstr "활성화 또는 비활성화:  "
 
-#: ../setup/setup.ui.h:22
-#, fuzzy
-msgid "Font for language bar and candidates"
-msgstr "도구 모음 및 후보에 대한 글꼴 선택  "
-
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "General"
 msgstr "일반  "
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "가로\n"
 "세로  "
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
+#, fuzzy
+msgid "Language panel position:"
+msgstr "언어 패널 표시:  "
+
+#: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "활성화된 입력 방식에서 선택한 입력 방식을 아래로 이동합니다     "
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 위로 이동합니다  "
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Next input method:"
 msgstr "다음 입력 방식:  "
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Previous input method:"
 msgstr "이전 입력 방식:  "
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "활성화된 입력 방식에서 선택한 입력 방식을 제거  "
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "입력 도구 모음을 표시 또는 숨기는 방법에 대한 ibus 동작 설정     "
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Set the orientation of candidates in lookup table"
 msgstr "룩업 테이블에서 후보 창의 방향 설정  "
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Show information of the selected input method"
 msgstr "선택한 입력 방식의 정보 표시  "
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "확인란을 선택하면 입력 도구 모음에 있는 입력 방식의 이름 표시   "
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Show language panel:"
 msgstr "언어 패널 표시:  "
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Start ibus on login"
 msgstr "로그인 시 ibus 시작  "
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축키   "
 
-#: ../setup/setup.ui.h:45
-msgid "Use custom font for language bar and candidates"
-msgstr "입력 도구 모음 및 후보에 대해 사용자 정의 글꼴 사용   "
+#: ../setup/setup.ui.h:46
+msgid "Top left corner"
+msgstr ""
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
+msgid "Top right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:51
 msgid "Vertical"
 msgstr ""
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "When active"
 msgstr ""
 "숨기기\n"
 "활성화된 경우에만 표시\n"
 "항상 표시   "
+
+#, fuzzy
+#~ msgid "Langauge panel position"
+#~ msgstr "언어 패널 표시:  "
+
+#~ msgid "Custom font:"
+#~ msgstr "사용자 정의 글꼴:  "
+
+#, fuzzy
+#~ msgid "Font for language bar and candidates"
+#~ msgstr "도구 모음 및 후보에 대한 글꼴 선택  "
+
+#~ msgid "Use custom font for language bar and candidates"
+#~ msgstr "입력 도구 모음 및 후보에 대해 사용자 정의 글꼴 사용   "
 
 #~ msgid "Custom Font"
 #~ msgstr "사용자 정의 글꼴  "

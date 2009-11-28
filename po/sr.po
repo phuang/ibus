@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-24 11:23+0800\n"
+"POT-Creation-Date: 2009-11-28 15:44+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
 msgstr "IBus радни оквир методе уноса"
 
@@ -31,38 +31,38 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
-#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
+#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 msgid "Other"
 msgstr "Друго"
 
-#: ../ui/gtk/panel.py:322
+#: ../ui/gtk/panel.py:333
 msgid "Restart"
 msgstr "Покрени поново"
 
-#: ../ui/gtk/panel.py:377
+#: ../ui/gtk/panel.py:388
 #, fuzzy
 msgid "Turn off input method"
 msgstr "Нема методе уноса"
 
-#: ../ui/gtk/panel.py:410
+#: ../ui/gtk/panel.py:425
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:438
+#: ../ui/gtk/panel.py:455
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus је интелигентна магистрала уноса за Linux/Unix."
 
-#: ../ui/gtk/panel.py:442
+#: ../ui/gtk/panel.py:459
 msgid "translator-credits"
 msgstr "Serbian <fedora-trans-sr@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:103
+#: ../ui/gtk/languagebar.py:105
 #, fuzzy
 msgid "About the Input Method"
 msgstr "Методе уноса"
 
-#: ../ui/gtk/languagebar.py:166
+#: ../ui/gtk/languagebar.py:169
 #, fuzzy
 msgid "Switch input method"
 msgstr "Нема методе уноса"
@@ -105,11 +105,11 @@ msgstr "Следећа метода уноса"
 msgid "previous input method"
 msgstr "Претходна метода уноса"
 
-#: ../setup/main.py:237
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus демон није покренут. Да ли желите да га сада покренете?"
 
-#: ../setup/main.py:252
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -123,7 +123,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:267
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Изаберите пречицу тастатуре за %s"
@@ -157,7 +157,7 @@ msgid "Select an input method"
 msgstr "Изаберите методу уноса"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
 #, fuzzy
 msgid "Input Method"
 msgstr "Методе уноса"
@@ -166,7 +166,7 @@ msgstr "Методе уноса"
 msgid "Kbd"
 msgstr ""
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus поставке"
 
@@ -186,47 +186,52 @@ msgstr "Назив прилагођеног фонта за језички па�
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
+msgid "Language panel position"
+msgstr "Прикажи језички панел:"
+
+#: ../data/ibus.schemas.in.h:5
+#, fuzzy
 msgid "Next engine shortcut keys"
 msgstr "Пречица следећег погона"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Оријентација референтне табеле. 0 = водоравно, 1 = усправно"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "Оријентација референтне табеле"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "Унапред учитај погоне током ibus покретања"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Preload engines"
 msgstr "Унапред учитај погоне"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "Пречица претходног погона"
 
-#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Show input method name"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 #, fuzzy
 msgid "Show input method name on language bar"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -234,35 +239,41 @@ msgstr ""
 "Понашање језичког панела. 0 = увек сакривен, 1 = самостално сакривање, 2 = "
 "увек приказан"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:15
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 #, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 "Пречица претходног погона за пребацивање на претходни погон методе уноса"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 #, fuzzy
 msgid "Trigger shortcut keys"
 msgstr "Пречица окидача"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
 msgstr "Употреби прилагођени фонт"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Use custom font name for language panel"
 msgstr "Користи прилагођени фонт за језички панел"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
 msgstr ""
 
@@ -322,106 +333,133 @@ msgid "Always"
 msgstr ""
 
 #: ../setup/setup.ui.h:19
+msgid "Bottom left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:20
+msgid "Bottom right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "Оријентације кандидата:"
 
-#: ../setup/setup.ui.h:20
-msgid "Custom font:"
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Custom"
 msgstr "Прилагођени фонт:"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
 msgstr "Укључи или искључи:"
 
-#: ../setup/setup.ui.h:22
-#, fuzzy
-msgid "Font for language bar and candidates"
-msgstr "Назив прилагођеног фонта за језички панел"
-
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "General"
 msgstr "Опште"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "Водоравно\n"
 "Усправно"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
+#, fuzzy
+msgid "Language panel position:"
+msgstr "Прикажи језички панел:"
+
+#: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Next input method:"
 msgstr "Следећа метода уноса:"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 #, fuzzy
 msgid "Previous input method:"
 msgstr "Претходна метода уноса:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 #, fuzzy
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Оријентација референтне табеле"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Назив прилагођеног фонта за језички панел"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Show language panel:"
 msgstr "Прикажи језички панел:"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Start ibus on login"
 msgstr "Покрени ibus при пријави"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 #, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "Пречица претходног погона за пребацивање на претходни погон методе уноса"
 
-#: ../setup/setup.ui.h:45
-#, fuzzy
-msgid "Use custom font for language bar and candidates"
-msgstr "Користи прилагођени фонт за језички панел"
+#: ../setup/setup.ui.h:46
+msgid "Top left corner"
+msgstr ""
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
+msgid "Top right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:51
 msgid "Vertical"
 msgstr ""
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "When active"
 msgstr ""
 "Никад\n"
 "Када је активно\n"
 "Увек"
+
+#, fuzzy
+#~ msgid "Langauge panel position"
+#~ msgstr "Прикажи језички панел:"
+
+#~ msgid "Custom font:"
+#~ msgstr "Прилагођени фонт:"
+
+#, fuzzy
+#~ msgid "Font for language bar and candidates"
+#~ msgstr "Назив прилагођеног фонта за језички панел"
+
+#, fuzzy
+#~ msgid "Use custom font for language bar and candidates"
+#~ msgstr "Користи прилагођени фонт за језички панел"
 
 #~ msgid "Custom Font"
 #~ msgstr "Прилагођени фонт"

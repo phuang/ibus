@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-24 11:23+0800\n"
+"POT-Creation-Date: 2009-11-28 15:44+0800\n"
 "PO-Revision-Date: 2009-09-01 16:30+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
 msgstr "IBus इन्पुट पद्धती मांडणी"
 
@@ -32,38 +32,38 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
-#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
+#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 msgid "Other"
 msgstr "इतर"
 
-#: ../ui/gtk/panel.py:322
+#: ../ui/gtk/panel.py:333
 msgid "Restart"
 msgstr "पुन्हा चालू करा"
 
-#: ../ui/gtk/panel.py:377
+#: ../ui/gtk/panel.py:388
 msgid "Turn off input method"
 msgstr "इंपुट पद्धत बंद करा"
 
-#: ../ui/gtk/panel.py:410
+#: ../ui/gtk/panel.py:425
 msgid "No input window"
 msgstr "इंपुट खिडकी आढळली नाही"
 
-#: ../ui/gtk/panel.py:438
+#: ../ui/gtk/panel.py:455
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix करीता IBus हे एक हुशार इनपुट बस आहे."
 
-#: ../ui/gtk/panel.py:442
+#: ../ui/gtk/panel.py:459
 msgid "translator-credits"
 msgstr ""
 "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
 "com>, 2009."
 
-#: ../ui/gtk/languagebar.py:103
+#: ../ui/gtk/languagebar.py:105
 msgid "About the Input Method"
 msgstr "इंपुट पद्धत विषयी"
 
-#: ../ui/gtk/languagebar.py:166
+#: ../ui/gtk/languagebar.py:169
 msgid "Switch input method"
 msgstr "इंपुट पद्धत बदला"
 
@@ -103,11 +103,11 @@ msgstr "पुढिल इंपुट पद्धत"
 msgid "previous input method"
 msgstr "मागील इंपुट पद्धत"
 
-#: ../setup/main.py:237
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus डिमन सुरू केले गेले नाही. तुम्हाला आता सुरू करायचे?"
 
-#: ../setup/main.py:252
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -121,7 +121,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:267
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s करीता कळफलक शार्टकट निवडा"
@@ -155,7 +155,7 @@ msgid "Select an input method"
 msgstr "इंपुट पद्धत निवडा"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
 msgid "Input Method"
 msgstr "इंपुट पद्धत"
 
@@ -163,7 +163,7 @@ msgstr "इंपुट पद्धत"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus आवड निवड"
 
@@ -183,78 +183,89 @@ msgstr "भाषा पटल करीता स्वपसंत फॉन�
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
+msgid "Language panel position"
+msgstr "भाषा पटल दाखवा:"
+
+#: ../data/ibus.schemas.in.h:5
+#, fuzzy
 msgid "Next engine shortcut keys"
 msgstr "पुढील इंजिनची हॉटकि"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "लुकअप टेबलचे निर्देशन. 0 = Horizontal, 1 = Vertical"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "लुकअप टेबलचे निर्देशन"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus सुरू होतेवेळी इंजिन पूर्व दाखल करा"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Preload engines"
 msgstr "इंजिन पूर्व दाखल करा"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "मागील इंचिनचे हॉटकि"
 
-#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Show input method name"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 msgid "Show input method name on language bar"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always show"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:15
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr "इंपुट पद्धत सुरू किंवा बंद करण्यासाठी शार्टकट किज् ठरवा"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 #, fuzzy
 msgid "Trigger shortcut keys"
 msgstr "हॉटकि निर्माण करा"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
 msgstr "स्वपसंत फॉन्ट वापरा"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Use custom font name for language panel"
 msgstr "भाषा पटल करीत स्वपसंत फॉन्ट नाव वापरा"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
 msgstr "प्रणाली कळफलक (XKB) मांडणीचा वापर करा"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
 msgstr "प्रणाली कळफलक मांडणीचा वापर करा"
 
@@ -315,100 +326,127 @@ msgid "Always"
 msgstr ""
 
 #: ../setup/setup.ui.h:19
+msgid "Bottom left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:20
+msgid "Bottom right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "घटकांचे निर्देशन:"
 
-#: ../setup/setup.ui.h:20
-msgid "Custom font:"
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Custom"
 msgstr "स्वपसंत फॉन्ट:"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
 msgstr "कार्यान्वीत करा किंवा अकार्यान्वीत करा:"
 
-#: ../setup/setup.ui.h:22
-#, fuzzy
-msgid "Font for language bar and candidates"
-msgstr "भाषा पट्टी व घटकांकरीता फॉन्टची नीवड करा"
-
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "General"
 msgstr "सर्वसाधारण"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "आडवे\n"
 "उभे"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
+#, fuzzy
+msgid "Language panel position:"
+msgstr "भाषा पटल दाखवा:"
+
+#: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "कार्यक्षम इंपुट पद्धतींमध्ये नीवडलेली इंपुट पद्धत खाली सरकवा"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "कार्यक्षम इंपुट पद्धतींमध्ये नीवडलेली इंपुट पद्धत वर सरकवा"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Next input method:"
 msgstr "पुढची इंपुट पद्धत:"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Previous input method:"
 msgstr "मागील इंपुट पद्धत:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "कार्यक्षम इंपुट पद्धतीपासून नीवडलेली इंपुट पद्धत काढून टाका"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "भाषा पट्टी कसे दाखवायचे किंवा लपवायचे यासाठी ibus चे वर्तन ठरवा"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Set the orientation of candidates in lookup table"
 msgstr "लुकअप टेबल मधील घटकांचे निर्देशन ठरवा"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Show information of the selected input method"
 msgstr "नीवडलेल्या इंपुट पद्धत विषयी माहिती दाखवा"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "चेकबॉक्स नीवडल्यानंतर भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Show language panel:"
 msgstr "भाषा पटल दाखवा:"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Start ibus on login"
 msgstr "प्रवेशवेळी ibus सुरू करा"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "सूचीतील मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
-#: ../setup/setup.ui.h:45
-msgid "Use custom font for language bar and candidates"
-msgstr "भाषा पट्टी व उपघटकांकरीता स्वपसंत फॉन्टचे नाव वापरा"
+#: ../setup/setup.ui.h:46
+msgid "Top left corner"
+msgstr ""
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
+msgid "Top right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:51
 msgid "Vertical"
 msgstr ""
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "When active"
 msgstr ""
 "कधिच नाही\n"
 "सक्रीय असल्यास\n"
 "नेहमी"
+
+#, fuzzy
+#~ msgid "Langauge panel position"
+#~ msgstr "भाषा पटल दाखवा:"
+
+#~ msgid "Custom font:"
+#~ msgstr "स्वपसंत फॉन्ट:"
+
+#, fuzzy
+#~ msgid "Font for language bar and candidates"
+#~ msgstr "भाषा पट्टी व घटकांकरीता फॉन्टची नीवड करा"
+
+#~ msgid "Use custom font for language bar and candidates"
+#~ msgstr "भाषा पट्टी व उपघटकांकरीता स्वपसंत फॉन्टचे नाव वापरा"
 
 #~ msgid "Custom Font"
 #~ msgstr "स्वपसंत फॉन्ट"

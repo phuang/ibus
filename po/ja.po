@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-27 17:22+0900\n"
+"POT-Creation-Date: 2009-11-28 15:44+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:111
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
 msgstr "IBus インプットメソッドフレームワーク"
 
@@ -32,39 +32,39 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:347 ../ui/gtk/panel.py:348
-#: ../ui/gtk/panel.py:349 ../ui/gtk/panel.py:350
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
+#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 msgid "Other"
 msgstr "その他"
 
-#: ../ui/gtk/panel.py:322
+#: ../ui/gtk/panel.py:333
 msgid "Restart"
 msgstr "再起動"
 
-#: ../ui/gtk/panel.py:377
+#: ../ui/gtk/panel.py:388
 msgid "Turn off input method"
 msgstr "インプットメソッドをオフにする"
 
-#: ../ui/gtk/panel.py:410
+#: ../ui/gtk/panel.py:425
 msgid "No input window"
 msgstr "入力ウィンドウがありません"
 
-#: ../ui/gtk/panel.py:440
+#: ../ui/gtk/panel.py:455
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk/panel.py:444
+#: ../ui/gtk/panel.py:459
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "IWAI, Masaharu <iwai@alib.jp>\n"
 "日向原 龍一 <hyu_gabaru@yahoo.co.jp>"
 
-#: ../ui/gtk/languagebar.py:103
+#: ../ui/gtk/languagebar.py:105
 msgid "About the Input Method"
 msgstr "インプットメソッドについて"
 
-#: ../ui/gtk/languagebar.py:166
+#: ../ui/gtk/languagebar.py:169
 msgid "Switch input method"
 msgstr "インプットメソッドがありません"
 
@@ -104,11 +104,11 @@ msgstr "次のインプットメソッド"
 msgid "previous input method"
 msgstr "ひとつ前のインプットメソッド"
 
-#: ../setup/main.py:237
+#: ../setup/main.py:240
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus デーモンが動いていません。起動しますか？"
 
-#: ../setup/main.py:252
+#: ../setup/main.py:255
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -122,7 +122,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:267
+#: ../setup/main.py:270
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
@@ -156,7 +156,7 @@ msgid "Select an input method"
 msgstr "インプットメソッドの選択"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:26
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
 msgid "Input Method"
 msgstr "インプットメソッド"
 
@@ -164,7 +164,7 @@ msgstr "インプットメソッド"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:25
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus の設定"
 
@@ -181,72 +181,83 @@ msgid "Custom font name for language panel"
 msgstr "言語パネル用のカスタムフォント名"
 
 #: ../data/ibus.schemas.in.h:4
+#, fuzzy
+msgid "Language panel position"
+msgstr "言語パネルの表示:"
+
+#: ../data/ibus.schemas.in.h:5
 msgid "Next engine shortcut keys"
 msgstr "次のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 msgid "Orientation of lookup table"
 msgstr "検索テーブルの方位"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus の開始中にエンジンをプリロード"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
 msgid "Preload engines"
 msgstr "エンジンのプリロード"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:10
 msgid "Prev engine shortcut keys"
 msgstr "前のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:10 ../setup/setup.ui.h:35
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
 msgstr "システムトレイにアイコンを表示する"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:12
 msgid "Show input method name"
 msgstr "インプットメソッド名を表示する"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 msgid "Show input method name on language bar"
 msgstr "言語バーにインプットメソッド名を表示する"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:14
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "言語パネルの動作。0 = 常に隠す、1 = 自動的に隠す、2 = 常に表示"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:15
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Trigger shortcut keys"
 msgstr "トリガーショートカットキー"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Use custom font name for language panel"
 msgstr "言語パネル用にカスタムフォント名を使用する"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
 msgstr "システムキーボード (XKB) レイアウトを使用する"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:47
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
 msgstr "システムキーボードレイアウトを使用する"
 
@@ -307,97 +318,124 @@ msgid "Always"
 msgstr "常に表示する"
 
 #: ../setup/setup.ui.h:19
+msgid "Bottom left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:20
+msgid "Bottom right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "候補ウィンドウの向き:"
 
-#: ../setup/setup.ui.h:20
-msgid "Custom font:"
-msgstr "カスタムフォント:"
+#: ../setup/setup.ui.h:22
+#, fuzzy
+msgid "Custom"
+msgstr "カスタムフォント"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
 msgstr "切り替え"
 
-#: ../setup/setup.ui.h:22
-msgid "Font for language bar and candidates"
-msgstr "言語バーと候補用にフォントを選択します"
-
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "General"
 msgstr "一般"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 msgid "Horizontal"
 msgstr "横"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
+#, fuzzy
+msgid "Language panel position:"
+msgstr "言語パネルの表示:"
+
+#: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Never"
 msgstr "表示しない"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Previous input method:"
 msgstr "ひとつ前のインプットメソッド:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "選択したインプットメソッドを有効なインプットメソッドから削除します"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "言語バーをどのように表示するもしくは隠すかの ibus の動作を設定します"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ルックアップテーブルの中で候補ウィンドウの向きを設定します"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Show information of the selected input method"
 msgstr "選択したインプットメソッドの情報を表示します"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
 "示します"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Show language panel:"
 msgstr "言語パネルの表示:"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../setup/setup.ui.h:45
-msgid "Use custom font for language bar and candidates"
-msgstr "言語バーと候補用にカスタムフォントを使用します"
+#: ../setup/setup.ui.h:46
+msgid "Top left corner"
+msgstr ""
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
+msgid "Top right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:51
 msgid "Vertical"
 msgstr "縦"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:52
 msgid "When active"
 msgstr "アクティブであるとき"
+
+#, fuzzy
+#~ msgid "Langauge panel position"
+#~ msgstr "言語パネルの表示:"
+
+#~ msgid "Custom font:"
+#~ msgstr "カスタムフォント:"
+
+#~ msgid "Font for language bar and candidates"
+#~ msgstr "言語バーと候補用にフォントを選択します"
+
+#~ msgid "Use custom font for language bar and candidates"
+#~ msgstr "言語バーと候補用にカスタムフォントを使用します"
 
 #~ msgid "Custom Font"
 #~ msgstr "カスタムフォント"
