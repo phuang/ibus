@@ -35,7 +35,6 @@
 enum {
     CONNECTED,
     DISCONNECTED,
-    NAME_OWNER_CHANGED,
     LAST_SIGNAL,
 };
 
@@ -141,21 +140,6 @@ ibus_bus_class_init (IBusBusClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
-#if 0
-    bus_signals[NAME_OWNER_CHANGED] =
-        g_signal_new (I_("name-owner-changed"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__STRING_STRING_STRING,
-            G_TYPE_NONE,
-            3,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE,
-            G_TYPE_STRING | G_SIGNAL_TYPE_STATIC_SCOPE
-            );
-#endif
 }
 
 static void
