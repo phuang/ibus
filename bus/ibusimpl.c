@@ -639,7 +639,7 @@ _ibus_get_address (BusIBusImpl     *ibus,
     address = ibus_server_get_address (IBUS_SERVER (BUS_DEFAULT_SERVER));
 
     reply = ibus_message_new_method_return (message);
-    ibus_message_append_args (message,
+    ibus_message_append_args (reply,
                               G_TYPE_STRING, &address,
                               G_TYPE_INVALID);
 
