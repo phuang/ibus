@@ -241,7 +241,6 @@ class CandidatePanel(gtk.VBox):
         self.__aux_label.set_attributes(self.__aux_attrs)
         self.__aux_label.set_alignment(0.0, 0.5)
         self.__aux_label.set_padding(8, 0)
-        self.__tooltips.set_tip(self.__aux_label, "Aux string")
         self.__aux_label.set_no_show_all(True)
         if self.__aux_string_visible:
             self.__aux_label.show()
