@@ -33,6 +33,7 @@ enum {
     DISABLED,
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
+    DELETE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -197,6 +198,27 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             3,
             G_TYPE_UINT,
             G_TYPE_UINT,
+            G_TYPE_UINT);
+
+    /**
+     * IBusInputContext::delete-surrounding-text:
+     * @context: An IBusInputContext.
+     * @offset: the character offset from the cursor position of the text to be deleted.
+     *   A negative value indicates a position before the cursor.
+     * @n_chars: the number of characters to be deleted.
+     *
+     * Emitted to delete surrounding text event from IME to client of IME.
+     */
+    context_signals[DELETE_SURROUNDING_TEXT] =
+        g_signal_new (I_("delete-surrounding-text"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__INT_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_INT,
             G_TYPE_UINT);
 
     /**
@@ -557,6 +579,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         guint32 state;
         gboolean retval;
 
+
         retval = ibus_message_get_args (message,
                                         &error,
                                         G_TYPE_UINT, &keyval,
@@ -572,6 +595,27 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        keyval,
                        keycode,
                        state | IBUS_FORWARD_MASK);
+    }
+    else if (ibus_message_is_signal (message,
+                                     IBUS_INTERFACE_INPUT_CONTEXT,
+                                     "DeleteSurroundingText")) {
+        gint offset_from_cursor;
+        guint nchars;
+        gboolean retval;
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_INT, &offset_from_cursor,
+                                        G_TYPE_UINT, &nchars,
+                                        G_TYPE_INVALID);
+
+
+        if (!retval)
+            goto failed;
+        g_signal_emit (context,
+                       context_signals[DELETE_SURROUNDING_TEXT],
+                       0,
+                       offset_from_cursor,
+                       nchars);
     }
     else if (ibus_message_is_signal (message,
                                      IBUS_INTERFACE_INPUT_CONTEXT,

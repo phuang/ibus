@@ -106,6 +106,7 @@ typedef enum {
     IBUS_CAP_LOOKUP_TABLE       = 1 << 2,
     IBUS_CAP_FOCUS              = 1 << 3,
     IBUS_CAP_PROPERTY           = 1 << 4,
+    IBUS_CAP_SURROUNDING_TEXT   = 1 << 5,
 } IBusCapabilite;
 
 /**

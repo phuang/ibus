@@ -81,6 +81,9 @@ static void     _context_commit_text_cb     (IBusInputContext   *context,
                                              X11IC              *x11ic);
 static void     _context_forward_key_event_cb
                                             (IBusInputContext   *context,
+                                             guint               keyval,
+                                             guint               keycode,
+                                             guint               state,
                                              X11IC              *x11ic);
 
 static void     _context_update_preedit_text_cb
@@ -717,16 +720,18 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
     }
 }
 
-/*
 static void
-_xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
+_xim_forward_key_event (X11IC   *x11ic,
+                        guint    keyval,
+                        guint    keycode,
+                        guint    state)
 {
     g_return_if_fail (x11ic != NULL);
 
     IMForwardEventStruct fe = {0};
     XEvent xkp = {0};
 
-    xkp.xkey.type = (event->type == GDK_KEY_PRESS) ? KeyPress : KeyRelease;
+    xkp.xkey.type = (state & IBUS_RELEASE_MASK) ? KeyPress : KeyRelease;
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
     xkp.xkey.same_screen = True;
@@ -737,8 +742,8 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
     xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
 
     xkp.xkey.time = 0;
-    xkp.xkey.state = event->state;
-    xkp.xkey.keycode = event->hardware_keycode;
+    xkp.xkey.state = state;
+    xkp.xkey.keycode = keycode;
 
     fe.major_code = XIM_FORWARD_EVENT;
     fe.icid = x11ic->icid;
@@ -749,7 +754,6 @@ _xim_forward_gdk_event (GdkEventKey *event, X11IC *x11ic)
 
     IMForwardEvent (_xims, (XPointer) & fe);
 }
-*/
 
 static void
 _bus_disconnected_cb (IBusBus  *bus,
@@ -788,11 +792,14 @@ _context_commit_text_cb (IBusInputContext *context,
 
 static void
 _context_forward_key_event_cb (IBusInputContext *context,
+                               guint             keyval,
+                               guint             keycode,
+                               guint             state,
                                X11IC            *x11ic)
 {
     g_assert (x11ic);
 
-    // _xim_forward_gdk_event (&(event->key), x11ic);
+    _xim_forward_key_event (x11ic, keyval, keycode, state);
 }
 
 static void

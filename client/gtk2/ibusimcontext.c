@@ -123,8 +123,8 @@ static void     _slave_retrieve_surrounding_cb
                                              IBusIMContext       *context);
 static void     _slave_delete_surrounding_cb
                                             (GtkIMContext       *slave,
-                                             gint               arg1,
-                                             gint               arg2,
+                                             gint               offset_from_cursor,
+                                             guint              nchars,
                                              IBusIMContext       *context);
 
 
@@ -322,7 +322,7 @@ ibus_im_context_init (GObject *obj)
 
     ibusimcontext->ibuscontext = NULL;
     ibusimcontext->has_focus = FALSE;
-    ibusimcontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS;
+    ibusimcontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS | IBUS_CAP_SURROUNDING_TEXT;
 
 
     // Create slave im context
@@ -684,6 +684,7 @@ _ibus_context_commit_text_cb (IBusInputContext *ibuscontext,
 static void
 _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
                                     guint              keyval,
+                                    guint              keycode,
                                     guint              state,
                                     IBusIMContext     *ibusimcontext)
 {
@@ -693,20 +694,33 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
     GdkEventKey *event;
 
     event = (GdkEventKey *)gdk_event_new (state & IBUS_RELEASE_MASK ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
-
     event->time = GDK_CURRENT_TIME;
     event->window = g_object_ref (ibusimcontext->client_window);
     event->send_event = FALSE;
     event->state = state;
     event->keyval = keyval;
-    event->string = gdk_keyval_name (keyval);
+    event->string = g_strdup (gdk_keyval_name (keyval));
     event->length = strlen (event->string);
-    event->hardware_keycode = 0;
+    event->hardware_keycode = keycode;
     event->group = 0;
     event->is_modifier = 0;
 
     gdk_event_put ((GdkEvent *)event);
     gdk_event_free ((GdkEvent *)event);
+}
+
+static void
+_ibus_context_delete_surrounding_text_cb (IBusInputContext *ibuscontext,
+                                          gint              offset_from_cursor,
+                                          guint             nchars,
+                                          IBusIMContext    *ibusimcontext)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+
+    gboolean return_value;
+
+    g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 
 static void
@@ -894,6 +908,10 @@ _create_input_context (IBusIMContext *ibusimcontext)
                       G_CALLBACK (_ibus_context_forward_key_event_cb),
                       ibusimcontext);
     g_signal_connect (ibusimcontext->ibuscontext,
+                      "delete-surrounding-text",
+                      G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
                       "update-preedit-text",
                       G_CALLBACK (_ibus_context_update_preedit_text_cb),
                       ibusimcontext);
@@ -991,15 +1009,16 @@ _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
 
 static void
 _slave_delete_surrounding_cb (GtkIMContext  *slave,
-                              gint           a1,
-                              gint           a2,
+                              gint           offset_from_cursor,
+                              guint          nchars,
                               IBusIMContext *ibusimcontext)
 {
     g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    gboolean return_value;
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return;
     }
-    g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, a1, a2);
+    g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 

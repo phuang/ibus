@@ -1648,6 +1648,25 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
 }
 
 static void
+_engine_delete_surrounding_text_cb (BusEngineProxy    *engine,
+                                    gint               offset_from_cursor,
+                                    guint              nchars,
+                                    BusInputContext   *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    g_assert (context->engine == engine);
+
+    bus_input_context_send_signal (context,
+                                   "DeleteSurroundingText",
+                                   G_TYPE_INT,   &offset_from_cursor,
+                                   G_TYPE_UINT,  &nchars,
+                                   G_TYPE_INVALID);
+
+}
+
+static void
 _engine_update_preedit_text_cb (BusEngineProxy  *engine,
                                 IBusText        *text,
                                 guint            cursor_pos,
@@ -1808,6 +1827,7 @@ const static struct {
 } signals [] = {
     { "commit-text",            G_CALLBACK (_engine_commit_text_cb) },
     { "forward-key-event",      G_CALLBACK (_engine_forward_key_event_cb) },
+    { "delete-surrounding-text", G_CALLBACK (_engine_delete_surrounding_text_cb) },
     { "update-preedit-text",    G_CALLBACK (_engine_update_preedit_text_cb) },
     { "show-preedit-text",      G_CALLBACK (_engine_show_preedit_text_cb) },
     { "hide-preedit-text",      G_CALLBACK (_engine_hide_preedit_text_cb) },
@@ -1881,6 +1901,9 @@ bus_input_context_set_engine (BusInputContext *context,
                 bus_engine_proxy_focus_in (context->engine);
             }
         }
+
+        bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
+
     }
     g_signal_emit (context,
                    context_signals[ENGINE_CHANGED],

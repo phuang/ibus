@@ -1229,6 +1229,17 @@ void ibus_engine_forward_key_event (IBusEngine      *engine,
                   G_TYPE_INVALID);
 }
 
+void ibus_engine_delete_surrounding_text (IBusEngine      *engine,
+                                          gint             offset_from_cursor,
+                                          guint            nchars)
+{
+    _send_signal (engine,
+                  "DeleteSurroundingText",
+                  G_TYPE_INT,  &offset_from_cursor,
+                  G_TYPE_UINT, &nchars,
+                  G_TYPE_INVALID);
+}
+
 void
 ibus_engine_register_properties (IBusEngine   *engine,
                                  IBusPropList *prop_list)

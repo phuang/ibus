@@ -28,6 +28,7 @@
 enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
+    DELETE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -152,6 +153,18 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             3,
             G_TYPE_UINT,
             G_TYPE_UINT,
+            G_TYPE_UINT);
+
+    engine_signals[DELETE_SURROUNDING_TEXT] =
+        g_signal_new (I_("delete-surrounding-text"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__INT_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_INT,
             G_TYPE_UINT);
 
     engine_signals[UPDATE_PREEDIT_TEXT] =
@@ -420,9 +433,25 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
             goto failed;
         g_signal_emit (engine,
                        engine_signals[FORWARD_KEY_EVENT],
+                       0,
                        keyval,
                        keycode,
                        states);
+    }
+    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "DeleteSurroundingText")) {
+        gint  offset_from_cursor;
+        guint nchars;
+        gboolean retval;
+
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_INT,  &offset_from_cursor,
+                                        G_TYPE_UINT, &nchars,
+                                        G_TYPE_INVALID);
+
+        if (!retval)
+            goto failed;
+        g_signal_emit (engine, engine_signals[DELETE_SURROUNDING_TEXT], 0, offset_from_cursor, nchars);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreeditText")) {
         IBusText *text;
