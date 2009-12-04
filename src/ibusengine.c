@@ -662,16 +662,16 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         gchar *member;
         guint  signal_id;
     } no_arg_methods[] = {
-        {"FocusIn",     FOCUS_IN},
-        {"FocusOut",    FOCUS_OUT},
-        {"Reset",       RESET},
-        {"Enable",      ENABLE},
-        {"Disable",     DISABLE},
-        {"PageUp",      PAGE_UP},
-        {"PageDown",    PAGE_DOWN},
-        {"CursorUp",    CURSOR_UP},
-        {"CursorDown",  CURSOR_DOWN},
-        {NULL, 0},
+        { "FocusIn",     FOCUS_IN },
+        { "FocusOut",    FOCUS_OUT },
+        { "Reset",       RESET },
+        { "Enable",      ENABLE },
+        { "Disable",     DISABLE },
+        { "PageUp",      PAGE_UP },
+        { "PageDown",    PAGE_DOWN },
+        { "CursorUp",    CURSOR_UP },
+        { "CursorDown",  CURSOR_DOWN },
+        { NULL, 0},
     };
     gint i;
 
