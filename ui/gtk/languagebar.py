@@ -76,13 +76,9 @@ class LanguageBar(gtk.Toolbar):
         self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
         self.__toplevel.connect("size-allocate", self.__toplevel_size_allocate_cb)
         self.__toplevel.add(self)
+        self.__screen = gdk.screen_get_default()
+        self.__screen.connect("size-changed", self.__screen_size_changed_cb)
 
-        root = gdk.get_default_root_window()
-        try:
-            self.__work_area = root.property_get("_NET_WORKAREA")[2]
-        except:
-            w, h = root.get_size()
-            self.__work_area = 0, 0, w, h
         self.set_position(-1, -1)
 
     def __create_ui(self):
@@ -105,6 +101,9 @@ class LanguageBar(gtk.Toolbar):
         self.__about_button.set_tooltip_text(_("About the Input Method"))
         self.__about_button.connect("clicked", self.__about_button_clicked_cb)
         self.insert(self.__about_button, -1)
+
+    def __screen_size_changed_cb(self, screen):
+        self.set_position(*self.__position)
 
     def __im_menu_toggled_cb(self, widget):
         if self.__im_menu.get_active():
@@ -131,7 +130,8 @@ class LanguageBar(gtk.Toolbar):
 
     def __toplevel_size_allocate_cb(self, toplevel, allocation):
         x, y = self.__position
-        if x - self.__work_area[0] >= self.__work_area[2] - 80 or True:
+        w, h = self.__screen.get_width(), self.__screen.get_height()
+        if x >= w - 80 or True:
             self.__toplevel.move(x - allocation.width, y - allocation.height)
 
     def __remove_properties(self):
@@ -199,13 +199,14 @@ class LanguageBar(gtk.Toolbar):
             self.focus_out()
 
     def set_position(self, x, y):
+        w, h = self.__screen.get_width(), self.__screen.get_height()
         if x < 0 or y < 0:
-            x = self.__work_area[0] + self.__work_area[2] - 20
-            y = self.__work_area[1] + self.__work_area[3] - 20
-        if x > self.__work_area[2]:
-            x = self.__work_area[0] + self.__work_area[2] - 20
-        if y > self.__work_area[3]:
-            y = self.__work_area[1] + self.__work_area[3] - 20
+            x = w - 20
+            y = h - 40
+        if x > w:
+            x = w - 20
+        if y > h:
+            y = h - 40
 
         self.__position = x, y
         w, h = self.__toplevel.get_size()

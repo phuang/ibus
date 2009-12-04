@@ -313,6 +313,8 @@ class Panel(ibus.PanelBase):
             self.__config_load_show_icon_on_systray()
         elif name == "show_im_name":
             self.__config_load_show_im_name()
+        elif name == "x" or name == "y":
+            pass
         else:
             print >> sys.stderr, "Unknown config item [%s]" % name
 
