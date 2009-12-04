@@ -731,7 +731,7 @@ _xim_forward_key_event (X11IC   *x11ic,
     IMForwardEventStruct fe = {0};
     XEvent xkp = {0};
 
-    xkp.xkey.type = (state & IBUS_RELEASE_MASK) ? KeyPress : KeyRelease;
+    xkp.xkey.type = (state & IBUS_RELEASE_MASK) ? KeyRelease : KeyPress;
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
     xkp.xkey.same_screen = True;
