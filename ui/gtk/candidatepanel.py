@@ -28,6 +28,10 @@ import pango
 import ibus
 from ibus._gtk import PangoAttrList
 
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
+N_ = lambda a : a
+
 class EventBox(gtk.EventBox):
     __gtype_name__ = "IBusEventBox"
     def __init__(self):
@@ -191,7 +195,6 @@ class CandidatePanel(gtk.VBox):
     def __init__(self):
         super(CandidatePanel, self).__init__()
         self.set_name("IBusCandidate")
-        self.__tooltips = gtk.Tooltips()
 
         self.__toplevel = gtk.Window(gtk.WINDOW_POPUP)
         self.__viewport = gtk.Viewport()
@@ -259,12 +262,12 @@ class CandidatePanel(gtk.VBox):
         self.__prev_button = gtk.Button()
         self.__prev_button.connect("clicked", lambda x: self.emit("page-up"))
         self.__prev_button.set_relief(gtk.RELIEF_NONE)
-        self.__tooltips.set_tip(self.__prev_button, "Previous page")
+        self.__prev_button.set_tooltip_text(_("Previous page"))
 
         self.__next_button = gtk.Button()
         self.__next_button.connect("clicked", lambda x: self.emit("page-down"))
         self.__next_button.set_relief(gtk.RELIEF_NONE)
-        self.__tooltips.set_tip(self.__next_button, "Next page")
+        self.__next_button.set_tooltip_text(_("Next page"))
 
         self.__pack_all_widgets()
 
