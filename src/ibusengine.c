@@ -686,29 +686,6 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
         return parent_class->ibus_message ((IBusService *) engine, connection, message);
 
-    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
-        if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
-            continue;
-
-        IBusMessageIter iter;
-        ibus_message_iter_init (message, &iter);
-        if (ibus_message_iter_has_next (&iter)) {
-            error_message = ibus_message_new_error_printf (message,
-                                DBUS_ERROR_INVALID_ARGS,
-                                "%s.%s: Method does not have arguments",
-                                IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
-            ibus_connection_send (connection, error_message);
-            ibus_message_unref (error_message);
-            return TRUE;
-        }
-
-        g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-    }
-
     if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {
         guint keyval, keycode, state;
         gboolean retval;
@@ -750,7 +727,31 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (g_strcmp0 (name, "CandidateClicked") == 0) {
+
+    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
+        if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
+            continue;
+
+        IBusMessageIter iter;
+        ibus_message_iter_init (message, &iter);
+        if (ibus_message_iter_has_next (&iter)) {
+            error_message = ibus_message_new_error_printf (message,
+                                DBUS_ERROR_INVALID_ARGS,
+                                "%s.%s: Method does not have arguments",
+                                IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
+            ibus_connection_send (connection, error_message);
+            ibus_message_unref (error_message);
+            return TRUE;
+        }
+
+        g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
+        return_message = ibus_message_new_method_return (message);
+        ibus_connection_send (connection, return_message);
+        ibus_message_unref (return_message);
+        return TRUE;
+    }
+
+    if (g_strcmp0 (name, "CandidateClicked") == 0) {
         guint index, button, state;
         gboolean retval;
         IBusError *error = NULL;

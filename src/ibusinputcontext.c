@@ -528,13 +528,6 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
     if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_INPUT_CONTEXT) != 0)
         goto failed;
 
-    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
-        if (g_strcmp0 (name, signals[i].member) == 0) {
-            g_signal_emit (context, context_signals[signals[i].signal_id], 0);
-            goto handled;
-        }
-    }
-
     if (g_strcmp0 (name, "CommitText") == 0) {
         IBusText *text;
         gboolean retval;
@@ -548,6 +541,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
 
         g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
         g_object_unref (text);
+        goto handled;
     }
     else if (g_strcmp0 (name, "UpdatePreeditText") == 0) {
         IBusText *text;
@@ -572,50 +566,17 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        cursor_pos,
                        visible);
         g_object_unref (text);
+        goto handled;
     }
-    else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
-        guint32 keyval;
-        guint32 keycode;
-        guint32 state;
-        gboolean retval;
 
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &keyval,
-                                        G_TYPE_UINT, &keycode,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-        g_signal_emit (context,
-                       context_signals[FORWARD_KEY_EVENT],
-                       0,
-                       keyval,
-                       keycode,
-                       state | IBUS_FORWARD_MASK);
+    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
+        if (g_strcmp0 (name, signals[i].member) == 0) {
+            g_signal_emit (context, context_signals[signals[i].signal_id], 0);
+            goto handled;
+        }
     }
-    else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
-        gint offset_from_cursor;
-        guint nchars;
-        gboolean retval;
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_INT, &offset_from_cursor,
-                                        G_TYPE_UINT, &nchars,
-                                        G_TYPE_INVALID);
 
-
-        if (!retval)
-            goto failed;
-        g_signal_emit (context,
-                       context_signals[DELETE_SURROUNDING_TEXT],
-                       0,
-                       offset_from_cursor,
-                       nchars);
-    }
-    else if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
+    if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
         IBusText *text;
         gboolean visible;
         gboolean retval;
@@ -688,6 +649,48 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
 
         g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
         g_object_unref (prop);
+    }
+    else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
+        guint32 keyval;
+        guint32 keycode;
+        guint32 state;
+        gboolean retval;
+
+
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_UINT, &keyval,
+                                        G_TYPE_UINT, &keycode,
+                                        G_TYPE_UINT, &state,
+                                        G_TYPE_INVALID);
+
+        if (!retval)
+            goto failed;
+        g_signal_emit (context,
+                       context_signals[FORWARD_KEY_EVENT],
+                       0,
+                       keyval,
+                       keycode,
+                       state | IBUS_FORWARD_MASK);
+    }
+    else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
+        gint offset_from_cursor;
+        guint nchars;
+        gboolean retval;
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_INT, &offset_from_cursor,
+                                        G_TYPE_UINT, &nchars,
+                                        G_TYPE_INVALID);
+
+
+        if (!retval)
+            goto failed;
+        g_signal_emit (context,
+                       context_signals[DELETE_SURROUNDING_TEXT],
+                       0,
+                       offset_from_cursor,
+                       nchars);
     }
     else {
         return FALSE;
