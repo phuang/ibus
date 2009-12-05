@@ -496,6 +496,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
     IBusInputContext *context;
     IBusError *error = NULL;
     gint i;
+    const gchar *interface;
+    const gchar *name;
 
     context = IBUS_INPUT_CONTEXT (proxy);
 
@@ -503,35 +505,37 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         const gchar *member;
         guint signal_id;
     } signals [] = {
-        { "Enabled",                ENABLED                 },
-        { "Disabled",               DISABLED                },
-        { "ShowPreeditText",        SHOW_PREEDIT_TEXT       },
-        { "HidePreeditText",        HIDE_PREEDIT_TEXT       },
-        { "ShowAuxiliaryText",      SHOW_AUXILIARY_TEXT     },
-        { "HideAuxiliaryText",      HIDE_AUXILIARY_TEXT     },
-        { "ShowLookupTable",        SHOW_LOOKUP_TABLE       },
-        { "HideLookupTable",        HIDE_LOOKUP_TABLE       },
-        { "PageUpLookupTable",      PAGE_UP_LOOKUP_TABLE    },
-        { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE  },
-        { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE  },
-        { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE},
-        { NULL, 0},
+        { "Enabled",                ENABLED                  },
+        { "Disabled",               DISABLED                 },
+        { "ShowPreeditText",        SHOW_PREEDIT_TEXT        },
+        { "HidePreeditText",        HIDE_PREEDIT_TEXT        },
+        { "ShowAuxiliaryText",      SHOW_AUXILIARY_TEXT      },
+        { "HideAuxiliaryText",      HIDE_AUXILIARY_TEXT      },
+        { "ShowLookupTable",        SHOW_LOOKUP_TABLE        },
+        { "HideLookupTable",        HIDE_LOOKUP_TABLE        },
+        { "PageUpLookupTable",      PAGE_UP_LOOKUP_TABLE     },
+        { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE   },
+        { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE   },
+        { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
     };
 
-    for (i = 0; ; i++) {
-        if (signals[i].member == NULL)
-            break;
-        if (ibus_message_is_signal (message,
-                                    IBUS_INTERFACE_INPUT_CONTEXT,
-                                    signals[i].member)) {
+    interface = ibus_message_get_interface (message);
+    name = ibus_message_get_member (message);
+
+    if (ibus_message_get_type (message) != DBUS_MESSAGE_TYPE_SIGNAL)
+        goto failed;
+
+    if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_INPUT_CONTEXT) != 0)
+        goto failed;
+
+    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
+        if (g_strcmp0 (name, signals[i].member) == 0) {
             g_signal_emit (context, context_signals[signals[i].signal_id], 0);
             goto handled;
         }
     }
 
-    if (ibus_message_is_signal (message,
-                                IBUS_INTERFACE_INPUT_CONTEXT,
-                                "CommitText")) {
+    if (g_strcmp0 (name, "CommitText") == 0) {
         IBusText *text;
         gboolean retval;
 
@@ -545,9 +549,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "UpdatePreeditText")) {
+    else if (g_strcmp0 (name, "UpdatePreeditText") == 0) {
         IBusText *text;
         gint32 cursor_pos;
         gboolean visible;
@@ -571,9 +573,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        visible);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "ForwardKeyEvent")) {
+    else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
         guint32 keyval;
         guint32 keycode;
         guint32 state;
@@ -596,9 +596,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        keycode,
                        state | IBUS_FORWARD_MASK);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "DeleteSurroundingText")) {
+    else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
         gint offset_from_cursor;
         guint nchars;
         gboolean retval;
@@ -617,9 +615,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        offset_from_cursor,
                        nchars);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "UpdateAuxiliaryText")) {
+    else if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
         IBusText *text;
         gboolean visible;
         gboolean retval;
@@ -640,9 +636,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        visible);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "UpdateLookupTable")) {
+    else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
         IBusLookupTable *table;
         gboolean visible;
         gboolean retval;
@@ -663,9 +657,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        visible);
         g_object_unref (table);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "RegisterProperties")) {
+    else if (g_strcmp0 (name, "RegisterProperties") == 0) {
         IBusPropList *prop_list;
         gboolean retval;
 
@@ -683,9 +675,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                        prop_list);
         g_object_unref (prop_list);
     }
-    else if (ibus_message_is_signal (message,
-                                     IBUS_INTERFACE_INPUT_CONTEXT,
-                                     "UpdateProperty")) {
+    else if (g_strcmp0 (name, "UpdateProperty") == 0) {
         IBusProperty *prop;
         gboolean retval;
 

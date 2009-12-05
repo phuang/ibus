@@ -658,6 +658,10 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     IBusMessage *return_message = NULL;
     IBusMessage *error_message = NULL;
 
+    gint i;
+    const gchar *interface;
+    const gchar *name;
+
     static const struct {
         gchar *member;
         guint  signal_id;
@@ -671,12 +675,19 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         { "PageDown",    PAGE_DOWN },
         { "CursorUp",    CURSOR_UP },
         { "CursorDown",  CURSOR_DOWN },
-        { NULL, 0},
     };
-    gint i;
 
-    for (i = 0; no_arg_methods[i].member != NULL; i++) {
-        if (!ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, no_arg_methods[i].member))
+    interface = ibus_message_get_interface (message);
+    name = ibus_message_get_member (message);
+
+    if (ibus_message_get_type (message) != DBUS_MESSAGE_TYPE_METHOD_CALL)
+        return parent_class->ibus_message ((IBusService *) engine, connection, message);
+
+    if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
+        return parent_class->ibus_message ((IBusService *) engine, connection, message);
+
+    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
+        if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
             continue;
 
         IBusMessageIter iter;
@@ -698,7 +709,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         return TRUE;
     }
 
-    if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "ProcessKeyEvent")) {
+    if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {
         guint keyval, keycode, state;
         gboolean retval;
         IBusError *error = NULL;
@@ -739,8 +750,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "CandidateClicked")) {
+    else if (g_strcmp0 (name, "CandidateClicked") == 0) {
         guint index, button, state;
         gboolean retval;
         IBusError *error = NULL;
@@ -778,7 +788,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyActivate")) {
+    else if (g_strcmp0 (name, "PropertyActivate") == 0) {
         gchar *name;
         guint state;
         gboolean retval;
@@ -815,7 +825,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         return TRUE;
 
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyShow")) {
+    else if (g_strcmp0 (name, "PropertyShow") == 0) {
         gchar *name;
         gboolean retval;
         IBusError *error;
@@ -848,7 +858,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "PropertyHide")) {
+    else if (g_strcmp0 (name, "PropertyHide") == 0) {
         gchar *name;
         gboolean retval;
         IBusError *error = NULL;
@@ -876,7 +886,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCursorLocation")) {
+    else if (g_strcmp0 (name, "SetCursorLocation") == 0) {
         gint x, y, w, h;
         gboolean retval;
         IBusError *error = NULL;
@@ -916,7 +926,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "SetCapabilities")) {
+    else if (g_strcmp0 (name, "SetCapabilities") == 0) {
         guint caps;
         gboolean retval;
         IBusError *error = NULL;
@@ -947,7 +957,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (error_message);
         return TRUE;
     }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_ENGINE, "Destroy")) {
+    else if (g_strcmp0 (name, "Destroy") == 0) {
         return_message = ibus_message_new_method_return (message);
 
         ibus_connection_send (connection, return_message);
