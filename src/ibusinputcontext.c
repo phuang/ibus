@@ -526,7 +526,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
 
         if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_INPUT_CONTEXT) != 0) {
             error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                                "%s.%s is not implemented", interface, name);
+                                                "Signal %s.%s is not handled", interface, name);
             break;
         }
 
@@ -576,7 +576,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
             }
         }
 
-        if (i >= G_N_ELEMENTS (signals))
+        if (i < G_N_ELEMENTS (signals))
             break;
         if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
             IBusText *text;
@@ -692,7 +692,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         }
         else {
             error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                                "%s.%s is not implemented", interface, name);
+                                                "Signal %s.%s is not handled", interface, name);
             break;
         }
     } while (0);
