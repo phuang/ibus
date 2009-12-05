@@ -235,47 +235,28 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
-    static struct {
+    const static struct {
         const gchar *name;
-        gboolean (*func)(IBusPanelService *panel, IBusError **error);
-    } no_arg_methods[17] = {
-        {"CursorUpLookupTable"  , NULL},  //  0
-        {"CursorDownLookupTable", NULL},  //  1
-        {"Destroy",               NULL},  //  2
-        {"HideAuxiliaryText",     NULL},  //  3
-        {"HideLanguageBar",       NULL},  //  4
-        {"HideLookupTable",       NULL},  //  5
-        {"HidePreeditText",       NULL},  //  6
-        {"PageDownLookupTable",   NULL},  //  7
-        {"PageUpLookupTable",     NULL},  //  8
-        {"Reset",                 NULL},  //  9
-        {"ShowAuxiliaryText",     NULL},  // 10
-        {"ShowLanguageBar",       NULL},  // 11
-        {"ShowLookupTable",       NULL},  // 12
-        {"ShowPreeditText",       NULL},  // 13
-        {"StartSetup",            NULL},  // 14
-        {"StateChanged",          NULL},  // 15
-        {NULL,                    NULL},  // 16
-    }
-    // We cannot initialize the function pointers at compile-time, as
-    // these pointers are set runtime.
-    no_arg_methods[ 0].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->cursor_down_lookup_table;
-    no_arg_methods[ 1].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->cursor_up_lookup_table;
-    no_arg_methods[ 2].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->destroy;
-    no_arg_methods[ 3].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->hide_auxiliary_text;
-    no_arg_methods[ 4].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->hide_language_bar;
-    no_arg_methods[ 5].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->hide_lookup_table;
-    no_arg_methods[ 6].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->hide_preedit_text;
-    no_arg_methods[ 7].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->page_down_lookup_table;
-    no_arg_methods[ 8].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->page_up_lookup_table;
-    no_arg_methods[ 9].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->reset;
-    no_arg_methods[10].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->show_auxiliary_text;
-    no_arg_methods[11].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->show_language_bar;
-    no_arg_methods[12].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->show_lookup_table;
-    no_arg_methods[13].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->show_preedit_text;
-    no_arg_methods[14].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->start_setup;
-    no_arg_methods[15].func = IBUS_PANEL_SERVICE_GET_CLASS (panel)->state_changed;
-    no_arg_methods[16].func = NULL;
+        const gint offset;
+    } no_arg_methods [] = {
+        { "CursorUpLookupTable"  , G_STRUCT_OFFSET (IBusPanelServiceClass, cursor_down_lookup_table) },
+        { "CursorDownLookupTable", G_STRUCT_OFFSET (IBusPanelServiceClass, cursor_up_lookup_table) },
+        { "Destroy",               G_STRUCT_OFFSET (IBusPanelServiceClass, destroy) },
+        { "HideAuxiliaryText",     G_STRUCT_OFFSET (IBusPanelServiceClass, hide_auxiliary_text) },
+        { "HideLanguageBar",       G_STRUCT_OFFSET (IBusPanelServiceClass, hide_language_bar) },
+        { "HideLookupTable",       G_STRUCT_OFFSET (IBusPanelServiceClass, hide_lookup_table) },
+        { "HidePreeditText",       G_STRUCT_OFFSET (IBusPanelServiceClass, hide_preedit_text) },
+        { "PageDownLookupTable",   G_STRUCT_OFFSET (IBusPanelServiceClass, page_down_lookup_table) },
+        { "PageUpLookupTable",     G_STRUCT_OFFSET (IBusPanelServiceClass, page_up_lookup_table) },
+        { "Reset",                 G_STRUCT_OFFSET (IBusPanelServiceClass, reset) },
+        { "ShowAuxiliaryText",     G_STRUCT_OFFSET (IBusPanelServiceClass, show_auxiliary_text) },
+        { "ShowLanguageBar",       G_STRUCT_OFFSET (IBusPanelServiceClass, show_language_bar) },
+        { "ShowLookupTable",       G_STRUCT_OFFSET (IBusPanelServiceClass, show_lookup_table) },
+        { "ShowPreeditText",       G_STRUCT_OFFSET (IBusPanelServiceClass, show_preedit_text) },
+        { "StartSetup",            G_STRUCT_OFFSET (IBusPanelServiceClass, start_setup) },
+        { "StateChanged",          G_STRUCT_OFFSET (IBusPanelServiceClass, state_changed) },
+        { NULL, 0 },
+    };
 
     IBusMessage *reply = NULL;
 
@@ -296,7 +277,12 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         }
         else {
             IBusError *error = NULL;
-            if (!no_arg_methods[i].func (panel, &error)) {
+            typedef gboolean (* NoArgFunc) (IBusPanelService *, IBusError **);
+            NoArgFunc func;
+            func = G_STRUCT_MEMBER (NoArgFunc,
+                                    IBUS_PANEL_SERVICE_GET_CLASS (panel),
+                                    no_arg_methods[i].offset);
+            if (!func (panel, &error)) {
                 reply = ibus_message_new_error (message,
                                                 error->name,
                                                 error->message);
