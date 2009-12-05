@@ -143,10 +143,10 @@ GType            ibus_type_get_variant          (void);
  *         <para>#DBUS_MESSAGE_TYPE_METHOD_RETURN</para>
  *     </listitem>
  *     <listitem>
- *         <para>#DBUS_MESSAGE_TYPE_METHOD_ERROR</para>
+ *         <para>#DBUS_MESSAGE_TYPE_ERROR</para>
  *     </listitem>
  *     <listitem>
- *         <para>#DBUS_MESSAGE_TYPE_METHOD_SIGNAL</para>
+ *         <para>#DBUS_MESSAGE_TYPE_SIGNAL</para>
  *     </listitem>
  * </itemizedlist>
  * These are defined in dbus-protocol.h in D-Bus.
