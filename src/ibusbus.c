@@ -367,60 +367,6 @@ ibus_bus_create_input_context (IBusBus      *bus,
     return context;
 }
 
-static void
-ibus_bus_watch_dbus_signal (IBusBus *bus)
-{
-    g_assert (IBUS_IS_BUS (bus));
-
-    const gchar *rule;
-
-    rule = "type='signal'," \
-           "path='" DBUS_PATH_DBUS "'," \
-           "interface='" DBUS_INTERFACE_DBUS "'";
-
-    ibus_bus_add_match (bus, rule);
-
-}
-
-static void
-ibus_bus_unwatch_dbus_signal (IBusBus *bus)
-{
-    g_assert (IBUS_IS_BUS (bus));
-
-    const gchar *rule;
-
-    rule = "type='signal'," \
-           "path='" DBUS_PATH_DBUS "'," \
-           "interface='" DBUS_INTERFACE_DBUS "'";
-
-    ibus_bus_remove_match (bus, rule);
-}
-
-void
-ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
-                                gboolean        watch)
-{
-    g_assert (IBUS_IS_BUS (bus));
-
-    IBusBusPrivate *priv;
-    priv = IBUS_BUS_GET_PRIVATE (bus);
-
-    if (priv->watch_dbus_signal == watch)
-        return;
-
-    priv->watch_dbus_signal = watch;
-
-    if (ibus_bus_is_connected (bus)) {
-        if (watch) {
-            ibus_bus_watch_dbus_signal (bus);
-        }
-        else {
-            ibus_bus_unwatch_dbus_signal (bus);
-        }
-    }
-}
-
-
 static gboolean
 ibus_bus_call (IBusBus      *bus,
                const gchar  *name,
@@ -500,6 +446,82 @@ ibus_bus_call (IBusBus      *bus,
     }
 
     return TRUE;
+}
+
+const gchar *
+ibus_bus_current_input_context(IBusBus      *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    gchar *name = NULL;
+    gboolean result;
+
+    result = ibus_bus_call (bus,
+                            DBUS_SERVICE_DBUS,
+                            DBUS_PATH_DBUS,
+                            DBUS_INTERFACE_DBUS,
+                            "CurrentInputContext",
+                            G_TYPE_INVALID,
+                            G_TYPE_STRING, &name,
+                            G_TYPE_INVALID);
+
+    if (result)
+        return name;
+
+    return NULL;
+}
+
+static void
+ibus_bus_watch_dbus_signal (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    const gchar *rule;
+
+    rule = "type='signal'," \
+           "path='" DBUS_PATH_DBUS "'," \
+           "interface='" DBUS_INTERFACE_DBUS "'";
+
+    ibus_bus_add_match (bus, rule);
+
+}
+
+static void
+ibus_bus_unwatch_dbus_signal (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    const gchar *rule;
+
+    rule = "type='signal'," \
+           "path='" DBUS_PATH_DBUS "'," \
+           "interface='" DBUS_INTERFACE_DBUS "'";
+
+    ibus_bus_remove_match (bus, rule);
+}
+
+void
+ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
+                                gboolean        watch)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (priv->watch_dbus_signal == watch)
+        return;
+
+    priv->watch_dbus_signal = watch;
+
+    if (ibus_bus_is_connected (bus)) {
+        if (watch) {
+            ibus_bus_watch_dbus_signal (bus);
+        }
+        else {
+            ibus_bus_unwatch_dbus_signal (bus);
+        }
+    }
 }
 
 const gchar *

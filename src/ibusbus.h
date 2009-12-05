@@ -203,6 +203,19 @@ IBusInputContext
             *ibus_bus_create_input_context
                                         (IBusBus        *bus,
                                          const gchar    *client_name);
+
+
+/**
+ * ibus_bus_current_input_context:
+ * @bus: An IBusBus.
+ * @returns: The named of currently focued IBusInputContext if the "CurrentInputContext" call
+ *            suceeded, NULL otherwise.
+ *
+ * Get the current focused input context.
+ */
+const gchar *ibus_bus_current_input_context(IBusBus        *bus);
+
+
 /**
  * ibus_bus_register_component:
  * @bus: An IBusBus.
