@@ -127,6 +127,9 @@ class Bus(object.Object):
     def create_input_context(self, client_name):
         return self.__ibus.CreateInputContext(client_name)
 
+    def current_input_contxt(self):
+        return self.__ibus.CurrentInputContext()
+
     def exit(self, restart):
         return self.__ibus.Exit(restart)
 
