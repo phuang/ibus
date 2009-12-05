@@ -598,6 +598,9 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "      <arg name=\"name\" direction=\"in\" type=\"s\"/>\n"
         "      <arg name=\"context\" direction=\"out\" type=\"o\"/>\n"
         "    </method>\n"
+        "    <method name=\"CurrentInputContext\">\n"
+        "      <arg name=\"name\" direction=\"out\" type=\"s\"/>\n"
+        "    </method>\n"
         "    <method name=\"RegisterComponent\">\n"
         "      <arg name=\"components\" direction=\"in\" type=\"v\"/>\n"
         "    </method>\n"
@@ -928,6 +931,35 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     return reply;
 }
 
+static IBusMessage *
+_ibus_current_input_context (BusIBusImpl     *ibus,
+                            IBusMessage     *message,
+                            BusConnection   *connection)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+    const gchar *path; 
+
+    if (!ibus->focused_context)
+    {
+        reply = ibus_message_new_error (message,
+                                        DBUS_ERROR_FAILED,
+                                        "No input context focused");
+        return reply;
+    }
+
+    reply = ibus_message_new_method_return (message);
+    path = ibus_service_get_path((IBusService *)ibus->focused_context);
+    ibus_message_append_args (reply,
+                              G_TYPE_STRING, &path,
+                              G_TYPE_INVALID);
+
+    return reply;
+}
+
 static void
 _factory_destroy_cb (BusFactoryProxy    *factory,
                      BusIBusImpl        *ibus)
@@ -1166,6 +1198,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         /* IBus interface */
         { IBUS_INTERFACE_IBUS, "GetAddress",            _ibus_get_address },
         { IBUS_INTERFACE_IBUS, "CreateInputContext",    _ibus_create_input_context },
+        { IBUS_INTERFACE_IBUS, "CurrentInputContext",   _ibus_current_input_context },
         { IBUS_INTERFACE_IBUS, "RegisterComponent",     _ibus_register_component },
         { IBUS_INTERFACE_IBUS, "ListEngines",           _ibus_list_engines },
         { IBUS_INTERFACE_IBUS, "ListActiveEngines",     _ibus_list_active_engines },
