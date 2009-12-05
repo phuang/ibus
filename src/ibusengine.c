@@ -649,6 +649,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     g_assert (IBUS_IS_ENGINE (engine));
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
+    g_assert (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL);
 
     IBusEnginePrivate *priv;
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
@@ -680,9 +681,6 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     interface = ibus_message_get_interface (message);
     name = ibus_message_get_member (message);
 
-    if (ibus_message_get_type (message) != DBUS_MESSAGE_TYPE_METHOD_CALL)
-        return parent_class->ibus_message ((IBusService *) engine, connection, message);
-
     if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
         return parent_class->ibus_message ((IBusService *) engine, connection, message);
 
@@ -699,7 +697,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
                                         G_TYPE_INVALID);
 
         if (!retval)
-            goto _keypress2_fail;
+            goto _keypress_fail;
 
         retval = FALSE;
         g_signal_emit (engine,
@@ -718,11 +716,11 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         ibus_message_unref (return_message);
         return TRUE;
 
-    _keypress2_fail:
+    _keypress_fail:
         error_message = ibus_message_new_error_printf (message,
                         DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (ubu) of method",
-                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent2");
+                        "%s.%s: Can not match signature (uuu) of method",
+                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
         ibus_connection_send (connection, error_message);
         ibus_message_unref (error_message);
         return TRUE;

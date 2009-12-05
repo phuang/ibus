@@ -492,6 +492,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (proxy));
     g_assert (message != NULL);
+    g_assert (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL);
 
     IBusInputContext *context;
     IBusError *error = NULL;
@@ -519,192 +520,191 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
     };
 
-    interface = ibus_message_get_interface (message);
-    name = ibus_message_get_member (message);
+    do {
+        interface = ibus_message_get_interface (message);
+        name = ibus_message_get_member (message);
 
-    if (ibus_message_get_type (message) != DBUS_MESSAGE_TYPE_SIGNAL)
-        goto failed;
-
-    if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_INPUT_CONTEXT) != 0)
-        goto failed;
-
-    if (g_strcmp0 (name, "CommitText") == 0) {
-        IBusText *text;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_TEXT, &text,
-                                        G_TYPE_INVALID);
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
-        g_object_unref (text);
-        goto handled;
-    }
-    else if (g_strcmp0 (name, "UpdatePreeditText") == 0) {
-        IBusText *text;
-        gint32 cursor_pos;
-        gboolean visible;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_TEXT, &text,
-                                        G_TYPE_UINT, &cursor_pos,
-                                        G_TYPE_BOOLEAN, &visible,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_PREEDIT_TEXT],
-                       0,
-                       text,
-                       cursor_pos,
-                       visible);
-        g_object_unref (text);
-        goto handled;
-    }
-
-    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
-        if (g_strcmp0 (name, signals[i].member) == 0) {
-            g_signal_emit (context, context_signals[signals[i].signal_id], 0);
-            goto handled;
+        if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_INPUT_CONTEXT) != 0) {
+            error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
+                                                "%s.%s is not implemented", interface, name);
+            break;
         }
+
+        if (g_strcmp0 (name, "CommitText") == 0) {
+            IBusText *text;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_TEXT, &text,
+                                            G_TYPE_INVALID);
+            if (retval) {
+                g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
+                g_object_unref (text);
+            }
+            break;
+        }
+        if (g_strcmp0 (name, "UpdatePreeditText") == 0) {
+            IBusText *text;
+            gint32 cursor_pos;
+            gboolean visible;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_TEXT, &text,
+                                            G_TYPE_UINT, &cursor_pos,
+                                            G_TYPE_BOOLEAN, &visible,
+                                            G_TYPE_INVALID);
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_PREEDIT_TEXT],
+                               0,
+                               text,
+                               cursor_pos,
+                               visible);
+                g_object_unref (text);
+            }
+            break;
+        }
+
+        for (i = 0; i < G_N_ELEMENTS (signals); i++) {
+            if (g_strcmp0 (name, signals[i].member) == 0) {
+                g_signal_emit (context, context_signals[signals[i].signal_id], 0);
+                break;
+            }
+        }
+
+        if (i >= G_N_ELEMENTS (signals))
+            break;
+        if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
+            IBusText *text;
+            gboolean visible;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_TEXT, &text,
+                                            G_TYPE_BOOLEAN, &visible,
+                                            G_TYPE_INVALID);
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_AUXILIARY_TEXT],
+                               0,
+                               text,
+                               visible);
+                g_object_unref (text);
+            }
+        }
+        else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
+            IBusLookupTable *table;
+            gboolean visible;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_LOOKUP_TABLE, &table,
+                                            G_TYPE_BOOLEAN, &visible,
+                                            G_TYPE_INVALID);
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[UPDATE_LOOKUP_TABLE],
+                               0,
+                               table,
+                               visible);
+                g_object_unref (table);
+            }
+        }
+        else if (g_strcmp0 (name, "RegisterProperties") == 0) {
+            IBusPropList *prop_list;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_PROP_LIST, &prop_list,
+                                            G_TYPE_INVALID);
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[REGISTER_PROPERTIES],
+                               0,
+                               prop_list);
+                g_object_unref (prop_list);
+            }
+        }
+        else if (g_strcmp0 (name, "UpdateProperty") == 0) {
+            IBusProperty *prop;
+            gboolean retval;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            IBUS_TYPE_PROPERTY, &prop,
+                                            G_TYPE_INVALID);
+            if (retval) {
+                g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
+                g_object_unref (prop);
+            }
+        }
+        else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
+            guint32 keyval;
+            guint32 keycode;
+            guint32 state;
+            gboolean retval;
+
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_UINT, &keyval,
+                                            G_TYPE_UINT, &keycode,
+                                            G_TYPE_UINT, &state,
+                                            G_TYPE_INVALID);
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[FORWARD_KEY_EVENT],
+                               0,
+                               keyval,
+                               keycode,
+                               state | IBUS_FORWARD_MASK);
+            }
+        }
+        else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
+            gint offset_from_cursor;
+            guint nchars;
+            gboolean retval;
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_INT, &offset_from_cursor,
+                                            G_TYPE_UINT, &nchars,
+                                            G_TYPE_INVALID);
+
+
+            if (retval) {
+                g_signal_emit (context,
+                               context_signals[DELETE_SURROUNDING_TEXT],
+                               0,
+                               offset_from_cursor,
+                               nchars);
+            }
+        }
+        else {
+            error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
+                                                "%s.%s is not implemented", interface, name);
+            break;
+        }
+    } while (0);
+
+    if (error == NULL) {
+        g_signal_stop_emission_by_name (context, "ibus-signal");
+        return TRUE;
     }
 
-    if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
-        IBusText *text;
-        gboolean visible;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_TEXT, &text,
-                                        G_TYPE_BOOLEAN, &visible,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_AUXILIARY_TEXT],
-                       0,
-                       text,
-                       visible);
-        g_object_unref (text);
-    }
-    else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
-        IBusLookupTable *table;
-        gboolean visible;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_LOOKUP_TABLE, &table,
-                                        G_TYPE_BOOLEAN, &visible,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context,
-                       context_signals[UPDATE_LOOKUP_TABLE],
-                       0,
-                       table,
-                       visible);
-        g_object_unref (table);
-    }
-    else if (g_strcmp0 (name, "RegisterProperties") == 0) {
-        IBusPropList *prop_list;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_PROP_LIST, &prop_list,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context,
-                       context_signals[REGISTER_PROPERTIES],
-                       0,
-                       prop_list);
-        g_object_unref (prop_list);
-    }
-    else if (g_strcmp0 (name, "UpdateProperty") == 0) {
-        IBusProperty *prop;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        IBUS_TYPE_PROPERTY, &prop,
-                                        G_TYPE_INVALID);
-        if (!retval)
-            goto failed;
-
-        g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
-        g_object_unref (prop);
-    }
-    else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
-        guint32 keyval;
-        guint32 keycode;
-        guint32 state;
-        gboolean retval;
-
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &keyval,
-                                        G_TYPE_UINT, &keycode,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto failed;
-        g_signal_emit (context,
-                       context_signals[FORWARD_KEY_EVENT],
-                       0,
-                       keyval,
-                       keycode,
-                       state | IBUS_FORWARD_MASK);
-    }
-    else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
-        gint offset_from_cursor;
-        guint nchars;
-        gboolean retval;
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_INT, &offset_from_cursor,
-                                        G_TYPE_UINT, &nchars,
-                                        G_TYPE_INVALID);
-
-
-        if (!retval)
-            goto failed;
-        g_signal_emit (context,
-                       context_signals[DELETE_SURROUNDING_TEXT],
-                       0,
-                       offset_from_cursor,
-                       nchars);
-    }
-    else {
-        return FALSE;
-    }
-
-handled:
-    g_signal_stop_emission_by_name (context, "ibus-signal");
-    return TRUE;
-
-failed:
-    if (error) {
-        g_warning ("%s: %s", error->name, error->message);
-        ibus_error_free (error);
-    }
+    /* some error happens */
+    g_warning ("%s: %s", error->name, error->message);
+    ibus_error_free (error);
     return FALSE;
 }
 

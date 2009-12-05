@@ -248,23 +248,25 @@ ibus_connection_destroy (IBusConnection *connection)
                     connection);
     }
 
-    if (!priv->shared && priv->connection) {
-        dbus_connection_close (priv->connection);
-        dbus_connection_unref (priv->connection);
-        priv->connection = NULL;
-        goto _out;
-    }
-
-    if (priv->shared && priv->connection) {
-        g_warn_if_fail (_connections != NULL);
-        if (_connections != NULL) {
-            g_hash_table_remove (_connections, priv->connection);
+    do {
+        if (!priv->shared && priv->connection) {
+            dbus_connection_close (priv->connection);
+            dbus_connection_unref (priv->connection);
+            priv->connection = NULL;
+            break;
         }
-        dbus_connection_unref (priv->connection);
-        priv->connection = NULL;
-        goto _out;
-    }
-_out:
+
+        if (priv->shared && priv->connection) {
+            g_warn_if_fail (_connections != NULL);
+            if (_connections != NULL) {
+                g_hash_table_remove (_connections, priv->connection);
+            }
+            dbus_connection_unref (priv->connection);
+            priv->connection = NULL;
+            break;
+        }
+    } while (0);
+
     parent_class->destroy (IBUS_OBJECT (connection));
 }
 

@@ -194,30 +194,33 @@ ibus_xml_parse_file (const gchar *filename)
         0,
     };
 
-    context = g_markup_parse_context_new (&root_parser, 0, &node, 0);
+    do {
+        context = g_markup_parse_context_new (&root_parser, 0, &node, 0);
 
-    while (!feof (pf)) {
-        gchar buf[1024];
-        gssize len = 0;
+        while (!feof (pf)) {
+            gchar buf[1024];
+            gssize len = 0;
 
-        len = fread (buf, 1, sizeof (buf), pf);
-        retval = g_markup_parse_context_parse (context, buf, len, &error);
+            len = fread (buf, 1, sizeof (buf), pf);
+            retval = g_markup_parse_context_parse (context, buf, len, &error);
+
+            if (!retval)
+                break;
+        }
+        fclose (pf);
 
         if (!retval)
-            goto _failed_out;
-    }
+            break;
 
-    fclose (pf);
+        retval = g_markup_parse_context_end_parse (context, &error);
+        if (!retval)
+            break;
 
-    retval = g_markup_parse_context_end_parse (context, &error);
-    if (!retval)
-        goto _failed_out;
+        g_markup_parse_context_free (context);
 
-    g_markup_parse_context_free (context);
+        return node;
+    } while (0);
 
-    return node;
-
-_failed_out:
     g_warning ("Parse %s failed: %s", filename, error->message);
     g_error_free (error);
     g_markup_parse_context_free (context);
@@ -243,25 +246,22 @@ ibus_xml_parse_buffer (const gchar *buffer)
 
     context = g_markup_parse_context_new (&root_parser, 0, &node, 0);
 
-    retval = g_markup_parse_context_parse (context, buffer, strlen (buffer), &error);
+    do {
+        retval = g_markup_parse_context_parse (context, buffer, strlen (buffer), &error);
+        if (!retval)
+            break;
 
-    if (!retval)
-        goto _failed_out;
+        retval = g_markup_parse_context_end_parse (context, &error);
+        if (!retval)
+            break;
+        g_markup_parse_context_free (context);
+        return node;
+    } while (0);
 
-    retval = g_markup_parse_context_end_parse (context, &error);
-    if (!retval)
-        goto _failed_out;
-
-    g_markup_parse_context_free (context);
-
-    return node;
-
-_failed_out:
     g_warning ("Parse buffer failed: %s", error->message);
     g_error_free (error);
     g_markup_parse_context_free (context);
     return NULL;
-
 }
 
 
