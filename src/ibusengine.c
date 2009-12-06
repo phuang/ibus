@@ -656,8 +656,9 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 
     g_assert (priv->connection == connection);
 
-    IBusMessage *return_message = NULL;
-    IBusMessage *error_message = NULL;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    gboolean retval;
 
     gint i;
     const gchar *interface;
@@ -684,288 +685,230 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
         return parent_class->ibus_message ((IBusService *) engine, connection, message);
 
-    if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {
-        guint keyval, keycode, state;
-        gboolean retval;
-        IBusError *error = NULL;
+    do {
+        if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {
+            guint keyval, keycode, state;
 
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &keyval,
-                                        G_TYPE_UINT, &keycode,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_UINT, &keyval,
+                                            G_TYPE_UINT, &keycode,
+                                            G_TYPE_UINT, &state,
+                                            G_TYPE_INVALID);
 
-        if (!retval)
-            goto _keypress_fail;
-
-        retval = FALSE;
-        g_signal_emit (engine,
-                       engine_signals[PROCESS_KEY_EVENT],
-                       0,
-                       keyval,
-                       keycode,
-                       state,
-                       &retval);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_message_append_args (return_message,
-                                  G_TYPE_BOOLEAN, &retval,
-                                  G_TYPE_INVALID);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _keypress_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (uuu) of method",
-                        IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-
-    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
-        if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
-            continue;
-
-        IBusMessageIter iter;
-        ibus_message_iter_init (message, &iter);
-        if (ibus_message_iter_has_next (&iter)) {
-            error_message = ibus_message_new_error_printf (message,
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
                                 DBUS_ERROR_INVALID_ARGS,
-                                "%s.%s: Method does not have arguments",
-                                IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
-            ibus_connection_send (connection, error_message);
-            ibus_message_unref (error_message);
+                                "%s.%s: Can not match signature (uuu) of method",
+                                IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
+                ibus_error_free (error);
+            }
+            else {
+                retval = FALSE;
+                g_signal_emit (engine,
+                               engine_signals[PROCESS_KEY_EVENT],
+                               0,
+                               keyval,
+                               keycode,
+                               state,
+                               &retval);
+
+                reply = ibus_message_new_method_return (message);
+                ibus_message_append_args (reply,
+                                          G_TYPE_BOOLEAN, &retval,
+                                          G_TYPE_INVALID);
+            }
+            break;
+        }
+        for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
+            if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
+                continue;
+
+            IBusMessageIter iter;
+            ibus_message_iter_init (message, &iter);
+            if (ibus_message_iter_has_next (&iter)) {
+                reply = ibus_message_new_error_printf (message,
+                                    DBUS_ERROR_INVALID_ARGS,
+                                    "%s.%s: Method does not have arguments",
+                                    IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
+            }
+            else {
+                g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        if (i < G_N_ELEMENTS (no_arg_methods))
+            break;
+        if (g_strcmp0 (name, "CandidateClicked") == 0) {
+            guint index, button, state;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_UINT, &index,
+                                            G_TYPE_UINT, &button,
+                                            G_TYPE_UINT, &state,
+                                            G_TYPE_INVALID);
+
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                                DBUS_ERROR_INVALID_ARGS,
+                                "%s.%s: Can not match signature (uuu) of method",
+                                IBUS_INTERFACE_ENGINE, "CandidateClicked");
+                ibus_error_free (error);
+            }
+            else {
+                g_signal_emit (engine,
+                               engine_signals[CANDIDATE_CLICKED],
+                               0,
+                               index,
+                               button,
+                               state);
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "PropertyActivate") == 0) {
+            gchar *name;
+            guint state;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_STRING, &name,
+                                            G_TYPE_UINT, &state,
+                                            G_TYPE_INVALID);
+
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                                DBUS_ERROR_INVALID_ARGS,
+                                "%s.%s: Can not match signature (si) of method",
+                                IBUS_INTERFACE_ENGINE,
+                                "PropertyActivate");
+                ibus_error_free (error);
+            }
+            else {
+                g_signal_emit (engine,
+                               engine_signals[PROPERTY_ACTIVATE],
+                               0,
+                               name,
+                               state);
+
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "PropertyShow") == 0) {
+            gchar *name;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_STRING, &name,
+                                            G_TYPE_INVALID);
+
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                            DBUS_ERROR_INVALID_ARGS,
+                            "%s.%s: Can not match signature (s) of method",
+                            IBUS_INTERFACE_ENGINE,
+                            "PropertyShow");
+                ibus_error_free (error);
+            }
+            else {
+                g_signal_emit (engine,
+                               engine_signals[PROPERTY_SHOW],
+                               0,
+                               name);
+
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "PropertyHide") == 0) {
+            gchar *name;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_STRING, &name,
+                                            G_TYPE_INVALID);
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                            DBUS_ERROR_INVALID_ARGS,
+                            "%s.%s: Can not match signature (s) of method",
+                            IBUS_INTERFACE_ENGINE, "PropertyHide");
+                ibus_error_free (error);
+            }
+            else {
+                g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "SetCursorLocation") == 0) {
+            gint x, y, w, h;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_INT, &x,
+                                            G_TYPE_INT, &y,
+                                            G_TYPE_INT, &w,
+                                            G_TYPE_INT, &h,
+                                            G_TYPE_INVALID);
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                            DBUS_ERROR_INVALID_ARGS,
+                            "%s.%s: Can not match signature (iiii) of method",
+                            IBUS_INTERFACE_ENGINE,
+                            "SetCursorLocation");
+                ibus_error_free (error);
+            }
+            else {
+                engine->cursor_area.x = x;
+                engine->cursor_area.y = y;
+                engine->cursor_area.width = w;
+                engine->cursor_area.height = h;
+
+                g_signal_emit (engine,
+                               engine_signals[SET_CURSOR_LOCATION],
+                               0,
+                               x, y, w, h);
+
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "SetCapabilities") == 0) {
+            guint caps;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_UINT, &caps,
+                                            G_TYPE_INVALID);
+
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                            DBUS_ERROR_INVALID_ARGS,
+                            "%s.%s: Can not match signature (u) of method",
+                            IBUS_INTERFACE_ENGINE, "SetCapabilities");
+                ibus_error_free (error);
+            }
+            else {
+                engine->client_capabilities = caps;
+                g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
+                reply = ibus_message_new_method_return (message);
+            }
+        }
+        else if (g_strcmp0 (name, "Destroy") == 0) {
+            reply = ibus_message_new_method_return (message);
+            ibus_connection_send (connection, reply);
+            ibus_message_unref (reply);
+            ibus_object_destroy ((IBusObject *) engine);
             return TRUE;
         }
+        else {
+            reply = ibus_message_new_error_printf (message,
+                        DBUS_ERROR_UNKNOWN_METHOD,
+                        "%s.%s",
+                        IBUS_INTERFACE_ENGINE, name);
+        }
+    } while (0);
 
-        g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-    }
-
-    if (g_strcmp0 (name, "CandidateClicked") == 0) {
-        guint index, button, state;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &index,
-                                        G_TYPE_UINT, &button,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto _candidate_clicked_fail;
-
-        retval = FALSE;
-        g_signal_emit (engine,
-                       engine_signals[CANDIDATE_CLICKED],
-                       0,
-                       index,
-                       button,
-                       state,
-                       &retval);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _candidate_clicked_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (uuu) of method",
-                        IBUS_INTERFACE_ENGINE, "CandidateClicked");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (g_strcmp0 (name, "PropertyActivate") == 0) {
-        gchar *name;
-        guint state;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_UINT, &state,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto _property_activate_fail;
-
-        g_signal_emit (engine,
-                       engine_signals[PROPERTY_ACTIVATE],
-                       0,
-                       name,
-                       state);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _property_activate_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (si) of method",
-                        IBUS_INTERFACE_ENGINE,
-                        "PropertyActivate");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-
-    }
-    else if (g_strcmp0 (name, "PropertyShow") == 0) {
-        gchar *name;
-        gboolean retval;
-        IBusError *error;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto _property_show_fail;
-
-        g_signal_emit (engine,
-                       engine_signals[PROPERTY_SHOW],
-                       0,
-                       name);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _property_show_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (s) of method",
-                        IBUS_INTERFACE_ENGINE,
-                        "PropertyShow");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (g_strcmp0 (name, "PropertyHide") == 0) {
-        gchar *name;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_INVALID);
-        if (!retval)
-            goto _property_hide_fail;
-
-        g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _property_hide_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (s) of method",
-                        IBUS_INTERFACE_ENGINE, "PropertyHide");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (g_strcmp0 (name, "SetCursorLocation") == 0) {
-        gint x, y, w, h;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_INT, &x,
-                                        G_TYPE_INT, &y,
-                                        G_TYPE_INT, &w,
-                                        G_TYPE_INT, &h,
-                                        G_TYPE_INVALID);
-        if (!retval)
-            goto _set_cursor_location_fail;
-
-        engine->cursor_area.x = x;
-        engine->cursor_area.y = y;
-        engine->cursor_area.width = w;
-        engine->cursor_area.height = h;
-
-        g_signal_emit (engine,
-                       engine_signals[SET_CURSOR_LOCATION],
-                       0,
-                       x, y, w, h);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _set_cursor_location_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (iiii) of method",
-                        IBUS_INTERFACE_ENGINE,
-                        "SetCursorLocation");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (g_strcmp0 (name, "SetCapabilities") == 0) {
-        guint caps;
-        gboolean retval;
-        IBusError *error = NULL;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_UINT, &caps,
-                                        G_TYPE_INVALID);
-
-        if (!retval)
-            goto _set_capabilities_fail;
-
-        engine->client_capabilities = caps;
-
-        g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
-
-        return_message = ibus_message_new_method_return (message);
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-        return TRUE;
-
-    _set_capabilities_fail:
-        error_message = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_INVALID_ARGS,
-                        "%s.%s: Can not match signature (u) of method",
-                        IBUS_INTERFACE_ENGINE, "SetCapabilities");
-        ibus_connection_send (connection, error_message);
-        ibus_message_unref (error_message);
-        return TRUE;
-    }
-    else if (g_strcmp0 (name, "Destroy") == 0) {
-        return_message = ibus_message_new_method_return (message);
-
-        ibus_connection_send (connection, return_message);
-        ibus_message_unref (return_message);
-
-        ibus_object_destroy ((IBusObject *) engine);
-    }
-
-    return parent_class->ibus_message ((IBusService *) engine, connection, message);
+    ibus_connection_send (connection, reply);
+    ibus_message_unref (reply);
+    return TRUE;
 }
 
 static gboolean
