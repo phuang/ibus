@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-28 15:44+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2009-09-02 12:29+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -32,32 +32,41 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
-#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: ../ui/gtk/panel.py:333
+#: ../ui/gtk/candidatepanel.py:265
+#, fuzzy
+msgid "Previous page"
+msgstr "পূর্ববর্তী ইনপুট পদ্ধতি:"
+
+#: ../ui/gtk/candidatepanel.py:270
+msgid "Next page"
+msgstr ""
+
+#: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "পুনরারম্ভ"
 
-#: ../ui/gtk/panel.py:388
+#: ../ui/gtk/panel.py:390
 msgid "Turn off input method"
 msgstr "ইনপুট পদ্ধতি বন্ধ করুন"
 
-#: ../ui/gtk/panel.py:425
+#: ../ui/gtk/panel.py:427
 msgid "No input window"
 msgstr "ইনপুটের উদ্দেশ্যে উইন্ডো অনুপস্থিত"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix-র সাথে ব্যবহারযোগ্য বুদ্ধিবিশিষ্ট ইনপুট বাস হল IBus"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:461
 msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
-#: ../ui/gtk/languagebar.py:105
+#: ../ui/gtk/languagebar.py:101
 msgid "About the Input Method"
 msgstr "ইনপুট পদ্ধতি পরিচিতি"
 
@@ -236,7 +245,7 @@ msgstr ""
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43

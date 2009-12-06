@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-28 15:44+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2009-04-07 06:38+1000\n"
 "Last-Translator: Caius 'kaio' Chance <k@kaio.me>\n"
 "Language-Team: Caius 'kaio' Chance <k@kaio.me>\n"
@@ -30,33 +30,42 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
-#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "其他"
 
-#: ../ui/gtk/panel.py:333
+#: ../ui/gtk/candidatepanel.py:265
+#, fuzzy
+msgid "Previous page"
+msgstr "上一個輸入法:"
+
+#: ../ui/gtk/candidatepanel.py:270
+msgid "Next page"
+msgstr ""
+
+#: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "重新啟動"
 
-#: ../ui/gtk/panel.py:388
+#: ../ui/gtk/panel.py:390
 #, fuzzy
 msgid "Turn off input method"
 msgstr "無輸入法"
 
-#: ../ui/gtk/panel.py:425
+#: ../ui/gtk/panel.py:427
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus 為 Linux/Unix上的智能輸入法框架。"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:461
 msgid "translator-credits"
 msgstr "Caius 'kaio' Chance <k@kaio.me>"
 
-#: ../ui/gtk/languagebar.py:105
+#: ../ui/gtk/languagebar.py:101
 #, fuzzy
 msgid "About the Input Method"
 msgstr "輸入法"
@@ -235,7 +244,7 @@ msgstr "語言面板行為。0 = 永遠隱藏，1 = 自動隱藏，2 = 永遠顯
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43

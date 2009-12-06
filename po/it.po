@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-28 15:44+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2009-12-03 18:51+0100\n"
 "Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -35,34 +35,43 @@ msgstr ""
 "Copyright © 2007-2009 Peng Huang\n"
 "Copying © 2007-2009 Red Hat, Inc."
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
-#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "Altro"
 
-#: ../ui/gtk/panel.py:333
+#: ../ui/gtk/candidatepanel.py:265
+#, fuzzy
+msgid "Previous page"
+msgstr "Metodo di input precedente:"
+
+#: ../ui/gtk/candidatepanel.py:270
+msgid "Next page"
+msgstr ""
+
+#: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "Riavvia"
 
-#: ../ui/gtk/panel.py:388
+#: ../ui/gtk/panel.py:390
 msgid "Turn off input method"
 msgstr "Disabilita metodo di input"
 
-#: ../ui/gtk/panel.py:425
+#: ../ui/gtk/panel.py:427
 msgid "No input window"
 msgstr "Nessuna finestra di input"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus è un bus di input intelligente per Linux/Unix."
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:461
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Sergio Zanchetta https://launchpad.net/~primes2h"
 
-#: ../ui/gtk/languagebar.py:105
+#: ../ui/gtk/languagebar.py:101
 msgid "About the Input Method"
 msgstr "Informazioni sul metodo di input"
 
@@ -231,9 +240,10 @@ msgstr ""
 "Nasconde automaticamente, 2 = Mostra sempre"
 
 #: ../data/ibus.schemas.in.h:15
+#, fuzzy
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 "La posizione del pannello della lingua. 0 = angolo in alto a sinistra, 1 = "
 "angolo in alto a destra, 2 = angolo in basso a sinistra, 3 = angolo in basso "

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-28 15:44+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2009-09-25 06:41+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -31,34 +31,44 @@ msgid ""
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
-#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "ਹੋਰ"
 
-#: ../ui/gtk/panel.py:333
+#: ../ui/gtk/candidatepanel.py:265
+#, fuzzy
+msgid "Previous page"
+msgstr "ਪਿਛਲਾ ਇੰਜਣ"
+
+#: ../ui/gtk/candidatepanel.py:270
+#, fuzzy
+msgid "Next page"
+msgstr "ਅਗਲਾ ਇੰਜਣ"
+
+#: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "ਮੁੜ-ਚਾਲੂ"
 
-#: ../ui/gtk/panel.py:388
+#: ../ui/gtk/panel.py:390
 msgid "Turn off input method"
 msgstr "ਇੰਪੁੱਟ ਢੰਗ ਬੰਦ ਕਰੋ"
 
-#: ../ui/gtk/panel.py:425
+#: ../ui/gtk/panel.py:427
 msgid "No input window"
 msgstr "ਕੋਈ ਇੰਪੁੱਟ ਵਿੰਡੋ ਨਹੀਂ"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ਲੀਨਕਸ/ਯੂਨੈਕਸ ਲਈ ਮਾਹਰ ਇੰਪੁੱਟ ਬੱਸ ਹੈ।"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:461
 msgid "translator-credits"
 msgstr ""
 "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ <aalam@users.sf.net> ੨੦੦੮-੨੦੦੯\n"
 "http://www.satluj.com/"
 
-#: ../ui/gtk/languagebar.py:105
+#: ../ui/gtk/languagebar.py:101
 msgid "About the Input Method"
 msgstr "ਇੰਪੁੱਟ ਢੰਗ ਬਾਰੇ"
 
@@ -234,7 +244,7 @@ msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਦਾ ਰਵੱਈਆ: 0 = ਹਮੇਸ਼
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
@@ -476,9 +486,6 @@ msgstr ""
 #~ msgid "Switch engine"
 #~ msgstr "ਇੰਜਣ ਬਦਲੋ"
 
-#~ msgid "next engine"
-#~ msgstr "ਅਗਲਾ ਇੰਜਣ"
-
 #~ msgid "prev engine"
 #~ msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
@@ -592,10 +599,6 @@ msgstr ""
 
 #~ msgid "keyboard label|Delete"
 #~ msgstr "Delete"
-
-#, fuzzy
-#~ msgid "Previous IME:"
-#~ msgstr "ਪਿਛਲਾ ਇੰਜਣ"
 
 #~ msgid "gtk-remove"
 #~ msgstr "gtk-close"

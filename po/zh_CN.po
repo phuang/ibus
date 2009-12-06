@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-05 19:41+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -233,7 +233,7 @@ msgstr "语言栏行为。0 = 总是隐藏，1 = 自动隐藏，2 = 总是显示
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "语言栏位置"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-28 15:44+0800\n"
+"POT-Creation-Date: 2009-12-07 06:50+0800\n"
 "PO-Revision-Date: 2009-11-13 16:25+0530\n"
 "Last-Translator: I. Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
@@ -36,32 +36,41 @@ msgstr ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:358 ../ui/gtk/panel.py:359
-#: ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "வேறு"
 
-#: ../ui/gtk/panel.py:333
+#: ../ui/gtk/candidatepanel.py:265
+#, fuzzy
+msgid "Previous page"
+msgstr "முந்தைய உள்ளீடு முறை:"
+
+#: ../ui/gtk/candidatepanel.py:270
+msgid "Next page"
+msgstr ""
+
+#: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "மறுதுவக்கம்"
 
-#: ../ui/gtk/panel.py:388
+#: ../ui/gtk/panel.py:390
 msgid "Turn off input method"
 msgstr "உள்ளீடு முறையை நிறுத்து"
 
-#: ../ui/gtk/panel.py:425
+#: ../ui/gtk/panel.py:427
 msgid "No input window"
 msgstr "உள்ளீடு சாளரம் இல்லை"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus Linux/Unixக்கான உள்ளிடு பஸ்."
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:461
 msgid "translator-credits"
 msgstr "I. Felix <ifelix@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:105
+#: ../ui/gtk/languagebar.py:101
 msgid "About the Input Method"
 msgstr "உள்ளீடு முறை பற்றி"
 
@@ -231,7 +240,7 @@ msgstr "மொழி பலகத்தின் பண்புகள். 0 = �
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom"
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
