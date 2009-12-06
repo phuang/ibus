@@ -370,7 +370,10 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
 {
     g_assert (BUS_IS_ENGINE_PROXY (proxy));
     g_assert (message != NULL);
+    g_assert (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_SIGNAL);
 
+    const gchar *interface;
+    const gchar *name;
     BusEngineProxy *engine;
     IBusError *error;
     gint i;
@@ -389,21 +392,23 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
-        { NULL, 0},
     };
 
     engine = BUS_ENGINE_PROXY (proxy);
+    interface = ibus_message_get_interface (message);
+    name = ibus_message_get_member (message);
 
-    for (i = 0; ; i++) {
-        if (signals[i].member == NULL)
-            break;
-        if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, signals[i].member)) {
+    if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
+        return FALSE;
+
+    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
+        if (g_strcmp0 (name, signals[i].member) == 0) {
             g_signal_emit (engine, engine_signals[signals[i].signal_id], 0);
             goto handled;
         }
     }
 
-    if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "CommitText")) {
+    if (g_strcmp0 (name, "CommitText") == 0) {
         IBusText *text;
         gboolean retval;
 
@@ -416,7 +421,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[COMMIT_TEXT], 0, text);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "ForwardKeyEvent")) {
+    else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {
         guint32 keyval;
         guint32 keycode;
         guint32 states;
@@ -438,7 +443,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
                        keycode,
                        states);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "DeleteSurroundingText")) {
+    else if (g_strcmp0 (name, "DeleteSurroundingText") == 0) {
         gint  offset_from_cursor;
         guint nchars;
         gboolean retval;
@@ -453,7 +458,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
             goto failed;
         g_signal_emit (engine, engine_signals[DELETE_SURROUNDING_TEXT], 0, offset_from_cursor, nchars);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdatePreeditText")) {
+    else if (g_strcmp0 (name, "UpdatePreeditText") == 0) {
         IBusText *text;
         gint cursor_pos;
         gboolean visible;
@@ -473,7 +478,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
                        text, cursor_pos, visible);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateAuxiliaryText")) {
+    else if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
         IBusText *text;
         gboolean visible;
         gboolean retval;
@@ -490,7 +495,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_AUXILIARY_TEXT], 0, text, visible);
         g_object_unref (text);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateLookupTable")) {
+    else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
         IBusLookupTable *table;
         gboolean visible;
         gboolean retval;
@@ -507,7 +512,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         g_object_unref (table);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "RegisterProperties")) {
+    else if (g_strcmp0 (name, "RegisterProperties") == 0) {
         gboolean retval;
 
         if (engine->prop_list) {
@@ -525,7 +530,7 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         }
         g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, engine->prop_list);
     }
-    else if (ibus_message_is_signal (message, IBUS_INTERFACE_ENGINE, "UpdateProperty")) {
+    else if (g_strcmp0 (name, "UpdateProperty") == 0) {
         IBusProperty *prop;
         gboolean retval;
 
@@ -540,9 +545,8 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
         g_object_unref (prop);
     }
-    else {
+    else
         return FALSE;
-    }
 
 handled:
     g_signal_stop_emission_by_name (engine, "ibus-signal");
