@@ -88,7 +88,7 @@
       <default>3</default>
       <locale name="C">
         <short>Language panel position</short>
-	    <long>The position of the language panel. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left corner, 3 = Bottom eight corner, 4 = Custom</long>
+	    <long>The position of the language panel. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom</long>
       </locale>
     </schema>
     -->
