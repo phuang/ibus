@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-07 06:50+0800\n"
-"PO-Revision-Date: 2009-11-13 15:32+0530\n"
+"PO-Revision-Date: 2009-12-08 13:27+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Hindi <hindi.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -44,13 +44,12 @@ msgid "Other"
 msgstr "अन्य"
 
 #: ../ui/gtk/candidatepanel.py:265
-#, fuzzy
 msgid "Previous page"
-msgstr "पिछली इनपुट विधि:"
+msgstr "पिछला पृष्ठ"
 
 #: ../ui/gtk/candidatepanel.py:270
 msgid "Next page"
-msgstr ""
+msgstr "अगला पृष्ठ"
 
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
@@ -193,9 +192,8 @@ msgid "Custom font name for language panel"
 msgstr "भाषा पटल के लिए मनपसंद फ़ॉन्ट नाम"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Language panel position"
-msgstr "भाषा पैनल दिखाएँ:"
+msgstr "भाषा पैनल स्थिति"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine shortcut keys"
@@ -243,7 +241,7 @@ msgstr "भाषा पटल का आचरण. 0 = हमेशा छु�
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
+msgstr "भाषा पटल की स्थिति. 0 = ऊपरी बायाँ कोना, 1 = ऊपरी दाहिना कोना, 2 = निचला बायां कोना, 3 = निचला दाहिना कोना, 4 = पसंदीदा"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
@@ -331,20 +329,19 @@ msgstr "हमेशा"
 
 #: ../setup/setup.ui.h:19
 msgid "Bottom left corner"
-msgstr ""
+msgstr "निचला बायां कोना"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom right corner"
-msgstr ""
+msgstr "निचला दाहिना कोना"
 
 #: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "कंडीडेट दिशा:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Custom"
-msgstr "मनपसंद फ़ॉन्ट"
+msgstr "मनपसंद"
 
 #: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
@@ -359,9 +356,8 @@ msgid "Horizontal"
 msgstr "क्षैतिज"
 
 #: ../setup/setup.ui.h:28
-#, fuzzy
 msgid "Language panel position:"
-msgstr "भाषा पैनल दिखाएँ:"
+msgstr "भाषा पैनल स्थिति:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
@@ -417,11 +413,11 @@ msgstr "सूची में पिछली इनपुट विधि म�
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
-msgstr ""
+msgstr "ऊपरी बायां कोना"
 
 #: ../setup/setup.ui.h:47
 msgid "Top right corner"
-msgstr ""
+msgstr "ऊपरी दाहिना कोना"
 
 #: ../setup/setup.ui.h:51
 msgid "Vertical"
@@ -431,15 +427,3 @@ msgstr "लंबवत"
 msgid "When active"
 msgstr "जब सक्रिय हो"
 
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "भाषा पैनल दिखाएँ:"
-
-#~ msgid "Custom font:"
-#~ msgstr "मनपसंद फ़ॉन्ट:"
-
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "भाषा पट्टी और कंडीडेट के लिए फ़ॉन्ट"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "भाषा पट्टी और कंडीडेट के लिए मनपसंद फ़ॉन्ट नाम का प्रयोग करें"
