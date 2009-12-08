@@ -55,7 +55,7 @@ enum {
 
 /* BusInputContextPriv */
 struct _IBusInputContextPrivate {
-    void *pad;
+    gboolean own;
 };
 typedef struct _IBusInputContextPrivate IBusInputContextPrivate;
 
@@ -112,6 +112,19 @@ ibus_input_context_new (const gchar     *path,
                         NULL);
 
     return IBUS_INPUT_CONTEXT (obj);
+}
+
+IBusInputContext *
+ibus_input_context_get_input_context (const gchar        *path,
+                                      IBusConnection     *connection)
+{
+    IBusInputContext *context = ibus_input_context_new (path, connection);
+    IBusInputContextPrivate *priv;
+    if (!context)
+        return NULL;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    priv->own = FALSE;
+    return context;
 }
 
 static void
@@ -472,12 +485,16 @@ ibus_input_context_init (IBusInputContext *context)
 {
     IBusInputContextPrivate *priv;
     priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    priv->own = TRUE;
 }
 
 static void
 ibus_input_context_real_destroy (IBusInputContext *context)
 {
-    if (ibus_proxy_get_connection ((IBusProxy *) context) != NULL) {
+    IBusInputContextPrivate *priv;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->own && ibus_proxy_get_connection ((IBusProxy *) context) != NULL) {
         ibus_proxy_call (IBUS_PROXY (context),
                          "Destroy",
                          G_TYPE_INVALID);
@@ -841,6 +858,84 @@ ibus_input_context_property_hide (IBusInputContext *context,
     ibus_proxy_call ((IBusProxy *) context,
                      "PropertyHide",
                      G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
+}
+
+gboolean
+ibus_input_context_is_enabled (IBusInputContext *context)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    gboolean retval = FALSE;
+
+    IBusMessage *reply_message;
+    IBusError *error = NULL;
+
+    reply_message = ibus_proxy_call_with_reply_and_block ((IBusProxy *) context,
+                                                          "IsEnabled",
+                                                          -1,
+                                                          &error,
+                                                          G_TYPE_INVALID);
+    if (!reply_message) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        return FALSE;
+    }
+
+    if (!ibus_message_get_args (reply_message,
+                                &error,
+                                G_TYPE_BOOLEAN, &retval,
+                                G_TYPE_INVALID)) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        retval = FALSE;
+    }
+    ibus_message_unref (reply_message);
+
+    return retval;
+}
+
+IBusEngineDesc *
+ibus_input_context_get_engine (IBusInputContext *context)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    IBusMessage *reply_message;
+    IBusError *error = NULL;
+    IBusSerializable *object = NULL;
+
+    reply_message = ibus_proxy_call_with_reply_and_block ((IBusProxy *) context,
+                                                          "GetEngine",
+                                                          -1,
+                                                          &error,
+                                                          G_TYPE_INVALID);
+    if (!reply_message) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        return NULL;
+    }
+
+    if (!ibus_message_get_args (reply_message,
+                                &error,
+                                IBUS_TYPE_ENGINE_DESC, &object,
+                                G_TYPE_INVALID)) {
+        g_debug ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply_message);
+        return NULL;
+    }
+    ibus_message_unref (reply_message);
+
+    return IBUS_ENGINE_DESC (object);
+}
+
+void
+ibus_input_context_set_engine (IBusInputContext *context,
+                               const gchar *name)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    ibus_proxy_call ((IBusProxy *) context,
+                     "SetEngine",
+                     G_TYPE_STRING, &name,
                      G_TYPE_INVALID);
 }
 

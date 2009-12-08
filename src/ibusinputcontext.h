@@ -34,6 +34,7 @@
 #define __IBUS_INPUT_CONTEXT_H_
 
 #include "ibusproxy.h"
+#include "ibusenginedesc.h"
 
 /*
  * Type macros.
@@ -90,6 +91,20 @@ GType        ibus_input_context_get_type    (void);
 IBusInputContext
             *ibus_input_context_new         (const gchar        *path,
                                              IBusConnection     *connection);
+
+/**
+ * ibus_input_context_get_input_context:
+ * @path: The path to the object that emitting the signal.
+ * @connection: An IBusConnection.
+ * @returns: An existing IBusInputContext.
+ *
+ * Gets an existing IBusInputContext.
+ */
+IBusInputContext
+            *ibus_input_context_get_input_context
+                                            (const gchar        *path,
+                                             IBusConnection     *connection);
+
 /**
  * ibus_input_context_process_key_event:
  * @context: An IBusInputContext.
@@ -205,6 +220,35 @@ void         ibus_input_context_enable      (IBusInputContext   *context);
  * @see_also: #IBusEngine::disable
  */
 void         ibus_input_context_disable     (IBusInputContext   *context);
+
+
+/**
+ * ibus_input_context_is_ensabled:
+ * @context: An IBusInputContext.
+ *
+ * Returns TRUE if the IME is enabled on the context.
+ */
+gboolean     ibus_input_context_is_enabled  (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_disable:
+ * @context: An IBusInputContext.
+ *
+ * Returns an IME engine description for the context.
+ */
+IBusEngineDesc
+            *ibus_input_context_get_engine  (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_set_engine:
+ * @context: An IBusInputContext.
+ * @name: A name of the engine.
+ *
+ * Invoked when the IME engine is changed.
+ */
+void         ibus_input_context_set_engine  (IBusInputContext   *context,
+                                             const gchar *name);
+
 
 G_END_DECLS
 #endif

@@ -27,6 +27,8 @@
 #include "ibusinternal.h"
 #include "ibusshare.h"
 #include "ibusconnection.h"
+#include "ibusenginedesc.h"
+#include "ibusserializable.h"
 #include "ibusconfig.h"
 
 #define IBUS_BUS_GET_PRIVATE(o)  \
@@ -782,16 +784,87 @@ ibus_bus_register_component (IBusBus       *bus,
 #endif
 }
 
+static GList *
+ibus_bus_do_list_engines (IBusBus *bus, gboolean active_engines_only)
+{
+    g_assert (IBUS_IS_BUS (bus));
+
+    IBusMessage *message, *reply;
+    IBusError *error;
+    gboolean retval;
+    IBusBusPrivate *priv;
+    IBusMessageIter iter, subiter;
+    GList *engines;
+    const gchar* member = active_engines_only ? "ListActiveEngines" : "ListEngines";
+
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
+                                            IBUS_PATH_IBUS,
+                                            IBUS_INTERFACE_IBUS,
+                                            member);
+    reply = ibus_connection_send_with_reply_and_block (priv->connection,
+                                                       message,
+                                                       -1,
+                                                       &error);
+    ibus_message_unref (message);
+
+    if (reply == NULL) {
+        g_warning ("%s : %s", error->name, error->message);
+        ibus_error_free (error);
+        return NULL;
+    }
+
+    if ((error = ibus_error_new_from_message (reply)) != NULL) {
+        g_warning ("%s : %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply);
+        return NULL;
+    }
+
+    retval = ibus_message_iter_init (reply, &iter);
+    if (!retval) {
+        error = ibus_error_new_from_printf (DBUS_ERROR_INVALID_ARGS,
+                                            "Message does not have arguments!");
+        g_warning ("%s : %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply);
+        return NULL;
+    }
+
+    if (!ibus_message_iter_recurse (&iter, IBUS_TYPE_ARRAY, &subiter)) {
+        ibus_message_unref (reply);
+        return NULL;
+    }
+
+    if (dbus_message_iter_get_array_len (&subiter) <= 0) {
+        ibus_message_unref (reply);
+        return NULL;
+    }
+
+    engines = NULL;
+    do {
+        IBusSerializable *object = NULL;
+        if (!ibus_message_iter_get (&subiter, IBUS_TYPE_ENGINE_DESC, &object) || !object) {
+            g_warning ("Unexpected type is returned from %s", member);
+            continue;
+        }
+        engines = g_list_append (engines, object);
+    } while (ibus_message_iter_next (&subiter));
+
+    ibus_message_unref (reply);
+    return engines;
+}
+
 GList *
 ibus_bus_list_engines (IBusBus *bus)
 {
-    return NULL;
+    return ibus_bus_do_list_engines (bus, FALSE);
 }
 
 GList *
 ibus_bus_list_active_engines (IBusBus *bus)
 {
-    return NULL;
+    return ibus_bus_do_list_engines (bus, TRUE);
 }
 
 static void

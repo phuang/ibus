@@ -165,6 +165,7 @@ AM_LDFLAGS = \
 	$(NULL)
 
 TESTS = \
+	test-bus \
 	test-text \
 	test-keymap \
 	test-keynames \
