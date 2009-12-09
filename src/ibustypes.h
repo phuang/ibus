@@ -97,6 +97,8 @@ typedef enum
  * @IBUS_CAP_LOOKUP_TABLE: UI is capable to show the lookup table.
  * @IBUS_CAP_FOCUS: UI is capable to get focus.
  * @IBUS_CAP_PROPERTY: UI is capable to have property.
+ * @IBUS_CAP_SURROUNDING_TEXT: Client can provide surround text,
+ *  or IME can handle surround text.
  *
  * Capability flags of UI.
  */
