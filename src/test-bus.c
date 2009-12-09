@@ -1,7 +1,7 @@
 #include <string.h>
 #include "ibus.h"
 
-static const char *
+static gchar *
 get_last_engine_id (const GList *engines)
 {
     g_assert (engines);
@@ -35,7 +35,7 @@ int main()
 	GList *engines;
 	IBusInputContext *context;
 	IBusEngineDesc *engine_desc;
-	const char *active_engine_name;
+	gchar *active_engine_name;
 
 	bus = ibus_bus_new ();
 
