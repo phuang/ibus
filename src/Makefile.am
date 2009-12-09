@@ -173,6 +173,7 @@ TESTS = \
 	test-lookuptable \
 	$(NULL)
 noinst_PROGRAMS = $(TESTS)
+test_bus_DEPENDENCIES = $(DEPS)
 test_text_DEPENDENCIES = $(DEPS)
 test_keymap_DEPENDENCIES = $(DEPS)
 test_keynames_DEPENDENCIES = $(DEPS)
