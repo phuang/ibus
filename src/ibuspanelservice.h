@@ -58,7 +58,6 @@ typedef struct _IBusPanelServiceClass IBusPanelServiceClass;
 
 /**
  * IBusPanelService:
- * @connection: An IBusConnection.
  */
 struct _IBusPanelService {
     IBusService parent;

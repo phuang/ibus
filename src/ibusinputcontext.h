@@ -225,14 +225,16 @@ void         ibus_input_context_disable     (IBusInputContext   *context);
 /**
  * ibus_input_context_is_ensabled:
  * @context: An IBusInputContext.
+ * @returns: TRUE if the IME is enabled on the context. 
  *
  * Returns TRUE if the IME is enabled on the context.
  */
 gboolean     ibus_input_context_is_enabled  (IBusInputContext   *context);
 
 /**
- * ibus_input_context_disable:
+ * ibus_input_context_get_engine:
  * @context: An IBusInputContext.
+ * @returns: An IME engine description for the context
  *
  * Returns an IME engine description for the context.
  */
