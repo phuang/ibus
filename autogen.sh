@@ -18,4 +18,8 @@ which gnome-autogen.sh || {
     exit 1
 }
 
+(test -f $srcdir/ChangeLog) || {
+    touch $srcdir/ChangeLog
+}
+
 ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.8 . gnome-autogen.sh
