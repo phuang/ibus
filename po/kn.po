@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-07 06:50+0800\n"
-"PO-Revision-Date: 2009-09-07 15:12+0530\n"
+"PO-Revision-Date: 2009-12-08 11:27+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
-"Language-Team: Kannada <en@li.org>\n"
+"Language-Team: Kannada <kde-l10n-kn@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -30,6 +30,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copying (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copying (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 #: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
@@ -37,13 +39,12 @@ msgid "Other"
 msgstr "ಇತರೆ"
 
 #: ../ui/gtk/candidatepanel.py:265
-#, fuzzy
 msgid "Previous page"
-msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
+msgstr "ಹಿಂದಿನ ಪುಟ:"
 
 #: ../ui/gtk/candidatepanel.py:270
 msgid "Next page"
-msgstr ""
+msgstr "ಮುಂದಿನ ಪುಟ"
 
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
@@ -174,35 +175,30 @@ msgid "IBus Preferences"
 msgstr "IBus ಆದ್ಯತೆಗಳು"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
-msgstr "ಸ್ವಯಂ ಅಡಗಿಸುವಿಕೆ"
+msgstr "ಸ್ವಯಂ ಅಡಗಿಸು"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ:"
+msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿನ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರು"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Language panel position"
-msgstr "ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು:"
+msgstr "ಭಾಷೆಯ ಫಲಕದ ಸ್ಥಳ"
 
 #: ../data/ibus.schemas.in.h:5
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "ಮುಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
+msgstr "ಮುಂದಿನ ಎಂಜಿನ್ ಶಾರ್ಟ್-ಕಟ್ ಕೀಲಿಗಳು"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ. 0 = ಅಡ್ಡಲಾಗಿ, 1 = ಲಂಬವಾಗಿ"
 
 #: ../data/ibus.schemas.in.h:7
-#, fuzzy
 msgid "Orientation of lookup table"
 msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ಹೊಂದಿಕೆ"
 
@@ -211,23 +207,20 @@ msgid "Preload Engines during ibus starts up"
 msgstr "ibus ಆರಂಭಗೊಂಡಾಗ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Preload engines"
 msgstr "ಮೊದಲೆ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "ಹಿಂದಿನ ಎಂಜಿನ್ ಹಾಟ್‌ಕೀಲಿ"
+msgstr "ಹಿಂದಿನ ಎಂಜಿನ್ ಶಾರ್ಟ್-ಕಟ್ ಕೀಲಿಗಳು"
 
 #: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "ಚಿಹ್ನೆಯನ್ನು ವ್ಯವಸ್ಥೆಯ ಟ್ರೇಯಲ್ಲಿ ತೋರಿಸು"
 
 #: ../data/ibus.schemas.in.h:12
-#, fuzzy
 msgid "Show input method name"
-msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
+msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 msgid "Show input method name on language bar"
@@ -237,28 +230,27 @@ msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವ
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಯಾವಾಗಲೂ ಅಡಗಿಸು, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
+msgstr "ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಯಾವಾಗಲೂ ಅಡಗಿಸು, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
 
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"ಭಾಷೆ ಫಲಕವು ಇರುವ ಸ್ಥಳ. 0 = ಮೇಲ್ಭಾಗದ ಎಡ ಮೂಲೆ, 1 = ಮೇಲ್ಭಾಗದ ಬಲ ಮೂಲೆ, 2 = ಕೆಳಗಿನ ಎಡ ಮೂಲೆ, 3 = "
+"ಕೆಳಗಿನ ಬಲ ಮೂಲೆ, 4 = ಇಚ್ಛೆಯ"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನಕ್ಕೆ ಬದಲಾಯಿಸಲು ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಗಳು"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
-msgstr "ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳನ್ನು ಆಫ್ ಹಾಗು ಆನ್ ಮಾಡಲು ಶಾರ್ಟ್-ಕೀಲಿಗಳನ್ನು ಹೊಂದಿಸಿ"
+msgstr "ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳನ್ನು ಆಫ್ ಹಾಗು ಆನ್ ಮಾಡಲು ಶಾರ್ಟ್-ಕೀಲಿಗಳು"
 
 #: ../data/ibus.schemas.in.h:18
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "ಟ್ರಿಗರ್ ಹಾಟ್‌ಕೀಲಿ"
+msgstr "ಶಾರ್ಟ್-ಕಟ್ ಕೀಲಿಗಳನ್ನು ಟ್ರಿಗರ್ ಮಾಡು"
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
@@ -330,24 +322,23 @@ msgstr "ಸುಧಾರಿತ"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "ಯಾವಾಗಲೂ"
 
 #: ../setup/setup.ui.h:19
 msgid "Bottom left corner"
-msgstr ""
+msgstr "ಕೆಳಗಿನ ಎಡ ಮೂಲೆ"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom right corner"
-msgstr ""
+msgstr "ಕೆಳಗಿನ ಬಲ ಮೂಲೆ"
 
 #: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "ಅಬ್ಯರ್ಥಿಗಳ ಹೊಂದಿಕೆ:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Custom"
-msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿ:"
+msgstr "ಇಚ್ಛೆಯ"
 
 #: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
@@ -358,16 +349,12 @@ msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
 #: ../setup/setup.ui.h:25
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"ಅಡ್ಡ\n"
-"ಲಂಬ"
+msgstr "ಅಡ್ಡವಾದ"
 
 #: ../setup/setup.ui.h:28
-#, fuzzy
 msgid "Language panel position:"
-msgstr "ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು:"
+msgstr "ಭಾಷೆಯ ಫಲಕದ ಸ್ಥಳ:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
@@ -381,7 +368,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:31
 msgid "Never"
-msgstr ""
+msgstr "ಎಂದಿಗೂ ಬೇಡ"
 
 #: ../setup/setup.ui.h:32
 msgid "Next input method:"
@@ -398,8 +385,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
-"ಭಾಷಾ ಪಟ್ಟಿಕೆಯನ್ನು ಹೇಗೆ ತೋರಿಸಬೇಕು ಅಥವ ಅಡಗಿಸಬೇಕು ಎನ್ನುವ ibus ನ ವರ್ತನೆಯನ್ನು ಹೊಂದಿಸಿ"
+msgstr "ಭಾಷಾ ಪಟ್ಟಿಕೆಯನ್ನು ಹೇಗೆ ತೋರಿಸಬೇಕು ಅಥವ ಅಡಗಿಸಬೇಕು ಎನ್ನುವ ibus ನ ವರ್ತನೆಯನ್ನು ಹೊಂದಿಸಿ"
 
 #: ../setup/setup.ui.h:36
 msgid "Set the orientation of candidates in lookup table"
@@ -427,23 +413,19 @@ msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಹಿಂದಿನ ಇನ್‌ಪು�
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
-msgstr ""
+msgstr "ಮೇಲ್ಭಾಗದ ಎಡ ಮೂಲೆ"
 
 #: ../setup/setup.ui.h:47
 msgid "Top right corner"
-msgstr ""
+msgstr "ಮೇಲ್ಭಾಗದ ಬಲ ಮೂಲೆ"
 
 #: ../setup/setup.ui.h:51
 msgid "Vertical"
-msgstr ""
+msgstr "ಲಂಬವಾಗಿ"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "When active"
-msgstr ""
-"ಎಂದಿಗೂ ಬೇಡ\n"
-"ಸಕ್ರಿಯವಾಗಿದ್ದಾಗ\n"
-"ಯಾವಾಗಲೂ"
+msgstr "ಸಕ್ರಿಯವಾಗಿದ್ದಾಗ"
 
 #, fuzzy
 #~ msgid "Langauge panel position"
