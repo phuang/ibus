@@ -1,10 +1,15 @@
+# Fedora Spanish translation of ibus.master
+# This file is distributed under the same license as the ibus.master package.
+#
+# Héctor Daniel Cabrera <logan@fedoraproject.org>, 2009.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 15:06+0800\n"
+"POT-Creation-Date: 2009-12-11 20:46+0800\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Domingo Becker <domingobecker@gmail.com>\n"
+"Last-Translator: Héctor Daniel Cabrera <logan@fedoraproject.org>\n"
 "Language-Team: Fedora Spanish <fedora-trans-es@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
