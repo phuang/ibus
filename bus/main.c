@@ -202,7 +202,7 @@ main (gint argc, gchar **argv)
     }
 
     /* create a new process group */
-    setpgrp ();
+    setpgid (0, 0);
 
     g_type_init ();
 
