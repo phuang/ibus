@@ -25,7 +25,7 @@ import sys
 import getopt
 import ibus
 import gtk
-import locale
+import gettext
 import panel
 import notifications
 
@@ -77,5 +77,7 @@ def main():
     launch_panel()
 
 if __name__ == "__main__":
-    locale.bind_textdomain_codeset("ibus", "UTF-8")
+    localedir = os.getenv("IBUS_LOCALEDIR")
+    gettext.bindtextdomain("ibus", localedir)
+    gettext.bind_textdomain_codeset("ibus", "UTF-8")
     main()

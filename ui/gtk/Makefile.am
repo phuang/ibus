@@ -64,5 +64,7 @@ gtkpanel.xml: gtkpanel.xml.in
 test:
 	$(ENV) DBUS_DEBUG=true \
 		IBUS_PREFIX=@prefix@ \
+		IBUS_DATAROOTDIR=@datarootdir@ \
+		IBUS_LOCALEDIR=@localedir@ \
 		PYTHONPATH=$(top_srcdir) \
 		$(PYTHON) $(srcdir)/main.py

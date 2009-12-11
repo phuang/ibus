@@ -19,6 +19,13 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+datarootdir=@datarootdir@
 export IBUS_PREFIX=@prefix@
+export IBUS_DATAROOTDIR=@datarootdir@
+export IBUS_LOCALEDIR=@localedir@
+
 exec python @prefix@/share/ibus/ui/gtk/main.py $@
 
