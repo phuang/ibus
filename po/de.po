@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-07 06:50+0800\n"
+"POT-Creation-Date: 2009-12-11 15:06+0800\n"
 "PO-Revision-Date: 2009-12-10 09:44+1000\n"
 "Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
 "Language-Team: \n"
@@ -30,10 +30,10 @@ msgstr "IBus-Eingabemethode-Framework"
 #: ../ibus/_config.py.in:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
-"Copying (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 "Copyright (c) 2007-2009 Peng Huang\n"
-"Copying (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 #: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
@@ -126,8 +126,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus wurde gestartet! Falls Sie IBus nicht nutzen können, fügen Sie bitte folgende Zeilen in "
-"$HOME/.bashrc hinzu und melden sich neu am Desktop an.\n"
+"IBus wurde gestartet! Falls Sie IBus nicht nutzen können, fügen Sie bitte "
+"folgende Zeilen in $HOME/.bashrc hinzu und melden sich neu am Desktop an.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -234,17 +234,22 @@ msgstr "Name der Eingabemethode auf Sprachleiste anzeigen"
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr "Verhalten des Sprach-Panels: 0 = Immer verstecken, 1 = Automatisch verstecken, 2 = Immer anzeigen"
+msgstr ""
+"Verhalten des Sprach-Panels: 0 = Immer verstecken, 1 = Automatisch "
+"verstecken, 2 = Immer anzeigen"
 
 #: ../data/ibus.schemas.in.h:15
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr "Die Position des Sprach-Panels: 0 = Ecke oben links, 1 = Ecke oben rechts, 2 = Ecke unten links, 3 = Ecke unten rechts, 4 = Benutzerdefiniert"
+msgstr ""
+"Die Position des Sprach-Panels: 0 = Ecke oben links, 1 = Ecke oben rechts, 2 "
+"= Ecke unten links, 3 = Ecke unten rechts, 4 = Benutzerdefiniert"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
+msgstr ""
+"Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 msgid "The shortcut keys for turning input method on or off"
@@ -311,12 +316,15 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
-"<small><i>Die standardmässige Eingabemethode steht in der Liste an erster Stelle.\n"
+"<small><i>Die standardmässige Eingabemethode steht in der Liste an erster "
+"Stelle.\n"
 "Sie können dies mit den Hoch/Runter-Schaltflächen ändern.</i></small>"
 
 #: ../setup/setup.ui.h:16
 msgid "Add the selected input method into the enabled input methods"
-msgstr "Fügen Sie die gewählte Eingabemethode zu den aktivierten Eingabemethoden hinzu"
+msgstr ""
+"Fügen Sie die gewählte Eingabemethode zu den aktivierten Eingabemethoden "
+"hinzu"
 
 #: ../setup/setup.ui.h:17
 msgid "Advanced"
@@ -360,11 +368,15 @@ msgstr "Position des Sprach-Panels:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
-msgstr "Bewegen Sie die gewählte Eingabemethode in den aktivierten Eingabemethoden nach unten"
+msgstr ""
+"Bewegen Sie die gewählte Eingabemethode in den aktivierten Eingabemethoden "
+"nach unten"
 
 #: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr "Bewegen Sie die gewählte Eingabemethode in den aktivierten Eingabemethoden nach oben"
+msgstr ""
+"Bewegen Sie die gewählte Eingabemethode in den aktivierten Eingabemethoden "
+"nach oben"
 
 #: ../setup/setup.ui.h:31
 msgid "Never"
@@ -380,11 +392,13 @@ msgstr "Vorherige Eingabemethode:"
 
 #: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
-msgstr "Entfernen Sie die gewählte Eingabemethode aus den aktivierten Eingabemethoden"
+msgstr ""
+"Entfernen Sie die gewählte Eingabemethode aus den aktivierten Eingabemethoden"
 
 #: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "Verhalten von IBus einstellen, das Sprach-Panel anzuzeigen oder zu verstecken"
+msgstr ""
+"Verhalten von IBus einstellen, das Sprach-Panel anzuzeigen oder zu verstecken"
 
 #: ../setup/setup.ui.h:36
 msgid "Set the orientation of candidates in lookup table"
@@ -396,7 +410,9 @@ msgstr "Informationen zur gewählten Eingabemethode anzeigen"
 
 #: ../setup/setup.ui.h:40
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr "Name der gewählten Eingabemethode auf Sprach-Panel anzeigen, wenn Auswahlkästchen aktiviert"
+msgstr ""
+"Name der gewählten Eingabemethode auf Sprach-Panel anzeigen, wenn "
+"Auswahlkästchen aktiviert"
 
 #: ../setup/setup.ui.h:41
 msgid "Show language panel:"
@@ -408,7 +424,8 @@ msgstr "Starte IBus bei der Anmeldung"
 
 #: ../setup/setup.ui.h:44
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "Tastenkombination zum Wechseln zur vorherigen Eingabemethode in der Liste"
+msgstr ""
+"Tastenkombination zum Wechseln zur vorherigen Eingabemethode in der Liste"
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
@@ -425,4 +442,3 @@ msgstr "Vertikal"
 #: ../setup/setup.ui.h:52
 msgid "When active"
 msgstr "Wenn aktiv"
-

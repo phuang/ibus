@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-07 06:50+0800\n"
+"POT-Creation-Date: 2009-12-11 15:06+0800\n"
 "PO-Revision-Date: 2009-05-26 15:19+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
@@ -27,7 +27,7 @@ msgstr "IBus input method framework"
 #: ../ibus/_config.py.in:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
-"Copying (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361

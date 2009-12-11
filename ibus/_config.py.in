@@ -35,7 +35,7 @@ def get_version():
 
 def get_copyright():
     return _('''Copyright (c) 2007-2009 Peng Huang
-Copying (c) 2007-2009 Red Hat, Inc.''')
+Copyright (c) 2007-2009 Red Hat, Inc.''')
 
 def get_license():
     return 'LGPL'

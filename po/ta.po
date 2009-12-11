@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-07 06:50+0800\n"
+"POT-Creation-Date: 2009-12-11 15:06+0800\n"
 "PO-Revision-Date: 2009-12-08 22:26+0530\n"
 "Last-Translator: I Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
@@ -21,24 +21,20 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2
-#: ../ui/gtk/panel.py:113
+#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
 msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
 
 #: ../ibus/_config.py.in:37
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
-"Copying (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 "Copyright (c) 2007-2009 Peng Huang\n"
-"Copying (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2009 Red Hat, Inc."
 
-#: ../ibus/lang.py:41
-#: ../ui/gtk/panel.py:360
-#: ../ui/gtk/panel.py:361
-#: ../ui/gtk/panel.py:362
-#: ../ui/gtk/panel.py:363
+#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
+#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
 msgid "Other"
 msgstr "வேறு"
 
@@ -78,32 +74,27 @@ msgstr "உள்ளீடு முறை பற்றி"
 msgid "Switch input method"
 msgstr "உள்ளீடு முறையை மாற்று"
 
-#: ../ui/gtk/engineabout.py:35
-#: ../setup/engineabout.py:35
+#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
 #: ../setup/setup.ui.h:15
 msgid "About"
 msgstr "பற்றி"
 
-#: ../ui/gtk/engineabout.py:63
-#: ../setup/engineabout.py:63
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
 msgstr "மொழி: %s\n"
 
-#: ../ui/gtk/engineabout.py:65
-#: ../setup/engineabout.py:65
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "விசைப்பலகை அமைப்பு: %s\n"
 
-#: ../ui/gtk/engineabout.py:67
-#: ../setup/engineabout.py:67
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
 msgstr "ஆசிரியர்: %s\n"
 
-#: ../ui/gtk/engineabout.py:69
-#: ../setup/engineabout.py:69
+#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
 msgstr "விளக்கம்:\n"
 
@@ -125,12 +116,14 @@ msgstr "IBus daemon துவக்கப்படவில்லை. இப்�
 
 #: ../setup/main.py:255
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus துவக்கப்பட்டது! உங்களால் IBusஐ பயன்படுத்த முடியவில்லையெனில், பின்வரும் வரியை சேர்த்து $HOME/.bashrc, உங்கள் பணிமேடையை மறுதுவக்கவும்.\n"
+"IBus துவக்கப்பட்டது! உங்களால் IBusஐ பயன்படுத்த முடியவில்லையெனில், பின்வரும் வரியை "
+"சேர்த்து $HOME/.bashrc, உங்கள் பணிமேடையை மறுதுவக்கவும்.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -169,8 +162,7 @@ msgid "Select an input method"
 msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60
-#: ../setup/setup.ui.h:27
+#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
 msgid "Input Method"
 msgstr "உள்ளீடு முறை"
 
@@ -178,8 +170,7 @@ msgstr "உள்ளீடு முறை"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1
-#: ../setup/setup.ui.h:26
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus முன்னுரிமைகள்"
 
@@ -223,8 +214,7 @@ msgstr "முன்ஏற்றப்பட்ட இயந்திரங்�
 msgid "Prev engine shortcut keys"
 msgstr "முந்தைய இயந்திர குறுக்குவிசைகள்"
 
-#: ../data/ibus.schemas.in.h:11
-#: ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
 msgstr "கணினி தட்டில் சின்னத்தை காட்டு"
 
@@ -232,26 +222,29 @@ msgstr "கணினி தட்டில் சின்னத்தை கா
 msgid "Show input method name"
 msgstr "உள்ளீடு முறையின் பெயரை காட்டு"
 
-#: ../data/ibus.schemas.in.h:13
-#: ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
 msgid "Show input method name on language bar"
 msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
 
 #: ../data/ibus.schemas.in.h:14
-msgid "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgid ""
+"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
+"show"
 msgstr "மொழி பலகத்தின் பண்புகள். 0 = எப்போதும் மறை, 1 = தானாக மறை, 2 = எப்போதும் காட்டு"
 
 #: ../data/ibus.schemas.in.h:15
-msgid "The position of the language panel. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr "மொழி பேனலின் இடம். 0 = மேல் இடது ஓரம், 1 = மேல் வலது ஓரம், 2 = கீழ் இடது ஓரம், 3 = கீழ் வலது ஓரம், 4 = தனிபயன்"
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
+msgstr ""
+"மொழி பேனலின் இடம். 0 = மேல் இடது ஓரம், 1 = மேல் வலது ஓரம், 2 = கீழ் இடது ஓரம், 3 = கீழ் "
+"வலது ஓரம், 4 = தனிபயன்"
 
-#: ../data/ibus.schemas.in.h:16
-#: ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "பட்டியலில் அடுத்த உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../data/ibus.schemas.in.h:17
-#: ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
 msgid "The shortcut keys for turning input method on or off"
 msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
 
@@ -259,8 +252,7 @@ msgstr "உள்ளீடு முறைமை துவக்க அல்ல
 msgid "Trigger shortcut keys"
 msgstr "ட்ரிகர் குறுக்குவிசை"
 
-#: ../data/ibus.schemas.in.h:19
-#: ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
 msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
 
@@ -268,13 +260,11 @@ msgstr "தனிபயன் எழுத்துருவை பயன்ப�
 msgid "Use custom font name for language panel"
 msgstr "மொழி பலகத்தில் தனிபயன் எழுத்துரு பெயர்"
 
-#: ../data/ibus.schemas.in.h:21
-#: ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
 msgstr "கணினி விசைப்பலகை (XKB) அமைப்பை பயன்படுத்து"
 
-#: ../data/ibus.schemas.in.h:22
-#: ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
 msgstr "கணினி விசைப்பலகை அமைப்பை பயன்படுத்து"
 
@@ -372,7 +362,8 @@ msgstr "செயல்படுத்தப்பட்ட உள்ளீட�
 
 #: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
+msgstr ""
+"செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
 
 #: ../setup/setup.ui.h:31
 msgid "Never"
@@ -437,10 +428,12 @@ msgstr "செயலிலிருக்கும் போது"
 #, fuzzy
 #~ msgid "Langauge panel position"
 #~ msgstr "மொழி பலகத்தை காட்டு:"
+
 #~ msgid "Custom font:"
 #~ msgstr "தனிபயன் எழுத்துரு:"
+
 #~ msgid "Font for language bar and candidates"
 #~ msgstr "மொழி பட்டை மற்றும் நபர்களுக்கு எழுத்துரு தேர்வு"
+
 #~ msgid "Use custom font for language bar and candidates"
 #~ msgstr "மொழி பட்டை மற்றும் நபர்களுக்கான தனிபயன் எழுத்துருவை பயன்படுத்து"
-
