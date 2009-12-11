@@ -6,14 +6,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 15:06+0800\n"
-"PO-Revision-Date: 2009-05-26 15:19+0530\n"
-"Last-Translator: Amitakhya Phukan <aphukan@fedoraproject.org>\n"
-"Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
+"POT-Creation-Date: 2009-12-11 20:46+0800\n"
+"PO-Revision-Date: 2009-12-11 12:13+0530\n"
+"Last-Translator: \n"
+"Language-Team: Assamese <>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.3\n"
+"X-Generator: Lokalize 0.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -29,6 +29,8 @@ msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copyright (c) 2007-2009 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2009 Peng Huang\n"
+"Copyright (c) 2007-2009 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 #: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
@@ -36,27 +38,24 @@ msgid "Other"
 msgstr "অন্য"
 
 #: ../ui/gtk/candidatepanel.py:265
-#, fuzzy
 msgid "Previous page"
-msgstr "আগৰ নিবেশ পদ্ধতি"
+msgstr "পূৰ্ববৰ্তী পৃষ্ঠা"
 
 #: ../ui/gtk/candidatepanel.py:270
-#, fuzzy
 msgid "Next page"
-msgstr "পিছৰ কলঘৰ"
+msgstr "পৰবৰ্তী পৃষ্ঠা"
 
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "পুনৰাৰম্ভ"
 
 #: ../ui/gtk/panel.py:390
-#, fuzzy
 msgid "Turn off input method"
-msgstr "কোনো নিবেশ পদ্ধতি নাই"
+msgstr "নিবেশ পদ্ধতি বন্ধ কৰক"
 
 #: ../ui/gtk/panel.py:427
 msgid "No input window"
-msgstr ""
+msgstr "নিবেশৰ সংযোগক্ষেত্ৰ নাই"
 
 #: ../ui/gtk/panel.py:457
 msgid "IBus is an intelligent input bus for Linux/Unix."
@@ -67,9 +66,8 @@ msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
 #: ../ui/gtk/languagebar.py:101
-#, fuzzy
 msgid "About the Input Method"
-msgstr "নিবেশ পদ্ধতি"
+msgstr "নিবেশ পদ্ধতিৰ বিষয়ে"
 
 #: ../ui/gtk/languagebar.py:169
 msgid "Switch input method"
@@ -83,21 +81,21 @@ msgstr "বিষয়ে"
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Language: %s\n"
-msgstr ""
+msgstr "ভাষা: %s\n"
 
 #: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
-#, fuzzy, python-format
+#, python-format
 msgid "Keyboard layout: %s\n"
-msgstr "কীবৰ্ডৰ চমুপথবোৰ"
+msgstr "চাবিৰ ফলকৰ বিন্যাস: %s\n"
 
 #: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 #, python-format
 msgid "Author: %s\n"
-msgstr ""
+msgstr "লিখক: %s\n"
 
 #: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
 msgid "Description:\n"
-msgstr ""
+msgstr "বিৱৰণ:\n"
 
 #: ../setup/main.py:106
 msgid "trigger"
@@ -164,78 +162,68 @@ msgstr "এটা নিবেশ পদ্ধতি নিৰ্ব্বাচ
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
-#, fuzzy
 msgid "Input Method"
 msgstr "নিবেশ পদ্ধতি"
 
 #: ../setup/enginetreeview.py:88
 msgid "Kbd"
-msgstr ""
+msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
 msgid "IBus Preferences"
 msgstr "IBus পছন্দ"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "স্বয়ংক্ৰিয়ভাবে লুকাওক"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "স্বনিৰ্বাচিত ফন্ট:"
+msgstr "স্বনিৰ্ধাৰিত ফন্ট"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Language panel position"
-msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
+msgstr "ভাষাৰ পেনেলৰ স্থান"
 
 #: ../data/ibus.schemas.in.h:5
-#, fuzzy
 msgid "Next engine shortcut keys"
-msgstr "পিছৰ কলঘৰৰ Hotkey"
+msgstr "পৰবৰ্তী কলঘৰৰ বাবে ছৰ্টকাট চাবি"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুকআপ টেবুলৰ দিশ । ০ = অনুভূমিক, ১ = উলম্ব"
 
 #: ../data/ibus.schemas.in.h:7
-#, fuzzy
 msgid "Orientation of lookup table"
-msgstr "লুকআপ টেবুলৰ দিশ"
+msgstr "লুক-আপ টেবুলৰ দিশ"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Preload Engines during ibus starts up"
-msgstr "ibus আৰম্ভৰ পূৰ্বে কলঘৰ তুলি লওক"
+msgstr "ibus আৰম্ভৰ আগতে কলঘৰ তুলি লওক"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Preload engines"
-msgstr "পূৰ্বে কলঘৰ তুলি লওক"
+msgstr "কলঘৰ আগতে তুলি লোৱা হ'ব"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "Prev engine shortcut keys"
-msgstr "আগৰ কলঘৰৰ Hotkey"
+msgstr "পূৰ্ববৰ্তী কলঘৰৰ ছৰ্টকাট চাবি"
 
 #: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "প্ৰণালী ট্ৰত আইকন প্ৰদৰ্শন কৰা হ'ব"
 
 #: ../data/ibus.schemas.in.h:12
-#, fuzzy
 msgid "Show input method name"
-msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+msgstr "নিবেশ পদ্ধতিৰ নাম দেখুৱাব"
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
-#, fuzzy
 msgid "Show input method name on language bar"
-msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+msgstr "ভাষাৰ বাৰত নিবেশ পদ্ধতিৰ নাম দেখুৱাব"
 
 #: ../data/ibus.schemas.in.h:14
 msgid ""
@@ -249,21 +237,20 @@ msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"ভাষাৰ পেনেলৰ স্থান । 0 = ওপৰৰ বাওঁফালৰ কোণত, 1 = ওপৰৰ সোঁফালৰ কোণত, 2 = তলৰ "
+"বাওঁফালৰ কোণত, 3 = তলৰ সোঁফালৰ কোণত, 4 = স্বনিৰ্ধাৰিত"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
-#, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "পিছৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+msgstr "তালিকাত উপস্থিত পৰবৰ্তী নিবেশ পদ্ধতিলৈ পৰিবৰ্তনৰ বাবে প্ৰযোজ্য ছৰ্ট-কাট চাবি"
 
 #: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
-#, fuzzy
 msgid "The shortcut keys for turning input method on or off"
-msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+msgstr "নিবেশ পদ্ধতি খোলা আৰু বন্ধ কৰাৰ বাবে প্ৰয়োজনীয় ছৰ্ট-কাট চাবি নিৰ্ধাৰণ কৰক"
 
 #: ../data/ibus.schemas.in.h:18
-#, fuzzy
 msgid "Trigger shortcut keys"
-msgstr "ট্ৰিগাৰ Hotkey"
+msgstr "ট্ৰিগাৰৰ ছৰ্টকাট চাবি"
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "Use custom font"
@@ -275,11 +262,11 @@ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্ব
 
 #: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
 msgid "Use system keyboard (XKB) layout"
-msgstr ""
+msgstr "প্ৰণালী চাবিৰ ফলক (XKB) বিন্যাস প্ৰয়োগ কৰা হ'ব"
 
 #: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
 msgid "Use system keyboard layout"
-msgstr ""
+msgstr "প্ৰণালী চাবিৰ ফলক বিন্যাস প্ৰয়োগ কৰা হ'ব"
 
 #: ../setup/setup.ui.h:1
 msgid "..."
@@ -290,9 +277,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ফন্ট আৰু শৈলী</b>"
 
 #: ../setup/setup.ui.h:3
-#, fuzzy
 msgid "<b>Keyboard Layout</b>"
-msgstr "<b>কীবৰ্ডৰ চমুপথবোৰ</b>"
+msgstr "<b>চাবিৰ ফলকৰ বিন্যাস</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Shortcuts</b>"
@@ -328,32 +314,31 @@ msgstr ""
 
 #: ../setup/setup.ui.h:16
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
+msgstr "নিৰ্বাচিত নিবেশ পদ্ধতিক সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাত যোগ কৰক"
 
 #: ../setup/setup.ui.h:17
 msgid "Advanced"
-msgstr ""
+msgstr "উন্নত"
 
 #: ../setup/setup.ui.h:18
 msgid "Always"
-msgstr ""
+msgstr "সদায়ে"
 
 #: ../setup/setup.ui.h:19
 msgid "Bottom left corner"
-msgstr ""
+msgstr "তলৰ বাওঁফালৰ কোণত"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom right corner"
-msgstr ""
+msgstr "তলৰ সোঁফালৰ কোণত"
 
 #: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "প্ৰাৰ্থীৰ দিশ:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Custom"
-msgstr "স্বনিৰ্বাচিত ফন্ট:"
+msgstr "স্বনিৰ্ধাৰিত"
 
 #: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
@@ -364,28 +349,24 @@ msgid "General"
 msgstr "সাধাৰণ"
 
 #: ../setup/setup.ui.h:25
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"অনুভূমিক\n"
-"উলম্ব"
+msgstr "অনুভূমিক"
 
 #: ../setup/setup.ui.h:28
-#, fuzzy
 msgid "Language panel position:"
-msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
+msgstr "ভাষাৰ পেনেলৰ স্থান:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
+msgstr "নিৰ্বাচিত নিবেশ পদ্ধতিক সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ তললৈ স্থানান্তৰ কৰক"
 
 #: ../setup/setup.ui.h:30
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
+msgstr "নিৰ্বাচিত নিবেশ পদ্ধতিক সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ ওপৰলৈ স্থানান্তৰ কৰক"
 
 #: ../setup/setup.ui.h:31
 msgid "Never"
-msgstr ""
+msgstr "কেতিয়াও নহয়"
 
 #: ../setup/setup.ui.h:32
 msgid "Next input method:"
@@ -397,25 +378,23 @@ msgstr "আগৰ নিবেশ পদ্ধতি"
 
 #: ../setup/setup.ui.h:34
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
+msgstr "সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ পৰা নিৰ্বাচিত নিবেশ পদ্ধতি আঁতৰুৱা হ'ব"
 
 #: ../setup/setup.ui.h:35
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
+msgstr "ভাষাৰ বাৰ প্ৰদৰ্শন আৰু লুকুৱাৰ উদ্দেশ্যে ibus ৰ আচৰণ নিৰ্ধাৰণ কৰক"
 
 #: ../setup/setup.ui.h:36
-#, fuzzy
 msgid "Set the orientation of candidates in lookup table"
-msgstr "লুকআপ টেবুলৰ দিশ"
+msgstr "লুক-আপ টেবুলত প্ৰযোজ্য বিকল্পসমূহৰ দিশ নিৰ্ধাৰণ কৰক"
 
 #: ../setup/setup.ui.h:38
 msgid "Show information of the selected input method"
-msgstr ""
+msgstr "নিৰ্বাচিত নিবেশ পদ্ধতি সংক্ৰান্ত তথ্য প্ৰদৰ্শন কৰা হ'ব"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্ট"
+msgstr "চেকবক্স নিৰ্বাচিত হ'লে ভাষাৰ বাৰত নিবেশ পদ্ধতিৰ নাম প্ৰদৰ্শন কৰা হ'ব"
 
 #: ../setup/setup.ui.h:41
 msgid "Show language panel:"
@@ -426,29 +405,24 @@ msgid "Start ibus on login"
 msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
 
 #: ../setup/setup.ui.h:44
-#, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "আগৰ কলঘৰৰ Hotkey পিছৰ নিবেশ কলঘৰলৈ যাবলৈ"
+msgstr "তালিকাত উপস্থিত পূৰ্ববৰ্তী নিবেশ পদ্ধতিলৈ পৰিবৰ্তনৰ বাবে প্ৰযোজ্য ছৰ্ট-কাট চাবি"
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
-msgstr ""
+msgstr "ওপৰৰ বাওঁফালৰ কোণত"
 
 #: ../setup/setup.ui.h:47
 msgid "Top right corner"
-msgstr ""
+msgstr "ওপৰৰ সোঁফালৰ কোণত"
 
 #: ../setup/setup.ui.h:51
 msgid "Vertical"
-msgstr ""
+msgstr "উল্লম্ব"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "When active"
-msgstr ""
-"কেতিয়াও নহয়\n"
-"যেতিয়া সক্ৰিয়\n"
-"সদায়"
+msgstr "সক্ৰিয় অৱস্থাত"
 
 #, fuzzy
 #~ msgid "Langauge panel position"
