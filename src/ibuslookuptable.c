@@ -310,6 +310,14 @@ ibus_lookup_table_new (guint page_size,
     return table;
 }
 
+guint
+ibus_lookup_table_get_number_of_candidates (IBusLookupTable *table)
+{
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), 0);
+
+    return table->candidates->len;
+}
+
 void
 ibus_lookup_table_append_candidate (IBusLookupTable *table,
                                     IBusText        *text)

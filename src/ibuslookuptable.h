@@ -121,6 +121,16 @@ void                 ibus_lookup_table_append_candidate
                                                  IBusText           *text);
 
 /**
+ * ibus_lookup_table_get_number_of_candidate:
+ * @table: An IBusLookupTable.
+ * @returns: The number of candidates in the table
+ *
+ * Return the number of candidate in the table.
+ */
+guint               ibus_lookup_table_get_number_of_candidates
+                                                (IBusLookupTable    *table);
+
+/**
  * ibus_lookup_table_get_candidate:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.
