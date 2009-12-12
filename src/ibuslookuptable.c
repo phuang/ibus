@@ -313,7 +313,7 @@ ibus_lookup_table_new (guint page_size,
 guint
 ibus_lookup_table_get_number_of_candidates (IBusLookupTable *table)
 {
-    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), 0);
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
 
     return table->candidates->len;
 }
@@ -322,8 +322,8 @@ void
 ibus_lookup_table_append_candidate (IBusLookupTable *table,
                                     IBusText        *text)
 {
-    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
-    g_return_if_fail (IBUS_IS_TEXT (text));
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+    g_assert (IBUS_IS_TEXT (text));
 
     g_object_ref (text);
     g_array_append_val (table->candidates, text);
@@ -333,7 +333,7 @@ IBusText *
 ibus_lookup_table_get_candidate (IBusLookupTable *table,
                                  guint            index)
 {
-    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), NULL);
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
 
     if (index >= table->candidates->len)
         return NULL;
@@ -345,8 +345,8 @@ void
 ibus_lookup_table_append_label (IBusLookupTable *table,
                                 IBusText        *text)
 {
-    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
-    g_return_if_fail (IBUS_IS_TEXT (text));
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+    g_assert (IBUS_IS_TEXT (text));
 
     g_object_ref (text);
     g_array_append_val (table->labels, text);
@@ -356,7 +356,7 @@ IBusText *
 ibus_lookup_table_get_label (IBusLookupTable *table,
                              guint            index)
 {
-    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), NULL);
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
 
     if (index >= table->labels->len)
         return NULL;
@@ -367,7 +367,7 @@ ibus_lookup_table_get_label (IBusLookupTable *table,
 void
 ibus_lookup_table_clear (IBusLookupTable *table)
 {
-    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
 
     gint index;
 
