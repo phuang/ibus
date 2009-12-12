@@ -65,6 +65,7 @@ typedef struct _IBusLookupTableClass IBusLookupTableClass;
  * @cursor_pos: position index of cursor.
  * @cursor_visible: whether the cursor is visible.
  * @round: TRUE for lookup table wrap around.
+ * @orientation: orientation of the table.
  * @candidates: Candidate words/phrases.
  * @labels: Candidate labels which identify individual candidates in the same page. Default is 1, 2, 3, 4 ...
  *
@@ -82,6 +83,7 @@ struct _IBusLookupTable {
     guint cursor_pos;
     gboolean cursor_visible;
     gboolean round;
+    gint orientation;
 
     GArray *candidates;
     GArray *labels;

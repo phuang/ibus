@@ -112,6 +112,20 @@ typedef enum {
 } IBusCapabilite;
 
 /**
+ * IBusOrientation:
+ * @IBUS_ORIENTATION_HORIZONTAL: Horizontal orientation.
+ * @IBUS_ORIENTATION_VERTICAL: Vertival orientation.
+ * @IBUS_ORIENTATION_SYSTEM: Use ibus global orientation setup.
+ *
+ * Orientation of UI.
+ */
+typedef enum {
+    IBUS_ORIENTATION_HORIZONTAL = 0,
+    IBUS_ORIENTATION_VERTICAL   = 1,
+    IBUS_ORIENTATION_SYSTEM     = 2,
+} IBusOrientation;
+
+/**
  * IBusRectangle:
  * @x: x coordinate.
  * @y: y coordinate.

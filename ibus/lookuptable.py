@@ -31,11 +31,12 @@ from exception import *
 class LookupTable(Serializable):
     __gtype_name__ = "PYIBusLookupTable"
     __NAME__ = "IBusLookupTable"
-    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, candidates=None, labels=None):
+    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, orientation=2, candidates=None, labels=None):
         super(LookupTable, self).__init__()
         self.__cursor_pos = cursor_pos
         self.__cursor_visible = True
         self.__round = round
+        self.__orientation = orientation
         if candidates == None:
             self.__candidates = list()
         else:
@@ -66,7 +67,7 @@ class LookupTable(Serializable):
     def get_labels(self):
         return self.__labels
 
-    def show_cursor(self, show = True):
+    def show_cursor(self, show=True):
         self.__cursor_visible = show
 
     def is_cursor_visible(self):
@@ -96,7 +97,11 @@ class LookupTable(Serializable):
             return False
         self.__cursor_pos = pos
         return True
+    def set_orientation(self, orientation):
+        self.__orientation = orientation
 
+    def get_orientation(self):
+        return self.__orientation
 
     def page_up(self):
         if self.__cursor_pos < self.__page_size:
@@ -191,6 +196,7 @@ class LookupTable(Serializable):
         struct.append(dbus.UInt32(self.__cursor_pos))
         struct.append(dbus.Boolean(self.__cursor_visible))
         struct.append(dbus.Boolean(self.__round))
+        struct.append(dbus.Int32(self.__orientation))
         candidates = map(lambda c: serialize_object(c), self.__candidates)
         struct.append(dbus.Array(candidates, signature="v"))
         labels = map(lambda c: serialize_object(c), self.__labels)
@@ -203,6 +209,7 @@ class LookupTable(Serializable):
                            self.__cursor_pos % self.__page_size,
                            self.__cursor_visible,
                            self.__round,
+                           self.__orientation,
                            candidates,
                            self.__labels)
 
@@ -213,6 +220,7 @@ class LookupTable(Serializable):
         self.__cursor_pos = struct.pop(0)
         self.__cursor_visible = struct.pop(0)
         self.__round = struct.pop(0)
+        self.__orientation = struct.pop(0)
         self.__candidates = map(deserialize_object, struct.pop(0))
         self.__labels = map(deserialize_object, struct.pop(0))
 

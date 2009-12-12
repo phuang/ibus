@@ -74,7 +74,7 @@ ibus_lookup_table_class_init (IBusLookupTableClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_lookup_table_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_lookup_table_copy;
 
-    g_string_append (serializable_class->signature, "uubbavav");
+    g_string_append (serializable_class->signature, "uubbiavav");
 }
 
 static void
@@ -135,6 +135,9 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->round);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_append (iter, G_TYPE_INT, &table->orientation);
     g_return_val_if_fail (retval, FALSE);
 
     // append candidates
@@ -207,6 +210,10 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
     ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->round);
+    g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
+
+    retval = ibus_message_iter_get (iter, G_TYPE_INT, &table->orientation);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
@@ -306,6 +313,7 @@ ibus_lookup_table_new (guint page_size,
     table->cursor_pos = cursor_pos;
     table->cursor_visible = cursor_visible;
     table->round = round;
+    table->orientation = IBUS_ORIENTATION_SYSTEM;
 
     return table;
 }

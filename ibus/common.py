@@ -30,6 +30,9 @@ __all__ = (
         "IBUS_IFACE_ENGINE_FACTORY",
         "IBUS_IFACE_INPUT_CONTEXT",
         "IBUS_IFACE_NOTIFICATIONS",
+        "ORIENTATION_HORIZONTAL",
+        "ORIENTATION_VERTICAL",
+        "ORIENTATION_SYSTEM",
         "default_reply_handler",
         "default_error_handler",
         "DEFAULT_ASYNC_HANDLERS",
@@ -120,6 +123,11 @@ IBUS_IFACE_ENGINE           = "org.freedesktop.IBus.Engine"
 IBUS_IFACE_ENGINE_FACTORY   = "org.freedesktop.IBus.EngineFactory"
 IBUS_IFACE_INPUT_CONTEXT    = "org.freedesktop.IBus.InputContext"
 IBUS_IFACE_NOTIFICATIONS    = "org.freedesktop.IBus.Notifications"
+
+# define orientation
+ORIENTATION_HORIZONTAL  = 0
+ORIENTATION_VERTICAL    = 1
+ORIENTATION_SYSTEM      = 2
 
 def default_reply_handler( *args):
     pass
