@@ -241,6 +241,27 @@ guint                ibus_lookup_table_get_page_size
                                                 (IBusLookupTable    *table);
 
 /**
+ * ibus_lookup_table_set_round:
+ * @table: An IBusLookupTable.
+ * @round: Whether to make @table round.
+ *
+ * Set whether to make the IBusLookupTable round or not.
+ */
+void                 ibus_lookup_table_set_round
+                                                (IBusLookupTable    *table,
+                                                 gboolean            round);
+/**
+ * ibus_lookup_table_is_round:
+ * @table: An IBusLookupTable.
+ * @returns: Whether the @table is round.
+ *
+ * Returns whether the IBusLookupTable is round.
+ */
+gboolean             ibus_lookup_table_is_round (IBusLookupTable    *table);
+
+
+
+/**
  * ibus_lookup_table_clear:
  * @table: An IBusLookupTable.
  *

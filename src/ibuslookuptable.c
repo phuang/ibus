@@ -441,6 +441,23 @@ ibus_lookup_table_get_page_size (IBusLookupTable *table)
     return table->page_size;
 }
 
+void
+ibus_lookup_table_set_round (IBusLookupTable *table,
+                             gboolean         round)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+
+    table->round = round ? TRUE: FALSE;
+}
+
+gboolean
+ibus_lookup_table_is_round (IBusLookupTable *table)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+
+    return table->round;
+}
+
 gboolean
 ibus_lookup_table_page_up (IBusLookupTable *table)
 {
