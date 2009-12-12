@@ -288,7 +288,7 @@ ibus_attr_list_init (IBusAttrList *attr_list)
 static void
 ibus_attr_list_destroy (IBusAttrList *attr_list)
 {
-    g_return_if_fail (IBUS_IS_ATTR_LIST (attr_list));
+    g_assert (IBUS_IS_ATTR_LIST (attr_list));
 
     gint i;
     for (i = 0;; i++) {
@@ -416,8 +416,8 @@ void
 ibus_attr_list_append (IBusAttrList  *attr_list,
                        IBusAttribute *attr)
 {
-    g_return_if_fail (IBUS_IS_ATTR_LIST (attr_list));
-    g_return_if_fail (IBUS_IS_ATTRIBUTE (attr));
+    g_assert (IBUS_IS_ATTR_LIST (attr_list));
+    g_assert (IBUS_IS_ATTRIBUTE (attr));
 
     g_object_ref (attr);
     g_array_append_val (attr_list->attributes, attr);
@@ -427,7 +427,7 @@ IBusAttribute *
 ibus_attr_list_get (IBusAttrList *attr_list,
                     guint         index)
 {
-    g_return_val_if_fail (attr_list != NULL, NULL);
+    g_assert (IBUS_IS_ATTR_LIST (attr_list));
     IBusAttribute *attr = NULL;
 
     if (index < attr_list->attributes->len) {
