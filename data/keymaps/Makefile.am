@@ -61,8 +61,9 @@
 keymaps = \
 	common \
 	modifiers \
-	jp \
 	us \
+	jp \
+	kr \
 	$(NULL)
 
 keymaps_DATA = $(keymaps)
