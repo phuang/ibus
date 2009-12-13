@@ -1,1 +1,0 @@
-../qt4/ibus-input-context.h

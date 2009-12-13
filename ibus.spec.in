@@ -33,7 +33,6 @@ BuildRequires:  gtk-doc
 BuildRequires:  GConf2-devel
 BuildRequires:  pygobject2-devel
 BuildRequires:  intltool
-# BuildRequires:  qt-devel
 
 Requires:   %{name}-libs = %{version}-%{release}
 Requires:   %{name}-gtk = %{version}-%{release}
@@ -83,15 +82,6 @@ Requires(post): glib2 >= %{glib_ver}
 %description gtk
 This package contains ibus im module for gtk2
 
-# %package qt
-# Summary:    IBus im module for qt4
-# Group:      System Environment/Libraries
-# Requires:   %{name} = %{version}-%{release}
-# Requires:   qt >= 4.4.2
-#
-# %description qt
-# This package contains ibus im module for qt4
-
 %package devel
 Summary:    Development tools for ibus
 Group:      Development/Libraries
@@ -121,7 +111,6 @@ The ibus-devel-docs package contains developer documentation for ibus
 %configure --disable-static \
 		   --disable-iso-codes-check \
 		   --enable-gtk-doc \
-		   --disable-qt4-immodule
 # make -C po update-gmo
 make %{?_smp_mflags}
 
@@ -225,10 +214,6 @@ fi
 %files gtk
 %defattr(-,root,root,-)
 %{_libdir}/gtk-2.0/%{gtk_binary_version}/immodules/im-ibus.so
-
-# %files qt
-# %defattr(-,root,root,-)
-# %{_libdir}/qt4/plugins/inputmethods/libibus.so
 
 %files devel
 %defattr(-,root,root,-)
