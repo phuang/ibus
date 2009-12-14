@@ -135,13 +135,12 @@ gboolean         ibus_service_add_to_connection (IBusService    *service,
                                                  IBusConnection *connection);
 
 /**
- * ibus_service_add_to_connection:
+ * ibus_service_get_connections:
  * @service: An IBusService.
- * @connection: Corresponding IBusCOnnection
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @returns: A newly allocated list of connections.
  *
- * Add an IBusService to an IBusConnection.
- * This function also connects the service to the signal IBusConnection::destroy of the connection.
+ * Returns a copy of list of connections.
+ * List elements need to be unref by g_object_unref().
  */
 GList           *ibus_service_get_connections   (IBusService    *service);
 

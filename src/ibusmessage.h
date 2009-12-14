@@ -552,7 +552,7 @@ gboolean         ibus_message_get_no_reply      (IBusMessage        *message);
 guint32          ibus_message_get_reply_serial  (IBusMessage        *message);
 
 /**
- * ibus_message_get_reply_serial:
+ * ibus_message_get_serial:
  * @message: An IBusMessage.
  * @returns: The serial of a message or 0 if none has been specified.
  *
@@ -678,8 +678,9 @@ gboolean         ibus_message_get_args          (IBusMessage        *message,
                                                  ...);
 
 /**
- * ibus_message_append_args_valist:
+ * ibus_message_get_args_valist:
  * @message: An IBusMessage.
+ * @error:  Error message is outputted here; or %NULL to suppress error.
  * @first_arg_type: Type of the first argument.
  * @va_args: Rest of arguments.
  * @returns: %TRUE if succeed; %FALSE otherwise.
@@ -720,6 +721,16 @@ gboolean         ibus_message_iter_append       (IBusMessageIter    *iter,
                                                  GType               type,
                                                  gconstpointer       value);
 
+/**
+ * ibus_message_iter_copy_data:
+ * @dst: Destination to be copy to.
+ * @src: Source to be copy from.
+ * @returns: %TRUE if succeed; %FALSE if failed.
+ *
+ * Deep copy an IBusMessageIter to another IBusMessageIter.
+ *
+ * Since: 1.2.0.20090719
+ */
 gboolean         ibus_message_iter_copy_data    (IBusMessageIter    *dst,
                                                  IBusMessageIter    *src);
 

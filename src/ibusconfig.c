@@ -125,9 +125,13 @@ ibus_config_class_init (IBusConfigClass *klass)
 
     /* install signals */
     /**
-     * IBusConfig:value-changed:
+     * IBusConfig::value-changed:
+     * @section: Section name.
+     * @name: Name of the property.
+     * @value: Value.
      *
      * Emitted when configuration value is changed.
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     config_signals[VALUE_CHANGED] =
         g_signal_new (I_("value-changed"),

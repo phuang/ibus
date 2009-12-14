@@ -18,17 +18,47 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/**
+ * SECTION: ibusversion
+ * @short_description: Current version of IBus.
+ * @stability: Stable
+ *
+ * IBusVersion shows the current IBus version.
+ */
+
 #ifndef __IBUS_VERSION_H_
 #define __IBUS_VERSION_H_
-
 /* compile time version
  */
+/**
+ * IBUS_MAJOR_VERSION:
+ *
+ * IBus major version.
+ */
 #define IBUS_MAJOR_VERSION				(@PACKAGE_VERSION_MAJOR@)
+
+/**
+ * IBUS_MINOR_VERSION:
+ *
+ * IBus minor version.
+ */
 #define IBUS_MINOR_VERSION				(@PACKAGE_VERSION_MINOR@)
+
+/**
+ * IBUS_MICRO_VERSION:
+ *
+ * IBus micro version.
+ */
 #define IBUS_MICRO_VERSION				(@PACKAGE_VERSION_MICRO@)
 
-/* check whether a Gtk+ version equal to or greater than
- * major.minor.micro is present.
+/**
+ * IBUS_CHECK_VERSION:
+ * @major: Major version of ibus.
+ * @minor: Minor version of ibus.
+ * @micro: Micro version of ibus.
+ *
+ * Check whether the current IBus version is equal to or greater than
+ * given major.minor.micro.
  */
 #define	IBUS_CHECK_VERSION(major,minor,micro)	\
     (IBUS_MAJOR_VERSION > (major) || \

@@ -18,7 +18,7 @@
 	    so you may find that modules are named as classes and objects in the sense of GObject,
 	    and may D-Bus wrapper API.</para>
 
-      <para>According to the puroposes of modules, we categorized them into 4 parts:</para>
+      <para>According to the puroposes of modules, we categorized them into following parts:</para>
       <variablelist>
 	  <varlistentry>
 	      <term>Panel</term>
@@ -32,16 +32,21 @@
 		      such as engine specification, and class abstracts.</para></listitem>
 	  </varlistentry>
 	  <varlistentry>
-	      <term>Communication and Configuration</term>
-	      <listitem><para>Here lists the service communication functions and
-		      functions that handling configuration like save, load, and listening.</para></listitem>
+	      <term>Configuration</term>
+	      <listitem><para>This part lists functions for configuring IBus and engines.
+		      Since most configuration files are in XML format,
+		      XML handling functions are also listed here.</para></listitem>
+	  </varlistentry>
+	  <varlistentry>
+	      <term>Communication</term>
+	      <listitem><para>Here lists the service communication functions.</para></listitem>
 	  </varlistentry>
 	  <varlistentry>
 	      <term>Internal</term>
-	      <listitem><para>Definition and functions for IBus internal use..</para></listitem>
+	      <listitem><para>Definition and functions for IBus internal use.</para></listitem>
 	  </varlistentry>
       </variablelist>
-      <para>Normally input method developers need only to read the first 2 parts and IBusConfig from the 3rd part.
+      <para>Normally input method developers need only to read the first three parts.
       </para>
   </chapter>
   <chapter>
@@ -53,6 +58,7 @@
       <xi:include href="xml/ibusattribute.xml"/>
       <xi:include href="xml/ibushotkey.xml"/>
       <xi:include href="xml/ibuslookuptable.xml"/>
+      <xi:include href="xml/ibuspanelservice.xml"/>
       <xi:include href="xml/ibusproperty.xml"/>
       <xi:include href="xml/ibustext.xml"/>
   </chapter>
@@ -70,37 +76,40 @@
       <xi:include href="xml/ibuskeysyms.xml"/>
   </chapter>
   <chapter>
-      <title>Communication and Configuration</title>
-      <para>Here lists the service communication functions and
-	  functions that handling configuration like save, load, and listening.</para>
-      <xi:include href="xml/ibusbus.xml"/>
+      <title>Configuration</title>
+      <para>This part lists functions for configuring IBus and engines.
+	  Since most configuration files are in XML format,
+	  XML handling functions are also listed here.</para>
       <xi:include href="xml/ibusconfig.xml"/>
       <xi:include href="xml/ibusconfigservice.xml"/>
-      <xi:include href="xml/ibusconnection.xml"/>
-      <xi:include href="xml/ibusmainloop.xml"/>
-      <xi:include href="xml/ibusmessage.xml"/>
       <xi:include href="xml/ibusobservedpath.xml"/>
+      <xi:include href="xml/ibusversion.xml"/>
+      <xi:include href="xml/ibusxml.xml"/>
+  </chapter>
+  <chapter>
+      <title>Communication</title>
+      <para>Here lists the service communication functions.</para>
+      <xi:include href="xml/ibusbus.xml"/>
+      <xi:include href="xml/ibusconnection.xml"/>
+      <xi:include href="xml/ibusmessage.xml"/>
       <xi:include href="xml/ibuspendingcall.xml"/>
       <xi:include href="xml/ibusproxy.xml"/>
       <xi:include href="xml/ibusserializable.xml"/>
       <xi:include href="xml/ibusservice.xml"/>
-      <xi:include href="xml/ibusxml.xml"/>
   </chapter>
   <chapter>
       <title>Internal</title>
-      <para>
-      </para>
+      <para>Definition and functions for IBus internal use.</para>
       <xi:include href="xml/ibusdebug.xml"/>
       <xi:include href="xml/ibusenumtypes.xml"/>
       <xi:include href="xml/ibuserror.xml"/>
       <xi:include href="xml/ibusinternal.xml"/>
+      <xi:include href="xml/ibusmainloop.xml"/>
       <xi:include href="xml/ibusmarshalers.xml"/>
       <xi:include href="xml/ibusobject.xml"/>
       <xi:include href="xml/ibusserver.xml"/>
       <xi:include href="xml/ibusshare.xml"/>
       <xi:include href="xml/ibustypes.xml"/>
-      <xi:include href="xml/ibusversion.xml"/>
-      <xi:include href="xml/keyname-table.xml"/>
   </chapter>
 </book>
 

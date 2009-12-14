@@ -47,7 +47,7 @@ CFILE_GLOB=$(top_srcdir)/src/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=
+IGNORE_HFILES= ibusconfigprivate.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -98,18 +98,14 @@ DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
 
-# trim-sections.txt: $(DOC_MODULE)-sections.txt
-# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-# 	sed '/<TITLE>IBusAttrList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
-# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-# 	sed '/<TITLE>IBusPropList<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
-# 	cp $(DOC_MODULE)-sections.txt $(DOC_MODULE)-sections.txt.old
-# 	sed '/<TITLE>IBusFactoryInfo<\/TITLE>/d' $(DOC_MODULE)-sections.txt.old > $(DOC_MODULE)-sections.txt
-
 trim-build.stamp: scan-build.stamp
 	sed "/<TITLE>IBusAttrList<\/TITLE>/d; \
 	     /<TITLE>IBusPropList<\/TITLE>/d; \
-	     /<TITLE>IBusFactoryInfo<\/TITLE>/d" \
+	     /<TITLE>IBusFactoryInfo<\/TITLE>/d; \
+	     /IBusObjectFlags/d;\
+	     /IBUS_OBJECT_FLAGS/d;\
+	     /IBUS_OBJECT_SET_FLAGS/d;\
+     	     /IBUS_OBJECT_UNSET_FLAGS/d" \
 		 -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt
 	$(RM) $(srcdir)/$(DOC_MODULE)-sections.txt.bak
 	touch trim-build.stamp
