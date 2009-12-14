@@ -123,7 +123,7 @@ void                 ibus_lookup_table_append_candidate
                                                  IBusText           *text);
 
 /**
- * ibus_lookup_table_get_number_of_candidate:
+ * ibus_lookup_table_get_number_of_candidates:
  * @table: An IBusLookupTable.
  * @returns: The number of candidates in the table
  *

@@ -18,7 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 /**
- * SECTION: ibuspanel
+ * SECTION: ibuspanelservice
  * @short_description: Panel service back-end.
  * @stability: Stable
  *
