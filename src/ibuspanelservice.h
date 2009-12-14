@@ -58,6 +58,8 @@ typedef struct _IBusPanelServiceClass IBusPanelServiceClass;
 
 /**
  * IBusPanelService:
+ *
+ * An opaque data type representing an IBusPanelService.
  */
 struct _IBusPanelService {
     IBusService parent;

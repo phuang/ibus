@@ -1,4 +1,11 @@
 /*** BEGIN file-header ***/
+/**
+ * SECTION: ibusenumtypes
+ * @short_description: Enumeration definition in IBus.
+ * @stability: Stable
+ *
+ * IBusEnumTypes lists IBus enumeration types.
+ */
 #ifndef __IBUS_ENUM_TYPES_H__
 #define __IBUS_ENUM_TYPES_H__
 
@@ -13,7 +20,20 @@ G_BEGIN_DECLS
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
+/**
+ * @enum_name@_get_type:
+ * @returns: GType of @ENUMPREFIX@@ENUMSHORT@
+ *
+ * Returns the type of @ENUMPREFIX@@ENUMSHORT@ as GType.
+ */
 GType @enum_name@_get_type (void) G_GNUC_CONST;
+
+/**
+ * @ENUMPREFIX@_TYPE_@ENUMSHORT@:
+ * @returns: GType of @ENUMPREFIX@@ENUMSHORT@
+ *
+ * Returns the type of @ENUMPREFIX@@ENUMSHORT@ as GType.
+ */
 #define @ENUMPREFIX@_TYPE_@ENUMSHORT@ (@enum_name@_get_type ())
 /*** END value-header ***/
 

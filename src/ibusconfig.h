@@ -55,6 +55,11 @@ G_BEGIN_DECLS
 typedef struct _IBusConfig IBusConfig;
 typedef struct _IBusConfigClass IBusConfigClass;
 
+/**
+ * IBusConfig:
+ *
+ * An opaque data type representing an IBusConfig.
+ */
 struct _IBusConfig {
   IBusProxy parent;
   /* instance members */

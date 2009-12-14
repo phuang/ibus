@@ -86,7 +86,9 @@ GType            ibus_text_get_type                 (void);
  * @str: An text string to be set.
  * @returns: A newly allocated IBusText.
  *
- * New an IBusText whose content is copied from a text string.
+ * New an IBusText from a string.
+ *
+ * @str will be duplicated in IBusText, so feel free to free @str after this function.
  */
 IBusText        *ibus_text_new_from_string          (const gchar    *str);
 
@@ -95,7 +97,9 @@ IBusText        *ibus_text_new_from_string          (const gchar    *str);
  * @str: An text string to be set.
  * @returns: A newly allocated IBusText.
  *
- * New an IBusText whose content is copied from a UCS4 encoded text string.
+ * New an IBusText from an UCS-4 encoded string.
+ *
+ * @str will be duplicated in IBusText, so feel free to free @str after this function.
  */
 IBusText        *ibus_text_new_from_ucs4            (const gunichar *str);
 
@@ -104,8 +108,10 @@ IBusText        *ibus_text_new_from_ucs4            (const gunichar *str);
  * @str: An text string to be set.
  * @returns: A newly allocated IBusText.
  *
- * New an IBusText whose content is from a static string.
- * Note that it is the developer's duty to ensure @str is static.
+ * New an IBusText from a static string.
+ *
+ * Since @str is a static string which won't be freed.
+ * This function will NOT duplicate @str.
  */
 IBusText        *ibus_text_new_from_static_string   (const gchar    *str);
 
@@ -116,6 +122,8 @@ IBusText        *ibus_text_new_from_static_string   (const gchar    *str);
  * @returns: A newly allocated IBusText.
  *
  * New an IBusText from a printf expression.
+ *
+ * The result of printf expression is stored in the new IBusText instance.
  */
 IBusText        *ibus_text_new_from_printf          (const gchar    *fmt,
                                                      ...);

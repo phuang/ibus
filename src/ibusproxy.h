@@ -61,6 +61,11 @@ G_BEGIN_DECLS
 typedef struct _IBusProxy IBusProxy;
 typedef struct _IBusProxyClass IBusProxyClass;
 
+/**
+ * IBusProxy:
+ *
+ * An opaque data type representing an IBusProxy.
+ */
 struct _IBusProxy {
     IBusObject parent;
     /* instance members */
@@ -175,9 +180,11 @@ IBusMessage     *ibus_proxy_call_with_reply_and_block
                                             ...);
 
 /**
- * ibus_proxy_send_with reply:
+ * ibus_proxy_send_with_reply:
  * @proxy: An IBusProxy.
  * @message: The IBusMessage to be sent.
+ * @pending: Return location of a IBusPendingCall object, or NULL if connection is disconnected.
+ * @timeout_milliseconds: Time out in milliseconds.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
  * Send an IBusMessage to the corresponding service and returns
@@ -239,7 +246,7 @@ gboolean         ibus_proxy_handle_signal   (IBusProxy          *proxy,
 const gchar     *ibus_proxy_get_name        (IBusProxy          *proxy);
 
 /**
- * ibus_proxy_get_name:
+ * ibus_proxy_get_unique_name:
  * @proxy: An IBusProxy.
  * @returns: The service name of the proxy object.
  *

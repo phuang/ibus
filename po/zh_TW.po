@@ -28,7 +28,7 @@ msgstr "IBus輸入法框架"
 msgid ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copyright (c) 2007-2009 Red Hat, Inc."
-msgstr ""
+msgstr "版權所有 2007-2009, 黃鵬, 紅帽公司"
 
 #: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
 #: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
@@ -38,11 +38,11 @@ msgstr "其他"
 #: ../ui/gtk/candidatepanel.py:265
 #, fuzzy
 msgid "Previous page"
-msgstr "前一輸入法:"
+msgstr "上一頁"
 
 #: ../ui/gtk/candidatepanel.py:270
 msgid "Next page"
-msgstr ""
+msgstr "下一頁"
 
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
@@ -137,7 +137,7 @@ msgstr "熱鍵"
 
 #: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
-msgstr "按鍵:"
+msgstr "按鍵碼:"
 
 #: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
@@ -157,7 +157,7 @@ msgstr "請按一個鍵盤按鍵（或是一個按鍵組合）"
 
 #: ../setup/enginecombobox.py:100
 msgid "Select an input method"
-msgstr " 選擇輸入法"
+msgstr "選擇輸入法"
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
@@ -182,7 +182,7 @@ msgstr "自訂字體"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr "自訂語言面板"
+msgstr "自訂面板字型"
 
 #: ../data/ibus.schemas.in.h:4
 #, fuzzy
@@ -323,11 +323,11 @@ msgstr "總是"
 
 #: ../setup/setup.ui.h:19
 msgid "Bottom left corner"
-msgstr ""
+msgstr "左下角"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom right corner"
-msgstr ""
+msgstr "右下角"
 
 #: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
@@ -353,7 +353,7 @@ msgstr "水平"
 #: ../setup/setup.ui.h:28
 #, fuzzy
 msgid "Language panel position:"
-msgstr "顯示語言面板:"
+msgstr "語言面板位置:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
@@ -409,11 +409,11 @@ msgstr "「上一個引擎」熱鍵"
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
-msgstr ""
+msgstr "左上角"
 
 #: ../setup/setup.ui.h:47
 msgid "Top right corner"
-msgstr ""
+msgstr "右上角"
 
 #: ../setup/setup.ui.h:51
 msgid "Vertical"

@@ -143,7 +143,7 @@ ibus_service_class_init (IBusServiceClass *klass)
      * @connection: Corresponding IBusConnection.
      * @message: An IBusMessage to be sent.
      *
-     * Send an IBusMessage though the @connection.
+     * Send a message as IBusMessage though the @connection.
      *
      * Returns: TRUE if succeed; FALSE otherwise.
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -160,6 +160,17 @@ ibus_service_class_init (IBusServiceClass *klass)
             G_TYPE_POINTER,
             G_TYPE_POINTER);
 
+    /**
+     * IBusService::ibus-signal:
+     * @service: An IBusService.
+     * @connection: Corresponding IBusConnection.
+     * @message: An IBusMessage to be sent.
+     *
+     * Send a signal as IBusMessage though the @connection.
+     *
+     * Returns: TRUE if succeed; FALSE otherwise.
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
     service_signals[IBUS_SIGNAL] =
         g_signal_new (I_("ibus-signal"),
             G_TYPE_FROM_CLASS (klass),
