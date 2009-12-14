@@ -1,4 +1,3 @@
 include us
-# FIXME: Need the keycode for kr
 keycode 122 = Hangul
 keycode 123 = Hangul_Hanja
