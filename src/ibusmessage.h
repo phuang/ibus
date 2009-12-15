@@ -631,9 +631,10 @@ gboolean         ibus_message_append_args       (IBusMessage        *message,
  * @first_arg_type: Type of the first argument.
  * @va_args: Rest of arguments.
  * @returns: %TRUE if succeed; %FALSE otherwise.
- * @see_also: ibus_message_append_args().
  *
  * Like ibus_message_append_args() but takes a va_list for use by language bindings.
+ *
+ * @see_also: ibus_message_append_args().
  */
 gboolean         ibus_message_append_args_valist(IBusMessage        *message,
                                                  GType               first_arg_type,
