@@ -397,13 +397,21 @@ class Panel(ibus.PanelBase):
     #     return menu
 
     def __create_im_menu(self):
-        menu = gtk.Menu()
         engines = self.__bus.list_active_engines()
+        current_engine = \
+            (self.__focus_ic != None and self.__focus_ic.get_engine()) or \
+            (engines and engines[0]) or \
+            None
 
         size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-        for engine in engines:
+        menu = gtk.Menu()
+        for i, engine in enumerate(engines):
             lang = ibus.get_language_name(engine.language)
             item = gtk.ImageMenuItem("%s - %s" % (lang, engine.longname))
+            if current_engine and current_engine.name == engine.name:
+                for widget in item.get_children():
+                    if isinstance(widget, gtk.Label):
+                        widget.set_markup("<b>%s</b>" % widget.get_text())
             if engine.icon:
                 item.set_image(_icon.IconWidget(engine.icon, size[0]))
             else:
@@ -487,13 +495,13 @@ class Panel(ibus.PanelBase):
             about_dialog.set_icon_name("ibus")
             about_dialog.run()
             about_dialog.destroy()
-        elif command == gtk.STOCK_QUIT: 
+        elif command == gtk.STOCK_QUIT:
             self.__bus.exit(False)
         elif command == "Restart":
             self.__bus.exit(True)
         else:
             print >> sys.stderr, "Unknown command %s" % command
-    
+
     def __sigchld_cb(self, sig, sf):
         try:
             pid, status = os.wait()
