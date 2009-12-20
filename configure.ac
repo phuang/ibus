@@ -228,6 +228,7 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-1.0.pc
 ibus.spec
+xinput-ibus
 ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
