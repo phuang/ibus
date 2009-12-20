@@ -18,7 +18,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
 # e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=$(top_srcdir)/src
+DOC_SOURCE_DIR=../../../src
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=
@@ -80,8 +80,13 @@ LDFLAGS	= \
 # signals and properties.
 # e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
 # e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
-INCLUDES=-I$(top_srcdir)/src
-GTKDOC_LIBS=$(top_builddir)/src/libibus.la
+INCLUDES = \
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
+	$(NULL)
+GTKDOC_LIBS = \
+	$(top_builddir)/src/libibus.la \
+	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

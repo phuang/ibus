@@ -50,6 +50,7 @@ ibus_x11_CFLAGS = \
 	@DBUS_CFLAGS@ \
 	-I$(top_srcdir)/util/IMdkit \
 	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
 
 noinst_HEADERS = \

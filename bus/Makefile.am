@@ -23,8 +23,8 @@
 libibus = $(top_builddir)/src/libibus.la
 
 INCLUDES = \
-	-I$(top_srcdir) \
 	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
 
 AM_CFLAGS = \
