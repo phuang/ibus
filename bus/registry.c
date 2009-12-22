@@ -22,14 +22,16 @@
 #include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ibusinternal.h>
 #include "registry.h"
 #include "option.h"
 
 enum {
+    CHANGED,
     LAST_SIGNAL,
 };
 
-// static guint            _signals[LAST_SIGNAL] = { 0 };
+static guint             _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void              bus_registry_class_init        (BusRegistryClass   *klass);
@@ -76,9 +78,20 @@ bus_registry_get_type (void)
 static void
 bus_registry_class_init (BusRegistryClass *klass)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
+
+    _signals[CHANGED] =
+        g_signal_new (I_("changed"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_registry_destroy;
 }
@@ -90,7 +103,9 @@ bus_registry_init (BusRegistry *registry)
     registry->observed_paths = NULL;
     registry->components = NULL;
     registry->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
-    
+    registry->timeout_id = 0;
+    registry->changed = FALSE;
+
     if (g_rescan ||
         bus_registry_load_cache (registry) == FALSE ||
         bus_registry_check_modification (registry)) {
@@ -128,6 +143,9 @@ bus_registry_remove_all (BusRegistry *registry)
 static void
 bus_registry_destroy (BusRegistry *registry)
 {
+    if (bus_registry_is_monitor_changes (registry))
+        bus_registry_set_monitor_changes (registry, FALSE);
+
     bus_registry_remove_all (registry);
 
     g_hash_table_destroy (registry->engine_table);
@@ -444,7 +462,55 @@ bus_registry_stop_all_components (BusRegistry *registry)
     g_assert (BUS_IS_REGISTRY (registry));
 
     g_list_foreach (registry->components, (GFunc) ibus_component_stop, NULL);
-    
+
+}
+
+static gboolean
+_check_changes_cb (BusRegistry *registry)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+
+    if (registry->changed)
+        return TRUE;
+
+    if (bus_registry_check_modification (registry)) {
+        registry->changed = TRUE;
+        g_signal_emit (registry, _signals[CHANGED], 0);
+        return TRUE;
+    }
+    return TRUE;
+}
+
+void
+bus_registry_set_monitor_changes (BusRegistry *registry,
+                                  gboolean     enable)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+
+    if (enable) {
+        extern gint g_monitor_timeout;
+        g_return_if_fail (!bus_registry_is_monitor_changes (registry));
+        registry->timeout_id = g_timeout_add_seconds (g_monitor_timeout, (GSourceFunc) _check_changes_cb, registry);
+    }
+    else {
+        g_return_if_fail (bus_registry_is_monitor_changes (registry));
+        g_warn_if_fail (g_source_remove (registry->timeout_id));
+        registry->timeout_id = 0;
+    }
+}
+
+gboolean
+bus_registry_is_monitor_changes (BusRegistry *registry)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+    return (registry->timeout_id != 0);
+}
+
+gboolean
+bus_registry_is_changed (BusRegistry *registry)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+    return (registry->changed != 0);
 }
 
 BusFactoryProxy *

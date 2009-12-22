@@ -24,7 +24,8 @@ __all__ = ("IIBus", )
 
 import dbus.service
 from ibus.common import \
-    IBUS_IFACE_IBUS
+    IBUS_IFACE_IBUS, \
+    IBUS_IFACE_CONFIG
 
 class IIBus(dbus.service.Object):
     # define method decorator.
@@ -39,6 +40,11 @@ class IIBus(dbus.service.Object):
                             connection_keyword="dbusconn", \
                             async_callbacks=("reply_cb", "error_cb"), \
                             **args)
+
+    # define signal decorator.
+    signal = lambda **args: \
+        dbus.service.signal(dbus_interface=IBUS_IFACE_IBUS, \
+            **args)
 
     @method(out_signature="s")
     def GetAddress(self, dbusconn): pass
@@ -65,4 +71,7 @@ class IIBus(dbus.service.Object):
 
     @method(in_signature="v", out_signature="v")
     def Ping(self, data, dbusconn): pass
+
+    @signal(signature="")
+    def RegistryChanged(self): pass
 

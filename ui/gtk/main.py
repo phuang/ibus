@@ -27,17 +27,40 @@ import ibus
 import gtk
 import gettext
 import panel
-import notifications
+import pynotify
+
+from gettext import dgettext
+_  = lambda a : dgettext("ibus", a)
 
 class UIApplication:
     def __init__ (self):
+        pynotify.init("ibus")
         self.__bus = ibus.Bus()
         self.__bus.connect("disconnected", gtk.main_quit)
+        self.__bus.connect("registry-changed", self.__registry_changed_cb)
+
+        match_rule = "type='signal',\
+                      sender='org.freedesktop.IBus',\
+                      path='/org/freedesktop/IBus'"
+        self.__bus.add_match(match_rule)
 
         self.__panel = panel.Panel(self.__bus)
         self.__bus.request_name(ibus.IBUS_SERVICE_PANEL, 0)
-        # self.__notify = notifications.Notifications(self.__bus)
-        # self.__notify.set_status_icon(self.__panel.get_status_icon())
+        self.__notify = pynotify.Notification("IBus", \
+                            _("Some input methods have been installed, removed or updated. " \
+                            "Please restart ibus input platform."), \
+                            "ibus")
+        self.__notify.set_timeout(10 * 1000)
+        self.__notify.attach_to_status_icon (self.__panel.get_status_icon())
+        self.__notify.add_action("restart", _("Restart Now"), self.__restart_cb, None)
+        self.__notify.add_action("ignore", _("Later"), lambda *args: None, None)
+
+    def __restart_cb(self, notify, action, data):
+        if action == "restart":
+            self.__bus.exit(True)
+
+    def __registry_changed_cb(self, bus):
+        self.__notify.show()
 
     def run(self):
         gtk.main()

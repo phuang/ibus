@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 15:06+0800\n"
+"POT-Creation-Date: 2009-12-22 17:46+0800\n"
 "PO-Revision-Date: 2009-10-23 23:16+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <fedora-trans-pl@redhat.com>\n"
@@ -29,8 +29,7 @@ msgstr ""
 "Copyright (c) 2007-2009 Peng Huang\n"
 "Copyright (c) 2007-2009 Red Hat, Inc."
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
-#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
+#: ../ibus/lang.py:41
 msgid "Other"
 msgstr "Inne"
 
@@ -43,23 +42,39 @@ msgstr "Poprzednia metoda wprowadzania:"
 msgid "Next page"
 msgstr ""
 
+#: ../ui/gtk/main.py:50
+msgid ""
+"Some input methods have been installed, removed or updated. Please restart "
+"ibus input platform."
+msgstr ""
+
+#: ../ui/gtk/main.py:55
+#, fuzzy
+msgid "Restart Now"
+msgstr "Uruchom ponownie"
+
+#: ../ui/gtk/main.py:56
+#, fuzzy
+msgid "Later"
+msgstr "Inne"
+
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
-#: ../ui/gtk/panel.py:390
+#: ../ui/gtk/panel.py:422
 msgid "Turn off input method"
 msgstr "Wyłącz metodę wprowadzania"
 
-#: ../ui/gtk/panel.py:427
+#: ../ui/gtk/panel.py:459
 msgid "No input window"
 msgstr "Brak okna wprowadzania"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:489
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "iBus jest inteligentną magistralą wprowadzania dla Linuksa/Uniksa."
 
-#: ../ui/gtk/panel.py:461
+#: ../ui/gtk/panel.py:493
 msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 

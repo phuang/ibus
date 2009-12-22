@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 15:06+0800\n"
+"POT-Creation-Date: 2009-12-22 17:46+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -32,8 +32,7 @@ msgid ""
 "Copyright (c) 2007-2009 Red Hat, Inc."
 msgstr ""
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
-#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
+#: ../ibus/lang.py:41
 msgid "Other"
 msgstr "その他"
 
@@ -47,23 +46,39 @@ msgstr "ひとつ前のインプットメソッド:"
 msgid "Next page"
 msgstr "次のエンジン"
 
+#: ../ui/gtk/main.py:50
+msgid ""
+"Some input methods have been installed, removed or updated. Please restart "
+"ibus input platform."
+msgstr ""
+
+#: ../ui/gtk/main.py:55
+#, fuzzy
+msgid "Restart Now"
+msgstr "再起動"
+
+#: ../ui/gtk/main.py:56
+#, fuzzy
+msgid "Later"
+msgstr "その他"
+
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "再起動"
 
-#: ../ui/gtk/panel.py:390
+#: ../ui/gtk/panel.py:422
 msgid "Turn off input method"
 msgstr "インプットメソッドをオフにする"
 
-#: ../ui/gtk/panel.py:427
+#: ../ui/gtk/panel.py:459
 msgid "No input window"
 msgstr "入力ウィンドウがありません"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:489
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk/panel.py:461
+#: ../ui/gtk/panel.py:493
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"

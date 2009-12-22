@@ -44,6 +44,7 @@ gboolean g_rescan = FALSE;
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
 gint   g_dbus_timeout = 2000;
+gint   g_monitor_timeout = 0;
 
 static const GOptionEntry entries[] =
 {
@@ -56,7 +57,8 @@ static const GOptionEntry entries[] =
     { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
-    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout", "timeout" },
+    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout in milliseconds.", "timeout [default is 2000]" },
+    { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "Timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
     { NULL },

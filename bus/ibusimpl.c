@@ -63,6 +63,8 @@ static void     bus_ibus_impl_set_preload_engines
 static void     bus_ibus_impl_set_use_sys_layout
                                                 (BusIBusImpl        *ibus,
                                                  GValue             *value);
+
+static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
                                                  BusIBusImpl        *ibus);
 
@@ -401,6 +403,13 @@ _config_destroy_cb (IBusConfig  *config,
 }
 
 static void
+_registry_changed_cb (BusRegistry *registry,
+                      BusIBusImpl *ibus)
+{
+    bus_ibus_impl_registry_changed (ibus);
+}
+
+static void
 _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                              const gchar *name,
                              const gchar *old_name,
@@ -489,13 +498,22 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                             NULL,
                             (GDestroyNotify) g_object_unref);
 
-    ibus->registry = bus_registry_new ();
     ibus->engine_list = NULL;
     ibus->register_engine_list = NULL;
     ibus->contexts = NULL;
     ibus->focused_context = NULL;
     ibus->panel = NULL;
     ibus->config = NULL;
+
+    ibus->registry = bus_registry_new ();
+
+    g_signal_connect (ibus->registry,
+                      "changed",
+                      G_CALLBACK (_registry_changed_cb),
+                      ibus);
+    extern gint g_monitor_timeout;
+    if (g_monitor_timeout != 0)
+        bus_registry_set_monitor_changes (ibus->registry, TRUE);
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_new ("us");
@@ -617,6 +635,8 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "      <arg name=\"data\" direction=\"in\" type=\"v\"/>\n"
         "      <arg name=\"data\" direction=\"out\" type=\"v\"/>\n"
         "    </method>\n"
+        "    <signal name=\"RegistryChanged\">\n"
+        "    </signal>\n"
         "  </interface>\n"
         "</node>\n";
 
@@ -941,7 +961,7 @@ _ibus_current_input_context (BusIBusImpl     *ibus,
     g_assert (BUS_IS_CONNECTION (connection));
 
     IBusMessage *reply;
-    const gchar *path; 
+    const gchar *path;
 
     if (!ibus->focused_context)
     {
@@ -1275,5 +1295,25 @@ bus_ibus_impl_get_registry (BusIBusImpl *ibus)
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     return ibus->registry;
+}
+
+static void
+bus_ibus_impl_registry_changed (BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    IBusMessage *message;
+
+    message = ibus_message_new_signal (IBUS_PATH_IBUS,
+                                       IBUS_INTERFACE_IBUS,
+                                       "RegistryChanged");
+    ibus_message_append_args (message,
+                              G_TYPE_INVALID);
+    ibus_message_set_sender (message, IBUS_SERVICE_IBUS);
+
+    bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, message, NULL);
+
+    ibus_message_unref (message);
+
 }
 

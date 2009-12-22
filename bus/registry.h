@@ -56,6 +56,9 @@ struct _BusRegistry {
 
     GHashTable *engine_table;
     GList *active_engines;
+
+    guint timeout_id;
+    gboolean changed;
 };
 
 struct _BusRegistryClass {
@@ -84,6 +87,11 @@ BusFactoryProxy *bus_registry_name_owner_changed(BusRegistry    *registry,
                                                  const gchar    *name,
                                                  const gchar    *old_name,
                                                  const gchar    *new_name);
+void             bus_registry_set_monitor_changes
+                                                (BusRegistry    *registry,
+                                                 gboolean        enable);
+gboolean         bus_registry_is_monitor_changes(BusRegistry    *registry);
+gboolean         bus_registry_is_changed        (BusRegistry    *registry);
 
 G_END_DECLS
 #endif

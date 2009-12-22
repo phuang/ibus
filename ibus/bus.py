@@ -49,6 +49,11 @@ class Bus(object.Object):
             gobject.TYPE_NONE,
             ()
         ),
+        "registry-changed" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            ()
+        ),
     }
 
     def __init__(self):
@@ -59,6 +64,7 @@ class Bus(object.Object):
         self.__unique_name = self.hello()
         self.__ibus = self.__dbusconn.get_object(common.IBUS_SERVICE_IBUS,
                                                  common.IBUS_PATH_IBUS)
+        self.__ibus.connect_to_signal("RegistryChanged", self.__registry_changed_cb)
 
         self.__dbusconn.call_on_disconnection(self.__dbusconn_disconnected_cb)
         # self.__dbusconn.add_message_filter(self.__filter_cb)
@@ -74,6 +80,9 @@ class Bus(object.Object):
         assert self.__dbusconn == dbusconn
         self.__dbusconn = None
         self.emit("disconnected")
+
+    def __registry_changed_cb(self):
+        self.emit("registry-changed")
 
     def get_name(self):
         return self.__unique_name

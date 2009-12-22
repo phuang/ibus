@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-11 15:06+0800\n"
+"POT-Creation-Date: 2009-12-22 17:46+0800\n"
 "PO-Revision-Date: 2009-12-09 17:28+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
@@ -34,8 +34,7 @@ msgstr ""
 "सर्वहक्काधिकार (c) 2007-2009 पेंग हुआंग\n"
 "सर्वहक्काधिकार (c) 2007-2009 Red Hat, Inc."
 
-#: ../ibus/lang.py:41 ../ui/gtk/panel.py:360 ../ui/gtk/panel.py:361
-#: ../ui/gtk/panel.py:362 ../ui/gtk/panel.py:363
+#: ../ibus/lang.py:41
 msgid "Other"
 msgstr "इतर"
 
@@ -47,23 +46,39 @@ msgstr "पूर्वीचे पान"
 msgid "Next page"
 msgstr "पुढचे पान"
 
+#: ../ui/gtk/main.py:50
+msgid ""
+"Some input methods have been installed, removed or updated. Please restart "
+"ibus input platform."
+msgstr ""
+
+#: ../ui/gtk/main.py:55
+#, fuzzy
+msgid "Restart Now"
+msgstr "पुन्हा चालू करा"
+
+#: ../ui/gtk/main.py:56
+#, fuzzy
+msgid "Later"
+msgstr "इतर"
+
 #: ../ui/gtk/panel.py:335
 msgid "Restart"
 msgstr "पुन्हा चालू करा"
 
-#: ../ui/gtk/panel.py:390
+#: ../ui/gtk/panel.py:422
 msgid "Turn off input method"
 msgstr "इंपुट पद्धत बंद करा"
 
-#: ../ui/gtk/panel.py:427
+#: ../ui/gtk/panel.py:459
 msgid "No input window"
 msgstr "इंपुट खिडकी आढळली नाही"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:489
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix करीता IBus हे एक हुशार इनपुट बस आहे."
 
-#: ../ui/gtk/panel.py:461
+#: ../ui/gtk/panel.py:493
 msgid "translator-credits"
 msgstr ""
 "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
