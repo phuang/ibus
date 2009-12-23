@@ -29,6 +29,7 @@ INCLUDES = \
 
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
+	@GTHREAD2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
@@ -38,6 +39,7 @@ AM_CFLAGS = \
 	$(NULL)
 AM_LDFLAGS = \
 	@GLIB2_LIBS@ \
+	@GTHREAD2_LIBS@ \
 	@DBUS_LIBS@ \
 	$(libibus) \
 	$(NULL)

@@ -511,9 +511,12 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                       "changed",
                       G_CALLBACK (_registry_changed_cb),
                       ibus);
+#ifdef G_THREADS_ENABLED
     extern gint g_monitor_timeout;
-    if (g_monitor_timeout != 0)
-        bus_registry_set_monitor_changes (ibus->registry, TRUE);
+    if (g_monitor_timeout != 0) {
+        bus_registry_start_monitor_changes (ibus->registry);
+    }
+#endif
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_new ("us");

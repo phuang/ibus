@@ -57,8 +57,14 @@ struct _BusRegistry {
     GHashTable *engine_table;
     GList *active_engines;
 
-    guint timeout_id;
+
+#ifdef G_THREADS_ENABLED
+    GThread *thread;
+    gboolean thread_running;
+    GMutex  *mutex;
+    GCond   *cond;
     gboolean changed;
+#endif
 };
 
 struct _BusRegistryClass {
@@ -74,7 +80,7 @@ GList           *bus_registry_get_engines       (BusRegistry    *registry);
 GList           *bus_registry_get_engines_by_language
                                                 (BusRegistry    *registry,
                                                  const gchar    *language);
-void             bus_registry_stop_all_components    
+void             bus_registry_stop_all_components
                                                 (BusRegistry    *registry);
 
 IBusComponent   *bus_registry_lookup_component_by_name
@@ -87,11 +93,11 @@ BusFactoryProxy *bus_registry_name_owner_changed(BusRegistry    *registry,
                                                  const gchar    *name,
                                                  const gchar    *old_name,
                                                  const gchar    *new_name);
-void             bus_registry_set_monitor_changes
-                                                (BusRegistry    *registry,
-                                                 gboolean        enable);
-gboolean         bus_registry_is_monitor_changes(BusRegistry    *registry);
+#ifdef G_THREADS_ENABLED
+void             bus_registry_start_monitor_changes
+                                                (BusRegistry    *registry);
 gboolean         bus_registry_is_changed        (BusRegistry    *registry);
+#endif
 
 G_END_DECLS
 #endif

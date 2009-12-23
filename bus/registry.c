@@ -103,8 +103,14 @@ bus_registry_init (BusRegistry *registry)
     registry->observed_paths = NULL;
     registry->components = NULL;
     registry->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
-    registry->timeout_id = 0;
+
+#ifdef G_THREADS_ENABLED
+    registry->thread = NULL;
+    registry->thread_running = TRUE;
+    registry->mutex = g_mutex_new ();
+    registry->cond = g_cond_new ();
     registry->changed = FALSE;
+#endif
 
     if (g_rescan ||
         bus_registry_load_cache (registry) == FALSE ||
@@ -143,13 +149,29 @@ bus_registry_remove_all (BusRegistry *registry)
 static void
 bus_registry_destroy (BusRegistry *registry)
 {
-    if (bus_registry_is_monitor_changes (registry))
-        bus_registry_set_monitor_changes (registry, FALSE);
+#ifdef G_THREADS_ENABLED
+    if (registry->thread) {
+        g_mutex_lock (registry->mutex);
+        registry->thread_running = FALSE;
+        g_mutex_unlock (registry->mutex);
+        g_cond_signal (registry->cond);
+        g_thread_join (registry->thread);
+        registry->thread = NULL;
+    }
+#endif
 
     bus_registry_remove_all (registry);
 
     g_hash_table_destroy (registry->engine_table);
     registry->engine_table = NULL;
+
+#ifdef G_THREADS_ENABLED
+    g_cond_free (registry->cond);
+    registry->cond = NULL;
+
+    g_mutex_free (registry->mutex);
+    registry->mutex = NULL;
+#endif
 
     IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (registry));
 }
@@ -465,45 +487,56 @@ bus_registry_stop_all_components (BusRegistry *registry)
 
 }
 
+#ifdef G_THREADS_ENABLED
 static gboolean
-_check_changes_cb (BusRegistry *registry)
+_emit_changed_signal_cb (BusRegistry *registry)
 {
     g_assert (BUS_IS_REGISTRY (registry));
 
-    if (registry->changed)
-        return TRUE;
+    g_signal_emit (registry, _signals[CHANGED], 0);
+    return FALSE;
+}
 
-    if (bus_registry_check_modification (registry)) {
-        registry->changed = TRUE;
-        g_signal_emit (registry, _signals[CHANGED], 0);
-        return TRUE;
+static gpointer
+_check_changes (BusRegistry *registry)
+{
+    g_assert (BUS_IS_REGISTRY (registry));
+
+    g_mutex_lock (registry->mutex);
+    while (registry->thread_running == TRUE && registry->changed == FALSE) {
+        extern gint g_monitor_timeout;
+        GTimeVal tv;
+        g_get_current_time (&tv);
+        g_time_val_add (&tv, g_monitor_timeout * G_USEC_PER_SEC);
+
+        if (g_cond_timed_wait (registry->cond, registry->mutex, &tv) == FALSE) {
+            /* timeout */
+            if (bus_registry_check_modification (registry)) {
+                registry->changed = TRUE;
+                g_idle_add ((GSourceFunc) _emit_changed_signal_cb, registry);
+                break;
+            }
+        }
+        else
+            g_warn_if_fail (registry->thread_running == FALSE);
     }
-    return TRUE;
+    g_mutex_unlock (registry->mutex);
+    return NULL;
 }
 
 void
-bus_registry_set_monitor_changes (BusRegistry *registry,
-                                  gboolean     enable)
+bus_registry_start_monitor_changes (BusRegistry *registry)
 {
     g_assert (BUS_IS_REGISTRY (registry));
 
-    if (enable) {
-        extern gint g_monitor_timeout;
-        g_return_if_fail (!bus_registry_is_monitor_changes (registry));
-        registry->timeout_id = g_timeout_add_seconds (g_monitor_timeout, (GSourceFunc) _check_changes_cb, registry);
-    }
-    else {
-        g_return_if_fail (bus_registry_is_monitor_changes (registry));
-        g_warn_if_fail (g_source_remove (registry->timeout_id));
-        registry->timeout_id = 0;
-    }
-}
+    g_return_if_fail (registry->thread == NULL);
+    g_return_if_fail (registry->changed == FALSE);
 
-gboolean
-bus_registry_is_monitor_changes (BusRegistry *registry)
-{
-    g_assert (BUS_IS_REGISTRY (registry));
-    return (registry->timeout_id != 0);
+    registry->thread_running = TRUE;
+    registry->thread = g_thread_create ((GThreadFunc)_check_changes,
+                                        registry,
+                                        TRUE,
+                                        NULL);
 }
 
 gboolean
@@ -512,6 +545,7 @@ bus_registry_is_changed (BusRegistry *registry)
     g_assert (BUS_IS_REGISTRY (registry));
     return (registry->changed != 0);
 }
+#endif
 
 BusFactoryProxy *
 bus_registry_name_owner_changed (BusRegistry *registry,
