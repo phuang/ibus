@@ -212,8 +212,9 @@ main (gint argc, gchar **argv)
 
     g_type_init ();
 
+#ifdef G_THREADS_ENABLED
     g_thread_init (NULL);
-
+#endif
     g_log_set_handler (G_LOG_DOMAIN,
         G_LOG_LEVEL_WARNING | G_LOG_LEVEL_DEBUG | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
         _my_log_handler,
