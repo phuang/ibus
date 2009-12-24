@@ -69,7 +69,7 @@ class EngineComboBox(gtk.ComboBox):
         keys = lang.keys()
         keys.sort()
         if ibus.get_language_name("Other") in keys:
-            keys.remove( ibus.get_language_name("Other"))
+            keys.remove(ibus.get_language_name("Other"))
             keys += [ibus.get_language_name("Other")]
         for l in keys:
             iter1 = self.__model.append(None)
@@ -84,7 +84,6 @@ class EngineComboBox(gtk.ComboBox):
     def __icon_cell_data_cb(self, celllayout, renderer, model, iter):
         engine = self.__model.get_value(iter, 0)
 
-        icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
         if isinstance(engine, str) or isinstance (engine, unicode):
             renderer.set_property("visible", False)
             renderer.set_property("sensitive", False)
