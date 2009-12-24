@@ -46,11 +46,13 @@ class EngineComboBox(gtk.ComboBox):
 
         renderer = gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0)
+        renderer.set_property("xpad", 2)
         self.pack_start(renderer, False)
         self.set_cell_data_func(renderer, self.__icon_cell_data_cb)
 
         renderer = gtk.CellRendererText()
         renderer.set_property("xalign", 0)
+        renderer.set_property("xpad", 2)
         self.pack_start(renderer, True)
         self.set_cell_data_func(renderer, self.__name_cell_data_cb)
 
