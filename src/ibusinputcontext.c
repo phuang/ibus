@@ -586,15 +586,15 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
             break;
         }
 
-        for (i = 0; i < G_N_ELEMENTS (signals); i++) {
-            if (g_strcmp0 (name, signals[i].member) == 0) {
-                g_signal_emit (context, context_signals[signals[i].signal_id], 0);
-                break;
-            }
+        for (i = 0;
+             i < G_N_ELEMENTS (signals) && g_strcmp0 (name, signals[i].member) != 0;
+             i++);
+
+        if (i < G_N_ELEMENTS (signals)) {
+            g_signal_emit (context, context_signals[signals[i].signal_id], 0);
+            break;
         }
 
-        if (i < G_N_ELEMENTS (signals))
-            break;
         if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
             IBusText *text;
             gboolean visible;

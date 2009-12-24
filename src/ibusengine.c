@@ -720,10 +720,12 @@ ibus_engine_ibus_message (IBusEngine     *engine,
             }
             break;
         }
-        for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
-            if (g_strcmp0 (name, no_arg_methods[i].member) != 0)
-                continue;
 
+        for (i = 0;
+             i < G_N_ELEMENTS (no_arg_methods) && g_strcmp0 (name, no_arg_methods[i].member) != 0;
+             i++);
+
+        if (i < G_N_ELEMENTS (no_arg_methods)) {
             IBusMessageIter iter;
             ibus_message_iter_init (message, &iter);
             if (ibus_message_iter_has_next (&iter)) {
@@ -736,9 +738,9 @@ ibus_engine_ibus_message (IBusEngine     *engine,
                 g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
                 reply = ibus_message_new_method_return (message);
             }
-        }
-        if (i < G_N_ELEMENTS (no_arg_methods))
             break;
+        }
+
         if (g_strcmp0 (name, "CandidateClicked") == 0) {
             guint index, button, state;
 
@@ -903,6 +905,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
                         DBUS_ERROR_UNKNOWN_METHOD,
                         "%s.%s",
                         IBUS_INTERFACE_ENGINE, name);
+            g_warn_if_reached ();
         }
     } while (0);
 
