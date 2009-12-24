@@ -95,7 +95,7 @@ ibus_engine_desc_class_init (IBusEngineDescClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_engine_desc_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_engine_desc_copy;
 
-    g_string_append (serializable_class->signature, "ssssssss");
+    g_string_append (serializable_class->signature, "ssssssssu");
 }
 
 static void
@@ -161,6 +161,9 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &desc->layout);
     g_return_val_if_fail (retval, FALSE);
 
+    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &desc->rank);
+    g_return_val_if_fail (retval, FALSE);
+
     return TRUE;
 }
 
@@ -213,6 +216,10 @@ ibus_engine_desc_deserialize (IBusEngineDesc  *desc,
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
     desc->layout = g_strdup (str);
+
+    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &desc->rank);
+    g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
 
     return TRUE;
 }
