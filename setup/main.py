@@ -228,7 +228,7 @@ class Setup(object):
         self.__builder.get_object("button_engine_up").set_sensitive(engine not in engines[:1])
         self.__builder.get_object("button_engine_down").set_sensitive(engine not in engines[-1:])
 
-        if property.name == engines:
+        if property.name == "engines":
             engine_names = map(lambda e: e.name, engines)
             self.__config.set_list("general", "preload_engines", engine_names, "s")
 
@@ -237,7 +237,7 @@ class Setup(object):
         self.__treeview.append_engine(engine)
 
     def __button_engine_about_cb(self, button):
-        engine = self.__treeview.get_select_engine()
+        engine = self.__treeview.get_active_engine()
         if engine:
             about = EngineAbout(engine)
             about.run()

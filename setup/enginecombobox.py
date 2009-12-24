@@ -79,7 +79,7 @@ class EngineComboBox(gtk.ComboBox):
             def cmp_engine(a, b):
                 if a.rank == b.rank:
                     return cmp(a.longname, b.longname)
-                return int(-a.rank + b.rank)
+                return int(b.rank - a.rank)
             lang[l].sort(cmp_engine)
             for e in lang[l]:
                 iter2 = self.__model.append(iter1)

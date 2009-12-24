@@ -34,12 +34,6 @@ N_ = lambda a : a
 
 class EngineTreeView(gtk.TreeView):
     __gtype_name__ = 'EngineTreeView'
-    __gsignals__ = {
-        'changed' : (
-            gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE,
-            ())
-    }
     __gproperties__ = {
         'active-engine' : (
             gobject.TYPE_PYOBJECT,
