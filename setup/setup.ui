@@ -33,6 +33,29 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="model_panel_position">
+    <columns>
+      <!-- column-name position -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Top left corner</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Top right corner</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Bottom left corner</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Bottom right corner</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Custom</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="window_preferences">
     <property name="border_width">12</property>
     <property name="title" translatable="yes">IBus Preferences</property>
@@ -478,7 +501,9 @@
                                   <object class="GtkAlignment" id="alignment_engine_combobox">
                                     <property name="visible">True</property>
                                     <child>
-                                      <placeholder/>
+                                      <object class="GtkComboBox" id="combobox_engines">
+                                        <property name="visible">True</property>
+                                      </object>
                                     </child>
                                   </object>
                                   <packing>
@@ -496,7 +521,10 @@
                                     <property name="vscrollbar_policy">automatic</property>
                                     <property name="shadow_type">in</property>
                                     <child>
-                                      <placeholder/>
+                                      <object class="GtkTreeView" id="treeview_engines">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                      </object>
                                     </child>
                                   </object>
                                   <packing>
@@ -524,6 +552,7 @@
                                   <object class="GtkButton" id="button_engine_add">
                                     <property name="label">gtk-add</property>
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Add the selected input method into the enabled input methods</property>
@@ -539,6 +568,7 @@
                                   <object class="GtkButton" id="button_engine_remove">
                                     <property name="label">gtk-remove</property>
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Remove the selected input method from the enabled input methods</property>
@@ -554,6 +584,7 @@
                                   <object class="GtkButton" id="button_engine_up">
                                     <property name="label">gtk-go-up</property>
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Move up the selected input method in the enabled input methods list</property>
@@ -569,6 +600,7 @@
                                   <object class="GtkButton" id="button_engine_down">
                                     <property name="label">gtk-go-down</property>
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Move down the selected input method in the enabled input methods</property>
@@ -584,6 +616,7 @@
                                   <object class="GtkButton" id="button_engine_about">
                                     <property name="label">gtk-about</property>
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Show information of the selected input method</property>
@@ -863,28 +896,5 @@ Homepage: http://code.google.com/p/ibus
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="model_panel_position">
-    <columns>
-      <!-- column-name position -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Top left corner</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Top right corner</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bottom left corner</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Bottom right corner</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Custom</col>
-      </row>
-    </data>
   </object>
 </interface>
