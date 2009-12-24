@@ -31,7 +31,7 @@ from serializable import *
 class EngineDesc(Serializable):
     __gtype_name__ = "PYIBusEngineDesc"
     __NAME__ = "IBusEngineDesc"
-    def __init__ (self, name="", longname="", description="", language="", license="", author="", icon="", layout="", rank=0):
+    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", rank=0):
         super(EngineDesc, self).__init__()
         self.__name = name
         self.__longname = longname
@@ -82,15 +82,15 @@ class EngineDesc(Serializable):
 
     def serialize(self, struct):
         super(EngineDesc, self).serialize(struct)
-        struct.append (dbus.String(self.__name))
-        struct.append (dbus.String(self.__longname))
-        struct.append (dbus.String(self.__description))
-        struct.append (dbus.String(self.__language))
-        struct.append (dbus.String(self.__license))
-        struct.append (dbus.String(self.__author))
-        struct.append (dbus.String(self.__icon))
-        struct.append (dbus.String(self.__layout))
-        struct.append (dbus.UInt(self.__rank))
+        struct.append(dbus.String(self.__name))
+        struct.append(dbus.String(self.__longname))
+        struct.append(dbus.String(self.__description))
+        struct.append(dbus.String(self.__language))
+        struct.append(dbus.String(self.__license))
+        struct.append(dbus.String(self.__author))
+        struct.append(dbus.String(self.__icon))
+        struct.append(dbus.String(self.__layout))
+        struct.append(dbus.UInt(self.__rank))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
