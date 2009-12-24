@@ -29,9 +29,32 @@ from icon import load_icon
 _ = lambda a : gettext.dgettext("ibus", a)
 
 class EngineComboBox(gtk.ComboBox):
-    def __init__(self, engines):
-        super(EngineComboBox, self).__init__()
+    __gtype_name__ = 'EngineComboBox'
+    __gproperties__ = {
+        'active-engine' : (
+            gobject.TYPE_PYOBJECT,
+            'selected engine',
+            'selected engine',
+            gobject.PARAM_READABLE)
+    }
 
+    def __init__(self):
+        super(EngineComboBox, self).__init__()
+        self.connect("notify::active", self.__notify_active_cb)
+
+        self.__model = None
+
+        renderer = gtk.CellRendererPixbuf()
+        renderer.set_property("xalign", 0)
+        self.pack_start(renderer, False)
+        self.set_cell_data_func(renderer, self.__icon_cell_data_cb)
+
+        renderer = gtk.CellRendererText()
+        renderer.set_property("xalign", 0)
+        self.pack_start(renderer, True)
+        self.set_cell_data_func(renderer, self.__name_cell_data_cb)
+
+    def set_engines(self, engines):
         self.__model = gtk.TreeStore(gobject.TYPE_PYOBJECT)
 
         iter1 = self.__model.append(None)
@@ -56,17 +79,6 @@ class EngineComboBox(gtk.ComboBox):
                 self.__model.set(iter2, 0, e)
 
         self.set_model(self.__model)
-
-        renderer = gtk.CellRendererPixbuf()
-        renderer.set_property("xalign", 0)
-        self.pack_start(renderer, False)
-        self.set_cell_data_func(renderer, self.__icon_cell_data_cb)
-
-        renderer = gtk.CellRendererText()
-        renderer.set_property("xalign", 0)
-        self.pack_start(renderer, True)
-        self.set_cell_data_func(renderer, self.__name_cell_data_cb)
-
         self.set_active(0)
 
     def __icon_cell_data_cb(self, celllayout, renderer, model, iter):
@@ -102,10 +114,21 @@ class EngineComboBox(gtk.ComboBox):
             renderer.set_property("sensitive", True)
             renderer.set_property("text", engine.longname)
 
+    def __notify_active_cb(self, combobox, property):
+        self.notify("active-engine")
+
+    def do_get_property(self, property):
+        if property.name == "active-engine":
+            i = self.get_active()
+            if i == 0 or i == -1:
+                return None
+            iter = self.get_active_iter()
+            return self.get_model()[iter][0]
+        else:
+            raise AttributeError, 'unknown property %s' % property.name
+
     def get_active_engine(self):
-        i = self.get_active()
-        iter = self.get_active_iter()
-        if i == 0 or i == -1:
-            return None
-        return self.get_model()[iter][0]
+        return self.get_property("active-engine")
+
+
 

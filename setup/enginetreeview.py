@@ -33,14 +33,27 @@ _  = lambda a : dgettext("ibus", a)
 N_ = lambda a : a
 
 class EngineTreeView(gtk.TreeView):
+    __gtype_name__ = 'EngineTreeView'
     __gsignals__ = {
         'changed' : (
             gobject.SIGNAL_RUN_LAST,
             gobject.TYPE_NONE,
             ())
     }
+    __gproperties__ = {
+        'active-engine' : (
+            gobject.TYPE_PYOBJECT,
+            'selected engine',
+            'selected engine',
+            gobject.PARAM_READABLE),
+        'engines' : (
+            gobject.TYPE_PYOBJECT,
+            'engines',
+            'engines',
+            gobject.PARAM_READABLE)
+    }
 
-    def __init__(self, engines):
+    def __init__(self):
         super(EngineTreeView, self).__init__()
 
         self.__engines = set([])
@@ -93,12 +106,12 @@ class EngineTreeView(gtk.TreeView):
         column.set_cell_data_func(renderer, self.__layout_cell_data_cb)
         # self.append_column(column)
 
-        self.set_engines(engines)
+        self.get_selection().connect("changed", lambda *args: self.notify("active-engine"))
 
     def __emit_changed(self, *args):
         if self.__changed:
             self.__changed = False
-            self.emit("changed")
+            self.notify("engines")
 
     def __emit_changed_delay_cb(self, *args):
         if not self.__changed:
@@ -149,6 +162,19 @@ class EngineTreeView(gtk.TreeView):
         layout = combo.get_property("model").get_value(iter, 0)
         self.__model.set_value(i, 1, layout)
 
+    def do_get_property(self, property):
+        if property.name == "active-engine":
+            iter = self.get_selected_iter()
+            if iter == None:
+                return None
+            row = self.__model.get(iter, 0)
+            return row[0]
+        elif property.name == "engines":
+            engines = [ r[0] for r in self.__model if r[0] != None]
+            return engines
+        else:
+            raise AttributeError, 'unknown property %s' % property.name
+
     def set_engines(self, engines):
         self.__model.clear()
         self.__engines = set([])
@@ -166,15 +192,10 @@ class EngineTreeView(gtk.TreeView):
             return selection.get_selected()[1]
 
     def get_engines(self):
-        engines = [ r[0] for r in self.__model if r[0] != None]
-        return engines
+        return self.get_property("engines")
 
-    def get_select_engine(self):
-        iter = self.get_selected_iter()
-        if iter == None:
-            return None
-        row = self.__model.get(iter, 0)
-        return row[0]
+    def get_active_engine(self):
+        return self.get_property("active-engine")
 
     def prepend_engine(self, engine):
         if engine == None or engine in self.__engines:

@@ -183,27 +183,20 @@ class Setup(object):
 
         # init engine page
         self.__engines = self.__bus.list_engines()
-        self.__combobox = EngineComboBox(self.__engines)
-        self.__combobox.show()
-        self.__builder.get_object("alignment_engine_combobox").add(self.__combobox)
+        self.__combobox = self.__builder.get_object("combobox_engines")
+        self.__combobox.set_engines(self.__engines)
 
         tmp_dict = {}
         for e in self.__engines:
             tmp_dict[e.name] = e
         engine_names = self.__config.get_value("general", "preload_engines", [])
-        engines = []
-        for n in engine_names:
-            if n in tmp_dict:
-                engines.append(tmp_dict[n])
-        self.__treeview = EngineTreeView(engines)
-        self.__treeview.show()
-        self.__builder.get_object("scrolledwindow_engine_treeview").add(self.__treeview)
+        engines = [tmp_dict[name] for name in engine_names if name in tmp_dict]
 
-        self.__treeview.connect("changed", self.__treeview_changed_cb)
+        self.__treeview = self.__builder.get_object("treeview_engines")
+        self.__treeview.set_engines(engines)
 
         button = self.__builder.get_object("button_engine_add")
-        button.connect("clicked",
-                       lambda *args:self.__treeview.append_engine(self.__combobox.get_active_engine()))
+        button.connect("clicked", self.__button_engine_add_cb)
         button = self.__builder.get_object("button_engine_remove")
         button.connect("clicked", lambda *args:self.__treeview.remove_engine())
         button = self.__builder.get_object("button_engine_up")
@@ -215,17 +208,40 @@ class Setup(object):
         button = self.__builder.get_object("button_engine_about")
         button.connect("clicked", self.__button_engine_about_cb)
 
+        self.__combobox.connect("notify::active-engine", self.__combobox_notify_active_engine_cb)
+        self.__treeview.connect("notify", self.__treeview_notify_cb)
+
+    def __combobox_notify_active_engine_cb(self, combobox, property):
+        engine = self.__combobox.get_active_engine()
+        button = self.__builder.get_object("button_engine_add")
+        button.set_sensitive(engine != None and engine not in self.__treeview.get_engines())
+
+    def __treeview_notify_cb(self, treeview, property):
+        if property.name != "active-engine" and property.name != "engines":
+            return
+
+        engines = self.__treeview.get_engines()
+        engine = self.__treeview.get_active_engine()
+
+        self.__builder.get_object("button_engine_remove").set_sensitive(engine != None)
+        self.__builder.get_object("button_engine_about").set_sensitive(engine != None)
+        self.__builder.get_object("button_engine_up").set_sensitive(engine not in engines[:1])
+        self.__builder.get_object("button_engine_down").set_sensitive(engine not in engines[-1:])
+
+        if property.name == engines:
+            engine_names = map(lambda e: e.name, engines)
+            self.__config.set_list("general", "preload_engines", engine_names, "s")
+
+    def __button_engine_add_cb(self, button):
+        engine = self.__combobox.get_active_engine()
+        self.__treeview.append_engine(engine)
+
     def __button_engine_about_cb(self, button):
         engine = self.__treeview.get_select_engine()
         if engine:
             about = EngineAbout(engine)
             about.run()
             about.destroy()
-
-    def __treeview_changed_cb(self, treeview):
-        engines = self.__treeview.get_engines()
-        engine_names = map(lambda e: e.name, engines)
-        self.__config.set_list("general", "preload_engines", engine_names, "s")
 
     def __init_bus(self):
         try:

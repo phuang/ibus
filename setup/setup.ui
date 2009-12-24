@@ -501,7 +501,7 @@
                                   <object class="GtkAlignment" id="alignment_engine_combobox">
                                     <property name="visible">True</property>
                                     <child>
-                                      <object class="GtkComboBox" id="combobox_engines">
+                                      <object class="EngineComboBox" id="combobox_engines">
                                         <property name="visible">True</property>
                                       </object>
                                     </child>
@@ -521,7 +521,7 @@
                                     <property name="vscrollbar_policy">automatic</property>
                                     <property name="shadow_type">in</property>
                                     <child>
-                                      <object class="GtkTreeView" id="treeview_engines">
+                                      <object class="EngineTreeView" id="treeview_engines">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                       </object>
