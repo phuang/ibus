@@ -63,7 +63,10 @@ class UIApplication:
         self.__notify.show()
 
     def run(self):
-        gtk.main()
+        try:
+            gtk.main()
+        except KeyboardInterrupt:
+            pass
 
 def launch_panel():
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
