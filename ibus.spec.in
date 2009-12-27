@@ -1,8 +1,6 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?gtk_binary_version: %define gtk_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-2.0)}
-%define mod_path ibus-@PACKAGE_VERSION_MAJOR@.@PACKAGE_VERSION_MINOR@
-%define host_vendor %(if [[ "%{_host_vendor}" == "unknown" ]]; then echo redhat; else echo %{_host_vendor}; fi)
-%define host %{_host_cpu}-%{host_vendor}-%{_host_os}-gnu
+
 %define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 %define gconf2_version 2.12.0
 %define dbus_python_version 0.83.0
@@ -17,6 +15,7 @@ Group:      System Environment/Libraries
 URL:        http://code.google.com/p/ibus/
 Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
 Source1:    xinput-ibus
+# Patch0:     ibus-HEAD.patch
 
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -43,6 +42,7 @@ Requires:   iso-codes
 Requires:   dbus-python >= %{dbus_python_version}
 Requires:   im-chooser >= %{im_chooser_version}
 Requires:   GConf2 >= %{gconf2_version}
+Requires:   notify-python
 
 Requires(post):  desktop-file-utils
 Requires(postun):  desktop-file-utils
@@ -59,9 +59,7 @@ Obsoletes:  ibus-qt < 1.1.0
 %define _xinputconf %{_sysconfdir}/X11/xinit/xinput.d/ibus.conf
 
 %description
-IBus means Intelligent Input Bus. It is a new input framework for Linux OS. It provides
-full featured and user friendly input method user interface. It also may help
-developers to develop input method easily.
+IBus means Intelligent Input Bus. It is an input framework for Linux OS.
 
 %package libs
 Summary:    IBus libraries
@@ -90,7 +88,8 @@ Requires:   glib2-devel
 Requires:   dbus-devel
 
 %description devel
-The ibus-devel package contains the header files for ibus.
+The ibus-devel package contains the header files and developer
+docs for ibus.
 
 %package devel-docs
 Summary:    Developer documents for ibus
@@ -105,24 +104,22 @@ The ibus-devel-docs package contains developer documentation for ibus
 %prep
 %setup -q
 # %patch0 -p1
-# ./autogen.sh --help
 
 %build
 %configure --disable-static \
-		   --disable-iso-codes-check \
-		   --enable-gtk-doc \
+           --disable-iso-codes-check \
+           --enable-gtk-doc
 # make -C po update-gmo
 make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=${RPM_BUILD_ROOT} install
+make DESTDIR=$RPM_BUILD_ROOT install
 rm -f $RPM_BUILD_ROOT%{_libdir}/libibus.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk_binary_version}/immodules/im-ibus.la
 
 # install xinput config file
-mkdir -pm 755 ${RPM_BUILD_ROOT}/%{_sysconfdir}/X11/xinit/xinput.d
-install -pm 644 %{SOURCE1} ${RPM_BUILD_ROOT}/%{_xinputconf}
+install -pm 644 -D %{SOURCE1} $RPM_BUILD_ROOT%{_xinputconf}
 
 # install .desktop files
 echo "NoDisplay=true" >> $RPM_BUILD_ROOT%{_datadir}/applications/ibus.desktop
@@ -144,8 +141,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 [ -x %{_bindir}/gtk-update-icon-cache ] && \
   %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 
-update-desktop-database -q || :
-
 %{_sbindir}/alternatives --install %{_sysconfdir}/X11/xinit/xinputrc xinputrc %{_xinputconf} 83 || :
 
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
@@ -153,14 +148,14 @@ gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >&
 
 %pre
 if [ "$1" -gt 1 ]; then
-	export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-	gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
+    export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
 fi
 
 %preun
 if [ "$1" -eq 0 ]; then
-	export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
-	gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
+    export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+    gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
 fi
 
 %postun
@@ -169,25 +164,21 @@ touch --no-create %{_datadir}/icons/hicolor || :
 [ -x %{_bindir}/gtk-update-icon-cache ] && \
   %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 
-update-desktop-database -q || :
-
 if [ "$1" = "0" ]; then
   %{_sbindir}/alternatives --remove xinputrc %{_xinputconf} || :
   # if alternative was set to manual, reset to auto
   [ -L %{_sysconfdir}/alternatives/xinputrc -a "`readlink %{_sysconfdir}/alternatives/xinputrc`" = "%{_xinputconf}" ] && %{_sbindir}/alternatives --auto xinputrc || :
 fi
 
-%post libs
-/sbin/ldconfig
+%post libs -p /sbin/ldconfig
 
-%postun libs
-/sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %post gtk
-%{_bindir}/update-gtk-immodules %{host} || :
+%{_bindir}/update-gtk-immodules %{_host} || :
 
 %postun gtk
-%{_bindir}/update-gtk-immodules %{host} || :
+%{_bindir}/update-gtk-immodules %{_host} || :
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -222,6 +213,7 @@ fi
 %{_libdir}/pkgconfig/*
 
 %files devel-docs
+%defattr(-,root,root,-)
 %{_datadir}/gtk-doc/html/*
 
 %changelog
