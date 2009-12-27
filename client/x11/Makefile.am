@@ -42,6 +42,7 @@ ibus_x11_LDADD = \
 	$(NULL)
 
 ibus_x11_LDFLAGS = \
+	@X11_LIBS@ \
 	@GTK2_LIBS@ \
 	$(NULL)
 

@@ -162,6 +162,8 @@ AM_CFLAGS = \
 	$(NULL)
 AM_LDFLAGS = \
 	$(DEPS) \
+	@GLIB2_LIBS@ \
+	@GOBJECT2_LIBS@ \
 	$(NULL)
 
 TESTS = \
@@ -179,6 +181,12 @@ test_keymap_DEPENDENCIES = $(DEPS)
 test_keynames_DEPENDENCIES = $(DEPS)
 test_attribute_DEPENDENCIES = $(DEPS)
 test_lookuptable_DEPENDENCIES = $(DEPS)
+test_bus_LDFLAGS = $(AM_LDFLAGS)
+test_text_LDFLAGS = $(AM_LDFLAGS)
+test_keymap_LDFLAGS = $(AM_LDFLAGS)
+test_keynames_LDFLAGS = $(AM_LDFLAGS)
+test_attribute_LDFLAGS = $(AM_LDFLAGS)
+test_lookuptable_LDFLAGS = $(AM_LDFLAGS)
 
 # gen enum types
 ibusenumtypes.h: stamp-ibusenumtypes.h
