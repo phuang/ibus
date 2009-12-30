@@ -20,6 +20,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#define _GNU_SOURCES
+
 #include <X11/Xproto.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
@@ -37,7 +39,6 @@
 #include <signal.h>
 #include <stdlib.h>
 
-#define _GNU_SOURCES
 #include <getopt.h>
 
 #define LOG(level, fmt_args...) \
@@ -1052,10 +1053,10 @@ main (int argc, char **argv)
                 strncpy (_server_name, optarg, sizeof (_server_name));
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale") == 0) {
-                strncpy (_locale, optarg, sizeof (_locale));
+                strncpy (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale-append") == 0) {
-                strncat (_locale, optarg, sizeof (_locale));
+                strncat (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
             }
             else if (g_strcmp0 (long_options[option_index].name, "help") == 0) {
                 _print_usage (stdout, argv[0]);
