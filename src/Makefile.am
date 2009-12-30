@@ -133,12 +133,14 @@ libibus_la_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DIBUS_DATA_DIR=\"$(pkgdatadir)\" \
 	$(NULL)
-libibus_la_LDFLAGS = \
+libibus_la_LIBADD = \
 	@X11_LIBS@ \
 	@GLIB2_LIBS@ \
 	@GOBJECT2_LIBS@ \
 	@GIO2_LIBS@ \
 	@DBUS_LIBS@ \
+	$(NULL)
+libibus_la_LDFLAGS = \
 	-export-symbols-regex "ibus_.*" \
 	-version-info @LT_VERSION_INFO@ \
 	$(NULL)
@@ -160,7 +162,7 @@ AM_CFLAGS = \
 	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
-AM_LDFLAGS = \
+AM_LDADD = \
 	$(DEPS) \
 	@GLIB2_LIBS@ \
 	@GOBJECT2_LIBS@ \
@@ -181,12 +183,12 @@ test_keymap_DEPENDENCIES = $(DEPS)
 test_keynames_DEPENDENCIES = $(DEPS)
 test_attribute_DEPENDENCIES = $(DEPS)
 test_lookuptable_DEPENDENCIES = $(DEPS)
-test_bus_LDFLAGS = $(AM_LDFLAGS)
-test_text_LDFLAGS = $(AM_LDFLAGS)
-test_keymap_LDFLAGS = $(AM_LDFLAGS)
-test_keynames_LDFLAGS = $(AM_LDFLAGS)
-test_attribute_LDFLAGS = $(AM_LDFLAGS)
-test_lookuptable_LDFLAGS = $(AM_LDFLAGS)
+test_bus_LDADD = $(AM_LDADD)
+test_text_LDADD = $(AM_LDADD)
+test_keymap_LDADD = $(AM_LDADD)
+test_keynames_LDADD = $(AM_LDADD)
+test_attribute_LDADD = $(AM_LDADD)
+test_lookuptable_LDADD = $(AM_LDADD)
 
 # gen enum types
 ibusenumtypes.h: stamp-ibusenumtypes.h

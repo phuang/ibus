@@ -39,9 +39,6 @@ ibus_x11_DEPENDENCIES = \
 ibus_x11_LDADD = \
 	$(libIMdkit) \
 	$(libibus) \
-	$(NULL)
-
-ibus_x11_LDFLAGS = \
 	@X11_LIBS@ \
 	@GTK2_LIBS@ \
 	$(NULL)

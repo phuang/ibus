@@ -34,7 +34,7 @@ AM_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(INCLUDES) \
 	$(NULL)
-AM_LDFLAGS = \
+AM_LDADD = \
 	@GOBJECT2_LIBS@ \
 	@GLIB2_LIBS@ \
 	@GCONF_LIBS@ \
@@ -54,8 +54,8 @@ ibus_gconf_SOURCES = \
 ibus_gconf_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(NULL)
-ibus_gconf_LDFLAGS = \
-	$(AM_LDFLAGS) \
+ibus_gconf_LDADD = \
+	$(AM_LDADD) \
 	$(NULL)
 
 component_DATA = \

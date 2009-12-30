@@ -37,7 +37,7 @@ AM_CFLAGS = \
 	-DBINDIR=\"@bindir@\" \
 	$(INCLUDES) \
 	$(NULL)
-AM_LDFLAGS = \
+AM_LDADD = \
 	@GOBJECT2_LIBS@ \
 	@GLIB2_LIBS@ \
 	@GTHREAD2_LIBS@ \
@@ -91,7 +91,7 @@ ibus_daemon_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(NULL)
 ibus_daemon_LDADD = \
-	$(AM_LDFLAGS) \
+	$(AM_LDADD) \
 	$(NULL)
 
 # test_registry_SOURCES = \

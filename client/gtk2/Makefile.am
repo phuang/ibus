@@ -45,9 +45,11 @@ im_ibus_la_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	$(NULL)
 
-im_ibus_la_LDFLAGS = \
+im_ibus_la_LIBADD = \
 	@GTK2_LIBS@ \
 	@DBUS_LIBS@ \
+	$(NULL)
+im_ibus_la_LDFLAGS = \
 	-avoid-version \
 	-module \
 	$(NULL)
