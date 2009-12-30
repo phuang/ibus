@@ -20,7 +20,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#define _GNU_SOURCES
+#define _GNU_SOURCE
 
 #include <X11/Xproto.h>
 #include <X11/Xlib.h>
