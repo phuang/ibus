@@ -37,7 +37,6 @@ im_ibus_la_SOURCES = \
 	$(NULL)
 
 im_ibus_la_DEPENDENCIES = $(libibus)
-im_ibus_la_LIBADD = $(libibus)
 
 im_ibus_la_CFLAGS = \
 	@GTK2_CFLAGS@ \
@@ -48,6 +47,7 @@ im_ibus_la_CFLAGS = \
 im_ibus_la_LIBADD = \
 	@GTK2_LIBS@ \
 	@DBUS_LIBS@ \
+	$(libibus) \
 	$(NULL)
 im_ibus_la_LDFLAGS = \
 	-avoid-version \
