@@ -107,6 +107,12 @@ test_matchrule_SOURCES = \
 	matchrule.c \
 	test-matchrule.c \
 	$(NULL)
+test_matchrule_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(NULL)
+test_matchrule_LDADD = \
+	$(AM_LDADD) \
+	$(NULL)
 
 EXTRA_DIST = \
 	$(desktop_in_files) \
