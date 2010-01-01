@@ -261,6 +261,26 @@ void                 ibus_lookup_table_set_round
  */
 gboolean             ibus_lookup_table_is_round (IBusLookupTable    *table);
 
+/**
+ * ibus_lookup_table_set_orientation:
+ * @table: An IBusLookupTable.
+ * @orientation: .
+ *
+ * Set the orientation.
+ */
+void                 ibus_lookup_table_set_orientation
+                                                (IBusLookupTable    *table,
+                                                 gint                orientation);
+
+/**
+ * ibus_lookup_table_get_orientation:
+ * @table: An IBusLookupTable.
+ * @returns: The orientation of the @table.
+ *
+ * Returns the orientation of the IBusLookupTable.
+ */
+gint                 ibus_lookup_table_get_orientation
+                                                (IBusLookupTable    *table);
 
 
 /**

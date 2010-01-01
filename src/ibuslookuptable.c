@@ -466,6 +466,27 @@ ibus_lookup_table_is_round (IBusLookupTable *table)
     return table->round;
 }
 
+void
+ibus_lookup_table_set_orientation (IBusLookupTable *table,
+                                   gint             orientation)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+    g_assert (orientation == IBUS_ORIENTATION_HORIZONTAL ||
+              orientation == IBUS_ORIENTATION_VERTICAL ||
+              orientation == IBUS_ORIENTATION_SYSTEM);
+
+    table->orientation = orientation;
+}
+
+gint
+ibus_lookup_table_get_orientation (IBusLookupTable *table)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+
+    return table->orientation;
+}
+
+
 gboolean
 ibus_lookup_table_page_up (IBusLookupTable *table)
 {
