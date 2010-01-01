@@ -259,9 +259,9 @@ class Panel(ibus.PanelBase):
         if value != 0 and value != 1:
             value = 0
         if value == 0:
-            self.__candidate_panel.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+            self.__candidate_panel.set_system_orientation(gtk.ORIENTATION_HORIZONTAL)
         else:
-            self.__candidate_panel.set_orientation(gtk.ORIENTATION_VERTICAL)
+            self.__candidate_panel.set_system_orientation(gtk.ORIENTATION_VERTICAL)
 
     def __config_load_show(self):
         show = self.__config.get_value("panel", "show", 1)

@@ -211,8 +211,8 @@ class CandidatePanel(gtk.VBox):
         # self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
         self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
-        self.__orientation = gtk.ORIENTATION_HORIZONTAL
         self.__orientation = gtk.ORIENTATION_VERTICAL
+        self.__system_orientation = self.__orientation
         self.__preedit_visible = False
         self.__aux_string_visible = False
         self.__lookup_table_visible = False
@@ -393,6 +393,12 @@ class CandidatePanel(gtk.VBox):
         self.__lookup_table = lookup_table
         self.__refresh_candidates()
         self.__refresh_labels()
+        orientation = self.__lookup_table.get_orientation()
+        if orientation in (0, 1):
+            self.set_orientation((gtk.ORIENTATION_HORIZONTAL,
+                                  gtk.ORIENTATION_VERTICAL)[orientation])
+        else:
+            self.set_orientation(self.__system_orientation)
 
     def show_lookup_table(self):
         self.__lookup_table_visible = True
@@ -449,6 +455,10 @@ class CandidatePanel(gtk.VBox):
         self.__recreate_ui()
         if self.__toplevel.flags() & gtk.VISIBLE:
             self.show_all()
+
+    def set_system_orientation(self, orientation):
+        self.__system_orientation = orientation
+        self.set_orientation(orientation)
 
     def get_orientation(self):
         return self.__orientation
