@@ -207,9 +207,6 @@ class CandidatePanel(gtk.VBox):
             gdk.BUTTON_RELEASE_MASK | \
             gdk.BUTTON1_MOTION_MASK)
         self.__begin_move = False
-        # self.__toplevel.connect("button-press-event", self.__button_press_event_cb)
-        # self.__toplevel.connect("button-release-event", self.__button_release_event_cb)
-        # self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
         self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
         self.__orientation = ibus.ORIENTATION_VERTICAL
@@ -508,40 +505,6 @@ class CandidatePanel(gtk.VBox):
             y = self.__cursor_location[1]
 
         self.move(x, y)
-
-    def __button_press_event_cb(self, widget, event):
-        if event.button == 1:
-            self.__begin_move = True
-            self.__press_pos = event.x_root, event.y_root
-            self.__toplevel.window.set_cursor(gdk.Cursor(gdk.FLEUR))
-            return True
-
-        if event.button == 3:
-            if self.get_current_orientation() == ibus.ORIENTATION_HORIZONTAL:
-                self.set_current_orientation(ibus.ORIENTATION_VERTICAL)
-            else:
-
-                self.set_current_orientation(ibus.ORIENTATION_HORIZONTAL)
-            return True
-        return False
-
-    def __button_release_event_cb(self, widget, event):
-        if event.button == 1:
-            del self.__press_pos
-            self.__begin_move = False
-            self.__toplevel.window.set_cursor(gdk.Cursor(gdk.LEFT_PTR))
-            return True
-        return False
-
-    def __motion_notify_event_cb(self, widget, event):
-        if self.__begin_move != True:
-            return False
-        x, y = self.__toplevel.get_position()
-        x  = int(x + event.x_root - self.__press_pos[0])
-        y  = int(y + event.y_root - self.__press_pos[1])
-        self.move(x, y)
-        self.__press_pos = event.x_root, event.y_root
-        return True
 
     def show_all(self):
         gtk.VBox.show_all(self)
