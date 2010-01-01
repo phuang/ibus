@@ -371,21 +371,21 @@ class CandidatePanel(gtk.VBox):
                 )
 
     def update_lookup_table(self, lookup_table, visible):
-        if lookup_table == None:
-            lookup_table = ibus.LookupTable()
-
-        if visible:
-            self.show_lookup_table()
-        else:
+        # hide lookup table
+        if not visible:
             self.hide_lookup_table()
 
-        self.__lookup_table = lookup_table
+        self.__lookup_table = lookup_table or ibus.LookupTable()
         self.__refresh_candidates()
         self.__refresh_labels()
         orientation = self.__lookup_table.get_orientation()
         if orientation not in (ibus.ORIENTATION_HORIZONTAL, ibus.ORIENTATION_VERTICAL):
             orientation = self.__orientation
         self.set_current_orientation(orientation)
+
+        # show lookup table
+        if visible:
+            self.show_lookup_table()
 
     def show_lookup_table(self):
         self.__lookup_table_visible = True
@@ -445,7 +445,7 @@ class CandidatePanel(gtk.VBox):
 
     def set_orientation(self, orientation):
         self.__orientation = orientation
-        self.set_current_orientation(orientation)
+        self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
 
     def get_current_orientation(self):
         return self.__current_orientation
