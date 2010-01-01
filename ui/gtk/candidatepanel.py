@@ -241,7 +241,7 @@ class CandidatePanel(gtk.VBox):
         self.__candidate_area = CandidateArea(self.__current_orientation)
         self.__candidate_area.set_no_show_all(True)
         self.__candidate_area.connect("candidate-clicked", lambda x, i, b, s: self.emit("candidate-clicked", i, b, s))
-        self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
+        # self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
 
         # create state label
         self.__state_label = Label()
