@@ -25,13 +25,15 @@ __all__ = (
     )
 
 import dbus
+from common import *
 from serializable import *
 from exception import *
 
 class LookupTable(Serializable):
     __gtype_name__ = "PYIBusLookupTable"
     __NAME__ = "IBusLookupTable"
-    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False, orientation=2, candidates=None, labels=None):
+    def __init__(self, page_size=5, cursor_pos=0, coursor_visible=True, round=False,
+        orientation=ORIENTATION_SYSTEM, candidates=None, labels=None):
         super(LookupTable, self).__init__()
         self.__cursor_pos = cursor_pos
         self.__cursor_visible = True
