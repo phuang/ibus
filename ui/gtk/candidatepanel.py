@@ -213,7 +213,7 @@ class CandidatePanel(gtk.VBox):
         self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
         self.__orientation = ibus.ORIENTATION_VERTICAL
-        self.__system_orientation = self.__orientation
+        self.__current_orientation = self.__orientation
         self.__preedit_visible = False
         self.__aux_string_visible = False
         self.__lookup_table_visible = False
@@ -250,7 +250,7 @@ class CandidatePanel(gtk.VBox):
             self.__aux_label.show()
 
         # create candidates area
-        self.__candidate_area = CandidateArea(self.__orientation)
+        self.__candidate_area = CandidateArea(self.__current_orientation)
         self.__candidate_area.set_no_show_all(True)
         self.__candidate_area.connect("candidate-clicked", lambda x, i, b, s: self.emit("candidate-clicked", i, b, s))
         self.update_lookup_table(self.__lookup_table, self.__lookup_table_visible)
@@ -273,7 +273,7 @@ class CandidatePanel(gtk.VBox):
         self.__pack_all_widgets()
 
     def __pack_all_widgets(self):
-        if self.__orientation == ibus.ORIENTATION_VERTICAL:
+        if self.__current_orientation == ibus.ORIENTATION_VERTICAL:
             # package all widgets in vertical mode
             image = gtk.Image()
             image.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
@@ -395,11 +395,9 @@ class CandidatePanel(gtk.VBox):
         self.__refresh_candidates()
         self.__refresh_labels()
         orientation = self.__lookup_table.get_orientation()
-        if orientation in (0, 1):
-            self.set_orientation((ibus.ORIENTATION_HORIZONTAL,
-                                  ibus.ORIENTATION_VERTICAL)[orientation])
-        else:
-            self.set_orientation(self.__system_orientation)
+        if orientation not in (ibus.ORIENTATION_HORIZONTAL, ibus.ORIENTATION_VERTICAL):
+            orientation = self.__orientation
+        self.set_current_orientation(orientation)
 
     def show_lookup_table(self):
         self.__lookup_table_visible = True
@@ -449,20 +447,20 @@ class CandidatePanel(gtk.VBox):
         self.update_lookup_table(None, False)
         self.hide()
 
-    def set_orientation(self, orientation):
-        if self.__orientation == orientation:
+    def set_current_orientation(self, orientation):
+        if self.__current_orientation == orientation:
             return
-        self.__orientation = orientation
+        self.__current_orientation = orientation
         self.__recreate_ui()
         if self.__toplevel.flags() & gtk.VISIBLE:
             self.show_all()
 
-    def set_system_orientation(self, orientation):
-        self.__system_orientation = orientation
-        self.set_orientation(orientation)
+    def set_orientation(self, orientation):
+        self.__orientation = orientation
+        self.set_current_orientation(orientation)
 
-    def get_orientation(self):
-        return self.__orientation
+    def get_current_orientation(self):
+        return self.__current_orientation
 
     def do_set_property(self, property, value):
         if property == 'orientation':
@@ -519,11 +517,11 @@ class CandidatePanel(gtk.VBox):
             return True
 
         if event.button == 3:
-            if self.get_orientation() == ibus.ORIENTATION_HORIZONTAL:
-                self.set_orientation(ibus.ORIENTATION_VERTICAL)
+            if self.get_current_orientation() == ibus.ORIENTATION_HORIZONTAL:
+                self.set_current_orientation(ibus.ORIENTATION_VERTICAL)
             else:
 
-                self.set_orientation(ibus.ORIENTATION_HORIZONTAL)
+                self.set_current_orientation(ibus.ORIENTATION_HORIZONTAL)
             return True
         return False
 
