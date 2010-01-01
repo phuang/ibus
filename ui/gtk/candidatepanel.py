@@ -74,7 +74,7 @@ class CandidateArea(gtk.HBox):
         self.__create_ui()
 
     def __create_ui(self):
-        if self.__orientation == gtk.ORIENTATION_VERTICAL:
+        if self.__orientation == ibus.ORIENTATION_VERTICAL:
             self.__vbox1 = gtk.VBox()
             self.__vbox1.set_homogeneous(True)
             self.__vbox2 = gtk.VBox()
@@ -92,7 +92,7 @@ class CandidateArea(gtk.HBox):
             label2.set_alignment(0.0, 0.5)
             label1.show()
 
-            if self.__orientation == gtk.ORIENTATION_VERTICAL:
+            if self.__orientation == ibus.ORIENTATION_VERTICAL:
                 label1.set_property("xpad", 8)
                 label2.set_property("xpad", 8)
                 ebox1 = EventBox()
@@ -162,11 +162,12 @@ class CandidateArea(gtk.HBox):
 class CandidatePanel(gtk.VBox):
     __gtype_name__ = "IBusCandidate"
     __gproperties__ = {
-        'orientation' : (gtk.Orientation,        # type
-        'orientation of candidates',            # nick name
-        'the orientation of candidates list',    # description
-        0,
-        gobject.PARAM_READWRITE)                # flags
+        'orientation' : (
+            gtk.Orientation,                        # type
+            'orientation of candidates',            # nick name
+            'the orientation of candidates list',   # description
+            0,
+            gobject.PARAM_READWRITE)                # flags
         }
 
     __gsignals__ = {
@@ -211,7 +212,7 @@ class CandidatePanel(gtk.VBox):
         # self.__toplevel.connect("motion-notify-event", self.__motion_notify_event_cb)
         self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
-        self.__orientation = gtk.ORIENTATION_VERTICAL
+        self.__orientation = ibus.ORIENTATION_VERTICAL
         self.__system_orientation = self.__orientation
         self.__preedit_visible = False
         self.__aux_string_visible = False
@@ -272,7 +273,7 @@ class CandidatePanel(gtk.VBox):
         self.__pack_all_widgets()
 
     def __pack_all_widgets(self):
-        if self.__orientation == gtk.ORIENTATION_VERTICAL:
+        if self.__orientation == ibus.ORIENTATION_VERTICAL:
             # package all widgets in vertical mode
             image = gtk.Image()
             image.set_from_stock(gtk.STOCK_GO_UP, gtk.ICON_SIZE_MENU)
@@ -395,8 +396,8 @@ class CandidatePanel(gtk.VBox):
         self.__refresh_labels()
         orientation = self.__lookup_table.get_orientation()
         if orientation in (0, 1):
-            self.set_orientation((gtk.ORIENTATION_HORIZONTAL,
-                                  gtk.ORIENTATION_VERTICAL)[orientation])
+            self.set_orientation((ibus.ORIENTATION_HORIZONTAL,
+                                  ibus.ORIENTATION_VERTICAL)[orientation])
         else:
             self.set_orientation(self.__system_orientation)
 
@@ -518,11 +519,11 @@ class CandidatePanel(gtk.VBox):
             return True
 
         if event.button == 3:
-            if self.get_orientation() == gtk.ORIENTATION_HORIZONTAL:
-                self.set_orientation(gtk.ORIENTATION_VERTICAL)
+            if self.get_orientation() == ibus.ORIENTATION_HORIZONTAL:
+                self.set_orientation(ibus.ORIENTATION_VERTICAL)
             else:
 
-                self.set_orientation(gtk.ORIENTATION_HORIZONTAL)
+                self.set_orientation(ibus.ORIENTATION_HORIZONTAL)
             return True
         return False
 
