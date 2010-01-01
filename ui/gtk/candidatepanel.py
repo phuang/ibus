@@ -161,15 +161,6 @@ class CandidateArea(gtk.HBox):
 
 class CandidatePanel(gtk.VBox):
     __gtype_name__ = "IBusCandidate"
-    __gproperties__ = {
-        'orientation' : (
-            gtk.Orientation,                        # type
-            'orientation of candidates',            # nick name
-            'the orientation of candidates list',   # description
-            0,
-            gobject.PARAM_READWRITE)                # flags
-        }
-
     __gsignals__ = {
         "cursor-up" : (
             gobject.SIGNAL_RUN_FIRST,
@@ -458,18 +449,6 @@ class CandidatePanel(gtk.VBox):
 
     def get_current_orientation(self):
         return self.__current_orientation
-
-    def do_set_property(self, property, value):
-        if property == 'orientation':
-            self.set_orientation(value)
-        else:
-            return gtk.DrawingArea.do_set_property(property, value)
-
-    def do_get_property(self, property):
-        if property == 'orientation':
-            return self.__orientation
-        else:
-            return gtk.DrawingArea.do_get_property(property)
 
     # def do_expose_event(self, event):
     #     self.style.paint_box(self.window,
