@@ -1151,6 +1151,7 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
     }
 
     ibus_lookup_table_set_cursor_pos (new_table, ibus_lookup_table_get_cursor_in_page (table));
+    ibus_lookup_table_set_orientation (new_table, ibus_lookup_table_get_orientation (table));
 
     ibus_engine_update_lookup_table (engine, new_table, visible);
 
