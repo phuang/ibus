@@ -43,7 +43,7 @@ static gchar *address = "";
 gboolean g_rescan = FALSE;
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
-gint   g_dbus_timeout = 2000;
+gint   g_dbus_timeout = 5000;
 #ifdef G_THREADS_ENABLED
 gint   g_monitor_timeout = 0;
 #endif
