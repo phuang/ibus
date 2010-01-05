@@ -302,6 +302,18 @@ void         ibus_engine_update_property(IBusEngine         *engine,
                                          IBusProperty       *prop);
 
 /**
+ * ibus_engine_delete_surrounding_text:
+ * @engine: An IBusEngine.
+ * @offset: The offset of the first char.
+ * @nchars: Number of chars to be deleted.
+ *
+ * Delete surrounding text.
+ */
+void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
+                                         gint                offset,
+                                         guint               nchars);
+
+/**
  * ibus_engine_get_name:
  * @engine: An IBusEngine.
  * @returns: Name of IBusEngine.
