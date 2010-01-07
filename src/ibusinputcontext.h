@@ -171,6 +171,21 @@ void         ibus_input_context_set_capabilities
                                              guint32             capabilities);
 
 /**
+ * ibus_input_context_property_activate
+ * @context: An IBusInputContext.
+ * @prop_name: A property name (e.g. "InputMode.WideLatin")
+ * @state: A status of the property (e.g. PROP_STATE_CHECKED)
+ *
+ * Activate the property.
+ *
+ * @see_also: #IBusEngine::property_activate
+ */
+void         ibus_input_context_property_activate
+                                            (IBusInputContext *context,
+                                             const gchar      *prop_name,
+                                             gint32            state);
+
+/**
  * ibus_input_context_focus_in:
  * @context: An IBusInputContext.
  *
