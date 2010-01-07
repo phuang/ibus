@@ -49,7 +49,7 @@ class Menu(gtk.Menu, PropItem):
 
         for prop in props:
             if prop.type == ibus.PROP_TYPE_NORMAL:
-                item = gtk.ImageMenuItem(prop)
+                item = ImageMenuItem(prop)
             elif prop.type == ibus.PROP_TYPE_TOGGLE:
                 item = CheckMenuItem(prop)
             elif prop.type == ibus.PROP_TYPE_RADIO:
@@ -59,11 +59,18 @@ class Menu(gtk.Menu, PropItem):
                 item = SeparatorMenuItem()
                 radio_group = None
             elif prop.type == ibus.PROP_TYPE_MENU:
-                item = gtk.ImageMenuItem(prop)
+                item = gtk.ImageMenuItem()
+                if prop.icon:
+                    size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+                    self.set_image(icon.IconWidget(prop.icon, size[0]))
+                if prop.label:
+                    item.set_label(prop.label.text)
                 item.set_submenu(Menu(prop))
             else:
                 assert Fasle
 
+            if prop.tooltip:
+                item.set_tooltip_text(prop.tooltip.text)
             item.set_sensitive(prop.sensitive)
             if prop.visible:
                 item.set_no_show_all(False)
@@ -95,12 +102,14 @@ class ImageMenuItem(gtk.ImageMenuItem, PropItem):
     }
 
     def __init__(self, prop):
-        gtk.ImageMenuItem.__init__(self, label=prop.label.text)
+        gtk.ImageMenuItem.__init__(self)
         PropItem.__init__(self, prop)
 
         if self._prop.icon:
             size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
             self.set_image(icon.IconWidget(prop.icon, size[0]))
+        if self._prop.label:
+            self.set_label(prop.label.text)
 
         if self._prop.visible:
             self.set_no_show_all(False)
