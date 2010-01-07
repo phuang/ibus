@@ -62,7 +62,7 @@ class Menu(gtk.Menu, PropItem):
                 item = gtk.ImageMenuItem()
                 if prop.icon:
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-                    self.set_image(icon.IconWidget(prop.icon, size[0]))
+                    item.set_image(icon.IconWidget(prop.icon, size[0]))
                 if prop.label:
                     item.set_label(prop.label.text)
                 item.set_submenu(Menu(prop))
