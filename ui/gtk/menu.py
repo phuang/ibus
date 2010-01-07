@@ -79,10 +79,13 @@ class Menu(gtk.Menu, PropItem):
                 item.set_no_show_all(True)
                 item.hide()
 
-            item.connect("property-activate", lambda w,n,s: self.emit("property-activate", n, s))
-
             self.append(item)
             self._sub_items.append(item)
+
+            if prop.type not in (ibus.PROP_TYPE_NORMAL, ibus.PROP_TYPE_TOGGLE, ibus.PROP_TYPE_RADIO):
+                continue
+            item.connect("property-activate",
+                lambda w,n,s: self.emit("property-activate", n, s))
 
     def popup(self, button, active_time, widget):
         gtk.Menu.popup(self, None, None, menu_position,
