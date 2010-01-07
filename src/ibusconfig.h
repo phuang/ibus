@@ -120,6 +120,20 @@ gboolean         ibus_config_set_value      (IBusConfig         *config,
                                              const gchar        *section,
                                              const gchar        *name,
                                              const GValue       *value);
+
+/**
+ * ibus_config_unset:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @name: Name of the configure option its self.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Remove an entry of a configuration option.
+ * @see_also: ibus_config_get_value.
+ */
+gboolean         ibus_config_unset      (IBusConfig         *config,
+                                         const gchar        *section,
+                                         const gchar        *name);
 G_END_DECLS
 #endif
 

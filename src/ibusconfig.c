@@ -281,3 +281,23 @@ ibus_config_set_value (IBusConfig   *config,
     g_assert (retval);
     return TRUE;
 }
+
+gboolean
+ibus_config_unset (IBusConfig   *config,
+                   const gchar  *section,
+                   const gchar  *name)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
+
+    gboolean retval;
+
+    retval = ibus_proxy_call ((IBusProxy *) config,
+                              "Unset",
+                              G_TYPE_STRING, &section,
+                              G_TYPE_STRING, &name,
+                              G_TYPE_INVALID);
+    g_assert (retval);
+    return TRUE;
+}

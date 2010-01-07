@@ -94,6 +94,35 @@
  *        <para>Get value of a configuration option.
  *        </para>
  *     </listitem>
+ *     <listitem>
+ *         <para>gboolean unset(IBusConfigService *config, const gchar *section, const gchar *name,
+ *             IBusError **error)
+ *         </para>
+ *         <variablelist>
+ *             <varlistentry>
+ *                 <term>config:</term>
+ *                 <listitem>A configure service</listitem>
+ *             </varlistentry>
+ *             <varlistentry>
+ *                 <term>section:</term>
+ *                 <listitem>Section name of the configuration option.</listitem>
+ *             </varlistentry>
+ *             <varlistentry>
+ *                 <term>name:</term>
+ *                 <listitem>Name of the configuration option.</listitem>
+ *             </varlistentry>
+ *             <varlistentry>
+ *                 <term>error:</term>
+ *                 <listitem>Error outputs here.</listitem>
+ *             </varlistentry>
+ *             <varlistentry>
+ *                 <term>Returns:</term>
+ *                 <listitem>TRUE if succeed; FALSE otherwise.</listitem>
+ *             </varlistentry>
+ *         </variablelist>
+ *         <para>Remove an entry to a configuration option.
+ *         </para>
+ *     </listitem>
  * </itemizedlist>
  */
 #ifndef __IBUS_CONFIG_SERVICE_H_
@@ -149,6 +178,10 @@ struct _IBusConfigServiceClass {
                                const gchar          *name,
                                GValue               *value,
                                IBusError           **error);
+    gboolean    (* unset) (IBusConfigService    *config,
+                           const gchar          *section,
+                           const gchar          *name,
+                           IBusError           **error);
 
     /*< private >*/
     /* padding */

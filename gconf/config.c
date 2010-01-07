@@ -20,6 +20,10 @@ static gboolean     ibus_config_gconf_get_value     (IBusConfigService      *con
                                                      const gchar            *name,
                                                      GValue                 *value,
                                                      IBusError             **error);
+static gboolean     ibus_config_gconf_unset     (IBusConfigService      *config,
+                                                 const gchar            *section,
+                                                 const gchar            *name,
+                                                 IBusError             **error);
 
 static GConfValue   *_to_gconf_value                (const GValue           *value);
 static void          _from_gconf_value              (GValue                 *value,
@@ -64,6 +68,7 @@ ibus_config_gconf_class_init (IBusConfigGConfClass *klass)
 	IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value = ibus_config_gconf_set_value;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value = ibus_config_gconf_get_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->unset = ibus_config_gconf_unset;
 }
 
 static void
@@ -296,6 +301,30 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
 
     _from_gconf_value (value, gv);
     gconf_value_free (gv);
+    return TRUE;
+}
+static gboolean
+ibus_config_gconf_unset (IBusConfigService      *config,
+                         const gchar            *section,
+                         const gchar            *name,
+                         IBusError             **error)
+{
+    gchar *key;
+    GError *gerror = NULL;
+
+    key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
+
+    gconf_client_unset (((IBusConfigGConf *)config)->client, key, &gerror);
+    g_free (key);
+
+    if (gerror != NULL) {
+        if (error) {
+            *error = ibus_error_new_from_text (DBUS_ERROR_FAILED, gerror->message);
+            g_error_free (gerror);
+        }
+        return FALSE;
+    }
+
     return TRUE;
 }
 

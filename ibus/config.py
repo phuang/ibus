@@ -46,6 +46,9 @@ class ConfigBase(object.Object):
     def set_value(self, section, name, value):
         pass
 
+    def unset(self, section, name):
+        pass
+
     def value_changed(self, section, name, value):
         self.__proxy.ValueChanged(section, name, value)
 
@@ -61,6 +64,9 @@ class ConfigProxy(interface.IConfig):
 
     def SetValue(self, section, name, value):
         return self.__config.set_value(section, name, value)
+
+    def Unset(self, section, name):
+        return self.__config.unset(section, name)
 
     def Destroy(self):
         self.__config.destroy()
@@ -141,3 +147,8 @@ class Config(object.Object):
     def set_list(self, section, name, value, signature):
         return self.set_value(section, name, dbus.Array(value, signature=signature))
 
+    def unset(self, section, name):
+        try:
+            return self.__config.Unset(section, name)
+        except:
+            return

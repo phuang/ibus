@@ -58,6 +58,10 @@ static gboolean ibus_config_service_get_value       (IBusConfigService      *con
                                                      const gchar            *name,
                                                      GValue                 *value,
                                                      IBusError             **error);
+static gboolean ibus_config_service_unset       (IBusConfigService      *config,
+                                                 const gchar            *section,
+                                                 const gchar            *name,
+                                                 IBusError             **error);
 
 static IBusServiceClass  *parent_class = NULL;
 
@@ -118,6 +122,7 @@ ibus_config_service_class_init (IBusConfigServiceClass *klass)
 
     klass->set_value = ibus_config_service_set_value;
     klass->get_value = ibus_config_service_get_value;
+    klass->unset = ibus_config_service_unset;
 
     /* install properties */
     /**
@@ -260,6 +265,33 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
             g_value_unset (&value);
         }
     }
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "Unset")) {
+        gchar *section;
+        gchar *name;
+        IBusError *error = NULL;
+        gboolean retval;
+
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &section,
+                                        G_TYPE_STRING, &name,
+                                        G_TYPE_INVALID);
+        if (!retval) {
+            reply = ibus_message_new_error_printf (message,
+                                                   DBUS_ERROR_INVALID_ARGS,
+                                                   "Can not parse arguments 1 of Unset");
+            ibus_error_free (error);
+        }
+        else if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->unset (config, section, name, &error)) {
+            reply = ibus_message_new_error (message,
+                                            error->name,
+                                            error->message);
+            ibus_error_free (error);
+        }
+        else {
+            reply = ibus_message_new_method_return (message);
+        }
+    }
 
     if (reply) {
         ibus_connection_send (connection, reply);
@@ -295,6 +327,20 @@ ibus_config_service_get_value (IBusConfigService *config,
     if (error) {
         *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
                                              "Can not get value [%s, %s]",
+                                             section, name);
+    }
+    return FALSE;
+}
+
+static gboolean
+ibus_config_service_unset (IBusConfigService *config,
+                           const gchar       *section,
+                           const gchar       *name,
+                           IBusError        **error)
+{
+    if (error) {
+        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
+                                             "Can not unset [%s, %s]",
                                              section, name);
     }
     return FALSE;
