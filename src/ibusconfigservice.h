@@ -185,7 +185,7 @@ struct _IBusConfigServiceClass {
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[14];
+    gpointer pdummy[13];
 };
 
 GType                ibus_config_service_get_type   (void);
