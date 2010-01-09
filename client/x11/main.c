@@ -107,8 +107,8 @@ static void     _context_disabled_cb        (IBusInputContext   *context,
 static GHashTable     *_x11_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
-static gchar _server_name[128] = "ibus";
-static gchar _locale[4096] = LOCALES_STRING;
+static gchar *_server_name = NULL;
+static gchar *_locale = NULL;
 
 static gboolean _kill_daemon = FALSE;
 static gint     g_debug_level = 0;
@@ -964,8 +964,8 @@ _xim_init_IMdkit ()
     _xims = IMOpenIM(GDK_DISPLAY(),
         IMModifiers, "Xi18n",
         IMServerWindow, GDK_WINDOW_XWINDOW(win),
-        IMServerName, _server_name,
-        IMLocale, _locale,
+        IMServerName, _server_name != NULL ? _server_name : "ibus",
+        IMLocale, _locale != NULL ? _locale : LOCALES_STRING,
         IMServerTransport, "X/",
         IMInputStyles, &styles,
         IMEncodingList, &encodings,
@@ -1050,13 +1050,18 @@ main (int argc, char **argv)
                 g_debug_level = atoi (optarg);
             }
             else if (g_strcmp0 (long_options[option_index].name, "server-name") == 0) {
-                strncpy (_server_name, optarg, sizeof (_server_name));
+                g_free (_server_name);
+                _server_name = g_strdup (optarg);
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale") == 0) {
-                strncpy (_locale, optarg, sizeof (_locale));
+                g_free (_locale);
+                _locale = g_strdup (optarg);
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale-append") == 0) {
-                strncat (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
+                gchar *tmp = g_strdup_printf ("%s,%s",
+                                _locale != NULL ? _locale : LOCALES_STRING, optarg);
+                g_free (_locale);
+                _locale = tmp;
             }
             else if (g_strcmp0 (long_options[option_index].name, "help") == 0) {
                 _print_usage (stdout, argv[0]);
@@ -1070,13 +1075,19 @@ main (int argc, char **argv)
             g_debug_level = atoi (optarg);
             break;
         case 'n':
-            strncpy (_server_name, optarg, sizeof (_server_name));
+            g_free (_server_name);
+            _server_name = g_strdup (optarg);
             break;
         case 'l':
-            strncpy (_locale, optarg, sizeof (_locale));
+            g_free (_locale);
+            _locale = g_strdup (optarg);
             break;
-        case 'a':
-            strncat (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
+        case 'a': {
+                gchar *tmp = g_strdup_printf ("%s,%s",
+                                _locale != NULL ? _locale : LOCALES_STRING, optarg);
+                g_free (_locale);
+                _locale = tmp;
+            }
             break;
         case 'k':
             _kill_daemon = TRUE;
