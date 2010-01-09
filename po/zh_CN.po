@@ -1,7 +1,7 @@
 # Translation for ibus.
-# Copyright (C) 2007-2009 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# Peng Huang <shawn.p.huang@gmail.com>, 2007-2009.
+# Peng Huang <shawn.p.huang@gmail.com>, 2007-2010.
 #
 msgid ""
 msgstr ""
@@ -26,11 +26,11 @@ msgstr "IBus 输入法框架"
 
 #: ../ibus/_config.py.in:37
 msgid ""
-"Copyright (c) 2007-2009 Peng Huang\n"
-"Copyright (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
-"版权所有 (c) 2007-2009 黄鹏\n"
-"版权所有 (c) 2007-2009 Red Hat 公司"
+"版权所有 (c) 2007-2010 黄鹏\n"
+"版权所有 (c) 2007-2010 Red Hat 公司"
 
 #: ../ibus/lang.py:41
 msgid "Other"

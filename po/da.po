@@ -25,8 +25,8 @@ msgstr "IBus-ramme for inddatametode"
 
 #: ../ibus/_config.py.in:37
 msgid ""
-"Copyright (c) 2007-2009 Peng Huang\n"
-"Copyright (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
 
 #: ../ibus/lang.py:41

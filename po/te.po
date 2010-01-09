@@ -33,11 +33,11 @@ msgstr "IBus ఇన్పుట్ పద్దతి ఆకృతి"
 
 #: ../ibus/_config.py.in:37
 msgid ""
-"Copyright (c) 2007-2009 Peng Huang\n"
-"Copyright (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
-"కాపీరైట్ (c) 2007-2009 Peng Huang\n"
-"కాపీరైట్ (c) 2007-2009 Red Hat, Inc."
+"కాపీరైట్ (c) 2007-2010 Peng Huang\n"
+"కాపీరైట్ (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41
 msgid "Other"

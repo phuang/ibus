@@ -26,9 +26,9 @@ msgstr "IBus輸入法框架"
 
 #: ../ibus/_config.py.in:37
 msgid ""
-"Copyright (c) 2007-2009 Peng Huang\n"
-"Copyright (c) 2007-2009 Red Hat, Inc."
-msgstr "版權所有 2007-2009, 黃鵬, 紅帽公司"
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "版權所有 2007-2010, 黃鵬, 紅帽公司"
 
 #: ../ibus/lang.py:41
 msgid "Other"

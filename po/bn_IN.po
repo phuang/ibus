@@ -28,8 +28,8 @@ msgstr "IBus ইনপুট পদ্ধতির পরিকাঠামো"
 
 #: ../ibus/_config.py.in:37
 msgid ""
-"Copyright (c) 2007-2009 Peng Huang\n"
-"Copyright (c) 2007-2009 Red Hat, Inc."
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
 "স্বত্বাধিকার (c) ২০০৭-২০০৯ পেং হুয়াং\n"
 "স্বত্বাধিকার (c) ২০০৭-২০০৯ Red Hat, Inc."
