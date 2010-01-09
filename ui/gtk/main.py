@@ -20,6 +20,13 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+# try Cython
+# try:
+#     import pyximport
+#     pyximport.install(pyimport=True,build_in_temp=False)
+# except:
+#     pass
+
 import os
 import sys
 import getopt
