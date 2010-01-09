@@ -58,10 +58,10 @@ static gboolean ibus_config_service_get_value       (IBusConfigService      *con
                                                      const gchar            *name,
                                                      GValue                 *value,
                                                      IBusError             **error);
-static gboolean ibus_config_service_unset       (IBusConfigService      *config,
-                                                 const gchar            *section,
-                                                 const gchar            *name,
-                                                 IBusError             **error);
+static gboolean ibus_config_service_unset           (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     const gchar            *name,
+                                                     IBusError             **error);
 
 static IBusServiceClass  *parent_class = NULL;
 

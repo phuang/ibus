@@ -178,10 +178,10 @@ struct _IBusConfigServiceClass {
                                const gchar          *name,
                                GValue               *value,
                                IBusError           **error);
-    gboolean    (* unset) (IBusConfigService    *config,
-                           const gchar          *section,
-                           const gchar          *name,
-                           IBusError           **error);
+    gboolean    (* unset)     (IBusConfigService    *config,
+                               const gchar          *section,
+                               const gchar          *name,
+                               IBusError           **error);
 
     /*< private >*/
     /* padding */
