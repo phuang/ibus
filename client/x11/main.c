@@ -108,7 +108,7 @@ static GHashTable     *_x11_ic_table = NULL;
 static GHashTable     *_connections = NULL;
 static XIMS _xims = NULL;
 static gchar _server_name[128] = "ibus";
-static gchar _locale[1024] = LOCALES_STRING;
+static gchar _locale[4096] = LOCALES_STRING;
 
 static gboolean _kill_daemon = FALSE;
 static gint     g_debug_level = 0;
@@ -1053,7 +1053,7 @@ main (int argc, char **argv)
                 strncpy (_server_name, optarg, sizeof (_server_name));
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale") == 0) {
-                strncpy (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
+                strncpy (_locale, optarg, sizeof (_locale));
             }
             else if (g_strcmp0 (long_options[option_index].name, "locale-append") == 0) {
                 strncat (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
@@ -1076,7 +1076,7 @@ main (int argc, char **argv)
             strncpy (_locale, optarg, sizeof (_locale));
             break;
         case 'a':
-            strncat (_locale, optarg, sizeof (_locale));
+            strncat (_locale, optarg, sizeof (_locale) - strlen (_locale) - 1);
             break;
         case 'k':
             _kill_daemon = TRUE;
