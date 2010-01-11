@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-22 17:46+0800\n"
-"PO-Revision-Date: 2009-10-23 23:16+0200\n"
+"POT-Creation-Date: 2010-01-09 20:54+0000\n"
+"PO-Revision-Date: 2010-01-09 22:02+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <fedora-trans-pl@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -33,48 +33,47 @@ msgstr ""
 msgid "Other"
 msgstr "Inne"
 
-#: ../ui/gtk/candidatepanel.py:265
-#, fuzzy
+#: ../ui/gtk/candidatepanel.py:254
 msgid "Previous page"
-msgstr "Poprzednia metoda wprowadzania:"
+msgstr "Poprzednia strona"
 
-#: ../ui/gtk/candidatepanel.py:270
+#: ../ui/gtk/candidatepanel.py:259
 msgid "Next page"
-msgstr ""
+msgstr "Następna strona"
 
-#: ../ui/gtk/main.py:50
+#: ../ui/gtk/main.py:57
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Metody wprowadzania zostały zainstalowane, usunięte lub zaktualizowane. "
+"Proszę ponownie uruchomić platformę wprowadzania iBus."
 
-#: ../ui/gtk/main.py:55
-#, fuzzy
+#: ../ui/gtk/main.py:62
 msgid "Restart Now"
-msgstr "Uruchom ponownie"
+msgstr "Uruchom ponownie teraz"
 
-#: ../ui/gtk/main.py:56
-#, fuzzy
+#: ../ui/gtk/main.py:63
 msgid "Later"
-msgstr "Inne"
+msgstr "Później"
 
-#: ../ui/gtk/panel.py:335
+#: ../ui/gtk/panel.py:334
 msgid "Restart"
 msgstr "Uruchom ponownie"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:421
 msgid "Turn off input method"
 msgstr "Wyłącz metodę wprowadzania"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:458
 msgid "No input window"
 msgstr "Brak okna wprowadzania"
 
-#: ../ui/gtk/panel.py:489
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "iBus jest inteligentną magistralą wprowadzania dla Linuksa/Uniksa."
 
-#: ../ui/gtk/panel.py:493
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
@@ -122,11 +121,11 @@ msgstr "następna metoda wprowadzania"
 msgid "previous input method"
 msgstr "poprzednia metoda wprowadzania"
 
-#: ../setup/main.py:240
+#: ../setup/main.py:256
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Demon iBus nie jest uruchomiony. Uruchomić go teraz?"
 
-#: ../setup/main.py:255
+#: ../setup/main.py:271
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -140,7 +139,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:270
+#: ../setup/main.py:286
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Proszę wybrać skrót klawiszowy dla %s"
@@ -169,16 +168,16 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy)"
 
-#: ../setup/enginecombobox.py:100
+#: ../setup/enginecombobox.py:118
 msgid "Select an input method"
 msgstr "Wybór metodę wprowadzania"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:27
 msgid "Input Method"
 msgstr "Metoda wprowadzania"
 
-#: ../setup/enginetreeview.py:88
+#: ../setup/enginetreeview.py:95
 msgid "Kbd"
 msgstr "KBD"
 
@@ -199,9 +198,8 @@ msgid "Custom font name for language panel"
 msgstr "Nazwa własnej czcionki dla panelu języków"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
 msgid "Language panel position"
-msgstr "Wyświetlanie panelu języków:"
+msgstr "Pozycja panela języków"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Next engine shortcut keys"
@@ -252,6 +250,8 @@ msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"Pozycja panela języków. 0 = górny lewy róg, 1 = górny prawy róg, 2 = dolny "
+"lewy róg, 3 = dolny prawy róg, 4 = własna"
 
 #: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "The shortcut keys for switching to next input method in the list"
@@ -340,20 +340,19 @@ msgstr "Zawsze"
 
 #: ../setup/setup.ui.h:19
 msgid "Bottom left corner"
-msgstr ""
+msgstr "Dolny lewy róg"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom right corner"
-msgstr ""
+msgstr "Dolny prawy róg"
 
 #: ../setup/setup.ui.h:21
 msgid "Candidates orientation:"
 msgstr "Orientacja kandydatów:"
 
 #: ../setup/setup.ui.h:22
-#, fuzzy
 msgid "Custom"
-msgstr "Własna czcionka"
+msgstr "Własna"
 
 #: ../setup/setup.ui.h:23
 msgid "Enable or disable:"
@@ -368,9 +367,8 @@ msgid "Horizontal"
 msgstr "Poziomo"
 
 #: ../setup/setup.ui.h:28
-#, fuzzy
 msgid "Language panel position:"
-msgstr "Wyświetlanie panelu języków:"
+msgstr "Pozycja panelu języków:"
 
 #: ../setup/setup.ui.h:29
 msgid "Move down the selected input method in the enabled input methods"
@@ -435,11 +433,11 @@ msgstr ""
 
 #: ../setup/setup.ui.h:46
 msgid "Top left corner"
-msgstr ""
+msgstr "Górny lewy róg"
 
 #: ../setup/setup.ui.h:47
 msgid "Top right corner"
-msgstr ""
+msgstr "Górny prawy róg"
 
 #: ../setup/setup.ui.h:51
 msgid "Vertical"
@@ -448,16 +446,3 @@ msgstr "Pionowo"
 #: ../setup/setup.ui.h:52
 msgid "When active"
 msgstr "W czasie aktywności"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "Wyświetlanie panelu języków:"
-
-#~ msgid "Custom font:"
-#~ msgstr "Własna czcionka:"
-
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "Czcionka dla panela języków i kandydatów"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "Nazwa własnej czcionki w panelu języków i kandydatów"
