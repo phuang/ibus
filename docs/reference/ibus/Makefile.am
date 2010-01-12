@@ -113,8 +113,7 @@ DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 #TESTS = $(GTKDOC_CHECK)
 
 trim-build.stamp: scan-build.stamp
-	sed "/<TITLE>IBusAttrList<\/TITLE>/d; \
-	     /<TITLE>IBusPropList<\/TITLE>/d; \
+	sed " \
 	     /<TITLE>IBusFactoryInfo<\/TITLE>/d; \
 	     /IBusObjectFlags/d;\
 	     /IBUS_OBJECT_FLAGS/d;\

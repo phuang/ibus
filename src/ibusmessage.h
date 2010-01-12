@@ -20,8 +20,9 @@
  */
 /**
  * SECTION: ibusmessage
- * @short_description: A DBusMessage in IBus.
- * @stability: Stable
+ * @Title: IBusMessage
+ * @Short_description: A DBusMessage in IBus.
+ * @Stability: Stable
  *
  * An IBusMessage is essentially a DBusMessage, which representing a message received from or to
  * be sent to another application.
