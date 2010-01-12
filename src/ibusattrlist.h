@@ -20,9 +20,10 @@
  */
 /**
  * SECTION: ibusattrlist
- * @short_description: AttrList of IBusText.
- * @see_also: #IBusAttribute #IBusText
- * @stability: Stable
+ * @Title: IBusAttrList
+ * @Short_description: AttrList of IBusText.
+ * @See_also: #IBusAttribute #IBusText
+ * @Stability: Stable
  *
  */
 #ifndef __IBUS_ATTRIBUTE_LIST_H_

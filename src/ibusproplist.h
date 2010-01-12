@@ -20,9 +20,10 @@
  */
 /**
  * SECTION: ibusproplist
- * @short_description: UI component for input method engine property.
- * @stability: Stable
- * @see_also: #IBusEngine
+ * @Title: IBusPropList
+ * @Short_description: UI component for input method engine property.
+ * @Stability: Stable
+ * @See_also: #IBusEngine
  *
  */
 #ifndef __IBUS_PROP_LIST_H_
