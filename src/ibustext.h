@@ -33,7 +33,7 @@
 #define __IBUS_TEXT_H_
 
 #include "ibusserializable.h"
-#include "ibusattribute.h"
+#include "ibusattrlist.h"
 
 /*
  * Type macros.

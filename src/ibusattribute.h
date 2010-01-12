@@ -31,6 +31,9 @@
 #define __IBUS_ATTRIBUTE_H_
 
 #include "ibusserializable.h"
+
+G_BEGIN_DECLS
+
 /*
  * Type macros.
  */
@@ -47,62 +50,6 @@
     (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_ATTRIBUTE))
 #define IBUS_ATTRIBUTE_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_ATTRIBUTE, IBusAttributeClass))
-
-/* define IBusAttrList macros */
-/**
- * IBUS_TYPE_ATTR_LIST:
- *
- * Return GType of IBus attribute list.
- */
-#define IBUS_TYPE_ATTR_LIST             \
-    (ibus_attr_list_get_type ())
-
-/**
- * IBUS_ATTR_LIST:
- * @obj: An object which is subject to casting.
- *
- * Casts an IBUS_ATTR_LIST or derived pointer into a (IBusAttrList*) pointer.
- * Depending on the current debugging level, this function may invoke
- * certain runtime checks to identify invalid casts.
- */
-#define IBUS_ATTR_LIST(obj)             \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_ATTR_LIST, IBusAttrList))
-
-/**
- * IBUS_ATTR_LIST_CLASS:
- * @klass: A class to be casted.
- *
- * Casts a derived IBusAttrListClass structure into a IBusAttrListClass structure.
- */
-#define IBUS_ATTR_LIST_CLASS(klass)     \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_ATTR_LIST, IBusAttrListClass))
-
-/**
- * IBUS_IS_ATTR_LIST:
- * @obj: Instance to check for being a IBUS_ATTR_LIST.
- *
- * Checks whether a valid GTypeInstance pointer is of type IBUS_ATTR_LIST.
- */
-#define IBUS_IS_ATTR_LIST(obj)          \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_ATTR_LIST))
-
-/**
- * IBUS_IS_ATTR_LIST_CLASS:
- * @klass: A class to be checked.
- *
- * Checks whether class "is a" valid IBusAttrListClass structure of type IBUS_ATTR_LIST or derived.
- */
-#define IBUS_IS_ATTR_LIST_CLASS(klass)  \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_ATTR_LIST))
-
-/**
- * IBUS_ATTR_LIST_GET_CLASS:
- * @obj: An object.
- *
- * Get the class of a given object and cast the class to IBusAttrListClass.
- */
-#define IBUS_ATTR_LIST_GET_CLASS(obj)   \
-    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_ATTR_LIST, IBusAttrListClass))
 
 /**
  * IBusAttrType:
@@ -136,13 +83,8 @@ typedef enum {
     IBUS_ATTR_UNDERLINE_ERROR   = 4,
 } IBusAttrUnderline;
 
-G_BEGIN_DECLS
-
 typedef struct _IBusAttribute IBusAttribute;
 typedef struct _IBusAttributeClass IBusAttributeClass;
-typedef struct _IBusAttrList IBusAttrList;
-typedef struct _IBusAttrListClass IBusAttrListClass;
-
 
 /**
  * IBusAttribute:
@@ -165,23 +107,6 @@ struct _IBusAttribute {
 };
 
 struct _IBusAttributeClass {
-    IBusSerializableClass parent;
-};
-
-/**
- * IBusAttrList:
- * @attributes: GArray that holds #IBusAttribute.
- *
- * Array of IBusAttribute.
- */
-struct _IBusAttrList {
-    IBusSerializable parent;
-
-    /*< public >*/
-    GArray *attributes;
-};
-
-struct _IBusAttrListClass {
     IBusSerializableClass parent;
 };
 
@@ -243,43 +168,6 @@ IBusAttribute       *ibus_attr_foreground_new   (guint           color,
 IBusAttribute       *ibus_attr_background_new   (guint           color,
                                                  guint           start_index,
                                                  guint           end_index);
-
-
-/**
- * ibus_attr_list_get_type:
- * @returns: GType of IBusAttrList.
- *
- * Returns GType of IBusAttrList.
- */
-GType                ibus_attr_list_get_type    ();
-
-/**
- * ibus_attr_list_new:
- * @returns: A newly allocated IBusAttrList.
- *
- * New an IBusAttrList.
- */
-IBusAttrList        *ibus_attr_list_new         ();
-
-/**
- * ibus_attr_list_append:
- * @attr_list: An IBusAttrList instance.
- * @attr: The IBusAttribute instance to be appended.
- *
- * Append an IBusAttribute to IBusAttrList, and increase reference.
- */
-void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
-                                                 IBusAttribute  *attr);
-/**
- * ibus_attr_list_get:
- * @attr_list: An IBusAttrList instance.
- * @index: Index of the @attr_list.
- * @returns: IBusAttribute at given index, NULL if no such IBusAttribute.
- *
- * Returns IBusAttribute at given index. Borrowed reference.
- */
-IBusAttribute       *ibus_attr_list_get         (IBusAttrList   *attr_list,
-                                                 guint           index);
 
 G_END_DECLS
 #endif
