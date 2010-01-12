@@ -47,7 +47,16 @@ CFILE_GLOB=$(top_srcdir)/src/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES= ibusconfigprivate.h
+IGNORE_HFILES= \
+	ibusconfigprivate.h \
+	ibusinternal.h \
+	keyname-table.h \
+	keysymdef.h \
+	ibusenumtypes.h \
+	stamp-ibusenumtypes.h \
+	ibusmarshalers.h \
+	stamp-ibusmarshalers.h \
+	$(NULL)
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -62,13 +71,13 @@ content_files=
 # e.g. expand_content_files=running.sgml
 expand_content_files=
 
-CFLAGS	= \
+CFLAGS= \
 	@GLIB2_CFLAGS@ \
 	@GOBJECT2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	$(NULL)
-LDFLAGS	= \
+LDFLAGS= \
 	@GLIB2_LIBS@ \
 	@GOBJECT2_LIBS@ \
 	@GIO2_LIBS@ \

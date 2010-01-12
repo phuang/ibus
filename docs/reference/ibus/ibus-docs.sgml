@@ -56,10 +56,12 @@
 	  radio boxes, and so on.
       </para>
       <xi:include href="xml/ibusattribute.xml"/>
+      <xi:include href="xml/ibusattrlist.xml"/>
       <xi:include href="xml/ibushotkey.xml"/>
       <xi:include href="xml/ibuslookuptable.xml"/>
       <xi:include href="xml/ibuspanelservice.xml"/>
       <xi:include href="xml/ibusproperty.xml"/>
+      <xi:include href="xml/ibusproplist.xml"/>
       <xi:include href="xml/ibustext.xml"/>
   </chapter>
   <chapter>
@@ -101,11 +103,8 @@
       <title>Internal</title>
       <para>Definition and functions for IBus internal use.</para>
       <xi:include href="xml/ibusdebug.xml"/>
-      <xi:include href="xml/ibusenumtypes.xml"/>
       <xi:include href="xml/ibuserror.xml"/>
-      <xi:include href="xml/ibusinternal.xml"/>
       <xi:include href="xml/ibusmainloop.xml"/>
-      <xi:include href="xml/ibusmarshalers.xml"/>
       <xi:include href="xml/ibusobject.xml"/>
       <xi:include href="xml/ibusserver.xml"/>
       <xi:include href="xml/ibusshare.xml"/>
