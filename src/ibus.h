@@ -26,6 +26,8 @@
 #include <ibusshare.h>
 #include <ibusobject.h>
 #include <ibusserializable.h>
+#include <ibusattribute.h>
+#include <ibusattrlist.h>
 #include <ibustext.h>
 #include <ibusconnection.h>
 #include <ibusserver.h>
@@ -33,7 +35,6 @@
 #include <ibusservice.h>
 #include <ibusfactory.h>
 #include <ibusengine.h>
-#include <ibusattribute.h>
 #include <ibusproperty.h>
 #include <ibuslookuptable.h>
 #include <ibusbus.h>
