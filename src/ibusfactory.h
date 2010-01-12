@@ -40,81 +40,86 @@
  */
 
 /* define GOBJECT macros */
+
+/**
+ * IBUS_TYPE_FACTORY:
+ *
+ * Return GType of IBus factory.
+ */
 #define IBUS_TYPE_FACTORY               \
     (ibus_factory_get_type ())
-#define IBUS_FACTORY(obj)               \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_FACTORY, IBusFactory))
-#define IBUS_FACTORY_CLASS(klass)       \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_FACTORY, IBusFactoryClass))
-#define IBUS_IS_FACTORY(obj)            \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_FACTORY))
-#define IBUS_IS_FACTORY_CLASS(klass)    \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_FACTORY))
-#define IBUS_FACTORY_GET_CLASS(obj)     \
-    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_FACTORY, IBusFactoryClass))
 
 /**
- * IBUS_TYPE_FACTORY_INFO:
- *
- * Return GType of IBus factory information.
- */
-#define IBUS_TYPE_FACTORY_INFO              \
-    (ibus_factory_info_get_type ())
-
-/**
- * IBUS_FACTORY_INFO:
+ * IBUS_FACTORY:
  * @obj: An object which is subject to casting.
  *
- * Casts an IBUS_FACTORY_INFO or derived pointer into a (IBusFactoryInfo*) pointer.
+ * Casts an IBUS_FACTORY or derived pointer into a (IBusFactory*) pointer.
  * Depending on the current debugging level, this function may invoke
  * certain runtime checks to identify invalid casts.
  */
-#define IBUS_FACTORY_INFO(obj)              \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfo))
+#define IBUS_FACTORY(obj)               \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_FACTORY, IBusFactory))
 
 /**
- * IBUS_FACTORY_INFO_CLASS:
+ * IBUS_FACTORY_CLASS:
  * @klass: A class to be casted.
  *
- * Casts a derived IBusFactoryInfoClass structure into a IBusFactoryInfoClass structure.
+ * Casts a derived IBusFactoryClass structure into a IBusFactoryClass structure.
  */
-#define IBUS_FACTORY_INFO_CLASS(klass)      \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfoClass))
+#define IBUS_FACTORY_CLASS(klass)       \
+    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_FACTORY, IBusFactoryClass))
 
 /**
- * IBUS_IS_FACTORY_INFO:
- * @obj: Instance to check for being a IBUS_FACTORY_INFO.
+ * IBUS_IS_FACTORY:
+ * @obj: Instance to check for being a IBUS_FACTORY.
  *
- * Checks whether a valid GTypeInstance pointer is of type IBUS_FACTORY_INFO.
+ * Checks whether a valid GTypeInstance pointer is of type IBUS_FACTORY.
  */
-#define IBUS_IS_FACTORY_INFO(obj)           \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_FACTORY_INFO))
+#define IBUS_IS_FACTORY(obj)            \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_FACTORY))
 
 /**
- * IBUS_IS_FACTORY_INFO_CLASS:
+ * IBUS_IS_FACTORY_CLASS:
  * @klass: A class to be checked.
  *
- * Checks whether class "is a" valid IBusFactoryInfoClass structure of type IBUS_FACTORY_INFO or derived.
+ * Checks whether class "is a" valid IBusFactoryClass structure of type IBUS_FACTORY or derived.
  */
-#define IBUS_IS_FACTORY_INFO_CLASS(klass)   \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_FACTORY_INFO))
+#define IBUS_IS_FACTORY_CLASS(klass)    \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_FACTORY))
 
 /**
- * IBUS_FACTORY_INFO_GET_CLASS:
+ * IBUS_FACTORY_GET_CLASS:
  * @obj: An object.
  *
- * Get the class of a given object and cast the class to IBusFactoryInfoClass.
+ * Get the class of a given object and cast the class to IBusFactoryClass.
  */
+#define IBUS_FACTORY_GET_CLASS(obj)     \
+    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_FACTORY, IBusFactoryClass))
+
+#if 0
+#define IBUS_TYPE_FACTORY_INFO              \
+    (ibus_factory_info_get_type ())
+#define IBUS_FACTORY_INFO(obj)              \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfo))
+#define IBUS_FACTORY_INFO_CLASS(klass)      \
+    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfoClass))
+#define IBUS_IS_FACTORY_INFO(obj)           \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_FACTORY_INFO))
+#define IBUS_IS_FACTORY_INFO_CLASS(klass)   \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_FACTORY_INFO))
 #define IBUS_FACTORY_INFO_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfoClass))
-
+#endif
 
 G_BEGIN_DECLS
 
 typedef struct _IBusFactory IBusFactory;
 typedef struct _IBusFactoryClass IBusFactoryClass;
+
+#if 0
 typedef struct _IBusFactoryInfo IBusFactoryInfo;
 typedef struct _IBusFactoryInfoClass IBusFactoryInfoClass;
+#endif
 
 /**
  * IBusFactory:
@@ -137,6 +142,7 @@ struct _IBusFactoryClass {
     gpointer pdummy[8];
 };
 
+#if 0
 /**
  * IBusFactoryInfo:
  * @path: D-Bus path for the IME.
@@ -171,6 +177,7 @@ struct _IBusFactoryInfoClass {
     /* padding */
     gpointer pdummy[8];
 };
+#endif
 
 GType            ibus_factory_get_type          (void);
 
@@ -195,6 +202,7 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
                                                  const gchar    *engine_name,
                                                  GType           engine_type);
 
+#if 0
 /**
  * ibus_factory_get_info:
  * @factory: An IBusFactory.
@@ -205,6 +213,7 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
  * <note><para>This function is currently commented out</para></note>
  */
 IBusFactoryInfo *ibus_factory_get_info          (IBusFactory    *factory);
+
 GType            ibus_factory_info_get_type     (void);
 
 /**
@@ -225,6 +234,8 @@ IBusFactoryInfo *ibus_factory_info_new          (const gchar    *path,
                                                  const gchar    *icon,
                                                  const gchar    *authors,
                                                  const gchar    *credits);
+
+#endif
 
 G_END_DECLS
 #endif

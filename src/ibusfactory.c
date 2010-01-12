@@ -50,6 +50,7 @@ static gboolean ibus_factory_ibus_message   (IBusFactory        *factory,
 
 static void     _engine_destroy_cb          (IBusEngine         *engine,
                                              IBusFactory        *factory);
+#if 0
 static void     ibus_factory_info_class_init(IBusFactoryInfoClass   *klass);
 static void     ibus_factory_info_init      (IBusFactoryInfo        *info);
 static void     ibus_factory_info_destroy   (IBusFactoryInfo        *info);
@@ -60,9 +61,13 @@ static gboolean ibus_factory_info_deserialize
                                              IBusMessageIter        *iter);
 static gboolean ibus_factory_info_copy      (IBusFactoryInfo        *dest,
                                              const IBusFactoryInfo  *src);
+#endif
 
 static IBusServiceClass *factory_parent_class = NULL;
+
+#if 0
 static IBusSerializableClass *factory_info_parent_class = NULL;
+#endif
 
 GType
 ibus_factory_get_type (void)
@@ -281,7 +286,6 @@ ibus_factory_get_info (IBusFactory *factory)
 
     return priv->info;
 }
-#endif
 
 GType
 ibus_factory_info_get_type (void)
@@ -481,5 +485,4 @@ ibus_factory_info_new (const gchar *path,
 
     return info;
 }
-
-
+#endif
