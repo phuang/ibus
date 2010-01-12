@@ -14,7 +14,6 @@ ibus_capabilite_get_type
 ibus_orientation_get_type
 ibus_service_get_type
 ibus_factory_get_type
-ibus_factory_info_get_type
 ibus_text_get_type
 ibus_config_service_get_type
 ibus_server_get_type

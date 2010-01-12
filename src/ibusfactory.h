@@ -35,12 +35,13 @@
 #include "ibusservice.h"
 #include "ibusserializable.h"
 
+G_BEGIN_DECLS
+
 /*
  * Type macros.
  */
 
 /* define GOBJECT macros */
-
 /**
  * IBUS_TYPE_FACTORY:
  *
@@ -96,30 +97,8 @@
 #define IBUS_FACTORY_GET_CLASS(obj)     \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_FACTORY, IBusFactoryClass))
 
-#if 0
-#define IBUS_TYPE_FACTORY_INFO              \
-    (ibus_factory_info_get_type ())
-#define IBUS_FACTORY_INFO(obj)              \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfo))
-#define IBUS_FACTORY_INFO_CLASS(klass)      \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfoClass))
-#define IBUS_IS_FACTORY_INFO(obj)           \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_FACTORY_INFO))
-#define IBUS_IS_FACTORY_INFO_CLASS(klass)   \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_FACTORY_INFO))
-#define IBUS_FACTORY_INFO_GET_CLASS(obj)   \
-    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_FACTORY_INFO, IBusFactoryInfoClass))
-#endif
-
-G_BEGIN_DECLS
-
 typedef struct _IBusFactory IBusFactory;
 typedef struct _IBusFactoryClass IBusFactoryClass;
-
-#if 0
-typedef struct _IBusFactoryInfo IBusFactoryInfo;
-typedef struct _IBusFactoryInfoClass IBusFactoryInfoClass;
-#endif
 
 /**
  * IBusFactory:
@@ -141,43 +120,6 @@ struct _IBusFactoryClass {
     /* padding */
     gpointer pdummy[8];
 };
-
-#if 0
-/**
- * IBusFactoryInfo:
- * @path: D-Bus path for the IME.
- * @name: D-Bus name for the IME.
- * @lang: Supporting language of the IME.
- * @icon: Icon file of the IME.
- * @authors: Authors of the IME.
- * @credits: Credits of the IME.
- *
- * An IBusFactoryInfo stores information about an IME.
- * So CreateEngine method can create instances of that IME.
- */
-struct _IBusFactoryInfo {
-    IBusSerializable parent;
-
-    /* instance members */
-    /*< public >*/
-    gchar *path;
-    gchar *name;
-    gchar *lang;
-    gchar *icon;
-    gchar *authors;
-    gchar *credits;
-};
-
-struct _IBusFactoryInfoClass {
-    IBusSerializableClass parent;
-
-    /* signals */
-
-    /*< private >*/
-    /* padding */
-    gpointer pdummy[8];
-};
-#endif
 
 GType            ibus_factory_get_type          (void);
 
@@ -201,41 +143,6 @@ IBusFactory     *ibus_factory_new               (IBusConnection *connection);
 void             ibus_factory_add_engine        (IBusFactory    *factory,
                                                  const gchar    *engine_name,
                                                  GType           engine_type);
-
-#if 0
-/**
- * ibus_factory_get_info:
- * @factory: An IBusFactory.
- * @returns: A corresponding IbusFactoryInfo.
- *
- * Get IBusFactoryInfo out of IBusFactory.
- *
- * <note><para>This function is currently commented out</para></note>
- */
-IBusFactoryInfo *ibus_factory_get_info          (IBusFactory    *factory);
-
-GType            ibus_factory_info_get_type     (void);
-
-/**
- * ibus_factory_info_new:
- * @path: D-Bus path for the IME.
- * @name: IME name.
- * @lang: Supporting language of the IME.
- * @icon: Icon file of the IME.
- * @authors: Authors of the IME.
- * @credits: Credits of the IME.
- * @returns: A newly allocated IBusFactoryInfo.
- *
- * New an IBusFactoryInfo.
- */
-IBusFactoryInfo *ibus_factory_info_new          (const gchar    *path,
-                                                 const gchar    *name,
-                                                 const gchar    *lang,
-                                                 const gchar    *icon,
-                                                 const gchar    *authors,
-                                                 const gchar    *credits);
-
-#endif
 
 G_END_DECLS
 #endif
