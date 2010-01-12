@@ -19,7 +19,7 @@
  * Boston, MA 02111-1307, USA.
  */
 /**
- * SECTION: ibusattribute
+ * SECTION: ibusattrlist
  * @short_description: AttrList of IBusText.
  * @see_also: #IBusAttribute #IBusText
  * @stability: Stable

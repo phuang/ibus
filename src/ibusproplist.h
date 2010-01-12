@@ -19,7 +19,7 @@
  * Boston, MA 02111-1307, USA.
  */
 /**
- * SECTION: ibusproperty
+ * SECTION: ibusproplist
  * @short_description: UI component for input method engine property.
  * @stability: Stable
  * @see_also: #IBusEngine
@@ -50,10 +50,11 @@ G_BEGIN_DECLS
 #define IBUS_PROP_LIST_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROP_LIST, IBusPropListClass))
 
-/*
+#ifndef __PROPLIST_DEFINED
+#define __PROPLIST_DEFINED
 typedef struct _IBusPropList IBusPropList;
 typedef struct _IBusPropListClass IBusPropListClass;
-*/
+#endif
 
 /**
  * IBusPropList:

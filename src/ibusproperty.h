@@ -106,8 +106,12 @@ typedef enum {
 
 typedef struct _IBusProperty IBusProperty;
 typedef struct _IBusPropertyClass IBusPropertyClass;
+
+#ifndef __PROPLIST_DEFINED
+#define __PROPLIST_DEFINED
 typedef struct _IBusPropList IBusPropList;
 typedef struct _IBusPropListClass IBusPropListClass;
+#endif
 
 /**
  * IBusProperty:

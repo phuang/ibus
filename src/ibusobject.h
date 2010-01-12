@@ -28,14 +28,6 @@
 #ifndef __IBUS_OBJECT_H_
 #define __IBUS_OBJECT_H_
 
-/**
- * SECTION: IBusObject
- * @short_description: Base object of IBus.
- *
- *
- * This module provides essential definition and functions for manipulating
- * IBus base object.
- */
 #include <glib-object.h>
 #include "ibusmarshalers.h"
 #include "ibustypes.h"
