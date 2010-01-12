@@ -36,6 +36,7 @@
 #include <ibusfactory.h>
 #include <ibusengine.h>
 #include <ibusproperty.h>
+#include <ibusproplist.h>
 #include <ibuslookuptable.h>
 #include <ibusbus.h>
 #include <ibuskeysyms.h>

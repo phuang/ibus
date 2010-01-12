@@ -23,7 +23,7 @@
 #include "ibusinputcontext.h"
 #include "ibusattribute.h"
 #include "ibuslookuptable.h"
-#include "ibusproperty.h"
+#include "ibusproplist.h"
 
 #define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))

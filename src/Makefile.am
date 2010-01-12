@@ -56,6 +56,7 @@ ibus_public_h_sources = \
 	ibusattribute.h \
 	ibusattrlist.h \
 	ibusproperty.h \
+	ibusproplist.h \
 	ibuslookuptable.h \
 	ibusinputcontext.h \
 	ibusconfig.h \
@@ -96,6 +97,7 @@ ibus_c_sources = \
 	ibusattribute.c \
 	ibusattrlist.c \
 	ibusproperty.c \
+	ibusproplist.c \
 	ibuslookuptable.c \
 	ibusinputcontext.c \
 	ibusconfig.c \

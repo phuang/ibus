@@ -56,63 +56,6 @@ G_BEGIN_DECLS
 #define IBUS_PROPERTY_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROPERTY, IBusPropertyClass))
 
-/* define IBusPropList macros */
-/**
- * IBUS_TYPE_PROP_LIST:
- * @returns: IBusPropList GType.
- *
- * Returns GType of IBus property list.
- */
-#define IBUS_TYPE_PROP_LIST             \
-    (ibus_prop_list_get_type ())
-
-/**
- * IBUS_PROP_LIST:
- * @obj: An object which is subject to casting.
- *
- * Casts an IBUS_PROP_LIST or derived pointer into a (IBusPropList*) pointer.
- * Depending on the current debugging level, this function may invoke
- * certain runtime checks to identify invalid casts.
- */
-#define IBUS_PROP_LIST(obj)             \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_PROP_LIST, IBusPropList))
-
-/**
- * IBUS_PROP_LIST_CLASS:
- * @klass: A class to be casted.
- *
- * Casts a derived IBusPropListClass structure into a IBusPropListClass structure.
- */
-#define IBUS_PROP_LIST_CLASS(klass)     \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_PROP_LIST, IBusPropListClass))
-
-/**
- * IBUS_IS_PROP_LIST:
- * @obj: Instance to check for being a IBUS_PROP_LIST.
- *
- * Checks whether a valid GTypeInstance pointer is of type IBUS_PROP_LIST.
- */
-#define IBUS_IS_PROP_LIST(obj)          \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_PROP_LIST))
-
-/**
- * IBUS_IS_PROP_LIST_CLASS:
- * @klass: A class to be checked.
- *
- * Checks whether class "is a" valid IBusPropListClass structure of type IBUS_PROP_LIST or derived.
- */
-#define IBUS_IS_PROP_LIST_CLASS(klass)  \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_PROP_LIST))
-
-/**
- * IBUS_PROP_LIST_GET_CLASS:
- * @obj: An object.
- *
- * Get the class of a given object and cast the class to IBusPropListClass.
- */
-#define IBUS_PROP_LIST_GET_CLASS(obj)   \
-    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROP_LIST, IBusPropListClass))
-
 /**
  * IBusPropType:
  * @PROP_TYPE_NORMAL: Property is shown as normal text.
@@ -199,23 +142,6 @@ struct _IBusProperty {
 };
 
 struct _IBusPropertyClass {
-    IBusSerializableClass parent;
-};
-
-/**
- * IBusPropList:
- * @properties: GArray that holds IBusProperties.
- *
- * An array of IBusProperties.
- */
-struct _IBusPropList {
-    IBusSerializable parent;
-
-    /*< public >*/
-    GArray *properties;
-};
-
-struct _IBusPropListClass {
     IBusSerializableClass parent;
 };
 
@@ -331,47 +257,5 @@ void             ibus_property_set_sub_props(IBusProperty   *prop,
 gboolean         ibus_property_update       (IBusProperty   *prop,
                                              IBusProperty   *prop_update);
 
-GType            ibus_prop_list_get_type    ();
-
-/**
- * ibus_prop_list_new:
- * @returns: A newly allocated IBusPropList.
- *
- * New a IBusPropList.
- */
-IBusPropList    *ibus_prop_list_new         ();
-
-/**
- * ibus_prop_list_append:
- * @prop_list: An IBusPropList.
- * @prop: IBusProperty to be append to @prop_list.
- *
- * Append an IBusProperty to an IBusPropList, and increase reference.
- */
-void             ibus_prop_list_append      (IBusPropList   *prop_list,
-                                             IBusProperty   *prop);
-
-/**
- * ibus_prop_list_get:
- * @prop_list: An IBusPropList.
- * @index: Index of an IBusPropList.
- * @returns: IBusProperty at given index, NULL if no such IBusProperty.
- *
- * Returns IBusProperty at given index. Borrowed reference.
- */
-IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
-                                             guint           index);
-
-/**
- * ibus_prop_list_update_property:
- * @prop_list: An IBusPropList.
- * @prop: IBusProperty to be update.
- * @returns: TRUE if succeeded, FALSE otherwise.
- *
- * Update an IBusProperty in IBusPropList.
- */
-gboolean         ibus_prop_list_update_property
-                                            (IBusPropList   *prop_list,
-                                             IBusProperty   *prop);
 G_END_DECLS
 #endif

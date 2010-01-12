@@ -34,7 +34,7 @@
 #include "ibusservice.h"
 #include "ibusattribute.h"
 #include "ibuslookuptable.h"
-#include "ibusproperty.h"
+#include "ibusproplist.h"
 
 /*
  * Type macros.
