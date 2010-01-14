@@ -299,7 +299,7 @@ class CandidatePanel(gtk.VBox):
             vbox.pack_start(self.__aux_label, False, False, 0)
             self.pack_start(vbox, False, False, 5)
             self.pack_start(HSeparator(), False, False)
-            hbox= gtk.HBox()
+            hbox = gtk.HBox()
             hbox.pack_start(self.__candidate_area, True, True, 2)
             hbox.pack_start(VSeparator(), False, False)
             hbox.pack_start(self.__prev_button, False, False, 2)
