@@ -90,7 +90,7 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__author))
         struct.append(dbus.String(self.__icon))
         struct.append(dbus.String(self.__layout))
-        struct.append(dbus.UInt(self.__rank))
+        struct.append(dbus.UInt32(self.__rank))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
