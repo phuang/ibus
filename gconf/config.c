@@ -80,6 +80,9 @@ _value_changed_cb (GConfClient     *client,
     gchar *p, *section, *name;
     GValue v =  { 0 };
 
+    g_return_if_fail (key != NULL);
+    g_return_if_fail (value != NULL);
+
     p = g_strdup (key);
     section = p + sizeof (GCONF_PREFIX);
     name = rindex (p, '/') + 1;
