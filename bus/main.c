@@ -61,7 +61,7 @@ static const GOptionEntry entries[] =
     { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
     { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout in milliseconds.", "timeout [default is 2000]" },
 #ifdef G_THREADS_ENABLED
-    { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "Timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
+    { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
 #endif
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
