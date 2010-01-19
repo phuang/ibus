@@ -26,7 +26,11 @@ import gobject
 import ibus
 import icon
 from handle import Handle
-from menu import menu_position
+from menu import menu_position,\
+    ImageMenuItem,\
+    Menu,\
+    RadioMenuItem,\
+    SeparatorMenuItem
 from engineabout import EngineAbout
 from toolitem import ToolButton,\
     ToggleToolButton, \
@@ -67,6 +71,8 @@ class LanguageBar(gtk.Toolbar):
         self.__has_focus = False
         self.__show_im_name = False
         self.__im_name = None
+        self.__props = None
+        self.__selected_menu_item = None
         self.set_style(gtk.TOOLBAR_BOTH_HORIZ)
         self.set_show_arrow(False)
         self.set_property("icon-size", ICON_SIZE)
@@ -144,6 +150,46 @@ class LanguageBar(gtk.Toolbar):
             self.__toplevel.realize()
         self.__toplevel.window.set_opacity(opacity)
 
+    def __replace_property(self, old_prop, new_prop):
+        old_prop.label = new_prop.label
+        old_prop.icon= new_prop.icon
+        old_prop.tooltip = new_prop.tooltip
+        old_prop.sensitive = new_prop.sensitive
+        old_prop.visible = new_prop.visible
+        old_prop.state = new_prop.state
+        old_prop.sub_props = new_prop.sub_props
+
+    def __label_select_cb(self, widget, data):
+            self.__selected_menu_item = widget
+
+    def __label_deselect_cb(self, widget, data):
+            self.__selected_menu_item = None
+
+    def __label_expose_cb(self, widget, event):
+            x = widget.allocation.x
+            y = widget.allocation.y
+            label = widget._prop.label.get_text()
+            if self.__selected_menu_item != widget:
+                gc = widget.style.fg_gc[gtk.STATE_NORMAL]
+            else:
+                gc = widget.style.bg_gc[gtk.STATE_NORMAL]
+            layout = widget.create_pango_layout(label)
+            widget.window.draw_layout(gc, x + 5, y + 2, layout)
+
+    def __set_item_icon(self, item, prop):
+        item.set_property("always-show-image", True)
+        if prop.icon:
+            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+            item.set_image(icon.IconWidget(prop.icon, size[0]))
+        elif prop.label and prop.label.get_text() != "":
+            item.set_label("")
+            item.connect_after("expose-event", self.__label_expose_cb)
+            item.connect("select", self.__label_select_cb, None)
+            item.connect("deselect", self.__label_deselect_cb, None)
+        else:
+            size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+            item.set_image(icon.IconWidget("ibus", size[0]))
+
     def do_show(self):
         gtk.Toolbar.do_show(self)
 
@@ -190,7 +236,7 @@ class LanguageBar(gtk.Toolbar):
         return self.__enabled
 
     def set_show(self, show):
-        if show not in (0, 1, 2):
+        if show not in (0, 1, 2, 3):
             show = 1
         self.__show = show
         if self.__has_focus:
@@ -216,6 +262,9 @@ class LanguageBar(gtk.Toolbar):
         return self.__show
 
     def register_properties(self, props):
+        self.__props = props
+        if self.__show == 3:
+            return
         self.__remove_properties()
         # create new properties
         for i, prop in enumerate(props):
@@ -225,7 +274,7 @@ class LanguageBar(gtk.Toolbar):
                 item = ToggleToolButton(prop = prop)
             elif prop.type == ibus.PROP_TYPE_MENU:
                 item = MenuToolButton(prop = prop)
-            elif prop.type == PROP_TYPE_SEPARATOR:
+            elif prop.type == ibus.PROP_TYPE_SEPARATOR:
                 item = SeparatorToolItem()
             else:
                 raise IBusException("Unknown property type = %d" % prop.type)
@@ -246,6 +295,12 @@ class LanguageBar(gtk.Toolbar):
             self.insert(item, i + 2)
 
     def update_property(self, prop):
+        if self.__show == 3 and self.__props:
+            list = self.__props.get_properties()
+            for i, p in enumerate(list):
+                if p.key == prop.key and p.type == prop.type:
+                    self.__replace_property(p, prop)
+                    break
         map(lambda x: x.update_property(prop), self.__properties)
 
     def show_all(self):
@@ -273,9 +328,76 @@ class LanguageBar(gtk.Toolbar):
     def focus_out(self):
         self.__has_focus = False
         self.__im_menu.set_sensitive(False)
-        if self.__show in (0, 1):
+        if self.__show in (0, 1, 3):
             self.hide_all()
         else:
             self.show_all()
 
+    def create_im_menu(self, menu):
+        if not self.__enabled:
+            return
+        if self.__show != 3:
+            return
+        if not menu:
+            assert False
+        props = self.__props
+        if not props:
+            return
+
+        self.__remove_properties()
+        item = gtk.SeparatorMenuItem()
+        item.show()
+        menu.insert(item, 0)
+
+        about_label = _("About") + " - " + self.__im_name
+        prop = ibus.Property(key=u"about",
+                             label=unicode(about_label),
+                             icon=unicode(gtk.STOCK_ABOUT),
+                             tooltip=unicode(_("About the Input Method")))
+        item = ImageMenuItem(prop = prop)
+        item.set_property("always-show-image", True)
+        item.set_no_show_all(True)
+        item.show()
+        menu.insert(item, 0)
+        item.connect("property-activate",
+                     lambda w, n, s: self.emit("show-engine-about"))
+
+        list = props.get_properties()
+        list.reverse()
+        radio_group = None
+
+        for i, prop in enumerate(list):
+            if prop.type == ibus.PROP_TYPE_NORMAL:
+                item = ImageMenuItem(prop = prop)
+                self.__set_item_icon(item, prop)
+            elif prop.type == ibus.PROP_TYPE_TOGGLE:
+                item = RadioMenuItem(radio_group, prop = prop)
+                radio_group = item
+            elif prop.type == ibus.PROP_TYPE_SEPARATOR:
+                item = SeparatorMenuItem(prop)
+                radio_group = None
+            elif prop.type == ibus.PROP_TYPE_MENU:
+                item = ImageMenuItem(prop = prop)
+                self.__set_item_icon(item, prop)
+                submenu = Menu(prop)
+                item.set_submenu(submenu)
+                submenu.connect("property-activate",
+                                lambda w, n, s: self.emit("property-activate", n, s))
+            else:
+                raise IBusException("Unknown property type = %d" % prop.type)
+
+            item.set_sensitive(prop.sensitive)
+
+            item.set_no_show_all(True)
+
+            if prop.visible:
+                item.show()
+            else:
+                item.hide()
+
+            self.__properties.append(item)
+            menu.insert(item, 0)
+
+            item.connect("property-activate",
+                         lambda w, n, s: self.emit("property-activate", n, s))
 

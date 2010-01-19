@@ -462,6 +462,7 @@ class Panel(ibus.PanelBase):
             menu.show_all()
         else:
             menu = self.__create_im_menu()
+            self.__language_bar.create_im_menu(menu)
         menu.popup(None, None,
                 gtk.status_icon_position_menu,
                 0,

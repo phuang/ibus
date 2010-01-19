@@ -31,6 +31,9 @@
       <row>
         <col id="0" translatable="yes">Always</col>
       </row>
+      <row>
+        <col id="0" translatable="yes">Show in Status Icon menu</col>
+      </row>
     </data>
   </object>
   <object class="GtkListStore" id="model_panel_position">
