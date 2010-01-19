@@ -102,8 +102,6 @@ libibus.so.1 libibus1 #MINVER#
  ibus_error_new_from_text@Base 1.2.0.20090617
  ibus_factory_add_engine@Base 1.2.0.20090617
  ibus_factory_get_type@Base 1.2.0.20090617
- ibus_factory_info_get_type@Base 1.2.0.20090617
- ibus_factory_info_new@Base 1.2.0.20090617
  ibus_factory_new@Base 1.2.0.20090617
  ibus_free_strv@Base 1.2.0.20090617
  ibus_get_address@Base 1.2.0.20090617
