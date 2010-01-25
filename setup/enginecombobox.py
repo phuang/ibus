@@ -22,6 +22,7 @@
 
 import gtk
 import gobject
+import pango
 import ibus
 import gettext
 from icon import load_icon
@@ -113,12 +114,15 @@ class EngineComboBox(gtk.ComboBox):
         if isinstance (engine, str) or isinstance (engine, unicode):
             renderer.set_property("sensitive", False)
             renderer.set_property("text", engine)
+            renderer.set_property("weight", pango.WEIGHT_NORMAL)
         elif isinstance(engine, int):
             renderer.set_property("sensitive", True)
             renderer.set_property("text", _("Select an input method"))
+            renderer.set_property("weight", pango.WEIGHT_NORMAL)
         else:
             renderer.set_property("sensitive", True)
             renderer.set_property("text", engine.longname)
+            renderer.set_property("weight", pango.WEIGHT_BOLD if engine.rank > 0 else pango.WEIGHT_NORMAL)
 
     def __notify_active_cb(self, combobox, property):
         self.notify("active-engine")
