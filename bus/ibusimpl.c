@@ -267,7 +267,7 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
 
     static gboolean done = FALSE;
     GValue value = { 0 };
-    GList *engines, *l;
+    GList *engines, *list;
     gchar *lang, *p;
     GValueArray *array;
 
@@ -296,16 +296,21 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
             engines = bus_registry_get_engines_by_language (ibus->registry, lang);
         }
     }
-
-    engines = g_list_sort (engines, (GCompareFunc) _engine_desc_cmp);
     g_free (lang);
+
+    /* sort engines by rank */
+    engines = g_list_sort (engines, (GCompareFunc) _engine_desc_cmp);
 
     g_value_init (&value, G_TYPE_VALUE_ARRAY);
     array = g_value_array_new (5);
-    for (l = engines; l != NULL; l = l->next) {
+    for (list = engines; list != NULL; list = list->next) {
         IBusEngineDesc *desc;
         GValue name = { 0 };
-        desc = (IBusEngineDesc *)l->data;
+        desc = (IBusEngineDesc *)list->data;
+
+        /* ignore engines with rank <== 0 */
+        if (desc->rank <= 0)
+            break;
         g_value_init (&name, G_TYPE_STRING);
         g_value_set_string (&name, desc->name);
         g_value_array_append (array, &name);
