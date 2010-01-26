@@ -211,7 +211,6 @@ ibus_panel_service_service_get_property (IBusPanelService *panel,
             else {
                 g_value_set_object (value, NULL);
             }
-            g_list_foreach (connections, (GFunc) g_object_unref, NULL);
             g_list_free (connections);
         }
         break;
@@ -364,6 +363,9 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+
+        if (prop_list != NULL && g_object_is_floating (prop_list))
+            g_object_unref (prop_list);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "UpdateAuxiliaryText")) {
         IBusText *text = NULL;
@@ -389,6 +391,9 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+
+        if (text != NULL && g_object_is_floating (text))
+            g_object_unref (text);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "UpdateLookupTable")) {
         IBusLookupTable *table = NULL;
@@ -414,6 +419,9 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+
+        if (table != NULL && g_object_is_floating (table))
+            g_object_unref (table);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "UpdatePreeditText")) {
         IBusText *text = NULL;
@@ -442,6 +450,9 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+
+        if (text != NULL && g_object_is_floating (text))
+            g_object_unref (text);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "UpdateProperty")) {
         IBusProperty *property = NULL;
@@ -464,6 +475,9 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+
+        if (property != NULL && g_object_is_floating (property))
+            g_object_unref (property);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "SetCursorLocation")) {
         guint x, y, w, h;

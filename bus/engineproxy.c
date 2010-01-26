@@ -105,13 +105,13 @@ bus_engine_proxy_new (const gchar    *path,
                                               NULL);
 
     engine->desc = desc;
-    g_object_ref (desc);
+    g_object_ref_sink (desc);
     if (desc->layout != NULL && desc->layout[0] != '\0') {
-        engine->keymap = ibus_keymap_new (desc->layout);
+        engine->keymap = ibus_keymap_get (desc->layout);
     }
 
     if (engine->keymap == NULL) {
-        engine->keymap = ibus_keymap_new ("us");
+        engine->keymap = ibus_keymap_get ("us");
     }
 
     return engine;
@@ -332,7 +332,6 @@ static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
     engine->enabled = FALSE;
-    engine->prop_list = NULL;
     engine->desc = NULL;
     engine->keymap = NULL;
 }
@@ -340,11 +339,6 @@ bus_engine_proxy_init (BusEngineProxy *engine)
 static void
 bus_engine_proxy_real_destroy (BusEngineProxy *engine)
 {
-    if (engine->prop_list) {
-        g_object_unref (engine->prop_list);
-        engine->prop_list = NULL;
-    }
-
     if (ibus_proxy_get_connection ((IBusProxy *) engine)) {
         ibus_proxy_call ((IBusProxy *) engine,
                          "Destroy",
@@ -476,7 +470,8 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
 
         g_signal_emit (engine, engine_signals[UPDATE_PREEDIT_TEXT], 0,
                        text, cursor_pos, visible);
-        g_object_unref (text);
+        if (g_object_is_floating (text))
+            g_object_unref (text);
     }
     else if (g_strcmp0 (name, "UpdateAuxiliaryText") == 0) {
         IBusText *text;
@@ -493,7 +488,8 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
             goto failed;
 
         g_signal_emit (engine, engine_signals[UPDATE_AUXILIARY_TEXT], 0, text, visible);
-        g_object_unref (text);
+        if (g_object_is_floating (text))
+            g_object_unref (text);
     }
     else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
         IBusLookupTable *table;
@@ -510,25 +506,25 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
             goto failed;
 
         g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
-        g_object_unref (table);
+        if (g_object_is_floating (table))
+            g_object_unref (table);
     }
     else if (g_strcmp0 (name, "RegisterProperties") == 0) {
         gboolean retval;
-
-        if (engine->prop_list) {
-            g_object_unref (engine->prop_list);
-            engine->prop_list = NULL;
-        }
+        IBusPropList *prop_list;
 
         retval = ibus_message_get_args (message,
                                         &error,
-                                        IBUS_TYPE_PROP_LIST, &engine->prop_list,
+                                        IBUS_TYPE_PROP_LIST, &prop_list,
                                         G_TYPE_INVALID);
         if (!retval) {
-            engine->prop_list = NULL;
             goto failed;
         }
-        g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, engine->prop_list);
+        g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, prop_list);
+
+        if (g_object_is_floating (prop_list))
+            g_object_unref (prop_list);
+
     }
     else if (g_strcmp0 (name, "UpdateProperty") == 0) {
         IBusProperty *prop;
@@ -543,7 +539,8 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
             goto failed;
 
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
-        g_object_unref (prop);
+        if (g_object_is_floating (prop))
+            g_object_unref (prop);
     }
     else
         return FALSE;

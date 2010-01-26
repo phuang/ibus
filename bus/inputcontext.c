@@ -188,7 +188,7 @@ bus_input_context_new (BusConnection    *connection,
                                  IBUS_CONNECTION (connection));
 #endif
 
-    g_object_ref (connection);
+    g_object_ref_sink (connection);
     context->connection = connection;
     context->client = g_strdup (client);
 
@@ -471,8 +471,11 @@ bus_input_context_class_init (BusInputContextClass *klass)
             0);
 
     text_empty = ibus_text_new_from_string ("");
+    g_object_ref_sink (text_empty);
     lookup_table_empty = ibus_lookup_table_new (9, 0, FALSE, FALSE);
+    g_object_ref_sink (lookup_table_empty);
     props_empty = ibus_prop_list_new ();
+    g_object_ref_sink (props_empty);
 }
 
 static void
@@ -494,20 +497,19 @@ bus_input_context_init (BusInputContext *context)
     context->w = 0;
     context->h = 0;
 
-    g_object_ref (text_empty);
+    g_object_ref_sink (text_empty);
     context->preedit_text = text_empty;
     context->preedit_cursor_pos = 0;
     context->preedit_visible = FALSE;
 
-    g_object_ref (text_empty);
+    g_object_ref_sink (text_empty);
     context->auxiliary_text = text_empty;
     context->auxiliary_visible = FALSE;
 
-    g_object_ref (lookup_table_empty);
+    g_object_ref_sink (lookup_table_empty);
     context->lookup_table = lookup_table_empty;
     context->lookup_table_visible = FALSE;
 
-    g_object_ref (props_empty);
 }
 
 static void
@@ -1289,7 +1291,7 @@ bus_input_context_update_preedit_text (BusInputContext *context,
         g_object_unref (context->preedit_text);
     }
 
-    context->preedit_text = (IBusText *) g_object_ref (text ? text : text_empty);
+    context->preedit_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
     context->preedit_cursor_pos = cursor_pos;
     context->preedit_visible = visible;
 
@@ -1368,7 +1370,7 @@ bus_input_context_update_auxiliary_text (BusInputContext *context,
         g_object_unref (context->auxiliary_text);
     }
 
-    context->auxiliary_text = (IBusText *) g_object_ref (text ? text : text_empty);
+    context->auxiliary_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
     context->auxiliary_visible = visible;
 
     if (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) {
@@ -1444,7 +1446,7 @@ bus_input_context_update_lookup_table (BusInputContext *context,
         g_object_unref (context->lookup_table);
     }
 
-    context->lookup_table = (IBusLookupTable *) g_object_ref (table ? table : lookup_table_empty);
+    context->lookup_table = (IBusLookupTable *) g_object_ref_sink (table ? table : lookup_table_empty);
     context->lookup_table_visible = visible;
 
     if (context->capabilities & IBUS_CAP_LOOKUP_TABLE) {
@@ -1926,7 +1928,7 @@ bus_input_context_set_engine (BusInputContext *context,
     else {
         gint i;
         context->engine = engine;
-        g_object_ref (context->engine);
+        g_object_ref_sink (context->engine);
 
         for (i = 0; signals[i].name != NULL; i++) {
             g_signal_connect (context->engine,

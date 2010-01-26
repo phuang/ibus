@@ -315,7 +315,7 @@ ibus_service_add_to_connection (IBusService *service, IBusConnection *connection
     g_return_val_if_fail (priv->path != NULL, FALSE);
     g_return_val_if_fail (g_list_find (priv->connections, connection) == NULL, FALSE);
 
-    g_object_ref (connection);
+    g_object_ref_sink (connection);
 
     retval = ibus_connection_register_object_path (connection, priv->path,
                     (IBusMessageFunc) _service_message_function, service);
@@ -341,11 +341,7 @@ ibus_service_get_connections (IBusService *service)
     IBusServicePrivate *priv;
     priv = IBUS_SERVICE_GET_PRIVATE (service);
 
-    GList *l;
-
-    l = g_list_copy (priv->connections);
-    g_list_foreach (l, (GFunc) g_object_ref, NULL);
-    return l;
+    return g_list_copy (priv->connections);
 }
 
 gboolean

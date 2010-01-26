@@ -82,7 +82,7 @@ bus_factory_proxy_new (IBusComponent *component,
                             "connection", connection,
                             NULL);
 
-    g_object_ref (component);
+    g_object_ref_sink (component);
     factory->component = component;
     g_object_set_data ((GObject *)factory->component, "factory", factory);
 

@@ -610,7 +610,7 @@ ibus_engine_set_property (IBusEngine   *engine,
 
     case PROP_CONNECTION:
         priv->connection = g_value_get_object (value);
-        g_object_ref (priv->connection);
+        g_object_ref_sink (priv->connection);
         ibus_service_add_to_connection ((IBusService *) engine,
                                         priv->connection);
         break;

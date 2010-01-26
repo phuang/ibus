@@ -256,10 +256,11 @@ _keymap_destroy_cb (IBusKeymap *keymap,
                     gpointer    user_data)
 {
     g_hash_table_remove (keymaps, keymap->name);
+    g_object_unref (keymap);
 }
 
 IBusKeymap *
-ibus_keymap_new (const gchar *name)
+ibus_keymap_get (const gchar *name)
 {
     g_assert (name != NULL);
 
@@ -279,6 +280,8 @@ ibus_keymap_new (const gchar *name)
     }
 
     keymap = g_object_new (IBUS_TYPE_KEYMAP, NULL);
+    g_object_ref_sink (keymap);
+
     if (!ibus_keymap_load (name, keymap->keymap)) {
         g_object_unref (keymap);
         return NULL;
@@ -292,7 +295,6 @@ ibus_keymap_new (const gchar *name)
 
     return keymap;
 }
-
 
 guint32
 ibus_keymap_lookup_keysym (IBusKeymap *keymap,

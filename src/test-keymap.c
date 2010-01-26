@@ -23,7 +23,7 @@ int main (int argc, char **argv)
 
     g_type_init ();
 
-    IBusKeymap *keymap = ibus_keymap_new (argc > 1 ? argv[1] : "us");
+    IBusKeymap *keymap = ibus_keymap_get (argc > 1 ? argv[1] : "us");
 
     g_object_unref (keymap);
 	return 0;

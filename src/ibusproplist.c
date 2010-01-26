@@ -134,7 +134,7 @@ ibus_prop_list_deserialize (IBusPropList    *prop_list,
 {
     gboolean retval;
     IBusMessageIter array_iter;
-    IBusSerializable *object;
+    IBusProperty *prop;
 
     retval = parent_class->deserialize ((IBusSerializable *) prop_list, iter);
     g_return_val_if_fail (retval, FALSE);
@@ -145,12 +145,11 @@ ibus_prop_list_deserialize (IBusPropList    *prop_list,
     g_return_val_if_fail (retval, FALSE);
 
     while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
-        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_PROPERTY, &object);
+        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_PROPERTY, &prop);
         g_return_val_if_fail (retval, FALSE);
         ibus_message_iter_next (&array_iter);
 
-        ibus_prop_list_append (prop_list, (IBusProperty *)object);
-        g_object_unref (object);
+        ibus_prop_list_append (prop_list, prop);
     }
 
     ibus_message_iter_next (iter);
@@ -179,7 +178,6 @@ ibus_prop_list_copy (IBusPropList       *dest,
     while ((prop = ibus_prop_list_get ((IBusPropList *)src, i)) != NULL) {
         prop = (IBusProperty *) ibus_serializable_copy ((IBusSerializable *) prop);
         ibus_prop_list_append (dest, prop);
-        g_object_unref (prop);
         i ++;
     }
     return TRUE;
@@ -203,7 +201,7 @@ ibus_prop_list_append (IBusPropList *prop_list,
     g_assert (IBUS_IS_PROP_LIST (prop_list));
     g_assert (IBUS_IS_PROPERTY (prop));
 
-    g_object_ref (prop);
+    g_object_ref_sink (prop);
 
     g_array_append_val (prop_list->properties, prop);
 }

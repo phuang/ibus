@@ -181,6 +181,7 @@ ibus_property_deserialize (IBusProperty    *prop,
     ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_TEXT, &prop->label);
+    g_object_ref_sink (prop->label);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
@@ -190,6 +191,7 @@ ibus_property_deserialize (IBusProperty    *prop,
     prop->icon = g_strdup (p);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_TEXT, &prop->tooltip);
+    g_object_ref_sink (prop->tooltip);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
@@ -206,6 +208,7 @@ ibus_property_deserialize (IBusProperty    *prop,
     ibus_message_iter_next (iter);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_PROP_LIST, &prop->sub_props);
+    g_object_ref_sink (prop->sub_props);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
@@ -296,7 +299,7 @@ ibus_property_set_label (IBusProperty *prop,
         prop->label = ibus_text_new_from_static_string ("");
     }
     else {
-        prop->label = g_object_ref (label);
+        prop->label = g_object_ref_sink (label);
     }
 }
 
@@ -323,9 +326,11 @@ ibus_property_set_tooltip (IBusProperty *prop,
 
     if (tooltip == NULL) {
         prop->tooltip = ibus_text_new_from_static_string ("");
+        g_object_ref_sink (prop->tooltip);
     }
     else {
-        prop->tooltip = g_object_ref (tooltip);
+        prop->tooltip = tooltip;
+        g_object_ref_sink (prop->tooltip);
     }
 }
 
@@ -369,11 +374,13 @@ ibus_property_set_sub_props (IBusProperty *prop,
     }
 
     if (prop_list) {
-        g_object_ref (prop_list);
         prop->sub_props = prop_list;
+        g_object_ref_sink (prop_list);
     }
-    else
+    else {
         prop->sub_props = ibus_prop_list_new ();
+        g_object_ref_sink (prop->sub_props);
+    }
 }
 
 gboolean
@@ -393,12 +400,12 @@ ibus_property_update (IBusProperty *prop,
     if (prop->label) {
         g_object_unref (prop->label);
     }
-    prop->label = (IBusText *) g_object_ref (prop_update->label);
+    prop->label = (IBusText *) g_object_ref_sink (prop_update->label);
 
     if (prop->tooltip) {
         g_object_unref (prop->tooltip);
     }
-    prop->tooltip = (IBusText *) g_object_ref (prop_update->tooltip);
+    prop->tooltip = (IBusText *) g_object_ref_sink (prop_update->tooltip);
     prop->visible = prop_update->visible;
     prop->state = prop_update->state;
     prop->sensitive = prop_update->sensitive;

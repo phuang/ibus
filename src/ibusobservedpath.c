@@ -246,6 +246,7 @@ ibus_observed_path_traverse (IBusObservedPath *path)
         IBusObservedPath *sub;
 
         sub = g_object_new (IBUS_TYPE_OBSERVED_PATH, NULL);
+        g_object_ref_sink (sub);
         sub->path = g_build_filename (path->path, name, NULL);
 
         ibus_observed_path_fill_stat (sub);
@@ -261,7 +262,7 @@ ibus_observed_path_traverse (IBusObservedPath *path)
 
 static gboolean
 ibus_observed_path_parse_xml_node (IBusObservedPath *path,
-                                  XMLNode         *node)
+                                   XMLNode          *node)
 {
     g_assert (IBUS_IS_OBSERVED_PATH (path));
     g_assert (node);

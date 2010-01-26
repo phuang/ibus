@@ -557,7 +557,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                             G_TYPE_INVALID);
             if (retval) {
                 g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
-                g_object_unref (text);
+                if (g_object_is_floating (text))
+                    g_object_unref (text);
             }
             break;
         }
@@ -581,7 +582,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                text,
                                cursor_pos,
                                visible);
-                g_object_unref (text);
+                if (g_object_is_floating (text))
+                    g_object_unref (text);
             }
             break;
         }
@@ -612,7 +614,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                0,
                                text,
                                visible);
-                g_object_unref (text);
+                if (g_object_is_floating (text))
+                    g_object_unref (text);
             }
         }
         else if (g_strcmp0 (name, "UpdateLookupTable") == 0) {
@@ -632,7 +635,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                0,
                                table,
                                visible);
-                g_object_unref (table);
+                if (g_object_is_floating (table))
+                    g_object_unref (table);
             }
         }
         else if (g_strcmp0 (name, "RegisterProperties") == 0) {
@@ -649,7 +653,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                context_signals[REGISTER_PROPERTIES],
                                0,
                                prop_list);
-                g_object_unref (prop_list);
+                if (g_object_is_floating (prop_list))
+                    g_object_unref (prop_list);
             }
         }
         else if (g_strcmp0 (name, "UpdateProperty") == 0) {
@@ -662,7 +667,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                             G_TYPE_INVALID);
             if (retval) {
                 g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
-                g_object_unref (prop);
+                if (g_object_is_floating (prop))
+                    g_object_unref (prop);
             }
         }
         else if (g_strcmp0 (name, "ForwardKeyEvent") == 0) {

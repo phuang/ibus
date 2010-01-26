@@ -282,6 +282,7 @@ ibus_component_deserialize (IBusComponent   *component,
         g_return_val_if_fail (retval, FALSE);
         ibus_message_iter_next (&array_iter);
 
+        g_object_ref_sink (path);
         component->observed_paths = g_list_append (component->observed_paths, path);
     }
     ibus_message_iter_next (iter);
@@ -537,6 +538,7 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
         IBusObservedPath *path;
 
         path = ibus_observed_path_new_from_xml_node ((XMLNode *)p->data, access_fs);
+        g_object_ref_sink (path);
         component->observed_paths = g_list_append (component->observed_paths, path);
 
         if (access_fs && path->is_dir && path->is_exist) {
@@ -635,6 +637,7 @@ ibus_component_add_observed_path (IBusComponent *component,
     IBusObservedPath *p;
 
     p = ibus_observed_path_new (path, access_fs);
+    g_object_ref_sink (p);
     component->observed_paths = g_list_append (component->observed_paths, p);
 
     if (access_fs && p->is_dir && p->is_exist) {
@@ -650,6 +653,7 @@ ibus_component_add_engine (IBusComponent  *component,
     g_assert (IBUS_IS_COMPONENT (component));
     g_assert (IBUS_IS_ENGINE_DESC (engine));
 
+    g_object_ref_sink (engine);
     component->engines = g_list_append (component->engines, engine);
     g_object_set_data ((GObject *)engine, "component", component);
 }

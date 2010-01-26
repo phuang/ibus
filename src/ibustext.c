@@ -113,8 +113,10 @@ ibus_text_serialize (IBusText        *text,
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &text->text);
     g_return_val_if_fail (retval, FALSE);
 
-    if (text->attrs == NULL)
+    if (text->attrs == NULL) {
         text->attrs = ibus_attr_list_new ();
+        g_object_ref_sink (text->attrs);
+    }
 
     retval = ibus_message_iter_append (iter, IBUS_TYPE_ATTR_LIST, &text->attrs);
     g_return_val_if_fail (retval, FALSE);
@@ -145,6 +147,7 @@ ibus_text_deserialize (IBusText        *text,
     }
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_ATTR_LIST, &text->attrs);
+    g_object_ref_sink (text->attrs);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
@@ -166,8 +169,10 @@ ibus_text_copy (IBusText       *dest,
 
     dest->text = g_strdup (src->text);
     dest->is_static = FALSE;
-    if (src->attrs)
+    if (src->attrs) {
         dest->attrs = (IBusAttrList *)ibus_serializable_copy ((IBusSerializable *)src->attrs);
+        g_object_ref_sink (dest->attrs);
+    }
 
     return TRUE;
 }
@@ -293,7 +298,6 @@ ibus_text_append_attribute (IBusText *text,
 
     attr = ibus_attribute_new (type, value, start_index, end_index);
     ibus_attr_list_append (text->attrs, attr);
-    g_object_unref (attr);
 }
 
 guint

@@ -228,7 +228,6 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         ibus_message_iter_next (&array_iter);
 
         ibus_lookup_table_append_candidate (table, text);
-        g_object_unref (text);
     }
 
     ibus_message_iter_next (iter);
@@ -244,7 +243,6 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
         ibus_message_iter_next (&array_iter);
 
         ibus_lookup_table_append_label (table, text);
-        g_object_unref (text);
     }
 
     ibus_message_iter_next (iter);
@@ -276,7 +274,6 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
         text = (IBusText *) ibus_serializable_copy ((IBusSerializable *) text);
 
         ibus_lookup_table_append_candidate (dest, text);
-        g_object_unref (text);
     }
 
     // copy labels
@@ -290,7 +287,6 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
         text = (IBusText *) ibus_serializable_copy ((IBusSerializable *) text);
 
         ibus_lookup_table_append_label (dest, text);
-        g_object_unref (text);
     }
 
     return TRUE;
@@ -333,7 +329,7 @@ ibus_lookup_table_append_candidate (IBusLookupTable *table,
     g_assert (IBUS_IS_LOOKUP_TABLE (table));
     g_assert (IBUS_IS_TEXT (text));
 
-    g_object_ref (text);
+    g_object_ref_sink (text);
     g_array_append_val (table->candidates, text);
 }
 
@@ -356,7 +352,7 @@ ibus_lookup_table_append_label (IBusLookupTable *table,
     g_assert (IBUS_IS_LOOKUP_TABLE (table));
     g_assert (IBUS_IS_TEXT (text));
 
-    g_object_ref (text);
+    g_object_ref_sink (text);
     g_array_append_val (table->labels, text);
 }
 

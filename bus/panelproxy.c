@@ -668,7 +668,7 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
     if (panel->focused_context != NULL)
         bus_panel_proxy_focus_out (panel, panel->focused_context);
 
-    g_object_ref (context);
+    g_object_ref_sink (context);
     panel->focused_context = context;
 
     const gchar *path = ibus_service_get_path ((IBusService *)context);

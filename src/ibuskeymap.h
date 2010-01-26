@@ -103,16 +103,16 @@ struct _IBusKeymapClass {
 GType            ibus_keymap_get_type               (void);
 
 /**
- * ibus_keymap_new:
+ * ibus_keymap_get:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: A newly allocated IBusKeymap; or NULL if failed.
+ * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
  *
- * New an IBusKeymap.
+ * Get an IBusKeymap associated with the giving name.
  *
  * This function loads the keymap file specified in @name
  * in the IBUS_DATA_DIR/keymaps directory.
  */
-IBusKeymap        *ibus_keymap_new                  (const gchar        *name);
+IBusKeymap        *ibus_keymap_get                  (const gchar        *name);
 
 /**
  * ibus_keymap_lookup_keysym:

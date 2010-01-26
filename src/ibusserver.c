@@ -252,7 +252,11 @@ _new_connection_cb (DBusServer      *dbus_server,
     ibus_connection_set_connection (connection, new_connection, FALSE);
 
     g_signal_emit (server, server_signals[NEW_CONNECTION], 0, connection);
-    g_object_unref (connection);
+
+    if (g_object_is_floating (connection)) {
+        /* release connection if it is still floating */
+        g_object_unref (connection);
+    }
 }
 
 static gboolean

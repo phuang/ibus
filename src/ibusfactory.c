@@ -92,7 +92,7 @@ ibus_factory_new (IBusConnection *connection)
                                             NULL);
     priv = IBUS_FACTORY_GET_PRIVATE (factory);
 
-    priv->connection = g_object_ref (connection);
+    priv->connection = g_object_ref_sink (connection);
     ibus_service_add_to_connection ((IBusService *)factory, connection);
 
     return factory;

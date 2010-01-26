@@ -455,7 +455,7 @@ ibus_proxy_set_property (IBusProxy      *proxy,
     case PROP_CONNECTION:
         g_assert (priv->connection == NULL);
         priv->connection = IBUS_CONNECTION (g_value_get_object (value));
-        g_object_ref (priv->connection);
+        g_object_ref_sink (priv->connection);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (proxy, prop_id, pspec);

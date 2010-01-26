@@ -378,6 +378,14 @@ ibus_connection_set_connection (IBusConnection *connection, DBusConnection *dbus
     g_warn_if_fail (result);
 }
 
+static void
+_connection_destroy_cb (IBusConnection *connection,
+                        gpointer        user_data)
+{
+    g_hash_table_remove (_connections, user_data);
+    g_object_unref (connection);
+}
+
 IBusConnection *
 ibus_connection_open (const gchar *address)
 {
@@ -409,8 +417,12 @@ ibus_connection_open (const gchar *address)
     }
 
     connection = ibus_connection_new ();
+    g_object_ref_sink (connection);
+
     ibus_connection_set_connection (connection, dbus_connection, TRUE);
-    g_hash_table_insert (_connections, dbus_connection, connection);
+    g_hash_table_insert (_connections, dbus_connection, g_object_ref (connection));
+
+    g_signal_connect (connection, "destroy", G_CALLBACK (_connection_destroy_cb), dbus_connection);
 
     return connection;
 }

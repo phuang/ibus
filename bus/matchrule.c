@@ -607,7 +607,7 @@ bus_match_rule_add_recipient (BusMatchRule   *rule,
 
     recipient = g_slice_new (BusRecipient);
 
-    g_object_ref (connection);
+    g_object_ref_sink (connection);
     recipient->connection = connection;
     recipient->refcount  = 1;
 
@@ -667,7 +667,6 @@ bus_match_rule_get_recipients (BusMatchRule   *rule,
     for (link = rule->recipients; link != NULL; link = link->next) {
         BusRecipient *recipient = (BusRecipient *) link->data;
 
-        g_object_ref (recipient->connection);
         recipients = g_list_append (recipients, recipient->connection);
     }
 

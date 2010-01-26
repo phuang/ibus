@@ -979,7 +979,7 @@ bus_dbus_impl_new_connection (BusDBusImpl    *dbus,
 
     g_assert (g_list_find (dbus->connections, connection) == NULL);
 
-    g_object_ref (connection);
+    g_object_ref_sink (connection);
     dbus->connections = g_list_append (dbus->connections, connection);
 
     g_signal_connect (connection,
@@ -1100,7 +1100,6 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
         if (connection != skip_connection) {
             ibus_connection_send (IBUS_CONNECTION (connection), message);
         }
-        g_object_unref (connection);
     }
     g_list_free (recipients);
 }
@@ -1132,7 +1131,7 @@ bus_dbus_impl_register_object (BusDBusImpl *dbus,
 
     g_return_val_if_fail  (g_hash_table_lookup (dbus->objects, path) == NULL, FALSE);
 
-    g_object_ref (object);
+    g_object_ref_sink (object);
     g_hash_table_insert (dbus->objects, (gpointer)path, object);
 
     g_signal_connect (object, "destroy", G_CALLBACK (_object_destroy_cb), dbus);

@@ -177,7 +177,6 @@ ibus_config_service_get_property (IBusConfigService *config,
             else {
                 g_value_set_object (value, NULL);
             }
-            g_list_foreach (connections, (GFunc) g_object_unref, NULL);
             g_list_free (connections);
         }
         break;

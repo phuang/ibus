@@ -403,8 +403,8 @@ _config_destroy_cb (IBusConfig  *config,
 
     g_assert (ibus->config == config);
 
+    g_object_unref (ibus->config);
     ibus->config = NULL;
-    g_object_unref (config);
 }
 
 static void
@@ -442,6 +442,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
             g_return_if_fail (connection != NULL);
 
             ibus->panel = bus_panel_proxy_new (connection);
+            g_object_ref_sink (ibus->panel);
 
             g_signal_connect (ibus->panel,
                               "destroy",
@@ -470,6 +471,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                                          "path", IBUS_PATH_CONFIG,
                                          "connection", connection,
                                          NULL);
+            g_object_ref_sink (ibus->config);
 
             g_signal_connect (ibus->config,
                               "value-changed",
@@ -490,7 +492,6 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
 
     if (factory) {
         bus_ibus_impl_add_factory (ibus, factory);
-        g_object_unref (factory);
     }
 }
 
@@ -524,7 +525,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 #endif
 
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
-    ibus->keymap = ibus_keymap_new ("us");
+    ibus->keymap = ibus_keymap_get ("us");
 
     ibus->use_sys_layout = FALSE;
 
@@ -782,7 +783,6 @@ _context_request_engine_cb (BusInputContext *context,
     }
 
     bus_input_context_set_engine (context, engine);
-    g_object_unref (engine);
 }
 
 static void
@@ -828,7 +828,6 @@ _context_request_next_engine_cb (BusInputContext *context,
     if (next_desc != NULL) {
         engine = bus_ibus_impl_create_engine (next_desc);
         bus_input_context_set_engine (context, engine);
-        g_object_unref (engine);
     }
 }
 
@@ -926,6 +925,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     }
 
     context = bus_input_context_new (connection, client);
+    g_object_ref_sink (context);
     ibus->contexts = g_list_append (ibus->contexts, context);
 
     static const struct {
@@ -1022,7 +1022,7 @@ bus_ibus_impl_add_factory (BusIBusImpl     *ibus,
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_FACTORY_PROXY (factory));
 
-    g_object_ref (factory);
+    g_object_ref_sink (factory);
     ibus->factory_list = g_list_append (ibus->factory_list, factory);
 
     g_signal_connect (factory, "destroy", G_CALLBACK (_factory_destroy_cb), ibus);
@@ -1054,6 +1054,7 @@ _ibus_register_component (BusIBusImpl     *ibus,
         return reply;
     }
 
+    g_object_ref_sink (component);
     factory = bus_factory_proxy_new (component, connection);
 
     if (factory == NULL) {
@@ -1064,7 +1065,6 @@ _ibus_register_component (BusIBusImpl     *ibus,
     }
 
     bus_ibus_impl_add_factory (ibus, factory);
-    g_object_unref (factory);
 
     engines = ibus_component_get_engines (component);
 

@@ -247,6 +247,7 @@ bus_registry_load_cache (BusRegistry *registry)
                 IBusObservedPath *path;
                 path = ibus_observed_path_new_from_xml_node (pp->data, FALSE);
                 if (path) {
+                    g_object_ref_sink (path);
                     registry->observed_paths = g_list_append (registry->observed_paths, path);
                 }
             }
@@ -258,6 +259,7 @@ bus_registry_load_cache (BusRegistry *registry)
                 IBusComponent *component;
                 component = ibus_component_new_from_xml_node (pp->data);
                 if (component) {
+                    g_object_ref_sink (component);
                     registry->components = g_list_append (registry->components, component);
                 }
             }

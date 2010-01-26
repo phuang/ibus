@@ -126,4 +126,6 @@ $(libibus):
 	$(MAKE) -C $(top_builddir)/src
 
 test: ibus-daemon
-	$(builddir)/ibus-daemon -v
+	$(ENV) \
+		G_DEBUG=fatal_warnings \
+		$(builddir)/ibus-daemon -v
