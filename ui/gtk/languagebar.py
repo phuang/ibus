@@ -345,8 +345,9 @@ class LanguageBar(gtk.Toolbar):
             return
 
         self.__remove_properties()
-        item = gtk.SeparatorMenuItem()
+        item = SeparatorMenuItem()
         item.show()
+        self.__properties.append(item)
         menu.insert(item, 0)
 
         about_label = _("About") + " - " + self.__im_name
@@ -358,6 +359,7 @@ class LanguageBar(gtk.Toolbar):
         item.set_property("always-show-image", True)
         item.set_no_show_all(True)
         item.show()
+        self.__properties.append(item)
         menu.insert(item, 0)
         item.connect("property-activate",
                      lambda w, n, s: self.emit("show-engine-about"))
@@ -374,7 +376,7 @@ class LanguageBar(gtk.Toolbar):
                 item = RadioMenuItem(radio_group, prop = prop)
                 radio_group = item
             elif prop.type == ibus.PROP_TYPE_SEPARATOR:
-                item = SeparatorMenuItem(prop)
+                item = SeparatorMenuItem()
                 radio_group = None
             elif prop.type == ibus.PROP_TYPE_MENU:
                 item = ImageMenuItem(prop = prop)
