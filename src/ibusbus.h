@@ -99,7 +99,15 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
  */
 IBusConnection
             *ibus_bus_get_connection    (IBusBus        *bus);
-/* declare dbus methods */
+
+/**
+ * ibus_bus_hello:
+ * @bus: An IBusBus.
+ * @returns: The unique name of IBus process in DBus.
+ *
+ * This function sends a "HELLO" message to DBus daemon,
+ * which replies the unique name of current IBus process.
+ */
 const gchar *ibus_bus_hello             (IBusBus        *bus);
 
 /**

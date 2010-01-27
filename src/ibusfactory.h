@@ -121,6 +121,12 @@ struct _IBusFactoryClass {
     gpointer pdummy[8];
 };
 
+/**
+ * ibus_factory_info_get_type:
+ * @returns: GType of IBus factory information.
+ *
+ * Return GType of IBus factory information.
+ */
 GType            ibus_factory_get_type          (void);
 
 /**

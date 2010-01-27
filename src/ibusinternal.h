@@ -32,6 +32,14 @@
 #include <glib.h>
 #include <dbus/dbus.h>
 
+/**
+ * I_:
+ * @string: A string
+ * @returns: The canonical representation for the string.
+ *
+ * Returns a canonical representation for string.
+ * Interned strings can be compared for equality by comparing the pointers, instead of using strcmp().
+ */
 #define I_(string) g_intern_static_string (string)
 
 /**

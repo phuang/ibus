@@ -66,9 +66,28 @@ struct _IBusService {
     /* instance members */
 };
 
+/**
+ * ServiceIBusMessageFunc:
+ * @service: An IBsService.
+ * @connection: Connection to IBus daemon.
+ * @message: IBusMessage to be sent.
+ * @returns: %TRUE if succeed; %FALSE if failed.
+ *
+ * Prototype of IBus service message sending callback function.
+ */
 typedef gboolean  (* ServiceIBusMessageFunc)    (IBusService    *service,
                                                  IBusConnection *connection,
                                                  IBusMessage    *message);
+
+/**
+ * ServiceIBusSignalFunc:
+ * @service: An IBsService.
+ * @connection: Connection to IBus daemon.
+ * @message: IBusMessage to be sent.
+ * @returns: %TRUE if succeed; %FALSE if failed.
+ *
+ * Prototype of IBus service signal sending callback function.
+ */
 typedef gboolean  (* ServiceIBusSignalFunc)     (IBusService    *service,
                                                  IBusConnection *connection,
                                                  IBusMessage    *message);
