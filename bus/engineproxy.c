@@ -815,3 +815,11 @@ bus_engine_proxy_get_desc (BusEngineProxy *engine)
 
     return engine->desc;
 }
+
+gboolean
+bus_engine_proxy_is_enabled (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    return engine->enabled;
+}

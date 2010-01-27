@@ -766,40 +766,6 @@ _find_engine_desc_by_name(BusIBusImpl *ibus,
 }
 
 static void
-_set_context_engine_from_desc (BusInputContext *context,
-                               IBusEngineDesc  *engine_desc,
-                               BusIBusImpl     *ibus)
-{
-    BusEngineProxy *engine = bus_ibus_impl_create_engine (engine_desc);
-
-    if (engine == NULL) {
-        return;
-    }
-
-    bus_input_context_set_engine (context, engine);
-
-    /* Only use the engine as global engine if the context supports
-     * IBUS_CAP_FOCUS. In other words, we allow the contexts that
-     * don't support IBUS_CAP_FOCUS to use independent engines. */
-    if (ibus->use_global_engine &&
-        (bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS)) {
-        if (ibus->global_engine) {
-            ibus_object_destroy (IBUS_OBJECT (ibus->global_engine));
-            g_object_unref (ibus->global_engine);
-        }
-        g_object_ref (engine);
-        ibus->global_engine = engine;
-
-        /* If the global engine is updated by an unfocused context, then update
-         * the focused context to use this engine immediately. This should be
-         * a very rare case. */
-        if (ibus->focused_context && ibus->focused_context != context) {
-            bus_input_context_set_engine (ibus->focused_context, engine);
-        }
-    }
-}
-
-static void
 _context_request_engine_cb (BusInputContext *context,
                             gchar           *engine_name,
                             BusIBusImpl     *ibus)
@@ -807,15 +773,10 @@ _context_request_engine_cb (BusInputContext *context,
     IBusEngineDesc *engine_desc = NULL;
     BusEngineProxy *engine;
 
-    if (engine_name == NULL || engine_name[0] == '\0') {
-        /* Use the saved global engine if the use_global_engine option is
-         * enabled and the context supports IBUS_CAP_FOCUS. */
-        if (ibus->use_global_engine && ibus->global_engine &&
-            (bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS)) {
-            bus_input_context_set_engine (context, ibus->global_engine);
-            return;
-        }
+    /* context should has focus before request an engine */
+    g_return_if_fail (bus_input_context_has_focus (context));
 
+    if (engine_name == NULL || engine_name[0] == '\0') {
         /* request default engine */
         if (ibus->register_engine_list) {
             engine_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
@@ -829,11 +790,12 @@ _context_request_engine_cb (BusInputContext *context,
         engine_desc = _find_engine_desc_by_name (ibus, engine_name);
     }
 
-    if (engine_desc == NULL) {
-        return;
+    if (engine_desc != NULL) {
+        engine = bus_ibus_impl_create_engine (engine_desc);
+        if (engine != NULL) {
+            bus_input_context_set_engine (context, engine);
+        }
     }
-
-    _set_context_engine_from_desc (context, engine_desc, ibus);
 }
 
 static void
@@ -877,7 +839,10 @@ _context_request_next_engine_cb (BusInputContext *context,
     }
 
     if (next_desc != NULL) {
-        _set_context_engine_from_desc (context, next_desc, ibus);
+        engine = bus_ibus_impl_create_engine (next_desc);
+        if (engine != NULL) {
+            bus_input_context_set_engine (context, engine);
+        }
     }
 }
 
@@ -889,23 +854,75 @@ _context_request_prev_engine_cb (BusInputContext *context,
 }
 
 static void
+_global_engine_destroy_cb (BusEngineProxy *engine,
+                           BusIBusImpl    *ibus)
+{
+    if (ibus->global_engine != engine) {
+        return;
+    }
+    g_object_unref (ibus->global_engine);
+    ibus->global_engine = NULL;
+}
+
+static void
+_context_engine_changed_cb (BusInputContext *context,
+                            BusIBusImpl     *ibus)
+{
+    BusEngineProxy *engine;
+
+    engine = bus_input_context_get_engine (context);
+
+    g_debug ("fc=%p, c=%p, e=%p", ibus->focused_context, context, engine);
+
+    if (context != ibus->focused_context ||
+        ibus->use_global_engine != TRUE ||
+        ibus->global_engine == engine) {
+        return;
+    }
+
+    if (ibus->global_engine) {
+        ibus_object_destroy ((IBusObject *)ibus->global_engine);
+        ibus->global_engine = NULL;
+    }
+
+    if (engine != NULL) {
+        g_object_ref (engine);
+        g_signal_connect (engine, "destroy",
+                G_CALLBACK (_global_engine_destroy_cb), ibus);
+        ibus->global_engine = engine;
+    }
+}
+
+static void
 _context_focus_out_cb (BusInputContext    *context,
                        BusIBusImpl        *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (ibus->focused_context != context)
+    /* do noting if context does not support focus */
+    if ((bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) == 0) {
         return;
+    }
+
+    /* do noting if it is not focused context */
+    if (ibus->focused_context != context) {
+        return;
+    }
+
+    ibus->focused_context = NULL;
 
     if (ibus->panel != NULL) {
         bus_panel_proxy_focus_out (ibus->panel, context);
     }
 
-    if (context) {
-        g_object_unref (context);
-        ibus->focused_context = NULL;
+    /* If the use_global_engine option is enabled,
+     * the global engine shoule be detached from the focused context. */
+    if (ibus->use_global_engine) {
+        bus_input_context_set_engine (context, NULL);
     }
+
+    g_object_unref (context);
 }
 
 static void
@@ -915,6 +932,16 @@ _context_focus_in_cb (BusInputContext *context,
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
+    /* do noting if context does not support focus */
+    if ((bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) == 0) {
+        return;
+    }
+
+    /* do noting if it is focused context already */
+    if (ibus->focused_context == context) {
+        return;
+    }
+
     if (ibus->focused_context) {
         /* focus out context */
         bus_input_context_focus_out (ibus->focused_context);
@@ -922,6 +949,7 @@ _context_focus_in_cb (BusInputContext *context,
     }
 
     g_object_ref (context);
+    ibus->focused_context = context;
 
     /* If the use_global_engine option is enabled, then we need:
      * - Switch the context to use the global engine or save the context's
@@ -929,24 +957,14 @@ _context_focus_in_cb (BusInputContext *context,
      * - Set the context's enabled state according to the saved state.
      * Note: we get this signal only if the context supports IBUS_CAP_FOCUS. */
     if (ibus->use_global_engine) {
-        if (bus_input_context_get_engine (context) != ibus->global_engine) {
-            if (ibus->global_engine) {
-                bus_input_context_set_engine (context, ibus->global_engine);
-            }
-            else {
-                ibus->global_engine = bus_input_context_get_engine (context);
-                g_object_ref (ibus->global_engine);
-            }
-        }
-        if (bus_input_context_is_enabled (context) != ibus->global_engine_enabled) {
-            if (ibus->global_engine_enabled)
+        if (ibus->global_engine) {
+            gboolean enable = bus_engine_proxy_is_enabled (ibus->global_engine);
+            bus_input_context_set_engine (context, ibus->global_engine);
+            if (enable)
                 bus_input_context_enable (context);
-            else
-                bus_input_context_disable (context);
         }
     }
 
-    ibus->focused_context = context;
     if (ibus->panel != NULL) {
         bus_panel_proxy_focus_in (ibus->panel, ibus->focused_context);
     }
@@ -1027,6 +1045,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
         { "request-engine",      G_CALLBACK (_context_request_engine_cb) },
         { "request-next-engine", G_CALLBACK (_context_request_next_engine_cb) },
         { "request-prev-engine", G_CALLBACK (_context_request_prev_engine_cb) },
+        { "engine-changed", G_CALLBACK (_context_engine_changed_cb) },
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
