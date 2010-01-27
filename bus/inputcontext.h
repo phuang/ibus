@@ -87,8 +87,6 @@ struct _BusInputContext {
 
     /* filter release */
     gboolean filter_release;
-
-
 };
 
 struct _BusInputContextClass {
@@ -120,7 +118,7 @@ BusEngineProxy      *bus_input_context_get_engine       (BusInputContext    *con
 void                 bus_input_context_property_activate(BusInputContext    *context,
                                                          const gchar        *prop_name,
                                                          gint                prop_state);
+guint                bus_input_context_get_capabilities (BusInputContext    *context);
 
 G_END_DECLS
 #endif
-

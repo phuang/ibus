@@ -27,6 +27,7 @@
 #include "registry.h"
 #include "factoryproxy.h"
 #include "panelproxy.h"
+#include "engineproxy.h"
 
 /*
  * Type macros.
@@ -82,6 +83,9 @@ struct _BusIBusImpl {
     IBusHotkeyProfile *hotkey_profile;
     IBusKeymap      *keymap;
 
+    gboolean use_global_engine;
+    gboolean global_engine_enabled;
+    BusEngineProxy  *global_engine;
 };
 
 struct _BusIBusImplClass {
@@ -106,4 +110,3 @@ BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
 
 G_END_DECLS
 #endif
-

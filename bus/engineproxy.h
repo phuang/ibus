@@ -50,7 +50,15 @@ typedef struct _BusEngineProxyClass BusEngineProxyClass;
 struct _BusEngineProxy {
     IBusProxy parent;
     /* instance members */
+    gboolean has_focus;
     gboolean enabled;
+    guint capabilities;
+    /* cursor location */
+    gint x;
+    gint y;
+    gint w;
+    gint h;
+
     IBusEngineDesc *desc;
     IBusKeymap     *keymap;
     IBusPropList *prop_list;
@@ -102,4 +110,3 @@ void             bus_engine_proxy_property_hide     (BusEngineProxy *engine,
                                                      const gchar    *prop_name);
 G_END_DECLS
 #endif
-

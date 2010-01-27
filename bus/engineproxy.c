@@ -304,6 +304,12 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
+    engine->has_focus = FALSE;
+    engine->enabled = FALSE;
+    engine->x = 0;
+    engine->y = 0;
+    engine->w = 0;
+    engine->h = 0;
     engine->enabled = FALSE;
     engine->desc = NULL;
     engine->keymap = NULL;
@@ -650,13 +656,19 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
-    ibus_proxy_call ((IBusProxy *) engine,
-                     "SetCursorLocation",
-                     G_TYPE_INT, &x,
-                     G_TYPE_INT, &y,
-                     G_TYPE_INT, &w,
-                     G_TYPE_INT, &h,
-                     G_TYPE_INVALID);
+    if (engine->x != x || engine->y != y || engine->w != w || engine->h != h) {
+        engine->x = x;
+        engine->y = y;
+        engine->w = w;
+        engine->h = h;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "SetCursorLocation",
+                         G_TYPE_INT, &x,
+                         G_TYPE_INT, &y,
+                         G_TYPE_INT, &w,
+                         G_TYPE_INT, &h,
+                         G_TYPE_INVALID);
+    }
 }
 
 void
@@ -665,11 +677,13 @@ bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
-    ibus_proxy_call ((IBusProxy *) engine,
-                     "SetCapabilities",
-                     G_TYPE_UINT, &caps,
-                     G_TYPE_INVALID);
-
+    if (engine->capabilities != caps) {
+        engine->capabilities = caps;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "SetCapabilities",
+                         G_TYPE_UINT, &caps,
+                         G_TYPE_INVALID);
+    }
 }
 
 void
@@ -722,17 +736,61 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                      G_TYPE_INVALID);                       \
     }
 
-DEFINE_FUNCTION (FocusIn, focus_in)
-DEFINE_FUNCTION (FocusOut, focus_out)
 DEFINE_FUNCTION (Reset, reset)
 DEFINE_FUNCTION (PageUp, page_up)
 DEFINE_FUNCTION (PageDown, page_down)
 DEFINE_FUNCTION (CursorUp, cursor_up)
 DEFINE_FUNCTION (CursorDown, cursor_down)
-DEFINE_FUNCTION (Enable, enable)
-DEFINE_FUNCTION (Disable, disable)
 
 #undef DEFINE_FUNCTION
+
+void
+bus_engine_proxy_focus_in (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    if (!engine->has_focus) {
+        engine->has_focus = TRUE;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "FocusIn",
+                         G_TYPE_INVALID);
+    }
+}
+
+void
+bus_engine_proxy_focus_out (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    if (engine->has_focus) {
+        engine->has_focus = FALSE;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "FocusOut",
+                         G_TYPE_INVALID);
+    }
+}
+
+void
+bus_engine_proxy_enable (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    if (!engine->enabled) {
+        engine->enabled = TRUE;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "Enable",
+                         G_TYPE_INVALID);
+    }
+}
+
+void
+bus_engine_proxy_disable (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    if (engine->enabled) {
+        engine->enabled = FALSE;
+        ibus_proxy_call ((IBusProxy *) engine,
+                         "Disable",
+                         G_TYPE_INVALID);
+    }
+}
 
 void
 bus_engine_proxy_candidate_clicked (BusEngineProxy *engine,
