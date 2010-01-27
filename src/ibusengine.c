@@ -1058,6 +1058,10 @@ ibus_engine_commit_text (IBusEngine *engine,
                   "CommitText",
                   IBUS_TYPE_TEXT, &text,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
 }
 
 void
@@ -1072,6 +1076,10 @@ ibus_engine_update_preedit_text (IBusEngine      *engine,
                   G_TYPE_UINT, &cursor_pos,
                   G_TYPE_BOOLEAN, &visible,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
 }
 
 void
@@ -1098,6 +1106,10 @@ void ibus_engine_update_auxiliary_text (IBusEngine      *engine,
                   IBUS_TYPE_TEXT, &text,
                   G_TYPE_BOOLEAN, &visible,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
 }
 
 void
@@ -1126,6 +1138,10 @@ ibus_engine_update_lookup_table (IBusEngine        *engine,
                   IBUS_TYPE_LOOKUP_TABLE, &table,
                   G_TYPE_BOOLEAN, &visible,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (table)) {
+        g_object_unref (table);
+    }
 }
 
 void
@@ -1155,7 +1171,9 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
 
     ibus_engine_update_lookup_table (engine, new_table, visible);
 
-    g_object_unref (new_table);
+    if (g_object_is_floating (table)) {
+        g_object_unref (table);
+    }
 }
 
 void ibus_engine_show_lookup_table (IBusEngine *engine)
@@ -1204,6 +1222,10 @@ ibus_engine_register_properties (IBusEngine   *engine,
                   "RegisterProperties",
                   IBUS_TYPE_PROP_LIST, &prop_list,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (prop_list)) {
+        g_object_unref (prop_list);
+    }
 }
 
 void
@@ -1214,6 +1236,10 @@ ibus_engine_update_property (IBusEngine   *engine,
                   "UpdateProperty",
                   IBUS_TYPE_PROPERTY, &prop,
                   G_TYPE_INVALID);
+
+    if (g_object_is_floating (prop)) {
+        g_object_unref (prop);
+    }
 }
 
 const gchar *
