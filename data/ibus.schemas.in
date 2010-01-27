@@ -158,5 +158,16 @@
 	    <long>Custom font name for language panel</long>
       </locale>
     </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/use_global_engine</key>
+      <applyto>/desktop/ibus/general/use_global_engine</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Use global input method</short>
+	    <long>Share the same input method among all applications</long>
+      </locale>
+    </schema>
   </schemalist>
 </gconfschemafile>

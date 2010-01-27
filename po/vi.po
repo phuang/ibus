@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-22 17:46+0800\n"
+"POT-Creation-Date: 2010-01-27 13:01+0800\n"
 "PO-Revision-Date: 2009-12-08 16:55+0700\n"
 "Last-Translator: Lê Quốc Tuấn <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -36,39 +36,39 @@ msgstr ""
 msgid "Other"
 msgstr "Khác"
 
-#: ../ui/gtk/candidatepanel.py:265
+#: ../ui/gtk/candidatepanel.py:254
 msgid "Previous page"
 msgstr "Trang trước"
 
-#: ../ui/gtk/candidatepanel.py:270
+#: ../ui/gtk/candidatepanel.py:259
 msgid "Next page"
 msgstr "Trang sau"
 
-#: ../ui/gtk/main.py:50
+#: ../ui/gtk/main.py:57
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 #, fuzzy
 msgid "Restart Now"
 msgstr "Khởi động lại"
 
-#: ../ui/gtk/main.py:56
+#: ../ui/gtk/main.py:63
 #, fuzzy
 msgid "Later"
 msgstr "Khác"
 
-#: ../ui/gtk/panel.py:335
+#: ../ui/gtk/panel.py:334
 msgid "Restart"
 msgstr "Khởi động lại"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:421
 msgid "Turn off input method"
 msgstr "Tắt kiểu gõ"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:458
 msgid "No input window"
 msgstr "Không có cửa sổ nhập"
 
@@ -80,16 +80,16 @@ msgstr "IBus là một bộ gõ thông minh cho Linux/Unix."
 msgid "translator-credits"
 msgstr "Lê Quốc Tuấn <mr.lequoctuan@gmail.com>"
 
-#: ../ui/gtk/languagebar.py:101
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
 msgid "About the Input Method"
 msgstr "Giới thiệu về kiểu gõ"
 
-#: ../ui/gtk/languagebar.py:169
+#: ../ui/gtk/languagebar.py:215
 msgid "Switch input method"
 msgstr "Chuyển kiểu gõ"
 
-#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
-#: ../setup/setup.ui.h:15
+#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Giới thiệu"
 
@@ -124,12 +124,12 @@ msgstr "chuyển đến kiểu gõ kế tiếp"
 msgid "previous input method"
 msgstr "chuyển đến kiểu gõ trước"
 
-#: ../setup/main.py:240
+#: ../setup/main.py:262
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr ""
 "Trình nền IBus chưa được khởi động. Bạn có muốn khởi động nó ngay bây giờ?"
 
-#: ../setup/main.py:255
+#: ../setup/main.py:277
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -143,7 +143,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:270
+#: ../setup/main.py:292
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Chọn phím tắt để %s"
@@ -172,20 +172,20 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Vui lòng nhấn một phím (hoặc tổ hợp phím)"
 
-#: ../setup/enginecombobox.py:100
+#: ../setup/enginecombobox.py:120
 msgid "Select an input method"
 msgstr "Chọn một kiểu gõ"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
 msgid "Input Method"
 msgstr "Kiểu gõ"
 
-#: ../setup/enginetreeview.py:88
+#: ../setup/enginetreeview.py:95
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
 msgid "IBus Preferences"
 msgstr "Tùy chọn IBus"
 
@@ -229,26 +229,30 @@ msgstr "Nạp trước các kiểu gõ"
 msgid "Prev engine shortcut keys"
 msgstr "Phím tắt cho kiểu gõ trước"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+msgid "Share the same input method among all applications"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
 msgid "Show icon on system tray"
 msgstr "Hiển thị biểu tượng trên khay hệ thống"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:13
 msgid "Show input method name"
 msgstr "Hiển thị tên kiểu gõ"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show input method name on language bar"
 msgstr "Hiển thị tên kiểu gõ trên thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 "Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -256,31 +260,36 @@ msgstr ""
 "Vị trí của thanh ngôn ngữ. 0 = góc trên bên trái, 1 = góc trên bên phải, 2 = "
 "góc dưới bên trái, 3 = góc dưới bên phái, 4 = Tùy chọn"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "Phím tắt dùng để chuyển đến kiểu gõ kế tiếp trong danh sách"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Phím tắt để bật hoặc tắt kiểu gõ"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Trigger shortcut keys"
 msgstr "Phím tắt kích hoạt"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
 msgid "Use custom font"
 msgstr "Dùng phông chữ tùy biến"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:21
 msgid "Use custom font name for language panel"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "Use global input method"
+msgstr "Chọn một kiểu gõ"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
 msgid "Use system keyboard (XKB) layout"
 msgstr "Dùng kiểu bố trí bàn phím hệ thống (XKB)"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
 msgid "Use system keyboard layout"
 msgstr "Dùng kiểu bố trí bàn phím của hệ thống"
 
@@ -293,18 +302,22 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>Phông và kiểu</b>"
 
 #: ../setup/setup.ui.h:3
+msgid "<b>Global input methood settings</b>"
+msgstr ""
+
+#: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Bố trí bàn phím</b>"
 
-#: ../setup/setup.ui.h:4
+#: ../setup/setup.ui.h:5
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Phím tắt</b>"
 
-#: ../setup/setup.ui.h:5
+#: ../setup/setup.ui.h:6
 msgid "<b>Startup</b>"
 msgstr "<b>Khởi động</b>"
 
-#: ../setup/setup.ui.h:6
+#: ../setup/setup.ui.h:7
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -320,7 +333,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:13
+#: ../setup/setup.ui.h:14
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
@@ -328,116 +341,124 @@ msgstr ""
 "<small><i>Kiểu gõ mặc định là kiểu gõ đầu tiên trong danh sách.\n"
 "Bạn có thể dùng nút lên/xuống để thay đổi nó</i></small>"
 
-#: ../setup/setup.ui.h:16
+#: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
 msgstr "Thêm kiểu gõ đã chọn vào những kiểu gõ cho phép sử dụng"
 
-#: ../setup/setup.ui.h:17
+#: ../setup/setup.ui.h:18
 msgid "Advanced"
 msgstr "Nâng cao"
 
-#: ../setup/setup.ui.h:18
+#: ../setup/setup.ui.h:19
 msgid "Always"
 msgstr "Luôn luôn"
 
-#: ../setup/setup.ui.h:19
+#: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
 msgstr "Góc dưới bên trái"
 
-#: ../setup/setup.ui.h:20
+#: ../setup/setup.ui.h:21
 msgid "Bottom right corner"
 msgstr "Góc dưới bên phải"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
 msgstr "Hướng danh sách từ ứng cử:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:23
 msgid "Custom"
 msgstr "Tùy biến"
 
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "Enable or disable:"
 msgstr "Bật hoặc tắt:"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 msgid "General"
 msgstr "Chung"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:26
 msgid "Horizontal"
 msgstr "Ngang"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Language panel position:"
 msgstr "Vị trí thanh ngôn ngữ:"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:30
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "Di chuyển kiểu gõ đã chọn xuống dưới trong những kiểu gõ cho phép sử dụng"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:31
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "Di chuyển kiểu gõ đã chọn lên trên trong những kiểu gõ cho phép sử dụng"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Never"
 msgstr "Không bao giờ"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Next input method:"
 msgstr "Kiểu gõ kế tiếp:"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Previous input method:"
 msgstr "Kiểu gõ trước:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "Xóa kiểu gõ đã chọn ra khỏi những kiểu gõ cho phép sử dụng"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "Thiết lập việc ẩn hay hiển thị thanh ngôn ngữ"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Đặt hướng của từ gợi ý trong bảng tra cứu"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
+msgid "Show in Status Icon menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:41
 msgid "Show information of the selected input method"
 msgstr "Hiển thị thông tin về kiểu gõ đã chọn"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:43
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Hiển thị tên của kiểu gõ trên thanh ngôn ngữ khi đánh dấu vào ô kiểm"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:44
 msgid "Show language panel:"
 msgstr "Hiển thị thanh ngôn ngữ:"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:45
 msgid "Start ibus on login"
 msgstr "Khởi động ibus khi đăng nhập"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Phím tắt dùng để chuyển về kiểu gõ trước trong danh sách"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:49
 msgid "Top left corner"
 msgstr "Góc trên bên trái"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:50
 msgid "Top right corner"
 msgstr "Góc trên bên phải"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:54
 msgid "Vertical"
 msgstr "Dọc"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:55
 msgid "When active"
 msgstr "Khi hoạt động"
+
+#, fuzzy
+#~ msgid "Use global engine"
+#~ msgstr "Nạp trước các kiểu gõ"

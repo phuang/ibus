@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-22 17:46+0800\n"
+"POT-Creation-Date: 2010-01-27 13:01+0800\n"
 "PO-Revision-Date: 2009-12-08 11:27+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <kde-l10n-kn@kde.org>\n"
@@ -37,39 +37,39 @@ msgstr ""
 msgid "Other"
 msgstr "ಇತರೆ"
 
-#: ../ui/gtk/candidatepanel.py:265
+#: ../ui/gtk/candidatepanel.py:254
 msgid "Previous page"
 msgstr "ಹಿಂದಿನ ಪುಟ:"
 
-#: ../ui/gtk/candidatepanel.py:270
+#: ../ui/gtk/candidatepanel.py:259
 msgid "Next page"
 msgstr "ಮುಂದಿನ ಪುಟ"
 
-#: ../ui/gtk/main.py:50
+#: ../ui/gtk/main.py:57
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 #, fuzzy
 msgid "Restart Now"
 msgstr "ಪುನರಾರಂಭಿಸು"
 
-#: ../ui/gtk/main.py:56
+#: ../ui/gtk/main.py:63
 #, fuzzy
 msgid "Later"
 msgstr "ಇತರೆ"
 
-#: ../ui/gtk/panel.py:335
+#: ../ui/gtk/panel.py:334
 msgid "Restart"
 msgstr "ಪುನರಾರಂಭಿಸು"
 
-#: ../ui/gtk/panel.py:422
+#: ../ui/gtk/panel.py:421
 msgid "Turn off input method"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಆಫ್‌ ಮಾಡಿ"
 
-#: ../ui/gtk/panel.py:459
+#: ../ui/gtk/panel.py:458
 msgid "No input window"
 msgstr "ಯಾವುದೆ ಇನ್‌ಪುಟ್ ವಿಂಡೊ ಇಲ್ಲ"
 
@@ -81,16 +81,16 @@ msgstr "IBus ಎನ್ನುವುದು Linux/Unix ಗಾಗಿನ ಒಂದು
 msgid "translator-credits"
 msgstr "ಶಂಕರ್ ಪ್ರಸಾದ್ <svenkate@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:101
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
 msgid "About the Input Method"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಬಗೆಗೆ"
 
-#: ../ui/gtk/languagebar.py:169
+#: ../ui/gtk/languagebar.py:215
 msgid "Switch input method"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸು"
 
-#: ../ui/gtk/engineabout.py:35 ../setup/engineabout.py:35
-#: ../setup/setup.ui.h:15
+#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "ಇದರ ಬಗ್ಗೆ"
 
@@ -125,11 +125,11 @@ msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 msgid "previous input method"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
-#: ../setup/main.py:240
+#: ../setup/main.py:262
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ಡೀಮನ್ ಇನ್ನೂ ಸಹ ಆರಂಭಗೊಂಡಿಲ್ಲ. ನೀವದನ್ನು ಈಗಲೆ ಆರಂಭಿಸಲು ಬಯಸುತ್ತೀರೆ?"
 
-#: ../setup/main.py:255
+#: ../setup/main.py:277
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -143,7 +143,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:270
+#: ../setup/main.py:292
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ಗಾಗಿ ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
@@ -172,20 +172,20 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "ದಯವಿಟ್ಟು ಒಂದು ಕೀಲಿಯನ್ನು (ಅಥವ ಒಂದು ಕೀಲಿ ಸಂಯೋಜನೆಯನ್ನು) ಒತ್ತಿ"
 
-#: ../setup/enginecombobox.py:100
+#: ../setup/enginecombobox.py:120
 msgid "Select an input method"
 msgstr "ಒಂದು ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:60 ../setup/setup.ui.h:27
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
 msgid "Input Method"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನ"
 
-#: ../setup/enginetreeview.py:88
+#: ../setup/enginetreeview.py:95
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:26
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
 msgid "IBus Preferences"
 msgstr "IBus ಆದ್ಯತೆಗಳು"
 
@@ -229,26 +229,30 @@ msgstr "ಮೊದಲೆ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗ
 msgid "Prev engine shortcut keys"
 msgstr "ಹಿಂದಿನ ಎಂಜಿನ್ ಶಾರ್ಟ್-ಕಟ್ ಕೀಲಿಗಳು"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:37
+#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+msgid "Share the same input method among all applications"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
 msgid "Show icon on system tray"
 msgstr "ಚಿಹ್ನೆಯನ್ನು ವ್ಯವಸ್ಥೆಯ ಟ್ರೇಯಲ್ಲಿ ತೋರಿಸು"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:13
 msgid "Show input method name"
 msgstr "ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show input method name on language bar"
 msgstr "ಭಾಷೆಯ ಫಲಕದಲ್ಲಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:15
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 "ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಯಾವಾಗಲೂ ಅಡಗಿಸು, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:16
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -256,31 +260,36 @@ msgstr ""
 "ಭಾಷೆ ಫಲಕವು ಇರುವ ಸ್ಥಳ. 0 = ಮೇಲ್ಭಾಗದ ಎಡ ಮೂಲೆ, 1 = ಮೇಲ್ಭಾಗದ ಬಲ ಮೂಲೆ, 2 = ಕೆಳಗಿನ ಎಡ "
 "ಮೂಲೆ, 3 = ಕೆಳಗಿನ ಬಲ ಮೂಲೆ, 4 = ಇಚ್ಛೆಯ"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನಕ್ಕೆ ಬದಲಾಯಿಸಲು ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಗಳು"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
 msgid "The shortcut keys for turning input method on or off"
 msgstr "ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳನ್ನು ಆಫ್ ಹಾಗು ಆನ್ ಮಾಡಲು ಶಾರ್ಟ್-ಕೀಲಿಗಳು"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:19
 msgid "Trigger shortcut keys"
 msgstr "ಶಾರ್ಟ್-ಕಟ್ ಕೀಲಿಗಳನ್ನು ಟ್ರಿಗರ್ ಮಾಡು"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
 msgid "Use custom font"
 msgstr "ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯನ್ನು ಬಳಸಿ"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:21
 msgid "Use custom font name for language panel"
 msgstr "ಭಾಷೆಯ ಫಲಕಕ್ಕಾಗಿ ಇಚ್ಛೆಯ ಅಕ್ಷರಶೈಲಿಯ ಹೆಸರನ್ನು ಬಳಸಿ"
 
-#: ../data/ibus.schemas.in.h:21 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "Use global input method"
+msgstr "ಒಂದು ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
 msgid "Use system keyboard (XKB) layout"
 msgstr "ವ್ಯವಸ್ಥೆಯ ಕೀಲಿಮಣೆ (XKB) ವಿನ್ಯಾಸವನ್ನು ಬಳಸಿ"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
 msgid "Use system keyboard layout"
 msgstr "ವ್ಯವಸ್ಥೆಯ ಕೀಲಿಮಣೆ ವಿನ್ಯಾಸವನ್ನು ಬಳಸಿ"
 
@@ -293,18 +302,22 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ಅಕ್ಷರಶೈಲಿ ಹಾಗು ವಿನ್ಯಾಸ</b>"
 
 #: ../setup/setup.ui.h:3
+msgid "<b>Global input methood settings</b>"
+msgstr ""
+
+#: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>ಕೀಲಿಮಣೆ ವಿನ್ಯಾಸ</b>"
 
-#: ../setup/setup.ui.h:4
+#: ../setup/setup.ui.h:5
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>ಕೀಲಿಮಣೆ ಶಾರ್ಟ್-ಕಟ್‌ಗಳು</b>"
 
-#: ../setup/setup.ui.h:5
+#: ../setup/setup.ui.h:6
 msgid "<b>Startup</b>"
 msgstr "<b>ಆರಂಭ</b>"
 
-#: ../setup/setup.ui.h:6
+#: ../setup/setup.ui.h:7
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -320,7 +333,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:13
+#: ../setup/setup.ui.h:14
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
@@ -328,121 +341,129 @@ msgstr ""
 "<small><i>ಪೂರ್ವನಿಯೋಜಿತ ಇನ್‌ಪುಟ್‌ ವಿಧಾನವು ಪಟ್ಟಿಯ ಮೇಲ್ಬಾಗದಲ್ಲಿದೆ.\n"
 "ಅದನ್ನು ಬದಲಾಯಿಸಲು ನೀವು up/down ಗುಂಡಿಗಳನ್ನು ಬಳಸಬಹುದು.</i></small>"
 
-#: ../setup/setup.ui.h:16
+#: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
 msgstr "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಶಕ್ತಗೊಂಡಿರುವ ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳಿಗೆ ಸೇರಿಸಿ"
 
-#: ../setup/setup.ui.h:17
+#: ../setup/setup.ui.h:18
 msgid "Advanced"
 msgstr "ಸುಧಾರಿತ"
 
-#: ../setup/setup.ui.h:18
+#: ../setup/setup.ui.h:19
 msgid "Always"
 msgstr "ಯಾವಾಗಲೂ"
 
-#: ../setup/setup.ui.h:19
+#: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
 msgstr "ಕೆಳಗಿನ ಎಡ ಮೂಲೆ"
 
-#: ../setup/setup.ui.h:20
+#: ../setup/setup.ui.h:21
 msgid "Bottom right corner"
 msgstr "ಕೆಳಗಿನ ಬಲ ಮೂಲೆ"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
 msgstr "ಅಬ್ಯರ್ಥಿಗಳ ಹೊಂದಿಕೆ:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:23
 msgid "Custom"
 msgstr "ಇಚ್ಛೆಯ"
 
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:24
 msgid "Enable or disable:"
 msgstr "ಶಕ್ತಗೊಂಡ ಅಥವ ಅಶಕ್ತಗೊಂಡ:"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:25
 msgid "General"
 msgstr "ಸಾಮಾನ್ಯ"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:26
 msgid "Horizontal"
 msgstr "ಅಡ್ಡವಾದ"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Language panel position:"
 msgstr "ಭಾಷೆಯ ಫಲಕದ ಸ್ಥಳ:"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:30
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಶಕ್ತಗೊಂಡಿರುವ ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ಕೆಳಕ್ಕೆ ಜರುಗಿಸಿ"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:31
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಶಕ್ತಗೊಂಡಿರುವ ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ಮೇಲಕ್ಕೆ ಜರುಗಿಸಿ"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Never"
 msgstr "ಎಂದಿಗೂ ಬೇಡ"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Next input method:"
 msgstr "ಮುಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Previous input method:"
 msgstr "ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನ:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನವನ್ನು ಶಕ್ತಗೊಂಡಿರುವ ಇನ್‌ಪುಟ್‌ ವಿಧಾನಗಳ ಪಟ್ಟಿಯಿಂದ ತೆಗೆದು ಹಾಕಿ"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 "ಭಾಷಾ ಪಟ್ಟಿಕೆಯನ್ನು ಹೇಗೆ ತೋರಿಸಬೇಕು ಅಥವ ಅಡಗಿಸಬೇಕು ಎನ್ನುವ ibus ನ ವರ್ತನೆಯನ್ನು ಹೊಂದಿಸಿ"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ನೋಡಬೇಕಿರುವ (ಲುಕ್‌ಅಪ್‌) ಕೋಷ್ಟಕದ ವಾಲಿಕೆಯನ್ನು ಹೊಂದಿಸಿ"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
+msgid "Show in Status Icon menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:41
 msgid "Show information of the selected input method"
 msgstr "ಆಯ್ಕೆ ಮಾಡಲಾದ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಮಾಹಿತಿಯನ್ನು ತೋರಿಸು"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:43
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "ಗುರುತುಚೌಕದಲ್ಲಿ ಗುರುತು ಹಾಕಿದಾಗ ಭಾಷಾ ಪಟ್ಟಿಯಲ್ಲಿ ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಹೆಸರನ್ನು ತೋರಿಸು"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:44
 msgid "Show language panel:"
 msgstr "ಭಾಷೆಯ ಫಲಕವನ್ನು ತೋರಿಸು:"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:45
 msgid "Start ibus on login"
 msgstr "ಪ್ರವೇಶಿಸಿದಾಗ ibus ಅನ್ನು ಆರಂಭಿಸು"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "ಪಟ್ಟಿಯಲ್ಲಿನ ಹಿಂದಿನ ಇನ್‌ಪುಟ್ ವಿಧಾನಕ್ಕೆ ಬದಲಾಯಿಸಲು ಶಾರ್ಟ್-ಕಟ್‌ ಕೀಲಿಗಳು"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:49
 msgid "Top left corner"
 msgstr "ಮೇಲ್ಭಾಗದ ಎಡ ಮೂಲೆ"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:50
 msgid "Top right corner"
 msgstr "ಮೇಲ್ಭಾಗದ ಬಲ ಮೂಲೆ"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:54
 msgid "Vertical"
 msgstr "ಲಂಬವಾಗಿ"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:55
 msgid "When active"
 msgstr "ಸಕ್ರಿಯವಾಗಿದ್ದಾಗ"
+
+#, fuzzy
+#~ msgid "Use global engine"
+#~ msgstr "ಮೊದಲೆ ಲೋಡ್ ಮಾಡಲಾದ ಎಂಜಿನ್‌ಗಳು"
 
 #, fuzzy
 #~ msgid "Langauge panel position"
