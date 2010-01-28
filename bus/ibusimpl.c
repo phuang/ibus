@@ -938,10 +938,9 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
-        { NULL, NULL }
     };
 
-    for (i = 0; signals[i].name != NULL; i++) {
+    for (i = 0; G_N_ELEMENTS (signals); i++) {
         g_signal_connect (context,
                           signals[i].name,
                           signals[i].callback,
@@ -1232,14 +1231,13 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "ListActiveEngines",     _ibus_list_active_engines },
         { IBUS_INTERFACE_IBUS, "Exit",                  _ibus_exit },
         { IBUS_INTERFACE_IBUS, "Ping",                  _ibus_ping },
-        { NULL, NULL, NULL }
     };
 
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
-        for (i = 0; handlers[i].interface != NULL; i++) {
+        for (i = 0; G_N_ELEMENTS (handlers); i++) {
             if (ibus_message_is_method_call (message,
                                              handlers[i].interface,
                                              handlers[i].name)) {

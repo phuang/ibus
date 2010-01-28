@@ -1117,14 +1117,12 @@ bus_input_context_ibus_message (BusInputContext *context,
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetEngine",         _ic_set_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "GetEngine",         _ic_get_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "Destroy",           _ic_destroy },
-
-        { NULL, NULL, NULL }
     };
 
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
-    for (i = 0; handlers[i].interface != NULL; i++) {
+    for (i = 0; G_N_ELEMENTS (handlers); i++) {
         if (ibus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {

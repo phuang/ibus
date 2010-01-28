@@ -61,13 +61,6 @@ static void     bus_panel_proxy_property_activate
 
 static IBusProxyClass  *parent_class = NULL;
 
-struct _SignalCallbackTable {
-    gchar *name;
-    GCallback callback;
-} ;
-
-static const struct _SignalCallbackTable __signals[];
-
 GType
 bus_panel_proxy_get_type (void)
 {
@@ -334,66 +327,6 @@ failed:
 }
 
 
-void
-bus_panel_proxy_focus_in (BusPanelProxy     *panel,
-                          BusInputContext   *context)
-{
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    if (panel->focused_context == context)
-        return;
-
-    if (panel->focused_context != NULL)
-        bus_panel_proxy_focus_out (panel, panel->focused_context);
-
-    g_object_ref (context);
-    panel->focused_context = context;
-
-    const gchar *path = ibus_service_get_path ((IBusService *)context);
-
-    ibus_proxy_call ((IBusProxy *) panel,
-                     "FocusIn",
-                     IBUS_TYPE_OBJECT_PATH, &path,
-                     G_TYPE_INVALID);
-
-    /* install signal handlers */
-    gint i;
-    for (i = 0; __signals[i].name != NULL; i++) {
-        g_signal_connect (context,
-                          __signals[i].name,
-                          __signals[i].callback,
-                          panel);
-    }
-}
-
-void
-bus_panel_proxy_focus_out (BusPanelProxy    *panel,
-                           BusInputContext  *context)
-{
-    g_assert (BUS_IS_PANEL_PROXY (panel));
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    g_assert (panel->focused_context == context);
-
-    /* uninstall signal handlers */
-    gint i;
-    for (i = 0; __signals[i].name != NULL; i++) {
-        g_signal_handlers_disconnect_by_func (context,
-                                              __signals[i].callback,
-                                              panel);
-    }
-
-    const gchar *path = ibus_service_get_path ((IBusService *)context);
-
-    ibus_proxy_call ((IBusProxy *) panel,
-                     "FocusOut",
-                     IBUS_TYPE_OBJECT_PATH, &path,
-                     G_TYPE_INVALID);
-
-    g_object_unref (panel->focused_context);
-    panel->focused_context = NULL;
-}
 
 void
 bus_panel_proxy_set_cursor_location (BusPanelProxy *panel,
@@ -690,8 +623,10 @@ DEFINE_FUNCTION (state_changed)
 
 #undef DEFINE_FUNCTION
 
-static const struct _SignalCallbackTable
-__signals[] = {
+static const struct _SignalCallbackTable {
+    gchar *name;
+    GCallback callback;
+} __signals[] = {
     { "set-cursor-location",        G_CALLBACK (_context_set_cursor_location_cb) },
 
     { "update-preedit-text",        G_CALLBACK (_context_update_preedit_text_cb) },
@@ -718,6 +653,66 @@ __signals[] = {
     { "factory-changed",            G_CALLBACK (_context_state_changed_cb) },
 
     //    { "destroy",                    G_CALLBACK (_context_destroy_cb) },
-    { NULL, NULL}
 };
+
+void
+bus_panel_proxy_focus_in (BusPanelProxy     *panel,
+                          BusInputContext   *context)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (panel->focused_context == context)
+        return;
+
+    if (panel->focused_context != NULL)
+        bus_panel_proxy_focus_out (panel, panel->focused_context);
+
+    g_object_ref (context);
+    panel->focused_context = context;
+
+    const gchar *path = ibus_service_get_path ((IBusService *)context);
+
+    ibus_proxy_call ((IBusProxy *) panel,
+                     "FocusIn",
+                     IBUS_TYPE_OBJECT_PATH, &path,
+                     G_TYPE_INVALID);
+
+    /* install signal handlers */
+    gint i;
+    for (i = 0; G_N_ELEMENTS (__signals); i++) {
+        g_signal_connect (context,
+                          __signals[i].name,
+                          __signals[i].callback,
+                          panel);
+    }
+}
+
+void
+bus_panel_proxy_focus_out (BusPanelProxy    *panel,
+                           BusInputContext  *context)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    g_assert (panel->focused_context == context);
+
+    /* uninstall signal handlers */
+    gint i;
+    for (i = 0; G_N_ELEMENTS (__signals); i++) {
+        g_signal_handlers_disconnect_by_func (context,
+                                              __signals[i].callback,
+                                              panel);
+    }
+
+    const gchar *path = ibus_service_get_path ((IBusService *)context);
+
+    ibus_proxy_call ((IBusProxy *) panel,
+                     "FocusOut",
+                     IBUS_TYPE_OBJECT_PATH, &path,
+                     G_TYPE_INVALID);
+
+    g_object_unref (panel->focused_context);
+    panel->focused_context = NULL;
+}
 
