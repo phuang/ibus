@@ -650,7 +650,7 @@ static const struct _SignalCallbackTable {
 
     { "enabled",                    G_CALLBACK (_context_state_changed_cb) },
     { "disabled",                   G_CALLBACK (_context_state_changed_cb) },
-    { "factory-changed",            G_CALLBACK (_context_state_changed_cb) },
+    { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
     //    { "destroy",                    G_CALLBACK (_context_destroy_cb) },
 };

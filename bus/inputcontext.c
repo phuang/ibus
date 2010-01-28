@@ -430,7 +430,7 @@ bus_input_context_class_init (BusInputContextClass *klass)
             0);
 
     context_signals[ENGINE_CHANGED] =
-        g_signal_new (I_("factory-changed"),
+        g_signal_new (I_("engine-changed"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
             0,
