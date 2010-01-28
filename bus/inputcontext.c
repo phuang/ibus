@@ -1122,7 +1122,7 @@ bus_input_context_ibus_message (BusInputContext *context,
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
-    for (i = 0; G_N_ELEMENTS (handlers); i++) {
+    for (i = 0; i < G_N_ELEMENTS (handlers); i++) {
         if (ibus_message_is_method_call (message,
                                          handlers[i].interface,
                                          handlers[i].name)) {

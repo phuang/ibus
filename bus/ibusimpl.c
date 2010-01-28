@@ -940,7 +940,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
     };
 
-    for (i = 0; G_N_ELEMENTS (signals); i++) {
+    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
         g_signal_connect (context,
                           signals[i].name,
                           signals[i].callback,
@@ -1237,7 +1237,7 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
     ibus_message_set_destination (message, DBUS_SERVICE_DBUS);
 
     if (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL) {
-        for (i = 0; G_N_ELEMENTS (handlers); i++) {
+        for (i = 0; i < G_N_ELEMENTS (handlers); i++) {
             if (ibus_message_is_method_call (message,
                                              handlers[i].interface,
                                              handlers[i].name)) {

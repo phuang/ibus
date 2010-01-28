@@ -680,7 +680,7 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
 
     /* install signal handlers */
     gint i;
-    for (i = 0; G_N_ELEMENTS (__signals); i++) {
+    for (i = 0; i < G_N_ELEMENTS (__signals); i++) {
         g_signal_connect (context,
                           __signals[i].name,
                           __signals[i].callback,
@@ -699,7 +699,7 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
 
     /* uninstall signal handlers */
     gint i;
-    for (i = 0; G_N_ELEMENTS (__signals); i++) {
+    for (i = 0; i < G_N_ELEMENTS (__signals); i++) {
         g_signal_handlers_disconnect_by_func (context,
                                               __signals[i].callback,
                                               panel);
