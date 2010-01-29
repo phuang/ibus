@@ -149,6 +149,10 @@ IBusEngine  *ibus_engine_new            (const gchar        *name,
  * @text: String commit to IBusEngine.
  *
  * Commit output of input method to IBus client.
+ *
+ * (Note: The text object will be released, if it is floating.
+ *  If caller want to the table object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_commit_text    (IBusEngine         *engine,
                                          IBusText           *text);
@@ -161,6 +165,10 @@ void         ibus_engine_commit_text    (IBusEngine         *engine,
  * @visible: Whether the pre-edit buffer is visible.
  *
  * Update the pre-edit buffer.
+ *
+ * (Note: The text object will be released, if it is floating.
+ *  If caller want to the table object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_preedit_text
                                         (IBusEngine         *engine,
@@ -193,6 +201,10 @@ void         ibus_engine_hide_preedit_text
  * @visible: Whether the auxiliary text bar is visible.
  *
  * Update the auxiliary bar.
+ *
+ * (Note: The text object will be released, if it is floating.
+ *  If caller want to the table object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_auxiliary_text
                                         (IBusEngine        *engine,
@@ -224,6 +236,10 @@ void         ibus_engine_hide_auxiliary_text
  * @visible: Whether the lookup_table is visible.
  *
  * Update the lookup table.
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to the table object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_lookup_table
                                         (IBusEngine         *engine,
@@ -241,6 +257,9 @@ void         ibus_engine_update_lookup_table
  * If size of lookup table is not over table page size *4,
  * then it calls ibus_engine_update_lookup_table().
  *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to the table object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_lookup_table_fast
                                         (IBusEngine         *engine,
@@ -286,6 +305,10 @@ void         ibus_engine_forward_key_event
  * @prop_list: Property List.
  *
  * Register and show properties in language bar.
+ *
+ * (Note: The prop_list object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_register_properties
                                         (IBusEngine         *engine,
@@ -297,6 +320,10 @@ void         ibus_engine_register_properties
  * @prop: IBusProperty to be updated.
  *
  * Update the state displayed in language bar.
+ *
+ * (Note: The prop object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_property(IBusEngine         *engine,
                                          IBusProperty       *prop);
