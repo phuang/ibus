@@ -151,7 +151,7 @@ IBusEngine  *ibus_engine_new            (const gchar        *name,
  * Commit output of input method to IBus client.
  *
  * (Note: The text object will be released, if it is floating.
- *  If caller want to the table object, caller should make the object
+ *  If caller want to keep the object, caller should make the object
  *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_commit_text    (IBusEngine         *engine,
@@ -167,7 +167,7 @@ void         ibus_engine_commit_text    (IBusEngine         *engine,
  * Update the pre-edit buffer.
  *
  * (Note: The text object will be released, if it is floating.
- *  If caller want to the table object, caller should make the object
+ *  If caller want to keep the object, caller should make the object
  *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_preedit_text
@@ -203,7 +203,7 @@ void         ibus_engine_hide_preedit_text
  * Update the auxiliary bar.
  *
  * (Note: The text object will be released, if it is floating.
- *  If caller want to the table object, caller should make the object
+ *  If caller want to keep the object, caller should make the object
  *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_auxiliary_text
@@ -238,7 +238,7 @@ void         ibus_engine_hide_auxiliary_text
  * Update the lookup table.
  *
  * (Note: The table object will be released, if it is floating.
- *  If caller want to the table object, caller should make the object
+ *  If caller want to keep the object, caller should make the object
  *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_lookup_table
@@ -258,7 +258,7 @@ void         ibus_engine_update_lookup_table
  * then it calls ibus_engine_update_lookup_table().
  *
  * (Note: The table object will be released, if it is floating.
- *  If caller want to the table object, caller should make the object
+ *  If caller want to keep the object, caller should make the object
  *  sink by g_object_ref_sink.)
  */
 void         ibus_engine_update_lookup_table_fast
