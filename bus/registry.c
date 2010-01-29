@@ -34,7 +34,6 @@ enum {
 static guint             _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void              bus_registry_class_init        (BusRegistryClass   *klass);
 static void              bus_registry_init              (BusRegistry        *registry);
 static void              bus_registry_destroy           (BusRegistry        *registry);
 static void              bus_registry_load              (BusRegistry        *registry);
@@ -45,43 +44,13 @@ static gboolean          bus_registry_load_cache        (BusRegistry        *reg
 static gboolean          bus_registry_check_modification(BusRegistry        *registry);
 static void              bus_registry_remove_all        (BusRegistry        *registry);
 
-static IBusObjectClass  *parent_class = NULL;
-
-GType
-bus_registry_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusRegistryClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_registry_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusRegistry),
-        0,
-        (GInstanceInitFunc) bus_registry_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "BusRegistry",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
-
+G_DEFINE_TYPE (BusRegistry, bus_registry, IBUS_TYPE_OBJECT)
 
 static void
 bus_registry_class_init (BusRegistryClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     _signals[CHANGED] =
         g_signal_new (I_("changed"),
@@ -173,7 +142,7 @@ bus_registry_destroy (BusRegistry *registry)
     registry->mutex = NULL;
 #endif
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (registry));
+    IBUS_OBJECT_CLASS (bus_registry_parent_class)->destroy (IBUS_OBJECT (registry));
 }
 
 

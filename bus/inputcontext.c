@@ -64,7 +64,6 @@ typedef struct _BusInputContextPrivate BusInputContextPrivate;
 static guint    context_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_input_context_class_init    (BusInputContextClass   *klass);
 static void     bus_input_context_init          (BusInputContext        *context);
 static void     bus_input_context_destroy       (BusInputContext        *context);
 static gboolean bus_input_context_ibus_message  (BusInputContext        *context,
@@ -123,37 +122,12 @@ static void     bus_input_context_update_property
 static void     _engine_destroy_cb              (BusEngineProxy         *factory,
                                                  BusInputContext        *context);
 
-static IBusServiceClass  *parent_class = NULL;
 static guint id = 0;
 static IBusText *text_empty = NULL;
 static IBusLookupTable *lookup_table_empty = NULL;
 static IBusPropList    *props_empty = NULL;
 
-GType
-bus_input_context_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusInputContextClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_input_context_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusInputContext),
-        0,
-        (GInstanceInitFunc) bus_input_context_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                    "BusInputContext",
-                    &type_info,
-                    (GTypeFlags) 0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (BusInputContext, bus_input_context, IBUS_TYPE_SERVICE)
 
 static void
 _connection_destroy_cb (BusConnection   *connection,
@@ -205,11 +179,10 @@ bus_input_context_class_init (BusInputContextClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
-
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) bus_input_context_ibus_message;
+    IBUS_SERVICE_CLASS (klass)->ibus_message =
+            (ServiceIBusMessageFunc) bus_input_context_ibus_message;
 
     /* install signals */
     context_signals[PROCESS_KEY_EVENT] =
@@ -550,7 +523,7 @@ bus_input_context_destroy (BusInputContext *context)
         context->client = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (context));
+    IBUS_OBJECT_CLASS(bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 /* introspectable interface */
@@ -1145,9 +1118,10 @@ bus_input_context_ibus_message (BusInputContext *context,
         }
     }
 
-    return parent_class->ibus_message ((IBusService *)context,
-                                       (IBusConnection *)connection,
-                                       message);
+    return IBUS_SERVICE_CLASS (bus_input_context_parent_class)->ibus_message (
+                                (IBusService *)context,
+                                (IBusConnection *)connection,
+                                message);
 }
 
 
