@@ -179,6 +179,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @text: Text to be committed.
      *
      * Emitted when the text is going to be committed.
+     *
+     * (Note: The text object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[COMMIT_TEXT] =
         g_signal_new (I_("commit-text"),
@@ -242,6 +246,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @visible: Whether the update is visible.
      *
      * Emitted to update preedit text.
+     *
+     * (Note: The text object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
@@ -291,6 +299,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @context: An IBusInputContext.
      *
      * Emitted to hide auxilary text.
+     *
+     * (Note: The text object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[UPDATE_AUXILIARY_TEXT] =
         g_signal_new (I_("update-auxiliary-text"),
@@ -340,6 +352,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @visible: Whether the table should be visible.
      *
      * Emitted to update lookup table.
+     *
+     * (Note: The table object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
@@ -449,6 +465,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @props: An IBusPropList that contains properties.
      *
      * Emitted to register the properties in @props.
+     *
+     * (Note: The props object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[REGISTER_PROPERTIES] =
         g_signal_new (I_("register-properties"),
@@ -467,6 +487,10 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
      * @prop: The IBusProperty to be updated.
      *
      * Emitted to update the property @prop.
+     *
+     * (Note: The prop object is floating, and it will be released after the signal.
+     *  If singal handler want to keep the object, the handler should use g_object_ref_sink()
+     *  to get the ownership of the object.)
      */
     context_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
