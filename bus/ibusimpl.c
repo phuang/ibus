@@ -47,7 +47,6 @@ enum {
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_ibus_impl_class_init        (BusIBusImplClass   *klass);
 static void     bus_ibus_impl_init              (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_destroy           (BusIBusImpl        *ibus);
 static gboolean bus_ibus_impl_ibus_message      (BusIBusImpl        *ibus,
@@ -68,33 +67,7 @@ static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
                                                  BusIBusImpl        *ibus);
 
-static IBusServiceClass  *parent_class = NULL;
-
-GType
-bus_ibus_impl_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusIBusImplClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_ibus_impl_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusIBusImpl),
-        0,
-        (GInstanceInitFunc) bus_ibus_impl_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                    "BusIBusImpl",
-                    &type_info,
-                    (GTypeFlags) 0);
-    }
-    return type;
-}
+G_DEFINE_TYPE(BusIBusImpl, bus_ibus_impl, IBUS_TYPE_SERVICE)
 
 BusIBusImpl *
 bus_ibus_impl_get_default (void)
@@ -115,8 +88,6 @@ static void
 bus_ibus_impl_class_init (BusIBusImplClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
@@ -600,7 +571,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     bus_server_quit (BUS_DEFAULT_SERVER);
     ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (ibus));
+    IBUS_OBJECT_CLASS(bus_ibus_impl_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
 /* introspectable interface */
@@ -1259,9 +1230,10 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         }
     }
 
-    return parent_class->ibus_message ((IBusService *) ibus,
-                                       (IBusConnection *) connection,
-                                       message);
+    return IBUS_SERVICE_CLASS(bus_ibus_impl_parent_class)->ibus_message (
+                                    (IBusService *) ibus,
+                                    (IBusConnection *) connection,
+                                    message);
 }
 
 BusFactoryProxy *

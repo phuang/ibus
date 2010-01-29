@@ -34,7 +34,6 @@ typedef struct _BusConnectionPrivate BusConnectionPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_connection_class_init   (BusConnectionClass     *klass);
 static void     bus_connection_init         (BusConnection          *connection);
 static void     bus_connection_destroy      (BusConnection          *connection);
 static gboolean bus_connection_authenticate_unix_user
@@ -47,34 +46,7 @@ static gboolean bus_connection_dbus_signal  (BusConnection          *connection,
                                              DBusMessage            *message);
 #endif
 
-static IBusObjectClass  *parent_class = NULL;
-
-GType
-bus_connection_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusConnectionClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_connection_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusConnection),
-        0,
-        (GInstanceInitFunc) bus_connection_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_CONNECTION,
-                    "BusConnection",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (BusConnection, bus_connection, IBUS_TYPE_CONNECTION)
 
 BusConnection *
 bus_connection_new (void)
@@ -88,8 +60,6 @@ bus_connection_class_init (BusConnectionClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
     IBusConnectionClass *ibus_connection_class = IBUS_CONNECTION_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
 
@@ -111,7 +81,7 @@ bus_connection_destroy (BusConnection *connection)
 {
     GList *name;
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (connection));
+    IBUS_OBJECT_CLASS(bus_connection_parent_class)->destroy (IBUS_OBJECT (connection));
 
     if (connection->unique_name) {
         g_free (connection->unique_name);
@@ -147,7 +117,7 @@ bus_connection_ibus_message (BusConnection  *connection,
     g_free(str);
 #endif
 
-    retval = IBUS_CONNECTION_CLASS (parent_class)->ibus_message (
+    retval = IBUS_CONNECTION_CLASS (bus_connection_parent_class)->ibus_message (
                     (IBusConnection *)connection,
                     message);
     return retval;
@@ -159,7 +129,7 @@ bus_connection_dbus_signal  (BusConnection  *connection,
                              DBusMessage    *message)
 {
     gboolean retval;
-    retval = IBUS_CONNECTION_CLASS (parent_class)->dbus_signal (
+    retval = IBUS_CONNECTION_CLASS (bus_connection_parent_class)->dbus_signal (
             IBUS_CONNECTION (connection), message);
     return retval;
 }

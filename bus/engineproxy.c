@@ -52,40 +52,13 @@ static guint    engine_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_engine_proxy_class_init     (BusEngineProxyClass    *klass);
 static void     bus_engine_proxy_init           (BusEngineProxy         *engine);
 static void     bus_engine_proxy_real_destroy   (BusEngineProxy         *engine);
 
 static gboolean bus_engine_proxy_ibus_signal    (IBusProxy              *proxy,
                                                  IBusMessage            *message);
 
-static IBusProxyClass  *parent_class = NULL;
-
-GType
-bus_engine_proxy_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusEngineProxyClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_engine_proxy_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusEngineProxy),
-        0,
-        (GInstanceInitFunc) bus_engine_proxy_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_PROXY,
-                    "BusEngineProxy",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (BusEngineProxy, bus_engine_proxy, IBUS_TYPE_PROXY)
 
 BusEngineProxy *
 bus_engine_proxy_new (const gchar    *path,
@@ -124,7 +97,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (klass);
 
 
-    parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
+    bus_engine_proxy_parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_engine_proxy_real_destroy;
 
@@ -355,7 +328,7 @@ bus_engine_proxy_real_destroy (BusEngineProxy *engine)
         engine->keymap = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (engine));
+    IBUS_OBJECT_CLASS(bus_engine_proxy_parent_class)->destroy (IBUS_OBJECT (engine));
 }
 
 static gboolean

@@ -25,45 +25,17 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONFIG_PROXY, BusMatchRulePrivate))
 
 
-static void      bus_match_rule_class_init      (BusMatchRuleClass  *klass);
 static void      bus_match_rule_init            (BusMatchRule       *rule);
 static void      bus_match_rule_destroy         (BusMatchRule       *rule);
 static void      _connection_destroy_cb         (BusConnection      *connection,
                                                  BusMatchRule       *rule);
-static IBusObjectClass  *parent_class = NULL;
 
-GType
-bus_match_rule_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusMatchRuleClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_match_rule_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusMatchRule),
-        0,
-        (GInstanceInitFunc) bus_match_rule_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "BusMatchRule",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (BusMatchRule, bus_match_rule, IBUS_TYPE_OBJECT)
 
 static void
 bus_match_rule_class_init (BusMatchRuleClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_match_rule_destroy;
 }
@@ -107,7 +79,7 @@ bus_match_rule_destroy (BusMatchRule *rule)
     }
     g_list_free (rule->recipients);
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (rule));
+    IBUS_OBJECT_CLASS(bus_match_rule_parent_class)->destroy (IBUS_OBJECT (rule));
 }
 
 

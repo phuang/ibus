@@ -29,40 +29,23 @@
 #include "ibusimpl.h"
 
 /* functions prototype */
-static void      bus_server_class_init  (BusServerClass     *klass);
 static void      bus_server_init        (BusServer          *server);
 static void      bus_server_destroy     (BusServer          *server);
 static void      bus_server_new_connection
                                         (BusServer          *server,
                                          BusConnection      *connection);
 
-static IBusObjectClass  *parent_class = NULL;
+G_DEFINE_TYPE (BusServer, bus_server, IBUS_TYPE_SERVER)
 
-GType
-bus_server_get_type (void)
+static void
+bus_server_class_init (BusServerClass *klass)
 {
-    static GType type = 0;
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
-    static const GTypeInfo type_info = {
-        sizeof (BusServerClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_server_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusServer),
-        0,
-        (GInstanceInitFunc) bus_server_init,
-    };
+    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_server_destroy;
 
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVER,
-                    "BusServer",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
+    IBUS_SERVER_CLASS (klass)->new_connection =
+            (IBusNewConnectionFunc) bus_server_new_connection;
 }
 
 BusServer *
@@ -140,18 +123,6 @@ bus_server_quit (BusServer *server)
 }
 
 static void
-bus_server_class_init (BusServerClass *klass)
-{
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
-
-    ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_server_destroy;
-
-    IBUS_SERVER_CLASS (klass)->new_connection = (IBusNewConnectionFunc) bus_server_new_connection;
-}
-
-static void
 bus_server_init (BusServer *server)
 {
     server->loop = g_main_loop_new (NULL, FALSE);
@@ -182,5 +153,5 @@ bus_server_destroy (BusServer *server)
     }
     g_main_loop_unref (server->loop);
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (server));
+    IBUS_OBJECT_CLASS (bus_server_parent_class)->destroy (IBUS_OBJECT (server));
 }

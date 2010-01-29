@@ -26,38 +26,10 @@
 #include "option.h"
 
 /* functions prototype */
-static void      bus_factory_proxy_class_init   (BusFactoryProxyClass   *klass);
 static void      bus_factory_proxy_init         (BusFactoryProxy        *factory);
 static void      bus_factory_proxy_destroy      (BusFactoryProxy        *factory);
 
-
-static IBusProxyClass  *parent_class = NULL;
-
-GType
-bus_factory_proxy_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusFactoryProxyClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_factory_proxy_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusFactoryProxy),
-        0,
-        (GInstanceInitFunc) bus_factory_proxy_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_PROXY,
-                    "BusFactoryProxy",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (BusFactoryProxy, bus_factory_proxy, IBUS_TYPE_PROXY)
 
 BusFactoryProxy *
 bus_factory_proxy_new (IBusComponent *component,
@@ -102,10 +74,7 @@ bus_factory_proxy_class_init (BusFactoryProxyClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
-    parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
-
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_factory_proxy_destroy;
-
 }
 
 static void
@@ -133,7 +102,7 @@ bus_factory_proxy_destroy (BusFactoryProxy *factory)
         factory->component = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (factory));
+    IBUS_OBJECT_CLASS(bus_factory_proxy_parent_class)->destroy (IBUS_OBJECT (factory));
 }
 
 IBusComponent *
