@@ -39,7 +39,6 @@ static guint    panel_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_panel_proxy_class_init      (BusPanelProxyClass     *klass);
 static void     bus_panel_proxy_init            (BusPanelProxy          *panel);
 static void     bus_panel_proxy_real_destroy    (BusPanelProxy          *panel);
 
@@ -59,33 +58,8 @@ static void     bus_panel_proxy_property_activate
                                                  const gchar            *prop_name,
                                                  gint                    prop_state);
 
-static IBusProxyClass  *parent_class = NULL;
 
-GType
-bus_panel_proxy_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusPanelProxyClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_panel_proxy_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusPanelProxy),
-        0,
-        (GInstanceInitFunc) bus_panel_proxy_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_PROXY,
-                    "BusPanelProxy",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE(BusPanelProxy, bus_panel_proxy, IBUS_TYPE_PROXY)
 
 BusPanelProxy *
 bus_panel_proxy_new (BusConnection *connection)
@@ -107,9 +81,6 @@ bus_panel_proxy_class_init (BusPanelProxyClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (klass);
-
-
-    parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     klass->page_up     = bus_panel_proxy_page_up;
     klass->page_down   = bus_panel_proxy_page_down;
@@ -225,7 +196,7 @@ bus_panel_proxy_real_destroy (BusPanelProxy *panel)
         panel->focused_context = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (panel));
+    IBUS_OBJECT_CLASS(bus_panel_proxy_parent_class)->destroy (IBUS_OBJECT (panel));
 }
 
 static gboolean

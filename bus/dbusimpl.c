@@ -40,7 +40,6 @@ enum {
 static guint dbus_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_dbus_impl_class_init        (BusDBusImplClass   *klass);
 static void     bus_dbus_impl_init              (BusDBusImpl        *dbus);
 static void     bus_dbus_impl_destroy           (BusDBusImpl        *dbus);
 static gboolean bus_dbus_impl_ibus_message      (BusDBusImpl        *dbus,
@@ -57,33 +56,7 @@ static void     _connection_destroy_cb          (BusConnection      *connection,
 static void     _rule_destroy_cb                (BusMatchRule       *rule,
                                                  BusDBusImpl        *dbus);
 
-static IBusServiceClass  *parent_class = NULL;
-
-GType
-bus_dbus_impl_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (BusDBusImplClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    bus_dbus_impl_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (BusDBusImpl),
-        0,
-        (GInstanceInitFunc) bus_dbus_impl_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                    "BusDBusImpl",
-                    &type_info,
-                    (GTypeFlags) 0);
-    }
-    return type;
-}
+G_DEFINE_TYPE(BusDBusImpl, bus_dbus_impl, IBUS_TYPE_SERVICE)
 
 BusDBusImpl *
 bus_dbus_impl_get_default (void)
@@ -104,8 +77,6 @@ bus_dbus_impl_class_init (BusDBusImplClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusServiceClass *service_class = IBUS_SERVICE_CLASS (klass);
-
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) bus_dbus_impl_destroy;
 
@@ -175,7 +146,7 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
     dbus->names = NULL;
     dbus->objects = NULL;
 
-    G_OBJECT_CLASS(parent_class)->dispose (G_OBJECT (dbus));
+    G_OBJECT_CLASS(bus_dbus_impl_parent_class)->dispose (G_OBJECT (dbus));
 }
 
 
@@ -778,9 +749,10 @@ bus_dbus_impl_ibus_message (BusDBusImpl  *dbus,
         }
     }
 
-    return parent_class->ibus_message ((IBusService *) dbus,
-                                       (IBusConnection *) connection,
-                                       message);
+    return IBUS_SERVICE_CLASS (bus_dbus_impl_parent_class)->ibus_message (
+                                (IBusService *) dbus,
+                                (IBusConnection *) connection,
+                                message);
 }
 
 static void
