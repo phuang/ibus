@@ -12,6 +12,7 @@ libibus.so.1 libibus1 #MINVER#
  ibus_attribute_new@Base 1.2.0.20090617
  ibus_bus_add_match@Base 1.2.0.20090617
  ibus_bus_create_input_context@Base 1.2.0.20090617
+ ibus_bus_current_input_context@Base 1.2.0.20090927-1~ppa1
  ibus_bus_exit@Base 1.2.0.20090617
  ibus_bus_get_config@Base 1.2.0.20090617
  ibus_bus_get_connection@Base 1.2.0.20090617
@@ -51,6 +52,7 @@ libibus.so.1 libibus1 #MINVER#
  ibus_config_service_new@Base 1.2.0.20090617
  ibus_config_service_value_changed@Base 1.2.0.20090617
  ibus_config_set_value@Base 1.2.0.20090617
+ ibus_config_unset@Base 1.2.0.20090927-1~ppa1
  ibus_connection_call@Base 1.2.0.20090617
  ibus_connection_close@Base 1.2.0.20090617
  ibus_connection_flush@Base 1.2.0.20090617
@@ -75,6 +77,7 @@ libibus.so.1 libibus1 #MINVER#
  ibus_dbus_connection_setup@Base 1.2.0.20090617
  ibus_dbus_server_setup@Base 1.2.0.20090617
  ibus_engine_commit_text@Base 1.2.0.20090617
+ ibus_engine_delete_surrounding_text@Base 1.2.0.20090927-1~ppa1
  ibus_engine_desc_get_type@Base 1.2.0.20090617
  ibus_engine_desc_new@Base 1.2.0.20090617
  ibus_engine_desc_new_from_xml_node@Base 1.2.0.20090617
@@ -108,7 +111,6 @@ libibus.so.1 libibus1 #MINVER#
  ibus_get_daemon_uid@Base 1.2.0.20090617
  ibus_get_local_machine_id@Base 1.2.0.20090719
  ibus_get_session_id@Base 1.2.0.20090617
-#MISSING: 1.2.0.20090812-1# ibus_get_socket_folder@Base 1.2.0.20090617
  ibus_get_socket_path@Base 1.2.0.20090617
  ibus_get_user_name@Base 1.2.0.20090617
  ibus_hotkey_get_type@Base 1.2.0.20090617
@@ -126,7 +128,10 @@ libibus.so.1 libibus1 #MINVER#
  ibus_input_context_enable@Base 1.2.0.20090617
  ibus_input_context_focus_in@Base 1.2.0.20090617
  ibus_input_context_focus_out@Base 1.2.0.20090617
+ ibus_input_context_get_engine@Base 1.2.0.20090927-1~ppa1
+ ibus_input_context_get_input_context@Base 1.2.0.20090927-1~ppa1
  ibus_input_context_get_type@Base 1.2.0.20090617
+ ibus_input_context_is_enabled@Base 1.2.0.20090927-1~ppa1
  ibus_input_context_new@Base 1.2.0.20090617
  ibus_input_context_page_down@Base 1.2.0.20090617
  ibus_input_context_page_up@Base 1.2.0.20090617
@@ -137,12 +142,13 @@ libibus.so.1 libibus1 #MINVER#
  ibus_input_context_reset@Base 1.2.0.20090617
  ibus_input_context_set_capabilities@Base 1.2.0.20090617
  ibus_input_context_set_cursor_location@Base 1.2.0.20090617
+ ibus_input_context_set_engine@Base 1.2.0.20090927-1~ppa1
  ibus_key_event_from_string@Base 1.2.0.20090617
  ibus_key_event_to_string@Base 1.2.0.20090617
  ibus_keymap_fill@Base 1.2.0.20090617
+ ibus_keymap_get@Base 1.2.0.20090927-1~ppa1
  ibus_keymap_get_type@Base 1.2.0.20090617
  ibus_keymap_lookup_keysym@Base 1.2.0.20090617
- ibus_keymap_new@Base 1.2.0.20090617
  ibus_keyval_from_name@Base 1.2.0.20090617
  ibus_keyval_name@Base 1.2.0.20090617
  ibus_lookup_table_append_candidate@Base 1.2.0.20090617
@@ -154,15 +160,20 @@ libibus.so.1 libibus1 #MINVER#
  ibus_lookup_table_get_cursor_in_page@Base 1.2.0.20090617
  ibus_lookup_table_get_cursor_pos@Base 1.2.0.20090617
  ibus_lookup_table_get_label@Base 1.2.0.20090617
+ ibus_lookup_table_get_number_of_candidates@Base 1.2.0.20090927-1~ppa1
+ ibus_lookup_table_get_orientation@Base 1.2.0.20090927-1~ppa1
  ibus_lookup_table_get_page_size@Base 1.2.0.20090617
  ibus_lookup_table_get_type@Base 1.2.0.20090617
  ibus_lookup_table_is_cursor_visible@Base 1.2.0.20090617
+ ibus_lookup_table_is_round@Base 1.2.0.20090927-1~ppa1
  ibus_lookup_table_new@Base 1.2.0.20090617
  ibus_lookup_table_page_down@Base 1.2.0.20090617
  ibus_lookup_table_page_up@Base 1.2.0.20090617
  ibus_lookup_table_set_cursor_pos@Base 1.2.0.20090617
  ibus_lookup_table_set_cursor_visible@Base 1.2.0.20090617
+ ibus_lookup_table_set_orientation@Base 1.2.0.20090927-1~ppa1
  ibus_lookup_table_set_page_size@Base 1.2.0.20090617
+ ibus_lookup_table_set_round@Base 1.2.0.20090927-1~ppa1
  ibus_main@Base 1.2.0.20090617
  ibus_mainloop_setup@Base 1.2.0.20090617
  ibus_marshal_BOOLEAN__POINTER@Base 1.2.0.20090617
@@ -172,6 +183,7 @@ libibus.so.1 libibus1 #MINVER#
  ibus_marshal_BOOLEAN__ULONG@Base 1.2.0.20090617
  ibus_marshal_VOID__BOXED_BOOLEAN@Base 1.2.0.20090617
  ibus_marshal_VOID__INT_INT_INT_INT@Base 1.2.0.20090617
+ ibus_marshal_VOID__INT_UINT@Base 1.2.0.20090927-1~ppa1
  ibus_marshal_VOID__OBJECT_BOOLEAN@Base 1.2.0.20090617
  ibus_marshal_VOID__OBJECT_UINT_BOOLEAN@Base 1.2.0.20090617
  ibus_marshal_VOID__STRING_INT@Base 1.2.0.20090617
@@ -210,7 +222,6 @@ libibus.so.1 libibus1 #MINVER#
  ibus_message_iter_init_append@Base 1.2.0.20090617
  ibus_message_iter_next@Base 1.2.0.20090617
  ibus_message_iter_open_container@Base 1.2.0.20090617
-#MISSING: 1.2.0.20090719-1# ibus_message_iter_peek@Base 1.2.0.20090617
  ibus_message_iter_recurse@Base 1.2.0.20090617
  ibus_message_new@Base 1.2.0.20090617
  ibus_message_new_error@Base 1.2.0.20090617
@@ -240,6 +251,17 @@ libibus.so.1 libibus1 #MINVER#
  ibus_observed_path_new_from_xml_node@Base 1.2.0.20090617
  ibus_observed_path_output@Base 1.2.0.20090617
  ibus_observed_path_traverse@Base 1.2.0.20090617
+ ibus_orientation_get_type@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_candidate_clicked@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_cursor_down@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_cursor_up@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_get_type@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_new@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_page_down@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_page_up@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_property_active@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_property_hide@Base 1.2.0.20090927-1~ppa1
+ ibus_panel_service_property_show@Base 1.2.0.20090927-1~ppa1
  ibus_pending_call_allocate_data_slot@Base 1.2.0.20090617
  ibus_pending_call_block@Base 1.2.0.20090617
  ibus_pending_call_cancel@Base 1.2.0.20090617
