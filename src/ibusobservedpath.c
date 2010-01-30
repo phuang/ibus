@@ -40,8 +40,6 @@ typedef struct _IBusObservedPathPrivate IBusObservedPathPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void      ibus_observed_path_class_init      (IBusObservedPathClass  *klass);
-static void      ibus_observed_path_init            (IBusObservedPath       *path);
 static void      ibus_observed_path_destroy         (IBusObservedPath       *path);
 static gboolean  ibus_observed_path_serialize       (IBusObservedPath       *path,
                                                      IBusMessageIter        *iter);
@@ -52,43 +50,13 @@ static gboolean  ibus_observed_path_copy            (IBusObservedPath       *des
 static gboolean  ibus_observed_path_parse_xml_node  (IBusObservedPath       *path,
                                                      XMLNode                *node);
 
-static IBusSerializableClass  *parent_class = NULL;
-
-GType
-ibus_observed_path_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusObservedPathClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_observed_path_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusObservedPath),
-        0,
-        (GInstanceInitFunc) ibus_observed_path_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                    "IBusObservedPath",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
-
+G_DEFINE_TYPE (IBusObservedPath, ibus_observed_path, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_observed_path_class_init (IBusObservedPathClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     // g_type_class_add_private (klass, sizeof (IBusObservedPathPrivate));
 
@@ -112,7 +80,7 @@ static void
 ibus_observed_path_destroy (IBusObservedPath *path)
 {
     g_free (path->path);
-    IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (path));
+    IBUS_OBJECT_CLASS (ibus_observed_path_parent_class)->destroy (IBUS_OBJECT (path));
 }
 
 static gboolean
@@ -121,7 +89,7 @@ ibus_observed_path_serialize (IBusObservedPath *path,
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *)path, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->serialize ((IBusSerializable *)path, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &(path->path));
@@ -140,7 +108,7 @@ ibus_observed_path_deserialize (IBusObservedPath *path,
     gboolean retval;
     gchar *str;
 
-    retval = parent_class->deserialize ((IBusSerializable *)path, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->deserialize ((IBusSerializable *)path, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
@@ -161,7 +129,7 @@ ibus_observed_path_copy (IBusObservedPath       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest, (IBusSerializable *)src);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->copy ((IBusSerializable *)dest, (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
     dest->path = g_strdup (src->path);

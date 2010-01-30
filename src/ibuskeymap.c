@@ -28,47 +28,17 @@
 #include "ibuskeymap.h"
 
 /* functions prototype */
-static void         ibus_keymap_class_init      (IBusKeymapClass        *klass);
-static void         ibus_keymap_init            (IBusKeymap             *keymap);
 static void         ibus_keymap_destroy         (IBusKeymap             *keymap);
 static gboolean     ibus_keymap_load            (const gchar            *name,
                                                  KEYMAP                  keymap);
-static IBusObjectClass *parent_class = NULL;
 static GHashTable      *keymaps = NULL;
 
-GType
-ibus_keymap_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusKeymapClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_keymap_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusKeymap),
-        0,
-        (GInstanceInitFunc) ibus_keymap_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                                       "IBusKeymap",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusKeymap, ibus_keymap, IBUS_TYPE_OBJECT)
 
 static void
 ibus_keymap_class_init (IBusKeymapClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_keymap_destroy;
 }
@@ -90,7 +60,7 @@ ibus_keymap_destroy (IBusKeymap *keymap)
         g_free (keymap->name);
         keymap->name = NULL;
     }
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)keymap);
+    IBUS_OBJECT_CLASS (ibus_keymap_parent_class)->destroy ((IBusObject *)keymap);
 }
 
 #define SKIP_SPACE(p)   \

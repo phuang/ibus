@@ -46,8 +46,6 @@ typedef struct _IBusServicePrivate IBusServicePrivate;
 static guint            service_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_service_class_init     (IBusServiceClass   *klass);
-static void     ibus_service_init           (IBusService        *service);
 static void     ibus_service_destroy        (IBusService        *service);
 static void     ibus_service_set_property   (IBusService        *service,
                                              guint              prop_id,
@@ -64,33 +62,7 @@ static gboolean ibus_service_ibus_signal    (IBusService        *service,
                                              IBusConnection     *connection,
                                              IBusMessage        *message);
 
-static IBusObjectClass  *parent_class = NULL;
-
-GType
-ibus_service_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusServiceClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_service_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusService),
-        0,
-        (GInstanceInitFunc) ibus_service_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusService",
-                    &type_info,
-                    (GTypeFlags) 0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (IBusService, ibus_service, IBUS_TYPE_OBJECT)
 
 IBusService *
 ibus_service_new (const gchar *path)
@@ -107,8 +79,6 @@ ibus_service_class_init (IBusServiceClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusServicePrivate));
 
@@ -206,7 +176,7 @@ ibus_service_destroy (IBusService *service)
     g_free (priv->path);
     priv->path = NULL;
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (service));
+    IBUS_OBJECT_CLASS(ibus_service_parent_class)->destroy (IBUS_OBJECT (service));
 }
 
 static void

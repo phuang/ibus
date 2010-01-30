@@ -54,8 +54,6 @@ typedef struct _IBusProxyPrivate IBusProxyPrivate;
 static guint            proxy_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void      ibus_proxy_class_init  (IBusProxyClass *klass);
-static void      ibus_proxy_init        (IBusProxy      *proxy);
 static GObject  *ibus_proxy_constructor (GType           type,
                                          guint           n_construct_params,
                                          GObjectConstructParam *construct_params);
@@ -72,33 +70,7 @@ static void      ibus_proxy_get_property(IBusProxy       *proxy,
 static gboolean  ibus_proxy_ibus_signal (IBusProxy       *proxy,
                                          IBusMessage     *message);
 
-static IBusObjectClass  *parent_class = NULL;
-
-GType
-ibus_proxy_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusProxyClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_proxy_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusProxy),
-        0,
-        (GInstanceInitFunc) ibus_proxy_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusProxy",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (IBusProxy, ibus_proxy, IBUS_TYPE_OBJECT)
 
 IBusProxy *
 ibus_proxy_new (const gchar     *name,
@@ -125,8 +97,6 @@ ibus_proxy_class_init (IBusProxyClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusProxyPrivate));
 
@@ -260,7 +230,7 @@ ibus_proxy_constructor (GType           type,
     IBusProxy *proxy;
     IBusProxyPrivate *priv;
 
-    obj = G_OBJECT_CLASS (parent_class)->constructor (type, n_construct_params, construct_params);
+    obj = G_OBJECT_CLASS (ibus_proxy_parent_class)->constructor (type, n_construct_params, construct_params);
 
     proxy = IBUS_PROXY (obj);
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
@@ -427,7 +397,7 @@ ibus_proxy_destroy (IBusProxy *proxy)
         priv->connection = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (proxy));
+    IBUS_OBJECT_CLASS(ibus_proxy_parent_class)->destroy (IBUS_OBJECT (proxy));
 }
 
 static void

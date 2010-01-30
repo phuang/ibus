@@ -44,8 +44,6 @@ static guint            _count = 0;
 #endif
 
 /* functions prototype */
-static void      ibus_object_class_init     (IBusObjectClass    *klass);
-static void      ibus_object_init           (IBusObject         *obj);
 static GObject  *ibus_object_constructor    (GType               type,
                                              guint               n,
                                              GObjectConstructParam
@@ -54,35 +52,7 @@ static void      ibus_object_dispose        (IBusObject         *obj);
 static void      ibus_object_finalize       (IBusObject         *obj);
 static void      ibus_object_real_destroy   (IBusObject         *obj);
 
-static GObjectClass *parent_class = NULL;
-
-
-GType
-ibus_object_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusObjectClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_object_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusObject),
-        0,
-        (GInstanceInitFunc) ibus_object_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (G_TYPE_INITIALLY_UNOWNED,
-                    "IBusObject",
-                    &type_info,
-                    G_TYPE_FLAG_ABSTRACT);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
 
 /**
  * ibus_object_new:
@@ -101,8 +71,6 @@ static void
 ibus_object_class_init     (IBusObjectClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-    parent_class = (GObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusObjectPrivate));
 
@@ -155,7 +123,7 @@ ibus_object_constructor (GType                   type,
 {
     GObject *object;
 
-    object = parent_class->constructor (type, n ,args);
+    object = G_OBJECT_CLASS (ibus_object_parent_class)->constructor (type, n ,args);
 
 #ifdef DEBUG_MEMORY
     if (object != NULL) {
@@ -185,7 +153,7 @@ ibus_object_dispose (IBusObject *obj)
         IBUS_OBJECT_UNSET_FLAGS (obj, IBUS_IN_DESTRUCTION);
     }
 
-    G_OBJECT_CLASS(parent_class)->dispose (G_OBJECT (obj));
+    G_OBJECT_CLASS(ibus_object_parent_class)->dispose (G_OBJECT (obj));
 }
 
 static void
@@ -200,7 +168,7 @@ ibus_object_finalize (IBusObject *obj)
     g_debug ("Finalize %s, count = %d, all = %d", G_OBJECT_TYPE_NAME (obj), count, _count);
 #endif
 
-    G_OBJECT_CLASS(parent_class)->finalize (G_OBJECT (obj));
+    G_OBJECT_CLASS(ibus_object_parent_class)->finalize (G_OBJECT (obj));
 }
 
 static void

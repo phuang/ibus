@@ -26,7 +26,6 @@
 #include "option.h"
 
 /* functions prototype */
-static void      bus_factory_proxy_init         (BusFactoryProxy        *factory);
 static void      bus_factory_proxy_destroy      (BusFactoryProxy        *factory);
 
 G_DEFINE_TYPE (BusFactoryProxy, bus_factory_proxy, IBUS_TYPE_PROXY)

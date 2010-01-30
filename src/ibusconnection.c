@@ -47,8 +47,6 @@ typedef struct _IBusConnectionPrivate IBusConnectionPrivate;
 static guint            connection_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_connection_class_init  (IBusConnectionClass    *klass);
-static void     ibus_connection_init        (IBusConnection         *connection);
 static void     ibus_connection_destroy     (IBusConnection         *connection);
 
 static gboolean ibus_connection_authenticate_unix_user
@@ -64,35 +62,9 @@ static DBusHandlerResult
                                               IBusMessage           *message,
                                               IBusConnection        *connection);
 
-static IBusObjectClass  *parent_class = NULL;
 static GHashTable       *_connections = NULL;
 
-GType
-ibus_connection_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusConnectionClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_connection_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusConnection),
-        0,
-        (GInstanceInitFunc) ibus_connection_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusConnection",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusConnection, ibus_connection, IBUS_TYPE_OBJECT)
 
 IBusConnection *
 ibus_connection_new (void)
@@ -106,8 +78,6 @@ static void
 ibus_connection_class_init (IBusConnectionClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusConnectionPrivate));
 
@@ -267,7 +237,7 @@ ibus_connection_destroy (IBusConnection *connection)
         }
     } while (0);
 
-    parent_class->destroy (IBUS_OBJECT (connection));
+    IBUS_OBJECT_CLASS (ibus_connection_parent_class)->destroy (IBUS_OBJECT (connection));
 }
 
 static gboolean

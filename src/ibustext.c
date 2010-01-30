@@ -21,8 +21,6 @@
 #include "ibustext.h"
 
 /* functions prototype */
-static void         ibus_text_class_init   (IBusTextClass       *klass);
-static void         ibus_text_init         (IBusText            *text);
 static void         ibus_text_destroy      (IBusText            *text);
 static gboolean     ibus_text_serialize    (IBusText            *text,
                                             IBusMessageIter     *iter);
@@ -31,34 +29,7 @@ static gboolean     ibus_text_deserialize  (IBusText            *text,
 static gboolean     ibus_text_copy         (IBusText            *dest,
                                             const IBusText      *src);
 
-static IBusSerializableClass *parent_class = NULL;
-
-GType
-ibus_text_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusTextClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_text_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusText),
-        0,
-        (GInstanceInitFunc) ibus_text_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                                       "IBusText",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusText, ibus_text, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_text_class_init (IBusTextClass *klass)
@@ -66,7 +37,7 @@ ibus_text_class_init (IBusTextClass *klass)
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
 
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
+    ibus_text_parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_text_destroy;
 
@@ -98,7 +69,7 @@ ibus_text_destroy (IBusText *text)
         text->attrs = NULL;
     }
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)text);
+    IBUS_OBJECT_CLASS (ibus_text_parent_class)->destroy ((IBusObject *)text);
 }
 
 static gboolean
@@ -107,7 +78,8 @@ ibus_text_serialize (IBusText        *text,
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *)text, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->serialize (
+                        (IBusSerializable *)text, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &text->text);
@@ -131,7 +103,8 @@ ibus_text_deserialize (IBusText        *text,
     gboolean retval;
     gchar *str;
 
-    retval = parent_class->deserialize ((IBusSerializable *)text, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->deserialize (
+                            (IBusSerializable *)text, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
@@ -160,8 +133,9 @@ ibus_text_copy (IBusText       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest,
-                                 (IBusSerializable *)src);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->copy (
+                            (IBusSerializable *)dest,
+                            (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_TEXT (dest), FALSE);

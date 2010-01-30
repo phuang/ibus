@@ -34,7 +34,6 @@ typedef struct _BusConnectionPrivate BusConnectionPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_connection_init         (BusConnection          *connection);
 static void     bus_connection_destroy      (BusConnection          *connection);
 static gboolean bus_connection_authenticate_unix_user
                                             (IBusConnection         *connection,

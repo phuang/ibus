@@ -25,7 +25,6 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONFIG_PROXY, BusMatchRulePrivate))
 
 
-static void      bus_match_rule_init            (BusMatchRule       *rule);
 static void      bus_match_rule_destroy         (BusMatchRule       *rule);
 static void      _connection_destroy_cb         (BusConnection      *connection,
                                                  BusMatchRule       *rule);

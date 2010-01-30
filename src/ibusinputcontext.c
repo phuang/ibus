@@ -63,39 +63,11 @@ static guint            context_signals[LAST_SIGNAL] = { 0 };
 // static guint            context_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_input_context_class_init   (IBusInputContextClass  *klass);
-static void     ibus_input_context_init         (IBusInputContext       *context);
 static void     ibus_input_context_real_destroy (IBusInputContext       *context);
 static gboolean ibus_input_context_ibus_signal  (IBusProxy              *proxy,
                                                  DBusMessage            *message);
 
-static IBusProxyClass  *parent_class = NULL;
-
-GType
-ibus_input_context_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusInputContextClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_input_context_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusInputContext),
-        0,
-        (GInstanceInitFunc) ibus_input_context_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_PROXY,
-                    "IBusInputContext",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (IBusInputContext, ibus_input_context, IBUS_TYPE_PROXY)
 
 IBusInputContext *
 ibus_input_context_new (const gchar     *path,
@@ -132,9 +104,6 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (klass);
-
-
-    parent_class = (IBusProxyClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusInputContextPrivate));
 
@@ -524,7 +493,7 @@ ibus_input_context_real_destroy (IBusInputContext *context)
                          G_TYPE_INVALID);
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (context));
+    IBUS_OBJECT_CLASS(ibus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 static gboolean

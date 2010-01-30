@@ -21,8 +21,6 @@
 #include "ibusproplist.h"
 
 /* functions prototype */
-static void         ibus_prop_list_class_init   (IBusPropListClass  *klass);
-static void         ibus_prop_list_init         (IBusPropList       *prop_list);
 static void         ibus_prop_list_destroy      (IBusPropList       *prop_list);
 static gboolean     ibus_prop_list_serialize    (IBusPropList       *prop_list,
                                                  IBusMessageIter    *iter);
@@ -31,42 +29,13 @@ static gboolean     ibus_prop_list_deserialize  (IBusPropList       *prop_list,
 static gboolean     ibus_prop_list_copy         (IBusPropList       *dest,
                                                  const IBusPropList *src);
 
-static IBusSerializableClass *parent_class = NULL;
-
-GType
-ibus_prop_list_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusPropListClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_prop_list_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusProperty),
-        0,
-        (GInstanceInitFunc) ibus_prop_list_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                                       "IBusPropList",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusPropList, ibus_prop_list, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_prop_list_class_init (IBusPropListClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_prop_list_destroy;
 
@@ -96,7 +65,7 @@ ibus_prop_list_destroy (IBusPropList *prop_list)
     }
     g_free (p);
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *) prop_list);
+    IBUS_OBJECT_CLASS (ibus_prop_list_parent_class)->destroy ((IBusObject *) prop_list);
 }
 
 static gboolean
@@ -108,7 +77,7 @@ ibus_prop_list_serialize (IBusPropList    *prop_list,
     IBusProperty *prop;
     guint i;
 
-    retval = parent_class->serialize ((IBusSerializable *) prop_list, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_prop_list_parent_class)->serialize ((IBusSerializable *) prop_list, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_open_container (iter, IBUS_TYPE_ARRAY, "v", &array_iter);
@@ -136,7 +105,7 @@ ibus_prop_list_deserialize (IBusPropList    *prop_list,
     IBusMessageIter array_iter;
     IBusProperty *prop;
 
-    retval = parent_class->deserialize ((IBusSerializable *) prop_list, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_prop_list_parent_class)->deserialize ((IBusSerializable *) prop_list, iter);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_PROP_LIST (prop_list), FALSE);
@@ -167,7 +136,7 @@ ibus_prop_list_copy (IBusPropList       *dest,
     IBusProperty *prop;
     guint i;
 
-    retval = parent_class->copy ((IBusSerializable *) dest,
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_prop_list_parent_class)->copy ((IBusSerializable *) dest,
                                  (const IBusSerializable *) src);
     g_return_val_if_fail (retval, FALSE);
 

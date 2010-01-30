@@ -64,7 +64,6 @@ typedef struct _BusInputContextPrivate BusInputContextPrivate;
 static guint    context_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_input_context_init          (BusInputContext        *context);
 static void     bus_input_context_destroy       (BusInputContext        *context);
 static gboolean bus_input_context_ibus_message  (BusInputContext        *context,
                                                  BusConnection          *connection,

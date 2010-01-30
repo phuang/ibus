@@ -47,7 +47,6 @@ enum {
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_ibus_impl_init              (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_destroy           (BusIBusImpl        *ibus);
 static gboolean bus_ibus_impl_ibus_message      (BusIBusImpl        *ibus,
                                                  BusConnection      *connection,

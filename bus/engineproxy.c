@@ -52,7 +52,6 @@ static guint    engine_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_engine_proxy_init           (BusEngineProxy         *engine);
 static void     bus_engine_proxy_real_destroy   (BusEngineProxy         *engine);
 
 static gboolean bus_engine_proxy_ibus_signal    (IBusProxy              *proxy,

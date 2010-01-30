@@ -27,8 +27,6 @@ enum {
 };
 
 /* functions prototype */
-static void     ibus_panel_service_class_init            (IBusPanelServiceClass *klass);
-static void     ibus_panel_service_init                  (IBusPanelService      *panel);
 static void     ibus_panel_service_service_set_property  (IBusPanelService      *panel,
                                                           guint                  prop_id,
                                                           const GValue          *value,
@@ -75,33 +73,7 @@ static gboolean ibus_panel_service_update_property       (IBusPanelService      
                                                           IBusProperty          *prop,
                                                           IBusError            **error);
 
-static IBusServiceClass  *parent_class = NULL;
-
-GType
-ibus_panel_service_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusPanelServiceClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_panel_service_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusPanelService),
-        0,
-        (GInstanceInitFunc) ibus_panel_service_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                                       "IBusPanelService",
-                                       &type_info,
-                                       (GTypeFlags)0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (IBusPanelService, ibus_panel_service, IBUS_TYPE_SERVICE)
 
 IBusPanelService *
 ibus_panel_service_new (IBusConnection *connection)
@@ -122,8 +94,6 @@ static void
 ibus_panel_service_class_init (IBusPanelServiceClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_panel_service_service_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_panel_service_service_get_property;
@@ -222,7 +192,7 @@ ibus_panel_service_service_get_property (IBusPanelService *panel,
 static void
 ibus_panel_service_real_destroy (IBusPanelService *panel)
 {
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (panel));
+    IBUS_OBJECT_CLASS(ibus_panel_service_parent_class)->destroy (IBUS_OBJECT (panel));
 }
 
 static gboolean

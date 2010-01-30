@@ -64,8 +64,6 @@ typedef struct _IBusEnginePrivate IBusEnginePrivate;
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_engine_class_init      (IBusEngineClass    *klass);
-static void     ibus_engine_init            (IBusEngine         *engine);
 static void     ibus_engine_destroy         (IBusEngine         *engine);
 static void     ibus_engine_set_property    (IBusEngine         *engine,
                                              guint               prop_id,
@@ -116,33 +114,7 @@ static void     ibus_engine_property_hide   (IBusEngine         *engine,
                                              const gchar        *prop_name);
 
 
-static IBusServiceClass  *parent_class = NULL;
-
-GType
-ibus_engine_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusEngineClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_engine_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusEngine),
-        0,
-        (GInstanceInitFunc) ibus_engine_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                    "IBusEngine",
-                    &type_info,
-                    (GTypeFlags) 0);
-    }
-    return type;
-}
+G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
 
 IBusEngine *
 ibus_engine_new (const gchar    *name,
@@ -168,8 +140,6 @@ ibus_engine_class_init (IBusEngineClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
 
@@ -591,7 +561,7 @@ ibus_engine_destroy (IBusEngine *engine)
         priv->connection = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (engine));
+    IBUS_OBJECT_CLASS(ibus_engine_parent_class)->destroy (IBUS_OBJECT (engine));
 }
 
 static void
@@ -683,7 +653,8 @@ ibus_engine_ibus_message (IBusEngine     *engine,
     name = ibus_message_get_member (message);
 
     if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
-        return parent_class->ibus_message ((IBusService *) engine, connection, message);
+        return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->ibus_message (
+                        (IBusService *) engine, connection, message);
 
     do {
         if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {

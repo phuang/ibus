@@ -39,8 +39,6 @@ typedef struct _IBusComponentPrivate IBusComponentPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void         ibus_component_class_init   (IBusComponentClass     *klass);
-static void         ibus_component_init         (IBusComponent          *component);
 static void         ibus_component_destroy      (IBusComponent          *component);
 static gboolean     ibus_component_serialize    (IBusComponent          *component,
                                                  IBusMessageIter        *iter);
@@ -60,43 +58,13 @@ static void         ibus_component_parse_observed_paths
                                                  XMLNode                *node,
                                                  gboolean                access_fs);
 
-static IBusSerializableClass  *parent_class = NULL;
-
-GType
-ibus_component_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusComponentClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_component_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusComponent),
-        0,
-        (GInstanceInitFunc) ibus_component_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                    "IBusComponent",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
-
+G_DEFINE_TYPE (IBusComponent, ibus_component, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_component_class_init (IBusComponentClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_component_destroy;
 
@@ -159,7 +127,7 @@ ibus_component_destroy (IBusComponent *component)
     g_list_free (component->engines);
     component->engines = NULL;
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (component));
+    IBUS_OBJECT_CLASS (ibus_component_parent_class)->destroy (IBUS_OBJECT (component));
 }
 
 static gboolean
@@ -170,7 +138,7 @@ ibus_component_serialize (IBusComponent   *component,
     IBusMessageIter array_iter;
     GList *p;
 
-    retval = parent_class->serialize ((IBusSerializable *)component, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->serialize ((IBusSerializable *)component, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &component->name);
@@ -230,7 +198,7 @@ ibus_component_deserialize (IBusComponent   *component,
     gchar *str;
     IBusMessageIter array_iter;
 
-    retval = parent_class->deserialize ((IBusSerializable *)component, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->deserialize ((IBusSerializable *)component, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
@@ -310,7 +278,7 @@ ibus_component_copy (IBusComponent       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest,
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->copy ((IBusSerializable *)dest,
                                  (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 

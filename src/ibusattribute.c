@@ -21,8 +21,6 @@
 #include "ibusattribute.h"
 
 /* functions prototype */
-static void         ibus_attribute_class_init   (IBusAttributeClass     *klass);
-static void         ibus_attribute_init         (IBusAttribute          *attr);
 // static void         ibus_attribute_destroy      (IBusAttribute          *attr);
 static gboolean     ibus_attribute_serialize    (IBusAttribute          *attr,
                                                  IBusMessageIter        *iter);
@@ -31,41 +29,12 @@ static gboolean     ibus_attribute_deserialize  (IBusAttribute          *attr,
 static gboolean     ibus_attribute_copy         (IBusAttribute          *dest,
                                                  const IBusAttribute    *src);
 
-static IBusSerializableClass *parent_class = NULL;
-
-GType
-ibus_attribute_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusAttributeClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_attribute_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusAttribute),
-        0,
-        (GInstanceInitFunc) ibus_attribute_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                                       "IBusAttribute",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusAttribute, ibus_attribute, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_attribute_class_init (IBusAttributeClass *klass)
 {
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     // object_class->destroy = (IBusObjectDestroyFunc) ibus_attribute_destroy;
 
@@ -84,7 +53,7 @@ ibus_attribute_init (IBusAttribute *attr)
 // static void
 // ibus_attribute_destroy (IBusAttribute *attr)
 // {
-//     IBUS_OBJECT (parent_class)->destroy ((IBusObject *)attr);
+//     IBUS_OBJECT (ibus_attribute_parent_class)->destroy ((IBusObject *)attr);
 // }
 
 static gboolean
@@ -93,7 +62,7 @@ ibus_attribute_serialize (IBusAttribute   *attr,
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *) attr, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->serialize ((IBusSerializable *) attr, iter);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_ATTRIBUTE (attr), FALSE);
@@ -119,7 +88,7 @@ ibus_attribute_deserialize (IBusAttribute   *attr,
 {
     gboolean retval;
 
-    retval = parent_class->deserialize ((IBusSerializable *) attr, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->deserialize ((IBusSerializable *) attr, iter);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_ATTRIBUTE (attr), FALSE);
@@ -150,7 +119,7 @@ ibus_attribute_copy (IBusAttribute       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest,
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->copy ((IBusSerializable *)dest,
                                  (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 

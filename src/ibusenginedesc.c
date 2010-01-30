@@ -39,8 +39,6 @@ typedef struct _IBusEngineDescPrivate IBusEngineDescPrivate;
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void         ibus_engine_desc_class_init     (IBusEngineDescClass    *klass);
-static void         ibus_engine_desc_init           (IBusEngineDesc         *desc);
 static void         ibus_engine_desc_destroy        (IBusEngineDesc         *desc);
 static gboolean     ibus_engine_desc_serialize      (IBusEngineDesc         *desc,
                                                      IBusMessageIter        *iter);
@@ -51,34 +49,7 @@ static gboolean     ibus_engine_desc_copy           (IBusEngineDesc         *des
 static gboolean     ibus_engine_desc_parse_xml_node (IBusEngineDesc         *desc,
                                                      XMLNode                *node);
 
-static IBusSerializableClass  *parent_class = NULL;
-
-GType
-ibus_engine_desc_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusEngineDescClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_engine_desc_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusEngineDesc),
-        0,
-        (GInstanceInitFunc) ibus_engine_desc_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                    "IBusEngineDesc",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusEngineDesc, ibus_engine_desc, IBUS_TYPE_SERIALIZABLE)
 
 
 static void
@@ -86,8 +57,6 @@ ibus_engine_desc_class_init (IBusEngineDescClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_engine_desc_destroy;
 
@@ -125,7 +94,7 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->icon);
     g_free (desc->layout);
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy (IBUS_OBJECT (desc));
+    IBUS_OBJECT_CLASS (ibus_engine_desc_parent_class)->destroy (IBUS_OBJECT (desc));
 }
 
 static gboolean
@@ -134,7 +103,7 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *)desc, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_engine_desc_parent_class)->serialize ((IBusSerializable *)desc, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &desc->name);
@@ -174,7 +143,7 @@ ibus_engine_desc_deserialize (IBusEngineDesc  *desc,
     gboolean retval;
     gchar *str;
 
-    retval = parent_class->deserialize ((IBusSerializable *)desc, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_engine_desc_parent_class)->deserialize ((IBusSerializable *)desc, iter);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
@@ -230,7 +199,7 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest,
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_engine_desc_parent_class)->copy ((IBusSerializable *)dest,
                                  (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 

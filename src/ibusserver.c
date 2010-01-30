@@ -47,8 +47,6 @@ typedef struct _IBusServerPrivate IBusServerPrivate;
 static guint            server_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_server_class_init  (IBusServerClass    *klass);
-static void     ibus_server_init        (IBusServer         *server);
 static void     ibus_server_destroy     (IBusServer         *server);
 static void     ibus_server_set_property(IBusServer         *server,
                                          guint               prop_id,
@@ -65,34 +63,7 @@ static void     ibus_server_new_connection
                                         (IBusServer         *server,
                                          IBusConnection     *connection);
 
-static IBusObjectClass  *parent_class = NULL;
-
-GType
-ibus_server_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusServerClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_server_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusServer),
-        0,
-        (GInstanceInitFunc) ibus_server_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_OBJECT,
-                    "IBusServer",
-                    &type_info,
-                    (GTypeFlags)0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusServer, ibus_server, IBUS_TYPE_OBJECT)
 
 IBusServer *
 ibus_server_new (void)
@@ -118,8 +89,6 @@ ibus_server_class_init (IBusServerClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusServerPrivate));
 
@@ -189,7 +158,7 @@ ibus_server_destroy (IBusServer *server)
         priv->server = NULL;
     }
 
-    IBUS_OBJECT_CLASS(parent_class)->destroy (IBUS_OBJECT (server));
+    IBUS_OBJECT_CLASS(ibus_server_parent_class)->destroy (IBUS_OBJECT (server));
 }
 
 static void

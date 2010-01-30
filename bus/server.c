@@ -29,7 +29,6 @@
 #include "ibusimpl.h"
 
 /* functions prototype */
-static void      bus_server_init        (BusServer          *server);
 static void      bus_server_destroy     (BusServer          *server);
 static void      bus_server_new_connection
                                         (BusServer          *server,

@@ -51,7 +51,6 @@ static gboolean  ibus_serializable_real_copy        (IBusSerializable       *des
 
 static IBusObjectClass *parent_class = NULL;
 
-
 GType
 ibus_serializable_get_type (void)
 {

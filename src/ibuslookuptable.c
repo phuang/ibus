@@ -21,8 +21,6 @@
 #include "ibuslookuptable.h"
 
 /* functions prototype */
-static void         ibus_lookup_table_class_init    (IBusLookupTableClass   *klass);
-static void         ibus_lookup_table_init          (IBusLookupTable        *table);
 static void         ibus_lookup_table_destroy       (IBusLookupTable        *table);
 static gboolean     ibus_lookup_table_serialize     (IBusLookupTable        *table,
                                                      IBusMessageIter        *iter);
@@ -31,42 +29,13 @@ static gboolean     ibus_lookup_table_deserialize   (IBusLookupTable        *tab
 static gboolean     ibus_lookup_table_copy          (IBusLookupTable        *dest,
                                                      IBusLookupTable        *src);
 
-static IBusSerializableClass *parent_class = NULL;
-
-GType
-ibus_lookup_table_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusLookupTableClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_lookup_table_class_init,
-        NULL,               /* class finialize */
-        NULL,               /* class data */
-        sizeof (IBusLookupTable),
-        0,
-        (GInstanceInitFunc) ibus_lookup_table_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                                       "IBusLookupTable",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusLookupTable, ibus_lookup_table, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_lookup_table_class_init (IBusLookupTableClass *klass)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_lookup_table_destroy;
 
@@ -109,7 +78,7 @@ ibus_lookup_table_destroy (IBusLookupTable *table)
         g_free (p);
     }
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *) table);
+    IBUS_OBJECT_CLASS (ibus_lookup_table_parent_class)->destroy ((IBusObject *) table);
 }
 
 static gboolean
@@ -120,7 +89,7 @@ ibus_lookup_table_serialize (IBusLookupTable *table,
     gboolean retval;
     guint i;
 
-    retval = parent_class->serialize ((IBusSerializable *)table, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->serialize ((IBusSerializable *)table, iter);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
@@ -192,7 +161,7 @@ ibus_lookup_table_deserialize (IBusLookupTable *table,
     DBusMessageIter array_iter;
     gboolean retval;
 
-    retval = parent_class->deserialize ((IBusSerializable *)table, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->deserialize ((IBusSerializable *)table, iter);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
@@ -257,7 +226,7 @@ ibus_lookup_table_copy (IBusLookupTable *dest,
     gboolean retval;
     guint i;
 
-    retval = parent_class->copy ((IBusSerializable *)dest, (IBusSerializable *)src);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->copy ((IBusSerializable *)dest, (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (dest), FALSE);

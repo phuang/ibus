@@ -34,7 +34,6 @@ enum {
 static guint             _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void              bus_registry_init              (BusRegistry        *registry);
 static void              bus_registry_destroy           (BusRegistry        *registry);
 static void              bus_registry_load              (BusRegistry        *registry);
 static void              bus_registry_load_in_dir       (BusRegistry        *registry,
