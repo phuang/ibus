@@ -5,13 +5,13 @@
 #
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
-# Humbert Julien <julroy67@gmail.com>, 2009.
+# Humbert Julien <julroy67@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-27 13:01+0800\n"
-"PO-Revision-Date: 2009-12-04 18:35+0100\n"
+"PO-Revision-Date: 2010-01-30 18:22+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -43,29 +43,28 @@ msgid "Other"
 msgstr "Autre"
 
 #: ../ui/gtk/candidatepanel.py:254
-#, fuzzy
 msgid "Previous page"
-msgstr "Méthode d'entrée précédente :"
+msgstr "Page précédente"
 
 #: ../ui/gtk/candidatepanel.py:259
 msgid "Next page"
-msgstr ""
+msgstr "Page suivante"
 
 #: ../ui/gtk/main.py:57
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Certaines méthodes d'entrée ont été installées, supprimées ou mises à jour. "
+"Veuillez redémarrer iBus."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
 msgstr "Redémarrer IBus"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "Autre"
+msgstr "Plus tard"
 
 #: ../ui/gtk/panel.py:334
 msgid "Restart"
@@ -238,7 +237,7 @@ msgstr "Raccourci clavier pour revenir au moteur précédent"
 
 #: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "Partager la même méthode d'entrée pour toutes les applications"
 
 #: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
 msgid "Show icon on system tray"
@@ -261,7 +260,6 @@ msgstr ""
 "automatiquement, 2 = Toujours afficher"
 
 #: ../data/ibus.schemas.in.h:16
-#, fuzzy
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -292,9 +290,8 @@ msgid "Use custom font name for language panel"
 msgstr "Utiliser une police personnalisée pour la barre de langue"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "Use global input method"
-msgstr "Sélectionnez une méthode d'entrée"
+msgstr "Utiliser une méthode d'éntrée globale"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
 msgid "Use system keyboard (XKB) layout"
@@ -314,7 +311,7 @@ msgstr "<b>Police et Style</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgstr "<b>Configuration de la méthode d'éntrée globale</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -435,7 +432,7 @@ msgstr "Permet de choisir l'orientation de la liste des candidats"
 
 #: ../setup/setup.ui.h:40
 msgid "Show in Status Icon menu"
-msgstr ""
+msgstr "Afficher l'icône de statut dans le menu"
 
 #: ../setup/setup.ui.h:41
 msgid "Show information of the selected input method"
