@@ -309,6 +309,11 @@ class LanguageBar(gtk.Toolbar):
         gtk.Toolbar.show_all(self)
 
     def hide_all(self):
+        try:
+            self.__toplevel.window.lower()
+            self.__toplevel.window.hide_all()
+        except:
+            pass
         x, y = self.__toplevel.get_position()
         self.__toplevel.hide_all()
         gtk.Toolbar.hide_all(self)
