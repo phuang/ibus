@@ -27,6 +27,7 @@ import gobject
 import pango
 import ibus
 from ibus._gtk import PangoAttrList
+from handle import Handle
 
 from gettext import dgettext
 _  = lambda a : dgettext("ibus", a)
@@ -192,7 +193,14 @@ class CandidatePanel(gtk.VBox):
         self.__viewport = gtk.Viewport()
         self.__viewport.set_shadow_type(gtk.SHADOW_IN)
         self.__toplevel.add(self.__viewport)
-        self.__viewport.add(self)
+
+        hbox = gtk.HBox()
+        handle = Handle()
+        handle.connect("move-end", self.__handle_move_end_cb)
+        hbox.pack_start(handle)
+        hbox.pack_start(self)
+
+        self.__viewport.add(hbox)
         self.__toplevel.add_events(
             gdk.BUTTON_PRESS_MASK | \
             gdk.BUTTON_RELEASE_MASK | \
@@ -212,8 +220,13 @@ class CandidatePanel(gtk.VBox):
         self.__lookup_table = None
 
         self.__cursor_location = (0, 0)
+        self.__moved_cursor_location = None
 
         self.__recreate_ui()
+
+    def __handle_move_end_cb(self, handle):
+        # store moved location
+        self.__moved_cursor_location = self.__toplevel.get_position()
 
     def __recreate_ui(self):
         for w in self:
@@ -416,8 +429,11 @@ class CandidatePanel(gtk.VBox):
         self.__refresh_candidates()
 
     def set_cursor_location(self, x, y):
-        self.__cursor_location = (x, y)
-        self.__check_position()
+        # if cursor location is changed, we reset the moved cursor location
+        if self.__cursor_location != (x, y):
+            self.__cursor_location = (x, y)
+            self.__moved_cursor_location = None
+            self.__check_position()
 
     def __check_show_states(self):
         if self.__preedit_visible or \
@@ -467,8 +483,9 @@ class CandidatePanel(gtk.VBox):
         self.__toplevel.resize(1, 1)
 
     def __check_position(self):
-        bx = self.__cursor_location[0] + self.__toplevel.allocation.width
-        by = self.__cursor_location[1] + self.__toplevel.allocation.height
+        cursor_location = self.__moved_cursor_location or self.__cursor_location
+        bx = cursor_location[0] + self.__toplevel.allocation.width
+        by = cursor_location[1] + self.__toplevel.allocation.height
 
         root_window = gdk.get_default_root_window()
         sx, sy = root_window.get_size()
@@ -476,12 +493,12 @@ class CandidatePanel(gtk.VBox):
         if bx > sx:
             x = sx - self.__toplevel.allocation.width
         else:
-            x = self.__cursor_location[0]
+            x = cursor_location[0]
 
         if by > sy:
             y = sy - self.__toplevel.allocation.height
         else:
-            y = self.__cursor_location[1]
+            y = cursor_location[1]
 
         self.move(x, y)
 
