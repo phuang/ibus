@@ -103,6 +103,22 @@ struct _IBusKeymapClass {
 GType            ibus_keymap_get_type               (void);
 
 /**
+ * ibus_keymap_new:
+ * @name: The keymap file to be loaded, such as 'us', 'jp'.
+ * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
+ *
+ * Get an IBusKeymap associated with the giving name.
+ *
+ * This function loads the keymap file specified in @name
+ * in the IBUS_DATA_DIR/keymaps directory.
+ *
+ * Deprecated: This function has been deprecated and should
+ * not be used in newly written code. Please use ibus_keymap_get().
+ */
+IBusKeymap        *ibus_keymap_new                  (const gchar        *name)
+    G_GNUC_DEPRECATED;
+
+/**
  * ibus_keymap_get:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
  * @returns: An IBusKeymap associated with the giving name; or NULL if failed.

@@ -230,6 +230,12 @@ _keymap_destroy_cb (IBusKeymap *keymap,
 }
 
 IBusKeymap *
+ibus_keymap_new (const gchar *name)
+{
+    return ibus_keymap_get (name);
+}
+
+IBusKeymap *
 ibus_keymap_get (const gchar *name)
 {
     g_assert (name != NULL);
