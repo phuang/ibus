@@ -2061,7 +2061,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     }
 
     if (retval == TRUE) {
-        /* begine filter release key event */
+        /* begin filter release key event */
         context->filter_release = TRUE;
     }
 
