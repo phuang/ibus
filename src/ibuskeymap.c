@@ -251,7 +251,6 @@ ibus_keymap_get (const gchar *name)
 
     keymap = (IBusKeymap *) g_hash_table_lookup (keymaps, name);
     if (keymap != NULL) {
-        g_object_ref (keymap);
         return keymap;
     }
 
