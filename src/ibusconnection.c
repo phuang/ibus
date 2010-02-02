@@ -380,20 +380,17 @@ ibus_connection_open (const gchar *address)
 
     connection = g_hash_table_lookup (_connections, dbus_connection);
 
-    if (connection) {
-        dbus_connection_unref (dbus_connection);
-        g_object_ref (connection);
-        return connection;
+    if (connection == NULL) {
+        connection = ibus_connection_new ();
+        g_object_ref_sink (connection);
+
+        ibus_connection_set_connection (connection, dbus_connection, TRUE);
+        g_hash_table_insert (_connections, dbus_connection, connection);
+        g_signal_connect (connection, "destroy", G_CALLBACK (_connection_destroy_cb), dbus_connection);
     }
 
-    connection = ibus_connection_new ();
+    dbus_connection_unref (dbus_connection);
     g_object_ref_sink (connection);
-
-    ibus_connection_set_connection (connection, dbus_connection, TRUE);
-    g_hash_table_insert (_connections, dbus_connection, g_object_ref (connection));
-
-    g_signal_connect (connection, "destroy", G_CALLBACK (_connection_destroy_cb), dbus_connection);
-
     return connection;
 }
 
