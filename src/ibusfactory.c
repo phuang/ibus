@@ -31,6 +31,11 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0,
+    PROP_CONNECTION,
+};
+
 /* IBusFactoryPriv */
 struct _IBusFactoryPrivate {
     guint id;
@@ -44,6 +49,15 @@ typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 static void     ibus_factory_class_init     (IBusFactoryClass   *klass);
 static void     ibus_factory_init           (IBusFactory        *factory);
 static void     ibus_factory_destroy        (IBusFactory        *factory);
+static void     ibus_factory_set_property   (IBusFactory        *engine,
+                                             guint               prop_id,
+                                             const GValue       *value,
+                                             GParamSpec         *pspec);
+static void     ibus_factory_get_property   (IBusFactory        *factory,
+                                             guint               prop_id,
+                                             GValue             *value,
+                                             GParamSpec         *pspec);
+
 static gboolean ibus_factory_ibus_message   (IBusFactory        *factory,
                                              IBusConnection     *connection,
                                              IBusMessage        *message);
@@ -100,11 +114,9 @@ ibus_factory_new (IBusConnection *connection)
 
     factory = (IBusFactory *) g_object_new (IBUS_TYPE_FACTORY,
                                             "path", IBUS_PATH_FACTORY,
+                                            "connection", connection,
                                             NULL);
     priv = IBUS_FACTORY_GET_PRIVATE (factory);
-
-    priv->connection = g_object_ref (connection);
-    ibus_service_add_to_connection ((IBusService *)factory, connection);
 
     return factory;
 }
@@ -112,16 +124,34 @@ ibus_factory_new (IBusConnection *connection)
 static void
 ibus_factory_class_init (IBusFactoryClass *klass)
 {
-    // GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     factory_parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
 
     g_type_class_add_private (klass, sizeof (IBusFactoryPrivate));
 
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_factory_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_factory_get_property;
+
+
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_factory_destroy;
 
     IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_factory_ibus_message;
+
+    /**
+     * IBusFactory:connection:
+     *
+     * Connection of this IBusFactory.
+     **/
+    g_object_class_install_property (gobject_class,
+                PROP_CONNECTION,
+                g_param_spec_object ("connection",
+                "connection",
+                "The connection of factory object",
+                IBUS_TYPE_CONNECTION,
+                G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
+
 
 }
 
@@ -158,12 +188,52 @@ ibus_factory_destroy (IBusFactory *factory)
     }
 
     if (priv->connection) {
-        ibus_service_remove_from_connection ((IBusService *)factory,
-                                             priv->connection);
         g_object_unref (priv->connection);
+        priv->connection = NULL;
     }
 
     IBUS_OBJECT_CLASS(factory_parent_class)->destroy (IBUS_OBJECT (factory));
+}
+
+static void
+ibus_factory_set_property (IBusFactory  *factory,
+                           guint         prop_id,
+                           const GValue *value,
+                           GParamSpec   *pspec)
+{
+    IBusFactoryPrivate *priv;
+    priv = IBUS_FACTORY_GET_PRIVATE (factory);
+
+    switch (prop_id) {
+    case PROP_CONNECTION:
+        priv->connection = g_value_get_object (value);
+        g_object_ref (priv->connection);
+        ibus_service_add_to_connection ((IBusService *) factory,
+                                        priv->connection);
+        break;
+
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
+    }
+}
+
+static void
+ibus_factory_get_property (IBusFactory *factory,
+                           guint        prop_id,
+                           GValue      *value,
+                           GParamSpec  *pspec)
+{
+    IBusFactoryPrivate *priv;
+    priv = IBUS_FACTORY_GET_PRIVATE (factory);
+
+    switch (prop_id) {
+    case PROP_CONNECTION:
+        g_value_set_object (value, priv->connection);
+        break;
+
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
+    }
 }
 
 static void
