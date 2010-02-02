@@ -250,24 +250,25 @@ ibus_keymap_get (const gchar *name)
     }
 
     keymap = (IBusKeymap *) g_hash_table_lookup (keymaps, name);
-    if (keymap != NULL) {
-        return keymap;
+
+    if (keymap == NULL) {
+        keymap = g_object_new (IBUS_TYPE_KEYMAP, NULL);
+        g_object_ref_sink (keymap);
+
+        if (ibus_keymap_load (name, keymap->keymap)) {
+            ibus_keymap_fill (keymap->keymap);
+            keymap->name = g_strdup (name);
+            g_hash_table_insert (keymaps, g_strdup (keymap->name), g_object_ref (keymap));
+
+            g_signal_connect (keymap, "destroy", G_CALLBACK (_keymap_destroy_cb), NULL);
+        }
+        else {
+            g_object_unref (keymap);
+            keymap = NULL;
+        }
     }
-
-    keymap = g_object_new (IBUS_TYPE_KEYMAP, NULL);
-    g_object_ref_sink (keymap);
-
-    if (!ibus_keymap_load (name, keymap->keymap)) {
-        g_object_unref (keymap);
-        return NULL;
-    }
-
-    ibus_keymap_fill (keymap->keymap);
-    keymap->name = g_strdup (name);
-    g_hash_table_insert (keymaps, g_strdup (keymap->name), g_object_ref (keymap));
-
-    g_signal_connect (keymap, "destroy", G_CALLBACK (_keymap_destroy_cb), NULL);
-
+    if (keymap != NULL)
+        g_object_ref_sink (keymap);
     return keymap;
 }
 
