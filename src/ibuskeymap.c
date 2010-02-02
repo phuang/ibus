@@ -258,7 +258,7 @@ ibus_keymap_get (const gchar *name)
         if (ibus_keymap_load (name, keymap->keymap)) {
             ibus_keymap_fill (keymap->keymap);
             keymap->name = g_strdup (name);
-            g_hash_table_insert (keymaps, g_strdup (keymap->name), g_object_ref (keymap));
+            g_hash_table_insert (keymaps, g_strdup (keymap->name), keymap);
 
             g_signal_connect (keymap, "destroy", G_CALLBACK (_keymap_destroy_cb), NULL);
         }
