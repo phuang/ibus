@@ -945,13 +945,13 @@ _context_focus_in_cb (BusInputContext *context,
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    /* Do noting if context does not support focus.
+    /* Do nothing if context does not support focus.
      * The global engine shoule be detached from the focused context. */
     if ((bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) == 0) {
         return;
     }
 
-    /* Do noting if it is focused context already. */
+    /* Do nothing if it is focused context already. */
     if (ibus->focused_context == context) {
         return;
     }
