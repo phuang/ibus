@@ -21,6 +21,7 @@
 /**
  * SECTION: ibuscomponent
  * @short_description:  Component (executable) specification.
+ * @title: IBusComponent
  * @stability: Stable
  *
  * An IBusComponent is an executable program.

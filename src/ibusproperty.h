@@ -21,8 +21,8 @@
 /**
  * SECTION: ibusproperty
  * @short_description: UI component for input method engine property.
+ * @title: IBusProperty
  * @stability: Stable
- * @see_also: #IBusEngine
  *
  * An IBusProperty is an UI component like a button or a menu item
  * which shows the status of corresponding input method engine property.
@@ -30,6 +30,8 @@
  * For example, ibus-chewing users change the English/Chinese input mode by
  * pressing ctrl-space or click on the Eng/Chi switch button.
  * And the IBusProperty shows the change correspondingly.
+ *
+ * @see_also: #IBusPropList, #IBusEngine
  */
 #ifndef __IBUS_PROPERTY_H_
 #define __IBUS_PROPERTY_H_

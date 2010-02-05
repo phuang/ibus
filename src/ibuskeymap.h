@@ -21,8 +21,8 @@
 /**
  * SECTION: ibuskeymap
  * @short_description: Keyboard mapping handling.
+ * @title: IBusKeymap
  * @stability: Stable
- * @see_also: #IBusComponent, #IBusEngineDesc
  *
  * An IBusKeymap defines the mapping between keyboard scancodes and
  * keyboard symbols such as numbers, alphabets, and punctuation marks.
@@ -34,6 +34,8 @@
  * instance and define the keyboard layout.
  * Then ibus_keymap_lookup_keysym() can
  * convert scancodes back to the key symbols.
+ *
+ * @see_also: #IBusComponent, #IBusEngineDesc
  *
  */
 

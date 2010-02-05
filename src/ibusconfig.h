@@ -20,6 +20,7 @@
  */
 /**
  * SECTION: ibusconfig
+ * @title: IBusConfig
  * @short_description: IBus engine configuration module.
  *
  * An IBusConfig provides engine configuration methods

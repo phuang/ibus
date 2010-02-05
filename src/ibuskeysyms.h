@@ -20,8 +20,8 @@
 /**
  * SECTION: ibuskeysyms
  * @short_description: Key symbol definition.
+ * @title: IBusKeysyms
  * @stability: Stable
- * @see_also: #IBusKeymap, #IBusHotkeyProfile
  *
  * This section defines the key symbols (keysym) used in IBus.
  * Those keysym data is converted from keysymdef.h in
@@ -29,6 +29,9 @@
  *
  * Most of the key symbols are not explicit documented,
  * because they are self-explaining.
+ *
+ * @see_also: #IBusKeymap, #IBusHotkeyProfile
+ *
  */
 
 #ifndef __IBUS_KEYSYMS_H__

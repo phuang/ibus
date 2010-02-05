@@ -21,10 +21,13 @@
 /**
  * SECTION: ibusinternal
  * @short_description: IBus DBus setting functions for internal use.
+ * @title: IBusInternal
  * @stability: Stable
- * @see_also: #IBusMainLoop
  *
  * This section contain several IBus house keeping functions.
+ *
+ * @see_also: #IBusMainLoop
+ *
  */
 #ifndef __IBUS_INTERNEL_H_
 #define __IBUS_INTERNEL_H_

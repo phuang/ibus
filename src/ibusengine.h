@@ -21,11 +21,13 @@
 /**
  * SECTION: ibusengine
  * @short_description: Input method engine abstract.
+ * @title: IBusEngine
  * @stability: Stable
- * @see_also: #IBusComponent, #IBusEngineDesc
  *
  * An IBusEngine provides infrastructure for input method engine.
  * Developers can "extend" this class for input method engine development.
+ *
+ * @see_also: #IBusComponent, #IBusEngineDesc
  */
 #ifndef __IBUS_ENGINE_H_
 #define __IBUS_ENGINE_H_

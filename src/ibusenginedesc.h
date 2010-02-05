@@ -21,8 +21,8 @@
 /**
  * SECTION: ibusenginedesc
  * @short_description:  Input method engine description data.
+ * @title: IBusEngineDesc
  * @stability: Stable
- * @see_also: #IBusComponent, #IBusEngine
  *
  * An IBusEngineDesc stores description data of IBusEngine.
  * The description data can either be passed to ibus_engine_desc_new(),
@@ -32,6 +32,9 @@
  * However, the recommended way to load engine description data is
  * using ibus_component_new_from_file() to load a component file,
  * which also includes engine description data.
+ *
+ * @see_also: #IBusComponent, #IBusEngine
+ *
  */
 
 #ifndef __ENGINE_DESC_H_

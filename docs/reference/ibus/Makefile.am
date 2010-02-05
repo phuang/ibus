@@ -114,7 +114,6 @@ DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 
 trim-build.stamp: scan-build.stamp
 	sed " \
-	     /<TITLE>IBusFactoryInfo<\/TITLE>/d; \
 	     /IBusObjectFlags/d;\
 	     /IBUS_OBJECT_FLAGS/d;\
 	     /IBUS_OBJECT_SET_FLAGS/d;\

@@ -21,13 +21,16 @@
 /**
  * SECTION: ibusconnection
  * @short_description: DBusConnection wrapper.
+ * @title: IBusConnection
  * @stability: Stable
- * @see_also: IBusMessage
  * <ulink url="http://dbus.freedesktop.org/doc/api/html/structDBusConnection.html">DBusConnection</ulink>
  *
  * An IBusConnection provides #DBusConnection wrapper, and is used to connect to either D-Bus or IBus daemon.
  * Usually, IBusConnection is set to a #DBusConnection and emitting ibus-message when
  * receiving incoming messages from the #DBusConnection.
+ *
+ * @see_also: #IBusMessage
+ *
  */
 
 #ifndef __IBUS_CONNECTION_H_

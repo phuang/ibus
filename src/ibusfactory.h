@@ -21,12 +21,15 @@
 /**
  * SECTION: ibusfactory
  * @short_description: Factory for creating engine instances.
+ * @title: IBusFactory
  * @stability: Stable
- * @see_also: #IBusEngine
  *
  * An IBusFactory is an #IBusService that creates input method engine (IME) instance.
  * It provides CreateEngine remote method, which creates an IME instance by name,
  * and returns the D-Bus object path to IBus daemon.
+ *
+ * @see_also: #IBusEngine
+ *
  */
 #ifndef __IBUS_FACTORY_H_
 #define __IBUS_FACTORY_H_

@@ -21,6 +21,7 @@
 /**
  * SECTION: ibusobject
  * @short_description: Base object of IBus.
+ * @title: IBusObject
  * @stability: Stable
  *
  * IBusObject is the base object for all objects in IBus.

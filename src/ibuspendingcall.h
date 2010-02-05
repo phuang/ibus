@@ -20,9 +20,9 @@
  */
 /**
  * SECTION: ibuspendingcall
- * @Title: IBusPendingCall
- * @Short_description: A DBusPendingCall in IBus.
- * @Stability: Stable
+ * @title: IBusPendingCall
+ * @short_description: A DBusPendingCall in IBus.
+ * @stability: Stable
  *
  * An IBusPendingCall is essentially a DBusPendingCall, which representing an expected reply.
  * A IBusPendingCall can be created when you send a message that should have a reply.
