@@ -74,6 +74,7 @@ struct _BusIBusImpl {
     GList *component_list;
 
     gboolean use_sys_layout;
+    gboolean embed_preedit_text;
 
     BusRegistry     *registry;
 

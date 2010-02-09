@@ -61,6 +61,10 @@ static void     bus_ibus_impl_set_preload_engines
 static void     bus_ibus_impl_set_use_sys_layout
                                                 (BusIBusImpl        *ibus,
                                                  GValue             *value);
+static void     bus_ibus_impl_set_embed_preedit_text
+                                                (BusIBusImpl        *ibus,
+                                                 GValue             *value);
+
 static void     bus_ibus_impl_set_use_global_engine
                                                 (BusIBusImpl        *ibus,
                                                  GValue             *value);
@@ -229,6 +233,15 @@ bus_ibus_impl_set_use_sys_layout (BusIBusImpl *ibus,
 }
 
 static void
+bus_ibus_impl_set_embed_preedit_text (BusIBusImpl        *ibus,
+							     GValue             *value){
+    if (value != NULL && G_VALUE_TYPE (value) == G_TYPE_BOOLEAN) {
+        ibus->embed_preedit_text = g_value_get_boolean (value);
+    }
+
+}
+
+static void
 bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
                                      GValue      *value)
 {
@@ -343,6 +356,7 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
         { "general", "preload_engines", bus_ibus_impl_set_preload_engines },
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { "general", "use_global_engine", bus_ibus_impl_set_use_global_engine },
+        { "general", "embed_preedit_text", bus_ibus_impl_set_embed_preedit_text },
         { NULL, NULL, NULL },
     };
 
@@ -387,6 +401,7 @@ _config_value_changed_cb (IBusConfig  *config,
         { "general", "preload_engines",    bus_ibus_impl_set_preload_engines },
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { "general", "use_global_engine", bus_ibus_impl_set_use_global_engine },
+        { "general", "embed_preedit_text", bus_ibus_impl_set_embed_preedit_text },
         { NULL, NULL, NULL },
     };
 
@@ -535,6 +550,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->keymap = ibus_keymap_get ("us");
 
     ibus->use_sys_layout = FALSE;
+    ibus->embed_preedit_text = TRUE;
     ibus->use_global_engine = TRUE;
     ibus->global_engine_enabled = FALSE;
     ibus->global_engine = NULL;

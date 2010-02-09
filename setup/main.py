@@ -175,6 +175,12 @@ class Setup(object):
             self.__config.get_value("panel", "show_im_name", False))
         self.__checkbutton_show_im_name.connect("toggled", self.__checkbutton_show_im_name_toggled_cb)
 
+        # embed preedit text
+        self.__checkbutton_embed_preedit_text = self.__builder.get_object("checkbutton_embed_preedit_text")
+        self.__checkbutton_embed_preedit_text.set_active(
+            self.__config.get_value("general", "embed_preedit_text", True))
+        self.__checkbutton_embed_preedit_text.connect("toggled", self.__checkbutton_embed_preedit_text_toggled_cb)
+
         # use system keyboard layout setting
         self.__checkbutton_use_sys_layout = self.__builder.get_object("checkbutton_use_sys_layout")
         self.__checkbutton_use_sys_layout.set_active(
@@ -425,6 +431,10 @@ class Setup(object):
     def __checkbutton_show_im_name_toggled_cb(self, button):
         value = self.__checkbutton_show_im_name.get_active()
         self.__config.set_value("panel", "show_im_name", value)
+
+    def __checkbutton_embed_preedit_text_toggled_cb(self, button):
+        value = self.__checkbutton_embed_preedit_text.get_active()
+        self.__config.set_value("general", "embed_preedit_text", value)
 
     def __checkbutton_use_sys_layout_toggled_cb(self, button):
         value = self.__checkbutton_use_sys_layout.get_active()

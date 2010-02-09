@@ -417,6 +417,19 @@
                                   </packing>
                                 </child>
                                 <child>
+                                  <object class="GtkCheckButton" id="checkbutton_embed_preedit_text">
+                                    <property name="label" translatable="yes">Embed preedit text in application window</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">Embed the preedit text of input method in the application window</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="position">5</property>
+                                  </packing>
+                                </child>
+                                <child>
                                   <object class="GtkHBox" id="hbox9">
                                     <property name="visible">True</property>
                                     <property name="homogeneous">True</property>
@@ -445,7 +458,7 @@
                                     </child>
                                   </object>
                                   <packing>
-                                    <property name="position">5</property>
+                                    <property name="position">6</property>
                                   </packing>
                                 </child>
                               </object>

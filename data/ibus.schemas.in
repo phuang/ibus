@@ -159,6 +159,17 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/embed_preedit_text</key>
+      <applyto>/desktop/ibus/general/embed_preedit_text</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Embed Preedit Text</short>
+	    <long>Embed Preedit Text in Application Window</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/use_global_engine</key>
       <applyto>/desktop/ibus/general/use_global_engine</applyto>
       <owner>ibus</owner>

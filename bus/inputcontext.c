@@ -128,6 +128,17 @@ static IBusPropList    *props_empty = NULL;
 
 G_DEFINE_TYPE (BusInputContext, bus_input_context, IBUS_TYPE_SERVICE)
 
+static inline gboolean is_embed_preedit_text(){
+    BusIBusImpl * ibusimpl = BUS_DEFAULT_IBUS;
+    return ibusimpl->embed_preedit_text;
+}
+
+#define IS_CLIENT_CAPABLE_PREEDIT(context)                     \
+    ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT)
+
+#define IS_CLIENT_FORCE_PREEDIT(context)                       \
+  (IS_CLIENT_CAPABLE_PREEDIT(context) && (context->capabilities & IBUS_CAP_FOCUS) == 0)
+
 static void
 _connection_destroy_cb (BusConnection   *connection,
                         BusInputContext *context)
@@ -1177,7 +1188,7 @@ bus_input_context_focus_in (BusInputContext *context)
     if (context->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
         if (context->engine && context->enabled) {
-            if (context->preedit_visible && (context->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
+          if (context->preedit_visible && !(is_embed_preedit_text() && IS_CLIENT_CAPABLE_PREEDIT(context)) && !IS_CLIENT_FORCE_PREEDIT(context)) {
                 g_signal_emit (context,
                                context_signals[UPDATE_PREEDIT_TEXT],
                                0,
@@ -1218,7 +1229,7 @@ bus_input_context_focus_out (BusInputContext *context)
     context->has_focus = FALSE;
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
-        if (context->preedit_visible && (context->capabilities & IBUS_CAP_PREEDIT_TEXT) == 0) {
+	  if (context->preedit_visible && !(is_embed_preedit_text() && IS_CLIENT_CAPABLE_PREEDIT(context)) && !IS_CLIENT_FORCE_PREEDIT(context) ) {
             g_signal_emit (context, context_signals[HIDE_PREEDIT_TEXT], 0);
         }
         if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
@@ -1293,7 +1304,7 @@ bus_input_context_update_preedit_text (BusInputContext *context,
     context->preedit_cursor_pos = cursor_pos;
     context->preedit_visible = visible;
 
-    if (context->capabilities & IBUS_CAP_PREEDIT_TEXT) {
+    if ((is_embed_preedit_text() && IS_CLIENT_CAPABLE_PREEDIT(context)) || IS_CLIENT_FORCE_PREEDIT(context)) {
         bus_input_context_send_signal (context,
                                        "UpdatePreeditText",
                                        IBUS_TYPE_TEXT, &(context->preedit_text),
@@ -1322,7 +1333,7 @@ bus_input_context_show_preedit_text (BusInputContext *context)
 
     context->preedit_visible = TRUE;
 
-    if ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
+    if ((is_embed_preedit_text() && IS_CLIENT_CAPABLE_PREEDIT(context)) || IS_CLIENT_FORCE_PREEDIT(context)) {
         bus_input_context_send_signal (context,
                                        "ShowPreeditText",
                                        G_TYPE_INVALID);
@@ -1345,7 +1356,7 @@ bus_input_context_hide_preedit_text (BusInputContext *context)
 
     context->preedit_visible = FALSE;
 
-    if ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
+    if (is_embed_preedit_text() && (context->capabilities & IBUS_CAP_PREEDIT_TEXT) == IBUS_CAP_PREEDIT_TEXT) {
         bus_input_context_send_signal (context,
                                        "HidePreeditText",
                                        G_TYPE_INVALID);
