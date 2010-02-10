@@ -898,7 +898,7 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
         g_assert (ibus->global_engine == NULL);
     }
 
-    if (engine != NULL) {
+    if (engine != NULL && !IBUS_OBJECT_DESTROYED (engine)) {
         g_object_ref (engine);
         ibus->global_engine = engine;
         g_signal_connect (ibus->global_engine, "destroy",
