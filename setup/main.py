@@ -184,7 +184,7 @@ class Setup(object):
         # use system keyboard layout setting
         self.__checkbutton_use_sys_layout = self.__builder.get_object("checkbutton_use_sys_layout")
         self.__checkbutton_use_sys_layout.set_active(
-            self.__config.get_value("general", "use_system_keyboard_layout", False))
+            self.__config.get_value("general", "use_system_keyboard_layout", True))
         self.__checkbutton_use_sys_layout.connect("toggled", self.__checkbutton_use_sys_layout_toggled_cb)
 
         # use global ime setting
