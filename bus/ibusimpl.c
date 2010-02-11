@@ -551,8 +551,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 
     ibus->use_sys_layout = FALSE;
     ibus->embed_preedit_text = TRUE;
-    ibus->use_global_engine = TRUE;
-    ibus->global_engine_enabled = FALSE;
+    ibus->use_global_engine = FALSE;
     ibus->global_engine = NULL;
 
     bus_ibus_impl_reload_config (ibus);
@@ -1016,25 +1015,19 @@ _context_destroy_cb (BusInputContext    *context,
     g_object_unref (context);
 }
 
+#if 0
 static void
 _context_enabled_cb (BusInputContext    *context,
                      BusIBusImpl        *ibus)
 {
-    if (ibus->focused_context == context && ibus->use_global_engine &&
-        (bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) != 0) {
-        ibus->global_engine_enabled = TRUE;
-    }
 }
 
 static void
 _context_disabled_cb (BusInputContext    *context,
                       BusIBusImpl        *ibus)
 {
-    if (ibus->focused_context == context && ibus->use_global_engine &&
-        (bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) != 0) {
-        ibus->global_engine_enabled = FALSE;
-    }
 }
+#endif
 
 static IBusMessage *
 _ibus_create_input_context (BusIBusImpl     *ibus,
@@ -1078,8 +1071,10 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
+    #if 0
         { "enabled",        G_CALLBACK (_context_enabled_cb) },
         { "disabled",       G_CALLBACK (_context_disabled_cb) },
+    #endif
     };
 
     for (i = 0; i < G_N_ELEMENTS (signals); i++) {

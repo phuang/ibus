@@ -85,7 +85,6 @@ struct _BusIBusImpl {
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
-    gboolean global_engine_enabled;
     BusEngineProxy  *global_engine;
 };
 
