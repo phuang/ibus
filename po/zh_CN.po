@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-27 13:01+0800\n"
+"POT-Creation-Date: 2010-02-10 14:32+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -36,11 +36,11 @@ msgstr ""
 msgid "Other"
 msgstr "其他"
 
-#: ../ui/gtk/candidatepanel.py:254
+#: ../ui/gtk/candidatepanel.py:267
 msgid "Previous page"
 msgstr "上一页"
 
-#: ../ui/gtk/candidatepanel.py:259
+#: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
 msgstr "下一页"
 
@@ -78,7 +78,7 @@ msgstr "IBus is an intelligent input bus for Linux/Unix."
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
 msgid "About the Input Method"
 msgstr "关于输入法"
 
@@ -86,7 +86,7 @@ msgstr "关于输入法"
 msgid "Switch input method"
 msgstr "切换输入法"
 
-#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "关于"
@@ -122,11 +122,11 @@ msgstr "下一入法"
 msgid "previous input method"
 msgstr "前一入法"
 
-#: ../setup/main.py:262
+#: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus 守护进程没有启动，您是否想现在启动它？"
 
-#: ../setup/main.py:277
+#: ../setup/main.py:283
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -140,7 +140,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:292
+#: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择%s的快捷键"
@@ -174,7 +174,7 @@ msgid "Select an input method"
 msgstr "选择输入法"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
 msgid "Input Method"
 msgstr "输入法"
 
@@ -182,7 +182,7 @@ msgstr "输入法"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
 msgid "IBus Preferences"
 msgstr "IBus 设置"
 
@@ -199,90 +199,98 @@ msgid "Custom font name for language panel"
 msgstr "自定义语言栏字体"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Embed Preedit Text"
+msgstr "内嵌编辑模式"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Embed Preedit Text in Application Window"
+msgstr "在应用程序窗口中启用内嵌编辑模式"
+
+#: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
 msgstr "语言栏位置"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 msgid "Next engine shortcut keys"
 msgstr "下一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "候选词表方向。0 = 水平，1 = 竖直。"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "候选词表方向"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus启动时预加载的引擎"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Preload engines"
 msgstr "预加载引擎"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "上一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "在所有应用程序中共享同一个输入法"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "在系统托盘上显示图标"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Show input method name"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
 msgid "Show input method name on language bar"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "语言栏行为。0 = 总是隐藏，1 = 自动隐藏，2 = 总是显示。"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "语言栏位置"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "切换下一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 msgid "The shortcut keys for turning input method on or off"
 msgstr "打开关闭输入法的快捷键"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid "Trigger shortcut keys"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "Use global input method"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
-#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
 msgid "Use system keyboard layout"
 msgstr "使用系统键盘布局"
 
@@ -363,90 +371,99 @@ msgid "Custom"
 msgstr "自定义"
 
 #: ../setup/setup.ui.h:24
+msgid "Embed preedit text in application window"
+msgstr "在应用程序窗口中启用内嵌编辑模式"
+
+#: ../setup/setup.ui.h:25
+#, fuzzy
+msgid "Embed the preedit text of input method in the application window"
+msgstr "在应用程序窗口中启用输入法的内嵌编辑模式"
+
+#: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
 msgstr "开关"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:27
 msgid "General"
 msgstr "常规"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:28
 msgid "Horizontal"
 msgstr "水平"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Language panel position:"
 msgstr "语言栏位置:"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "下移选中的输入法"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "上移选中的输入法"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Never"
 msgstr "从不"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Next input method:"
 msgstr "下一入法:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "前一入法:"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "删除选中的输入法"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "设置显示隐藏语言栏的方式"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "设置候选词表方向"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
 msgstr ""
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
 msgstr "显示选中输入法的信息"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "在语言栏上显示输入法的名字"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show language panel:"
 msgstr "显示语言栏:"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
 msgstr "启动桌面时自动启动IBus"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "切换上一个引擎快捷键"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:51
 msgid "Top left corner"
 msgstr "左上角"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "右上角"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Vertical"
 msgstr "竖直"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "活动时"
 
