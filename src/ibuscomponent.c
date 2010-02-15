@@ -76,7 +76,6 @@ ibus_component_class_init (IBusComponentClass *klass)
 }
 
 
-
 static void
 ibus_component_init (IBusComponent *component)
 {
@@ -90,6 +89,8 @@ ibus_component_init (IBusComponent *component)
     component->textdomain = NULL;
     component->engines = NULL;
     component->observed_paths = NULL;
+    component->pid = 0;
+    component->child_source_id = 0;
 }
 
 static void
@@ -126,6 +127,17 @@ ibus_component_destroy (IBusComponent *component)
     }
     g_list_free (component->engines);
     component->engines = NULL;
+
+    if (component->pid != 0) {
+        ibus_component_stop (component);
+        g_spawn_close_pid (component->pid);
+        component->pid = 0;
+    }
+
+    if (component->child_source_id != 0) {
+        g_source_remove (component->child_source_id);
+        component->child_source_id = 0;
+    }
 
     IBUS_OBJECT_CLASS (ibus_component_parent_class)->destroy (IBUS_OBJECT (component));
 }
@@ -642,6 +654,7 @@ ibus_component_child_cb (GPid            pid,
 
     g_spawn_close_pid (pid);
     component->pid = 0;
+    component->child_source_id = 0;
 }
 
 gboolean
@@ -674,15 +687,15 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
                             flags,
                             NULL, NULL,
                             &(component->pid), &error);
-    g_strfreev (argv)
-    ;
+    g_strfreev (argv);
     if (!retval) {
         g_warning ("Can not execute component %s: %s", component->name, error->message);
         g_error_free (error);
         return FALSE;
     }
 
-    g_child_watch_add (component->pid, (GChildWatchFunc) ibus_component_child_cb, component);
+    component->child_source_id =
+        g_child_watch_add (component->pid, (GChildWatchFunc) ibus_component_child_cb, component);
 
     return TRUE;
 }
