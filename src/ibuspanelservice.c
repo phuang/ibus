@@ -224,13 +224,12 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         { "ShowPreeditText",       G_STRUCT_OFFSET (IBusPanelServiceClass, show_preedit_text) },
         { "StartSetup",            G_STRUCT_OFFSET (IBusPanelServiceClass, start_setup) },
         { "StateChanged",          G_STRUCT_OFFSET (IBusPanelServiceClass, state_changed) },
-        { NULL, 0 },
     };
 
     IBusMessage *reply = NULL;
 
     gint i;
-    for (i = 0; no_arg_methods[i].name != NULL; i++) {
+    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
         if (!ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL,
                                           no_arg_methods[i].name))
             continue;

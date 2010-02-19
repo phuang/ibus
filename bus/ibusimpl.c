@@ -357,10 +357,9 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { "general", "use_global_engine", bus_ibus_impl_set_use_global_engine },
         { "general", "embed_preedit_text", bus_ibus_impl_set_embed_preedit_text },
-        { NULL, NULL, NULL },
     };
 
-    for (i = 0; entries[i].section != NULL; i++) {
+    for (i = 0; i < G_N_ELEMENTS (entries); i++) {
         if (ibus->config != NULL &&
             ibus_config_get_value (ibus->config,
                                    entries[i].section,
@@ -402,10 +401,9 @@ _config_value_changed_cb (IBusConfig  *config,
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
         { "general", "use_global_engine", bus_ibus_impl_set_use_global_engine },
         { "general", "embed_preedit_text", bus_ibus_impl_set_embed_preedit_text },
-        { NULL, NULL, NULL },
     };
 
-    for (i = 0; entries[i].section != NULL; i++) {
+    for (i = 0; i < G_N_ELEMENTS (entries); i++) {
         if (g_strcmp0 (entries[i].section, section) == 0 &&
             g_strcmp0 (entries[i].key, key) == 0) {
             entries[i].func (ibus, value);

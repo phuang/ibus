@@ -218,14 +218,11 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
         { "PageDown",       PAGE_DOWN },
         { "CursorUp",       CURSOR_UP },
         { "CursorDown",     CURSOR_DOWN },
-        { NULL, 0},
     };
 
     panel = BUS_PANEL_PROXY (proxy);
 
-    for (i = 0; ; i++) {
-        if (signals[i].member == NULL)
-            break;
+    for (i = 0; i < G_N_ELEMENTS (signals); i++) {
         if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, signals[i].member)) {
             g_signal_emit (panel, panel_signals[signals[i].signal_id], 0);
             goto handled;
