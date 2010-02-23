@@ -806,20 +806,16 @@ ibus_bus_do_list_engines (IBusBus *bus, gboolean active_engines_only)
         return NULL;
     }
 
-    if (dbus_message_iter_get_array_len (&subiter) <= 0) {
-        ibus_message_unref (reply);
-        return NULL;
-    }
-
     engines = NULL;
-    do {
+    while (ibus_message_iter_get_arg_type (&subiter) != G_TYPE_INVALID) {
         IBusSerializable *object = NULL;
         if (!ibus_message_iter_get (&subiter, IBUS_TYPE_ENGINE_DESC, &object) || !object) {
             g_warning ("Unexpected type is returned from %s", member);
             continue;
         }
         engines = g_list_append (engines, object);
-    } while (ibus_message_iter_next (&subiter));
+        ibus_message_iter_next (&subiter);
+    };
 
     ibus_message_unref (reply);
     return engines;
