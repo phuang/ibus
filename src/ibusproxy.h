@@ -166,7 +166,8 @@ gboolean         ibus_proxy_call_with_reply (IBusProxy          *proxy,
  *
  * Call a method of the corresponding service and blocks a certain time period while waiting for
  * an IBusMessage as reply.
- * If the IBusMessage is not NULL,  it calls ibus_connection_send_with_reply_and_block() to do the actual sending.
+ * If the IBusMessage is not NULL, it calls ibus_connection_send_with_reply_and_block() to do the
+ * actual sending.
  *
  * @see_also: ibus_connection_send_with_reply_and_block(),
  * @see_also: ibus_proxy_call(), ibus_proxy_send_with_reply(), ibus_proxy_call_with_reply_and_block().
@@ -207,7 +208,8 @@ gboolean         ibus_proxy_send_with_reply (IBusProxy          *proxy,
  *
  * Send an IBusMessage to the corresponding service and blocks a certain time period while waiting for
  * an IBusMessage as reply.
- * If the IBusMessage is not NULL,  it calls ibus_connection_send_with_reply_and_block() to do the actual sending.
+ * If the IBusMessage is not NULL, it calls ibus_connection_send_with_reply_and_block() to do the
+ * actual sending.
  *
  * @see_also: ibus_connection_send_with_reply_and_block(),
  * @see_also: ibus_proxy_send(), ibus_proxy_send_with_reply(), ibus_proxy_call_with_reply_and_block().
