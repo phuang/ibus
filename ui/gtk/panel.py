@@ -267,7 +267,6 @@ class Panel(ibus.PanelBase):
         self.__language_bar.set_show(show)
 
     def __config_load_position(self):
-        position = self.__config.get_value("panel", "position", 3)
         x = self.__config.get_value("panel", "x", -1)
         y = self.__config.get_value("panel", "y", -1)
         self.__language_bar.set_position(x, y)
@@ -304,8 +303,6 @@ class Panel(ibus.PanelBase):
             self.__config_load_lookup_table_orientation()
         elif name == "show":
             self.__config_load_show()
-        # elif name == "position":
-        #     self.__config_load_position()
         elif name == "use_custom_font" or name == "custom_font":
             self.__config_load_custom_font()
         elif name == "show_icon_on_systray":
