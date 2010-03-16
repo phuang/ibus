@@ -7,6 +7,7 @@ Exec=ibus-daemon --xim
 Icon=ibus
 Terminal=false
 Type=Application
+Categories=System;Utility;
 X-GNOME-Autostart-Phase=Applications
 X-GNOME-AutoRestart=false
 X-GNOME-Autostart-Notify=true
