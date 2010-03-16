@@ -1041,19 +1041,8 @@ ibus_engine_update_preedit_text (IBusEngine      *engine,
                                  guint            cursor_pos,
                                  gboolean         visible)
 {
-    guint mode = IBUS_ENGINE_PREEDIT_CLEAR;
-
-    _send_signal (engine,
-                  "UpdatePreeditText",
-                  IBUS_TYPE_TEXT, &text,
-                  G_TYPE_UINT, &cursor_pos,
-                  G_TYPE_BOOLEAN, &visible,
-                  G_TYPE_UINT, &mode,
-                  G_TYPE_INVALID);
-
-    if (g_object_is_floating (text)) {
-        g_object_unref (text);
-    }
+    ibus_engine_update_preedit_text_with_mode (engine,
+            text, cursor_pos, visible, IBUS_ENGINE_PREEDIT_CLEAR);
 }
 
 void
