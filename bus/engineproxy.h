@@ -62,6 +62,9 @@ struct _BusEngineProxy {
     IBusEngineDesc *desc;
     IBusKeymap     *keymap;
     IBusPropList *prop_list;
+
+    /* private member */
+    guint _preedit_focus_mode;
 };
 
 struct _BusEngineProxyClass {
@@ -91,6 +94,11 @@ void             bus_engine_proxy_focus_out         (BusEngineProxy *engine);
 void             bus_engine_proxy_reset             (BusEngineProxy *engine);
 void             bus_engine_proxy_set_capabilities  (BusEngineProxy *engine,
                                                      guint           caps);
+guint            bus_engine_proxy_get_preedit_focus_mode
+                                                    (BusEngineProxy *engine);
+void             bus_engine_proxy_set_preedit_focus_mode
+                                                    (BusEngineProxy *engine,
+                                                     guint           mode);
 void             bus_engine_proxy_page_up           (BusEngineProxy *engine);
 void             bus_engine_proxy_page_down         (BusEngineProxy *engine);
 void             bus_engine_proxy_cursor_up         (BusEngineProxy *engine);

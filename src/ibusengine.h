@@ -179,6 +179,30 @@ void         ibus_engine_update_preedit_text
                                          gboolean            visible);
 
 /**
+ * ibus_engine_update_preedit_text_with_mode:
+ * @engine: An IBusEngine.
+ * @text: Update content.
+ * @cursor_pos: Current position of cursor
+ * @visible: Whether the pre-edit buffer is visible.
+ * @mode: Pre-edit commit mode when the focus is lost.
+ *
+ * Update the pre-edit buffer with commit mode.
+ * if mode is IBUS_ENGINE_PREEDIT_CLEAR,
+ * ibus_engine_update_preedit_text_with_mode is compatible with
+ * ibus_engine_update_preedit_text.
+ *
+ * (Note: The text object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void         ibus_engine_update_preedit_text_with_mode
+                                        (IBusEngine              *engine,
+                                         IBusText                *text,
+                                         guint                    cursor_pos,
+                                         gboolean                 visible,
+                                         IBusPreeditFocusMode     mode);
+
+/**
  * ibus_engine_show_preedit_text:
  * @engine: An IBusEngine.
  *

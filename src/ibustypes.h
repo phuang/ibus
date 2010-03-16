@@ -112,6 +112,18 @@ typedef enum {
 } IBusCapabilite;
 
 /**
+ * IBusPreeditFocusMode:
+ * @IBUS_ENGINE_PREEDIT_CLEAR: pre-edit text is cleared.
+ * @IBUS_ENGINE_PREEDIT_COMMIT: pre-edit text is committed.
+ *
+ * Pre-edit commit mode when the focus is lost.
+ */
+typedef enum {
+    IBUS_ENGINE_PREEDIT_CLEAR   = 0,
+    IBUS_ENGINE_PREEDIT_COMMIT  = 1,
+} IBusPreeditFocusMode;
+
+/**
  * IBusOrientation:
  * @IBUS_ORIENTATION_HORIZONTAL: Horizontal orientation.
  * @IBUS_ORIENTATION_VERTICAL: Vertival orientation.

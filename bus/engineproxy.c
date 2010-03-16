@@ -435,17 +435,20 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         gint cursor_pos;
         gboolean visible;
         gboolean retval;
+        guint mode;
 
         retval = ibus_message_get_args (message,
                                         &error,
                                         IBUS_TYPE_TEXT, &text,
                                         G_TYPE_UINT, &cursor_pos,
                                         G_TYPE_BOOLEAN, &visible,
+                                        G_TYPE_UINT, &mode,
                                         G_TYPE_INVALID);
 
         if (!retval)
             goto failed;
 
+        engine->_preedit_focus_mode = mode;
         g_signal_emit (engine, engine_signals[UPDATE_PREEDIT_TEXT], 0,
                        text, cursor_pos, visible);
         if (g_object_is_floating (text))
@@ -683,6 +686,21 @@ bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
                          G_TYPE_UINT, &caps,
                          G_TYPE_INVALID);
     }
+}
+
+guint
+bus_engine_proxy_get_preedit_focus_mode (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    return engine->_preedit_focus_mode;
+}
+
+void
+bus_engine_proxy_set_preedit_focus_mode (BusEngineProxy *engine,
+                                         guint           mode)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    engine->_preedit_focus_mode = mode;
 }
 
 void

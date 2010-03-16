@@ -124,6 +124,10 @@ IBUS_IFACE_ENGINE_FACTORY   = "org.freedesktop.IBus.EngineFactory"
 IBUS_IFACE_INPUT_CONTEXT    = "org.freedesktop.IBus.InputContext"
 IBUS_IFACE_NOTIFICATIONS    = "org.freedesktop.IBus.Notifications"
 
+# define pre-edit commit mode when the focus is lost
+IBUS_ENGINE_PREEDIT_CLEAR       = 0
+IBUS_ENGINE_PREEDIT_COMMIT      = 1
+
 # define orientation
 ORIENTATION_HORIZONTAL  = 0
 ORIENTATION_VERTICAL    = 1

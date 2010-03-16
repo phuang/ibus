@@ -24,6 +24,7 @@ __all__ = (
         "EngineBase",
     )
 
+import common
 import object
 import serializable
 import interface
@@ -85,9 +86,9 @@ class EngineBase(object.Object):
     def forward_key_event(self, keyval, state):
         return self.__proxy.ForwardKeyEvent(keyval, state)
 
-    def update_preedit_text(self, text, cursor_pos, visible):
+    def update_preedit_text(self, text, cursor_pos, visible, mode=common.IBUS_ENGINE_PREEDIT_CLEAR):
         text = serializable.serialize_object(text)
-        return self.__proxy.UpdatePreeditText(text, cursor_pos, visible)
+        return self.__proxy.UpdatePreeditText(text, cursor_pos, visible, mode)
 
     def show_preedit_text(self):
         return self.__proxy.ShowPreeditText()
