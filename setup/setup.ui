@@ -63,7 +63,7 @@
     <property name="border_width">12</property>
     <property name="title" translatable="yes">IBus Preferences</property>
     <property name="resizable">False</property>
-    <property name="window_position">center</property>
+    <property name="window_position">center-always</property>
     <property name="icon_name">ibus-setup</property>
     <child>
       <object class="GtkVBox" id="vbox1">
