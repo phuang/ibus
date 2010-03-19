@@ -257,10 +257,14 @@ bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
     }
 
     if (new_value == TRUE) {
+        BusEngineProxy *engine;
         /* turn on use_global_engine option */
         ibus->use_global_engine = TRUE;
-        if (ibus->focused_context != NULL)
-            bus_ibus_impl_set_global_engine (ibus, bus_input_context_get_engine (ibus->focused_context));
+        engine = ibus->focused_context != NULL ?
+                    bus_input_context_get_engine (ibus->focused_context) : NULL;
+        if (engine) {
+            bus_ibus_impl_set_global_engine (ibus, engine);
+        }
     }
     else {
         /* turn off use_global_engine option */
@@ -915,7 +919,10 @@ _context_engine_changed_cb (BusInputContext *context,
     }
 
     engine = bus_input_context_get_engine (context);
-    bus_ibus_impl_set_global_engine (ibus, engine);
+    if (engine != NULL) {
+        /* only set global engine if engine is not NULL */
+        bus_ibus_impl_set_global_engine (ibus, engine);
+    }
 }
 
 static void
@@ -975,9 +982,6 @@ _context_focus_in_cb (BusInputContext *context,
         g_assert (ibus->focused_context == NULL);
     }
 
-    g_object_ref (context);
-    ibus->focused_context = context;
-
     /* If the use_global_engine option is enabled, then we need:
      * - Switch the context to use the global engine or save the context's
      *   existing engine as global engine.
@@ -992,8 +996,11 @@ _context_focus_in_cb (BusInputContext *context,
     }
 
     if (ibus->panel != NULL) {
-        bus_panel_proxy_focus_in (ibus->panel, ibus->focused_context);
+        bus_panel_proxy_focus_in (ibus->panel, context);
     }
+
+    g_object_ref (context);
+    ibus->focused_context = context;
 }
 
 static void
