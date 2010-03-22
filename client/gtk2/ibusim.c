@@ -43,7 +43,7 @@ g_module_check_init (GModule *module)
 {
     return glib_check_version (GLIB_MAJOR_VERSION,
                                GLIB_MINOR_VERSION,
-                               GLIB_MICRO_VERSION);
+                               0);
 }
 
 G_MODULE_EXPORT void
