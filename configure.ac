@@ -37,7 +37,6 @@ AC_GNU_SOURCE
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 # define PACKAGE_VERSION_* variables
@@ -150,24 +149,34 @@ AC_CHECK_HEADERS([X11/XKBlib.h])
 AC_PATH_PROG(ENV, env)
 AC_SUBST(ENV)
 
+AC_ARG_ENABLE(python,
+    AS_HELP_STRING([--disable-python],
+                   [Do not use Python code]),
+    [enable_python=$enableval],
+    [enable_python=yes]
+)
 
-# check python
-AM_PATH_PYTHON([2.5])
-AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
-if test x"$PYTHON_CONFIG" == x""; then
-    AC_PATH_PROG(PYTHON_CONFIG, python-config)
+AM_CONDITIONAL([ENABLE_PYTHON], [test "x$enable_python" = "xyes"])
+
+if test x"$enable_python" != x"no"; then
+    # check python
+    AM_PATH_PYTHON([2.5])
+    AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
+    if test x"$PYTHON_CONFIG" == x""; then
+        AC_PATH_PROG(PYTHON_CONFIG, python-config)
+    fi
+    if test x"$PYTHON_CONFIG" != x""; then
+        PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
+        PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+    else
+        PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
+        PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
+    fi
+    PYTHON_INCLUDES="$PYTHON_CFLAGS"
+    AC_SUBST(PYTHON_CFLAGS)
+    AC_SUBST(PYTHON_INCLUDES)
+    AC_SUBST(PYTHON_LIBS)
 fi
-if test x"$PYTHON_CONFIG" != x""; then
-    PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
-    PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-else
-    PYTHON_CFLAGS=`$PYTHON $srcdir/python-config.py --includes`
-    PYTHON_LIBS=`$PYTHON $srcdir/python-config.py --libs`
-fi
-PYTHON_INCLUDES="$PYTHON_CFLAGS"
-AC_SUBST(PYTHON_CFLAGS)
-AC_SUBST(PYTHON_INCLUDES)
-AC_SUBST(PYTHON_LIBS)
 
 #
 # REBUILD = \#
@@ -188,23 +197,25 @@ AC_ARG_WITH(gtk-im-module-dir,
 )
 AC_SUBST(GTK_IM_MODULEDIR)
 
-# check for dbus-python
-AC_ARG_ENABLE(dbus-python-check,
-    AS_HELP_STRING([--disable-dbus-python-check],
-        [Do not check dbus-python]),
-    [enable_dbus_python_check=$enableval],
-    [enable_dbus_python_check=yes],
-)
-PKG_CHECK_MODULES(DBUS_PYTHON,
-    [dbus-python >= 0.83.0],
-    [IBUS_HAS_DBUS_PYTHON=yes],
-    [IBUS_HAS_DBUS_PYTHON=no]
-)
-if test x"$IBUS_HAS_DBUS_PYTHON" != x"yes"; then
-    if test x"$enable_dbus_python_check" != x"no"; then
-        AC_MSG_ERROR([can not find dbus-python >= 0.83.0. Please install or update dbus-python.])
-    else
-        AC_MSG_WARN([can not find dbus-python >= 0.83.0. It is required.])
+if test x"$enable_python" != x"no"; then
+    # check for dbus-python
+    AC_ARG_ENABLE(dbus-python-check,
+        AS_HELP_STRING([--disable-dbus-python-check],
+            [Do not check dbus-python]),
+        [enable_dbus_python_check=$enableval],
+        [enable_dbus_python_check=yes],
+    )
+    PKG_CHECK_MODULES(DBUS_PYTHON,
+        [dbus-python >= 0.83.0],
+        [IBUS_HAS_DBUS_PYTHON=yes],
+        [IBUS_HAS_DBUS_PYTHON=no]
+    )
+    if test x"$IBUS_HAS_DBUS_PYTHON" != x"yes"; then
+        if test x"$enable_dbus_python_check" != x"no"; then
+            AC_MSG_ERROR([can not find dbus-python >= 0.83.0. Please install or update dbus-python.])
+        else
+            AC_MSG_WARN([can not find dbus-python >= 0.83.0. It is required.])
+        fi
     fi
 fi
 
@@ -234,20 +245,11 @@ Makefile
 ibus-1.0.pc
 ibus.spec
 xinput-ibus
-ibus/_config.py
-ibus/Makefile
-ibus/interface/Makefile
-ui/Makefile
-ui/gtk/Makefile
-ui/gtk/ibus-ui-gtk
-ui/gtk/gtkpanel.xml.in
 gconf/Makefile
 gconf/gconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/x11/Makefile
-setup/Makefile
-setup/ibus-setup
 src/Makefile
 src/ibusversion.h
 bus/Makefile
@@ -262,6 +264,20 @@ docs/reference/ibus/Makefile
 m4/Makefile
 ])
 
+if test x"$enable_python" != x"no"; then
+    AC_CONFIG_FILES([
+    ibus/_config.py
+    ibus/Makefile
+    ibus/interface/Makefile
+    ui/Makefile
+    ui/gtk/Makefile
+    ui/gtk/ibus-ui-gtk
+    ui/gtk/gtkpanel.xml.in
+    setup/Makefile
+    setup/ibus-setup
+    ])
+fi
+
 AC_OUTPUT
 AC_MSG_RESULT([
 Build options:
@@ -270,6 +286,7 @@ Build options:
   Build shared libs        $enable_shared
   Build static libs        $enable_static
   Gtk immodule dir         $GTK_IM_MODULEDIR
+  Build python modules     $enable_python
   Build document           $enable_gtk_doc
 ])
 
