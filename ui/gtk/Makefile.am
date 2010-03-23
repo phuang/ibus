@@ -55,6 +55,7 @@ EXTRA_DIST = \
 	$(NULL)
 
 gtkpanel.xml: gtkpanel.xml.in
+	$(AM_V_GEN) \
 	( \
 		libexecdir=${libexecdir}; \
 		s=`cat $<`; \

@@ -113,6 +113,7 @@ DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 #TESTS = $(GTKDOC_CHECK)
 
 trim-build.stamp: scan-build.stamp
+	$(AM_V_GEN) \
 	sed " \
 	     /IBusObjectFlags/d;\
 	     /IBUS_OBJECT_FLAGS/d;\
