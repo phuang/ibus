@@ -1,27 +1,23 @@
-/* -*- mode: C; c-file-style: "gnu" -*- */
-/* dbus-gmain.c GLib main loop integration
+/* vim:set et sts=4: */
+/* ibus - The Input Bus
+ * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2010 Red Hat, Inc.
  *
- * Copyright (C) 2002, 2003 CodeFactory AB
- * Copyright (C) 2005 Red Hat, Inc.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- * Licensed under the Academic Free License version 2.1
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
-
 #include "ibusinternal.h"
 
 /**
@@ -130,23 +126,21 @@ connection_setup_new (GMainContext   *context,
 {
     ConnectionSetup *cs;
 
-    cs = g_new0 (ConnectionSetup, 1);
+    cs = g_slice_new0 (ConnectionSetup);
 
     g_assert (context != NULL);
 
     cs->context = context;
     g_main_context_ref (cs->context);
 
-    if (connection)
-      {
+    if (connection) {
         cs->connection = connection;
 
         cs->message_queue_source = g_source_new ((GSourceFuncs *) &message_queue_funcs,
                                                  sizeof (IBusMessageQueue));
         ((IBusMessageQueue*)cs->message_queue_source)->connection = connection;
         g_source_attach (cs->message_queue_source, cs->context);
-      }
-
+    }
     return cs;
 }
 
@@ -160,7 +154,7 @@ io_handler_source_finalized (gpointer data)
     if (handler->watch)
       dbus_watch_set_data (handler->watch, NULL, NULL);
 
-    g_free (handler);
+    g_slice_free (IOHandler, handler);
 }
 
 static void
@@ -170,14 +164,13 @@ io_handler_destroy_source (void *data)
 
     handler = data;
 
-    if (handler->source)
-      {
+    if (handler->source) {
         GSource *source = handler->source;
         handler->source = NULL;
         handler->cs->ios = g_slist_remove (handler->cs->ios, handler);
         g_source_destroy (source);
         g_source_unref (source);
-      }
+    }
 }
 
 static void
@@ -206,16 +199,16 @@ io_handler_dispatch (GIOChannel   *source,
     connection = handler->cs->connection;
 
     if (connection)
-      dbus_connection_ref (connection);
+        dbus_connection_ref (connection);
 
     if (condition & G_IO_IN)
-      dbus_condition |= DBUS_WATCH_READABLE;
+        dbus_condition |= DBUS_WATCH_READABLE;
     if (condition & G_IO_OUT)
-      dbus_condition |= DBUS_WATCH_WRITABLE;
+        dbus_condition |= DBUS_WATCH_WRITABLE;
     if (condition & G_IO_ERR)
-      dbus_condition |= DBUS_WATCH_ERROR;
+        dbus_condition |= DBUS_WATCH_ERROR;
     if (condition & G_IO_HUP)
-      dbus_condition |= DBUS_WATCH_HANGUP;
+        dbus_condition |= DBUS_WATCH_HANGUP;
 
     /* Note that we don't touch the handler after this, because
      * dbus may have disabled the watch and thus killed the
@@ -225,7 +218,7 @@ io_handler_dispatch (GIOChannel   *source,
     handler = NULL;
 
     if (connection)
-      dbus_connection_unref (connection);
+        dbus_connection_unref (connection);
 
     return TRUE;
 }
@@ -240,7 +233,7 @@ connection_setup_add_watch (ConnectionSetup *cs,
     IOHandler *handler;
 
     if (!dbus_watch_get_enabled (watch))
-      return;
+        return;
 
     g_assert (dbus_watch_get_data (watch) == NULL);
 
@@ -248,11 +241,11 @@ connection_setup_add_watch (ConnectionSetup *cs,
 
     condition = G_IO_ERR | G_IO_HUP;
     if (flags & DBUS_WATCH_READABLE)
-      condition |= G_IO_IN;
+        condition |= G_IO_IN;
     if (flags & DBUS_WATCH_WRITABLE)
-      condition |= G_IO_OUT;
+        condition |= G_IO_OUT;
 
-    handler = g_new0 (IOHandler, 1);
+    handler = g_slice_new (IOHandler);
     handler->cs = cs;
     handler->watch = watch;
 
@@ -278,7 +271,7 @@ connection_setup_remove_watch (ConnectionSetup *cs,
     handler = dbus_watch_get_data (watch);
 
     if (handler == NULL)
-      return;
+        return;
 
     io_handler_destroy_source (handler);
 }
@@ -291,9 +284,9 @@ timeout_handler_source_finalized (gpointer data)
     handler = data;
 
     if (handler->timeout)
-      dbus_timeout_set_data (handler->timeout, NULL, NULL);
+        dbus_timeout_set_data (handler->timeout, NULL, NULL);
 
-    g_free (handler);
+    g_slice_free (TimeoutHandler, handler);
 }
 
 static void
@@ -303,14 +296,13 @@ timeout_handler_destroy_source (void *data)
 
     handler = data;
 
-    if (handler->source)
-      {
+    if (handler->source) {
         GSource *source = handler->source;
         handler->source = NULL;
         handler->cs->timeouts = g_slist_remove (handler->cs->timeouts, handler);
         g_source_destroy (source);
         g_source_unref (source);
-      }
+    }
 }
 
 static void
@@ -344,11 +336,11 @@ connection_setup_add_timeout (ConnectionSetup *cs,
     TimeoutHandler *handler;
 
     if (!dbus_timeout_get_enabled (timeout))
-      return;
+        return;
 
     g_assert (dbus_timeout_get_data (timeout) == NULL);
 
-    handler = g_new0 (TimeoutHandler, 1);
+    handler = g_slice_new0 (TimeoutHandler);
     handler->cs = cs;
     handler->timeout = timeout;
 
@@ -371,7 +363,7 @@ connection_setup_remove_timeout (ConnectionSetup *cs,
     handler = dbus_timeout_get_data (timeout);
 
     if (handler == NULL)
-      return;
+        return;
 
     timeout_handler_destroy_source (handler);
 }
@@ -380,13 +372,12 @@ static void
 connection_setup_free (ConnectionSetup *cs)
 {
     while (cs->ios)
-      io_handler_destroy_source (cs->ios->data);
+        io_handler_destroy_source (cs->ios->data);
 
     while (cs->timeouts)
-      timeout_handler_destroy_source (cs->timeouts->data);
+        timeout_handler_destroy_source (cs->timeouts->data);
 
-    if (cs->message_queue_source)
-      {
+    if (cs->message_queue_source) {
         GSource *source;
 
         source = cs->message_queue_source;
@@ -394,10 +385,10 @@ connection_setup_free (ConnectionSetup *cs)
 
         g_source_destroy (source);
         g_source_unref (source);
-      }
+    }
 
     g_main_context_unref (cs->context);
-    g_free (cs);
+    g_slice_free (ConnectionSetup, cs);
 }
 
 static dbus_bool_t
@@ -432,9 +423,9 @@ watch_toggled (DBusWatch *watch,
      * no different from add/remove
      */
     if (dbus_watch_get_enabled (watch))
-      add_watch (watch, data);
+        add_watch (watch, data);
     else
-      remove_watch (watch, data);
+        remove_watch (watch, data);
 }
 
 static dbus_bool_t
@@ -446,7 +437,7 @@ add_timeout (DBusTimeout *timeout,
     cs = data;
 
     if (!dbus_timeout_get_enabled (timeout))
-      return TRUE;
+        return TRUE;
 
     connection_setup_add_timeout (cs, timeout);
 
@@ -472,9 +463,9 @@ timeout_toggled (DBusTimeout *timeout,
      * no different from add/remove
      */
     if (dbus_timeout_get_enabled (timeout))
-      add_timeout (timeout, data);
+        add_timeout (timeout, data);
     else
-      remove_timeout (timeout, data);
+        remove_timeout (timeout, data);
 }
 
 static void
@@ -499,24 +490,22 @@ connection_setup_new_from_old (GMainContext    *context,
     cs = connection_setup_new (context, old->connection);
 
     tmp = old->ios;
-    while (tmp != NULL)
-      {
+    while (tmp != NULL) {
         IOHandler *handler = tmp->data;
 
         connection_setup_add_watch (cs, handler->watch);
 
         tmp = tmp->next;
-      }
+    }
 
     tmp = old->timeouts;
-    while (tmp != NULL)
-      {
+    while (tmp != NULL) {
         TimeoutHandler *handler = tmp->data;
 
         connection_setup_add_timeout (cs, handler->timeout);
 
         tmp = tmp->next;
-      }
+    }
 
     return cs;
 }
@@ -549,59 +538,59 @@ dbus_connection_setup (DBusConnection *connection,
     ConnectionSetup *old_setup;
     ConnectionSetup *cs;
 
-    /* FIXME we never free the slot, so its refcount just keeps growing,
-     * which is kind of broken.
-     */
-    dbus_connection_allocate_data_slot (&_dbus_gmain_connection_slot);
-    if (_dbus_gmain_connection_slot < 0)
-      goto nomem;
+    do {
+        /* FIXME we never free the slot, so its refcount just keeps growing,
+         * which is kind of broken.
+         */
+        dbus_connection_allocate_data_slot (&_dbus_gmain_connection_slot);
+        if (_dbus_gmain_connection_slot < 0)
+            break;
 
-    if (context == NULL)
-      context = g_main_context_default ();
+        if (context == NULL)
+            context = g_main_context_default ();
 
-    cs = NULL;
+        cs = NULL;
 
-    old_setup = dbus_connection_get_data (connection, _dbus_gmain_connection_slot);
-    if (old_setup != NULL)
-      {
-        if (old_setup->context == context)
-          return; /* nothing to do */
+        old_setup = dbus_connection_get_data (connection, _dbus_gmain_connection_slot);
+        if (old_setup != NULL) {
+            if (old_setup->context == context)
+                return; /* nothing to do */
 
-        cs = connection_setup_new_from_old (context, old_setup);
+            cs = connection_setup_new_from_old (context, old_setup);
 
-        /* Nuke the old setup */
-        dbus_connection_set_data (connection, _dbus_gmain_connection_slot, NULL, NULL);
-        old_setup = NULL;
-      }
+            /* Nuke the old setup */
+            dbus_connection_set_data (connection, _dbus_gmain_connection_slot, NULL, NULL);
+            old_setup = NULL;
+        }
 
-    if (cs == NULL)
-      cs = connection_setup_new (context, connection);
+        if (cs == NULL)
+            cs = connection_setup_new (context, connection);
 
-    if (!dbus_connection_set_data (connection, _dbus_gmain_connection_slot, cs,
-                                   (DBusFreeFunction)connection_setup_free))
-      goto nomem;
+        if (!dbus_connection_set_data (connection, _dbus_gmain_connection_slot, cs,
+                                       (DBusFreeFunction)connection_setup_free))
+            break;
 
-    if (!dbus_connection_set_watch_functions (connection,
-                                              add_watch,
-                                              remove_watch,
-                                              watch_toggled,
-                                              cs, NULL))
-      goto nomem;
+        if (!dbus_connection_set_watch_functions (connection,
+                                                  add_watch,
+                                                  remove_watch,
+                                                  watch_toggled,
+                                                  cs, NULL))
+            break;
 
-    if (!dbus_connection_set_timeout_functions (connection,
-                                                add_timeout,
-                                                remove_timeout,
-                                                timeout_toggled,
-                                                cs, NULL))
-      goto nomem;
+        if (!dbus_connection_set_timeout_functions (connection,
+                                                    add_timeout,
+                                                    remove_timeout,
+                                                    timeout_toggled,
+                                                    cs, NULL))
+            break;
 
-    dbus_connection_set_wakeup_main_function (connection,
-                        wakeup_main,
-                        cs, NULL);
+        dbus_connection_set_wakeup_main_function (connection,
+                            wakeup_main,
+                            cs, NULL);
 
-    return;
-
- nomem:
+        return;
+    } while (0);
+    
     g_error ("Not enough memory to set up DBusConnection for use with GLib");
 }
 
@@ -626,55 +615,55 @@ dbus_server_setup (DBusServer   *server,
     ConnectionSetup *old_setup;
     ConnectionSetup *cs;
 
-    /* FIXME we never free the slot, so its refcount just keeps growing,
-     * which is kind of broken.
-     */
-    dbus_server_allocate_data_slot (&server_slot);
-    if (server_slot < 0)
-      goto nomem;
+    do {
+        /* FIXME we never free the slot, so its refcount just keeps growing,
+         * which is kind of broken.
+         */
+        dbus_server_allocate_data_slot (&server_slot);
+        if (server_slot < 0)
+            break;
 
-    if (context == NULL)
-      context = g_main_context_default ();
+        if (context == NULL)
+            context = g_main_context_default ();
 
-    cs = NULL;
+        cs = NULL;
 
-    old_setup = dbus_server_get_data (server, server_slot);
-    if (old_setup != NULL)
-      {
-        if (old_setup->context == context)
-          return; /* nothing to do */
+        old_setup = dbus_server_get_data (server, server_slot);
+        if (old_setup != NULL) {
+            if (old_setup->context == context)
+                return; /* nothing to do */
 
-        cs = connection_setup_new_from_old (context, old_setup);
+            cs = connection_setup_new_from_old (context, old_setup);
 
-        /* Nuke the old setup */
-        dbus_server_set_data (server, server_slot, NULL, NULL);
-        old_setup = NULL;
-      }
+            /* Nuke the old setup */
+            dbus_server_set_data (server, server_slot, NULL, NULL);
+            old_setup = NULL;
+        }
 
-    if (cs == NULL)
-      cs = connection_setup_new (context, NULL);
+        if (cs == NULL)
+            cs = connection_setup_new (context, NULL);
 
-    if (!dbus_server_set_data (server, server_slot, cs,
-                               (DBusFreeFunction)connection_setup_free))
-      goto nomem;
+        if (!dbus_server_set_data (server, server_slot, cs,
+                                   (DBusFreeFunction)connection_setup_free))
+            break;
 
-    if (!dbus_server_set_watch_functions (server,
-                                          add_watch,
-                                          remove_watch,
-                                          watch_toggled,
-                                          cs, NULL))
-      goto nomem;
+        if (!dbus_server_set_watch_functions (server,
+                                              add_watch,
+                                              remove_watch,
+                                              watch_toggled,
+                                              cs, NULL))
+            break;
 
-    if (!dbus_server_set_timeout_functions (server,
-                                            add_timeout,
-                                            remove_timeout,
-                                            timeout_toggled,
-                                            cs, NULL))
-      goto nomem;
+        if (!dbus_server_set_timeout_functions (server,
+                                                add_timeout,
+                                                remove_timeout,
+                                                timeout_toggled,
+                                                cs, NULL))
+            break;
 
-    return;
-
- nomem:
+        return;
+    } while (0);
+    
     g_error ("Not enough memory to set up DBusServer for use with GLib");
 }
 
