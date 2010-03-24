@@ -8,11 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-27 13:01+0800\n"
-"PO-Revision-Date: 2009-09-03 11:08+0530\n"
-"Last-Translator: Ani Peter <apeter@redhat.com>\n"
-"Language-Team:  Swathantra Malayalam Computing|സ്വതന്ത്ര മലയാളം കമ്പ്യൂട്ടിങ്  <smc-"
-"discuss@googlegroups.com>\n"
+"POT-Creation-Date: 2010-03-24 08:17+0000\n"
+"PO-Revision-Date: 2010-03-24 16:48+0530\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,19 +30,20 @@ msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41
 msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
-#: ../ui/gtk/candidatepanel.py:254
-#, fuzzy
+#: ../ui/gtk/candidatepanel.py:267
 msgid "Previous page"
-msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്:"
+msgstr "മുമ്പുള്ള താള്‍:"
 
-#: ../ui/gtk/candidatepanel.py:259
+#: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
-msgstr ""
+msgstr "അടുത്ത താള്‍"
 
 #: ../ui/gtk/main.py:57
 msgid ""
@@ -52,36 +52,34 @@ msgid ""
 msgstr ""
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "വീണ്ടും ആരംഭിക്കുക"
+msgstr "വീണ്ടും ഉടന്‍ ആരംഭിക്കുക"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "മറ്റുള്ളവ"
+msgstr "പിന്നീടു്"
 
-#: ../ui/gtk/panel.py:334
+#: ../ui/gtk/panel.py:331
 msgid "Restart"
 msgstr "വീണ്ടും ആരംഭിക്കുക"
 
-#: ../ui/gtk/panel.py:421
+#: ../ui/gtk/panel.py:418
 msgid "Turn off input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓഫ് ചെയ്യുക"
 
-#: ../ui/gtk/panel.py:458
+#: ../ui/gtk/panel.py:455
 msgid "No input window"
 msgstr "ഇന്‍പുട്ട് ജാലകം ലഭ്യമല്ല"
 
-#: ../ui/gtk/panel.py:489
+#: ../ui/gtk/panel.py:486
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "ലിനക്സ്/യുണിക്സിനുള്ള ഇന്റലിജന്റ് ഇന്‍പുട്ട് ബസാണു് IBus."
 
-#: ../ui/gtk/panel.py:493
+#: ../ui/gtk/panel.py:490
 msgid "translator-credits"
 msgstr "അനി പീറ്റര്‍ <apeter@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
 msgid "About the Input Method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് സംബന്ധിച്ചു്"
 
@@ -89,7 +87,7 @@ msgstr "ഇന്‍പുട്ട് മെഥേഡ് സംബന്ധി�
 msgid "Switch input method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് മാറ്റുക"
 
-#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "സംബന്ധിച്ചു്"
@@ -125,11 +123,11 @@ msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്"
 msgid "previous input method"
 msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്"
 
-#: ../setup/main.py:262
+#: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ഡെമണ്‍ ആരംഭിച്ചിട്ടില്ല. നിങ്ങള്‍ക്കിതു് ഉടന്‍ ആരംഭിക്കണമോ?"
 
-#: ../setup/main.py:277
+#: ../setup/main.py:283
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -143,7 +141,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:292
+#: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-നുള്ള കീബോര്‍ഡ് എളുപ്പവഴി തെരഞ്ഞെടുക്കുക"
@@ -177,7 +175,7 @@ msgid "Select an input method"
 msgstr "ഒരു ഇന്‍പുട്ട് മെഥേഡ് തെരഞ്ഞെടുക്കുക"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
 msgid "Input Method"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ്"
 
@@ -185,120 +183,117 @@ msgstr "ഇന്‍പുട്ട് മെഥേഡ്"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
 msgid "IBus Preferences"
 msgstr "IBus മുന്‍ഗണനകള്‍"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
 msgstr "സ്വയം അദൃശ്യമാക്കുക"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക:"
+msgstr "അക്ഷരസഞ്ചയം യഥേഷ്ടമാക്കുക:"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
 msgstr "ഭാഷയുടെ പാനലിലേക്കുള്ള അക്ഷരസഞ്ചയത്തിനുള്ള പേരു് സജ്ജമാക്കുക"
 
 #: ../data/ibus.schemas.in.h:4
-#, fuzzy
-msgid "Language panel position"
-msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
+msgid "Embed Preedit Text"
+msgstr ""
 
 #: ../data/ibus.schemas.in.h:5
-#, fuzzy
-msgid "Next engine shortcut keys"
-msgstr "അടുത്ത സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+msgid "Embed Preedit Text in Application Window"
+msgstr ""
 
 #: ../data/ibus.schemas.in.h:6
+msgid "Language panel position"
+msgstr "ഭാഷയുടെ പാനല്‍ സ്ഥാനം"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Next engine shortcut keys"
+msgstr "അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴികള്‍"
+
+#: ../data/ibus.schemas.in.h:8
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം. 0 = നേരെയുള്ള, 1 = കുറുകയുള്ള"
 
-#: ../data/ibus.schemas.in.h:7
-#, fuzzy
+#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus ആരംഭിക്കുമ്പോള്‍ സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:9
-#, fuzzy
+#: ../data/ibus.schemas.in.h:11
 msgid "Preload engines"
 msgstr "സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:10
-#, fuzzy
+#: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
-msgstr "തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
+msgstr "തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള എളുപ്പവഴികള്‍"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
-msgstr ""
+msgstr "സിസ്റ്റം ട്രേയില്‍ ചിഹ്നം കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:13
-#, fuzzy
+#: ../data/ibus.schemas.in.h:15
 msgid "Show input method name"
-msgstr "ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
+msgstr "ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
 msgid "Show input method name on language bar"
 msgstr "ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = എപ്പോഴും അദൃശ്യം, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും കാണിക്കുക"
+msgstr "ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = എപ്പോഴും അദൃശ്യം, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"ഭാഷയുടെ പാനലിന്റെ സ്ഥാനം. 0 = മുകളില്‍ ഇടതു് കോണ്‍, 1 = മുകളില്‍ "
+"വലതു് കോണ്‍, 2 = താഴെ ഇടതു് കോണ്‍, 3 = താഴെ വലതു് കോണ്‍, 4 = യഥേഷ്ടം"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
+msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
-#, fuzzy
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 msgid "The shortcut keys for turning input method on or off"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓണ്‍ അല്ലെങ്കില്‍ ഓഫ് ചെയ്യുന്നതിനുള്ള എളുപ്പവളികള്‍ സജ്ജമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:19
-#, fuzzy
+#: ../data/ibus.schemas.in.h:21
 msgid "Trigger shortcut keys"
-msgstr "ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
+msgstr "എളുപ്പവഴികള്‍ ട്രിഗര്‍ ചെയ്യുക"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
 msgid "Use custom font"
 msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "Use custom font name for language panel"
 msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:22
-#, fuzzy
+#: ../data/ibus.schemas.in.h:24
 msgid "Use global input method"
-msgstr "ഒരു ഇന്‍പുട്ട് മെഥേഡ് തെരഞ്ഞെടുക്കുക"
+msgstr "ഗ്ലോബല്‍ ഇന്‍പുട്ട് മെഥേഡ് ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് (XKB) മാതൃക ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
 msgid "Use system keyboard layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
 
@@ -360,165 +355,119 @@ msgstr "മെച്ചപ്പെട്ടവ"
 
 #: ../setup/setup.ui.h:19
 msgid "Always"
-msgstr ""
+msgstr "എപ്പോഴും"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
-msgstr ""
+msgstr "താഴെ ഇടതു് കോണ്‍"
 
 #: ../setup/setup.ui.h:21
 msgid "Bottom right corner"
-msgstr ""
+msgstr "താഴെ വലതു് കോണ്‍ "
 
 #: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
 msgstr "ലഭ്യമായവയുടെ ക്രമീകരണങ്ങള്‍:"
 
 #: ../setup/setup.ui.h:23
-#, fuzzy
 msgid "Custom"
-msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക:"
+msgstr "യഥേഷ്ടം:"
 
 #: ../setup/setup.ui.h:24
+msgid "Embed preedit text in application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
 msgstr "സജ്ജമാക്കുക അല്ലെങ്കില്‍ നിര്‍ജ്ജീവമാക്കുക:"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:27
 msgid "General"
 msgstr "സാധാരണ"
 
-#: ../setup/setup.ui.h:26
-#, fuzzy
+#: ../setup/setup.ui.h:28
 msgid "Horizontal"
-msgstr ""
-"നേരേയുള്ള\n"
-"കുറുകെയുള്ള"
+msgstr "കുറുകെയുള്ള"
 
-#: ../setup/setup.ui.h:29
-#, fuzzy
+#: ../setup/setup.ui.h:31
 msgid "Language panel position:"
-msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
+msgstr "ഭാഷയുടെ പാനല്‍ സ്ഥാനം:"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "സജ്ജമാക്കിയ ഇന്‍പുട്ട് മെഥേഡുകളില്‍ നിന്നും തെരഞ്ഞെടുത്ത ഇന്‍പുട്ട് മെഥേഡ് താഴേക്ക് നീക്കുക"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "സജ്ജമാക്കിയ ഇന്‍പുട്ട് മെഥേഡുകളില്‍ നിന്നും തെരഞ്ഞെടുത്ത ഇന്‍പുട്ട് മെഥേഡ് മുകളിലേക്ക് നീക്കുക"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Never"
-msgstr ""
+msgstr "ഒരിക്കലുമില്ല"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Next input method:"
 msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ്:"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "സജ്ജമാക്കിയ ഇന്‍പുട്ട് മെഥേഡുകളില്‍ നിന്നും തെരഞ്ഞെടുത്ത ഇന്‍പുട്ട് മെഥേഡ് നീക്കം ചെയ്യുക"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ibus ഭാഷയുടെ പാനല്‍ കാണിക്കണമോ വേണ്ടയോ എന്നതു് സജ്ജമാക്കുക"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ലുക്കപ്പ് പട്ടികയില്‍ ലഭ്യമായവയുടെ ക്രമീകരണം സജ്ജമാക്കുക"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
 msgstr ""
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
 msgstr "തെരഞ്ഞെടുത്ത ഇന്‍പുട്ട് മെഥേഡിനെപ്പറ്റിയുള്ള വിവരങ്ങള്‍ കാണിക്കുക"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "ചെക്ക്ബോക്സ് ചെക്ക് ചെയ്യുമ്പോള്‍ ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show language panel:"
 msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
 msgstr "പ്രവേശിക്കുമ്പോള്‍ തന്നെ ibus ആരംഭിക്കുക"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള "
 "എളുപ്പവഴി"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:51
 msgid "Top left corner"
-msgstr ""
+msgstr "മുകളില്‍ ഇടതു് കോണ്‍ "
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top right corner"
-msgstr ""
+msgstr "മുകളില്‍ വലതു് കോണ്‍ "
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Vertical"
-msgstr ""
+msgstr "നേരെയുള്ള"
 
-#: ../setup/setup.ui.h:55
-#, fuzzy
+#: ../setup/setup.ui.h:57
 msgid "When active"
-msgstr ""
-"ഒരിക്കലും ഇല്ല\n"
-"സജീവമാകുമ്പോള്‍\n"
-"എപ്പോഴും"
+msgstr "സജീവമാകുമ്പോള്‍"
 
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
-
-#~ msgid "Custom font:"
-#~ msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക:"
-
-#, fuzzy
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "ഭാഷയുടെ പാനലിലേക്കുള്ള അക്ഷരസഞ്ചയത്തിനുള്ള പേരും ലഭ്യമായവയും സജ്ജമാക്കുക"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
-
-#~ msgid "Custom Font"
-#~ msgstr "അക്ഷരസഞ്ചയം സജ്ജമാക്കുക"
-
-#~ msgid "Show IM Name"
-#~ msgstr "IM പേരു് കാണിക്കുക"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "ഭാഷയുടെ പാനലില്‍ IM പേരു് കാണിക്കുക"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr ""
-#~ "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള ഹോട്ട്കീ"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr ""
-#~ "മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള "
-#~ "ഹോട്ട്കീ"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr ""
-#~ "ഇന്‍പുട്ട് കോണ്‍ടെക്സ്റ്റ് സജ്ജമാക്കുകയോ നിര്‍ജ്ജീവമാക്കുകയോ ചെയ്യുന്നതിനായി ഹോട്ട്കീ ട്രിഗര്‍ ചെയ്യുക"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
