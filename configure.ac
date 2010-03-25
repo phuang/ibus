@@ -53,9 +53,8 @@ AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
 
 # For dislpay Date
-m4_define(ibus_maybe_datedisplay,
-    m4_esyscmd([if test x]ibus_released[ != x1; then date '+%a %b %d %Y' | tr -d '\n\r'; fi]))
-m4_define([ibus_datedisplay], ibus_maybe_datedisplay)
+m4_define(ibus_datedisplay,
+    m4_esyscmd(date '+%a %b %d %Y' | tr -d '\n\r'))
 DATE_DISPLAY="ibus_datedisplay"
 AC_SUBST(DATE_DISPLAY)
 
