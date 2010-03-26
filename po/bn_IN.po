@@ -1,15 +1,15 @@
-# translation of ibus.master.bn_IN.po to Bengali INDIA
+# translation of ibus.master.po to Bengali INDIA
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Runa Bhattacharjee <runab@fedoraproject.org>, 2009.
-# Runa Bhattacharjee <runab@redhat.com>, 2009.
+# Runa Bhattacharjee <runab@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.bn_IN\n"
+"Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-27 13:01+0800\n"
-"PO-Revision-Date: 2009-12-07 18:09+0530\n"
+"POT-Creation-Date: 2010-03-25 08:16+0000\n"
+"PO-Revision-Date: 2010-03-25 17:16+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,11 @@ msgstr ""
 msgid "Other"
 msgstr "অন্যান্য"
 
-#: ../ui/gtk/candidatepanel.py:254
+#: ../ui/gtk/candidatepanel.py:267
 msgid "Previous page"
 msgstr "পূর্ববর্তী পৃষ্ঠা"
 
-#: ../ui/gtk/candidatepanel.py:259
+#: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
 msgstr "পরবর্তী পৃষ্ঠা"
 
@@ -50,39 +50,37 @@ msgstr "পরবর্তী পৃষ্ঠা"
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
-msgstr ""
+msgstr "কয়েকটি ইনপুট পদ্ধতি ইনস্টল, অপসারণ অথবা আপডেট করা হয়েছে। অনুগ্রহ করে ibus ইনপুট প্ল্যাটফর্ম পুনরায় আরম্ভ করুন।"
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "পুনরারম্ভ"
+msgstr "অবিলম্বে পুনরারম্ভ"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "অন্যান্য"
+msgstr "পরে"
 
-#: ../ui/gtk/panel.py:334
+#: ../ui/gtk/panel.py:331
 msgid "Restart"
 msgstr "পুনরারম্ভ"
 
-#: ../ui/gtk/panel.py:421
+#: ../ui/gtk/panel.py:418
 msgid "Turn off input method"
 msgstr "ইনপুট পদ্ধতি বন্ধ করুন"
 
-#: ../ui/gtk/panel.py:458
+#: ../ui/gtk/panel.py:455
 msgid "No input window"
 msgstr "ইনপুটের উদ্দেশ্যে উইন্ডো অনুপস্থিত"
 
-#: ../ui/gtk/panel.py:489
+#: ../ui/gtk/panel.py:486
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix-র সাথে ব্যবহারযোগ্য বুদ্ধিবিশিষ্ট ইনপুট বাস হল IBus"
 
-#: ../ui/gtk/panel.py:493
+#: ../ui/gtk/panel.py:490
 msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
 msgid "About the Input Method"
 msgstr "ইনপুট পদ্ধতি পরিচিতি"
 
@@ -90,7 +88,7 @@ msgstr "ইনপুট পদ্ধতি পরিচিতি"
 msgid "Switch input method"
 msgstr "ইনপুট পদ্ধতি পরিবর্তন করুন"
 
-#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "পরিচিতি"
@@ -126,11 +124,11 @@ msgstr "পরবর্তী ইনপুট পদ্ধতি"
 msgid "previous input method"
 msgstr "পূর্ববর্তী ইনপুট পদ্ধতি"
 
-#: ../setup/main.py:262
+#: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ডেমন আরম্ভ করা হয়নি। এটি এখন আরম্ভ করা হবে কি?"
 
-#: ../setup/main.py:277
+#: ../setup/main.py:283
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -144,7 +142,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:292
+#: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-র জন্য কি-বোর্ড শর্ট-কাট ধার্য করুন"
@@ -178,7 +176,7 @@ msgid "Select an input method"
 msgstr "একটি ইনপুট পদ্ধতি নির্বাচন করুন"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
 msgid "Input Method"
 msgstr "ইনপুট পদ্ধতি"
 
@@ -186,7 +184,7 @@ msgstr "ইনপুট পদ্ধতি"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
 msgid "IBus Preferences"
 msgstr "IBus সংক্রান্ত পছন্দ"
 
@@ -203,50 +201,58 @@ msgid "Custom font name for language panel"
 msgstr "ভাষার প্যানেলের জন্য ব্যবহারযোগ্য স্বনির্ধারিত ফন্টের নাম"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Embed Preedit Text"
+msgstr "প্রি-এডিট টেক্সট এমবেড করা হবে"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Embed Preedit Text in Application Window"
+msgstr "অ্যাপ্লিকেশন উইন্ডোর মধ্যে প্রি-এডিট টেক্সট এমবেড করা হবে"
+
+#: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
 msgstr "ভাষার প্যানেলের অবস্থান"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 msgid "Next engine shortcut keys"
 msgstr "পরবর্তী ইঞ্জিনের জন্য শর্টকাট-কি"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুক-আপ টেবিলের দিশা। 0 (০) = অনুভুমিক, 1 (১) = উল্লম্ব"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "লুক-আপ টেবিলের দিশা"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload Engines during ibus starts up"
 msgstr "ibus আরম্ভের সময় ইঞ্জিনগুলি পূর্বে লোড করা হবে"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Preload engines"
 msgstr "ইঞ্জিন পূর্বে লোড করা হবে"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "পূর্ববর্তী ইঞ্জিনের শর্টকাট-কি"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "সকল অ্যাপ্লিকেশনের মধ্যে একই ইনপুট পদ্ধতি ব্যবহার করা হবে"
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "সিস্টেম ট্রের মধ্যে আইকন প্রদর্শন করা হবে"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Show input method name"
 msgstr "ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
 msgid "Show input method name on language bar"
 msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -254,7 +260,7 @@ msgstr ""
 "ভাষা প্রদর্শনের প্যানেলের আচরণ। 0 (০) = সর্বদা আড়াল করা হবে, 1 (১) = "
 "স্বয়ংক্রিয়ভাবে আড়াল করা হবে, 2 (২) = সর্বদা প্রদর্শন করা হবে"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -262,36 +268,35 @@ msgstr ""
 "ভাষার প্যানেলের অবস্থান। 0 = উপরে বাঁদিকের কোণায়, 1 = উপরে ডানদিকের কোণায়, 2 = "
 "নীচে বাঁদিকের কোণায়, 3 = নীচে ডানদিকের কোণায়, 4 = স্বনির্ধারিত"
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "তালিকায় উপস্থিত পরবর্তী ইনপুট পদ্ধতিতে পরিবর্তনের জন্য প্রযোজ্য শর্ট-কাট কি"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 msgid "The shortcut keys for turning input method on or off"
 msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ করার জন্য প্রয়োজনীয় শর্ট-কাট কি নির্ধারণ করুন"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid "Trigger shortcut keys"
 msgstr "ট্রিগারের শর্টকাট-কি"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
 msgid "Use custom font"
 msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "Use custom font name for language panel"
 msgstr "ভাষার প্যানেলের জন্য স্বনির্ধারিত ফন্টের নাম ব্যবহার করা হবে"
 
-#: ../data/ibus.schemas.in.h:22
-#, fuzzy
+#: ../data/ibus.schemas.in.h:24
 msgid "Use global input method"
-msgstr "একটি ইনপুট পদ্ধতি নির্বাচন করুন"
+msgstr "সার্বজনীন ইনপুট পদ্ধতি "
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
 msgstr "সিস্টেম কি-বোর্ড (XKB) বিন্যাস প্রয়োগ করা হবে"
 
-#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
 msgid "Use system keyboard layout"
 msgstr "সিস্টেম কি-বোর্ড বিন্যাস প্রয়োগ করা হবে"
 
@@ -305,7 +310,7 @@ msgstr "<b>ফন্ট ও বিন্যাস</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgstr "<b>ইনপুট পদ্ধতির সার্বজনীন বৈশিষ্ট্য</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -373,93 +378,98 @@ msgid "Custom"
 msgstr "স্বনির্ধারিত"
 
 #: ../setup/setup.ui.h:24
+msgid "Embed preedit text in application window"
+msgstr "অ্যাপ্লিকেশনের উইন্ডোর মধ্যে প্রি-এডিট টেক্সট সন্নিবেশ করা হবে"
+
+#: ../setup/setup.ui.h:25
+msgid "Embed the preedit text of input method in the application window"
+msgstr "অ্যাপ্লিকেশনের উইন্ডোর মধ্যে ইনপুট পদ্ধতির প্রি-এডিট টেক্সট সন্নিবেশ করা হবে"
+
+#: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
 msgstr "সক্রিয় অথা নিষ্ক্রিয় করুন:"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:27
 msgid "General"
 msgstr "সাধারণ"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:28
 msgid "Horizontal"
 msgstr "অনুভূমিক"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Language panel position:"
 msgstr "ভাষার প্যানেলের অবস্থান:"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "নির্বাচিত ইনপুট পদ্ধতিটি, সক্রিয় ইনপুট পদ্ধতির তালিকায় নীচে স্থানান্তর করা হবে"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "নির্বাচিত ইনপুট পদ্ধতিটি, সক্রিয় ইনপুট পদ্ধতির তালিকায় উপরে স্থানান্তর করা হবে"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Never"
 msgstr "কখনো নয়"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Next input method:"
 msgstr "পরবর্তী ইনপুট পদ্ধতি:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "পূর্ববর্তী ইনপুট পদ্ধতি:"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "সক্রিয় ইনপুট পদ্ধতির তালিকা থেকে নির্বাচিত ইনপুট পদ্ধতিটি মুছে ফেলা হবে"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ভাষার বার প্রদর্শন ও আড়াল করার উদ্দেশ্যে ibus-র আচরণ নির্ধারণ করুন"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "লুক-আপ টেবিলের মধ্যে প্রযোজ্য বিকল্পগুলির দিশা নির্ধারণ করুন"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
-msgstr ""
+msgstr "অবস্থাসীচক আইকনের মেনুর মধ্যে প্রদর্শন করা হবে"
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
 msgstr "নির্বাচিত ইনপুট পদ্ধতি সংক্রান্ত তথ্য প্রদর্শন করা হবে"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "চেকবক্স নির্বাচিত হলে, ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show language panel:"
 msgstr "ভাষার প্যানেল প্রদর্শন করা হবে:"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
 msgstr "লগ-ইন করার সময় ibus আরম্ভ করা হবে"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "তালিকায় উপস্থিত পূর্ববর্তী ইনপুট পদ্ধতিতে পরিবর্তনের জন্য প্রযোজ্য শর্ট-কাট কি"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:51
 msgid "Top left corner"
 msgstr "উপরে বাঁদিকের কোণায়"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "উপরে ডানদিকের কোণায়"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Vertical"
 msgstr "উল্লম্ব"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "সক্রিয় অবস্থায়"
 
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "ইঞ্জিন পূর্বে লোড করা হবে"
