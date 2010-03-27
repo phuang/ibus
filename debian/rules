@@ -1,114 +1,50 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-#
-# This file was originally written by Joey Hess and Craig Small.
-# As a special exception, when this file is copied by dh-make into a
-# dh-make output file, you may use that output file without restriction.
-# This special exception was added by Craig Small in version 0.37 of dh-make.
-#
-# Modified to make a template file for a multi-binary package with separated
-# build-arch and build-indep targets  by Bill Allombert 2001
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+include /usr/share/dpatch/dpatch.make
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
-
-# These are used for cross-compiling and for saving the configure script
-# from having to guess our platform (since we know it already)
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
-CROSS= --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
-else
-CROSS= --build $(DEB_BUILD_GNU_TYPE)
-endif
-
-config.status: configure
-	dh_testdir
-	# Add here commands to configure the package.
-ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+build: patch
 	ln -sf /usr/share/misc/config.sub config.sub
-endif
-ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	ln -sf /usr/share/misc/config.guess config.guess
-endif
+	dh $@ --before auto_configure
 	dh_auto_configure -- --enable-static LDFLAGS="-Wl,--as-needed"
+	dh $@ --before auto_test
+	cd po; make ibus.pot # https://bugs.launchpad.net/ubuntu/+source/ibus/+bug/188690
+	dh $@ --after auto_test
 
-
-#Architecture
-build: build-stamp
-build-stamp: config.status
-	$(MAKE)
-	touch $@
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp 
-
-	# Add here commands to clean up after the build process.
-	[ ! -f Makefile ] || $(MAKE) distclean
-	dh_clean 
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-	dh_installdirs
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+install:
+	dh $@ --until auto_install
 	rm -rf $(CURDIR)/debian/tmp/usr/lib/libibus.la \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.a \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.la \
 		$(CURDIR)/debian/tmp/etc/xdg \
 		$(CURDIR)/debian/tmp/usr/share/applications/ibus.desktop
 	dh_install --list-missing --fail-missing
+	dh_installdocs # http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=552293
+	dh $@ --after installdocs
+	LD_LIBRARY_PATH=debian/libibus2/usr/lib:$(LD_LIBRARY_PATH) \
+		dh_gtkmodules -p ibus-gtk -s
 
-binary-indep: install
-	dh_testdir -i
-	dh_testroot -i
-	dh_installchangelogs -i
-	dh_installdocs -i
-	dh_installexamples -i
-	dh_installman -i
-	dh_gconf -i
-	dh_link -i
-	dh_strip -i
-	dh_compress -i
-	dh_fixperms -i
-	dh_makeshlibs -Nibus-gtk -i
-	dh_pysupport -i
+install-stamp: install
+	touch $@
+
+binary: binary-indep binary-arch
+
+binary-indep: install-stamp
 	dh_installdeb -i
-	dh_shlibdeps -i
 	dh_gencontrol -i
 	dh_md5sums -i
 	dh_builddeb -i
-# Build architecture independant packages using the common target.
-binary-arch: install
-	dh_testdir -s
-	dh_testroot -s
-	dh_installchangelogs -s
-	dh_installdocs -s
-	dh_installexamples -s
-	dh_installman -s
-	dh_gconf -s
-	LD_LIBRARY_PATH=debian/libibus1/usr/lib:$(LD_LIBRARY_PATH) \
-		dh_gtkmodules -p ibus-gtk -s
-	dh_link -s
+
+binary-arch: install-stamp
 	dh_strip -s
-	dh_compress -s
-	dh_fixperms -s
 	dh_makeshlibs -Nibus-gtk -s
-	dh_pysupport -s
-	dh_installdeb -s
 	dh_shlibdeps -s
+	dh_installdeb -s
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s
 
-binary: binary-indep binary-arch
+clean: clean0 unpatch
 
-.PHONY: build clean binary-indep binary-arch binary install	\
-	install-indep install-arch
+clean0:
+	dh clean

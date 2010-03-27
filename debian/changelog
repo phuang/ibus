@@ -1,14 +1,83 @@
-ibus (1.2.0.20100130-1~ppa1) karmic; urgency=low
+ibus (1.3.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Sat, 03 Apr 2010 18:53:10 +0800
+
+ibus (1.3.0-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/source/format: missing-debian-source-format
+  * debian/libibus2.symbols: updated.
+
+ -- LI Daobing <lidaobing@debian.org>  Wed, 24 Mar 2010 20:47:49 +0800
+
+ibus (1.2.99.20100202-1) experimental; urgency=low
+
+  * New upstream release.
+  * debian/control: bump standards version to 3.8.4.
+  * libibus1 -> libibus2 transition:
+    - debian/control: updated
+    - debian/libibus1.*: deleted
+    - debian/libibus2.*: added
+    - debian/rules: updated.
+
+ -- LI Daobing <lidaobing@debian.org>  Sun, 21 Mar 2010 18:23:37 +0800
+
+ibus (1.2.0.20091215-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/libibus1.symbols: updated
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 17 Dec 2009 19:43:32 +0800
+
+ibus (1.2.0.20091124-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- LI Daobing <lidaobing@debian.org>  Thu, 26 Nov 2009 19:24:06 +0800
+
+ibus (1.2.0.20091024-1) unstable; urgency=low
+
+  * new upstream release.
+    - Fix "notification icon should be optional" (LP: #422253)
+  * Fix "move im-switch from depends to recommends" (Closes: #551157)
+    - debian/control: updated.
+  * debian/rules: rewrited.
+  * debian/clean: updated.
+  * Fix "Desktop entry needs the X-Ubuntu-Gettext-Domain key"  (LP: #457632)
+    - debian/control: add dpatch to build-depends.
+    - debian/patches/*: added.
+    - debian/README.source: added.
+  * debian/rules: ignore test.
+
+ -- LI Daobing <lidaobing@debian.org>  Mon, 26 Oct 2009 18:55:02 +0800
+
+ibus (1.2.0.20091014-1) unstable; urgency=low
+
+  * new upstream release.
+  * debian/control:
+    - depends on librsvg2-common instead of python-rsvg.
+    - Turn ANDed ibus-{gtk,qt4} dependency into an OR, to avoid installing
+      both. (LP: #449966)
+  * debian/xinput/ibus: Turn ANDed ibus-{gtk,qt4} dependency into an OR
+
+ -- LI Daobing <lidaobing@debian.org>  Wed, 14 Oct 2009 19:04:57 +0800
+
+ibus (1.2.0.20090927-2) unstable; urgency=low
+
+  * create po template when build (LP: #188690)
+    - debian/rules: updated.
+    - debian/clean: remove pot file when clean.
+  * debian/control: build depends on python-rsvg (LP: #432375)
+
+ -- LI Daobing <lidaobing@debian.org>  Mon, 05 Oct 2009 20:45:18 +0800
+
+ibus (1.2.0.20090927-1) unstable; urgency=low
 
   * new upstream release.
 
- -- Peng Huang <shawn.p.huang@gmail.com>  Sat, 30 Jan 2010 08:00:00 +0800
-
-ibus (1.2.0.20090927-1~ppa1) karmic; urgency=low
-
-  * new upstream release.
-
- -- LI Daobing <lidaobing@debian.org>  Tue, 29 Sep 2009 20:45:17 +0800
+ -- LI Daobing <lidaobing@debian.org>  Tue, 29 Sep 2009 20:28:59 +0800
 
 ibus (1.2.0.20090915-1) unstable; urgency=low
 
@@ -26,15 +95,15 @@ ibus (1.2.0.20090904-1) unstable; urgency=low
 ibus (1.2.0.20090828-1) unstable; urgency=low
 
   * new upstream release.
-  * debian/control: bump standards version to 3.8.3. 
-  * debian/libibus1.symbols: updated. 
+  * debian/control: bump standards version to 3.8.3.
+  * debian/libibus1.symbols: updated.
 
  -- LI Daobing <lidaobing@debian.org>  Sun, 30 Aug 2009 12:37:45 +0800
 
 ibus (1.2.0.20090812-1) unstable; urgency=low
 
   * new upstream release.
-  * debian/libibus1.symbols: updated. 
+  * debian/libibus1.symbols: updated.
 
  -- LI Daobing <lidaobing@debian.org>  Wed, 12 Aug 2009 20:41:02 +0800
 
@@ -75,8 +144,8 @@ ibus (1.2.0.20090719-2) unstable; urgency=low
 ibus (1.2.0.20090719-1) unstable; urgency=low
 
   * new upstream release.
-  * debian/libibus1.symbols: updated. 
-  * debian/control: change url of vcs-bzr 
+  * debian/libibus1.symbols: updated.
+  * debian/control: change url of vcs-bzr
 
  -- LI Daobing <lidaobing@debian.org>  Sun, 19 Jul 2009 16:00:48 +0800
 
@@ -85,8 +154,8 @@ ibus (1.2.0.20090617-2) unstable; urgency=low
   * Fix "ibus' autostart in xdg folder breaks im-switch and other input
     method" (Closes: #537217)
     - debian/ibus.install: remove the autostart file.
-    - debian/rules: remove /etc/xdg after install. 
-    - debian/ibus.postinst: remove the autostart file. 
+    - debian/rules: remove /etc/xdg after install.
+    - debian/ibus.postinst: remove the autostart file.
 
  -- LI Daobing <lidaobing@debian.org>  Thu, 16 Jul 2009 20:41:18 +0800
 
@@ -101,8 +170,8 @@ ibus (1.2.0.20090617-1) unstable; urgency=low
     - debian/libibus1.symbols: added
     - debian/rules: change script of dh_gtkmodules
   * debian/ibus-gtk.install: updated.
-  * debian/control: 
-    - ibus conflicts the ibus modules with low version. 
+  * debian/control:
+    - ibus conflicts the ibus modules with low version.
     - bump policy version to 3.8.2.
 
  -- LI Daobing <lidaobing@debian.org>  Fri, 26 Jun 2009 22:47:52 +0800
@@ -149,8 +218,8 @@ ibus (1.1.0.20090423-0ubuntu1) karmic; urgency=low
     "--xim" to XIM_ARGS
   * debian/xinput/ibus-qt4: removed.
   * debian/ibus.install: install gconf schemas, lib and autostart.
-  * debian/rules: add dh_gconf 
-  * debian/control: 
+  * debian/rules: add dh_gconf
+  * debian/control:
     - build depends: add intltool, python-dbus, python-gobject-dev,
       libgconf2-dev. remove libqt4-dev, dpatch.
     - package libibus-gtk0 renamed to libibus0.
@@ -161,7 +230,7 @@ ibus (1.1.0.20090423-0ubuntu1) karmic; urgency=low
     - package ibus-qt4 removed. (no longer supported)
     - new package libibus-dev.
   * debian/libibus0.symbols: update symbols
-  * debian/docs: added 
+  * debian/docs: added
 
  -- LI Daobing <lidaobing@debian.org>  Fri, 01 May 2009 10:41:09 +0800
 
@@ -181,22 +250,22 @@ ibus (1.1.0.20090417-1) unstable; urgency=low
   * debian/xinput/ibus: change XIM_PROGRAM from ibus to ibus-daemon, add
     "--xim" to XIM_ARGS
   * debian/xinput/ibus-qt4: removed.
-  * debian/ibus.install: install gconf schemas 
-  * debian/rules: add dh_gconf 
-  * debian/control: 
+  * debian/ibus.install: install gconf schemas
+  * debian/rules: add dh_gconf
+  * debian/control:
     - build depends on python-dbus.
     - change maintainer's email.
     - bump standards version to 3.8.1.
     - use simple depends on python-dbus.
   * debian/libibus0.symbols: update symbols
-  * debian/docs: added 
+  * debian/docs: added
 
  -- LI Daobing <lidaobing@debian.org>  Wed, 22 Apr 2009 21:28:45 +0800
 
 ibus (0.1.1.20081023-0ubuntu5) jaunty; urgency=low
 
   * debian/control: Add depends on python-gconf as ibus needs this to run
-    correctly. (LP: #358770) 
+    correctly. (LP: #358770)
 
  -- LI Daobing <lidaobing@gmail.com>  Sun, 12 Apr 2009 10:58:27 +0800
 
@@ -205,13 +274,13 @@ ibus (0.1.1.20081023-0ubuntu4) jaunty; urgency=low
   * port to python2.6 (LP: #336525)
     - debian/pyversions: change from "2.5" to "2.5-"
     - debian/rules: fix dh_pysupport
-  * debian/rules: change "dh_clean -k" to "dh_prep" 
+  * debian/rules: change "dh_clean -k" to "dh_prep"
 
  -- LI Daobing <lidaobing@gmail.com>  Mon, 02 Mar 2009 13:03:03 +0800
 
 ibus (0.1.1.20081023-0ubuntu3) jaunty; urgency=low
 
-  * debian/rules: add dh_gtkmodules (LP: #314375) 
+  * debian/rules: add dh_gtkmodules (LP: #314375)
   * debian/control: depends on ${misc:Depends}
 
  -- LI Daobing <lidaobing@gmail.com>  Tue, 06 Jan 2009 22:29:46 +0800
