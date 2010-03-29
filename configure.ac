@@ -111,17 +111,27 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# check gconf
-PKG_CHECK_MODULES(GCONF,
-    [gconf-2.0 >= 2.12],
+AC_ARG_ENABLE(gconf,
+    AS_HELP_STRING([--disable-gconf],
+                   [Do not use GConf code]),
+    [enable_gconf=$enableval],
+    [enable_gconf=yes]
 )
 
-AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
-if test x"$GCONFTOOL" = xno; then
-    AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
-fi
+AM_CONDITIONAL([ENABLE_GCONF], [test "x$enable_gconf" = "xyes"])
 
-AM_GCONF_SOURCE_2
+if test x"$enable_gconf" != x"no"; then
+    # check gconf
+    PKG_CHECK_MODULES(GCONF,
+        [gconf-2.0 >= 2.12],
+    )
+
+    AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+    if test x"$GCONFTOOL" = xno; then
+        AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+    fi
+
+    AM_GCONF_SOURCE_2
 
 # GCONF_SERVERDIR=`$PKG_CONFIG --variable=gconf_serverdir gconf-2.0`
 # old_path=$PATH
@@ -136,6 +146,9 @@ AM_GCONF_SOURCE_2
 # 
 # AC_SUBST(GCONF_SANITY_CHECK)
 # PATH=$old_path
+else
+AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [0])
+fi
 
 # Check for x11
 PKG_CHECK_MODULES(X11, [
@@ -244,8 +257,6 @@ Makefile
 ibus-1.0.pc
 ibus.spec
 xinput-ibus
-gconf/Makefile
-gconf/gconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/x11/Makefile
@@ -277,6 +288,13 @@ if test x"$enable_python" != x"no"; then
     ])
 fi
 
+if test x"$enable_gconf" != x"no"; then
+    AC_CONFIG_FILES([
+    gconf/Makefile
+    gconf/gconf.xml.in
+    ])
+fi
+
 AC_OUTPUT
 AC_MSG_RESULT([
 Build options:
@@ -286,6 +304,7 @@ Build options:
   Build static libs        $enable_static
   Gtk immodule dir         $GTK_IM_MODULEDIR
   Build python modules     $enable_python
+  Build gconf modules      $enable_gconf
   Build document           $enable_gtk_doc
 ])
 

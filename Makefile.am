@@ -22,7 +22,6 @@
 
 SUBDIRS =       \
 	src         \
-	gconf       \
 	util        \
 	client      \
 	bus         \
@@ -37,6 +36,12 @@ SUBDIRS +=      \
 	ibus        \
 	ui          \
 	setup       \
+	$(NULL)
+endif
+
+if ENABLE_GCONF
+SUBDIRS +=      \
+	gconf       \
 	$(NULL)
 endif
 
