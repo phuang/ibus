@@ -33,6 +33,12 @@ GCONF_DIRS = \
 	$(NULL)
 endif
 
+if ENABLE_MEMCONF
+MEM_CONF = \
+	memconf \
+	$(NULL)
+endif
+
 SUBDIRS = \
 	src \
 	bus \
@@ -46,6 +52,7 @@ SUBDIRS = \
 	bindings \
 	$(PYTHON_DIRS) \
 	$(GCONF_DIRS) \
+	$(MEM_DIRS) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4

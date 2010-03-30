@@ -207,6 +207,14 @@ else
     enable_gconf="no (disabled, use --enable-gconf to enable)"
 fi
 
+AC_ARG_ENABLE(memconf,
+    AS_HELP_STRING([--enable-memconf],
+                   [Enable configure base on memory]),
+    [enable_memconf=$enableval],
+    [enable_memconf=no]
+)
+AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
+
 # check env
 AC_PATH_PROG(ENV, env)
 AC_SUBST(ENV)
@@ -328,6 +336,8 @@ Makefile
 ibus-1.0.pc
 ibus.spec
 xinput-ibus
+memconf/Makefile
+memconf/memconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
@@ -374,6 +384,7 @@ Build options:
   Build XIM agent server    $enable_xim
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
+  Build memconf modules     $enable_memconf
   Build introspection       $found_introspection
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
