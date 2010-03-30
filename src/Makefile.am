@@ -198,12 +198,13 @@ test_lookuptable_LDADD = $(AM_LDADD)
 ibusenumtypes.h: stamp-ibusenumtypes.h
 	@true
 stamp-ibusenumtypes.h: $(ibus_public_h_sources) ibusenumtypes.h.template
-	( cd $(srcdir) && $(GLIB_MKENUMS) --template ibusenumtypes.h.template \
+	@( cd $(srcdir) && $(GLIB_MKENUMS) --template ibusenumtypes.h.template \
 	$(ibus_public_h_sources) ) | sed 's/i_bus_/ibus_/g' | sed 's/I_TYPE_BUS_/IBUS_TYPE_/g' >> xgen-geth \
 	&& (cmp -s xgen-geth ibusenumtypes.h || cp xgen-geth ibusenumtypes.h ) \
 	&& rm -f xgen-geth \
 	&& echo timestamp > $(@F)
 ibusenumtypes.c: $(ibus_public_h_sources) ibusenumtypes.c.template
+	$(AM_V_GEN) \
 	( cd $(srcdir) && $(GLIB_MKENUMS) --template ibusenumtypes.c.template \
 	$(ibus_public_h_sources) ) | sed 's/i_bus_/ibus_/g' | sed 's/I_TYPE_BUS_/IBUS_TYPE_/g' > xgen-getc \
 	&& cp xgen-getc ibusenumtypes.c  \
@@ -213,11 +214,12 @@ ibusenumtypes.c: $(ibus_public_h_sources) ibusenumtypes.c.template
 ibusmarshalers.h: stamp-ibusmarshalers.h
 	@true
 stamp-ibusmarshalers.h: ibusmarshalers.list
-	$(GLIB_GENMARSHAL) --prefix=ibus_marshal $(srcdir)/ibusmarshalers.list --header >> xgen-gmh \
+	@$(GLIB_GENMARSHAL) --prefix=ibus_marshal $(srcdir)/ibusmarshalers.list --header >> xgen-gmh \
 	&& (cmp -s xgen-gmh ibusmarshalers.h || cp xgen-gmh ibusmarshalers.h) \
 	&& rm -f xgen-gmh \
 	&& echo timestamp > $(@F)
 ibusmarshalers.c: ibusmarshalers.list
+	$(AM_V_GEN) \
 	(echo "#include \"ibusmarshalers.h\""; \
 	 $(GLIB_GENMARSHAL) --prefix=ibus_marshal $(srcdir)/ibusmarshalers.list --body; \
 	 echo ) >> xgen-gmc \

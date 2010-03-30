@@ -73,6 +73,7 @@ EXTRA_DIST = \
 	$(NULL)
 
 gconf.xml: gconf.xml.in
+	$(AM_V_GEN) \
 	( \
 		libexecdir=${libexecdir}; \
 		s=`cat $<`; \
