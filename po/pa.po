@@ -3,13 +3,13 @@
 #
 # Amanpreet Singh <aalam@users.sf.net>, 2008.
 # A S Alam <aalam@users.sf.net>, 2009.
-# Jaswinder Singh <jsingh@redhat.com>, 2009.
+# Jaswinder Singh <jsingh@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
-"PO-Revision-Date: 2009-12-08 14:17+0530\n"
+"POT-Creation-Date: 2010-03-31 06:26+0000\n"
+"PO-Revision-Date: 2010-03-31 14:55+0530\n"
 "Last-Translator: Jaswinder Singh <jsingh@redhat.com>\n"
 "Language-Team: Punjabi/Panjabi <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -50,17 +50,15 @@ msgstr "ਅਗਲਾ ਪੇਜ਼"
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
-msgstr ""
+msgstr "ਕੁਝ ਇੰਪੁੰਟ ਢੰਗ ਇੰਸਟਾਲ ਕੀਤੇ, ਹਟਾਏ ਜਾਂ ਅੱਪਡੇਟ ਕੀਤੇ ਗਏ ਹਨ। ਕਿਰਪਾ ਕਰਕੇ ibus ਇੰਪੁੱਟ ਪਲੇਟਫਾਰਮ ਮੁੜ-ਚਾਲੂ ਕਰੋ।"
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "ਮੁੜ-ਚਾਲੂ"
+msgstr "ਹੁਣ ਮੁੜ-ਚਾਲੂ"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "ਹੋਰ"
+msgstr "ਬਾਅਦ `ਚ"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -205,11 +203,11 @@ msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ �
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "ਸ਼ਾਮਿਲ ਕੀਤਾ ਪਹਿਲਾਂ-ਸੋਧਿਆ ਪਾਠ"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "ਐਪਲੀਕੇਸ਼ਨ ਵਿੱਡੋ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕੀਤਾ ਪਹਿਲਾਂ-ਸੋਧਿਆ ਪਾਠ"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -241,7 +239,7 @@ msgstr "ਪਿਛਲਾ ਇੰਜਣ ਸ਼ਾਰਟਕੱਟ ਕੁੰਜੀਆਂ
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "ਸਭ ਐਪਲੀਕੇਸ਼ਨਾਂ ਵਿਚਕਾਰ ਕੁਝ ਇੰਪੁੱਟ ਸਾਂਝੀ ਕਰੋ"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -290,9 +288,8 @@ msgid "Use custom font name for language panel"
 msgstr "ਭਾਸ਼ਾ ਪੈਨਲ ਲਈ ਪਸੰਦੀਦਾ ਫੋਂਟ ਨਾਂ ਵਰਤੋਂ"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "ਇੱਕ ਇੰਪੁੱਟ ਢੰਗ ਚੁਣੋ"
+msgstr "ਗਲੋਬਲ ਇੰਪੁੱਟ ਢੰਗ ਵਰਤੋ"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
@@ -312,7 +309,7 @@ msgstr "<b>ਫੋਂਟ ਅਤੇ ਸਟਾਈਲ</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgstr "<b>ਗਲੋਬਲ ਇੰਪੁੱਟ ਢੰਗ ਸੈਟਿੰਗ</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -380,11 +377,11 @@ msgstr "ਪਸੰਦੀਦਾ"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "ਐਪਲੀਕੇਸ਼ਨ ਵਿੰਡੋ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕੀਤਾ ਪਹਿਲਾਂ-ਸੋਧਿਆ ਪਾਠ"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "ਐਪਲੀਕੇਸ਼ਨ ਵਿੰਡੋ ਵਿੱਚ ਇੰਪੁੱਟ ਢੰਗ ਦਾ ਸ਼ਾਮਿਲ ਕੀਤਾ ਪਹਿਲਾਂ-ਸੋਧਿਆ ਪਾਠ"
 
 #: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
@@ -436,7 +433,7 @@ msgstr "ਖੋਜ ਟੇਬਲ ਵਿੱਚ ਉਮੀਦਵਾਰ ਦੀ ਸਥ�
 
 #: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
-msgstr ""
+msgstr "ਸਥਿਤੀ ਆਈਕਾਨ ਮੇਨੂ ਵਿੱਚ ਵੇਖਾਓ"
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
