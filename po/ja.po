@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-12 10:27+0900\n"
+"POT-Creation-Date: 2010-03-31 12:25+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -268,8 +268,8 @@ msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
-"言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、"
-"4 = カスタム"
+"言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタ"
+"ム"
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
@@ -385,8 +385,9 @@ msgstr "アプリケーションウィンドウに前編集テキストを組み
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr "アプリケーションウィンドウにインプットメソッドのプリエディットテキスト"
-"を組み込みます"
+msgstr ""
+"アプリケーションウィンドウにインプットメソッドのプリエディットテキストを組み"
+"込みます"
 
 #: ../setup/setup.ui.h:26
 msgid "Enable or disable:"

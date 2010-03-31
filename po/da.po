@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-27 13:01+0800\n"
+"POT-Creation-Date: 2010-03-31 12:25+0800\n"
 "PO-Revision-Date: 2009-06-11 17:58+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -33,12 +33,12 @@ msgstr ""
 msgid "Other"
 msgstr "Andre"
 
-#: ../ui/gtk/candidatepanel.py:254
+#: ../ui/gtk/candidatepanel.py:267
 #, fuzzy
 msgid "Previous page"
 msgstr "Forrige inddatametode:"
 
-#: ../ui/gtk/candidatepanel.py:259
+#: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
 msgstr ""
 
@@ -58,24 +58,24 @@ msgstr "Genstart"
 msgid "Later"
 msgstr "Andre"
 
-#: ../ui/gtk/panel.py:334
+#: ../ui/gtk/panel.py:331
 msgid "Restart"
 msgstr "Genstart"
 
-#: ../ui/gtk/panel.py:421
+#: ../ui/gtk/panel.py:418
 #, fuzzy
 msgid "Turn off input method"
 msgstr "Ingen inddatametode"
 
-#: ../ui/gtk/panel.py:458
+#: ../ui/gtk/panel.py:455
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:489
+#: ../ui/gtk/panel.py:486
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus er en intelligent inddatabus til Linux/Unix."
 
-#: ../ui/gtk/panel.py:493
+#: ../ui/gtk/panel.py:490
 msgid "translator-credits"
 msgstr ""
 "Kris Thomsen\n"
@@ -83,7 +83,7 @@ msgstr ""
 "Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
 "Mere info: http://www.dansk-gruppen.dk"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
 #, fuzzy
 msgid "About the Input Method"
 msgstr "Inddatametoder"
@@ -92,7 +92,7 @@ msgstr "Inddatametoder"
 msgid "Switch input method"
 msgstr "Skift inddatametode"
 
-#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Om"
@@ -128,11 +128,11 @@ msgstr "næste inddatametode"
 msgid "previous input method"
 msgstr "forrige inddatametode"
 
-#: ../setup/main.py:262
+#: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus-dæmonen er ikke startet. Vil du starte den nu?"
 
-#: ../setup/main.py:277
+#: ../setup/main.py:283
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -146,7 +146,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:292
+#: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Vælg tastaturgenveje til %s"
@@ -180,7 +180,7 @@ msgid "Select an input method"
 msgstr "Vælg en inddatametode"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
 #, fuzzy
 msgid "Input Method"
 msgstr "Inddatametoder"
@@ -189,7 +189,7 @@ msgstr "Inddatametoder"
 msgid "Kbd"
 msgstr ""
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
 msgid "IBus Preferences"
 msgstr "Indstillinger for IBus"
 
@@ -208,104 +208,112 @@ msgid "Custom font name for language panel"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Embed Preedit Text"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Embed Preedit Text in Application Window"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:6
 #, fuzzy
 msgid "Language panel position"
 msgstr "Vis sprogpanel:"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 #, fuzzy
 msgid "Next engine shortcut keys"
 msgstr "Næste tastaturgenvej til motor"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientering af opslagstabel. 0 = Vandret, 1 = Lodret"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "Orientering af opslagstabel"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload Engines during ibus starts up"
 msgstr "Forindlæs motorer under opstarten af ibus"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 #, fuzzy
 msgid "Preload engines"
 msgstr "Forindlæs motorer"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "Forrige tastaturgenvej til motor"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 #, fuzzy
 msgid "Show input method name"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
 #, fuzzy
 msgid "Show input method name on language bar"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
 "Sprogpanelets opførsel. 0 = Skjul altid, 1 = Skjul automatisk, 2 = Vis altid"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 #, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 "Næste tastaturgenvej til motor til skift af næste motor for inddatametode"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 "Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 #, fuzzy
 msgid "Trigger shortcut keys"
 msgstr "Udløser til tastaturgenvej"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
 msgid "Use custom font"
 msgstr "Brug tilpasset skrifttype"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "Use custom font name for language panel"
 msgstr "Brug tilpasset skrifttypenavn til sprogpanel"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 #, fuzzy
 msgid "Use global input method"
 msgstr "Vælg en inddatametode"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
 msgid "Use system keyboard layout"
 msgstr ""
 
@@ -388,98 +396,106 @@ msgid "Custom"
 msgstr "Tilpasset skrifttype:"
 
 #: ../setup/setup.ui.h:24
+msgid "Embed preedit text in application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
 msgstr "Aktivér eller deaktivér:"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:27
 msgid "General"
 msgstr "Generelt"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:28
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "Vandret\n"
 "Lodret"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 #, fuzzy
 msgid "Language panel position:"
 msgstr "Vis sprogpanel:"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Next input method:"
 msgstr "Næste inddatametode:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "Forrige inddatametode:"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 #, fuzzy
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Orientering af opslagstabel"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
 msgstr ""
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
 msgstr ""
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 #, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show language panel:"
 msgstr "Vis sprogpanel:"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
 msgstr "Start ibus ved logind"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 #, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "Forrige tastaturgenvej til motor til skift af forrige motor for inddatametode"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:51
 msgid "Top left corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Vertical"
 msgstr ""
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 #, fuzzy
 msgid "When active"
 msgstr ""

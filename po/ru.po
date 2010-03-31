@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-27 13:01+0800\n"
+"POT-Creation-Date: 2010-03-31 12:25+0800\n"
 "PO-Revision-Date: 2009-10-14 09:39+0300\n"
 "Last-Translator: Alexey Kotlyarov <koterpillar@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -35,12 +35,12 @@ msgstr ""
 msgid "Other"
 msgstr "Другие"
 
-#: ../ui/gtk/candidatepanel.py:254
+#: ../ui/gtk/candidatepanel.py:267
 #, fuzzy
 msgid "Previous page"
 msgstr "Предыдущий метод ввода:"
 
-#: ../ui/gtk/candidatepanel.py:259
+#: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
 msgstr ""
 
@@ -60,27 +60,27 @@ msgstr "Перезапустить"
 msgid "Later"
 msgstr "Другие"
 
-#: ../ui/gtk/panel.py:334
+#: ../ui/gtk/panel.py:331
 msgid "Restart"
 msgstr "Перезапустить"
 
-#: ../ui/gtk/panel.py:421
+#: ../ui/gtk/panel.py:418
 msgid "Turn off input method"
 msgstr "Выключить метод ввода"
 
-#: ../ui/gtk/panel.py:458
+#: ../ui/gtk/panel.py:455
 msgid "No input window"
 msgstr "Нет окна ввода"
 
-#: ../ui/gtk/panel.py:489
+#: ../ui/gtk/panel.py:486
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus - умная система ввода для Linux/Unix."
 
-#: ../ui/gtk/panel.py:493
+#: ../ui/gtk/panel.py:490
 msgid "translator-credits"
 msgstr ""
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:356
+#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
 msgid "About the Input Method"
 msgstr "О методе ввода"
 
@@ -88,7 +88,7 @@ msgstr "О методе ввода"
 msgid "Switch input method"
 msgstr "Переключить метод ввода"
 
-#: ../ui/gtk/languagebar.py:352 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "О программе"
@@ -124,11 +124,11 @@ msgstr "следующий метод ввода"
 msgid "previous input method"
 msgstr "предыдущий метод ввода"
 
-#: ../setup/main.py:262
+#: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "Демон IBus не запущен. Хотите запустить его сейчас?"
 
-#: ../setup/main.py:277
+#: ../setup/main.py:283
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -142,7 +142,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:292
+#: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Выберите комбинацию клавиш для %s"
@@ -176,7 +176,7 @@ msgid "Select an input method"
 msgstr "Выберите метод ввода"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:28
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
 msgid "Input Method"
 msgstr "Метод ввода"
 
@@ -184,7 +184,7 @@ msgstr "Метод ввода"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:27
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
 msgid "IBus Preferences"
 msgstr "Параметры IBus"
 
@@ -201,51 +201,59 @@ msgid "Custom font name for language panel"
 msgstr "Свой шрифт для языковой панели"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Embed Preedit Text"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Embed Preedit Text in Application Window"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:6
 #, fuzzy
 msgid "Language panel position"
 msgstr "Показывать языковую панель:"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 msgid "Next engine shortcut keys"
 msgstr "Клавиши для следующего метода ввода"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
 msgstr "Ориентация таблицы просмотра. 0 = горизонтально, 1 = вертикально."
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "Ориентация таблицы поиска"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload Engines during ibus starts up"
 msgstr "Загружать методы ввода при запуске ibus"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Preload engines"
 msgstr "Предварительная загрузка методов ввода"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "Клавиши для предыдущего метода ввода"
 
-#: ../data/ibus.schemas.in.h:11 ../setup/setup.ui.h:38
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:12 ../setup/setup.ui.h:39
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "Показать значок в области уведомлений"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Show input method name"
 msgstr "Показывать название метода ввода на языковой панели"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
 msgid "Show input method name on language bar"
 msgstr "Показывать название метода ввода на языковой панели"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
@@ -253,43 +261,43 @@ msgstr ""
 "Поведение языковой панели. 0 - всегда скрыта, 1 - автоматически скрывать, 2 "
 "- всегда показывать"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:46
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "Горячие клавиши для переключения на следующий в списке метод ввода:"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Горячие клавиши для включения/выключения метода ввода"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid "Trigger shortcut keys"
 msgstr "Горячие клавиши для включения/выключения"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
 msgid "Use custom font"
 msgstr "Использовать свой шрифт"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "Use custom font name for language panel"
 msgstr "Использовать свой шрифт для языковой панели"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 #, fuzzy
 msgid "Use global input method"
 msgstr "Выберите метод ввода"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:52
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
 msgstr "Использовать системную раскладку клавиатуры (XKB)"
 
-#: ../data/ibus.schemas.in.h:24 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
 msgid "Use system keyboard layout"
 msgstr "Использовать системную раскладку клавиатуры"
 
@@ -371,92 +379,100 @@ msgid "Custom"
 msgstr "Свой шрифт"
 
 #: ../setup/setup.ui.h:24
+msgid "Embed preedit text in application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:26
 msgid "Enable or disable:"
 msgstr "Включить или выключить:"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:27
 msgid "General"
 msgstr "Основные"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:28
 msgid "Horizontal"
 msgstr "Горизонтально"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 #, fuzzy
 msgid "Language panel position:"
 msgstr "Показывать языковую панель:"
 
-#: ../setup/setup.ui.h:30
+#: ../setup/setup.ui.h:32
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "Переместить выбранный метод ввода вниз в списке используемых"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:33
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "Переместить выбранный метод ввода вверх в списке используемых"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Never"
 msgstr "Никогда"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Next input method:"
 msgstr "Следующий метод ввода:"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "Предыдущий метод ввода:"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "Добавить выбранный метод ввода к используемым"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "Установить поведение ibus для показа или скрытия языковой панели"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Установить ориентацию кандидатов в таблице поиска"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:42
 msgid "Show in Status Icon menu"
 msgstr ""
 
-#: ../setup/setup.ui.h:41
+#: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
 msgstr "Показать информацию о выбранном методе ввода"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:45
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "Показывать название метода ввода на языковой панели, когда пункт выбран"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show language panel:"
 msgstr "Показывать языковую панель:"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
 msgstr "Запускать ibus при входе в систему:"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Горячие клавиши для переключения на предыдущий в списке метод ввода:"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:51
 msgid "Top left corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Vertical"
 msgstr "Вертикально"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "Когда активна"
 
