@@ -284,7 +284,7 @@
                                 <child>
                                   <object class="GtkHBox" id="hbox2">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
+                                    <property name="spacing">20</property>
                                     <child>
                                       <object class="GtkLabel" id="label6">
                                         <property name="visible">True</property>
@@ -321,7 +321,7 @@
                                 <child>
                                   <object class="GtkHBox" id="hbox3">
                                     <property name="visible">True</property>
-                                    <property name="homogeneous">True</property>
+                                    <property name="spacing">20</property>
                                     <child>
                                       <object class="GtkLabel" id="label10">
                                         <property name="visible">True</property>
@@ -358,7 +358,7 @@
                                 <child>
                                   <object class="GtkHBox" id="hbox7">
                                     <property name="no_show_all">True</property>
-                                    <property name="homogeneous">True</property>
+                                    <property name="spacing">20</property>
                                     <child>
                                       <object class="GtkLabel" id="label16">
                                         <property name="xalign">0</property>
