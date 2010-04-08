@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <pwd.h>
 #include <dbus/dbus.h>
 #include "ibusshare.h"
 
@@ -58,6 +57,8 @@ ibus_set_display (const gchar *display)
 const gchar *
 ibus_get_user_name (void)
 {
+    return g_get_user_name ();
+#if 0
     static gchar *username = NULL;
     if (username == NULL) {
         username = g_strdup (getlogin());
@@ -87,11 +88,14 @@ ibus_get_user_name (void)
 
     }
     return username;
+#endif
 }
 
 glong
 ibus_get_daemon_uid (void)
 {
+    return getuid ();
+#if 0
     struct passwd *pwd;
     uid_t uid;
     const gchar *username;
@@ -110,6 +114,7 @@ ibus_get_daemon_uid (void)
         return 0;
 
     return pwd->pw_uid;
+#endif
 }
 
 const gchar *

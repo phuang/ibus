@@ -208,20 +208,15 @@ ibus_bus_init (IBusBus *bus)
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
+    g_mkdir_with_parents (path, 0700);
+    g_chmod (path, 0700);
+
     if (stat (path, &buf) == 0) {
-        if (buf.st_uid != ibus_get_daemon_uid ()) {
+        if (buf.st_uid != getuid ()) {
             g_warning ("The owner of %s is not %s!", path, ibus_get_user_name ());
             return;
         }
     }
-#if 0
-    else {
-        if (getuid () == ibus_get_daemon_uid ()) {
-            mkdir (path, 0700);
-            chmod (path, 0700);
-        }
-    }
-#endif
 
     ibus_bus_connect (bus);
 

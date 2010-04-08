@@ -219,8 +219,11 @@ const gchar     *ibus_get_user_name     (void);
  * @returns: UID of ibus-daemon; or 0 if UID is not available.
  *
  * Get UID of ibus-daemon.
+ *
+ * Deprecated: This function has been deprecated and should
+ * not be used in newly written code.
  */
-glong            ibus_get_daemon_uid    (void);
+glong            ibus_get_daemon_uid    (void) G_GNUC_DEPRECATED;
 
 /**
  * ibus_get_socket_path:
