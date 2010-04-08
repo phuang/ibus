@@ -418,6 +418,8 @@ class Panel(ibus.PanelBase):
         item = gtk.ImageMenuItem(_("Turn off input method"))
         item.set_image(_icon.IconWidget("gtk-close", size[0]))
         item.connect("activate", self.__im_menu_item_activate_cb, None)
+        if self.__focus_ic == None or not self.__focus_ic.is_enabled():
+            item.set_sensitive(False)
         menu.add(item)
 
         menu.show_all()
