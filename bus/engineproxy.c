@@ -145,12 +145,13 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__OBJECT_UINT_BOOLEAN,
+            ibus_marshal_VOID__OBJECT_UINT_BOOLEAN_UINT,
             G_TYPE_NONE,
-            3,
+            4,
             IBUS_TYPE_TEXT,
             G_TYPE_UINT,
-            G_TYPE_BOOLEAN);
+            G_TYPE_BOOLEAN,
+            G_TYPE_UINT);
 
     engine_signals[SHOW_PREEDIT_TEXT] =
         g_signal_new (I_("show-preedit-text"),
@@ -448,9 +449,8 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         if (!retval)
             goto failed;
 
-        engine->_preedit_focus_mode = mode;
         g_signal_emit (engine, engine_signals[UPDATE_PREEDIT_TEXT], 0,
-                       text, cursor_pos, visible);
+                        text, cursor_pos, visible, mode);
         if (g_object_is_floating (text))
             g_object_unref (text);
     }
@@ -686,21 +686,6 @@ bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
                          G_TYPE_UINT, &caps,
                          G_TYPE_INVALID);
     }
-}
-
-guint
-bus_engine_proxy_get_preedit_focus_mode (BusEngineProxy *engine)
-{
-    g_assert (BUS_IS_ENGINE_PROXY (engine));
-    return engine->_preedit_focus_mode;
-}
-
-void
-bus_engine_proxy_set_preedit_focus_mode (BusEngineProxy *engine,
-                                         guint           mode)
-{
-    g_assert (BUS_IS_ENGINE_PROXY (engine));
-    engine->_preedit_focus_mode = mode;
 }
 
 void

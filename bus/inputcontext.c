@@ -79,11 +79,14 @@ static gboolean bus_input_context_send_signal   (BusInputContext        *context
                                                  ...);
 
 static void     bus_input_context_unset_engine  (BusInputContext        *context);
+static void     bus_input_context_commit_text   (BusInputContext        *context,
+                                                 IBusText               *text);
 static void     bus_input_context_update_preedit_text
                                                 (BusInputContext        *context,
                                                  IBusText               *text,
                                                  guint                   cursor_pos,
-                                                 gboolean                visible);
+                                                 gboolean                visible,
+                                                 guint                   mode);
 static void     bus_input_context_show_preedit_text
                                                 (BusInputContext        *context);
 static void     bus_input_context_hide_preedit_text
@@ -478,6 +481,7 @@ bus_input_context_init (BusInputContext *context)
     context->preedit_text = text_empty;
     context->preedit_cursor_pos = 0;
     context->preedit_visible = FALSE;
+    context->preedit_mode = IBUS_ENGINE_PREEDIT_CLEAR;
 
     g_object_ref_sink (text_empty);
     context->auxiliary_text = text_empty;
@@ -1209,23 +1213,18 @@ bus_input_context_focus_in (BusInputContext *context)
 }
 
 static void
-commit_preedit_text_with_focus_mode (BusInputContext *context)
+bus_input_context_clear_preedit_text (BusInputContext *context)
 {
-    guint mode = IBUS_ENGINE_PREEDIT_CLEAR;
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context->engine) {
-        mode = bus_engine_proxy_get_preedit_focus_mode (context->engine);
+    if (context->preedit_visible &&
+        context->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+        bus_input_context_commit_text (context, context->preedit_text);
     }
-    if (mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-        if (context->engine && context->enabled) {
-            bus_input_context_send_signal (context,
-                                           "CommitText",
-                                           IBUS_TYPE_TEXT, &context->preedit_text,
-                                           G_TYPE_INVALID);
-        }
-        mode = IBUS_ENGINE_PREEDIT_CLEAR;
-        bus_engine_proxy_set_preedit_focus_mode (context->engine, mode);
-    }
+
+    /* always clear preedit text */
+    bus_input_context_update_preedit_text (context,
+        text_empty, 0, FALSE, IBUS_ENGINE_PREEDIT_CLEAR);
 }
 
 void
@@ -1236,7 +1235,10 @@ bus_input_context_focus_out (BusInputContext *context)
     if (!context->has_focus)
         return;
 
-    commit_preedit_text_with_focus_mode (context);
+    bus_input_context_clear_preedit_text (context);
+    bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
+    bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
+    bus_input_context_register_properties (context, props_empty);
 
     if (context->engine && context->enabled) {
         bus_engine_proxy_focus_out (context->engine);
@@ -1245,15 +1247,6 @@ bus_input_context_focus_out (BusInputContext *context)
     context->has_focus = FALSE;
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
-	  if (context->preedit_visible && !PREEDIT_CONDITION) {
-            g_signal_emit (context, context_signals[HIDE_PREEDIT_TEXT], 0);
-        }
-        if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_AUXILIARY_TEXT) == 0) {
-            g_signal_emit (context, context_signals[HIDE_AUXILIARY_TEXT], 0);
-        }
-        if (context->auxiliary_visible && (context->capabilities & IBUS_CAP_LOOKUP_TABLE) == 0) {
-            g_signal_emit (context, context_signals[HIDE_LOOKUP_TABLE], 0);
-        }
         g_signal_emit (context, context_signals[FOCUS_OUT], 0);
     }
 }
@@ -1305,10 +1298,29 @@ bus_input_context_property_activate (BusInputContext *context,
 }
 
 static void
+bus_input_context_commit_text (BusInputContext *context,
+                               IBusText        *text)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (!context->enabled)
+        return;
+
+    if (text == text_empty || text == NULL)
+        return;
+
+    bus_input_context_send_signal (context,
+                                   "CommitText",
+                                   IBUS_TYPE_TEXT, &text,
+                                   G_TYPE_INVALID);
+}
+
+static void
 bus_input_context_update_preedit_text (BusInputContext *context,
                                        IBusText        *text,
                                        guint            cursor_pos,
-                                       gboolean         visible)
+                                       gboolean         visible,
+                                       guint            mode)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
@@ -1319,6 +1331,7 @@ bus_input_context_update_preedit_text (BusInputContext *context,
     context->preedit_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
     context->preedit_cursor_pos = cursor_pos;
     context->preedit_visible = visible;
+    context->preedit_mode = mode;
 
     if (PREEDIT_CONDITION) {
         bus_input_context_send_signal (context,
@@ -1685,13 +1698,7 @@ _engine_commit_text_cb (BusEngineProxy  *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
-    bus_input_context_send_signal (context,
-                                   "CommitText",
-                                   IBUS_TYPE_TEXT, &text,
-                                   G_TYPE_INVALID);
+    bus_input_context_commit_text (context, text);
 }
 
 static void
@@ -1743,6 +1750,7 @@ _engine_update_preedit_text_cb (BusEngineProxy  *engine,
                                 IBusText        *text,
                                 guint            cursor_pos,
                                 gboolean         visible,
+                                guint            mode,
                                 BusInputContext *context)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
@@ -1754,7 +1762,7 @@ _engine_update_preedit_text_cb (BusEngineProxy  *engine,
     if (!context->enabled)
         return;
 
-    bus_input_context_update_preedit_text (context, text, cursor_pos, visible);
+    bus_input_context_update_preedit_text (context, text, cursor_pos, visible, mode);
 }
 
 static void
@@ -1888,7 +1896,10 @@ bus_input_context_disable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    commit_preedit_text_with_focus_mode (context);
+    bus_input_context_clear_preedit_text (context);
+    bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
+    bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
+    bus_input_context_register_properties (context, props_empty);
 
     if (context->engine) {
         bus_engine_proxy_focus_out (context->engine);
@@ -1944,12 +1955,10 @@ bus_input_context_unset_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    commit_preedit_text_with_focus_mode (context);
-
-    bus_input_context_register_properties (context, props_empty);
-    bus_input_context_update_preedit_text (context, text_empty, 0, FALSE);
+    bus_input_context_clear_preedit_text (context);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
+    bus_input_context_register_properties (context, props_empty);
 
     if (context->engine) {
         gint i;

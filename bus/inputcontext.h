@@ -76,6 +76,7 @@ struct _BusInputContext {
     IBusText *preedit_text;
     guint     preedit_cursor_pos;
     gboolean  preedit_visible;
+    guint     preedit_mode;
 
     /* auxiliary text */
     IBusText *auxiliary_text;
