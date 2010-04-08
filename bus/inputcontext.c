@@ -1208,14 +1208,10 @@ bus_input_context_focus_in (BusInputContext *context)
     }
 }
 
-void
-bus_input_context_focus_out (BusInputContext *context)
+static void
+commit_preedit_text_with_focus_mode (BusInputContext *context)
 {
     guint mode = IBUS_ENGINE_PREEDIT_CLEAR;
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    if (!context->has_focus)
-        return;
 
     if (context->engine) {
         mode = bus_engine_proxy_get_preedit_focus_mode (context->engine);
@@ -1230,6 +1226,17 @@ bus_input_context_focus_out (BusInputContext *context)
         mode = IBUS_ENGINE_PREEDIT_CLEAR;
         bus_engine_proxy_set_preedit_focus_mode (context->engine, mode);
     }
+}
+
+void
+bus_input_context_focus_out (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (!context->has_focus)
+        return;
+
+    commit_preedit_text_with_focus_mode (context);
 
     if (context->engine && context->enabled) {
         bus_engine_proxy_focus_out (context->engine);
@@ -1881,6 +1888,8 @@ bus_input_context_disable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
+    commit_preedit_text_with_focus_mode (context);
+
     if (context->engine) {
         bus_engine_proxy_focus_out (context->engine);
         bus_engine_proxy_disable (context->engine);
@@ -1933,22 +1942,9 @@ const static struct {
 static void
 bus_input_context_unset_engine (BusInputContext *context)
 {
-    guint mode = IBUS_ENGINE_PREEDIT_CLEAR;
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context->engine) {
-        mode = bus_engine_proxy_get_preedit_focus_mode (context->engine);
-    }
-    if (mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-        if (context->engine && context->enabled) {
-            bus_input_context_send_signal (context,
-                                           "CommitText",
-                                           IBUS_TYPE_TEXT, &context->preedit_text,
-                                           G_TYPE_INVALID);
-        }
-        mode = IBUS_ENGINE_PREEDIT_CLEAR;
-        bus_engine_proxy_set_preedit_focus_mode (context->engine, mode);
-    }
+    commit_preedit_text_with_focus_mode (context);
 
     bus_input_context_register_properties (context, props_empty);
     bus_input_context_update_preedit_text (context, text_empty, 0, FALSE);
