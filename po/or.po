@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2009-11-14 15:22+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <oriya-it@googlegroups.com>\n"
@@ -79,20 +79,21 @@ msgstr "ପୁନଃଚାଳନ"
 msgid "Turn off input method"
 msgstr "ନିବେଶ ପ୍ରଣୀଳୀକୁ ବନ୍ଦ କରନ୍ତୁ"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr "କୌଣସି ନିବେଶ ୱିଣ୍ଡୋ ନାହିଁ"
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ହେଉଛି Linux/Unix ପାଇଁ ଗୋଟିଏ ବୁଦ୍ଧିମାନ ନିବେଶ ପରିପଥ।"
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
-msgid "About the Input Method"
+#: ../ui/gtk/languagebar.py:107
+#, fuzzy
+msgid "About the input method"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
 #: ../ui/gtk/languagebar.py:215
@@ -103,6 +104,10 @@ msgstr "ନିବେଶ ପ୍ରଣୀଳିକୁ ବଦଳାନ୍ତୁ"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "ବିବରଣୀ"
+
+#: ../ui/gtk/languagebar.py:362
+msgid "About the Input Method"
+msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -187,7 +192,7 @@ msgid "Select an input method"
 msgstr "ଗୋଟିଏ ନିବେଶ ପ୍ରଣୀଳୀ ବାଛନ୍ତୁ"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 msgid "Input Method"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀ"
 
@@ -195,7 +200,7 @@ msgstr "ନିବେଶ ପ୍ରଣାଳୀ"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 
@@ -229,30 +234,32 @@ msgid "Next engine shortcut keys"
 msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ। 0 = ଭୂ-ସମାନ୍ତର, 1 = ଭୂ-ଲମ୍ବ"
-
-#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "ibus ଆରମ୍ଭ ସମୟରେ ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ। 0 = ଭୂ-ସମାନ୍ତର, 1 = ଭୂ-ଲମ୍ବ"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "ଯନ୍ତ୍ରକୁ ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "ibus ଆରମ୍ଭ ସମୟରେ ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "ପୂର୍ବ ଯନ୍ତ୍ରର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr "ତନ୍ତ୍ର ଟ୍ରେରେ ଚିତ୍ରସଂକେତଗୁଡ଼ିକୁ ଦର୍ଶାନ୍ତୁ"
 
@@ -396,57 +403,57 @@ msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "ସକ୍ରିୟ ଅଥବା ନିଷ୍କ୍ରିୟ:"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "ସାଧାରଣ"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Horizontal"
 msgstr "ଭୂ-ସମାନ୍ତରାଳ"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 #, fuzzy
 msgid "Language panel position:"
 msgstr "ଭାଷା ତାଲିକା ଦର୍ଶାନ୍ତୁ:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତିଗୁଡ଼ିକରେ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ ତଳକୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତି ତାଲିକାରେ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ ଉପରକୁ ଘୁଞ୍ଚାନ୍ତୁ"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr "କଦାପି ନୁହଁ"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "ସକ୍ରିୟ ନିବେଶ ପଦ୍ଧତିରୁ ବଚ୍ଛିତ ନିବେଶ ପ୍ରଣୀଳୀକୁ କାଢ଼ିଦିଅନ୍ତୁ"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ଭାଷା ସୂଚକକୁ ଦର୍ଶାଇବା ଅଥବା ଲୁଚାଇବା ପାଇଁ ibus ର ଆଚରଣକୁ ସେଟକରନ୍ତୁ"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ଅବଲୋକନ ସାରଣୀରେ ବ୍ୟକ୍ତିମାନଙ୍କର ଅନୁସ୍ଥାପନ ସେଟକରନ୍ତୁ"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr ""
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"

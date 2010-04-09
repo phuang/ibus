@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -70,23 +70,23 @@ msgstr "再起動"
 msgid "Turn off input method"
 msgstr "インプットメソッドをオフにする"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr "入力ウィンドウがありません"
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
 "IWAI, Masaharu <iwai@alib.jp>\n"
 "日向原 龍一 <hyu_gabaru@yahoo.co.jp>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
-msgid "About the Input Method"
+#: ../ui/gtk/languagebar.py:107
+msgid "About the input method"
 msgstr "インプットメソッドについて"
 
 #: ../ui/gtk/languagebar.py:215
@@ -97,6 +97,10 @@ msgstr "インプットメソッドがありません"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "情報"
+
+#: ../ui/gtk/languagebar.py:362
+msgid "About the Input Method"
+msgstr "インプットメソッドについて"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -181,7 +185,7 @@ msgid "Select an input method"
 msgstr "インプットメソッドの選択"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 msgid "Input Method"
 msgstr "インプットメソッド"
 
@@ -189,7 +193,7 @@ msgstr "インプットメソッド"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus の設定"
 
@@ -222,30 +226,30 @@ msgid "Next engine shortcut keys"
 msgstr "次のエンジンへのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "検索テーブルの方位。0 = 横、1 = 縦"
-
-#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "検索テーブルの方位"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "ibus の開始中にエンジンをプリロード"
+#: ../data/ibus.schemas.in.h:9
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "エンジンのプリロード"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Preload engines during ibus starts up"
+msgstr "ibus の開始中にエンジンをプリロード"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "前のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr "すべてのアプリケーション間で同じインプットメソッドを共有する"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr "システムトレイにアイコンを表示する"
 
@@ -390,58 +394,59 @@ msgstr ""
 "込みます"
 
 #: ../setup/setup.ui.h:26
+#, fuzzy
+msgid "Embedded in menu"
+msgstr "ステータスアイコンのメニューに表示する"
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "切り替え"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "一般"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Horizontal"
 msgstr "横"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Language panel position:"
 msgstr "言語パネルの位置"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr "表示しない"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "ひとつ前のインプットメソッド:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "選択したインプットメソッドを有効なインプットメソッドから削除します"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "言語バーをどのように表示するもしくは隠すかの ibus の動作を設定します"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ルックアップテーブルの中で候補ウィンドウの向きを設定します"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr "ステータスアイコンのメニューに表示する"
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
@@ -481,10 +486,6 @@ msgstr "縦"
 #: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "アクティブであるとき"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "エンジンのプリロード"
 
 #, fuzzy
 #~ msgid "Langauge panel position"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2009-04-01 19:58+0100\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
@@ -70,21 +70,21 @@ msgstr "Pokreni ponovo"
 msgid "Turn off input method"
 msgstr "Nema metode unosa"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus je inteligentna magistrala unosa za Linux/Unix."
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "Serbian <fedora-trans-sr@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:107
 #, fuzzy
-msgid "About the Input Method"
+msgid "About the input method"
 msgstr "Metode unosa"
 
 #: ../ui/gtk/languagebar.py:215
@@ -96,6 +96,11 @@ msgstr "Nema metode unosa"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "O programu"
+
+#: ../ui/gtk/languagebar.py:362
+#, fuzzy
+msgid "About the Input Method"
+msgstr "Metode unosa"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -182,7 +187,7 @@ msgid "Select an input method"
 msgstr "Izaberite metodu unosa"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 #, fuzzy
 msgid "Input Method"
 msgstr "Metode unosa"
@@ -191,7 +196,7 @@ msgstr "Metode unosa"
 msgid "Kbd"
 msgstr ""
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus postavke"
 
@@ -228,33 +233,35 @@ msgid "Next engine shortcut keys"
 msgstr "Prečica sledećeg pogona"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "Orijentacija referentne tabele. 0 = vodoravno, 1 = uspravno"
-
-#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "Orijentacija referentne tabele"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "Unapred učitaj pogone tokom ibus pokretanja"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "Orijentacija referentne tabele. 0 = vodoravno, 1 = uspravno"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Preload engines"
 msgstr "Unapred učitaj pogone"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "Unapred učitaj pogone tokom ibus pokretanja"
 
 #: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "Prečica prethodnog pogona"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr ""
 
@@ -404,62 +411,62 @@ msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "Uključi ili isključi:"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "Opšte"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "Vodoravno\n"
 "Uspravno"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 #, fuzzy
 msgid "Language panel position:"
 msgstr "Prikaži jezički panel:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "Sledeća metoda unosa:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 #, fuzzy
 msgid "Previous input method:"
 msgstr "Prethodna metoda unosa:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 #, fuzzy
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Orijentacija referentne tabele"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr ""
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"

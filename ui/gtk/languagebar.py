@@ -104,7 +104,7 @@ class LanguageBar(gtk.Toolbar):
 
         self.__about_button = gtk.ToolButton(gtk.STOCK_ABOUT)
         self.__about_button.set_no_show_all(True)
-        self.__about_button.set_tooltip_text(_("About the Input Method"))
+        self.__about_button.set_tooltip_text(_("About the input method"))
         self.__about_button.connect("clicked", self.__about_button_clicked_cb)
         self.insert(self.__about_button, -1)
 

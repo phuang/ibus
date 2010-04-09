@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2009-12-08 15:31+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -75,20 +75,21 @@ msgstr "పునఃప్రారంభము"
 msgid "Turn off input method"
 msgstr "ఇన్పుట్ పద్దతి ఆఫ్ చేయుము"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr "ఇన్పుట్ విండో లేదు"
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus అనునది Linux/Unix కొరకు తెలివైన ఇన్పుట్ బస్."
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
-msgid "About the Input Method"
+#: ../ui/gtk/languagebar.py:107
+#, fuzzy
+msgid "About the input method"
 msgstr "ఇన్పుట్ పద్దతి గురించి"
 
 #: ../ui/gtk/languagebar.py:215
@@ -99,6 +100,10 @@ msgstr "ఇన్పుట్ పద్దతి మార్చుము"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "గురించి"
+
+#: ../ui/gtk/languagebar.py:362
+msgid "About the Input Method"
+msgstr "ఇన్పుట్ పద్దతి గురించి"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -183,7 +188,7 @@ msgid "Select an input method"
 msgstr "ఇన్పుట్ పద్దతిని యెంపికచేయుము"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 msgid "Input Method"
 msgstr "ఇన్పుట్ పద్దతి"
 
@@ -191,7 +196,7 @@ msgstr "ఇన్పుట్ పద్దతి"
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus అభీష్టములు"
 
@@ -224,30 +229,32 @@ msgid "Next engine shortcut keys"
 msgstr "తరువాతి యింజన్‌కు లఘువులు"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "లుకప్ పట్టిక సర్దుబాటు. 0 = చదరముగా, 1 = నిలువుగా"
-
-#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "లుకప్ పట్టిక సర్దుబాటు"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "ibus ప్రారంభమునందు ముందుగా లోడైన యింజన్లు"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "లుకప్ పట్టిక సర్దుబాటు. 0 = చదరముగా, 1 = నిలువుగా"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "ముందుగా లోడైన యింజన్లు"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "ibus ప్రారంభమునందు ముందుగా లోడైన యింజన్లు"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "మునుపటి యింజన్ లఘువులు"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr "సిస్టమ్ ట్రే నందు ప్రతిమను చూపుము"
 
@@ -393,56 +400,56 @@ msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "చేతనముచేయి లేదా అచేతనముచేయి:"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "సాదారణ"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Horizontal"
 msgstr "అడ్డముగా"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Language panel position:"
 msgstr "భాషా ప్యానల్ స్థానము:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని క్రిందకి కదుపుము"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని పైకి కదుపుము"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr "ఎప్పటికివద్దు"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "తరువాతి ఇన్పుట్ పద్దతి:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "మునుపటి ఇన్పుట్ పద్దతి:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "చేతనమైన యిన్పుట్ పద్దతులలో యెంపికైన యిన్పుట్ పద్దతిని తీసివేయుము"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "భాషా పట్టీని యెలా చూపాలి మరియు దాయాలి అనేదానికి ibus ప్రవర్తనను అమర్చుము"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 msgid "Set the orientation of candidates in lookup table"
 msgstr "లుకప్ పట్టికనందు కాండిడేట్ల సర్దుబాటును అమర్చుము"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr ""
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"

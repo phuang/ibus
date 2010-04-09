@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0.20090331\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2009-04-07 06:38+1000\n"
 "Last-Translator: Caius 'kaio' Chance <k@kaio.me>\n"
 "Language-Team: Caius 'kaio' Chance <k@kaio.me>\n"
@@ -68,21 +68,21 @@ msgstr "重新啟動"
 msgid "Turn off input method"
 msgstr "無輸入法"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr ""
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus 為 Linux/Unix上的智能輸入法框架。"
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "Caius 'kaio' Chance <k@kaio.me>"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:107
 #, fuzzy
-msgid "About the Input Method"
+msgid "About the input method"
 msgstr "輸入法"
 
 #: ../ui/gtk/languagebar.py:215
@@ -93,6 +93,11 @@ msgstr "切換輸入法"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "關於"
+
+#: ../ui/gtk/languagebar.py:362
+#, fuzzy
+msgid "About the Input Method"
+msgstr "輸入法"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -176,7 +181,7 @@ msgid "Select an input method"
 msgstr "選擇輸入法"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 #, fuzzy
 msgid "Input Method"
 msgstr "輸入法"
@@ -185,7 +190,7 @@ msgstr "輸入法"
 msgid "Kbd"
 msgstr ""
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus設定"
 
@@ -222,33 +227,35 @@ msgid "Next engine shortcut keys"
 msgstr "下一個引擎捷徑鍵"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "候選字詞表排列方向。0 = 水平，1 = 垂直"
-
-#: ../data/ibus.schemas.in.h:9
 #, fuzzy
 msgid "Orientation of lookup table"
 msgstr "候選字詞表排列方向"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "ibus啟動時預先載入引擎"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "候選字詞表排列方向。0 = 水平，1 = 垂直"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 #, fuzzy
 msgid "Preload engines"
 msgstr "預載引擎"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "ibus啟動時預先載入引擎"
 
 #: ../data/ibus.schemas.in.h:12
 #, fuzzy
 msgid "Prev engine shortcut keys"
 msgstr "切換到上一個引擎捷徑鍵"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr ""
 
@@ -395,61 +402,61 @@ msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "開關"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "通用"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "水平\n"
 "垂直"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 #, fuzzy
 msgid "Language panel position:"
 msgstr "顯示語言面板:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr ""
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "下一個輸入法:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "上一個輸入法:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 #, fuzzy
 msgid "Set the orientation of candidates in lookup table"
 msgstr "候選字詞表排列方向"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr ""
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"

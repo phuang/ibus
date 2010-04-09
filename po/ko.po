@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2010-03-31 14:16+1000\n"
 "Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -70,20 +70,21 @@ msgstr "재시작"
 msgid "Turn off input method"
 msgstr "입력 방식 해제"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr "입력 창이 없음  "
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus는 Linux/Unix를 위한 지능형 입력 버스입니다. "
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "김은주(eukim@redhat.com)"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
-msgid "About the Input Method"
+#: ../ui/gtk/languagebar.py:107
+#, fuzzy
+msgid "About the input method"
 msgstr "입력 방식 정보"
 
 #: ../ui/gtk/languagebar.py:215
@@ -94,6 +95,10 @@ msgstr "입력 방식 전환  "
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "정보  "
+
+#: ../ui/gtk/languagebar.py:362
+msgid "About the Input Method"
+msgstr "입력 방식 정보"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -178,7 +183,7 @@ msgid "Select an input method"
 msgstr "입력 방식을 선택합니다"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 msgid "Input Method"
 msgstr "입력 방식  "
 
@@ -186,7 +191,7 @@ msgstr "입력 방식  "
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "IBus 환경 설정  "
 
@@ -219,30 +224,32 @@ msgid "Next engine shortcut keys"
 msgstr "다음 엔진 단축키"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "검색 테이블의 방향. 0 = 가로, 1 = 세로  "
-
-#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "검색 테이블의 방향  "
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "ibus 시작 시 엔진 미리로드  "
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "검색 테이블의 방향. 0 = 가로, 1 = 세로  "
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "엔진 미리로드"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "ibus 시작 시 엔진 미리로드  "
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "이전 엔진 단축키"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr "모든 어플리케이션에서 동일한 입력 방식 공유"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr "시스템 트레이에 아이콘 보여주기"
 
@@ -385,56 +392,56 @@ msgid "Embed the preedit text of input method in the application window"
 msgstr "입력 방식의 편집전 텍스트를 어플레케이션 창에 포함시킵니다"
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "활성화 또는 비활성화:  "
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "일반  "
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Horizontal"
 msgstr "가로"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Language panel position:"
 msgstr "언어 패널 위치:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 아래로 이동합니다"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 위로 이동합니다"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr "하지않음"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "다음 입력 방식:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "이전 입력 방식:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 제거"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ibus가 입력 도구 모음을 표시하거나 숨기는 방법 설정"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 msgid "Set the orientation of candidates in lookup table"
 msgstr "검색 테이블에서 후보 창의 방향 설정  "
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr "상태 아이콘 메뉴에서 보여주기"
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
@@ -471,3 +478,6 @@ msgstr "세로"
 #: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "활성화 되었을 때"
+
+#~ msgid "Show in Status Icon menu"
+#~ msgstr "상태 아이콘 메뉴에서 보여주기"

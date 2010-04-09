@@ -9,7 +9,7 @@
       <list_type>string</list_type>
       <locale name="C">
         <short>Preload engines</short>
-	    <long>Preload Engines during ibus starts up</long>
+	    <long>Preload engines during ibus starts up</long>
       </locale>
     </schema>
     <schema>
@@ -100,7 +100,7 @@
       <default>1</default>
       <locale name="C">
         <short>Orientation of lookup table</short>
-	    <long>Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical</long>
+	    <long>Orientation of lookup table. 0 = Horizontal, 1 = Vertical</long>
       </locale>
     </schema>
     <schema>

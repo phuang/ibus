@@ -32,7 +32,7 @@
         <col id="0" translatable="yes">Always</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Show in Status Icon menu</col>
+        <col id="0" translatable="yes">Embedded in menu</col>
       </row>
     </data>
   </object>

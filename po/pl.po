@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-31 12:25+0800\n"
+"POT-Creation-Date: 2010-04-09 11:19+0800\n"
 "PO-Revision-Date: 2010-02-28 03:12+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
@@ -65,20 +65,21 @@ msgstr "Uruchom ponownie"
 msgid "Turn off input method"
 msgstr "Wyłącz metodę wprowadzania"
 
-#: ../ui/gtk/panel.py:455
+#: ../ui/gtk/panel.py:457
 msgid "No input window"
 msgstr "Brak okna wprowadzania"
 
-#: ../ui/gtk/panel.py:486
+#: ../ui/gtk/panel.py:488
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "iBus jest inteligentną magistralą wprowadzania dla systemu Linux/UNIX."
 
-#: ../ui/gtk/panel.py:490
+#: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
-#: ../ui/gtk/languagebar.py:107 ../ui/gtk/languagebar.py:362
-msgid "About the Input Method"
+#: ../ui/gtk/languagebar.py:107
+#, fuzzy
+msgid "About the input method"
 msgstr "O metodzie wprowadzania"
 
 #: ../ui/gtk/languagebar.py:215
@@ -89,6 +90,10 @@ msgstr "Przełącz metodę wprowadzania"
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "O programie"
+
+#: ../ui/gtk/languagebar.py:362
+msgid "About the Input Method"
+msgstr "O metodzie wprowadzania"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -173,7 +178,7 @@ msgid "Select an input method"
 msgstr "Wybór metodę wprowadzania"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:30
+#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
 msgid "Input Method"
 msgstr "Metoda wprowadzania"
 
@@ -181,7 +186,7 @@ msgstr "Metoda wprowadzania"
 msgid "Kbd"
 msgstr "KBD"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:29
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
 msgstr "Preferencje programu iBus"
 
@@ -214,30 +219,32 @@ msgid "Next engine shortcut keys"
 msgstr "Klawisze skrótów następnego mechanizmu"
 
 #: ../data/ibus.schemas.in.h:8
-msgid "Orientation of Lookup Table. 0 = Horizontal, 1 = Vertical"
-msgstr "Orientacja tablicy wyszukiwania. 0 = pozioma, 1 = pionowa"
-
-#: ../data/ibus.schemas.in.h:9
 msgid "Orientation of lookup table"
 msgstr "Orientacja tablicy wyszukiwania"
 
-#: ../data/ibus.schemas.in.h:10
-msgid "Preload Engines during ibus starts up"
-msgstr "Wczytanie mechanizmów podczas uruchamiania programu iBus"
+#: ../data/ibus.schemas.in.h:9
+#, fuzzy
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "Orientacja tablicy wyszukiwania. 0 = pozioma, 1 = pionowa"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "Wcześniejsze wczytanie mechanizmów"
+
+#: ../data/ibus.schemas.in.h:11
+#, fuzzy
+msgid "Preload engines during ibus starts up"
+msgstr "Wczytanie mechanizmów podczas uruchamiania programu iBus"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
 msgstr "Klawisze skrótów poprzedniego mechanizmu"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
 msgstr "Używanie tej samej metody wprowadzania we wszystkich aplikacjach"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
 msgstr "Wyświetlanie ikony w obszarze powiadamiania"
 
@@ -384,62 +391,62 @@ msgstr ""
 "Osadzanie wcześniej wprowadzonego tekstu metody wejścia w oknie aplikacji"
 
 #: ../setup/setup.ui.h:26
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
 msgstr "Włączenie lub wyłączenie:"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "General"
 msgstr "Ogólne"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
 msgid "Horizontal"
 msgstr "Poziomo"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:32
 msgid "Language panel position:"
 msgstr "Pozycja panelu języków:"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "Przeniesienie w dół zaznaczonej metody wprowadzania we włączonych metodach "
 "wprowadzania"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "Przeniesienie w górę zaznaczonej metody wprowadzania we włączonych metodach "
 "wprowadzania"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:35
 msgid "Never"
 msgstr "Nigdy"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "Następna metoda wprowadzania:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:37
 msgid "Previous input method:"
 msgstr "Poprzednia metoda wprowadzania:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "Usunięcie zaznaczonej metody wprowadzania we włączonych metodach wprowadzania"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:39
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 "Ustawienie zachowania programu iBus wyświetlania lub ukrywania panela języków"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:40
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Ustawienie orientacji kandydatów w tablicy wyszukiwania"
-
-#: ../setup/setup.ui.h:42
-msgid "Show in Status Icon menu"
-msgstr "Wyświetlanie w menu ikony w obszarze powiadamiania"
 
 #: ../setup/setup.ui.h:43
 msgid "Show information of the selected input method"
@@ -479,3 +486,6 @@ msgstr "Pionowo"
 #: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "W czasie aktywności"
+
+#~ msgid "Show in Status Icon menu"
+#~ msgstr "Wyświetlanie w menu ikony w obszarze powiadamiania"
