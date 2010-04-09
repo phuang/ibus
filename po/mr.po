@@ -1,17 +1,17 @@
-# translation of ibus.master.po to Marathi
+# translation of mr.po to Marathi
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2009.
-# Sandeep Shedmake <sshedmak@redhat.com>, 2009.
+# Sandeep Shedmake <sshedmak@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master\n"
+"Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 11:19+0800\n"
-"PO-Revision-Date: 2009-12-09 17:28+0530\n"
+"POT-Creation-Date: 2010-04-09 18:43+0800\n"
+"PO-Revision-Date: 2010-04-09 14:48+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
-"Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
+"Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,16 +51,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"काहिक इंपुट पद्धत प्रतिष्ठापीत, काढून टाकले किंवा सुधारीत केले आहे. कृपया ibus इंपुट "
+"प्लॅटफॉर्म पुनः सुरू करा."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "पुन्हा चालू करा"
+msgstr "आत्ता पुनः सुरू करा"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "इतर"
+msgstr "पुढे"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -82,10 +82,9 @@ msgstr "Linux/Unix करीता IBus हे एक हुशार इनप�
 msgid "translator-credits"
 msgstr ""
 "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
-"com>, 2009."
+"com>, 2009, 2010."
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "इंपुट पद्धत विषयी"
 
@@ -154,7 +153,7 @@ msgstr ""
 #: ../setup/main.py:298
 #, python-format
 msgid "Select keyboard shortcut for %s"
-msgstr "%s करीता कळफलक शार्टकट निवडा"
+msgstr "%s करीता कळफलक शार्टकट नीवडा"
 
 #: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
@@ -182,7 +181,7 @@ msgstr "कृपया कि (किंवा कि जोडणी) दा�
 
 #: ../setup/enginecombobox.py:120
 msgid "Select an input method"
-msgstr "इंपुट पद्धत निवडा"
+msgstr "इंपुट पद्धत नीवडा"
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
@@ -211,11 +210,11 @@ msgstr "भाषा पटल करीता स्वपसंत फॉन�
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "प्रिएडीट मजकूर एम्बेड करा"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "ऍप्लिकेशन पटलात प्रिएडीट मजकूर एम्बेड करा"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -223,14 +222,13 @@ msgstr "भाषा पटलचे स्थान"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Next engine shortcut keys"
-msgstr "पुढील इंजिनचे शार्टकट किज्"
+msgstr "पुढील इंजीनचे शार्टकट किज्"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Orientation of lookup table"
 msgstr "लुकअप टेबलचे निर्देशन"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "लुकअप टेबलचे निर्देशन. 0 = Horizontal, 1 = Vertical"
 
@@ -239,9 +237,8 @@ msgid "Preload engines"
 msgstr "प्रीलोड इंजीन्स्"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "ibus सुरू होतेवेळी इंजिन पूर्व दाखल करा"
+msgstr "ibus सुरू होतेवेळी इंजीन आधिपासूनच लोड करा"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -249,7 +246,7 @@ msgstr "मागील इंजीनचे शॉर्टकट किज्
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "सर्व ऍप्लिकेशन्स् मध्ये एकसारखेच इंपुट पद्धत शेअर करा"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
@@ -298,9 +295,8 @@ msgid "Use custom font name for language panel"
 msgstr "भाषा पटल करीत स्वपसंत फॉन्ट नाव वापरा"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "इंपुट पद्धत निवडा"
+msgstr "ग्लोबल इंपुट पद्धत नीवडा"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
@@ -320,7 +316,7 @@ msgstr "<b>फॉन्ट व शैली</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgstr "<b>ग्लोबल इंपुट पद्धत सेटिंग्स्</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -388,15 +384,15 @@ msgstr "मनपसंत"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "ऍप्लिकेशन पटलात प्रिएडीट मजूकर एम्बेड करा"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "ऍप्लिकेशन पटलात इंपुट पद्धतीचे प्रिएडीट मजकूर एम्बेड करा"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "मेन्यू मध्ये एम्बेड केले"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -481,7 +477,3 @@ msgstr "उभे"
 #: ../setup/setup.ui.h:57
 msgid "When active"
 msgstr "सक्रीय असल्यावर"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "प्रीलोड इंजीन्स्"
