@@ -151,7 +151,6 @@ bus_registry_load (BusRegistry *registry)
     g_assert (BUS_IS_REGISTRY (registry));
 
     gchar *dirname;
-    gchar *homedir;
     IBusObservedPath *path;
 
     dirname = g_build_filename (PKGDATADIR, "component", NULL);

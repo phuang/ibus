@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include "ibusbus.h"
 #include "ibusinternal.h"
