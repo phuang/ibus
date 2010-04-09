@@ -132,22 +132,9 @@ if test x"$enable_gconf" != x"no"; then
     fi
 
     AM_GCONF_SOURCE_2
-
-# GCONF_SERVERDIR=`$PKG_CONFIG --variable=gconf_serverdir gconf-2.0`
-# old_path=$PATH
-# if test x"$GCONF_SERVERDIR" != x; then
-#     PATH=$GCONF_SERVERDIR:$PATH
-# fi
-# 
-# AC_PATH_PROG(GCONF_SANITY_CHECK, gconf-sanity-check-2, no)
-# if test x"$GCONF_SANITY_CHECK" = xno; then
-#     AC_MSG_ERROR([gconf-sanity-check-2 executable not found in your path - should be installed with GConf])
-# fi
-# 
-# AC_SUBST(GCONF_SANITY_CHECK)
-# PATH=$old_path
+    # GCONF_SCHEMAS_INSTALL should be set in macro AM_GCONF_SOURCE_2
 else
-AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [0])
+    AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
 fi
 
 # Check for x11
