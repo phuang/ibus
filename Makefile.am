@@ -107,4 +107,7 @@ clean-rpm:
 clean-local: clean-rpm
 
 git-tag:
-	git tag @PACKAGE_VERSION@
+	git tag -s @PACKAGE_VERSION@
+
+git-clean-tree:
+	git clean -d -f -x	
