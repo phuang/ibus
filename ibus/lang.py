@@ -60,7 +60,9 @@ def __char_data(data):
     pass
 
 def __load_lang():
-    iso_639_xml = "/usr/share/xml/iso-codes/iso_639.xml"
+    import os
+    import _config
+    iso_639_xml = os.path.join(_config.ISOCODES_PREFIX, "share/xml/iso-codes/iso_639.xml")
     p = xml.parsers.expat.ParserCreate()
     p.StartElementHandler = __start_element
     p.EndElementHandler = __end_element

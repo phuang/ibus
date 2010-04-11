@@ -219,24 +219,11 @@ if test x"$enable_python" != x"no"; then
 fi
 
 # check iso-codes
-AC_ARG_ENABLE(iso-codes-check,
-    AS_HELP_STRING([--disable-iso-codes-check],
-        [Do not check iso-codes]),
-    [enable_iso_codes_check=$enableval],
-    [enable_iso_codes_check=yes],
-)
-PKG_CHECK_MODULES(ISOCODES,
-    iso-codes,
-    [IBUS_HAS_ISOCODES=yes],
-    [IBUS_HAS_ISOCODES=no],
-)
-if test x"$IBUS_HAS_ISOCODES" != x"yes"; then
-    if test x"$enable_iso_codes_check" != x"no"; then
-        AC_MSG_ERROR([can not find iso-codes. Please install iso-codes or configure with --disable-iso-codes-check])
-    else
-        AC_MSG_WARN([can not find iso-codes. It is required.])
-    fi
-fi
+PKG_CHECK_MODULES(ISOCODES, [
+    iso-codes
+])
+ISOCODES_PREFIX=`pkg-config iso-codes --variable=prefix`
+AC_SUBST(ISOCODES_PREFIX)
 
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
