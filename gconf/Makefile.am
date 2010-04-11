@@ -22,29 +22,11 @@
 
 libibus = $(top_builddir)/src/libibus.la
 
-INCLUDES = \
-	-I$(top_srcdir)/src \
-	-I$(top_builddir)/src \
-	$(NULL)
-
-AM_CFLAGS = \
-	@GLIB2_CFLAGS@ \
-	@GCONF_CFLAGS@ \
-	@DBUS_CFLAGS@ \
-	-DG_LOG_DOMAIN=\"IBUS\" \
-	$(INCLUDES) \
-	$(NULL)
-AM_LDADD = \
-	@GOBJECT2_LIBS@ \
-	@GLIB2_LIBS@ \
-	@GCONF_LIBS@ \
-	@DBUS_LIBS@ \
-	$(libibus) \
-	$(NULL)
-
+if ENABLE_GCONF
 libexec_PROGRAMS = \
 	ibus-gconf \
 	$(NULL)
+endif
 
 ibus_gconf_SOURCES = \
 	main.c \
@@ -52,15 +34,30 @@ ibus_gconf_SOURCES = \
 	config.h \
 	$(NULL)
 ibus_gconf_CFLAGS = \
-	$(AM_CFLAGS) \
+	@GLIB2_CFLAGS@ \
+	@GCONF_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
 ibus_gconf_LDADD = \
-	$(AM_LDADD) \
+	@GOBJECT2_LIBS@ \
+	@GLIB2_LIBS@ \
+	@GCONF_LIBS@ \
+	@DBUS_LIBS@ \
+	$(libibus) \
+	$(NULL)
+ibus_gconf_DEPENDENCIES = \
+	$(libibus) \
 	$(NULL)
 
+if ENABLE_GCONF
 component_DATA = \
 	gconf.xml \
 	$(NULL)
+endif
+
 componentdir = $(pkgdatadir)/component
 
 CLEANFILES = \

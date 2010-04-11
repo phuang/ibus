@@ -23,6 +23,7 @@ SUBDIRS = \
 	interface \
 	$(NULL)
 
+if ENABLE_PYTHON
 ibus_PYTHON = \
 	ascii.py \
 	application.py \
@@ -57,6 +58,7 @@ nodist_ibus_PYTHON = \
 	$(NULL)
 
 ibusdir = @pkgpythondir@
+endif
 
 EXTRA_DIST = \
 	_config.py.in \

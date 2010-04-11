@@ -259,28 +259,18 @@ docs/Makefile
 docs/reference/Makefile
 docs/reference/ibus/Makefile
 m4/Makefile
+ibus/_config.py
+ibus/Makefile
+ibus/interface/Makefile
+ui/Makefile
+ui/gtk/Makefile
+ui/gtk/ibus-ui-gtk
+ui/gtk/gtkpanel.xml.in
+setup/Makefile
+setup/ibus-setup
+gconf/Makefile
+gconf/gconf.xml.in
 ])
-
-if test x"$enable_python" != x"no"; then
-    AC_CONFIG_FILES([
-    ibus/_config.py
-    ibus/Makefile
-    ibus/interface/Makefile
-    ui/Makefile
-    ui/gtk/Makefile
-    ui/gtk/ibus-ui-gtk
-    ui/gtk/gtkpanel.xml.in
-    setup/Makefile
-    setup/ibus-setup
-    ])
-fi
-
-if test x"$enable_gconf" != x"no"; then
-    AC_CONFIG_FILES([
-    gconf/Makefile
-    gconf/gconf.xml.in
-    ])
-fi
 
 AC_OUTPUT
 AC_MSG_RESULT([

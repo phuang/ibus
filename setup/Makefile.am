@@ -20,6 +20,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+if ENABLE_PYTHON
 ibussetup_PYTHON = \
 	main.py \
 	icon.py \
@@ -36,10 +37,11 @@ ibussetup_DATA = \
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup
 
-desktopdir = $(datadir)/applications
 desktop_in_files = ibus-setup.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+desktopdir = $(datadir)/applications
 @INTLTOOL_DESKTOP_RULE@
+endif
 
 CLEANFILES = \
 	*.pyc \
@@ -49,7 +51,7 @@ CLEANFILES = \
 EXTRA_DIST = \
 	ibus-setup.in \
 	setup.ui \
-	$(desktop_in_files) \
+	ibus-setup.desktop.in \
 	$(NULL)
 
 DISTCLEANFILES = \

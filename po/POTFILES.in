@@ -14,6 +14,7 @@ bus/dbusimpl.c
 bus/engineproxy.c
 bus/inputcontext.c
 bus/panelproxy.c
+bus/registry.c
 ibus/bus.py
 ibus/__init__.py
 ibus/_config.py.in

@@ -29,21 +29,11 @@ SUBDIRS =       \
 	m4          \
 	po          \
 	docs        \
-	$(NULL)
-
-if ENABLE_PYTHON
-SUBDIRS +=      \
 	ibus        \
 	ui          \
 	setup       \
-	$(NULL)
-endif
-
-if ENABLE_GCONF
-SUBDIRS +=      \
 	gconf       \
 	$(NULL)
-endif
 
 ACLOCAL_AMFLAGS = -I m4
 
