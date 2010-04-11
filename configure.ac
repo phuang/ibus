@@ -161,7 +161,7 @@ if test x"$enable_python" != x"no"; then
     # check python
     AM_PATH_PYTHON([2.5])
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
-    if test x"$PYTHON_CONFIG" == x""; then
+    if test x"$PYTHON_CONFIG" = x""; then
         AC_PATH_PROG(PYTHON_CONFIG, python-config)
     fi
     if test x"$PYTHON_CONFIG" != x""; then
