@@ -33,8 +33,6 @@ int main()
 
 	IBusBus *bus;
 	GList *engines;
-	IBusInputContext *context;
-	IBusEngineDesc *engine_desc;
 	gchar *active_engine_name;
 
 	bus = ibus_bus_new ();
@@ -56,21 +54,25 @@ int main()
 
 	/* Test ibusinputcontext.c */
 #if 0
-	context = ibus_bus_create_input_context (bus, "test");
-	ibus_input_context_set_capabilities (context, 0);
-	ibus_input_context_disable (context);
-	g_assert (ibus_input_context_is_enabled (context) == FALSE);
-	ibus_input_context_enable (context);
-	g_assert (ibus_input_context_is_enabled (context) == TRUE);
-	ibus_input_context_set_engine (context, active_engine_name);
-	engine_desc = ibus_input_context_get_engine (context);
-	g_assert (engine_desc);
-	g_assert (!strcmp (active_engine_name, engine_desc->name));
-	g_debug ("Test ibusinputcontext.c: passed.");
+    {
+	    IBusInputContext *context;
+	    IBusEngineDesc *engine_desc;
+	    context = ibus_bus_create_input_context (bus, "test");
+	    ibus_input_context_set_capabilities (context, 0);
+	    ibus_input_context_disable (context);
+	    g_assert (ibus_input_context_is_enabled (context) == FALSE);
+	    ibus_input_context_enable (context);
+	    g_assert (ibus_input_context_is_enabled (context) == TRUE);
+	    ibus_input_context_set_engine (context, active_engine_name);
+	    engine_desc = ibus_input_context_get_engine (context);
+	    g_assert (engine_desc);
+	    g_assert (!strcmp (active_engine_name, engine_desc->name));
+	    g_debug ("Test ibusinputcontext.c: passed.");
 
-	g_free (active_engine_name);
-	g_object_unref (engine_desc);
-	g_object_unref (context);
+	    g_free (active_engine_name);
+	    g_object_unref (engine_desc);
+	    g_object_unref (context);
+    }
 #endif
 	g_object_unref (bus);
 
