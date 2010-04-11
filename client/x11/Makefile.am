@@ -44,6 +44,7 @@ ibus_x11_LDADD = \
 	$(NULL)
 
 ibus_x11_CFLAGS = \
+	@X11_CFLAGS@ \
 	@GTK2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
 	-I$(top_srcdir)/util/IMdkit \

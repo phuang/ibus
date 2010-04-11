@@ -47,3 +47,6 @@ noinst_HEADERS = \
 	Xtrans.h \
 	$(NULL)
 
+libIMdkit_la_CFLAGS = \
+	@X11_CFLAGS@ \
+	$(NULL)
