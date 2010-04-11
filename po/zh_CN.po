@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 18:43+0800\n"
+"POT-Creation-Date: 2010-04-12 06:41+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -24,7 +24,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus 输入法框架"
 
-#: ../ibus/_config.py.in:37
+#: ../ibus/_config.py.in:38
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -268,7 +268,7 @@ msgstr "语言栏位置"
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "切换下一个引擎快捷键"
+msgstr "切换下一个输入法快捷键"
 
 #: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
 msgid "The shortcut keys for turning input method on or off"
@@ -416,11 +416,11 @@ msgstr "从不"
 
 #: ../setup/setup.ui.h:36
 msgid "Next input method:"
-msgstr "下一入法:"
+msgstr "下一输入法:"
 
 #: ../setup/setup.ui.h:37
 msgid "Previous input method:"
-msgstr "前一入法:"
+msgstr "上一输入法:"
 
 #: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
@@ -452,7 +452,7 @@ msgstr "启动桌面时自动启动IBus"
 
 #: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "切换上一个引擎快捷键"
+msgstr "切换上一个输入法快捷键"
 
 #: ../setup/setup.ui.h:51
 msgid "Top left corner"
@@ -470,8 +470,3 @@ msgstr "竖直"
 msgid "When active"
 msgstr "活动时"
 
-#~ msgid "Yes"
-#~ msgstr "是"
-
-#~ msgid "No"
-#~ msgstr "否"
