@@ -120,11 +120,11 @@ msgstr "开关"
 
 #: ../setup/main.py:117
 msgid "next input method"
-msgstr "下一入法"
+msgstr "下一输入法"
 
 #: ../setup/main.py:128
 msgid "previous input method"
-msgstr "前一入法"
+msgstr "上一输入法"
 
 #: ../setup/main.py:268
 msgid "IBus daemon is not started. Do you want to start it now?"
