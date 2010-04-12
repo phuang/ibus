@@ -59,6 +59,14 @@ enum {
     PROP_0,
 };
 
+#define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
+
+struct _BusInputContextPrivate {
+    gchar *surrounding_text;
+    gint cursor_index;
+};
+
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
 
 static guint    context_signals[LAST_SIGNAL] = { 0 };
@@ -185,6 +193,8 @@ static void
 bus_input_context_class_init (BusInputContextClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+
+    g_type_class_add_private (klass, sizeof (BusInputContextPrivate));
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
@@ -461,6 +471,8 @@ bus_input_context_class_init (BusInputContextClass *klass)
 static void
 bus_input_context_init (BusInputContext *context)
 {
+    BusInputContextPrivate *priv;
+
     context->connection = NULL;
     context->client = NULL;
     context->engine = NULL;
@@ -491,6 +503,9 @@ bus_input_context_init (BusInputContext *context)
     context->lookup_table = lookup_table_empty;
     context->lookup_table_visible = FALSE;
 
+    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    priv->surrounding_text = NULL;
+    priv->cursor_index = 0;
 }
 
 static void
@@ -587,6 +602,14 @@ _ibus_introspect (BusInputContext   *context,
         "      <arg name=\"desc\" direction=\"out\" type=\"v\"/>\n"
         "    </method>\n"
         "    <method name=\"Destroy\"/>\n"
+        "    <method name=\"GetSurroundingText\">\n"
+        "      <arg name=\"text\" direction=\"out\" type=\"s\"/>\n"
+        "      <arg name=\"cursor_index\" direction=\"out\" type=\"i\"/>\n"
+        "    </method>\n"
+        "    <method name=\"SetSurroundingText\">\n"
+        "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
+        "      <arg name=\"cursor_index\" direction=\"in\" type=\"i\"/>\n"
+        "    </method>\n"
 
         /* signals */
         "    <signal name=\"CommitText\">\n"
@@ -632,6 +655,9 @@ _ibus_introspect (BusInputContext   *context,
         "    <signal name=\"UpdateProperty\">\n"
         "      <arg name=\"prop\" type=\"v\"/>\n"
         "    </signal>\n"
+
+        "    <signal name=\"DeleteSurroundingText\"/>\n"
+        "    <signal name=\"GetSurroundingText\"/>\n"
 
         "  </interface>\n"
         "</node>\n";
@@ -1085,6 +1111,89 @@ _ic_destroy (BusInputContext  *context,
     return NULL;
 }
 
+static IBusMessage *
+_ic_get_surrounding_text (BusInputContext  *context,
+                          IBusMessage      *message,
+                          BusConnection    *connection)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+    IBusError *error;
+
+    gchar *text = NULL;
+    gint cursor_index = 0;
+    BusInputContextPrivate *priv;
+    gboolean retval;
+
+    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
+        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+        g_free (priv->surrounding_text);
+        priv->surrounding_text = NULL;
+        
+        bus_input_context_send_signal (context, "GetSurroundingText",
+                                       G_TYPE_INVALID);
+
+        /* Should check timeout? */
+        while (!priv->surrounding_text) {
+            g_main_context_iteration (NULL, TRUE);
+        }
+
+        text = g_strdup (priv->surrounding_text ? priv->surrounding_text : "");
+        cursor_index = priv->cursor_index;
+    }
+
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+                              G_TYPE_STRING, &text,
+                              G_TYPE_INT, &cursor_index,
+                              G_TYPE_INVALID);
+    return reply;
+}
+
+static IBusMessage *
+_ic_set_surrounding_text (BusInputContext  *context,
+                          IBusMessage      *message,
+                          BusConnection    *connection)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+    IBusError *error;
+
+    gchar *text = NULL;
+    gint cursor_index = 0;
+    BusInputContextPrivate *priv;
+    gboolean retval;
+
+    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &text,
+                                        G_TYPE_INT, &cursor_index,
+                                        G_TYPE_INVALID);
+
+        if (!retval) {
+            reply = ibus_message_new_error (message,
+                                            error->name,
+                                            error->message);
+            ibus_error_free (error);
+            return reply;
+        }
+
+        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
+        priv->surrounding_text = g_strdup (text ? text : "");
+        priv->cursor_index = cursor_index;
+    }
+
+    reply = ibus_message_new_method_return (message);
+    return reply;
+}
+
 static gboolean
 bus_input_context_ibus_message (BusInputContext *context,
                                 BusConnection   *connection,
@@ -1119,6 +1228,8 @@ bus_input_context_ibus_message (BusInputContext *context,
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetEngine",         _ic_set_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "GetEngine",         _ic_get_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "Destroy",           _ic_destroy },
+        { IBUS_INTERFACE_INPUT_CONTEXT, "GetSurroundingText",_ic_get_surrounding_text },
+        { IBUS_INTERFACE_INPUT_CONTEXT, "SetSurroundingText",_ic_set_surrounding_text },
     };
 
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));

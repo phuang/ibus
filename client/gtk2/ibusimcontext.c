@@ -723,6 +723,25 @@ _ibus_context_delete_surrounding_text_cb (IBusInputContext *ibuscontext,
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 
+static gboolean
+_ibus_context_get_surrounding_text_cb (IBusInputContext *ibuscontext,
+                                       IBusIMContext    *ibusimcontext)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+
+    gboolean result;
+    gchar *text;
+    gint cursor_index;
+
+    result = gtk_im_context_get_surrounding ((GtkIMContext *)ibusimcontext,
+                                             &text, &cursor_index);
+    ibus_input_context_set_surrounding_text (ibuscontext, text, cursor_index);
+    if (result)
+        g_free (text);
+    return result;
+}
+
 static void
 _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
                                       IBusText          *text,
@@ -911,6 +930,10 @@ _create_input_context (IBusIMContext *ibusimcontext)
     g_signal_connect (ibusimcontext->ibuscontext,
                       "delete-surrounding-text",
                       G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
+                      ibusimcontext);
+    g_signal_connect (ibusimcontext->ibuscontext,
+                      "get-surrounding-text",
+                      G_CALLBACK (_ibus_context_get_surrounding_text_cb),
                       ibusimcontext);
     g_signal_connect (ibusimcontext->ibuscontext,
                       "update-preedit-text",

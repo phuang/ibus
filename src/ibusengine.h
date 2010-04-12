@@ -367,6 +367,19 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
                                          guint               nchars);
 
 /**
+ * ibus_engine_get_surrounding_text:
+ * @engine: An IBusEngine.
+ *
+ * Request surrounding text.
+ *
+ * @see_also #IBusEngine::set-surrounding-text
+ */
+void ibus_engine_get_surrounding_text(IBusEngine         *engine,
+                                      gchar             **text,
+                                      gint               *cursor_index);
+
+
+/**
  * ibus_engine_get_name:
  * @engine: An IBusEngine.
  * @returns: Name of IBusEngine.

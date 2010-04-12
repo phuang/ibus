@@ -1197,6 +1197,64 @@ void ibus_engine_delete_surrounding_text (IBusEngine      *engine,
                   G_TYPE_INVALID);
 }
 
+void ibus_engine_get_surrounding_text (IBusEngine   *engine,
+                                       gchar       **text,
+                                       gint         *cursor_index)
+{
+    IBusMessage *message, *reply;
+    IBusError *error;
+    gboolean retval;
+    gchar *name = NULL;
+    IBusEnginePrivate *priv;
+
+    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
+                                            IBUS_PATH_IBUS,
+                                            IBUS_INTERFACE_IBUS,
+                                            "CurrentInputContext");
+
+    reply = ibus_connection_send_with_reply_and_block (priv->connection,
+                                                       message,
+                                                       -1,
+                                                       &error);
+    ibus_message_unref (message);
+
+    retval = ibus_message_get_args (reply,
+                                    &error,
+                                    G_TYPE_STRING, &name,
+                                    G_TYPE_INVALID);
+    ibus_message_unref (reply);
+    if (!retval) {
+        g_warning ("%s: %s", error->name, error->message);
+        *text = NULL;
+        *cursor_index = 0;
+        return;
+    }
+
+    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
+                                            name,
+                                            IBUS_INTERFACE_INPUT_CONTEXT,
+                                            "GetSurroundingText");
+
+    reply = ibus_connection_send_with_reply_and_block (priv->connection,
+                                                       message,
+                                                       -1,
+                                                       &error);
+    ibus_message_unref (message);
+
+    retval = ibus_message_get_args (reply,
+                                    &error,
+                                    G_TYPE_STRING, text,
+                                    G_TYPE_INT, cursor_index,
+                                    G_TYPE_INVALID);
+    ibus_message_unref (reply);
+    if (!retval) {
+        g_warning ("%s: %s", error->name, error->message);
+        *text = NULL;
+        *cursor_index = 0;
+    }
+}
+
 void
 ibus_engine_register_properties (IBusEngine   *engine,
                                  IBusPropList *prop_list)

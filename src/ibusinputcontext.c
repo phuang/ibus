@@ -34,6 +34,7 @@ enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
     DELETE_SURROUNDING_TEXT,
+    GET_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -206,6 +207,21 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             2,
             G_TYPE_INT,
             G_TYPE_UINT);
+
+    /**
+     * IBusInputContext::get-surrounding-text:
+     * @context: An IBusInputContext.
+     *
+     * Emitted when IME requests surrounding text to client of IME.
+     */
+    context_signals[GET_SURROUNDING_TEXT] =
+        g_signal_new (I_("get-surrounding-text"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE, 0);
 
     /**
      * IBusInputContext::update-preedit-text:
@@ -528,6 +544,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE   },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE   },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
+        { "GetSurroundingText",     GET_SURROUNDING_TEXT     },
     };
 
     do {
@@ -857,6 +874,20 @@ ibus_input_context_property_hide (IBusInputContext *context,
     ibus_proxy_call ((IBusProxy *) context,
                      "PropertyHide",
                      G_TYPE_STRING, &prop_name,
+                     G_TYPE_INVALID);
+}
+
+void
+ibus_input_context_set_surrounding_text (IBusInputContext   *context,
+                                         const gchar        *text,
+                                         gint32              cursor_index)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    ibus_proxy_call ((IBusProxy *) context,
+                     "SetSurroundingText",
+                     G_TYPE_STRING, &text,
+                     G_TYPE_INT, &cursor_index,
                      G_TYPE_INVALID);
 }
 
