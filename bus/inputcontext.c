@@ -52,19 +52,12 @@ enum {
     REQUEST_ENGINE,
     REQUEST_NEXT_ENGINE,
     REQUEST_PREV_ENGINE,
+    UPDATE_SURROUNDING_TEXT,
     LAST_SIGNAL,
 };
 
 enum {
     PROP_0,
-};
-
-#define BUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_INPUT_CONTEXT, BusInputContextPrivate))
-
-struct _BusInputContextPrivate {
-    gchar *surrounding_text;
-    gint cursor_index;
 };
 
 typedef struct _BusInputContextPrivate BusInputContextPrivate;
@@ -129,6 +122,8 @@ static void     bus_input_context_register_properties
 static void     bus_input_context_update_property
                                                 (BusInputContext        *context,
                                                  IBusProperty           *prop);
+static void     bus_input_context_update_surrounding_text
+                                                (BusInputContext        *context);
 static void     _engine_destroy_cb              (BusEngineProxy         *factory,
                                                  BusInputContext        *context);
 
@@ -193,8 +188,6 @@ static void
 bus_input_context_class_init (BusInputContextClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    g_type_class_add_private (klass, sizeof (BusInputContextPrivate));
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
@@ -460,6 +453,16 @@ bus_input_context_class_init (BusInputContextClass *klass)
             G_TYPE_NONE,
             0);
 
+    context_signals[UPDATE_SURROUNDING_TEXT] =
+        g_signal_new (I_("update-surrounding-text"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+
     text_empty = ibus_text_new_from_string ("");
     g_object_ref_sink (text_empty);
     lookup_table_empty = ibus_lookup_table_new (9, 0, FALSE, FALSE);
@@ -471,8 +474,6 @@ bus_input_context_class_init (BusInputContextClass *klass)
 static void
 bus_input_context_init (BusInputContext *context)
 {
-    BusInputContextPrivate *priv;
-
     context->connection = NULL;
     context->client = NULL;
     context->engine = NULL;
@@ -503,9 +504,6 @@ bus_input_context_init (BusInputContext *context)
     context->lookup_table = lookup_table_empty;
     context->lookup_table_visible = FALSE;
 
-    priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-    priv->surrounding_text = NULL;
-    priv->cursor_index = 0;
 }
 
 static void
@@ -602,10 +600,6 @@ _ibus_introspect (BusInputContext   *context,
         "      <arg name=\"desc\" direction=\"out\" type=\"v\"/>\n"
         "    </method>\n"
         "    <method name=\"Destroy\"/>\n"
-        "    <method name=\"GetSurroundingText\">\n"
-        "      <arg name=\"text\" direction=\"out\" type=\"s\"/>\n"
-        "      <arg name=\"cursor_index\" direction=\"out\" type=\"i\"/>\n"
-        "    </method>\n"
         "    <method name=\"SetSurroundingText\">\n"
         "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
         "      <arg name=\"cursor_index\" direction=\"in\" type=\"i\"/>\n"
@@ -657,7 +651,7 @@ _ibus_introspect (BusInputContext   *context,
         "    </signal>\n"
 
         "    <signal name=\"DeleteSurroundingText\"/>\n"
-        "    <signal name=\"GetSurroundingText\"/>\n"
+        "    <signal name=\"UpdateSurroundingText\"/>\n"
 
         "  </interface>\n"
         "</node>\n";
@@ -801,6 +795,7 @@ _ic_set_cursor_location (BusInputContext  *context,
 
     if (context->has_focus && context->enabled && context->engine) {
         bus_engine_proxy_set_cursor_location (context->engine, x, y, w, h);
+        bus_input_context_update_surrounding_text (context);
     }
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
@@ -1112,48 +1107,6 @@ _ic_destroy (BusInputContext  *context,
 }
 
 static IBusMessage *
-_ic_get_surrounding_text (BusInputContext  *context,
-                          IBusMessage      *message,
-                          BusConnection    *connection)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (message != NULL);
-    g_assert (BUS_IS_CONNECTION (connection));
-
-    IBusMessage *reply;
-    IBusError *error;
-
-    gchar *text = NULL;
-    gint cursor_index = 0;
-    BusInputContextPrivate *priv;
-    gboolean retval;
-
-    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-        g_free (priv->surrounding_text);
-        priv->surrounding_text = NULL;
-        
-        bus_input_context_send_signal (context, "GetSurroundingText",
-                                       G_TYPE_INVALID);
-
-        /* Should check timeout? */
-        while (!priv->surrounding_text) {
-            g_main_context_iteration (NULL, TRUE);
-        }
-
-        text = g_strdup (priv->surrounding_text ? priv->surrounding_text : "");
-        cursor_index = priv->cursor_index;
-    }
-
-    reply = ibus_message_new_method_return (message);
-    ibus_message_append_args (reply,
-                              G_TYPE_STRING, &text,
-                              G_TYPE_INT, &cursor_index,
-                              G_TYPE_INVALID);
-    return reply;
-}
-
-static IBusMessage *
 _ic_set_surrounding_text (BusInputContext  *context,
                           IBusMessage      *message,
                           BusConnection    *connection)
@@ -1167,7 +1120,6 @@ _ic_set_surrounding_text (BusInputContext  *context,
 
     gchar *text = NULL;
     gint cursor_index = 0;
-    BusInputContextPrivate *priv;
     gboolean retval;
 
     if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
@@ -1184,10 +1136,9 @@ _ic_set_surrounding_text (BusInputContext  *context,
             ibus_error_free (error);
             return reply;
         }
-
-        priv = BUS_INPUT_CONTEXT_GET_PRIVATE (context);
-        priv->surrounding_text = g_strdup (text ? text : "");
-        priv->cursor_index = cursor_index;
+        bus_engine_proxy_set_surrounding_text (context->engine,
+                                               text,
+                                               cursor_index);
     }
 
     reply = ibus_message_new_method_return (message);
@@ -1228,7 +1179,6 @@ bus_input_context_ibus_message (BusInputContext *context,
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetEngine",         _ic_set_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "GetEngine",         _ic_get_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "Destroy",           _ic_destroy },
-        { IBUS_INTERFACE_INPUT_CONTEXT, "GetSurroundingText",_ic_get_surrounding_text },
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetSurroundingText",_ic_set_surrounding_text },
     };
 
@@ -1292,6 +1242,7 @@ bus_input_context_focus_in (BusInputContext *context)
         bus_engine_proxy_enable (context->engine);
         bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
         bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
+        bus_input_context_update_surrounding_text (context);
     }
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
@@ -1787,6 +1738,23 @@ bus_input_context_update_property (BusInputContext *context,
 }
 
 static void
+bus_input_context_update_surrounding_text (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
+        bus_input_context_send_signal (context,
+                                       "UpdateSurroundingText",
+                                       G_TYPE_INVALID);
+    }
+    else {
+        g_signal_emit (context,
+                       context_signals[UPDATE_SURROUNDING_TEXT],
+                       0);
+    }
+}
+
+static void
 _engine_destroy_cb (BusEngineProxy  *engine,
                     BusInputContext *context)
 {
@@ -1993,6 +1961,7 @@ bus_input_context_enable (BusInputContext *context)
         bus_engine_proxy_focus_in (context->engine);
         bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
         bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
+        bus_input_context_update_surrounding_text (context);
     }
     bus_input_context_send_signal (context,
                                    "Enabled",
@@ -2111,6 +2080,7 @@ bus_input_context_set_engine (BusInputContext *context,
             bus_engine_proxy_enable (context->engine);
             bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
             bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
+            bus_input_context_update_surrounding_text (context);
         }
     }
     g_signal_emit (context,

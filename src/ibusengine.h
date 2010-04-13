@@ -124,10 +124,14 @@ struct _IBusEngineClass {
                                      guint           index,
                                      guint           button,
                                      guint           state);
+    void        (* set_surrounding_text)
+                                    (IBusEngine     *engine,
+                                     const gchar    *text,
+                                     gint            cursor_index);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];
+    gpointer pdummy[7];
 };
 
 GType        ibus_engine_get_type       (void);

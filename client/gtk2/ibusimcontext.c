@@ -724,7 +724,7 @@ _ibus_context_delete_surrounding_text_cb (IBusInputContext *ibuscontext,
 }
 
 static gboolean
-_ibus_context_get_surrounding_text_cb (IBusInputContext *ibuscontext,
+_ibus_context_update_surrounding_text_cb (IBusInputContext *ibuscontext,
                                        IBusIMContext    *ibusimcontext)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
@@ -932,8 +932,8 @@ _create_input_context (IBusIMContext *ibusimcontext)
                       G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
                       ibusimcontext);
     g_signal_connect (ibusimcontext->ibuscontext,
-                      "get-surrounding-text",
-                      G_CALLBACK (_ibus_context_get_surrounding_text_cb),
+                      "update-surrounding-text",
+                      G_CALLBACK (_ibus_context_update_surrounding_text_cb),
                       ibusimcontext);
     g_signal_connect (ibusimcontext->ibuscontext,
                       "update-preedit-text",

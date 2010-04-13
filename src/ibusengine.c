@@ -44,6 +44,7 @@ enum {
     PROPERTY_SHOW,
     PROPERTY_HIDE,
     CANDIDATE_CLICKED,
+    SET_SURROUNDING_TEXT,
     LAST_SIGNAL,
 };
 
@@ -58,6 +59,11 @@ enum {
 struct _IBusEnginePrivate {
     gchar *name;
     IBusConnection *connection;
+
+    struct {
+        gchar *text;
+        gint cursor_index;
+    } surrounding;
 };
 typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
@@ -536,6 +542,27 @@ ibus_engine_class_init (IBusEngineClass *klass)
             1,
             G_TYPE_STRING);
 
+    /**
+     * IBusEngine::set-surrounding-text:
+     * @engine: An IBusEngine.
+     *
+     * Emitted when a surrounding text is set.
+     * Implement the member function set_surrounding_text() in extended class to receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
+    engine_signals[SET_SURROUNDING_TEXT] =
+        g_signal_new (I_("set-surrounding-text"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, set_surrounding_text),
+            NULL, NULL,
+            ibus_marshal_VOID__STRING_INT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_STRING,
+            G_TYPE_INT);
+
 }
 
 static void
@@ -546,6 +573,8 @@ ibus_engine_init (IBusEngine *engine)
 
     priv->name = NULL;
     priv->connection = NULL;
+    priv->surrounding.text = NULL;
+    priv->surrounding.cursor_index = 0;
 }
 
 static void
@@ -870,6 +899,32 @@ ibus_engine_ibus_message (IBusEngine     *engine,
             ibus_message_unref (reply);
             ibus_object_destroy ((IBusObject *) engine);
             return TRUE;
+        }
+        else if (g_strcmp0 (name, "SetSurroundingText") == 0) {
+            gchar *text = NULL;
+            gint cursor_index = 0;
+
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_STRING, &text,
+                                            G_TYPE_INT, &cursor_index,
+                                            G_TYPE_INVALID);
+
+            if (!retval) {
+                reply = ibus_message_new_error_printf (message,
+                            DBUS_ERROR_INVALID_ARGS,
+                            "%s.%s: Can not match signature (u) of method",
+                            IBUS_INTERFACE_ENGINE, "SetSurroundingText");
+                ibus_error_free (error);
+            }
+            else {
+                priv->surrounding.text = g_strdup (text ? text : "");
+                priv->surrounding.cursor_index = cursor_index;
+                g_signal_emit (engine, engine_signals[SET_SURROUNDING_TEXT], 0,
+                               priv->surrounding.text,
+                               priv->surrounding.cursor_index);
+                reply = ibus_message_new_method_return (message);
+            }
         }
         else {
             reply = ibus_message_new_error_printf (message,
@@ -1201,58 +1256,12 @@ void ibus_engine_get_surrounding_text (IBusEngine   *engine,
                                        gchar       **text,
                                        gint         *cursor_index)
 {
-    IBusMessage *message, *reply;
-    IBusError *error;
-    gboolean retval;
-    gchar *name = NULL;
     IBusEnginePrivate *priv;
 
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
-    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
-                                            IBUS_PATH_IBUS,
-                                            IBUS_INTERFACE_IBUS,
-                                            "CurrentInputContext");
 
-    reply = ibus_connection_send_with_reply_and_block (priv->connection,
-                                                       message,
-                                                       -1,
-                                                       &error);
-    ibus_message_unref (message);
-
-    retval = ibus_message_get_args (reply,
-                                    &error,
-                                    G_TYPE_STRING, &name,
-                                    G_TYPE_INVALID);
-    ibus_message_unref (reply);
-    if (!retval) {
-        g_warning ("%s: %s", error->name, error->message);
-        *text = NULL;
-        *cursor_index = 0;
-        return;
-    }
-
-    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
-                                            name,
-                                            IBUS_INTERFACE_INPUT_CONTEXT,
-                                            "GetSurroundingText");
-
-    reply = ibus_connection_send_with_reply_and_block (priv->connection,
-                                                       message,
-                                                       -1,
-                                                       &error);
-    ibus_message_unref (message);
-
-    retval = ibus_message_get_args (reply,
-                                    &error,
-                                    G_TYPE_STRING, text,
-                                    G_TYPE_INT, cursor_index,
-                                    G_TYPE_INVALID);
-    ibus_message_unref (reply);
-    if (!retval) {
-        g_warning ("%s: %s", error->name, error->message);
-        *text = NULL;
-        *cursor_index = 0;
-    }
+    *text = priv->surrounding.text;
+    *cursor_index = priv->surrounding.cursor_index;
 }
 
 void

@@ -34,7 +34,7 @@ enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
     DELETE_SURROUNDING_TEXT,
-    GET_SURROUNDING_TEXT,
+    UPDATE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -209,13 +209,13 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             G_TYPE_UINT);
 
     /**
-     * IBusInputContext::get-surrounding-text:
+     * IBusInputContext::update-surrounding-text:
      * @context: An IBusInputContext.
      *
-     * Emitted when IME requests surrounding text to client of IME.
+     * Emitted to update surrounding text information.
      */
-    context_signals[GET_SURROUNDING_TEXT] =
-        g_signal_new (I_("get-surrounding-text"),
+    context_signals[UPDATE_SURROUNDING_TEXT] =
+        g_signal_new (I_("update-surrounding-text"),
             G_TYPE_FROM_CLASS (klass),
             G_SIGNAL_RUN_LAST,
             0,
@@ -544,7 +544,7 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE   },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE   },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
-        { "GetSurroundingText",     GET_SURROUNDING_TEXT     },
+        { "UpdateSurroundingText",  UPDATE_SURROUNDING_TEXT  },
     };
 
     do {
