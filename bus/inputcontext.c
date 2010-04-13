@@ -52,7 +52,6 @@ enum {
     REQUEST_ENGINE,
     REQUEST_NEXT_ENGINE,
     REQUEST_PREV_ENGINE,
-    UPDATE_SURROUNDING_TEXT,
     LAST_SIGNAL,
 };
 
@@ -122,8 +121,6 @@ static void     bus_input_context_register_properties
 static void     bus_input_context_update_property
                                                 (BusInputContext        *context,
                                                  IBusProperty           *prop);
-static void     bus_input_context_update_surrounding_text
-                                                (BusInputContext        *context);
 static void     _engine_destroy_cb              (BusEngineProxy         *factory,
                                                  BusInputContext        *context);
 
@@ -453,16 +450,6 @@ bus_input_context_class_init (BusInputContextClass *klass)
             G_TYPE_NONE,
             0);
 
-    context_signals[UPDATE_SURROUNDING_TEXT] =
-        g_signal_new (I_("update-surrounding-text"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
-
     text_empty = ibus_text_new_from_string ("");
     g_object_ref_sink (text_empty);
     lookup_table_empty = ibus_lookup_table_new (9, 0, FALSE, FALSE);
@@ -651,7 +638,6 @@ _ibus_introspect (BusInputContext   *context,
         "    </signal>\n"
 
         "    <signal name=\"DeleteSurroundingText\"/>\n"
-        "    <signal name=\"UpdateSurroundingText\"/>\n"
 
         "  </interface>\n"
         "</node>\n";
@@ -795,7 +781,6 @@ _ic_set_cursor_location (BusInputContext  *context,
 
     if (context->has_focus && context->enabled && context->engine) {
         bus_engine_proxy_set_cursor_location (context->engine, x, y, w, h);
-        bus_input_context_update_surrounding_text (context);
     }
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
@@ -1242,7 +1227,6 @@ bus_input_context_focus_in (BusInputContext *context)
         bus_engine_proxy_enable (context->engine);
         bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
         bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
-        bus_input_context_update_surrounding_text (context);
     }
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
@@ -1738,23 +1722,6 @@ bus_input_context_update_property (BusInputContext *context,
 }
 
 static void
-bus_input_context_update_surrounding_text (BusInputContext *context)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
-        bus_input_context_send_signal (context,
-                                       "UpdateSurroundingText",
-                                       G_TYPE_INVALID);
-    }
-    else {
-        g_signal_emit (context,
-                       context_signals[UPDATE_SURROUNDING_TEXT],
-                       0);
-    }
-}
-
-static void
 _engine_destroy_cb (BusEngineProxy  *engine,
                     BusInputContext *context)
 {
@@ -1961,7 +1928,6 @@ bus_input_context_enable (BusInputContext *context)
         bus_engine_proxy_focus_in (context->engine);
         bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
         bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
-        bus_input_context_update_surrounding_text (context);
     }
     bus_input_context_send_signal (context,
                                    "Enabled",
@@ -2080,7 +2046,6 @@ bus_input_context_set_engine (BusInputContext *context,
             bus_engine_proxy_enable (context->engine);
             bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
             bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
-            bus_input_context_update_surrounding_text (context);
         }
     }
     g_signal_emit (context,

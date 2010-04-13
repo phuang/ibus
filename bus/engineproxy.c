@@ -29,7 +29,6 @@ enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
     DELETE_SURROUNDING_TEXT,
-    UPDATE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -139,16 +138,6 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
             2,
             G_TYPE_INT,
             G_TYPE_UINT);
-
-    engine_signals[UPDATE_SURROUNDING_TEXT] =
-        g_signal_new (I_("update-surrounding-text"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
 
     engine_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
@@ -376,7 +365,6 @@ bus_engine_proxy_ibus_signal (IBusProxy     *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
-        { "UpdateSurroundingText",  UPDATE_SURROUNDING_TEXT },
     };
 
     engine = BUS_ENGINE_PROXY (proxy);

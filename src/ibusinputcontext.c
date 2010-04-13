@@ -34,7 +34,6 @@ enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
     DELETE_SURROUNDING_TEXT,
-    UPDATE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -207,21 +206,6 @@ ibus_input_context_class_init (IBusInputContextClass *klass)
             2,
             G_TYPE_INT,
             G_TYPE_UINT);
-
-    /**
-     * IBusInputContext::update-surrounding-text:
-     * @context: An IBusInputContext.
-     *
-     * Emitted to update surrounding text information.
-     */
-    context_signals[UPDATE_SURROUNDING_TEXT] =
-        g_signal_new (I_("update-surrounding-text"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE, 0);
 
     /**
      * IBusInputContext::update-preedit-text:
@@ -544,7 +528,6 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE   },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE   },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
-        { "UpdateSurroundingText",  UPDATE_SURROUNDING_TEXT  },
     };
 
     do {
