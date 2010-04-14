@@ -730,15 +730,15 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
 
 void
 bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
-                                       const gchar    *text,
-                                       gint            cursor_index)
+                                       IBusText       *text,
+                                       guint           cursor_pos)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     ibus_proxy_call ((IBusProxy *) engine,
                      "SetSurroundingText",
-                     G_TYPE_STRING, &text,
-                     G_TYPE_INT, &cursor_index,
+                     IBUS_TYPE_TEXT, &text,
+                     G_TYPE_UINT, &cursor_pos,
                      G_TYPE_INVALID);
 }
 

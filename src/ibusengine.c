@@ -60,14 +60,14 @@ struct _IBusEnginePrivate {
     gchar *name;
     IBusConnection *connection;
 
-    struct {
-        gchar *text;
-        gint cursor_index;
-    } surrounding;
+    IBusText *surrounding_text;
+    guint surrounding_cursor_pos;
 };
 typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
+
+static IBusText *text_empty = NULL;
 
 /* functions prototype */
 static void     ibus_engine_destroy         (IBusEngine         *engine);
@@ -148,6 +148,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
+    text_empty = ibus_text_new_from_string ("");
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_engine_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_engine_get_property;
@@ -557,11 +558,11 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, set_surrounding_text),
             NULL, NULL,
-            ibus_marshal_VOID__STRING_INT,
+            ibus_marshal_VOID__POINTER_UINT,
             G_TYPE_NONE,
             2,
-            G_TYPE_STRING,
-            G_TYPE_INT);
+            G_TYPE_POINTER,
+            G_TYPE_UINT);
 
 }
 
@@ -573,8 +574,10 @@ ibus_engine_init (IBusEngine *engine)
 
     priv->name = NULL;
     priv->connection = NULL;
-    priv->surrounding.text = NULL;
-    priv->surrounding.cursor_index = 0;
+
+    g_object_ref_sink (text_empty);
+    priv->surrounding_text = text_empty;
+    priv->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -588,6 +591,11 @@ ibus_engine_destroy (IBusEngine *engine)
     if (priv->connection) {
         g_object_unref (priv->connection);
         priv->connection = NULL;
+    }
+
+    if (priv->surrounding_text) {
+        g_object_unref (priv->surrounding_text);
+        priv->surrounding_text = NULL;
     }
 
     IBUS_OBJECT_CLASS(ibus_engine_parent_class)->destroy (IBUS_OBJECT (engine));
@@ -901,13 +909,13 @@ ibus_engine_ibus_message (IBusEngine     *engine,
             return TRUE;
         }
         else if (g_strcmp0 (name, "SetSurroundingText") == 0) {
-            gchar *text = NULL;
-            gint cursor_index = 0;
+            IBusText *text;
+            guint cursor_pos;
 
             retval = ibus_message_get_args (message,
                                             &error,
-                                            G_TYPE_STRING, &text,
-                                            G_TYPE_INT, &cursor_index,
+                                            IBUS_TYPE_TEXT, &text,
+                                            G_TYPE_UINT, &cursor_pos,
                                             G_TYPE_INVALID);
 
             if (!retval) {
@@ -918,11 +926,15 @@ ibus_engine_ibus_message (IBusEngine     *engine,
                 ibus_error_free (error);
             }
             else {
-                priv->surrounding.text = g_strdup (text ? text : "");
-                priv->surrounding.cursor_index = cursor_index;
+                if (priv->surrounding_text) {
+                    g_object_unref (priv->surrounding_text);
+                }
+
+                priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
+                priv->surrounding_cursor_pos = cursor_pos;
                 g_signal_emit (engine, engine_signals[SET_SURROUNDING_TEXT], 0,
-                               priv->surrounding.text,
-                               priv->surrounding.cursor_index);
+                               priv->surrounding_text,
+                               priv->surrounding_cursor_pos);
                 reply = ibus_message_new_method_return (message);
             }
         }
@@ -1253,15 +1265,15 @@ void ibus_engine_delete_surrounding_text (IBusEngine      *engine,
 }
 
 void ibus_engine_get_surrounding_text (IBusEngine   *engine,
-                                       gchar       **text,
-                                       gint         *cursor_index)
+                                       IBusText    **text,
+                                       guint        *cursor_pos)
 {
     IBusEnginePrivate *priv;
 
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
-    *text = priv->surrounding.text;
-    *cursor_index = priv->surrounding.cursor_index;
+    *text = priv->surrounding_text;
+    *cursor_pos = priv->surrounding_cursor_pos;
 }
 
 void

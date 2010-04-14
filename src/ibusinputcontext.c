@@ -862,15 +862,15 @@ ibus_input_context_property_hide (IBusInputContext *context,
 
 void
 ibus_input_context_set_surrounding_text (IBusInputContext   *context,
-                                         const gchar        *text,
-                                         gint32              cursor_index)
+                                         IBusText           *text,
+                                         guint32             cursor_pos)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
     ibus_proxy_call ((IBusProxy *) context,
                      "SetSurroundingText",
-                     G_TYPE_STRING, &text,
-                     G_TYPE_INT, &cursor_index,
+                     IBUS_TYPE_TEXT, &text,
+                     G_TYPE_UINT, &cursor_pos,
                      G_TYPE_INVALID);
 }
 

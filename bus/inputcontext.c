@@ -491,6 +491,9 @@ bus_input_context_init (BusInputContext *context)
     context->lookup_table = lookup_table_empty;
     context->lookup_table_visible = FALSE;
 
+    g_object_ref_sink (text_empty);
+    context->surrounding_text = text_empty;
+    context->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -531,6 +534,11 @@ bus_input_context_destroy (BusInputContext *context)
     if (context->client) {
         g_free (context->client);
         context->client = NULL;
+    }
+
+    if (context->surrounding_text) {
+        g_object_unref (context->surrounding_text);
+        context->surrounding_text = NULL;
     }
 
     IBUS_OBJECT_CLASS(bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
@@ -588,8 +596,8 @@ _ibus_introspect (BusInputContext   *context,
         "    </method>\n"
         "    <method name=\"Destroy\"/>\n"
         "    <method name=\"SetSurroundingText\">\n"
-        "      <arg name=\"text\" direction=\"in\" type=\"s\"/>\n"
-        "      <arg name=\"cursor_index\" direction=\"in\" type=\"i\"/>\n"
+        "      <arg name=\"text\" direction=\"in\" type=\"v\"/>\n"
+        "      <arg name=\"cursor_pos\" direction=\"in\" type=\"u\"/>\n"
         "    </method>\n"
 
         /* signals */
@@ -636,8 +644,6 @@ _ibus_introspect (BusInputContext   *context,
         "    <signal name=\"UpdateProperty\">\n"
         "      <arg name=\"prop\" type=\"v\"/>\n"
         "    </signal>\n"
-
-        "    <signal name=\"DeleteSurroundingText\"/>\n"
 
         "  </interface>\n"
         "</node>\n";
@@ -1101,30 +1107,44 @@ _ic_set_surrounding_text (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     IBusMessage *reply;
+    IBusText *text;
+    guint cursor_pos = 0;
+    gboolean retval;
     IBusError *error;
 
-    gchar *text = NULL;
-    gint cursor_index = 0;
-    gboolean retval;
+    retval = ibus_message_get_args (message,
+                                    &error,
+                                    IBUS_TYPE_TEXT, &text,
+                                    G_TYPE_UINT, &cursor_pos,
+                                    G_TYPE_INVALID);
 
-    if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &text,
-                                        G_TYPE_INT, &cursor_index,
-                                        G_TYPE_INVALID);
-
-        if (!retval) {
-            reply = ibus_message_new_error (message,
-                                            error->name,
-                                            error->message);
-            ibus_error_free (error);
-            return reply;
-        }
-        bus_engine_proxy_set_surrounding_text (context->engine,
-                                               text,
-                                               cursor_index);
+    if (!retval) {
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
+        return reply;
     }
+
+    if (!context->surrounding_text ||
+        g_strcmp0 (text->text, context->surrounding_text->text) != 0 ||
+        cursor_pos != context->surrounding_cursor_pos) {
+        if (context->surrounding_text) {
+            g_object_unref (context->surrounding_text);
+        }
+
+        context->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
+        context->surrounding_cursor_pos = cursor_pos;
+
+        if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
+            bus_engine_proxy_set_surrounding_text (context->engine,
+                                                   text,
+                                                   cursor_pos);
+        }
+    }
+
+    if (g_object_is_floating (text))
+        g_object_unref (text);
 
     reply = ibus_message_new_method_return (message);
     return reply;

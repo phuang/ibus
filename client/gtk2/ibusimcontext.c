@@ -108,6 +108,8 @@ static void     _set_cursor_location_internal
 
 static void     _bus_connected_cb           (IBusBus            *bus,
                                              IBusIMContext      *context);
+static void     _set_surrounding_text       (IBusInputContext *ibuscontext,
+                                             IBusIMContext    *ibusimcontext);
 /* callback functions for slave context */
 static void     _slave_commit_cb            (GtkIMContext       *slave,
                                              gchar              *string,
@@ -412,6 +414,8 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
          * It is a workaround for increase search in treeview.
          */
         gboolean retval = FALSE;
+
+        _set_surrounding_text (ibusimcontext->ibuscontext, ibusimcontext);
 
         if (event->state & IBUS_HANDLED_MASK)
             return TRUE;
@@ -723,25 +727,6 @@ _ibus_context_delete_surrounding_text_cb (IBusInputContext *ibuscontext,
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 
-static gboolean
-_ibus_context_update_surrounding_text_cb (IBusInputContext *ibuscontext,
-                                       IBusIMContext    *ibusimcontext)
-{
-    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
-    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
-
-    gboolean result;
-    gchar *text;
-    gint cursor_index;
-
-    result = gtk_im_context_get_surrounding ((GtkIMContext *)ibusimcontext,
-                                             &text, &cursor_index);
-    ibus_input_context_set_surrounding_text (ibuscontext, text, cursor_index);
-    if (result)
-        g_free (text);
-    return result;
-}
-
 static void
 _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
                                       IBusText          *text,
@@ -932,10 +917,6 @@ _create_input_context (IBusIMContext *ibusimcontext)
                       G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
                       ibusimcontext);
     g_signal_connect (ibusimcontext->ibuscontext,
-                      "update-surrounding-text",
-                      G_CALLBACK (_ibus_context_update_surrounding_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
                       "update-preedit-text",
                       G_CALLBACK (_ibus_context_update_preedit_text_cb),
                       ibusimcontext);
@@ -964,6 +945,30 @@ _create_input_context (IBusIMContext *ibusimcontext)
     if (ibusimcontext->has_focus) {
         gtk_im_context_focus_in (GTK_IM_CONTEXT (ibusimcontext));
     }
+}
+
+static void
+_set_surrounding_text (IBusInputContext *ibuscontext,
+                       IBusIMContext    *ibusimcontext)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (ibuscontext));
+    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
+
+    gboolean result;
+    gchar *text;
+    gint cursor_index;
+    IBusText *ibustext;
+    guint cursor_pos;
+
+    result = gtk_im_context_get_surrounding ((GtkIMContext *)ibusimcontext,
+                                             &text, &cursor_index);
+    ibustext = ibus_text_new_from_string (text);
+    cursor_pos = g_utf8_strlen (text, cursor_index);
+    ibus_input_context_set_surrounding_text (ibuscontext,
+                                             ibustext,
+                                             cursor_pos);
+    if (result)
+        g_free (text);
 }
 
 /* Callback functions for slave context */

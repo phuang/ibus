@@ -373,14 +373,16 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
 /**
  * ibus_engine_get_surrounding_text:
  * @engine: An IBusEngine.
+ * @text: Location to store surrounding text.
+ * @cursor_pos: Cursor position in characters in @text.
  *
- * Request surrounding text.
+ * Get surrounding text.
  *
  * @see_also #IBusEngine::set-surrounding-text
  */
 void ibus_engine_get_surrounding_text(IBusEngine         *engine,
-                                      gchar             **text,
-                                      gint               *cursor_index);
+                                      IBusText          **text,
+                                      guint              *cursor_pos);
 
 
 /**
