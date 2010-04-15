@@ -1126,9 +1126,10 @@ _ic_set_surrounding_text (BusInputContext  *context,
         return reply;
     }
 
-    if (!context->surrounding_text ||
-        g_strcmp0 (text->text, context->surrounding_text->text) != 0 ||
-        cursor_pos != context->surrounding_cursor_pos) {
+    if ((context->capabilities & IBUS_CAP_SURROUNDING_TEXT) &&
+        (!context->surrounding_text ||
+         g_strcmp0 (text->text, context->surrounding_text->text) != 0 ||
+         cursor_pos != context->surrounding_cursor_pos)) {
         if (context->surrounding_text) {
             g_object_unref (context->surrounding_text);
         }
@@ -1136,7 +1137,7 @@ _ic_set_surrounding_text (BusInputContext  *context,
         context->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
         context->surrounding_cursor_pos = cursor_pos;
 
-        if (context->capabilities & IBUS_CAP_SURROUNDING_TEXT) {
+        if (context->has_focus && context->enabled && context->engine) {
             bus_engine_proxy_set_surrounding_text (context->engine,
                                                    text,
                                                    cursor_pos);
