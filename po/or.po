@@ -1,21 +1,22 @@
-# translation of ibus.master.or.po to Oriya
+# translation of ibus.or.po to Oriya
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Manoj Kumar Giri <mgiri@redhat.com>, 2009.
+# Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.or\n"
+"Project-Id-Version: ibus.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 18:43+0800\n"
-"PO-Revision-Date: 2009-11-14 15:22+0530\n"
+"POT-Creation-Date: 2010-04-15 02:29+0000\n"
+"PO-Revision-Date: 2010-04-15 14:17+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
-"Language-Team: Oriya <oriya-it@googlegroups.com>\n"
+"Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -33,8 +34,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
-#: ../ibus/_config.py.in:37
-#, fuzzy
+#: ../ibus/_config.py.in:38
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -47,29 +47,28 @@ msgid "Other"
 msgstr "ଅନ୍ୟାନ୍ୟ"
 
 #: ../ui/gtk/candidatepanel.py:267
-#, fuzzy
 msgid "Previous page"
-msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ:"
+msgstr "ପୂର୍ବବର୍ତ୍ତୀ ପୃଷ୍ଠା"
 
 #: ../ui/gtk/candidatepanel.py:272
 msgid "Next page"
-msgstr ""
+msgstr "ପରବର୍ତ୍ତୀ ପୃଷ୍ଠା"
 
 #: ../ui/gtk/main.py:57
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"କିଛି ନିବେଶ ପଦ୍ଧତିକୁ ସ୍ଥାପନ କରାଯାଇଛି, କଢ଼ାଯାଇଛି ଅଥବା ଅଦ୍ୟତନ କରାଯାଇଛି। ଦୟାକରି ibus ନିବେଶ "
+"ପ୍ଲାଟଫର୍ମକୁ ପୁନର୍ଚାଳନ କରନ୍ତୁ।"
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "ପୁନଃଚାଳନ"
+msgstr "ବର୍ତ୍ତମାନ ପୁନଃଚାଳନ କରନ୍ତୁ"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "ଅନ୍ୟାନ୍ୟ"
+msgstr "ପରେ"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -92,7 +91,6 @@ msgid "translator-credits"
 msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
@@ -218,16 +216,15 @@ msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତା
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "ପ୍ରୟୋଗ ୱିଣ୍ଡୋରେ ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Language panel position"
-msgstr "ଭାଷା ତାଲିକା ଦର୍ଶାନ୍ତୁ:"
+msgstr "ଭାଷା ଫଳକ ଅବସ୍ଥାନ"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Next engine shortcut keys"
@@ -238,7 +235,6 @@ msgid "Orientation of lookup table"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ। 0 = ଭୂ-ସମାନ୍ତର, 1 = ଭୂ-ଲମ୍ବ"
 
@@ -247,7 +243,6 @@ msgid "Preload engines"
 msgstr "ଯନ୍ତ୍ରକୁ ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
 msgstr "ibus ଆରମ୍ଭ ସମୟରେ ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
@@ -257,7 +252,7 @@ msgstr "ପୂର୍ବ ଯନ୍ତ୍ରର ସଂକ୍ଷିପ୍ତ ପଥ
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "ସମସ୍ତ ପ୍ରୟୋଗଗୁଡ଼ିକ ମଧ୍ଯରେ ଏକା ପ୍ରକାରର ନିବେଶ ପଦ୍ଧତିକୁ ସହଭାଗ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
 msgid "Show icon on system tray"
@@ -275,14 +270,15 @@ msgstr "ଭାଷା ତାଲିକା ପାଇଁ ନିବେଶ ପଦ୍�
 msgid ""
 "The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
-"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
+msgstr "ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ସର୍ବଦା ଲୁଚାନ୍ତୁ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"ଭାଷା ଫଳକର ଅବସ୍ଥାନ। 0 = ଉପର ପାଖ ବାମ କୋଣ, 1 = ଉପର ପାଖ ଡାହାଣ କୋଣ, 2 = ତଳ ପାଖ ବାମ "
+"କୋଣ, 3 = ତଳ ପାଖ ଡ଼ାହାଣ କୋଣ, 4 = ଇଚ୍ଛାମୁତାବକ"
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to next input method in the list"
@@ -305,9 +301,8 @@ msgid "Use custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "ଗୋଟିଏ ନିବେଶ ପ୍ରଣୀଳୀ ବାଛନ୍ତୁ"
+msgstr "ସର୍ବସାଧାରଣ ନିବେଶ ପ୍ରଣୀଳୀକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
 msgid "Use system keyboard (XKB) layout"
@@ -327,7 +322,7 @@ msgstr "<b>ଅକ୍ଷରରୂପ ଏବଂ ଶୈଳୀ</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgstr "<b>ସର୍ବସାଧାରଣ ନିବେଶ ପ୍ରଣୀଳୀ ବିନ୍ୟାସ</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -379,32 +374,31 @@ msgstr "ସର୍ବଦା"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
-msgstr ""
+msgstr "ତଳପାଖ ବାମ କୋଣ"
 
 #: ../setup/setup.ui.h:21
 msgid "Bottom right corner"
-msgstr ""
+msgstr "ତଳ ପାଖ ଡ଼ାହାଣ କୋଣ"
 
 #: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
 msgstr "ପ୍ରାର୍ଥୀ ଅନୁସ୍ଥାପନ:"
 
 #: ../setup/setup.ui.h:23
-#, fuzzy
 msgid "Custom"
-msgstr "ଇଚ୍ଛାରୂପୀ ଅକ୍ଷରରୂପ"
+msgstr "ଇଚ୍ଛାରୂପୀ"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "ପ୍ରୟୋଗ ୱିଣ୍ଡୋରେ ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "ନିବେଶ ପଦ୍ଧତିର ପ୍ରୀଡିତ ପାଠ୍ୟକୁ ପ୍ରୟୋଗ ୱିଣ୍ଡୋରେ ଅନ୍ତସ୍ଥାପିତ କରନ୍ତୁ"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "ତାଲିକାରେ ଅନ୍ତସ୍ଥାପିତ କରନ୍ତୁ"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -419,9 +413,8 @@ msgid "Horizontal"
 msgstr "ଭୂ-ସମାନ୍ତରାଳ"
 
 #: ../setup/setup.ui.h:32
-#, fuzzy
 msgid "Language panel position:"
-msgstr "ଭାଷା ତାଲିକା ଦର୍ଶାନ୍ତୁ:"
+msgstr "ଭାଷା ଫଳକ ଅବସ୍ଥାନ:"
 
 #: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
@@ -477,11 +470,11 @@ msgstr "ତାଲିକାରେ ପୂର୍ବ ନିବେଶ ପ୍ରଣା
 
 #: ../setup/setup.ui.h:51
 msgid "Top left corner"
-msgstr ""
+msgstr "ଉପର ପାଖ ବାମ କୋଣ"
 
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
-msgstr ""
+msgstr "ଉପର ପାଖ ଡ଼ାହାଣ କୋଣ"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"
@@ -491,19 +484,3 @@ msgstr "ଭୂଲମ୍ବ"
 msgid "When active"
 msgstr "ସକ୍ରିୟ ଥିବା ସମୟରେ"
 
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "ଯନ୍ତ୍ରକୁ ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "ଭାଷା ତାଲିକା ଦର୍ଶାନ୍ତୁ:"
-
-#~ msgid "Custom font:"
-#~ msgstr "ଇଚ୍ଛାରୂପୀ ଅକ୍ଷରରୂପ:"
-
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "ଭାଷା ତାଲିକା ପଟି ଏବଂ ବ୍ୟକ୍ତି ପାଇଁ ଅକ୍ଷରରୂପ"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "ଭାଷା ତାଲିକା ଏବଂ ପ୍ରାର୍ଥୀମାନଙ୍କପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
