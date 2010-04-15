@@ -734,6 +734,7 @@ bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
                                        guint           cursor_pos)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
 
     ibus_proxy_call ((IBusProxy *) engine,
                      "SetSurroundingText",

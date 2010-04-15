@@ -118,6 +118,10 @@ static void     ibus_engine_property_show   (IBusEngine         *engine,
                                              const gchar        *prop_name);
 static void     ibus_engine_property_hide   (IBusEngine         *engine,
                                              const gchar        *prop_name);
+static void     ibus_engine_set_surrounding_text
+                                            (IBusEngine         *engine,
+                                             IBusText           *text,
+                                             guint               cursor_pos);
 
 
 G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
@@ -173,6 +177,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     klass->property_hide        = ibus_engine_property_hide;
     klass->set_cursor_location  = ibus_engine_set_cursor_location;
     klass->set_capabilities     = ibus_engine_set_capabilities;
+    klass->set_surrounding_text = ibus_engine_set_surrounding_text;
 
 
     /* install properties */
@@ -1059,6 +1064,14 @@ static void
 ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
 {
     // g_debug ("property-hide ('%s')", prop_name);
+}
+
+static void
+ibus_engine_set_surrounding_text (IBusEngine *engine,
+                                  IBusText   *text,
+                                  guint       cursor_pos)
+{
+    // g_debug ("set-surrounding-text ('%s', %d)", text->text, cursor_pos);
 }
 
 static void

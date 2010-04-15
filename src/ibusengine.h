@@ -126,8 +126,8 @@ struct _IBusEngineClass {
                                      guint           state);
     void        (* set_surrounding_text)
                                     (IBusEngine     *engine,
-                                     const gchar    *text,
-                                     gint            cursor_index);
+                                     IBusText       *text,
+                                     guint           cursor_index);
 
     /*< private >*/
     /* padding */
