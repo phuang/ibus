@@ -415,13 +415,13 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
          */
         gboolean retval = FALSE;
 
-        _set_surrounding_text (ibusimcontext->ibuscontext, ibusimcontext);
-
         if (event->state & IBUS_HANDLED_MASK)
             return TRUE;
 
         if (event->state & IBUS_IGNORED_MASK)
             return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
+        _set_surrounding_text (ibusimcontext->ibuscontext, ibusimcontext);
 
         switch (event->type) {
         case GDK_KEY_RELEASE:
@@ -960,8 +960,9 @@ _set_surrounding_text (IBusInputContext *ibuscontext,
     IBusText *ibustext;
     guint cursor_pos;
 
-    result = gtk_im_context_get_surrounding ((GtkIMContext *)ibusimcontext,
-                                             &text, &cursor_index);
+    result = gtk_im_context_get_surrounding (ibusimcontext->slave,
+                                             &text,
+                                             &cursor_index);
     ibustext = ibus_text_new_from_string (text);
     cursor_pos = g_utf8_strlen (text, cursor_index);
     ibus_input_context_set_surrounding_text (ibuscontext,
