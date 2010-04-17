@@ -1041,11 +1041,12 @@ _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
                                 IBusIMContext *ibusimcontext)
 {
     g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
+    gboolean return_value;
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return FALSE;
     }
-    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
+    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0, &return_value);
     return FALSE;
 }
 
@@ -1056,6 +1057,7 @@ _slave_delete_surrounding_cb (GtkIMContext  *slave,
                               IBusIMContext *ibusimcontext)
 {
     g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
+    gboolean return_value;
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         return FALSE;
