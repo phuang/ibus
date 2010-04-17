@@ -1047,7 +1047,7 @@ _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
         return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0, &return_value);
-    return FALSE;
+    return return_value;
 }
 
 static gboolean
@@ -1063,6 +1063,6 @@ _slave_delete_surrounding_cb (GtkIMContext  *slave,
         return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
-    return FALSE;
+    return return_value;
 }
 
