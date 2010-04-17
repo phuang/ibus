@@ -134,6 +134,7 @@ static gboolean _slave_delete_surrounding_cb
                                              IBusIMContext       *context);
 
 
+
 static GType                _ibus_type_im_context = 0;
 static GtkIMContextClass    *parent_class = NULL;
 
