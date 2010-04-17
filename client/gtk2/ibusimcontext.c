@@ -219,7 +219,8 @@ _key_snooper_cb (GtkWidget   *widget,
     if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
         return FALSE;
 
-    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
+    if (ibusimcontext->enable)
+        g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
@@ -427,7 +428,8 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
         if (event->state & IBUS_IGNORED_MASK)
             return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
 
-        g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
+        if (ibusimcontext->enable)
+            g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
 
         switch (event->type) {
         case GDK_KEY_RELEASE:
@@ -678,7 +680,7 @@ ibus_im_context_set_surrounding (GtkIMContext  *context,
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibusimcontext->ibuscontext) {
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
         IBusText *ibustext;
         guint cursor_pos;
 
