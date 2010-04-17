@@ -124,10 +124,10 @@ static void     _slave_preedit_start_cb     (GtkIMContext       *slave,
                                              IBusIMContext       *context);
 static void     _slave_preedit_end_cb       (GtkIMContext       *slave,
                                              IBusIMContext       *context);
-static void     _slave_retrieve_surrounding_cb
+static gboolean _slave_retrieve_surrounding_cb
                                             (GtkIMContext       *slave,
                                              IBusIMContext       *context);
-static void     _slave_delete_surrounding_cb
+static gboolean _slave_delete_surrounding_cb
                                             (GtkIMContext       *slave,
                                              gint               offset_from_cursor,
                                              guint              nchars,
@@ -1034,30 +1034,31 @@ _slave_preedit_end_cb (GtkIMContext  *slave,
     g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
 
-static void
+static gboolean
 _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
                                 IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
-        return;
+        return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
+    return FALSE;
 }
 
-static void
+static gboolean
 _slave_delete_surrounding_cb (GtkIMContext  *slave,
                               gint           offset_from_cursor,
                               guint          nchars,
                               IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
-    gboolean return_value;
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
-        return;
+        return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
+    return FALSE;
 }
 
