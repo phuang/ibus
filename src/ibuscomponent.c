@@ -335,7 +335,9 @@ ibus_component_output (IBusComponent *component,
 
 #define OUTPUT_ENTRY(field, element)                                        \
     {                                                                       \
-        gchar *escape_text = g_markup_escape_text (component->field, -1);   \
+        gchar *escape_text =                                                \
+            g_markup_escape_text (component->field ?                        \
+                                    component->field : "", -1);             \
         g_string_append_indent (output, indent + 1);                        \
         g_string_append_printf (output, "<"element">%s</"element">\n",      \
                                 escape_text);                               \

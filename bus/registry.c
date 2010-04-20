@@ -347,7 +347,10 @@ bus_registry_load_in_dir (BusRegistry *registry,
 
         path = g_build_filename (dirname, filename, NULL);
         component = ibus_component_new_from_file (path);
-        registry->components = g_list_append (registry->components, component);
+        if (component != NULL) {
+            g_object_ref_sink (component);
+            registry->components = g_list_append (registry->components, component);
+        }
 
         g_free (path);
     }
