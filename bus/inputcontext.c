@@ -703,10 +703,15 @@ _ic_process_key_event  (BusInputContext *context,
         return reply;
     }
 
-    if (context->has_focus) {
+    if (G_UNLIKELY (!context->has_focus)) {
+        /* workaround: set focus if context does not have focus */
+        bus_input_context_focus_in (context);
+    }
+
+    if (G_LIKELY (context->has_focus)) {
         retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, keycode, modifiers);
         /* If it is keyboard shortcut, reply TRUE to client */
-        if (retval) {
+        if (G_UNLIKELY (retval)) {
             reply = ibus_message_new_method_return (message);
             ibus_message_append_args (reply,
                                       G_TYPE_BOOLEAN, &retval,
