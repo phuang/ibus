@@ -32,6 +32,7 @@ BuildRequires:  gtk-doc
 BuildRequires:  GConf2-devel
 BuildRequires:  pygobject2-devel
 BuildRequires:  intltool
+BuildRequires:  iso-codes-devel
 
 Requires:   %{name}-libs = %{version}-%{release}
 Requires:   %{name}-gtk = %{version}-%{release}
@@ -107,7 +108,6 @@ The ibus-devel-docs package contains developer documentation for ibus
 
 %build
 %configure --disable-static \
-           --disable-iso-codes-check \
            --enable-gtk-doc
 # make -C po update-gmo
 make %{?_smp_mflags}
