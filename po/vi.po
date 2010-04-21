@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-08 16:55+0700\n"
 "Last-Translator: Lê Quốc Tuấn <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -287,7 +287,7 @@ msgstr "Phím tắt để bật hoặc tắt kiểu gõ"
 msgid "Trigger shortcut keys"
 msgstr "Phím tắt kích hoạt"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Dùng phông chữ tùy biến"
 
@@ -473,6 +473,11 @@ msgstr "Góc trên bên trái"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Góc trên bên phải"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Dùng phông chữ tùy biến"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

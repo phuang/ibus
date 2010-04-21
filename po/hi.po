@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-08 13:27+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Hindi <hindi.sf.net>\n"
@@ -292,7 +292,7 @@ msgstr "इनपुट विधि को चालू या बंद रख
 msgid "Trigger shortcut keys"
 msgstr "शॉर्टकट कुंजी ट्रिगर करें"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "मनपसंद फ़ॉन्ट का प्रयोग करें"
 
@@ -476,6 +476,11 @@ msgstr "ऊपरी बायां कोना"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "ऊपरी दाहिना कोना"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "मनपसंद फ़ॉन्ट का प्रयोग करें"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

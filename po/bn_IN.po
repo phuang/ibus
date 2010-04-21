@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-03-25 17:16+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -289,7 +289,7 @@ msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ কর�
 msgid "Trigger shortcut keys"
 msgstr "ট্রিগারের শর্টকাট-কি"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
@@ -473,6 +473,11 @@ msgstr "উপরে বাঁদিকের কোণায়"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "উপরে ডানদিকের কোণায়"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

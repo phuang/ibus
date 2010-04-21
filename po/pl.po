@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-02-28 03:12+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
@@ -285,7 +285,7 @@ msgstr "Klawisze skrótów do włączania lub wyłączania metody wprowadzania"
 msgid "Trigger shortcut keys"
 msgstr "Klawisze skrótów przełącznika"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Użycie własnej czcionki"
 
@@ -478,6 +478,11 @@ msgstr "Górny lewy róg"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Górny prawy róg"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Użycie własnej czcionki"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

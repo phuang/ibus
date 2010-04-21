@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-03-24 16:48+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -286,7 +286,7 @@ msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓണ്‍ അല്
 msgid "Trigger shortcut keys"
 msgstr "എളുപ്പവഴികള്‍ ട്രിഗര്‍ ചെയ്യുക"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
@@ -471,6 +471,11 @@ msgstr "മുകളില്‍ ഇടതു് കോണ്‍ "
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "മുകളില്‍ വലതു് കോണ്‍ "
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

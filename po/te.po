@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-08 15:31+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -294,7 +294,7 @@ msgstr "ఇన్పుట్ పద్దతిని ఆన్ చేయుట
 msgid "Trigger shortcut keys"
 msgstr "లఘవులను నొక్కుము"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
@@ -478,6 +478,11 @@ msgstr "పై ఎడమ మూల"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "పై కుడి మూల"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

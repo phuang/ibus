@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-01-30 18:22+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -296,7 +296,7 @@ msgstr ""
 msgid "Trigger shortcut keys"
 msgstr "Raccourci clavier d'activation/désactivation"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Utiliser une police personnalisée :"
 
@@ -487,6 +487,11 @@ msgstr "Coin en haut à gauche"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Coin en haut à droite"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Utiliser une police personnalisée :"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

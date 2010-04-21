@@ -424,7 +424,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkCheckButton" id="checkbutton_custom_font">
-                                    <property name="label" translatable="yes">Use custom font</property>
+                                    <property name="label" translatable="yes">Use custom font:</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>

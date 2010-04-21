@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Héctor Daniel Cabrera <logan@fedoraproject.org>\n"
 "Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
@@ -287,7 +287,7 @@ msgstr "Atajo de teclado para encender o apagar el método de entrada"
 msgid "Trigger shortcut keys"
 msgstr "Activadora de los Atajos de teclado"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Usar fuente personalizada"
 
@@ -485,6 +485,11 @@ msgstr "Esquina superior izquierda"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Esquina superior derecha"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Usar fuente personalizada"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

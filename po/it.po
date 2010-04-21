@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-10 09:28+1000\n"
 "Last-Translator: \n"
 "Language-Team:  <it@li.org>\n"
@@ -295,7 +295,7 @@ msgstr "I tasti scorciatoia per abilitare o disabilitare i metodi di input"
 msgid "Trigger shortcut keys"
 msgstr "Tasto di scelta rapida di avvio"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Usare carattere personalizzato"
 
@@ -484,6 +484,11 @@ msgstr "Angolo superiore sinistro"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Angolo superiore destro"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Usare carattere personalizzato"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

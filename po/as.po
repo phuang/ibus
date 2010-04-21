@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-11 12:13+0530\n"
 "Last-Translator: \n"
 "Language-Team: Assamese <>\n"
@@ -286,7 +286,7 @@ msgstr "নিবেশ পদ্ধতি খোলা আৰু বন্ধ �
 msgid "Trigger shortcut keys"
 msgstr "ট্ৰিগাৰৰ ছৰ্টকাট চাবি"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
 
@@ -470,6 +470,11 @@ msgstr "ওপৰৰ বাওঁফালৰ কোণত"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "ওপৰৰ সোঁফালৰ কোণত"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

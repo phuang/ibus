@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-06-11 17:58+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -303,7 +303,7 @@ msgstr ""
 msgid "Trigger shortcut keys"
 msgstr "Udløser til tastaturgenvej"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Brug tilpasset skrifttype"
 
@@ -497,6 +497,11 @@ msgstr ""
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr ""
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Brug tilpasset skrifttype"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-03-23 12:09+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -286,7 +286,7 @@ msgstr "ઇનપુટ પદ્દતિને ફેરબદલી કરવ
 msgid "Trigger shortcut keys"
 msgstr "ટ્રીગર ટૂંકાણ કીઓ"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 
@@ -469,6 +469,11 @@ msgstr "ઉંચે ડાબી બાજુનો ખૂણો"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "ઉંચે જમણી બાજુનો ખૂણો"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "વૈવિધ્ય ફોન્ટને વાપરો"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

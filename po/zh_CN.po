@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -155,11 +155,11 @@ msgstr "快捷键"
 
 #: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
-msgstr "按键:"
+msgstr "按键："
 
 #: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
-msgstr "修饰符:"
+msgstr "修饰符："
 
 #: ../setup/keyboardshortcut.py:228
 msgid ""
@@ -196,7 +196,7 @@ msgstr "自动隐藏"
 
 #: ../data/ibus.schemas.in.h:2
 msgid "Custom font"
-msgstr "自定义字体:"
+msgstr "自定义字体"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -278,7 +278,7 @@ msgstr "打开关闭输入法的快捷键"
 msgid "Trigger shortcut keys"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
@@ -368,7 +368,7 @@ msgstr "右下角"
 
 #: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
-msgstr "候选词排列方向:"
+msgstr "候选词排列方向："
 
 #: ../setup/setup.ui.h:23
 msgid "Custom"
@@ -388,7 +388,7 @@ msgstr "嵌入菜单"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
-msgstr "开关"
+msgstr "开关："
 
 #: ../setup/setup.ui.h:28
 msgid "General"
@@ -400,7 +400,7 @@ msgstr "水平"
 
 #: ../setup/setup.ui.h:32
 msgid "Language panel position:"
-msgstr "语言栏位置:"
+msgstr "语言栏位置："
 
 #: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
@@ -416,11 +416,11 @@ msgstr "从不"
 
 #: ../setup/setup.ui.h:36
 msgid "Next input method:"
-msgstr "下一输入法:"
+msgstr "下一输入法："
 
 #: ../setup/setup.ui.h:37
 msgid "Previous input method:"
-msgstr "上一输入法:"
+msgstr "上一输入法："
 
 #: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
@@ -444,7 +444,7 @@ msgstr "在语言栏上显示输入法的名字"
 
 #: ../setup/setup.ui.h:46
 msgid "Show language panel:"
-msgstr "显示语言栏:"
+msgstr "显示语言栏："
 
 #: ../setup/setup.ui.h:47
 msgid "Start ibus on login"
@@ -461,6 +461,10 @@ msgstr "左上角"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "右上角"
+
+#: ../setup/setup.ui.h:53
+msgid "Use custom font:"
+msgstr "使用自定义字体："
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

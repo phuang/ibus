@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-12-10 09:44+1000\n"
 "Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
 "Language-Team: \n"
@@ -293,7 +293,7 @@ msgstr "Tastenkombination zum An- oder Ausschalten der Eingabemethode"
 msgid "Trigger shortcut keys"
 msgstr "Auslöser Tastenkombination"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Benutzerdefinierte Schriftart verwenden"
 
@@ -489,6 +489,11 @@ msgstr "Ecke oben links"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Ecke oben rechts"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Benutzerdefinierte Schriftart verwenden"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

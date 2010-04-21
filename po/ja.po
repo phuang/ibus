@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -287,7 +287,7 @@ msgstr "インプットメソッドをオン、オフするためのショート
 msgid "Trigger shortcut keys"
 msgstr "トリガーショートカットキー"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
@@ -478,6 +478,11 @@ msgstr "左上隅"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "右上隅"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "カスタムフォントを使う"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

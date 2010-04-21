@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-04-09 14:48+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
@@ -286,7 +286,7 @@ msgstr "इंपुट पद्धत सुरू किंवा बंद �
 msgid "Trigger shortcut keys"
 msgstr "शॉर्टकट किज् ट्रिगर करा"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "स्वपसंत फॉन्ट वापरा"
 
@@ -469,6 +469,11 @@ msgstr "वरील डावा कोपरा"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "वरील उजवा कोपरा"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "स्वपसंत फॉन्ट वापरा"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"

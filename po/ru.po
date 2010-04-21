@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-20 18:01+0800\n"
+"POT-Creation-Date: 2010-04-21 10:58+0800\n"
 "PO-Revision-Date: 2010-04-09 12:45\n"
 "Last-Translator: Yulia <ypoyarko@redhat.com>\n"
 "Language-Team: Russian\n"
@@ -289,7 +289,7 @@ msgstr "Горячие клавиши для включения/выключен
 msgid "Trigger shortcut keys"
 msgstr "Горячие клавиши для включения/выключения"
 
-#: ../data/ibus.schemas.in.h:22 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:22
 msgid "Use custom font"
 msgstr "Использовать свой шрифт"
 
@@ -474,6 +474,11 @@ msgstr "Левый верхний угол"
 #: ../setup/setup.ui.h:52
 msgid "Top right corner"
 msgstr "Правый верхний угол"
+
+#: ../setup/setup.ui.h:53
+#, fuzzy
+msgid "Use custom font:"
+msgstr "Использовать свой шрифт"
 
 #: ../setup/setup.ui.h:56
 msgid "Vertical"
