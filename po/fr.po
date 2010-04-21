@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 18:43+0800\n"
+"POT-Creation-Date: 2010-04-20 18:01+0800\n"
 "PO-Revision-Date: 2010-01-30 18:22+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -30,7 +30,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "Framework de méthode d'entrée IBus"
 
-#: ../ibus/_config.py.in:37
+#: ../ibus/_config.py.in:38
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."

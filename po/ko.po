@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 18:43+0800\n"
+"POT-Creation-Date: 2010-04-20 18:01+0800\n"
 "PO-Revision-Date: 2010-03-31 14:16+1000\n"
 "Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -26,7 +26,7 @@ msgstr "IBus"
 msgid "IBus input method framework"
 msgstr "IBus 입력 방식 프레임워크"
 
-#: ../ibus/_config.py.in:37
+#: ../ibus/_config.py.in:38
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-09 18:43+0800\n"
+"POT-Creation-Date: 2010-04-20 18:01+0800\n"
 "PO-Revision-Date: 2010-02-28 03:12+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
@@ -21,7 +21,7 @@ msgstr "iBus"
 msgid "IBus input method framework"
 msgstr "Struktura metody wprowadzania iBus"
 
-#: ../ibus/_config.py.in:37
+#: ../ibus/_config.py.in:38
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
