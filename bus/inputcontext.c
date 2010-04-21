@@ -683,7 +683,7 @@ _ic_process_key_event  (BusInputContext *context,
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    IBusMessage *reply = NULL;
+    IBusMessage *reply;
     guint keyval, keycode, modifiers;
     gboolean retval;
     IBusError *error;
@@ -703,16 +703,19 @@ _ic_process_key_event  (BusInputContext *context,
         return reply;
     }
 
-    if (context->has_focus)
+    if (context->has_focus) {
         retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, keycode, modifiers);
-
-    if (retval) {
-        reply = ibus_message_new_method_return (message);
-        ibus_message_append_args (reply,
-                                  G_TYPE_BOOLEAN, &retval,
-                                  G_TYPE_INVALID);
+        /* If it is keyboard shortcut, reply TRUE to client */
+        if (retval) {
+            reply = ibus_message_new_method_return (message);
+            ibus_message_append_args (reply,
+                                      G_TYPE_BOOLEAN, &retval,
+                                      G_TYPE_INVALID);
+            return reply;
+        }
     }
-    else if (context->has_focus && context->enabled && context->engine) {
+
+    if (context->has_focus && context->enabled && context->engine) {
         CallData *call_data;
 
         call_data = g_slice_new (CallData);
@@ -729,14 +732,16 @@ _ic_process_key_event  (BusInputContext *context,
                                             modifiers,
                                             (GFunc) _ic_process_key_event_reply_cb,
                                             call_data);
+        return NULL;
     }
     else {
+        retval = FALSE;
         reply = ibus_message_new_method_return (message);
         ibus_message_append_args (reply,
                                   G_TYPE_BOOLEAN, &retval,
                                   G_TYPE_INVALID);
+        return reply;
     }
-    return reply;
 }
 
 static IBusMessage *
