@@ -88,6 +88,10 @@ struct _BusInputContext {
 
     /* filter release */
     gboolean filter_release;
+
+    /* surrounding text */
+    IBusText *surrounding_text;
+    guint     surrounding_cursor_pos;
 };
 
 struct _BusInputContextClass {

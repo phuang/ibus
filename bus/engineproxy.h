@@ -111,5 +111,9 @@ void             bus_engine_proxy_property_show     (BusEngineProxy *engine,
 void             bus_engine_proxy_property_hide     (BusEngineProxy *engine,
                                                      const gchar    *prop_name);
 gboolean         bus_engine_proxy_is_enabled        (BusEngineProxy *engine);
+void             bus_engine_proxy_set_surrounding_text
+                                                    (BusEngineProxy *engine,
+                                                     IBusText       *text,
+                                                     guint           cursor_pos);
 G_END_DECLS
 #endif

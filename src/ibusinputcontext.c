@@ -860,6 +860,20 @@ ibus_input_context_property_hide (IBusInputContext *context,
                      G_TYPE_INVALID);
 }
 
+void
+ibus_input_context_set_surrounding_text (IBusInputContext   *context,
+                                         IBusText           *text,
+                                         guint32             cursor_pos)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    ibus_proxy_call ((IBusProxy *) context,
+                     "SetSurroundingText",
+                     IBUS_TYPE_TEXT, &text,
+                     G_TYPE_UINT, &cursor_pos,
+                     G_TYPE_INVALID);
+}
+
 gboolean
 ibus_input_context_is_enabled (IBusInputContext *context)
 {

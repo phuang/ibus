@@ -728,6 +728,20 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                      G_TYPE_INVALID);
 }
 
+void bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
+                                            IBusText       *text,
+                                            guint           cursor_pos)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
+
+    ibus_proxy_call ((IBusProxy *) engine,
+                     "SetSurroundingText",
+                     IBUS_TYPE_TEXT, &text,
+                     G_TYPE_UINT, &cursor_pos,
+                     G_TYPE_INVALID);
+}
+
 #define DEFINE_FUNCTION(Name, name)                         \
     void                                                    \
     bus_engine_proxy_##name (BusEngineProxy *engine)        \

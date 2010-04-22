@@ -35,6 +35,7 @@
 
 #include "ibusproxy.h"
 #include "ibusenginedesc.h"
+#include "ibustext.h"
 
 /*
  * Type macros.
@@ -266,6 +267,16 @@ IBusEngineDesc
 void         ibus_input_context_set_engine  (IBusInputContext   *context,
                                              const gchar *name);
 
+/**
+ * ibus_input_context_set_surrounding_text:
+ * @context: An IBusInputContext.
+ * @text: An IBusText surrounding the current cursor on the application.
+ * @cursor_po: Current cursor position in characters in @text.
+*/
+void         ibus_input_context_set_surrounding_text
+                                            (IBusInputContext   *context,
+                                             IBusText           *text,
+                                             guint32             cursor_pos);
 
 G_END_DECLS
 #endif

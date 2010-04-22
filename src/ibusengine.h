@@ -124,10 +124,14 @@ struct _IBusEngineClass {
                                      guint           index,
                                      guint           button,
                                      guint           state);
+    void        (* set_surrounding_text)
+                                    (IBusEngine     *engine,
+                                     IBusText       *text,
+                                     guint           cursor_index);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];
+    gpointer pdummy[7];
 };
 
 GType        ibus_engine_get_type       (void);
@@ -365,6 +369,21 @@ void         ibus_engine_update_property(IBusEngine         *engine,
 void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
                                          gint                offset,
                                          guint               nchars);
+
+/**
+ * ibus_engine_get_surrounding_text:
+ * @engine: An IBusEngine.
+ * @text: Location to store surrounding text.
+ * @cursor_pos: Cursor position in characters in @text.
+ *
+ * Get surrounding text.
+ *
+ * @see_also #IBusEngine::set-surrounding-text
+ */
+void ibus_engine_get_surrounding_text(IBusEngine         *engine,
+                                      IBusText          **text,
+                                      guint              *cursor_pos);
+
 
 /**
  * ibus_engine_get_name:

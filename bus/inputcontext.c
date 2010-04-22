@@ -491,6 +491,9 @@ bus_input_context_init (BusInputContext *context)
     context->lookup_table = lookup_table_empty;
     context->lookup_table_visible = FALSE;
 
+    g_object_ref_sink (text_empty);
+    context->surrounding_text = text_empty;
+    context->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -531,6 +534,11 @@ bus_input_context_destroy (BusInputContext *context)
     if (context->client) {
         g_free (context->client);
         context->client = NULL;
+    }
+
+    if (context->surrounding_text) {
+        g_object_unref (context->surrounding_text);
+        context->surrounding_text = NULL;
     }
 
     IBUS_OBJECT_CLASS(bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
@@ -587,6 +595,10 @@ _ibus_introspect (BusInputContext   *context,
         "      <arg name=\"desc\" direction=\"out\" type=\"v\"/>\n"
         "    </method>\n"
         "    <method name=\"Destroy\"/>\n"
+        "    <method name=\"SetSurroundingText\">\n"
+        "      <arg name=\"text\" direction=\"in\" type=\"v\"/>\n"
+        "      <arg name=\"cursor_pos\" direction=\"in\" type=\"u\"/>\n"
+        "    </method>\n"
 
         /* signals */
         "    <signal name=\"CommitText\">\n"
@@ -1095,6 +1107,60 @@ _ic_destroy (BusInputContext  *context,
     return NULL;
 }
 
+static IBusMessage *
+_ic_set_surrounding_text (BusInputContext  *context,
+                          IBusMessage      *message,
+                          BusConnection    *connection)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (message != NULL);
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    IBusMessage *reply;
+    IBusText *text;
+    guint cursor_pos = 0;
+    gboolean retval;
+    IBusError *error;
+
+    retval = ibus_message_get_args (message,
+                                    &error,
+                                    IBUS_TYPE_TEXT, &text,
+                                    G_TYPE_UINT, &cursor_pos,
+                                    G_TYPE_INVALID);
+
+    if (!retval) {
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
+        return reply;
+    }
+
+    if ((context->capabilities & IBUS_CAP_SURROUNDING_TEXT) &&
+        (!context->surrounding_text ||
+         g_strcmp0 (text->text, context->surrounding_text->text) != 0 ||
+         cursor_pos != context->surrounding_cursor_pos)) {
+        if (context->surrounding_text) {
+            g_object_unref (context->surrounding_text);
+        }
+
+        context->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
+        context->surrounding_cursor_pos = cursor_pos;
+
+        if (context->has_focus && context->enabled && context->engine) {
+            bus_engine_proxy_set_surrounding_text (context->engine,
+                                                   text,
+                                                   cursor_pos);
+        }
+    }
+
+    if (g_object_is_floating (text))
+        g_object_unref (text);
+
+    reply = ibus_message_new_method_return (message);
+    return reply;
+}
+
 static gboolean
 bus_input_context_ibus_message (BusInputContext *context,
                                 BusConnection   *connection,
@@ -1129,6 +1195,7 @@ bus_input_context_ibus_message (BusInputContext *context,
         { IBUS_INTERFACE_INPUT_CONTEXT, "SetEngine",         _ic_set_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "GetEngine",         _ic_get_engine },
         { IBUS_INTERFACE_INPUT_CONTEXT, "Destroy",           _ic_destroy },
+        { IBUS_INTERFACE_INPUT_CONTEXT, "SetSurroundingText",_ic_set_surrounding_text },
     };
 
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));

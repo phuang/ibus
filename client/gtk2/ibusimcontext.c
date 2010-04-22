@@ -100,6 +100,12 @@ static void     ibus_im_context_set_cursor_location
 static void     ibus_im_context_set_use_preedit
                                             (GtkIMContext           *context,
                                              gboolean               use_preedit);
+static void     ibus_im_context_set_surrounding
+                                            (GtkIMContext  *slave,
+                                             const gchar   *text,
+                                             gint           len,
+                                             gint           cursor_index);
+
 
 /* static methods*/
 static void     _create_input_context       (IBusIMContext      *context);
@@ -118,10 +124,10 @@ static void     _slave_preedit_start_cb     (GtkIMContext       *slave,
                                              IBusIMContext       *context);
 static void     _slave_preedit_end_cb       (GtkIMContext       *slave,
                                              IBusIMContext       *context);
-static void     _slave_retrieve_surrounding_cb
+static gboolean _slave_retrieve_surrounding_cb
                                             (GtkIMContext       *slave,
                                              IBusIMContext       *context);
-static void     _slave_delete_surrounding_cb
+static gboolean _slave_delete_surrounding_cb
                                             (GtkIMContext       *slave,
                                              gint               offset_from_cursor,
                                              guint              nchars,
@@ -214,6 +220,11 @@ _key_snooper_cb (GtkWidget   *widget,
     if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
         return FALSE;
 
+    if (ibusimcontext->enable) {
+        gboolean return_value;
+        g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0, &return_value);
+    }
+
     switch (event->type) {
     case GDK_KEY_RELEASE:
         retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
@@ -258,6 +269,7 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     im_context_class->set_client_window = ibus_im_context_set_client_window;
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
+    im_context_class->set_surrounding = ibus_im_context_set_surrounding;
     gobject_class->finalize = ibus_im_context_finalize;
 
     _signal_commit_id =
@@ -418,6 +430,11 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 
         if (event->state & IBUS_IGNORED_MASK)
             return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
+        if (ibusimcontext->enable) {
+            gboolean return_value;
+            g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0, &return_value);
+        }
 
         switch (event->type) {
         case GDK_KEY_RELEASE:
@@ -655,6 +672,34 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
         ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
     }
     gtk_im_context_set_use_preedit (ibusimcontext->slave, use_preedit);
+}
+
+static void
+ibus_im_context_set_surrounding (GtkIMContext  *context,
+                                 const gchar   *text,
+                                 gint           len,
+                                 gint           cursor_index)
+{
+    g_return_if_fail (context != NULL);
+    g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
+
+    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
+
+    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+        IBusText *ibustext;
+        guint cursor_pos;
+
+        ibustext = ibus_text_new_from_string (text);
+        cursor_pos = g_utf8_strlen (text, cursor_index);
+        ibus_input_context_set_surrounding_text (ibusimcontext->ibuscontext,
+                                                 ibustext,
+                                                 cursor_pos);
+        g_object_unref (ibustext);
+    }
+    gtk_im_context_set_surrounding (ibusimcontext->slave,
+                                    text,
+                                    len,
+                                    cursor_index);
 }
 
 static void
@@ -996,30 +1041,33 @@ _slave_preedit_end_cb (GtkIMContext  *slave,
     g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
 }
 
-static void
+static gboolean
 _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
                                 IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
+    gboolean return_value;
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
-        return;
+        return FALSE;
     }
-    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0);
+    g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0, &return_value);
+    return return_value;
 }
 
-static void
+static gboolean
 _slave_delete_surrounding_cb (GtkIMContext  *slave,
                               gint           offset_from_cursor,
                               guint          nchars,
                               IBusIMContext *ibusimcontext)
 {
-    g_return_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext));
+    g_return_val_if_fail (IBUS_IS_IM_CONTEXT (ibusimcontext), FALSE);
     gboolean return_value;
 
     if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
-        return;
+        return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
+    return return_value;
 }
 
