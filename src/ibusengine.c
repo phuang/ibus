@@ -456,6 +456,9 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::candidate-clicked:
      * @engine: An IBusEngine.
+     * @index:  Index of candidate be clicked.
+     * @button: Mouse button.
+     * @state:  Keyboard state.
      *
      * Emitted when candidate on lookup table is clicked.
      * Implement the member function candidate_clicked() in extended class to receive this signal.
@@ -478,6 +481,8 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::property-activate:
      * @engine: An IBusEngine.
+     * @name:   Property name.
+     * @state:  Property state.
      *
      * Emitted when a property is activated or change changed.
      * Implement the member function property_activate() in extended class to receive this signal.
@@ -499,6 +504,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::property-show:
      * @engine: An IBusEngine.
+     * @name:   Property name.
      *
      * Emitted when a property is shown.
      * Implement the member function property_side() in extended class to receive this signal.
@@ -519,6 +525,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
     /**
      * IBusEngine::property-hide:
      * @engine: An IBusEngine.
+     * @name:   Property name.
      *
      * Emitted when a property is hidden.
      * Implement the member function property_hide() in extended class to receive this signal.
