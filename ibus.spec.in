@@ -44,6 +44,7 @@ Requires:   dbus-python >= %{dbus_python_version}
 Requires:   im-chooser >= %{im_chooser_version}
 Requires:   GConf2 >= %{gconf2_version}
 Requires:   notify-python
+Requires:   librsvg2
 
 Requires(post):  desktop-file-utils
 Requires(postun):  desktop-file-utils
