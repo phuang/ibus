@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-04-26 08:54+0800\n"
-"PO-Revision-Date: 2010-01-30 18:22+0100\n"
-"Last-Translator: Julien <julroy67@gmail.com>\n"
+"PO-Revision-Date: 2010-04-26 13:25+0200\n"
+"Last-Translator: \n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,9 +87,8 @@ msgid "translator-credits"
 msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
-msgstr "À propos de la Méthode d'Entrée"
+msgstr "À propos de la méthode d'entrée"
 
 #: ../ui/gtk/languagebar.py:215
 msgid "Switch input method"
@@ -214,11 +213,11 @@ msgstr "Police personnalisée pour le panneau de langue"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "Insérer le Texte en cours d'Édition"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "Insérer le texte en cours d'édition dans la fenêtre de l'application"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -233,18 +232,16 @@ msgid "Orientation of lookup table"
 msgstr "Orientation de la table"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
-msgstr "Orientation de la table. 0 = Horizontale, 1 = Verticale"
+msgstr "Orientation de la liste des candidats. 0 = Horizontale, 1 = Verticale"
 
 #: ../data/ibus.schemas.in.h:10
 msgid "Preload engines"
 msgstr "Précharger les moteurs"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "Précharger les moteurs lors du démarrage d'iBus"
+msgstr "Précharger les moteurs au démarrage d'ibus"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -267,13 +264,12 @@ msgid "Show input method name on language bar"
 msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"Préférence d'affichage du panneau de langue. 0 = Toujours cacher, 1 = Cacher "
-"automatiquement, 2 = Toujours afficher"
+"Sélection du comportement d'affichage de la liste des candidats. 0 = Insérée "
+"dans le menu, 1 = Cacher automatiquement, 2 = Toujours afficher"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -395,16 +391,17 @@ msgstr "Personnalisée"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "Insérer le texte en cours d'édition dans la fenêtre de l'application"
 
 #: ../setup/setup.ui.h:25
-#, fuzzy
 msgid "Embed the preedit text of input method in the application window"
-msgstr "Partager la même méthode d'entrée pour toutes les applications"
+msgstr ""
+"Insérer le texte en cours d'édition par la méthode d'entrée dans la fenêtre "
+"de l'application"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "Insérée dans le menu"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -486,7 +483,6 @@ msgid "Top right corner"
 msgstr "Coin en haut à droite"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
 msgstr "Utiliser une police personnalisée :"
 
