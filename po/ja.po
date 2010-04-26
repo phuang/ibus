@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-21 10:58+0800\n"
+"POT-Creation-Date: 2010-04-26 08:54+0800\n"
 "PO-Revision-Date: 2009-09-08 17:31+0900\n"
 "Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -245,11 +245,11 @@ msgstr "ibus の開始中にエンジンをプリロード"
 msgid "Prev engine shortcut keys"
 msgstr "前のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "すべてのアプリケーション間で同じインプットメソッドを共有する"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "システムトレイにアイコンを表示する"
 
@@ -257,14 +257,15 @@ msgstr "システムトレイにアイコンを表示する"
 msgid "Show input method name"
 msgstr "インプットメソッド名を表示する"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "言語バーにインプットメソッド名を表示する"
 
 #: ../data/ibus.schemas.in.h:17
+#, fuzzy
 msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
 msgstr "言語パネルの動作。0 = 常に隠す、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:18
@@ -275,11 +276,11 @@ msgstr ""
 "言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタ"
 "ム"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
@@ -299,11 +300,11 @@ msgstr "言語パネル用にカスタムフォント名を使用する"
 msgid "Use global input method"
 msgstr "グローバルインプットメソッドを使用する"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "システムキーボード (XKB) レイアウトを使用する"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "システムキーボードレイアウトを使用する"
 
@@ -424,71 +425,70 @@ msgstr ""
 "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:35
-msgid "Never"
-msgstr "表示しない"
-
-#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "次のインプットメソッド:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "ひとつ前のインプットメソッド:"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "選択したインプットメソッドを有効なインプットメソッドから削除します"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "言語バーをどのように表示するもしくは隠すかの ibus の動作を設定します"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "ルックアップテーブルの中で候補ウィンドウの向きを設定します"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:42
 msgid "Show information of the selected input method"
 msgstr "選択したインプットメソッドの情報を表示します"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:44
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
 "示します"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "Show language panel:"
 msgstr "言語パネルの表示:"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:50
 msgid "Top left corner"
 msgstr "左上隅"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:51
 msgid "Top right corner"
 msgstr "右上隅"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:52
 msgid "Use custom font:"
 msgstr "カスタムフォントを使う:"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:55
 msgid "Vertical"
 msgstr "縦"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "アクティブであるとき"
+
+#~ msgid "Never"
+#~ msgstr "表示しない"
 
 #, fuzzy
 #~ msgid "Langauge panel position"

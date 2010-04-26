@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-21 10:58+0800\n"
+"POT-Creation-Date: 2010-04-26 08:54+0800\n"
 "PO-Revision-Date: 2010-04-09 14:48+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
@@ -244,11 +244,11 @@ msgstr "ibus सुरू होतेवेळी इंजीन आधिप�
 msgid "Prev engine shortcut keys"
 msgstr "मागील इंजीनचे शॉर्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "सर्व ऍप्लिकेशन्स् मध्ये एकसारखेच इंपुट पद्धत शेअर करा"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "चिन्ह प्रणाली ट्रेवर दाखवा"
 
@@ -256,14 +256,15 @@ msgstr "चिन्ह प्रणाली ट्रेवर दाखवा
 msgid "Show input method name"
 msgstr "इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
 #: ../data/ibus.schemas.in.h:17
+#, fuzzy
 msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
 msgstr "भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always show"
 
 #: ../data/ibus.schemas.in.h:18
@@ -274,11 +275,11 @@ msgstr ""
 "भाषा पटलाचे स्थान. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left "
 "corner, 3 = Bottom right corner, 4 = Custom"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "इंपुट पद्धत सुरू किंवा बंद करण्यासाठी शार्टकट किज्"
 
@@ -298,11 +299,11 @@ msgstr "भाषा पटल करीत स्वपसंत फॉन्�
 msgid "Use global input method"
 msgstr "ग्लोबल इंपुट पद्धत नीवडा"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "प्रणाली कळफलक (XKB) मांडणीचा वापर करा"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "प्रणाली कळफलक मांडणीचा वापर करा"
 
@@ -419,66 +420,65 @@ msgid "Move up the selected input method in the enabled input methods list"
 msgstr "कार्यक्षम इंपुट पद्धतींमध्ये नीवडलेली इंपुट पद्धत वर सरकवा"
 
 #: ../setup/setup.ui.h:35
-msgid "Never"
-msgstr "कधीच नाही"
-
-#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "पुढची इंपुट पद्धत:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "मागील इंपुट पद्धत:"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "कार्यक्षम इंपुट पद्धतीपासून नीवडलेली इंपुट पद्धत काढून टाका"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "भाषा पट्टी कसे दाखवायचे किंवा लपवायचे यासाठी ibus चे वर्तन ठरवा"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "लुकअप टेबल मधील घटकांचे निर्देशन ठरवा"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:42
 msgid "Show information of the selected input method"
 msgstr "नीवडलेल्या इंपुट पद्धत विषयी माहिती दाखवा"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:44
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "चेकबॉक्स नीवडल्यानंतर भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "Show language panel:"
 msgstr "भाषा पटल दाखवा:"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "प्रवेशवेळी ibus सुरू करा"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "सूचीतील मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:50
 msgid "Top left corner"
 msgstr "वरील डावा कोपरा"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:51
 msgid "Top right corner"
 msgstr "वरील उजवा कोपरा"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "Use custom font:"
 msgstr "स्वपसंत फॉन्ट वापरा"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:55
 msgid "Vertical"
 msgstr "उभे"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "सक्रीय असल्यावर"
+
+#~ msgid "Never"
+#~ msgstr "कधीच नाही"

@@ -23,16 +23,13 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Never</col>
+        <col id="0" translatable="yes">Embedded in menu</col>
       </row>
       <row>
         <col id="0" translatable="yes">When active</col>
       </row>
       <row>
         <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Embedded in menu</col>
       </row>
     </data>
   </object>

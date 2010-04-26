@@ -263,7 +263,7 @@ class Panel(ibus.PanelBase):
         self.__candidate_panel.set_orientation(orientation)
 
     def __config_load_show(self):
-        show = self.__config.get_value("panel", "show", 1)
+        show = self.__config.get_value("panel", "show", 0)
         self.__language_bar.set_show(show)
 
     def __config_load_position(self):

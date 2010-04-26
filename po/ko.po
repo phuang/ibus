@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-21 10:58+0800\n"
+"POT-Creation-Date: 2010-04-26 08:54+0800\n"
 "PO-Revision-Date: 2010-03-31 14:16+1000\n"
 "Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -245,11 +245,11 @@ msgstr "ibus 시작 시 엔진 미리로드  "
 msgid "Prev engine shortcut keys"
 msgstr "이전 엔진 단축키"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "모든 어플리케이션에서 동일한 입력 방식 공유"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "시스템 트레이에 아이콘 보여주기"
 
@@ -257,14 +257,15 @@ msgstr "시스템 트레이에 아이콘 보여주기"
 msgid "Show input method name"
 msgstr "입력 방식 이름 보여주기"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "언어 도구 모음에 입력 방식 이름 보여주기"
 
 #: ../data/ibus.schemas.in.h:17
+#, fuzzy
 msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
 msgstr "언어 패널의 동작 0 = 항상 숨기기, 1 = 자동 숨기기, 2 = 항상 표시  "
 
 #: ../data/ibus.schemas.in.h:18
@@ -275,11 +276,11 @@ msgstr ""
 "언어 패널의 위치. 0 = 왼쪽 위, 1 = 오른쪽 위, 2 = 왼쪽 아래, 3 = 오른쪽 아"
 "래, 4 = 사용자 지정"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "입력 방식을 활성 또는 해제하기 위한 단축키"
 
@@ -299,11 +300,11 @@ msgstr "언어 패널 용 사용자 정의 글꼴 이름 사용"
 msgid "Use global input method"
 msgstr "전역 입력 방식 사용"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "시스템 키보드 (XKB) 레이아웃 사용  "
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "시스템 키보드 레이아웃 사용  "
 
@@ -420,69 +421,68 @@ msgid "Move up the selected input method in the enabled input methods list"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 위로 이동합니다"
 
 #: ../setup/setup.ui.h:35
-msgid "Never"
-msgstr "하지않음"
-
-#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "다음 입력 방식:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "이전 입력 방식:"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "활성화된 입력 방식 목록에서 선택한 입력 방식을 제거"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ibus가 입력 도구 모음을 표시하거나 숨기는 방법 설정"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "검색 테이블에서 후보 창의 방향 설정  "
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:42
 msgid "Show information of the selected input method"
 msgstr "선택한 입력 방식의 정보 보여주기"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:44
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "확인란을 선택하면 입력 방식의 이름을 입력 도구 모음에 표시"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "Show language panel:"
 msgstr "언어 패널 표시:  "
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "로그인 시 ibus 시작  "
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축키   "
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:50
 msgid "Top left corner"
 msgstr "왼쪽 위"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:51
 msgid "Top right corner"
 msgstr "오른쪽 위"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "Use custom font:"
 msgstr "사용자 정의 글꼴 사용  "
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:55
 msgid "Vertical"
 msgstr "세로"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "활성화 되었을 때"
+
+#~ msgid "Never"
+#~ msgstr "하지않음"
 
 #~ msgid "Show in Status Icon menu"
 #~ msgstr "상태 아이콘 메뉴에서 보여주기"

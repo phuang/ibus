@@ -137,7 +137,7 @@ class Setup(object):
         # auto hide
         self.__combobox_panel_show = self.__builder.get_object("combobox_panel_show")
         self.__combobox_panel_show.set_active(
-            self.__config.get_value("panel", "show", 1))
+            self.__config.get_value("panel", "show", 0))
         self.__combobox_panel_show.connect("changed", self.__combobox_panel_show_changed_cb)
 
         # panel position

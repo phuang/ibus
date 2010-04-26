@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-21 10:58+0800\n"
+"POT-Creation-Date: 2010-04-26 08:54+0800\n"
 "PO-Revision-Date: 2010-01-30 18:22+0100\n"
 "Last-Translator: Julien <julroy67@gmail.com>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -250,11 +250,11 @@ msgstr "Précharger les moteurs lors du démarrage d'iBus"
 msgid "Prev engine shortcut keys"
 msgstr "Raccourci clavier pour revenir au moteur précédent"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "Partager la même méthode d'entrée pour toutes les applications"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "Afficher l'icône dans la boîte à miniatures"
 
@@ -262,14 +262,15 @@ msgstr "Afficher l'icône dans la boîte à miniatures"
 msgid "Show input method name"
 msgstr "Afficher le nom de la méthode d'entrée"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:44
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
 
 #: ../data/ibus.schemas.in.h:17
+#, fuzzy
 msgid ""
-"The behavior of language panel. 0 = Always hide, 1 = Auto hide, 2 = Always "
-"show"
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
 msgstr ""
 "Préférence d'affichage du panneau de langue. 0 = Toujours cacher, 1 = Cacher "
 "automatiquement, 2 = Toujours afficher"
@@ -282,11 +283,11 @@ msgstr ""
 "Position de la barre de langue. 0 = En haut à gauche, 1 = En haut à droite, "
 "2 = En bas à gauche, 3 = En bas à droite, 4 = Personnalisé"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:48
+#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "Raccourci clavier pour passer à la méthode d'entrée suivante"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:50
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr ""
 "Sélection des raccourcis claviers pour activer ou désactiver les méthodes "
@@ -308,11 +309,11 @@ msgstr "Utiliser une police personnalisée pour la barre de langue"
 msgid "Use global input method"
 msgstr "Utiliser une méthode d'éntrée globale"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "Utiliser la disposition clavier système (XKB)"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "Utiliser la disposition clavier système"
 
@@ -434,72 +435,71 @@ msgstr ""
 "méthodes d'entrée actives"
 
 #: ../setup/setup.ui.h:35
-msgid "Never"
-msgstr "Ne jamais afficher"
-
-#: ../setup/setup.ui.h:36
 msgid "Next input method:"
 msgstr "Méthode d'entrée suivante :"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:36
 msgid "Previous input method:"
 msgstr "Méthode d'entrée précédente :"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "Supprimer la méthode d'entrée selectionnée des méthodes d'entrées actives"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "Sélection du comportent d'affichage de la barre de langue d'Ibus"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Permet de choisir l'orientation de la liste des candidats"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:42
 msgid "Show information of the selected input method"
 msgstr "Afficher les informations de la méthode d'entrée selectionnée"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:44
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "Afficher le nom de la méthode d'entrée sur la barre de langue lorsque la "
 "case est cochée"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "Show language panel:"
 msgstr "Afficher la barre de langue :"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "Démarrer IBus lors de la connexion"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Raccourci clavier pour revenir à la méthode d'entrée précédente"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:50
 msgid "Top left corner"
 msgstr "Coin en haut à gauche"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:51
 msgid "Top right corner"
 msgstr "Coin en haut à droite"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:52
 #, fuzzy
 msgid "Use custom font:"
 msgstr "Utiliser une police personnalisée :"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:55
 msgid "Vertical"
 msgstr "Verticale"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Uniquement lorsque active"
+
+#~ msgid "Never"
+#~ msgstr "Ne jamais afficher"
 
 #~ msgid "Show in Status Icon menu"
 #~ msgstr "Afficher l'icône de statut dans le menu"

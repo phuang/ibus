@@ -66,7 +66,7 @@ class LanguageBar(gtk.Toolbar):
 
     def __init__ (self):
         super(LanguageBar, self).__init__()
-        self.__show = 1
+        self.__show = 0
         self.__enabled = False
         self.__has_focus = False
         self.__show_im_name = False
@@ -236,8 +236,8 @@ class LanguageBar(gtk.Toolbar):
         return self.__enabled
 
     def set_show(self, show):
-        if show not in (0, 1, 2, 3):
-            show = 1
+        if show not in (0, 1, 2):
+            show = 0
         self.__show = show
         if self.__has_focus:
             self.focus_in()
@@ -263,8 +263,9 @@ class LanguageBar(gtk.Toolbar):
 
     def register_properties(self, props):
         self.__props = props
-        if self.__show == 3:
+        if self.__show == 0:
             return
+        # refresh items on labguage bar
         self.__remove_properties()
         # create new properties
         for i, prop in enumerate(props):
@@ -295,7 +296,7 @@ class LanguageBar(gtk.Toolbar):
             self.insert(item, i + 2)
 
     def update_property(self, prop):
-        if self.__show == 3 and self.__props:
+        if self.__show == 0 and self.__props:
             list = self.__props.get_properties()
             for i, p in enumerate(list):
                 if p.key == prop.key and p.type == prop.type:
@@ -324,24 +325,23 @@ class LanguageBar(gtk.Toolbar):
     def focus_in(self):
         self.__has_focus = True
         self.__im_menu.set_sensitive(True)
-        if self.__enabled:
-            if self.__show in (1, 2):
-                self.show_all()
-            else:
-                self.hide_all()
+        if (self.__show == 1 and self.__enabled) or self.__show == 2:
+            self.show_all()
+        else:
+            self.hide_all()
 
     def focus_out(self):
         self.__has_focus = False
         self.__im_menu.set_sensitive(False)
-        if self.__show in (0, 1, 3):
-            self.hide_all()
-        else:
+        if self.__show == 2:
             self.show_all()
+        else:
+            self.hide_all()
 
     def create_im_menu(self, menu):
         if not self.__enabled:
             return
-        if self.__show != 3:
+        if self.__show != 0:
             return
         if not menu:
             assert False
