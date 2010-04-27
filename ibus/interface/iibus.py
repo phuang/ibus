@@ -72,6 +72,8 @@ class IIBus(dbus.service.Object):
     @method(in_signature="v", out_signature="v")
     def Ping(self, data, dbusconn): pass
 
+    @method(out_signature="b")
+    def GetUseSysLayout(self, dbusconn): pass
+
     @signal(signature="")
     def RegistryChanged(self): pass
-

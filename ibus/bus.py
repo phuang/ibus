@@ -154,6 +154,9 @@ class Bus(object.Object):
             data = serializable.deserialize_object(data)
         return data
 
+    def get_use_sys_layout(self):
+        return self.__ibus.GetUseSysLayout();
+
     def introspect_ibus(self):
         return self.__ibus.Introspect()
 
