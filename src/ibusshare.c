@@ -281,7 +281,6 @@ ibus_free_strv (gchar **strv)
     g_free (strv);
 }
 
-
 void
 ibus_init (void)
 {

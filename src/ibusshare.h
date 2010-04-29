@@ -258,8 +258,11 @@ guint            ibus_keyval_from_name  (const gchar    *keyval_name);
  * @strv: List of strings.
  *
  * Free a list of strings.
+ * Deprecated: This function has been deprecated and should
+ * not be used in newly written code.
  */
-void             ibus_free_strv         (gchar          **strv);
+void             ibus_free_strv         (gchar          **strv)
+    G_GNUC_DEPRECATED;
 
 /**
  * ibus_key_event_to_string:
