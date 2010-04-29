@@ -60,6 +60,8 @@ class Panel(ibus.PanelBase):
     def __init__(self, bus):
         super(Panel, self).__init__(bus)
         self.__bus = bus
+        self.__bus.connect("global-engine-changed",
+                           self.__global_engine_changed_cb)
         self.__config = self.__bus.get_config()
         self.__focus_ic = None
         self.__setup_pid = None
@@ -200,63 +202,19 @@ class Panel(ibus.PanelBase):
     def focus_in(self, ic):
         self.reset()
         self.__focus_ic = ibus.InputContext(self.__bus, ic)
-        enabled = self.__focus_ic.is_enabled()
-        self.__language_bar.set_enabled(enabled)
-
-        if not enabled:
-            self.__set_im_icon(ICON_KEYBOARD)
-            self.__set_im_name(None)
-            if self.__bus.get_use_sys_layout():
-                self.__set_xkb_layout(self.__default_xkb_layout)
-        else:
-            engine = self.__focus_ic.get_engine()
-            if engine:
-                self.__set_im_icon(engine.icon)
-                self.__set_im_name(engine.longname)
-                if self.__bus.get_use_sys_layout():
-                    self.__set_xkb_layout(engine.layout)
-            else:
-                self.__set_im_icon(ICON_KEYBOARD)
-                self.__set_im_name(None)
-                if self.__bus.get_use_sys_layout():
-                    self.__set_xkb_layout(self.__default_xkb_layout)
+        self.__update_ui_and_xkb_layout()
         self.__language_bar.focus_in()
 
     def focus_out(self, ic):
         self.reset()
         self.__focus_ic = None
-        self.__language_bar.set_enabled(False)
+        self.__update_ui_and_xkb_layout()
         self.__language_bar.focus_out()
-        self.__set_im_icon(ICON_KEYBOARD)
-        self.__set_im_name(None)
-        if self.__bus.get_use_sys_layout():
-            self.__set_xkb_layout(self.__default_xkb_layout)
 
     def state_changed(self):
         if not self.__focus_ic:
             return
-
-        enabled = self.__focus_ic.is_enabled()
-        self.__language_bar.set_enabled(enabled)
-
-        if enabled == False:
-            self.reset()
-            self.__set_im_icon(ICON_KEYBOARD)
-            self.__set_im_name(None)
-            if self.__bus.get_use_sys_layout():
-                self.__set_xkb_layout(self.__default_xkb_layout)
-        else:
-            engine = self.__focus_ic.get_engine()
-            if engine:
-                self.__set_im_icon(engine.icon)
-                self.__set_im_name(engine.longname)
-                if self.__bus.get_use_sys_layout():
-                    self.__set_xkb_layout(engine.layout)
-            else:
-                self.__set_im_icon(ICON_KEYBOARD)
-                self.__set_im_name(None)
-                if self.__bus.get_use_sys_layout():
-                    self.__set_xkb_layout(self.__default_xkb_layout)
+        self.__update_ui_and_xkb_layout()
 
     def reset(self):
         self.__candidate_panel.reset()
@@ -410,6 +368,7 @@ class Panel(ibus.PanelBase):
         engines = self.__bus.list_active_engines()
         current_engine = \
             (self.__focus_ic != None and self.__focus_ic.get_engine()) or \
+            self.__bus.get_global_engine() or \
             (engines and engines[0]) or \
             None
 
@@ -466,7 +425,7 @@ class Panel(ibus.PanelBase):
                 self.__status_icon)
 
     def __status_icon_activate_cb(self, status_icon):
-        if not self.__focus_ic:
+        if not (self.__focus_ic or self.__bus.get_use_global_engine()):
             menu = gtk.Menu()
             item = gtk.ImageMenuItem(_("No input window"))
             size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
@@ -483,12 +442,13 @@ class Panel(ibus.PanelBase):
                 self.__status_icon)
 
     def __im_menu_item_activate_cb(self, item, engine):
-        if not self.__focus_ic:
-            return
-        if engine:
-            self.__focus_ic.set_engine(engine)
-        else:
-            self.__focus_ic.disable()
+        if self.__focus_ic:
+            if engine:
+                self.__focus_ic.set_engine(engine)
+            else:
+                self.__focus_ic.disable()
+        elif self.__bus.get_use_global_engine() and engine:
+            self.__bus.set_global_engine(engine)
 
     def __sys_menu_item_activate_cb(self, item, command):
         if command == gtk.STOCK_PREFERENCES:
@@ -544,7 +504,7 @@ class Panel(ibus.PanelBase):
             layout = layout + ",us"
 
         if self.__current_xkb_layout == layout:
-            return;
+            return
 
         self.__current_xkb_layout = layout
 
@@ -555,3 +515,33 @@ class Panel(ibus.PanelBase):
                       [ "setxkbmap", "-layout", layout ] )
         except:
             print >> sys.stderr, "Failed to run %s" % self.__setxkbmap_cmd
+
+    def __update_ui_and_xkb_layout(self):
+        engine = None
+        enabled = False
+        language_bar_enabled = False
+
+        if self.__focus_ic:
+            engine = self.__focus_ic.get_engine()
+            enabled = self.__focus_ic.is_enabled()
+            language_bar_enabled = enabled
+        elif self.__bus.get_use_global_engine():
+            engine = self.__bus.get_global_engine()
+            enabled = self.__bus.is_global_engine_enabled()
+
+        self.__language_bar.set_enabled(language_bar_enabled)
+
+        if engine and enabled:
+            self.__set_im_icon(engine.icon)
+            self.__set_im_name(engine.longname)
+            if self.__bus.get_use_sys_layout():
+                self.__set_xkb_layout(engine.layout)
+        else:
+            self.__set_im_icon(ICON_KEYBOARD)
+            self.__set_im_name(None)
+            if self.__bus.get_use_sys_layout():
+                self.__set_xkb_layout(self.__default_xkb_layout)
+
+    def __global_engine_changed_cb(self, bus):
+        if not self.__focus_ic:
+            self.__update_ui_and_xkb_layout()

@@ -54,6 +54,11 @@ class Bus(object.Object):
             gobject.TYPE_NONE,
             ()
         ),
+        "global-engine-changed" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            ()
+        ),
     }
 
     def __init__(self):
@@ -68,6 +73,8 @@ class Bus(object.Object):
                                            common.IBUS_PATH_IBUS)
         self.__ibus = dbus.Interface (_ibus, dbus_interface='org.freedesktop.IBus')
         self.__ibus.connect_to_signal("RegistryChanged", self.__registry_changed_cb)
+        self.__ibus.connect_to_signal("GlobalEngineChanged",
+                                      self.__global_engine_changed_cb)
 
         self.__dbusconn.call_on_disconnection(self.__dbusconn_disconnected_cb)
         # self.__dbusconn.add_message_filter(self.__filter_cb)
@@ -86,6 +93,9 @@ class Bus(object.Object):
 
     def __registry_changed_cb(self):
         self.emit("registry-changed")
+
+    def __global_engine_changed_cb(self):
+        self.emit("global-engine-changed")
 
     def get_name(self):
         return self.__unique_name
@@ -155,7 +165,24 @@ class Bus(object.Object):
         return data
 
     def get_use_sys_layout(self):
-        return self.__ibus.GetUseSysLayout();
+        return self.__ibus.GetUseSysLayout()
+
+    def get_use_global_engine(self):
+        return self.__ibus.GetUseGlobalEngine()
+
+    def get_global_engine(self):
+        try:
+            engine = self.__ibus.GetGlobalEngine()
+            engine = serializable.deserialize_object(engine)
+            return engine
+        except:
+            return None
+
+    def set_global_engine(self, engine):
+        return self.__ibus.SetGlobalEngine(engine.name)
+
+    def is_global_engine_enabled(self):
+        return self.__ibus.IsGlobalEngineEnabled()
 
     def introspect_ibus(self):
         return self.__ibus.Introspect()
