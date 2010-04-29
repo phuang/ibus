@@ -75,5 +75,20 @@ class IIBus(dbus.service.Object):
     @method(out_signature="b")
     def GetUseSysLayout(self, dbusconn): pass
 
+    @method(out_signature="b")
+    def GetUseGlobalEngine(self, dbusconn): pass
+
+    @method(out_signature="v")
+    def GetGlobalEngine(self, dbusconn): pass
+
+    @method(in_signature="s")
+    def SetGlobalEngine(self, engine_name, dbusconn): pass
+
+    @method(out_signature="b")
+    def IsGlobalEngineEnabled(self, dbusconn): pass
+
     @signal(signature="")
     def RegistryChanged(self): pass
+
+    @signal(signature="")
+    def GlobalEngineChanged(self): pass
