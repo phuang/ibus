@@ -656,21 +656,24 @@ _ic_process_key_event_reply_cb (gpointer data,
 {
     gboolean retval;
     CallData *call_data;
-    IBusMessage *reply;
 
     retval = (gboolean) GPOINTER_TO_INT (data);
     call_data = (CallData *) user_data;
 
-    reply = ibus_message_new_method_return (call_data->message);
-    ibus_message_append_args (reply,
-                              G_TYPE_BOOLEAN, &retval,
-                              G_TYPE_INVALID);
+    /* make sure the connection is alive */
+    if (G_LIKELY (call_data->context->connection != NULL)) {
+        IBusMessage *reply;
+        reply = ibus_message_new_method_return (call_data->message);
+        ibus_message_append_args (reply,
+                                  G_TYPE_BOOLEAN, &retval,
+                                  G_TYPE_INVALID);
 
-    ibus_connection_send ((IBusConnection *)call_data->context->connection, reply);
+        ibus_connection_send ((IBusConnection *)call_data->context->connection, reply);
+        ibus_message_unref (reply);
+    }
 
     g_object_unref (call_data->context);
     ibus_message_unref (call_data->message);
-    ibus_message_unref (reply);
     g_slice_free (CallData, call_data);
 }
 
