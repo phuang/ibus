@@ -18,6 +18,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 #include <sys/types.h>
@@ -69,11 +74,10 @@ static guint    _signal_preedit_start_id = 0;
 static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
-#if 0
-static const gchar * _snooper_apps [] = {
-                    "xchat", "pidgin", NULL };
-#endif
+
+static const gchar * const _no_snooper_apps = NO_SNOOPER_APPS;
 static gboolean _use_key_snooper = TRUE;
+
 static GtkIMContext *_focus_im_context = NULL;
 
 /* functions prototype */
@@ -284,13 +288,22 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-#if 0
-    for (p = _snooper_apps; *p != NULL; p++) {
-        if (g_strcmp0 (*p,  g_get_application_name()) == 0) {
-            _use_key_snooper = TRUE;
-        }
+    if (g_getenv ("IBUS_DISABLE_SNOOPER") != NULL) {
+        /* disable snooper if env IBUS_DISABLE_SNOOPER is set */
+        _use_key_snooper = FALSE;
     }
-#endif
+    else {
+        /* disable snooper if app is in _no_snooper_apps */
+        gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
+        gchar **p;
+        for (p = apps; *p != NULL; p++) {
+            if (g_strcmp0 (*p,  g_get_application_name ()) == 0) {
+                _use_key_snooper = FALSE;
+                break;
+            }
+        }
+        g_strfreev (apps);
+    }
 
     if (_use_key_snooper) {
         gtk_key_snooper_install (_key_snooper_cb, NULL);
