@@ -87,7 +87,7 @@ typedef enum
 
     IBUS_RELEASE_MASK  = 1 << 30,
 
-    IBUS_MODIFIER_MASK = 0x5c001fff
+    IBUS_MODIFIER_MASK = 0x5f001fff
 } IBusModifierType;
 
 /**
