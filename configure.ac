@@ -218,7 +218,7 @@ if test x"$enable_python" != x"no"; then
     fi
 fi
 
-# add option var
+# option for no snooper applications
 AC_ARG_WITH(no-snooper-apps,
     AS_HELP_STRING([--with-no-snooper-apps[=app1,app2]],
         [Does not enable keyboard snooper in those applications]),
