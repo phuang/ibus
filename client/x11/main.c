@@ -898,13 +898,10 @@ _init_ibus (void)
 {
     if (_bus != NULL)
         return;
+
     ibus_init ();
 
     _bus = ibus_bus_new ();
-
-    if (!ibus_bus_is_connected (_bus)) {
-        g_error ("Can not connect to ibus-daemon!");
-    }
 
     g_signal_connect (_bus, "disconnected",
                         G_CALLBACK (_bus_disconnected_cb), NULL);
@@ -977,7 +974,7 @@ _xim_init_IMdkit ()
 
     if (!ibus_bus_is_connected (_bus)) {
         g_warning ("Can not connect to ibus daemon");
-        exit (1);
+        exit (EXIT_FAILURE);
     }
 }
 
