@@ -76,7 +76,7 @@ static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
 static const gchar * const _no_snooper_apps = NO_SNOOPER_APPS;
-static gboolean _use_key_snooper = TRUE;
+static gboolean _use_key_snooper = ENABLE_SNOOPER;
 
 static GtkIMContext *_focus_im_context = NULL;
 
@@ -288,21 +288,24 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-    if (g_getenv ("IBUS_DISABLE_SNOOPER") != NULL) {
-        /* disable snooper if env IBUS_DISABLE_SNOOPER is set */
-        _use_key_snooper = FALSE;
-    }
-    else {
-        /* disable snooper if app is in _no_snooper_apps */
-        gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
-        gchar **p;
-        for (p = apps; *p != NULL; p++) {
-            if (g_strcmp0 (*p,  g_get_application_name ()) == 0) {
-                _use_key_snooper = FALSE;
-                break;
-            }
+    if (_use_key_snooper) {
+        if (g_getenv ("IBUS_DISABLE_SNOOPER") != NULL) {
+            /* disable snooper if env IBUS_DISABLE_SNOOPER is set */
+            _use_key_snooper = FALSE;
         }
-        g_strfreev (apps);
+        else {
+            /* disable snooper if app is in _no_snooper_apps */
+            const gchar * prgname = g_get_prgname ();
+            gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
+            gchar **p;
+            for (p = apps; *p != NULL; p++) {
+                if (g_strcmp0 (*p,  prgname) == 0) {
+                    _use_key_snooper = FALSE;
+                    break;
+                }
+            }
+            g_strfreev (apps);
+        }
     }
 
     if (_use_key_snooper) {

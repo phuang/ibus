@@ -202,7 +202,7 @@ if test x"$enable_python" != x"no"; then
         AS_HELP_STRING([--disable-dbus-python-check],
             [Do not check dbus-python]),
         [enable_dbus_python_check=$enableval],
-        [enable_dbus_python_check=yes],
+        [enable_dbus_python_check=yes]
     )
     PKG_CHECK_MODULES(DBUS_PYTHON,
         [dbus-python >= 0.83.0],
@@ -218,6 +218,19 @@ if test x"$enable_python" != x"no"; then
     fi
 fi
 
+# option for disable snooper applications
+AC_ARG_ENABLE(key-snooper,
+    AS_HELP_STRING([--disable-key-snooper],
+        [Disable key snooper in gtk im module]),
+    [enable_key_snooper=$enableval],
+    [enable_key_snooper=yes]
+)
+if test x"$enable_key_snooper" != x"no"; then
+    AC_DEFINE(ENABLE_SNOOPER, TRUE, [Enable key snooper])
+else
+    AC_DEFINE(ENABLE_SNOOPER, FALSE, [Enable key snooper])
+fi
+
 # option for no snooper applications
 AC_ARG_WITH(no-snooper-apps,
     AS_HELP_STRING([--with-no-snooper-apps[=app1,app2]],
@@ -225,7 +238,7 @@ AC_ARG_WITH(no-snooper-apps,
     NO_SNOOPER_APPS=$with_no_snooper_apps
 )
 AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
-    [Does not enbale snooper in thos applications])
+    [Does not enbale key snooper in those applications])
 
 # check iso-codes
 PKG_CHECK_MODULES(ISOCODES, [
@@ -271,13 +284,15 @@ gconf/gconf.xml.in
 AC_OUTPUT
 AC_MSG_RESULT([
 Build options:
-  Version                  $VERSION
-  Install prefix           $prefix
-  Build shared libs        $enable_shared
-  Build static libs        $enable_static
-  Gtk immodule dir         $GTK_IM_MODULEDIR
-  Build python modules     $enable_python
-  Build gconf modules      $enable_gconf
-  Build document           $enable_gtk_doc
+  Version                   $VERSION
+  Install prefix            $prefix
+  Build shared libs         $enable_shared
+  Build static libs         $enable_static
+  Gtk immodule dir          $GTK_IM_MODULEDIR
+  Build python modules      $enable_python
+  Build gconf modules       $enable_gconf
+  Build document            $enable_gtk_doc
+  Enable key snooper        $enable_key_snooper
+  No snooper apps           "$NO_SNOOPER_APPS"
 ])
 
