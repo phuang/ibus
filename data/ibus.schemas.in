@@ -24,6 +24,8 @@
 	    <long>The shortcut keys for turning input method on or off</long>
       </locale>
     </schema>
+
+    <!-- For backward compatibility -->
     <schema>
       <key>/schemas/desktop/ibus/general/hotkey/next_engine</key>
       <applyto>/desktop/ibus/general/hotkey/next_engine</applyto>
@@ -33,9 +35,24 @@
       <default>[Alt+Shift_L]</default>
       <locale name="C">
         <short>Next engine shortcut keys</short>
-	    <long>The shortcut keys for switching to next input method in the list</long>
+	    <long>The shortcut keys for switching to the next input method in the list</long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/next_engine_in_menu</key>
+      <applyto>/desktop/ibus/general/hotkey/next_engine_in_menu</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[Alt+Shift_L]</default>
+      <locale name="C">
+        <short>Next engine shortcut keys</short>
+	    <long>The shortcut keys for switching to the next input method in the list</long>
+      </locale>
+    </schema>
+
+    <!-- For backward compatibility -->
     <schema>
       <key>/schemas/desktop/ibus/general/hotkey/prev_engine</key>
       <applyto>/desktop/ibus/general/hotkey/prev_engine</applyto>
@@ -45,7 +62,20 @@
       <default>[]</default>
       <locale name="C">
         <short>Prev engine shortcut keys</short>
-	    <long>The shortcut keys for switching to next input method in the list</long>
+	    <long>The shortcut keys for switching to the previous input method</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/previous_engine</key>
+      <applyto>/desktop/ibus/general/hotkey/previous_engine</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+        <short>Prev engine shortcut keys</short>
+	    <long>The shortcut keys for switching to the previous input method</long>
       </locale>
     </schema>
     <schema>
@@ -178,6 +208,19 @@
       <locale name="C">
         <short>Use global input method</short>
 	    <long>Share the same input method among all applications</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/ibus/general/enable_by_default</key>
+      <applyto>/desktop/ibus/general/enable_by_default</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Enable input method by default</short>
+	    <long>Enable input method by default when the application gets input
+            focus</long>
       </locale>
     </schema>
   </schemalist>

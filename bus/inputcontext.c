@@ -50,8 +50,6 @@ enum {
     DISABLED,
     ENGINE_CHANGED,
     REQUEST_ENGINE,
-    REQUEST_NEXT_ENGINE,
-    REQUEST_PREV_ENGINE,
     LAST_SIGNAL,
 };
 
@@ -429,26 +427,6 @@ bus_input_context_class_init (BusInputContextClass *klass)
             G_TYPE_NONE,
             1,
             G_TYPE_STRING);
-
-    context_signals[REQUEST_NEXT_ENGINE] =
-        g_signal_new (I_("request-next-engine"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
-
-    context_signals[REQUEST_PREV_ENGINE] =
-        g_signal_new (I_("request-prev-engine"),
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            ibus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
 
     text_empty = ibus_text_new_from_string ("");
     g_object_ref_sink (text_empty);
@@ -1881,6 +1859,12 @@ bus_input_context_enable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
+    if (!context->has_focus) {
+        context->enabled = TRUE;
+        /* TODO: Do we need to emit "enabled" signal? */
+        return;
+    }
+
     if (context->engine == NULL) {
         g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
     }
@@ -1890,12 +1874,11 @@ bus_input_context_enable (BusInputContext *context)
 
     context->enabled = TRUE;
 
-    if (context->has_focus) {
-        bus_engine_proxy_enable (context->engine);
-        bus_engine_proxy_focus_in (context->engine);
-        bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
-        bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
-    }
+    bus_engine_proxy_enable (context->engine);
+    bus_engine_proxy_focus_in (context->engine);
+    bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
+    bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
+
     bus_input_context_send_signal (context,
                                    "Enabled",
                                    G_TYPE_INVALID);
@@ -1990,6 +1973,9 @@ bus_input_context_set_engine (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
+    if (context->engine == engine)
+        return;
+
     if (context->engine != NULL) {
         bus_input_context_unset_engine (context);
     }
@@ -2038,11 +2024,16 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
 
     gboolean retval = FALSE;
 
-    static GQuark trigger;
-    static GQuark next_factory;
-    static GQuark prev_factory;
-
-    GQuark event;
+    if (context->filter_release){
+        if(modifiers & IBUS_RELEASE_MASK) {
+            /* filter release key event */
+            return TRUE;
+        }
+        else {
+            /* stop filter release key event */
+            context->filter_release = FALSE;
+        }
+    }
 
     if (keycode != 0 && !BUS_DEFAULT_IBUS->use_sys_layout) {
         IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
@@ -2055,62 +2046,14 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         }
     }
 
-    if (trigger == 0) {
-        trigger = g_quark_from_static_string ("trigger");
-        next_factory = g_quark_from_static_string ("next-engine");
-        prev_factory = g_quark_from_static_string ("prev-engine");
-    }
-
-    if (context->filter_release){
-        if(modifiers & IBUS_RELEASE_MASK) {
-            /* filter release key event */
-            return TRUE;
-        }
-        else {
-            /* stop filter release key event */
-            context->filter_release = FALSE;
-        }
-    }
-
-    event = ibus_hotkey_profile_filter_key_event (BUS_DEFAULT_HOTKEY_PROFILE,
-                                                  keyval,
-                                                  modifiers,
-                                                  context->prev_keyval,
-                                                  context->prev_modifiers,
-                                                  0);
+    retval = bus_ibus_impl_filter_keyboard_shortcuts (BUS_DEFAULT_IBUS,
+                                                      context,
+                                                      keyval,
+                                                      modifiers,
+                                                      context->prev_keyval,
+                                                      context->prev_modifiers);
     context->prev_keyval = keyval;
     context->prev_modifiers = modifiers;
-
-    if (event == trigger) {
-        gboolean enabled = context->enabled;
-
-        if (context->enabled) {
-            bus_input_context_disable (context);
-        }
-        else {
-            bus_input_context_enable (context);
-        }
-
-        retval = (enabled != context->enabled);
-    }
-    else if (event == next_factory) {
-        if (context->engine == NULL || context->enabled == FALSE) {
-            retval =  FALSE;
-        }
-        else {
-            g_signal_emit (context, context_signals[REQUEST_NEXT_ENGINE], 0);
-            retval = TRUE;
-        }
-    }
-    else if (event == prev_factory) {
-        if (context->engine == NULL || context->enabled == FALSE) {
-            retval = FALSE;
-        }
-        else {
-            g_signal_emit (context, context_signals[REQUEST_PREV_ENGINE], 0);
-            retval = TRUE;
-        }
-    }
 
     if (retval == TRUE) {
         /* begin filter release key event */
