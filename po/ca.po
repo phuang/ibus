@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2009-09-19 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -343,8 +343,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>Tipus de lletra i estil</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "Selecciona un mètode d'entrada"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

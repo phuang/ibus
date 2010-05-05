@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2009-12-08 15:31+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -325,8 +325,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ఫాంటు మరియు శైలి</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "ఇన్పుట్ పద్దతిని యెంపికచేయుము"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

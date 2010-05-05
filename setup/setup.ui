@@ -806,7 +806,7 @@ You may use up/down buttons to change it.&lt;/i&gt;&lt;/small&gt;</property>
                         <child type="label">
                           <object class="GtkLabel" id="label17">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">&lt;b&gt;Global input methood settings&lt;/b&gt;</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Global input method settings&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </object>
                         </child>

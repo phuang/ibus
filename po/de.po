@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2009-12-10 09:44+1000\n"
 "Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
 "Language-Team: \n"
@@ -324,8 +324,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>Schriftart und Stil</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "Eingabemethode wählen"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

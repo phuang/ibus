@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2009-12-08 22:26+0530\n"
 "Last-Translator: I Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
@@ -317,8 +317,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>எழுத்துரு மற்றும் தோற்றம்</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

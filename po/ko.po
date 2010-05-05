@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2010-03-31 14:16+1000\n"
 "Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -317,7 +317,7 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>글꼴 및 스타일</b> "
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
+msgid "<b>Global input method settings</b>"
 msgstr "<b>전역 입력 방식 설정</b>"
 
 #: ../setup/setup.ui.h:4

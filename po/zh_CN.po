@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1.20080813\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2008-08-13 21:59+0800\n"
 "Last-Translator: Huang Peng <shawn.p.huang@gmail.com>\n"
 "Language-Team: Huang Peng <shawn.p.huang@gmail.com>\n"
@@ -307,7 +307,7 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>字体和风格</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
+msgid "<b>Global input method settings</b>"
 msgstr "<b>全局输入法设置</b>"
 
 #: ../setup/setup.ui.h:4

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2010-04-09 14:48+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
@@ -316,7 +316,7 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>फॉन्ट व शैली</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
+msgid "<b>Global input method settings</b>"
 msgstr "<b>ग्लोबल इंपुट पद्धत सेटिंग्स्</b>"
 
 #: ../setup/setup.ui.h:4

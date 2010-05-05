@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2010-03-24 16:48+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -316,8 +316,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>അക്ഷരസഞ്ചയവും രീതിയും</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "ഗ്ലോബല്‍ ഇന്‍പുട്ട് മെഥേഡ് ഉപയോഗിക്കുക"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

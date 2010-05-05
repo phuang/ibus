@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2010-04-15 14:17+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
@@ -323,7 +323,7 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>ଅକ୍ଷରରୂପ ଏବଂ ଶୈଳୀ</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
+msgid "<b>Global input method settings</b>"
 msgstr "<b>ସର୍ବସାଧାରଣ ନିବେଶ ପ୍ରଣୀଳୀ ବିନ୍ୟାସ</b>"
 
 #: ../setup/setup.ui.h:4

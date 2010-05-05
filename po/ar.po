@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-26 08:54+0800\n"
+"POT-Creation-Date: 2010-05-05 19:05+0800\n"
 "PO-Revision-Date: 2009-04-06 11:45+0800\n"
 "Last-Translator: Muayyad Alsadi <alsadi@ojuba.org>\n"
 "Language-Team: Arabic <AR@li.org>\n"
@@ -318,8 +318,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>الخط والتنسيق</b>"
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input methood settings</b>"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "اختر طريقة الإدخال"
 
 #: ../setup/setup.ui.h:4
 #, fuzzy
