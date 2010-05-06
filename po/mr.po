@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
-"PO-Revision-Date: 2010-04-09 14:48+0530\n"
+"POT-Creation-Date: 2010-05-05 16:12+0000\n"
+"PO-Revision-Date: 2010-05-06 12:13+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
 "MIME-Version: 1.0\n"
@@ -261,11 +261,10 @@ msgid "Show input method name on language bar"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "भाषा पटलाचे वर्तन. 0 = Always hide, 1 = Auto hide, 2 = Always show"
+msgstr "भाषा पटलचे वर्तन. 0 = Embedded in menu, 1 = Auto hide, 2 = Always show"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -468,9 +467,8 @@ msgid "Top right corner"
 msgstr "वरील उजवा कोपरा"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "स्वपसंत फॉन्ट वापरा"
+msgstr "मनपसंत फॉन्टचा वापर करा:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -480,5 +478,3 @@ msgstr "उभे"
 msgid "When active"
 msgstr "सक्रीय असल्यावर"
 
-#~ msgid "Never"
-#~ msgstr "कधीच नाही"
