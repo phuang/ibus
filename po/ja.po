@@ -1,22 +1,27 @@
+# translation of ja.po to Japanese
 # Japanese translation of ibus.
 # Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
+#
+#
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
-# IWAI, Masaharu <iwai@alib.jp>, 2009
+# IWAI, Masaharu <iwai@alib.jp>, 2009.
 # Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2009.
-#
-#
+# Kiyoto Hashida <khashida@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus VERSION\n"
+"Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
-"PO-Revision-Date: 2009-09-08 17:31+0900\n"
-"Last-Translator: Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>\n"
-"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"POT-Creation-Date: 2010-05-05 16:12+0000\n"
+"PO-Revision-Date: 2010-05-06 17:34+0900\n"
+"Last-Translator: Kiyoto Hashida <khashida@redhat.com>\n"
+"Language-Team: Japanese <jp@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n\n"
+"\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -262,11 +267,10 @@ msgid "Show input method name on language bar"
 msgstr "言語バーにインプットメソッド名を表示する"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "言語パネルの動作。0 = 常に隠す、1 = 自動的に隠す、2 = 常に表示"
+msgstr "言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -416,13 +420,11 @@ msgstr "言語パネルの位置"
 
 #: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
 #: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:35
 msgid "Next input method:"
@@ -464,8 +466,7 @@ msgstr "ログイン時に IBus を起動"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -487,51 +488,3 @@ msgstr "縦"
 msgid "When active"
 msgstr "アクティブであるとき"
 
-#~ msgid "Never"
-#~ msgstr "表示しない"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "言語パネルの表示:"
-
-#~ msgid "Custom font:"
-#~ msgstr "カスタムフォント:"
-
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "言語バーと候補用にフォントを選択します"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "言語バーと候補用にカスタムフォントを使用します"
-
-#~ msgid "Custom Font"
-#~ msgstr "カスタムフォント"
-
-#~ msgid "Show IM Name"
-#~ msgstr "IM 名の表示"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "言語バーでの IM 名の表示"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "カスタムフォントを使う"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr ""
-#~ "次のインプットメソッドエンジンへの切り替え用の次のエンジンへのホットキー"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr ""
-#~ "ひとつ前のインプットメソッドエンジンへの切り替え用の前のエンジンへのホット"
-#~ "キー"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "入力コンテンツを有効や無効にするためのトリガーホットキー"
-
-#~ msgid "gtk-about"
-#~ msgstr "gtk-about"
-
-#~ msgid "Switch engine"
-#~ msgstr "エンジンの変更"
-
-#~ msgid "prev engine"
-#~ msgstr "前のエンジン"
