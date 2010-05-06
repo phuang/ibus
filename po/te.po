@@ -1,21 +1,21 @@
-# translation of ibus.master.te.po to Telugu
+# translation of te.po to Telugu
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Krishna Babu K <kkrothap@redhat.com>, 2009.
+# Krishna Babu K <kkrothap@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.te\n"
+"Project-Id-Version: te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
-"PO-Revision-Date: 2009-12-08 15:31+0530\n"
+"POT-Creation-Date: 2010-05-04 20:09+0000\n"
+"PO-Revision-Date: 2010-05-05 16:34+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -56,16 +56,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"కొన్ని యిన్పుట్ విధానములు సంస్థాపించబడెను, తీసివేయబడెను, లేదా నవీకరించబడెను. దయచేసి ibus యిన్పుట్ ప్లాట్‌ఫాంను "
+"పునఃప్రారంభించుము."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "పునఃప్రారంభము"
+msgstr "ఇప్పుడు పునఃప్రారంభించుము"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "ఇతర"
+msgstr "తరువాత"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -88,7 +88,6 @@ msgid "translator-credits"
 msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "ఇన్పుట్ పద్దతి గురించి"
 
@@ -214,11 +213,11 @@ msgstr "భాష ప్యానల్ కొరకు మలచుకొని
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "ఎంబెడెడ్ ప్రీడిట్ పాఠము"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "అనువర్తన విండోనందు ఎంబెడెడ్ ప్రీడిట్ పాఠము"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -233,7 +232,6 @@ msgid "Orientation of lookup table"
 msgstr "లుకప్ పట్టిక సర్దుబాటు"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "లుకప్ పట్టిక సర్దుబాటు. 0 = చదరముగా, 1 = నిలువుగా"
 
@@ -242,9 +240,8 @@ msgid "Preload engines"
 msgstr "ముందుగా లోడైన యింజన్లు"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "ibus ప్రారంభమునందు ముందుగా లోడైన యింజన్లు"
+msgstr "ibus ప్రారంభమునందు యింజన్లు ముందుగా లోడుచేయి"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -252,7 +249,7 @@ msgstr "మునుపటి యింజన్ లఘువులు"
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "అన్ని అనువర్తనములనందు యిన్పుట్ పద్దతిని భాగస్వామ్యపరచుము"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -267,13 +264,12 @@ msgid "Show input method name on language bar"
 msgstr "భాషా పట్టీపై యిన్పుట్ పద్దతి నామము చూపుము"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = ఎల్లప్పుడూ మరుగునవుంచు, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = "
-"ఎల్లప్పుడూ "
+"భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = మెనూనందు యెంబెడ్‌చేయి, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = "
+"ఎల్లప్పుడూ చూయించు"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -304,9 +300,8 @@ msgid "Use custom font name for language panel"
 msgstr "భాషా ప్యానల్ కొరకు మలచుకొనిన ఫాంట్ నామము వుపయోగించుము"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "ఇన్పుట్ పద్దతిని యెంపికచేయుము"
+msgstr "గ్లోబల్ యిన్పుట్ పద్దతిని వుపయోగించుము"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
@@ -326,7 +321,7 @@ msgstr "<b>ఫాంటు మరియు శైలి</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input method settings</b>"
-msgstr "ఇన్పుట్ పద్దతిని యెంపికచేయుము"
+msgstr "<b>గ్లోబల్ యిన్పుట్ పద్దతి అమరికలు</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -394,15 +389,15 @@ msgstr "మలచుకొనిన"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "అనువర్తనము విండో నందు ముందుగాసరికూర్చిన పాఠమును యెంబెడ్ చేయుము"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "అనువర్తనము విండోనందు యిన్పుట్ పద్దతి యొక్క ముందుగాసరికూర్చిన పాఠమును యెంబెడ్ చేయుము"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "మెనూనందు యెంబెడ్ చేయబడెను"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -477,9 +472,8 @@ msgid "Top right corner"
 msgstr "పై కుడి మూల"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము"
+msgstr "మలచుకొనిన ఫాంటు వుపయోగించుము:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -489,9 +483,3 @@ msgstr "వెర్టికల్"
 msgid "When active"
 msgstr "క్రియాశీలముగా వున్నప్పుడు"
 
-#~ msgid "Never"
-#~ msgstr "ఎప్పటికివద్దు"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "ముందుగా లోడైన యింజన్లు"
