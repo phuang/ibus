@@ -266,6 +266,7 @@ data/icons/Makefile
 data/keymaps/Makefile
 docs/Makefile
 docs/reference/Makefile
+docs/reference/ibus/ibus-docs.sgml
 docs/reference/ibus/Makefile
 m4/Makefile
 ibus/_config.py
