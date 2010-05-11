@@ -160,6 +160,18 @@ GQuark           ibus_hotkey_profile_filter_key_event
                                                  guint               prev_modifiers,
                                                  gpointer            user_data);
 
+/**
+ * ibus_hotkey_profile_lookup_hotkey:
+ * @profile: An IBusHotkeyProfile.
+ * @keyval: Keycode of the hotkey.
+ * @modifiers: Modifiers of the hotkey.
+ * @returns: The event associated to the hotkey or 0 if the hotkey is not in the
+ * profile.
+ */
+GQuark           ibus_hotkey_profile_lookup_hotkey
+                                                (IBusHotkeyProfile  *profile,
+                                                 guint               keyval,
+                                                 guint               modifiers);
+
 G_END_DECLS
 #endif
-

@@ -90,8 +90,8 @@ class Component(Serializable):
     def add_observed_path(self, path):
         self.__observed_paths.append(ObservedPath(path))
 
-    def add_engine(self, name="", longname="", description="", language="", license="", author="", icon="", layout=""):
-        engine = EngineDesc(name, longname, description, language, license, author, icon, layout)
+    def add_engine(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", hotkeys=""):
+        engine = EngineDesc(name, longname, description, language, license, author, icon, layout, hotkeys)
         self.__engines.append(engine)
 
     def serialize(self, struct):

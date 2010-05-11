@@ -503,3 +503,19 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
 
     return event;
 }
+
+GQuark
+ibus_hotkey_profile_lookup_hotkey (IBusHotkeyProfile *profile,
+                                   guint              keyval,
+                                   guint              modifiers)
+{
+    IBusHotkeyProfilePrivate *priv;
+    priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
+
+    IBusHotkey hotkey = {
+        .keyval = keyval,
+        .modifiers = modifiers & priv->mask,
+    };
+
+    return (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
+}

@@ -64,7 +64,7 @@ ibus_engine_desc_class_init (IBusEngineDescClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_engine_desc_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_engine_desc_copy;
 
-    g_string_append (serializable_class->signature, "ssssssssu");
+    g_string_append (serializable_class->signature, "sssssssssu");
 }
 
 static void
@@ -79,6 +79,7 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->author = NULL;
     desc->icon = NULL;
     desc->layout = NULL;
+    desc->hotkeys = NULL;
     desc->rank = 0;
 }
 
@@ -93,6 +94,7 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->author);
     g_free (desc->icon);
     g_free (desc->layout);
+    g_free (desc->hotkeys);
 
     IBUS_OBJECT_CLASS (ibus_engine_desc_parent_class)->destroy (IBUS_OBJECT (desc));
 }
@@ -128,6 +130,9 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_STRING, &desc->layout);
+    g_return_val_if_fail (retval, FALSE);
+
+    retval = ibus_message_iter_append (iter, G_TYPE_STRING, &desc->hotkeys);
     g_return_val_if_fail (retval, FALSE);
 
     retval = ibus_message_iter_append (iter, G_TYPE_UINT, &desc->rank);
@@ -186,6 +191,11 @@ ibus_engine_desc_deserialize (IBusEngineDesc  *desc,
     ibus_message_iter_next (iter);
     desc->layout = g_strdup (str);
 
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    g_return_val_if_fail (retval, FALSE);
+    ibus_message_iter_next (iter);
+    desc->hotkeys = g_strdup (str);
+
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &desc->rank);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
@@ -212,6 +222,7 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
     dest->author        = g_strdup (src->author);
     dest->icon          = g_strdup (src->icon);
     dest->layout        = g_strdup (src->layout);
+    dest->hotkeys       = g_strdup (src->hotkeys);
 
     return TRUE;
 }
@@ -248,6 +259,7 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(author);
     OUTPUT_ENTRY_1(icon);
     OUTPUT_ENTRY_1(layout);
+    OUTPUT_ENTRY_1(hotkeys);
     g_string_append_indent (output, indent + 1);
     g_string_append_printf (output, "<rank>%u</rank>\n", desc->rank);
 #undef OUTPUT_ENTRY
@@ -279,8 +291,9 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(author);
         PARSE_ENTRY_1(icon);
         PARSE_ENTRY_1(layout);
+        PARSE_ENTRY_1(hotkeys);
 #undef PARSE_ENTRY
-#undef PARSE_ENTRY1
+#undef PARSE_ENTRY_1
         if (g_strcmp0 (sub_node->name , "rank") == 0) {
             desc->rank = atoi (sub_node->text);
             continue;
@@ -300,6 +313,21 @@ ibus_engine_desc_new (const gchar *name,
                       const gchar *icon,
                       const gchar *layout)
 {
+    return ibus_engine_desc_new2 (name, longname, description, language,
+                                  license, author, icon, layout, "");
+}
+
+IBusEngineDesc *
+ibus_engine_desc_new2 (const gchar *name,
+                       const gchar *longname,
+                       const gchar *description,
+                       const gchar *language,
+                       const gchar *license,
+                       const gchar *author,
+                       const gchar *icon,
+                       const gchar *layout,
+                       const gchar *hotkeys)
+{
     g_assert (name);
     g_assert (longname);
     g_assert (description);
@@ -308,6 +336,7 @@ ibus_engine_desc_new (const gchar *name,
     g_assert (author);
     g_assert (icon);
     g_assert (layout);
+    g_assert (hotkeys);
 
     IBusEngineDesc *desc;
     desc = (IBusEngineDesc *)g_object_new (IBUS_TYPE_ENGINE_DESC, NULL);
@@ -320,6 +349,7 @@ ibus_engine_desc_new (const gchar *name,
     desc->author        = g_strdup (author);
     desc->icon          = g_strdup (icon);
     desc->layout        = g_strdup (layout);
+    desc->hotkeys       = g_strdup (hotkeys);
 
     return desc;
 }
@@ -344,4 +374,3 @@ ibus_engine_desc_new_from_xml_node (XMLNode      *node)
 
     return desc;
 }
-

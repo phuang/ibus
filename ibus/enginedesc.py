@@ -31,7 +31,7 @@ from serializable import *
 class EngineDesc(Serializable):
     __gtype_name__ = "PYIBusEngineDesc"
     __NAME__ = "IBusEngineDesc"
-    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", rank=0):
+    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", hotkeys="", rank=0):
         super(EngineDesc, self).__init__()
         self.__name = name
         self.__longname = longname
@@ -41,7 +41,8 @@ class EngineDesc(Serializable):
         self.__author = author
         self.__icon = icon
         self.__layout = layout
-        self.__rank = rank;
+        self.__hotkeys = hotkeys
+        self.__rank = rank
 
     def get_name(self):
         return self.__name
@@ -67,6 +68,9 @@ class EngineDesc(Serializable):
     def get_layout(self):
         return self.__layout
 
+    def get_hotkeys(self):
+        return self.__hotkeys
+
     def get_rank(self):
         return self.__rank
 
@@ -78,6 +82,7 @@ class EngineDesc(Serializable):
     author      = property(get_author)
     icon        = property(get_icon)
     layout      = property(get_layout)
+    hotkeys     = property(get_hotkeys)
     rank        = property(get_rank)
 
     def serialize(self, struct):
@@ -90,6 +95,7 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__author))
         struct.append(dbus.String(self.__icon))
         struct.append(dbus.String(self.__layout))
+        struct.append(dbus.String(self.__hotkeys))
         struct.append(dbus.UInt32(self.__rank))
 
     def deserialize(self, struct):
@@ -102,10 +108,11 @@ class EngineDesc(Serializable):
         self.__author = struct.pop(0)
         self.__icon = struct.pop(0)
         self.__layout = struct.pop(0)
+        self.__hotkeys = struct.pop(0)
         self.__rank = struct.pop(0)
 
 def test():
-    engine = EngineDesc("Hello", "", "", "", "", "", "", "")
+    engine = EngineDesc("Hello", "", "", "", "", "", "", "", "")
     value = serialize_object(engine)
     engine = deserialize_object(value)
 

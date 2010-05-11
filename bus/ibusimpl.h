@@ -88,6 +88,9 @@ struct _BusIBusImpl {
     gboolean use_global_engine;
     BusEngineProxy  *global_engine;
     gchar           *global_previous_engine_name;
+
+    IBusHotkeyProfile *engines_hotkey_profile;
+    GHashTable      *hotkey_to_engines_map;
 };
 
 struct _BusIBusImplClass {

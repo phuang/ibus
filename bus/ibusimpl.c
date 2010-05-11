@@ -90,6 +90,10 @@ static void     bus_ibus_impl_global_engine_changed
 static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
                                                  BusIBusImpl        *ibus);
 
+static void     bus_ibus_impl_set_context_engine_from_desc
+                                                (BusIBusImpl        *ibus,
+                                                 BusInputContext    *context,
+                                                 IBusEngineDesc     *engine_desc);
 static void     bus_ibus_impl_set_context_engine(BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
                                                  BusEngineProxy     *engine);
@@ -102,6 +106,8 @@ static void     bus_ibus_impl_save_global_engine_name_to_config
 static gchar   *bus_ibus_impl_load_global_previous_engine_name_from_config
                                                 (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_save_global_previous_engine_name_to_config
+                                                (BusIBusImpl        *ibus);
+static void     bus_ibus_impl_update_engines_hotkey_profile
                                                 (BusIBusImpl        *ibus);
 
 G_DEFINE_TYPE(BusIBusImpl, bus_ibus_impl, IBUS_TYPE_SERVICE)
@@ -250,6 +256,8 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
             ibus_component_start (component, g_verbose);
         }
     }
+
+    bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
 static void
@@ -616,6 +624,9 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->global_engine = NULL;
     ibus->global_previous_engine_name = NULL;
 
+    ibus->engines_hotkey_profile = NULL;
+    ibus->hotkey_to_engines_map = NULL;
+
     bus_ibus_impl_reload_config (ibus);
 
     g_signal_connect (BUS_DEFAULT_DBUS,
@@ -691,6 +702,16 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     }
 
     g_free (ibus->global_previous_engine_name);
+
+    if (ibus->engines_hotkey_profile != NULL) {
+        g_object_unref (ibus->engines_hotkey_profile);
+        ibus->engines_hotkey_profile = NULL;
+    }
+
+    if (ibus->hotkey_to_engines_map) {
+        g_hash_table_unref (ibus->hotkey_to_engines_map);
+        ibus->hotkey_to_engines_map = NULL;
+    }
 
     bus_server_quit (BUS_DEFAULT_SERVER);
     ibus_object_destroy ((IBusObject *) BUS_DEFAULT_SERVER);
@@ -901,12 +922,7 @@ _context_request_engine_cb (BusInputContext *context,
         engine_desc = _find_engine_desc_by_name (ibus, engine_name);
     }
 
-    if (engine_desc != NULL) {
-        engine = bus_ibus_impl_create_engine (engine_desc);
-        if (engine != NULL) {
-            bus_ibus_impl_set_context_engine (ibus, context, engine);
-        }
-    }
+    bus_ibus_impl_set_context_engine_from_desc (ibus, context, engine_desc);
 }
 
 static void
@@ -949,12 +965,7 @@ bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
         }
     }
 
-    if (next_desc != NULL) {
-        engine = bus_ibus_impl_create_engine (next_desc);
-        if (engine != NULL) {
-            bus_ibus_impl_set_context_engine (ibus, context, engine);
-        }
-    }
+    bus_ibus_impl_set_context_engine_from_desc (ibus, context, next_desc);
 }
 
 static void
@@ -1020,6 +1031,19 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
     bus_ibus_impl_save_global_engine_name_to_config (ibus);
     bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
     bus_ibus_impl_global_engine_changed (ibus);
+}
+
+static void
+bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
+                                            BusInputContext *context,
+                                            IBusEngineDesc  *engine_desc)
+{
+    if (engine_desc != NULL) {
+        BusEngineProxy *engine = bus_ibus_impl_create_engine (engine_desc);
+        if (engine != NULL) {
+            bus_ibus_impl_set_context_engine (ibus, context, engine);
+        }
+    }
 }
 
 static void
@@ -1295,6 +1319,8 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
     }
 
     g_object_unref (factory);
+
+    bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
 static void
@@ -1353,6 +1379,8 @@ _ibus_register_component (BusIBusImpl     *ibus,
     g_list_foreach (engines, (GFunc) g_object_ref, NULL);
     ibus->register_engine_list = g_list_concat (ibus->register_engine_list, engines);
     g_object_unref (component);
+
+    bus_ibus_impl_update_engines_hotkey_profile (ibus);
 
     reply = ibus_message_new_method_return (message);
     return reply;
@@ -1800,18 +1828,22 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
     static GQuark next = 0;
     static GQuark previous = 0;
 
+    GQuark event;
+    GList *engine_list;
+
     if (trigger == 0) {
         trigger = g_quark_from_static_string ("trigger");
         next = g_quark_from_static_string ("next-engine-in-menu");
         previous = g_quark_from_static_string ("previous-engine");
     }
 
-    GQuark event = ibus_hotkey_profile_filter_key_event (ibus->hotkey_profile,
-                                                         keyval,
-                                                         modifiers,
-                                                         prev_keyval,
-                                                         prev_modifiers,
-                                                         0);
+    /* Try global hotkeys first. */
+    event = ibus_hotkey_profile_filter_key_event (ibus->hotkey_profile,
+                                                  keyval,
+                                                  modifiers,
+                                                  prev_keyval,
+                                                  prev_modifiers,
+                                                  0);
 
     if (event == trigger) {
         gboolean enabled = bus_input_context_is_enabled (context);
@@ -1841,6 +1873,50 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         }
         return TRUE;
     }
+
+    if (!ibus->engines_hotkey_profile || !ibus->hotkey_to_engines_map) {
+        return FALSE;
+    }
+
+    /* Then try engines hotkeys. */
+    event = ibus_hotkey_profile_filter_key_event (ibus->engines_hotkey_profile,
+                                                  keyval,
+                                                  modifiers,
+                                                  prev_keyval,
+                                                  prev_modifiers,
+                                                  0);
+    if (event == 0) {
+        return FALSE;
+    }
+
+    engine_list = g_hash_table_lookup (ibus->hotkey_to_engines_map,
+                                       GUINT_TO_POINTER (event));
+    if (engine_list) {
+        BusEngineProxy *current_engine = bus_input_context_get_engine (context);
+        IBusEngineDesc *current_engine_desc =
+            (current_engine ? bus_engine_proxy_get_desc (current_engine) : NULL);
+        IBusEngineDesc *new_engine_desc = (IBusEngineDesc *) engine_list->data;
+
+        g_assert (new_engine_desc);
+
+        /* Find out what engine we should switch to. If the current engine has
+         * the same hotkey, then we should switch to the next engine with the
+         * same hotkey in the list. Otherwise, we just switch to the first
+         * engine in the list. */
+        GList *p = engine_list;
+        for (; p->next != NULL; p = p->next) {
+            if (current_engine_desc == (IBusEngineDesc *) p->data) {
+                new_engine_desc = (IBusEngineDesc *) p->next->data;
+                break;
+            }
+        }
+
+        if (current_engine_desc != new_engine_desc) {
+            bus_ibus_impl_set_context_engine_from_desc (ibus, context, new_engine_desc);
+            return TRUE;
+        }
+    }
+
     return FALSE;
 }
 
@@ -1906,4 +1982,75 @@ bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
         ibus_config_set_value (ibus->config, "general", "global_previous_engine", &value);
         g_value_unset (&value);
     }
+}
+
+static void
+_add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
+{
+    gchar **hotkey_list;
+    gchar **p;
+    gchar *hotkey;
+    GList *engine_list;
+
+    GQuark event;
+    guint keyval;
+    guint modifiers;
+
+    if (!engine || !engine->hotkeys || !*engine->hotkeys) {
+        return;
+    }
+
+    hotkey_list = g_strsplit_set (engine->hotkeys, ";,", 0);
+
+    for (p = hotkey_list; p && *p; ++p) {
+        hotkey = g_strstrip (*p);
+        if (!*hotkey || !ibus_key_event_from_string (hotkey, &keyval, &modifiers)) {
+            continue;
+        }
+
+        /* If the hotkey already exists, we won't need to add it again. */
+        event = ibus_hotkey_profile_lookup_hotkey (ibus->engines_hotkey_profile,
+                                                   keyval, modifiers);
+        if (event == 0) {
+            event = g_quark_from_string (hotkey);
+            ibus_hotkey_profile_add_hotkey (ibus->engines_hotkey_profile,
+                                            keyval, modifiers, event);
+        }
+
+        engine_list = g_hash_table_lookup (ibus->hotkey_to_engines_map,
+                                           GUINT_TO_POINTER (event));
+
+        /* As we will rebuild the engines hotkey map whenever an engine was
+         * added or removed, we don't need to hold a reference of the engine
+         * here. */
+        engine_list = g_list_append (engine_list, engine);
+
+        /* We need to steal the value before adding it back, otherwise it will
+         * be destroyed. */
+        g_hash_table_steal (ibus->hotkey_to_engines_map, GUINT_TO_POINTER (event));
+
+        g_hash_table_insert (ibus->hotkey_to_engines_map,
+                             GUINT_TO_POINTER (event), engine_list);
+    }
+
+    g_strfreev (hotkey_list);
+}
+
+static void
+bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
+{
+    if (ibus->engines_hotkey_profile) {
+        g_object_unref (ibus->engines_hotkey_profile);
+    }
+
+    if (ibus->hotkey_to_engines_map) {
+        g_hash_table_unref (ibus->hotkey_to_engines_map);
+    }
+
+    ibus->engines_hotkey_profile = ibus_hotkey_profile_new();
+    ibus->hotkey_to_engines_map =
+        g_hash_table_new_full (NULL, NULL, NULL, (GDestroyNotify) g_list_free);
+
+    g_list_foreach (ibus->register_engine_list, (GFunc) _add_engine_hotkey, ibus);
+    g_list_foreach (ibus->engine_list, (GFunc) _add_engine_hotkey, ibus);
 }

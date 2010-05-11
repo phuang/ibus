@@ -77,6 +77,8 @@ typedef struct _BusComponent BusComponent;
  * @author: Author of the input method engine.
  * @icon: Icon file of this engine.
  * @layout: Keyboard layout
+ * @hotkeys: One or more hotkeys for switching to this engine, separated by
+ *  semi-colon.
  * @rank: Preference rank among engines, the highest ranked IME will put in
  * the front.
  *
@@ -95,6 +97,7 @@ struct _IBusEngineDesc {
     gchar *author;
     gchar *icon;
     gchar *layout;
+    gchar *hotkeys;
     guint  rank;
 };
 
@@ -127,6 +130,32 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
                                                  const gchar    *author,
                                                  const gchar    *icon,
                                                  const gchar    *layout);
+
+/**
+ * ibus_engine_desc_new2:
+ * @name: Name of the engine.
+ * @longname: Long name of the input method engine.
+ * @description: Input method engine description.
+ * @language: Language (e.g. zh, jp) supported by this input method engine.
+ * @license: License of the input method engine.
+ * @author: Author of the input method engine.
+ * @icon: Icon file of this engine.
+ * @layout: Keyboard layout
+ * @hotkeys: Hotkeys for switching to this engine.
+ * @returns: A newly allocated IBusEngineDesc.
+ *
+ * New a IBusEngineDesc.
+ */
+IBusEngineDesc  *ibus_engine_desc_new2          (const gchar    *name,
+                                                 const gchar    *longname,
+                                                 const gchar    *description,
+                                                 const gchar    *language,
+                                                 const gchar    *license,
+                                                 const gchar    *author,
+                                                 const gchar    *icon,
+                                                 const gchar    *layout,
+                                                 const gchar    *hotkeys);
+
 /**
  * ibus_engine_desc_new_from_xml_node:
  * @node: An XML node
@@ -154,4 +183,3 @@ void             ibus_engine_desc_output        (IBusEngineDesc *info,
                                                  gint            indent);
 G_END_DECLS
 #endif
-
