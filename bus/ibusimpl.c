@@ -318,10 +318,13 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
                            GVariant    *value)
 {
     GQuark hotkey = g_quark_from_static_string ("trigger");
+
+#ifdef OS_CHROMEOS
+    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
+#else
     if (value != NULL) {
         bus_ibus_impl_set_hotkey (ibus, hotkey, value);
     }
-#ifndef OS_CHROMEOS
     else {
         /* set default trigger */
         ibus_hotkey_profile_remove_hotkey_by_event (ibus->hotkey_profile, hotkey);
@@ -828,10 +831,10 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_get ("us");
 
-    ibus->use_sys_layout = FALSE;
+    ibus->use_sys_layout = TRUE;
     ibus->embed_preedit_text = TRUE;
-    ibus->enable_by_default = FALSE;
-    ibus->use_global_engine = FALSE;
+    ibus->enable_by_default = TRUE;
+    ibus->use_global_engine = TRUE;
     ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
 
