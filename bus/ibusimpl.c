@@ -190,12 +190,15 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
 {
     GQuark hotkey = g_quark_from_static_string ("trigger");
     bus_ibus_impl_set_hotkey (ibus, hotkey, value);
+#if 0
+    /* Chromium-OS: We don't use trigger key. */
     if (value == NULL) {
         ibus_hotkey_profile_add_hotkey (ibus->hotkey_profile,
                                         IBUS_space,
                                         IBUS_CONTROL_MASK,
                                         hotkey);
     }
+#endif
 }
 
 static void
@@ -619,10 +622,10 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_get ("us");
 
-    ibus->use_sys_layout = FALSE;
+    ibus->use_sys_layout = TRUE;
     ibus->embed_preedit_text = TRUE;
-    ibus->enable_by_default = FALSE;
-    ibus->use_global_engine = FALSE;
+    ibus->enable_by_default = TRUE;
+    ibus->use_global_engine = TRUE;
     ibus->global_engine = NULL;
     ibus->global_previous_engine_name = NULL;
 
