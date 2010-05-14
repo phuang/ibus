@@ -158,6 +158,21 @@ void                 ibus_lookup_table_append_label
                                                  IBusText           *text);
 
 /**
+ * ibus_lookup_table_set_label:
+ * @table: An IBusLookupTable.
+ * @index: Intex in the Lookup table.
+ * @text: A candidate label to be appended (in IBusText format).
+ *
+ * Append a candidate word/phrase to IBusLookupTable, and increase reference.
+ * This function is needed if the input method select candidate with
+ * non-numeric keys such as "asdfghjkl;".
+ */
+void                 ibus_lookup_table_set_label
+                                                (IBusLookupTable    *table,
+                                                 guint               index,
+                                                 IBusText           *text);
+
+/**
  * ibus_lookup_table_get_label:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.

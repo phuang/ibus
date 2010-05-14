@@ -325,6 +325,23 @@ ibus_lookup_table_append_label (IBusLookupTable *table,
     g_array_append_val (table->labels, text);
 }
 
+void
+ibus_lookup_table_set_label (IBusLookupTable *table,
+                             guint            index,
+                             IBusText        *text)
+{
+    g_assert (IBUS_IS_LOOKUP_TABLE (table));
+    g_assert (IBUS_IS_TEXT (text));
+
+    IBusText *old = ibus_lookup_table_get_label (table, index);
+    if (old != NULL) {
+        g_object_unref (old);
+    }
+
+    g_object_ref_sink (text);
+    g_array_index (table->labels, IBusText *, index) = text;
+}
+
 IBusText *
 ibus_lookup_table_get_label (IBusLookupTable *table,
                              guint            index)
