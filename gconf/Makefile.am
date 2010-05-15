@@ -22,11 +22,9 @@
 
 libibus = $(top_builddir)/src/libibus.la
 
-if ENABLE_GCONF
 libexec_PROGRAMS = \
 	ibus-gconf \
 	$(NULL)
-endif
 
 ibus_gconf_SOURCES = \
 	main.c \

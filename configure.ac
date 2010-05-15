@@ -88,15 +88,15 @@ PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= 2.18
 ])
 
-AC_ARG_ENABLE(clients,
-    AS_HELP_STRING([--disable-clients],
+AC_ARG_ENABLE(client,
+    AS_HELP_STRING([--disable-client],
                    [Do not build gtk im module and ibux-x11]),
-    [enable_clients=$enableval],
-    [enable_clients=yes]
+    [enable_client=$enableval],
+    [enable_client=yes]
 )
-AM_CONDITIONAL([ENABLE_CLIENTS], [test x"$enable_clients" = x"yes"])
+AM_CONDITIONAL([ENABLE_CLIENT], [test x"$enable_client" = x"yes"])
 
-if test x"$enable_clients" != x"no"; then
+if test x"$enable_client" != x"no"; then
     # check for gtk, gdk
     PKG_CHECK_MODULES(GTK2, [
         gtk+-2.0
@@ -295,7 +295,7 @@ Build options:
   Build shared libs         $enable_shared
   Build static libs         $enable_static
   Gtk immodule dir          $GTK_IM_MODULEDIR
-  Build gtk, x11 clients    $enable_clients
+  Build gtk, x11 clients    $enable_client
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
   Build document            $enable_gtk_doc

@@ -20,7 +20,6 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_PYTHON
 ibus_interface_PYTHON = \
 	iconfig.py \
 	ienginefactory.py \
@@ -33,7 +32,6 @@ ibus_interface_PYTHON = \
 	$(NULL)
 
 ibus_interfacedir = @pkgpythondir@/interface
-endif
 
 CLEANFILES = \
 	*.pyc \

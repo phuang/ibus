@@ -20,20 +20,35 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-SUBDIRS =       \
-	src         \
-	util        \
-	client      \
-	bus         \
-	data        \
-	m4          \
-	po          \
-	docs        \
-	ibus        \
-	ui          \
-	setup       \
-	gconf       \
+SUBDIRS = \
+	src \
+	util \
+	bus \
+	data \
+	m4 \
+	po \
+	docs \
+	ui \
 	$(NULL)
+
+if ENABLE_CLIENT
+SUBDIRS += \
+	client \
+	$(NULL)
+endif
+
+if ENABLE_PYTHON
+SUBDIRS += \
+	ibus \
+	setup \
+	$(NULL)
+endif
+
+if ENABLE_GCONF
+SUBDIRS += \
+	gconf \
+	$(NULL)
+endif
 
 ACLOCAL_AMFLAGS = -I m4
 

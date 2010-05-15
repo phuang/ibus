@@ -20,7 +20,6 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_PYTHON
 ui_gtk_PYTHON = \
 	candidatepanel.py \
 	handle.py \
@@ -44,7 +43,6 @@ component_DATA = \
 	gtkpanel.xml \
 	$(NULL)
 componentdir = $(pkgdatadir)/component
-endif
 
 CLEANFILES = \
 	gtkpanel.xml \
