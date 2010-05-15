@@ -87,21 +87,34 @@ PKG_CHECK_MODULES(GIO2, [
 PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= 2.18
 ])
-# PKG_CHECK_MODULES(PYGOBJECT2, [
-#     pygobject-2.0 >= 2.14
-# ])
 
-# check for gtk, gdk & pygtk
-PKG_CHECK_MODULES(GTK2, [
-    gtk+-2.0
-])
+AC_ARG_ENABLE(clients,
+    AS_HELP_STRING([--disable-clients],
+                   [Do not build gtk im module and ibux-x11]),
+    [enable_clients=$enableval],
+    [enable_clients=yes]
+)
+AM_CONDITIONAL([ENABLE_CLIENTS], [test x"$enable_clients" = x"yes"])
 
-gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-GTK_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk_binary_version/immodules
+if test x"$enable_clients" != x"no"; then
+    # check for gtk, gdk
+    PKG_CHECK_MODULES(GTK2, [
+        gtk+-2.0
+    ])
 
-PKG_CHECK_MODULES(GDK2, [
-    gdk-2.0
-])
+    gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
+    GTK_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk_binary_version/immodules
+
+    PKG_CHECK_MODULES(GDK2, [
+        gdk-2.0
+    ])
+    # Check for x11
+    PKG_CHECK_MODULES(X11, [
+        x11
+    ])
+
+    AC_CHECK_HEADERS([X11/XKBlib.h])
+fi
 
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
@@ -117,7 +130,6 @@ AC_ARG_ENABLE(gconf,
     [enable_gconf=$enableval],
     [enable_gconf=yes]
 )
-
 AM_CONDITIONAL([ENABLE_GCONF], [test "x$enable_gconf" = "xyes"])
 
 if test x"$enable_gconf" != x"no"; then
@@ -136,13 +148,6 @@ if test x"$enable_gconf" != x"no"; then
 else
     AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
 fi
-
-# Check for x11
-PKG_CHECK_MODULES(X11, [
-    x11
-])
-
-AC_CHECK_HEADERS([X11/XKBlib.h])
 
 # check env
 AC_PATH_PROG(ENV, env)
@@ -290,6 +295,7 @@ Build options:
   Build shared libs         $enable_shared
   Build static libs         $enable_static
   Gtk immodule dir          $GTK_IM_MODULEDIR
+  Build gtk, x11 clients    $enable_clients
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
   Build document            $enable_gtk_doc
