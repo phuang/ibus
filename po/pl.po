@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
-"PO-Revision-Date: 2010-02-28 03:12+0100\n"
+"POT-Creation-Date: 2010-05-14 22:09+0000\n"
+"PO-Revision-Date: 2010-05-14 00:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -78,7 +78,6 @@ msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "O metodzie wprowadzania"
 
@@ -139,7 +138,7 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 "iBus został uruchomiony. Jeśli nie można używać iBus, należy dodać poniższe "
-"wiersze do $HOME/.bashrc i zalogować się ponownie.\n"
+"wiersze do pliku $HOME/.bashrc i zalogować się ponownie.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -223,7 +222,6 @@ msgid "Orientation of lookup table"
 msgstr "Orientacja tablicy wyszukiwania"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientacja tablicy wyszukiwania. 0 = pozioma, 1 = pionowa"
 
@@ -232,9 +230,8 @@ msgid "Preload engines"
 msgstr "Wcześniejsze wczytanie mechanizmów"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "Wczytanie mechanizmów podczas uruchamiania programu iBus"
+msgstr "Wcześniejsze wczytanie mechanizmów podczas uruchamiania usługi iBus"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -257,12 +254,11 @@ msgid "Show input method name on language bar"
 msgstr "Wyświetlanie nazwy metody wprowadzania na panelu języków"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"Zachowanie panela języków. 0 = zawsze ukrywany, 1 = automatycznie ukrywany, "
+"Zachowanie panela języków. 0 = osadzony w menu, 1 = automatycznie ukrywany, "
 "2 = zawsze wyświetlany"
 
 #: ../data/ibus.schemas.in.h:18
@@ -393,7 +389,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "Osadzanie w menu"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -438,8 +434,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
-"Ustawienie zachowania programu iBus wyświetlania lub ukrywania panela języków"
+msgstr "Ustawienie wyświetlania lub ukrywania panela języków usługi iBus"
 
 #: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
@@ -477,9 +472,8 @@ msgid "Top right corner"
 msgstr "Górny prawy róg"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "Użycie własnej czcionki"
+msgstr "Użycie własnej czcionki:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -488,9 +482,3 @@ msgstr "Pionowo"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "W czasie aktywności"
-
-#~ msgid "Never"
-#~ msgstr "Nigdy"
-
-#~ msgid "Show in Status Icon menu"
-#~ msgstr "Wyświetlanie w menu ikony w obszarze powiadamiania"
