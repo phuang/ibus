@@ -157,11 +157,19 @@ class CheckMenuItem(gtk.CheckMenuItem, PropItem):
             self.hide_all()
 
     def do_toggled(self):
+        # Do not send property-activate to engine in case the event is
+        # sent from engine.
+        do_emit = False
         if self.get_active():
+            if self._prop.state != ibus.PROP_STATE_CHECKED:
+                do_emit = True
             self._prop.state = ibus.PROP_STATE_CHECKED
         else:
+            if self._prop.state != ibus.PROP_STATE_UNCHECKED:
+                do_emit = True
             self._prop.state = ibus.PROP_STATE_UNCHECKED
-        self.emit("property-activate", self._prop.key, self._prop.state)
+        if do_emit:
+            self.emit("property-activate", self._prop.key, self._prop.state)
 
     def property_changed(self):
         self.set_active(self._prop.state == ibus.PROP_STATE_CHECKED)
@@ -207,11 +215,19 @@ class RadioMenuItem(gtk.RadioMenuItem, PropItem):
             self.hide_all()
 
     def do_toggled(self):
+        # Do not send property-activate to engine in case the event is
+        # sent from engine.
+        do_emit = False
         if self.get_active():
+            if self._prop.state != ibus.PROP_STATE_CHECKED:
+                do_emit = True
             self._prop.state = ibus.PROP_STATE_CHECKED
         else:
+            if self._prop.state != ibus.PROP_STATE_UNCHECKED:
+                do_emit = True
             self._prop.state = ibus.PROP_STATE_UNCHECKED
-        self.emit("property-activate", self._prop.key, self._prop.state)
+        if do_emit:
+            self.emit("property-activate", self._prop.key, self._prop.state)
 
 class SeparatorMenuItem(gtk.SeparatorMenuItem, PropItem):
     __gtype_name__ = "IBusSeparatorMenuItem"
