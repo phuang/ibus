@@ -53,17 +53,21 @@ int main()
 	g_debug ("Test ibusbus.c: passed.");
 
 	/* Test ibusinputcontext.c */
-#if 0
+#if 1
     {
 	    IBusInputContext *context;
 	    IBusEngineDesc *engine_desc;
+	    const gchar *current_ic;
 	    context = ibus_bus_create_input_context (bus, "test");
-	    ibus_input_context_set_capabilities (context, 0);
+	    ibus_input_context_set_capabilities (context, IBUS_CAP_FOCUS);
 	    ibus_input_context_disable (context);
 	    g_assert (ibus_input_context_is_enabled (context) == FALSE);
 	    ibus_input_context_enable (context);
 	    g_assert (ibus_input_context_is_enabled (context) == TRUE);
+	    ibus_input_context_focus_in (context);
 	    ibus_input_context_set_engine (context, active_engine_name);
+	    current_ic = ibus_bus_current_input_context (bus);
+	    g_assert (!strcmp (current_ic, ibus_proxy_get_path (IBUS_PROXY (context))));
 	    engine_desc = ibus_input_context_get_engine (context);
 	    g_assert (engine_desc);
 	    g_assert (!strcmp (active_engine_name, engine_desc->name));

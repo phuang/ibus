@@ -425,9 +425,9 @@ ibus_bus_current_input_context(IBusBus      *bus)
     gboolean result;
 
     result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
                             "CurrentInputContext",
                             G_TYPE_INVALID,
                             G_TYPE_STRING, &name,
