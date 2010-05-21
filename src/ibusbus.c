@@ -885,3 +885,98 @@ ibus_bus_get_config (IBusBus *bus)
 
     return priv->config;
 }
+
+gboolean
+ibus_bus_get_use_sys_layout (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    gboolean result;
+    gboolean use_sys_layout;
+
+    result = ibus_bus_call (bus,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
+                            "GetUseSysLayout",
+                            G_TYPE_INVALID,
+                            G_TYPE_BOOLEAN, &use_sys_layout,
+                            G_TYPE_INVALID);
+
+    return result && use_sys_layout;
+}
+
+gboolean
+ibus_bus_get_use_global_engine (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    gboolean result;
+    gboolean use_global_engine;
+
+    result = ibus_bus_call (bus,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
+                            "GetUseGlobalEngine",
+                            G_TYPE_INVALID,
+                            G_TYPE_BOOLEAN, &use_global_engine,
+                            G_TYPE_INVALID);
+
+    return result && use_global_engine;
+}
+
+gboolean
+ibus_bus_is_global_engine_enabled (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    gboolean result;
+    gboolean is_global_engine_enabled;
+
+    result = ibus_bus_call (bus,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
+                            "IsGlobalEngineEnabled",
+                            G_TYPE_INVALID,
+                            G_TYPE_BOOLEAN, &is_global_engine_enabled,
+                            G_TYPE_INVALID);
+
+    return result && is_global_engine_enabled;
+}
+
+IBusEngineDesc *
+ibus_bus_get_global_engine (IBusBus *bus)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    gboolean result;
+    IBusEngineDesc *global_engine = NULL;
+
+    result = ibus_bus_call (bus,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
+                            "GetGlobalEngine",
+                            G_TYPE_INVALID,
+                            IBUS_TYPE_ENGINE_DESC, &global_engine,
+                            G_TYPE_INVALID);
+
+    return result ? global_engine : NULL;
+}
+
+gboolean
+ibus_bus_set_global_engine (IBusBus     *bus,
+                            const gchar *global_engine)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    gboolean result;
+
+    result = ibus_bus_call (bus,
+                            IBUS_SERVICE_IBUS,
+                            IBUS_PATH_IBUS,
+                            IBUS_INTERFACE_IBUS,
+                            "SetGlobalEngine",
+                            G_TYPE_STRING, &global_engine,
+                            G_TYPE_INVALID,
+                            G_TYPE_INVALID);
+
+    return result;
+}

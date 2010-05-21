@@ -50,6 +50,22 @@ int main()
 	g_assert (engines);
 	print_engines (engines);
 	g_list_free (engines);
+
+	g_debug ("===== Global engine:");
+	if (ibus_bus_get_use_global_engine (bus)) {
+	    g_debug ("use_global_engine is true.");
+	    if (ibus_bus_is_global_engine_enabled (bus)) {
+		g_debug ("Global engine is enabled.");
+		IBusEngineDesc *global_engine = ibus_bus_get_global_engine (bus);
+		g_assert (global_engine);
+		g_debug ("%s (id:%s, icon:%s)", global_engine->longname,
+			 global_engine->name, global_engine->icon);
+		g_object_unref (global_engine);
+	    }
+	}
+
+	g_debug ("===== Use system layout:%s", ibus_bus_get_use_sys_layout (bus) ? "true" : "false");
+
 	g_debug ("Test ibusbus.c: passed.");
 
 	/* Test ibusinputcontext.c */

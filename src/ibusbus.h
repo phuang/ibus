@@ -257,6 +257,59 @@ GList       *ibus_bus_list_engines      (IBusBus        *bus);
  */
 GList       *ibus_bus_list_active_engines
                                         (IBusBus        *bus);
+
+/**
+ * ibus_bus_get_use_sys_layout:
+ * @bus: An IBusBus.
+ * @returns: TRUE if "use_sys_layout" option is enabled.
+ *
+ * Check if the bus's "use_sys_layout" option is enabled or not.
+ */
+gboolean     ibus_bus_get_use_sys_layout(IBusBus        *bus);
+
+/**
+ * ibus_bus_get_use_global_engine:
+ * @bus: An IBusBus.
+ * @returns: TRUE if "use_global_engine" option is enabled.
+ *
+ * Check if the bus's "use_global_engine" option is enabled or not.
+ */
+gboolean     ibus_bus_get_use_global_engine
+                                        (IBusBus        *bus);
+
+
+/**
+ * ibus_bus_is_global_engine_enabled:
+ * @bus: An IBusBus.
+ * @returns: TRUE if the current global engine is enabled.
+ *
+ * Check if the current global engine is enabled or not.
+ */
+gboolean     ibus_bus_is_global_engine_enabled
+                                        (IBusBus        *bus);
+
+/**
+ * ibus_bus_get_global_engine:
+ * @bus: An IBusBus.
+ * @returns: The description of current global engine, or NULL if there is no
+ * global engine.
+ *
+ * Get the description of current global engine.
+ */
+IBusEngineDesc
+            *ibus_bus_get_global_engine (IBusBus        *bus);
+
+/**
+ * ibus_bus_set_global_engine:
+ * @bus: An IBusBus.
+ * @global_engine: A new engine name.
+ * @returns: TRUE if the global engine was set successfully.
+ *
+ * Set current global engine.
+ */
+gboolean     ibus_bus_set_global_engine (IBusBus        *bus,
+                                         const gchar    *global_engine);
+
 /* declare config apis */
 /**
  * ibus_bus_get_config:
