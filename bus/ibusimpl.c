@@ -83,6 +83,9 @@ static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
                                                  BusEngineProxy     *engine);
 
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
+static void     bus_ibus_impl_global_engine_changed
+                                                (BusIBusImpl        *ibus);
+
 static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
                                                  BusIBusImpl        *ibus);
 
@@ -729,7 +732,21 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "    <method name=\"GetUseSysLayout\">\n"
         "      <arg name=\"enable\" direction=\"out\" type=\"b\"/>\n"
         "    </method>\n"
+        "    <method name=\"GetUseGlobalEngine\">\n"
+        "      <arg name=\"enable\" direction=\"out\" type=\"b\"/>\n"
+        "    </method>\n"
+        "    <method name=\"GetGlobalEngine\">\n"
+        "      <arg name=\"desc\" direction=\"out\" type=\"v\"/>\n"
+        "    </method>\n"
+        "    <method name=\"SetGlobalEngine\">\n"
+        "      <arg name=\"name\" direction=\"in\" type=\"s\"/>\n"
+        "    </method>\n"
+        "    <method name=\"IsGlobalEngineEnabled\">\n"
+        "      <arg name=\"enable\" direction=\"out\" type=\"b\"/>\n"
+        "    </method>\n"
         "    <signal name=\"RegistryChanged\">\n"
+        "    </signal>\n"
+        "    <signal name=\"GlobalEngineChanged\">\n"
         "    </signal>\n"
         "  </interface>\n"
         "</node>\n";
@@ -993,6 +1010,7 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
 
     bus_ibus_impl_save_global_engine_name_to_config (ibus);
     bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
+    bus_ibus_impl_global_engine_changed (ibus);
 }
 
 static void
@@ -1472,7 +1490,6 @@ _ibus_get_use_sys_layout (BusIBusImpl     *ibus,
                           BusConnection   *connection)
 {
     IBusMessage *reply;
-    IBusMessageIter src, dst;
 
     reply = ibus_message_new_method_return (message);
     ibus_message_append_args (reply,
@@ -1481,6 +1498,140 @@ _ibus_get_use_sys_layout (BusIBusImpl     *ibus,
 
     return reply;
 }
+
+static IBusMessage *
+_ibus_get_use_global_engine (BusIBusImpl     *ibus,
+                             IBusMessage     *message,
+                             BusConnection   *connection)
+{
+    IBusMessage *reply;
+
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+            G_TYPE_BOOLEAN, &ibus->use_global_engine,
+            G_TYPE_INVALID);
+
+    return reply;
+}
+
+static IBusMessage *
+_ibus_get_global_engine (BusIBusImpl     *ibus,
+                         IBusMessage     *message,
+                         BusConnection   *connection)
+{
+    IBusMessage *reply;
+
+    if (ibus->use_global_engine && ibus->global_engine) {
+        IBusEngineDesc *desc = bus_engine_proxy_get_desc (ibus->global_engine);
+        if (desc != NULL) {
+            reply = ibus_message_new_method_return (message);
+            ibus_message_append_args (reply,
+                                      IBUS_TYPE_ENGINE_DESC, &desc,
+                                      G_TYPE_INVALID);
+            return reply;
+        }
+    }
+
+    reply = ibus_message_new_error (message, DBUS_ERROR_FAILED,
+                                    "No global engine.");
+    return reply;
+}
+
+static IBusMessage *
+_ibus_set_global_engine (BusIBusImpl     *ibus,
+                         IBusMessage     *message,
+                         BusConnection   *connection)
+{
+    gboolean retval;
+    IBusMessage *reply;
+    IBusError *error;
+    gchar *new_engine_name;
+    gchar *old_engine_name;
+
+    if (!ibus->use_global_engine) {
+        reply = ibus_message_new_error (message, DBUS_ERROR_FAILED,
+                                        "Global engine feature is disable.");
+        return reply;
+    }
+
+    retval = ibus_message_get_args (message,
+                                    &error,
+                                    G_TYPE_STRING, &new_engine_name,
+                                    G_TYPE_INVALID);
+    if (!retval) {
+        reply = ibus_message_new_error (message,
+                                        error->name,
+                                        error->message);
+        ibus_error_free (error);
+        return reply;
+    }
+
+    reply = ibus_message_new_method_return (message);
+    old_engine_name = NULL;
+
+    if (ibus->global_engine) {
+        old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
+    }
+
+    if (g_strcmp0 (new_engine_name, old_engine_name) == 0) {
+        /* If the user requested the same global engine, then we just enable the
+         * original one. */
+        if (ibus->focused_context) {
+            bus_input_context_enable (ibus->focused_context);
+        }
+        else if (ibus->global_engine) {
+            bus_engine_proxy_enable (ibus->global_engine);
+        }
+        return reply;
+    }
+
+    /* If there is a focused input context, then we just change the engine of
+     * the focused context, which will then change the global engine
+     * automatically. Otherwise, we need to change the global engine directly.
+     */
+    if (ibus->focused_context) {
+        _context_request_engine_cb (ibus->focused_context, new_engine_name, ibus);
+    }
+    else {
+        IBusEngineDesc *engine_desc = _find_engine_desc_by_name (ibus, new_engine_name);
+        if (engine_desc != NULL) {
+            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (engine_desc);
+            if (new_engine != NULL) {
+                /* Enable the global engine by default, because the user
+                 * selected it explicitly. */
+                bus_engine_proxy_enable (new_engine);
+
+                /* Assume the ownership of the new global engine. Normally it's
+                 * done by the input context. But as we need to change the global
+                 * engine directly, so we need to do it here. */
+                g_object_ref_sink (new_engine);
+                bus_ibus_impl_set_global_engine (ibus, new_engine);
+
+                /* The global engine should already be referenced. */
+                g_object_unref (new_engine);
+            }
+        }
+    }
+
+    return reply;
+}
+
+static IBusMessage *
+_ibus_is_global_engine_enabled (BusIBusImpl     *ibus,
+                                IBusMessage     *message,
+                                BusConnection   *connection)
+{
+    IBusMessage *reply;
+    gboolean enabled = (ibus->use_global_engine && ibus->global_engine &&
+                        bus_engine_proxy_is_enabled (ibus->global_engine));
+
+    reply = ibus_message_new_method_return (message);
+    ibus_message_append_args (reply,
+                              G_TYPE_BOOLEAN, &enabled,
+                              G_TYPE_INVALID);
+    return reply;
+}
+
 
 static gboolean
 bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
@@ -1512,6 +1663,10 @@ bus_ibus_impl_ibus_message (BusIBusImpl     *ibus,
         { IBUS_INTERFACE_IBUS, "Exit",                  _ibus_exit },
         { IBUS_INTERFACE_IBUS, "Ping",                  _ibus_ping },
         { IBUS_INTERFACE_IBUS, "GetUseSysLayout",       _ibus_get_use_sys_layout },
+        { IBUS_INTERFACE_IBUS, "GetUseGlobalEngine",    _ibus_get_use_global_engine },
+        { IBUS_INTERFACE_IBUS, "GetGlobalEngine",       _ibus_get_global_engine },
+        { IBUS_INTERFACE_IBUS, "SetGlobalEngine",       _ibus_set_global_engine },
+        { IBUS_INTERFACE_IBUS, "IsGlobalEngineEnabled", _ibus_is_global_engine_enabled },
     };
 
     ibus_message_set_sender (message, bus_connection_get_unique_name (connection));
@@ -1605,6 +1760,24 @@ bus_ibus_impl_registry_changed (BusIBusImpl *ibus)
 
 }
 
+static void
+bus_ibus_impl_global_engine_changed (BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    IBusMessage *message;
+
+    message = ibus_message_new_signal (IBUS_PATH_IBUS,
+                                       IBUS_INTERFACE_IBUS,
+                                       "GlobalEngineChanged");
+    ibus_message_append_args (message,
+                              G_TYPE_INVALID);
+    ibus_message_set_sender (message, IBUS_SERVICE_IBUS);
+
+    bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, message, NULL);
+
+    ibus_message_unref (message);
+}
 
 gboolean
 bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
