@@ -266,7 +266,7 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
     }
 
     if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "FocusIn")) {
-        const gchar* input_context_path = NULL;
+        gchar* input_context_path = NULL;
         IBusError *error = NULL;
         gboolean retval;
 
@@ -287,9 +287,10 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+        g_free (input_context_path);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "FocusOut")) {
-        const gchar* input_context_path = NULL;
+        gchar* input_context_path = NULL;
         gboolean retval;
         IBusError *error = NULL;
 
@@ -310,6 +311,7 @@ ibus_panel_service_ibus_message (IBusPanelService *panel,
         else {
             reply = ibus_message_new_method_return (message);
         }
+        g_free (input_context_path);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_PANEL, "RegisterProperties")) {
         IBusPropList *prop_list = NULL;

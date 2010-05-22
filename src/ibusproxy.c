@@ -469,7 +469,9 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
     if (ibus_message_is_signal (message, DBUS_SERVICE_DBUS, "NameOwnerChanged")) {
-        gchar *name, *old_name, *new_name;
+        gchar *name = NULL;
+        gchar *old_name = NULL;
+        gchar *new_name = NULL;
         IBusError *error;
 
         if (!ibus_message_get_args (message,
@@ -484,8 +486,11 @@ ibus_proxy_handle_signal (IBusProxy     *proxy,
 
         if (g_strcmp0 (priv->unique_name, old_name) == 0) {
             ibus_object_destroy (IBUS_OBJECT (proxy));
-            return FALSE;
         }
+        g_free (name);
+        g_free (old_name);
+        g_free (new_name);
+        return FALSE;
     }
 
     if (g_strcmp0 (ibus_message_get_path (message), priv->path) == 0) {
@@ -521,21 +526,19 @@ ibus_proxy_get_unique_name (IBusProxy *proxy)
 
     if (priv->unique_name == NULL && priv->connection != NULL) {
         IBusError *error;
-        gchar *owner;
         if (!ibus_connection_call (priv->connection,
                                    DBUS_SERVICE_DBUS,
                                    DBUS_PATH_DBUS,
                                    DBUS_INTERFACE_DBUS,
                                    "GetNameOwner",
                                    &error,
-                                   G_TYPE_STRING, &(priv->name),
+                                   G_TYPE_STRING, &priv->name,
                                    G_TYPE_INVALID,
-                                   G_TYPE_STRING, &owner,
+                                   G_TYPE_STRING, &priv->unique_name,
                                    G_TYPE_INVALID)) {
             g_warning ("%s: %s", error->name, error->message);
             ibus_error_free (error);
         }
-        priv->unique_name = g_strdup (owner);
     }
 
     return priv->unique_name;

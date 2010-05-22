@@ -203,8 +203,8 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
     IBusMessage *reply = NULL;
 
     if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "SetValue")) {
-        gchar *section;
-        gchar *name;
+        gchar *section = NULL;
+        gchar *name = NULL;
         GValue value = { 0 };
         IBusError *error = NULL;
         gboolean retval;
@@ -230,10 +230,12 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
         else {
             reply = ibus_message_new_method_return (message);
         }
+        g_free (section);
+        g_free (name);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "GetValue")) {
-        gchar *section;
-        gchar *name;
+        gchar *section = NULL;
+        gchar *name = NULL;
         GValue value = { 0 };
         IBusError *error = NULL;
         gboolean retval;
@@ -263,10 +265,12 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
                                       G_TYPE_INVALID);
             g_value_unset (&value);
         }
+        g_free (section);
+        g_free (name);
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "Unset")) {
-        gchar *section;
-        gchar *name;
+        gchar *section = NULL;
+        gchar *name = NULL;
         IBusError *error = NULL;
         gboolean retval;
 
@@ -290,6 +294,8 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
         else {
             reply = ibus_message_new_method_return (message);
         }
+        g_free (section);
+        g_free (name);
     }
 
     if (reply) {

@@ -215,7 +215,6 @@ ibus_factory_ibus_message (IBusFactory    *factory,
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (message != NULL);
 
-    IBusMessage *reply_message;
     IBusFactoryPrivate *priv;
     priv = IBUS_FACTORY_GET_PRIVATE (factory);
 
@@ -224,57 +223,54 @@ ibus_factory_ibus_message (IBusFactory    *factory,
     if (ibus_message_is_method_call (message,
                                      IBUS_INTERFACE_FACTORY,
                                      "CreateEngine")) {
-        gchar *engine_name;
-        gchar *path;
+        IBusMessage *reply_message = NULL;
+        gchar *engine_name = NULL;
+        gchar *path = NULL;
         IBusError *error;
         IBusEngine *engine;
         gboolean retval;
         GType engine_type;
 
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &engine_name,
-                                        G_TYPE_INVALID);
+        do {
+            retval = ibus_message_get_args (message,
+                                            &error,
+                                            G_TYPE_STRING, &engine_name,
+                                            G_TYPE_INVALID);
 
-        if (!retval) {
-            reply_message = ibus_message_new_error_printf (message,
-                                        DBUS_ERROR_INVALID_ARGS,
-                                        "The 1st arg should be engine name");
-            ibus_connection_send (connection, reply_message);
-            ibus_message_unref (reply_message);
-            return TRUE;
-        }
+            if (!retval) {
+                reply_message = ibus_message_new_error_printf (message,
+                                            DBUS_ERROR_INVALID_ARGS,
+                                            "The 1st arg should be engine name");
+                break;
+            }
+            engine_type = (GType )g_hash_table_lookup (priv->engine_table, engine_name);
 
-        engine_type = (GType )g_hash_table_lookup (priv->engine_table, engine_name);
+            if (engine_type == G_TYPE_INVALID) {
+                 reply_message = ibus_message_new_error_printf (message,
+                                            DBUS_ERROR_FAILED,
+                                            "Can not create engine %s", engine_name);
+                break;
+            }
 
-        if (engine_type == G_TYPE_INVALID) {
-             reply_message = ibus_message_new_error_printf (message,
-                                        DBUS_ERROR_FAILED,
-                                        "Can not create engine %s", engine_name);
-            ibus_connection_send (connection, reply_message);
-            ibus_message_unref (reply_message);
-            return TRUE;
+            path = g_strdup_printf ("/org/freedesktop/IBus/Engine/%d", ++priv->id);
+            engine = g_object_new (engine_type,
+                                   "name", engine_name,
+                                   "path", path,
+                                   "connection", priv->connection,
+                                   NULL);
 
-        }
+            priv->engine_list = g_list_append (priv->engine_list, engine);
+            g_signal_connect (engine,
+                              "destroy",
+                              G_CALLBACK (_engine_destroy_cb),
+                              factory);
 
-        path = g_strdup_printf ("/org/freedesktop/IBus/Engine/%d", ++priv->id);
-
-        engine = g_object_new (engine_type,
-                               "name", engine_name,
-                               "path", path,
-                               "connection", priv->connection,
-                               NULL);
-
-        priv->engine_list = g_list_append (priv->engine_list, engine);
-        g_signal_connect (engine,
-                          "destroy",
-                          G_CALLBACK (_engine_destroy_cb),
-                          factory);
-
-        reply_message = ibus_message_new_method_return (message);
-        ibus_message_append_args (reply_message,
-                                  IBUS_TYPE_OBJECT_PATH, &path,
-                                  G_TYPE_INVALID);
+            reply_message = ibus_message_new_method_return (message);
+            ibus_message_append_args (reply_message,
+                                      IBUS_TYPE_OBJECT_PATH, &path,
+                                      G_TYPE_INVALID);
+        } while (0);
+        g_free (engine_name);
         g_free (path);
         ibus_connection_send (connection, reply_message);
         ibus_message_unref (reply_message);

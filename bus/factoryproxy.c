@@ -206,6 +206,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     IBusConnection *connection = ibus_proxy_get_connection ((IBusProxy *) factory);
     engine = bus_engine_proxy_new (object_path, desc, (BusConnection *) connection);
     ibus_message_unref (reply_message);
+    g_free (object_path);
 
     return engine;
 }

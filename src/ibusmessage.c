@@ -801,10 +801,12 @@ ibus_message_iter_get (IBusMessageIter *iter,
     case G_TYPE_STRING:
         {
             gchar *v;
-            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_STRING)
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_STRING) {
+                *(gchar **) value = NULL;
                 return FALSE;
+            }
             dbus_message_iter_get_basic (iter, &v);
-            *(gchar **) value = (gchar *) v;
+            *(gchar **) value = g_strdup ((gchar *) v);
             return TRUE;
         }
     case G_TYPE_INT64:
@@ -851,10 +853,12 @@ ibus_message_iter_get (IBusMessageIter *iter,
         }
         if (type == IBUS_TYPE_OBJECT_PATH) {
             gchar *v;
-            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_OBJECT_PATH)
+            if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_OBJECT_PATH) {
+                *(gchar **) value = NULL;
                 return FALSE;
+            }
             dbus_message_iter_get_basic (iter, &v);
-            *(gchar **) value = (gchar *) v;
+            *(gchar **) value = g_strdup ((gchar *) v);
             return TRUE;
         }
 

@@ -101,18 +101,15 @@ ibus_text_deserialize (IBusText        *text,
                        IBusMessageIter *iter)
 {
     gboolean retval;
-    gchar *str;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->deserialize (
                             (IBusSerializable *)text, iter);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    text->is_static = FALSE;
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &text->text);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-
-    text->is_static = FALSE;
-    text->text = g_strdup (str);
 
     if (text->attrs) {
         g_object_unref (text->attrs);

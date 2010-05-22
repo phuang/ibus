@@ -245,7 +245,7 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
         g_signal_emit (panel, panel_signals[CANDIDATE_CLICKED], 0, index, button, state);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyActivate")) {
-        gchar *prop_name;
+        gchar *prop_name = NULL;
         gint prop_state;
         gboolean retval;
 
@@ -258,9 +258,10 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
             goto failed;
 
         g_signal_emit (panel, panel_signals[PROPERTY_ACTIVATE], 0, prop_name, prop_state);
+        g_free (prop_name);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyShow")) {
-        gchar *prop_name;
+        gchar *prop_name = NULL;
         gboolean retval;
 
         retval = ibus_message_get_args (message,
@@ -270,9 +271,10 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
         if (!retval)
             goto failed;
         g_signal_emit (panel, panel_signals[PROPERTY_SHOW], 0, prop_name);
+        g_free (prop_name);
     }
     else if (ibus_message_is_signal (message, IBUS_INTERFACE_PANEL, "PropertyHide")) {
-        gchar *prop_name;
+        gchar *prop_name = NULL;
         gboolean retval;
 
         retval = ibus_message_get_args (message,
@@ -282,6 +284,7 @@ bus_panel_proxy_ibus_signal (IBusProxy      *proxy,
         if (!retval)
             goto failed;
         g_signal_emit (panel, panel_signals[PROPERTY_HIDE], 0, prop_name);
+        g_free (prop_name);
     }
 
 handled:

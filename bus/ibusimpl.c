@@ -1062,6 +1062,7 @@ _ibus_create_input_context (BusIBusImpl     *ibus,
     }
 
     context = bus_input_context_new (connection, client);
+    g_free (client);
     g_object_ref_sink (context);
     ibus->contexts = g_list_append (ibus->contexts, context);
 

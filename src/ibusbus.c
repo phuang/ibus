@@ -48,6 +48,7 @@ struct _IBusBusPrivate {
     IBusConnection *connection;
     gboolean watch_dbus_signal;
     IBusConfig *config;
+    gchar *unique_name;
 };
 typedef struct _IBusBusPrivate IBusBusPrivate;
 
@@ -131,6 +132,8 @@ _connection_destroy_cb (IBusConnection  *connection,
                                           bus);
     g_object_unref (priv->connection);
     priv->connection = NULL;
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
 
     g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
 }
@@ -206,6 +209,7 @@ ibus_bus_init (IBusBus *bus)
     priv->config = NULL;
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
+    priv->unique_name = NULL;
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
@@ -255,6 +259,9 @@ ibus_bus_destroy (IBusObject *object)
         priv->connection = NULL;
     }
 
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
+
     IBUS_OBJECT_CLASS (ibus_bus_parent_class)->destroy (object);
 }
 
@@ -283,7 +290,7 @@ ibus_bus_create_input_context (IBusBus      *bus,
 
     g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
 
-    gchar *path;
+    gchar *path = NULL;
     DBusMessage *call = NULL;
     DBusMessage *reply = NULL;
     IBusError *error;
@@ -330,6 +337,7 @@ ibus_bus_create_input_context (IBusBus      *bus,
     }
 
     context = ibus_input_context_new (path, priv->connection);
+    g_free (path);
     ibus_message_unref (reply);
 
     return context;
@@ -416,8 +424,8 @@ ibus_bus_call (IBusBus      *bus,
     return TRUE;
 }
 
-const gchar *
-ibus_bus_current_input_context(IBusBus      *bus)
+gchar *
+ibus_bus_current_input_context (IBusBus      *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
 
@@ -433,6 +441,7 @@ ibus_bus_current_input_context(IBusBus      *bus)
                             G_TYPE_STRING, &name,
                             G_TYPE_INVALID);
 
+    /* the name should be freed in caller */
     if (result)
         return name;
 
@@ -497,8 +506,13 @@ ibus_bus_hello (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
 
-    gchar *unique_name = NULL;
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
     gboolean result;
+
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
 
     result = ibus_bus_call (bus,
                             DBUS_SERVICE_DBUS,
@@ -506,11 +520,11 @@ ibus_bus_hello (IBusBus *bus)
                             DBUS_INTERFACE_DBUS,
                             "Hello",
                             G_TYPE_INVALID,
-                            G_TYPE_STRING, &unique_name,
+                            G_TYPE_STRING, &(priv->unique_name),
                             G_TYPE_INVALID);
 
     if (result)
-        return unique_name;
+        return priv->unique_name;
 
     return NULL;
 }
@@ -632,7 +646,7 @@ ibus_bus_remove_match (IBusBus      *bus,
                             G_TYPE_INVALID);
 }
 
-const gchar *
+gchar *
 ibus_bus_get_name_owner (IBusBus        *bus,
                          const gchar    *name)
 {
@@ -651,6 +665,7 @@ ibus_bus_get_name_owner (IBusBus        *bus,
                             G_TYPE_STRING, &owner,
                             G_TYPE_INVALID);
 
+    /* the owner should be freed in caller */
     if (result)
         return owner;
 

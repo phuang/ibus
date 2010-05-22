@@ -207,51 +207,42 @@ ibus_component_deserialize (IBusComponent   *component,
                             IBusMessageIter *iter)
 {
     gboolean retval;
-    gchar *str;
     IBusMessageIter array_iter;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->deserialize ((IBusSerializable *)component, iter);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->name);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->name = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->description);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->description = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->version);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->version = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->license);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->license = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->author);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->author = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->homepage);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->homepage = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->exec);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->exec = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &component->textdomain);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    component->textdomain = g_strdup (str);
 
     retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
     g_return_val_if_fail (retval, FALSE);

@@ -181,9 +181,9 @@ void         ibus_bus_remove_match      (IBusBus        *bus,
  * @name: Name.
  * @returns: Owner of the name.
  *
- * Return the name owner.
+ * Return the name owner in a new allocated memory, use g_free to free it. 
  */
-const gchar *ibus_bus_get_name_owner    (IBusBus        *bus,
+gchar       *ibus_bus_get_name_owner    (IBusBus        *bus,
                                          const gchar    *name);
 /* declare ibus methods */
 
@@ -219,9 +219,10 @@ IBusInputContext
  * @returns: The named of currently focued IBusInputContext if the "CurrentInputContext" call
  *            suceeded, NULL otherwise.
  *
- * Get the current focused input context.
+ * Get the current focused input context in a new allocated memory, use g_free to free it.
  */
-const gchar *ibus_bus_current_input_context(IBusBus        *bus);
+gchar       *ibus_bus_current_input_context
+                                        (IBusBus        *bus);
 
 
 /**

@@ -926,30 +926,35 @@ _ic_property_activate (BusInputContext  *context,
     g_assert (BUS_IS_CONNECTION (connection));
 
     IBusMessage *reply;
-    gchar *prop_name;
-    gint prop_state;
-    gboolean retval;
-    IBusError *error;
+    gchar *prop_name = NULL;
 
-    retval = ibus_message_get_args (message,
-                                    &error,
-                                    G_TYPE_STRING, &prop_name,
-                                    G_TYPE_INT, &prop_state,
-                                    G_TYPE_INVALID);
+    do {
+        gint prop_state;
+        gboolean retval;
+        IBusError *error;
 
-    if (!retval) {
-        reply = ibus_message_new_error (message,
-                                        error->name,
-                                        error->message);
-        ibus_error_free (error);
-        return reply;
-    }
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &prop_name,
+                                        G_TYPE_INT, &prop_state,
+                                        G_TYPE_INVALID);
 
-    if (context->enabled && context->engine) {
-        bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
-    }
+        if (!retval) {
+            reply = ibus_message_new_error (message,
+                                            error->name,
+                                            error->message);
+            ibus_error_free (error);
+            break;
+        }
 
-    reply = ibus_message_new_method_return (message);
+        if (context->enabled && context->engine) {
+            bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
+        }
+
+        reply = ibus_message_new_method_return (message);
+    } while (0);
+
+    g_free (prop_name);
     return reply;
 }
 
@@ -1015,36 +1020,39 @@ _ic_set_engine (BusInputContext  *context,
     g_assert (message != NULL);
     g_assert (BUS_IS_CONNECTION (connection));
 
-    gboolean retval;
-    IBusMessage *reply;
-    IBusError *error;
-    gchar *engine_name;
+    IBusMessage *reply = NULL;
+    gchar *engine_name = NULL;
 
-    retval = ibus_message_get_args (message,
-                                    &error,
-                                    G_TYPE_STRING, &engine_name,
-                                    G_TYPE_INVALID);
-     if (!retval) {
-        reply = ibus_message_new_error (message,
-                                        error->name,
-                                        error->message);
-        ibus_error_free (error);
-        return reply;
-    }
+    do {
+        gboolean retval;
+        IBusError *error;
+        retval = ibus_message_get_args (message,
+                                        &error,
+                                        G_TYPE_STRING, &engine_name,
+                                        G_TYPE_INVALID);
+         if (!retval) {
+            reply = ibus_message_new_error (message,
+                                            error->name,
+                                            error->message);
+            ibus_error_free (error);
+            break;
+        }
 
-    g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, engine_name);
+        g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, engine_name);
 
-    if (context->engine == NULL) {
-        reply = ibus_message_new_error_printf (message,
-                                               "org.freedesktop.IBus.NoEngine",
-                                               "can not find engine with name %s",
-                                               engine_name);
-        return reply;
-    }
+        if (context->engine == NULL) {
+            reply = ibus_message_new_error_printf (message,
+                                                   "org.freedesktop.IBus.NoEngine",
+                                                   "can not find engine with name %s",
+                                                   engine_name);
+            break;
+        }
 
-    bus_input_context_enable (context);
+        bus_input_context_enable (context);
+        reply = ibus_message_new_method_return (message);
+    } while (0);
 
-    reply = ibus_message_new_method_return (message);
+    g_free (engine_name);
     return reply;
 }
 

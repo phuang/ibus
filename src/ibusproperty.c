@@ -135,15 +135,13 @@ ibus_property_deserialize (IBusProperty    *prop,
                            IBusMessageIter *iter)
 {
     gboolean retval;
-    gchar *p;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_property_parent_class)->deserialize ((IBusSerializable *) prop, iter);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &p);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &prop->key);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    prop->key = g_strdup (p);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &prop->type);
     g_return_val_if_fail (retval, FALSE);
@@ -154,10 +152,9 @@ ibus_property_deserialize (IBusProperty    *prop,
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &p);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &prop->icon);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    prop->icon = g_strdup (p);
 
     retval = ibus_message_iter_get (iter, IBUS_TYPE_TEXT, &prop->tooltip);
     g_object_ref_sink (prop->tooltip);

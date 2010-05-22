@@ -334,8 +334,8 @@ ibus_serializable_real_deserialize (IBusSerializable *object,
     g_return_val_if_fail (retval, FALSE);
 
     while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
-        gchar *name;
-        GValue *value;
+        gchar *name = NULL;
+        GValue *value = NULL;
         IBusMessageIter dict_entry;
 
         retval = ibus_message_iter_recurse (&array_iter,
@@ -353,6 +353,7 @@ ibus_serializable_real_deserialize (IBusSerializable *object,
         g_return_val_if_fail (value != NULL, FALSE);
 
         ibus_serializable_set_attachment (object, name, value);
+        g_free (name);
 
         ibus_message_iter_next (&array_iter);
     }

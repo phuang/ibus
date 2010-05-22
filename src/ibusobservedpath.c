@@ -106,15 +106,13 @@ ibus_observed_path_deserialize (IBusObservedPath *path,
                                 IBusMessageIter  *iter)
 {
     gboolean retval;
-    gchar *str;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->deserialize ((IBusSerializable *)path, iter);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &path->path);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    path->path = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_LONG, &(path->mtime));
     g_return_val_if_fail (retval, FALSE);

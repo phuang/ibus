@@ -747,7 +747,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
             }
         }
         else if (g_strcmp0 (name, "PropertyActivate") == 0) {
-            gchar *name;
+            gchar *name = NULL;
             guint state;
 
             retval = ibus_message_get_args (message,
@@ -773,9 +773,10 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 
                 reply = ibus_message_new_method_return (message);
             }
+            g_free (name);
         }
         else if (g_strcmp0 (name, "PropertyShow") == 0) {
-            gchar *name;
+            gchar *name = NULL;
 
             retval = ibus_message_get_args (message,
                                             &error,
@@ -798,9 +799,10 @@ ibus_engine_ibus_message (IBusEngine     *engine,
 
                 reply = ibus_message_new_method_return (message);
             }
+            g_free (name);
         }
         else if (g_strcmp0 (name, "PropertyHide") == 0) {
-            gchar *name;
+            gchar *name = NULL;
 
             retval = ibus_message_get_args (message,
                                             &error,
@@ -817,6 +819,7 @@ ibus_engine_ibus_message (IBusEngine     *engine,
                 g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
                 reply = ibus_message_new_method_return (message);
             }
+            g_free (name);
         }
         else if (g_strcmp0 (name, "SetCursorLocation") == 0) {
             gint x, y, w, h;

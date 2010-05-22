@@ -178,8 +178,8 @@ ibus_config_ibus_signal (IBusProxy     *proxy,
     config = IBUS_CONFIG (proxy);
 
     if (ibus_message_is_signal (message, IBUS_INTERFACE_CONFIG, "ValueChanged")) {
-        gchar *section;
-        gchar *name;
+        gchar *section = NULL;
+        gchar *name = NULL;
         GValue value = { 0 };
         IBusError *error = NULL;
         gboolean retval;
@@ -201,6 +201,8 @@ ibus_config_ibus_signal (IBusProxy     *proxy,
                        section,
                        name,
                        &value);
+        g_free (section);
+        g_free (name);
         g_value_unset (&value);
 
         g_signal_stop_emission_by_name (config, "ibus-signal");

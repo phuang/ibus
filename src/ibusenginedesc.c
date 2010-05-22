@@ -141,50 +141,41 @@ ibus_engine_desc_deserialize (IBusEngineDesc  *desc,
                               IBusMessageIter *iter)
 {
     gboolean retval;
-    gchar *str;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_engine_desc_parent_class)->deserialize ((IBusSerializable *)desc, iter);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->name);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->name = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->longname);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->longname = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->description);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->description = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->language);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->language = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->license);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->license = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->author);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->author = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->author);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->icon = g_strdup (str);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
+    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &desc->layout);
     g_return_val_if_fail (retval, FALSE);
     ibus_message_iter_next (iter);
-    desc->layout = g_strdup (str);
 
     retval = ibus_message_iter_get (iter, G_TYPE_UINT, &desc->rank);
     g_return_val_if_fail (retval, FALSE);
