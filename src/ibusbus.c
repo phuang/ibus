@@ -162,7 +162,7 @@ ibus_bus_connect (IBusBus *bus)
     }
 
     if (priv->connection) {
-        ibus_bus_hello (bus);
+        g_free (ibus_bus_hello (bus));
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
@@ -335,14 +335,14 @@ ibus_bus_create_input_context (IBusBus      *bus,
     return context;
 }
 
-static gboolean
-ibus_bus_call (IBusBus      *bus,
-               const gchar  *name,
-               const gchar  *path,
-               const gchar  *interface,
-               const gchar  *member,
-               GType         first_arg_type,
-               ...)
+IBusMessage *
+ibus_bus_call_with_reply_valist (IBusBus      *bus,
+                                 const gchar  *name,
+                                 const gchar  *path,
+                                 const gchar  *interface,
+                                 const gchar  *member,
+                                 GType         first_arg_type,
+                                 va_list       va_args)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (name != NULL);
@@ -352,8 +352,6 @@ ibus_bus_call (IBusBus      *bus,
 
     IBusMessage *message, *reply;
     IBusError *error;
-    va_list args;
-    GType type;
     gboolean retval;
     IBusBusPrivate *priv;
 
@@ -363,9 +361,7 @@ ibus_bus_call (IBusBus      *bus,
 
     message = ibus_message_new_method_call (name, path, interface, member);
 
-    va_start (args, first_arg_type);
-    ibus_message_append_args_valist (message, first_arg_type, args);
-    va_end (args);
+    ibus_message_append_args_valist (message, first_arg_type, va_args);
 
     reply = ibus_connection_send_with_reply_and_block (
                                         priv->connection,
@@ -377,66 +373,94 @@ ibus_bus_call (IBusBus      *bus,
     if (reply == NULL) {
         g_warning ("%s : %s", error->name, error->message);
         ibus_error_free (error);
-        return FALSE;
+        return NULL;
     }
 
     if ((error = ibus_error_new_from_message (reply)) != NULL) {
         g_warning ("%s : %s", error->name, error->message);
         ibus_error_free (error);
         ibus_message_unref (reply);
-        return FALSE;
+        return NULL;
     }
 
-    va_start (args, first_arg_type);
-
-    type = first_arg_type;
-
-    while (type != G_TYPE_INVALID) {
-        va_arg (args, gpointer);
-        type = va_arg (args, GType);
-    }
-
-    type = va_arg (args, GType);
-    if (type != G_TYPE_INVALID) {
-        retval = ibus_message_get_args_valist (reply, &error, type, args);
-    }
-    else {
-        retval = TRUE;
-    }
-    va_end (args);
-
-    ibus_message_unref (reply);
-
-    if (!retval) {
-        g_warning ("%s: %s", error->name, error->message);
-        ibus_error_free (error);
-        return FALSE;
-    }
-
-    return TRUE;
+    return reply;
 }
 
-const gchar *
+IBusMessage *
+ibus_bus_call_with_reply (IBusBus      *bus,
+                          const gchar  *name,
+                          const gchar  *path,
+                          const gchar  *interface,
+                          const gchar  *member,
+                          GType         first_arg_type,
+                          ...)
+{
+    IBusMessage *reply;
+    va_list va_args;
+
+    va_start (va_args, first_arg_type);
+    reply = ibus_bus_call_with_reply_valist (
+        bus, name, path, interface, member, first_arg_type, va_args);
+    va_end (va_args);
+
+    return reply;
+}
+
+gboolean
+ibus_bus_call (IBusBus      *bus,
+               const gchar  *name,
+               const gchar  *path,
+               const gchar  *interface,
+               const gchar  *member,
+               GType         first_arg_type,
+               ...)
+{
+    IBusMessage *reply;
+    va_list va_args;
+
+    va_start (va_args, first_arg_type);
+    reply = ibus_bus_call_with_reply_valist (
+        bus, name, path, interface, member, first_arg_type, va_args);
+    va_end (va_args);
+
+    if (reply) {
+      ibus_message_unref (reply);
+      return TRUE;
+    }
+
+    return FALSE;
+}
+
+gchar *
 ibus_bus_current_input_context(IBusBus      *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
+    g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
 
     gchar *name = NULL;
-    gboolean result;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
 
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "CurrentInputContext",
-                            G_TYPE_INVALID,
-                            G_TYPE_STRING, &name,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      IBUS_SERVICE_IBUS,
+                                      IBUS_PATH_IBUS,
+                                      IBUS_INTERFACE_IBUS,
+                                      "CurrentInputContext",
+                                      G_TYPE_INVALID);
 
-    if (result)
-        return name;
+    if (reply) {
+        if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &name,
+                                   G_TYPE_INVALID)) {
+            name = g_strdup (name);
+        } else {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return NULL;
+        ibus_message_unref (reply);
+    }
+
+    return name;
 }
 
 static void
@@ -492,27 +516,35 @@ ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
     }
 }
 
-const gchar *
+gchar *
 ibus_bus_hello (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
 
     gchar *unique_name = NULL;
-    gboolean result;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "Hello",
-                            G_TYPE_INVALID,
-                            G_TYPE_STRING, &unique_name,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      DBUS_SERVICE_DBUS,
+                                      DBUS_PATH_DBUS,
+                                      DBUS_INTERFACE_DBUS,
+                                      "Hello",
+                                      G_TYPE_INVALID);
 
-    if (result)
-        return unique_name;
+    if (reply) {
+        if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &unique_name,
+                                   G_TYPE_INVALID)) {
+            unique_name = g_strdup (unique_name);
+        } else {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return NULL;
+        ibus_message_unref (reply);
+    }
+
+    return unique_name;
 }
 
 guint
@@ -522,24 +554,30 @@ ibus_bus_request_name (IBusBus      *bus,
 {
     g_assert (IBUS_IS_BUS (bus));
 
-    guint retval;
-    gboolean result;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    guint retval = 0;
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "RequestName",
-                            G_TYPE_STRING, &name,
-                            G_TYPE_UINT, &flags,
-                            G_TYPE_INVALID,
-                            G_TYPE_UINT, &retval,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      DBUS_SERVICE_DBUS,
+                                      DBUS_PATH_DBUS,
+                                      DBUS_INTERFACE_DBUS,
+                                      "RequestName",
+                                      G_TYPE_STRING, &name,
+                                      G_TYPE_UINT, &flags,
+                                      G_TYPE_INVALID);
 
-    if (result)
-        return retval;
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_UINT, &retval,
+                                    G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return 0;
+        ibus_message_unref (reply);
+    }
+
+    return retval;
 }
 
 guint
@@ -548,46 +586,60 @@ ibus_bus_release_name (IBusBus      *bus,
 {
     g_assert (IBUS_IS_BUS (bus));
 
-    guint retval;
-    gboolean result;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    guint retval = 0;
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "ReleaseName",
-                            G_TYPE_STRING, &name,
-                            G_TYPE_INVALID,
-                            G_TYPE_UINT, &retval,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      DBUS_SERVICE_DBUS,
+                                      DBUS_PATH_DBUS,
+                                      DBUS_INTERFACE_DBUS,
+                                      "ReleaseName",
+                                      G_TYPE_STRING, &name,
+                                      G_TYPE_INVALID);
 
-    if (result)
-        return retval;
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_UINT, &retval,
+                                    G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return 0;
+        ibus_message_unref (reply);
+    }
+
+    return retval;
 }
 
 gboolean
 ibus_bus_name_has_owner (IBusBus        *bus,
                          const gchar    *name)
 {
-    gboolean retval;
-    gboolean result;
+    g_assert (IBUS_IS_BUS (bus));
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "NameHasOwner",
-                            G_TYPE_STRING, &name,
-                            G_TYPE_INVALID,
-                            G_TYPE_BOOLEAN, &retval,
-                            G_TYPE_INVALID);
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    gboolean retval = FALSE;
 
-    if (result)
-        return retval;
+    reply = ibus_bus_call_with_reply (bus,
+                                      DBUS_SERVICE_DBUS,
+                                      DBUS_PATH_DBUS,
+                                      DBUS_INTERFACE_DBUS,
+                                      "NameHasOwner",
+                                      G_TYPE_STRING, &name,
+                                      G_TYPE_INVALID);
 
-    return FALSE;
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_BOOLEAN, &retval,
+                                    G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
+
+        ibus_message_unref (reply);
+    }
+
+    return retval;
 }
 
 GList *
@@ -602,16 +654,13 @@ ibus_bus_add_match (IBusBus     *bus,
 {
     g_assert (IBUS_IS_BUS (bus));
 
-    gboolean result;
-
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "AddMatch",
-                            G_TYPE_STRING, &rule,
-                            G_TYPE_INVALID,
-                            G_TYPE_INVALID);
+    ibus_bus_call (bus,
+                   DBUS_SERVICE_DBUS,
+                   DBUS_PATH_DBUS,
+                   DBUS_INTERFACE_DBUS,
+                   "AddMatch",
+                   G_TYPE_STRING, &rule,
+                   G_TYPE_INVALID);
 }
 
 void
@@ -620,41 +669,46 @@ ibus_bus_remove_match (IBusBus      *bus,
 {
     g_assert (IBUS_IS_BUS (bus));
 
-    gboolean result;
-
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "RemoveMatch",
-                            G_TYPE_STRING, &rule,
-                            G_TYPE_INVALID,
-                            G_TYPE_INVALID);
+    ibus_bus_call (bus,
+                   DBUS_SERVICE_DBUS,
+                   DBUS_PATH_DBUS,
+                   DBUS_INTERFACE_DBUS,
+                   "RemoveMatch",
+                   G_TYPE_STRING, &rule,
+                   G_TYPE_INVALID);
 }
 
-const gchar *
+gchar *
 ibus_bus_get_name_owner (IBusBus        *bus,
                          const gchar    *name)
 {
     g_assert (IBUS_IS_BUS (bus));
 
     gchar *owner = NULL;
-    gboolean result;
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "GetNameOwner",
-                            G_TYPE_STRING, &name,
-                            G_TYPE_INVALID,
-                            G_TYPE_STRING, &owner,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      DBUS_SERVICE_DBUS,
+                                      DBUS_PATH_DBUS,
+                                      DBUS_INTERFACE_DBUS,
+                                      "GetNameOwner",
+                                      G_TYPE_STRING, &owner,
+                                      G_TYPE_INVALID);
 
-    if (result)
-        return owner;
+    if (reply) {
+        if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &owner,
+                                   G_TYPE_INVALID)) {
+            owner = g_strdup (owner);
+        } else {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return NULL;
+        ibus_message_unref (reply);
+    }
+
+    return owner;
 }
 
 IBusConnection *
@@ -684,7 +738,6 @@ ibus_bus_exit (IBusBus *bus,
                             IBUS_INTERFACE_IBUS,
                             "Exit",
                             G_TYPE_BOOLEAN, &restart,
-                            G_TYPE_INVALID,
                             G_TYPE_INVALID);
     return result;
 }
@@ -704,50 +757,9 @@ ibus_bus_register_component (IBusBus       *bus,
                             IBUS_INTERFACE_IBUS,
                             "RegisterComponent",
                             IBUS_TYPE_COMPONENT, &component,
-                            G_TYPE_INVALID,
                             G_TYPE_INVALID);
 
     return result;
-
-
-#if 0
-    IBusMessage *message, *reply;
-    IBusError *error;
-
-    IBusBusPrivate *priv;
-    priv = IBUS_BUS_GET_PRIVATE (bus);
-
-    message = ibus_message_new_method_call (IBUS_SERVICE_IBUS,
-                                            IBUS_PATH_IBUS,
-                                            IBUS_INTERFACE_IBUS,
-                                            "RegisterComponent");
-
-    ibus_message_append_args (message,
-                              IBUS_TYPE_COMPONENT, &component,
-                              G_TYPE_INVALID);
-
-    reply = ibus_connection_send_with_reply_and_block (
-                                        priv->connection,
-                                        message,
-                                        -1,
-                                        &error);
-    ibus_message_unref (message);
-
-    if (reply == NULL) {
-        g_warning ("%s : %s", error->name, error->message);
-        ibus_error_free (error);
-        return FALSE;
-    }
-
-    if ((error = ibus_error_from_message (reply)) != NULL) {
-        g_warning ("%s : %s", error->name, error->message);
-        ibus_error_free (error);
-        ibus_message_unref (reply);
-        return FALSE;
-    }
-
-    return TRUE;
-#endif
 }
 
 static GList *

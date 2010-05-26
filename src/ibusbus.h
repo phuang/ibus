@@ -103,12 +103,13 @@ IBusConnection
 /**
  * ibus_bus_hello:
  * @bus: An IBusBus.
- * @returns: The unique name of IBus process in DBus.
+ * @returns: The unique name of IBus process in DBus. The return value must be
+ *            freed with g_free().
  *
  * This function sends a "HELLO" message to DBus daemon,
  * which replies the unique name of current IBus process.
  */
-const gchar *ibus_bus_hello             (IBusBus        *bus);
+gchar       *ibus_bus_hello             (IBusBus        *bus);
 
 /**
  * ibus_bus_request_name:
@@ -179,11 +180,11 @@ void         ibus_bus_remove_match      (IBusBus        *bus,
  * ibus_bus_get_name_owner:
  * @bus: An IBusBus.
  * @name: Name.
- * @returns: Owner of the name.
+ * @returns: Owner of the name. The returned value must be freed with g_free().
  *
  * Return the name owner.
  */
-const gchar *ibus_bus_get_name_owner    (IBusBus        *bus,
+gchar       *ibus_bus_get_name_owner    (IBusBus        *bus,
                                          const gchar    *name);
 /* declare ibus methods */
 
@@ -216,12 +217,13 @@ IBusInputContext
 /**
  * ibus_bus_current_input_context:
  * @bus: An IBusBus.
- * @returns: The named of currently focued IBusInputContext if the "CurrentInputContext" call
- *            suceeded, NULL otherwise.
+ * @returns: The named of currently focued IBusInputContext if the
+ *            "CurrentInputContext" call suceeded, NULL otherwise. The return
+ *            value must be freed with g_free().
  *
  * Get the current focused input context.
  */
-const gchar *ibus_bus_current_input_context(IBusBus        *bus);
+gchar       *ibus_bus_current_input_context(IBusBus        *bus);
 
 
 /**
@@ -268,4 +270,3 @@ GList       *ibus_bus_list_active_engines
 
 G_END_DECLS
 #endif
-

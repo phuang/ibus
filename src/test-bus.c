@@ -57,7 +57,7 @@ int main()
     {
 	    IBusInputContext *context;
 	    IBusEngineDesc *engine_desc;
-	    const gchar *current_ic;
+	    gchar *current_ic;
 	    context = ibus_bus_create_input_context (bus, "test");
 	    ibus_input_context_set_capabilities (context, IBUS_CAP_FOCUS);
 	    ibus_input_context_disable (context);
@@ -74,6 +74,7 @@ int main()
 	    g_debug ("Test ibusinputcontext.c: passed.");
 
 	    g_free (active_engine_name);
+	    g_free (current_ic);
 	    g_object_unref (engine_desc);
 	    g_object_unref (context);
     }
