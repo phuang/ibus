@@ -25,6 +25,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #include <strings.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"

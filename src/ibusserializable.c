@@ -247,8 +247,8 @@ _g_value_deserialize (IBusMessageIter *iter)
     case G_TYPE_##TYPE:                                         \
         {                                                       \
             g##_type v;                                         \
-            ibus_message_iter_get_basic (&variant_iter, &v);    \
-            ibus_message_iter_next (&variant_iter);             \
+            dbus_message_iter_get_basic (&variant_iter, &v);    \
+            dbus_message_iter_next (&variant_iter);             \
             value = g_slice_new0 (GValue);                      \
             g_value_init (value, G_TYPE_##TYPE);                \
             g_value_set_##_type (value, v);                     \

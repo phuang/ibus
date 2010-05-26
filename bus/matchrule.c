@@ -463,7 +463,7 @@ bus_match_rule_match (BusMatchRule   *rule,
                 if (type != G_TYPE_STRING && type != IBUS_TYPE_OBJECT_PATH)
                     return FALSE;
 
-                ibus_message_iter_get_basic (&iter, &value);
+                dbus_message_iter_get_basic (&iter, &value);
 
                 if (g_strcmp0 (arg, value) != 0)
                     return FALSE;
