@@ -264,7 +264,6 @@ ibus_proxy_constructor (GType           type,
                                    "AddMatch",
                                    &error,
                                    G_TYPE_STRING, &rule,
-                                   G_TYPE_INVALID,
                                    G_TYPE_INVALID)) {
             g_warning ("%s: %s", error->name, error->message);
             ibus_error_free (error);
@@ -284,7 +283,6 @@ ibus_proxy_constructor (GType           type,
                                    "AddMatch",
                                    &error,
                                    G_TYPE_STRING, &rule,
-                                   G_TYPE_INVALID,
                                    G_TYPE_INVALID)) {
             g_warning ("%s: %s", error->name, error->message);
             ibus_error_free (error);
@@ -351,7 +349,6 @@ ibus_proxy_destroy (IBusProxy *proxy)
                                        "RemoveMatch",
                                        &error,
                                        G_TYPE_STRING, &rule,
-                                       G_TYPE_INVALID,
                                        G_TYPE_INVALID)) {
 
                 g_warning ("%s: %s", error->name, error->message);
@@ -372,7 +369,6 @@ ibus_proxy_destroy (IBusProxy *proxy)
                                        "RemoveMatch",
                                        &error,
                                        G_TYPE_STRING, &rule,
-                                       G_TYPE_INVALID,
                                        G_TYPE_INVALID)) {
 
                 g_warning ("%s: %s", error->name, error->message);
@@ -520,22 +516,28 @@ ibus_proxy_get_unique_name (IBusProxy *proxy)
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
     if (priv->unique_name == NULL && priv->connection != NULL) {
-        IBusError *error;
-        gchar *owner;
-        if (!ibus_connection_call (priv->connection,
-                                   DBUS_SERVICE_DBUS,
-                                   DBUS_PATH_DBUS,
-                                   DBUS_INTERFACE_DBUS,
-                                   "GetNameOwner",
-                                   &error,
-                                   G_TYPE_STRING, &(priv->name),
-                                   G_TYPE_INVALID,
-                                   G_TYPE_STRING, &owner,
-                                   G_TYPE_INVALID)) {
-            g_warning ("%s: %s", error->name, error->message);
-            ibus_error_free (error);
+        IBusMessage *reply = NULL;
+        IBusError *error = NULL;
+        gchar *owner = NULL;
+        reply = ibus_connection_call_with_reply (priv->connection,
+                                                 DBUS_SERVICE_DBUS,
+                                                 DBUS_PATH_DBUS,
+                                                 DBUS_INTERFACE_DBUS,
+                                                 "GetNameOwner",
+                                                 NULL,
+                                                 G_TYPE_STRING, &(priv->name),
+                                                 G_TYPE_INVALID);
+        if (reply) {
+            if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &owner,
+                                       G_TYPE_INVALID)) {
+                priv->unique_name = g_strdup (owner);
+            } else {
+                g_warning ("%s: %s", error->name, error->message);
+                ibus_error_free (error);
+            }
+
+            ibus_message_unref (reply);
         }
-        priv->unique_name = g_strdup (owner);
     }
 
     return priv->unique_name;

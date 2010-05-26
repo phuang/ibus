@@ -722,15 +722,15 @@ ibus_connection_send_with_reply_and_block (IBusConnection   *connection,
     return reply;
 }
 
-gboolean
-ibus_connection_call (IBusConnection     *connection,
-                      const gchar        *name,
-                      const gchar        *path,
-                      const gchar        *interface,
-                      const gchar        *member,
-                      IBusError          **error,
-                      GType              first_arg_type,
-                      ...)
+static IBusMessage *
+ibus_connection_call_with_reply_valist (IBusConnection     *connection,
+                                        const gchar        *name,
+                                        const gchar        *path,
+                                        const gchar        *interface,
+                                        const gchar        *member,
+                                        IBusError          **error,
+                                        GType              first_arg_type,
+                                        va_list            va_args)
 {
     g_assert (IBUS_IS_CONNECTION (connection));
     g_assert (name != NULL);
@@ -744,17 +744,12 @@ ibus_connection_call (IBusConnection     *connection,
 
     IBusMessage *message, *reply;
     IBusError *tmp_error;
-    va_list args;
     GType type;
     gboolean retval;
 
     message = ibus_message_new_method_call (name, path, interface, member);
 
-    va_start (args, first_arg_type);
-
-    ibus_message_append_args_valist (message, first_arg_type, args);
-
-    va_end (args);
+    ibus_message_append_args_valist (message, first_arg_type, va_args);
 
     reply = ibus_connection_send_with_reply_and_block (
                                         connection,
@@ -764,7 +759,7 @@ ibus_connection_call (IBusConnection     *connection,
     ibus_message_unref (message);
 
     if (reply == NULL) {
-        return FALSE;
+        return NULL;
     }
 
     if ((tmp_error = ibus_error_new_from_message (reply)) != NULL) {
@@ -775,30 +770,59 @@ ibus_connection_call (IBusConnection     *connection,
             ibus_error_free (tmp_error);
         }
         ibus_message_unref (reply);
-        return FALSE;
+        return NULL;
     }
 
-    va_start (args, first_arg_type);
+    return reply;
+}
 
-    type = first_arg_type;
+IBusMessage *
+ibus_connection_call_with_reply (IBusConnection     *connection,
+                                 const gchar        *name,
+                                 const gchar        *path,
+                                 const gchar        *interface,
+                                 const gchar        *member,
+                                 IBusError          **error,
+                                 GType              first_arg_type,
+                                 ...)
+{
+    IBusMessage *reply;
+    va_list va_args;
 
-    while (type != G_TYPE_INVALID) {
-        va_arg (args, gpointer);
-        type = va_arg (args, GType);
+    va_start (va_args, first_arg_type);
+    reply = ibus_connection_call_with_reply_valist (
+        connection, name, path, interface, member, error,
+        first_arg_type, va_args);
+    va_end (va_args);
+
+    return reply;
+}
+
+gboolean
+ibus_connection_call (IBusConnection     *connection,
+                      const gchar        *name,
+                      const gchar        *path,
+                      const gchar        *interface,
+                      const gchar        *member,
+                      IBusError          **error,
+                      GType              first_arg_type,
+                      ...)
+{
+    IBusMessage *reply;
+    va_list va_args;
+
+    va_start (va_args, first_arg_type);
+    reply = ibus_connection_call_with_reply_valist (
+        connection, name, path, interface, member, error,
+        first_arg_type, va_args);
+    va_end (va_args);
+
+    if (reply) {
+      ibus_message_unref (reply);
+      return TRUE;
     }
-    type = va_arg (args, GType);
 
-    if (type != G_TYPE_INVALID) {
-        retval = ibus_message_get_args_valist (reply, error, type, args);
-    }
-    else {
-        retval = TRUE;
-    }
-
-    va_end (args);
-    ibus_message_unref (reply);
-
-    return retval;
+    return FALSE;
 }
 
 void

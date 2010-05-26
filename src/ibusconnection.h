@@ -429,11 +429,38 @@ IBusMessage     *ibus_connection_send_with_reply_and_block
  * @...: Rest of arguments, NULL to mark the end.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
- * Invoke a member function by sending an IBusMessage.
+ * Invoke a member function by sending an IBusMessage. This method does not
+ * support reply message, use ibus_connection_call_with_reply instead.
  *
  * @see_also: ibus_connection_send_valist().
  */
 gboolean         ibus_connection_call               (IBusConnection     *connection,
+                                                     const gchar        *name,
+                                                     const gchar        *path,
+                                                     const gchar        *interface,
+                                                     const gchar        *member,
+                                                     IBusError          **error,
+                                                     GType              first_arg_type,
+                                                     ...);
+
+/**
+ * ibus_connection_call_with_reply:
+ * @connection: An IBusConnection.
+ * @name: Name of the signal.
+ * @path: The path to the object emitting the signal.
+ * @interface: The interface the signal is emitted from.
+ * @member: The name of the member function to be called.
+ * @error: Returned error is stored here; NULL to ignore error.
+ * @first_arg_type: Type of first argument.
+ * @...: Rest of arguments, NULL to mark the end.
+ * @returns: Reply message, or NULL when fail. The returned message must be
+ * freed with ibus_message_unref().
+ *
+ * Invoke a member function by sending an IBusMessage.
+ *
+ * @see_also: ibus_connection_send_valist().
+ */
+IBusMessage     *ibus_connection_call_with_reply    (IBusConnection     *connection,
                                                      const gchar        *name,
                                                      const gchar        *path,
                                                      const gchar        *interface,
@@ -490,4 +517,3 @@ gboolean         ibus_connection_unregister_object_path
 
 G_END_DECLS
 #endif
-
