@@ -1316,6 +1316,15 @@ _ibus_exit (BusIBusImpl     *ibus,
         }
 
         execv (exe, g_argv);
+
+        /* If the server binary is replaced while the server is running,
+         * "readlink /proc/[pid]/exe" might return a path with " (deleted)"
+         * suffix. */
+        const gchar suffix[] = " (deleted)";
+        if (g_str_has_suffix (exe, suffix)) {
+            exe [strlen (exe) - strlen (suffix)] = '\0';
+            execv (exe, g_argv);
+        }
         g_warning ("execv %s failed!", g_argv[0]);
         exit (-1);
     }
