@@ -983,6 +983,14 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
         engine_name = ibus->global_previous_engine_name;
     }
 
+    /*
+     * If the previous engine name is not found, switch to the next engine
+     * in the menu. This behavior is better than doing nothing.
+     */
+    if (!engine_name) {
+        bus_ibus_impl_context_request_next_engine_in_menu(ibus, context);
+        return;
+    }
     _context_request_engine_cb (context, engine_name, ibus);
 }
 
