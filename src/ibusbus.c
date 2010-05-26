@@ -360,7 +360,6 @@ ibus_bus_call_with_reply_valist (IBusBus      *bus,
 
     IBusMessage *message, *reply;
     IBusError *error;
-    gboolean retval;
     IBusBusPrivate *priv;
 
     g_return_val_if_fail (ibus_bus_is_connected (bus), FALSE);

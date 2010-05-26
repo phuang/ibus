@@ -744,8 +744,6 @@ ibus_connection_call_with_reply_valist (IBusConnection     *connection,
 
     IBusMessage *message, *reply;
     IBusError *tmp_error;
-    GType type;
-    gboolean retval;
 
     message = ibus_message_new_method_call (name, path, interface, member);
 
