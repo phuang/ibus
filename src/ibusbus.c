@@ -48,6 +48,7 @@ struct _IBusBusPrivate {
     IBusConnection *connection;
     gboolean watch_dbus_signal;
     IBusConfig *config;
+    gchar *unique_name;
 };
 typedef struct _IBusBusPrivate IBusBusPrivate;
 
@@ -132,6 +133,9 @@ _connection_destroy_cb (IBusConnection  *connection,
     g_object_unref (priv->connection);
     priv->connection = NULL;
 
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
+
     g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
 }
 
@@ -162,7 +166,7 @@ ibus_bus_connect (IBusBus *bus)
     }
 
     if (priv->connection) {
-        g_free (ibus_bus_hello (bus));
+        ibus_bus_hello (bus);
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
@@ -206,6 +210,7 @@ ibus_bus_init (IBusBus *bus)
     priv->config = NULL;
     priv->connection = NULL;
     priv->watch_dbus_signal = FALSE;
+    priv->unique_name = NULL;
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
@@ -254,6 +259,9 @@ ibus_bus_destroy (IBusObject *object)
         ibus_object_destroy ((IBusObject *) priv->connection);
         priv->connection = NULL;
     }
+
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
 
     IBUS_OBJECT_CLASS (ibus_bus_parent_class)->destroy (object);
 }
@@ -516,7 +524,7 @@ ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
     }
 }
 
-gchar *
+const gchar *
 ibus_bus_hello (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
@@ -524,6 +532,12 @@ ibus_bus_hello (IBusBus *bus)
     gchar *unique_name = NULL;
     IBusMessage *reply = NULL;
     IBusError *error = NULL;
+    IBusBusPrivate *priv;
+
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    g_free (priv->unique_name);
+    priv->unique_name = NULL;
 
     reply = ibus_bus_call_with_reply (bus,
                                       DBUS_SERVICE_DBUS,
@@ -535,7 +549,7 @@ ibus_bus_hello (IBusBus *bus)
     if (reply) {
         if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &unique_name,
                                    G_TYPE_INVALID)) {
-            unique_name = g_strdup (unique_name);
+            priv->unique_name = g_strdup (unique_name);
         } else {
             g_warning ("%s: %s", error->name, error->message);
             ibus_error_free (error);
@@ -544,7 +558,7 @@ ibus_bus_hello (IBusBus *bus)
         ibus_message_unref (reply);
     }
 
-    return unique_name;
+    return priv->unique_name;
 }
 
 guint

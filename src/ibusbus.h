@@ -103,13 +103,12 @@ IBusConnection
 /**
  * ibus_bus_hello:
  * @bus: An IBusBus.
- * @returns: The unique name of IBus process in DBus. The return value must be
- *            freed with g_free().
+ * @returns: The unique name of IBus process in DBus.
  *
  * This function sends a "HELLO" message to DBus daemon,
  * which replies the unique name of current IBus process.
  */
-gchar       *ibus_bus_hello             (IBusBus        *bus);
+const gchar *ibus_bus_hello             (IBusBus        *bus);
 
 /**
  * ibus_bus_request_name:
