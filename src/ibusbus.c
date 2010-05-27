@@ -38,6 +38,7 @@
 enum {
     CONNECTED,
     DISCONNECTED,
+    GLOBAL_ENGINE_CHANGED,
     LAST_SIGNAL,
 };
 
@@ -114,6 +115,39 @@ ibus_bus_class_init (IBusBusClass *klass)
             ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
+
+    /**
+     * IBusBus::global-engine-changed:
+     *
+     * Emitted when global engine is changed.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
+    bus_signals[GLOBAL_ENGINE_CHANGED] =
+        g_signal_new (I_("global-engine-changed"),
+            G_TYPE_FROM_CLASS (klass),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            ibus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
+}
+
+static gboolean
+_connection_ibus_signal_cb (IBusConnection *connection,
+                            IBusMessage    *message,
+                            IBusBus        *bus)
+{
+    IBusBusPrivate *priv;
+    priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    if (ibus_message_is_signal (message, IBUS_INTERFACE_IBUS,
+                                "GlobalEngineChanged")) {
+        g_signal_emit (bus, bus_signals[GLOBAL_ENGINE_CHANGED], 0);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 static void
@@ -129,6 +163,9 @@ _connection_destroy_cb (IBusConnection  *connection,
     g_assert (priv->connection == connection);
     g_signal_handlers_disconnect_by_func (priv->connection,
                                           G_CALLBACK (_connection_destroy_cb),
+                                          bus);
+    g_signal_handlers_disconnect_by_func (priv->connection,
+                                          G_CALLBACK (_connection_ibus_signal_cb),
                                           bus);
     g_object_unref (priv->connection);
     priv->connection = NULL;
@@ -167,6 +204,7 @@ ibus_bus_connect (IBusBus *bus)
 
     if (priv->connection) {
         ibus_bus_hello (bus);
+
         g_signal_connect (priv->connection,
                           "destroy",
                           (GCallback) _connection_destroy_cb,
@@ -176,6 +214,18 @@ ibus_bus_connect (IBusBus *bus)
         if (priv->watch_dbus_signal) {
             ibus_bus_watch_dbus_signal (bus);
         }
+
+        /** Watch ibus signals. */
+        const gchar *rule =
+            "type='signal',"
+            "path='" IBUS_PATH_IBUS "',"
+            "interface='" IBUS_INTERFACE_IBUS "'";
+
+        ibus_bus_add_match (bus, rule);
+        g_signal_connect (priv->connection,
+                          "ibus-signal",
+                          (GCallback) _connection_ibus_signal_cb,
+                          bus);
     }
 }
 
@@ -193,7 +243,7 @@ _changed_cb (GFileMonitor       *monitor,
 
     if (ibus_bus_is_connected (bus))
         return;
-    
+
     ibus_bus_connect (bus);
 }
 
