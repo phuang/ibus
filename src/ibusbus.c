@@ -890,76 +890,112 @@ gboolean
 ibus_bus_get_use_sys_layout (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
-    gboolean result;
-    gboolean use_sys_layout;
 
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetUseSysLayout",
-                            G_TYPE_INVALID,
-                            G_TYPE_BOOLEAN, &use_sys_layout,
-                            G_TYPE_INVALID);
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    gboolean use_sys_layout = FALSE;
 
-    return result && use_sys_layout;
+    reply = ibus_bus_call_with_reply (bus,
+                                      IBUS_SERVICE_IBUS,
+                                      IBUS_PATH_IBUS,
+                                      IBUS_INTERFACE_IBUS,
+                                      "GetUseSysLayout",
+                                      G_TYPE_INVALID);
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_BOOLEAN,
+                                    &use_sys_layout, G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
+
+        ibus_message_unref (reply);
+    }
+
+    return use_sys_layout;
 }
 
 gboolean
 ibus_bus_get_use_global_engine (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
-    gboolean result;
-    gboolean use_global_engine;
 
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetUseGlobalEngine",
-                            G_TYPE_INVALID,
-                            G_TYPE_BOOLEAN, &use_global_engine,
-                            G_TYPE_INVALID);
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    gboolean use_global_engine = FALSE;
 
-    return result && use_global_engine;
+    reply = ibus_bus_call_with_reply (bus,
+                                      IBUS_SERVICE_IBUS,
+                                      IBUS_PATH_IBUS,
+                                      IBUS_INTERFACE_IBUS,
+                                      "GetUseGlobalEngine",
+                                      G_TYPE_INVALID);
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_BOOLEAN,
+                                    &use_global_engine, G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
+
+        ibus_message_unref (reply);
+    }
+
+    return use_global_engine;
 }
 
 gboolean
 ibus_bus_is_global_engine_enabled (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
-    gboolean result;
-    gboolean is_global_engine_enabled;
 
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "IsGlobalEngineEnabled",
-                            G_TYPE_INVALID,
-                            G_TYPE_BOOLEAN, &is_global_engine_enabled,
-                            G_TYPE_INVALID);
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
+    gboolean global_engine_enabled = FALSE;
 
-    return result && is_global_engine_enabled;
+    reply = ibus_bus_call_with_reply (bus,
+                                      IBUS_SERVICE_IBUS,
+                                      IBUS_PATH_IBUS,
+                                      IBUS_INTERFACE_IBUS,
+                                      "IsGlobalEngineEnabled",
+                                      G_TYPE_INVALID);
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, G_TYPE_BOOLEAN,
+                                    &global_engine_enabled, G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
+
+        ibus_message_unref (reply);
+    }
+
+    return global_engine_enabled;
 }
 
 IBusEngineDesc *
 ibus_bus_get_global_engine (IBusBus *bus)
 {
     g_assert (IBUS_IS_BUS (bus));
-    gboolean result;
+
+    IBusMessage *reply = NULL;
+    IBusError *error = NULL;
     IBusEngineDesc *global_engine = NULL;
 
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetGlobalEngine",
-                            G_TYPE_INVALID,
-                            IBUS_TYPE_ENGINE_DESC, &global_engine,
-                            G_TYPE_INVALID);
+    reply = ibus_bus_call_with_reply (bus,
+                                      IBUS_SERVICE_IBUS,
+                                      IBUS_PATH_IBUS,
+                                      IBUS_INTERFACE_IBUS,
+                                      "GetGlobalEngine",
+                                      G_TYPE_INVALID);
+    if (reply) {
+        if (!ibus_message_get_args (reply, &error, IBUS_TYPE_ENGINE_DESC,
+                                    &global_engine, G_TYPE_INVALID)) {
+            g_warning ("%s: %s", error->name, error->message);
+            ibus_error_free (error);
+        }
 
-    return result ? global_engine : NULL;
+        ibus_message_unref (reply);
+    }
+
+    return global_engine;
 }
 
 gboolean
@@ -967,15 +1003,14 @@ ibus_bus_set_global_engine (IBusBus     *bus,
                             const gchar *global_engine)
 {
     g_assert (IBUS_IS_BUS (bus));
-    gboolean result;
 
+    gboolean result;
     result = ibus_bus_call (bus,
                             IBUS_SERVICE_IBUS,
                             IBUS_PATH_IBUS,
                             IBUS_INTERFACE_IBUS,
                             "SetGlobalEngine",
                             G_TYPE_STRING, &global_engine,
-                            G_TYPE_INVALID,
                             G_TYPE_INVALID);
 
     return result;
