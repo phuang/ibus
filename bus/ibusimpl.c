@@ -83,6 +83,11 @@ static void     bus_ibus_impl_set_use_global_engine
                                                  GValue             *value);
 static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
                                                  BusEngineProxy     *engine);
+static void     bus_ibus_impl_set_global_engine_by_name
+                                                (BusIBusImpl        *ibus,
+                                                 const gchar        *name);
+static void     bus_ibus_impl_engines_maybe_removed
+                                                (BusIBusImpl        *ibus);
 
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
@@ -261,6 +266,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
         }
     }
 
+    bus_ibus_impl_engines_maybe_removed (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
@@ -869,7 +875,7 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 
 static IBusEngineDesc *
 _find_engine_desc_by_name(BusIBusImpl *ibus,
-                          gchar *engine_name)
+                          const gchar *engine_name)
 {
     IBusEngineDesc *engine_desc = NULL;
     GList *p;
@@ -893,7 +899,7 @@ _find_engine_desc_by_name(BusIBusImpl *ibus,
 
 static void
 _context_request_engine_cb (BusInputContext *context,
-                            gchar           *engine_name,
+                            const gchar     *engine_name,
                             BusIBusImpl     *ibus)
 {
     IBusEngineDesc *engine_desc = NULL;
@@ -909,26 +915,27 @@ _context_request_engine_cb (BusInputContext *context,
                 return;
             }
             else {
-                engine_name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
-                if (engine_name) {
-                    engine_desc = _find_engine_desc_by_name (ibus, engine_name);
-                    g_free (engine_name);
+                gchar *global_name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
+                if (global_name) {
+                    engine_desc = _find_engine_desc_by_name (ibus, global_name);
+                    g_free (global_name);
                 }
             }
         }
-        /* request default engine */
-        if (!engine_desc) {
-            if (ibus->register_engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
-            }
-            else if (ibus->engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->engine_list->data;
-            }
-         }
     }
     else {
         /* request engine by name */
         engine_desc = _find_engine_desc_by_name (ibus, engine_name);
+    }
+
+    /* request default engine */
+    if (!engine_desc) {
+        if (ibus->register_engine_list) {
+            engine_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
+        }
+        else if (ibus->engine_list) {
+            engine_desc = (IBusEngineDesc *)ibus->engine_list->data;
+        }
     }
 
     bus_ibus_impl_set_context_engine_from_desc (ibus, context, engine_desc);
@@ -1048,6 +1055,98 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
     bus_ibus_impl_save_global_engine_name_to_config (ibus);
     bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
     bus_ibus_impl_global_engine_changed (ibus);
+}
+
+static void
+bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
+                                         const gchar *name)
+{
+    gchar *old_engine_name = NULL;
+
+    if (!ibus->use_global_engine)
+        return;
+
+    if (ibus->global_engine) {
+        old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
+    }
+
+    if (g_strcmp0 (name, old_engine_name) == 0) {
+        /* If the user requested the same global engine, then we just enable the
+         * original one. */
+        if (ibus->focused_context) {
+            bus_input_context_enable (ibus->focused_context);
+        }
+        else if (ibus->global_engine) {
+            bus_engine_proxy_enable (ibus->global_engine);
+        }
+        return;
+    }
+
+    /* If there is a focused input context, then we just change the engine of
+     * the focused context, which will then change the global engine
+     * automatically. Otherwise, we need to change the global engine directly.
+     */
+    if (ibus->focused_context) {
+        _context_request_engine_cb (ibus->focused_context, name, ibus);
+    }
+    else {
+        IBusEngineDesc *engine_desc = _find_engine_desc_by_name (ibus, name);
+        if (engine_desc != NULL) {
+            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (engine_desc);
+            if (new_engine != NULL) {
+                /* Enable the global engine by default, because the user
+                 * selected it explicitly. */
+                bus_engine_proxy_enable (new_engine);
+
+                /* Assume the ownership of the new global engine. Normally it's
+                 * done by the input context. But as we need to change the global
+                 * engine directly, so we need to do it here. */
+                g_object_ref_sink (new_engine);
+                bus_ibus_impl_set_global_engine (ibus, new_engine);
+
+                /* The global engine should already be referenced. */
+                g_object_unref (new_engine);
+            }
+        }
+    }
+}
+
+static void
+bus_ibus_impl_engines_maybe_removed (BusIBusImpl *ibus)
+{
+    const gchar *old_engine_name = NULL;
+    GList *engine_list = NULL;
+
+    if (!ibus->use_global_engine || !ibus->global_engine)
+        return;
+
+    old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
+
+    /* The current global engine is not removed, so do nothing. */
+    if (_find_engine_desc_by_name (ibus, old_engine_name))
+        return;
+
+    /* If the previous engine is available, then just switch to it. */
+    if (ibus->global_previous_engine_name &&
+        _find_engine_desc_by_name (ibus, ibus->global_previous_engine_name)) {
+        bus_ibus_impl_set_global_engine_by_name (
+            ibus, ibus->global_previous_engine_name);
+        return;
+    }
+
+    /* Just choose one in the list. */
+    engine_list = ibus->register_engine_list;
+    if (!engine_list)
+        engine_list = ibus->engine_list;
+
+    if (engine_list) {
+        IBusEngineDesc *engine_desc = (IBusEngineDesc *)engine_list->data;
+        bus_ibus_impl_set_global_engine_by_name (ibus, engine_desc->name);
+        return;
+    }
+
+    /* No engine available? Just disable global engine. */
+    bus_ibus_impl_set_global_engine (ibus, NULL);
 }
 
 static void
@@ -1337,6 +1436,7 @@ _factory_destroy_cb (BusFactoryProxy    *factory,
 
     g_object_unref (factory);
 
+    bus_ibus_impl_engines_maybe_removed (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
@@ -1597,15 +1697,12 @@ _ibus_set_global_engine (BusIBusImpl     *ibus,
                          BusConnection   *connection)
 {
     gboolean retval;
-    IBusMessage *reply;
     IBusError *error;
-    gchar *new_engine_name;
-    gchar *old_engine_name;
+    gchar *new_engine_name = NULL;
 
     if (!ibus->use_global_engine) {
-        reply = ibus_message_new_error (message, DBUS_ERROR_FAILED,
-                                        "Global engine feature is disable.");
-        return reply;
+        return ibus_message_new_error (message, DBUS_ERROR_FAILED,
+                                       "Global engine feature is disable.");
     }
 
     retval = ibus_message_get_args (message,
@@ -1613,61 +1710,22 @@ _ibus_set_global_engine (BusIBusImpl     *ibus,
                                     G_TYPE_STRING, &new_engine_name,
                                     G_TYPE_INVALID);
     if (!retval) {
-        reply = ibus_message_new_error (message,
-                                        error->name,
-                                        error->message);
+        IBusMessage *reply = ibus_message_new_error (message,
+                                                     error->name,
+                                                     error->message);
         ibus_error_free (error);
         return reply;
     }
 
-    reply = ibus_message_new_method_return (message);
-    old_engine_name = NULL;
-
-    if (ibus->global_engine) {
-        old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
+    if (!new_engine_name || !new_engine_name[0] ||
+        !_find_engine_desc_by_name (ibus, new_engine_name)) {
+        return ibus_message_new_error (message, DBUS_ERROR_FAILED,
+                                       "Invalid engine name.");
     }
 
-    if (g_strcmp0 (new_engine_name, old_engine_name) == 0) {
-        /* If the user requested the same global engine, then we just enable the
-         * original one. */
-        if (ibus->focused_context) {
-            bus_input_context_enable (ibus->focused_context);
-        }
-        else if (ibus->global_engine) {
-            bus_engine_proxy_enable (ibus->global_engine);
-        }
-        return reply;
-    }
+    bus_ibus_impl_set_global_engine_by_name (ibus, new_engine_name);
 
-    /* If there is a focused input context, then we just change the engine of
-     * the focused context, which will then change the global engine
-     * automatically. Otherwise, we need to change the global engine directly.
-     */
-    if (ibus->focused_context) {
-        _context_request_engine_cb (ibus->focused_context, new_engine_name, ibus);
-    }
-    else {
-        IBusEngineDesc *engine_desc = _find_engine_desc_by_name (ibus, new_engine_name);
-        if (engine_desc != NULL) {
-            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (engine_desc);
-            if (new_engine != NULL) {
-                /* Enable the global engine by default, because the user
-                 * selected it explicitly. */
-                bus_engine_proxy_enable (new_engine);
-
-                /* Assume the ownership of the new global engine. Normally it's
-                 * done by the input context. But as we need to change the global
-                 * engine directly, so we need to do it here. */
-                g_object_ref_sink (new_engine);
-                bus_ibus_impl_set_global_engine (ibus, new_engine);
-
-                /* The global engine should already be referenced. */
-                g_object_unref (new_engine);
-            }
-        }
-    }
-
-    return reply;
+    return ibus_message_new_method_return (message);
 }
 
 static IBusMessage *
