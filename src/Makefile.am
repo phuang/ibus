@@ -179,6 +179,7 @@ TESTS = \
 	test-keynames \
 	test-attribute \
 	test-lookuptable \
+	test-global-engine \
 	$(NULL)
 noinst_PROGRAMS = $(TESTS)
 test_bus_DEPENDENCIES = $(DEPS)
@@ -187,12 +188,14 @@ test_keymap_DEPENDENCIES = $(DEPS)
 test_keynames_DEPENDENCIES = $(DEPS)
 test_attribute_DEPENDENCIES = $(DEPS)
 test_lookuptable_DEPENDENCIES = $(DEPS)
+test_global_engine_DEPENDENCIES = $(DEPS)
 test_bus_LDADD = $(AM_LDADD)
 test_text_LDADD = $(AM_LDADD)
 test_keymap_LDADD = $(AM_LDADD)
 test_keynames_LDADD = $(AM_LDADD)
 test_attribute_LDADD = $(AM_LDADD)
 test_lookuptable_LDADD = $(AM_LDADD)
+test_global_engine_LDADD = $(AM_LDADD)
 
 # gen enum types
 ibusenumtypes.h: stamp-ibusenumtypes.h
