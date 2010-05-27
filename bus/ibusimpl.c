@@ -156,6 +156,13 @@ static void     bus_ibus_impl_set_enable_by_default
 static void     bus_ibus_impl_set_use_global_engine
                                                 (BusIBusImpl        *ibus,
                                                  GVariant           *value);
+static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
+                                                 BusEngineProxy     *engine);
+static void     bus_ibus_impl_set_global_engine_by_name
+                                                (BusIBusImpl        *ibus,
+                                                 const gchar        *name);
+static void     bus_ibus_impl_engines_maybe_removed
+                                                (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
                                                 (BusIBusImpl        *ibus);
@@ -384,6 +391,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
         }
     }
 
+    bus_ibus_impl_engines_maybe_removed (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
@@ -1122,6 +1130,91 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
     }
 }
 
+static void
+bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
+                                 BusEngineProxy *engine)
+{
+    BusInputContext *context = NULL;
+
+    if (!ibus->use_global_engine)
+        return;
+
+    if (ibus->focused_context) {
+        bus_input_context_set_engine (ibus->focused_context, engine);
+    } else if (ibus->fake_context) {
+        bus_input_context_set_engine (ibus->fake_context, engine);
+    }
+}
+
+static void
+bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
+                                         const gchar *name)
+{
+    gchar *old_engine_name = NULL;
+
+    if (!ibus->use_global_engine)
+        return;
+
+    if (g_strcmp0 (name, ibus->global_engine_name) == 0) {
+        /* If the user requested the same global engine, then we just enable the
+         * original one. */
+        if (ibus->focused_context) {
+            bus_input_context_enable (ibus->focused_context);
+        }
+        else if (ibus->fake_context) {
+            bus_input_context_enable (ibus->fake_context);
+        }
+        return;
+    }
+
+    /* If there is a focused input context, then we just change the engine of
+     * the focused context, which will then change the global engine
+     * automatically. Otherwise, we need to change the global engine directly.
+     */
+    if (ibus->focused_context) {
+        _context_request_engine_cb (ibus->focused_context, name, ibus);
+    }
+    else if (ibus->fake_context) {
+        _context_request_engine_cb (ibus->fake_context, name, ibus);
+    }
+}
+
+static void
+bus_ibus_impl_engines_maybe_removed (BusIBusImpl *ibus)
+{
+    const gchar *old_engine_name = NULL;
+    GList *engine_list = NULL;
+
+    if (!ibus->use_global_engine || ibus->global_engine_name == NULL)
+        return;
+
+    /* The current global engine is not removed, so do nothing. */
+    if (_find_engine_desc_by_name (ibus, ibus->global_engine_name))
+        return;
+
+    /* If the previous engine is available, then just switch to it. */
+    if (ibus->global_previous_engine_name &&
+        _find_engine_desc_by_name (ibus, ibus->global_previous_engine_name)) {
+        bus_ibus_impl_set_global_engine_by_name (
+            ibus, ibus->global_previous_engine_name);
+        return;
+    }
+
+    /* Just choose one in the list. */
+    engine_list = ibus->register_engine_list;
+    if (!engine_list)
+        engine_list = ibus->engine_list;
+
+    if (engine_list) {
+        IBusEngineDesc *engine_desc = (IBusEngineDesc *)engine_list->data;
+        bus_ibus_impl_set_global_engine_by_name (ibus,
+                        ibus_engine_desc_get_name (engine_desc));
+        return;
+    }
+
+    /* No engine available? Just disable global engine. */
+    bus_ibus_impl_set_global_engine (ibus, NULL);
+}
 
 /**
  * _context_engine_changed_cb:
@@ -1379,6 +1472,7 @@ _component_destroy_cb (BusComponent *component,
 
     g_object_unref (component);
 
+    bus_ibus_impl_engines_maybe_removed (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
