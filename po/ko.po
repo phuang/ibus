@@ -1,4 +1,4 @@
-# translation of ibus.ko.po to Korean
+# translation of ko.po to Korean
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,9 +6,9 @@
 # Hyunsok Oh <hoh@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.ko\n"
+"Project-Id-Version: ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-03-31 14:16+1000\n"
 "Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -83,7 +83,6 @@ msgid "translator-credits"
 msgstr "김은주(eukim@redhat.com)"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "입력 방식 정보"
 
@@ -228,7 +227,6 @@ msgid "Orientation of lookup table"
 msgstr "검색 테이블의 방향  "
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "검색 테이블의 방향. 0 = 가로, 1 = 세로  "
 
@@ -237,9 +235,8 @@ msgid "Preload engines"
 msgstr "엔진 미리로드"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "ibus 시작 시 엔진 미리로드  "
+msgstr "ibus 시작 시 엔진 미리 로드  "
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -262,11 +259,10 @@ msgid "Show input method name on language bar"
 msgstr "언어 도구 모음에 입력 방식 이름 보여주기"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "언어 패널의 동작 0 = 항상 숨기기, 1 = 자동 숨기기, 2 = 항상 표시  "
+msgstr "언어 패널의 동작 0 = 메뉴에 포함, 1 = 자동 숨기기, 2 = 항상 표시  "
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -394,7 +390,7 @@ msgstr "입력 방식의 편집전 텍스트를 어플레케이션 창에 포함
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "메뉴에 포함"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -469,9 +465,8 @@ msgid "Top right corner"
 msgstr "오른쪽 위"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "사용자 정의 글꼴 사용  "
+msgstr "사용자 정의 글꼴 사용:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -480,9 +475,3 @@ msgstr "세로"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "활성화 되었을 때"
-
-#~ msgid "Never"
-#~ msgstr "하지않음"
-
-#~ msgid "Show in Status Icon menu"
-#~ msgstr "상태 아이콘 메뉴에서 보여주기"

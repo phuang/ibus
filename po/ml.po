@@ -1,3 +1,4 @@
+# translation of ml.po to
 # translation of ibus.master.ml.po to
 # translation of ibus.master.ibus.ml.po to
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
@@ -6,9 +7,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ml\n"
+"Project-Id-Version: ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 16:12+0000\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-05-06 12:49+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -50,8 +51,8 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
-"ചില ഇന്‍പുട്ട് മെഥേഡുകള്‍ക്കു് ചില മാറ്റങ്ങള്‍ വരുത്തിയിട്ടുണ്ടു്. ദയവായി ibus "
-"ഇന്‍പുട്ട് പ്ലാറ്റ്ഫോം വീണ്ടും ആരംഭിക്കുക."
+"ചില ഇന്‍പുട്ട് മെഥേഡുകള്‍ക്കു് ചില മാറ്റങ്ങള്‍ വരുത്തിയിട്ടുണ്ടു്. ദയവായി ibus ഇന്‍പുട്ട് പ്ലാറ്റ്ഫോം "
+"വീണ്ടും ആരംഭിക്കുക."
 
 #: ../ui/gtk/main.py:62
 msgid "Restart Now"
@@ -262,8 +263,8 @@ msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = മെനുവില്‍ ഉള്‍പ്പെടുത്തുക, 1 = സ്വയം അദൃശ്യമാകുക, 2 = "
-"എപ്പോഴും കാണിക്കുക"
+"ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = മെനുവില്‍ ഉള്‍പ്പെടുത്തുക, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും "
+"കാണിക്കുക"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -275,7 +276,8 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
+msgstr ""
+"അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
 
 #: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -478,4 +480,3 @@ msgstr "നേരെയുള്ള"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "സജീവമാകുമ്പോള്‍"
-

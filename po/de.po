@@ -1,3 +1,4 @@
+# translation of de.po to
 # translation of ibus.master.de.po to
 # German translation of iBus.
 # Copyright (C) 2009
@@ -5,11 +6,12 @@
 #
 # Fabian Affolter <fab@fedoraproject.org>, 2009.
 # Hedda Peters <hpeters@redhat.com>, 2009.
+# sknirT omiT <moc.tahder@sknirtt>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.de\n"
+"Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2009-12-10 09:44+1000\n"
 "Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
 "Language-Team: \n"
@@ -52,16 +54,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Einige Eingabemethoden wurden installiert, entfernt oder aktualisiert. Bitte "
+"starten Sie die IBus-Eingabe-Plattform erneut."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "Neustart"
+msgstr "Jetzt neu starten"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "Sonstige"
+msgstr "Später"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -86,9 +88,8 @@ msgstr ""
 "Hedda Peters <hpeters@redhat.com>, 2009."
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
-msgstr "Info zur Eingabemethode"
+msgstr "Über die Eingabemethode"
 
 #: ../ui/gtk/languagebar.py:215
 msgid "Switch input method"
@@ -97,11 +98,11 @@ msgstr "Eingabemethode wechseln"
 #: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
-msgstr "Info"
+msgstr "Über"
 
 #: ../ui/gtk/languagebar.py:362
 msgid "About the Input Method"
-msgstr "Info zur Eingabemethode"
+msgstr "Über die Eingabemethode"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
@@ -212,11 +213,11 @@ msgstr "Name der benutzerdefinierten Schriftart für Sprach-Panel"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "Preedit-Text einbetten"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "Preedit-Text in Anwendungsfenster einbetten"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -231,7 +232,6 @@ msgid "Orientation of lookup table"
 msgstr "Ausrichtung der Lookup-Tabelle"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Ausrichtung der Lookup-Tabelle. 0 = Horizontal, 1 = Vertikal"
 
@@ -240,7 +240,6 @@ msgid "Preload engines"
 msgstr "Engines vorladen"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
 msgstr "Engines vorladen, während IBus startet"
 
@@ -250,7 +249,7 @@ msgstr "Vorherige Engine Tastenkombination"
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "Dieselbe Eingabemethode für alle Anwendungen verwenden"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -265,12 +264,11 @@ msgid "Show input method name on language bar"
 msgstr "Name der Eingabemethode auf Sprachleiste anzeigen"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"Verhalten des Sprach-Panels: 0 = Immer verstecken, 1 = Automatisch "
+"Verhalten des Sprach-Panels: 0 = Im Menü einbetten, 1 = Automatisch "
 "verstecken, 2 = Immer anzeigen"
 
 #: ../data/ibus.schemas.in.h:18
@@ -303,9 +301,8 @@ msgid "Use custom font name for language panel"
 msgstr "Benutzerdefinierte Schriftart für Sprach-Panel verwenden"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "Eingabemethode wählen"
+msgstr "Globale Eingabemethode wählen"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
@@ -360,7 +357,7 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
-"<small><i>Die standardmässige Eingabemethode steht in der Liste an erster "
+"<small><i>Die standardmäßige Eingabemethode steht in der Liste an erster "
 "Stelle.\n"
 "Sie können dies mit den Hoch/Runter-Schaltflächen ändern.</i></small>"
 
@@ -396,15 +393,15 @@ msgstr "Benutzerdefiniert"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "Preedit-Text in Anwendungsfenster einbetten"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "Den Preedit-Text der Eingabemethode in Anwendungsfenster einbetten"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "In Menü eingebettet"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -488,9 +485,8 @@ msgid "Top right corner"
 msgstr "Ecke oben rechts"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "Benutzerdefinierte Schriftart verwenden"
+msgstr "Benutzerdefinierte Schriftart verwenden:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -499,10 +495,3 @@ msgstr "Vertikal"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Wenn aktiv"
-
-#~ msgid "Never"
-#~ msgstr "Nie"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Engines vorladen"

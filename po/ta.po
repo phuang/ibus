@@ -3,18 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # I. Felix <ifelix@redhat.com>, 2009.
+# I Felix <ifelix@redhat.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2009-12-08 22:26+0530\n"
 "Last-Translator: I Felix <ifelix@redhat.com>\n"
-"Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
+"Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\\n\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -50,16 +51,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"சில உள்ளீடு முறைகள் நிறுவப்பட்டுள்ளது, நீக்கப்பட்டுள்ளது அல்லது மேம்படுத்தப்பட்டுள்ளது. ibus "
+"உள்ளீட்டை மறுதுவக்கவும்."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "மறுதுவக்கம்"
+msgstr "இப்போது மறுதுவக்கு"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "வேறு"
+msgstr "பின்னர்"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -82,7 +83,6 @@ msgid "translator-credits"
 msgstr "I. Felix <ifelix@redhat.com>"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "உள்ளீடு முறை பற்றி"
 
@@ -208,11 +208,11 @@ msgstr "தனிபயன் எழுத்துரு பெயர் மொ
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "உட்பொதியப்பட்ட Preedit உரை"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட Preedit உரை"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -227,7 +227,6 @@ msgid "Orientation of lookup table"
 msgstr "காணும் அட்டவணையின் திசை"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "காணும் அட்டவணையின் திசை. 0 = கிடைமட்டம், 1 = செங்குத்து"
 
@@ -236,7 +235,6 @@ msgid "Preload engines"
 msgstr "முன்ஏற்றப்பட்ட இயந்திரங்கள்"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
 msgstr "ibus துவங்கும் போது முன்னேற்றப்பட்ட எந்திரங்கள் "
 
@@ -246,7 +244,7 @@ msgstr "முந்தைய இயந்திர குறுக்குவ�
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "அனைத்து பயன்பாடுகளிலும் சில உள்ளீடு முறையை பகிரவும்"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -261,11 +259,12 @@ msgid "Show input method name on language bar"
 msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "மொழி பலகத்தின் பண்புகள். 0 = எப்போதும் மறை, 1 = தானாக மறை, 2 = எப்போதும் காட்டு"
+msgstr ""
+"மொழி பலகத்தின் பண்புகள். 0 = மெனுவில் உட்பொதியப்பட்டது, 1 = தானாக மறை, 2 = எப்போதும் "
+"காட்டு"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -296,9 +295,8 @@ msgid "Use custom font name for language panel"
 msgstr "மொழி பலகத்தில் தனிபயன் எழுத்துரு பெயர்"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
+msgstr "பொது உள்ளீடு முறையை பயன்படுத்து"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
@@ -386,15 +384,15 @@ msgstr "தனிபயன்"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட preedit உரை"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "பயன்பாட்டு சாளரத்தில் preedit உரையின் உள்ளீடு முறையை உட்பொதியவும்"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "மெனுவில் உட்பொதியப்பட்டது"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -470,9 +468,8 @@ msgid "Top right corner"
 msgstr "மேல் வலது ஓரம்"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
+msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"

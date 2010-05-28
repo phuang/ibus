@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-04 20:09+0000\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-05-05 16:04+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: kn-IN <>\n"
@@ -262,7 +262,8 @@ msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಮೆನುವಿನಲ್ಲಿ ಅಡಕಗೊಳಿಸಲಾಗಿದೆ, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = ಯಾವಾಗಲೂ ತೋರಿಸು"
+"ಭಾಷೆಯ ಫಲಕದ ವರ್ತನೆ. 0 = ಮೆನುವಿನಲ್ಲಿ ಅಡಕಗೊಳಿಸಲಾಗಿದೆ, 1 = ಸ್ವಯಂ ಅಡಗಿಸು, 2 = "
+"ಯಾವಾಗಲೂ ತೋರಿಸು"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -433,7 +434,8 @@ msgstr ""
 
 #: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "ಭಾಷಾ ಪಟ್ಟಿಕೆಯನ್ನು ಹೇಗೆ ತೋರಿಸಬೇಕು ಅಥವ ಅಡಗಿಸಬೇಕು ಎನ್ನುವ ibus ನ ವರ್ತನೆಯನ್ನು ಹೊಂದಿಸಿ"
+msgstr ""
+"ಭಾಷಾ ಪಟ್ಟಿಕೆಯನ್ನು ಹೇಗೆ ತೋರಿಸಬೇಕು ಅಥವ ಅಡಗಿಸಬೇಕು ಎನ್ನುವ ibus ನ ವರ್ತನೆಯನ್ನು ಹೊಂದಿಸಿ"
 
 #: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2009-12-10 09:28+1000\n"
 "Last-Translator: \n"
 "Language-Team:  <it@li.org>\n"
@@ -53,16 +53,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Alcuni metodi di input sono stati installati, rimossi o aggiornati. "
+"Riavviare la piattaforma di input di ibus."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "Riavvia"
+msgstr "Riavvia ora"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "Altro"
+msgstr "Più tardi"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -87,7 +87,6 @@ msgstr ""
 "  Sergio Zanchetta https://launchpad.net/~primes2h"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "Informazioni sul metodo di input"
 
@@ -213,11 +212,11 @@ msgstr "Nome del tipo di carattere personalizzato per il pannello della lingua"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "Inserire il testo pre-modificato"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "Inserire il testo pre-modificato nella finestra dell'applicazione"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -232,7 +231,6 @@ msgid "Orientation of lookup table"
 msgstr "Orientamento della tabella di ricerca"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientamento della tabella di ricerca. 0 = Orizzontale, 1 = Verticale"
 
@@ -241,9 +239,8 @@ msgid "Preload engines"
 msgstr "Pre-carica i motori"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
-msgstr "Pre-carica i motori durante l'avvio di IBus"
+msgstr "Precarica i motori durante l'avvio di ibus"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "Prev engine shortcut keys"
@@ -251,7 +248,7 @@ msgstr "Motore dei tasti di scelta rapida precedente"
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "Condivide lo stesso metodo di input tra le applicazioni"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -266,12 +263,11 @@ msgid "Show input method name on language bar"
 msgstr "Mostrare il nome del metodo di input nella barra della lingua"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"Il comportamento del pannello della lingua. 0 = Nasconde sempre, 1 = "
+"Il comportamento del pannello della lingua. 0 = Inserito nel menu, 1 = "
 "Nasconde automaticamente, 2 = Mostra sempre"
 
 #: ../data/ibus.schemas.in.h:18
@@ -305,9 +301,8 @@ msgid "Use custom font name for language panel"
 msgstr "Usa un tipo di carattere personalizzato per il pannello della lingua"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "Seleziona un metodo di input"
+msgstr "Usa il metodo di input globale"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
@@ -395,15 +390,17 @@ msgstr "Personalizzato"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "Inserire il testo pre-modificato nella finestra dell'applicazione"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
 msgstr ""
+"Inserisce il testo premodificato del metodo di input nella finestra "
+"dell'applicazione"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "Inserito nel menu"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -483,9 +480,8 @@ msgid "Top right corner"
 msgstr "Angolo superiore destro"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "Usare carattere personalizzato"
+msgstr "Usare carattere personalizzato:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -494,10 +490,3 @@ msgstr "Verticale"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Quando attivoB"
-
-#~ msgid "Never"
-#~ msgstr "Mai"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Pre-carica i motori"

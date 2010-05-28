@@ -1,4 +1,4 @@
-# translation of ibus.master.po to Hindi
+# translation of hi.po to Hindi
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,9 +6,9 @@
 # Rajesh Ranjan <rajesh672@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master\n"
+"Project-Id-Version: hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 16:12+0000\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-05-06 13:55+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi <Red Hat>\n"
@@ -16,7 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"\n"
 "\n"
 "\n"
 "\n"
@@ -56,8 +57,8 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
-"कुछ इनपुट विधियाँ संस्थापित, हटाई या अद्यतन की गई हैं. कृपया "
-"ibus इनपुट प्लैटफॉर्म को फिर आरंभ करें."
+"कुछ इनपुट विधियाँ संस्थापित, हटाई या अद्यतन की गई हैं. कृपया ibus इनपुट प्लैटफॉर्म को फिर "
+"आरंभ करें."
 
 #: ../ui/gtk/main.py:62
 msgid "Restart Now"
@@ -268,8 +269,7 @@ msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"भाषा फलक का व्यवहार. 0 = मेन्यू में अंतःस्थापित, 1 = स्वतः छिपाएँ, 2 = "
-"हमेशा दिखाएँ"
+"भाषा फलक का व्यवहार. 0 = मेन्यू में अंतःस्थापित, 1 = स्वतः छिपाएँ, 2 = हमेशा दिखाएँ"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -482,4 +482,3 @@ msgstr "लंबवत"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "जब सक्रिय हो"
-

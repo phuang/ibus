@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 16:12+0000\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-05-06 17:34+0900\n"
 "Last-Translator: Kiyoto Hashida <khashida@redhat.com>\n"
 "Language-Team: Japanese <jp@li.org>\n"
@@ -20,7 +20,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n\n"
+"Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n"
+"\n"
 "\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -270,7 +271,8 @@ msgstr "言語バーにインプットメソッド名を表示する"
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
+msgstr ""
+"言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -420,11 +422,13 @@ msgstr "言語パネルの位置"
 
 #: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
-msgstr "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
 #: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:35
 msgid "Next input method:"
@@ -466,7 +470,8 @@ msgstr "ログイン時に IBus を起動"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr ""
+"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -487,4 +492,3 @@ msgstr "縦"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "アクティブであるとき"
-

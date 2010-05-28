@@ -2,18 +2,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2009.
+# Amitakhya Phukan <aphukan@redhat.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
-"PO-Revision-Date: 2009-12-11 12:13+0530\n"
-"Last-Translator: \n"
-"Language-Team: Assamese <>\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
+"PO-Revision-Date: 2010-05-05 16:04+0530\n"
+"Last-Translator: Amitakhya Phukan <aphukan@redhat.com>\n"
+"Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 0.2\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -49,16 +50,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"কিছুমান নিবেশ পদ্ধতিক সংস্থাপন, আঁতৰুৱা বা উন্নত কৰা হৈছে । অনুগ্ৰহ কৰি ibus নিবেশৰ "
+"মঞ্চ পুনৰাৰম্ভ কৰক ।"
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "পুনৰাৰম্ভ"
+msgstr "এতিয়া পুনৰাৰম্ভ কৰক"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "অন্য"
+msgstr "পিছত"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -81,7 +82,6 @@ msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "নিবেশ পদ্ধতিৰ বিষয়ে"
 
@@ -207,11 +207,11 @@ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্ব
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "অনুপ্ৰয়োগৰ সংযোগক্ষেত্ৰত প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -226,7 +226,6 @@ msgid "Orientation of lookup table"
 msgstr "লুক-আপ টেবুলৰ দিশ"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুকআপ টেবুলৰ দিশ । ০ = অনুভূমিক, ১ = উলম্ব"
 
@@ -235,7 +234,6 @@ msgid "Preload engines"
 msgstr "কলঘৰ আগতে তুলি লোৱা হ'ব"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
 msgstr "ibus আৰম্ভৰ আগতে কলঘৰ তুলি লওক"
 
@@ -245,7 +243,7 @@ msgstr "পূৰ্ববৰ্তী কলঘৰৰ ছৰ্টকাট চ
 
 #: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "সকলো অনুপ্ৰয়োগৰ মাজত একেই নিবেশ পদ্ধতি অংশীদাৰ কৰক"
 
 #: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
@@ -260,12 +258,12 @@ msgid "Show input method name on language bar"
 msgstr "ভাষাৰ বাৰত নিবেশ পদ্ধতিৰ নাম দেখুৱাব"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"ভাষাৰ পেনেলৰ আচৰণ । ০ = সদায় লুকাওক, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় দেখুৱাওক"
+"ভাষাৰ পেনেলৰ আচৰণ । ০ = তালিকাত প্ৰোথিত, ১ = স্বয়ংক্ৰিয়ভাবে লুকাওক, ২ = সদায় "
+"দেখুৱাওক"
 
 #: ../data/ibus.schemas.in.h:18
 msgid ""
@@ -296,9 +294,8 @@ msgid "Use custom font name for language panel"
 msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্বাচিত ফন্টৰ নাম ব্যৱহাৰ কৰক"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
 msgid "Use global input method"
-msgstr "এটা নিবেশ পদ্ধতি নিৰ্ব্বাচন কৰক"
+msgstr "সৰ্বব্যাপী নিবেশ পদ্ধতি ব্যৱহাৰ কৰক"
 
 #: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
@@ -386,15 +383,15 @@ msgstr "স্বনিৰ্ধাৰিত"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "অনুপ্ৰয়োগৰ সংযোগক্ষেত্ৰত প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "অনুপ্ৰয়োগৰ সংযোগক্ষেত্ৰত নিবেশ পদ্ধতিৰ প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "তালিকাত প্ৰোথিত"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -469,9 +466,8 @@ msgid "Top right corner"
 msgstr "ওপৰৰ সোঁফালৰ কোণত"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰা হ'ব"
+msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰক:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"

@@ -1,4 +1,4 @@
-# translation of ibus.master.po to Bengali INDIA
+# translation of bn_IN.po to Bengali INDIA
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,9 +6,9 @@
 # Runa Bhattacharjee <runab@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master\n"
+"Project-Id-Version: bn_IN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-05 19:05+0800\n"
+"POT-Creation-Date: 2010-05-29 07:32+0800\n"
 "PO-Revision-Date: 2010-03-25 17:16+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
@@ -83,7 +83,6 @@ msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "ইনপুট পদ্ধতি পরিচিতি"
 
@@ -209,11 +208,11 @@ msgstr "ভাষার প্যানেলের জন্য ব্যবহ
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr "প্রি-এডিট টেক্সট এমবেড করা হবে"
+msgstr "প্রি-এডিট টেক্সট সন্নিবেশ করা হবে"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr "অ্যাপ্লিকেশন উইন্ডোর মধ্যে প্রি-এডিট টেক্সট এমবেড করা হবে"
+msgstr "অ্যাপ্লিকেশন উইন্ডোর মধ্যে প্রি-এডিট টেক্সট সন্নিবেশ করা হবে"
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Language panel position"
@@ -228,7 +227,6 @@ msgid "Orientation of lookup table"
 msgstr "লুক-আপ টেবিলের দিশা"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "লুক-আপ টেবিলের দিশা। 0 (০) = অনুভুমিক, 1 (১) = উল্লম্ব"
 
@@ -237,7 +235,6 @@ msgid "Preload engines"
 msgstr "ইঞ্জিন পূর্বে লোড করা হবে"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
 msgid "Preload engines during ibus starts up"
 msgstr "ibus আরম্ভের সময় ইঞ্জিনগুলি পূর্বে লোড করা হবে"
 
@@ -262,12 +259,11 @@ msgid "Show input method name on language bar"
 msgstr "ভাষার বারের মধ্যে ইনপুট পদ্ধতির নাম প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:17
-#, fuzzy
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"ভাষা প্রদর্শনের প্যানেলের আচরণ। 0 (০) = সর্বদা আড়াল করা হবে, 1 (১) = "
+"ভাষা প্রদর্শনের প্যানেলের আচরণ। 0 (০) = মেনুর মধ্যে সন্নিবেশ করা হবে, 1 (১) = "
 "স্বয়ংক্রিয়ভাবে আড়াল করা হবে, 2 (২) = সর্বদা প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:18
@@ -397,7 +393,7 @@ msgstr "অ্যাপ্লিকেশনের উইন্ডোর মধ�
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "মেনুর মধ্যে সন্নিবিষ্ট"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -472,9 +468,8 @@ msgid "Top right corner"
 msgstr "উপরে ডানদিকের কোণায়"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন"
+msgstr "স্বনির্ধারিত ফন্ট প্রয়োগ করুন:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -483,9 +478,3 @@ msgstr "উল্লম্ব"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "সক্রিয় অবস্থায়"
-
-#~ msgid "Never"
-#~ msgstr "কখনো নয়"
-
-#~ msgid "Show in Status Icon menu"
-#~ msgstr "অবস্থাসীচক আইকনের মেনুর মধ্যে প্রদর্শন করা হবে"
