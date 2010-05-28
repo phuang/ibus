@@ -12,5 +12,5 @@ if [ -e /usr/lib/qt4/plugins/inputmethods/libqtim-ibus.so ]; then
 else
 	QT_IM_MODULE=xim
 fi
-DEPENDS="ibus, ibus-gtk, ibus-qt4"
+DEPENDS="ibus, ibus-gtk|ibus-qt4"
 # vim:ft=sh:

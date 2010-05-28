@@ -1,2 +1,4 @@
 config.guess
 config.sub
+po/ibus.pot
+install-stamp

@@ -16,8 +16,9 @@ Build-Depends: debhelper (>= 7),
  python-gobject-dev,
  libgconf2-dev,
  python-dbus (>= 0.83.0),
- intltool (>= 0.40.0)
-Standards-Version: 3.8.3
+ intltool (>= 0.40.0),
+ dpatch
+Standards-Version: 3.8.4
 Homepage: http://code.google.com/p/ibus/
 Vcs-Bzr: lp:~lidaobing/ibus/ibus
 Vcs-Browser: https://code.launchpad.net/~lidaobing/ibus/ibus
@@ -25,20 +26,20 @@ Vcs-Browser: https://code.launchpad.net/~lidaobing/ibus/ibus
 Package: ibus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-glade2,
- im-switch, python-ibus (= ${source:Version}), python-xdg
-Recommends: ibus-gtk, ibus-qt4
-Conflicts: ibus-anthy (< 1.2),
- ibus-table (< 1.2),
- ibus-pinyin (< 1.2),
- ibus-m17n (< 1.2),
- ibus-hangul (< 1.2),
- ibus-chewing (< 1.2)
+ python-ibus (= ${source:Version}), python-xdg, librsvg2-common
+Recommends: im-switch, ibus-gtk | ibus-qt4
+Conflicts: ibus-anthy (<< 1.2),
+ ibus-table (<< 1.2),
+ ibus-pinyin (<< 1.2.99),
+ ibus-m17n (<< 1.2.99),
+ ibus-hangul (<< 1.2.99),
+ ibus-chewing (<< 1.2.99)
 Description: New input method framework using dbus
  IBus is an Intelligent Input Bus. It is a new input framework for Linux
  OS. It provides full featured and user friendly input method user interface.
  It also may help developers to develop input method easily.
 
-Package: libibus1
+Package: libibus2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -47,12 +48,12 @@ Description: New input method framework using dbus
  OS. It provides full featured and user friendly input method user interface.
  It also may help developers to develop input method easily.
  .
- libibus1 is the library of ibus.
+ libibus2 is the library of ibus.
 
 Package: libibus-dev
 Section: libdevel
 Architecture: any
-Depends: libibus1 (= ${binary:Version}), libglib2.0-dev, libdbus-1-dev, ${shlibs:Depends}, ${misc:Depends}
+Depends: libibus2 (= ${binary:Version}), libglib2.0-dev, libdbus-1-dev, ${shlibs:Depends}, ${misc:Depends}
 Description: New input method framework using dbus
  IBus is an Intelligent Input Bus. It is a new input framework for Linux
  OS. It provides full featured and user friendly input method user interface.

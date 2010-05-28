@@ -1,0 +1,30 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_ubuntu_desktop.dpatch by LI Daobing <lidaobing@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: see https://bugs.launchpad.net/ubuntu/+source/ibus/+bug/457632
+## DP: ubuntu need X-Ubuntu-Gettext-Domain field.
+
+@DPATCH@
+diff -urNad ibus~/bus/ibus.desktop.in ibus/bus/ibus.desktop.in
+--- ibus~/bus/ibus.desktop.in	2009-06-14 14:28:10.000000000 +0800
++++ ibus/bus/ibus.desktop.in	2009-10-25 16:37:43.000000000 +0800
+@@ -3,6 +3,7 @@
+ _Name=IBus
+ _GenericName=IBus input method framework
+ _Comment=IBus input method framework
++X-Ubuntu-Gettext-Domain=ibus
+ Exec=ibus-daemon --xim
+ Icon=ibus
+ Terminal=false
+diff -urNad ibus~/setup/ibus-setup.desktop.in ibus/setup/ibus-setup.desktop.in
+--- ibus~/setup/ibus-setup.desktop.in	2009-06-14 14:28:11.000000000 +0800
++++ ibus/setup/ibus-setup.desktop.in	2009-10-25 16:37:43.000000000 +0800
+@@ -3,6 +3,7 @@
+ _Name=IBus Preferences
+ _GenericName=IBus Preferences
+ _Comment=IBus Preferences
++X-Ubuntu-Gettext-Domain=ibus
+ Exec=ibus-setup
+ Icon=ibus-setup
+ Terminal=false
