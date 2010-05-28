@@ -25,6 +25,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 #include <strings.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"
@@ -1322,7 +1323,7 @@ _ibus_exit (BusIBusImpl     *ibus,
          * suffix. */
         const gchar suffix[] = " (deleted)";
         if (g_str_has_suffix (exe, suffix)) {
-            exe [strlen (exe) - strlen (suffix)] = '\0';
+            exe [strlen (exe) - sizeof (suffix) + 1] = '\0';
             execv (exe, g_argv);
         }
         g_warning ("execv %s failed!", g_argv[0]);
