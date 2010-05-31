@@ -333,6 +333,10 @@ ibus_lookup_table_set_label (IBusLookupTable *table,
     g_assert (IBUS_IS_LOOKUP_TABLE (table));
     g_assert (IBUS_IS_TEXT (text));
 
+    if (table->labels->len <= index) {
+        g_array_set_size (table->labels, index + 1);
+    }
+
     IBusText *old = ibus_lookup_table_get_label (table, index);
     if (old != NULL) {
         g_object_unref (old);
