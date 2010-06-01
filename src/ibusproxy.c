@@ -20,6 +20,7 @@
  */
 
 #include <stdarg.h>
+#include <dbus/dbus.h>
 #include "ibusmessage.h"
 #include "ibusproxy.h"
 #include "ibusinternal.h"

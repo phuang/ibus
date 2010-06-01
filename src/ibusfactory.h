@@ -34,7 +34,6 @@
 #ifndef __IBUS_FACTORY_H_
 #define __IBUS_FACTORY_H_
 
-#include <dbus/dbus.h>
 #include "ibusservice.h"
 #include "ibusserializable.h"
 

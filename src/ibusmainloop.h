@@ -31,7 +31,7 @@
 #define __IBUS_MAINLOOP_H_
 
 #include <glib.h>
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 
 /**
  * DBusConnectionSetupFunc:

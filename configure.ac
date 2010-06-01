@@ -116,6 +116,9 @@ if test x"$enable_client" != x"no"; then
     AC_CHECK_HEADERS([X11/XKBlib.h])
 fi
 
+# GObject introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.7])
+
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
 

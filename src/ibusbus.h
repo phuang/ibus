@@ -28,11 +28,9 @@
 #ifndef __IBUS_BUS_H_
 #define __IBUS_BUS_H_
 
-#include <dbus/dbus.h>
 #include "ibusinputcontext.h"
 #include "ibusconfig.h"
 #include "ibuscomponent.h"
-
 
 /*
  * Type macros.

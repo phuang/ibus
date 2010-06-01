@@ -33,7 +33,6 @@
 #ifndef __IBUS_PROXY_H_
 #define __IBUS_PROXY_H_
 
-#include <dbus/dbus.h>
 #include "ibusobject.h"
 #include "ibusconnection.h"
 #include "ibusmessage.h"

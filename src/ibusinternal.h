@@ -33,7 +33,7 @@
 #define __IBUS_INTERNEL_H_
 
 #include <glib.h>
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 
 /**
  * I_:

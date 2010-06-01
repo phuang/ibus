@@ -20,12 +20,23 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_SCANNER_ARGS =
+INTROSPECTION_COMPILER_ARGS = \
+	--includedir=$(srcdir) \
+	--includedir=. \
+	$(NULL)
+INTROSPECTION_GIRS =
+CLEANFILES =
+
+
 INCLUDES = \
 	-I$(top_srcdir) \
 	$(NULL)
 
 # ibus library
-lib_LTLIBRARIES = libibus.la
+ibustargetlib = libibus.la
+lib_LTLIBRARIES = $(ibustargetlib)
 ibus_built_public_h_sources = \
 	ibusmarshalers.h \
 	ibusenumtypes.h \
@@ -40,6 +51,7 @@ ibus_built_sources = \
 	$(NULL)
 ibus_public_h_sources = \
 	ibus.h \
+	ibusdbus.h \
 	ibusversion.h \
 	ibusshare.h \
 	ibusdebug.h \
@@ -116,6 +128,32 @@ ibus_c_sources = \
 	ibusmainloop.c \
 	$(NULL)
 ibusincludedir = $(includedir)/ibus-1.0
+
+if HAVE_INTROSPECTION
+
+introspection_files = \
+		$(ibus_public_h_sources) \
+		$(ibus_c_sources) \
+        ibusenumtypes.c \
+        ibusenumtypes.h \
+		$(NULL)
+IBus-1.0.gir: $(ibustargetlib) Makefile
+IBus_1_0_gir_SCANNERFLAGS = --strip-prefix=IBus --pkg=dbus-1,glib-2.0
+IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0
+IBus_1_0_gir_LIBS = $(ibustargetlib)
+IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
+IBus_1_0_gir_CFLAGS = $(INCLUDES)
+INTROSPECTION_GIRS += IBus-1.0.gir
+
+girdir = $(datadir)/gir-1.0
+dist_gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibsdir = $(libdir)/girepository-1.0
+typelibs_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(dist_gir_DATA) $(typelibs_DATA)
+endif
+
 ibusinclude_HEADERS = \
 	$(ibus_public_h_sources) \
 	$(ibus_built_public_h_sources) \
@@ -236,7 +274,7 @@ EXTRA_DIST = \
 	ibusenumtypes.c.template \
 	$(NULL)
 
-CLEANFILES = \
+CLEANFILES += \
 	$(BUILT_SOURCES) \
 	stamp-ibusmarshalers.h \
 	stamp-ibusenumtypes.h \

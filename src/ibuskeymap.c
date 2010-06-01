@@ -27,6 +27,7 @@
 #include "ibuskeysyms.h"
 #include "ibuskeymap.h"
 
+typedef guint KEYMAP[256][7];
 /* functions prototype */
 static void         ibus_keymap_destroy         (IBusKeymap             *keymap);
 static gboolean     ibus_keymap_load            (const gchar            *name,

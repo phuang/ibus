@@ -29,7 +29,6 @@
 #ifndef __IBUS_SERVICE_H_
 #define __IBUS_SERVICE_H_
 
-#include <dbus/dbus.h>
 #include "ibusobject.h"
 #include "ibusconnection.h"
 

@@ -36,7 +36,7 @@
 #ifndef __IBUS_CONNECTION_H_
 #define __IBUS_CONNECTION_H_
 
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 #include "ibusmessage.h"
 #include "ibuspendingcall.h"
 #include "ibusobject.h"
