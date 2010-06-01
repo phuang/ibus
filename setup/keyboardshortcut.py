@@ -111,14 +111,17 @@ class KeyboardShortcutSelection(gtk.VBox):
         hbox = gtk.HBox()
         # add button
         self.__add_button = gtk.Button(stock = gtk.STOCK_ADD)
+        self.__add_button.set_sensitive(False)
         self.__add_button.connect("clicked", self.__add_button_clicked_cb)
         hbox.pack_start(self.__add_button)
         # apply button
         self.__apply_button = gtk.Button(stock = gtk.STOCK_APPLY)
+        self.__apply_button.set_sensitive(False)
         self.__apply_button.connect("clicked", self.__apply_button_clicked_cb)
         hbox.pack_start(self.__apply_button)
         # delete button
         self.__delete_button = gtk.Button(stock = gtk.STOCK_DELETE)
+        self.__delete_button.set_sensitive(False)
         self.__delete_button.connect("clicked", self.__delete_button_clicked_cb)
         hbox.pack_start(self.__delete_button)
         self.pack_start(hbox, False, True, 4)
@@ -137,7 +140,10 @@ class KeyboardShortcutSelection(gtk.VBox):
 
     def get_shortcuts(self):
         model = self.__shortcut_view.get_model()
-        return [i[0] for i in model]
+        try:
+            return [i[0] for i in model]
+        except:
+            return []
 
     def add_shortcut(self, shortcut):
         model = self.__shortcut_view.get_model()
