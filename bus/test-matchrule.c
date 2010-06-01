@@ -1,3 +1,4 @@
+#include <dbus/dbus.h>
 #include "matchrule.h"
 
 int

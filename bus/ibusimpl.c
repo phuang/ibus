@@ -27,6 +27,7 @@
 #include <locale.h>
 #include <string.h>
 #include <strings.h>
+#include <dbus/dbus.h>
 #include "ibusimpl.h"
 #include "dbusimpl.h"
 #include "server.h"
