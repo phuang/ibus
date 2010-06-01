@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-01 14:27+0800\n"
-"PO-Revision-Date: 2010-04-26 13:25+0200\n"
+"PO-Revision-Date: 2010-06-01 12:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -220,13 +220,13 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "Insérer le texte en cours d'édition dans la fenêtre de l'application"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "passer à méthode d'entrée suivante"
+msgstr "Par défaut, activer la méthode d'entrée"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
+"Par défaut, activer la méthode d'entrée lorsque l'application reçoit le focus"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -289,12 +289,11 @@ msgstr ""
 "2 = En bas à gauche, 3 = En bas à droite, 4 = Personnalisé"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "Raccourci clavier pour passer à la méthode d'entrée suivante"
+msgstr ""
+"Raccourci clavier pour passer à la méthode d'entrée suivante de la liste"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "Raccourci clavier pour revenir à la méthode d'entrée précédente"
 
