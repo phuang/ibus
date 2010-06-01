@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-29 07:32+0800\n"
+"POT-Creation-Date: 2010-06-01 14:27+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Héctor Daniel Cabrera <logan@fedoraproject.org>\n"
 "Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
@@ -164,7 +164,7 @@ msgstr "Código clave:"
 msgid "Modifiers:"
 msgstr "Modificadores:"
 
-#: ../setup/keyboardshortcut.py:228
+#: ../setup/keyboardshortcut.py:234
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -172,7 +172,7 @@ msgstr ""
 "Por favor, presione una tecla (o una combinación de tecla).\n"
 "El diálogo será cerrado cuando la tecla sea soltada."
 
-#: ../setup/keyboardshortcut.py:230
+#: ../setup/keyboardshortcut.py:236
 msgid "Please press a key (or a key combination)"
 msgstr "Por favor, presione una tecla (o combinación de teclas)"
 
@@ -214,50 +214,59 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "Insertar texto previamente editado en la ventana de la aplicación"
 
 #: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Enable input method by default"
+msgstr "siguiente método de entrada"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
 msgstr "Posición del panel de idioma"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Next engine shortcut keys"
 msgstr "Atajo de teclado para el siguiente motor"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Orientation of lookup table"
 msgstr "Orientación de búsqueda en la tabla "
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientación de la tabla de búsqueda. 0 = Horizontal, 1 = Vertical"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Preload engines"
 msgstr "Precargar máquinas"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Preload engines during ibus starts up"
 msgstr "Precargar los motores durante el inicio de ibus"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Prev engine shortcut keys"
 msgstr "Atajo de teclado para la máquina previa"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "Compartir el mismo método de entrada con todas las aplicaciones"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "Mostrar un ícono en el área de notificación"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Show input method name"
 msgstr "Mostrar el nombre del método de entrada"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "Mostrar el nombre del método de entrada en la barra de idioma"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
@@ -265,7 +274,7 @@ msgstr ""
 "El comportamiento del panel de idioma. 0 = Incrustado en el menú, 1 = "
 "Ocultarlo automáticamente, 2 = Mostrarlo siempre"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -274,36 +283,43 @@ msgstr ""
 "superior derecha, 2 = esquina inferior izquierda, 3 = esquina inferior "
 "derecha, 4 = personalizado"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
-msgid "The shortcut keys for switching to next input method in the list"
+#: ../data/ibus.schemas.in.h:21
+#, fuzzy
+msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
 "Tecla programada para cambiar al siguiente método de entrada en la lista"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "The shortcut keys for switching to the previous input method"
+msgstr ""
+"Tecla programada para cambiar al método de entrada anterior en la lista"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Atajo de teclado para encender o apagar el método de entrada"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:24
 msgid "Trigger shortcut keys"
 msgstr "Activadora de los Atajos de teclado"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:25
 msgid "Use custom font"
 msgstr "Usar fuente personalizada"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:26
 msgid "Use custom font name for language panel"
 msgstr "Usar nombre de fuente personalizada para el panel de idioma"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:27
 msgid "Use global input method"
 msgstr "Utilizar método de entrada global"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "Usar el diseño del teclado del sistema (XKB)"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "Usar el diseño del teclado del sistema"
 
@@ -468,6 +484,11 @@ msgstr "Mostrar el panel de idioma:"
 #: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "Iniciar ibus al ingresar"
+
+#: ../setup/setup.ui.h:47
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+"Tecla programada para cambiar al siguiente método de entrada en la lista"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"

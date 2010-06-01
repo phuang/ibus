@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-29 07:32+0800\n"
+"POT-Creation-Date: 2010-06-01 14:27+0800\n"
 "PO-Revision-Date: 2010-05-06 12:13+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
@@ -166,7 +166,7 @@ msgstr "कि कोड:"
 msgid "Modifiers:"
 msgstr "मॉडिफायर:"
 
-#: ../setup/keyboardshortcut.py:228
+#: ../setup/keyboardshortcut.py:234
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -174,7 +174,7 @@ msgstr ""
 "कृपया कि (किंवा कि जोडणी) दाबा.\n"
 "कि सोडल्यावर संवाद बंद होईल."
 
-#: ../setup/keyboardshortcut.py:230
+#: ../setup/keyboardshortcut.py:236
 msgid "Please press a key (or a key combination)"
 msgstr "कृपया कि (किंवा कि जोडणी) दाबा"
 
@@ -216,56 +216,65 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "ऍप्लिकेशन पटलात प्रिएडीट मजकूर एम्बेड करा"
 
 #: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Enable input method by default"
+msgstr "पुढिल इंपुट पद्धत"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
 msgstr "भाषा पटलचे स्थान"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Next engine shortcut keys"
 msgstr "पुढील इंजीनचे शार्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Orientation of lookup table"
 msgstr "लुकअप टेबलचे निर्देशन"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "लुकअप टेबलचे निर्देशन. 0 = Horizontal, 1 = Vertical"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Preload engines"
 msgstr "प्रीलोड इंजीन्स्"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Preload engines during ibus starts up"
 msgstr "ibus सुरू होतेवेळी इंजीन आधिपासूनच लोड करा"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Prev engine shortcut keys"
 msgstr "मागील इंजीनचे शॉर्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "सर्व ऍप्लिकेशन्स् मध्ये एकसारखेच इंपुट पद्धत शेअर करा"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "चिन्ह प्रणाली ट्रेवर दाखवा"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Show input method name"
 msgstr "इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "भाषा पट्टीवरील इंपुट पद्धतीचे नाव दाखवा"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr "भाषा पटलचे वर्तन. 0 = Embedded in menu, 1 = Auto hide, 2 = Always show"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -273,35 +282,41 @@ msgstr ""
 "भाषा पटलाचे स्थान. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left "
 "corner, 3 = Bottom right corner, 4 = Custom"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
-msgid "The shortcut keys for switching to next input method in the list"
+#: ../data/ibus.schemas.in.h:21
+#, fuzzy
+msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "The shortcut keys for switching to the previous input method"
+msgstr "सूचीतील मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "इंपुट पद्धत सुरू किंवा बंद करण्यासाठी शार्टकट किज्"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:24
 msgid "Trigger shortcut keys"
 msgstr "शॉर्टकट किज् ट्रिगर करा"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:25
 msgid "Use custom font"
 msgstr "स्वपसंत फॉन्ट वापरा"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:26
 msgid "Use custom font name for language panel"
 msgstr "भाषा पटल करीत स्वपसंत फॉन्ट नाव वापरा"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:27
 msgid "Use global input method"
 msgstr "ग्लोबल इंपुट पद्धत नीवडा"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "प्रणाली कळफलक (XKB) मांडणीचा वापर करा"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "प्रणाली कळफलक मांडणीचा वापर करा"
 
@@ -452,6 +467,10 @@ msgstr "भाषा पटल दाखवा:"
 #: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "प्रवेशवेळी ibus सुरू करा"
+
+#: ../setup/setup.ui.h:47
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"

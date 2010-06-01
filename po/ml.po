@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-29 07:32+0800\n"
+"POT-Creation-Date: 2010-06-01 14:27+0800\n"
 "PO-Revision-Date: 2010-05-06 12:49+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -165,7 +165,7 @@ msgstr "കീ കോഡ്:"
 msgid "Modifiers:"
 msgstr "മോഡിഫയറുകള്‍:"
 
-#: ../setup/keyboardshortcut.py:228
+#: ../setup/keyboardshortcut.py:234
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -173,7 +173,7 @@ msgstr ""
 "ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്).\n"
 "കീ റിലീസ് ചെയ്യുമ്പോള്‍ ഡയലോഗ് അടയ്ക്കുന്നു."
 
-#: ../setup/keyboardshortcut.py:230
+#: ../setup/keyboardshortcut.py:236
 msgid "Please press a key (or a key combination)"
 msgstr "ദയവായി ഒരു കീ അമര്‍ത്തുക (അല്ലെങ്കില്‍ ഒരു കീ കൂട്ട്)"
 
@@ -215,50 +215,59 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "പ്രയോഗത്തിനുള്ള ജാലകത്തില്‍ പ്രീഎഡിറ്റ് ടെക്സ്റ്റ് ചേര്‍ക്കുക"
 
 #: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Enable input method by default"
+msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ്"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
 msgstr "ഭാഷയുടെ പാനല്‍ സ്ഥാനം"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Next engine shortcut keys"
 msgstr "അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴികള്‍"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Orientation of lookup table"
 msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "ലുക്കപ്പ് പട്ടികയുടെ ക്രമീകരണം. 0 = നേരെയുള്ള, 1 = കുറുകയുള്ള"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Preload engines"
 msgstr "സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Preload engines during ibus starts up"
 msgstr "ibus ആരംഭിക്കുമ്പോള്‍ സംവിധാനങ്ങള്‍ ലഭ്യമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Prev engine shortcut keys"
 msgstr "തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള എളുപ്പവഴികള്‍"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
 msgstr "എല്ലാ പ്രയോഗങ്ങളിലും ഒരേ ഇന്‍പുട്ട് രീതി ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "സിസ്റ്റം ട്രേയില്‍ ചിഹ്നം കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Show input method name"
 msgstr "ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "ഭാഷയുടെ പാനലില്‍ ഇന്‍പുട്ട് മെഥേഡിന്റെ പേരു് കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
@@ -266,7 +275,7 @@ msgstr ""
 "ഭാഷയുടെ പാനലിന്റെ രീതി. 0 = മെനുവില്‍ ഉള്‍പ്പെടുത്തുക, 1 = സ്വയം അദൃശ്യമാകുക, 2 = എപ്പോഴും "
 "കാണിക്കുക"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -274,36 +283,44 @@ msgstr ""
 "ഭാഷയുടെ പാനലിന്റെ സ്ഥാനം. 0 = മുകളില്‍ ഇടതു് കോണ്‍, 1 = മുകളില്‍ വലതു് കോണ്‍, 2 = താഴെ ഇടതു് "
 "കോണ്‍, 3 = താഴെ വലതു് കോണ്‍, 4 = യഥേഷ്ടം"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
-msgid "The shortcut keys for switching to next input method in the list"
+#: ../data/ibus.schemas.in.h:21
+#, fuzzy
+msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
 "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "The shortcut keys for switching to the previous input method"
+msgstr ""
+"മുമ്പുള്ള ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി തൊട്ടു് മുമ്പുള്ള സംവിധാനത്തിനുള്ള "
+"എളുപ്പവഴി"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "ഇന്‍പുട്ട് മെഥേഡ് ഓണ്‍ അല്ലെങ്കില്‍ ഓഫ് ചെയ്യുന്നതിനുള്ള എളുപ്പവളികള്‍ സജ്ജമാക്കുക"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:24
 msgid "Trigger shortcut keys"
 msgstr "എളുപ്പവഴികള്‍ ട്രിഗര്‍ ചെയ്യുക"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:25
 msgid "Use custom font"
 msgstr "സജ്ജമാക്കിയ അക്ഷരസഞ്ചയം ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:26
 msgid "Use custom font name for language panel"
 msgstr "ഭാഷ്ക്കുള്ള പാനലില്‍ നിങ്ങള്‍ സജ്ജമാക്കിയ അക്ഷരസഞ്ചയത്തിന്റെ പേരു് ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:27
 msgid "Use global input method"
 msgstr "ഗ്ലോബല്‍ ഇന്‍പുട്ട് മെഥേഡ് ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് (XKB) മാതൃക ഉപയോഗിക്കുക"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "സിസ്റ്റം കീബോര്‍ഡ് മാതൃക ഉപയോഗിക്കുക"
 
@@ -454,6 +471,11 @@ msgstr "ഭാഷയുടെ പാനല്‍ കാണിക്കുക:"
 #: ../setup/setup.ui.h:46
 msgid "Start ibus on login"
 msgstr "പ്രവേശിക്കുമ്പോള്‍ തന്നെ ibus ആരംഭിക്കുക"
+
+#: ../setup/setup.ui.h:47
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+"അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"

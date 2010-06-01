@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-29 07:32+0800\n"
-"PO-Revision-Date: 2009-12-08 16:55+0700\n"
+"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"PO-Revision-Date: 2010-06-01 13:17+0700\n"
 "Last-Translator: Lê Quốc Tuấn <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -49,16 +49,16 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Một vài kiểu gõ vừa được cài đặt, xóa hoặc cập nhật. Vui lòng khởi động lại "
+"bộ gõ ibus."
 
 #: ../ui/gtk/main.py:62
-#, fuzzy
 msgid "Restart Now"
-msgstr "Khởi động lại"
+msgstr "Khởi động lại ngay"
 
 #: ../ui/gtk/main.py:63
-#, fuzzy
 msgid "Later"
-msgstr "Khác"
+msgstr "Sau"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -81,7 +81,6 @@ msgid "translator-credits"
 msgstr "Lê Quốc Tuấn <mr.lequoctuan@gmail.com>"
 
 #: ../ui/gtk/languagebar.py:107
-#, fuzzy
 msgid "About the input method"
 msgstr "Giới thiệu về kiểu gõ"
 
@@ -165,7 +164,7 @@ msgstr "Mã phím:"
 msgid "Modifiers:"
 msgstr "Phím bổ sung:"
 
-#: ../setup/keyboardshortcut.py:228
+#: ../setup/keyboardshortcut.py:234
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -173,7 +172,7 @@ msgstr ""
 "Vui lòng nhấn một phím (hoặc tổ hợp phím).\n"
 "Hộp thoại này sẽ được đóng lại khi bạn thả phím ấn."
 
-#: ../setup/keyboardshortcut.py:230
+#: ../setup/keyboardshortcut.py:236
 msgid "Please press a key (or a key combination)"
 msgstr "Vui lòng nhấn một phím (hoặc tổ hợp phím)"
 
@@ -208,67 +207,74 @@ msgstr "Tùy biến phông cho thanh ngôn ngữ"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Embed Preedit Text"
-msgstr ""
+msgstr "Nhúng văn bản tiền soạn thảo"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgstr "Nhúng văn bản tiền soạn thảo trong cửa sổ ứng dụng"
 
 #: ../data/ibus.schemas.in.h:6
+#, fuzzy
+msgid "Enable input method by default"
+msgstr "chuyển đến kiểu gõ kế tiếp"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
 msgstr "Vị trí thanh ngôn ngữ:"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Next engine shortcut keys"
 msgstr "Phím tắt cho kiểu gõ kế tiếp"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid "Orientation of lookup table"
 msgstr "Hướng của bảng tra cứu"
 
-#: ../data/ibus.schemas.in.h:9
-#, fuzzy
+#: ../data/ibus.schemas.in.h:11
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Hướng của bảng tra cứu. 0 = Ngang, 1 = Dọc"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Preload engines"
 msgstr "Nạp trước các kiểu gõ"
 
-#: ../data/ibus.schemas.in.h:11
-#, fuzzy
+#: ../data/ibus.schemas.in.h:13
 msgid "Preload engines during ibus starts up"
 msgstr "Nạp trước các kiểu gõ khi khởi động ibus"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Prev engine shortcut keys"
 msgstr "Phím tắt cho kiểu gõ trước"
 
-#: ../data/ibus.schemas.in.h:13 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "Chia sẻ cùng kiểu gõ cho tất cả các ứng dụng"
 
-#: ../data/ibus.schemas.in.h:14 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
 msgid "Show icon on system tray"
 msgstr "Hiển thị biểu tượng trên khay hệ thống"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "Show input method name"
 msgstr "Hiển thị tên kiểu gõ"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show input method name on language bar"
 msgstr "Hiển thị tên kiểu gõ trên thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:17
-#, fuzzy
+#: ../data/ibus.schemas.in.h:19
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"Cách hiển thị thanh ngôn ngữ. 0 = Luôn ẩn, 1 = Tự  động ẩn, 2 = Luôn hiện"
+"Cách hiển thị thanh ngôn ngữ. 0 = Nhúng vào menu, 1 = Tự  động ẩn, 2 = Luôn "
+"hiện"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
@@ -276,36 +282,41 @@ msgstr ""
 "Vị trí của thanh ngôn ngữ. 0 = góc trên bên trái, 1 = góc trên bên phải, 2 = "
 "góc dưới bên trái, 3 = góc dưới bên phái, 4 = Tùy chọn"
 
-#: ../data/ibus.schemas.in.h:19 ../setup/setup.ui.h:47
-msgid "The shortcut keys for switching to next input method in the list"
+#: ../data/ibus.schemas.in.h:21
+#, fuzzy
+msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "Phím tắt dùng để chuyển đến kiểu gõ kế tiếp trong danh sách"
 
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:22
+#, fuzzy
+msgid "The shortcut keys for switching to the previous input method"
+msgstr "Phím tắt dùng để chuyển về kiểu gõ trước trong danh sách"
+
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Phím tắt để bật hoặc tắt kiểu gõ"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:24
 msgid "Trigger shortcut keys"
 msgstr "Phím tắt kích hoạt"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:25
 msgid "Use custom font"
 msgstr "Dùng phông chữ tùy biến"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:26
 msgid "Use custom font name for language panel"
 msgstr "Dùng phông tùy biến cho thanh ngôn ngữ"
 
-#: ../data/ibus.schemas.in.h:24
-#, fuzzy
+#: ../data/ibus.schemas.in.h:27
 msgid "Use global input method"
-msgstr "Chọn một kiểu gõ"
+msgstr "Dùng chung kiểu gõ cho toàn hệ thống"
 
-#: ../data/ibus.schemas.in.h:25 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
 msgid "Use system keyboard (XKB) layout"
 msgstr "Dùng kiểu bố trí bàn phím hệ thống (XKB)"
 
-#: ../data/ibus.schemas.in.h:26 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
 msgid "Use system keyboard layout"
 msgstr "Dùng kiểu bố trí bàn phím của hệ thống"
 
@@ -387,15 +398,15 @@ msgstr "Tùy biến"
 
 #: ../setup/setup.ui.h:24
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "Nhúng văn bản tiền soạn thảo trong cửa sổ ứng dụng"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
+msgstr "Nhúng văn bản tiền soạn thảo của bộ gõ trong cửa sổ ứng dụng"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
-msgstr ""
+msgstr "Nhúng vào menu"
 
 #: ../setup/setup.ui.h:27
 msgid "Enable or disable:"
@@ -459,6 +470,10 @@ msgstr "Hiển thị thanh ngôn ngữ:"
 msgid "Start ibus on login"
 msgstr "Khởi động ibus khi đăng nhập"
 
+#: ../setup/setup.ui.h:47
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "Phím tắt dùng để chuyển đến kiểu gõ kế tiếp trong danh sách"
+
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "Phím tắt dùng để chuyển về kiểu gõ trước trong danh sách"
@@ -472,9 +487,8 @@ msgid "Top right corner"
 msgstr "Góc trên bên phải"
 
 #: ../setup/setup.ui.h:52
-#, fuzzy
 msgid "Use custom font:"
-msgstr "Dùng phông chữ tùy biến"
+msgstr "Dùng phông chữ tùy biến:"
 
 #: ../setup/setup.ui.h:55
 msgid "Vertical"
@@ -483,10 +497,3 @@ msgstr "Dọc"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Khi hoạt động"
-
-#~ msgid "Never"
-#~ msgstr "Không bao giờ"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Nạp trước các kiểu gõ"
