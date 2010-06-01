@@ -75,8 +75,8 @@ struct _IBusProxyClass {
     IBusObjectClass parent;
 
     /* class members */
-    gboolean    (* ibus_signal)     (IBusProxy   *proxy,
-                                     IBusMessage      *message);
+    gboolean    (* ibus_signal)     (IBusProxy      *proxy,
+                                     IBusMessage    *message);
     /*< private >*/
     /* padding */
     gpointer pdummy[7];
