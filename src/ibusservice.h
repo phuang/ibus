@@ -155,7 +155,7 @@ gboolean         ibus_service_add_to_connection (IBusService    *service,
 /**
  * ibus_service_get_connections:
  * @service: An IBusService.
- * @returns: A newly allocated list of connections.
+ * @returns: (element-type IBusConnection): A newly allocated list of connections.
  *
  * Returns a copy of list of connections.
  * List elements need to be unref by g_object_unref().
