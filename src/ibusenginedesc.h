@@ -149,7 +149,7 @@ IBusEngineDesc  *ibus_engine_desc_new_from_xml_node
  * Output XML-formatted input method engine description.
  * The result will be append to GString specified in @output.
  */
-void             ibus_engine_desc_output        (IBusEngineDesc  *info,
+void             ibus_engine_desc_output        (IBusEngineDesc *info,
                                                  GString        *output,
                                                  gint            indent);
 G_END_DECLS
