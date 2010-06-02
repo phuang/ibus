@@ -31,12 +31,12 @@
 G_BEGIN_DECLS
 
 #ifndef DBUS_H
-typedef struct _DummyStruct DBusMessage;
-typedef struct _DummyStruct DBusMessageIter;
-typedef struct _DummyStruct DBusServer;
-typedef struct _DummyStruct DBusConnection;
-typedef struct _DummyStruct DBusPendingCall;
-typedef struct _DummyStruct DBusError;
+typedef struct DBusError DBusError;
+typedef struct DBusMessage DBusMessage;
+typedef struct DBusMessageIter DBusMessageIter;
+typedef struct DBusPendingCall DBusPendingCall;
+typedef struct DBusServer DBusServer;
+typedef struct DBusConnection DBusConnection;
 #else
 #endif
 
