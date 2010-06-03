@@ -1,11 +1,23 @@
 from gi.repository.IBus import \
-    Bus, \
-    Engine, \
-    Attribute, \
     AttrList, \
-    Text, \
-    LookupTable, \
-    Property, \
-    PropList, \
+    Attribute, \
+    Bus, \
     Component, \
-    EngineDesc
+    Config, \
+    Connection, \
+    Engine, \
+    EngineDesc, \
+    Factory, \
+    HotkeyProfile, \
+    Keymap, \
+    LookupTable, \
+    Object, \
+    ObservedPath, \
+    PanelService, \
+    PropList, \
+    Property, \
+    Proxy, \
+    Serializable, \
+    Server, \
+    Service, \
+    Text
