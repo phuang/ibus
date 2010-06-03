@@ -126,6 +126,7 @@ ibus_config_class_init (IBusConfigClass *klass)
     /* install signals */
     /**
      * IBusConfig::value-changed:
+     * @config: An IBusConfig.
      * @section: Section name.
      * @name: Name of the property.
      * @value: Value.
