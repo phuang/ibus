@@ -265,7 +265,6 @@ ibus_xml_parse_buffer (const gchar *buffer)
 }
 
 
-void     ibus_xml_free          (XMLNode        *node);
 static void
 output_indent (int level, GString *output)
 {
