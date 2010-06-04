@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-01 14:27+0800\n"
-"PO-Revision-Date: 2010-06-04 12:00+0200\n"
+"PO-Revision-Date: 2010-06-04 12:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,7 @@ msgstr "Raccourci clavier pour %s"
 
 #: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
-msgstr "Raccourcis clavier"
+msgstr "Raccourci clavier"
 
 #: ../setup/keyboardshortcut.py:66
 msgid "Key code:"
@@ -461,7 +461,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "Permet de choisir l'affichage de la barre de langue d'Ibus"
+msgstr "Permet de choisir l'affichage de la barre de langue d'ibus"
 
 #: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
