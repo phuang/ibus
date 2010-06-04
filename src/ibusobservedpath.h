@@ -109,7 +109,7 @@ IBusObservedPath    *ibus_observed_path_new                 (const gchar        
 /**
  * ibus_observed_path_traverse:
  * @path: An IBusObservedPath.
- * @returns: A newly allocate GList which holds content in path; NULL if @path is not directory.
+ * @returns: (element-type IBusObservedPath): A newly allocate GList which holds content in path; NULL if @path is not directory.
  *
  * Recursively traverse the path and put the files and subdirectory in to a newly allocated
  * GLists, if the @path is a directory. Otherwise returns NULL.

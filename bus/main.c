@@ -48,8 +48,16 @@ gint   g_dbus_timeout = 5000;
 gint   g_monitor_timeout = 0;
 #endif
 
+static void
+show_version_and_quit (void)
+{
+    g_print ("%s - Version %s\n", g_get_application_name (), VERSION);
+    exit (EXIT_SUCCESS);
+}
+
 static const GOptionEntry entries[] =
 {
+    { "version",   'V', G_OPTION_FLAG_NO_ARG, G_OPTION_ARG_CALLBACK, show_version_and_quit, "Show the application's version.", NULL },
     { "daemonize", 'd', 0, G_OPTION_ARG_NONE,   &daemonize, "run ibus as background process.", NULL },
     { "single",    's', 0, G_OPTION_ARG_NONE,   &single,    "do not execute panel and config module.", NULL },
     { "xim",       'x', 0, G_OPTION_ARG_NONE,   &xim,       "execute ibus XIM server.", NULL },

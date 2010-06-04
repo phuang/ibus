@@ -18,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#include <dbus/dbus.h>
 #include "ibusinternal.h"
 #include "ibusmarshalers.h"
 #include "ibusshare.h"
@@ -126,6 +126,7 @@ ibus_config_class_init (IBusConfigClass *klass)
     /* install signals */
     /**
      * IBusConfig::value-changed:
+     * @config: An IBusConfig.
      * @section: Section name.
      * @name: Name of the property.
      * @value: Value.

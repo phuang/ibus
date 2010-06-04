@@ -21,7 +21,7 @@
 # Boston, MA  02111-1307  USA
 
 # if not 1, append datestamp to the version number.
-m4_define([ibus_released], [1])
+m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [3])
 m4_define([ibus_micro_version], [4])
@@ -115,6 +115,9 @@ if test x"$enable_client" != x"no"; then
 
     AC_CHECK_HEADERS([X11/XKBlib.h])
 fi
+
+# GObject introspection
+GOBJECT_INTROSPECTION_CHECK([0.6.9])
 
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)

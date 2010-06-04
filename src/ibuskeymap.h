@@ -80,7 +80,7 @@ typedef struct _IBusKeymapClass IBusKeymapClass;
  *  5 - shift altgr
  *  6 - numlock
  */
-typedef guint KEYMAP[256][7];
+/* typedef guint KEYMAP[256][7]; */
 
 /**
  * IBusKeymap:
@@ -95,7 +95,7 @@ struct _IBusKeymap {
     /* members */
     /*< public >*/
     gchar *name;
-    KEYMAP keymap;
+    guint keymap[256][7];
 };
 
 struct _IBusKeymapClass {

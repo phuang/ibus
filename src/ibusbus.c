@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
+#include <dbus/dbus.h>
 #include "ibusbus.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"

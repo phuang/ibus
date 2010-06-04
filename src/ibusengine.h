@@ -32,7 +32,6 @@
 #ifndef __IBUS_ENGINE_H_
 #define __IBUS_ENGINE_H_
 
-#include <dbus/dbus.h>
 #include "ibusservice.h"
 #include "ibusattribute.h"
 #include "ibuslookuptable.h"

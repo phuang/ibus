@@ -20,6 +20,7 @@
  */
 
 #include <string.h>
+#include <dbus/dbus.h>
 #include <ibusinternal.h>
 #include <ibusmarshalers.h>
 #include "dbusimpl.h"

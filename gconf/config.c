@@ -1,6 +1,7 @@
 /* vim:set et sts=4: */
 
 #include <string.h>
+#include <dbus/dbus.h>
 #include <ibus.h>
 #include "config.h"
 

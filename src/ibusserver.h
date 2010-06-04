@@ -29,7 +29,6 @@
 #ifndef __IBUS_SERVER_H_
 #define __IBUS_SERVER_H_
 
-#include <dbus/dbus.h>
 #include "ibusobject.h"
 #include "ibusconnection.h"
 
@@ -55,7 +54,6 @@ G_BEGIN_DECLS
 
 typedef struct _IBusServer IBusServer;
 typedef struct _IBusServerClass IBusServerClass;
-
 /**
  * IBusNewConnectionFunc:
  * @server: An IBusServer.

@@ -34,7 +34,7 @@
 #define __IBUS_PENDING_CALL_H_
 
 #include <glib.h>
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 #include "ibusmessage.h"
 
 G_BEGIN_DECLS

@@ -18,8 +18,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
 #include <stdarg.h>
+#include <dbus/dbus.h>
 #include "ibusengine.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"
@@ -1140,6 +1140,7 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
                                       gboolean           visible)
 {
     IBusLookupTable *new_table;
+    IBusText *text;
     gint page_begin;
     gint i;
 
@@ -1154,6 +1155,10 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
 
     for (i = page_begin; i < page_begin + table->page_size && i < table->candidates->len; i++) {
         ibus_lookup_table_append_candidate (new_table, ibus_lookup_table_get_candidate (table, i));
+    }
+
+    for (i = 0; (text = ibus_lookup_table_get_label (table, i)) != NULL; i++) {
+        ibus_lookup_table_append_label (new_table, text);
     }
 
     ibus_lookup_table_set_cursor_pos (new_table, ibus_lookup_table_get_cursor_in_page (table));

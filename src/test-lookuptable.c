@@ -1,3 +1,4 @@
+#include <dbus/dbus.h>
 #include "ibus.h"
 
 int main()

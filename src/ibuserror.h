@@ -30,7 +30,7 @@
 #define __IBUS_ERROR_H_
 
 #include <glib.h>
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 
 G_BEGIN_DECLS
 
@@ -81,7 +81,7 @@ IBusError       *ibus_error_new_from_printf (const gchar    *name,
  * @message: A DBusMessage
  * @returns: A newly allocated IBusError.
  *
- * New an IBusError from a #DBusMessage.
+ * New an IBusError from a #IBusMessage.
  */
 IBusError       *ibus_error_new_from_message
                                             (DBusMessage    *message);

@@ -35,7 +35,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <dbus/dbus.h>
+#include "ibusdbus.h"
 #include "ibuserror.h"
 
 /**
