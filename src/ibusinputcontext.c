@@ -725,6 +725,64 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
     return FALSE;
 }
 
+typedef struct {
+    IBusInputContext *context;
+    guint32 keyval;
+    guint32 keycode;
+    guint32 state;
+} CallData;
+
+static void
+_process_key_event_reply_cb (IBusPendingCall *pending,
+                             CallData        *call_data)
+{
+    IBusMessage *reply_message;
+    IBusError *error;
+    gboolean retval = FALSE;
+
+    reply_message = dbus_pending_call_steal_reply (pending);
+
+    if (reply_message == NULL) {
+        /* reply timeout */
+        retval = FALSE;
+    }
+    else if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
+        /* some error happens */
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        retval = FALSE;
+    }
+    else if (!ibus_message_get_args (reply_message,
+                                    &error,
+                                     G_TYPE_BOOLEAN, &retval,
+                                     G_TYPE_INVALID)) {
+        /* can not get return value */
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        retval = FALSE;
+    }
+
+    if (retval == TRUE) {
+        call_data->state |= IBUS_HANDLED_MASK;
+    }
+    else {
+        call_data->state |= IBUS_IGNORED_MASK;
+    }
+    /* forward key event back with ignored or handled mask */
+    g_signal_emit (call_data->context,
+                   context_signals[FORWARD_KEY_EVENT],
+                   0,
+                   call_data->keyval,
+                   call_data->keycode,
+                   call_data->state);
+}
+
+static void
+_call_data_free (CallData *call_data)
+{
+    g_object_unref (call_data->context);
+    g_slice_free (CallData, call_data);
+}
 
 gboolean
 ibus_input_context_process_key_event (IBusInputContext *context,
@@ -734,9 +792,9 @@ ibus_input_context_process_key_event (IBusInputContext *context,
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
-    IBusMessage *reply_message;
     IBusPendingCall *pending = NULL;
     IBusError *error = NULL;
+    CallData *call_data;
     gboolean retval;
 
     if (state & IBUS_HANDLED_MASK)
@@ -760,37 +818,27 @@ ibus_input_context_process_key_event (IBusInputContext *context,
         return FALSE;
     }
 
-    /* wait reply or timeout */
-    IBusConnection *connection = ibus_proxy_get_connection ((IBusProxy *) context);
-    while (!ibus_pending_call_get_completed (pending)) {
-        ibus_connection_read_write_dispatch (connection, -1);
-    }
+    call_data = g_slice_new0 (CallData);
+    g_object_ref (context);
+    call_data->context = context;
+    call_data->keyval = keyval;
+    call_data->keycode = keycode;
+    call_data->state = state;
 
-    reply_message = ibus_pending_call_steal_reply (pending);
+    /* set notify callback to handle the reply from daemon */
+    retval = ibus_pending_call_set_notify (pending,
+                                           (IBusPendingCallNotifyFunction)_process_key_event_reply_cb,
+                                           call_data,
+                                           (GDestroyNotify)_call_data_free);
     ibus_pending_call_unref (pending);
 
-    if (reply_message == NULL) {
-        g_debug ("%s: Do not recevie reply of ProcessKeyEvent", DBUS_ERROR_NO_REPLY);
-        retval = FALSE;
+    if (!retval) {
+        _call_data_free (call_data);
+        g_warning ("%s : ProcessKeyEvent", DBUS_ERROR_NO_MEMORY);
+        return FALSE;
     }
-    else if ((error = ibus_error_new_from_message (reply_message)) != NULL) {
-        g_debug ("%s: %s", error->name, error->message);
-        ibus_message_unref (reply_message);
-        ibus_error_free (error);
-        retval = FALSE;
-    }
-    else {
-        if (!ibus_message_get_args (reply_message,
-                                    &error,
-                                    G_TYPE_BOOLEAN, &retval,
-                                    G_TYPE_INVALID)) {
-            g_debug ("%s: %s", error->name, error->message);
-            ibus_error_free (error);
-            retval = FALSE;
-        }
-        ibus_message_unref (reply_message);
-    }
-    return retval;
+
+    return TRUE;
 }
 
 void
