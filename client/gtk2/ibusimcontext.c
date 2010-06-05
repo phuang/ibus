@@ -709,7 +709,7 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
 
     GdkEventKey *event;
 
-    event = (GdkEventKey *)gdk_event_new (state & IBUS_RELEASE_MASK ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
+    event = (GdkEventKey *)gdk_event_new ((state & IBUS_RELEASE_MASK) ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
     event->time = GDK_CURRENT_TIME;
     event->window = g_object_ref (ibusimcontext->client_window);
     event->send_event = FALSE;
@@ -717,7 +717,7 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
     event->keyval = keyval;
     event->string = g_strdup (gdk_keyval_name (keyval));
     event->length = strlen (event->string);
-    event->hardware_keycode = keycode;
+    event->hardware_keycode = (keycode != 0) ? keycode + 8 : 0;
     event->group = 0;
     event->is_modifier = 0;
 
