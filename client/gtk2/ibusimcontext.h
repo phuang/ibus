@@ -29,15 +29,15 @@
 #define IBUS_TYPE_IM_CONTEXT             \
     (ibus_im_context_get_type ())
 #define IBUS_IM_CONTEXT(obj)             \
-    (GTK_CHECK_CAST ((obj), IBUS_TYPE_IM_CONTEXT, IBusIMContext))
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_IM_CONTEXT, IBusIMContext))
 #define IBUS_IM_CONTEXT_CLASS(klass)     \
-    (GTK_CHECK_CLASS_CAST ((klass), IBUS_TYPE_IM_CONTEXT, IBusIMContextClass))
+    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_IM_CONTEXT, IBusIMContextClass))
 #define IBUS_IS_IM_CONTEXT(obj)          \
-    (GTK_CHECK_TYPE ((obj), IBUS_TYPE_IM_CONTEXT))
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_IM_CONTEXT))
 #define IBUS_IS_IM_CONTEXT_CLASS(klass)  \
-    (GTK_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_IM_CONTEXT))
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_IM_CONTEXT))
 #define IBUS_IM_CONTEXT_GET_CLASS(obj)   \
-    (GTK_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CONTEXT, IBusIMContextClass))
+    (G_TYPE_CHECK_GET_CLASS ((obj), IBUS_TYPE_IM_CONTEXT, IBusIMContextClass))
 
 G_BEGIN_DECLS
 typedef struct _IBusIMContext IBusIMContext;
