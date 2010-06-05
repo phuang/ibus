@@ -7,17 +7,18 @@ Build-Depends: debhelper (>= 7),
  autotools-dev,
  autoconf,
  automake,
+ dpatch,
+ gobject-introspection (>= 0.6.9),
+ intltool (>= 0.40.0),
+ iso-codes,
+ libdbus-glib-1-dev,
+ libgconf2-dev,
+ libgtk2.0-dev,
  libtool,
  python-support (>= 0.6),
- libgtk2.0-dev,
- libdbus-glib-1-dev,
  python-dev,
- iso-codes,
  python-gobject-dev,
- libgconf2-dev,
- python-dbus (>= 0.83.0),
- intltool (>= 0.40.0),
- dpatch
+ python-dbus (>= 0.83.0)
 Standards-Version: 3.8.4
 Homepage: http://code.google.com/p/ibus/
 Vcs-Bzr: lp:~lidaobing/ibus/ibus

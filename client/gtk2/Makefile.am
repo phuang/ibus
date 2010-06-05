@@ -27,7 +27,7 @@ INCLUDES = \
 	-I$(top_builddir)/src \
 	$(NULL)
 
-immoduledir = @GTK_IM_MODULEDIR@
+immoduledir = @GTK2_IM_MODULEDIR@
 immodule_LTLIBRARIES = im-ibus.la
 
 im_ibus_la_SOURCES = \

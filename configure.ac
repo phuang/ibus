@@ -88,31 +88,63 @@ PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= 2.18
 ])
 
-AC_ARG_ENABLE(client,
-    AS_HELP_STRING([--disable-client],
-                   [Do not build gtk im module and ibux-x11]),
-    [enable_client=$enableval],
-    [enable_client=yes]
+AC_ARG_ENABLE(gtk2,
+    AS_HELP_STRING([--disable-gtk2],
+                   [Do not build gtk2 im module]),
+    [enable_gtk2=$enableval],
+    [enable_gtk2=yes]
 )
-AM_CONDITIONAL([ENABLE_CLIENT], [test x"$enable_client" = x"yes"])
+AM_CONDITIONAL([ENABLE_GTK2], [test x"$enable_gtk2" = x"yes"])
 
-if test x"$enable_client" != x"no"; then
-    # check for gtk, gdk
+AC_ARG_ENABLE(gtk3,
+    AS_HELP_STRING([--enable-gtk3],
+                   [Build gtk3 im module]),
+    [enable_gtk3=$enableval],
+    [enable_gtk3=no]
+)
+AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"yes"])
+
+AC_ARG_ENABLE(xim,
+    AS_HELP_STRING([--disable-xim],
+                   [Do not build xim server]),
+    [enable_xim=$enableval],
+    [enable_xim=yes]
+)
+AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
+
+if test x"$enable_gtk2" != x"no"; then
+    # check for gtk2, gdk2
     PKG_CHECK_MODULES(GTK2, [
         gtk+-2.0
     ])
 
-    gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-    GTK_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk_binary_version/immodules
+    gtk2_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
+    GTK2_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk2_binary_version/immodules
 
     PKG_CHECK_MODULES(GDK2, [
         gdk-2.0
     ])
+fi
+
+if test x"$enable_gtk3" = x"yes"; then
+    # check for gtk3, gdk3
+    PKG_CHECK_MODULES(GTK3, [
+        gtk+-3.0
+    ])
+
+    gtk3_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-3.0`
+    GTK3_IM_MODULEDIR="$libdir"/gtk-3.0/$gtk3_binary_version/immodules
+
+    PKG_CHECK_MODULES(GDK3, [
+        gdk-3.0
+    ])
+fi
+
+if test x"$enable_xim" != x"no"; then
     # Check for x11
     PKG_CHECK_MODULES(X11, [
         x11
     ])
-
     AC_CHECK_HEADERS([X11/XKBlib.h])
 fi
 
@@ -196,13 +228,21 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 
 AM_GLIB_GNU_GETTEXT
 
-# define configure arguments
-AC_ARG_WITH(gtk-im-module-dir,
-    AS_HELP_STRING([--with-gtk-im-module-dir[=DIR]],
-        [Select gtk immodule dir]),
-    GTK_IM_MODULEDIR=$with_gtk_im_module_dir
+# define gtk2 immodule dir
+AC_ARG_WITH(gtk2-im-module-dir,
+    AS_HELP_STRING([--with-gtk2-im-module-dir[=DIR]],
+        [Select gtk2 immodule dir]),
+    GTK2_IM_MODULEDIR=$with_gtk2_im_module_dir
 )
-AC_SUBST(GTK_IM_MODULEDIR)
+AC_SUBST(GTK2_IM_MODULEDIR)
+
+# define gtk3 immodule dir
+AC_ARG_WITH(gtk3-im-module-dir,
+    AS_HELP_STRING([--with-gtk3-im-module-dir[=DIR]],
+        [Select gtk3 immodule dir]),
+    GTK3_IM_MODULEDIR=$with_gtk3_im_module_dir
+)
+AC_SUBST(GTK3_IM_MODULEDIR)
 
 if test x"$enable_python" != x"no"; then
     # check for dbus-python
@@ -263,6 +303,7 @@ ibus.spec
 xinput-ibus
 client/Makefile
 client/gtk2/Makefile
+client/gtk3/Makefile
 client/x11/Makefile
 src/Makefile
 src/ibusversion.h
@@ -297,8 +338,11 @@ Build options:
   Install prefix            $prefix
   Build shared libs         $enable_shared
   Build static libs         $enable_static
-  Gtk immodule dir          $GTK_IM_MODULEDIR
-  Build gtk, x11 clients    $enable_client
+  Gtk2 immodule dir         $GTK2_IM_MODULEDIR
+  Gtk3 immodule dir         $GTK3_IM_MODULEDIR
+  Build gtk2 immodule       $enable_gtk2
+  Build gtk3 immodule       $enable_gtk3
+  Build XIM agent server    $enable_xim
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
   Build document            $enable_gtk_doc

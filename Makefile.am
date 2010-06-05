@@ -22,20 +22,15 @@
 
 SUBDIRS = \
 	src \
-	util \
 	bus \
+	util \
+	client \
 	data \
 	m4 \
 	po \
 	docs \
 	ui \
 	$(NULL)
-
-if ENABLE_CLIENT
-SUBDIRS += \
-	client \
-	$(NULL)
-endif
 
 if ENABLE_PYTHON
 SUBDIRS += \

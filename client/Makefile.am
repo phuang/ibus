@@ -20,7 +20,20 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+if ENABLE_GTK2
+GTK2 = gtk2
+endif
+
+if ENABLE_GTK3
+GTK3 = gtk3
+endif
+
+if ENABLE_XIM
+X11 = x11
+endif
+
 SUBDIRS = \
-	gtk2 \
-	x11 \
+	$(GTK2) \
+	$(GTK3) \
+	$(X11) \
 	$(NULL)

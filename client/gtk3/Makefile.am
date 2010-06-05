@@ -20,8 +20,45 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_XIM
-SUBDIRS = \
-	IMdkit \
+libibus = $(top_builddir)/src/libibus.la
+
+INCLUDES = \
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
-endif
+
+immoduledir = @GTK3_IM_MODULEDIR@
+immodule_LTLIBRARIES = im-ibus.la
+
+im_ibus_la_SOURCES = \
+	ibusim.c \
+	ibusimcontext.c \
+	ibusimcontext.h \
+	$(NULL)
+
+im_ibus_la_DEPENDENCIES = $(libibus)
+
+im_ibus_la_CFLAGS = \
+	@GTK3_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	$(NULL)
+
+im_ibus_la_LIBADD = \
+	@GTK3_LIBS@ \
+	@DBUS_LIBS@ \
+	$(libibus) \
+	$(NULL)
+im_ibus_la_LDFLAGS = \
+	-avoid-version \
+	-module \
+	$(NULL)
+
+$(libibus):
+	(cd $(top_builddir)/src; make )
+
+EXTRA_DIST = \
+	$(NULL)
+
+test: all
+	GTK_IM_MODULE=ibus gedit
