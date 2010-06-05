@@ -193,16 +193,16 @@ fi
 %postun libs -p /sbin/ldconfig
 
 %post gtk2
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{_host}
 
 %postun gtk2
-%{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/update-gtk-immodules %{_host}
 
 %post gtk3
-# %{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/gtk-query-immodules-3.0-%{__isa_bits} --update-cache
 
 %postun gtk3
-# %{_bindir}/update-gtk-immodules %{_host} || :
+%{_bindir}/gtk-query-immodules-3.0-%{__isa_bits} --update-cache
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
