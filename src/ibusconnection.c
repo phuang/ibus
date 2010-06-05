@@ -738,7 +738,7 @@ ibus_connection_call_with_reply_valist (IBusConnection     *connection,
     g_assert (path != NULL);
     g_assert (interface != NULL);
     g_assert (member != NULL);
-    g_return_val_if_fail (ibus_connection_is_connected (connection), FALSE);
+    g_assert (ibus_connection_is_connected (connection));
 
     IBusConnectionPrivate *priv;
     priv = IBUS_CONNECTION_GET_PRIVATE (connection);

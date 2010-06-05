@@ -56,7 +56,13 @@ typedef struct _IBusBusPrivate IBusBusPrivate;
 
 static guint    bus_signals[LAST_SIGNAL] = { 0 };
 
+static IBusBus *_bus = NULL;
+
 /* functions prototype */
+static GObject* ibus_bus_constructor    (GType          type,
+                                         guint          n_params,
+                                         GObjectConstructParam
+                                                        *params);
 static void     ibus_bus_destroy        (IBusObject     *object);
 static void     ibus_bus_watch_dbus_signal
                                         (IBusBus        *bus);
@@ -76,10 +82,12 @@ ibus_bus_new (void)
 static void
 ibus_bus_class_init (IBusBusClass *klass)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
 
     g_type_class_add_private (klass, sizeof (IBusBusPrivate));
 
+    gobject_class->constructor = ibus_bus_constructor;
     ibus_object_class->destroy = ibus_bus_destroy;
 
     // install signals
@@ -287,6 +295,27 @@ ibus_bus_init (IBusBus *bus)
     g_free (path);
 }
 
+static GObject*
+ibus_bus_constructor (GType                  type,
+                      guint                  n_params,
+                      GObjectConstructParam *params)
+{
+    GObject *object;
+
+    /* share one IBusBus instance in whole application */
+    if (_bus == NULL) {
+        object = G_OBJECT_CLASS (ibus_bus_parent_class)->constructor (type, n_params, params);
+        /* make bus object sink */
+        g_object_ref_sink (object);
+        _bus = IBUS_BUS (object);
+    }
+    else {
+        object = g_object_ref (_bus);
+    }
+
+    return object;
+}
+
 static void
 ibus_bus_destroy (IBusObject *object)
 {
@@ -295,6 +324,9 @@ ibus_bus_destroy (IBusObject *object)
 
     bus = IBUS_BUS (object);
     priv = IBUS_BUS_GET_PRIVATE (bus);
+
+    g_assert (_bus == (IBusBus *)object);
+    _bus = NULL;
 
     if (priv->monitor) {
         g_object_unref (priv->monitor);
