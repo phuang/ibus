@@ -30,6 +30,7 @@ SUBDIRS = \
 	po \
 	docs \
 	ui \
+	bindings \
 	$(NULL)
 
 if ENABLE_PYTHON

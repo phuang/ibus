@@ -225,7 +225,7 @@ fi
 %files libs
 %defattr(-,root,root,-)
 %{_libdir}/libibus.so.*
-%{_libdir}/girepository-1.0/IBus-*.typelib
+%{_libdir}/girepository-1.0/IBus-1.0.typelib
 
 %files gtk2
 %defattr(-,root,root,-)
@@ -240,7 +240,8 @@ fi
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/*
 %{_includedir}/*
-%{_datadir}/gir-1.0/IBus-*.gir
+%{_datadir}/gir-1.0/IBus-1.0.gir
+%{_datadir}/vala/vapi/ibus-1.0.vapi
 
 %files devel-docs
 %defattr(-,root,root,-)
