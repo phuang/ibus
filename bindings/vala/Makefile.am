@@ -26,4 +26,4 @@ dist_vapi_DATA = \
 	$(NULL)
 
 ibus-1.0.vapi:
-	vapigen --library ibus-1.0 ibus-1.0/ibus-1.0.gi
+	vapigen --library ibus-1.0 ibus-1.0/ibus-1.0.gi ibus-1.0/ibus-1.0-custom.vala
