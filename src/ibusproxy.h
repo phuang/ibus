@@ -276,7 +276,7 @@ const gchar     *ibus_proxy_get_interface   (IBusProxy          *proxy);
 /**
  * ibus_proxy_get_connection:
  * @proxy: An IBusProxy.
- * @returns: The connection of the proxy object.
+ * @returns: (transfer none): The connection of the proxy object.
  *
  * Get the connection of a proxy object.
  */

@@ -136,7 +136,7 @@ guint               ibus_lookup_table_get_number_of_candidates
  * ibus_lookup_table_get_candidate:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.
- * @returns: IBusText at the given index; NULL if no such IBusText.
+ * @returns: (transfer none): IBusText at the given index; NULL if no such IBusText.
  *
  * Return IBusText at the given index. Borrowed reference.
  */
@@ -176,7 +176,7 @@ void                 ibus_lookup_table_set_label
  * ibus_lookup_table_get_label:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.
- * @returns: IBusText at the given index; NULL if no such IBusText.
+ * @returns: (transfer none): IBusText at the given index; NULL if no such IBusText.
  *
  * Return IBusText at the given index. Borrowed reference.
  */

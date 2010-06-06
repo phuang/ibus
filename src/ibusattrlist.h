@@ -100,7 +100,7 @@ void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
  * ibus_attr_list_get:
  * @attr_list: An IBusAttrList instance.
  * @index: Index of the @attr_list.
- * @returns: IBusAttribute at given index, NULL if no such IBusAttribute.
+ * @returns: (transfer none): IBusAttribute at given index, NULL if no such IBusAttribute.
  *
  * Returns IBusAttribute at given index. Borrowed reference.
  */

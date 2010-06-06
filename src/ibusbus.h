@@ -146,7 +146,7 @@ gboolean     ibus_bus_name_has_owner    (IBusBus        *bus,
 /**
  * ibus_bus_list_names:
  * @bus: An IBusBus.
- * @returns: (element-type utf8): Lists that attached to @bus.
+ * @returns: (transfer full) (element-type utf8): Lists that attached to @bus.
  *
  * Return lists that attached to @bus.
  * <note><para>[FixMe] Not implemented yet, only return NULL.</para></note>
@@ -237,7 +237,7 @@ gboolean     ibus_bus_register_component(IBusBus        *bus,
 /**
  * ibus_bus_list_engines:
  * @bus: An IBusBus.
- * @returns: (element-type IBusEngineDesc): A List of engines.
+ * @returns: (transfer full) (element-type IBusEngineDesc): A List of engines.
  *
  * List engines.
  * Note that this function is not yet implemented.
@@ -247,7 +247,7 @@ GList       *ibus_bus_list_engines      (IBusBus        *bus);
 /**
  * ibus_bus_list_active_engines:
  * @bus: An IBusBus.
- * @returns: (element-type IBusEngineDesc): A List of active engines.
+ * @returns: (transfer full) (element-type IBusEngineDesc): A List of active engines.
  *
  * List active engines.
  * Note that this function is not yet implemented.

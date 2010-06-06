@@ -99,7 +99,7 @@ void             ibus_prop_list_append      (IBusPropList   *prop_list,
  * ibus_prop_list_get:
  * @prop_list: An IBusPropList.
  * @index: Index of an IBusPropList.
- * @returns: IBusProperty at given index, NULL if no such IBusProperty.
+ * @returns: (transfer none): IBusProperty at given index, NULL if no such IBusProperty.
  *
  * Returns IBusProperty at given index. Borrowed reference.
  */
