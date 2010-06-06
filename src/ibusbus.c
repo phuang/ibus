@@ -789,7 +789,7 @@ ibus_bus_get_name_owner (IBusBus        *bus,
                                       DBUS_PATH_DBUS,
                                       DBUS_INTERFACE_DBUS,
                                       "GetNameOwner",
-                                      G_TYPE_STRING, &owner,
+                                      G_TYPE_STRING, &name,
                                       G_TYPE_INVALID);
 
     if (reply) {
