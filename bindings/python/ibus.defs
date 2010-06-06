@@ -1,5 +1,0 @@
-(include "ibus-types.defs")
-(include "ibus-func.defs")
-(include "ibus-virtual-methods.defs")
-(include "ibus-codegen.defs")
-
