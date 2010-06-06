@@ -25,6 +25,89 @@
 				<parameter name="end_index" type="guint"/>
 			</parameters>
 		</function>
+		<function name="dbus_connection_setup" symbol="ibus_dbus_connection_setup">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="connection" type="DBusConnection*"/>
+			</parameters>
+		</function>
+		<function name="dbus_server_setup" symbol="ibus_dbus_server_setup">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="server" type="DBusServer*"/>
+			</parameters>
+		</function>
+		<function name="free_strv" symbol="ibus_free_strv">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="strv" type="gchar**"/>
+			</parameters>
+		</function>
+		<function name="get_address" symbol="ibus_get_address">
+			<return-type type="gchar*"/>
+		</function>
+		<function name="get_daemon_uid" symbol="ibus_get_daemon_uid">
+			<return-type type="glong"/>
+		</function>
+		<function name="get_local_machine_id" symbol="ibus_get_local_machine_id">
+			<return-type type="gchar*"/>
+		</function>
+		<function name="get_socket_path" symbol="ibus_get_socket_path">
+			<return-type type="gchar*"/>
+		</function>
+		<function name="get_user_name" symbol="ibus_get_user_name">
+			<return-type type="gchar*"/>
+		</function>
+		<function name="init" symbol="ibus_init">
+			<return-type type="void"/>
+		</function>
+		<function name="key_event_from_string" symbol="ibus_key_event_from_string">
+			<return-type type="gboolean"/>
+			<parameters>
+				<parameter name="string" type="gchar*"/>
+				<parameter name="keyval" type="guint*"/>
+				<parameter name="modifiers" type="guint*"/>
+			</parameters>
+		</function>
+		<function name="key_event_to_string" symbol="ibus_key_event_to_string">
+			<return-type type="gchar*"/>
+			<parameters>
+				<parameter name="keyval" type="guint"/>
+				<parameter name="modifiers" type="guint"/>
+			</parameters>
+		</function>
+		<function name="keyval_from_name" symbol="ibus_keyval_from_name">
+			<return-type type="guint"/>
+			<parameters>
+				<parameter name="keyval_name" type="gchar*"/>
+			</parameters>
+		</function>
+		<function name="keyval_name" symbol="ibus_keyval_name">
+			<return-type type="gchar*"/>
+			<parameters>
+				<parameter name="keyval" type="guint"/>
+			</parameters>
+		</function>
+		<function name="main" symbol="ibus_main">
+			<return-type type="void"/>
+		</function>
+		<function name="mainloop_setup" symbol="ibus_mainloop_setup">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="connection_func" type="DBusConnectionSetupFunc"/>
+				<parameter name="server_func" type="DBusServerSetupFunc"/>
+				<parameter name="user_data" type="gpointer"/>
+			</parameters>
+		</function>
+		<function name="quit" symbol="ibus_quit">
+			<return-type type="void"/>
+		</function>
+		<function name="set_display" symbol="ibus_set_display">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="display" type="gchar*"/>
+			</parameters>
+		</function>
 		<function name="type_get_array" symbol="ibus_type_get_array">
 			<return-type type="GType"/>
 		</function>
@@ -39,6 +122,12 @@
 		</function>
 		<function name="type_get_variant" symbol="ibus_type_get_variant">
 			<return-type type="GType"/>
+		</function>
+		<function name="write_address" symbol="ibus_write_address">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="address" type="gchar*"/>
+			</parameters>
 		</function>
 		<function name="xml_free" symbol="ibus_xml_free">
 			<return-type type="void"/>
@@ -65,6 +154,20 @@
 				<parameter name="name" type="gchar*"/>
 			</parameters>
 		</function>
+		<callback name="DBusConnectionSetupFunc">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="connection" type="DBusConnection*"/>
+				<parameter name="user_data" type="gpointer"/>
+			</parameters>
+		</callback>
+		<callback name="DBusServerSetupFunc">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="server" type="DBusServer*"/>
+				<parameter name="user_data" type="gpointer"/>
+			</parameters>
+		</callback>
 		<callback name="IBusConnectionReplyFunc">
 			<return-type type="void"/>
 			<parameters>
@@ -99,6 +202,13 @@
 				<parameter name="connection" type="IBusConnection*"/>
 				<parameter name="message" type="IBusMessage*"/>
 				<parameter name="user_data" type="gpointer"/>
+			</parameters>
+		</callback>
+		<callback name="IBusNewConnectionFunc">
+			<return-type type="void"/>
+			<parameters>
+				<parameter name="server" type="IBusServer*"/>
+				<parameter name="connection" type="IBusConnection*"/>
 			</parameters>
 		</callback>
 		<callback name="IBusObjectDestroyFunc">
@@ -154,13 +264,6 @@
 		<struct name="BusComponent">
 		</struct>
 		<struct name="DBusConnection">
-			<method name="setup" symbol="dbus_connection_setup">
-				<return-type type="void"/>
-				<parameters>
-					<parameter name="connection" type="DBusConnection*"/>
-					<parameter name="context" type="GMainContext*"/>
-				</parameters>
-			</method>
 		</struct>
 		<struct name="DBusError">
 		</struct>
@@ -171,13 +274,6 @@
 		<struct name="DBusPendingCall">
 		</struct>
 		<struct name="DBusServer">
-			<method name="setup" symbol="dbus_server_setup">
-				<return-type type="void"/>
-				<parameters>
-					<parameter name="server" type="DBusServer*"/>
-					<parameter name="context" type="GMainContext*"/>
-				</parameters>
-			</method>
 		</struct>
 		<struct name="IBusError">
 			<method name="free" symbol="ibus_error_free">
@@ -633,10 +729,6 @@
 			<field name="attributes" type="gchar**"/>
 			<field name="sub_nodes" type="GList*"/>
 		</struct>
-		<struct name="gdk_key">
-			<field name="keyval" type="guint"/>
-			<field name="offset" type="guint"/>
-		</struct>
 		<enum name="IBusAttrType">
 			<member name="IBUS_ATTR_TYPE_UNDERLINE" value="1"/>
 			<member name="IBUS_ATTR_TYPE_FOREGROUND" value="2"/>
@@ -1059,6 +1151,53 @@
 				</parameters>
 			</signal>
 		</object>
+		<object name="IBusConfigService" parent="IBusService" type-name="IBusConfigService" get-type="ibus_config_service_get_type">
+			<constructor name="new" symbol="ibus_config_service_new">
+				<return-type type="IBusConfigService*"/>
+				<parameters>
+					<parameter name="connection" type="IBusConnection*"/>
+				</parameters>
+			</constructor>
+			<method name="value_changed" symbol="ibus_config_service_value_changed">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="config" type="IBusConfigService*"/>
+					<parameter name="section" type="gchar*"/>
+					<parameter name="name" type="gchar*"/>
+					<parameter name="value" type="GValue*"/>
+				</parameters>
+			</method>
+			<property name="connection" type="IBusConnection*" readable="1" writable="1" construct="0" construct-only="1"/>
+			<vfunc name="get_value">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="config" type="IBusConfigService*"/>
+					<parameter name="section" type="gchar*"/>
+					<parameter name="name" type="gchar*"/>
+					<parameter name="value" type="GValue*"/>
+					<parameter name="error" type="IBusError**"/>
+				</parameters>
+			</vfunc>
+			<vfunc name="set_value">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="config" type="IBusConfigService*"/>
+					<parameter name="section" type="gchar*"/>
+					<parameter name="name" type="gchar*"/>
+					<parameter name="value" type="GValue*"/>
+					<parameter name="error" type="IBusError**"/>
+				</parameters>
+			</vfunc>
+			<vfunc name="unset">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="config" type="IBusConfigService*"/>
+					<parameter name="section" type="gchar*"/>
+					<parameter name="name" type="gchar*"/>
+					<parameter name="error" type="IBusError**"/>
+				</parameters>
+			</vfunc>
+		</object>
 		<object name="IBusConnection" parent="IBusObject" type-name="IBusConnection" get-type="ibus_connection_get_type">
 			<method name="call" symbol="ibus_connection_call">
 				<return-type type="gboolean"/>
@@ -1258,6 +1397,256 @@
 					<parameter name="message" type="gpointer"/>
 				</parameters>
 			</signal>
+		</object>
+		<object name="IBusEngine" parent="IBusService" type-name="IBusEngine" get-type="ibus_engine_get_type">
+			<method name="commit_text" symbol="ibus_engine_commit_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="text" type="IBusText*"/>
+				</parameters>
+			</method>
+			<method name="delete_surrounding_text" symbol="ibus_engine_delete_surrounding_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="offset" type="gint"/>
+					<parameter name="nchars" type="guint"/>
+				</parameters>
+			</method>
+			<method name="forward_key_event" symbol="ibus_engine_forward_key_event">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="keyval" type="guint"/>
+					<parameter name="keycode" type="guint"/>
+					<parameter name="state" type="guint"/>
+				</parameters>
+			</method>
+			<method name="get_name" symbol="ibus_engine_get_name">
+				<return-type type="gchar*"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="hide_auxiliary_text" symbol="ibus_engine_hide_auxiliary_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="hide_lookup_table" symbol="ibus_engine_hide_lookup_table">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="hide_preedit_text" symbol="ibus_engine_hide_preedit_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<constructor name="new" symbol="ibus_engine_new">
+				<return-type type="IBusEngine*"/>
+				<parameters>
+					<parameter name="name" type="gchar*"/>
+					<parameter name="path" type="gchar*"/>
+					<parameter name="connection" type="IBusConnection*"/>
+				</parameters>
+			</constructor>
+			<method name="register_properties" symbol="ibus_engine_register_properties">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="prop_list" type="IBusPropList*"/>
+				</parameters>
+			</method>
+			<method name="show_auxiliary_text" symbol="ibus_engine_show_auxiliary_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="show_lookup_table" symbol="ibus_engine_show_lookup_table">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="show_preedit_text" symbol="ibus_engine_show_preedit_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</method>
+			<method name="update_auxiliary_text" symbol="ibus_engine_update_auxiliary_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="text" type="IBusText*"/>
+					<parameter name="visible" type="gboolean"/>
+				</parameters>
+			</method>
+			<method name="update_lookup_table" symbol="ibus_engine_update_lookup_table">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="lookup_table" type="IBusLookupTable*"/>
+					<parameter name="visible" type="gboolean"/>
+				</parameters>
+			</method>
+			<method name="update_lookup_table_fast" symbol="ibus_engine_update_lookup_table_fast">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="lookup_table" type="IBusLookupTable*"/>
+					<parameter name="visible" type="gboolean"/>
+				</parameters>
+			</method>
+			<method name="update_preedit_text" symbol="ibus_engine_update_preedit_text">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="text" type="IBusText*"/>
+					<parameter name="cursor_pos" type="guint"/>
+					<parameter name="visible" type="gboolean"/>
+				</parameters>
+			</method>
+			<method name="update_preedit_text_with_mode" symbol="ibus_engine_update_preedit_text_with_mode">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="text" type="IBusText*"/>
+					<parameter name="cursor_pos" type="guint"/>
+					<parameter name="visible" type="gboolean"/>
+					<parameter name="mode" type="IBusPreeditFocusMode"/>
+				</parameters>
+			</method>
+			<method name="update_property" symbol="ibus_engine_update_property">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="prop" type="IBusProperty*"/>
+				</parameters>
+			</method>
+			<property name="connection" type="IBusConnection*" readable="1" writable="1" construct="0" construct-only="1"/>
+			<property name="name" type="char*" readable="1" writable="1" construct="0" construct-only="1"/>
+			<signal name="candidate-clicked" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="index" type="guint"/>
+					<parameter name="button" type="guint"/>
+					<parameter name="state" type="guint"/>
+				</parameters>
+			</signal>
+			<signal name="cursor-down" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="cursor-up" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="disable" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="enable" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="focus-in" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="focus-out" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="page-down" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="page-up" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="process-key-event" when="LAST">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="keyval" type="guint"/>
+					<parameter name="keycode" type="guint"/>
+					<parameter name="state" type="guint"/>
+				</parameters>
+			</signal>
+			<signal name="property-activate" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="prop_name" type="char*"/>
+					<parameter name="prop_state" type="guint"/>
+				</parameters>
+			</signal>
+			<signal name="property-hide" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="prop_name" type="char*"/>
+				</parameters>
+			</signal>
+			<signal name="property-show" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="prop_name" type="char*"/>
+				</parameters>
+			</signal>
+			<signal name="reset" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+				</parameters>
+			</signal>
+			<signal name="set-capabilities" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="caps" type="guint"/>
+				</parameters>
+			</signal>
+			<signal name="set-cursor-location" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="engine" type="IBusEngine*"/>
+					<parameter name="x" type="gint"/>
+					<parameter name="y" type="gint"/>
+					<parameter name="w" type="gint"/>
+					<parameter name="h" type="gint"/>
+				</parameters>
+			</signal>
+			<field name="enabled" type="gboolean"/>
+			<field name="has_focus" type="gboolean"/>
+			<field name="cursor_area" type="IBusRectangle"/>
+			<field name="client_capabilities" type="guint"/>
 		</object>
 		<object name="IBusEngineDesc" parent="IBusSerializable" type-name="IBusEngineDesc" get-type="ibus_engine_desc_get_type">
 			<constructor name="new" symbol="ibus_engine_desc_new">
@@ -1603,6 +1992,30 @@
 					<parameter name="p0" type="IBusProperty*"/>
 				</parameters>
 			</signal>
+		</object>
+		<object name="IBusKeymap" parent="IBusObject" type-name="IBusKeymap" get-type="ibus_keymap_get_type">
+			<method name="get" symbol="ibus_keymap_get">
+				<return-type type="IBusKeymap*"/>
+				<parameters>
+					<parameter name="name" type="gchar*"/>
+				</parameters>
+			</method>
+			<method name="lookup_keysym" symbol="ibus_keymap_lookup_keysym">
+				<return-type type="guint"/>
+				<parameters>
+					<parameter name="keymap" type="IBusKeymap*"/>
+					<parameter name="keycode" type="guint16"/>
+					<parameter name="state" type="guint32"/>
+				</parameters>
+			</method>
+			<constructor name="new" symbol="ibus_keymap_new">
+				<return-type type="IBusKeymap*"/>
+				<parameters>
+					<parameter name="name" type="gchar*"/>
+				</parameters>
+			</constructor>
+			<field name="name" type="gchar*"/>
+			<field name="keymap" type="guint[][]"/>
 		</object>
 		<object name="IBusLookupTable" parent="IBusSerializable" type-name="IBusLookupTable" get-type="ibus_lookup_table_get_type">
 			<method name="append_candidate" symbol="ibus_lookup_table_append_candidate">
@@ -2355,6 +2768,57 @@
 				</parameters>
 			</vfunc>
 			<field name="flags" type="guint32"/>
+		</object>
+		<object name="IBusServer" parent="IBusObject" type-name="IBusServer" get-type="ibus_server_get_type">
+			<method name="disconnect" symbol="ibus_server_disconnect">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+				</parameters>
+			</method>
+			<method name="get_address" symbol="ibus_server_get_address">
+				<return-type type="gchar*"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+				</parameters>
+			</method>
+			<method name="get_id" symbol="ibus_server_get_id">
+				<return-type type="gchar*"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+				</parameters>
+			</method>
+			<method name="is_connected" symbol="ibus_server_is_connected">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+				</parameters>
+			</method>
+			<method name="listen" symbol="ibus_server_listen">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+					<parameter name="address" type="gchar*"/>
+				</parameters>
+			</method>
+			<constructor name="new" symbol="ibus_server_new">
+				<return-type type="IBusServer*"/>
+			</constructor>
+			<method name="set_auth_mechanisms" symbol="ibus_server_set_auth_mechanisms">
+				<return-type type="gboolean"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+					<parameter name="mechanisms" type="gchar**"/>
+				</parameters>
+			</method>
+			<property name="connection-type" type="GType" readable="1" writable="1" construct="0" construct-only="0"/>
+			<signal name="new-connection" when="LAST">
+				<return-type type="void"/>
+				<parameters>
+					<parameter name="server" type="IBusServer*"/>
+					<parameter name="connectin" type="GObject*"/>
+				</parameters>
+			</signal>
 		</object>
 		<object name="IBusService" parent="IBusObject" type-name="IBusService" get-type="ibus_service_get_type">
 			<method name="add_to_connection" symbol="ibus_service_add_to_connection">

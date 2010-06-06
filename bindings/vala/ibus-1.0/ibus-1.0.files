@@ -1,2 +1,2 @@
-../../src
-../../src/libibus.la
+include/ibus-1.0/
+lib/libibus.so

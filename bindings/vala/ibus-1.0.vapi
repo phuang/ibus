@@ -95,6 +95,20 @@ namespace IBus {
 		public virtual signal void value_changed (string p0, string p1, GLib.Value p2);
 	}
 	[CCode (cheader_filename = "ibus.h")]
+	public class ConfigService : IBus.Service {
+		[CCode (has_construct_function = false)]
+		public ConfigService (IBus.Connection connection);
+		[NoWrapper]
+		public virtual bool get_value (string section, string name, GLib.Value value, out unowned IBus.Error error);
+		[NoWrapper]
+		public virtual bool set_value (string section, string name, GLib.Value value, out unowned IBus.Error error);
+		[NoWrapper]
+		public virtual bool unset (string section, string name, out unowned IBus.Error error);
+		public void value_changed (string section, string name, GLib.Value value);
+		[NoAccessorMethod]
+		public IBus.Connection connection { owned get; construct; }
+	}
+	[CCode (cheader_filename = "ibus.h")]
 	public class Connection : IBus.Object {
 		[CCode (has_construct_function = false)]
 		public Connection ();
@@ -127,8 +141,6 @@ namespace IBus {
 	[Compact]
 	[CCode (cheader_filename = "ibus.h")]
 	public class DBusConnection {
-		[CCode (cname = "dbus_connection_setup")]
-		public static void setup (IBus.DBusConnection connection, GLib.MainContext context);
 	}
 	[Compact]
 	[CCode (cheader_filename = "ibus.h")]
@@ -149,8 +161,51 @@ namespace IBus {
 	[Compact]
 	[CCode (cheader_filename = "ibus.h")]
 	public class DBusServer {
-		[CCode (cname = "dbus_server_setup")]
-		public static void setup (IBus.DBusServer server, GLib.MainContext context);
+	}
+	[CCode (cheader_filename = "ibus.h")]
+	public class Engine : IBus.Service {
+		public uint client_capabilities;
+		public weak IBus.Rectangle cursor_area;
+		public bool enabled;
+		public bool has_focus;
+		[CCode (has_construct_function = false)]
+		public Engine (string name, string path, IBus.Connection connection);
+		public void commit_text (IBus.Text text);
+		public void delete_surrounding_text (int offset, uint nchars);
+		public void forward_key_event (uint keyval, uint keycode, uint state);
+		public unowned string get_name ();
+		public void hide_auxiliary_text ();
+		public void hide_lookup_table ();
+		public void hide_preedit_text ();
+		public void register_properties (IBus.PropList prop_list);
+		public void show_auxiliary_text ();
+		public void show_lookup_table ();
+		public void show_preedit_text ();
+		public void update_auxiliary_text (IBus.Text text, bool visible);
+		public void update_lookup_table (IBus.LookupTable lookup_table, bool visible);
+		public void update_lookup_table_fast (IBus.LookupTable lookup_table, bool visible);
+		public void update_preedit_text (IBus.Text text, uint cursor_pos, bool visible);
+		public void update_preedit_text_with_mode (IBus.Text text, uint cursor_pos, bool visible, IBus.PreeditFocusMode mode);
+		public void update_property (IBus.Property prop);
+		[NoAccessorMethod]
+		public IBus.Connection connection { owned get; construct; }
+		public string name { get; construct; }
+		public virtual signal void candidate_clicked (uint index, uint button, uint state);
+		public virtual signal void cursor_down ();
+		public virtual signal void cursor_up ();
+		public virtual signal void disable ();
+		public virtual signal void enable ();
+		public virtual signal void focus_in ();
+		public virtual signal void focus_out ();
+		public virtual signal void page_down ();
+		public virtual signal void page_up ();
+		public virtual signal bool process_key_event (uint keyval, uint keycode, uint state);
+		public virtual signal void property_activate (string prop_name, uint prop_state);
+		public virtual signal void property_hide (string prop_name);
+		public virtual signal void property_show (string prop_name);
+		public virtual signal void reset ();
+		public virtual signal void set_capabilities (uint caps);
+		public virtual signal void set_cursor_location (int x, int y, int w, int h);
 	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class EngineDesc : IBus.Serializable {
@@ -237,6 +292,16 @@ namespace IBus {
 		public virtual signal void update_lookup_table (IBus.LookupTable p0, bool p1);
 		public virtual signal void update_preedit_text (IBus.Text p0, uint p1, bool p2);
 		public virtual signal void update_property (IBus.Property p0);
+	}
+	[CCode (cheader_filename = "ibus.h")]
+	public class Keymap : IBus.Object {
+		[CCode (array_length = false)]
+		public weak uint[] keymap;
+		public weak string name;
+		[CCode (has_construct_function = false)]
+		public Keymap (string name);
+		public static unowned IBus.Keymap @get (string name);
+		public uint lookup_keysym (uint16 keycode, uint32 state);
 	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class LookupTable : IBus.Serializable {
@@ -504,6 +569,20 @@ namespace IBus {
 		public bool set_qattachment (GLib.Quark key, GLib.Value value);
 	}
 	[CCode (cheader_filename = "ibus.h")]
+	public class Server : IBus.Object {
+		[CCode (has_construct_function = false)]
+		public Server ();
+		public void disconnect ();
+		public unowned string get_address ();
+		public unowned string get_id ();
+		public bool is_connected ();
+		public bool listen (string address);
+		public bool set_auth_mechanisms (string mechanisms);
+		[NoAccessorMethod]
+		public GLib.Type connection_type { get; set; }
+		public virtual signal void new_connection (GLib.Object connectin);
+	}
+	[CCode (cheader_filename = "ibus.h")]
 	public class Service : IBus.Object {
 		[CCode (has_construct_function = false)]
 		public Service (string path);
@@ -543,12 +622,6 @@ namespace IBus {
 		public weak string name;
 		public weak GLib.List sub_nodes;
 		public weak string text;
-	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class gdk_key {
-		public uint keyval;
-		public uint offset;
 	}
 	[CCode (cprefix = "IBUS_ATTR_TYPE_", has_type_id = false, cheader_filename = "ibus.h")]
 	public enum AttrType {
@@ -631,6 +704,10 @@ namespace IBus {
 	}
 	[CCode (cheader_filename = "ibus.h")]
 	public delegate void ConnectionReplyFunc (IBus.Connection connection, IBus.Message reply);
+	[CCode (cheader_filename = "ibus.h")]
+	public delegate void DBusConnectionSetupFunc (IBus.DBusConnection connection);
+	[CCode (cheader_filename = "ibus.h")]
+	public delegate void DBusServerSetupFunc (IBus.DBusServer server);
 	[CCode (cheader_filename = "ibus.h", has_target = false)]
 	public delegate void FreeFunc (void* object);
 	[CCode (cheader_filename = "ibus.h", has_target = false)]
@@ -639,6 +716,8 @@ namespace IBus {
 	public delegate bool IBusSignalFunc (IBus.Connection connection, IBus.Message message);
 	[CCode (cheader_filename = "ibus.h")]
 	public delegate bool MessageFunc (IBus.Connection connection, IBus.Message message);
+	[CCode (cheader_filename = "ibus.h", has_target = false)]
+	public delegate void NewConnectionFunc (IBus.Server server, IBus.Connection connection);
 	[CCode (cheader_filename = "ibus.h", has_target = false)]
 	public delegate void ObjectDestroyFunc (IBus.Object p1);
 	[CCode (cheader_filename = "ibus.h")]
@@ -4678,6 +4757,40 @@ namespace IBus {
 	[CCode (cheader_filename = "ibus.h")]
 	public static unowned IBus.Attribute attr_underline_new (uint underline_type, uint start_index, uint end_index);
 	[CCode (cheader_filename = "ibus.h")]
+	public static void dbus_connection_setup (IBus.DBusConnection connection);
+	[CCode (cheader_filename = "ibus.h")]
+	public static void dbus_server_setup (IBus.DBusServer server);
+	[CCode (cheader_filename = "ibus.h")]
+	public static void free_strv (string strv);
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string get_address ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static long get_daemon_uid ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string get_local_machine_id ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string get_socket_path ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string get_user_name ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static void init ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static bool key_event_from_string (string str, uint keyval, uint modifiers);
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string key_event_to_string (uint keyval, uint modifiers);
+	[CCode (cheader_filename = "ibus.h")]
+	public static uint keyval_from_name (string keyval_name);
+	[CCode (cheader_filename = "ibus.h")]
+	public static unowned string keyval_name (uint keyval);
+	[CCode (cheader_filename = "ibus.h")]
+	public static void main ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static void mainloop_setup (IBus.DBusConnectionSetupFunc connection_func, IBus.DBusServerSetupFunc server_func);
+	[CCode (cheader_filename = "ibus.h")]
+	public static void quit ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static void set_display (string display);
+	[CCode (cheader_filename = "ibus.h")]
 	public static GLib.Type type_get_array ();
 	[CCode (cheader_filename = "ibus.h")]
 	public static GLib.Type type_get_dict_entry ();
@@ -4687,6 +4800,8 @@ namespace IBus {
 	public static GLib.Type type_get_struct ();
 	[CCode (cheader_filename = "ibus.h")]
 	public static GLib.Type type_get_variant ();
+	[CCode (cheader_filename = "ibus.h")]
+	public static void write_address (string address);
 	[CCode (cheader_filename = "ibus.h")]
 	public static void xml_free (IBus.XMLNode node);
 	[CCode (cheader_filename = "ibus.h")]
