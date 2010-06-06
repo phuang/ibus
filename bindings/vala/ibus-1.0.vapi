@@ -30,7 +30,7 @@ namespace IBus {
 		public unowned IBus.Config get_config ();
 		public unowned IBus.Connection get_connection ();
 		public unowned IBus.EngineDesc get_global_engine ();
-		public unowned string get_name_owner (string name);
+		public string get_name_owner (string name);
 		public bool get_use_global_engine ();
 		public bool get_use_sys_layout ();
 		public unowned string hello ();
