@@ -508,7 +508,7 @@ namespace IBus {
 		[CCode (has_construct_function = false)]
 		public Service (string path);
 		public bool add_to_connection (IBus.Connection connection);
-		public unowned GLib.List get_connections ();
+		public GLib.List<weak IBus.Connection> get_connections ();
 		public unowned string get_path ();
 		public bool handle_message (IBus.Connection connection, IBus.Message message);
 		public bool remove_from_all_connections ();
