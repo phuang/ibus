@@ -20,8 +20,10 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-VALA = vala
-
-SUBDIRS = \
-	$(VALA) \
+vapidir = $(datadir)/vala/vapi
+dist_vapi_DATA = \
+	ibus-1.0.vapi \
 	$(NULL)
+
+ibus-1.0.vapi:
+	vapigen --library ibus-1.0 ibus-1.0/ibus-1.0.gi

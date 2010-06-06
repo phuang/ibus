@@ -1,0 +1,5 @@
+IBus cheader_filename="ibus.h" gir_namespace="IBus" gir_version="2.0"
+IBusObject::destroy has_emitter="1"
+ibus_bus_list_engines transfer_ownership="1" type_arguments="EngineDesc"
+ibus_bus_list_active_engines transfer_ownership="1" type_arguments="EngineDesc"
+ibus_bus_list_names transfer_ownership="1" type_arguments="string"

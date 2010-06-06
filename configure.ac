@@ -329,6 +329,8 @@ setup/Makefile
 setup/ibus-setup
 gconf/Makefile
 gconf/gconf.xml.in
+bindings/Makefile
+bindings/vala/Makefile
 ])
 
 AC_OUTPUT
