@@ -264,7 +264,7 @@ IBusEngineDesc
  * Invoked when the IME engine is changed.
  */
 void         ibus_input_context_set_engine  (IBusInputContext   *context,
-                                             const gchar *name);
+                                             const gchar        *name);
 
 
 G_END_DECLS
