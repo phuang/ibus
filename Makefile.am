@@ -20,6 +20,19 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+if ENABLE_PYTHON
+PYTHON_DIRS = \
+	ibus \
+	setup \
+	$(NULL)
+endif
+
+if ENABLE_GCONF
+GCONF_DIRS = \
+	gconf \
+	$(NULL)
+endif
+
 SUBDIRS = \
 	src \
 	bus \
@@ -31,37 +44,20 @@ SUBDIRS = \
 	docs \
 	ui \
 	bindings \
+	$(PYTHON_DIRS) \
+	$(GCONF_DIRS) \
 	$(NULL)
-
-if ENABLE_PYTHON
-SUBDIRS += \
-	ibus \
-	setup \
-	$(NULL)
-endif
-
-if ENABLE_GCONF
-SUBDIRS += \
-	gconf \
-	$(NULL)
-endif
 
 ACLOCAL_AMFLAGS = -I m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ibus-1.0.pc
 
-# xinitrc_SCRIPTS = \
-# 	ibus.sh \
-# 	$(NULL)
-# xinitrcdir = $(sysconfdir)/X11/xinit/xinitrc.d
-
 EXTRA_DIST = \
 	autogen.sh \
 	ibus-1.0.pc.in \
 	ibus.spec.in \
 	python-config.py \
-	ibus.sh \
 	$(NULL)
 
 noinst_DIST = \

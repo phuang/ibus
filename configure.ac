@@ -112,6 +112,14 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
+AC_ARG_ENABLE(vala,
+    AS_HELP_STRING([--disable-vala],
+                   [Do not build ibus vala binding]),
+    [enable_vala=$enableval],
+    [enable_vala=yes]
+)
+AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
+
 if test x"$enable_gtk2" != x"no"; then
     # check for gtk2, gdk2
     PKG_CHECK_MODULES(GTK2, [
@@ -347,6 +355,7 @@ Build options:
   Build XIM agent server    $enable_xim
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
+  Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
   No snooper apps           "$NO_SNOOPER_APPS"

@@ -1,6 +1,0 @@
-[ -z "$XIM" ] && export XIM="ibus"
-[ -z "$XMODIFIERS" ] && export XMODIFIERS="@im=ibus"
-[ -z "$GTK_IM_MODULE" ] && export GTK_IM_MODULE="ibus"
-[ -z "$QT_IM_MODULE" ] && export QT_IM_MODULE="xim"
-[ -z "$XIM_PROGRAM" ] && export XIM_PROGRAM="ibus-daemon"
-[ -z "$XIM_ARGS" ] && export XIM_ARGS="--daemonize --xim"
