@@ -46,7 +46,8 @@ int main()
 	g_assert (engines);
 
 	g_debug ("===== Global engine:");
-	g_assert (ibus_bus_get_use_global_engine (bus));
+	if (ibus_bus_get_use_global_engine (bus) == FALSE)
+        return 0;
 
 	g_signal_connect (bus, "global-engine-changed",
                           G_CALLBACK (global_engine_changed_cb), bus);
