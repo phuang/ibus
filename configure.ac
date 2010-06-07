@@ -157,7 +157,7 @@ if test x"$enable_xim" != x"no"; then
 fi
 
 # GObject introspection
-GOBJECT_INTROSPECTION_CHECK([0.6.9])
+GOBJECT_INTROSPECTION_CHECK([0.6.8])
 
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
