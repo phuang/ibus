@@ -119,6 +119,9 @@ AC_ARG_ENABLE(vala,
     [enable_vala=yes]
 )
 AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
+if test x"$enable_vala" = x"no"; then
+    enable_vala="no (disabled, use --enable-vala to enable)"
+fi
 
 if test x"$enable_gtk2" != x"no"; then
     # check for gtk2, gdk2
@@ -132,6 +135,8 @@ if test x"$enable_gtk2" != x"no"; then
     PKG_CHECK_MODULES(GDK2, [
         gdk-2.0
     ])
+else
+    enable_gtk2="no (disabled, use --enable-gtk2 to enable)"
 fi
 
 if test x"$enable_gtk3" = x"yes"; then
@@ -146,6 +151,8 @@ if test x"$enable_gtk3" = x"yes"; then
     PKG_CHECK_MODULES(GDK3, [
         gdk-3.0
     ])
+else
+    enable_gtk3="no (disabled, use --enable-gtk3 to enable)"
 fi
 
 if test x"$enable_xim" != x"no"; then
@@ -154,6 +161,8 @@ if test x"$enable_xim" != x"no"; then
         x11
     ])
     AC_CHECK_HEADERS([X11/XKBlib.h])
+else
+    enable_xim="no (disabled, use --enable-xim to enable)"
 fi
 
 # GObject introspection
@@ -161,7 +170,9 @@ GOBJECT_INTROSPECTION_CHECK([0.6.8])
 
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
-
+if test x"$enable_gtk_doc" = x"no"; then
+    enable_gtk_doc="no (disabled, use --enable-gtk-doc to enable)"
+fi
 # check for dbus-glib
 PKG_CHECK_MODULES(DBUS, [
     dbus-1
@@ -190,6 +201,7 @@ if test x"$enable_gconf" != x"no"; then
     # GCONF_SCHEMAS_INSTALL should be set in macro AM_GCONF_SOURCE_2
 else
     AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
+    enable_gconf="no (disabled, use --enable-gconf to enable)"
 fi
 
 # check env
@@ -223,6 +235,8 @@ if test x"$enable_python" != x"no"; then
     AC_SUBST(PYTHON_CFLAGS)
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
+else
+    enable_python="no (disabled, use --enable-python to enable)"
 fi
 
 #
@@ -281,10 +295,11 @@ AC_ARG_ENABLE(key-snooper,
     [enable_key_snooper=$enableval],
     [enable_key_snooper=yes]
 )
-if test x"$enable_key_snooper" != x"no"; then
+if test x"$enable_key_snooper" = x"yes"; then
     AC_DEFINE(ENABLE_SNOOPER, TRUE, [Enable key snooper])
 else
     AC_DEFINE(ENABLE_SNOOPER, FALSE, [Enable key snooper])
+    enable_key_snooper="no (disabled, use --enable-key-snooper to enable)"
 fi
 
 # option for no snooper applications
@@ -355,6 +370,7 @@ Build options:
   Build XIM agent server    $enable_xim
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
+  Build introspection       $found_introspection
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
