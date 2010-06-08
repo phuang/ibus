@@ -423,6 +423,7 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 
     IBusIMContext *ibusimcontext = (IBusIMContext *) context;
 
+
     if (G_LIKELY (ibusimcontext->ibuscontext && ibusimcontext->has_focus)) {
         /* If context does not have focus, ibus will process key event in sync mode.
          * It is a workaround for increase search in treeview.
@@ -697,6 +698,77 @@ _ibus_context_commit_text_cb (IBusInputContext *ibuscontext,
     g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
 }
 
+/* Copy from gdk */
+static GdkEventKey *
+_create_gdk_event (IBusIMContext *ibusimcontext,
+                   guint          keyval,
+                   guint          keycode,
+                   guint          state)
+{
+    gunichar c = 0;
+    gchar buf[8];
+    GdkEventKey *event;
+
+    event = (GdkEventKey *)gdk_event_new ((state & IBUS_RELEASE_MASK) ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
+    event->time = GDK_CURRENT_TIME;
+    event->window = g_object_ref (ibusimcontext->client_window);
+    event->send_event = FALSE;
+    event->state = state;
+    event->keyval = keyval;
+    event->string = NULL;
+    event->length = 0;
+    event->hardware_keycode = (keycode != 0) ? keycode + 8 : 0;
+    event->group = 0;
+    event->is_modifier = 0;
+
+    if (keyval != GDK_VoidSymbol)
+        c = gdk_keyval_to_unicode (keyval);
+
+    if (c) {
+        gsize bytes_written;
+        gint len;
+
+        /* Apply the control key - Taken from Xlib
+         */
+        if (event->state & GDK_CONTROL_MASK) {
+	        if ((c >= '@' && c < '\177') || c == ' ') c &= 0x1F;
+	        else if (c == '2') {
+	            event->string = g_memdup ("\0\0", 2);
+	            event->length = 1;
+	            buf[0] = '\0';
+	            goto out;
+	        }
+	        else if (c >= '3' && c <= '7') c -= ('3' - '\033');
+	        else if (c == '8') c = '\177';
+	        else if (c == '/') c = '_' & 0x1F;
+	    }
+
+        len = g_unichar_to_utf8 (c, buf);
+        buf[len] = '\0';
+
+        event->string = g_locale_from_utf8 (buf, len,
+					                        NULL, &bytes_written,
+                                            NULL);
+        if (event->string)
+            event->length = bytes_written;
+    } else if (keyval == GDK_Escape) {
+      event->length = 1;
+      event->string = g_strdup ("\033");
+    }
+    else if (keyval == GDK_Return ||
+	         keyval == GDK_KP_Enter) {
+        event->length = 1;
+        event->string = g_strdup ("\r");
+    }
+
+    if (!event->string) {
+      event->length = 0;
+      event->string = g_strdup ("");
+    }
+out:
+    return event;
+}
+
 static void
 _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
                                     guint              keyval,
@@ -709,18 +781,7 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
 
     GdkEventKey *event;
 
-    event = (GdkEventKey *)gdk_event_new ((state & IBUS_RELEASE_MASK) ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
-    event->time = GDK_CURRENT_TIME;
-    event->window = g_object_ref (ibusimcontext->client_window);
-    event->send_event = FALSE;
-    event->state = state;
-    event->keyval = keyval;
-    event->string = g_strdup (gdk_keyval_name (keyval));
-    event->length = strlen (event->string);
-    event->hardware_keycode = (keycode != 0) ? keycode + 8 : 0;
-    event->group = 0;
-    event->is_modifier = 0;
-
+    event = _create_gdk_event (ibusimcontext, keyval, keycode, state);
     gdk_event_put ((GdkEvent *)event);
     gdk_event_free ((GdkEvent *)event);
 }
