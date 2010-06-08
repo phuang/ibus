@@ -119,11 +119,11 @@ AC_ARG_ENABLE(vala,
     [enable_vala=yes]
 )
 AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
-if test x"$enable_vala" = x"no"; then
+if test x"$enable_vala" != x"yes"; then
     enable_vala="no (disabled, use --enable-vala to enable)"
 fi
 
-if test x"$enable_gtk2" != x"no"; then
+if test x"$enable_gtk2" = x"yes"; then
     # check for gtk2, gdk2
     PKG_CHECK_MODULES(GTK2, [
         gtk+-2.0
@@ -155,7 +155,7 @@ else
     enable_gtk3="no (disabled, use --enable-gtk3 to enable)"
 fi
 
-if test x"$enable_xim" != x"no"; then
+if test x"$enable_xim" = x"yes"; then
     # Check for x11
     PKG_CHECK_MODULES(X11, [
         x11
@@ -186,7 +186,7 @@ AC_ARG_ENABLE(gconf,
 )
 AM_CONDITIONAL([ENABLE_GCONF], [test "x$enable_gconf" = "xyes"])
 
-if test x"$enable_gconf" != x"no"; then
+if test x"$enable_gconf" = x"yes"; then
     # check gconf
     PKG_CHECK_MODULES(GCONF,
         [gconf-2.0 >= 2.12],
@@ -217,7 +217,7 @@ AC_ARG_ENABLE(python,
 
 AM_CONDITIONAL([ENABLE_PYTHON], [test "x$enable_python" = "xyes"])
 
-if test x"$enable_python" != x"no"; then
+if test x"$enable_python" = x"yes"; then
     # check python
     AM_PATH_PYTHON([2.5])
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
@@ -266,7 +266,7 @@ AC_ARG_WITH(gtk3-im-module-dir,
 )
 AC_SUBST(GTK3_IM_MODULEDIR)
 
-if test x"$enable_python" != x"no"; then
+if test x"$enable_python" = x"yes"; then
     # check for dbus-python
     AC_ARG_ENABLE(dbus-python-check,
         AS_HELP_STRING([--disable-dbus-python-check],
