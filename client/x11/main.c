@@ -447,6 +447,7 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
     X11IC *x11ic;
     XKeyEvent *xevent;
     GdkEventKey event;
+    gboolean retval;
 
     LOG (1, "XIM_FORWARD_EVENT ic=%d connect_id=%d",
                 call_data->icid, call_data->connect_id);
@@ -467,10 +468,11 @@ xim_forward_event (XIMS xims, IMForwardEventStruct *call_data)
         event.state |= IBUS_RELEASE_MASK;
     }
 
-    if (ibus_input_context_process_key_event (x11ic->context,
-                                              event.keyval,
-                                              event.hardware_keycode - 8,
-                                              event.state)) {
+    retval = ibus_input_context_process_key_event (x11ic->context,
+                                                   event.keyval,
+                                                   event.hardware_keycode - 8,
+                                                   event.state);
+    if (retval) {
         if (! x11ic->has_preedit_area) {
             _xim_set_cursor_location (x11ic);
         }
@@ -799,6 +801,10 @@ _context_forward_key_event_cb (IBusInputContext *context,
                                X11IC            *x11ic)
 {
     g_assert (x11ic);
+
+    /* ignore handled key event */
+    if (state & IBUS_HANDLED_MASK)
+        return;
 
     _xim_forward_key_event (x11ic, keyval, keycode, state);
 }
