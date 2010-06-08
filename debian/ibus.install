@@ -1,5 +1,9 @@
 debian/tmp/etc/gconf/schemas/*
 debian/tmp/usr/bin/*
-debian/tmp/usr/share/*
+debian/tmp/usr/share/locale/*
+debian/tmp/usr/share/applications/*
+debian/tmp/usr/share/ibus/*
+debian/tmp/usr/share/icons/*
+debian/tmp/usr/share/gtk-doc/*
 debian/tmp/usr/lib/ibus/*
 debian/xinput/* etc/X11/xinit/xinput.d
