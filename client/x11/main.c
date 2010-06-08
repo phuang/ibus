@@ -802,10 +802,6 @@ _context_forward_key_event_cb (IBusInputContext *context,
 {
     g_assert (x11ic);
 
-    /* ignore handled key event */
-    if (state & IBUS_HANDLED_MASK)
-        return;
-
     _xim_forward_key_event (x11ic, keyval, keycode, state);
 }
 

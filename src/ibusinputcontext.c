@@ -680,6 +680,8 @@ ibus_input_context_ibus_signal (IBusProxy           *proxy,
                                             G_TYPE_INVALID);
 
             if (retval) {
+                /* Forward key event back with IBUS_FORWARD_MASK. And process_key_event will
+                 * not process key event with IBUS_FORWARD_MASK again. */
                 g_signal_emit (context,
                                context_signals[FORWARD_KEY_EVENT],
                                0,
@@ -762,19 +764,16 @@ _process_key_event_reply_cb (IBusPendingCall *pending,
         retval = FALSE;
     }
 
-    if (retval == TRUE) {
-        call_data->state |= IBUS_HANDLED_MASK;
+    if (!retval) {
+        /* Forward key event back with IBUS_FORWARD_MASK. And process_key_event will
+         * not process key event with IBUS_FORWARD_MASK again. */
+        g_signal_emit (call_data->context,
+                       context_signals[FORWARD_KEY_EVENT],
+                       0,
+                       call_data->keyval,
+                       call_data->keycode,
+                       call_data->state | IBUS_FORWARD_MASK);
     }
-    else {
-        call_data->state |= IBUS_IGNORED_MASK;
-    }
-    /* forward key event back with ignored or handled mask */
-    g_signal_emit (call_data->context,
-                   context_signals[FORWARD_KEY_EVENT],
-                   0,
-                   call_data->keyval,
-                   call_data->keycode,
-                   call_data->state);
 }
 
 static void
