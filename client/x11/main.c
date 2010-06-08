@@ -744,7 +744,7 @@ _xim_forward_key_event (X11IC   *x11ic,
 
     xkp.xkey.time = 0;
     xkp.xkey.state = state;
-    xkp.xkey.keycode = keycode;
+    xkp.xkey.keycode = (keycode == 0) ? 0 : keycode + 8;
 
     fe.major_code = XIM_FORWARD_EVENT;
     fe.icid = x11ic->icid;
