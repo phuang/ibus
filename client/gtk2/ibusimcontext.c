@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -731,39 +731,39 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
         /* Apply the control key - Taken from Xlib
          */
         if (event->state & GDK_CONTROL_MASK) {
-	        if ((c >= '@' && c < '\177') || c == ' ') c &= 0x1F;
-	        else if (c == '2') {
-	            event->string = g_memdup ("\0\0", 2);
-	            event->length = 1;
-	            buf[0] = '\0';
-	            goto out;
-	        }
-	        else if (c >= '3' && c <= '7') c -= ('3' - '\033');
-	        else if (c == '8') c = '\177';
-	        else if (c == '/') c = '_' & 0x1F;
-	    }
+            if ((c >= '@' && c < '\177') || c == ' ') c &= 0x1F;
+            else if (c == '2') {
+                event->string = g_memdup ("\0\0", 2);
+                event->length = 1;
+                buf[0] = '\0';
+                goto out;
+            }
+            else if (c >= '3' && c <= '7') c -= ('3' - '\033');
+            else if (c == '8') c = '\177';
+            else if (c == '/') c = '_' & 0x1F;
+        }
 
         len = g_unichar_to_utf8 (c, buf);
         buf[len] = '\0';
 
         event->string = g_locale_from_utf8 (buf, len,
-					                        NULL, &bytes_written,
+                                            NULL, &bytes_written,
                                             NULL);
         if (event->string)
             event->length = bytes_written;
     } else if (keyval == GDK_Escape) {
-      event->length = 1;
-      event->string = g_strdup ("\033");
+        event->length = 1;
+        event->string = g_strdup ("\033");
     }
     else if (keyval == GDK_Return ||
-	         keyval == GDK_KP_Enter) {
+             keyval == GDK_KP_Enter) {
         event->length = 1;
         event->string = g_strdup ("\r");
     }
 
     if (!event->string) {
-      event->length = 0;
-      event->string = g_strdup ("");
+        event->length = 0;
+        event->string = g_strdup ("");
     }
 out:
     return event;
