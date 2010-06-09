@@ -322,7 +322,7 @@ ibus_proxy_destroy (IBusProxy *proxy)
     priv = IBUS_PROXY_GET_PRIVATE (proxy);
 
     if (priv->connection) {
-
+        /* disconnect signal handlers */
         g_signal_handlers_disconnect_by_func (priv->connection,
                                               (GCallback) _connection_ibus_signal_cb,
                                               proxy);
@@ -330,7 +330,8 @@ ibus_proxy_destroy (IBusProxy *proxy)
                                               (GCallback) _connection_destroy_cb,
                                               proxy);
 
-        if (priv->name != NULL) {
+        /* remove match rules */
+        if (priv->name != NULL && ibus_connection_is_connected (priv->connection)) {
 
             IBusError *error;
             gchar *rule;
