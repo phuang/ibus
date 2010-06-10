@@ -28,9 +28,11 @@ PYTHON_DIRS = \
 endif
 
 if ENABLE_GCONF
-GCONF_DIRS = \
-	gconf \
-	$(NULL)
+GCONF_DIR = gconf
+endif
+
+if ENABLE_GSETTINGS
+GSETTINGS_DIR = gsettings
 endif
 
 SUBDIRS = \
@@ -45,7 +47,8 @@ SUBDIRS = \
 	ui \
 	bindings \
 	$(PYTHON_DIRS) \
-	$(GCONF_DIRS) \
+	$(GCONF_DIR) \
+	$(GSETTINGS_DIR) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4

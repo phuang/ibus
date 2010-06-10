@@ -178,6 +178,7 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
+# --disable-gconf option
 AC_ARG_ENABLE(gconf,
     AS_HELP_STRING([--disable-gconf],
                    [Do not use GConf code]),
@@ -202,6 +203,19 @@ if test x"$enable_gconf" = x"yes"; then
 else
     AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
     enable_gconf="no (disabled, use --enable-gconf to enable)"
+fi
+
+# --disable-gsettings option
+AC_ARG_ENABLE(gsettings,
+    AS_HELP_STRING([--disable-gsettings],
+                   [Do not use GSettings code]),
+    [enable_gsettings=$enableval],
+    [enable_gsettings=yes]
+)
+AM_CONDITIONAL([ENABLE_GSETTINGS], [test "x$enable_gsettings" = "xyes"])
+
+if test x"$enable_gsettings" = x"no"; then
+    enable_gsettings="no (disabled, use --enable-gsettings to enable)"
 fi
 
 # check env
@@ -352,6 +366,8 @@ setup/Makefile
 setup/ibus-setup
 gconf/Makefile
 gconf/gconf.xml.in
+gsettings/Makefile
+gsettings/gsettings.xml.in
 bindings/Makefile
 bindings/vala/Makefile
 ])
@@ -370,6 +386,7 @@ Build options:
   Build XIM agent server    $enable_xim
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
+  Build gsettings modules   $enable_gsettings
   Build introspection       $found_introspection
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
