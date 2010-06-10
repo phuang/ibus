@@ -73,7 +73,7 @@ struct _IBusBusClass {
 GType        ibus_bus_get_type          (void);
 /**
  * ibus_bus_new:
- * @returns: A newly allocated IBusBus instance.
+ * @returns: A newly allocated IBusBus instance, and the instance is not floating.
  *
  * New an IBusBus instance.
  */
