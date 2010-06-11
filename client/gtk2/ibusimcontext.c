@@ -299,7 +299,7 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
             gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
             gchar **p;
             for (p = apps; *p != NULL; p++) {
-                if (g_strcmp0 (*p,  prgname) == 0) {
+                if (g_regex_match_simple (*p, prgname, 0, 0)) {
                     _use_key_snooper = FALSE;
                     break;
                 }

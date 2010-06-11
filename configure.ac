@@ -304,9 +304,10 @@ fi
 
 # option for no snooper applications
 AC_ARG_WITH(no-snooper-apps,
-    AS_HELP_STRING([--with-no-snooper-apps[=app1,app2]],
-        [Does not enable keyboard snooper in those applications]),
-    NO_SNOOPER_APPS=$with_no_snooper_apps
+    AS_HELP_STRING([--with-no-snooper-apps[=regex1,regex2]],
+        [Does not enable keyboard snooper in those applications (like: .*chrome.*,firefox.*)]),
+    NO_SNOOPER_APPS=$with_no_snooper_apps,
+    NO_SNOOPER_APPS=.*chrome
 )
 AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
     [Does not enbale key snooper in those applications])
@@ -374,6 +375,6 @@ Build options:
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
-  No snooper apps           "$NO_SNOOPER_APPS"
+  No snooper regexes        "$NO_SNOOPER_APPS"
 ])
 
