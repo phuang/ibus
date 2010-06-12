@@ -125,7 +125,9 @@ The ibus-devel-docs package contains developer documentation for ibus
     --enable-gtk2 \
     --enable-gtk3 \
     --enable-xim \
-    --enable-gtk-doc
+    --disable-gtk-doc \
+    --enable-introspection
+
 # make -C po update-gmo
 make %{?_smp_mflags}
 
