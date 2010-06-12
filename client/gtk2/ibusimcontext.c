@@ -75,7 +75,7 @@ static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
-static const gchar * const _snooper_apps = SNOOPER_APPS;
+static const gchar *_snooper_apps = SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 
 static GtkIMContext *_focus_im_context = NULL;
@@ -306,8 +306,11 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         if (!_use_key_snooper) {
             /* disable snooper if app is in _no_snooper_apps */
             const gchar * prgname = g_get_prgname ();
-            gchar ** apps = g_strsplit (_snooper_apps, ",", 0);
+            if (g_getenv ("IBUS_SNOOPER_APPS")) {
+                _snooper_apps = g_getenv ("IBUS_SNOOPER_APPS");
+            }
             gchar **p;
+            gchar ** apps = g_strsplit (_snooper_apps, ",", 0);
             for (p = apps; *p != NULL; p++) {
                 if (g_regex_match_simple (*p, prgname, 0, 0)) {
                     _use_key_snooper = TRUE;
