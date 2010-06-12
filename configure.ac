@@ -24,7 +24,7 @@
 m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [3])
-m4_define([ibus_micro_version], [4])
+m4_define([ibus_micro_version], [5])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -288,12 +288,12 @@ if test x"$enable_python" = x"yes"; then
     fi
 fi
 
-# option for disable snooper applications
+# option for always enable snooper applications
 AC_ARG_ENABLE(key-snooper,
-    AS_HELP_STRING([--disable-key-snooper],
-        [Disable key snooper in gtk im module]),
+    AS_HELP_STRING([--enable-key-snooper],
+        [Always enable key snooper in gtk im module]),
     [enable_key_snooper=$enableval],
-    [enable_key_snooper=yes]
+    [enable_key_snooper=no]
 )
 if test x"$enable_key_snooper" = x"yes"; then
     AC_DEFINE(ENABLE_SNOOPER, TRUE, [Enable key snooper])
@@ -303,14 +303,14 @@ else
 fi
 
 # option for no snooper applications
-AC_ARG_WITH(no-snooper-apps,
-    AS_HELP_STRING([--with-no-snooper-apps[=regex1,regex2]],
-        [Does not enable keyboard snooper in those applications (like: .*chrome.*,firefox.*)]),
-    NO_SNOOPER_APPS=$with_no_snooper_apps,
-    NO_SNOOPER_APPS=.*chrome
+AC_ARG_WITH(snooper-apps,
+    AS_HELP_STRING([--with-snooper-apps[=regex1,regex2]],
+        [Enable keyboard snooper in those applications (default: xchat,pidgin,empathy)]),
+    SNOOPER_APPS=$with_snooper_apps,
+    SNOOPER_APPS=[xchat,pidgin,empathy]
 )
-AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
-    [Does not enbale key snooper in those applications])
+AC_DEFINE_UNQUOTED(SNOOPER_APPS, "$SNOOPER_APPS",
+    [Enbale keyboard snooper in those applications])
 
 # check iso-codes
 PKG_CHECK_MODULES(ISOCODES, [
@@ -375,6 +375,6 @@ Build options:
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
-  No snooper regexes        "$NO_SNOOPER_APPS"
+  Snooper regexes           "$SNOOPER_APPS"
 ])
 

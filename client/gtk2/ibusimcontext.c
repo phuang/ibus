@@ -75,7 +75,7 @@ static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
-static const gchar * const _no_snooper_apps = NO_SNOOPER_APPS;
+static const gchar * const _snooper_apps = SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 
 static GtkIMContext *_focus_im_context = NULL;
@@ -288,19 +288,29 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-    if (_use_key_snooper) {
-        if (g_getenv ("IBUS_DISABLE_SNOOPER") != NULL) {
-            /* disable snooper if env IBUS_DISABLE_SNOOPER is set */
+    const gchar *ibus_snooper = g_getenv ("IBUS_SNOOPER");
+    if (ibus_snooper) {
+        /* env IBUS_SNOOPER exist */
+        if (g_strcmp0 (ibus_snooper, "") == 0 ||
+            g_strcmp0 (ibus_snooper, "0") == 0 ||
+            g_strcmp0 (ibus_snooper, "false") == 0 ||
+            g_strcmp0 (ibus_snooper, "FALSE") == 0) {
             _use_key_snooper = FALSE;
         }
         else {
+            _use_key_snooper = TRUE;
+        }
+    }
+    else {
+        /* env IBUS_SNOOPER does not exist */
+        if (!_use_key_snooper) {
             /* disable snooper if app is in _no_snooper_apps */
             const gchar * prgname = g_get_prgname ();
-            gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
+            gchar ** apps = g_strsplit (_snooper_apps, ",", 0);
             gchar **p;
             for (p = apps; *p != NULL; p++) {
                 if (g_regex_match_simple (*p, prgname, 0, 0)) {
-                    _use_key_snooper = FALSE;
+                    _use_key_snooper = TRUE;
                     break;
                 }
             }
@@ -308,6 +318,7 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         }
     }
 
+    IDEBUG ("snooper = %d", _use_key_snooper);
     if (_use_key_snooper) {
         gtk_key_snooper_install (_key_snooper_cb, NULL);
     }
