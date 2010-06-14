@@ -29,12 +29,15 @@ enum {
 
 /* IBusComponentPriv */
 struct _IBusComponentPrivate {
-    gpointer pad;
+    // TRUE if the component started in the verbose mode.
+    gboolean verbose;
+    // TRUE if the component needs to be restarted when it dies.
+    gboolean restart;
 };
 typedef struct _IBusComponentPrivate IBusComponentPrivate;
 
 #define IBUS_COMPONENT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_COMPONENT, IBusComponentPrivate))
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_COMPONENT, IBusComponentPrivate))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -66,6 +69,8 @@ ibus_component_class_init (IBusComponentClass *klass)
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
 
+    g_type_class_add_private (klass, sizeof (IBusComponentPrivate));
+
     object_class->destroy = (IBusObjectDestroyFunc) ibus_component_destroy;
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_component_serialize;
@@ -91,6 +96,10 @@ ibus_component_init (IBusComponent *component)
     component->observed_paths = NULL;
     component->pid = 0;
     component->child_source_id = 0;
+
+    IBusComponentPrivate * priv = IBUS_COMPONENT_GET_PRIVATE (component);
+    priv->verbose = FALSE;
+    priv->restart = FALSE;
 }
 
 static void
@@ -657,6 +666,12 @@ ibus_component_child_cb (GPid            pid,
     g_spawn_close_pid (pid);
     component->pid = 0;
     component->child_source_id = 0;
+
+    IBusComponentPrivate *priv = IBUS_COMPONENT_GET_PRIVATE (component);
+    if (priv->restart) {
+        g_debug ("==== Restarting %s", component->exec);
+        ibus_component_start (component, priv->verbose);
+    }
 }
 
 gboolean
@@ -666,6 +681,9 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
 
     if (component->pid != 0)
         return TRUE;
+
+    IBusComponentPrivate *priv = IBUS_COMPONENT_GET_PRIVATE (component);
+    priv->verbose = verbose;
 
     gint argc;
     gchar **argv;
@@ -747,4 +765,13 @@ ibus_component_get_from_engine (IBusEngineDesc *engine)
 
     component = (IBusComponent *)g_object_get_data ((GObject *)engine, "component");
     return component;
+}
+
+void
+ibus_component_set_restart (IBusComponent *component, gboolean restart)
+{
+    g_assert (IBUS_IS_COMPONENT (component));
+
+    IBusComponentPrivate *priv = IBUS_COMPONENT_GET_PRIVATE (component);
+    priv->restart = restart;
 }

@@ -36,6 +36,7 @@ static gboolean daemonize = FALSE;
 static gboolean single = FALSE;
 static gboolean xim = FALSE;
 static gboolean replace = FALSE;
+static gboolean restart = FALSE;
 static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
@@ -72,6 +73,7 @@ static const GOptionEntry entries[] =
     { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
 #endif
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
+    { "restart",     'r', 0, G_OPTION_ARG_NONE,   &restart,    "restart panel and config processes when they die.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
     { NULL },
 };
@@ -255,6 +257,9 @@ main (gint argc, gchar **argv)
         if (g_strcmp0 (config, "default") == 0) {
             IBusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_CONFIG);
+            if (component) {
+                ibus_component_set_restart (component, restart);
+            }
             if (component == NULL || !ibus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default config program\n");
                 exit (-1);
@@ -268,6 +273,9 @@ main (gint argc, gchar **argv)
         if (g_strcmp0 (panel, "default") == 0) {
             IBusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
+            if (component) {
+                ibus_component_set_restart (component, restart);
+            }
             if (component == NULL || !ibus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default panel program\n");
                 exit (-1);
