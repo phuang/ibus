@@ -73,7 +73,7 @@ static const GOptionEntry entries[] =
     { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
 #endif
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
-    { "restart",     'r', 0, G_OPTION_ARG_NONE,   &restart,    "restart panel and config processes when they die.", NULL },
+    { "restart",     'R', 0, G_OPTION_ARG_NONE,   &restart,    "restart panel and config processes when they die.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
     { NULL },
 };
