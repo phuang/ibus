@@ -103,7 +103,10 @@ static void
 ibus_config_gconf_init (IBusConfigGConf *config)
 {
     config->client = gconf_client_get_default ();
-    gconf_client_add_dir (config->client, GCONF_PREFIX, GCONF_CLIENT_PRELOAD_NONE, NULL);
+    gconf_client_add_dir (config->client,
+                          GCONF_PREFIX,
+                          GCONF_CLIENT_PRELOAD_RECURSIVE,
+                          NULL);
     g_signal_connect (config->client, "value-changed", G_CALLBACK (_value_changed_cb), config);
 }
 
@@ -111,6 +114,7 @@ static void
 ibus_config_gconf_destroy (IBusConfigGConf *config)
 {
     if (config->client) {
+        g_signal_handlers_disconnect_by_func (config->client, G_CALLBACK (_value_changed_cb), config);
         g_object_unref (config->client);
         config->client = NULL;
     }
