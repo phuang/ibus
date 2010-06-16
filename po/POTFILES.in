@@ -1,12 +1,10 @@
 src/ibusbus.c
 src/ibusconfig.c
-src/ibusconnection.c
 src/ibusengine.c
 src/ibushotkey.c
 src/ibusinputcontext.c
 src/ibusobject.c
 src/ibusproxy.c
-src/ibusserver.c
 src/ibusservice.c
 src/keyname-table.h
 bus/ibus.desktop.in

@@ -443,7 +443,7 @@ ibus_im_context_finalize (GObject *obj)
     g_signal_handlers_disconnect_by_func (_bus, G_CALLBACK (_bus_connected_cb), obj);
 
     if (ibusimcontext->ibuscontext) {
-        ibus_object_destroy ((IBusObject *)ibusimcontext->ibuscontext);
+        ibus_proxy_destroy ((IBusProxy *)ibusimcontext->ibuscontext);
     }
 
     ibus_im_context_set_client_window ((GtkIMContext *)ibusimcontext, NULL);
@@ -1089,6 +1089,7 @@ _create_input_context (IBusIMContext *ibusimcontext)
 
     g_assert (ibusimcontext->ibuscontext == NULL);
 
+    g_debug ("create ibus context");
     ibusimcontext->ibuscontext = ibus_bus_create_input_context (_bus, "gtk-im");
 
     g_return_if_fail (ibusimcontext->ibuscontext != NULL);

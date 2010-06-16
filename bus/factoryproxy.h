@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __FACTORY_PROXY_H_
-#define __FACTORY_PROXY_H_
+#ifndef __BUS_FACTORY_PROXY_H_
+#define __BUS_FACTORY_PROXY_H_
 
 #include <ibus.h>
 #include "connection.h"
@@ -48,19 +48,6 @@ G_BEGIN_DECLS
 
 typedef struct _BusFactoryProxy BusFactoryProxy;
 typedef struct _BusFactoryProxyClass BusFactoryProxyClass;
-
-struct _BusFactoryProxy {
-    IBusProxy parent;
-    /* instance members */
-
-    IBusComponent *component;
-    GList *engine_list;
-};
-
-struct _BusFactoryProxyClass {
-    IBusProxyClass parent;
-    /* class members */
-};
 
 GType            bus_factory_proxy_get_type     (void);
 BusFactoryProxy *bus_factory_proxy_new          (IBusComponent      *component,

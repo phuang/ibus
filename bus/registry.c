@@ -19,13 +19,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include "registry.h"
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ibusinternal.h>
-#include "registry.h"
+#include "types.h"
 #include "option.h"
+#include "marshalers.h"
 
 enum {
     CHANGED,
@@ -58,7 +59,7 @@ bus_registry_class_init (BusRegistryClass *klass)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            bus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -586,7 +587,7 @@ bus_registry_name_owner_changed (BusRegistry *registry,
         factory = bus_factory_proxy_get_from_component (component);
 
         if (factory != NULL) {
-            ibus_object_destroy ((IBusObject *)factory);
+            ibus_proxy_destroy ((IBusProxy *)factory);
         }
     }
 

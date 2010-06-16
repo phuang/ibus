@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusengine
  * @short_description: Input method engine abstract.
@@ -60,6 +65,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusEngine IBusEngine;
 typedef struct _IBusEngineClass IBusEngineClass;
+typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
 /**
  * IBusEngine:
@@ -71,7 +77,10 @@ typedef struct _IBusEngineClass IBusEngineClass;
  * IBusEngine properties.
  */
 struct _IBusEngine {
+    /*< private >*/
     IBusService parent;
+    IBusEnginePrivate *priv;
+
     /* instance members */
     /*< public >*/
     gboolean enabled;
@@ -83,9 +92,12 @@ struct _IBusEngine {
 };
 
 struct _IBusEngineClass {
+    /*< private >*/
     IBusServiceClass parent;
 
     /* class members */
+    /*< public >*/
+    /* signals */
     gboolean    (* process_key_event)
                                     (IBusEngine     *engine,
                                      guint           keyval,
@@ -136,14 +148,29 @@ GType        ibus_engine_get_type       (void);
  * ibus_engine_new:
  * @name: Name of the IBusObject.
  * @path: Path for IBusService.
- * @connection: An opened IBusConnection.
+ * @connection: An opened GDBusConnection.
  * @returns: A newly allocated IBusEngine.
  *
  * New an IBusEngine.
  */
-IBusEngine  *ibus_engine_new            (const gchar        *name,
-                                         const gchar        *path,
-                                         IBusConnection     *connection);
+IBusEngine  *ibus_engine_new            (const gchar        *engine_name,
+                                         const gchar        *object_path,
+                                         GDBusConnection    *connection);
+/**
+ * ibus_engine_new_type:
+ * @engine_type: GType of subclass of IBUS_TYPE_ENGINE
+ * @engine_name: Name of the IBusObject.
+ * @object_path: Path for IBusService.
+ * @connection: An opened GDBusConnection.
+ * @returns: A newly allocated IBusEngine.
+ *
+ * New an IBusEngine.
+ */
+IBusEngine  *ibus_engine_new_type       (GType               engine_type,
+                                         const gchar        *engine_name,
+                                         const gchar        *object_path,
+                                         GDBusConnection    *connection);
+
 
 /**
  * ibus_engine_commit_text:

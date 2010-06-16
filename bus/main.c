@@ -20,7 +20,6 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <config.h>
-#include <dbus/dbus.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,6 +28,9 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <signal.h>
+#include <glib.h>
+#include <gio/gio.h>
+#include <ibus.h>
 #include "server.h"
 #include "ibusimpl.h"
 
@@ -42,7 +44,7 @@ static gboolean restart = FALSE;
 static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
-static gchar *address = "";
+gchar *g_address = "unix:tmpdir=/tmp";
 gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
@@ -67,7 +69,7 @@ static const GOptionEntry entries[] =
     { "desktop",   'n', 0, G_OPTION_ARG_STRING, &desktop,   "specify the name of desktop session. [default=gnome]", "name" },
     { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program.", "cmdline" },
     { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program.", "cmdline" },
-    { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
+    { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
     { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout in milliseconds.", "timeout [default is 2000]" },
@@ -85,12 +87,9 @@ execute_cmdline (const gchar *cmdline)
 {
     g_assert (cmdline);
 
-    gint argc;
-    gchar **argv;
-    gboolean retval;
-    GError *error;
-
-    error = NULL;
+    gint argc = 0;
+    gchar **argv = NULL;
+    GError *error = NULL;
     if (!g_shell_parse_argv (cmdline, &argc, &argv, &error)) {
         g_warning ("Can not parse cmdline `%s` exec: %s", cmdline, error->message);
         g_error_free (error);
@@ -98,7 +97,7 @@ execute_cmdline (const gchar *cmdline)
     }
 
     error = NULL;
-    retval = g_spawn_async (NULL, argv, NULL,
+    gboolean retval = g_spawn_async (NULL, argv, NULL,
                             G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
                             NULL, NULL,
                             NULL, &error);
@@ -165,21 +164,16 @@ _sig_usr2_handler (int sig)
 gint
 main (gint argc, gchar **argv)
 {
-    GOptionContext *context;
-    BusServer *server;
-    IBusBus *bus;
-
-    GError *error = NULL;
-
     setlocale (LC_ALL, "");
 
-    context = g_option_context_new ("- ibus daemon");
-
+    GOptionContext *context = g_option_context_new ("- ibus daemon");
     g_option_context_add_main_entries (context, entries, "ibus-daemon");
 
     g_argv = g_strdupv (argv);
+    GError *error = NULL;
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_printerr ("Option parsing failed: %s\n", error->message);
+	g_error_free (error);
         exit (-1);
     }
 
@@ -211,7 +205,7 @@ main (gint argc, gchar **argv)
     /* create a new process group */
     setpgid (0, 0);
 
-    g_type_init ();
+    ibus_init ();
 
 #ifdef G_THREADS_ENABLED
     g_thread_init (NULL);
@@ -219,8 +213,9 @@ main (gint argc, gchar **argv)
     ibus_set_log_handler(g_verbose);
 
     /* check if ibus-daemon is running in this session */
+#if 0
     if (ibus_get_address () != NULL) {
-        bus = ibus_bus_new ();
+        IBusBus *bus = ibus_bus_new ();
 
         if (ibus_bus_is_connected (bus)) {
             if (!replace) {
@@ -235,11 +230,9 @@ main (gint argc, gchar **argv)
         g_object_unref (bus);
         bus = NULL;
     }
-
-    /* create ibus server */
-    server = bus_server_get_default ();
-    bus_server_listen (server);
-
+#endif
+    bus_server_init ();
+    /* FIXME */
     if (!single) {
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
@@ -280,7 +273,6 @@ main (gint argc, gchar **argv)
             exit (-1);
     }
 
-    bus_server_run (server);
-
+    bus_server_run ();
     return 0;
 }

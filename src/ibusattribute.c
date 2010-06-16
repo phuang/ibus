@@ -24,26 +24,22 @@
 /* functions prototype */
 // static void         ibus_attribute_destroy      (IBusAttribute          *attr);
 static gboolean     ibus_attribute_serialize    (IBusAttribute          *attr,
-                                                 IBusMessageIter        *iter);
-static gboolean     ibus_attribute_deserialize  (IBusAttribute          *attr,
-                                                 IBusMessageIter        *iter);
+                                                 GVariantBuilder        *builder);
+static gint         ibus_attribute_deserialize  (IBusAttribute          *attr,
+                                                 GVariant               *variant);
 static gboolean     ibus_attribute_copy         (IBusAttribute          *dest,
                                                  const IBusAttribute    *src);
 
 G_DEFINE_TYPE (IBusAttribute, ibus_attribute, IBUS_TYPE_SERIALIZABLE)
 
 static void
-ibus_attribute_class_init (IBusAttributeClass *klass)
+ibus_attribute_class_init (IBusAttributeClass *class)
 {
-    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
-
-    // object_class->destroy = (IBusObjectDestroyFunc) ibus_attribute_destroy;
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_attribute_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_attribute_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_attribute_copy;
-
-    g_string_append (serializable_class->signature, "uuuu");
 }
 
 static void
@@ -51,66 +47,38 @@ ibus_attribute_init (IBusAttribute *attr)
 {
 }
 
-// static void
-// ibus_attribute_destroy (IBusAttribute *attr)
-// {
-//     IBUS_OBJECT (ibus_attribute_parent_class)->destroy ((IBusObject *)attr);
-// }
-
 static gboolean
 ibus_attribute_serialize (IBusAttribute   *attr,
-                          IBusMessageIter *iter)
+                          GVariantBuilder *builder)
 {
     gboolean retval;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->serialize ((IBusSerializable *) attr, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->serialize ((IBusSerializable *) attr, builder);
     g_return_val_if_fail (retval, FALSE);
 
-    g_return_val_if_fail (IBUS_IS_ATTRIBUTE (attr), FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &attr->type);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &attr->value);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &attr->start_index);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &attr->end_index);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "u", attr->type);
+    g_variant_builder_add (builder, "u", attr->value);
+    g_variant_builder_add (builder, "u", attr->start_index);
+    g_variant_builder_add (builder, "u", attr->end_index);
 
     return TRUE;
 }
 
-static gboolean
-ibus_attribute_deserialize (IBusAttribute   *attr,
-                            IBusMessageIter *iter)
+static gint
+ibus_attribute_deserialize (IBusAttribute *attr,
+                            GVariant      *variant)
 {
-    gboolean retval;
+    gint retval;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->deserialize ((IBusSerializable *) attr, iter);
-    g_return_val_if_fail (retval, FALSE);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_attribute_parent_class)->deserialize ((IBusSerializable *) attr, variant);
+    g_return_val_if_fail (retval, 0);
 
-    g_return_val_if_fail (IBUS_IS_ATTRIBUTE (attr), FALSE);
+    g_variant_get_child (variant, retval++, "u", &attr->type);
+    g_variant_get_child (variant, retval++, "u", &attr->value);
+    g_variant_get_child (variant, retval++, "u", &attr->start_index);
+    g_variant_get_child (variant, retval++, "u", &attr->end_index);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->type);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->value);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->start_index);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &attr->end_index);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    return TRUE;
+    return retval;
 
 }
 

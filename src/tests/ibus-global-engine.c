@@ -39,6 +39,7 @@ change_global_engine_cb (IBusBus *bus)
 int main()
 {
 	g_type_init ();
+    IBUS_TYPE_ENGINE_DESC;
 
 	IBusBus *bus;
 

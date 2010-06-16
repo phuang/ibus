@@ -22,7 +22,7 @@
 
 
 libIMdkit = $(top_builddir)/util/IMdkit/libIMdkit.la
-libibus = $(top_builddir)/src/libibus.la
+libibus = $(top_builddir)/src/libibus-2.0.la
 
 libexec_PROGRAMS = ibus-x11
 

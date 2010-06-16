@@ -52,7 +52,7 @@ im_module_init (GTypeModule *type_module)
 {
     /* make module resident */
     g_type_module_use (type_module);
-
+    ibus_init ();
     ibus_im_context_register_type (type_module);
 }
 

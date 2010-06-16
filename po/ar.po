@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
+"POT-Creation-Date: 2010-08-07 10:22+0800\n"
 "PO-Revision-Date: 2009-04-06 11:45+0800\n"
 "Last-Translator: Muayyad Alsadi <alsadi@ojuba.org>\n"
 "Language-Team: Arabic <AR@li.org>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -90,21 +91,21 @@ msgstr "نظام IBus هو ناقل إدخال ذكي لنظام لينكس وي
 msgid "translator-credits"
 msgstr "Muayyad Alsadi <alsadi@ojuba.org>"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 #, fuzzy
 msgid "About the input method"
 msgstr "طرق الإدخال"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "تبديل طريقة الإدخال"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "حول"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 #, fuzzy
 msgid "About the Input Method"
 msgstr "طرق الإدخال"

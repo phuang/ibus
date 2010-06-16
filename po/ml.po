@@ -9,10 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-02 08:23+0000\n"
+"POT-Creation-Date: 2010-08-07 10:22+0800\n"
 "PO-Revision-Date: 2010-08-02 17:16+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -480,7 +481,8 @@ msgstr "പ്രവേശിക്കുമ്പോള്‍ തന്നെ i
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
+msgstr ""
+"അടുത്ത ഇന്‍പുട്ട് മെഥേഡ് സംവിധാനത്തിലേക്ക് മാറ്റുന്നതിനായി അടുത്ത സംവിധാനത്തിനുള്ള എളുപ്പവഴി"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
@@ -507,4 +509,3 @@ msgstr "നേരെയുള്ള"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "സജീവമാകുമ്പോള്‍"
-

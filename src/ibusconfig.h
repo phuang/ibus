@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusconfig
  * @title: IBusConfig
@@ -76,20 +81,21 @@ GType            ibus_config_get_type       (void);
 
 /**
  * ibus_config_new:
- * @connection: An IBusConnection.
+ * @connection: An GDBusConnection.
  * @returns: An newly allocated IBusConfig corresponding to @connection.
  *
- * New a IBusConfig from existing IBusConnection.
+ * New a IBusConfig from existing GDBusConnection.
  */
-IBusConfig      *ibus_config_new            (IBusConnection     *connection);
+IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
+                                             GCancellable       *cancellable,
+                                             GError            **error);
 
 /**
  * ibus_config_get_value:
  * @config: An IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
- * @value: GValue that holds the value.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @returns: a GVariant.
  *
  * Get the value of a configuration option.
  *
@@ -102,10 +108,9 @@ IBusConfig      *ibus_config_new            (IBusConnection     *connection);
  * so the section name for it is "engine/Chewing".
  * @see_also: ibus_config_set_value.
  */
-gboolean         ibus_config_get_value      (IBusConfig         *config,
+GVariant        *ibus_config_get_value      (IBusConfig         *config,
                                              const gchar        *section,
-                                             const gchar        *name,
-                                             GValue             *value);
+                                             const gchar        *name);
 
 /**
  * ibus_config_set_value:
@@ -121,7 +126,7 @@ gboolean         ibus_config_get_value      (IBusConfig         *config,
 gboolean         ibus_config_set_value      (IBusConfig         *config,
                                              const gchar        *section,
                                              const gchar        *name,
-                                             const GValue       *value);
+                                             GVariant           *value);
 
 /**
  * ibus_config_unset:

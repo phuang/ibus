@@ -20,7 +20,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-libibus = $(top_builddir)/src/libibus.la
+libibus = $(top_builddir)/src/libibus-2.0.la
 
 libexec_PROGRAMS = \
 	ibus-gconf \
@@ -33,8 +33,8 @@ ibus_gconf_SOURCES = \
 	$(NULL)
 ibus_gconf_CFLAGS = \
 	@GLIB2_CFLAGS@ \
+	@GIO2_CFLAGS@ \
 	@GCONF_CFLAGS@ \
-	@DBUS_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
@@ -42,8 +42,8 @@ ibus_gconf_CFLAGS = \
 ibus_gconf_LDADD = \
 	@GOBJECT2_LIBS@ \
 	@GLIB2_LIBS@ \
+	@GIO2_LIBS@ \
 	@GCONF_LIBS@ \
-	@DBUS_LIBS@ \
 	$(libibus) \
 	$(NULL)
 ibus_gconf_DEPENDENCIES = \

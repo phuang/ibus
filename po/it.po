@@ -11,10 +11,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-28 18:37+0000\n"
+"POT-Creation-Date: 2010-08-07 10:22+0800\n"
 "PO-Revision-Date: 2010-07-30 08:36+1000\n"
 "Last-Translator: \n"
 "Language-Team:  <it@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -237,7 +238,9 @@ msgstr "Abilita per impostazione predefinita il metodo di input"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr "Abilita per impostazione predefinita il metodo di input quando le applicazioni ottengono l'input focus"
+msgstr ""
+"Abilita per impostazione predefinita il metodo di input quando le "
+"applicazioni ottengono l'input focus"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -302,7 +305,8 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
+msgstr ""
+"I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
 
 #: ../data/ibus.schemas.in.h:22
 msgid "The shortcut keys for switching to the previous input method"
@@ -492,11 +496,13 @@ msgstr "Avvia IBus all'accesso"
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr "I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
+msgstr ""
+"I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "I tasti scorciatoia per passare al metodo di input precedente nell'elenco"
+msgstr ""
+"I tasti scorciatoia per passare al metodo di input precedente nell'elenco"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -517,4 +523,3 @@ msgstr "Verticale"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Quando attivoB"
-

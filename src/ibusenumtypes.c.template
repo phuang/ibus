@@ -1,5 +1,4 @@
 /*** BEGIN file-header ***/
-#include <dbus/dbus.h>
 #include "ibus.h"
 
 /*** END file-header ***/

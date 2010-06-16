@@ -19,9 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <dbus/dbus.h>
 #include "ibusshare.h"
 #include "ibusconfigservice.h"
+
+#define IBUS_CONFIG_SERVICE_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG_SERVICE, IBusConfigServicePrivate))
 
 enum {
     LAST_SIGNAL,
@@ -29,120 +31,116 @@ enum {
 
 enum {
     PROP_0,
-    PROP_CONNECTION,
 };
 
 // static guint            config_service_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_config_service_class_init      (IBusConfigServiceClass *klass);
-static void     ibus_config_service_init            (IBusConfigService      *config);
-static void     ibus_config_service_set_property    (IBusConfigService      *config,
-                                                     guint                   prop_id,
-                                                     const GValue           *value,
-                                                     GParamSpec             *pspec);
-static void     ibus_config_service_get_property    (IBusConfigService      *config,
-                                                     guint                   prop_id,
-                                                     GValue                 *value,
-                                                     GParamSpec             *pspec);
-static void     ibus_config_service_destroy         (IBusConfigService      *config);
-static gboolean ibus_config_service_ibus_message    (IBusConfigService      *config,
-                                                     IBusConnection         *connection,
-                                                     IBusMessage            *message);
-static gboolean ibus_config_service_set_value       (IBusConfigService      *config,
-                                                     const gchar            *section,
-                                                     const gchar            *name,
-                                                     const GValue           *value,
-                                                     IBusError             **error);
-static gboolean ibus_config_service_get_value       (IBusConfigService      *config,
-                                                     const gchar            *section,
-                                                     const gchar            *name,
-                                                     GValue                 *value,
-                                                     IBusError             **error);
-static gboolean ibus_config_service_unset           (IBusConfigService      *config,
-                                                     const gchar            *section,
-                                                     const gchar            *name,
-                                                     IBusError             **error);
+static void      ibus_config_service_class_init      (IBusConfigServiceClass *class);
+static void      ibus_config_service_init            (IBusConfigService      *config);
+static void      ibus_config_service_set_property    (IBusConfigService      *config,
+                                                      guint                   prop_id,
+                                                      const GValue           *value,
+                                                      GParamSpec             *pspec);
+static void      ibus_config_service_get_property    (IBusConfigService      *config,
+                                                      guint                   prop_id,
+                                                      GValue                 *value,
+                                                      GParamSpec             *pspec);
+static void      ibus_config_service_destroy         (IBusConfigService      *config);
+static void      ibus_config_service_service_method_call
+                                                     (IBusService            *service,
+                                                      GDBusConnection        *connection,
+                                                      const gchar            *sender,
+                                                      const gchar            *object_path,
+                                                      const gchar            *interface_name,
+                                                      const gchar            *method_name,
+                                                      GVariant               *parameters,
+                                                      GDBusMethodInvocation  *invocation);
+static GVariant *ibus_config_service_service_get_property
+                                                     (IBusService            *service,
+                                                      GDBusConnection        *connection,
+                                                      const gchar            *sender,
+                                                      const gchar            *object_path,
+                                                      const gchar            *interface_name,
+                                                      const gchar            *property_name,
+                                                      GError                **error);
+static gboolean  ibus_config_service_service_set_property
+                                                     (IBusService            *service,
+                                                      GDBusConnection        *connection,
+                                                      const gchar            *sender,
+                                                      const gchar            *object_path,
+                                                      const gchar            *interface_name,
+                                                      const gchar            *property_name,
+                                                      GVariant               *value,
+                                                      GError                **error);
+static gboolean  ibus_config_service_set_value       (IBusConfigService      *config,
+                                                      const gchar            *section,
+                                                      const gchar            *name,
+                                                      GVariant               *value,
+                                                      GError                **error);
+static GVariant *ibus_config_service_get_value       (IBusConfigService      *config,
+                                                      const gchar            *section,
+                                                      const gchar            *name,
+                                                      GError                **error);
+static gboolean  ibus_config_service_unset_value     (IBusConfigService      *config,
+                                                      const gchar            *section,
+                                                      const gchar            *name,
+                                                      GError                **error);
 
-static IBusServiceClass  *parent_class = NULL;
+G_DEFINE_TYPE (IBusConfigService, ibus_config_service, IBUS_TYPE_SERVICE)
 
-GType
-ibus_config_service_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusConfigServiceClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_config_service_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusConfigService),
-        0,
-        (GInstanceInitFunc) ibus_config_service_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERVICE,
-                                       "IBusConfigService",
-                                       &type_info,
-                                       (GTypeFlags) 0);
-    }
-    return type;
-}
-
-IBusConfigService *
-ibus_config_service_new (IBusConnection *connection)
-{
-    g_assert (IBUS_IS_CONNECTION (connection));
-
-    IBusConfigService *config;
-
-    config = (IBusConfigService *) g_object_new (IBUS_TYPE_CONFIG_SERVICE,
-                                                 "path", IBUS_PATH_CONFIG,
-                                                 "connection", connection,
-                                                 NULL);
-
-    return config;
-}
+static const gchar introspection_xml[] =
+    "<node>"
+    "  <interface name='org.freedesktop.IBus.Config'>"
+    "    <method name='SetValue'>"
+    "      <arg direction='in'  type='s' name='section' />"
+    "      <arg direction='in'  type='s' name='name' />"
+    "      <arg direction='in'  type='v' name='value' />"
+    "    </method>"
+    "    <method name='GetValue'>"
+    "      <arg direction='in'  type='s' name='section' />"
+    "      <arg direction='in'  type='s' name='name' />"
+    "      <arg direction='out' type='v' name='value' />"
+    "    </method>"
+    "    <method name='UnsetValue'>"
+    "      <arg direction='in'  type='s' name='section' />"
+    "      <arg direction='in'  type='s' name='name' />"
+    "    </method>"
+    "  </interface>"
+    "</node>";
 
 static void
-ibus_config_service_class_init (IBusConfigServiceClass *klass)
+ibus_config_service_class_init (IBusConfigServiceClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-    parent_class = (IBusServiceClass *) g_type_class_peek_parent (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_config_service_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_config_service_get_property;
 
     IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) ibus_config_service_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_config_service_ibus_message;
+    IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_config_service_service_method_call;
+    IBUS_SERVICE_CLASS (class)->service_get_property = ibus_config_service_service_get_property;
+    IBUS_SERVICE_CLASS (class)->service_set_property = ibus_config_service_service_set_property;
 
-    klass->set_value = ibus_config_service_set_value;
-    klass->get_value = ibus_config_service_get_value;
-    klass->unset = ibus_config_service_unset;
+    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
+
+    class->set_value   = ibus_config_service_set_value;
+    class->get_value   = ibus_config_service_get_value;
+    class->unset_value = ibus_config_service_unset_value;
 
     /* install properties */
-    /**
-     * IBusConfigService:connection:
-     *
-     * Connection of this IBusConfigService.
+    /*
+     * g_type_class_add_private (class, sizeof (IBusConfigServicePrivate));
      */
-    g_object_class_install_property (gobject_class,
-                    PROP_CONNECTION,
-                    g_param_spec_object ("connection",
-                        "connection",
-                        "The connection of config object",
-                        IBUS_TYPE_CONNECTION,
-                        G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
 ibus_config_service_init (IBusConfigService *config)
 {
+    /*
+     * config->priv = IBUS_CONFIG_SERVICE_GET_PRIVATE (config);
+     */
 }
 
 static void
@@ -152,11 +150,12 @@ ibus_config_service_set_property (IBusConfigService *config,
                                   GParamSpec        *pspec)
 {
     switch (prop_id) {
+    #if 0
     case PROP_CONNECTION:
         ibus_service_add_to_connection ((IBusService *) config,
                                         g_value_get_object (value));
         break;
-
+    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
     }
@@ -169,18 +168,10 @@ ibus_config_service_get_property (IBusConfigService *config,
                                   GParamSpec        *pspec)
 {
     switch (prop_id) {
+    #if 0
     case PROP_CONNECTION:
-        {
-            GList *connections = ibus_service_get_connections ((IBusService *) config);
-            if (connections) {
-                g_value_set_object (value, connections->data);
-            }
-            else {
-                g_value_set_object (value, NULL);
-            }
-            g_list_free (connections);
-        }
         break;
+    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
     }
@@ -189,182 +180,205 @@ ibus_config_service_get_property (IBusConfigService *config,
 static void
 ibus_config_service_destroy (IBusConfigService *config)
 {
-    IBUS_OBJECT_CLASS(parent_class)->destroy ((IBusObject *) config);
+    IBUS_OBJECT_CLASS(ibus_config_service_parent_class)->destroy ((IBusObject *) config);
+}
+
+static void
+ibus_config_service_service_method_call (IBusService           *service,
+                                         GDBusConnection       *connection,
+                                         const gchar           *sender,
+                                         const gchar           *object_path,
+                                         const gchar           *interface_name,
+                                         const gchar           *method_name,
+                                         GVariant              *parameters,
+                                         GDBusMethodInvocation *invocation)
+{
+    IBusConfigService *config = IBUS_CONFIG_SERVICE (service);
+
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_CONFIG) != 0) {
+        IBUS_SERVICE_CLASS (ibus_config_service_parent_class)->
+                service_method_call (service,
+                                     connection,
+                                     sender,
+                                     object_path,
+                                     interface_name,
+                                     method_name,
+                                     parameters,
+                                     invocation);
+        return;
+    }
+
+    if (g_strcmp0 (method_name, "SetValue") == 0) {
+        gchar *section;
+        gchar *name;
+        GVariant *value;
+        gboolean retval;
+        GError *error = NULL;
+
+        g_variant_get (parameters, "(&s&sv)", &section, &name, &value);
+
+        retval = IBUS_CONFIG_SERVICE_GET_CLASS (config)->set_value (config, section, name, value, &error);
+        if (retval) {
+            g_dbus_method_invocation_return_value (invocation, NULL);
+        }
+        else {
+            g_dbus_method_invocation_return_gerror (invocation, error);
+            g_error_free (error);
+        }
+        return;
+    }
+
+    if (g_strcmp0 (method_name, "GetValue") == 0) {
+        gchar *section;
+        gchar *name;
+        GVariant *value;
+        GError *error = NULL;
+
+        g_variant_get (parameters, "(&s&s)", &section, &name);
+
+        value = IBUS_CONFIG_SERVICE_GET_CLASS (config)->get_value (config, section, name, &error);
+        if (value != NULL) {
+            g_dbus_method_invocation_return_value (invocation, g_variant_new ("(v)", value));
+        }
+        else {
+            g_dbus_method_invocation_return_gerror (invocation, error);
+            g_error_free (error);
+        }
+        return;
+    }
+
+    if (g_strcmp0 (method_name, "UnsetValue") == 0) {
+        gchar *section;
+        gchar *name;
+        gboolean retval;
+        GError *error = NULL;
+
+        g_variant_get (parameters, "(&s&s)", &section, &name);
+
+        retval = IBUS_CONFIG_SERVICE_GET_CLASS (config)->unset_value (config, section, name, &error);
+        if (retval) {
+            g_dbus_method_invocation_return_value (invocation, NULL);
+        }
+        else {
+            g_dbus_method_invocation_return_gerror (invocation, error);
+            g_error_free (error);
+        }
+        return;
+    }
+
+    /* should not be reached */
+    g_return_if_reached ();
+}
+
+static GVariant *
+ibus_config_service_service_get_property (IBusService        *service,
+                                          GDBusConnection    *connection,
+                                          const gchar        *sender,
+                                          const gchar        *object_path,
+                                          const gchar        *interface_name,
+                                          const gchar        *property_name,
+                                          GError            **error)
+{
+    return IBUS_SERVICE_CLASS (ibus_config_service_parent_class)->
+                service_get_property (service,
+                                      connection,
+                                      sender,
+                                      object_path,
+                                      interface_name,
+                                      property_name,
+                                      error);
 }
 
 static gboolean
-ibus_config_service_ibus_message (IBusConfigService     *config,
-                                  IBusConnection        *connection,
-                                  IBusMessage           *message)
+ibus_config_service_service_set_property (IBusService        *service,
+                                          GDBusConnection    *connection,
+                                          const gchar        *sender,
+                                          const gchar        *object_path,
+                                          const gchar        *interface_name,
+                                          const gchar        *property_name,
+                                          GVariant           *value,
+                                          GError            **error)
 {
-    g_assert (IBUS_IS_CONFIG_SERVICE (config));
-    g_assert (IBUS_IS_CONNECTION (connection));
-    g_assert (message != NULL);
-
-    IBusMessage *reply = NULL;
-
-    if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "SetValue")) {
-        gchar *section;
-        gchar *name;
-        GValue value = { 0 };
-        IBusError *error = NULL;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &section,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_VALUE, &value,
-                                        G_TYPE_INVALID);
-        if (!retval) {
-            reply = ibus_message_new_error_printf (message,
-                                                   DBUS_ERROR_INVALID_ARGS,
-                                                   "Can not parse arguments 1 of SetValue");
-            ibus_error_free (error);
-        }
-        else {
-            if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->set_value (config, section, name, &value, &error)) {
-                reply = ibus_message_new_error (message,
-                                                error->name,
-                                                error->message);
-                ibus_error_free (error);
-            }
-            else {
-                reply = ibus_message_new_method_return (message);
-            }
-            g_value_unset (&value);
-        }
-    }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "GetValue")) {
-        gchar *section;
-        gchar *name;
-        GValue value = { 0 };
-        IBusError *error = NULL;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &section,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_INVALID);
-
-        if (!retval) {
-            reply = ibus_message_new_error (message,
-                                            error->name,
-                                            error->message);
-            ibus_error_free (error);
-        }
-        else if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->get_value (config, section, name, &value, &error)) {
-            reply = ibus_message_new_error (message,
-                                            error->name,
-                                            error->message);
-            ibus_error_free (error);
-        }
-        else {
-            reply = ibus_message_new_method_return (message);
-            ibus_message_append_args (reply,
-                                      G_TYPE_VALUE, &value,
-                                      G_TYPE_INVALID);
-            g_value_unset (&value);
-        }
-    }
-    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "Unset")) {
-        gchar *section;
-        gchar *name;
-        IBusError *error = NULL;
-        gboolean retval;
-
-        retval = ibus_message_get_args (message,
-                                        &error,
-                                        G_TYPE_STRING, &section,
-                                        G_TYPE_STRING, &name,
-                                        G_TYPE_INVALID);
-        if (!retval) {
-            reply = ibus_message_new_error_printf (message,
-                                                   DBUS_ERROR_INVALID_ARGS,
-                                                   "Can not parse arguments 1 of Unset");
-            ibus_error_free (error);
-        }
-        else if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->unset (config, section, name, &error)) {
-            reply = ibus_message_new_error (message,
-                                            error->name,
-                                            error->message);
-            ibus_error_free (error);
-        }
-        else {
-            reply = ibus_message_new_method_return (message);
-        }
-    }
-
-    if (reply) {
-        ibus_connection_send (connection, reply);
-        ibus_message_unref (reply);
-        return TRUE;
-    }
-
-    return parent_class->ibus_message ((IBusService *) config, connection, message);
+    return IBUS_SERVICE_CLASS (ibus_config_service_parent_class)->
+                service_set_property (service,
+                                      connection,
+                                      sender,
+                                      object_path,
+                                      interface_name,
+                                      property_name,
+                                      value,
+                                      error);
 }
 
 static gboolean
 ibus_config_service_set_value (IBusConfigService *config,
                                const gchar       *section,
                                const gchar       *name,
-                               const GValue      *value,
-                               IBusError        **error)
+                               GVariant          *value,
+                               GError           **error)
 {
     if (error) {
-        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                             "Can not set value [%s, %s]",
-                                             section, name);
+        gchar *str = g_variant_print (value, TRUE);
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                              "Cannot set value %s::%s to %s", section, name, str);
+        g_free (str);
     }
     return FALSE;
 }
 
-static gboolean
+static GVariant *
 ibus_config_service_get_value (IBusConfigService *config,
                                const gchar       *section,
                                const gchar       *name,
-                               GValue            *value,
-                               IBusError        **error)
+                               GError           **error)
 {
     if (error) {
-        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                             "Can not get value [%s, %s]",
-                                             section, name);
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                              "Cannot get value %s::%s", section, name);
+    }
+    return NULL;
+}
+
+static gboolean
+ibus_config_service_unset_value (IBusConfigService *config,
+                                 const gchar       *section,
+                                 const gchar       *name,
+                                 GError           **error)
+{
+    if (error) {
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                              "Cannot unset value %s::%s", section, name);
     }
     return FALSE;
 }
 
-static gboolean
-ibus_config_service_unset (IBusConfigService *config,
-                           const gchar       *section,
-                           const gchar       *name,
-                           IBusError        **error)
+IBusConfigService *
+ibus_config_service_new (GDBusConnection *connection)
 {
-    if (error) {
-        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                             "Can not unset [%s, %s]",
-                                             section, name);
-    }
-    return FALSE;
+    g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+
+    GObject *object = g_object_new (IBUS_TYPE_CONFIG_SERVICE,
+                                    "object-path", IBUS_PATH_CONFIG,
+                                    "connection", connection,
+                                    NULL);
+    return IBUS_CONFIG_SERVICE (object);
 }
 
 void
 ibus_config_service_value_changed (IBusConfigService  *config,
                                    const gchar        *section,
                                    const gchar        *name,
-                                   const GValue       *value)
+                                   GVariant           *value)
 {
-    g_assert (IBUS_IS_CONFIG_SERVICE (config));
-    g_assert (section);
-    g_assert (name);
-    g_assert (G_IS_VALUE (value));
+    g_return_if_fail (IBUS_IS_CONFIG_SERVICE (config));
+    g_return_if_fail (section != NULL);
+    g_return_if_fail (name != NULL);
+    g_return_if_fail (value != NULL);
 
-    ibus_service_send_signal ((IBusService *) config,
+    ibus_service_emit_signal ((IBusService *) config,
+                              NULL,
                               IBUS_INTERFACE_CONFIG,
                               "ValueChanged",
-                              G_TYPE_STRING, &section,
-                              G_TYPE_STRING, &name,
-                              G_TYPE_VALUE, value,
-                              G_TYPE_INVALID);
+                              g_variant_new ("(ssv)", section, name, value),
+                              NULL);
 }

@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <dbus/dbus.h>
 #include "ibushotkey.h"
+#include "ibusmarshalers.h"
 #include "ibuskeysyms.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"
@@ -66,13 +66,13 @@ static gboolean      ibus_hotkey_serialize          (IBusHotkey             *hot
 static gboolean      ibus_hotkey_deserialize        (IBusHotkey             *hotkey,
                                                      IBusMessageIter        *iter);
 */
-static void          ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass);
+static void          ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *class);
 static void          ibus_hotkey_profile_init       (IBusHotkeyProfile      *profile);
 static void          ibus_hotkey_profile_destroy    (IBusHotkeyProfile      *profile);
 static gboolean      ibus_hotkey_profile_serialize  (IBusHotkeyProfile      *profile,
-                                                     IBusMessageIter        *iter);
-static gboolean      ibus_hotkey_profile_deserialize(IBusHotkeyProfile      *profile,
-                                                     IBusMessageIter        *iter);
+                                                     GVariantBuilder        *builder);
+static gint          ibus_hotkey_profile_deserialize(IBusHotkeyProfile      *profile,
+                                                     GVariant               *variant);
 static gboolean      ibus_hotkey_profile_copy       (IBusHotkeyProfile      *dest,
                                                      const IBusHotkeyProfile*src);
 static void          ibus_hotkey_profile_trigger    (IBusHotkeyProfile      *profile,
@@ -203,14 +203,14 @@ ibus_hotkey_profile_get_type (void)
 }
 
 static void
-ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass)
+ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *class)
 {
-    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
+    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (class);
 
-    g_type_class_add_private (klass, sizeof (IBusHotkeyProfilePrivate));
+    g_type_class_add_private (class, sizeof (IBusHotkeyProfilePrivate));
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_hotkey_profile_destroy;
 
@@ -218,9 +218,7 @@ ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass)
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_hotkey_profile_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_hotkey_profile_copy;
 
-    klass->trigger = ibus_hotkey_profile_trigger;
-
-    g_string_append (serializable_class->signature, "av");
+    class->trigger = ibus_hotkey_profile_trigger;
 
     /* install signals */
     /**
@@ -236,11 +234,11 @@ ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *klass)
      */
     profile_signals[TRIGGER] =
         g_signal_new (I_("trigger"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
             G_STRUCT_OFFSET (IBusHotkeyProfileClass, trigger),
             NULL, NULL,
-            ibus_marshal_VOID__UINT_POINTER,
+            _ibus_marshal_VOID__UINT_POINTER,
             G_TYPE_NONE,
             2,
             G_TYPE_UINT,
@@ -294,26 +292,26 @@ ibus_hotkey_profile_destroy (IBusHotkeyProfile *profile)
 
 static gboolean
 ibus_hotkey_profile_serialize (IBusHotkeyProfile *profile,
-                               IBusMessageIter   *iter)
+                               GVariantBuilder   *builder)
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *) profile, iter);
+    retval = parent_class->serialize ((IBusSerializable *) profile, builder);
     g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
 }
 
-static gboolean
+static gint
 ibus_hotkey_profile_deserialize (IBusHotkeyProfile *profile,
-                                 IBusMessageIter   *iter)
+                                 GVariant          *variant)
 {
-    gboolean retval;
+    gint retval;
 
-    retval = parent_class->deserialize ((IBusSerializable *) profile, iter);
-    g_return_val_if_fail (retval, FALSE);
+    retval = parent_class->deserialize ((IBusSerializable *) profile, variant);
+    g_return_val_if_fail (retval, 0);
 
-    return TRUE;
+    return retval;
 }
 
 static gboolean

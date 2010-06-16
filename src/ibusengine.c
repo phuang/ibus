@@ -19,9 +19,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <stdarg.h>
-#include <dbus/dbus.h>
 #include "ibusengine.h"
+#include <stdarg.h>
+#include "ibusmarshalers.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"
 
@@ -50,124 +50,201 @@ enum {
 
 enum {
     PROP_0,
-    PROP_NAME,
-    PROP_CONNECTION,
+    PROP_ENGINE_NAME,
 };
 
 
 /* IBusEnginePriv */
 struct _IBusEnginePrivate {
-    gchar *name;
-    IBusConnection *connection;
+    gchar *engine_name;
+    GDBusConnection *connection;
 };
-typedef struct _IBusEnginePrivate IBusEnginePrivate;
 
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     ibus_engine_destroy         (IBusEngine         *engine);
-static void     ibus_engine_set_property    (IBusEngine         *engine,
-                                             guint               prop_id,
-                                             const GValue       *value,
-                                             GParamSpec         *pspec);
-static void     ibus_engine_get_property    (IBusEngine         *engine,
-                                             guint               prop_id,
-                                             GValue             *value,
-                                             GParamSpec         *pspec);
-static gboolean ibus_engine_ibus_message    (IBusEngine         *engine,
-                                             IBusConnection     *connection,
-                                             IBusMessage        *message);
-static gboolean ibus_engine_process_key_event
-                                            (IBusEngine         *engine,
-                                             guint               keyval,
-                                             guint               keycode,
-                                             guint               state);
-static void     ibus_engine_focus_in        (IBusEngine         *engine);
-static void     ibus_engine_focus_out       (IBusEngine         *engine);
-static void     ibus_engine_reset           (IBusEngine         *engine);
-static void     ibus_engine_enable          (IBusEngine         *engine);
-static void     ibus_engine_disable         (IBusEngine         *engine);
-static void     ibus_engine_set_cursor_location
-                                            (IBusEngine         *engine,
-                                             gint                x,
-                                             gint                y,
-                                             gint                w,
-                                             gint                h);
-static void     ibus_engine_set_capabilities
-                                            (IBusEngine         *engine,
-                                             guint               caps);
-static void     ibus_engine_page_up         (IBusEngine         *engine);
-static void     ibus_engine_page_down       (IBusEngine         *engine);
-static void     ibus_engine_cursor_up       (IBusEngine         *engine);
-static void     ibus_engine_cursor_down     (IBusEngine         *engine);
-static void     ibus_engine_candidate_clicked
-                                            (IBusEngine         *engine,
-                                             guint               index,
-                                             guint               button,
-                                             guint               state);
-static void     ibus_engine_property_activate
-                                            (IBusEngine         *engine,
-                                             const gchar        *prop_name,
-                                             guint               prop_state);
-static void     ibus_engine_property_show   (IBusEngine         *engine,
-                                             const gchar        *prop_name);
-static void     ibus_engine_property_hide   (IBusEngine         *engine,
-                                             const gchar        *prop_name);
+static void      ibus_engine_destroy         (IBusEngine         *engine);
+static void      ibus_engine_set_property    (IBusEngine         *engine,
+                                              guint               prop_id,
+                                              const GValue       *value,
+                                              GParamSpec         *pspec);
+static void      ibus_engine_get_property    (IBusEngine         *engine,
+                                              guint               prop_id,
+                                              GValue             *value,
+                                              GParamSpec         *pspec);
+static void      ibus_engine_service_method_call
+                                              (IBusService        *service,
+                                               GDBusConnection    *connection,
+                                               const gchar        *sender,
+                                               const gchar        *object_path,
+                                               const gchar        *interface_name,
+                                               const gchar        *method_name,
+                                               GVariant           *parameters,
+                                               GDBusMethodInvocation
+                                                                  *invocation);
+static GVariant *ibus_engine_service_get_property
+                                             (IBusService        *service,
+                                              GDBusConnection    *connection,
+                                              const gchar        *sender,
+                                              const gchar        *object_path,
+                                              const gchar        *interface_name,
+                                              const gchar        *property_name,
+                                              GError            **error);
+static gboolean  ibus_engine_service_set_property
+                                             (IBusService        *service,
+                                              GDBusConnection    *connection,
+                                              const gchar        *sender,
+                                              const gchar        *object_path,
+                                              const gchar        *interface_name,
+                                              const gchar        *property_name,
+                                              GVariant           *value,
+                                              GError            **error);
+static gboolean  ibus_engine_process_key_event
+                                             (IBusEngine         *engine,
+                                              guint               keyval,
+                                              guint               keycode,
+                                              guint               state);
+static void      ibus_engine_focus_in        (IBusEngine         *engine);
+static void      ibus_engine_focus_out       (IBusEngine         *engine);
+static void      ibus_engine_reset           (IBusEngine         *engine);
+static void      ibus_engine_enable          (IBusEngine         *engine);
+static void      ibus_engine_disable         (IBusEngine         *engine);
+static void      ibus_engine_set_cursor_location
+                                             (IBusEngine         *engine,
+                                              gint                x,
+                                              gint                y,
+                                              gint                w,
+                                              gint                h);
+static void      ibus_engine_set_capabilities
+                                             (IBusEngine         *engine,
+                                              guint               caps);
+static void      ibus_engine_page_up         (IBusEngine         *engine);
+static void      ibus_engine_page_down       (IBusEngine         *engine);
+static void      ibus_engine_cursor_up       (IBusEngine         *engine);
+static void      ibus_engine_cursor_down     (IBusEngine         *engine);
+static void      ibus_engine_candidate_clicked
+                                             (IBusEngine         *engine,
+                                              guint               index,
+                                              guint               button,
+                                              guint               state);
+static void      ibus_engine_property_activate
+                                             (IBusEngine         *engine,
+                                              const gchar        *prop_name,
+                                              guint               prop_state);
+static void      ibus_engine_property_show   (IBusEngine         *engine,
+                                              const gchar        *prop_name);
+static void      ibus_engine_property_hide   (IBusEngine         *engine,
+                                              const gchar        *prop_name);
+static void      ibus_engine_emit_signal     (IBusEngine         *engine,
+                                              const gchar        *signal_name,
+                                              GVariant           *parameters);
 
 
 G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
 
-IBusEngine *
-ibus_engine_new (const gchar    *name,
-                 const gchar    *path,
-                 IBusConnection *connection)
-{
-    g_assert (path);
-    g_assert (IBUS_IS_CONNECTION (connection));
-
-    IBusEngine *engine;
-
-    engine = (IBusEngine *) g_object_new (IBUS_TYPE_ENGINE,
-                                          "name", name,
-                                          "path", path,
-                                          "connection", connection,
-                                          NULL);
-
-    return engine;
-}
+static const gchar introspection_xml[] =
+    "<node>"
+    "  <interface name='org.freedesktop.IBus.Engine'>"
+    /* FIXME methods */
+    "    <method name='ProcessKeyEvent'>"
+    "      <arg direction='in'  type='u' name='keyval' />"
+    "      <arg direction='in'  type='u' name='keycode' />"
+    "      <arg direction='in'  type='u' name='state' />"
+    "      <arg direction='out' type='b' />"
+    "    </method>"
+    "    <method name='SetCursorLocation'>"
+    "      <arg direction='in'  type='i' name='x' />"
+    "      <arg direction='in'  type='i' name='y' />"
+    "      <arg direction='in'  type='i' name='w' />"
+    "      <arg direction='in'  type='i' name='h' />"
+    "    </method>"
+    "    <method name='SetCapabilities'>"
+    "      <arg direction='in'  type='u' name='caps' />"
+    "    </method>"
+    "    <method name='PropertyActivate'>"
+    "      <arg direction='in'  type='s' name='name' />"
+    "      <arg direction='in'  type='i' name='state' />"
+    "    </method>"
+    "    <method name='PropertyShow'>"
+    "      <arg direction='in'  type='s' name='name' />"
+    "    </method>"
+    "    <method name='PropertyHide'>"
+    "      <arg direction='in'  type='s' name='name' />"
+    "    </method>"
+    "    <method name='FocusIn' />"
+    "    <method name='FocusOut' />"
+    "    <method name='Reset' />"
+    "    <method name='Enable' />"
+    "    <method name='Disable' />"
+    "    <method name='PageUp' />"
+    "    <method name='PageDown' />"
+    "    <method name='CursorUp' />"
+    "    <method name='CursorDown' />"
+    /* FIXME signals */
+    "    <signal name='CommitText'>"
+    "      <arg type='v' name='text' />"
+    "    </signal>"
+    "    <signal name='UpdatePreeditText'>"
+    "      <arg type='v' name='text' />"
+    "      <arg type='u' name='cursor_pos' />"
+    "      <arg type='b' name='visible' />"
+    "      <arg type='u' name='mode' />"
+    "    </signal>"
+    "    <signal name='UpdateAuxiliaryText'>"
+    "      <arg type='v' name='text' />"
+    "      <arg type='b' name='visible' />"
+    "    </signal>"
+    "    <signal name='UpdateLookupTable'>"
+    "      <arg type='v' name='table' />"
+    "      <arg type='b' name='visible' />"
+    "    </signal>"
+    "    <signal name='RegisterProperties'>"
+    "      <arg type='v' name='props' />"
+    "    </signal>"
+    "    <signal name='UpdateProperty'>"
+    "      <arg type='v' name='prop' />"
+    "    </signal>"
+    "    <signal name='ForwardKeyEvent'>"
+    "      <arg type='u' name='keyval' />"
+    "      <arg type='u' name='keycode' />"
+    "      <arg type='u' name='state' />"
+    "    </signal>"
+    "  </interface>"
+    "</node>";
 
 static void
-ibus_engine_class_init (IBusEngineClass *klass)
+ibus_engine_class_init (IBusEngineClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-
-    g_type_class_add_private (klass, sizeof (IBusEnginePrivate));
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_engine_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_engine_get_property;
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_engine_destroy;
 
-    IBUS_SERVICE_CLASS (klass)->ibus_message = (ServiceIBusMessageFunc) ibus_engine_ibus_message;
+    IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_engine_service_method_call;
+    IBUS_SERVICE_CLASS (class)->service_get_property = ibus_engine_service_get_property;
+    IBUS_SERVICE_CLASS (class)->service_set_property = ibus_engine_service_set_property;
 
-    klass->process_key_event = ibus_engine_process_key_event;
-    klass->focus_in     = ibus_engine_focus_in;
-    klass->focus_out    = ibus_engine_focus_out;
-    klass->reset        = ibus_engine_reset;
-    klass->enable       = ibus_engine_enable;
-    klass->disable      = ibus_engine_disable;
-    klass->page_up      = ibus_engine_page_up;
-    klass->page_down    = ibus_engine_page_down;
-    klass->cursor_up    = ibus_engine_cursor_up;
-    klass->cursor_down  = ibus_engine_cursor_down;
-    klass->candidate_clicked    = ibus_engine_candidate_clicked;
-    klass->property_activate    = ibus_engine_property_activate;
-    klass->property_show        = ibus_engine_property_show;
-    klass->property_hide        = ibus_engine_property_hide;
-    klass->set_cursor_location  = ibus_engine_set_cursor_location;
-    klass->set_capabilities     = ibus_engine_set_capabilities;
+    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 
+    class->process_key_event = ibus_engine_process_key_event;
+    class->focus_in     = ibus_engine_focus_in;
+    class->focus_out    = ibus_engine_focus_out;
+    class->reset        = ibus_engine_reset;
+    class->enable       = ibus_engine_enable;
+    class->disable      = ibus_engine_disable;
+    class->page_up      = ibus_engine_page_up;
+    class->page_down    = ibus_engine_page_down;
+    class->cursor_up    = ibus_engine_cursor_up;
+    class->cursor_down  = ibus_engine_cursor_down;
+    class->candidate_clicked    = ibus_engine_candidate_clicked;
+    class->property_activate    = ibus_engine_property_activate;
+    class->property_show        = ibus_engine_property_show;
+    class->property_hide        = ibus_engine_property_hide;
+    class->set_cursor_location  = ibus_engine_set_cursor_location;
+    class->set_capabilities     = ibus_engine_set_capabilities;
 
     /* install properties */
     /**
@@ -176,25 +253,14 @@ ibus_engine_class_init (IBusEngineClass *klass)
      * Name of this IBusEngine.
      */
     g_object_class_install_property (gobject_class,
-                    PROP_NAME,
-                    g_param_spec_string ("name",
-                        "name",
+                    PROP_ENGINE_NAME,
+                    g_param_spec_string ("engine-name",
+                        "engine name",
                         "engine name",
                         "noname",
-                        G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
-
-    /**
-     * IBusEngine:connection:
-     *
-     * Connection of this IBusEngine.
-     */
-    g_object_class_install_property (gobject_class,
-                    PROP_CONNECTION,
-                    g_param_spec_object ("connection",
-                        "connection",
-                        "The connection of engine object",
-                        IBUS_TYPE_CONNECTION,
-                        G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY |
+                        G_PARAM_STATIC_STRINGS));
 
     /* install signals */
     /**
@@ -221,7 +287,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
             NULL, NULL,
-            ibus_marshal_BOOL__UINT_UINT_UINT,
+            _ibus_marshal_BOOL__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
             G_TYPE_UINT,
@@ -244,7 +310,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, focus_in),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -264,7 +330,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, focus_out),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -284,7 +350,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, reset),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -304,7 +370,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, enable),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -324,7 +390,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, disable),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -348,7 +414,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, set_cursor_location),
             NULL, NULL,
-            ibus_marshal_VOID__INT_INT_INT_INT,
+            _ibus_marshal_VOID__INT_INT_INT_INT,
             G_TYPE_NONE,
             4,
             G_TYPE_INT,
@@ -373,7 +439,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, set_capabilities),
             NULL, NULL,
-            ibus_marshal_VOID__UINT,
+            _ibus_marshal_VOID__UINT,
             G_TYPE_NONE,
             1,
             G_TYPE_UINT);
@@ -393,7 +459,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, page_up),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -412,7 +478,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, page_down),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -431,7 +497,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, cursor_up),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -450,7 +516,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, cursor_down),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE,
             0);
 
@@ -472,7 +538,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, candidate_clicked),
             NULL, NULL,
-            ibus_marshal_VOID__UINT_UINT_UINT,
+            _ibus_marshal_VOID__UINT_UINT_UINT,
             G_TYPE_NONE,
             3,
             G_TYPE_UINT,
@@ -496,7 +562,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, property_activate),
             NULL, NULL,
-            ibus_marshal_VOID__STRING_UINT,
+            _ibus_marshal_VOID__STRING_UINT,
             G_TYPE_NONE,
             2,
             G_TYPE_STRING,
@@ -518,7 +584,7 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, property_show),
             NULL, NULL,
-            ibus_marshal_VOID__STRING,
+            _ibus_marshal_VOID__STRING,
             G_TYPE_NONE,
             1,
             G_TYPE_STRING);
@@ -539,35 +605,25 @@ ibus_engine_class_init (IBusEngineClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, property_hide),
             NULL, NULL,
-            ibus_marshal_VOID__STRING,
+            _ibus_marshal_VOID__STRING,
             G_TYPE_NONE,
             1,
             G_TYPE_STRING);
 
+    g_type_class_add_private (class, sizeof (IBusEnginePrivate));
 }
 
 static void
 ibus_engine_init (IBusEngine *engine)
 {
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    priv->name = NULL;
-    priv->connection = NULL;
+    engine->priv = IBUS_ENGINE_GET_PRIVATE (engine);
 }
 
 static void
 ibus_engine_destroy (IBusEngine *engine)
 {
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    g_free (priv->name);
-
-    if (priv->connection) {
-        g_object_unref (priv->connection);
-        priv->connection = NULL;
-    }
+    g_free (engine->priv->engine_name);
+    engine->priv->engine_name = NULL;
 
     IBUS_OBJECT_CLASS(ibus_engine_parent_class)->destroy (IBUS_OBJECT (engine));
 }
@@ -578,19 +634,24 @@ ibus_engine_set_property (IBusEngine   *engine,
                           const GValue *value,
                           GParamSpec   *pspec)
 {
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
     switch (prop_id) {
-    case PROP_NAME:
-        priv->name = g_strdup (g_value_dup_string (value));
+    case PROP_ENGINE_NAME:
+        engine->priv->engine_name = g_value_dup_string (value);
         break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
+    }
+}
 
-    case PROP_CONNECTION:
-        priv->connection = g_value_get_object (value);
-        g_object_ref_sink (priv->connection);
-        ibus_service_add_to_connection ((IBusService *) engine,
-                                        priv->connection);
+static void
+ibus_engine_get_property (IBusEngine *engine,
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
+{
+    switch (prop_id) {
+    case PROP_ENGINE_NAME:
+        g_value_set_string (value, engine->priv->engine_name);
         break;
 
     default:
@@ -599,48 +660,44 @@ ibus_engine_set_property (IBusEngine   *engine,
 }
 
 static void
-ibus_engine_get_property (IBusEngine *engine,
-    guint prop_id, GValue *value, GParamSpec *pspec)
+ibus_engine_service_method_call (IBusService           *service,
+                                 GDBusConnection       *connection,
+                                 const gchar           *sender,
+                                 const gchar           *object_path,
+                                 const gchar           *interface_name,
+                                 const gchar           *method_name,
+                                 GVariant              *parameters,
+                                 GDBusMethodInvocation *invocation)
 {
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    IBusEngine *engine = IBUS_ENGINE (service);
 
-    switch (prop_id) {
-    case PROP_NAME:
-        g_value_set_string (value, priv->name);
-        break;
-
-    case PROP_CONNECTION:
-        g_value_set_object (value, priv->connection);
-        break;
-
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_ENGINE) != 0) {
+        IBUS_SERVICE_CLASS (ibus_engine_parent_class)->
+                service_method_call (service,
+                                     connection,
+                                     sender,
+                                     object_path,
+                                     interface_name,
+                                     method_name,
+                                     parameters,
+                                     invocation);
+        return;
     }
-}
 
-static gboolean
-ibus_engine_ibus_message (IBusEngine     *engine,
-                          IBusConnection *connection,
-                          IBusMessage    *message)
-{
-    g_assert (IBUS_IS_ENGINE (engine));
-    g_assert (IBUS_IS_CONNECTION (connection));
-    g_assert (message != NULL);
-    g_assert (ibus_message_get_type (message) == DBUS_MESSAGE_TYPE_METHOD_CALL);
-
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    g_assert (priv->connection == connection);
-
-    IBusMessage *reply = NULL;
-    IBusError *error = NULL;
-    gboolean retval;
-
-    gint i;
-    const gchar *interface;
-    const gchar *name;
+    if (g_strcmp0 (method_name, "ProcessKeyEvent") == 0) {
+        guint keyval, keycode, state;
+        gboolean retval = FALSE;
+        g_variant_get (parameters, "(uuu)", &keyval, &keycode, &state);
+        g_signal_emit (engine,
+                       engine_signals[PROCESS_KEY_EVENT],
+                       0,
+                       keyval,
+                       keycode,
+                       state,
+                       &retval);
+        g_dbus_method_invocation_return_value (invocation, g_variant_new ("(b)", retval));
+        return;
+    }
 
     static const struct {
         gchar *member;
@@ -657,240 +714,130 @@ ibus_engine_ibus_message (IBusEngine     *engine,
         { "CursorDown",  CURSOR_DOWN },
     };
 
-    interface = ibus_message_get_interface (message);
-    name = ibus_message_get_member (message);
-
-    if (interface != NULL && g_strcmp0 (interface, IBUS_INTERFACE_ENGINE) != 0)
-        return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->ibus_message (
-                        (IBusService *) engine, connection, message);
-
-    do {
-        if (g_strcmp0 (name, "ProcessKeyEvent") == 0) {
-            guint keyval, keycode, state;
-
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_UINT, &keyval,
-                                            G_TYPE_UINT, &keycode,
-                                            G_TYPE_UINT, &state,
-                                            G_TYPE_INVALID);
-
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                                DBUS_ERROR_INVALID_ARGS,
-                                "%s.%s: Can not match signature (uuu) of method",
-                                IBUS_INTERFACE_ENGINE, "ProcessKeyEvent");
-                ibus_error_free (error);
-            }
-            else {
-                retval = FALSE;
-                g_signal_emit (engine,
-                               engine_signals[PROCESS_KEY_EVENT],
-                               0,
-                               keyval,
-                               keycode,
-                               state,
-                               &retval);
-
-                reply = ibus_message_new_method_return (message);
-                ibus_message_append_args (reply,
-                                          G_TYPE_BOOLEAN, &retval,
-                                          G_TYPE_INVALID);
-            }
-            break;
+    gint i;
+    for (i = 0; i < G_N_ELEMENTS (no_arg_methods); i++) {
+        if (g_strcmp0 (method_name, no_arg_methods[i].member) == 0) {
+            g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
+            g_dbus_method_invocation_return_value (invocation, NULL);
+            return;
         }
+    }
 
-        for (i = 0;
-             i < G_N_ELEMENTS (no_arg_methods) && g_strcmp0 (name, no_arg_methods[i].member) != 0;
-             i++);
+    if (g_strcmp0 (method_name, "CandidateClicked") == 0) {
+        guint index, button, state;
+        g_variant_get (parameters, "(uuu)", &index, &button, &state);
+        g_signal_emit (engine,
+                       engine_signals[CANDIDATE_CLICKED],
+                       0,
+                       index,
+                       button,
+                       state);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-        if (i < G_N_ELEMENTS (no_arg_methods)) {
-            IBusMessageIter iter;
-            ibus_message_iter_init (message, &iter);
-            if (ibus_message_iter_has_next (&iter)) {
-                reply = ibus_message_new_error_printf (message,
-                                    DBUS_ERROR_INVALID_ARGS,
-                                    "%s.%s: Method does not have arguments",
-                                    IBUS_INTERFACE_ENGINE, no_arg_methods[i].member);
-            }
-            else {
-                g_signal_emit (engine, engine_signals[no_arg_methods[i].signal_id], 0);
-                reply = ibus_message_new_method_return (message);
-            }
-            break;
-        }
+    if (g_strcmp0 (method_name, "PropertyActivate") == 0) {
+        gchar *name;
+        guint state;
+        g_variant_get (parameters, "(&su)", &name, &state);
+        g_signal_emit (engine,
+                       engine_signals[PROPERTY_ACTIVATE],
+                       0,
+                       name,
+                       state);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-        if (g_strcmp0 (name, "CandidateClicked") == 0) {
-            guint index, button, state;
+    if (g_strcmp0 (method_name, "PropertyShow") == 0) {
+        gchar *name;
+        g_variant_get (parameters, "(&s)", &name);
+        g_signal_emit (engine,
+                       engine_signals[PROPERTY_SHOW],
+                       0,
+                       name);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_UINT, &index,
-                                            G_TYPE_UINT, &button,
-                                            G_TYPE_UINT, &state,
-                                            G_TYPE_INVALID);
+    if (g_strcmp0 (method_name, "PropertyHide") == 0) {
+        gchar *name;
+        g_variant_get (parameters, "(&s)", &name);
+        g_signal_emit (engine,
+                       engine_signals[PROPERTY_HIDE],
+                       0,
+                       name);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                                DBUS_ERROR_INVALID_ARGS,
-                                "%s.%s: Can not match signature (uuu) of method",
-                                IBUS_INTERFACE_ENGINE, "CandidateClicked");
-                ibus_error_free (error);
-            }
-            else {
-                g_signal_emit (engine,
-                               engine_signals[CANDIDATE_CLICKED],
-                               0,
-                               index,
-                               button,
-                               state);
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "PropertyActivate") == 0) {
-            gchar *name;
-            guint state;
+    if (g_strcmp0 (method_name, "SetCursorLocation") == 0) {
+        gint x, y, w, h;
+        g_variant_get (parameters, "(iiii)", &x, &y, &w, &h);
+        engine->cursor_area.x = x;
+        engine->cursor_area.y = y;
+        engine->cursor_area.width = w;
+        engine->cursor_area.height = h;
 
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_STRING, &name,
-                                            G_TYPE_UINT, &state,
-                                            G_TYPE_INVALID);
+        g_signal_emit (engine,
+                       engine_signals[SET_CURSOR_LOCATION],
+                       0,
+                       x, y, w, h);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                                DBUS_ERROR_INVALID_ARGS,
-                                "%s.%s: Can not match signature (si) of method",
-                                IBUS_INTERFACE_ENGINE,
-                                "PropertyActivate");
-                ibus_error_free (error);
-            }
-            else {
-                g_signal_emit (engine,
-                               engine_signals[PROPERTY_ACTIVATE],
-                               0,
-                               name,
-                               state);
+    if (g_strcmp0 (method_name, "SetCapabilities") == 0) {
+        guint caps;
+        g_variant_get (parameters, "(u)", &caps);
+        engine->client_capabilities = caps;
+        g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
 
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "PropertyShow") == 0) {
-            gchar *name;
+    /* should not be reached */
+    g_return_if_reached ();
+}
 
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_STRING, &name,
-                                            G_TYPE_INVALID);
+static GVariant *
+ibus_engine_service_get_property (IBusService        *service,
+                                  GDBusConnection    *connection,
+                                  const gchar        *sender,
+                                  const gchar        *object_path,
+                                  const gchar        *interface_name,
+                                  const gchar        *property_name,
+                                  GError            **error)
+{
+    return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->
+                service_get_property (service,
+                                      connection,
+                                      sender,
+                                      object_path,
+                                      interface_name,
+                                      property_name,
+                                      error);
+}
 
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                            DBUS_ERROR_INVALID_ARGS,
-                            "%s.%s: Can not match signature (s) of method",
-                            IBUS_INTERFACE_ENGINE,
-                            "PropertyShow");
-                ibus_error_free (error);
-            }
-            else {
-                g_signal_emit (engine,
-                               engine_signals[PROPERTY_SHOW],
-                               0,
-                               name);
-
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "PropertyHide") == 0) {
-            gchar *name;
-
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_STRING, &name,
-                                            G_TYPE_INVALID);
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                            DBUS_ERROR_INVALID_ARGS,
-                            "%s.%s: Can not match signature (s) of method",
-                            IBUS_INTERFACE_ENGINE, "PropertyHide");
-                ibus_error_free (error);
-            }
-            else {
-                g_signal_emit (engine, engine_signals[PROPERTY_HIDE], 0, name);
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "SetCursorLocation") == 0) {
-            gint x, y, w, h;
-
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_INT, &x,
-                                            G_TYPE_INT, &y,
-                                            G_TYPE_INT, &w,
-                                            G_TYPE_INT, &h,
-                                            G_TYPE_INVALID);
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                            DBUS_ERROR_INVALID_ARGS,
-                            "%s.%s: Can not match signature (iiii) of method",
-                            IBUS_INTERFACE_ENGINE,
-                            "SetCursorLocation");
-                ibus_error_free (error);
-            }
-            else {
-                engine->cursor_area.x = x;
-                engine->cursor_area.y = y;
-                engine->cursor_area.width = w;
-                engine->cursor_area.height = h;
-
-                g_signal_emit (engine,
-                               engine_signals[SET_CURSOR_LOCATION],
-                               0,
-                               x, y, w, h);
-
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "SetCapabilities") == 0) {
-            guint caps;
-
-            retval = ibus_message_get_args (message,
-                                            &error,
-                                            G_TYPE_UINT, &caps,
-                                            G_TYPE_INVALID);
-
-            if (!retval) {
-                reply = ibus_message_new_error_printf (message,
-                            DBUS_ERROR_INVALID_ARGS,
-                            "%s.%s: Can not match signature (u) of method",
-                            IBUS_INTERFACE_ENGINE, "SetCapabilities");
-                ibus_error_free (error);
-            }
-            else {
-                engine->client_capabilities = caps;
-                g_signal_emit (engine, engine_signals[SET_CAPABILITIES], 0, caps);
-                reply = ibus_message_new_method_return (message);
-            }
-        }
-        else if (g_strcmp0 (name, "Destroy") == 0) {
-            reply = ibus_message_new_method_return (message);
-            ibus_connection_send (connection, reply);
-            ibus_message_unref (reply);
-            ibus_object_destroy ((IBusObject *) engine);
-            return TRUE;
-        }
-        else {
-            reply = ibus_message_new_error_printf (message,
-                        DBUS_ERROR_UNKNOWN_METHOD,
-                        "%s.%s",
-                        IBUS_INTERFACE_ENGINE, name);
-            g_warn_if_reached ();
-        }
-    } while (0);
-
-    ibus_connection_send (connection, reply);
-    ibus_message_unref (reply);
-    return TRUE;
+static gboolean
+ibus_engine_service_set_property (IBusService        *service,
+                                  GDBusConnection    *connection,
+                                  const gchar        *sender,
+                                  const gchar        *object_path,
+                                  const gchar        *interface_name,
+                                  const gchar        *property_name,
+                                  GVariant           *value,
+                                  GError            **error)
+{
+    return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->
+                service_set_property (service,
+                                      connection,
+                                      sender,
+                                      object_path,
+                                      interface_name,
+                                      property_name,
+                                      value,
+                                      error);
 }
 
 static gboolean
@@ -1003,6 +950,20 @@ ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
 }
 
 static void
+ibus_engine_emit_signal (IBusEngine  *engine,
+                         const gchar *signal_name,
+                         GVariant    *parameters)
+{
+    ibus_service_emit_signal ((IBusService *)engine,
+                              NULL,
+                              IBUS_INTERFACE_ENGINE,
+                              signal_name,
+                              parameters,
+                              NULL);
+}
+
+#if 0
+static void
 _send_signal (IBusEngine  *engine,
               const gchar *name,
               GType        first_arg_type,
@@ -1028,15 +989,50 @@ _send_signal (IBusEngine  *engine,
                                         args);
     va_end (args);
 }
+#endif
+
+IBusEngine *
+ibus_engine_new (const gchar     *engine_name,
+                 const gchar     *object_path,
+                 GDBusConnection *connection)
+{
+    return ibus_engine_new_type (IBUS_TYPE_ENGINE,
+                                 engine_name,
+                                 object_path,
+                                 connection);
+}
+
+IBusEngine  *
+ibus_engine_new_type (GType            engine_type,
+                      const gchar     *engine_name,
+                      const gchar     *object_path,
+                      GDBusConnection *connection)
+{
+    g_return_val_if_fail (g_type_is_a (engine_type, IBUS_TYPE_ENGINE), NULL);
+    g_return_val_if_fail (engine_name != NULL, NULL);
+    g_return_val_if_fail (object_path != NULL, NULL);
+    g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+
+    GObject *object = g_object_new (engine_type,
+                                    "engine-name", engine_name,
+                                    "object-path", object_path,
+                                    "connection", connection,
+                                    NULL);
+    return IBUS_ENGINE (object);
+}
+
 
 void
 ibus_engine_commit_text (IBusEngine *engine,
                          IBusText   *text)
 {
-    _send_signal (engine,
-                  "CommitText",
-                  IBUS_TYPE_TEXT, &text,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    ibus_engine_emit_signal (engine,
+                             "CommitText",
+                             g_variant_new ("(v)", variant));
 
     if (g_object_is_floating (text)) {
         g_object_unref (text);
@@ -1060,75 +1056,49 @@ ibus_engine_update_preedit_text_with_mode (IBusEngine            *engine,
                                            gboolean               visible,
                                            IBusPreeditFocusMode   mode)
 {
-    _send_signal (engine,
-                  "UpdatePreeditText",
-                  IBUS_TYPE_TEXT, &text,
-                  G_TYPE_UINT, &cursor_pos,
-                  G_TYPE_BOOLEAN, &visible,
-                  G_TYPE_UINT, &mode,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    ibus_engine_emit_signal (engine,
+                             "UpdatePreeditText",
+                             g_variant_new ("(vubu)", variant, cursor_pos, visible, mode));
 
     if (g_object_is_floating (text)) {
         g_object_unref (text);
     }
-}
-
-void
-ibus_engine_show_preedit_text (IBusEngine *engine)
-{
-    _send_signal (engine,
-                  "ShowPreeditText",
-                  G_TYPE_INVALID);
-}
-
-void ibus_engine_hide_preedit_text (IBusEngine *engine)
-{
-    _send_signal (engine,
-                  "HidePreeditText",
-                  G_TYPE_INVALID);
 }
 
 void ibus_engine_update_auxiliary_text (IBusEngine      *engine,
                                         IBusText        *text,
                                         gboolean         visible)
 {
-    _send_signal (engine,
-                  "UpdateAuxiliaryText",
-                  IBUS_TYPE_TEXT, &text,
-                  G_TYPE_BOOLEAN, &visible,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    ibus_engine_emit_signal (engine,
+                             "UpdateAuxiliaryText",
+                             g_variant_new ("(vb)", variant, visible));
 
     if (g_object_is_floating (text)) {
         g_object_unref (text);
     }
 }
 
-void
-ibus_engine_show_auxiliary_text (IBusEngine *engine)
-{
-    _send_signal (engine,
-                  "ShowAuxiliaryText",
-                  G_TYPE_INVALID);
-}
-
-void
-ibus_engine_hide_auxiliary_text (IBusEngine *engine)
-{
-    _send_signal (engine,
-                  "HideAuxiliaryText",
-                  G_TYPE_INVALID);
-}
 
 void
 ibus_engine_update_lookup_table (IBusEngine        *engine,
                                  IBusLookupTable   *table,
                                  gboolean           visible)
 {
-    _send_signal (engine,
-                  "UpdateLookupTable",
-                  IBUS_TYPE_LOOKUP_TABLE, &table,
-                  G_TYPE_BOOLEAN, &visible,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)table);
+    ibus_engine_emit_signal (engine,
+                             "UpdateLookupTable",
+                             g_variant_new ("(vb)", variant, visible));
 
     if (g_object_is_floating (table)) {
         g_object_unref (table);
@@ -1140,6 +1110,9 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
                                       IBusLookupTable   *table,
                                       gboolean           visible)
 {
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+
     IBusLookupTable *new_table;
     IBusText *text;
     gint page_begin;
@@ -1172,52 +1145,41 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
     }
 }
 
-void ibus_engine_show_lookup_table (IBusEngine *engine)
+void
+ibus_engine_forward_key_event (IBusEngine      *engine,
+                               guint            keyval,
+                               guint            keycode,
+                               guint            state)
 {
-    _send_signal (engine,
-                  "ShowLookupTable",
-                  G_TYPE_INVALID);
-}
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
 
-void ibus_engine_hide_lookup_table (IBusEngine *engine)
-{
-    _send_signal (engine,
-                  "HideLookupTable",
-                  G_TYPE_INVALID);
-}
-
-void ibus_engine_forward_key_event (IBusEngine      *engine,
-                                    guint            keyval,
-                                    guint            keycode,
-                                    guint            state)
-{
-    _send_signal (engine,
-                  "ForwardKeyEvent",
-                  G_TYPE_UINT, &keyval,
-                  G_TYPE_UINT, &keycode,
-                  G_TYPE_UINT, &state,
-                  G_TYPE_INVALID);
+    ibus_engine_emit_signal (engine,
+                             "ForwardKeyEvent",
+                             g_variant_new ("(uuu)", keyval, keycode, state));
 }
 
 void ibus_engine_delete_surrounding_text (IBusEngine      *engine,
                                           gint             offset_from_cursor,
                                           guint            nchars)
 {
-    _send_signal (engine,
-                  "DeleteSurroundingText",
-                  G_TYPE_INT,  &offset_from_cursor,
-                  G_TYPE_UINT, &nchars,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+
+    ibus_engine_emit_signal (engine,
+                             "DeleteSurroundingText",
+                             g_variant_new ("(iu)", offset_from_cursor, nchars));
 }
 
 void
 ibus_engine_register_properties (IBusEngine   *engine,
                                  IBusPropList *prop_list)
 {
-    _send_signal (engine,
-                  "RegisterProperties",
-                  IBUS_TYPE_PROP_LIST, &prop_list,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_PROP_LIST (prop_list));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)prop_list);
+    ibus_engine_emit_signal (engine,
+                             "RegisterProperties",
+                             g_variant_new ("(v)", variant));
 
     if (g_object_is_floating (prop_list)) {
         g_object_unref (prop_list);
@@ -1228,24 +1190,40 @@ void
 ibus_engine_update_property (IBusEngine   *engine,
                              IBusProperty *prop)
 {
-    _send_signal (engine,
-                  "UpdateProperty",
-                  IBUS_TYPE_PROPERTY, &prop,
-                  G_TYPE_INVALID);
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+    g_return_if_fail (IBUS_IS_PROPERTY (prop));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)prop);
+    ibus_engine_emit_signal (engine,
+                             "UpdateProperty",
+                             g_variant_new ("(v)", variant));
 
     if (g_object_is_floating (prop)) {
         g_object_unref (prop);
     }
 }
 
+#define DEFINE_FUNC(name, Name)                             \
+    void                                                    \
+    ibus_engine_##name (IBusEngine *engine)                 \
+    {                                                       \
+        g_return_if_fail (IBUS_IS_ENGINE (engine));         \
+        ibus_engine_emit_signal (engine,                    \
+                              #Name,                        \
+                              NULL);                        \
+    }
+DEFINE_FUNC (show_preedit_text, ShowPreeditText)
+DEFINE_FUNC (hide_preedit_text, HidePreeditText)
+DEFINE_FUNC (show_auxiliary_text, ShowAuxiliaryText)
+DEFINE_FUNC (hide_auxiliary_text, HideAuxiliaryText)
+DEFINE_FUNC (show_lookup_table, ShowLookupTable)
+DEFINE_FUNC (hide_lookup_table, HideLookupTable)
+#undef DEFINE_FUNC
+
 const gchar *
 ibus_engine_get_name (IBusEngine *engine)
 {
-    g_assert (IBUS_IS_ENGINE (engine));
-
-    IBusEnginePrivate *priv;
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    return priv->name;
+    g_return_val_if_fail (IBUS_IS_ENGINE (engine), NULL);
+    return engine->priv->engine_name;
 }
 

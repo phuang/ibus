@@ -22,16 +22,15 @@
 #ifndef __IBUS_H_
 #define __IBUS_H_
 
+#define __IBUS_H_INSIDE__
+
 #include <ibusversion.h>
-#include <ibusmainloop.h>
 #include <ibusshare.h>
 #include <ibusobject.h>
 #include <ibusserializable.h>
 #include <ibusattribute.h>
 #include <ibusattrlist.h>
 #include <ibustext.h>
-#include <ibusconnection.h>
-#include <ibusserver.h>
 #include <ibusproxy.h>
 #include <ibusservice.h>
 #include <ibusfactory.h>
@@ -42,9 +41,6 @@
 #include <ibusbus.h>
 #include <ibuskeysyms.h>
 #include <ibuskeymap.h>
-#include <ibusmessage.h>
-#include <ibuspendingcall.h>
-#include <ibuserror.h>
 #include <ibusenumtypes.h>
 #include <ibushotkey.h>
 #include <ibusxml.h>
@@ -53,7 +49,8 @@
 #include <ibuscomponent.h>
 #include <ibusconfig.h>
 #include <ibusconfigservice.h>
-#include <ibusmainloop.h>
+
+#undef __IBUS_H_INSIDE__
 
 #endif
 

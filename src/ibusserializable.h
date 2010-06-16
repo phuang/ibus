@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusserializable
  * @short_description: A serializable object.
@@ -47,7 +52,6 @@
 #define __IBUS_SERIALIZABLE_H_
 
 #include "ibusobject.h"
-#include "ibusmessage.h"
 
 /*
  * Type macros.
@@ -106,6 +110,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusSerializable IBusSerializable;
 typedef struct _IBusSerializableClass IBusSerializableClass;
+typedef struct _IBusSerializablePrivate IBusSerializablePrivate;
 
 /**
  * IBusSerializable:
@@ -114,9 +119,10 @@ typedef struct _IBusSerializableClass IBusSerializableClass;
  * private to the #IBusSerializable and should never be accessed directly.
  */
 struct _IBusSerializable {
-  GObject parent;
-  /* instance members */
-  guint32 flags;
+    /*< private >*/
+    IBusObject parent;
+    IBusSerializablePrivate *priv;
+    /* instance members */
 };
 
 /**
@@ -131,7 +137,7 @@ struct _IBusSerializable {
  * Return TRUE if succeed.
  */
 typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       *object,
-                                                         IBusMessageIter        *iter);
+                                                         GVariantBuilder        *builder);
 
 /**
  * IBusSerializableDeserializeFunc:
@@ -143,8 +149,8 @@ typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       
  * Deserialize function convert an IBusMessageIter to IBusSerializable.
  * Returns a gboolean value which indicates whether the conversion is success.
  */
-typedef gboolean    (* IBusSerializableDeserializeFunc) (IBusSerializable       *object,
-                                                         IBusMessageIter        *iter);
+typedef gint        (* IBusSerializableDeserializeFunc) (IBusSerializable       *object,
+                                                         GVariant               *variant);
 
 /**
  * IBusSerializableCopyFunc:
@@ -159,16 +165,14 @@ typedef gboolean    (* IBusSerializableDeserializeFunc) (IBusSerializable       
 typedef gboolean    (* IBusSerializableCopyFunc)        (IBusSerializable       *dest,
                                                          const IBusSerializable *src);
 struct _IBusSerializableClass {
+    /*< private >*/
     IBusObjectClass parent;
-
-    /* signature */
-    GString *signature;
 
     /* virtual table */
     gboolean    (* serialize)   (IBusSerializable       *object,
-                                 IBusMessageIter        *iter);
-    gboolean    (* deserialize) (IBusSerializable       *object,
-                                 IBusMessageIter        *iter);
+                                 GVariantBuilder        *builder);
+    gint        (* deserialize) (IBusSerializable       *object,
+                                 GVariant               *variant);
     gboolean    (* copy)        (IBusSerializable       *dest,
                                  const IBusSerializable *src);
     /*< private >*/
@@ -250,8 +254,7 @@ IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *obj
  *
  * @see_also: IBusSerializableCopyFunc().
  */
-gboolean             ibus_serializable_serialize        (IBusSerializable   *object,
-                                                         IBusMessageIter    *iter);
+GVariant            *ibus_serializable_serialize        (IBusSerializable   *object);
 
 /**
  * ibus_serializable_deserialize:
@@ -263,7 +266,7 @@ gboolean             ibus_serializable_serialize        (IBusSerializable   *obj
  *
  * @see_also: IBusSerializableCopyFunc().
  */
-IBusSerializable    *ibus_serializable_deserialize      (IBusMessageIter    *iter);
+IBusSerializable    *ibus_serializable_deserialize      (GVariant           *variant);
 
 G_END_DECLS
 #endif

@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusbus
  * @short_description: Connect with IBus daemon.
@@ -29,6 +34,7 @@
 #ifndef __IBUS_BUS_H_
 #define __IBUS_BUS_H_
 
+#include <gio/gio.h>
 #include "ibusinputcontext.h"
 #include "ibusconfig.h"
 #include "ibuscomponent.h"
@@ -55,6 +61,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusBus IBusBus;
 typedef struct _IBusBusClass IBusBusClass;
+typedef struct _IBusBusPrivate IBusBusPrivate;
 
 /**
  * IBusBus:
@@ -64,6 +71,8 @@ typedef struct _IBusBusClass IBusBusClass;
 struct _IBusBus {
   IBusObject parent;
   /* instance members */
+
+  IBusBusPrivate *priv;
 };
 
 struct _IBusBusClass {
@@ -94,9 +103,9 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
  * @bus: An IBusBus.
  * @returns: TRUE if @bus is connected, FALSE otherwise.
  *
- * Return IBusConnection of an IBusIBus instance.
+ * Return GDBusConnection of an IBusIBus instance.
  */
-IBusConnection
+GDBusConnection
             *ibus_bus_get_connection    (IBusBus        *bus);
 
 /**
@@ -190,11 +199,10 @@ gchar       *ibus_bus_get_name_owner    (IBusBus        *bus,
  * ibus_bus_exit:
  * @bus: An IBusBus.
  * @restart: Whether restarting the ibus.
- * @returns: TRUE if the "Exit" call is suceeded, FALSE otherwise.
  *
  * Exit or restart an IBusBus.
  */
-gboolean     ibus_bus_exit              (IBusBus        *bus,
+void        ibus_bus_exit              (IBusBus        *bus,
                                          gboolean        restart);
 
 /**

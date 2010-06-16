@@ -43,7 +43,7 @@ ibus_gconf_start (void)
     ibus_main ();
 }
 
-int
+gint
 main (gint argc, gchar **argv)
 {
     GError *error = NULL;

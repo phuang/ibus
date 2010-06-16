@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibuscomponent
  * @short_description:  Component (executable) specification.
@@ -66,6 +71,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusComponent IBusComponent;
 typedef struct _IBusComponentClass IBusComponentClass;
+typedef struct _IBusComponentPrivate IBusComponentPrivate;
 
 /**
  * IBusComponent:
@@ -81,7 +87,9 @@ typedef struct _IBusComponentClass IBusComponentClass;
  * An IBusComponent stores component information.
  */
 struct _IBusComponent {
+    /*< private >*/
     IBusSerializable parent;
+    IBusComponentPrivate *priv;
     /* instance members */
 
     /*< public >*/

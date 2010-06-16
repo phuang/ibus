@@ -24,49 +24,48 @@
 #include "connection.h"
 #include "matchrule.h"
 
-#define BUS_CONNECTION_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONNECTION, BusConnectionPrivate))
+struct _BusConnection {
+    IBusObject parent;
 
-/* BusConnectionPriv */
-struct _BusConnectionPrivate {
+    /* instance members */
+    GDBusConnection *connection;
+    gchar *unique_name;
+    /* list for well known names */
+    GList  *names;
+    GList  *rules;
+    guint  filter_id;
 };
-typedef struct _BusConnectionPrivate BusConnectionPrivate;
+
+struct _BusConnectionClass {
+  IBusObjectClass parent;
+
+  /* class members */
+};
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_connection_destroy      (BusConnection          *connection);
-static gboolean bus_connection_authenticate_unix_user
-                                            (IBusConnection         *connection,
-                                             gulong                  uid);
-static gboolean bus_connection_ibus_message (BusConnection          *connection,
-                                             IBusMessage            *message);
-#if 0
-static gboolean bus_connection_dbus_signal  (BusConnection          *connection,
-                                             DBusMessage            *message);
-#endif
+static void     bus_connection_destroy      (BusConnection      *connection);
+static void     bus_connection_set_dbus_connection
+                                            (BusConnection      *connection,
+                                             GDBusConnection    *dbus_connection);
+static void     bus_connection_dbus_connection_closed_cb
+                                            (GDBusConnection    *dbus_connection,
+                                             gboolean            remote_peer_vanished,
+                                             GError             *error,
+                                             BusConnection      *connection);
+static GQuark   bus_connection_quark        (void);
 
-G_DEFINE_TYPE (BusConnection, bus_connection, IBUS_TYPE_CONNECTION)
+#define BUS_CONNECTION_QUARK (bus_connection_quark ())
 
-BusConnection *
-bus_connection_new (void)
-{
-    BusConnection *connection = BUS_CONNECTION (g_object_new (BUS_TYPE_CONNECTION, NULL));
-    return connection;
-}
+G_DEFINE_TYPE (BusConnection, bus_connection, IBUS_TYPE_OBJECT)
 
 static void
 bus_connection_class_init (BusConnectionClass *klass)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
-    IBusConnectionClass *ibus_connection_class = IBUS_CONNECTION_CLASS (klass);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
-
-    ibus_connection_class->authenticate_unix_user = bus_connection_authenticate_unix_user;
-    ibus_connection_class->ibus_message =
-            (IBusIBusMessageFunc) bus_connection_ibus_message;
-
 }
 
 static void
@@ -79,61 +78,84 @@ bus_connection_init (BusConnection *connection)
 static void
 bus_connection_destroy (BusConnection *connection)
 {
-    GList *name;
+    if (connection->connection) {
+        /* disconnect from closed signal */
+        g_signal_handlers_disconnect_by_func (connection->connection,
+                G_CALLBACK (bus_connection_dbus_connection_closed_cb), connection);
 
-    IBUS_OBJECT_CLASS(bus_connection_parent_class)->destroy (IBUS_OBJECT (connection));
+        /* remove filter */
+        bus_connection_set_filter (connection, NULL, NULL, NULL);
+
+        /* disconnect busconnection with dbus connection */
+        g_object_set_qdata ((GObject *)connection->connection, BUS_CONNECTION_QUARK, NULL);
+        if (!g_dbus_connection_is_closed (connection->connection)) {
+            g_dbus_connection_close (connection->connection, NULL, NULL, NULL);
+        }
+        g_object_unref (connection->connection);
+        connection->connection = NULL;
+    }
 
     if (connection->unique_name) {
         g_free (connection->unique_name);
         connection->unique_name = NULL;
     }
 
-    for (name = connection->names; name != NULL; name = name->next) {
-        g_free (name->data);
-    }
+    g_list_foreach (connection->names, (GFunc) g_free, NULL);
     g_list_free (connection->names);
     connection->names = NULL;
+
+    IBUS_OBJECT_CLASS(bus_connection_parent_class)->destroy (IBUS_OBJECT (connection));
 }
 
-static gboolean
-bus_connection_authenticate_unix_user (IBusConnection *connection,
-                                       gulong          uid)
+static void
+bus_connection_dbus_connection_closed_cb (GDBusConnection *dbus_connection,
+                                          gboolean         remote_peer_vanished,
+                                          GError          *error,
+                                          BusConnection   *connection)
 {
-    /* just allow root or same user connect to ibus */
-    if (uid == 0 || uid == getuid ())
-        return TRUE;
-    return FALSE;
+    ibus_object_destroy ((IBusObject *)connection);
 }
 
-static gboolean
-bus_connection_ibus_message (BusConnection  *connection,
-                             IBusMessage    *message)
+static void
+bus_connection_set_dbus_connection (BusConnection   *connection,
+                                    GDBusConnection *dbus_connection)
 {
-    gboolean retval;
-
-#if 0
-    gchar *str = ibus_message_to_string (message);
-    g_debug ("%s", str);
-    g_free(str);
-#endif
-
-    retval = IBUS_CONNECTION_CLASS (bus_connection_parent_class)->ibus_message (
-                    (IBusConnection *)connection,
-                    message);
-    return retval;
+    connection->connection = dbus_connection;
+    g_object_ref (connection->connection);
+    g_object_set_qdata_full ((GObject *)dbus_connection,
+                             BUS_CONNECTION_QUARK,
+                             g_object_ref (connection),
+                             (GDestroyNotify)g_object_unref);
+    g_signal_connect (connection->connection, "closed",
+                G_CALLBACK (bus_connection_dbus_connection_closed_cb), connection);
 }
 
-#if 0
-static gboolean
-bus_connection_dbus_signal  (BusConnection  *connection,
-                             DBusMessage    *message)
+static GQuark
+bus_connection_quark (void)
 {
-    gboolean retval;
-    retval = IBUS_CONNECTION_CLASS (bus_connection_parent_class)->dbus_signal (
-            IBUS_CONNECTION (connection), message);
-    return retval;
+    GQuark quark = 0;
+    if (quark == 0) {
+        quark = g_quark_from_static_string ("BUS_CONNECTION");
+    }
+    return quark;
 }
-#endif
+
+BusConnection *
+bus_connection_new (GDBusConnection *dbus_connection)
+{
+    g_return_val_if_fail (bus_connection_lookup (dbus_connection) == NULL, NULL);
+    BusConnection * connection = BUS_CONNECTION (g_object_new (BUS_TYPE_CONNECTION, NULL));
+    bus_connection_set_dbus_connection (connection, dbus_connection);
+    return connection;
+}
+
+BusConnection *
+bus_connection_lookup (GDBusConnection *dbus_connection)
+{
+    g_return_val_if_fail (G_IS_DBUS_CONNECTION (dbus_connection), NULL);
+    return (BusConnection *) g_object_get_qdata ((GObject *)dbus_connection,
+                    BUS_CONNECTION_QUARK);
+}
 
 const gchar *
 bus_connection_get_unique_name (BusConnection   *connection)
@@ -171,13 +193,11 @@ gboolean
 bus_connection_remove_name (BusConnection     *connection,
                              const gchar       *name)
 {
-    GList *link;
+    GList *list = g_list_find_custom (connection->names, name, (GCompareFunc) g_strcmp0);
 
-    link = g_list_find_custom (connection->names, name, (GCompareFunc) g_strcmp0);
-
-    if (link) {
-        g_free (link->data);
-        connection->names = g_list_delete_link (connection->names, link);
+    if (list) {
+        g_free (list->data);
+        connection->names = g_list_delete_link (connection->names, list);
         return TRUE;
     }
     return FALSE;
@@ -190,29 +210,55 @@ bus_connection_add_match (BusConnection  *connection,
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (rule != NULL);
 
-    BusMatchRule *p;
-    GList *link;
-
-    p = bus_match_rule_new (rule);
-    if (p == NULL)
+    BusMatchRule *match = bus_match_rule_new (rule);
+    if (match == NULL)
         return FALSE;
 
-    for (link = connection->rules; link != NULL; link = link->next) {
-        if (bus_match_rule_is_equal (p, (BusMatchRule *)link->data)) {
-            g_object_unref (p);
+    GList *list;
+    for (list = connection->rules; list != NULL; list = list->next) {
+        if (bus_match_rule_is_equal (match, (BusMatchRule *)list->data)) {
+            g_object_unref (match);
             return TRUE;
         }
     }
 
-    connection->rules = g_list_append (connection->rules, p);
+    connection->rules = g_list_append (connection->rules, match);
     return TRUE;
-
 }
 
 gboolean
 bus_connection_remove_match (BusConnection  *connection,
                              const gchar    *rule)
 {
+    g_assert (BUS_IS_CONNECTION (connection));
     return FALSE;
 }
 
+GDBusConnection *
+bus_connection_get_dbus_connection (BusConnection *connection)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+    return connection->connection;
+}
+
+
+void
+bus_connection_set_filter (BusConnection             *connection,
+                           GDBusMessageFilterFunction filter_func,
+                           gpointer                   user_data,
+                           GDestroyNotify             user_data_free_func)
+{
+    g_assert (BUS_IS_CONNECTION (connection));
+
+    if (connection->filter_id != 0) {
+        g_dbus_connection_remove_filter (connection->connection, connection->filter_id);
+        connection->filter_id = 0;
+    }
+
+    if (filter_func != NULL) {
+        connection->filter_id = g_dbus_connection_add_filter (connection->connection,
+                                                              filter_func,
+                                                              user_data,
+                                                              user_data_free_func);
+    }
+}

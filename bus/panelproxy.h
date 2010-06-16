@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __PANEL_PROXY_H_
-#define __PANEL_PROXY_H_
+#ifndef __BUS_PANEL_PROXY_H_
+#define __BUS_PANEL_PROXY_H_
 
 #include <ibus.h>
 #include "connection.h"
@@ -48,31 +48,6 @@ G_BEGIN_DECLS
 
 typedef struct _BusPanelProxy BusPanelProxy;
 typedef struct _BusPanelProxyClass BusPanelProxyClass;
-
-struct _BusPanelProxy {
-    IBusProxy parent;
-
-    /* instance members */
-    BusInputContext *focused_context;
-};
-
-struct _BusPanelProxyClass {
-    IBusProxyClass parent;
-    /* class members */
-
-    void (* page_up)            (BusPanelProxy   *panel);
-    void (* page_down)          (BusPanelProxy   *panel);
-    void (* cursor_up)          (BusPanelProxy   *panel);
-    void (* cursor_down)        (BusPanelProxy   *panel);
-    void (* candidate_clicked)  (BusPanelProxy   *panel,
-                                 guint            index,
-                                 guint            button,
-                                 guint            state);
-
-    void (* property_activate)  (BusPanelProxy   *panel,
-                                 const gchar     *prop_name,
-                                 gint             prop_state);
-};
 
 GType            bus_panel_proxy_get_type           (void);
 BusPanelProxy   *bus_panel_proxy_new                (BusConnection      *connection);

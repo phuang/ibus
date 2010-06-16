@@ -13,7 +13,7 @@ build: patch
 
 install:
 	dh $@ --until auto_install
-	rm -rf $(CURDIR)/debian/tmp/usr/lib/libibus.la \
+	rm -rf $(CURDIR)/debian/tmp/usr/lib/libibus*.la \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.a \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.la \
 		$(CURDIR)/debian/tmp/etc/xdg \

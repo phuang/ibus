@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __MATCH_RULE_H_
-#define __MATCH_RULE_H_
+#ifndef __BUS_MATCH_RULE_H_
+#define __BUS_MATCH_RULE_H_
 
 #include <ibus.h>
 #include "connection.h"
@@ -48,77 +48,42 @@ G_BEGIN_DECLS
 typedef struct _BusMatchRule BusMatchRule;
 typedef struct _BusMatchRuleClass BusMatchRuleClass;
 
-typedef enum {
-    MATCH_TYPE          = 1 << 0,
-    MATCH_INTERFACE     = 1 << 1,
-    MATCH_MEMBER        = 1 << 2,
-    MATCH_SENDER        = 1 << 3,
-    MATCH_DESTINATION   = 1 << 4,
-    MATCH_PATH          = 1 << 5,
-    MATCH_ARGS          = 1 << 6,
-} BusMatchFlags;
-
-typedef struct _BusRecipient BusRecipient;
-struct _BusRecipient {
-    BusConnection *connection;
-    gint refcount;
-};
-
-struct _BusMatchRule {
-    IBusObject parent;
-    /* instance members */
-    gint   flags;
-    gint   message_type;
-    gchar *interface;
-    gchar *member;
-    gchar *sender;
-    gchar *destination;
-    gchar *path;
-    GArray *args;
-    GList  *recipients;
-};
-
-struct _BusMatchRuleClass {
-    IBusObjectClass parent;
-    /* class members */
-};
-
 GType            bus_match_rule_get_type    (void);
-BusMatchRule    *bus_match_rule_new         (const gchar    *text);
-BusMatchRule    *bus_match_rule_ref         (BusMatchRule   *rule);
-void             bus_match_rule_unref       (BusMatchRule   *rule);
-void             bus_match_rule_free        (BusMatchRule   *rule);
+BusMatchRule    *bus_match_rule_new         (const gchar        *text);
+BusMatchRule    *bus_match_rule_ref         (BusMatchRule       *rule);
+void             bus_match_rule_unref       (BusMatchRule       *rule);
+void             bus_match_rule_free        (BusMatchRule       *rule);
 gboolean         bus_match_rule_set_message_type
-                                            (BusMatchRule   *rule,
-                                             gint            type);
-gboolean         bus_match_rule_set_sender  (BusMatchRule   *rule,
-                                             const gchar    *sender);
+                                            (BusMatchRule       *rule,
+                                             gint                type);
+gboolean         bus_match_rule_set_sender  (BusMatchRule       *rule,
+                                             const gchar        *sender);
 gboolean         bus_match_rule_set_interface
-                                            (BusMatchRule   *rule,
-                                             const gchar    *interface);
-gboolean         bus_match_rule_set_member  (BusMatchRule   *rule,
-                                             const gchar    *member);
-gboolean         bus_match_rule_set_path    (BusMatchRule   *rule,
-                                             const gchar    *path);
+                                            (BusMatchRule       *rule,
+                                             const gchar        *interface);
+gboolean         bus_match_rule_set_member  (BusMatchRule       *rule,
+                                             const gchar        *member);
+gboolean         bus_match_rule_set_path    (BusMatchRule       *rule,
+                                             const gchar        *path);
 gboolean         bus_match_rule_set_destination
-                                            (BusMatchRule   *rule,
-                                             const gchar    *dest);
-gboolean         bus_match_rule_set_arg     (BusMatchRule   *rule,
-                                             guint           arg_i,
-                                             const gchar    *arg);
-gboolean         bus_match_rule_match       (BusMatchRule   *rule,
-                                             IBusMessage    *message);
-gboolean         bus_match_rule_is_equal    (BusMatchRule   *a,
-                                             BusMatchRule   *b);
+                                            (BusMatchRule       *rule,
+                                             const gchar        *dest);
+gboolean         bus_match_rule_set_arg     (BusMatchRule       *rule,
+                                             guint               arg_i,
+                                             const gchar        *arg);
+gboolean         bus_match_rule_match       (BusMatchRule       *rule,
+                                             GDBusMessage       *message);
+gboolean         bus_match_rule_is_equal    (BusMatchRule       *a,
+                                             BusMatchRule       *b);
 void             bus_match_rule_add_recipient
-                                            (BusMatchRule   *rule,
-                                             BusConnection  *connection);
+                                            (BusMatchRule       *rule,
+                                             BusConnection      *connection);
 void             bus_match_rule_remove_recipient
-                                            (BusMatchRule   *rule,
-                                             BusConnection  *connection);
+                                            (BusMatchRule       *rule,
+                                             BusConnection      *connection);
 GList           *bus_match_rule_get_recipients
                                             (BusMatchRule   *rule,
-                                             IBusMessage    *message);
+                                             GDBusMessage   *message);
 
 G_END_DECLS
 #endif

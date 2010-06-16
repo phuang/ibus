@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusinputcontext
  * @short_description: IBus input context proxy object.
@@ -66,8 +71,8 @@ typedef struct _IBusInputContextClass IBusInputContextClass;
  * An opaque data type representing an IBusInputContext.
  */
 struct _IBusInputContext {
-  IBusProxy parent;
-  /* instance members */
+    IBusProxy parent;
+    /* instance members */
 };
 
 struct _IBusInputContextClass {
@@ -84,19 +89,24 @@ GType        ibus_input_context_get_type    (void);
 /**
  * ibus_input_context_new:
  * @path: The path to the object that emitting the signal.
- * @connection: An IBusConnection.
+ * @connection: An GDBusConnection.
+ * @cancellable: A #GCancellable or %NULL.
+ * @error: Return location for error or %NULL.
+ *
  * @returns: A newly allocated IBusInputContext.
  *
  * New an IBusInputContext.
  */
 IBusInputContext
             *ibus_input_context_new         (const gchar        *path,
-                                             IBusConnection     *connection);
+                                             GDBusConnection    *connection,
+                                             GCancellable       *cancellable,
+                                             GError            **error);
 
 /**
  * ibus_input_context_get_input_context:
  * @path: The path to the object that emitting the signal.
- * @connection: An IBusConnection.
+ * @connection: An GDBusConnection.
  * @returns: An existing IBusInputContext.
  *
  * Gets an existing IBusInputContext.
@@ -104,7 +114,7 @@ IBusInputContext
 IBusInputContext
             *ibus_input_context_get_input_context
                                             (const gchar        *path,
-                                             IBusConnection     *connection);
+                                             GDBusConnection    *connection);
 
 /**
  * ibus_input_context_process_key_event:

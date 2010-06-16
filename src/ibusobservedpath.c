@@ -43,9 +43,9 @@ typedef struct _IBusObservedPathPrivate IBusObservedPathPrivate;
 /* functions prototype */
 static void      ibus_observed_path_destroy         (IBusObservedPath       *path);
 static gboolean  ibus_observed_path_serialize       (IBusObservedPath       *path,
-                                                     IBusMessageIter        *iter);
-static gboolean  ibus_observed_path_deserialize     (IBusObservedPath       *path,
-                                                     IBusMessageIter        *iter);
+                                                     GVariantBuilder        *builder);
+static gint      ibus_observed_path_deserialize     (IBusObservedPath       *path,
+                                                     GVariant               *variant);
 static gboolean  ibus_observed_path_copy            (IBusObservedPath       *dest,
                                                      const IBusObservedPath *src);
 static gboolean  ibus_observed_path_parse_xml_node  (IBusObservedPath       *path,
@@ -54,27 +54,24 @@ static gboolean  ibus_observed_path_parse_xml_node  (IBusObservedPath       *pat
 G_DEFINE_TYPE (IBusObservedPath, ibus_observed_path, IBUS_TYPE_SERIALIZABLE)
 
 static void
-ibus_observed_path_class_init (IBusObservedPathClass *klass)
+ibus_observed_path_class_init (IBusObservedPathClass *class)
 {
-    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
-    // g_type_class_add_private (klass, sizeof (IBusObservedPathPrivate));
+    // g_type_class_add_private (class, sizeof (IBusObservedPathPrivate));
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_observed_path_destroy;
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_observed_path_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_observed_path_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_observed_path_copy;
-
-    g_string_append (serializable_class->signature, "sx");
 }
 
 
 static void
 ibus_observed_path_init (IBusObservedPath *path)
 {
-    path->path = NULL;
 }
 
 static void
@@ -86,42 +83,32 @@ ibus_observed_path_destroy (IBusObservedPath *path)
 
 static gboolean
 ibus_observed_path_serialize (IBusObservedPath *path,
-                              IBusMessageIter  *iter)
+                              GVariantBuilder  *builder)
 {
     gboolean retval;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->serialize ((IBusSerializable *)path, iter);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->serialize ((IBusSerializable *)path, builder);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_append (iter, G_TYPE_STRING, &(path->path));
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_LONG, &(path->mtime));
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "s", path->path);
+    g_variant_builder_add (builder, "x", path->mtime);
 
     return TRUE;
 }
 
-static gboolean
+static gint
 ibus_observed_path_deserialize (IBusObservedPath *path,
-                                IBusMessageIter  *iter)
+                                GVariant         *variant)
 {
-    gboolean retval;
-    gchar *str;
+    gint retval;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->deserialize ((IBusSerializable *)path, iter);
-    g_return_val_if_fail (retval, FALSE);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->deserialize ((IBusSerializable *)path, variant);
+    g_return_val_if_fail (retval, 0);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-    path->path = g_strdup (str);
+    g_variant_get_child (variant, retval++, "s", &path->path);
+    g_variant_get_child (variant, retval++, "x", &path->mtime);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_LONG, &(path->mtime));
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    return TRUE;
+    return retval;
 }
 
 static gboolean

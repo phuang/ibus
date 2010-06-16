@@ -1,2 +1,2 @@
-debian/tmp/usr/lib/libibus.so.2*
+debian/tmp/usr/lib/libibus-*.so.*
 debian/tmp/usr/lib/girepository-1.0/*

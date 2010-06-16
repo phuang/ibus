@@ -20,7 +20,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-libibus = $(top_builddir)/src/libibus.la
+libibus = $(top_builddir)/src/libibus-2.0.la
 
 INCLUDES = \
 	-I$(top_srcdir)/src \

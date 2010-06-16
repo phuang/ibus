@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusobject
  * @short_description: Base object of IBus.
@@ -31,7 +36,6 @@
 #define __IBUS_OBJECT_H_
 
 #include <glib-object.h>
-#include "ibusmarshalers.h"
 #include "ibustypes.h"
 #include "ibusdebug.h"
 
@@ -69,6 +73,8 @@ G_BEGIN_DECLS
 
 typedef struct _IBusObject IBusObject;
 typedef struct _IBusObjectClass IBusObjectClass;
+typedef struct _IBusObjectPrivate IBusObjectPrivate;
+
 /**
  * IBusObject:
  *
@@ -76,9 +82,11 @@ typedef struct _IBusObjectClass IBusObjectClass;
  * private to the #IBusObject and should never be accessed directly.
  */
 struct _IBusObject {
-  GInitiallyUnowned parent;
-  /* instance members */
-  guint32 flags;
+    GInitiallyUnowned parent;
+    /* instance members */
+    guint32 flags;
+
+    IBusObjectPrivate *priv;
 };
 
 typedef void ( *IBusObjectDestroyFunc) (IBusObject *);

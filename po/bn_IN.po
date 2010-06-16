@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-02 08:23+0000\n"
+"POT-Creation-Date: 2010-08-07 10:22+0800\n"
 "PO-Revision-Date: 2010-08-02 18:27+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -232,7 +233,9 @@ msgstr "ডিফল্ট অবস্থায় ইনপুট পদ্ধত
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr "ইনপুট প্রাপ্ত করার উদ্দেশ্যে অ্যাপ্লিকেশনে ফোকাস করা হলে, ডিফল্ট রূপে ইনপুট পদ্ধতি সক্রিয় করা হবে"
+msgstr ""
+"ইনপুট প্রাপ্ত করার উদ্দেশ্যে অ্যাপ্লিকেশনে ফোকাস করা হলে, ডিফল্ট রূপে ইনপুট পদ্ধতি "
+"সক্রিয় করা হবে"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -506,4 +509,3 @@ msgstr "উল্লম্ব"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "সক্রিয় অবস্থায়"
-

@@ -13,17 +13,17 @@ typedef struct _IBusConfigGConf IBusConfigGConf;
 typedef struct _IBusConfigGConfClass IBusConfigGConfClass;
 
 struct _IBusConfigGConf {
-	IBusConfigService parent;
+    IBusConfigService parent;
     GConfClient *client;
 };
 
 struct _IBusConfigGConfClass {
-	IBusConfigServiceClass parent;
+    IBusConfigServiceClass parent;
 
 };
 
 
 GType            ibus_config_gconf_get_type     (void);
-IBusConfigGConf *ibus_config_gconf_new          (IBusConnection     *connection);
+IBusConfigGConf *ibus_config_gconf_new          (GDBusConnection    *connection);
 
 #endif

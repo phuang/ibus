@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"POT-Creation-Date: 2010-08-07 10:22+0800\n"
 "PO-Revision-Date: 2010-07-30 08:28+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
+"Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -87,7 +88,9 @@ msgstr "Linux/Unix करीता IBus हे एक हुशार इनप�
 
 #: ../ui/gtk/panel.py:492
 msgid "translator-credits"
-msgstr "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat.com>, 2009, 2010."
+msgstr ""
+"संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
+"com>, 2009, 2010."
 
 #: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
@@ -502,4 +505,3 @@ msgstr "उभे"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "सक्रीय असल्यावर"
-

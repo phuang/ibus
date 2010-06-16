@@ -19,7 +19,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <dbus/dbus.h>
 #include "ibusinternal.h"
 #include "ibusserializable.h"
 
@@ -30,7 +29,6 @@ enum {
     LAST_SIGNAL,
 };
 
-typedef struct _IBusSerializablePrivate IBusSerializablePrivate;
 struct _IBusSerializablePrivate {
     GData   *attachments;
 };
@@ -38,15 +36,15 @@ struct _IBusSerializablePrivate {
 // static guint    object_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void      ibus_serializable_base_init        (IBusSerializableClass  *klass);
-static void      ibus_serializable_base_fini        (IBusSerializableClass  *klass);
-static void      ibus_serializable_class_init       (IBusSerializableClass  *klass);
+static void      ibus_serializable_base_init        (IBusSerializableClass  *class);
+static void      ibus_serializable_base_fini        (IBusSerializableClass  *class);
+static void      ibus_serializable_class_init       (IBusSerializableClass  *class);
 static void      ibus_serializable_init             (IBusSerializable       *object);
 static void      ibus_serializable_destroy          (IBusSerializable       *object);
 static gboolean  ibus_serializable_real_serialize   (IBusSerializable       *object,
-                                                     IBusMessageIter        *iter);
-static gboolean  ibus_serializable_real_deserialize (IBusSerializable       *object,
-                                                     IBusMessageIter        *iter);
+                                                     GVariantBuilder        *builder);
+static gint      ibus_serializable_real_deserialize (IBusSerializable       *object,
+                                                     GVariant               *variant);
 static gboolean  ibus_serializable_real_copy        (IBusSerializable       *dest,
                                                      const IBusSerializable *src);
 
@@ -86,55 +84,44 @@ ibus_serializable_new (void)
 }
 
 static void
-ibus_serializable_base_init     (IBusSerializableClass *klass)
+ibus_serializable_base_init     (IBusSerializableClass *class)
 {
-    /* init signature */
-    klass->signature = g_string_new ("a{sv}");
 }
 
 static void
-ibus_serializable_base_fini     (IBusSerializableClass *klass)
+ibus_serializable_base_fini     (IBusSerializableClass *class)
 {
-    /* init signature */
-    g_string_free (klass->signature, TRUE);
-    klass->signature = NULL;
 }
 
 static void
-ibus_serializable_class_init     (IBusSerializableClass *klass)
+ibus_serializable_class_init     (IBusSerializableClass *class)
 {
-    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
 
-    parent_class = (IBusObjectClass *) g_type_class_peek_parent (klass);
+    parent_class = (IBusObjectClass *) g_type_class_peek_parent (class);
 
-    g_type_class_add_private (klass, sizeof (IBusSerializablePrivate));
+    g_type_class_add_private (class, sizeof (IBusSerializablePrivate));
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_serializable_destroy;
 
-    klass->serialize = ibus_serializable_real_serialize;
-    klass->deserialize = ibus_serializable_real_deserialize;
-    klass->copy = ibus_serializable_real_copy;
+    class->serialize = ibus_serializable_real_serialize;
+    class->deserialize = ibus_serializable_real_deserialize;
+    class->copy = ibus_serializable_real_copy;
 }
 
 static void
-ibus_serializable_init (IBusSerializable *object)
+ibus_serializable_init (IBusSerializable *serializable)
 {
-    IBusSerializablePrivate *priv;
-    priv = IBUS_SERIALIZABLE_GET_PRIVATE (object);
-
-    priv->attachments = NULL;
-    g_datalist_init (&priv->attachments);
+    serializable->priv = IBUS_SERIALIZABLE_GET_PRIVATE (serializable);
+    serializable->priv->attachments = NULL;
+    g_datalist_init (&serializable->priv->attachments);
 }
 
 static void
-ibus_serializable_destroy (IBusSerializable *object)
+ibus_serializable_destroy (IBusSerializable *serializable)
 {
-    IBusSerializablePrivate *priv;
-    priv = IBUS_SERIALIZABLE_GET_PRIVATE (object);
-
-    g_datalist_clear (&priv->attachments);
-
-    parent_class->destroy (IBUS_OBJECT (object));
+    g_datalist_clear (&serializable->priv->attachments);
+    parent_class->destroy (IBUS_OBJECT (serializable));
 }
 
 static GValue *
@@ -156,51 +143,28 @@ ibus_g_value_free (GValue *value)
     g_slice_free (GValue, value);
 }
 
-static gboolean
-_g_value_serialize (GValue          *value,
-                    IBusMessageIter *iter)
+static GVariant *
+_g_value_serialize (GValue          *value)
 {
-    gboolean retval;
     GType type;
 
     type = G_VALUE_TYPE (value);
     g_return_val_if_fail (type != G_TYPE_INVALID, FALSE);
 
-
     if (g_type_is_a (type, IBUS_TYPE_SERIALIZABLE)) {
         IBusSerializable *object;
         object = IBUS_SERIALIZABLE (g_value_get_object (value));
-        retval = ibus_message_iter_append (iter,
-                                           type,
-                                           &object);
-        g_return_val_if_fail (retval, FALSE);
-        return TRUE;
+        return ibus_serializable_serialize (object);
     }
 
     typedef const gchar *gstring;
     switch (type) {
-#define CASE_ENTRY(TYPE, _type, signature)                                          \
-    case G_TYPE_##TYPE:                                                             \
-        {                                                                           \
-            g##_type v;                                                             \
-            IBusMessageIter variant_iter;                                           \
-                                                                                    \
-            retval = ibus_message_iter_open_container (iter,                        \
-                                                       IBUS_TYPE_VARIANT,           \
-                                                       signature,                   \
-                                                       &variant_iter);              \
-            g_return_val_if_fail (retval, FALSE);                                   \
-                                                                                    \
-            v = g_value_get_##_type (value);                                        \
-            retval = ibus_message_iter_append (&variant_iter,                       \
-                                                G_TYPE_##TYPE,                      \
-                                                &v);                                \
-            g_return_val_if_fail (retval, FALSE);                                   \
-                                                                                    \
-            retval = ibus_message_iter_close_container (iter, &variant_iter);       \
-            g_return_val_if_fail (retval, FALSE);                                   \
-                                                                                    \
-            return TRUE;                                                            \
+#define CASE_ENTRY(TYPE, _type, signature)                              \
+    case G_TYPE_##TYPE:                                                 \
+        {                                                               \
+            g##_type v;                                                 \
+            v = g_value_get_##_type (value);                            \
+            return g_variant_new ("v", g_variant_new (signature, v));   \
         }
     CASE_ENTRY(CHAR, char, "y");
     CASE_ENTRY(BOOLEAN, boolean, "b");
@@ -214,28 +178,19 @@ _g_value_serialize (GValue          *value,
 #undef CASE_ENTRY
     }
 
-    g_return_val_if_reached (FALSE);
+    g_assert_not_reached ();
 }
 
 static GValue *
-_g_value_deserialize (IBusMessageIter *iter)
+_g_value_deserialize (GVariant *variant)
 {
-    IBusMessageIter variant_iter;
-    gboolean retval;
     GValue *value = NULL;
-    GType type;
+    const GVariantType *type;
 
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
-    g_return_val_if_fail (retval, NULL);
-
-    type = ibus_message_iter_get_arg_type (&variant_iter);
-
-    if (type == IBUS_TYPE_STRUCT) {
+    type = g_variant_get_type (variant);
+    if (type == G_VARIANT_TYPE_TUPLE) {
         IBusSerializable *object;
-        retval = ibus_message_iter_get (iter, IBUS_TYPE_SERIALIZABLE, &object);
-        g_return_val_if_fail (retval, NULL);
-        ibus_message_iter_next (iter);
-
+        object = ibus_serializable_deserialize (variant);
         value = g_slice_new0 (GValue);
         g_value_init (value, G_OBJECT_TYPE (object));
         g_value_take_object (value, object);
@@ -243,124 +198,69 @@ _g_value_deserialize (IBusMessageIter *iter)
     }
 
     typedef gchar *gstring;
-    switch (type) {
-#define CASE_ENTRY(TYPE, _type)                                 \
-    case G_TYPE_##TYPE:                                         \
-        {                                                       \
-            g##_type v;                                         \
-            ibus_message_iter_get_basic (&variant_iter, &v);    \
-            ibus_message_iter_next (&variant_iter);             \
-            value = g_slice_new0 (GValue);                      \
-            g_value_init (value, G_TYPE_##TYPE);                \
-            g_value_set_##_type (value, v);                     \
-            ibus_message_iter_next (iter);                      \
-            return value;                                       \
-        }
-    CASE_ENTRY(CHAR, char);
-    CASE_ENTRY(BOOLEAN, boolean);
-    CASE_ENTRY(INT, int);
-    CASE_ENTRY(UINT, uint);
-    CASE_ENTRY(INT64, int64);
-    CASE_ENTRY(UINT64, uint64);
-    CASE_ENTRY(FLOAT, float);
-    CASE_ENTRY(DOUBLE, double);
-    CASE_ENTRY(STRING, string);
+#define IF_ENTRY(TYPE, _type, signature)                    \
+    if (type ==  G_VARIANT_TYPE_##TYPE) {                   \
+        g##_type v;                                         \
+        g_variant_get (variant, signature, &v);             \
+        value = g_slice_new0 (GValue);                      \
+        g_value_init (value, G_TYPE_##TYPE);                \
+        g_value_set_##_type (value, v);                     \
+        return value;                                       \
     }
+#define G_VARIANT_TYPE_CHAR G_VARIANT_TYPE_BYTE
+    IF_ENTRY(CHAR, char, "y");
+#undef G_VARIANT_TYPE_CHAR
+    IF_ENTRY(BOOLEAN, boolean, "b");
+#define G_VARIANT_TYPE_INT G_VARIANT_TYPE_INT32
+#define G_VARIANT_TYPE_UINT G_VARIANT_TYPE_UINT32
+    IF_ENTRY(INT, int, "i");
+    IF_ENTRY(UINT, uint, "u");
+#undef G_VARIANT_TYPE_INT
+#undef G_VARIANT_TYPE_UINT
+    IF_ENTRY(INT64, int64, "x");
+    IF_ENTRY(UINT64, uint64, "t");
+    IF_ENTRY(DOUBLE, double, "d");
+    IF_ENTRY(STRING, string, "s");
+
     g_return_val_if_reached (NULL);
 }
 
 static void
 _serialize_cb (GQuark           key,
                GValue          *value,
-               IBusMessageIter *iter)
+               GVariantBuilder *array)
 {
-    IBusMessageIter dict_entry;
-    gboolean retval;
-    const gchar *name;
-
-    retval = ibus_message_iter_open_container (iter,
-                                               IBUS_TYPE_DICT_ENTRY,
-                                               NULL,
-                                               &dict_entry);
-    g_return_if_fail (retval);
-    name = g_quark_to_string (key);
-    retval = ibus_message_iter_append (&dict_entry,
-                                       G_TYPE_STRING,
-                                       &name);
-    g_return_if_fail (retval);
-
-    retval = _g_value_serialize (value, &dict_entry);
-    g_return_if_fail (retval);
-
-    retval = ibus_message_iter_close_container (iter, &dict_entry);
-    g_return_if_fail (retval);
+    g_variant_builder_add (array, "{sv}",
+                g_quark_to_string (key), _g_value_serialize (value));
 }
 
 static gboolean
-ibus_serializable_real_serialize (IBusSerializable *object,
-                                  IBusMessageIter  *iter)
+ibus_serializable_real_serialize (IBusSerializable *serializable,
+                                  GVariantBuilder  *builder)
 {
-    IBusSerializablePrivate *priv;
-    IBusMessageIter array_iter;
-    gboolean retval;
+    GVariantBuilder array;
+    g_variant_builder_init (&array, G_VARIANT_TYPE ("a{sv}"));
 
-    priv = IBUS_SERIALIZABLE_GET_PRIVATE (object);
-
-    retval = ibus_message_iter_open_container (iter,
-                                               IBUS_TYPE_ARRAY,
-                                               "{sv}",
-                                               &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    g_datalist_foreach (&priv->attachments,
+    g_datalist_foreach (&serializable->priv->attachments,
                         (GDataForeachFunc) _serialize_cb,
-                        &array_iter);
-
-    retval = ibus_message_iter_close_container (iter, &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
+                        &array);
+    g_variant_builder_add (builder, "a{sv}", &array);
     return TRUE;
 }
 
-static gboolean
+static gint
 ibus_serializable_real_deserialize (IBusSerializable *object,
-                                    IBusMessageIter  *iter)
+                                    GVariant         *variant)
 {
-    IBusMessageIter array_iter;
-    gboolean retval;
-
-    retval = ibus_message_iter_recurse (iter,
-                                        IBUS_TYPE_ARRAY,
-                                        &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
-        gchar *name;
-        GValue *value;
-        IBusMessageIter dict_entry;
-
-        retval = ibus_message_iter_recurse (&array_iter,
-                                            IBUS_TYPE_DICT_ENTRY,
-                                            &dict_entry);
-        g_return_val_if_fail (retval, FALSE);
-
-        retval = ibus_message_iter_get (&dict_entry,
-                                        G_TYPE_STRING,
-                                        &name);
-        g_return_val_if_fail (retval, FALSE);
-        ibus_message_iter_next (&dict_entry);
-
-        value = _g_value_deserialize (&dict_entry);
-        g_return_val_if_fail (value != NULL, FALSE);
-
-        ibus_serializable_set_attachment (object, name, value);
-
-        ibus_message_iter_next (&array_iter);
+    const gchar *key;
+    GVariant *value;
+    GVariantIter *iter = NULL;
+    g_variant_get_child (variant, 1, "a{sv}", &iter);
+    while (g_variant_iter_loop (iter, "{&sv}", &key, &value)) {
+        ibus_serializable_set_attachment (object, key, _g_value_deserialize (value));
     }
-
-    ibus_message_iter_next (iter);
-
-    return TRUE;
+    g_variant_iter_free (iter);
+    return 2;
 }
 
 static void
@@ -433,31 +333,25 @@ ibus_serializable_set_qattachment (IBusSerializable *object,
 }
 
 const GValue *
-ibus_serializable_get_qattachment (IBusSerializable *object,
+ibus_serializable_get_qattachment (IBusSerializable *serializable,
                                    GQuark            key)
 {
 
-    g_return_val_if_fail (IBUS_IS_SERIALIZABLE (object), NULL);
+    g_return_val_if_fail (IBUS_IS_SERIALIZABLE (serializable), NULL);
     g_return_val_if_fail (key != 0, NULL);
 
-    IBusSerializablePrivate *priv;
-    priv = IBUS_SERIALIZABLE_GET_PRIVATE (object);
-
-    return (const GValue *) g_datalist_id_get_data (&priv->attachments, key);
+    return (const GValue *) g_datalist_id_get_data (&serializable->priv->attachments, key);
 }
 
 void
-ibus_serializable_remove_qattachment (IBusSerializable *object,
+ibus_serializable_remove_qattachment (IBusSerializable *serializable,
                                       GQuark            key)
 {
 
-    g_return_if_fail (IBUS_IS_SERIALIZABLE (object));
+    g_return_if_fail (IBUS_IS_SERIALIZABLE (serializable));
     g_return_if_fail (key != 0);
 
-    IBusSerializablePrivate *priv;
-    priv = IBUS_SERIALIZABLE_GET_PRIVATE (object);
-
-    g_datalist_id_remove_no_notify (&priv->attachments, key);
+    g_datalist_id_remove_no_notify (&serializable->priv->attachments, key);
 }
 
 IBusSerializable *
@@ -481,92 +375,49 @@ ibus_serializable_copy (IBusSerializable *object)
     g_return_val_if_reached (NULL);
 }
 
-gboolean
-ibus_serializable_serialize (IBusSerializable *object,
-                             IBusMessageIter  *iter)
+GVariant *
+ibus_serializable_serialize (IBusSerializable *object)
 {
     g_return_val_if_fail (IBUS_IS_SERIALIZABLE (object), FALSE);
-    g_return_val_if_fail (iter != NULL, FALSE);
-
-    IBusMessageIter variant_iter;
-    IBusMessageIter sub_iter;
     gboolean retval;
 
-    gchar *signature;
+    GVariantBuilder builder;
+    g_variant_builder_init (&builder, G_VARIANT_TYPE_TUPLE);
 
-    signature = g_strdup_printf ("(s%s)", IBUS_SERIALIZABLE_GET_CLASS (object)->signature->str);
-    retval = ibus_message_iter_open_container (iter,
-                                               IBUS_TYPE_VARIANT,
-                                               signature,
-                                               &variant_iter);
-    g_free (signature);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (&builder, "s", g_type_name (G_OBJECT_TYPE (object)));
+    retval = IBUS_SERIALIZABLE_GET_CLASS (object)->serialize (object, &builder);
+    g_assert (retval);
 
-    retval = ibus_message_iter_open_container (&variant_iter,
-                                               IBUS_TYPE_STRUCT,
-                                               NULL,
-                                               &sub_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    const gchar *type_name = g_type_name (G_OBJECT_TYPE (object));
-    g_return_val_if_fail (type_name != NULL, FALSE);
-
-    retval = ibus_message_iter_append (&sub_iter,
-                                       G_TYPE_STRING,
-                                       &type_name);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = IBUS_SERIALIZABLE_GET_CLASS (object)->serialize (object, &sub_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_close_container (&variant_iter, &sub_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_close_container (iter, &variant_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    return TRUE;
+    return g_variant_builder_end (&builder);
 }
 
 IBusSerializable *
-ibus_serializable_deserialize (IBusMessageIter *iter)
+ibus_serializable_deserialize (GVariant *variant)
 {
-    g_return_val_if_fail (iter != NULL, NULL);
+    g_return_val_if_fail (variant != NULL, NULL);
 
-    gboolean retval;
-    IBusMessageIter variant_iter;
-    IBusMessageIter sub_iter;
-    gchar *type_name;
-    GType type;
-    IBusSerializable *object;
-
-    type = ibus_message_iter_get_arg_type (iter);
-
-    if (type == IBUS_TYPE_VARIANT) {
-        retval = ibus_message_iter_recurse (iter, IBUS_TYPE_VARIANT, &variant_iter);
-        g_return_val_if_fail (retval, NULL);
-
-        retval = ibus_message_iter_recurse (&variant_iter, IBUS_TYPE_STRUCT, &sub_iter);
-        g_return_val_if_fail (retval, NULL);
-    }
-    else if (type == IBUS_TYPE_STRUCT) {
-        retval = ibus_message_iter_recurse (iter, IBUS_TYPE_STRUCT, &sub_iter);
-        g_return_val_if_fail (retval, NULL);
-    }
-    else
+    GVariant *var = NULL;
+    switch (g_variant_classify (variant)) {
+    case G_VARIANT_CLASS_VARIANT:
+        var = g_variant_get_variant (variant);
+        break;
+    case G_VARIANT_CLASS_TUPLE:
+        var = g_variant_ref (variant);
+        break;
+    default:
         g_return_val_if_reached (NULL);
+    }
 
-    retval = ibus_message_iter_get (&sub_iter, G_TYPE_STRING, &type_name);
-    g_return_val_if_fail (retval, NULL);
-    ibus_message_iter_next (&sub_iter);
-
-    type = g_type_from_name (type_name);
+    gchar *type_name = NULL;
+    g_variant_get_child (var, 0, "&s", &type_name);
+    GType type = g_type_from_name (type_name);
 
     g_return_val_if_fail (g_type_is_a (type, IBUS_TYPE_SERIALIZABLE), NULL);
 
-    object = g_object_new (type, NULL);
+    IBusSerializable *object = g_object_new (type, NULL);
 
-    retval = IBUS_SERIALIZABLE_GET_CLASS (object)->deserialize (object, &sub_iter);
+    gint retval = IBUS_SERIALIZABLE_GET_CLASS (object)->deserialize (object, var);
+    g_variant_unref (var);
     if (retval)
         return object;
 

@@ -19,33 +19,30 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <dbus/dbus.h>
 #include "ibuslookuptable.h"
 
 /* functions prototype */
 static void         ibus_lookup_table_destroy       (IBusLookupTable        *table);
 static gboolean     ibus_lookup_table_serialize     (IBusLookupTable        *table,
-                                                     IBusMessageIter        *iter);
-static gboolean     ibus_lookup_table_deserialize   (IBusLookupTable        *table,
-                                                     IBusMessageIter        *iter);
+                                                     GVariantBuilder        *builder);
+static gint         ibus_lookup_table_deserialize   (IBusLookupTable        *table,
+                                                     GVariant               *variant);
 static gboolean     ibus_lookup_table_copy          (IBusLookupTable        *dest,
                                                      IBusLookupTable        *src);
 
 G_DEFINE_TYPE (IBusLookupTable, ibus_lookup_table, IBUS_TYPE_SERIALIZABLE)
 
 static void
-ibus_lookup_table_class_init (IBusLookupTableClass *klass)
+ibus_lookup_table_class_init (IBusLookupTableClass *class)
 {
-    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_lookup_table_destroy;
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_lookup_table_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_lookup_table_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_lookup_table_copy;
-
-    g_string_append (serializable_class->signature, "uubbiavav");
 }
 
 static void
@@ -85,140 +82,82 @@ ibus_lookup_table_destroy (IBusLookupTable *table)
 
 static gboolean
 ibus_lookup_table_serialize (IBusLookupTable *table,
-                             IBusMessageIter *iter)
+                             GVariantBuilder *builder)
 {
-    IBusMessageIter array_iter;
     gboolean retval;
     guint i;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->serialize ((IBusSerializable *)table, iter);
-    g_return_val_if_fail (retval, FALSE);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->serialize ((IBusSerializable *)table, builder);
+    g_return_val_if_fail (retval, 0);
 
-    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), 0);
 
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &table->page_size);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "u", table->page_size);
+    g_variant_builder_add (builder, "u", table->cursor_pos);
+    g_variant_builder_add (builder, "b", table->cursor_visible);
+    g_variant_builder_add (builder, "b", table->round);
+    g_variant_builder_add (builder, "i", table->orientation);
 
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &table->cursor_pos);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_BOOLEAN, &table->round);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_INT, &table->orientation);
-    g_return_val_if_fail (retval, FALSE);
-
-    // append candidates
-    retval = ibus_message_iter_open_container (iter,
-                                               IBUS_TYPE_ARRAY,
-                                               "v",
-                                               &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
+    GVariantBuilder array;
+    /* append candidates */
+    g_variant_builder_init (&array, G_VARIANT_TYPE ("av"));
     for (i = 0;; i++) {
-        IBusText *text;
+        IBusText *text = ibus_lookup_table_get_candidate (table, i);
+        if (text == NULL)
+            break;
+        g_variant_builder_add (&array, "v", ibus_serializable_serialize ((IBusSerializable *)text));
+    }
+    g_variant_builder_add (builder, "av", &array);
 
-        text = ibus_lookup_table_get_candidate (table, i);
+    /* append labels */
+    g_variant_builder_init (&array, G_VARIANT_TYPE ("av"));
+    for (i = 0;; i++) {
+        IBusText *text = ibus_lookup_table_get_label (table, i);
         if (text == NULL)
             break;
 
-        retval = ibus_message_iter_append (&array_iter, IBUS_TYPE_TEXT, &text);
-        g_return_val_if_fail (retval, FALSE);
+        g_variant_builder_add (&array, "v", ibus_serializable_serialize ((IBusSerializable *)text));
     }
-
-    retval = ibus_message_iter_close_container (iter, &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    // append labels
-    retval = ibus_message_iter_open_container (iter,
-                                               IBUS_TYPE_ARRAY,
-                                               "v",
-                                               &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    for (i = 0;; i++) {
-        IBusText *text;
-
-        text = ibus_lookup_table_get_label (table, i);
-        if (text == NULL)
-            break;
-
-        retval = ibus_message_iter_append (&array_iter, IBUS_TYPE_TEXT, &text);
-        g_return_val_if_fail (retval, FALSE);
-    }
-
-    retval = ibus_message_iter_close_container (iter, &array_iter);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "av", &array);
 
     return TRUE;
 }
 
-static gboolean
+static gint
 ibus_lookup_table_deserialize (IBusLookupTable *table,
-                               IBusMessageIter *iter)
+                               GVariant        *variant)
 {
-    DBusMessageIter array_iter;
-    gboolean retval;
+    gint retval;
 
-    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->deserialize ((IBusSerializable *)table, iter);
-    g_return_val_if_fail (retval, FALSE);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_lookup_table_parent_class)->deserialize ((IBusSerializable *)table, variant);
+    g_return_val_if_fail (retval, 0);
 
-    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), FALSE);
+    g_return_val_if_fail (IBUS_IS_LOOKUP_TABLE (table), 0);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->page_size);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
+    g_variant_get_child (variant, retval++, "u", &table->page_size);
+    g_variant_get_child (variant, retval++, "u", &table->cursor_pos);
+    g_variant_get_child (variant, retval++, "b", &table->cursor_visible);
+    g_variant_get_child (variant, retval++, "b", &table->round);
+    g_variant_get_child (variant, retval++, "i", &table->orientation);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &table->cursor_pos);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->cursor_visible);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_BOOLEAN, &table->round);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_INT, &table->orientation);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
+    GVariant *var;
     // deserialize candidates
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
-        IBusText *text;
-        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
-        g_return_val_if_fail (retval, FALSE);
-        ibus_message_iter_next (&array_iter);
-
-        ibus_lookup_table_append_candidate (table, text);
+    GVariantIter *iter = NULL;
+    g_variant_get_child (variant, retval++, "av", &iter);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        ibus_lookup_table_append_candidate (table, IBUS_TEXT (ibus_serializable_deserialize (var)));
     }
-
-    ibus_message_iter_next (iter);
+    g_variant_iter_free (iter);
 
     // deserialize labels
-    retval = ibus_message_iter_recurse (iter, IBUS_TYPE_ARRAY, &array_iter);
-    g_return_val_if_fail (retval, FALSE);
-
-    while (ibus_message_iter_get_arg_type (&array_iter) != G_TYPE_INVALID) {
-        IBusText *text;
-        retval = ibus_message_iter_get (&array_iter, IBUS_TYPE_TEXT, &text);
-        g_return_val_if_fail (retval, FALSE);
-        ibus_message_iter_next (&array_iter);
-
-        ibus_lookup_table_append_label (table, text);
+    iter = NULL;
+    g_variant_get_child (variant, retval++, "av", &iter);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        ibus_lookup_table_append_label (table, IBUS_TEXT (ibus_serializable_deserialize (var)));
     }
+    g_variant_iter_free (iter);
 
-    ibus_message_iter_next (iter);
-
-    return TRUE;
+    return retval;
 }
 
 static gboolean

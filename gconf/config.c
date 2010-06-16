@@ -2,62 +2,58 @@
 /* vim:set et sts=4: */
 
 #include <string.h>
-#include <dbus/dbus.h>
 #include <ibus.h>
 #include "config.h"
 
 #define GCONF_PREFIX "/desktop/ibus"
 
 /* functions prototype */
-static void	        ibus_config_gconf_class_init    (IBusConfigGConfClass   *klass);
-static void	        ibus_config_gconf_init		    (IBusConfigGConf		*config);
-static void	        ibus_config_gconf_destroy		(IBusConfigGConf		*config);
+static void         ibus_config_gconf_class_init    (IBusConfigGConfClass   *klass);
+static void         ibus_config_gconf_init          (IBusConfigGConf        *config);
+static void         ibus_config_gconf_destroy       (IBusConfigGConf        *config);
 static gboolean     ibus_config_gconf_set_value     (IBusConfigService      *config,
                                                      const gchar            *section,
                                                      const gchar            *name,
-                                                     const GValue           *value,
-                                                     IBusError             **error);
-static gboolean     ibus_config_gconf_get_value     (IBusConfigService      *config,
+                                                     GVariant               *value,
+                                                     GError                **error);
+static GVariant    *ibus_config_gconf_get_value     (IBusConfigService      *config,
                                                      const gchar            *section,
                                                      const gchar            *name,
-                                                     GValue                 *value,
-                                                     IBusError             **error);
-static gboolean     ibus_config_gconf_unset     (IBusConfigService      *config,
-                                                 const gchar            *section,
-                                                 const gchar            *name,
-                                                 IBusError             **error);
-
-static GConfValue   *_to_gconf_value                (const GValue           *value);
-static void          _from_gconf_value              (GValue                 *value,
-                                                     const GConfValue       *gvalue);
+                                                     GError                **error);
+static gboolean     ibus_config_gconf_unset_value   (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     const gchar            *name,
+                                                     GError                **error);
+static GConfValue   *_to_gconf_value                (GVariant               *value);
+static GVariant     *_from_gconf_value              (const GConfValue       *gvalue);
 
 static IBusConfigServiceClass *parent_class = NULL;
 
 GType
 ibus_config_gconf_get_type (void)
 {
-	static GType type = 0;
+    static GType type = 0;
 
-	static const GTypeInfo type_info = {
-		sizeof (IBusConfigGConfClass),
-		(GBaseInitFunc)		NULL,
-		(GBaseFinalizeFunc) NULL,
-		(GClassInitFunc)	ibus_config_gconf_class_init,
-		NULL,
-		NULL,
-		sizeof (IBusConfigGConf),
-		0,
-		(GInstanceInitFunc)	ibus_config_gconf_init,
-	};
+    static const GTypeInfo type_info = {
+        sizeof (IBusConfigGConfClass),
+        (GBaseInitFunc)        NULL,
+        (GBaseFinalizeFunc) NULL,
+        (GClassInitFunc)    ibus_config_gconf_class_init,
+        NULL,
+        NULL,
+        sizeof (IBusConfigGConf),
+        0,
+        (GInstanceInitFunc)    ibus_config_gconf_init,
+    };
 
-	if (type == 0) {
-		type = g_type_register_static (IBUS_TYPE_CONFIG_SERVICE,
-									   "IBusConfigGConf",
-									   &type_info,
-									   (GTypeFlags) 0);
-	}
+    if (type == 0) {
+        type = g_type_register_static (IBUS_TYPE_CONFIG_SERVICE,
+                                       "IBusConfigGConf",
+                                       &type_info,
+                                       (GTypeFlags) 0);
+    }
 
-	return type;
+    return type;
 }
 
 static void
@@ -67,10 +63,10 @@ ibus_config_gconf_class_init (IBusConfigGConfClass *klass)
 
     parent_class = (IBusConfigServiceClass *) g_type_class_peek_parent (klass);
 
-	IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
-    IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value = ibus_config_gconf_set_value;
-    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value = ibus_config_gconf_get_value;
-    IBUS_CONFIG_SERVICE_CLASS (object_class)->unset = ibus_config_gconf_unset;
+    IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_gconf_set_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value   = ibus_config_gconf_get_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->unset_value = ibus_config_gconf_unset_value;
 }
 
 static void
@@ -80,7 +76,6 @@ _value_changed_cb (GConfClient     *client,
                    IBusConfigGConf *config)
 {
     gchar *p, *section, *name;
-    GValue v =  { 0 };
 
     g_return_if_fail (key != NULL);
     g_return_if_fail (value != NULL);
@@ -91,13 +86,14 @@ _value_changed_cb (GConfClient     *client,
     *(name - 1) = '\0';
 
 
-    _from_gconf_value (&v, value);
+    GVariant *variant = _from_gconf_value (value);
+    g_return_if_fail (variant != NULL);
     ibus_config_service_value_changed ((IBusConfigService *) config,
                                        section,
                                        name,
-                                       &v);
+                                       variant);
+    g_variant_unref (variant);
     g_free (p);
-    g_value_unset (&v);
 }
 
 static void
@@ -120,140 +116,132 @@ ibus_config_gconf_destroy (IBusConfigGConf *config)
         config->client = NULL;
     }
 
-	IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)config);
+    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)config);
 }
 
 static GConfValue *
-_to_gconf_value (const GValue *value)
+_to_gconf_value (GVariant *value)
 {
-    GConfValue *gv;
-    GType type = G_VALUE_TYPE (value);
+    GConfValue *gv = NULL;
 
-    switch (type) {
-    case G_TYPE_STRING:
+    switch (g_variant_classify (value)) {
+    case G_VARIANT_CLASS_STRING:
         {
             gv = gconf_value_new (GCONF_VALUE_STRING);
-            gconf_value_set_string (gv, g_value_get_string (value));
+            gconf_value_set_string (gv, g_variant_get_string (value, NULL));
         }
         break;
-    case G_TYPE_INT:
+    case G_VARIANT_CLASS_INT32:
         {
             gv = gconf_value_new (GCONF_VALUE_INT);
-            gconf_value_set_int (gv, g_value_get_int (value));
+            gconf_value_set_int (gv, g_variant_get_int32 (value));
         }
         break;
-    case G_TYPE_UINT:
-        {
-            gv = gconf_value_new (GCONF_VALUE_INT);
-            gconf_value_set_int (gv, g_value_get_uint (value));
-        }
-        break;
-    case G_TYPE_BOOLEAN:
+    case G_VARIANT_CLASS_BOOLEAN:
         {
             gv = gconf_value_new (GCONF_VALUE_BOOL);
-            gconf_value_set_bool (gv, g_value_get_boolean (value));
+            gconf_value_set_bool (gv, g_variant_get_boolean (value));
         }
         break;
-    case G_TYPE_DOUBLE:
+    case G_VARIANT_CLASS_DOUBLE:
         {
             gv = gconf_value_new (GCONF_VALUE_FLOAT);
-            gconf_value_set_float (gv, g_value_get_double (value));
+            gconf_value_set_float (gv, g_variant_get_double (value));
         }
         break;
-    case G_TYPE_FLOAT:
+    case G_VARIANT_CLASS_ARRAY:
         {
-            gv = gconf_value_new (GCONF_VALUE_FLOAT);
-            gconf_value_set_float (gv, g_value_get_float (value));
+            const GVariantType *element_type = g_variant_type_element (g_variant_get_type (value));
+
+            GConfValueType type = GCONF_VALUE_INVALID;
+            if (g_variant_type_equal (element_type, G_VARIANT_TYPE_STRING))
+                type = GCONF_VALUE_STRING;
+            else if (g_variant_type_equal (element_type, G_VARIANT_TYPE_INT32))
+                type = GCONF_VALUE_INT;
+            else if (g_variant_type_equal (element_type, G_VARIANT_TYPE_BOOLEAN))
+                type = GCONF_VALUE_BOOL;
+            else if (g_variant_type_equal (element_type, G_VARIANT_TYPE_DOUBLE))
+                type = GCONF_VALUE_FLOAT;
+            else
+                g_return_val_if_reached (NULL);
+
+            gv = gconf_value_new (GCONF_VALUE_LIST);
+            gconf_value_set_list_type (gv, type);
+
+            GSList *elements = NULL;
+            GVariantIter iter;
+            GVariant *child;
+            g_variant_iter_init (&iter, value);
+            while ((child = g_variant_iter_next_value (&iter)) != NULL) {
+                elements = g_slist_append (elements, _to_gconf_value (child));
+                g_variant_unref (child);
+            }
+            gconf_value_set_list_nocopy (gv, elements);
         }
         break;
     default:
-        if (type == G_TYPE_VALUE_ARRAY) {
+        g_return_val_if_reached (NULL);
+    }
 
-            GSList *l = NULL;
-            GType list_type = G_TYPE_STRING;
-            GValueArray *array = g_value_get_boxed (value);
-            gint i;
+    return gv;
+}
 
-            if (array && array->n_values > 0) {
-                list_type = G_VALUE_TYPE (&(array->values[0]));
-            }
+static GVariant *
+_from_gconf_value (const GConfValue *gv)
+{
+    g_assert (gv != NULL);
 
-            gv = gconf_value_new (GCONF_VALUE_LIST);
-
-            switch (list_type) {
-            case G_TYPE_STRING:
-                gconf_value_set_list_type (gv, GCONF_VALUE_STRING); break;
-            case G_TYPE_INT:
-            case G_TYPE_UINT:
-                gconf_value_set_list_type (gv, GCONF_VALUE_INT); break;
-            case G_TYPE_BOOLEAN:
-                gconf_value_set_list_type (gv, GCONF_VALUE_BOOL); break;
-            case G_TYPE_FLOAT:
-            case G_TYPE_DOUBLE:
-                gconf_value_set_list_type (gv, GCONF_VALUE_FLOAT); break;
+    switch (gv->type) {
+    case GCONF_VALUE_STRING:
+        return g_variant_new_string (gconf_value_get_string (gv));
+    case GCONF_VALUE_INT:
+        return g_variant_new_int32 (gconf_value_get_int (gv));
+    case GCONF_VALUE_FLOAT:
+        return g_variant_new_double (gconf_value_get_float (gv));
+    case GCONF_VALUE_BOOL:
+        return g_variant_new_boolean (gconf_value_get_bool (gv));
+    case GCONF_VALUE_LIST:
+        {
+            GVariantBuilder builder;
+            switch (gconf_value_get_list_type (gv)) {
+            case GCONF_VALUE_STRING:
+                g_variant_builder_init (&builder, G_VARIANT_TYPE("as")); break;
+            case GCONF_VALUE_INT:
+                g_variant_builder_init (&builder, G_VARIANT_TYPE("ai")); break;
+            case GCONF_VALUE_FLOAT:
+                g_variant_builder_init (&builder, G_VARIANT_TYPE("ad")); break;
+            case GCONF_VALUE_BOOL:
+                g_variant_builder_init (&builder, G_VARIANT_TYPE("ab")); break;
+                break;
             default:
                 g_assert_not_reached ();
             }
 
-            for (i = 0; array && i < array->n_values; i++) {
-                GConfValue *tmp;
-                g_assert (G_VALUE_TYPE (&(array->values[i])) == list_type);
-                tmp = _to_gconf_value (&(array->values[i]));
-                l = g_slist_append (l, tmp);
+            GSList *list = gconf_value_get_list (gv);
+            GSList *p = list;
+            while (p != NULL) {
+                switch (gconf_value_get_list_type (gv)) {
+                case GCONF_VALUE_STRING:
+                    g_variant_builder_add (&builder, "s", gconf_value_get_string ((GConfValue *)p->data));
+                    break;
+                case GCONF_VALUE_INT:
+                    g_variant_builder_add (&builder, "i", gconf_value_get_int ((GConfValue *)p->data));
+                    break;
+                case GCONF_VALUE_FLOAT:
+                    g_variant_builder_add (&builder, "d", gconf_value_get_float ((GConfValue *)p->data));
+                    break;
+                case GCONF_VALUE_BOOL:
+                    g_variant_builder_add (&builder, "b", gconf_value_get_bool ((GConfValue *)p->data));
+                    break;
+                default:
+                    g_assert_not_reached ();
+                }
+                p = p->next;
             }
-            gconf_value_set_list_nocopy (gv, l);
+            return g_variant_builder_end (&builder);
         }
-        else
-            g_assert_not_reached ();
-    }
-    return gv;
-}
-
-static void
-_from_gconf_value (GValue           *value,
-                   const GConfValue *gv)
-{
-    g_assert (value);
-    g_assert (gv);
-
-    switch (gv->type) {
-    case GCONF_VALUE_STRING:
-        g_value_init (value, G_TYPE_STRING);
-        g_value_set_string (value, gconf_value_get_string (gv));
-        return;
-    case GCONF_VALUE_INT:
-        g_value_init (value, G_TYPE_INT);
-        g_value_set_int (value, gconf_value_get_int (gv));
-        return;
-    case GCONF_VALUE_FLOAT:
-        g_value_init (value, G_TYPE_DOUBLE);
-        g_value_set_double (value, gconf_value_get_float (gv));
-        return;
-    case GCONF_VALUE_BOOL:
-        g_value_init (value, G_TYPE_BOOLEAN);
-        g_value_set_boolean (value, gconf_value_get_bool (gv));
-        return;
-    case GCONF_VALUE_LIST:
-        {
-            g_value_init (value, G_TYPE_VALUE_ARRAY);
-
-            GSList *list, *p;
-            GValueArray *va;
-
-            list = gconf_value_get_list (gv);
-            va = g_value_array_new (g_slist_length (list));
-            for (p = list; p != NULL; p = p->next) {
-                GValue tmp = {0};
-                _from_gconf_value (&tmp, (GConfValue *) p->data);
-                g_value_array_append (va, &tmp);
-            }
-
-            g_value_take_boxed (value, va);
-        }
-        return;
     default:
         g_assert_not_reached ();
-        break;
     }
 }
 
@@ -262,88 +250,86 @@ static gboolean
 ibus_config_gconf_set_value (IBusConfigService      *config,
                              const gchar            *section,
                              const gchar            *name,
-                             const GValue           *value,
-                             IBusError             **error)
+                             GVariant               *value,
+                             GError                **error)
 {
+    g_debug ("set value: %s : %s", section, name);
     gchar *key;
     GConfValue *gv;
-    GError *gerror = NULL;
 
     gv = _to_gconf_value (value);
-
+    if (gv == NULL) {
+        gchar *str = g_variant_print (value, TRUE);
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                        "Can not set config value [%s:%s] to %s.",
+                        section, name, str);
+        g_free (str);
+        return FALSE;
+    }
     key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
+    gconf_client_set (((IBusConfigGConf *)config)->client, key, gv, error);
 
-    gconf_client_set (((IBusConfigGConf *)config)->client, key, gv, &gerror);
     g_free (key);
     gconf_value_free (gv);
 
-    if (gerror != NULL) {
-        if (error) {
-            *error = ibus_error_new_from_text (DBUS_ERROR_FAILED, gerror->message);
-            g_error_free (gerror);
-        }
+    if (*error != NULL) {
         return FALSE;
     }
-
     return TRUE;
 }
-static gboolean
+
+static GVariant *
 ibus_config_gconf_get_value (IBusConfigService      *config,
                              const gchar            *section,
                              const gchar            *name,
-                             GValue                 *value,
-                             IBusError             **error)
+                             GError                **error)
 {
-    gchar *key;
-    GConfValue *gv;
 
-    key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
+    gchar *key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
 
-    gv = gconf_client_get (((IBusConfigGConf *) config)->client, key, NULL);
+    GConfValue *gv = gconf_client_get (((IBusConfigGConf *) config)->client, key, NULL);
+
     g_free (key);
 
     if (gv == NULL) {
-        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
-                                             "Can not get value [%s->%s]", section, name);
-        return FALSE;
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                        "Config value [%s:%s] does not exist.", section, name);
+        return NULL;
     }
 
-    _from_gconf_value (value, gv);
+    GVariant *variant = _from_gconf_value (gv);
     gconf_value_free (gv);
-    return TRUE;
+#if 0
+    gchar *str = g_variant_print (variant, TRUE);
+    g_debug ("get value: [%s:%s] = %s", section, name, str);
+    g_free (str);
+#endif
+    return variant;
 }
+
 static gboolean
-ibus_config_gconf_unset (IBusConfigService      *config,
-                         const gchar            *section,
-                         const gchar            *name,
-                         IBusError             **error)
+ibus_config_gconf_unset_value (IBusConfigService      *config,
+                               const gchar            *section,
+                               const gchar            *name,
+                               GError                **error)
 {
-    gchar *key;
-    GError *gerror = NULL;
+    gchar *key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
 
-    key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
-
-    gconf_client_unset (((IBusConfigGConf *)config)->client, key, &gerror);
+    gconf_client_unset (((IBusConfigGConf *)config)->client, key, error);
     g_free (key);
 
-    if (gerror != NULL) {
-        if (error) {
-            *error = ibus_error_new_from_text (DBUS_ERROR_FAILED, gerror->message);
-            g_error_free (gerror);
-        }
+    if (*error != NULL) {
         return FALSE;
     }
-
     return TRUE;
 }
 
 IBusConfigGConf *
-ibus_config_gconf_new (IBusConnection *connection)
+ibus_config_gconf_new (GDBusConnection *connection)
 {
     IBusConfigGConf *config;
-
     config = (IBusConfigGConf *) g_object_new (IBUS_TYPE_CONFIG_GCONF,
-                                               "path", IBUS_PATH_CONFIG,
+                                               "object-path", IBUS_PATH_CONFIG,
                                                "connection", connection,
                                                NULL);
     return config;

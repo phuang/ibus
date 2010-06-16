@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: IBus
 Description: IBus Library
 Version: @VERSION@
-Requires: gobject-2.0
-Libs: -L${libdir} -libus
-Cflags: -I${includedir}/ibus-1.0
+Requires: gobject-2.0 gio-2.0
+Libs: -L${libdir} -libus-2.0
+Cflags: -I${includedir}/ibus-2.0

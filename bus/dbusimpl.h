@@ -19,9 +19,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __DBUS_IMPL_H_
-#define __DBUS_IMPL_H_
+#ifndef __BUS_DBUS_IMPL_H_
+#define __BUS_DBUS_IMPL_H_
 
+#include <gio/gio.h>
 #include <ibus.h>
 #include "connection.h"
 
@@ -51,27 +52,6 @@ G_BEGIN_DECLS
 typedef struct _BusDBusImpl BusDBusImpl;
 typedef struct _BusDBusImplClass BusDBusImplClass;
 
-struct _BusDBusImpl {
-    IBusService parent;
-    /* instance members */
-    GHashTable *unique_names;
-    GHashTable *names;
-    GHashTable *objects;
-    GList *connections;
-    GList *rules;
-    gint id;
-};
-
-struct _BusDBusImplClass {
-    IBusServiceClass parent;
-
-    /* class members */
-    void    (* name_owner_changed) (BusDBusImpl     *dbus,
-                                    gchar           *name,
-                                    gchar           *old_name,
-                                    gchar           *new_name);
-};
-
 GType            bus_dbus_impl_get_type         (void);
 BusDBusImpl     *bus_dbus_impl_get_default      (void);
 gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
@@ -79,17 +59,18 @@ gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
 BusConnection   *bus_dbus_impl_get_connection_by_name
                                                 (BusDBusImpl    *dbus,
                                                  const gchar    *name);
-void             bus_dbus_impl_dispatch_message (BusDBusImpl    *dbus,
-                                                 IBusMessage    *message);
+/* FIXME */
+void             bus_dbus_impl_forward_message  (BusDBusImpl    *dbus,
+                                                 BusConnection  *connection,
+                                                 GDBusMessage   *message);
 void             bus_dbus_impl_dispatch_message_by_rule
                                                 (BusDBusImpl    *dbus,
-                                                 IBusMessage    *message,
+                                                 GDBusMessage   *message,
                                                  BusConnection  *skip_connection);
 gboolean         bus_dbus_impl_register_object  (BusDBusImpl    *dbus,
                                                  IBusService    *object);
 gboolean         bus_dbus_impl_unregister_object(BusDBusImpl    *dbus,
                                                  IBusService    *object);
-
 G_END_DECLS
 #endif
 

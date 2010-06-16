@@ -1,4 +1,3 @@
-ibus_connection_get_type
 ibus_hotkey_profile_get_type
 ibus_object_get_type
 ibus_config_get_type
@@ -12,11 +11,9 @@ ibus_prop_state_get_type
 ibus_modifier_type_get_type
 ibus_capabilite_get_type
 ibus_orientation_get_type
-ibus_service_get_type
 ibus_factory_get_type
 ibus_text_get_type
 ibus_config_service_get_type
-ibus_server_get_type
 ibus_attribute_get_type
 ibus_attr_list_get_type
 ibus_engine_desc_get_type

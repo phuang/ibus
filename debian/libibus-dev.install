@@ -1,6 +1,6 @@
 debian/tmp/usr/include/*
-debian/tmp/usr/lib/libibus.so
-debian/tmp/usr/lib/libibus.a
+debian/tmp/usr/lib/libibus-*.so
+debian/tmp/usr/lib/libibus-*.a
 debian/tmp/usr/lib/pkgconfig/*
 debian/tmp/usr/share/gir-1.0/*
 debian/tmp/usr/share/vala/vapi/*

@@ -24,29 +24,27 @@
 /* functions prototype */
 static void         ibus_text_destroy      (IBusText            *text);
 static gboolean     ibus_text_serialize    (IBusText            *text,
-                                            IBusMessageIter     *iter);
-static gboolean     ibus_text_deserialize  (IBusText            *text,
-                                            IBusMessageIter     *iter);
+                                            GVariantBuilder     *builder);
+static int          ibus_text_deserialize  (IBusText            *text,
+                                            GVariant            *variant);
 static gboolean     ibus_text_copy         (IBusText            *dest,
                                             const IBusText      *src);
 
 G_DEFINE_TYPE (IBusText, ibus_text, IBUS_TYPE_SERIALIZABLE)
 
 static void
-ibus_text_class_init (IBusTextClass *klass)
+ibus_text_class_init (IBusTextClass *class)
 {
-    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (klass);
-    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (klass);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
-    ibus_text_parent_class = (IBusSerializableClass *) g_type_class_peek_parent (klass);
+    ibus_text_parent_class = (IBusSerializableClass *) g_type_class_peek_parent (class);
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_text_destroy;
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_text_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_text_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_text_copy;
-
-    g_string_append (serializable_class->signature, "sv");
 }
 
 static void
@@ -75,57 +73,47 @@ ibus_text_destroy (IBusText *text)
 
 static gboolean
 ibus_text_serialize (IBusText        *text,
-                     IBusMessageIter *iter)
+                     GVariantBuilder *builder)
 {
     gboolean retval;
 
     retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->serialize (
-                        (IBusSerializable *)text, iter);
+                        (IBusSerializable *)text, builder);
     g_return_val_if_fail (retval, FALSE);
 
-    retval = ibus_message_iter_append (iter, G_TYPE_STRING, &text->text);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "s", text->text);
 
     if (text->attrs == NULL) {
         text->attrs = ibus_attr_list_new ();
         g_object_ref_sink (text->attrs);
     }
-
-    retval = ibus_message_iter_append (iter, IBUS_TYPE_ATTR_LIST, &text->attrs);
-    g_return_val_if_fail (retval, FALSE);
+    g_variant_builder_add (builder, "v", ibus_serializable_serialize ((IBusSerializable *)text->attrs));
 
     return TRUE;
 }
 
-static gboolean
-ibus_text_deserialize (IBusText        *text,
-                       IBusMessageIter *iter)
+static gint
+ibus_text_deserialize (IBusText *text,
+                       GVariant *variant)
 {
-    gboolean retval;
-    gchar *str;
-
+    gint retval;
     retval = IBUS_SERIALIZABLE_CLASS (ibus_text_parent_class)->deserialize (
-                            (IBusSerializable *)text, iter);
-    g_return_val_if_fail (retval, FALSE);
+                            (IBusSerializable *)text, variant);
 
-    retval = ibus_message_iter_get (iter, G_TYPE_STRING, &str);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
+    if (text->is_static == FALSE)
+        g_free (text->text);
+    g_variant_get_child (variant, retval++, "s", &text->text);
     text->is_static = FALSE;
-    text->text = g_strdup (str);
 
-    if (text->attrs) {
+    if (text->attrs)
         g_object_unref (text->attrs);
-        text->attrs = NULL;
-    }
 
-    retval = ibus_message_iter_get (iter, IBUS_TYPE_ATTR_LIST, &text->attrs);
+    GVariant *var = g_variant_get_child_value (variant, retval++);
+    text->attrs = IBUS_ATTR_LIST (ibus_serializable_deserialize (var));
+    g_variant_unref (var);
     g_object_ref_sink (text->attrs);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
 
-    return TRUE;
+    return retval;
 }
 
 static gboolean

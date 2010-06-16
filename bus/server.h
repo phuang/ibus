@@ -19,60 +19,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __SERVER_H_
-#define __SERVER_H_
+#ifndef __BUS_SERVER_H_
+#define __BUS_SERVER_H_
 
 #include <ibus.h>
-#include "dbusimpl.h"
-#include "ibusimpl.h"
-
-/*
- * Type macros.
- */
-
-/* define GOBJECT macros */
-#define BUS_TYPE_SERVER             \
-    (bus_server_get_type ())
-#define BUS_SERVER(obj)             \
-    (G_TYPE_CHECK_INSTANCE_CAST ((obj), BUS_TYPE_SERVER, BusServer))
-#define BUS_SERVER_CLASS(klass)     \
-    (G_TYPE_CHECK_CLASS_CAST ((klass), BUS_TYPE_SERVER, BusServerClass))
-#define BUS_IS_SERVER(obj)          \
-    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), BUS_TYPE_SERVER))
-#define BUS_IS_SERVER_CLASS(klass)  \
-    (G_TYPE_CHECK_CLASS_TYPE ((klass), BUS_TYPE_SERVER))
-#define BUS_SERVER_GET_CLASS(obj)   \
-    (G_TYPE_INSTANCE_GET_CLASS ((obj), BUS_TYPE_SERVER, BusServerClass))
-#define BUS_DEFAULT_SERVER          \
-    (bus_server_get_default ())
 
 G_BEGIN_DECLS
 
-typedef struct _BusServer BusServer;
-typedef struct _BusServerClass BusServerClass;
-
-struct _BusServer {
-    IBusServer parent;
-
-    /* instance members */
-    GMainLoop *loop;
-
-    BusDBusImpl *dbus;
-    BusIBusImpl *ibus;
-
-};
-
-struct _BusServerClass {
-  IBusServerClass parent;
-
-  /* class members */
-};
-
-GType            bus_server_get_type        (void);
-BusServer       *bus_server_get_default     (void);
-gboolean         bus_server_listen          (BusServer  *server);
-void             bus_server_run             (BusServer  *server);
-void             bus_server_quit            (BusServer  *server);
+void    bus_server_init     (void);
+void    bus_server_run      (void);
+void    bus_server_quit     (void);
 
 G_END_DECLS
 #endif

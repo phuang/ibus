@@ -98,7 +98,7 @@ import ctypes
 #         return None
 #     return address
 
-libibus = ctypes.CDLL("libibus.so.2")
+libibus = ctypes.CDLL("libibus-2.0.so.0")
 get_address = libibus.ibus_get_address
 get_address.restype=ctypes.c_char_p
 

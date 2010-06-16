@@ -19,6 +19,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 /**
  * SECTION: ibusfactory
  * @short_description: Factory for creating engine instances.
@@ -102,6 +107,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusFactory IBusFactory;
 typedef struct _IBusFactoryClass IBusFactoryClass;
+typedef struct _IBusFactoryPrivate IBusFactoryPrivate;
 
 /**
  * IBusFactory:
@@ -109,12 +115,15 @@ typedef struct _IBusFactoryClass IBusFactoryClass;
  * An opaque data type representing an IBusFactory.
  */
 struct _IBusFactory {
+    /*< private >*/
     IBusService parent;
+    IBusFactoryPrivate *priv;
 
     /* instance members */
 };
 
 struct _IBusFactoryClass {
+    /*< private >*/
     IBusServiceClass parent;
 
     /* signals */
@@ -134,12 +143,12 @@ GType            ibus_factory_get_type          (void);
 
 /**
  * ibus_factory_new:
- * @connection: An IBusConnection.
+ * @connection: An GDBusConnection.
  * @returns: A newly allocated IBusFactory.
  *
  * New an IBusFactory.
  */
-IBusFactory     *ibus_factory_new               (IBusConnection *connection);
+IBusFactory     *ibus_factory_new               (GDBusConnection *connection);
 
 /**
  * ibus_factory_add_engine:

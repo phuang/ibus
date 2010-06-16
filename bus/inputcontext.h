@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __INPUT_CONTEXT_H_
-#define __INPUT_CONTEXT_H_
+#ifndef __BUS_INPUT_CONTEXT_H_
+#define __BUS_INPUT_CONTEXT_H_
 
 #include <ibus.h>
 #include "connection.h"
@@ -48,57 +48,6 @@ G_BEGIN_DECLS
 
 typedef struct _BusInputContext BusInputContext;
 typedef struct _BusInputContextClass BusInputContextClass;
-
-struct _BusInputContext {
-    IBusService parent;
-
-    /* instance members */
-    BusConnection *connection;
-    BusEngineProxy *engine;
-    gchar *client;
-
-    gboolean has_focus;
-    gboolean enabled;
-
-    /* capabilities */
-    guint capabilities;
-
-    /* cursor location */
-    gint x;
-    gint y;
-    gint w;
-    gint h;
-
-    /* prev key event */
-    guint prev_keyval;
-    guint prev_modifiers;
-
-    /* preedit text */
-    IBusText *preedit_text;
-    guint     preedit_cursor_pos;
-    gboolean  preedit_visible;
-    guint     preedit_mode;
-
-    /* auxiliary text */
-    IBusText *auxiliary_text;
-    gboolean  auxiliary_visible;
-
-    /* lookup table */
-    IBusLookupTable *lookup_table;
-    gboolean lookup_table_visible;
-
-    /* filter release */
-    gboolean filter_release;
-
-    /* is fake context */
-    gboolean fake;
-};
-
-struct _BusInputContextClass {
-    IBusServiceClass parent;
-
-    /* class members */
-};
 
 GType                bus_input_context_get_type         (void);
 BusInputContext     *bus_input_context_new              (BusConnection      *connection,

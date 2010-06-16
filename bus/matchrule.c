@@ -19,17 +19,87 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include <string.h>
-#include <dbus/dbus.h>
 #include "matchrule.h"
+#include <string.h>
 
-#define BUS_CONFIG_PROXY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), BUS_TYPE_CONFIG_PROXY, BusMatchRulePrivate))
+typedef enum {
+    MATCH_TYPE          = 1 << 0,
+    MATCH_INTERFACE     = 1 << 1,
+    MATCH_MEMBER        = 1 << 2,
+    MATCH_SENDER        = 1 << 3,
+    MATCH_DESTINATION   = 1 << 4,
+    MATCH_PATH          = 1 << 5,
+    MATCH_ARGS          = 1 << 6,
+} BusMatchFlags;
 
+struct _BusMatchRule {
+    IBusObject parent;
+    /* instance members */
+    gint   flags;
+    gint   message_type;
+    gchar *interface;
+    gchar *member;
+    gchar *sender;
+    gchar *destination;
+    gchar *path;
+    GArray *args;
+    GList *recipients;
+};
 
-static void      bus_match_rule_destroy         (BusMatchRule       *rule);
-static void      _connection_destroy_cb         (BusConnection      *connection,
+struct _BusMatchRuleClass {
+    IBusObjectClass parent;
+    /* class members */
+};
+
+typedef struct _BusRecipient BusRecipient;
+struct _BusRecipient {
+    BusConnection *connection;
+    gint refcount;
+};
+
+static BusRecipient *bus_recipient_new          (BusConnection      *connection);
+static void          bus_recipient_free         (BusRecipient       *recipient);
+static BusRecipient *bus_recipient_ref          (BusRecipient       *recipient);
+static gboolean      bus_recipient_unref        (BusRecipient       *recipient);
+static void          bus_match_rule_destroy     (BusMatchRule       *rule);
+static void          bus_match_rule_connection_destroy_cb
+                                                (BusConnection      *connection,
                                                  BusMatchRule       *rule);
+
+static BusRecipient *
+bus_recipient_new (BusConnection *connection)
+{
+    BusRecipient *recipient = g_slice_new (BusRecipient);
+    g_object_ref (connection);
+    recipient->connection = connection;
+    recipient->refcount = 1;
+    return recipient;
+}
+
+static void
+bus_recipient_free (BusRecipient *recipient)
+{
+    g_object_unref (recipient->connection);
+    g_slice_free (BusRecipient, recipient);
+}
+
+static BusRecipient *
+bus_recipient_ref (BusRecipient *recipient)
+{
+    recipient->refcount ++;
+    return recipient;
+}
+
+static gboolean
+bus_recipient_unref (BusRecipient *recipient)
+{
+    recipient->refcount --;
+    if (recipient->refcount == 0) {
+        bus_recipient_free (recipient);
+        return TRUE;
+    }
+    return FALSE;
+}
 
 G_DEFINE_TYPE (BusMatchRule, bus_match_rule, IBUS_TYPE_OBJECT)
 
@@ -45,7 +115,7 @@ static void
 bus_match_rule_init (BusMatchRule *rule)
 {
     rule->flags = 0;
-    rule->message_type = DBUS_MESSAGE_TYPE_INVALID;
+    rule->message_type = G_DBUS_MESSAGE_TYPE_INVALID;
     rule->interface = NULL;
     rule->member = NULL;
     rule->sender = NULL;
@@ -64,19 +134,17 @@ bus_match_rule_destroy (BusMatchRule *rule)
     g_free (rule->path);
 
     gint i;
-    GList *link;
-
     for (i = 0; i < rule->args->len; i++) {
         g_free (g_array_index (rule->args, gchar *, i));
     }
     g_array_free (rule->args, TRUE);
 
-    for (link = rule->recipients; link != NULL; link = link->next) {
-        BusRecipient *recipient = (BusRecipient *) link->data;
+    GList *p;
+    for (p = rule->recipients; p != NULL; p = p->next) {
+        BusRecipient *recipient = (BusRecipient *) p->data;
         g_signal_handlers_disconnect_by_func (recipient->connection,
-                                              G_CALLBACK (_connection_destroy_cb), rule);
-        g_object_unref (recipient->connection);
-        g_slice_free (BusRecipient, recipient);
+                                              G_CALLBACK (bus_match_rule_connection_destroy_cb), rule);
+        bus_recipient_free (recipient);
     }
     g_list_free (rule->recipients);
 
@@ -255,16 +323,16 @@ bus_match_rule_new (const gchar *text)
     for (p = tokens; p != NULL && p->key != 0; p++) {
         if (g_strcmp0 (p->key, "type") == 0) {
             if (g_strcmp0 (p->value, "signal") == 0) {
-                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_SIGNAL);
+                bus_match_rule_set_message_type (rule, G_DBUS_MESSAGE_TYPE_SIGNAL);
             }
             else if (g_strcmp0 (p->value, "method_call") == 0) {
-                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_CALL);
+                bus_match_rule_set_message_type (rule, G_DBUS_MESSAGE_TYPE_METHOD_CALL);
             }
             else if (g_strcmp0 (p->value, "method_return") == 0) {
-                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_METHOD_RETURN);
+                bus_match_rule_set_message_type (rule, G_DBUS_MESSAGE_TYPE_METHOD_RETURN);
             }
             else if (g_strcmp0 (p->value, "error") == 0) {
-                bus_match_rule_set_message_type (rule, DBUS_MESSAGE_TYPE_ERROR);
+                bus_match_rule_set_message_type (rule, G_DBUS_MESSAGE_TYPE_ERROR);
             }
             else
                 goto failed;
@@ -308,10 +376,10 @@ bus_match_rule_set_message_type (BusMatchRule   *rule,
                                  gint            type)
 {
     g_assert (rule != NULL);
-    g_assert (type == DBUS_MESSAGE_TYPE_SIGNAL ||
-              type == DBUS_MESSAGE_TYPE_METHOD_CALL ||
-              type == DBUS_MESSAGE_TYPE_METHOD_RETURN ||
-              type == DBUS_MESSAGE_TYPE_ERROR);
+    g_assert (type == G_DBUS_MESSAGE_TYPE_SIGNAL ||
+              type == G_DBUS_MESSAGE_TYPE_METHOD_CALL ||
+              type == G_DBUS_MESSAGE_TYPE_METHOD_RETURN ||
+              type == G_DBUS_MESSAGE_TYPE_ERROR);
 
     rule->flags |= MATCH_TYPE;
     rule->message_type = type;
@@ -414,66 +482,68 @@ bus_match_rule_set_arg (BusMatchRule   *rule,
 
 gboolean
 bus_match_rule_match (BusMatchRule   *rule,
-                      IBusMessage    *message)
+                      GDBusMessage   *message)
 {
     g_assert (rule != NULL);
     g_assert (message != NULL);
 
     if (rule->flags & MATCH_TYPE) {
-        if (ibus_message_get_type (message) != rule->message_type)
+        if (g_dbus_message_get_message_type (message) != rule->message_type)
             return FALSE;
     }
 
     if (rule->flags & MATCH_INTERFACE) {
-        if (g_strcmp0 (ibus_message_get_interface (message), rule->interface) != 0)
+        if (g_strcmp0 (g_dbus_message_get_interface (message), rule->interface) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_MEMBER) {
-        if (g_strcmp0 (ibus_message_get_member (message), rule->member) != 0)
+        if (g_strcmp0 (g_dbus_message_get_member (message), rule->member) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_SENDER) {
-        if (g_strcmp0 (ibus_message_get_sender (message), rule->sender) != 0)
+        if (g_strcmp0 (g_dbus_message_get_sender (message), rule->sender) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_DESTINATION) {
-        if (g_strcmp0 (ibus_message_get_destination (message), rule->destination) != 0)
+        if (g_strcmp0 (g_dbus_message_get_destination (message), rule->destination) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_PATH) {
-        if (g_strcmp0 (ibus_message_get_path (message), rule->path) != 0)
+        if (g_strcmp0 (g_dbus_message_get_path (message), rule->path) != 0)
             return FALSE;
     }
 
     if (rule->flags & MATCH_ARGS) {
         guint i;
-        IBusMessageIter iter;
-
-        ibus_message_iter_init (message, &iter);
+        GVariant *arguments = g_dbus_message_get_body (message);
+        if (arguments == NULL)
+            return FALSE;
 
         for (i = 0; i < rule->args->len; i++) {
-            gchar *arg = g_array_index (rule->args, gchar *, i);
-            if (arg != NULL) {
-                gint type;
-                gchar *value;
-
-                type = ibus_message_iter_get_arg_type (&iter);
-                if (type != G_TYPE_STRING && type != IBUS_TYPE_OBJECT_PATH)
-                    return FALSE;
-
-                ibus_message_iter_get_basic (&iter, &value);
-
-                if (g_strcmp0 (arg, value) != 0)
-                    return FALSE;
+            const gchar *arg = g_array_index (rule->args, const gchar *, i);
+            if (arg == NULL)
+                continue;
+            GVariant * variant = g_variant_get_child_value (arguments, i);
+            if (variant == NULL)
+                return FALSE;
+            switch (g_variant_classify (variant)) {
+            case G_VARIANT_CLASS_STRING:
+            case G_VARIANT_CLASS_OBJECT_PATH:
+                if (g_strcmp0 (arg, g_variant_get_string (variant, NULL)) == 0) {
+                    g_variant_unref (variant);
+                    continue;
+                }
+            default:
+                break;
             }
-            ibus_message_iter_next (&iter);
+            g_variant_unref (variant);
+            return FALSE;
         }
     }
-
     return TRUE;
 }
 
@@ -534,22 +604,16 @@ bus_match_rule_is_equal (BusMatchRule   *a,
 }
 
 static void
-_connection_destroy_cb (BusConnection   *connection,
-                        BusMatchRule    *rule)
+bus_match_rule_connection_destroy_cb (BusConnection *connection,
+                                      BusMatchRule  *rule)
 {
-    g_assert (BUS_IS_MATCH_RULE (rule));
-    g_assert (BUS_IS_CONNECTION (connection));
-
-    GList *link;
-    BusRecipient *recipient;
-
-    for (link = rule->recipients; link != NULL; link = link->next) {
-        recipient = (BusRecipient *)link->data;
+    GList *p;
+    for (p = rule->recipients; p != NULL; p = p->next) {
+        BusRecipient *recipient = (BusRecipient *)p->data;
 
         if (recipient->connection == connection) {
-            rule->recipients = g_list_remove_link (rule->recipients, link);
-            g_object_unref (connection);
-            g_slice_free (BusRecipient, recipient);
+            rule->recipients = g_list_remove_link (rule->recipients, p);
+            bus_recipient_free (recipient);
             return;
         }
 
@@ -561,57 +625,46 @@ _connection_destroy_cb (BusConnection   *connection,
 }
 
 void
-bus_match_rule_add_recipient (BusMatchRule   *rule,
-                              BusConnection  *connection)
+bus_match_rule_add_recipient (BusMatchRule    *rule,
+                              BusConnection   *connection)
 {
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (BUS_IS_CONNECTION (connection));
 
-    GList *link;
-    BusRecipient *recipient;
-
-    for (link = rule->recipients; link != NULL; link = link->next) {
-        recipient = (BusRecipient *) link->data;
+    GList *p;
+    for (p = rule->recipients; p != NULL; p = p->next) {
+        BusRecipient *recipient = (BusRecipient *) p->data;
         if (connection == recipient->connection) {
-            recipient->refcount ++;
+            bus_recipient_ref (recipient);
             return;
         }
     }
 
-    recipient = g_slice_new (BusRecipient);
-
-    g_object_ref_sink (connection);
-    recipient->connection = connection;
-    recipient->refcount  = 1;
-
+    /* alloc a new recipient */
+    BusRecipient *recipient = bus_recipient_new (connection);
     rule->recipients = g_list_append (rule->recipients, recipient);
     g_signal_connect (connection,
                       "destroy",
-                      G_CALLBACK (_connection_destroy_cb),
+                      G_CALLBACK (bus_match_rule_connection_destroy_cb),
                       rule);
 }
 
 void
-bus_match_rule_remove_recipient (BusMatchRule   *rule,
-                                 BusConnection  *connection)
+bus_match_rule_remove_recipient (BusMatchRule  *rule,
+                                 BusConnection *connection)
 {
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (BUS_IS_CONNECTION (connection));
 
-    GList *link;
-    BusRecipient *recipient;
-
-    for (link = rule->recipients; link != NULL; link = link->next) {
-        recipient = (BusRecipient *) link->data;
+    GList *p;
+    for (p = rule->recipients; p != NULL; p = p->next) {
+        BusRecipient *recipient = (BusRecipient *) p->data;
         if (connection == recipient->connection) {
-            recipient->refcount --;
-            if (recipient->refcount == 0) {
-                rule->recipients = g_list_remove_link (rule->recipients, link);
-                g_slice_free (BusRecipient, recipient);
+            if (bus_recipient_unref (recipient)) {
+                rule->recipients = g_list_remove_link (rule->recipients, p);
                 g_signal_handlers_disconnect_by_func (connection,
-                                                      G_CALLBACK (_connection_destroy_cb),
+                                                      G_CALLBACK (bus_match_rule_connection_destroy_cb),
                                                       rule);
-                g_object_unref (connection);
             }
 
             if (rule->recipients == NULL ) {
@@ -620,13 +673,12 @@ bus_match_rule_remove_recipient (BusMatchRule   *rule,
             return;
         }
     }
-
-    g_warning ("Remove recipient failed");
+    g_return_if_reached ();
 }
 
 GList *
 bus_match_rule_get_recipients (BusMatchRule   *rule,
-                               IBusMessage    *message)
+                               GDBusMessage   *message)
 {
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (message != NULL);

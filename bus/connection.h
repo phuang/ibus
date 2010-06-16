@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __CONNECTION_H_
-#define __CONNECTION_H_
+#ifndef __BUS_CONNECTION_H_
+#define __BUS_CONNECTION_H_
 
 #include <ibus.h>
 
@@ -47,32 +47,24 @@ G_BEGIN_DECLS
 typedef struct _BusConnection BusConnection;
 typedef struct _BusConnectionClass BusConnectionClass;
 
-struct _BusConnection {
-    IBusConnection parent;
-
-    /* instance members */
-    gchar *unique_name;
-    /* list for well known names */
-    GList  *names;
-    GList  *rules;
-};
-
-struct _BusConnectionClass {
-  IBusConnectionClass parent;
-
-  /* class members */
-};
-
 GType            bus_connection_get_type            (void);
-BusConnection   *bus_connection_new                 (void);
-const gchar     *bus_connection_get_unique_name     (BusConnection  *connection);
-void             bus_connection_set_unique_name     (BusConnection  *connection,
-                                                     const gchar    *name);
-const GList     *bus_connection_get_names           (BusConnection  *connection);
-const gchar     *bus_connection_add_name            (BusConnection  *connection,
-                                                     const gchar    *name);
-gboolean         bus_connection_remove_name         (BusConnection  *connection,
-                                                     const gchar    *name);
+BusConnection   *bus_connection_new                 (GDBusConnection    *connection);
+BusConnection   *bus_connection_lookup              (GDBusConnection    *connection);
+const gchar     *bus_connection_get_unique_name     (BusConnection      *connection);
+void             bus_connection_set_unique_name     (BusConnection      *connection,
+                                                     const gchar        *name);
+const GList     *bus_connection_get_names           (BusConnection      *connection);
+const gchar     *bus_connection_add_name            (BusConnection      *connection,
+                                                     const gchar        *name);
+gboolean         bus_connection_remove_name         (BusConnection      *connection,
+                                                     const gchar        *name);
+GDBusConnection *bus_connection_get_dbus_connection (BusConnection      *connection);
+void             bus_connection_set_filter          (BusConnection      *connection,
+                                                     GDBusMessageFilterFunction
+                                                                         filter_func,
+                                                     gpointer            user_data,
+                                                     GDestroyNotify      user_data_free_func);
+
 G_END_DECLS
 #endif
 

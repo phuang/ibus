@@ -21,6 +21,7 @@
  */
 
 #include "ibusobject.h"
+#include "ibusmarshalers.h"
 #include "ibusinternal.h"
 
 #define IBUS_OBJECT_GET_PRIVATE(o)  \
@@ -31,7 +32,6 @@ enum {
     LAST_SIGNAL,
 };
 
-typedef struct _IBusObjectPrivate IBusObjectPrivate;
 struct _IBusObjectPrivate {
     gpointer pad;
 };
@@ -55,31 +55,16 @@ static void      ibus_object_real_destroy   (IBusObject         *obj);
 
 G_DEFINE_TYPE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
 
-/**
- * ibus_object_new:
- *
- * Creates a new instance of an #IBusObject.
- *
- * Returns: a new instance of #IBusObject.
- */
-IBusObject *
-ibus_object_new (void)
-{
-    return IBUS_OBJECT (g_object_new (IBUS_TYPE_OBJECT, NULL));
-}
-
 static void
-ibus_object_class_init     (IBusObjectClass *klass)
+ibus_object_class_init     (IBusObjectClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-    g_type_class_add_private (klass, sizeof (IBusObjectPrivate));
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
     gobject_class->constructor = ibus_object_constructor;
     gobject_class->dispose = (GObjectFinalizeFunc) ibus_object_dispose;
     gobject_class->finalize = (GObjectFinalizeFunc) ibus_object_finalize;
 
-    klass->destroy = ibus_object_real_destroy;
+    class->destroy = ibus_object_real_destroy;
 
     /* install signals */
     /**
@@ -98,22 +83,21 @@ ibus_object_class_init     (IBusObjectClass *klass)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusObjectClass, destroy),
             NULL, NULL,
-            ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+
+    g_type_class_add_private (class, sizeof (IBusObjectPrivate));
+
 #ifdef DEBUG_MEMORY
     _count_table = g_hash_table_new (g_direct_hash, g_direct_equal);
 #endif
-
 }
 
 static void
 ibus_object_init (IBusObject *obj)
 {
-    IBusObjectPrivate *priv;
-    priv = IBUS_OBJECT_GET_PRIVATE (obj);
-
     obj->flags = 0;
-
+    obj->priv = IBUS_OBJECT_GET_PRIVATE (obj);
 }
 
 
@@ -160,7 +144,7 @@ ibus_object_dispose (IBusObject *obj)
 static void
 ibus_object_finalize (IBusObject *obj)
 {
-#ifdef DEBUG_MEMORY 
+#ifdef DEBUG_MEMORY
     guint count;
 
     _count --;
@@ -178,11 +162,24 @@ ibus_object_real_destroy (IBusObject *obj)
     g_signal_handlers_destroy (obj);
 }
 
+/**
+ * ibus_object_new:
+ *
+ * Creates a new instance of an #IBusObject.
+ *
+ * Returns: a new instance of #IBusObject.
+ */
+IBusObject *
+ibus_object_new (void)
+{
+    GObject *object = g_object_new (IBUS_TYPE_OBJECT, NULL);
+    return IBUS_OBJECT (object);
+}
+
 void
 ibus_object_destroy (IBusObject *obj)
 {
-    IBusObjectPrivate *priv;
-    priv = IBUS_OBJECT_GET_PRIVATE (obj);
+    g_return_if_fail (IBUS_IS_OBJECT (obj));
 
     if (! (IBUS_OBJECT_FLAGS (obj) & IBUS_IN_DESTRUCTION)) {
         g_object_run_dispose (G_OBJECT (obj));

@@ -87,19 +87,19 @@ ibus_server_listen  (IBusServer  *server,
 }
 
 static void
-ibus_server_class_init (IBusServerClass *klass)
+ibus_server_class_init (IBusServerClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
-    g_type_class_add_private (klass, sizeof (IBusServerPrivate));
+    g_type_class_add_private (class, sizeof (IBusServerPrivate));
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_server_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_server_get_property;
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_server_destroy;
 
-    klass->new_connection = ibus_server_new_connection;
+    class->new_connection = ibus_server_new_connection;
 
     /* install properties */
     /**
@@ -131,7 +131,7 @@ ibus_server_class_init (IBusServerClass *klass)
      */
     server_signals[NEW_CONNECTION] =
         g_signal_new (I_("new-connection"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusServerClass, new_connection),
             NULL, NULL,

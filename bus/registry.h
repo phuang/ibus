@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __REGISTRY_H_
-#define __REGISTRY_H_
+#ifndef __BUS_REGISTRY_H_
+#define __BUS_REGISTRY_H_
 
 #include <ibus.h>
 #include "factoryproxy.h"

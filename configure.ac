@@ -21,10 +21,10 @@
 # Boston, MA  02111-1307  USA
 
 # if not 1, append datestamp to the version number.
-m4_define([ibus_released], [1])
+m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [3])
-m4_define([ibus_micro_version], [8])
+m4_define([ibus_micro_version], [99])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -61,7 +61,7 @@ AC_SUBST(DATE_DISPLAY)
 # If only source code changed, lt_revision + 1
 # If any interface added, lt_age + 1
 # If any interfaces changed or removed, lt_current + 1, lt_revision = 0, lt_age = 0
-m4_define([lt_current], [2])
+m4_define([lt_current], [0])
 m4_define([lt_revision], [0])
 m4_define([lt_age], [0])
 LT_VERSION_INFO="lt_current:lt_revision:lt_age"
@@ -76,16 +76,16 @@ AC_CHECK_FUNCS(daemon)
 # check glib2
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [
-    glib-2.0 >= 2.18
+    glib-2.0 >= 2.25
 ])
 PKG_CHECK_MODULES(GOBJECT2, [
-    gobject-2.0 >= 2.18
+    gobject-2.0 >= 2.25
 ])
 PKG_CHECK_MODULES(GIO2, [
-    gio-2.0 >= 2.18
+    gio-2.0 >= 2.25
 ])
 PKG_CHECK_MODULES(GTHREAD2, [
-    gthread-2.0 >= 2.18
+    gthread-2.0 >= 2.25
 ])
 
 AC_ARG_ENABLE(gtk2,
@@ -188,7 +188,8 @@ GTK_DOC_CHECK(1.9)
 if test x"$enable_gtk_doc" = x"no"; then
     enable_gtk_doc="no (disabled, use --enable-gtk-doc to enable)"
 fi
-# check for dbus-glib
+
+# check for dbus
 PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
@@ -199,7 +200,7 @@ AC_ARG_ENABLE(gconf,
     [enable_gconf=$enableval],
     [enable_gconf=yes]
 )
-AM_CONDITIONAL([ENABLE_GCONF], [test "x$enable_gconf" = "xyes"])
+AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
 
 if test x"$enable_gconf" = x"yes"; then
     # check gconf
@@ -238,7 +239,8 @@ AC_ARG_ENABLE(python,
     [enable_python=yes]
 )
 
-AM_CONDITIONAL([ENABLE_PYTHON], [test "x$enable_python" = "xyes"])
+AM_CONDITIONAL([ENABLE_PYTHON], [test x"$enable_python" = x"yes"])
+AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
 if test x"$enable_python" = x"yes"; then
     # check python
@@ -345,7 +347,7 @@ AC_SUBST(ISOCODES_PREFIX)
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
-ibus-1.0.pc
+ibus-2.0.pc
 ibus.spec
 xinput-ibus
 memconf/Makefile
@@ -356,6 +358,7 @@ client/gtk3/Makefile
 client/x11/Makefile
 src/Makefile
 src/ibusversion.h
+src/tests/Makefile
 bus/Makefile
 util/Makefile
 util/IMdkit/Makefile
@@ -389,6 +392,7 @@ Build options:
   Install prefix            $prefix
   Build shared libs         $enable_shared
   Build static libs         $enable_static
+  CFLAGS                    $CFLAGS
   Gtk2 immodule dir         $GTK2_IM_MODULEDIR
   Gtk3 immodule dir         $GTK3_IM_MODULEDIR
   Build gtk2 immodule       $enable_gtk2

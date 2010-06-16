@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "ibusshare.h"
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <glib-object.h>
@@ -29,8 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <dbus/dbus.h>
-#include "ibusshare.h"
+#include <ibus.h>
 
 static gchar *_display = NULL;
 
@@ -40,9 +40,18 @@ ibus_get_local_machine_id (void)
     static gchar *machine_id = NULL;
 
     if (machine_id == NULL) {
-        gchar *id = dbus_get_local_machine_id ();
-        machine_id = g_strdup (id);
-        dbus_free (id);
+        GError *error = NULL;
+        if (!g_file_get_contents ("/var/lib/dbus/machine-id",
+                                  &machine_id,
+                                  NULL,
+                                  &error)) {
+            g_warning ("Unable to load /var/lib/dbus/machine-id: %s", error->message);
+            g_error_free (error);
+            machine_id = "machine-id";
+        }
+        else {
+            g_strstrip (machine_id);
+        }
     }
 
     return machine_id;
@@ -287,6 +296,12 @@ void
 ibus_init (void)
 {
     g_type_init ();
+    IBUS_TYPE_TEXT;
+    IBUS_TYPE_ATTRIBUTE;
+    IBUS_TYPE_ATTR_LIST;
+    IBUS_TYPE_LOOKUP_TABLE;
+    IBUS_TYPE_COMPONENT;
+    IBUS_TYPE_ENGINE_DESC;
 }
 
 static GMainLoop *main_loop = NULL;
