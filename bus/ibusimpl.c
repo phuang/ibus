@@ -712,7 +712,7 @@ _ibus_introspect (BusIBusImpl     *ibus,
         "      <arg name=\"context\" direction=\"out\" type=\"o\"/>\n"
         "    </method>\n"
         "    <method name=\"CurrentInputContext\">\n"
-        "      <arg name=\"name\" direction=\"out\" type=\"s\"/>\n"
+        "      <arg name=\"name\" direction=\"out\" type=\"o\"/>\n"
         "    </method>\n"
         "    <method name=\"RegisterComponent\">\n"
         "      <arg name=\"components\" direction=\"in\" type=\"v\"/>\n"
@@ -1255,7 +1255,7 @@ _ibus_current_input_context (BusIBusImpl     *ibus,
     reply = ibus_message_new_method_return (message);
     path = ibus_service_get_path((IBusService *)ibus->focused_context);
     ibus_message_append_args (reply,
-                              G_TYPE_STRING, &path,
+                              IBUS_TYPE_OBJECT_PATH, &path,
                               G_TYPE_INVALID);
 
     return reply;

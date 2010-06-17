@@ -527,7 +527,7 @@ ibus_bus_current_input_context(IBusBus      *bus)
     g_assert (IBUS_IS_BUS (bus));
     g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
 
-    gchar *name = NULL;
+    gchar *path = NULL;
     IBusMessage *reply = NULL;
     IBusError *error = NULL;
 
@@ -539,9 +539,10 @@ ibus_bus_current_input_context(IBusBus      *bus)
                                       G_TYPE_INVALID);
 
     if (reply) {
-        if (ibus_message_get_args (reply, &error, G_TYPE_STRING, &name,
+        if (ibus_message_get_args (reply, &error,
+                                   IBUS_TYPE_OBJECT_PATH, &path,
                                    G_TYPE_INVALID)) {
-            name = g_strdup (name);
+            path = g_strdup (path);
         } else {
             g_warning ("%s: %s", error->name, error->message);
             ibus_error_free (error);
@@ -550,7 +551,7 @@ ibus_bus_current_input_context(IBusBus      *bus)
         ibus_message_unref (reply);
     }
 
-    return name;
+    return path;
 }
 
 static void

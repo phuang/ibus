@@ -53,7 +53,7 @@ class IIBus(dbus.service.Object):
     @method(in_signature="s", out_signature="o")
     def CreateInputContext(self, client_name, dbusconn): pass
 
-    @method(out_signature="s")
+    @method(out_signature="o")
     def CurrentInputContext(self, dbusconn): pass
 
     # general methods
