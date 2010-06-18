@@ -123,12 +123,15 @@ if test x"$enable_vala" != x"yes"; then
     enable_vala="no (disabled, use --enable-vala to enable)"
 fi
 
-if test x"$enable_gtk2" = x"yes"; then
-    # check for gtk2, gdk2
+if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
+    # check for gtk2
     PKG_CHECK_MODULES(GTK2, [
         gtk+-2.0
     ])
+fi
 
+if test x"$enable_gtk2" = x"yes"; then
+    # check for gdk2
     gtk2_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
     GTK2_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk2_binary_version/immodules
 
