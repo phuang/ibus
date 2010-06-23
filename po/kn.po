@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-05-05 16:04+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: kn-IN <>\n"
@@ -21,8 +21,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "IBus ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಫ್ರೇಮ್‌ವರ್ಕ್"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "IBus ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಫ್ರೇಮ್‌ವರ್ಕ್"
 
 #: ../ibus/_config.py.in:38
@@ -60,6 +66,10 @@ msgstr "ಮರಳಿ ಆರಂಭಿಸು"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "ನಂತರ"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "IBus ಇನ್‌ಪುಟ್ ವಿಧಾನದ ಫ್ರೇಮ್‌ವರ್ಕ್"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -191,6 +201,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "IBus ಆದ್ಯತೆಗಳು"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "IBus ಆದ್ಯತೆಗಳು"
 
 #: ../data/ibus.schemas.in.h:1

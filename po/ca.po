@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2009-09-19 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -33,8 +33,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "Entorn de mètodes d'entrada IBus"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "Entorn de mètodes d'entrada IBus"
 
 #: ../ibus/_config.py.in:38
@@ -71,6 +77,10 @@ msgstr "Reinicia"
 #, fuzzy
 msgid "Later"
 msgstr "Altres"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "Entorn de mètodes d'entrada IBus"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -206,6 +216,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "Prefèrencies de l'IBus"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "Prefèrencies de l'IBus"
 
 #: ../data/ibus.schemas.in.h:1

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-06-04 12:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -26,8 +26,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "Environnement de méthode de saisie iBus"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "Environnement de méthode de saisie iBus"
 
 #: ../ibus/_config.py.in:38
@@ -65,6 +71,10 @@ msgstr "Redémarrer IBus maintenant"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "Plus tard"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "Environnement de méthode de saisie iBus"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -199,6 +209,11 @@ msgstr "Kbd"
 msgid "IBus Preferences"
 msgstr "Préférences IBus"
 
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
+msgstr "Préférences IBus"
+
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
 msgstr "Masquage automatique"
@@ -286,8 +301,8 @@ msgid ""
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 "Position de la barre de langue. 0 = Coin supérieur gauche, 1 = Coin "
-"supérieur droit, "
-"2 = Coin inférieur gauche, 3 = Coin inférieur droit, 4 = Personnalisé"
+"supérieur droit, 2 = Coin inférieur gauche, 3 = Coin inférieur droit, 4 = "
+"Personnalisé"
 
 #: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the next input method in the list"

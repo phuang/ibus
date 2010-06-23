@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: data 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-06-01 13:17+0700\n"
 "Last-Translator: Lê Quốc Tuấn <mr.lequoctuan@gmail.com>\n"
 "Language-Team: Vietnamese\n"
@@ -20,8 +20,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "Bộ gõ IBus"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "Bộ gõ IBus"
 
 #: ../ibus/_config.py.in:38
@@ -59,6 +65,10 @@ msgstr "Khởi động lại ngay"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "Sau"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "Bộ gõ IBus"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -191,6 +201,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "Tùy chọn IBus"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "Tùy chọn IBus"
 
 #: ../data/ibus.schemas.in.h:1

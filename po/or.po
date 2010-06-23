@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-04-15 14:17+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
@@ -30,8 +30,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
 #: ../ibus/_config.py.in:38
@@ -69,6 +75,10 @@ msgstr "ବର୍ତ୍ତମାନ ପୁନଃଚାଳନ କରନ୍ତୁ"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "ପରେ"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -200,6 +210,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "IBus ପସନ୍ଦ"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 
 #: ../data/ibus.schemas.in.h:1

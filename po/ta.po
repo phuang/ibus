@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2009-12-08 22:26+0530\n"
 "Last-Translator: I Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
@@ -22,8 +22,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
 
 #: ../ibus/_config.py.in:38
@@ -61,6 +67,10 @@ msgstr "இப்போது மறுதுவக்கு"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "பின்னர்"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -192,6 +202,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "IBus முன்னுரிமைகள்"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "IBus முன்னுரிமைகள்"
 
 #: ../data/ibus.schemas.in.h:1

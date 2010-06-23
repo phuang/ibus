@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2009-04-11 10:58+0200\n"
 "Last-Translator: Sulyok Péter <peti@fedoraproject.org>\n"
 "Language-Team: Hungarian <fedora-trans-hu@redhat.com>\n"
@@ -19,8 +19,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "IBus bevitel eljárás keretrendszer"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "IBus bevitel eljárás keretrendszer"
 
 #: ../ibus/_config.py.in:38
@@ -57,6 +63,10 @@ msgstr "Újraindítás"
 #, fuzzy
 msgid "Later"
 msgstr "Más"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "IBus bevitel eljárás keretrendszer"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -192,6 +202,11 @@ msgstr ""
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "IBus beállítás"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "IBus beállítás"
 
 #: ../data/ibus.schemas.in.h:1

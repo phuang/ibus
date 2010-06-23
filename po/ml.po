@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-05-06 12:49+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -22,8 +22,14 @@ msgstr ""
 msgid "IBus"
 msgstr "IBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
 
 #: ../ibus/_config.py.in:38
@@ -61,6 +67,10 @@ msgstr "വീണ്ടും ഉടന്‍ ആരംഭിക്കുക"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "പിന്നീടു്"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "IBus ഇന്‍പുട്ട് മെഥേഡ് ആകൃതി"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -192,6 +202,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "IBus മുന്‍ഗണനകള്‍"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "IBus മുന്‍ഗണനകള്‍"
 
 #: ../data/ibus.schemas.in.h:1

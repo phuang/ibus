@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-01 14:27+0800\n"
+"POT-Creation-Date: 2010-06-23 13:32+0800\n"
 "PO-Revision-Date: 2010-05-14 00:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
@@ -17,8 +17,14 @@ msgstr ""
 msgid "IBus"
 msgstr "iBus"
 
-#: ../bus/ibus.desktop.in.h:2 ../ui/gtk/panel.py:113
-msgid "IBus input method framework"
+#: ../bus/ibus.desktop.in.h:2
+#, fuzzy
+msgid "Input Method Framework"
+msgstr "Struktura metody wprowadzania iBus"
+
+#: ../bus/ibus.desktop.in.h:3
+#, fuzzy
+msgid "Start IBus Input Method Framework"
 msgstr "Struktura metody wprowadzania iBus"
 
 #: ../ibus/_config.py.in:38
@@ -56,6 +62,10 @@ msgstr "Uruchom ponownie teraz"
 #: ../ui/gtk/main.py:63
 msgid "Later"
 msgstr "Później"
+
+#: ../ui/gtk/panel.py:113
+msgid "IBus input method framework"
+msgstr "Struktura metody wprowadzania iBus"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -187,6 +197,11 @@ msgstr "KBD"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
+msgstr "Preferencje programu iBus"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+#, fuzzy
+msgid "Set IBus Preferences"
 msgstr "Preferencje programu iBus"
 
 #: ../data/ibus.schemas.in.h:1
