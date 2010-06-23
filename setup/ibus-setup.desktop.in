@@ -1,8 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 _Name=IBus Preferences
-_GenericName=IBus Preferences
-_Comment=IBus Preferences
+_Comment=Set IBus Preferences
 Exec=ibus-setup
 Icon=ibus-setup
 Terminal=false

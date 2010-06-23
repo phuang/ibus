@@ -1,8 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
 _Name=IBus
-_GenericName=IBus input method framework
-_Comment=IBus input method framework
+_GenericName=Input Method Framework
+_Comment=Start IBus Input Method Framework
 Exec=ibus-daemon --xim
 Icon=ibus
 Terminal=false
