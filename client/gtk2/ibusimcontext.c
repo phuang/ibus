@@ -700,6 +700,43 @@ _ibus_context_commit_text_cb (IBusInputContext *ibuscontext,
     g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
 }
 
+static gboolean
+_key_is_modifier (guint keyval)
+{
+  /* See gdkkeys-x11.c:_gdk_keymap_key_is_modifier() for how this
+   * really should be implemented */
+
+    switch (keyval) {
+    case GDK_Shift_L:
+    case GDK_Shift_R:
+    case GDK_Control_L:
+    case GDK_Control_R:
+    case GDK_Caps_Lock:
+    case GDK_Shift_Lock:
+    case GDK_Meta_L:
+    case GDK_Meta_R:
+    case GDK_Alt_L:
+    case GDK_Alt_R:
+    case GDK_Super_L:
+    case GDK_Super_R:
+    case GDK_Hyper_L:
+    case GDK_Hyper_R:
+    case GDK_ISO_Lock:
+    case GDK_ISO_Level2_Latch:
+    case GDK_ISO_Level3_Shift:
+    case GDK_ISO_Level3_Latch:
+    case GDK_ISO_Level3_Lock:
+    case GDK_ISO_Level5_Shift:
+    case GDK_ISO_Level5_Latch:
+    case GDK_ISO_Level5_Lock:
+    case GDK_ISO_Group_Shift:
+    case GDK_ISO_Group_Latch:
+    case GDK_ISO_Group_Lock:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
 /* Copy from gdk */
 static GdkEventKey *
 _create_gdk_event (IBusIMContext *ibusimcontext,
@@ -723,7 +760,7 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
     event->length = 0;
     event->hardware_keycode = (keycode != 0) ? keycode + 8 : 0;
     event->group = 0;
-    event->is_modifier = 0;
+    event->is_modifier = _key_is_modifier (keyval);
 
     if (keyval != GDK_VoidSymbol)
         c = gdk_keyval_to_unicode (keyval);
