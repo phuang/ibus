@@ -395,11 +395,15 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
         void ( *func) (BusIBusImpl *, GValue *);
     } entries [] = {
         { "general/hotkey", "trigger", bus_ibus_impl_set_trigger },
+        #if 0
         /* Only for backward compatibility, shall be removed later. */
         { "general/hotkey", "next_engine", bus_ibus_impl_set_next_engine_in_menu },
+        #endif
         { "general/hotkey", "next_engine_in_menu", bus_ibus_impl_set_next_engine_in_menu },
+        #if 0
         /* Only for backward compatibility, shall be removed later. */
         { "general/hotkey", "prev_engine", bus_ibus_impl_set_previous_engine },
+        #endif
         { "general/hotkey", "previous_engine", bus_ibus_impl_set_previous_engine },
         { "general", "preload_engines", bus_ibus_impl_set_preload_engines },
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },
@@ -444,11 +448,15 @@ _config_value_changed_cb (IBusConfig  *config,
         void ( *func) (BusIBusImpl *, GValue *);
     } entries [] = {
         { "general/hotkey", "trigger", bus_ibus_impl_set_trigger },
+        #if 0
         /* Only for backward compatibility, shall be removed later. */
         { "general/hotkey", "next_engine", bus_ibus_impl_set_next_engine_in_menu },
+        #endif
         { "general/hotkey", "next_engine_in_menu", bus_ibus_impl_set_next_engine_in_menu },
+        #if 0
         /* Only for backward compatibility, shall be removed later. */
         { "general/hotkey", "prev_engine", bus_ibus_impl_set_previous_engine },
+        #endif
         { "general/hotkey", "previous_engine", bus_ibus_impl_set_previous_engine },
         { "general", "preload_engines",    bus_ibus_impl_set_preload_engines },
         { "general", "use_system_keyboard_layout", bus_ibus_impl_set_use_sys_layout },

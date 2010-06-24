@@ -107,25 +107,25 @@ class Setup(object):
 
         # next engine
         shortcuts = self.__config.get_value(
-                        "general/hotkey", "next_engine",
+                        "general/hotkey", "next_engine_in_menu",
                         ibus.CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT)
         button = self.__builder.get_object("button_next_engine")
         entry = self.__builder.get_object("entry_next_engine")
         entry.set_text("; ".join(shortcuts))
         entry.set_tooltip_text("\n".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("next input method"), "general/hotkey", "next_engine", entry)
+                    N_("next input method"), "general/hotkey", "next_engine_in_menu", entry)
 
         # prev engine
         shortcuts = self.__config.get_value(
-                        "general/hotkey", "prev_engine",
+                        "general/hotkey", "previous_engine",
                         ibus.CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT)
         button = self.__builder.get_object("button_prev_engine")
         entry = self.__builder.get_object("entry_prev_engine")
         entry.set_text("; ".join(shortcuts))
         entry.set_tooltip_text("\n".join(shortcuts))
         button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    N_("previous input method"), "general/hotkey", "prev_engine", entry)
+                    N_("previous input method"), "general/hotkey", "previous_engine", entry)
 
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__builder.get_object("combobox_lookup_table_orientation")
