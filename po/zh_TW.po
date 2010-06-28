@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-06-01 22:57+0800\n"
+"POT-Creation-Date: 2010-06-28 13:15+0800\n"
+"PO-Revision-Date: 2010-06-28 13:10+0800\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: chinese-l10n <chinese-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -24,14 +24,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus 輸入法框架"
+msgstr "輸入法框架"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus 輸入法框架"
+msgstr "啟動 IBus 輸入法框架"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -90,8 +88,8 @@ msgstr "IBus 為 Linux/Unix 上的智慧型輸入法框架。"
 #: ../ui/gtk/panel.py:492
 msgid "translator-credits"
 msgstr ""
-"Ding-Yi Chen 陳定彞 <dchen@redhat.com>, 2009\n"
-"Cheng-Chia Tseng <pswo10680@gmail.com>, 2010"
+"Ding-Yi Chen 陳定彞 <dchen@redhat.com>, 2009.\n"
+"Cheng-Chia Tseng <pswo10680@gmail.com>, 2010."
 
 #: ../ui/gtk/languagebar.py:107
 msgid "About the input method"
@@ -206,9 +204,8 @@ msgid "IBus Preferences"
 msgstr "IBus 偏好設定"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus 偏好設定"
+msgstr "設置 IBus 偏好設定"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
