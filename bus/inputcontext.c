@@ -1172,6 +1172,11 @@ bus_input_context_focus_in (BusInputContext *context)
 
     context->has_focus = TRUE;
 
+    // To make sure that we won't use an old value left before we losing focus
+    // last time.
+    context->prev_keyval = IBUS_VoidSymbol;
+    context->prev_modifiers = 0;
+
     if (context->engine == NULL && context->enabled) {
         g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
     }
