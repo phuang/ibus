@@ -59,7 +59,7 @@ class Menu(gtk.Menu, PropItem):
                 item = SeparatorMenuItem()
                 radio_group = None
             elif prop.type == ibus.PROP_TYPE_MENU:
-                item = gtk.ImageMenuItem()
+                item = ImageMenuItem(prop)
                 if prop.icon:
                     size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
                     item.set_image(icon.IconWidget(prop.icon, size[0]))
@@ -238,6 +238,9 @@ class SeparatorMenuItem(gtk.SeparatorMenuItem, PropItem):
        (gobject.TYPE_STRING, gobject.TYPE_INT)),
     }
 
+    def __init__(self):
+        gtk.SeparatorMenuItem.__init__(self)
+        PropItem.__init__(self, None)
 
 
 def menu_position(menu, button):

@@ -29,6 +29,7 @@ from handle import Handle
 from menu import menu_position,\
     ImageMenuItem,\
     Menu,\
+    CheckMenuItem,\
     RadioMenuItem,\
     SeparatorMenuItem
 from engineabout import EngineAbout
@@ -378,6 +379,8 @@ class LanguageBar(gtk.Toolbar):
                 item = ImageMenuItem(prop = prop)
                 self.__set_item_icon(item, prop)
             elif prop.type == ibus.PROP_TYPE_TOGGLE:
+                item = CheckMenuItem(prop = prop)
+            elif prop.type == ibus.PROP_TYPE_RADIO:
                 item = RadioMenuItem(radio_group, prop = prop)
                 radio_group = item
             elif prop.type == ibus.PROP_TYPE_SEPARATOR:
