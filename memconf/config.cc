@@ -42,6 +42,10 @@ static gboolean ibus_config_memconf_unset(IBusConfigService* config,
                                           const gchar* section,
                                           const gchar* name,
                                           IBusError** error);
+static gboolean ibus_config_memconf_get_unused(IBusConfigService* config,
+                                               GValue* unread,
+                                               GValue* unwritten,
+                                               IBusError** error);
 
 // Copied from gconf/config.c.
 static IBusConfigServiceClass* parent_class = NULL;
@@ -86,10 +90,14 @@ static void ibus_config_memconf_class_init(IBusConfigMemConfClass* klass) {
   IBUS_CONFIG_SERVICE_CLASS(object_class)->get_value
       = ibus_config_memconf_get_value;
   IBUS_CONFIG_SERVICE_CLASS(object_class)->unset = ibus_config_memconf_unset;
+  IBUS_CONFIG_SERVICE_CLASS(object_class)->get_unused
+      = ibus_config_memconf_get_unused;
 }
 
 static void ibus_config_memconf_init(IBusConfigMemConf* config) {
   config->entries = new std::map<std::string, GValue*>;
+  config->unread = new std::set<std::string>;
+  config->unwritten = new std::set<std::string>;
 }
 
 static void ibus_config_memconf_destroy(IBusConfigMemConf* config) {
@@ -102,6 +110,8 @@ static void ibus_config_memconf_destroy(IBusConfigMemConf* config) {
       g_free(iter->second);
     }
     delete config->entries;
+    delete config->unread;
+    delete config->unwritten;
   }
   IBUS_OBJECT_CLASS(parent_class)->destroy(
       reinterpret_cast<IBusObject*>(config));
@@ -139,7 +149,10 @@ static gboolean ibus_config_memconf_set_value(IBusConfigService* config,
   g_value_init(new_entry, G_VALUE_TYPE(value));
   g_value_copy(value, new_entry);
 
-  do_unset(memconf, key);  // remove an existing entry (if any) first.
+  // remove an existing entry (if any) first.
+  if (!do_unset(memconf, key)) {
+    memconf->unread->insert(key);
+  }
   bool result = memconf->entries->insert(std::make_pair(key, new_entry)).second;
   if (!result) {
     g_value_unset(new_entry);
@@ -175,9 +188,11 @@ static gboolean ibus_config_memconf_get_value(IBusConfigService* config,
   if (iter == memconf->entries->end()) {
     *error = ibus_error_new_from_printf(
         "org.freedesktop.DBus.Error.Failed", "Can not get value [%s->%s]", section, name);
+    memconf->unwritten->insert(key);
     return FALSE;
   }
 
+  memconf->unread->erase(key);
   const GValue* entry = iter->second;
   g_value_init(value, G_VALUE_TYPE(entry));
   g_value_copy(entry, value);
@@ -205,10 +220,47 @@ static gboolean ibus_config_memconf_unset(IBusConfigService* config,
         "org.freedesktop.DBus.Error.Failed", "Can not unset value [%s->%s]", section, name);
     return FALSE;
   }
+  memconf->unread->erase(key);
 
   // Note: It is not allowed to call ibus_config_service_value_changed function
   // with zero-cleared GValue, so we don't call the function here.
   // See src/ibusconfigservice.c for details.
+  return TRUE;
+}
+
+static gboolean ibus_config_memconf_get_unused(IBusConfigService* config,
+                                               GValue* unread,
+                                               GValue* unwritten,
+                                               IBusError** error) {
+  IBusConfigMemConf* memconf = reinterpret_cast<IBusConfigMemConf*>(config);
+
+  {
+    g_value_init(unread, G_TYPE_VALUE_ARRAY);
+    GValueArray* array = g_value_array_new(memconf->unread->size());
+    for (std::set<std::string>::const_iterator current =
+         memconf->unread->begin();
+         current != memconf->unread->end(); ++current) {
+      GValue array_element = {0};
+      g_value_init(&array_element, G_TYPE_STRING);
+      g_value_set_string(&array_element, current->c_str());
+      g_value_array_append(array, &array_element);
+    }
+    g_value_take_boxed(unread, array);
+  }
+
+  {
+    g_value_init(unwritten, G_TYPE_VALUE_ARRAY);
+    GValueArray* array = g_value_array_new(memconf->unwritten->size());
+    for (std::set<std::string>::const_iterator current =
+         memconf->unwritten->begin();
+         current != memconf->unwritten->end(); ++current) {
+      GValue array_element = {0};
+      g_value_init(&array_element, G_TYPE_STRING);
+      g_value_set_string(&array_element, current->c_str());
+      g_value_array_append(array, &array_element);
+    }
+    g_value_take_boxed(unwritten, array);
+  }
   return TRUE;
 }
 

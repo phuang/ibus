@@ -304,3 +304,48 @@ ibus_config_unset (IBusConfig   *config,
     g_assert (retval);
     return TRUE;
 }
+
+gboolean
+ibus_config_get_unused (IBusConfig  *config,
+                        GValue      *unread,
+                        GValue      *unwritten)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (unread != NULL);
+    g_assert (unwritten != NULL);
+
+    IBusMessage *reply;
+    IBusError *error;
+    gboolean retval;
+
+    reply = ibus_proxy_call_with_reply_and_block ((IBusProxy *) config,
+                                                  "GetUnused",
+                                                  -1,
+                                                  &error,
+                                                  G_TYPE_INVALID);
+    if (reply == NULL) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        return FALSE;
+    }
+
+    if ((error = ibus_error_new_from_message (reply)) != NULL) {
+        g_warning ("%s: %s", error->name, error->message);
+        ibus_error_free (error);
+        ibus_message_unref (reply);
+        return FALSE;
+    }
+
+    retval = ibus_message_get_args (reply,
+                                    &error,
+                                    G_TYPE_VALUE, unread,
+                                    G_TYPE_VALUE, unwritten,
+                                    G_TYPE_INVALID);
+    ibus_message_unref (reply);
+    if (!retval) {
+        g_warning ("%s: %s", error->name, error->message);
+        return FALSE;
+    }
+
+    return TRUE;
+}

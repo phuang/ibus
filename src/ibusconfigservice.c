@@ -63,6 +63,10 @@ static gboolean ibus_config_service_unset           (IBusConfigService      *con
                                                      const gchar            *section,
                                                      const gchar            *name,
                                                      IBusError             **error);
+static gboolean ibus_config_service_get_unused      (IBusConfigService      *config,
+                                                     GValue                 *unread,
+                                                     GValue                 *unwritten,
+                                                     IBusError             **error);
 
 static IBusServiceClass  *parent_class = NULL;
 
@@ -124,6 +128,7 @@ ibus_config_service_class_init (IBusConfigServiceClass *klass)
     klass->set_value = ibus_config_service_set_value;
     klass->get_value = ibus_config_service_get_value;
     klass->unset = ibus_config_service_unset;
+    klass->get_unused = ibus_config_service_get_unused;
 
     /* install properties */
     /**
@@ -295,6 +300,28 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
             reply = ibus_message_new_method_return (message);
         }
     }
+    else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "GetUnused")) {
+        GValue unread = { 0 };
+        GValue unwritten = { 0 };
+        IBusError *error = NULL;
+        gboolean retval;
+
+        if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->get_unused (config, &unread, &unwritten, &error)) {
+            reply = ibus_message_new_error (message,
+                                            error->name,
+                                            error->message);
+            ibus_error_free (error);
+        }
+        else {
+            reply = ibus_message_new_method_return (message);
+            ibus_message_append_args (reply,
+                                      G_TYPE_VALUE, &unread,
+                                      G_TYPE_VALUE, &unwritten,
+                                      G_TYPE_INVALID);
+            g_value_unset (&unread);
+            g_value_unset (&unwritten);
+        }
+    }
 
     if (reply) {
         ibus_connection_send (connection, reply);
@@ -345,6 +372,19 @@ ibus_config_service_unset (IBusConfigService *config,
         *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
                                              "Can not unset [%s, %s]",
                                              section, name);
+    }
+    return FALSE;
+}
+
+static gboolean
+ibus_config_service_get_unused (IBusConfigService *config,
+                                GValue            *unread,
+                                GValue            *unwritten,
+                                IBusError        **error)
+{
+    if (error) {
+        *error = ibus_error_new_from_printf (DBUS_ERROR_FAILED,
+                                             "Can not get unused values");
     }
     return FALSE;
 }
