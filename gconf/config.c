@@ -34,6 +34,10 @@ static gboolean     ibus_config_gconf_unset_value   (IBusConfigService      *con
                                                      const gchar            *section,
                                                      const gchar            *name,
                                                      GError                **error);
+static gboolean     ibus_config_gconf_get_unused    (IBusConfigService      *config,
+                                                     GVariant              **unread,
+                                                     GVariant              **unwritten,
+                                                     GError                **error);
 static GConfValue   *_to_gconf_value                (GVariant               *value);
 static GVariant     *_from_gconf_value              (const GConfValue       *gvalue);
 
@@ -48,6 +52,7 @@ ibus_config_gconf_class_init (IBusConfigGConfClass *class)
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_gconf_set_value;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value   = ibus_config_gconf_get_value;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->unset_value = ibus_config_gconf_unset_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_unused = ibus_config_gconf_get_unused;
 }
 
 static void
@@ -298,6 +303,17 @@ ibus_config_gconf_unset_value (IBusConfigService      *config,
         return FALSE;
     }
     return TRUE;
+}
+
+static gboolean
+ibus_config_gconf_get_unused (IBusConfigService      *config,
+                              GVariant              **unread,
+                              GVariant              **unwritten,
+                              GError                **error)
+{
+    *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                          "Not implemented");
+    return FALSE;
 }
 
 IBusConfigGConf *

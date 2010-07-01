@@ -49,6 +49,9 @@ class ConfigBase(object.Object):
     def unset_value(self, section, name):
         pass
 
+    def get_unused(self, unread, unwritten):
+        pass
+
     def value_changed(self, section, name, value):
         self.__proxy.ValueChanged(section, name, value)
 
@@ -67,6 +70,9 @@ class ConfigProxy(interface.IConfig):
 
     def UnsetValue(self, section, name):
         return self.__config.unset_value(section, name)
+
+    def GetUnused(self, unread, unwritten):
+        return self.__config.get_unused(unread, unwritten)
 
     def Destroy(self):
         self.__config.destroy()
@@ -142,6 +148,12 @@ class Config(object.Object):
     def set_value(self, section, name, value):
         try:
             return self.__config.SetValue(section, name, value)
+        except:
+            return
+
+    def get_unused(self, unread, unwritten):
+        try:
+            return self.__config.GetUnused(unread, unwritten)
         except:
             return
 
