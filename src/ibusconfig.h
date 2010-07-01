@@ -213,6 +213,20 @@ gboolean         ibus_config_set_value_async_finish
 gboolean         ibus_config_unset      (IBusConfig         *config,
                                          const gchar        *section,
                                          const gchar        *name);
+
+/**
+ * ibus_config_get_unused:
+ * @config: An IBusConfig
+ * @unread: GVariant that holds a list of values that have been written but not
+ * read.
+ * @unwritten: GVariant that holds a list of values that have been read but not
+ * written.
+ * @returns: TRUE if succeed; FALSE otherwise.
+ *
+ * Get the list of values that haven't been used properly.
+ */
+gboolean         ibus_config_get_unused     (IBusConfig         *config,
+                                             GVariant          **unread,
+                                             GVariant          **unwritten);
 G_END_DECLS
 #endif
-

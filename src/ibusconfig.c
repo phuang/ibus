@@ -296,3 +296,37 @@ ibus_config_unset (IBusConfig   *config,
     g_variant_unref (result);
     return TRUE;
 }
+
+gboolean
+ibus_config_get_unused (IBusConfig  *config,
+                        GVariant   **unread,
+                        GVariant   **unwritten)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (unread != NULL && *unread == NULL);
+    g_assert (unwritten != NULL && *unwritten == NULL);
+
+    GError *error = NULL;
+    GVariant *result;
+
+    result = g_dbus_proxy_call_sync ((GDBusProxy *) config,
+                                     "GetUnused",               /* method_name */
+                                     NULL,                      /* parameters */
+                                     G_DBUS_CALL_FLAGS_NONE,    /* flags */
+                                     -1,                        /* timeout */
+                                     NULL,                      /* cancellable */
+                                     &error                     /* error */
+                                     );
+    if (result == NULL) {
+        g_warning ("%s.GetUnused: %s", IBUS_INTERFACE_CONFIG, error->message);
+        g_error_free (error);
+        return FALSE;
+    }
+
+    *unread = g_variant_get_child_value (result, 0);
+    *unwritten = g_variant_get_child_value (result, 1);
+
+    g_variant_unref (result);
+
+    return TRUE;
+}
