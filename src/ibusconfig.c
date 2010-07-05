@@ -101,6 +101,7 @@ ibus_config_new (IBusConnection *connection)
     GObject *obj;
     obj = g_object_new (IBUS_TYPE_CONFIG,
                         "name", IBUS_SERVICE_CONFIG,
+                        "interface", IBUS_INTERFACE_CONFIG,
                         "path", IBUS_PATH_CONFIG,
                         "connection", connection,
                         NULL);

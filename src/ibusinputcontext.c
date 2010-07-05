@@ -80,6 +80,7 @@ ibus_input_context_new (const gchar     *path,
 
     obj = g_object_new (IBUS_TYPE_INPUT_CONTEXT,
                         "name", IBUS_SERVICE_IBUS,
+                        "interface", IBUS_INTERFACE_INPUT_CONTEXT,
                         "path", path,
                         "connection", connection,
                         NULL);
