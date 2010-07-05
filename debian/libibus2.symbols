@@ -11,15 +11,22 @@ libibus.so.2 libibus2 #MINVER#
  ibus_attribute_get_type@Base 1.2.99.20100202
  ibus_attribute_new@Base 1.2.99.20100202
  ibus_bus_add_match@Base 1.2.99.20100202
+ ibus_bus_call@Base 1.3.5.20100705
+ ibus_bus_call_with_reply@Base 1.3.5.20100705
+ ibus_bus_call_with_reply_valist@Base 1.3.5.20100705
  ibus_bus_create_input_context@Base 1.2.99.20100202
  ibus_bus_current_input_context@Base 1.2.99.20100202
  ibus_bus_exit@Base 1.2.99.20100202
  ibus_bus_get_config@Base 1.2.99.20100202
  ibus_bus_get_connection@Base 1.2.99.20100202
+ ibus_bus_get_global_engine@Base 1.3.5.20100705
  ibus_bus_get_name_owner@Base 1.2.99.20100202
  ibus_bus_get_type@Base 1.2.99.20100202
+ ibus_bus_get_use_global_engine@Base 1.3.5.20100705
+ ibus_bus_get_use_sys_layout@Base 1.3.5.20100705
  ibus_bus_hello@Base 1.2.99.20100202
  ibus_bus_is_connected@Base 1.2.99.20100202
+ ibus_bus_is_global_engine_enabled@Base 1.3.5.20100705
  ibus_bus_list_active_engines@Base 1.2.99.20100202
  ibus_bus_list_engines@Base 1.2.99.20100202
  ibus_bus_list_names@Base 1.2.99.20100202
@@ -29,6 +36,7 @@ libibus.so.2 libibus2 #MINVER#
  ibus_bus_release_name@Base 1.2.99.20100202
  ibus_bus_remove_match@Base 1.2.99.20100202
  ibus_bus_request_name@Base 1.2.99.20100202
+ ibus_bus_set_global_engine@Base 1.3.5.20100705
  ibus_bus_set_watch_dbus_signal@Base 1.2.99.20100202
  ibus_capabilite_get_type@Base 1.2.99.20100202
  ibus_component_add_engine@Base 1.2.99.20100202
@@ -43,6 +51,7 @@ libibus.so.2 libibus2 #MINVER#
  ibus_component_new_from_xml_node@Base 1.2.99.20100202
  ibus_component_output@Base 1.2.99.20100202
  ibus_component_output_engines@Base 1.2.99.20100202
+ ibus_component_set_restart@Base 1.3.5.20100705
  ibus_component_start@Base 1.2.99.20100202
  ibus_component_stop@Base 1.2.99.20100202
  ibus_config_get_type@Base 1.2.99.20100202
@@ -54,6 +63,7 @@ libibus.so.2 libibus2 #MINVER#
  ibus_config_set_value@Base 1.2.99.20100202
  ibus_config_unset@Base 1.2.99.20100202
  ibus_connection_call@Base 1.2.99.20100202
+ ibus_connection_call_with_reply@Base 1.3.5.20100705
  ibus_connection_close@Base 1.2.99.20100202
  ibus_connection_flush@Base 1.2.99.20100202
  ibus_connection_get_connection@Base 1.2.99.20100202
@@ -173,6 +183,7 @@ libibus.so.2 libibus2 #MINVER#
  ibus_lookup_table_page_up@Base 1.2.99.20100202
  ibus_lookup_table_set_cursor_pos@Base 1.2.99.20100202
  ibus_lookup_table_set_cursor_visible@Base 1.2.99.20100202
+ ibus_lookup_table_set_label@Base 1.3.5.20100705
  ibus_lookup_table_set_orientation@Base 1.2.99.20100202
  ibus_lookup_table_set_page_size@Base 1.2.99.20100202
  ibus_lookup_table_set_round@Base 1.2.99.20100202
@@ -188,6 +199,7 @@ libibus.so.2 libibus2 #MINVER#
  ibus_marshal_VOID__INT_UINT@Base 1.2.99.20100202
  ibus_marshal_VOID__OBJECT_BOOLEAN@Base 1.2.99.20100202
  ibus_marshal_VOID__OBJECT_UINT_BOOLEAN@Base 1.2.99.20100202
+ ibus_marshal_VOID__OBJECT_UINT_BOOLEAN_UINT@Base 1.3.5.20100705
  ibus_marshal_VOID__STRING_INT@Base 1.2.99.20100202
  ibus_marshal_VOID__STRING_STRING_BOXED@Base 1.2.99.20100202
  ibus_marshal_VOID__STRING_STRING_STRING@Base 1.2.99.20100202
@@ -348,5 +360,6 @@ libibus.so.2 libibus2 #MINVER#
  ibus_type_get_variant@Base 1.2.99.20100202
  ibus_write_address@Base 1.2.99.20100202
  ibus_xml_free@Base 1.2.99.20100202
+ ibus_xml_output@Base 1.3.5.20100705
  ibus_xml_parse_buffer@Base 1.2.99.20100202
  ibus_xml_parse_file@Base 1.2.99.20100202
