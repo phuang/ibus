@@ -121,7 +121,8 @@ class InputContext(object.Object):
         super(InputContext, self).__init__()
 
         self.__bus = bus
-        self.__context = bus.get_dbusconn().get_object(common.IBUS_SERVICE_IBUS, path)
+        _context = bus.get_dbusconn().get_object(common.IBUS_SERVICE_IBUS, path)
+        self.__context = dbus.Interface(_context, dbus_interface="org.freedesktop.IBus.InputContext")
         self.__signal_matches = []
 
         if not watch_signals:

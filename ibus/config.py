@@ -122,7 +122,8 @@ class Config(object.Object):
             self.__bus.remove_match(match_rule % self.__bus_name)
             self.__bus_name = None
 
-        self.__config = self.__bus.get_dbusconn().get_object(bus_name, IBUS_PATH_CONFIG)
+        _config = self.__bus.get_dbusconn().get_object(bus_name, IBUS_PATH_CONFIG)
+        self.__config = dbus.Interface(_config, dbus_interface="org.freedesktop.IBus.Config")
         self.__config.connect_to_signal("ValueChanged", self.__value_changed_cb)
 
         self.__bus_name = bus_name

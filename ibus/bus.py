@@ -59,11 +59,14 @@ class Bus(object.Object):
     def __init__(self):
         super(Bus, self).__init__()
         self.__dbusconn = dbus.connection.Connection(common.get_address())
-        self.__dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
-                                                 dbus.BUS_DAEMON_PATH)
+        _dbus = self.__dbusconn.get_object(dbus.BUS_DAEMON_NAME,
+                                           dbus.BUS_DAEMON_PATH)
+        self.__dbus = dbus.Interface (_dbus, dbus_interface="org.freedesktop.DBus")
         self.__unique_name = self.hello()
-        self.__ibus = self.__dbusconn.get_object(common.IBUS_SERVICE_IBUS,
-                                                 common.IBUS_PATH_IBUS)
+
+        _ibus = self.__dbusconn.get_object(common.IBUS_SERVICE_IBUS,
+                                           common.IBUS_PATH_IBUS)
+        self.__ibus = dbus.Interface (_ibus, dbus_interface='org.freedesktop.IBus')
         self.__ibus.connect_to_signal("RegistryChanged", self.__registry_changed_cb)
 
         self.__dbusconn.call_on_disconnection(self.__dbusconn_disconnected_cb)
