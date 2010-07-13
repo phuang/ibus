@@ -23,7 +23,7 @@
 
 G_BEGIN_DECLS
 
-extern gboolean g_rescan;
+extern gchar *g_cache;
 extern gboolean g_mempro;
 extern gboolean g_verbose;
 extern gint   g_dbus_timeout;

@@ -80,12 +80,24 @@ bus_registry_init (BusRegistry *registry)
     registry->changed = FALSE;
 #endif
 
-    if (g_rescan ||
-        bus_registry_load_cache (registry) == FALSE ||
-        bus_registry_check_modification (registry)) {
-        bus_registry_remove_all (registry);
+    if (g_strcmp0 (g_cache, "none") == 0) {
+        /* only load registry, but not read and write cache */
+        bus_registry_load (registry);
+    }
+    else if (g_strcmp0 (g_cache, "refresh") == 0) {
+        /* load registry and overwrite the cache */
         bus_registry_load (registry);
         bus_registry_save_cache (registry);
+    }
+    else {
+        /* load registry from cache.
+         * If the cache does not exist or it is outdated, then rebuild it */
+        if (bus_registry_load_cache (registry) == FALSE ||
+            bus_registry_check_modification (registry)) {
+            bus_registry_remove_all (registry);
+            bus_registry_load (registry);
+            bus_registry_save_cache (registry);
+        }
     }
 
     for (p = registry->components; p != NULL; p = p->next) {

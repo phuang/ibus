@@ -41,7 +41,7 @@ static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
 static gchar *address = "";
-gboolean g_rescan = FALSE;
+gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
 gint   g_dbus_timeout = 5000;
@@ -67,7 +67,7 @@ static const GOptionEntry entries[] =
     { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program.", "cmdline" },
     { "address",   'a', 0, G_OPTION_ARG_STRING, &address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
-    { "re-scan",   't', 0, G_OPTION_ARG_NONE,   &g_rescan,  "force to re-scan components, and re-create registry cache.", NULL },
+    { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
     { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout in milliseconds.", "timeout [default is 2000]" },
 #ifdef G_THREADS_ENABLED
     { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
