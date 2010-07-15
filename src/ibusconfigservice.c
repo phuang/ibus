@@ -221,14 +221,17 @@ ibus_config_service_ibus_message (IBusConfigService     *config,
                                                    "Can not parse arguments 1 of SetValue");
             ibus_error_free (error);
         }
-        else if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->set_value (config, section, name, &value, &error)) {
-            reply = ibus_message_new_error (message,
-                                            error->name,
-                                            error->message);
-            ibus_error_free (error);
-        }
         else {
-            reply = ibus_message_new_method_return (message);
+            if (!IBUS_CONFIG_SERVICE_GET_CLASS (config)->set_value (config, section, name, &value, &error)) {
+                reply = ibus_message_new_error (message,
+                                                error->name,
+                                                error->message);
+                ibus_error_free (error);
+            }
+            else {
+                reply = ibus_message_new_method_return (message);
+            }
+            g_value_unset (&value);
         }
     }
     else if (ibus_message_is_method_call (message, IBUS_INTERFACE_CONFIG, "GetValue")) {
