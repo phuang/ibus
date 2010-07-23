@@ -145,7 +145,7 @@ static gboolean ibus_config_memconf_set_value(IBusConfigService* config,
     g_value_unset(new_entry);
     g_free(new_entry);
     *error = ibus_error_new_from_printf(
-        DBUS_ERROR_FAILED, "Can not set value [%s->%s]", section, name);
+        "org.freedesktop.DBus.Error.Failed", "Can not set value [%s->%s]", section, name);
   }
 
   // Let ibus-daemon know that a new value is set to ibus-memconf. Note that
@@ -174,7 +174,7 @@ static gboolean ibus_config_memconf_get_value(IBusConfigService* config,
       = memconf->entries->find(key);
   if (iter == memconf->entries->end()) {
     *error = ibus_error_new_from_printf(
-        DBUS_ERROR_FAILED, "Can not get value [%s->%s]", section, name);
+        "org.freedesktop.DBus.Error.Failed", "Can not get value [%s->%s]", section, name);
     return FALSE;
   }
 
@@ -202,7 +202,7 @@ static gboolean ibus_config_memconf_unset(IBusConfigService* config,
 
   if (!do_unset(memconf, key)) {
     *error = ibus_error_new_from_printf(
-        DBUS_ERROR_FAILED, "Can not unset value [%s->%s]", section, name);
+        "org.freedesktop.DBus.Error.Failed", "Can not unset value [%s->%s]", section, name);
     return FALSE;
   }
 

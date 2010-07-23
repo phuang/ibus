@@ -34,7 +34,7 @@ GCONF_DIRS = \
 endif
 
 if ENABLE_MEMCONF
-MEM_CONF = \
+MEMCONF_DIRS = \
 	memconf \
 	$(NULL)
 endif
@@ -52,7 +52,7 @@ SUBDIRS = \
 	bindings \
 	$(PYTHON_DIRS) \
 	$(GCONF_DIRS) \
-	$(MEM_DIRS) \
+	$(MEMCONF_DIRS) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
@@ -132,6 +132,18 @@ ppa: dist debian/changelog
 		cp -a ../../debian . ; \
 		cd debian; \
 		debuild -S -sa ; \
+	)
+
+dpkg: dist debian/changelog
+	$(AM_V_GEN) \
+	( \
+		mkdir ppa; \
+		cd ppa; \
+		tar zxvf ../$(distdir).tar.gz ; \
+		cd $(distdir); \
+		cp -a ../../debian . ; \
+		cd debian; \
+		debuild -b ; \
 	)
 
 
