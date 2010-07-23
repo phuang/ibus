@@ -79,6 +79,7 @@ static const gchar *_snooper_apps = SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 
 static GtkIMContext *_focus_im_context = NULL;
+static IBusInputContext *_fake_context = NULL;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
@@ -130,6 +131,7 @@ static void     _slave_delete_surrounding_cb
                                              gint               offset_from_cursor,
                                              guint              nchars,
                                              IBusIMContext       *context);
+static void     _create_fake_input_context  (void);
 
 
 
@@ -204,15 +206,21 @@ _key_snooper_cb (GtkWidget   *widget,
     IDEBUG ("%s", __FUNCTION__);
     gboolean retval = FALSE;
 
-    IBusIMContext *ibusimcontext = (IBusIMContext *)_focus_im_context;
+    IBusIMContext *ibusimcontext = (IBusIMContext *) _focus_im_context;
+    IBusInputContext *ibuscontext = NULL;
 
-    if (G_UNLIKELY (!_use_key_snooper))
-        return retval;
+    if (ibusimcontext != NULL &&
+        ibusimcontext->has_focus == TRUE) {
+        /* has IC with focus and use_key_snooper is true */
+        if (_use_key_snooper)
+            ibuscontext = ibusimcontext->ibuscontext;
+    }
+    else {
+        /* If no IC has focus, and fake IC has been created, then pass key events to fake IC. */
+        ibuscontext = _fake_context;
+    }
 
-    if (ibusimcontext == NULL)
-        return FALSE;
-
-    if (G_UNLIKELY (ibusimcontext->ibuscontext == NULL || ibusimcontext->has_focus == FALSE))
+    if (ibuscontext == NULL)
         return FALSE;
 
     if (G_UNLIKELY (event->state & IBUS_HANDLED_MASK))
@@ -223,13 +231,13 @@ _key_snooper_cb (GtkWidget   *widget,
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
-        retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
+        retval = ibus_input_context_process_key_event (ibuscontext,
                                                        event->keyval,
                                                        event->hardware_keycode - 8,
                                                        event->state | IBUS_RELEASE_MASK);
         break;
     case GDK_KEY_PRESS:
-        retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
+        retval = ibus_input_context_process_key_event (ibuscontext,
                                                        event->keyval,
                                                        event->hardware_keycode - 8,
                                                        event->state);
@@ -326,10 +334,19 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
         }
     }
 
-    IDEBUG ("snooper = %d", _use_key_snooper);
-    if (_use_key_snooper) {
-        gtk_key_snooper_install (_key_snooper_cb, NULL);
+    /* init bus object */
+    if (_bus == NULL) {
+        ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
+        _bus = ibus_bus_new();
     }
+
+    if (ibus_bus_is_connected (_bus)) {
+        _create_fake_input_context ();
+    }
+    g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), NULL);
+
+    /* always install snooper */
+    gtk_key_snooper_install (_key_snooper_cb, NULL);
 }
 
 static void
@@ -387,12 +404,6 @@ ibus_im_context_init (GObject *obj)
                       "delete-surrounding",
                       G_CALLBACK (_slave_delete_surrounding_cb),
                       ibusimcontext);
-
-    /* init bus object */
-    if (_bus == NULL) {
-        ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
-        _bus = ibus_bus_new();
-    }
 
     if (ibus_bus_is_connected (_bus)) {
         _create_input_context (ibusimcontext);
@@ -538,7 +549,12 @@ ibus_im_context_focus_out (GtkIMContext *context)
     if (ibusimcontext->ibuscontext) {
         ibus_input_context_focus_out (ibusimcontext->ibuscontext);
     }
+
     gtk_im_context_focus_out (ibusimcontext->slave);
+
+    /* focus in the fake ic */
+    if (_fake_context)
+        ibus_input_context_focus_in (_fake_context);
 }
 
 static void
@@ -684,10 +700,10 @@ _bus_connected_cb (IBusBus          *bus,
                    IBusIMContext    *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
-    g_assert (IBUS_IS_IM_CONTEXT (ibusimcontext));
-    g_assert (ibusimcontext->ibuscontext == NULL);
-
-    _create_input_context (ibusimcontext);
+    if (ibusimcontext)
+        _create_input_context (ibusimcontext);
+    else
+        _create_fake_input_context ();
 }
 
 static void
@@ -746,11 +762,10 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
 {
     gunichar c = 0;
     gchar buf[8];
-    GdkEventKey *event;
 
-    event = (GdkEventKey *)gdk_event_new ((state & IBUS_RELEASE_MASK) ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
+    GdkEventKey *event = (GdkEventKey *)gdk_event_new ((state & IBUS_RELEASE_MASK) ? GDK_KEY_RELEASE : GDK_KEY_PRESS);
 
-    if (ibusimcontext->client_window)
+    if (ibusimcontext && ibusimcontext->client_window)
         event->window = g_object_ref (ibusimcontext->client_window);
     event->time = GDK_CURRENT_TIME;
     event->send_event = FALSE;
@@ -1116,3 +1131,46 @@ _slave_delete_surrounding_cb (GtkIMContext  *slave,
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 
+#ifdef OS_CHROMEOS
+static void
+_ibus_fake_context_destroy_cb (IBusInputContext *ibuscontext,
+                               gpointer          user_data)
+{
+    /* The fack IC may be destroyed when the connection is lost.
+     * Should release it. */
+    g_assert (ibuscontext == _fake_context);
+    g_object_unref (_fake_context);
+    _fake_context = NULL;
+}
+
+static void
+_create_fake_input_context (void)
+{
+    g_return_if_fail (_fake_context == NULL);
+
+     /* Global engine is always enabled in Chrome OS,
+      * so create fake IC, and set focus if no other IC has focus.
+     */
+    _fake_context = ibus_bus_create_input_context (_bus, "fake");
+    g_return_if_fail (_fake_context != NULL);
+    g_object_ref_sink (_fake_context);
+
+    g_signal_connect (_fake_context, "forward-key-event",
+                      G_CALLBACK (_ibus_context_forward_key_event_cb),
+                      NULL);
+    g_signal_connect (_fake_context, "destroy",
+                      G_CALLBACK (_ibus_fake_context_destroy_cb),
+                      NULL);
+
+    guint32 caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS | IBUS_CAP_SURROUNDING_TEXT;
+    ibus_input_context_set_capabilities (_fake_context, caps);
+
+    ibus_input_context_focus_in (_fake_context);
+}
+#else
+static void
+_create_fake_input_context (void)
+{
+    /* For Linux desktop, do not use fake IC. */
+}
+#endif

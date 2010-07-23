@@ -171,6 +171,9 @@ bus_input_context_new (BusConnection    *connection,
     context->connection = connection;
     context->client = g_strdup (client);
 
+    /* it is a fake input context, just need process hotkey */
+    context->fake = (g_strcmp0 (client, "fake") == 0);
+
     g_signal_connect (context->connection,
                       "destroy",
                       (GCallback) _connection_destroy_cb,
@@ -701,7 +704,8 @@ _ic_process_key_event  (BusInputContext *context,
         }
     }
 
-    if (context->has_focus && context->enabled && context->engine) {
+    /* ignore key events, if it is a fake input context */
+    if (context->has_focus && context->enabled && context->engine && context->fake == FALSE) {
         CallData *call_data;
 
         call_data = g_slice_new (CallData);

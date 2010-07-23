@@ -88,6 +88,9 @@ struct _BusInputContext {
 
     /* filter release */
     gboolean filter_release;
+
+    /* is fake context */
+    gboolean fake;
 };
 
 struct _BusInputContextClass {
