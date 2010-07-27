@@ -80,6 +80,7 @@ static gboolean _use_key_snooper = ENABLE_SNOOPER;
 
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
+static GdkWindow *_input_window = NULL;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
@@ -228,6 +229,14 @@ _key_snooper_cb (GtkWidget   *widget,
 
     if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
         return FALSE;
+
+    if (_fake_context == ibuscontext && _input_window != event->window) {
+        if (_input_window)
+            g_object_unref (_input_window);
+        if (event->window)
+            g_object_ref (event->window);
+        _input_window = event->window;
+    }
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
@@ -767,6 +776,8 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
 
     if (ibusimcontext && ibusimcontext->client_window)
         event->window = g_object_ref (ibusimcontext->client_window);
+    else if (_input_window)
+        event->window = g_object_ref (_input_window);
     event->time = GDK_CURRENT_TIME;
     event->send_event = FALSE;
     event->state = state;
@@ -833,7 +844,6 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
                                     IBusIMContext     *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
-
     GdkEventKey *event = _create_gdk_event (ibusimcontext, keyval, keycode, state);
     gdk_event_put ((GdkEvent *)event);
     gdk_event_free ((GdkEvent *)event);
