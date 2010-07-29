@@ -1,3 +1,4 @@
+# translation of ibus.master.po to
 # translation of it.po to
 # Italian translation for ibus
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
@@ -8,10 +9,10 @@
 # Milo Casagrande <milo@ubuntu.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: it\n"
+"Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2009-12-10 09:28+1000\n"
+"POT-Creation-Date: 2010-07-28 18:37+0000\n"
+"PO-Revision-Date: 2010-07-30 08:36+1000\n"
 "Last-Translator: \n"
 "Language-Team:  <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +26,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "Ambiente del metodo di input IBus"
+msgstr "Framework del metodo di input"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "Ambiente del metodo di input IBus"
+msgstr "Avvia il framework del metodo di input di IBus"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -96,20 +95,20 @@ msgstr ""
 "Launchpad Contributions:\n"
 "  Sergio Zanchetta https://launchpad.net/~primes2h"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "Informazioni sul metodo di input"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "Cambia metodo di input"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Informazioni"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "Informazioni sul metodo di input"
 
@@ -209,9 +208,8 @@ msgid "IBus Preferences"
 msgstr "Preferenze di IBus"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "Preferenze di IBus"
+msgstr "Imposta Preferenze di IBus"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -234,13 +232,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "Inserire il testo pre-modificato nella finestra dell'applicazione"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "il metodo di input successivo"
+msgstr "Abilita per impostazione predefinita il metodo di input"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "Abilita per impostazione predefinita il metodo di input quando le applicazioni ottengono l'input focus"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -304,16 +301,12 @@ msgstr ""
 "a destra, 4 = Personalizzata"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr ""
-"I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
+msgstr "I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr ""
-"I tasti scorciatoia per passare al metodo di input precedente nell'elenco"
+msgstr "I tasti scorciatoia per passare al metodo di input precedente"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -499,13 +492,11 @@ msgstr "Avvia IBus all'accesso"
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
+msgstr "I tasti scorciatoia per passare al metodo di input successivo nell'elenco"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"I tasti scorciatoia per passare al metodo di input precedente nell'elenco"
+msgstr "I tasti scorciatoia per passare al metodo di input precedente nell'elenco"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -526,3 +517,4 @@ msgstr "Verticale"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Quando attivoB"
+

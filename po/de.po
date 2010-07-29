@@ -6,15 +6,14 @@
 #
 # Fabian Affolter <fab@fedoraproject.org>, 2009.
 # Hedda Peters <hpeters@redhat.com>, 2009.
-# sknirT omiT <moc.tahder@sknirtt>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: de\n"
+"Project-Id-Version: ibus.master.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2009-12-10 09:44+1000\n"
-"Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2010-07-28 18:37+0000\n"
+"PO-Revision-Date: 2010-07-29 22:37+1000\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,14 +25,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus-Eingabemethode-Framework"
+msgstr "Eingabemethode-Framework"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus-Eingabemethode-Framework"
+msgstr "IBus-Eingabemethode-Framework starten"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -97,20 +94,20 @@ msgstr ""
 "Fabian Affolter <fab@fedoraproject.org>, 2009.\n"
 "Hedda Peters <hpeters@redhat.com>, 2009."
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "Über die Eingabemethode"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "Eingabemethode wechseln"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Über"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "Über die Eingabemethode"
 
@@ -210,9 +207,8 @@ msgid "IBus Preferences"
 msgstr "IBus-Einstellungen"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus-Einstellungen"
+msgstr "IBus-Einstellungen konfigurieren"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -235,13 +231,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "Preedit-Text in Anwendungsfenster einbetten"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "Nächste Eingabemethode"
+msgstr "Eingabemethode standardmäßig aktivieren"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "Eingabemethode standardmäßig aktivieren, wenn die Anwendung Eingabefokus erlangt"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -304,16 +299,12 @@ msgstr ""
 "= Ecke unten links, 3 = Ecke unten rechts, 4 = Benutzerdefiniert"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr ""
-"Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
+msgstr "Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr ""
-"Tastenkombination zum Wechseln zur vorherigen Eingabemethode in der Liste"
+msgstr "Tastenkombination zum Wechseln zur vorherigen Eingabemethode"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -472,13 +463,11 @@ msgstr "Vorherige Eingabemethode:"
 
 #: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"Entfernen Sie die gewählte Eingabemethode aus den aktivierten Eingabemethoden"
+msgstr "Entfernen Sie die gewählte Eingabemethode aus den aktivierten Eingabemethoden"
 
 #: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
-"Verhalten von IBus einstellen, das Sprach-Panel anzuzeigen oder zu verstecken"
+msgstr "Verhalten von IBus einstellen, das Sprach-Panel anzuzeigen oder zu verstecken"
 
 #: ../setup/setup.ui.h:39
 msgid "Set the orientation of candidates in lookup table"
@@ -504,13 +493,11 @@ msgstr "Starte IBus bei der Anmeldung"
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
+msgstr "Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"Tastenkombination zum Wechseln zur vorherigen Eingabemethode in der Liste"
+msgstr "Tastenkombination zum Wechseln zur vorherigen Eingabemethode in der Liste"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -531,3 +518,4 @@ msgstr "Vertikal"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Wenn aktiv"
+
