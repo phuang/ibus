@@ -689,7 +689,12 @@ _ic_process_key_event  (BusInputContext *context,
 
     if (G_UNLIKELY (!context->has_focus)) {
         /* workaround: set focus if context does not have focus */
-        bus_input_context_focus_in (context);
+        if (BUS_DEFAULT_IBUS->focused_context == NULL ||
+            BUS_DEFAULT_IBUS->focused_context->fake == TRUE ||
+            context->fake == FALSE) {
+            /* grab focus, if context is a real IC or current focused IC is fake */
+            bus_input_context_focus_in (context);
+        }
     }
 
     if (G_LIKELY (context->has_focus)) {
