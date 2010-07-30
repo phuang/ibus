@@ -1,20 +1,23 @@
+# translation of ibus.master.po to Wei Liu
 # Translation for ibus.
 # Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# Peng Huang <shawn.p.huang@gmail.com>, 2007-2010.
 #
+# Peng Huang <shawn.p.huang@gmail.com>, 2007-2010.
+# Leah Liu <lliu@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1.1.20080813\n"
+"Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2008-08-13 21:59+0800\n"
-"Last-Translator: Peng Huang <shawn.p.huang@gmail.com>\n"
-"Language-Team: Peng Huang <shawn.p.huang@gmail.com>\n"
+"POT-Creation-Date: 2010-07-29 23:22+0000\n"
+"PO-Revision-Date: 2010-07-30 10:43+1000\n"
+"Last-Translator: Leah Liu <lliu@redhat.com>\n"
+"Language-Team: Wei Liu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -86,20 +89,20 @@ msgstr "IBus is an intelligent input bus for Linux/Unix."
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "关于输入法"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "切换输入法"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "关于"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "关于输入法"
 
@@ -228,7 +231,7 @@ msgstr "默认启动输入法"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "当应用程序需要使用输入时自动启用输入法"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -498,5 +501,3 @@ msgstr "竖直"
 msgid "When active"
 msgstr "活动时"
 
-#~ msgid "Never"
-#~ msgstr "从不"

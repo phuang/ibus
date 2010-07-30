@@ -1,4 +1,4 @@
-# translation of pt_BR.po to Portuguese
+# translation of ibus.master.pt_BR.po to Portuguese
 # translation of pt_BR1.po to
 # translation of pt_BR.po to
 # Gujarati translations for el package.
@@ -9,10 +9,10 @@
 # Glaucia Cintra <gcintra@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: pt_BR\n"
+"Project-Id-Version: ibus.master.pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-27 11:22+0800\n"
-"PO-Revision-Date: 2010-05-07 12:12+1000\n"
+"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"PO-Revision-Date: 2010-07-30 11:10+1000\n"
 "Last-Translator: Glaucia Cintra <gcintra@redhat.com>\n"
 "Language-Team: Portuguese <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "Framework do método de entrada IBus"
+msgstr "Framework do método de entrada"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "Framework do método de entrada IBus"
+msgstr "Iniciar Framework do método de entrada IBus"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -207,9 +205,8 @@ msgid "IBus Preferences"
 msgstr "Preferências do IBus"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "Preferências do IBus"
+msgstr "Definir Preferências do IBus"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -232,13 +229,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "Embutir Texto de Pré-edição na Janela do Aplicativo"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "próximo método de entrada"
+msgstr "Habilitar método de entrada por padrão"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "Habilitar método de entrada por padrão quando o aplicativo obtiver o foco de entradas"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -302,15 +298,12 @@ msgstr ""
 "= Padrão "
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr ""
-"As teclas de atalho para alteração ao próximo método de entrada na lista"
+msgstr "As teclas de atalho para alteração ao próximo método de entrada na lista "
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr "Teclas de atalho para alteração ao método de entrada anterior da lista"
+msgstr "Teclas de atalho para alteração ao método de entrada anterior"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -349,9 +342,8 @@ msgid "<b>Font and Style</b>"
 msgstr "<b>Fonte e Estilo</b>"
 
 #: ../setup/setup.ui.h:3
-#, fuzzy
 msgid "<b>Global input method settings</b>"
-msgstr "<b>Configurações de Método de Entrada Global</b>"
+msgstr "<b>Configurações de Método de Entrada Global</b> "
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"
@@ -392,8 +384,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"Adicione o método de entrada selecionado nos métodos de entrada ativados"
+msgstr "Adicione o método de entrada selecionado nos métodos de entrada ativados"
 
 #: ../setup/setup.ui.h:18
 msgid "Advanced"
@@ -425,8 +416,7 @@ msgstr "Embutir texto de pré-edição na janela do aplicativo "
 
 #: ../setup/setup.ui.h:25
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
-"Embutir o texto de pré-edição do método de entrada na janela do aplicativo"
+msgstr "Embutir o texto de pré-edição do método de entrada na janela do aplicativo"
 
 #: ../setup/setup.ui.h:26
 msgid "Embedded in menu"
@@ -504,8 +494,7 @@ msgstr "Inicie o ibus na conexão "
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"As teclas de atalho para alteração ao próximo método de entrada na lista"
+msgstr "As teclas de atalho para alteração ao próximo método de entrada na lista"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
@@ -530,3 +519,4 @@ msgstr "Vertical"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "Quando ativado"
+

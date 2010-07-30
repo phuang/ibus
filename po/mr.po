@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-05-06 12:13+0530\n"
+"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"PO-Revision-Date: 2010-07-30 08:28+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
-"Language-Team: Marathi <maajhe-sanganak@freelists.org>\n"
+"Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,14 +22,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus इन्पुट पद्धती मांडणी"
+msgstr "इन्पुट पद्धत फ्रेमवर्क"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus इन्पुट पद्धती मांडणी"
+msgstr "IBus इन्पुट पद्धती फ्रेमवर्क सुरू करा"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -69,7 +67,7 @@ msgstr "पुढे"
 
 #: ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
-msgstr "IBus इन्पुट पद्धती मांडणी"
+msgstr "IBus इन्पुट पद्धती फ्रेमवर्क"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -89,24 +87,22 @@ msgstr "Linux/Unix करीता IBus हे एक हुशार इनप�
 
 #: ../ui/gtk/panel.py:492
 msgid "translator-credits"
-msgstr ""
-"संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
-"com>, 2009, 2010."
+msgstr "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat.com>, 2009, 2010."
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "इंपुट पद्धत विषयी"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "इंपुट पद्धत बदला"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "विषयी"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "इंपुट पद्धत विषयी"
 
@@ -206,9 +202,8 @@ msgid "IBus Preferences"
 msgstr "IBus आवड निवड"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus आवड निवड"
+msgstr "IBus पसंती सुरू करा"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -231,13 +226,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "ऍप्लिकेशन पटलात प्रिएडीट मजकूर एम्बेड करा"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "पुढिल इंपुट पद्धत"
+msgstr "पूर्वनितर्धारीतपणे इंपुट पद्धत सुरू करा"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "ऍप्लिकेशनला इंपुट फोकस प्राप्त झाल्यावर इंपुट पद्धत पूर्वनिर्धारीतपणे सुरू करा"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -298,14 +292,12 @@ msgstr ""
 "corner, 3 = Bottom right corner, 4 = Custom"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "सूचीतील पुढची इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
+msgstr "सूचीतील पुढील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr "सूचीतील मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
+msgstr "मागील इंपुट पद्धत नीवडण्याकरीता वापरण्याजोगी शार्टकट किज्"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -510,3 +502,4 @@ msgstr "उभे"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "सक्रीय असल्यावर"
+
