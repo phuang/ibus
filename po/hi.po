@@ -1,4 +1,4 @@
-# translation of hi.po to Hindi
+# translation of ibus.master.po to Hindi
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,17 +6,17 @@
 # Rajesh Ranjan <rajesh672@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: hi\n"
+"Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-05-06 13:55+0530\n"
+"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"PO-Revision-Date: 2010-07-30 16:10+0530\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
-"Language-Team: Hindi <Red Hat>\n"
+"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -29,14 +29,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus इनपुट विधि फ्रेमवर्क"
+msgstr "IBus विधि फ्रेमवर्क"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus इनपुट विधि फ्रेमवर्क"
+msgstr "IBus इनपुट विधि फ्रेमवर्क आरंभ करें"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -98,20 +96,20 @@ msgstr "IBus Linux/Unix के लिए तेज तर्रार इनप�
 msgid "translator-credits"
 msgstr "राजेश रंजन (rranjan@redhat.com)"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "इनपुट विधि का परिचय"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "इनपुट विधि बदलें"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "परिचय"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "इनपुट विधि का परिचय"
 
@@ -211,9 +209,8 @@ msgid "IBus Preferences"
 msgstr "IBus वरीयता"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus वरीयता"
+msgstr "IBus वरीयताएँ सेट करें"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -236,13 +233,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "अनुप्रयोग विंडो में पूर्वसंपादित पाठ अंतःस्थापित करें"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "अगली इनपुट विधि"
+msgstr "इनपुट विधि को तयशुदा रूप से सक्रिय करें"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "जब अनुप्रयोग इनपुट फोकस पाता है तो इनपुट विधि को तयशुदा रूप से सक्रिय करें"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -292,8 +288,7 @@ msgstr "भाषा पट्टी पर इनपुट विधि ना�
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"भाषा फलक का व्यवहार. 0 = मेन्यू में अंतःस्थापित, 1 = स्वतः छिपाएँ, 2 = हमेशा दिखाएँ"
+msgstr "भाषा फलक का व्यवहार. 0 = मेन्यू में अंतःस्थापित, 1 = स्वतः छिपाएँ, 2 = हमेशा दिखाएँ"
 
 #: ../data/ibus.schemas.in.h:20
 msgid ""
@@ -304,14 +299,12 @@ msgstr ""
 "कोना, 3 = निचला दाहिना कोना, 4 = पसंदीदा"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "सूची में अगली इनपुट विधि में जाने के लिए शॉर्टकट कुंजी"
+msgstr "सूची में अगली इनपुट विधि में जाने के लिए शॉर्टकट कुंजियाँ"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr "सूची में पिछली इनपुट विधि में जाने के लिए शॉर्टकट कुंजी"
+msgstr "सूची में पिछली इनपुट विधि में जाने के लिए शॉर्टकट कुंजियाँ"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"

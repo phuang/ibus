@@ -8,19 +8,20 @@
 # IWAI, Masaharu <iwai@alib.jp>, 2009.
 # Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2009.
 # Kiyoto Hashida <khashida@redhat.com>, 2010.
+# Makoto Mizukami <makoto@fedoraporject.org>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-07-30 00:45+0000\n"
-"PO-Revision-Date: 2010-07-30 10:01+0900\n"
-"Last-Translator: Kiyoto Hashida <khashida@redhat.com>\n"
+"PO-Revision-Date: 2010-07-30 22:20+0900\n"
+"Last-Translator: Makoto Mizukami <makoto@fedoraporject.org>\n"
 "Language-Team: Japanese <jp@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
+"Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n"
 "\n"
 "\n"
 
@@ -34,7 +35,7 @@ msgstr "インプットメソッドフレームワーク"
 
 #: ../bus/ibus.desktop.in.h:3
 msgid "Start IBus Input Method Framework"
-msgstr "IBus インプットメソッドフレームワークを開始"
+msgstr "IBus インプットメソッドフレームワークを起動"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -213,7 +214,7 @@ msgstr "IBus の設定"
 
 #: ../setup/ibus-setup.desktop.in.h:2
 msgid "Set IBus Preferences"
-msgstr "IBus の個人設定をセットする"
+msgstr "IBus の設定"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -237,11 +238,13 @@ msgstr "アプリケーションウィンドウにプリエディットテキス
 
 #: ../data/ibus.schemas.in.h:6
 msgid "Enable input method by default"
-msgstr "デフォルトでインプットメソッドを有効にする"
+msgstr "標準でインプットメソッドを有効にする"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr "アプリケーションが入力に焦点を置く時点にデフォルトで入力メソッドを有効にする"
+msgstr ""
+"アプリケーションに入力フォーカスが当たったとき標準でインプットメソッドを有効"
+"にする"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -291,7 +294,8 @@ msgstr "言語バーにインプットメソッド名を表示する"
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr "言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
+msgstr ""
+"言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:20
 msgid ""
@@ -303,11 +307,12 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "リスト内の次のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リスト中の次のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:22
 msgid "The shortcut keys for switching to the previous input method"
-msgstr "ひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr ""
+"リスト中のひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -445,11 +450,13 @@ msgstr "言語パネルの位置"
 
 #: ../setup/setup.ui.h:33
 msgid "Move down the selected input method in the enabled input methods"
-msgstr "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
 #: ../setup/setup.ui.h:34
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+msgstr ""
+"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:35
 msgid "Next input method:"
@@ -495,7 +502,8 @@ msgstr "リストの中で次のインプットメソッドに切り替えるた
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr ""
+"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -516,4 +524,3 @@ msgstr "縦"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "アクティブであるとき"
-
