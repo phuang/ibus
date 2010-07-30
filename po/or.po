@@ -1,14 +1,14 @@
-# translation of or.po to Oriya
+# translation of ibus.master.or.po to Oriya
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: or\n"
+"Project-Id-Version: ibus.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-04-15 14:17+0530\n"
+"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"PO-Revision-Date: 2010-07-30 13:19+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -31,14 +31,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
+msgstr "ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କ"
+msgstr "IBus ନିବେଶ ପ୍ରଣାଳୀ ଫ୍ରେମୱର୍କକୁ ଆରମ୍ଭ କରନ୍ତୁ"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -100,20 +98,20 @@ msgstr "IBus ହେଉଛି Linux/Unix ପାଇଁ ଗୋଟିଏ ବୁଦ�
 msgid "translator-credits"
 msgstr "ମନୋଜ କୁମାର ଗିରି <mgiri@redhat.com>"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "ନିବେଶ ପ୍ରଣୀଳିକୁ ବଦଳାନ୍ତୁ"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "ବିବରଣୀ"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "ନିବେଶ ପ୍ରଣାଳୀ ବିଷୟରେ"
 
@@ -213,9 +211,8 @@ msgid "IBus Preferences"
 msgstr "IBus ପସନ୍ଦ"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus ପସନ୍ଦ"
+msgstr "IBus ପସନ୍ଦଗୁଡ଼ିକୁ ସେଟକରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -238,13 +235,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "ପ୍ରୟୋଗ ୱିଣ୍ଡୋରେ ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "ପରବର୍ତ୍ତି ନିବେଶ ପ୍ରଣାଳୀ"
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଭାବରେ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଭାବରେ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ କରନ୍ତୁ ଯେତେବେଳେ ପ୍ରୟୋଗକୁ ନିବେଶ ଲକ୍ଷ୍ଯ ମିଳିଥାଏ"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -307,12 +303,10 @@ msgstr ""
 "କୋଣ, 3 = ତଳ ପାଖ ଡ଼ାହାଣ କୋଣ, 4 = ଇଚ୍ଛାମୁତାବକ"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "ତାଲିକାରେ ପରବର୍ତ୍ତୀ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "ତାଲିକାରେ ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
@@ -519,3 +513,4 @@ msgstr "ଭୂଲମ୍ବ"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "ସକ୍ରିୟ ଥିବା ସମୟରେ"
+
