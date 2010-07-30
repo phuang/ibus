@@ -1,21 +1,21 @@
-# translation of te.po to Telugu
+# translation of ibus.master.te.po to Telugu
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Krishna Babu K <kkrothap@redhat.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: te\n"
+"Project-Id-Version: ibus.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-05-05 16:34+0530\n"
+"POT-Creation-Date: 2010-07-30 00:45+0000\n"
+"PO-Revision-Date: 2010-07-30 14:17+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "\n"
@@ -29,14 +29,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus ఇన్పుట్ పద్దతి ఆకృతి"
+msgstr "ఇన్పుట్ పద్దతి ఫ్రేమ్‌వర్క్"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus ఇన్పుట్ పద్దతి ఆకృతి"
+msgstr "IBus ఇన్పుట్ పద్దతి ఫ్రేమ్‌వర్కును ప్రారంభించుము"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -98,20 +96,20 @@ msgstr "IBus అనునది Linux/Unix కొరకు తెలివైన
 msgid "translator-credits"
 msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009."
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "ఇన్పుట్ పద్దతి గురించి"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "ఇన్పుట్ పద్దతి మార్చుము"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "గురించి"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "ఇన్పుట్ పద్దతి గురించి"
 
@@ -211,9 +209,8 @@ msgid "IBus Preferences"
 msgstr "IBus అభీష్టములు"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus అభీష్టములు"
+msgstr "IBus అభీష్టములను అమర్చుము"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -236,13 +233,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "అనువర్తన విండోనందు ఎంబెడెడ్ ప్రీడిట్ పాఠము"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "తరువాతి ఇన్పుట్ పద్దతి"
+msgstr "ఇన్పుట్ పద్దతిని అప్రమేయంగా చేతనముచేయుము"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "అనువర్తనము యిన్పుట్ ఫోకస్‌ను పొందగానే అప్రమేయంగా యిన్పుట్ పద్దతిని చేతనము చేయుము"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -305,12 +301,10 @@ msgstr ""
 "కుడి మూల, 4 = మలచుకొనిన"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "జాబితానందలి తరువాతి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "జాబితానందలి ముందరి యిన్పుట్ పద్దతినకు మారుటకు లఘువులు"
 
@@ -517,3 +511,4 @@ msgstr "వెర్టికల్"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "క్రియాశీలముగా వున్నప్పుడు"
+
