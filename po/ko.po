@@ -1,4 +1,4 @@
-# translation of ko.po to Korean
+# translation of ibus.master.ko.po to Korean
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -6,12 +6,12 @@
 # Hyunsok Oh <hoh@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ko\n"
+"Project-Id-Version: ibus.master.ko\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-03-31 14:16+1000\n"
-"Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"POT-Creation-Date: 2010-08-02 08:23+0000\n"
+"PO-Revision-Date: 2010-08-03 15:01+1000\n"
+"Last-Translator: \n"
+"Language-Team: Korean <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,14 +23,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus 입력 방식 프레임워크"
+msgstr "입력 방식 프레임워크"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus 입력 방식 프레임워크"
+msgstr "IBus 입력 방식 프레임워크 시작"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -92,20 +90,20 @@ msgstr "IBus는 Linux/Unix를 위한 지능형 입력 버스입니다. "
 msgid "translator-credits"
 msgstr "김은주(eukim@redhat.com)"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "입력 방식 정보"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "입력 방식 전환  "
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "정보  "
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "입력 방식 정보"
 
@@ -205,9 +203,8 @@ msgid "IBus Preferences"
 msgstr "IBus 환경 설정  "
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus 환경 설정  "
+msgstr "IBus 환경 설정"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -230,13 +227,12 @@ msgid "Embed Preedit Text in Application Window"
 msgstr "어플리케이션 창에 편집전 텍스트를 포함"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
 msgid "Enable input method by default"
-msgstr "다음 입력 방식   "
+msgstr "입력기를 디폴트로 활성화"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgstr "프로그램의 입력창에 포커스가 가면 디폴트로 입력기를 활성화합니다"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -297,14 +293,12 @@ msgstr ""
 "래, 4 = 사용자 지정"
 
 #: ../data/ibus.schemas.in.h:21
-#, fuzzy
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축키"
+msgstr "목록에 있는 다음 입력 방식으로 전환하기 위한 단축 키"
 
 #: ../data/ibus.schemas.in.h:22
-#, fuzzy
 msgid "The shortcut keys for switching to the previous input method"
-msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축키   "
+msgstr "목록에 있는 이전 입력 방식으로 전환하기 위한 단축 키"
 
 #: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
 msgid "The shortcut keys for turning input method on or off"
@@ -509,3 +503,4 @@ msgstr "세로"
 #: ../setup/setup.ui.h:56
 msgid "When active"
 msgstr "활성화 되었을 때"
+
