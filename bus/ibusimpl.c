@@ -887,7 +887,6 @@ _context_request_engine_cb (BusInputContext *context,
                             BusIBusImpl     *ibus)
 {
     IBusEngineDesc *engine_desc = NULL;
-    BusEngineProxy *engine;
 
     /* context should has focus before request an engine */
     g_return_if_fail (bus_input_context_has_focus (context));
