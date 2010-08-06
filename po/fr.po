@@ -1,3 +1,4 @@
+# translation of ibus.master.fr.po to French
 # Japanese translation of ibus.
 # Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
@@ -6,20 +7,21 @@
 # UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
 # Humbert Julien <julroy67@gmail.com>, 2009, 2010.
+# Sam Friedmann <sam.friedmann@redhat.com>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus VERSION\n"
+"Project-Id-Version: ibus.master.fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 13:32+0800\n"
-"PO-Revision-Date: 2010-06-04 12:06+0200\n"
-"Last-Translator: \n"
-"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"POT-Creation-Date: 2010-08-01 01:47+0000\n"
+"PO-Revision-Date: 2010-08-04 11:45+1000\n"
+"Last-Translator: Sam Friedmann <sam.friedmann@redhat.com>\n"
+"Language-Team: French <French fedora-trans-fr@fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -27,14 +29,12 @@ msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "Environnement de méthode de saisie iBus"
+msgstr "Framework de méthode de saisie"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "Environnement de méthode de saisie iBus"
+msgstr "Démarrer le framework de méthode de saisie IBus"
 
 #: ../ibus/_config.py.in:38
 msgid ""
@@ -74,7 +74,7 @@ msgstr "Plus tard"
 
 #: ../ui/gtk/panel.py:113
 msgid "IBus input method framework"
-msgstr "Environnement de méthode de saisie iBus"
+msgstr "Framework de méthode de saisie iBus"
 
 #: ../ui/gtk/panel.py:331
 msgid "Restart"
@@ -96,20 +96,20 @@ msgstr "IBus est un IME intelligent pour Linux/Unix"
 msgid "translator-credits"
 msgstr "HUMBERT Julien <julroy67@gmail.com>"
 
-#: ../ui/gtk/languagebar.py:107
+#: ../ui/gtk/languagebar.py:108
 msgid "About the input method"
 msgstr "À propos de la méthode d'entrée"
 
-#: ../ui/gtk/languagebar.py:215
+#: ../ui/gtk/languagebar.py:216
 msgid "Switch input method"
 msgstr "Changer de méthode d'entrée"
 
-#: ../ui/gtk/languagebar.py:358 ../ui/gtk/engineabout.py:35
+#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
 #: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "À propos"
 
-#: ../ui/gtk/languagebar.py:362
+#: ../ui/gtk/languagebar.py:363
 msgid "About the Input Method"
 msgstr "À propos de la méthode d'entrée"
 
@@ -207,12 +207,11 @@ msgstr "Kbd"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
 msgid "IBus Preferences"
-msgstr "Préférences IBus"
+msgstr "Préférences de IBus"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "Préférences IBus"
+msgstr "Définir les préférences de IBus"
 
 #: ../data/ibus.schemas.in.h:1
 msgid "Auto hide"
@@ -240,8 +239,7 @@ msgstr "Par défaut, activer la méthode d'entrée"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"Par défaut, activer la méthode d'entrée lorsque l'application reçoit le focus"
+msgstr "Par défaut, activer la méthode d'entrée lorsque l'application reçoit le focus"
 
 #: ../data/ibus.schemas.in.h:8
 msgid "Language panel position"
@@ -306,8 +304,7 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr ""
-"Raccourci clavier pour passer à la méthode d'entrée suivante de la liste"
+msgstr "Raccourci clavier pour passer à la méthode d'entrée suivante de la liste"
 
 #: ../data/ibus.schemas.in.h:22
 msgid "The shortcut keys for switching to the previous input method"
@@ -471,8 +468,7 @@ msgstr "Méthode d'entrée précédente :"
 
 #: ../setup/setup.ui.h:37
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"Supprimer la méthode d'entrée selectionnée des méthodes d'entrées actives"
+msgstr "Supprimer la méthode d'entrée selectionnée des méthodes d'entrées actives"
 
 #: ../setup/setup.ui.h:38
 msgid "Set the behavior of ibus how to show or hide language bar"
@@ -502,13 +498,11 @@ msgstr "Démarrer IBus lors de la connexion"
 
 #: ../setup/setup.ui.h:47
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"Raccourci clavier pour passer à la méthode d'entrée suivante de la liste"
+msgstr "Raccourci clavier pour passer à la méthode d'entrée suivante de la liste"
 
 #: ../setup/setup.ui.h:48
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"Raccourci clavier pour revenir à la méthode d'entrée précédente de la liste"
+msgstr "Raccourci clavier pour revenir à la méthode d'entrée précédente de la liste"
 
 #: ../setup/setup.ui.h:50
 msgid "Top left corner"
@@ -530,51 +524,3 @@ msgstr "Verticale"
 msgid "When active"
 msgstr "Uniquement lorsque active"
 
-#~ msgid "Never"
-#~ msgstr "Ne jamais afficher"
-
-#~ msgid "Show in Status Icon menu"
-#~ msgstr "Afficher l'icône de statut dans le menu"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Précharger les moteurs"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "Afficher la barre de langue :"
-
-#~ msgid "Custom font:"
-#~ msgstr "Police personnalisée :"
-
-#, fuzzy
-#~ msgid "Font for language bar and candidates"
-#~ msgstr ""
-#~ "Choix d'une police personnalisée pour la barre de langue et les candidats"
-
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr ""
-#~ "Utiliser une police personnalisée pour le barre de langue et les candidats"
-
-#~ msgid "Custom Font"
-#~ msgstr "Police personnalisée"
-
-#~ msgid "Show IM Name"
-#~ msgstr "Afficher le nom de la méthode d'entrée"
-
-#~ msgid "Show IM name on language bar"
-#~ msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "Utiliser une police personnalisée"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr "Raccourci clavier pour passer au moteur de méthode d'entrée suivant"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr ""
-#~ "Raccourci clavier pour revenir au moteur de méthode d'entrée précédant"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr ""
-#~ "Raccourci clavier d'activation ou de désactivation la méthode d'entrée"
