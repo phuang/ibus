@@ -775,6 +775,10 @@ _process_key_event_reply_cb (IBusPendingCall *pending,
                        call_data->keycode,
                        call_data->state | IBUS_FORWARD_MASK);
     }
+
+    if (reply_message != NULL) {
+        dbus_message_unref (reply_message);
+    }
 }
 
 static void
