@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <signal.h>
+#include <sys/time.h>
 #include "server.h"
 #include "ibusimpl.h"
 
@@ -160,9 +161,23 @@ _my_log_handler (const gchar    *log_domain,
                  const gchar    *message,
                  gpointer        user_data)
 {
-    if (g_verbose) {
-        g_log_default_handler (log_domain, log_level, message, user_data);
+    if (!g_verbose) {
+        return;
     }
+    // Add timing info like "17:34:57.680038" (hour, min, sec, microsecond).
+    struct timeval time_val;
+    gettimeofday (&time_val, NULL);
+    struct tm local_time;
+    localtime_r (&time_val.tv_sec, &local_time);
+    char* new_message =
+        g_strdup_printf ("%02d:%02d:%02d.%6d: %s",
+                         local_time.tm_hour,
+                         local_time.tm_min,
+                         local_time.tm_sec,
+                         (int)time_val.tv_usec,
+                         message);
+    g_log_default_handler (log_domain, log_level, new_message, user_data);
+    g_free (new_message);
 }
 
 static void
