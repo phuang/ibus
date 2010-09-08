@@ -51,7 +51,7 @@ typedef struct
 IMListOfAttr Default_IMattr[] =
 {
     {XNQueryInputStyle,   XimType_XIMStyles},
-/*    {XNQueryIMValuesList, XimType_XIMValuesList},	*/
+/*    {XNQueryIMValuesList, XimType_XIMValuesList},        */
     {(char *) NULL, (CARD16) 0}
 };
 
@@ -136,7 +136,7 @@ static XIMAttr *CreateAttrList (Xi18n i18n_core,
 void _Xi18nInitAttrList (Xi18n i18n_core)
 {
     XIMAttr *args;
-    int	total_count;
+    int        total_count;
 
     /* init IMAttr list */
     if (i18n_core->address.xim_attr)

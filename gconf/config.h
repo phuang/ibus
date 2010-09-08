@@ -5,19 +5,19 @@
 #include <ibus.h>
 #include <gconf/gconf-client.h>
 
-#define IBUS_TYPE_CONFIG_GCONF	\
-	(ibus_config_gconf_get_type ())
+#define IBUS_TYPE_CONFIG_GCONF        \
+        (ibus_config_gconf_get_type ())
 
 typedef struct _IBusConfigGConf IBusConfigGConf;
 typedef struct _IBusConfigGConfClass IBusConfigGConfClass;
 
 struct _IBusConfigGConf {
-	IBusConfigService parent;
+        IBusConfigService parent;
     GConfClient *client;
 };
 
 struct _IBusConfigGConfClass {
-	IBusConfigServiceClass parent;
+        IBusConfigServiceClass parent;
 
 };
 

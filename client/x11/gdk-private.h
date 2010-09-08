@@ -24,6 +24,6 @@
 
 void
 translate_key_event (GdkDisplay *display,
-		     GdkEvent   *event,
-		     XEvent     *xevent);
+                     GdkEvent   *event,
+                     XEvent     *xevent);
 #endif

@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.         See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -175,7 +175,7 @@ void             ibus_message_unref             (IBusMessage        *message);
  * ibus_message_new_method_call:
  * @destination: Where this message to be sent to or %NULL for no destination.
  * @path: Object path the message should be sent to.
- * @interface: 	Interface to invoke method on, or %NULL.
+ * @interface:         Interface to invoke method on, or %NULL.
  * @method: The method to be invoked.
  * @returns: A newly allocate IBusMessage; or %NULL if memory cannot be allocated.
  *
@@ -244,7 +244,7 @@ IBusMessage     *ibus_message_new_error_printf  (IBusMessage        *reply_to,
 /**
  * ibus_message_new_signal:
  * @path: Object path the message should be sent to.
- * @interface: 	Interface to invoke method on, or %NULL.
+ * @interface:         Interface to invoke method on, or %NULL.
  * @method: The method to invoke.
  * @returns: A newly allocate IBusMessage with the error information; or %NULL if memory cannot be allocated.
  *
@@ -260,7 +260,7 @@ IBusMessage     *ibus_message_new_signal        (const gchar        *path,
 /**
  * ibus_message_is_method_call:
  * @message: An IBusMessage.
- * @interface: 	The interface to check. Cannot be %NULL.
+ * @interface:         The interface to check. Cannot be %NULL.
  * @method: The method to check. Cannot be %NULL.
  * @returns: %TRUE if @message is DBUS_MESSAGE_TYPE_METHOD_CALL and the invoked method is matched with @method;
  *           %FALSE otherwise.
