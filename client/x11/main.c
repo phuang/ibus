@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus
  * Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>

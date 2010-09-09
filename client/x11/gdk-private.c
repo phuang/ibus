@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus
  * Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
  * Copyright (C) 2008 Red Hat, Inc.

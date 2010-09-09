@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

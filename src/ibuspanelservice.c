@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (c) 2009, Google Inc. All rights reserved.
@@ -644,9 +645,3 @@ ibus_panel_service_property_hide (IBusPanelService *panel,
                               G_TYPE_STRING, &prop_name,
                               G_TYPE_INVALID);
 }
-/* For Emacs:
- * Local Variables:
- * c-file-style: "gnu"
- * c-basic-offset: 4
- * End:
- */

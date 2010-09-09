@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 #ifndef __CONFIG_GCONF_H__
 #define __CONFIG_GCONF_H__
