@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <signal.h>
-#include <sys/time.h>
 #include "server.h"
 #include "ibusimpl.h"
 
@@ -156,31 +155,6 @@ daemon (gint nochdir, gint noclose)
 #endif
 
 static void
-_my_log_handler (const gchar    *log_domain,
-                 GLogLevelFlags  log_level,
-                 const gchar    *message,
-                 gpointer        user_data)
-{
-    if (!g_verbose) {
-        return;
-    }
-    // Add timing info like "17:34:57.680038" (hour, min, sec, microsecond).
-    struct timeval time_val;
-    gettimeofday (&time_val, NULL);
-    struct tm local_time;
-    localtime_r (&time_val.tv_sec, &local_time);
-    char* new_message =
-        g_strdup_printf ("%02d:%02d:%02d.%6d: %s",
-                         local_time.tm_hour,
-                         local_time.tm_min,
-                         local_time.tm_sec,
-                         (int)time_val.tv_usec,
-                         message);
-    g_log_default_handler (log_domain, log_level, new_message, user_data);
-    g_free (new_message);
-}
-
-static void
 _sig_usr2_handler (int sig)
 {
     g_mem_profile ();
@@ -240,10 +214,7 @@ main (gint argc, gchar **argv)
 #ifdef G_THREADS_ENABLED
     g_thread_init (NULL);
 #endif
-    g_log_set_handler (G_LOG_DOMAIN,
-        G_LOG_LEVEL_WARNING | G_LOG_LEVEL_DEBUG | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
-        _my_log_handler,
-        NULL);
+    ibus_set_log_handler(g_verbose);
 
     /* check if ibus-daemon is running in this session */
     if (ibus_get_address () != NULL) {

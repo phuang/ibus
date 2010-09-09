@@ -321,5 +321,23 @@ void             ibus_main              (void);
  */
 void             ibus_quit              (void);
 
+/**
+ * ibus_set_log_handler:
+ * @verbose: TRUE for verbose logging.
+ *
+ * Sets GLIB's log handler to ours. Our log handler adds time info
+ * including hour, minute, second, and microsecond, like:
+ *
+ * (ibus-daemon:7088): IBUS-DEBUG: 18:06:45.822819: ibus-daemon started
+ *
+ * If @verbose is TRUE, all levels of messages will be logged. Otherwise,
+ * DEBUG and WARNING messages will be ignored.  The function is used in
+ * ibus-daemon, but can be useful for IBus client programs as well for
+ * debugging. It's totally fine for not calling this function. If you
+ * don't set a custom GLIB log handler, the default GLIB log handler will
+ * be used.
+ */
+void             ibus_set_log_handler   (gboolean verbose);
+
 G_END_DECLS
 #endif
