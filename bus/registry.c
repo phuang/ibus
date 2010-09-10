@@ -74,6 +74,14 @@ bus_registry_init (BusRegistry *registry)
     registry->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
 
 #ifdef G_THREADS_ENABLED
+    /* If glib supports thread, we'll create a thread to monitor changes in IME
+     * XML files and related files, so users can use newly installed IMEs
+     * immediatlly.
+     * Note that we don't use GFileMonitor for watching as we need to monitor
+     * not only XML files but also other related files that can be scattered in
+     * many places. Monitoring these files with GFileMonitor would be make it
+     * complicated. hence we use a thread to poll the changes.
+     */
     registry->thread = NULL;
     registry->thread_running = TRUE;
     registry->mutex = g_mutex_new ();
@@ -82,17 +90,18 @@ bus_registry_init (BusRegistry *registry)
 #endif
 
     if (g_strcmp0 (g_cache, "none") == 0) {
-        /* only load registry, but not read and write cache */
+        /* Only load registry, but not read and write cache. */
         bus_registry_load (registry);
     }
     else if (g_strcmp0 (g_cache, "refresh") == 0) {
-        /* load registry and overwrite the cache */
+        /* Load registry and overwrite the cache. */
         bus_registry_load (registry);
         bus_registry_save_cache (registry);
     }
     else {
-        /* load registry from cache.
-         * If the cache does not exist or it is outdated, then rebuild it */
+        /* Load registry from cache. If the cache does not exist or
+         * it is outdated, then generate it.
+         */
         if (bus_registry_load_cache (registry) == FALSE ||
             bus_registry_check_modification (registry)) {
             bus_registry_remove_all (registry);
@@ -135,8 +144,14 @@ bus_registry_destroy (BusRegistry *registry)
         g_mutex_lock (registry->mutex);
         registry->thread_running = FALSE;
         g_mutex_unlock (registry->mutex);
+
+        /* Raise a signal to cause the loop in _checks_changes() exits
+         * immediately, and then wait until the thread finishes, and release all
+         * resources of the thread.
+         * */
         g_cond_signal (registry->cond);
         g_thread_join (registry->thread);
+
         registry->thread = NULL;
     }
 #endif
@@ -493,10 +508,25 @@ _check_changes (BusRegistry *registry)
         GTimeVal tv;
         g_get_current_time (&tv);
         g_time_val_add (&tv, g_monitor_timeout * G_USEC_PER_SEC);
-
+        /* Wait for the condition change or timeout. It will also unlock
+         * the mutex, so that other thread could obay the lock and modify
+         * the condition value.
+         * Note that we use g_cond_timed_wait() here rather than sleep() so
+         * that the loop can terminate immediately when the registry object
+         * is destroyed. See also comments in bus_registry_destroy().
+         */
         if (g_cond_timed_wait (registry->cond, registry->mutex, &tv) == FALSE) {
-            /* timeout */
+            /* Timeout happens. We check the modification of all IMEs' xml files
+             * and related files specified in <observed-paths> in xml files.
+             * If any file is changed, the changed signal will be emitted in
+             * main thread. It is for finding install/uninstall/upgrade of IMEs.
+             * On Linux desktop, ibus will popup UI to notificate users that
+             * some IMEs are changed and ibus need a restart.
+             */
             if (bus_registry_check_modification (registry)) {
+                /* Emit the changed signal in main thread, and terminate
+                 * this thread.
+                 */
                 registry->changed = TRUE;
                 g_idle_add ((GSourceFunc) _emit_changed_signal_cb, registry);
                 break;

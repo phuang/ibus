@@ -611,6 +611,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 #ifdef G_THREADS_ENABLED
     extern gint g_monitor_timeout;
     if (g_monitor_timeout != 0) {
+        /* Start the monitor of registry changes. */
         bus_registry_start_monitor_changes (ibus->registry);
     }
 #endif
