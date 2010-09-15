@@ -1083,6 +1083,7 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
                                                BusInputContext *context)
 {
     gchar *engine_name = NULL;
+
     if (!ibus->use_global_engine) {
         engine_name = (gchar *) g_object_get_data (G_OBJECT (context), "previous-engine-name");
     }
@@ -1091,6 +1092,16 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
             ibus->global_previous_engine_name = bus_ibus_impl_load_global_previous_engine_name_from_config (ibus);
         }
         engine_name = ibus->global_previous_engine_name;
+        if (engine_name != NULL) {
+            /* If the previous engine is removed from the engine list or the
+               current engine and the previous engine are the same one, force
+               to pick a new one. */
+            if (!_find_engine_desc_by_name (ibus, engine_name) ||
+                g_strcmp0 (engine_name, ibus->global_engine_name) == 0) {
+                g_free (engine_name);
+                ibus->global_previous_engine_name = engine_name = NULL;
+            }
+        }
     }
 
     /*
