@@ -1935,7 +1935,8 @@ bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
     GValue value = { 0 };
     gchar *global_engine_name = NULL;
 
-    g_assert (IBUS_IS_CONFIG (ibus->config));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_return_val_if_fail (IBUS_IS_CONFIG (ibus->config), NULL);
 
     if (ibus_config_get_value (ibus->config, "general", "global_engine", &value) &&
         G_VALUE_TYPE (&value) == G_TYPE_STRING) {
@@ -1949,7 +1950,8 @@ bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
 static void
 bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
 {
-    g_assert (IBUS_IS_CONFIG (ibus->config));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_return_if_fail (IBUS_IS_CONFIG (ibus->config));
 
     if (ibus->use_global_engine && ibus->global_engine) {
         GValue value = { 0 };
@@ -1967,7 +1969,8 @@ bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
     GValue value = { 0 };
     gchar *global_previous_engine_name = NULL;
 
-    g_assert (IBUS_IS_CONFIG (ibus->config));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_return_val_if_fail (IBUS_IS_CONFIG (ibus->config), NULL);
 
     if (ibus_config_get_value (ibus->config, "general", "global_previous_engine", &value) &&
         G_VALUE_TYPE (&value) == G_TYPE_STRING) {
@@ -1981,7 +1984,8 @@ bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
 static void
 bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
 {
-    g_assert (IBUS_IS_CONFIG (ibus->config));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_return_if_fail (IBUS_IS_CONFIG (ibus->config));
 
     if (ibus->use_global_engine && ibus->global_previous_engine_name) {
         GValue value = { 0 };
