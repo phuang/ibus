@@ -24,6 +24,7 @@
 #  include <config.h>
 #endif
 
+#include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 #include <sys/types.h>
@@ -33,6 +34,10 @@
 #include <string.h>
 #include <ibus.h>
 #include "ibusimcontext.h"
+
+#if !GTK_CHECK_VERSION (2, 90, 0)
+#  define DEPRECATED_GDK_KEYSYMS 1
+#endif
 
 #ifdef DEBUG
 #  define IDEBUG g_debug
@@ -733,6 +738,7 @@ _key_is_modifier (guint keyval)
    * really should be implemented */
 
     switch (keyval) {
+#ifdef DEPRECATED_GDK_KEYSYMS
     case GDK_Shift_L:
     case GDK_Shift_R:
     case GDK_Control_L:
@@ -759,6 +765,34 @@ _key_is_modifier (guint keyval)
     case GDK_ISO_Group_Latch:
     case GDK_ISO_Group_Lock:
         return TRUE;
+#else
+    case GDK_KEY_Shift_L:
+    case GDK_KEY_Shift_R:
+    case GDK_KEY_Control_L:
+    case GDK_KEY_Control_R:
+    case GDK_KEY_Caps_Lock:
+    case GDK_KEY_Shift_Lock:
+    case GDK_KEY_Meta_L:
+    case GDK_KEY_Meta_R:
+    case GDK_KEY_Alt_L:
+    case GDK_KEY_Alt_R:
+    case GDK_KEY_Super_L:
+    case GDK_KEY_Super_R:
+    case GDK_KEY_Hyper_L:
+    case GDK_KEY_Hyper_R:
+    case GDK_KEY_ISO_Lock:
+    case GDK_KEY_ISO_Level2_Latch:
+    case GDK_KEY_ISO_Level3_Shift:
+    case GDK_KEY_ISO_Level3_Latch:
+    case GDK_KEY_ISO_Level3_Lock:
+    case GDK_KEY_ISO_Level5_Shift:
+    case GDK_KEY_ISO_Level5_Latch:
+    case GDK_KEY_ISO_Level5_Lock:
+    case GDK_KEY_ISO_Group_Shift:
+    case GDK_KEY_ISO_Group_Latch:
+    case GDK_KEY_ISO_Group_Lock:
+        return TRUE;
+#endif
     default:
         return FALSE;
     }
@@ -789,7 +823,11 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
     event->group = 0;
     event->is_modifier = _key_is_modifier (keyval);
 
+#ifdef DEPRECATED_GDK_KEYSYMS
     if (keyval != GDK_VoidSymbol)
+#else
+    if (keyval != GDK_KEY_VoidSymbol)
+#endif
         c = gdk_keyval_to_unicode (keyval);
 
     if (c) {
@@ -819,12 +857,21 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
                                             NULL);
         if (event->string)
             event->length = bytes_written;
+#ifdef DEPRECATED_GDK_KEYSYMS
     } else if (keyval == GDK_Escape) {
+#else
+    } else if (keyval == GDK_KEY_Escape) {
+#endif
         event->length = 1;
         event->string = g_strdup ("\033");
     }
+#ifdef DEPRECATED_GDK_KEYSYMS
     else if (keyval == GDK_Return ||
              keyval == GDK_KP_Enter) {
+#else
+    else if (keyval == GDK_KEY_Return ||
+             keyval == GDK_KEY_KP_Enter) {
+#endif
         event->length = 1;
         event->string = g_strdup ("\r");
     }
