@@ -47,6 +47,7 @@ AM_LDADD = \
 
 TESTS = \
 	test-matchrule \
+	test-stress \
 	$(NULL)
 xdgautostart_DATA = \
 	ibus.desktop \
@@ -112,6 +113,21 @@ test_matchrule_CFLAGS = \
 	$(NULL)
 test_matchrule_LDADD = \
 	$(AM_LDADD) \
+	$(NULL)
+
+test_stress_SOURCES = \
+	test-client.c \
+	test-stress.c \
+	$(NULL)
+test_stress_CFLAGS = \
+	$(AM_CFLAGS) \
+	@GTK2_CFLAGS@ \
+	@X11_CFLAGS@ \
+	$(NULL)
+test_stress_LDADD = \
+	$(AM_LDADD) \
+	@GTK2_LIBS@ \
+	@X11_LIBS@ \
 	$(NULL)
 
 EXTRA_DIST = \
