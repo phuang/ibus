@@ -185,7 +185,7 @@ class PropList(Serializable):
     def append(self, prop):
         self.__props.append(prop)
 
-    def prepand(self, prop):
+    def prepend(self, prop):
         self.__props.insert(0, prop)
 
     def insert(self, index, prop):
