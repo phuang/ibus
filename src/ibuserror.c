@@ -63,7 +63,7 @@ ibus_error_new_from_printf (const gchar *name,
 }
 
 IBusError *
-ibus_error_new_from_message (DBusMessage *message)
+ibus_error_new_from_message (IBusMessage *message)
 {
     g_assert (message != NULL);
 

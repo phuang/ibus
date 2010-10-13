@@ -107,7 +107,7 @@ gboolean         bus_match_rule_set_arg     (BusMatchRule   *rule,
                                              guint           arg_i,
                                              const gchar    *arg);
 gboolean         bus_match_rule_match       (BusMatchRule   *rule,
-                                             DBusMessage    *message);
+                                             IBusMessage    *message);
 gboolean         bus_match_rule_is_equal    (BusMatchRule   *a,
                                              BusMatchRule   *b);
 void             bus_match_rule_add_recipient
@@ -118,7 +118,7 @@ void             bus_match_rule_remove_recipient
                                              BusConnection  *connection);
 GList           *bus_match_rule_get_recipients
                                             (BusMatchRule   *rule,
-                                             DBusMessage    *message);
+                                             IBusMessage    *message);
 
 G_END_DECLS
 #endif

@@ -32,13 +32,44 @@
 G_BEGIN_DECLS
 
 #ifndef DBUS_H
-typedef struct DBusError DBusError;
-typedef struct DBusMessage DBusMessage;
-typedef struct DBusMessageIter DBusMessageIter;
-typedef struct DBusPendingCall DBusPendingCall;
+typedef struct IBusError IBusError;
+typedef struct IBusMessage IBusMessage;
+typedef struct IBusMessageIter IBusMessageIter;
+typedef struct IBusPendingCall IBusPendingCall;
 typedef struct DBusServer DBusServer;
 typedef struct DBusConnection DBusConnection;
 #else
+/**
+ * IBusError:
+ *
+ * A data type representing an IBusError.
+ * An IBusError is actually a #DBusError.
+ *
+ * @see_also: #DBusError for detail structure definition.
+ */
+typedef DBusError IBusError;
+
+/**
+ * IBusMessage:
+ *
+ * An opaque data structure that represents IBusMessage.
+ */
+typedef DBusMessage IBusMessage;
+
+/**
+ * IBusMessageIter:
+ *
+ * An opaque data structure that represents IBusMessageIter.
+ */
+typedef DBusMessageIter IBusMessageIter;
+
+/**
+ * IBusPendingCall:
+ *
+ * An opaque data structure that represents IBusPendingCall.
+ */
+typedef DBusPendingCall IBusPendingCall;
+
 #endif
 
 G_END_DECLS

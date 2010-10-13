@@ -138,7 +138,7 @@ introspection_files = \
         ibusenumtypes.h \
 		$(NULL)
 IBus-1.0.gir: $(ibustargetlib) Makefile
-IBus_1_0_gir_SCANNERFLAGS = --strip-prefix=IBus --pkg=glib-2.0
+IBus_1_0_gir_SCANNERFLAGS = --pkg=glib-2.0 $(IBUS_GIR_SCANNERFLAGS)
 IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0
 IBus_1_0_gir_LIBS = $(ibustargetlib)
 IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))

@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <config.h>
+#include <dbus/dbus.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>

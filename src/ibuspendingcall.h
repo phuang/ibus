@@ -41,13 +41,6 @@
 G_BEGIN_DECLS
 
 /**
- * IBusPendingCall:
- *
- * An opaque data structure that represents IBusPendingCall.
- */
-typedef DBusPendingCall IBusPendingCall;
-
-/**
  * IBusPendingCallNotifyFunction:
  * @pending: An IBusPendingCall.
  * @user_data: User data for the callback function.

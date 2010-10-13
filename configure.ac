@@ -171,6 +171,18 @@ fi
 # GObject introspection
 GOBJECT_INTROSPECTION_CHECK([0.6.8])
 
+IBUS_GIR_SCANNERFLAGS=
+if test x"$found_introspection" = x"yes" ; then
+    IBUS_GIR_SCANNERFLAGS="--identifier-prefix=IBus --symbol-prefix=ibus"
+    PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.9.6],
+                     [gir_symbol_prefix=yes],
+                     [gir_symbol_prefix=no])
+    if test x"$gir_symbol_prefix" = x"no" ; then
+        IBUS_GIR_SCANNERFLAGS="--strip-prefix=IBus"
+    fi
+fi
+AC_SUBST(IBUS_GIR_SCANNERFLAGS)
+
 # check for gtk-doc
 GTK_DOC_CHECK(1.9)
 if test x"$enable_gtk_doc" = x"no"; then
@@ -386,6 +398,7 @@ Build options:
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
   Build introspection       $found_introspection
+  IBus-1.0.gir scannerflags "$IBUS_GIR_SCANNERFLAGS"
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper

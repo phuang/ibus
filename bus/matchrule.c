@@ -414,7 +414,7 @@ bus_match_rule_set_arg (BusMatchRule   *rule,
 
 gboolean
 bus_match_rule_match (BusMatchRule   *rule,
-                      DBusMessage    *message)
+                      IBusMessage    *message)
 {
     g_assert (rule != NULL);
     g_assert (message != NULL);
@@ -451,7 +451,7 @@ bus_match_rule_match (BusMatchRule   *rule,
 
     if (rule->flags & MATCH_ARGS) {
         guint i;
-        DBusMessageIter iter;
+        IBusMessageIter iter;
 
         ibus_message_iter_init (message, &iter);
 
@@ -626,7 +626,7 @@ bus_match_rule_remove_recipient (BusMatchRule   *rule,
 
 GList *
 bus_match_rule_get_recipients (BusMatchRule   *rule,
-                               DBusMessage    *message)
+                               IBusMessage    *message)
 {
     g_assert (BUS_IS_MATCH_RULE (rule));
     g_assert (message != NULL);

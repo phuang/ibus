@@ -36,16 +36,6 @@
 G_BEGIN_DECLS
 
 /**
- * IBusError:
- *
- * A data type representing an IBusError.
- * An IBusError is actually a #DBusError.
- *
- * @see_also: #DBusError for detail structure definition.
- */
-typedef DBusError IBusError;
-
-/**
  * ibus_error_new:
  * @returns: A newly allocated IBusError.
  *
@@ -85,7 +75,7 @@ IBusError       *ibus_error_new_from_printf (const gchar    *name,
  * New an IBusError from a #IBusMessage.
  */
 IBusError       *ibus_error_new_from_message
-                                            (DBusMessage    *message);
+                                            (IBusMessage    *message);
 
 /**
  * ibus_error_free:

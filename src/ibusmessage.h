@@ -77,20 +77,6 @@
 G_BEGIN_DECLS
 
 /**
- * IBusMessage:
- *
- * An opaque data structure that represents IBusMessage.
- */
-typedef DBusMessage IBusMessage;
-
-/**
- * IBusMessageIter:
- *
- * An opaque data structure that represents IBusMessageIter.
- */
-typedef DBusMessageIter IBusMessageIter;
-
-/**
  * ibus_type_get_object_path:
  * @returns: Type of object path.
  *

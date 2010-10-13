@@ -80,10 +80,10 @@ BusConnection   *bus_dbus_impl_get_connection_by_name
                                                 (BusDBusImpl    *dbus,
                                                  const gchar    *name);
 void             bus_dbus_impl_dispatch_message (BusDBusImpl    *dbus,
-                                                 DBusMessage    *message);
+                                                 IBusMessage    *message);
 void             bus_dbus_impl_dispatch_message_by_rule
                                                 (BusDBusImpl    *dbus,
-                                                 DBusMessage    *message,
+                                                 IBusMessage    *message,
                                                  BusConnection  *skip_connection);
 gboolean         bus_dbus_impl_register_object  (BusDBusImpl    *dbus,
                                                  IBusService    *object);
