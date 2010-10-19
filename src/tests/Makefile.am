@@ -32,7 +32,7 @@ INCLUDES =              \
 prog_ldadd = 			\
 	@GLIB2_LIBS@        \
 	@GIO2_LIBS@			\
-	$(top_builddir)/src/libibus-2.0.la	\
+	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la	\
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)

@@ -94,7 +94,7 @@ INCLUDES = \
 	-I$(top_builddir)/src \
 	$(NULL)
 GTKDOC_LIBS = \
-	$(top_builddir)/src/libibus-2.0.la \
+	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la \
 	$(NULL)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.

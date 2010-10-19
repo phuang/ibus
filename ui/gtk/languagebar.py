@@ -38,9 +38,7 @@ from toolitem import ToolButton,\
     SeparatorToolItem, \
     MenuToolButton
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import *
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 

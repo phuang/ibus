@@ -24,12 +24,13 @@ __all__ = (
     "get_version",
     "get_copyright",
     "get_license",
-    "ISOCODES_PREFIX"
+    "ISOCODES_PREFIX",
+    "_"
 )
 
 import gettext
 
-_ = lambda a: gettext.dgettext("ibus", a)
+_ = lambda a: gettext.dgettext("@GETTEXT_PACKAGE@", a)
 
 def get_version():
 	return '@PACKAGE_VERSION@'

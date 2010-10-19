@@ -35,9 +35,7 @@ import gtk
 import gettext
 import panel
 import pynotify
-
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
+from i18n import *
 
 class UIApplication:
     def __init__ (self):
@@ -110,7 +108,6 @@ def main():
     launch_panel()
 
 if __name__ == "__main__":
-    localedir = os.getenv("IBUS_LOCALEDIR")
-    gettext.bindtextdomain("ibus", localedir)
-    gettext.bind_textdomain_codeset("ibus", "UTF-8")
+    import i18n
+    i18n.init()
     main()

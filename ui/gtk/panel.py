@@ -35,9 +35,7 @@ from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 from engineabout import EngineAbout
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import *
 
 ICON_KEYBOARD = "ibus-keyboard"
 ICON_ENGINE = "ibus-engine"

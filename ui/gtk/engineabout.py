@@ -25,9 +25,7 @@ from gtk import gdk
 import pango
 import ibus
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import *
 
 class EngineAbout(gtk.Dialog):
     def __init__(self, enginedesc):

@@ -19,6 +19,15 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
+AC_PREFEQ([2.62])
+
+AC_INIT([ibus], [ibus_version],
+        [http://code.google.com/p/ibus/issues/entry],
+        [ibus])
+
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+
 
 # if not 1, append datestamp to the version number.
 m4_define([ibus_released], [0])
@@ -27,36 +36,47 @@ m4_define([ibus_minor_version], [3])
 m4_define([ibus_micro_version], [99])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
-
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
+# This is the X.Y used in -libus-X.Y
+m4_define([ibus_api_version], [1.0])
 
-AC_INIT([ibus], [ibus_version], [http://code.google.com/p/ibus/issues/entry],[ibus])
+
+# Required versions of other packages
+m4_define([glib_required_version], [2.26.0])
+
+
+# Init automake
 AM_INIT_AUTOMAKE([1.10])
+AM_MAINTAINER_MODE([enable])
 AC_GNU_SOURCE
 
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_MACRO_DIR([m4])
+# Support silent build
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-# define PACKAGE_VERSION_* variables
-AS_VERSION
-AS_NANO
-AM_MAINTAINER_MODE
-AM_DISABLE_STATIC
+# Define sustituted variables:
+IBUS_MAJOR_VERSION=ibus_major_version
+IBUS_MINOR_VERSION=ibus_minor_version
+IBUS_MICRO_VERSION=ibus_micro_version
+IBUS_API_VERSION=ibus_api_version
+AC_SUBST(IBUS_MAJOR_VERSION)
+AC_SUBST(IBUS_MINOR_VERSION)
+AC_SUBST(IBUS_MICRO_VERSION)
+AC_SUBST(IBUS_API_VERSION)
+
+# Check for programs
 AC_PROG_CC
 AM_PROG_CC_C_O
+AC_PROG_CC_STDC
+AC_PROG_INSTALL
 AC_PROG_CXX
+
+# define PACKAGE_VERSION_* variables
+AM_DISABLE_STATIC
 AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
-
-# For dislpay Date
-m4_define(ibus_datedisplay,
-    m4_esyscmd(date '+%a %b %d %Y' | tr -d '\n\r'))
-DATE_DISPLAY="ibus_datedisplay"
-AC_SUBST(DATE_DISPLAY)
 
 # If only source code changed, lt_revision + 1
 # If any interface added, lt_age + 1
@@ -67,25 +87,22 @@ m4_define([lt_age], [0])
 LT_VERSION_INFO="lt_current:lt_revision:lt_age"
 AC_SUBST(LT_VERSION_INFO)
 
-# check inotify
-AC_CHECK_HEADERS([sys/inotify.h])
-
 # check funcs
 AC_CHECK_FUNCS(daemon)
 
 # check glib2
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [
-    glib-2.0 >= 2.25
+    glib-2.0 >= glib_required_version
 ])
 PKG_CHECK_MODULES(GOBJECT2, [
-    gobject-2.0 >= 2.25
+    gobject-2.0 >= glib_required_version
 ])
 PKG_CHECK_MODULES(GIO2, [
-    gio-2.0 >= 2.25
+    gio-2.0 >= glib_required_version
 ])
 PKG_CHECK_MODULES(GTHREAD2, [
-    gthread-2.0 >= 2.25
+    gthread-2.0 >= glib_required_version
 ])
 
 AC_ARG_ENABLE(gtk2,
@@ -269,7 +286,7 @@ fi
 # AC_SUBST(REBUILD)
 
 # define GETTEXT_* variables
-GETTEXT_PACKAGE=ibus
+GETTEXT_PACKAGE=ibus10
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
 
@@ -347,7 +364,7 @@ AC_SUBST(ISOCODES_PREFIX)
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
-ibus-2.0.pc
+ibus-1.0.pc
 ibus.spec
 xinput-ibus
 memconf/Makefile

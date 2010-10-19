@@ -23,6 +23,7 @@
 ui_gtk_PYTHON = \
 	candidatepanel.py \
 	handle.py \
+	i18n.py \
 	icon.py \
 	languagebar.py \
 	main.py \

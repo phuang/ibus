@@ -66,11 +66,12 @@ SUBDIRS =           \
 ACLOCAL_AMFLAGS = -I m4
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ibus-2.0.pc
+pkgconfig_DATA = ibus-@IBUS_API_VERSION@.pc
 
+ibus_pc_in = ibus-@IBUS_API_VERSION@.pc.in
 EXTRA_DIST = \
 	autogen.sh \
-	ibus-2.0.pc.in \
+	$(ibus_pc_in) \
 	ibus.spec.in \
 	python-config.py \
 	$(NULL)
@@ -122,7 +123,7 @@ debian/changelog:
 		version=@VERSION@; \
 		serie=$(serie); \
 		if test -z "$$serie"; then \
-		  serie=lucid; \
+		  serie=maverick; \
 		fi; \
 		if test -z "$$release"; then \
 		  release=1; \

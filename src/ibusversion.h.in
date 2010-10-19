@@ -35,21 +35,21 @@
  *
  * IBus major version.
  */
-#define IBUS_MAJOR_VERSION				(@PACKAGE_VERSION_MAJOR@)
+#define IBUS_MAJOR_VERSION				(@IBUS_MAJOR_VERSION@)
 
 /**
  * IBUS_MINOR_VERSION:
  *
  * IBus minor version.
  */
-#define IBUS_MINOR_VERSION				(@PACKAGE_VERSION_MINOR@)
+#define IBUS_MINOR_VERSION				(@IBUS_MINOR_VERSION@)
 
 /**
  * IBUS_MICRO_VERSION:
  *
  * IBus micro version.
  */
-#define IBUS_MICRO_VERSION				(@PACKAGE_VERSION_MICRO@)
+#define IBUS_MICRO_VERSION				(@IBUS_MICRO_VERSION@)
 
 /**
  * IBUS_CHECK_VERSION:

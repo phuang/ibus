@@ -31,8 +31,7 @@ import sys
 from os import path
 from ibus import interface
 
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
+_  = ibus._
 N_ = lambda a : a
 
 class Notifications(ibus.NotificationsBase):

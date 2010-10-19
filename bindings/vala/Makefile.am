@@ -22,8 +22,10 @@
 
 vapidir = $(datadir)/vala/vapi
 dist_vapi_DATA = \
-	ibus-2.0.vapi \
+	ibus-@IBUS_API_VERSION@.vapi \
 	$(NULL)
 
 ibus-2.0.vapi:
-	vapigen --library ibus-2.0 ibus-2.0/ibus-2.0.gi ibus-2.0/ibus-2.0-custom.vala
+	vapigen --library ibus-@IBUS_API_VERSION@ \
+			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.gi \
+			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@-custom.vala

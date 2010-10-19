@@ -20,7 +20,7 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-libibus = $(top_builddir)/src/libibus-2.0.la
+libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
 libexec_PROGRAMS = \
 	ibus-gconf \
