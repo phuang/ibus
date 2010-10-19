@@ -736,12 +736,6 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
                                     gboolean         incoming,
                                     gpointer         user_data)
 {
-#if 0
-    gchar *str = g_dbus_message_print (message, 4);
-    g_debug ("message: incoming=%d locked=%d \n%s", incoming, g_dbus_message_get_locked (message), str);
-    g_free (str);
-#endif
-
     g_assert (G_IS_DBUS_CONNECTION (dbus_connection));
     g_assert (G_IS_DBUS_MESSAGE (message));
     g_assert (BUS_IS_DBUS_IMPL (user_data));
@@ -897,7 +891,6 @@ gboolean
 bus_dbus_impl_new_connection (BusDBusImpl   *dbus,
                               BusConnection *connection)
 {
-    g_debug ("new connection");
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (g_list_find (dbus->connections, connection) == NULL);
@@ -1008,9 +1001,10 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
     gboolean is_running = (dbus->forward_queue != NULL);
     dbus->forward_queue = g_list_append (dbus->forward_queue, g_object_ref (message));
     g_mutex_unlock (dbus->forward_lock);
-    if (!is_running)
+    if (!is_running) {
         g_idle_add_full (0, (GSourceFunc) bus_dbus_impl_forward_message_idle_cb,
                         g_object_ref (dbus), (GDestroyNotify) g_object_unref);
+    }
 }
 
 static BusDispatchData *

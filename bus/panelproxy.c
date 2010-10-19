@@ -92,11 +92,13 @@ bus_panel_proxy_new (BusConnection *connection)
     g_assert (BUS_IS_CONNECTION (connection));
 
     GObject *obj;
-    obj = g_object_new (BUS_TYPE_PANEL_PROXY,
-                        "g-object-path", IBUS_PATH_PANEL,
-                        "g-interface-name", "org.freedesktop.IBus.Panel",
-                        "g-connection", bus_connection_get_dbus_connection (connection),
-                        NULL);
+    obj = g_initable_new (BUS_TYPE_PANEL_PROXY,
+                          NULL,
+                          NULL,
+                         "g-object-path", IBUS_PATH_PANEL,
+                         "g-interface-name", IBUS_INTERFACE_PANEL,
+                         "g-connection", bus_connection_get_dbus_connection (connection),
+                         NULL);
 
     return BUS_PANEL_PROXY (obj);
 }
@@ -113,8 +115,6 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
     class->cursor_down = bus_panel_proxy_cursor_down;
     class->candidate_clicked = bus_panel_proxy_candidate_clicked;
     class->property_activate = bus_panel_proxy_property_activate;
-
-
 
     /* install signals */
     panel_signals[PAGE_UP] =
@@ -255,7 +255,7 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
     if (g_strcmp0 ("PropertyActivate", signal_name) == 0) {
         gchar *prop_name = NULL;
         gint prop_state = 0;
-        g_variant_get (parameters, "(&si)", &prop_name, &prop_state);
+        g_variant_get (parameters, "(&su)", &prop_name, &prop_state);
         g_signal_emit (panel, panel_signals[PROPERTY_ACTIVATE], 0, prop_name, prop_state);
         return;
     }
@@ -273,10 +273,10 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
         g_signal_emit (panel, panel_signals[PROPERTY_HIDE], 0, prop_name);
         return;
     }
+
     /* shound not be reached */
     g_return_if_reached ();
 }
-
 
 
 void

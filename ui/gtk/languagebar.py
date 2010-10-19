@@ -38,7 +38,7 @@ from toolitem import ToolButton,\
     SeparatorToolItem, \
     MenuToolButton
 
-from i18n import *
+from i18n import _, N_
 
 ICON_SIZE = gtk.ICON_SIZE_MENU
 

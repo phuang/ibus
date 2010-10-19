@@ -35,7 +35,7 @@ from languagebar import LanguageBar
 from candidatepanel import CandidatePanel
 from engineabout import EngineAbout
 
-from i18n import *
+from i18n import _, N_
 
 ICON_KEYBOARD = "ibus-keyboard"
 ICON_ENGINE = "ibus-engine"

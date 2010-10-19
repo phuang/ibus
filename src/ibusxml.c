@@ -115,7 +115,7 @@ _end_element_cb (GMarkupParseContext *context,
     XMLNode *p = (XMLNode *) g_markup_parse_context_pop (context);
 
     if (p->text && p->sub_nodes) {
-        g_debug ("Error");
+        g_warning ("Error");
     }
 
     if (p->text == NULL && p->sub_nodes == NULL) {

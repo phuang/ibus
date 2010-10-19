@@ -68,12 +68,7 @@ bus_server_init (void)
                             g_dbus_server_get_guid (server));
 
     /* write address to file */
-    g_debug ("address = %s", address);
-
-    /* FIXME */
-#if 1
     ibus_write_address (address);
-#endif
 
     g_free (address);
 }

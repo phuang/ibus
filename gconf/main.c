@@ -25,7 +25,6 @@ static void
 ibus_disconnected_cb (IBusBus  *bus,
                       gpointer  user_data)
 {
-    g_debug ("bus disconnected");
     ibus_quit ();
 }
 

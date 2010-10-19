@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "matchrule.h"
+#include "dbusimpl.h"
 #include <string.h>
 
 typedef enum {
@@ -480,6 +481,20 @@ bus_match_rule_set_arg (BusMatchRule   *rule,
     return TRUE;
 }
 
+static gboolean
+bus_match_rule_match_name (const gchar *name,
+                           const gchar *match_name)
+{
+    if (name[0] == ':' && match_name[0] != ':') {
+        BusConnection *connection =
+                bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, match_name);
+        if (connection == NULL)
+            return FALSE;
+        return g_strcmp0 (name, bus_connection_get_unique_name (connection)) == 0;
+    }
+    return g_strcmp0 (name, match_name) == 0;
+}
+
 gboolean
 bus_match_rule_match (BusMatchRule   *rule,
                       GDBusMessage   *message)
@@ -503,12 +518,12 @@ bus_match_rule_match (BusMatchRule   *rule,
     }
 
     if (rule->flags & MATCH_SENDER) {
-        if (g_strcmp0 (g_dbus_message_get_sender (message), rule->sender) != 0)
+        if (!bus_match_rule_match_name (g_dbus_message_get_sender (message), rule->sender))
             return FALSE;
     }
 
     if (rule->flags & MATCH_DESTINATION) {
-        if (g_strcmp0 (g_dbus_message_get_destination (message), rule->destination) != 0)
+        if (!bus_match_rule_match_name (g_dbus_message_get_destination (message), rule->destination))
             return FALSE;
     }
 

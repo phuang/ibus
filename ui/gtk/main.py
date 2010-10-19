@@ -35,7 +35,7 @@ import gtk
 import gettext
 import panel
 import pynotify
-from i18n import *
+from i18n import _, N_
 
 class UIApplication:
     def __init__ (self):

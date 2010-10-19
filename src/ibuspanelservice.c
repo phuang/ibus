@@ -495,14 +495,14 @@ ibus_panel_service_candidate_clicked (IBusPanelService *panel,
 void
 ibus_panel_service_property_active (IBusPanelService *panel,
                                     const gchar      *prop_name,
-                                    gint              prop_state)
+                                    guint             prop_state)
 {
     g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
     ibus_service_emit_signal ((IBusService *) panel,
                               NULL,
                               IBUS_INTERFACE_PANEL,
                               "PropertyActive",
-                              g_variant_new ("(si)", prop_name, prop_state),
+                              g_variant_new ("(su)", prop_name, prop_state),
                               NULL);
 }
 

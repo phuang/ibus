@@ -22,6 +22,7 @@
 
 ibussetup_PYTHON = \
 	main.py \
+	i18n.py \
 	icon.py \
 	enginecombobox.py \
 	enginetreeview.py \

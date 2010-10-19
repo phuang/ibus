@@ -433,8 +433,8 @@ ibus_component_deserialize (IBusComponent   *component,
 
     g_variant_get_child (variant, retval++, "av", &iter);
     while (g_variant_iter_loop (iter, "v", &var)) {
-        component->engines = g_list_append (component->engines,
-                        IBUS_ENGINE_DESC (ibus_serializable_deserialize (var)));
+        ibus_component_add_engine (component,
+                                   IBUS_ENGINE_DESC (ibus_serializable_deserialize (var)));
     }
     g_variant_iter_free (iter);
 
@@ -851,7 +851,6 @@ ibus_component_child_cb (GPid            pid,
     component->child_source_id = 0;
 
     if (component->priv->restart) {
-        g_debug ("==== Restarting %s", component->priv->exec);
         ibus_component_start (component, component->priv->verbose);
     }
 }

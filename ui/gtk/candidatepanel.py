@@ -28,7 +28,7 @@ import pango
 import ibus
 from ibus._gtk import PangoAttrList
 from handle import Handle
-from i18n import *
+from i18n import _, N_
 
 class EventBox(gtk.EventBox):
     __gtype_name__ = "IBusEventBox"

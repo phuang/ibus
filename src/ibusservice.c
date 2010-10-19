@@ -270,7 +270,7 @@ ibus_service_constructed (GObject *object)
     if (service->priv->connection) {
         GError *error = NULL;
         if (!ibus_service_register (service, service->priv->connection, &error)) {
-            g_debug ("%s", error->message);
+            g_warning ("%s", error->message);
             g_error_free (error);
         }
     }
@@ -610,7 +610,7 @@ ibus_service_class_add_interfaces (IBusServiceClass   *class,
     GError *error = NULL;
     GDBusNodeInfo *introspection_data = g_dbus_node_info_new_for_xml (xml_data, &error);
     if (introspection_data == NULL) {
-        g_debug ("%s", error->message);
+        g_warning ("%s", error->message);
         g_error_free (error);
         return FALSE;
     }

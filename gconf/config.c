@@ -253,7 +253,6 @@ ibus_config_gconf_set_value (IBusConfigService      *config,
                              GVariant               *value,
                              GError                **error)
 {
-    g_debug ("set value: %s : %s", section, name);
     gchar *key;
     GConfValue *gv;
 
@@ -299,11 +298,7 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
 
     GVariant *variant = _from_gconf_value (gv);
     gconf_value_free (gv);
-#if 0
-    gchar *str = g_variant_print (variant, TRUE);
-    g_debug ("get value: [%s:%s] = %s", section, name, str);
-    g_free (str);
-#endif
+
     return variant;
 }
 

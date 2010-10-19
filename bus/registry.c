@@ -192,7 +192,7 @@ bus_registry_load (BusRegistry *registry)
     bus_registry_load_in_dir (registry, dirname);
 
     g_free (dirname);
-
+#if 0
     dirname = g_build_filename (g_get_user_data_dir (), "ibus", "component", NULL);
 
     path = ibus_observed_path_new (dirname, TRUE);
@@ -203,6 +203,7 @@ bus_registry_load (BusRegistry *registry)
     }
 
     g_free (dirname);
+#endif
 }
 
 

@@ -97,8 +97,8 @@ bus_factory_proxy_new (IBusComponent *component,
     }
 
     factory = g_object_new (BUS_TYPE_FACTORY_PROXY,
-                            "g-object-path", "/org/freedesktop/IBus/Factory",
-                            "g-interface-name", "org.freedesktop.IBus.Factory",
+                            "g-object-path", IBUS_PATH_FACTORY,
+                            "g-interface-name", IBUS_INTERFACE_FACTORY,
                             "g-connection", bus_connection_get_dbus_connection (connection),
                             NULL);
 
@@ -112,6 +112,7 @@ bus_factory_proxy_new (IBusComponent *component,
         IBusEngineDesc *desc = (IBusEngineDesc *)p->data;
         g_object_ref (desc);
         g_object_set_data ((GObject *)desc, "factory", factory);
+        g_assert (g_object_get_data ((GObject *)desc, "factory") == factory);
     }
 
     return factory;

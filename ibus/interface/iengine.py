@@ -85,7 +85,7 @@ class IEngine(dbus.service.Object):
     @method()
     def Disable(self): pass
 
-    @method(in_signature="si")
+    @method(in_signature="su")
     def PropertyActivate(self, prop_name, prop_state): pass
 
     @method(in_signature="s")

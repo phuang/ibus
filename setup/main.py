@@ -37,9 +37,7 @@ from gtk import gdk
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
-
-_  = lambda a : gettext.dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import _, N_, init
 
 (
     COLUMN_NAME,
@@ -69,9 +67,6 @@ class Setup(object):
 
     def __init__(self):
         super(Setup, self).__init__()
-        localedir = os.getenv("IBUS_LOCALEDIR")
-        gettext.bindtextdomain("ibus", localedir)
-        gettext.bind_textdomain_codeset("ibus", "UTF-8")
         gtk_builder_file = path.join(path.dirname(__file__), "./setup.ui")
         self.__builder = gtk.Builder()
         self.__builder.set_translation_domain("ibus")
@@ -461,5 +456,7 @@ class Setup(object):
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
+    import i18n
+    i18n.init()
     setup = Setup()
     setup.run()

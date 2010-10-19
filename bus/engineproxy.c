@@ -370,8 +370,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
         g_return_if_fail (text != NULL);
         g_signal_emit (engine, engine_signals[COMMIT_TEXT], 0, text);
         _g_object_unref_if_floating (text);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "ForwardKeyEvent") == 0) {
+
+    if (g_strcmp0 (signal_name, "ForwardKeyEvent") == 0) {
         guint32 keyval = 0;
         guint32 keycode = 0;
         guint32 states = 0;
@@ -383,8 +385,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
                        keyval,
                        keycode,
                        states);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "DeleteSurroundingText") == 0) {
+
+    if (g_strcmp0 (signal_name, "DeleteSurroundingText") == 0) {
         gint  offset_from_cursor = 0;
         guint nchars = 0;
         g_variant_get (parameters, "(iu)", &offset_from_cursor, &nchars);
@@ -392,8 +396,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
         g_signal_emit (engine,
                        engine_signals[DELETE_SURROUNDING_TEXT],
                        0, offset_from_cursor, nchars);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "UpdatePreeditText") == 0) {
+
+    if (g_strcmp0 (signal_name, "UpdatePreeditText") == 0) {
         GVariant *arg0 = NULL;
         guint cursor_pos = 0;
         gboolean visible = FALSE;
@@ -411,8 +417,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
                        0, text, cursor_pos, visible, mode);
 
         _g_object_unref_if_floating (text);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "UpdateAuxiliaryText") == 0) {
+
+    if (g_strcmp0 (signal_name, "UpdateAuxiliaryText") == 0) {
         GVariant *arg0 = NULL;
         gboolean visible = FALSE;
 
@@ -425,8 +433,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (engine, engine_signals[UPDATE_AUXILIARY_TEXT], 0, text, visible);
         _g_object_unref_if_floating (text);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "UpdateLookupTable") == 0) {
+
+    if (g_strcmp0 (signal_name, "UpdateLookupTable") == 0) {
         GVariant *arg0 = NULL;
         gboolean visible = FALSE;
 
@@ -439,8 +449,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (engine, engine_signals[UPDATE_LOOKUP_TABLE], 0, table, visible);
         _g_object_unref_if_floating (table);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "RegisterProperties") == 0) {
+
+    if (g_strcmp0 (signal_name, "RegisterProperties") == 0) {
         GVariant *arg0 = NULL;
         g_variant_get (parameters, "(v)", &arg0);
         g_return_if_fail (arg0 != NULL);
@@ -451,8 +463,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (engine, engine_signals[REGISTER_PROPERTIES], 0, prop_list);
         _g_object_unref_if_floating (prop_list);
+        return;
     }
-    else if (g_strcmp0 (signal_name, "UpdateProperty") == 0) {
+
+    if (g_strcmp0 (signal_name, "UpdateProperty") == 0) {
         GVariant *arg0 = NULL;
         g_variant_get (parameters, "(v)", &arg0);
         g_return_if_fail (arg0 != NULL);
@@ -463,10 +477,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
         _g_object_unref_if_floating (prop);
+        return;
     }
-    else
-        return G_DBUS_PROXY_CLASS (bus_engine_proxy_parent_class)->g_signal (
-                        proxy, sender_name, signal_name, parameters);
+
+    g_return_if_reached ();
 }
 
 BusEngineProxy *

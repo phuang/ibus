@@ -545,8 +545,6 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
     g_assert (new_name != NULL);
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
-    BusFactoryProxy *factory;
-
     if (g_strcmp0 (name, IBUS_SERVICE_PANEL) == 0) {
         if (g_strcmp0 (new_name, "") != 0) {
             BusConnection *connection;
@@ -586,11 +584,13 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
             connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name);
             g_return_if_fail (connection != NULL);
 
-            ibus->config = g_object_new (IBUS_TYPE_CONFIG,
-                                         "g-object-path", "/org/freedesktop/IBus/Config",
-                                         "g-interface-name", "org.freedesktop.IBus.Config",
-                                         "g-connection", bus_connection_get_dbus_connection (connection),
-                                         NULL);
+            ibus->config = g_initable_new (IBUS_TYPE_CONFIG,
+                                           NULL,
+                                           NULL,
+                                           "g-object-path", IBUS_PATH_CONFIG,
+                                           "g-interface-name", IBUS_INTERFACE_CONFIG,
+                                           "g-connection", bus_connection_get_dbus_connection (connection),
+                                           NULL);
             g_object_ref_sink (ibus->config);
 
             g_signal_connect (ibus->config,
@@ -608,9 +608,10 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
         }
     }
 
-    factory = bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
+    BusFactoryProxy *factory = bus_registry_name_owner_changed (ibus->registry,
+                                                name, old_name, new_name);
 
-    if (factory) {
+    if (factory != NULL) {
         bus_ibus_impl_add_factory (ibus, factory);
     }
 }

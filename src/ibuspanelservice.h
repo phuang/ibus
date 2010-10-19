@@ -193,7 +193,7 @@ void ibus_panel_service_page_up           (IBusPanelService *panel);
  */
 void ibus_panel_service_property_active   (IBusPanelService *panel,
                                            const gchar      *prop_name,
-                                           int               prop_state);
+                                           guint             prop_state);
 /**
  * ibus_panel_service_property_show
  * @panel: An IBusPanelService

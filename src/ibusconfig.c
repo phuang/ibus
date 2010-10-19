@@ -126,10 +126,10 @@ ibus_config_g_signal (GDBusProxy  *proxy,
                       const gchar *signal_name,
                       GVariant    *parameters)
 {
-    if (g_strcmp0 (signal_name,"ValueChanged")) {
-        gchar *section;
-        gchar *name;
-        GVariant *value;
+    if (g_strcmp0 (signal_name, "ValueChanged") == 0) {
+        const gchar *section = NULL;
+        const gchar *name = NULL;
+        GVariant *value = NULL;
 
         g_variant_get (parameters, "(&s&sv)", &section, &name, &value);
 
@@ -139,10 +139,11 @@ ibus_config_g_signal (GDBusProxy  *proxy,
                        section,
                        name,
                        value);
+        g_variant_unref (value);
         return;
     }
 
-    G_DBUS_PROXY_CLASS (ibus_config_parent_class)->g_signal (proxy, sender_name, signal_name, parameters);
+    g_return_if_reached ();
 }
 
 IBusConfig *

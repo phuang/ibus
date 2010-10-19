@@ -27,10 +27,7 @@ import pango
 import ibus
 
 from icon import load_icon
-
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import _, N_
 
 class EngineTreeView(gtk.TreeView):
     __gtype_name__ = 'EngineTreeView'

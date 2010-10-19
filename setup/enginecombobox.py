@@ -24,11 +24,9 @@ import gtk
 import gobject
 import pango
 import ibus
-import gettext
 import locale
 from icon import load_icon
-
-_ = lambda a : gettext.dgettext("ibus", a)
+from i18n import _, N_
 
 class EngineComboBox(gtk.ComboBox):
     __gtype_name__ = 'EngineComboBox'

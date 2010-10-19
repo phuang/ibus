@@ -29,10 +29,7 @@ import gobject
 import gtk
 from gtk import gdk
 from gtk import keysyms
-
-from gettext import dgettext
-_  = lambda a : dgettext("ibus", a)
-N_ = lambda a : a
+from i18n import _, N_
 
 MAX_HOTKEY = 6
 
