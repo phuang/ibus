@@ -75,16 +75,17 @@ typedef struct _IBusComponentPrivate IBusComponentPrivate;
 
 /**
  * IBusComponent:
- * @name: Name of the component.
- * @description: Detailed description of component.
- * @version: Component version.
- * @license: Distribution license of this component.
- * @author: Author(s) of the component.
- * @homepage: Homepage of the component.
- * @exec: path to component executable.
- * @textdomain: Domain name for dgettext()
  *
  * An IBusComponent stores component information.
+ * You can get extended values with g_object_get_properties.
+ * name: Name of the component.
+ * description: Detailed description of component.
+ * version: Component version.
+ * license: Distribution license of this component.
+ * author: Author(s) of the component.
+ * homepage: Homepage of the component.
+ * exec: path to component executable.
+ * textdomain: Domain name for dgettext()
  */
 struct _IBusComponent {
     /*< private >*/
@@ -93,16 +94,6 @@ struct _IBusComponent {
     /* instance members */
 
     /*< public >*/
-    gchar *name;
-    gchar *description;
-    gchar *version;
-    gchar *license;
-    gchar *author;
-    gchar *homepage;
-    gchar *exec;
-
-    /* text domain for dgettext */
-    gchar *textdomain;
 
     /*< private >*/
     /* engines */
@@ -150,6 +141,21 @@ IBusComponent   *ibus_component_new             (const gchar    *name,
                                                  const gchar    *textdomain);
 
 /**
+ * ibus_component_new2:
+ * @first_property_name: Name of the first property.
+ * @Varargs: the NULL-terminated arguments of the properties and values.
+ *
+ * New an IBusComponent.
+ * ibus_component_new2() supports the va_list format.
+ * name property is required. e.g.
+ * IBusComponent *component = ibus_component_new2 ("name", "ibus-foo",
+ *                                                 "exec", "/usr/libexec/ibus-engine-foo --ibus",
+ *                                                 NULL)
+ */
+IBusComponent   *ibus_component_new2            (const gchar    *first_property_name,
+                                                 ...);
+
+/**
  * ibus_component_new_from_xml_node:
  * @node: Root node of component XML tree.
  * @returns: A newly allocated IBusComponent.
@@ -170,6 +176,78 @@ IBusComponent   *ibus_component_new_from_xml_node
  * to load the engine descriptions.
  */
 IBusComponent   *ibus_component_new_from_file   (const gchar    *filename);
+
+/**
+ * ibus_component_get_name:
+ * @component: An IBusComponent
+ * @returns: name property in IBusComponent
+ *
+ * Return the name property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_name        (IBusComponent  *component);
+
+/**
+ * ibus_component_get_description:
+ * @component: An IBusComponent
+ * @returns: description property in IBusComponent
+ *
+ * Return the description property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_description (IBusComponent  *component);
+
+/**
+ * ibus_component_get_version:
+ * @component: An IBusComponent
+ * @returns: version property in IBusComponent
+ *
+ * Return the version property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_version     (IBusComponent  *component);
+
+/**
+ * ibus_component_get_license:
+ * @component: An IBusComponent
+ * @returns: license property in IBusComponent
+ *
+ * Return the license property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_license     (IBusComponent  *component);
+
+/**
+ * ibus_component_get_author:
+ * @component: An IBusComponent
+ * @returns: author property in IBusComponent
+ *
+ * Return the author property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_author      (IBusComponent  *component);
+
+/**
+ * ibus_component_get_homepage:
+ * @component: An IBusComponent
+ * @returns: homepage property in IBusComponent
+ *
+ * Return the homepage property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_homepage    (IBusComponent  *component);
+
+/**
+ * ibus_component_get_exec:
+ * @component: An IBusComponent
+ * @returns: exec property in IBusComponent
+ *
+ * Return the exec property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_exec        (IBusComponent  *component);
+
+/**
+ * ibus_component_get_textdomain:
+ * @component: An IBusComponent
+ * @returns: textdomain property in IBusComponent
+ *
+ * Return the textdomain property in IBusComponent. It should not be freed.
+ */
+const gchar     *ibus_component_get_textdomain  (IBusComponent  *component);
 
 /**
  * ibus_component_add_observed_path:

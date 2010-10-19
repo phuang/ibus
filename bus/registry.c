@@ -117,7 +117,9 @@ bus_registry_init (BusRegistry *registry)
 
         for (p1 = comp->engines; p1 != NULL; p1 = p1->next) {
             IBusEngineDesc *desc = (IBusEngineDesc *)p1->data;
-            g_hash_table_insert (registry->engine_table, desc->name, desc);
+            g_hash_table_insert (registry->engine_table,
+                                 (gpointer) ibus_engine_desc_get_name (desc),
+                                 desc);
             g_object_set_data ((GObject *)desc, "component", comp);
         }
     }
@@ -403,7 +405,7 @@ _component_is_name (IBusComponent *component,
     g_assert (IBUS_IS_COMPONENT (component));
     g_assert (name);
 
-    return g_strcmp0 (component->name, name);
+    return g_strcmp0 (ibus_component_get_name (component), name);
 }
 
 IBusComponent *
@@ -460,7 +462,7 @@ bus_registry_get_engines_by_language (BusRegistry *registry,
 
     for (p2 = p1; p2 != NULL; p2 = p2->next) {
         IBusEngineDesc *desc = (IBusEngineDesc *) p2->data;
-        if (strncmp (desc->language, language, n) == 0) {
+        if (strncmp (ibus_engine_desc_get_language (desc), language, n) == 0) {
             engines = g_list_append (engines, desc);
         }
     }

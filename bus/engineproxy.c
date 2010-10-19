@@ -491,8 +491,9 @@ bus_engine_proxy_new (const gchar    *path,
 
     engine->desc = desc;
     g_object_ref_sink (desc);
-    if (desc->layout != NULL && desc->layout[0] != '\0') {
-        engine->keymap = ibus_keymap_get (desc->layout);
+    const gchar *layout = ibus_engine_desc_get_layout (desc);
+    if (layout != NULL && layout[0] != '\0') {
+        engine->keymap = ibus_keymap_get (layout);
     }
 
     if (engine->keymap == NULL) {

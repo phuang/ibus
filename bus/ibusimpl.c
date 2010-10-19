@@ -401,7 +401,8 @@ static gint
 _engine_desc_cmp (IBusEngineDesc *desc1,
                   IBusEngineDesc *desc2)
 {
-    return - ((gint) desc1->rank) + ((gint) desc2->rank);
+    return - ((gint) ibus_engine_desc_get_rank (desc1)) +
+              ((gint) ibus_engine_desc_get_rank (desc2));
 }
 
 static void
@@ -448,8 +449,8 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
     for (list = engines; list != NULL; list = list->next) {
         IBusEngineDesc *desc = (IBusEngineDesc *)list->data;
         /* ignore engines with rank <== 0 */
-        if (desc->rank > 0)
-            g_variant_builder_add (&builder, "s", desc->name);
+        if (ibus_engine_desc_get_rank (desc) > 0)
+            g_variant_builder_add (&builder, "s", ibus_engine_desc_get_name (desc));
     }
     ibus_config_set_value (ibus->config,
                     "general", "preload_engines", g_variant_builder_end (&builder));
@@ -831,14 +832,14 @@ _find_engine_desc_by_name(BusIBusImpl *ibus,
     /* find engine in registered engine list */
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
         engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (engine_desc->name, engine_name) == 0)
+        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
             return engine_desc;
     }
 
     /* find engine in preload engine list */
     for (p = ibus->engine_list; p != NULL; p = p->next) {
         engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (engine_desc->name, engine_name) == 0)
+        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
             return engine_desc;
     }
 
@@ -985,7 +986,8 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
     ibus->global_previous_engine_name = NULL;
     if (ibus->global_engine) {
         /* Save the current global engine's name as previous engine. */
-        ibus->global_previous_engine_name = g_strdup (bus_engine_proxy_get_desc (ibus->global_engine)->name);
+        const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (ibus->global_engine));
+        ibus->global_previous_engine_name = g_strdup (name);
 
         ibus_proxy_destroy ((IBusProxy *)ibus->global_engine);
         /* global_engine should be NULL */
@@ -1028,8 +1030,9 @@ bus_ibus_impl_set_context_engine (BusIBusImpl     *ibus,
   if (!ibus->use_global_engine) {
       BusEngineProxy *previous_engine = bus_input_context_get_engine (context);
       if (previous_engine) {
+          const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (previous_engine));
           g_object_set_data_full (G_OBJECT (context), "previous-engine-name",
-                                  g_strdup (bus_engine_proxy_get_desc (previous_engine)->name),
+                                  g_strdup (name),
                                   g_free);
       }
   }
@@ -1458,7 +1461,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
     const gchar *old_engine_name = NULL;
 
     if (ibus->global_engine) {
-        old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
+        old_engine_name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (ibus->global_engine));
     }
 
     if (g_strcmp0 (new_engine_name, old_engine_name) == 0) {
@@ -1769,9 +1772,10 @@ bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
     g_return_if_fail (IBUS_IS_CONFIG (ibus->config));
 
     if (ibus->use_global_engine && ibus->global_engine) {
+        IBusEngineDesc *desc = bus_engine_proxy_get_desc (ibus->global_engine);
         ibus_config_set_value (ibus->config,
                         "general", "global_engine",
-                        g_variant_new ("s", bus_engine_proxy_get_desc (ibus->global_engine)->name));
+                        g_variant_new ("s", ibus_engine_desc_get_name (desc)));
     }
 }
 
@@ -1806,6 +1810,7 @@ bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
 static void
 _add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
 {
+    const gchar *hotkeys;
     gchar **hotkey_list;
     gchar **p;
     gchar *hotkey;
@@ -1815,11 +1820,17 @@ _add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
     guint keyval;
     guint modifiers;
 
-    if (!engine || !engine->hotkeys || !*engine->hotkeys) {
+    if (!engine) {
         return;
     }
 
-    hotkey_list = g_strsplit_set (engine->hotkeys, ";,", 0);
+    hotkeys = ibus_engine_desc_get_hotkeys (engine);
+
+    if (!hotkeys || !*hotkeys) {
+        return;
+    }
+
+    hotkey_list = g_strsplit_set (hotkeys, ";,", 0);
 
     for (p = hotkey_list; p && *p; ++p) {
         hotkey = g_strstrip (*p);

@@ -106,6 +106,8 @@ class Component(Serializable):
         struct.append (dbus.String(self.__textdomain))
         struct.append (dbus.Array(map(serialize_object,self.__observed_paths), signature="v"))
         struct.append (dbus.Array(map(serialize_object,self.__engines), signature="v"))
+        # New properties of Component will use dict for serialize
+        struct.append(dbus.Array({}, signature=None))
 
     def deserialize(self, struct):
         super(Component, self).deserialize(struct)
@@ -121,6 +123,8 @@ class Component(Serializable):
 
         self.__observed_paths = map(deserialize_object, struct.pop(0))
         self.__engines = map(deserialize_object, struct.pop(0))
+        # New properties of Component will use dict for serialize
+        #value = struct.pop(0)
 
 def test():
     text = Component("Hello", "", "", "", "", "", "", "")

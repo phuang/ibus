@@ -70,41 +70,35 @@
 G_BEGIN_DECLS
 
 typedef struct _IBusEngineDesc IBusEngineDesc;
+typedef struct _IBusEngineDescPrivate IBusEngineDescPrivate;
 typedef struct _IBusEngineDescClass IBusEngineDescClass;
 typedef struct _BusComponent BusComponent;
 
 /**
  * IBusEngineDesc:
- * @name: Name of the engine.
- * @longname: Long name of the input method engine.
- * @description: Input method engine description.
- * @language: Language (e.g. zh, jp) supported by this input method engine.
- * @license: License of the input method engine.
- * @author: Author of the input method engine.
- * @icon: Icon file of this engine.
- * @layout: Keyboard layout
- * @hotkeys: One or more hotkeys for switching to this engine, separated by
- *  semi-colon.
- * @rank: Preference rank among engines, the highest ranked IME will put in
- * the front.
  *
  * Input method engine description data.
+ * You can get extended values with g_object_get_properties.
+ * name: Name of the engine.
+ * longname: Long name of the input method engine.
+ * description: Input method engine description.
+ * language: Language (e.g. zh, jp) supported by this input method engine.
+ * license: License of the input method engine.
+ * author: Author of the input method engine.
+ * icon: Icon file of this engine.
+ * layout: Keyboard layout
+ * rank: Preference rank among engines, the highest ranked IME will put in
+ * the front.
+ * hotkeys: One or more hotkeys for switching to this engine, separated by
+ *  semi-colon.
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
     /* instance members */
 
     /*< public >*/
-    gchar *name;
-    gchar *longname;
-    gchar *description;
-    gchar *language;
-    gchar *license;
-    gchar *author;
-    gchar *icon;
-    gchar *layout;
-    gchar *hotkeys;
-    guint  rank;
+    /*< private >*/
+    IBusEngineDescPrivate *priv;
 };
 
 struct _IBusEngineDescClass {
@@ -139,28 +133,17 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
 
 /**
  * ibus_engine_desc_new2:
- * @name: Name of the engine.
- * @longname: Long name of the input method engine.
- * @description: Input method engine description.
- * @language: Language (e.g. zh, jp) supported by this input method engine.
- * @license: License of the input method engine.
- * @author: Author of the input method engine.
- * @icon: Icon file of this engine.
- * @layout: Keyboard layout
- * @hotkeys: Hotkeys for switching to this engine.
- * @returns: A newly allocated IBusEngineDesc.
+ * @first_property_name: Name of the first property.
+ * @Varargs: the NULL-terminated arguments of the properties and values.
  *
  * New a IBusEngineDesc.
+ * ibus_engine_desc_new2() supports the va_list format.
+ * name property is required. e.g.
+ * ibus_engine_desc_new2("name", "ibus-foo", "language", "us", NULL)
  */
-IBusEngineDesc  *ibus_engine_desc_new2          (const gchar    *name,
-                                                 const gchar    *longname,
-                                                 const gchar    *description,
-                                                 const gchar    *language,
-                                                 const gchar    *license,
-                                                 const gchar    *author,
-                                                 const gchar    *icon,
-                                                 const gchar    *layout,
-                                                 const gchar    *hotkeys);
+IBusEngineDesc  *ibus_engine_desc_new2          (const gchar *first_property_name,
+                                                 ...);
+
 
 /**
  * ibus_engine_desc_new_from_xml_node:
@@ -175,6 +158,97 @@ IBusEngineDesc  *ibus_engine_desc_new2          (const gchar    *name,
  */
 IBusEngineDesc  *ibus_engine_desc_new_from_xml_node
                                                 (XMLNode        *node);
+/**
+ * ibus_engine_desc_get_name:
+ * @info: An IBusEngineDesc
+ * @returns: name property in IBusEngineDesc
+ *
+ * Return the name property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_name      (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_longname:
+ * @info: An IBusEngineDesc
+ * @returns: longname property in IBusEngineDesc
+ *
+ * Return the longname property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_longname  (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_description:
+ * @info: An IBusEngineDesc
+ * @returns: description property in IBusEngineDesc
+ *
+ * Return the description property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_description
+                                                (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_language:
+ * @info: An IBusEngineDesc
+ * @returns: language property in IBusEngineDesc
+ *
+ * Return the language property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_language  (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_license:
+ * @info: An IBusEngineDesc
+ * @returns: license property in IBusEngineDesc
+ *
+ * Return the license property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_license   (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_author:
+ * @info: An IBusEngineDesc
+ * @returns: author property in IBusEngineDesc
+ *
+ * Return the author property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_author    (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_icon:
+ * @info: An IBusEngineDesc
+ * @returns: icon property in IBusEngineDesc
+ *
+ * Return the icon property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_icon      (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_layout:
+ * @info: An IBusEngineDesc
+ * @returns: layout property in IBusEngineDesc
+ *
+ * Return the layout property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_layout    (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_rank:
+ * @info: An IBusEngineDesc
+ * @returns: rank property in IBusEngineDesc
+ *
+ * Return the rank property in IBusEngineDesc.
+ */
+guint            ibus_engine_desc_get_rank      (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_hotkeys:
+ * @info: An IBusEngineDesc
+ * @returns: hotkeys property in IBusEngineDesc
+ *
+ * Return the hotkeys property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_hotkeys   (IBusEngineDesc *info);
+
 /**
  * ibus_engine_desc_output:
  * @info: An IBusEngineDesc

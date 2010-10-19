@@ -41,8 +41,8 @@ class EngineDesc(Serializable):
         self.__author = author
         self.__icon = icon
         self.__layout = layout
-        self.__hotkeys = hotkeys
         self.__rank = rank
+        self.__hotkeys = hotkeys
 
     def get_name(self):
         return self.__name
@@ -68,11 +68,11 @@ class EngineDesc(Serializable):
     def get_layout(self):
         return self.__layout
 
-    def get_hotkeys(self):
-        return self.__hotkeys
-
     def get_rank(self):
         return self.__rank
+
+    def get_hotkeys(self):
+        return self.__hotkeys
 
     name        = property(get_name)
     longname    = property(get_longname)
@@ -82,8 +82,8 @@ class EngineDesc(Serializable):
     author      = property(get_author)
     icon        = property(get_icon)
     layout      = property(get_layout)
-    hotkeys     = property(get_hotkeys)
     rank        = property(get_rank)
+    hotkeys     = property(get_hotkeys)
 
     def serialize(self, struct):
         super(EngineDesc, self).serialize(struct)
@@ -95,8 +95,10 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__author))
         struct.append(dbus.String(self.__icon))
         struct.append(dbus.String(self.__layout))
-        struct.append(dbus.String(self.__hotkeys))
         struct.append(dbus.UInt32(self.__rank))
+        struct.append(dbus.String(self.__hotkeys))
+        # New properties of EngineDesc will use dict for serialize
+        struct.append(dbus.Array({}, signature=None))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
@@ -108,8 +110,10 @@ class EngineDesc(Serializable):
         self.__author = struct.pop(0)
         self.__icon = struct.pop(0)
         self.__layout = struct.pop(0)
-        self.__hotkeys = struct.pop(0)
         self.__rank = struct.pop(0)
+        self.__hotkeys = struct.pop(0)
+        # New properties of EngineDesc will use dict for serialize
+        #value = struct.pop(0)
 
 def test():
     engine = EngineDesc("Hello", "", "", "", "", "", "", "", "")

@@ -26,9 +26,30 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0 = 0,
+    PROP_NAME,
+    PROP_DESCRIPTION,
+    PROP_VERSION,
+    PROP_LICENSE,
+    PROP_AUTHOR,
+    PROP_HOMEPAGE,
+    PROP_EXEC,
+    PROP_TEXTDOMAIN,
+};
+
 
 /* IBusComponentPriv */
 struct _IBusComponentPrivate {
+    gchar *name;
+    gchar *description;
+    gchar *version;
+    gchar *license;
+    gchar *author;
+    gchar *homepage;
+    gchar *exec;
+    gchar *textdomain;
+
     // TRUE if the component started in the verbose mode.
     gboolean verbose;
     // TRUE if the component needs to be restarted when it dies.
@@ -41,6 +62,14 @@ struct _IBusComponentPrivate {
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
+static void         ibus_component_set_property (IBusComponent          *component,
+                                                 guint                   prop_id,
+                                                 const GValue           *value,
+                                                 GParamSpec             *pspec);
+static void         ibus_component_get_property (IBusComponent          *component,
+                                                 guint                   prop_id,
+                                                 GValue                 *value,
+                                                 GParamSpec             *pspec);
 static void         ibus_component_destroy      (IBusComponent          *component);
 static gboolean     ibus_component_serialize    (IBusComponent          *component,
                                                  GVariantBuilder        *builder);
@@ -65,16 +94,124 @@ G_DEFINE_TYPE (IBusComponent, ibus_component, IBUS_TYPE_SERIALIZABLE)
 static void
 ibus_component_class_init (IBusComponentClass *class)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
     g_type_class_add_private (class, sizeof (IBusComponentPrivate));
 
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_component_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_component_get_property;
     object_class->destroy = (IBusObjectDestroyFunc) ibus_component_destroy;
 
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_component_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_component_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_component_copy;
+
+    /* install properties */
+    /**
+     * IBusComponent:name:
+     *
+     * The name of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_NAME,
+                    g_param_spec_string ("name",
+                        "component name",
+                        "The name of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:description:
+     *
+     * The description of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_DESCRIPTION,
+                    g_param_spec_string ("description",
+                        "component description",
+                        "The description of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:version:
+     *
+     * The version of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_VERSION,
+                    g_param_spec_string ("version",
+                        "component version",
+                        "The version of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:license:
+     *
+     * The license of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_LICENSE,
+                    g_param_spec_string ("license",
+                        "component license",
+                        "The license of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:author:
+     *
+     * The author of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_AUTHOR,
+                    g_param_spec_string ("author",
+                        "component author",
+                        "The author of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:homepage:
+     *
+     * The homepage of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_HOMEPAGE,
+                    g_param_spec_string ("homepage",
+                        "component homepage",
+                        "The homepage of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:exec:
+     *
+     * The exec path of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_EXEC,
+                    g_param_spec_string ("exec",
+                        "component exec",
+                        "The exec path of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusComponent:textdomain:
+     *
+     * The textdomain of component
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_TEXTDOMAIN,
+                    g_param_spec_string ("textdomain",
+                        "component textdomain",
+                        "The textdomain path of component",
+                        NULL,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 
@@ -82,8 +219,23 @@ static void
 ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
+
+    component->engines = NULL;
+    component->observed_paths = NULL;
+    component->pid = 0;
+    component->child_source_id = 0;
+
+    component->priv->name = NULL;
+    component->priv->description = NULL;
+    component->priv->version = NULL;
+    component->priv->license = NULL;
+    component->priv->author = NULL;
+    component->priv->homepage = NULL;
+    component->priv->exec = NULL;
+    component->priv->textdomain = NULL;
     component->priv->verbose = FALSE;
     component->priv->restart = FALSE;
+
 }
 
 static void
@@ -91,23 +243,23 @@ ibus_component_destroy (IBusComponent *component)
 {
     GList *p;
 
-    g_free (component->name);
-    g_free (component->description);
-    g_free (component->version);
-    g_free (component->license);
-    g_free (component->author);
-    g_free (component->homepage);
-    g_free (component->exec);
-    g_free (component->textdomain);
+    g_free (component->priv->name);
+    g_free (component->priv->description);
+    g_free (component->priv->version);
+    g_free (component->priv->license);
+    g_free (component->priv->author);
+    g_free (component->priv->homepage);
+    g_free (component->priv->exec);
+    g_free (component->priv->textdomain);
 
-    component->name = NULL;
-    component->description = NULL;
-    component->version = NULL;
-    component->license = NULL;
-    component->author = NULL;
-    component->homepage = NULL;
-    component->exec = NULL;
-    component->textdomain = NULL;
+    component->priv->name = NULL;
+    component->priv->description = NULL;
+    component->priv->version = NULL;
+    component->priv->license = NULL;
+    component->priv->author = NULL;
+    component->priv->homepage = NULL;
+    component->priv->exec = NULL;
+    component->priv->textdomain = NULL;
 
     g_list_foreach (component->observed_paths, (GFunc)g_object_unref, NULL);
     g_list_free (component->observed_paths);
@@ -135,6 +287,86 @@ ibus_component_destroy (IBusComponent *component)
     IBUS_OBJECT_CLASS (ibus_component_parent_class)->destroy (IBUS_OBJECT (component));
 }
 
+static void
+ibus_component_set_property (IBusComponent *component,
+                             guint          prop_id,
+                             const GValue  *value,
+                             GParamSpec    *pspec)
+{
+    switch (prop_id) {
+    case PROP_NAME:
+        g_assert (component->priv->name == NULL);
+        component->priv->name = g_value_dup_string (value);
+        break;
+    case PROP_DESCRIPTION:
+        g_assert (component->priv->description == NULL);
+        component->priv->description = g_value_dup_string (value);
+        break;
+    case PROP_VERSION:
+        g_assert (component->priv->version == NULL);
+        component->priv->version = g_value_dup_string (value);
+        break;
+    case PROP_LICENSE:
+        g_assert (component->priv->license == NULL);
+        component->priv->license = g_value_dup_string (value);
+        break;
+    case PROP_AUTHOR:
+        g_assert (component->priv->author == NULL);
+        component->priv->author = g_value_dup_string (value);
+        break;
+    case PROP_HOMEPAGE:
+        g_assert (component->priv->homepage == NULL);
+        component->priv->homepage = g_value_dup_string (value);
+        break;
+    case PROP_EXEC:
+        g_assert (component->priv->exec == NULL);
+        component->priv->exec = g_value_dup_string (value);
+        break;
+    case PROP_TEXTDOMAIN:
+        g_assert (component->priv->textdomain == NULL);
+        component->priv->textdomain = g_value_dup_string (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
+    }
+}
+
+static void
+ibus_component_get_property (IBusComponent *component,
+                             guint          prop_id,
+                             GValue        *value,
+                             GParamSpec    *pspec)
+{
+    switch (prop_id) {
+    case PROP_NAME:
+        g_value_set_string (value, ibus_component_get_name (component));
+        break;
+    case PROP_DESCRIPTION:
+        g_value_set_string (value, ibus_component_get_description (component));
+        break;
+    case PROP_VERSION:
+        g_value_set_string (value, ibus_component_get_version (component));
+        break;
+    case PROP_LICENSE:
+        g_value_set_string (value, ibus_component_get_license (component));
+        break;
+    case PROP_AUTHOR:
+        g_value_set_string (value, ibus_component_get_author (component));
+        break;
+    case PROP_HOMEPAGE:
+        g_value_set_string (value, ibus_component_get_homepage (component));
+        break;
+    case PROP_EXEC:
+        g_value_set_string (value, ibus_component_get_exec (component));
+        break;
+    case PROP_TEXTDOMAIN:
+        g_value_set_string (value, ibus_component_get_textdomain (component));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
+    }
+}
+
 static gboolean
 ibus_component_serialize (IBusComponent   *component,
                           GVariantBuilder *builder)
@@ -144,14 +376,14 @@ ibus_component_serialize (IBusComponent   *component,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->serialize ((IBusSerializable *)component, builder);
     g_return_val_if_fail (retval, FALSE);
 
-    g_variant_builder_add (builder, "s", component->name);
-    g_variant_builder_add (builder, "s", component->description);
-    g_variant_builder_add (builder, "s", component->version);
-    g_variant_builder_add (builder, "s", component->license);
-    g_variant_builder_add (builder, "s", component->author);
-    g_variant_builder_add (builder, "s", component->homepage);
-    g_variant_builder_add (builder, "s", component->exec);
-    g_variant_builder_add (builder, "s", component->textdomain);
+    g_variant_builder_add (builder, "s", component->priv->name);
+    g_variant_builder_add (builder, "s", component->priv->description);
+    g_variant_builder_add (builder, "s", component->priv->version);
+    g_variant_builder_add (builder, "s", component->priv->license);
+    g_variant_builder_add (builder, "s", component->priv->author);
+    g_variant_builder_add (builder, "s", component->priv->homepage);
+    g_variant_builder_add (builder, "s", component->priv->exec);
+    g_variant_builder_add (builder, "s", component->priv->textdomain);
 
     GList *p;
     GVariantBuilder *array;
@@ -162,7 +394,7 @@ ibus_component_serialize (IBusComponent   *component,
     }
     g_variant_builder_add (builder, "av", array);
 
-    /* serialize engine desc */
+    /* serialize engine desc list */
     array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
     for (p = component->engines; p != NULL; p = p->next) {
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
@@ -181,14 +413,14 @@ ibus_component_deserialize (IBusComponent   *component,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->deserialize ((IBusSerializable *)component, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &component->name);
-    g_variant_get_child (variant, retval++, "s", &component->description);
-    g_variant_get_child (variant, retval++, "s", &component->version);
-    g_variant_get_child (variant, retval++, "s", &component->license);
-    g_variant_get_child (variant, retval++, "s", &component->author);
-    g_variant_get_child (variant, retval++, "s", &component->homepage);
-    g_variant_get_child (variant, retval++, "s", &component->exec);
-    g_variant_get_child (variant, retval++, "s", &component->textdomain);
+    g_variant_get_child (variant, retval++, "s", &component->priv->name);
+    g_variant_get_child (variant, retval++, "s", &component->priv->description);
+    g_variant_get_child (variant, retval++, "s", &component->priv->version);
+    g_variant_get_child (variant, retval++, "s", &component->priv->license);
+    g_variant_get_child (variant, retval++, "s", &component->priv->author);
+    g_variant_get_child (variant, retval++, "s", &component->priv->homepage);
+    g_variant_get_child (variant, retval++, "s", &component->priv->exec);
+    g_variant_get_child (variant, retval++, "s", &component->priv->textdomain);
 
     GVariant *var;
     GVariantIter *iter = NULL;
@@ -219,15 +451,14 @@ ibus_component_copy (IBusComponent       *dest,
                                  (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
-
-    dest->name          = g_strdup (src->name);
-    dest->description   = g_strdup (src->description);
-    dest->version       = g_strdup (src->version);
-    dest->license       = g_strdup (src->license);
-    dest->author        = g_strdup (src->author);
-    dest->homepage      = g_strdup (src->homepage);
-    dest->exec          = g_strdup (src->exec);
-    dest->textdomain    = g_strdup (src->textdomain);
+    dest->priv->name          = g_strdup (src->priv->name);
+    dest->priv->description   = g_strdup (src->priv->description);
+    dest->priv->version       = g_strdup (src->priv->version);
+    dest->priv->license       = g_strdup (src->priv->license);
+    dest->priv->author        = g_strdup (src->priv->author);
+    dest->priv->homepage      = g_strdup (src->priv->homepage);
+    dest->priv->exec          = g_strdup (src->priv->exec);
+    dest->priv->textdomain    = g_strdup (src->priv->textdomain);
 
     dest->observed_paths = g_list_copy (src->observed_paths);
     g_list_foreach (dest->observed_paths, (GFunc) g_object_ref, NULL);
@@ -261,8 +492,8 @@ ibus_component_output (IBusComponent *component,
 #define OUTPUT_ENTRY(field, element)                                        \
     {                                                                       \
         gchar *escape_text =                                                \
-            g_markup_escape_text (component->field ?                        \
-                                    component->field : "", -1);             \
+            g_markup_escape_text (component->priv->field ?                  \
+                                  component->priv->field : "", -1);         \
         g_string_append_indent (output, indent + 1);                        \
         g_string_append_printf (output, "<"element">%s</"element">\n",      \
                                 escape_text);                               \
@@ -326,8 +557,8 @@ ibus_component_output_engines (IBusComponent  *component,
 
 static gboolean
 ibus_component_parse_xml_node (IBusComponent   *component,
-                              XMLNode        *node,
-                              gboolean        access_fs)
+                              XMLNode          *node,
+                              gboolean          access_fs)
 {
     g_assert (component);
     g_assert (node);
@@ -340,13 +571,13 @@ ibus_component_parse_xml_node (IBusComponent   *component,
     for (p = node->sub_nodes; p != NULL; p = p->next) {
         XMLNode *sub_node = (XMLNode *)p->data;
 
-#define PARSE_ENTRY(field_name, element_name)                   \
-        if (g_strcmp0 (sub_node->name, element_name) == 0) {    \
-            if (component->field_name != NULL) {                \
-                g_free (component->field_name);                 \
-            }                                                   \
-            component->field_name = g_strdup (sub_node->text);  \
-            continue;                                           \
+#define PARSE_ENTRY(field_name, element_name)                           \
+        if (g_strcmp0 (sub_node->name, element_name) == 0) {            \
+            if (component->priv->field_name != NULL) {                  \
+                g_free (component->priv->field_name);                   \
+            }                                                           \
+            component->priv->field_name = g_strdup (sub_node->text);    \
+            continue;                                                   \
         }
 #define PARSE_ENTRY_1(name) PARSE_ENTRY (name, #name)
         PARSE_ENTRY_1 (name);
@@ -455,6 +686,23 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
     }
 }
 
+#define IBUS_COMPONENT_GET_PROPERTY(property, return_type)  \
+return_type                                                 \
+ibus_component_get_ ## property (IBusComponent *component)  \
+{                                                           \
+    return component->priv->property;                       \
+}
+
+IBUS_COMPONENT_GET_PROPERTY (name, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (description, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (version, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (license, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (author, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (homepage, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (exec, const gchar *)
+IBUS_COMPONENT_GET_PROPERTY (textdomain, const gchar *)
+#undef IBUS_COMPONENT_GET_PROPERTY
+
 IBusComponent *
 ibus_component_new (const gchar *name,
                     const gchar *description,
@@ -465,18 +713,37 @@ ibus_component_new (const gchar *name,
                     const gchar *exec,
                     const gchar *textdomain)
 {
+    return ibus_component_new2 ("name", name,
+                                "description", description,
+                                "version", version,
+                                "license", license,
+                                "author", author,
+                                "homepage", homepage,
+                                "exec", exec,
+                                "textdomain", textdomain,
+                                NULL);
+}
 
+
+IBusComponent *
+ibus_component_new2 (const gchar *first_property_name, ...)
+{
+    va_list var_args;
     IBusComponent *component;
-    component = (IBusComponent *)g_object_new (IBUS_TYPE_COMPONENT, NULL);
+    IBusComponentPrivate *priv;
 
-    component->name         = g_strdup (name);
-    component->description  = g_strdup (description);
-    component->version      = g_strdup (version);
-    component->license      = g_strdup (license);
-    component->author       = g_strdup (author);
-    component->homepage     = g_strdup (homepage);
-    component->exec         = g_strdup (exec);
-    component->textdomain   = g_strdup (textdomain);
+    g_assert (first_property_name);
+
+    va_start (var_args, first_property_name);
+    component = (IBusComponent *) g_object_new_valist (IBUS_TYPE_COMPONENT,
+                                                       first_property_name,
+                                                       var_args);
+    va_end (var_args);
+
+    priv = IBUS_COMPONENT_GET_PRIVATE (component);
+
+    /* name is required. Other properties are set in class_init by default. */
+    g_assert (priv->name);
 
     return component;
 }
@@ -583,10 +850,9 @@ ibus_component_child_cb (GPid            pid,
     component->pid = 0;
     component->child_source_id = 0;
 
-    IBusComponentPrivate *priv = IBUS_COMPONENT_GET_PRIVATE (component);
-    if (priv->restart) {
-        g_debug ("==== Restarting %s", component->exec);
-        ibus_component_start (component, priv->verbose);
+    if (component->priv->restart) {
+        g_debug ("==== Restarting %s", component->priv->exec);
+        ibus_component_start (component, component->priv->verbose);
     }
 }
 
@@ -598,8 +864,7 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
     if (component->pid != 0)
         return TRUE;
 
-    IBusComponentPrivate *priv = IBUS_COMPONENT_GET_PRIVATE (component);
-    priv->verbose = verbose;
+    component->priv->verbose = verbose;
 
     gint argc;
     gchar **argv;
@@ -608,8 +873,9 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
     GSpawnFlags flags;
 
     error = NULL;
-    if (!g_shell_parse_argv (component->exec, &argc, &argv, &error)) {
-        g_warning ("Can not parse component %s exec: %s", component->name, error->message);
+    if (!g_shell_parse_argv (component->priv->exec, &argc, &argv, &error)) {
+        g_warning ("Can not parse component %s exec: %s",
+                        component->priv->name, error->message);
         g_error_free (error);
         return FALSE;
     }
@@ -625,7 +891,8 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
                             &(component->pid), &error);
     g_strfreev (argv);
     if (!retval) {
-        g_warning ("Can not execute component %s: %s", component->name, error->message);
+        g_warning ("Can not execute component %s: %s",
+                        component->priv->name, error->message);
         g_error_free (error);
         return FALSE;
     }

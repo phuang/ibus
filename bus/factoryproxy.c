@@ -88,7 +88,8 @@ bus_factory_proxy_new (IBusComponent *component,
     GList *p;
 
     if (connection == NULL) {
-        connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, component->name);
+        const gchar *name = ibus_component_get_name (component);
+        connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, name);
     }
 
     if (connection == NULL) {
@@ -161,7 +162,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     GError *error = NULL;
     GVariant *retval = g_dbus_proxy_call_sync ((GDBusProxy *)factory,
                                                "CreateEngine",
-                                               g_variant_new ("(s)", desc->name),
+                                               g_variant_new ("(s)", ibus_engine_desc_get_name (desc)),
                                                G_DBUS_CALL_FLAGS_NONE,
                                                -1, NULL, &error);
     if (retval == NULL) {
