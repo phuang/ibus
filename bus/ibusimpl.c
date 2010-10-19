@@ -812,6 +812,27 @@ _ibus_get_address (BusIBusImpl     *ibus,
     return reply;
 }
 
+static BusFactoryProxy *
+_get_factory_proxy(IBusEngineDesc *engine_desc)
+{
+    BusFactoryProxy *factory;
+    GTimeVal t1, t2;
+    g_get_current_time (&t1);
+    while (1) {
+        if (g_main_context_pending (NULL)) {
+            g_main_context_iteration (NULL, FALSE);
+            factory = bus_factory_proxy_get_from_engine (engine_desc);
+            if (factory != NULL) {
+                return factory;
+            }
+        }
+        g_get_current_time (&t2);
+        if (t2.tv_sec - t1.tv_sec >= 5)
+            break;
+    }
+    return NULL;
+}
+
 static BusEngineProxy *
 bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 {
@@ -829,23 +850,8 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 
         if (!ibus_component_is_running (comp)) {
             ibus_component_start (comp, g_verbose);
-            g_get_current_time (&t1);
-            while (1) {
-                if (g_main_context_pending (NULL)) {
-                    g_main_context_iteration (NULL, FALSE);
-                    factory = bus_factory_proxy_get_from_engine (engine_desc);
-                    if (factory != NULL) {
-                        break;
-                    }
-                }
-                g_get_current_time (&t2);
-                if (t2.tv_sec - t1.tv_sec >= 5)
-                    break;
-            }
         }
-        else {
-            factory = bus_factory_proxy_get_from_engine (engine_desc);
-        }
+        factory = _get_factory_proxy (engine_desc);
     }
 
     if (factory == NULL) {
