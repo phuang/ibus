@@ -1109,7 +1109,9 @@ bus_input_context_focus_out (BusInputContext *context)
     bus_input_context_clear_preedit_text (context);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
-    bus_input_context_register_properties (context, props_empty);
+
+    // Workaround for http://crosbug.com/7702
+    // bus_input_context_register_properties (context, props_empty);
 
     if (context->engine && context->enabled) {
         bus_engine_proxy_focus_out (context->engine);
