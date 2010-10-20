@@ -311,12 +311,12 @@ if test x"$enable_python" = x"yes"; then
     fi
 fi
 
-# option for always enable snooper applications
+# option for always disable snooper applications
 AC_ARG_ENABLE(key-snooper,
-    AS_HELP_STRING([--enable-key-snooper],
-        [Always enable key snooper in gtk im module]),
+    AS_HELP_STRING([--disable-key-snooper],
+        [Always disable key snooper in gtk im module]),
     [enable_key_snooper=$enableval],
-    [enable_key_snooper=no]
+    [enable_key_snooper=yes]
 )
 if test x"$enable_key_snooper" = x"yes"; then
     AC_DEFINE(ENABLE_SNOOPER, TRUE, [Enable key snooper])
@@ -326,14 +326,14 @@ else
 fi
 
 # option for no snooper applications
-AC_ARG_WITH(snooper-apps,
-    AS_HELP_STRING([--with-snooper-apps[=regex1,regex2]],
-        [Enable keyboard snooper in those applications (default: xchat,pidgin,empathy)]),
-    SNOOPER_APPS=$with_snooper_apps,
-    SNOOPER_APPS=[xchat,pidgin,empathy]
+AC_ARG_WITH(no-snooper-apps,
+    AS_HELP_STRING([--with-no-snooper-apps[=regex1,regex2]],
+        [Does not enable keyboard snooper in those applications (like: .*chrome.*,firefox.*)]),
+    NO_SNOOPER_APPS=$with_no_snooper_apps,
+    NO_SNOOPER_APPS=.*chrome
 )
-AC_DEFINE_UNQUOTED(SNOOPER_APPS, "$SNOOPER_APPS",
-    [Enbale keyboard snooper in those applications])
+AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
+    [Does not enbale keyboard snooper in those applications])
 
 # check iso-codes
 PKG_CHECK_MODULES(ISOCODES, [
@@ -402,6 +402,6 @@ Build options:
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
-  Snooper regexes           "$SNOOPER_APPS"
+  No snooper regexes        "$NO_SNOOPER_APPS"
 ])
 
