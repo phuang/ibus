@@ -1,3 +1,4 @@
+/* vim:set et sts=4 ai: */
 using GLib;
 using Enchant;
 using IBus;
@@ -139,6 +140,12 @@ class TestEngine : Engine {
 
 void main (string []argv) {
     var bus = new Bus();
+    
+    if (!bus.is_connected ()) {
+        stderr.printf ("Can not connect to ibus-daemon!\n");
+        return;
+    }
+
     var factory = new Factory(bus.get_connection());
     factory.add_engine("vala-debug", typeof(TestEngine));
     var component = new Component (
