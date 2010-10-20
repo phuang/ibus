@@ -117,14 +117,6 @@ namespace IBus {
 		public virtual bool unset_value (string section, string name) throws GLib.Error;
 		public void value_changed (string section, string name, GLib.Variant value);
 	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class DBusConnection {
-	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class DBusServer {
-	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class Engine : IBus.Service {
 		public uint client_capabilities;
@@ -200,10 +192,6 @@ namespace IBus {
 		public string longname { get; construct; }
 		public string name { get; construct; }
 		public uint rank { get; construct; }
-	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class Error {
 	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class Factory : IBus.Service {
@@ -305,14 +293,6 @@ namespace IBus {
 		public void set_page_size (uint page_size);
 		public void set_round (bool round);
 	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class Message {
-	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class MessageIter {
-	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class Object : GLib.InitiallyUnowned {
 		public uint32 flags;
@@ -395,10 +375,6 @@ namespace IBus {
 		public virtual void update_preedit_text (IBus.Text text, uint cursor_pos, bool visible);
 		[NoWrapper]
 		public virtual void update_property (IBus.Property prop);
-	}
-	[Compact]
-	[CCode (cheader_filename = "ibus.h")]
-	public class PendingCall {
 	}
 	[CCode (cheader_filename = "ibus.h")]
 	public class PropList : IBus.Serializable {

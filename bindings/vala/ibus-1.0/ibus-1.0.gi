@@ -160,18 +160,6 @@
 		</callback>
 		<struct name="BusComponent">
 		</struct>
-		<struct name="DBusConnection">
-		</struct>
-		<struct name="DBusServer">
-		</struct>
-		<struct name="IBusError">
-		</struct>
-		<struct name="IBusMessage">
-		</struct>
-		<struct name="IBusMessageIter">
-		</struct>
-		<struct name="IBusPendingCall">
-		</struct>
 		<struct name="IBusRectangle">
 			<field name="x" type="gint"/>
 			<field name="y" type="gint"/>

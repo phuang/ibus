@@ -102,7 +102,6 @@ ibus_enumtypes_sources =    \
 	$(NULL)
 ibus_headers =              \
 	ibus.h                  \
-	ibusdbus.h              \
 	ibusversion.h           \
 	ibusshare.h             \
 	ibusdebug.h             \
