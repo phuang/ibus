@@ -139,7 +139,7 @@ class TestEngine : Engine {
 }
 
 void main (string []argv) {
-    var bus = new Bus();
+    var bus = new IBus.Bus();
     
     if (!bus.is_connected ()) {
         stderr.printf ("Can not connect to ibus-daemon!\n");
