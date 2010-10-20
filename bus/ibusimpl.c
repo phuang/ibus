@@ -1928,8 +1928,9 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
 
         if (current_engine_desc != new_engine_desc) {
             bus_ibus_impl_set_context_engine_from_desc (ibus, context, new_engine_desc);
-            return TRUE;
         }
+
+        return TRUE;
     }
 
     return FALSE;
