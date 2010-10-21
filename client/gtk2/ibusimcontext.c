@@ -83,6 +83,7 @@ static guint    _signal_retrieve_surrounding_id = 0;
 
 static const gchar *_no_snooper_apps = NO_SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
+static guint    _key_snooper_id = 0;
 
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
@@ -164,7 +165,7 @@ ibus_im_context_register_type (GTypeModule *type_module)
         (GInstanceInitFunc)    ibus_im_context_init,
     };
 
-    if (! _ibus_type_im_context ) {
+    if (!_ibus_type_im_context) {
         if (type_module) {
             _ibus_type_im_context =
                 g_type_module_register_type (type_module,
@@ -354,15 +355,19 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
         _bus = ibus_bus_new();
+
+        /* init the global fake context */
+        if (ibus_bus_is_connected (_bus)) {
+            _create_fake_input_context ();
+        }
+
+        g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), NULL);
     }
 
-    if (ibus_bus_is_connected (_bus)) {
-        _create_fake_input_context ();
-    }
-    g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), NULL);
 
     /* always install snooper */
-    gtk_key_snooper_install (_key_snooper_cb, NULL);
+    if (_key_snooper_id == 0)
+        _key_snooper_id = gtk_key_snooper_install (_key_snooper_cb, NULL);
 }
 
 static void

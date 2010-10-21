@@ -192,22 +192,12 @@ ibus_bus_connect (IBusBus *bus)
     IBusBusPrivate *priv;
     priv = IBUS_BUS_GET_PRIVATE (bus);
 
-#if 0
-    socket_path = ibus_get_socket_path ();
-
-    if (stat (socket_path, &buf) != 0) {
-        g_warning ("Can not get stat from %s!", socket_path);
-        return;
-    }
-    if (buf.st_uid != ibus_get_daemon_uid ()) {
-        g_warning ("The owner of %s is not %s!", socket_path, ibus_get_user_name ());
-        return;
-    }
-
+    /* destry old connection at first */
     if (priv->connection != NULL) {
-        ibus_object_destroy ((IBusObject *) priv->connection);
+        ibus_object_destroy ((IBusObject *)priv->connection);
+        g_assert (priv->connection == NULL);
     }
-#endif
+
     if (ibus_get_address () != NULL) {
         priv->connection = ibus_connection_open (ibus_get_address ());
     }
@@ -285,7 +275,6 @@ ibus_bus_init (IBusBus *bus)
     }
 
     ibus_bus_connect (bus);
-
 
     file = g_file_new_for_path (ibus_get_socket_path ());
     priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
