@@ -18,7 +18,7 @@
       <owner>ibus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[Control+space,Zenkaku_Hankaku,Alt+Zenkaku_Hankaku,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
+      <default>[Control+space,Zenkaku_Hankaku,Alt+Kanji,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
       <locale name="C">
         <short>Trigger shortcut keys</short>
 	    <long>The shortcut keys for turning input method on or off</long>

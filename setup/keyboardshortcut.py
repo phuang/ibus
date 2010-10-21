@@ -235,16 +235,19 @@ class KeyboardShortcutSelection(gtk.VBox):
         dlg.set_markup(message)
         dlg.set_title(_("Please press a key (or a key combination)"))
 
-        def __key_release_event(d, k, out):
+        def __key_press_event(d, k, out):
             out.append(k.copy())
+
+        def __key_release_event(d, k, out):
             d.response(gtk.RESPONSE_OK)
 
-        dlg.connect("key-release-event", __key_release_event, out)
+        dlg.connect("key-press-event", __key_press_event, out)
+        dlg.connect("key-release-event", __key_release_event, None)
         id = dlg.run()
         dlg.destroy()
         if id != gtk.RESPONSE_OK or not out:
             return
-        keyevent = out[0]
+        keyevent = out[len(out) - 1]
         state = keyevent.state & (gdk.CONTROL_MASK | \
                                   gdk.SHIFT_MASK   | \
                                   gdk.MOD1_MASK    | \
