@@ -692,6 +692,12 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
+    if (ibusimcontext->cursor_area.x == area->x &&
+        ibusimcontext->cursor_area.y == area->y &&
+        ibusimcontext->cursor_area.width == area->width &&
+        ibusimcontext->cursor_area.height == area->height) {
+        return;
+    }
     ibusimcontext->cursor_area = *area;
     _set_cursor_location_internal (context);
     gtk_im_context_set_cursor_location (ibusimcontext->slave, area);
