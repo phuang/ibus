@@ -839,7 +839,6 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
     IBusComponent *comp;
     BusFactoryProxy *factory;
     BusEngineProxy *engine;
-    GTimeVal t1, t2;
 
     factory = bus_factory_proxy_get_from_engine (engine_desc);
 
