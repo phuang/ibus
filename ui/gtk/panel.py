@@ -122,7 +122,7 @@ class Panel(ibus.PanelBase):
         # self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
     def set_cursor_location(self, x, y, w, h):
-        self.__candidate_panel.set_cursor_location(x + w, y + h)
+        self.__candidate_panel.set_cursor_location(x, y, w, h)
 
     def update_preedit_text(self, text, cursor_pos, visible):
         self.__candidate_panel.update_preedit_text(text, cursor_pos, visible)
@@ -517,4 +517,3 @@ class Panel(ibus.PanelBase):
                 return
             self.__setup_pid = 0
         self.__setup_pid = os.spawnl(os.P_NOWAIT, self.__setup_cmd, "ibus-setup")
-

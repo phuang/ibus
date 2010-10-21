@@ -219,14 +219,14 @@ class CandidatePanel(gtk.VBox):
         self.__aux_attrs = pango.AttrList()
         self.__lookup_table = None
 
-        self.__cursor_location = (0, 0)
+        self.__cursor_location = (0, 0, 0, 0)
         self.__moved_cursor_location = None
 
         self.__recreate_ui()
 
     def __handle_move_end_cb(self, handle):
         # store moved location
-        self.__moved_cursor_location = self.__toplevel.get_position()
+        self.__moved_cursor_location = self.__toplevel.get_position() + (self.__cursor_location[2], self.__cursor_location[3])
 
     def __recreate_ui(self):
         for w in self:
@@ -428,10 +428,10 @@ class CandidatePanel(gtk.VBox):
         self.__lookup_table.cursor_down()
         self.__refresh_candidates()
 
-    def set_cursor_location(self, x, y):
+    def set_cursor_location(self, x, y, w, h):
         # if cursor location is changed, we reset the moved cursor location
-        if self.__cursor_location != (x, y):
-            self.__cursor_location = (x, y)
+        if self.__cursor_location != (x, y, w, h):
+            self.__cursor_location = (x, y, w, h)
             self.__moved_cursor_location = None
             self.__check_position()
 
@@ -484,21 +484,26 @@ class CandidatePanel(gtk.VBox):
 
     def __check_position(self):
         cursor_location = self.__moved_cursor_location or self.__cursor_location
-        bx = cursor_location[0] + self.__toplevel.allocation.width
-        by = cursor_location[1] + self.__toplevel.allocation.height
+
+        cursor_right = cursor_location[0] + cursor_location[2]
+        cursor_bottom = cursor_location[1] + cursor_location[3]
+
+        window_right = cursor_right + self.__toplevel.allocation.width
+        window_bottom = cursor_bottom + self.__toplevel.allocation.height
 
         root_window = gdk.get_default_root_window()
         sx, sy = root_window.get_size()
 
-        if bx > sx:
+        if window_right > sx:
             x = sx - self.__toplevel.allocation.width
         else:
-            x = cursor_location[0]
+            x = cursor_right
 
-        if by > sy:
-            y = sy - self.__toplevel.allocation.height
+        if window_bottom > sy:
+            # move the window just above the cursor so the window and a preedit string do not overlap.
+            y = cursor_location[1] - self.__toplevel.allocation.height
         else:
-            y = cursor_location[1]
+            y = cursor_bottom
 
         self.move(x, y)
 
