@@ -30,142 +30,144 @@ libibus = libibus-1.0.la
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_SCANNER_ARGS =
 INTROSPECTION_COMPILER_ARGS = \
-	--includedir=$(srcdir)    \
-	--includedir=.            \
-	$(NULL)
+    --includedir=$(srcdir)    \
+    --includedir=.            \
+    $(NULL)
 INTROSPECTION_GIRS =
 CLEANFILES =
 
 # C preprocessor flags
 AM_CPPFLAGS =                           \
-	-DG_LOG_DOMAIN=\"IBUS\"             \
-	@GLIB2_CFLAGS@                      \
-	@GOBJECT2_CFLAGS@                   \
-	@GIO2_CFLAGS@                       \
-	-DIBUS_DATA_DIR=\"$(pkgdatadir)\"   \
-	-DIBUS_COMPILATION					\
-	$(NULL)
+    -DG_LOG_DOMAIN=\"IBUS\"             \
+    @GLIB2_CFLAGS@                      \
+    @GOBJECT2_CFLAGS@                   \
+    @GIO2_CFLAGS@                       \
+    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"   \
+    -DIBUS_COMPILATION                  \
+    $(NULL)
 
 # ibus library
 lib_LTLIBRARIES = $(libibus)
 
 libibus_1_0_la_LIBADD =     \
-	@GLIB2_LIBS@            \
-	@GOBJECT2_LIBS@         \
-	@GIO2_LIBS@             \
-	$(NULL)
+    @GLIB2_LIBS@            \
+    @GOBJECT2_LIBS@         \
+    @GIO2_LIBS@             \
+    $(NULL)
 libibus_1_0_la_LDFLAGS =            \
-	-no-undefined                   \
-	-export-symbols-regex "ibus_.*" \
-	-version-info @LT_VERSION_INFO@ \
-	$(NULL)
+    -no-undefined                   \
+    -export-symbols-regex "ibus_.*" \
+    -version-info @LT_VERSION_INFO@ \
+    $(NULL)
 
 ibus_sources =              \
-	ibusshare.c             \
-	ibusobject.c            \
-	ibusserializable.c      \
-	ibusproxy.c             \
-	ibusservice.c           \
-	ibusfactory.c           \
-	ibusengine.c            \
-	ibustext.c              \
-	ibuskeymap.c            \
-	ibusattribute.c         \
-	ibusattrlist.c          \
-	ibusproperty.c          \
-	ibusproplist.c          \
-	ibuslookuptable.c       \
-	ibusinputcontext.c      \
-	ibusconfig.c            \
-	ibusconfigservice.c     \
-	ibuspanelservice.c      \
-	ibusbus.c               \
-	ibuskeynames.c          \
-	ibushotkey.c            \
-	ibusxml.c               \
-	ibusenginedesc.c        \
-	ibusobservedpath.c      \
-	ibuscomponent.c         \
-	$(NULL)
+    ibusshare.c             \
+    ibusobject.c            \
+    ibusserializable.c      \
+    ibusproxy.c             \
+    ibusservice.c           \
+    ibusfactory.c           \
+    ibusengine.c            \
+    ibustext.c              \
+    ibuskeymap.c            \
+    ibusattribute.c         \
+    ibusattrlist.c          \
+    ibusproperty.c          \
+    ibusproplist.c          \
+    ibuslookuptable.c       \
+    ibusinputcontext.c      \
+    ibusconfig.c            \
+    ibusconfigservice.c     \
+    ibuspanelservice.c      \
+    ibusbus.c               \
+    ibuskeynames.c          \
+    ibushotkey.c            \
+    ibusxml.c               \
+    ibusenginedesc.c        \
+    ibusobservedpath.c      \
+    ibuscomponent.c         \
+$(NULL)
 libibus_1_0_la_SOURCES =    \
-	$(ibus_sources)         \
-	ibusmarshalers.c        \
-	ibusenumtypes.c         \
-	$(NULL)
+    $(ibus_sources)         \
+    ibusmarshalers.c        \
+    ibusenumtypes.c         \
+    $(NULL)
 ibus_marshalers_sources =   \
-	ibusmarshalers.h        \
-	ibusmarshalers.c        \
-	$(NULL)
+    ibusmarshalers.h        \
+    ibusmarshalers.c        \
+    $(NULL)
 ibus_enumtypes_sources =    \
-	ibusenumtypes.h         \
-	ibusenumtypes.c         \
-	$(NULL)
+    ibusenumtypes.h         \
+    ibusenumtypes.c         \
+    $(NULL)
 ibus_headers =              \
-	ibus.h                  \
-	ibusversion.h           \
-	ibusshare.h             \
-	ibusdebug.h             \
-	ibusobject.h            \
-	ibusserializable.h      \
-	ibusproxy.h             \
-	ibusservice.h           \
-	ibusfactory.h           \
-	ibusengine.h            \
-	ibustext.h              \
-	ibuskeymap.h            \
-	ibusattribute.h         \
-	ibusattrlist.h          \
-	ibusproperty.h          \
-	ibusproplist.h          \
-	ibuslookuptable.h       \
-	ibusinputcontext.h      \
-	ibusconfig.h            \
-	ibusconfigservice.h     \
-	ibuspanelservice.h      \
-	ibuskeysyms.h           \
-	ibustypes.h             \
-	ibusbus.h               \
-	ibushotkey.h            \
-	ibusxml.h               \
-	ibusenginedesc.h        \
-	ibusobservedpath.h      \
-	ibuscomponent.h         \
-	$(NULL)
+    ibus.h                  \
+    ibusversion.h           \
+    ibusshare.h             \
+    ibusdebug.h             \
+    ibusobject.h            \
+    ibusserializable.h      \
+    ibusproxy.h             \
+    ibusservice.h           \
+    ibusfactory.h           \
+    ibusengine.h            \
+    ibustext.h              \
+    ibuskeymap.h            \
+    ibusattribute.h         \
+    ibusattrlist.h          \
+    ibusproperty.h          \
+    ibusproplist.h          \
+    ibuslookuptable.h       \
+    ibusinputcontext.h      \
+    ibusconfig.h            \
+    ibusconfigservice.h     \
+    ibuspanelservice.h      \
+    ibuskeysyms.h           \
+    ibustypes.h             \
+    ibusbus.h               \
+    ibushotkey.h            \
+    ibusxml.h               \
+    ibusenginedesc.h        \
+    ibusobservedpath.h      \
+    ibuscomponent.h         \
+    $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
+ibus_public_headers =       \
+    $(ibus_headers)         \
+    ibusenumtypes.h         \
+    $(NULL)
 ibusinclude_HEADERS =       \
-	$(ibus_headers)         \
-	ibusenumtypes.h         \
-	$(NULL)
-
+    $(ibus_public_headers)  \
+    $(NULL)
 ibus_privite_headers =      \
-	ibusconfigprivate.h     \
-	ibusinternal.h          \
-	keyname-table.h         \
-	$(NULL)
+    ibusconfigprivate.h     \
+    ibusinternal.h          \
+    keyname-table.h         \
+    $(NULL)
 noinst_HEADERS =            \
-	$(ibus_privite_headers) \
-	$(NULL)
+    $(ibus_privite_headers) \
+    $(NULL)
 
 BUILT_SOURCES =             \
-	ibusmarshalers.h        \
-	ibusmarshalers.c        \
-	ibusenumtypes.h         \
-	ibusenumtypes.c         \
-	$(NULL)
+    ibusmarshalers.h        \
+    ibusmarshalers.c        \
+    ibusenumtypes.h         \
+    ibusenumtypes.c         \
+    $(NULL)
 
 if HAVE_INTROSPECTION
-introspection_files =               \
-		$(ibus_public_h_sources)    \
-		$(ibus_c_sources)           \
-        ibusenumtypes.c             \
-        ibusenumtypes.h             \
-		$(NULL)
+introspection_files =           \
+    $(ibus_public_headers)      \
+    $(ibus_c_sources)           \
+    ibusenumtypes.c             \
+    ibusenumtypes.h             \
+    $(NULL)
 IBus-1.0.gir: $(libibus) Makefile
 IBus_1_0_gir_SCANNERFLAGS = --pkg=glib-2.0 $(IBUS_GIR_SCANNERFLAGS)
-IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0
+IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0 Gio-2.0
 IBus_1_0_gir_LIBS = $(libibus)
 IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
-IBus_1_0_gir_CFLAGS =
+IBus_1_0_gir_CFLAGS = -DIBUS_COMPILATION
 INTROSPECTION_GIRS += IBus-1.0.gir
 
 girdir = $(datadir)/gir-1.0
@@ -203,18 +205,18 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	mv $@.tmp $@
 
 EXTRA_DIST =                    \
-	ibusversion.h.in            \
-	ibusmarshalers.list         \
-	ibusenumtypes.h.template    \
-	ibusenumtypes.c.template    \
-	$(NULL)
+    ibusversion.h.in            \
+    ibusmarshalers.list         \
+    ibusenumtypes.h.template    \
+    ibusenumtypes.c.template    \
+    $(NULL)
 
 CLEANFILES +=                   \
-	$(BUILT_SOURCES)            \
-	stamp-ibusmarshalers.h      \
-	stamp-ibusenumtypes.h       \
-	$(NULL)
+    $(BUILT_SOURCES)            \
+    stamp-ibusmarshalers.h      \
+    stamp-ibusenumtypes.h       \
+    $(NULL)
 
 DISTCLEANFILES =                \
-	ibusversion.h               \
-	$(NULL)
+    ibusversion.h               \
+    $(NULL)

@@ -136,34 +136,34 @@ class TestEngine : Engine {
             base.update_auxiliary_text (new Text.from_string(words[i]), true);
         }
     }
-}
 
-void main (string []argv) {
-    var bus = new IBus.Bus();
-    
-    if (!bus.is_connected ()) {
-        stderr.printf ("Can not connect to ibus-daemon!\n");
-        return;
+    public static void main (string []argv) {
+        var bus = new IBus.Bus();
+
+        if (!bus.is_connected ()) {
+            stderr.printf ("Can not connect to ibus-daemon!\n");
+            return;
+        }
+
+        var factory = new Factory(bus.get_connection());
+        factory.add_engine("vala-debug", typeof(TestEngine));
+        var component = new Component (
+                                "org.freedesktop.IBus.Vala",
+                                "ValaTest", "0.0.1", "GPL",
+                                "Peng Huang <shawn.p.huang@gmail.com>",
+                                "http://code.google.com/p/ibus/",
+                                "",
+                                "ibus-vala");
+        var engine = new EngineDesc ("vala-debug",
+                                     "Vala (debug)",
+                                     "Vala demo input method",
+                                     "zh_CN",
+                                     "GPL",
+                                     "Peng Huang <shawn.p.huang@gmail.com>",
+                                     "",
+                                     "us");
+        component.add_engine (engine);
+        bus.register_component (component);
+        IBus.main ();
     }
-
-    var factory = new Factory(bus.get_connection());
-    factory.add_engine("vala-debug", typeof(TestEngine));
-    var component = new Component (
-                            "org.freedesktop.IBus.Vala",
-                            "ValaTest", "0.0.1", "GPL",
-                            "Peng Huang <shawn.p.huang@gmail.com>",
-                            "http://code.google.com/p/ibus/",
-                            "",
-                            "ibus-vala");
-    var engine = new EngineDesc ("vala-debug",
-                                 "Vala (debug)",
-                                 "Vala demo input method",
-                                 "zh_CN",
-                                 "GPL",
-                                 "Peng Huang <shawn.p.huang@gmail.com>",
-                                 "",
-                                 "us");
-    component.add_engine (engine);
-    bus.register_component (component);
-    IBus.main ();
 }

@@ -31,3 +31,6 @@ ibus-@IBUS_API_VERSION@.vapi:
 			--pkg gio-2.0 \
 			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.gi \
 			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@-custom.vala
+
+generate-vala:
+	vala-gen-introspect ibus-@IBUS_API_VERSION@ ibus-@IBUS_API_VERSION@

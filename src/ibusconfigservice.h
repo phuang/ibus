@@ -183,6 +183,15 @@ struct _IBusConfigServiceClass {
                                  const gchar          *name,
                                  GVariant             *value,
                                  GError              **error);
+    /**
+     * get_value:
+     * @config: An IBusConfig.
+     * @section: section name
+     * @name: value name
+     *
+     * @returns: (transfer full): The value in config associated with section and name.
+     *
+     */
     GVariant *  (* get_value)   (IBusConfigService    *config,
                                  const gchar          *section,
                                  const gchar          *name,
