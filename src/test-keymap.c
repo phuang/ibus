@@ -19,6 +19,7 @@ int main (int argc, char **argv)
 
 int main (int argc, char **argv)
 {
+#if 0
     gint fd;
     struct input_event e;
 
@@ -49,7 +50,7 @@ int main (int argc, char **argv)
     }
 
     g_object_unref (keymap);
-	return 0;
-
+#endif
+    return 0;
 }
 #endif
