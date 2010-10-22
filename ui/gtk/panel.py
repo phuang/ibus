@@ -500,16 +500,22 @@ class Panel(ibus.PanelBase):
             print >> sys.stderr, "Unknown command %s" % command
 
     def __child_watch_cb(self, pid, status):
-        self.__setup_pid.close()
-        self.__setup_pid = None
+        if self.__setup_pid == pid:
+            self.__setup_pid.close()
+            self.__setup_pid = None
 
     def __start_setup(self):
         if self.__setup_pid != None:
-            # if setup dialog is running, bring the dialog to front by SIGUSR1
-            os.kill(self.__setup_pid, signal.SIGUSR1)
-            return
+            try:
+                # if setup dialog is running, bring the dialog to front by SIGUSR1
+                os.kill(self.__setup_pid, signal.SIGUSR1)
+                return
+            except OSError:
+                # seems the setup dialog is not running anymore
+                self.__setup_pid.close()
+                self.__setup_pid = None
 
         pid = glib.spawn_async(argv=[self.__setup_cmd, "ibus-setup"],
-                            flags=glib.SPAWN_DO_NOT_REAP_CHILD)[0]
+                               flags=glib.SPAWN_DO_NOT_REAP_CHILD)[0]
         self.__setup_pid = pid
         glib.child_watch_add(self.__setup_pid, self.__child_watch_cb)
