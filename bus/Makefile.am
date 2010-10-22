@@ -117,6 +117,7 @@ test_matchrule_LDADD = \
 
 test_stress_SOURCES = \
 	test-client.c \
+	test-client.h \
 	test-stress.c \
 	$(NULL)
 test_stress_CFLAGS = \

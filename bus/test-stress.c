@@ -27,7 +27,7 @@
 #include <glib.h>
 #include "test-client.h"
 
-#define MAX_SEND_KEY_NUM 100000000
+#define MAX_SEND_KEY_NUM 100
 #define MAX_RANDOM_SPACE 5
 
 static gboolean
@@ -107,7 +107,8 @@ main (gint argc, gchar **argv)
         }
         bus_test_client_send_key (client, keysym);
         send_key_num += 1;
-        _sleep (1);
+        /* limit the typing rate to 800 hits/minutes */
+        _sleep (1000 * 60 / 800);
     }
 
     g_print ("%f sec\n", g_timer_elapsed (timer, NULL));
