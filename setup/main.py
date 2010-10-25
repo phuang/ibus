@@ -30,6 +30,7 @@ import gobject
 import pango
 import ibus
 import keyboardshortcut
+import locale
 from os import path
 from xdg import BaseDirectory
 from gtk import gdk
@@ -459,5 +460,6 @@ class Setup(object):
         gtk.main()
 
 if __name__ == "__main__":
+    locale.setlocale(locale.LC_ALL, '')
     setup = Setup()
     setup.run()
