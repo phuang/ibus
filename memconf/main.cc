@@ -1,3 +1,4 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 
 #include <ibus.h>
@@ -24,7 +25,6 @@ static void
 ibus_disconnected_cb (IBusBus  *bus,
                       gpointer  user_data)
 {
-    g_debug ("bus disconnected");
     ibus_quit ();
 }
 
