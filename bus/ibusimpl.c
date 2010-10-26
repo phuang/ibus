@@ -1541,6 +1541,30 @@ _ibus_list_engines (BusIBusImpl   *ibus,
     return reply;
 }
 
+static void
+_reload_preload_engines (BusIBusImpl     *ibus)
+{
+    // Chrome for Chrome OS sometimes calls set_global_engine and
+    // list_active_engine APIs right after updating preload_engines. In this
+    // case, if _ibus_set_global_engine function is called before
+    // _config_value_changed_cb is called, _ibus_set_global_engine would fail
+    // with the "Invalid engine name" error. The same is true for the list
+    // active engines API -- the function might return an obsolete list.
+    // To resolve the issues, this function force to update ibus->engine_list by
+    // fetching the latest config from the config daemon.
+    //
+    // Note that this is NOT a perfect solution. e.g. other functions that calls
+    // _find_engine_desc_by_name might still fail. We might also have to do the
+    // same for other config keys like "use_global_engine". So, for now, we use
+    // this hack only on Chrome OS.
+    GValue value = { 0 };
+    if (ibus->config != NULL &&
+        ibus_config_get_value (ibus->config, "general", "preload_engines", &value)) {
+        bus_ibus_impl_set_preload_engines (ibus, &value);
+        g_value_unset (&value);
+    }
+}
+
 static IBusMessage *
 _ibus_list_active_engines (BusIBusImpl   *ibus,
                            IBusMessage   *message,
@@ -1555,6 +1579,7 @@ _ibus_list_active_engines (BusIBusImpl   *ibus,
     ibus_message_iter_init_append (reply, &iter);
     ibus_message_iter_open_container (&iter, IBUS_TYPE_ARRAY, "v", &sub_iter);
 
+    _reload_preload_engines(ibus);
     for (p = ibus->engine_list; p != NULL; p = p->next) {
         ibus_message_iter_append (&sub_iter, IBUS_TYPE_ENGINE_DESC, &(p->data));
     }
@@ -1731,23 +1756,7 @@ _ibus_set_global_engine (BusIBusImpl     *ibus,
         return reply;
     }
 
-    // Chrome for Chrome OS sometimes calls set_global_engine API right after
-    // updating preload_engines. In this case, if _ibus_set_global_engine
-    // function is called before _config_value_changed_cb is called,
-    // _ibus_set_global_engine would fail with the "Invalid engine name" error
-    // below.
-    // To resolve the issue, force to update ibus->engine_list here by fetching
-    // the latest config from the config daemon. Note that this is NOT a perfect
-    // solution. e.g. Other functions that calls _find_engine_desc_by_name might
-    // still fail. We might also have to do the same for other config keys like
-    // "use_global_engine". So, for now, we use this hack only on Chrome OS.
-    GValue value = { 0 };
-    if (ibus->config != NULL &&
-        ibus_config_get_value (ibus->config, "general", "preload_engines", &value)) {
-        bus_ibus_impl_set_preload_engines (ibus, &value);
-        g_value_unset (&value);
-    }
-
+    _reload_preload_engines (ibus);
     if (!new_engine_name || !new_engine_name[0] ||
         !_find_engine_desc_by_name (ibus, new_engine_name)) {
         return ibus_message_new_error_printf (message, DBUS_ERROR_FAILED,
