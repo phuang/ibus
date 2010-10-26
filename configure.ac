@@ -228,8 +228,8 @@ AC_ARG_ENABLE(memconf,
 AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
 
 # check env
-AC_PATH_PROG(ENV, env)
-AC_SUBST(ENV)
+AC_PATH_PROG(ENV_IBUS_TEST, env)
+AC_SUBST(ENV_IBUS_TEST)
 
 AC_ARG_ENABLE(python,
     AS_HELP_STRING([--disable-python],
