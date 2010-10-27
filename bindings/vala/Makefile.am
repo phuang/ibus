@@ -29,6 +29,7 @@ dist_vapi_DATA = \
 ibus-@IBUS_API_VERSION@.vapi:
 	vapigen --library ibus-@IBUS_API_VERSION@ \
 			--pkg gio-2.0 \
+			--metadata=ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.metadata \
 			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.gi \
 			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@-custom.vala
 

@@ -5,7 +5,6 @@ using IBus;
 
 class MemoryConfig : ConfigService {
     private HashMap<string, HashMap<string, Variant>> values;
-    private Variant tmp;
 
     construct {
         values = new HashMap<string, HashMap<string, Variant>> (str_hash, str_equal);
@@ -21,12 +20,11 @@ class MemoryConfig : ConfigService {
         return true;
     }
 
-    public override unowned Variant get_value (string section,
+    public override Variant get_value (string section,
                                                string name) throws GLib.Error {
         if (!values.contains (section) || !values[section].contains(name))
             throw new DBusError.FAILED("Can not get value %s", name);
-        tmp = values[section][name];
-        return tmp;
+        return values[section][name];
     }
 
     public static void main (string []argv) {

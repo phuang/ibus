@@ -100,7 +100,7 @@ namespace IBus {
 	public class Config : IBus.Proxy, GLib.Initable, GLib.AsyncInitable {
 		[CCode (has_construct_function = false)]
 		public Config (GLib.DBusConnection connection, GLib.Cancellable cancellable) throws GLib.Error;
-		public unowned GLib.Variant get_value (string section, string name);
+		public GLib.Variant get_value (string section, string name);
 		public bool set_value (string section, string name, GLib.Variant value);
 		public bool unset (string section, string name);
 		public virtual signal void value_changed (string p0, string p1, GLib.Variant p2);
@@ -110,7 +110,7 @@ namespace IBus {
 		[CCode (has_construct_function = false)]
 		public ConfigService (GLib.DBusConnection connection);
 		[NoWrapper]
-		public virtual unowned GLib.Variant get_value (string section, string name) throws GLib.Error;
+		public virtual GLib.Variant get_value (string section, string name) throws GLib.Error;
 		[NoWrapper]
 		public virtual bool set_value (string section, string name, GLib.Variant value) throws GLib.Error;
 		[NoWrapper]
