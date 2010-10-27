@@ -575,10 +575,15 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
     g_assert (old_owner != NULL);
     g_assert (new_owner != NULL);
 
+    static guint32 serial = 0;
+
     GDBusMessage *message = g_dbus_message_new_signal ("/org/freedesktop/DBus",
                                                        "org.freedesktop.DBus",
                                                        "NameOwnerChanged");
     g_dbus_message_set_sender (message, "org.freedesktop.DBus");
+
+    /* set a non-zero serial to make libdbus happy */
+    g_dbus_message_set_serial (message, ++serial);
     g_dbus_message_set_body (message,
                              g_variant_new ("(sss)", name, old_owner, new_owner));
     bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
@@ -748,7 +753,7 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
         /* is incoming message */
         const gchar *destination = g_dbus_message_get_destination (message);
         GDBusMessageType message_type = g_dbus_message_get_message_type (message);
-        
+
         if (g_dbus_message_get_locked (message)) {
             /* If the message is locked, we need make a copy of it. */
             GDBusMessage *new_message = g_dbus_message_copy (message, NULL);
@@ -759,7 +764,7 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
 
         /* connection unique name as sender of the message*/
         g_dbus_message_set_sender (message, bus_connection_get_unique_name (connection));
-    
+
         if (g_strcmp0 (destination, "org.freedesktop.IBus") == 0) {
             /* the message is sended to IBus service. */
             switch (message_type) {
@@ -834,7 +839,7 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
              * we set the sender to org.freedesktop.DBus */
             g_dbus_message_set_sender (message, "org.freedesktop.DBus");
         }
-        
+
         /* dispatch the outgoing message by rules. */
         bus_dbus_impl_dispatch_message_by_rule (dbus, message, connection);
         return message;
@@ -1008,8 +1013,8 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
 }
 
 static BusDispatchData *
-bus_dispatch_data_new (GDBusMessage *message,
-                               BusConnection *skip_connection)
+bus_dispatch_data_new (GDBusMessage  *message,
+                       BusConnection *skip_connection)
 {
     BusDispatchData *data = g_slice_new (BusDispatchData);
 
