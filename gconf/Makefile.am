@@ -50,11 +50,9 @@ ibus_gconf_DEPENDENCIES = \
 	$(libibus) \
 	$(NULL)
 
-if ENABLE_GCONF
 component_DATA = \
 	gconf.xml \
 	$(NULL)
-endif
 
 componentdir = $(pkgdatadir)/component
 

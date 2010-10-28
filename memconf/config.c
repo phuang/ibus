@@ -1,0 +1,168 @@
+/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
+/* vim:set et sts=4: */
+/* ibus - The Input Bus
+ * Copyright (c) 2010, Google Inc. All rights reserved.
+ * Copyright (C) 2010 Peng Huang <shawn.p.huang@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+#include <string.h>
+#include <ibus.h>
+#include "config.h"
+
+
+typedef struct _IBusConfigMemconfClass IBusConfigMemconfClass;
+
+struct _IBusConfigMemconf {
+    IBusConfigService parent;
+    GHashTable *values;
+};
+
+struct _IBusConfigMemconfClass {
+    IBusConfigServiceClass parent;
+};
+
+/* functions prototype */
+static void         ibus_config_memconf_class_init  (IBusConfigMemconfClass *klass);
+static void         ibus_config_memconf_init        (IBusConfigMemconf      *config);
+static void         ibus_config_memconf_destroy     (IBusConfigMemconf      *config);
+static gboolean     ibus_config_memconf_set_value   (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     const gchar            *name,
+                                                     GVariant               *value,
+                                                     GError                **error);
+static GVariant    *ibus_config_memconf_get_value   (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     const gchar            *name,
+                                                     GError                **error);
+static gboolean     ibus_config_memconf_unset_value (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     const gchar            *name,
+                                                     GError                **error);
+
+G_DEFINE_TYPE (IBusConfigMemconf, ibus_config_memconf, IBUS_TYPE_CONFIG_SERVICE)
+
+static void
+ibus_config_memconf_class_init (IBusConfigMemconfClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_memconf_destroy;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_memconf_set_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value   = ibus_config_memconf_get_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->unset_value = ibus_config_memconf_unset_value;
+}
+
+static void
+ibus_config_memconf_init (IBusConfigMemconf *config)
+{
+    config->values = g_hash_table_new_full (g_str_hash,
+                                            g_str_equal,
+                                            (GDestroyNotify)g_free,
+                                            (GDestroyNotify)g_variant_unref);
+}
+
+static void
+ibus_config_memconf_destroy (IBusConfigMemconf *config)
+{
+    g_hash_table_destroy (config->values);
+    IBUS_OBJECT_CLASS (ibus_config_memconf_parent_class)->destroy ((IBusObject *)config);
+}
+
+static gboolean
+ibus_config_memconf_set_value (IBusConfigService *config,
+                               const gchar       *section,
+                               const gchar       *name,
+                               GVariant          *value,
+                               GError           **error)
+{
+    g_assert (IBUS_IS_CONFIG_MEMCONF (config));
+    g_assert (section);
+    g_assert (name);
+    g_assert (value);
+    g_assert (error == NULL || *error == NULL);
+
+    gchar *key = g_strdup_printf ("%s:%s", section, name);
+
+    g_hash_table_insert (IBUS_CONFIG_MEMCONF (config)->values,
+                         key, g_variant_ref_sink (value));
+
+    ibus_config_service_value_changed (config, section, name, value);
+
+    return TRUE;
+}
+
+static GVariant *
+ibus_config_memconf_get_value (IBusConfigService *config,
+                               const gchar       *section,
+                               const gchar       *name,
+                               GError           **error)
+{
+    g_assert (IBUS_IS_CONFIG_MEMCONF (config));
+    g_assert (section);
+    g_assert (name);
+    g_assert (error == NULL || *error == NULL);
+
+    gchar *key = g_strdup_printf ("%s:%s", section, name);
+    GVariant *value = (GVariant *)g_hash_table_lookup (IBUS_CONFIG_MEMCONF (config)->values, key);
+    g_free (key);
+
+    if (value != NULL) {
+        g_variant_ref (value);
+    }
+    else if (error != NULL) {
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                              "Config value [%s:%s] does not exist.", section, name);
+    }
+    return value;
+}
+
+static gboolean
+ibus_config_memconf_unset_value (IBusConfigService *config,
+                                 const gchar       *section,
+                                 const gchar       *name,
+                                 GError            **error)
+{
+    g_assert (IBUS_IS_CONFIG_MEMCONF (config));
+    g_assert (section);
+    g_assert (name);
+    g_assert (error == NULL || *error == NULL);
+
+    gchar *key = g_strdup_printf ("%s:%s", section, name);
+    gboolean retval = g_hash_table_remove (IBUS_CONFIG_MEMCONF (config)->values, key);
+    g_free (key);
+
+    if (retval) {
+    }
+    else {
+        if (error && *error) {
+            *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                                  "Config value [%s:%s] does not exist.", section, name);
+        }
+    }
+    return retval;
+}
+
+IBusConfigMemconf *
+ibus_config_memconf_new (GDBusConnection *connection)
+{
+    IBusConfigMemconf *config;
+    config = (IBusConfigMemconf *) g_object_new (IBUS_TYPE_CONFIG_MEMCONF,
+                                                 "object-path", IBUS_PATH_CONFIG,
+                                                 "connection", connection,
+                                                 NULL);
+    return config;
+}

@@ -7,6 +7,16 @@
 
 #define GCONF_PREFIX "/desktop/ibus"
 
+struct _IBusConfigGConf {
+    IBusConfigService parent;
+    GConfClient *client;
+};
+
+struct _IBusConfigGConfClass {
+    IBusConfigServiceClass parent;
+
+};
+
 /* functions prototype */
 static void         ibus_config_gconf_class_init    (IBusConfigGConfClass   *klass);
 static void         ibus_config_gconf_init          (IBusConfigGConf        *config);
@@ -27,41 +37,12 @@ static gboolean     ibus_config_gconf_unset_value   (IBusConfigService      *con
 static GConfValue   *_to_gconf_value                (GVariant               *value);
 static GVariant     *_from_gconf_value              (const GConfValue       *gvalue);
 
-static IBusConfigServiceClass *parent_class = NULL;
-
-GType
-ibus_config_gconf_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusConfigGConfClass),
-        (GBaseInitFunc)        NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_config_gconf_class_init,
-        NULL,
-        NULL,
-        sizeof (IBusConfigGConf),
-        0,
-        (GInstanceInitFunc)    ibus_config_gconf_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_CONFIG_SERVICE,
-                                       "IBusConfigGConf",
-                                       &type_info,
-                                       (GTypeFlags) 0);
-    }
-
-    return type;
-}
+G_DEFINE_TYPE (IBusConfigGConf, ibus_config_gconf, IBUS_TYPE_CONFIG_SERVICE)
 
 static void
 ibus_config_gconf_class_init (IBusConfigGConfClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-    parent_class = (IBusConfigServiceClass *) g_type_class_peek_parent (klass);
 
     IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_gconf_set_value;
@@ -116,7 +97,7 @@ ibus_config_gconf_destroy (IBusConfigGConf *config)
         config->client = NULL;
     }
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)config);
+    IBUS_OBJECT_CLASS (ibus_config_gconf_parent_class)->destroy ((IBusObject *)config);
 }
 
 static GConfValue *

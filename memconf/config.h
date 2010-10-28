@@ -1,6 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
+/* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (c) 2010, Google Inc. All rights reserved.
+ * Copyright (C) 2010 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,27 +19,27 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
-#ifndef MEMCONF_CONFIG_H_
-#define MEMCONF_CONFIG_H_
-
-#include <map>
-#include <string>
+#ifndef __CONFIG_MEMCONF_H__
+#define __CONFIG_MEMCONF_H__
 
 #include <ibus.h>
 
-struct IBusConfigMemConf {
-  IBusConfigService parent;
-  // We have to use pointer type here for |entries| since g_object_new() uses
-  // malloc rather than new to create IBusConfigMemConf object.
-  std::map<std::string, GValue*>* entries;
-};
+#define IBUS_TYPE_CONFIG_MEMCONF	    \
+	(ibus_config_memconf_get_type ())
+#define IBUS_CONFIG_MEMCONF(obj)            \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_CONFIG_MEMCONF, IBusConfigMemconf))
+#define IBUS_CONFIG_MEMCONF_CLASS(klass)     \
+    (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_CONFIG_MEMCONF, IBusConfigMemconfClass))
+#define IBUS_IS_CONFIG_MEMCONF(obj)          \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_CONFIG_MEMCONF))
+#define IBUS_IS_CONFIG_MEMCONF_CLASS(klass)  \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_CONFIG_MEMCONF))
+#define IBUS_CONFIG_MEMCONF_GET_CLASS(obj)   \
+    (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_CONFIG_MEMCONF, IBusConfigMemconfClass))
 
-IBusConfigMemConf* ibus_config_memconf_new(IBusConnection* connection);
+typedef struct _IBusConfigMemconf IBusConfigMemconf;
 
-// These tiny hacks are necessary since memconf/main.cc which is copied
-// from gconf/main.c on compile-time uses "gconf" rather than "memconf."
-typedef IBusConfigMemConf IBusConfigGConf;
-#define ibus_config_gconf_new ibus_config_memconf_new
+GType                ibus_config_memconf_get_type   (void);
+IBusConfigMemconf   *ibus_config_memconf_new        (GDBusConnection    *connection);
 
-#endif  // MEMCONF_CONFIG_H_
+#endif
