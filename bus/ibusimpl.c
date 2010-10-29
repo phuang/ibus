@@ -850,25 +850,38 @@ _ibus_get_address (BusIBusImpl     *ibus,
     return reply;
 }
 
+
+static gboolean
+_timeout_cb (gpointer data)
+{
+    return TRUE;
+}
+
 static BusFactoryProxy *
 _get_factory_proxy(IBusEngineDesc *engine_desc)
 {
-    BusFactoryProxy *factory;
-    GTimeVal t1, t2;
-    g_get_current_time (&t1);
-    while (1) {
-        if (g_main_context_pending (NULL)) {
-            g_main_context_iteration (NULL, FALSE);
+    BusFactoryProxy *factory = NULL;
+
+    /* Add a timeout to wake up g_main_context_iteration in every 0.5 second,
+     * and then to check the factory assocated with the engine_desc */
+    guint timeout_id = g_timeout_add (500, _timeout_cb, NULL);
+
+    GTimer *timer = g_timer_new ();
+
+    /* Leave the loop, if it spends more than 5 seconds */
+    while (g_timer_elapsed (timer, NULL) <= 5.0) {
+        if (g_main_context_iteration (NULL, TRUE)) {
             factory = bus_factory_proxy_get_from_engine (engine_desc);
             if (factory != NULL) {
-                return factory;
+                break;
             }
         }
-        g_get_current_time (&t2);
-        if (t2.tv_sec - t1.tv_sec >= 5)
-            break;
     }
-    return NULL;
+
+    g_source_remove (timeout_id);
+    g_timer_destroy (timer);
+
+    return factory;
 }
 
 static BusEngineProxy *
