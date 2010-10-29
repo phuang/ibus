@@ -1,4 +1,4 @@
-libibus-1.0.so.0 libibus1 #MINVER#
+libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_attr_background_new@Base 1.3.99.20101019
  ibus_attr_foreground_new@Base 1.3.99.20101019
  ibus_attr_list_append@Base 1.3.99.20101019

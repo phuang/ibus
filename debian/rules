@@ -21,7 +21,7 @@ install:
 	dh_install --list-missing --fail-missing
 	dh_installdocs # http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=552293
 	dh $@ --after installdocs
-	LD_LIBRARY_PATH=debian/libibus2/usr/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=debian/libibus-1.0-0/usr/lib:$(LD_LIBRARY_PATH) \
 		dh_gtkmodules -p ibus-gtk -s
 
 install-stamp: install
