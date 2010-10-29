@@ -445,6 +445,24 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
     }
 }
 
+
+struct _SetValueData {
+    void (* func) (BusIBusImpl *, GValue *);
+    BusIBusImpl *ibus;
+    GValue value;
+};
+typedef struct _SetValueData SetValueData;
+
+static gboolean
+_set_value_in_idle_cb (SetValueData *data)
+{
+    data->func (data->ibus, &(data->value));
+    g_object_unref (data->ibus);
+    g_value_unset (&(data->value));
+    g_slice_free (SetValueData, data);
+    return FALSE;
+}
+
 static void
 _config_value_changed_cb (IBusConfig  *config,
                           gchar       *section,
@@ -486,7 +504,18 @@ _config_value_changed_cb (IBusConfig  *config,
     for (i = 0; i < G_N_ELEMENTS (entries); i++) {
         if (g_strcmp0 (entries[i].section, section) == 0 &&
             g_strcmp0 (entries[i].key, key) == 0) {
-            entries[i].func (ibus, value);
+
+            SetValueData *data = g_slice_new0 (SetValueData);
+
+            data->func = entries[i].func;
+            data->ibus = g_object_ref (ibus);
+            g_value_init (&(data->value), G_VALUE_TYPE (value));
+            g_value_copy (value, &(data->value));
+
+            /* Avoid blocking the connection with config process,
+             * we will use idle callback to delay the set function call.
+             */
+            g_idle_add ((GSourceFunc)_set_value_in_idle, data);
             break;
         }
     }
