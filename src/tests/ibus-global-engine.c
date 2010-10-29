@@ -48,15 +48,12 @@ change_global_engine_cb (IBusBus *bus)
 
 int main()
 {
-<<<<<<< HEAD:src/tests/ibus-global-engine.c
 	g_type_init ();
-    IBUS_TYPE_ENGINE_DESC;
 
-=======
->>>>>>> 0d7730b... Use va_list for IBusEngineDesc for back compatibility.:src/test-global-engine.c
 	IBusBus *bus;
 
 	g_type_init ();
+	IBUS_TYPE_ENGINE_DESC;
 
 	bus = ibus_bus_new ();
 	engines = ibus_bus_list_active_engines (bus);
