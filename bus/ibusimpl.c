@@ -515,7 +515,7 @@ _config_value_changed_cb (IBusConfig  *config,
             /* Avoid blocking the connection with config process,
              * we will use idle callback to delay the set function call.
              */
-            g_idle_add ((GSourceFunc)_set_value_in_idle, data);
+            g_idle_add ((GSourceFunc)_set_value_in_idle_cb, data);
             break;
         }
     }
