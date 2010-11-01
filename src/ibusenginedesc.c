@@ -379,8 +379,8 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->author));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->icon));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout));
-    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->hotkeys));
     g_variant_builder_add (builder, "u", desc->priv->rank);
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->hotkeys));
 #undef NOTNULL
     return TRUE;
 }
@@ -402,8 +402,8 @@ ibus_engine_desc_deserialize (IBusEngineDesc *desc,
     g_variant_get_child (variant, retval++, "s", &desc->priv->author);
     g_variant_get_child (variant, retval++, "s", &desc->priv->icon);
     g_variant_get_child (variant, retval++, "s", &desc->priv->layout);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->hotkeys);
     g_variant_get_child (variant, retval++, "u", &desc->priv->rank);
+    g_variant_get_child (variant, retval++, "s", &desc->priv->hotkeys);
 
     return retval;
 }
