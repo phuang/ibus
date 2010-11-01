@@ -141,18 +141,18 @@ IBusComponent   *ibus_component_new             (const gchar    *name,
                                                  const gchar    *textdomain);
 
 /**
- * ibus_component_new2:
+ * ibus_component_new_varargs:
  * @first_property_name: Name of the first property.
  * @Varargs: the NULL-terminated arguments of the properties and values.
  *
  * New an IBusComponent.
- * ibus_component_new2() supports the va_list format.
+ * ibus_component_new_varargs() supports the va_list format.
  * name property is required. e.g.
- * IBusComponent *component = ibus_component_new2 ("name", "ibus-foo",
- *                                                 "exec", "/usr/libexec/ibus-engine-foo --ibus",
- *                                                 NULL)
+ * IBusComponent *component = ibus_component_new_varargs ("name", "ibus-foo",
+ *                                                     "exec", "/usr/libexec/ibus-engine-foo --ibus",
+ *                                                     NULL)
  */
-IBusComponent   *ibus_component_new2            (const gchar    *first_property_name,
+IBusComponent   *ibus_component_new_varargs     (const gchar    *first_property_name,
                                                  ...);
 
 /**

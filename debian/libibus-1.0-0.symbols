@@ -51,7 +51,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_component_get_type@Base 1.3.99.20101019
  ibus_component_get_version@Base 1.3.99.20101019
  ibus_component_is_running@Base 1.3.99.20101019
- ibus_component_new2@Base 1.3.99.20101019
+ ibus_component_new_varargs@Base 1.3.99.20101101
  ibus_component_new@Base 1.3.99.20101019
  ibus_component_new_from_file@Base 1.3.99.20101019
  ibus_component_new_from_xml_node@Base 1.3.99.20101019
@@ -81,8 +81,8 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_engine_desc_get_name@Base 1.3.99.20101019
  ibus_engine_desc_get_rank@Base 1.3.99.20101019
  ibus_engine_desc_get_type@Base 1.3.99.20101019
- ibus_engine_desc_new2@Base 1.3.99.20101019
  ibus_engine_desc_new@Base 1.3.99.20101019
+ ibus_engine_desc_new_varargs@Base 1.3.99.20101101
  ibus_engine_desc_new_from_xml_node@Base 1.3.99.20101019
  ibus_engine_desc_output@Base 1.3.99.20101019
  ibus_engine_forward_key_event@Base 1.3.99.20101019

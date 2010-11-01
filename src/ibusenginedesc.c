@@ -538,19 +538,19 @@ ibus_engine_desc_new (const gchar *name,
                       const gchar *icon,
                       const gchar *layout)
 {
-    return ibus_engine_desc_new2 ("name", name,
-                                  "longname", longname,
-                                  "description", description,
-                                  "language", language,
-                                  "license", license,
-                                  "author", author,
-                                  "icon", icon,
-                                  "layout", layout,
-                                  NULL);
+    return ibus_engine_desc_new_varargs ("name", name,
+                                         "longname", longname,
+                                         "description", description,
+                                         "language", language,
+                                         "license", license,
+                                         "author", author,
+                                         "icon", icon,
+                                         "layout", layout,
+                                         NULL);
 }
 
 IBusEngineDesc *
-ibus_engine_desc_new2 (const gchar *first_property_name, ...)
+ibus_engine_desc_new_varargs (const gchar *first_property_name, ...)
 {
     va_list var_args;
     IBusEngineDesc *desc;

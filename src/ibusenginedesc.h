@@ -132,16 +132,16 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
                                                  const gchar    *layout);
 
 /**
- * ibus_engine_desc_new2:
+ * ibus_engine_desc_new_varargs:
  * @first_property_name: Name of the first property.
  * @Varargs: the NULL-terminated arguments of the properties and values.
  *
  * New a IBusEngineDesc.
- * ibus_engine_desc_new2() supports the va_list format.
+ * ibus_engine_desc_new_varargs() supports the va_list format.
  * name property is required. e.g.
- * ibus_engine_desc_new2("name", "ibus-foo", "language", "us", NULL)
+ * ibus_engine_desc_new_varargs("name", "ibus-foo", "language", "us", NULL)
  */
-IBusEngineDesc  *ibus_engine_desc_new2          (const gchar *first_property_name,
+IBusEngineDesc  *ibus_engine_desc_new_varargs   (const gchar *first_property_name,
                                                  ...);
 
 

@@ -713,20 +713,20 @@ ibus_component_new (const gchar *name,
                     const gchar *exec,
                     const gchar *textdomain)
 {
-    return ibus_component_new2 ("name", name,
-                                "description", description,
-                                "version", version,
-                                "license", license,
-                                "author", author,
-                                "homepage", homepage,
-                                "exec", exec,
-                                "textdomain", textdomain,
-                                NULL);
+    return ibus_component_new_varargs ("name", name,
+                                       "description", description,
+                                       "version", version,
+                                       "license", license,
+                                       "author", author,
+                                       "homepage", homepage,
+                                       "exec", exec,
+                                       "textdomain", textdomain,
+                                       NULL);
 }
 
 
 IBusComponent *
-ibus_component_new2 (const gchar *first_property_name, ...)
+ibus_component_new_varargs (const gchar *first_property_name, ...)
 {
     va_list var_args;
     IBusComponent *component;
