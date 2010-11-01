@@ -49,6 +49,9 @@ class IConfig(dbus.service.Object):
     @method(in_signature="ssv")
     def SetValue(self, section, name, value): pass
 
+    @method(in_signature="ss")
+    def UnsetValue(self, section, name): pass
+
     @method()
     def Destroy(self): pass
 
