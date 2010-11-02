@@ -245,7 +245,9 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
     text.feedback = feedback;
 
     if (len > 0) {
-        Xutf8TextListToTextProperty (GDK_DISPLAY (), (char **)&preedit_string, 1, XCompoundTextStyle, &tp);
+        Xutf8TextListToTextProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+                                     (char **)&preedit_string,
+                                     1, XCompoundTextStyle, &tp);
         text.encoding_is_wchar = 0;
         text.length = strlen ((char*)tp.value);
         text.string.multi_byte = (char*)tp.value;
@@ -583,9 +585,9 @@ _xim_set_cursor_location (X11IC *x11ic)
         XWindowAttributes xwa;
         Window child;
 
-        XGetWindowAttributes (GDK_DISPLAY(), w, &xwa);
+        XGetWindowAttributes (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), w, &xwa);
         if (preedit_area.x <= 0 && preedit_area.y <= 0) {
-             XTranslateCoordinates (GDK_DISPLAY(), w,
+             XTranslateCoordinates (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), w,
                 xwa.root,
                 0,
                 xwa.height,
@@ -594,7 +596,7 @@ _xim_set_cursor_location (X11IC *x11ic)
                 &child);
         }
         else {
-            XTranslateCoordinates (GDK_DISPLAY(), w,
+            XTranslateCoordinates (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), w,
                 xwa.root,
                 preedit_area.x,
                 preedit_area.y,
@@ -739,11 +741,11 @@ _xim_forward_key_event (X11IC   *x11ic,
     xkp.xkey.serial = 0L;
     xkp.xkey.send_event = False;
     xkp.xkey.same_screen = True;
-    xkp.xkey.display = GDK_DISPLAY();
+    xkp.xkey.display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
     xkp.xkey.window =
         x11ic->focus_window ? x11ic->focus_window : x11ic->client_window;
     xkp.xkey.subwindow = None;
-    xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY());
+    xkp.xkey.root = DefaultRootWindow (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
 
     xkp.xkey.time = 0;
     xkp.xkey.state = state;
@@ -781,7 +783,7 @@ _context_commit_text_cb (IBusInputContext *context,
     XTextProperty tp;
     IMCommitStruct cms = {0};
 
-    Xutf8TextListToTextProperty (GDK_DISPLAY (),
+    Xutf8TextListToTextProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
         (gchar **)&(text->text), 1, XCompoundTextStyle, &tp);
 
     cms.major_code = XIM_COMMIT;
@@ -961,7 +963,7 @@ _xim_init_IMdkit ()
         sizeof (ims_encodings)/sizeof (XIMEncoding) - 1;
     encodings.supported_encodings = ims_encodings;
 
-    _xims = IMOpenIM(GDK_DISPLAY(),
+    _xims = IMOpenIM(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
         IMModifiers, "Xi18n",
         IMServerWindow, GDK_WINDOW_XWINDOW(win),
         IMServerName, _server_name != NULL ? _server_name : "ibus",
