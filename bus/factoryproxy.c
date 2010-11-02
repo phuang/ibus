@@ -176,7 +176,8 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     g_variant_get (retval, "(&o)", &object_path);
     GDBusConnection *connection = g_dbus_proxy_get_connection ((GDBusProxy *) factory);
     BusEngineProxy *engine = bus_engine_proxy_new (object_path,
-                    desc, bus_connection_lookup (connection));
+                                                   desc,
+                                                   bus_connection_lookup (connection));
     g_variant_unref (retval);
     return engine;
 }
