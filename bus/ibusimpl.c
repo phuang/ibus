@@ -83,7 +83,7 @@ static void     bus_ibus_impl_set_use_global_engine
                                                  GValue             *value);
 static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
                                                  BusEngineProxy     *engine);
-static void     bus_ibus_impl_set_global_engine_by_name
+static gboolean bus_ibus_impl_set_global_engine_by_name
                                                 (BusIBusImpl        *ibus,
                                                  const gchar        *name);
 static void     bus_ibus_impl_engines_maybe_removed
@@ -1113,14 +1113,14 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
     bus_ibus_impl_global_engine_changed (ibus);
 }
 
-static void
+static gboolean
 bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
                                          const gchar *name)
 {
     gchar *old_engine_name = NULL;
 
     if (!ibus->use_global_engine)
-        return;
+        return FALSE;
 
     if (ibus->global_engine) {
         old_engine_name = bus_engine_proxy_get_desc (ibus->global_engine)->name;
@@ -1135,7 +1135,7 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
         else if (ibus->global_engine) {
             bus_engine_proxy_enable (ibus->global_engine);
         }
-        return;
+        return TRUE;
     }
 
     /* If there is a focused input context, then we just change the engine of
@@ -1165,6 +1165,10 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
             }
         }
     }
+
+    return ibus->global_engine != NULL &&
+           g_strcmp0 (name,
+                bus_engine_proxy_get_desc (ibus->global_engine)->name) == 0;
 }
 
 static void
@@ -1806,9 +1810,13 @@ _ibus_set_global_engine (BusIBusImpl     *ibus,
                                               new_engine_name ? new_engine_name : "NULL");
     }
 
-    bus_ibus_impl_set_global_engine_by_name (ibus, new_engine_name);
-
-    return ibus_message_new_method_return (message);
+    if (bus_ibus_impl_set_global_engine_by_name (ibus, new_engine_name)) {
+        return ibus_message_new_method_return (message);
+    }
+    else {
+        return ibus_message_new_error_printf (message, DBUS_ERROR_FAILED,
+                        "Set global engine to %s failed.", new_engine_name);
+    }
 }
 
 static IBusMessage *
