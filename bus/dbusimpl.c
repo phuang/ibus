@@ -44,7 +44,7 @@ struct _BusDBusImpl {
     GList *objects;
     GList *connections;
     GList *rules;
-    gint id;
+    guint id;
 
     GMutex *dispatch_lock;
     GList *dispatch_queue;
@@ -350,7 +350,15 @@ bus_dbus_impl_name_has_owner (BusDBusImpl           *dbus,
     g_variant_get (parameters, "(&s)", &name);
 
     gboolean has_owner;
-    if (name[0] == ':') {
+    if (!g_dbus_is_name (name)) {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_FAILED,
+                                               "'%s' is not a legal bus name");
+        return;
+    }
+
+    if (g_dbus_is_unique_name (name)) {
         has_owner = g_hash_table_lookup (dbus->unique_names, name) != NULL;
     }
     else {
@@ -403,8 +411,8 @@ bus_dbus_impl_get_id (BusDBusImpl           *dbus,
                       GVariant              *parameters,
                       GDBusMethodInvocation *invocation)
 {
-    /* FXIME */
-    const gchar *uuid = "FXIME";
+    /* FIXME */
+    const gchar *uuid = "FIXME";
     g_dbus_method_invocation_return_value (invocation,
                     g_variant_new ("(s)", uuid));
 }
@@ -490,7 +498,9 @@ bus_dbus_impl_request_name (BusDBusImpl           *dbus,
     guint flags = 0;
     g_variant_get (parameters, "(&su)", &name, &flags);
 
-    if (name[0] == ':' || !g_dbus_is_name (name)) {
+    if (name == NULL ||
+        !g_dbus_is_name (name) ||
+        g_dbus_is_unique_name (name)) {
         g_dbus_method_invocation_return_error (invocation,
                         G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
                         "'%s' is not a legal service name.", name);
@@ -534,7 +544,9 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
     const gchar *name= NULL;
     g_variant_get (parameters, "(&s)", &name);
 
-    if (name[0] == ':' || !g_dbus_is_name (name)) {
+    if (name == NULL ||
+        !g_dbus_is_name (name) ||
+        g_dbus_is_unique_name (name)) {
         g_dbus_method_invocation_return_error (invocation,
                         G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
                         "'%s' is not a legal service name.", name);
@@ -687,54 +699,6 @@ bus_dbus_impl_service_set_property (IBusService        *service,
 
 }
 
-#if 1
-static void
-message_print(GDBusMessage *message)
-{
-    switch (g_dbus_message_get_message_type (message)) {
-    case G_DBUS_MESSAGE_TYPE_METHOD_CALL:
-        g_debug ("From %s to %s, CALL(%u) %s.%s (%s)",
-            g_dbus_message_get_sender (message),
-            g_dbus_message_get_destination (message),
-            g_dbus_message_get_serial (message),
-            g_dbus_message_get_interface (message),
-            g_dbus_message_get_member (message),
-            g_dbus_message_get_signature (message)
-            );
-        break;
-    case G_DBUS_MESSAGE_TYPE_METHOD_RETURN:
-        g_debug ("From %s to %s, RETURN(%u) (%s)",
-            g_dbus_message_get_sender (message),
-            g_dbus_message_get_destination (message),
-            g_dbus_message_get_reply_serial (message),
-            g_dbus_message_get_signature (message)
-            );
-        break;
-    case G_DBUS_MESSAGE_TYPE_ERROR:
-        g_debug ("From %s to %s, ERROR(%u) %s",
-            g_dbus_message_get_sender (message),
-            g_dbus_message_get_destination (message),
-            g_dbus_message_get_reply_serial (message),
-            g_dbus_message_get_error_name (message)
-            );
-        break;
-    case G_DBUS_MESSAGE_TYPE_SIGNAL:
-        g_debug ("From %s to %s, SIGNAL %s.%s (%s) @ %s",
-            g_dbus_message_get_sender (message),
-            g_dbus_message_get_destination (message),
-            g_dbus_message_get_interface (message),
-            g_dbus_message_get_member (message),
-            g_dbus_message_get_signature (message),
-            g_dbus_message_get_path (message)
-            );
-        break;
-    default:
-        break;
-    }
-
-}
-#endif
-
 static GDBusMessage *
 bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
                                     GDBusMessage    *message,
@@ -778,7 +742,6 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
             default:
                 /* dispatch signal messages by match rule */
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
-                message_print (message);
                 g_object_unref (message);
                 g_return_val_if_reached (NULL);
             }
@@ -796,7 +759,6 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
             default:
                 /* dispatch signal messages by match rule */
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
-                message_print (message);
                 g_object_unref (message);
                 g_return_val_if_reached (NULL);
             }
@@ -814,7 +776,6 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
             default:
                 /* dispatch signal messages by match rule */
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
-                message_print (message);
                 g_object_unref (message);
                 g_return_val_if_reached (NULL);
             }
@@ -928,7 +889,7 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (name != NULL);
 
-    if (G_LIKELY (name[0] == ':')) {
+    if (G_LIKELY (g_dbus_is_unique_name (name))) {
         return (BusConnection *)g_hash_table_lookup (dbus->unique_names, name);
     }
     else {
@@ -963,12 +924,12 @@ bus_dbus_impl_forward_message_idle_cb (BusDBusImpl   *dbus)
                                         NULL, &error);
         if (!retval) {
             g_warning ("send error failed:  %s.", error->message);
-            // message_print (message);
             g_error_free (error);
         }
     }
     else {
-        /* FIXME can not get destination */
+        /* FIXME What should we do, if can not get destination.
+         * It should not happen */
 #if 0
         if (g_dbus_message_get_message_type (message) == G_DBUS_MESSAGE_TYPE_METHOD_CALL) {
             /* reply an error message, if the destination does not exist */

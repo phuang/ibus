@@ -105,9 +105,9 @@ bus_recipient_unref (BusRecipient *recipient)
 G_DEFINE_TYPE (BusMatchRule, bus_match_rule, IBUS_TYPE_OBJECT)
 
 static void
-bus_match_rule_class_init (BusMatchRuleClass *klass)
+bus_match_rule_class_init (BusMatchRuleClass *class)
 {
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_match_rule_destroy;
 }
@@ -339,18 +339,26 @@ bus_match_rule_new (const gchar *text)
                 goto failed;
         }
         else if (g_strcmp0 (p->key, "sender") == 0) {
+            if (!g_dbus_is_name (p->value))
+                goto failed;
             bus_match_rule_set_sender (rule, p->value);
         }
         else if (g_strcmp0 (p->key, "interface") == 0) {
+            if (!g_dbus_is_interface_name (p->value))
+                goto failed;
             bus_match_rule_set_interface (rule, p->value);
         }
         else if (g_strcmp0 (p->key, "member") == 0) {
+            if (!g_dbus_is_member_name (p->value))
+                goto failed;
             bus_match_rule_set_member (rule, p->value);
         }
         else if (g_strcmp0 (p->key, "path") == 0) {
             bus_match_rule_set_path (rule, p->value);
         }
         else if (g_strcmp0 (p->key, "destination") == 0) {
+            if (!g_dbus_is_name (p->value))
+                goto failed;
             bus_match_rule_set_destination (rule, p->value);
         }
         else if (strncmp (p->key, "arg", 3) == 0) {
@@ -485,7 +493,7 @@ static gboolean
 bus_match_rule_match_name (const gchar *name,
                            const gchar *match_name)
 {
-    if (name[0] == ':' && match_name[0] != ':') {
+    if (g_dbus_is_unique_name (name) && !g_dbus_is_unique_name (match_name)) {
         BusConnection *connection =
                 bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, match_name);
         if (connection == NULL)

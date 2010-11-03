@@ -85,15 +85,15 @@ static void     bus_engine_proxy_g_signal       (GDBusProxy         *proxy,
 G_DEFINE_TYPE (BusEngineProxy, bus_engine_proxy, IBUS_TYPE_PROXY)
 
 static void
-bus_engine_proxy_class_init (BusEngineProxyClass *klass)
+bus_engine_proxy_class_init (BusEngineProxyClass *class)
 {
-    IBUS_PROXY_CLASS (klass)->destroy = bus_engine_proxy_real_destroy;
-    G_DBUS_PROXY_CLASS (klass)->g_signal = bus_engine_proxy_g_signal;
+    IBUS_PROXY_CLASS (class)->destroy = bus_engine_proxy_real_destroy;
+    G_DBUS_PROXY_CLASS (class)->g_signal = bus_engine_proxy_g_signal;
 
     /* install signals */
     engine_signals[COMMIT_TEXT] =
         g_signal_new (I_("commit-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -104,7 +104,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[FORWARD_KEY_EVENT] =
         g_signal_new (I_("forward-key-event"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -117,7 +117,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[DELETE_SURROUNDING_TEXT] =
         g_signal_new (I_("delete-surrounding-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -129,7 +129,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -143,7 +143,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[SHOW_PREEDIT_TEXT] =
         g_signal_new (I_("show-preedit-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -153,7 +153,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[HIDE_PREEDIT_TEXT] =
         g_signal_new (I_("hide-preedit-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -163,7 +163,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[UPDATE_AUXILIARY_TEXT] =
         g_signal_new (I_("update-auxiliary-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -175,7 +175,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[SHOW_AUXILIARY_TEXT] =
         g_signal_new (I_("show-auxiliary-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -185,7 +185,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[HIDE_AUXILIARY_TEXT] =
         g_signal_new (I_("hide-auxiliary-text"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -195,7 +195,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -207,7 +207,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[SHOW_LOOKUP_TABLE] =
         g_signal_new (I_("show-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -217,7 +217,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[HIDE_LOOKUP_TABLE] =
         g_signal_new (I_("hide-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -227,7 +227,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[PAGE_UP_LOOKUP_TABLE] =
         g_signal_new (I_("page-up-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -237,7 +237,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[PAGE_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("page-down-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -247,7 +247,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[CURSOR_UP_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-up-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -257,7 +257,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[CURSOR_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-down-lookup-table"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -267,7 +267,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[REGISTER_PROPERTIES] =
         g_signal_new (I_("register-properties"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
@@ -278,7 +278,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *klass)
 
     engine_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
-            G_TYPE_FROM_CLASS (klass),
+            G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,

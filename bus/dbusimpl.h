@@ -59,7 +59,6 @@ gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
 BusConnection   *bus_dbus_impl_get_connection_by_name
                                                 (BusDBusImpl    *dbus,
                                                  const gchar    *name);
-/* FIXME */
 void             bus_dbus_impl_forward_message  (BusDBusImpl    *dbus,
                                                  BusConnection  *connection,
                                                  GDBusMessage   *message);

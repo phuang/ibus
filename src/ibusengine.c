@@ -962,35 +962,6 @@ ibus_engine_emit_signal (IBusEngine  *engine,
                               NULL);
 }
 
-#if 0
-static void
-_send_signal (IBusEngine  *engine,
-              const gchar *name,
-              GType        first_arg_type,
-              ...)
-{
-    g_assert (IBUS_IS_ENGINE (engine));
-    g_assert (name != NULL);
-
-    va_list args;
-    const gchar *path;
-    IBusEnginePrivate *priv;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    path = ibus_service_get_path ((IBusService *)engine);
-
-    va_start (args, first_arg_type);
-    ibus_connection_send_signal_valist (priv->connection,
-                                        path,
-                                        IBUS_INTERFACE_ENGINE,
-                                        name,
-                                        first_arg_type,
-                                        args);
-    va_end (args);
-}
-#endif
-
 IBusEngine *
 ibus_engine_new (const gchar     *engine_name,
                  const gchar     *object_path,

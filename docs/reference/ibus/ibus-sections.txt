@@ -111,15 +111,6 @@ ibus_component_stop
 ibus_component_is_running
 ibus_component_get_from_engine
 ibus_component_set_restart
->>>>>>> wip.
-<SUBSECTION Standard>
-IBUS_KEYMAP
-IBUS_IS_KEYMAP
-IBUS_TYPE_KEYMAP
-ibus_keymap_get_type
-IBUS_KEYMAP_CLASS
-IBUS_IS_KEYMAP_CLASS
-IBUS_KEYMAP_GET_CLASS
 </SECTION>
 
 <SECTION>

@@ -151,14 +151,6 @@ ibus_factory_set_property (IBusFactory  *factory,
                            GParamSpec   *pspec)
 {
     switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        priv->connection = g_value_get_object (value);
-        g_object_ref_sink (priv->connection);
-        ibus_service_add_to_connection ((IBusService *) factory,
-                                        priv->connection);
-        break;
-    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
     }
@@ -171,11 +163,6 @@ ibus_factory_get_property (IBusFactory *factory,
                            GParamSpec  *pspec)
 {
     switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        g_value_set_object (value, priv->connection);
-        break;
-    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (factory, prop_id, pspec);
     }

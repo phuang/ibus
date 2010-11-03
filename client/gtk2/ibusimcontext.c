@@ -90,7 +90,7 @@ static IBusInputContext *_fake_context = NULL;
 static GdkWindow *_input_window = NULL;
 
 /* functions prototype */
-static void     ibus_im_context_class_init  (IBusIMContextClass    *klass);
+static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
 static void     ibus_im_context_init        (GObject               *obj);
 static void     ibus_im_context_finalize    (GObject               *obj);
 static void     ibus_im_context_reset       (GtkIMContext          *context);
@@ -274,14 +274,14 @@ _key_snooper_cb (GtkWidget   *widget,
 }
 
 static void
-ibus_im_context_class_init     (IBusIMContextClass *klass)
+ibus_im_context_class_init     (IBusIMContextClass *class)
 {
     IDEBUG ("%s", __FUNCTION__);
 
-    GtkIMContextClass *im_context_class = GTK_IM_CONTEXT_CLASS (klass);
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+    GtkIMContextClass *im_context_class = GTK_IM_CONTEXT_CLASS (class);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
-    parent_class = (GtkIMContextClass *) g_type_class_peek_parent (klass);
+    parent_class = (GtkIMContextClass *) g_type_class_peek_parent (class);
 
     im_context_class->reset = ibus_im_context_reset;
     im_context_class->focus_in = ibus_im_context_focus_in;
@@ -294,27 +294,27 @@ ibus_im_context_class_init     (IBusIMContextClass *klass)
     gobject_class->finalize = ibus_im_context_finalize;
 
     _signal_commit_id =
-        g_signal_lookup ("commit", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("commit", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_commit_id != 0);
 
     _signal_preedit_changed_id =
-        g_signal_lookup ("preedit-changed", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("preedit-changed", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_preedit_changed_id != 0);
 
     _signal_preedit_start_id =
-        g_signal_lookup ("preedit-start", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("preedit-start", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_preedit_start_id != 0);
 
     _signal_preedit_end_id =
-        g_signal_lookup ("preedit-end", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("preedit-end", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_preedit_end_id != 0);
 
     _signal_delete_surrounding_id =
-        g_signal_lookup ("delete-surrounding", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("delete-surrounding", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_delete_surrounding_id != 0);
 
     _signal_retrieve_surrounding_id =
-        g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (klass));
+        g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
     const gchar *ibus_disable_snooper = g_getenv ("IBUS_DISABLE_SNOOPER");

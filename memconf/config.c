@@ -36,7 +36,7 @@ struct _IBusConfigMemconfClass {
 };
 
 /* functions prototype */
-static void         ibus_config_memconf_class_init  (IBusConfigMemconfClass *klass);
+static void         ibus_config_memconf_class_init  (IBusConfigMemconfClass *class);
 static void         ibus_config_memconf_init        (IBusConfigMemconf      *config);
 static void         ibus_config_memconf_destroy     (IBusConfigMemconf      *config);
 static gboolean     ibus_config_memconf_set_value   (IBusConfigService      *config,
@@ -56,9 +56,9 @@ static gboolean     ibus_config_memconf_unset_value (IBusConfigService      *con
 G_DEFINE_TYPE (IBusConfigMemconf, ibus_config_memconf, IBUS_TYPE_CONFIG_SERVICE)
 
 static void
-ibus_config_memconf_class_init (IBusConfigMemconfClass *klass)
+ibus_config_memconf_class_init (IBusConfigMemconfClass *class)
 {
-    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
 
     IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_memconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_memconf_set_value;

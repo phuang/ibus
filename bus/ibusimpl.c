@@ -284,7 +284,7 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
         bus_ibus_impl_set_hotkey (ibus, hotkey, value);
     }
     else {
-        /* set defaint trigger */
+        /* set default trigger */
         ibus_hotkey_profile_add_hotkey (ibus->hotkey_profile,
                                         IBUS_space,
                                         IBUS_CONTROL_MASK,
@@ -754,8 +754,8 @@ _ibus_get_address (BusIBusImpl           *ibus,
                    GVariant              *parameters,
                    GDBusMethodInvocation *invocation)
 {
-    /* FIXME */
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(s)", "FIXME"));
+    g_dbus_method_invocation_return_value (invocation,
+                                           g_variant_new ("(s)", bus_server_get_address ()));
 }
 
 

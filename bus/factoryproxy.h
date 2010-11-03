@@ -59,15 +59,6 @@ BusFactoryProxy *bus_factory_proxy_get_from_component
                                                 (IBusComponent      *component);
 BusFactoryProxy *bus_factory_proxy_get_from_engine
                                                 (IBusEngineDesc     *desc);
-
-#if 0
-const gchar     *bus_factory_proxy_get_name     (BusFactoryProxy    *factory);
-const gchar     *bus_factory_proxy_get_lang     (BusFactoryProxy    *factory);
-const gchar     *bus_factory_proxy_get_icon     (BusFactoryProxy    *factory);
-const gchar     *bus_factory_proxy_get_authors  (BusFactoryProxy    *factory);
-const gchar     *bus_factory_proxy_get_credits  (BusFactoryProxy    *factory);
-#endif
-
 G_END_DECLS
 #endif
 

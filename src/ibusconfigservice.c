@@ -22,9 +22,6 @@
 #include "ibusshare.h"
 #include "ibusconfigservice.h"
 
-#define IBUS_CONFIG_SERVICE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG_SERVICE, IBusConfigServicePrivate))
-
 enum {
     LAST_SIGNAL,
 };
@@ -128,19 +125,11 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
     class->set_value   = ibus_config_service_set_value;
     class->get_value   = ibus_config_service_get_value;
     class->unset_value = ibus_config_service_unset_value;
-
-    /* install properties */
-    /*
-     * g_type_class_add_private (class, sizeof (IBusConfigServicePrivate));
-     */
 }
 
 static void
 ibus_config_service_init (IBusConfigService *config)
 {
-    /*
-     * config->priv = IBUS_CONFIG_SERVICE_GET_PRIVATE (config);
-     */
 }
 
 static void
@@ -150,12 +139,6 @@ ibus_config_service_set_property (IBusConfigService *config,
                                   GParamSpec        *pspec)
 {
     switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        ibus_service_add_to_connection ((IBusService *) config,
-                                        g_value_get_object (value));
-        break;
-    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
     }

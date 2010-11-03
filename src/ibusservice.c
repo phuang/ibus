@@ -25,7 +25,6 @@
 #define IBUS_SERVICE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERVICE, IBusServicePrivate))
 
-/* XXX */
 enum {
     LAST_SIGNAL
 };

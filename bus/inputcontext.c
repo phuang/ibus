@@ -667,7 +667,7 @@ _ic_process_key_event_reply_cb (GObject      *source,
     GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)source,
                     result, &error);
     if (retval != NULL) {
-        /* XXX: need check retval is floating? */
+        /* FIXME: need check retval is floating? */
         g_dbus_method_invocation_return_value ((GDBusMethodInvocation *)user_data, retval);
         g_variant_unref (retval);
     }
@@ -1698,12 +1698,6 @@ bus_input_context_new (BusConnection    *connection,
                                                 "connection",  bus_connection_get_dbus_connection (connection),
                                                 NULL);
     g_free (path);
-
-
-#if 0
-    ibus_service_add_to_connection (IBUS_SERVICE (context),
-                                 IBUS_CONNECTION (connection));
-#endif
 
     g_object_ref_sink (connection);
     context->connection = connection;

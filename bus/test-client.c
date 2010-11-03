@@ -31,7 +31,7 @@
 #  define IDEBUG(a...)
 #endif
 /* functions prototype */
-static void          bus_test_client_class_init      (BusTestClientClass *klass);
+static void          bus_test_client_class_init      (BusTestClientClass *class);
 static void          bus_test_client_destroy         (IBusObject         *object);
 
 /* static methods*/
@@ -57,11 +57,11 @@ static Display      *_xdisplay = NULL;
 G_DEFINE_TYPE (BusTestClient, bus_test_client, IBUS_TYPE_OBJECT)
 
 static void
-bus_test_client_class_init (BusTestClientClass *klass)
+bus_test_client_class_init (BusTestClientClass *class)
 {
     IDEBUG ("%s", __FUNCTION__);
 
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     ibus_object_class->destroy = bus_test_client_destroy;
 

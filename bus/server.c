@@ -29,6 +29,7 @@ static GDBusServer *server = NULL;
 static GMainLoop *mainloop = NULL;
 static BusDBusImpl *dbus = NULL;
 static BusIBusImpl *ibus = NULL;
+static gchar *address = NULL;
 
 static gboolean
 bus_new_connection_cb (GDBusServer     *server,
@@ -63,14 +64,18 @@ bus_server_init (void)
 
     g_dbus_server_start (server);
 
-    gchar *address = g_strdup_printf ("%s,guid=%s",
-                            g_dbus_server_get_client_address (server),
-                            g_dbus_server_get_guid (server));
+    address = g_strdup_printf ("%s,guid=%s",
+                               g_dbus_server_get_client_address (server),
+                               g_dbus_server_get_guid (server));
 
     /* write address to file */
     ibus_write_address (address);
+}
 
-    g_free (address);
+const gchar *
+bus_server_get_address (void)
+{
+    return address;
 }
 
 void

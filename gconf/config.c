@@ -18,7 +18,7 @@ struct _IBusConfigGConfClass {
 };
 
 /* functions prototype */
-static void         ibus_config_gconf_class_init    (IBusConfigGConfClass   *klass);
+static void         ibus_config_gconf_class_init    (IBusConfigGConfClass   *class);
 static void         ibus_config_gconf_init          (IBusConfigGConf        *config);
 static void         ibus_config_gconf_destroy       (IBusConfigGConf        *config);
 static gboolean     ibus_config_gconf_set_value     (IBusConfigService      *config,
@@ -40,9 +40,9 @@ static GVariant     *_from_gconf_value              (const GConfValue       *gva
 G_DEFINE_TYPE (IBusConfigGConf, ibus_config_gconf, IBUS_TYPE_CONFIG_SERVICE)
 
 static void
-ibus_config_gconf_class_init (IBusConfigGConfClass *klass)
+ibus_config_gconf_class_init (IBusConfigGConfClass *class)
 {
-    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
 
     IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_gconf_set_value;

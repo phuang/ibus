@@ -129,22 +129,6 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     class->show_preedit_text        = ibus_panel_service_not_implemented;
     class->start_setup              = ibus_panel_service_not_implemented;
     class->state_changed            = ibus_panel_service_not_implemented;
-
-    /* install properties */
-    #if 0
-    /**
-     * IBusPanelService:connection:
-     *
-     * Connection of this IBusPanelService.
-     */
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONNECTION,
-                                     g_param_spec_object ("connection",
-                                                          "connection",
-                                                          "The connection of service object",
-                                                          IBUS_TYPE_CONNECTION,
-                                                          G_PARAM_READWRITE |  G_PARAM_CONSTRUCT_ONLY));
-    #endif
 }
 
 static void
@@ -159,12 +143,6 @@ ibus_panel_service_set_property (IBusPanelService *panel,
                                  GParamSpec       *pspec)
 {
     switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        ibus_service_add_to_connection ((IBusService *) panel,
-                                        g_value_get_object (value));
-        break;
-    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (panel, prop_id, pspec);
     }
@@ -177,10 +155,6 @@ ibus_panel_service_get_property (IBusPanelService *panel,
                                  GParamSpec       *pspec)
 {
     switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        break;
-    #endif
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (panel, prop_id, pspec);
     }

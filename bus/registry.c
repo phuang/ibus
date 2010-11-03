@@ -48,10 +48,10 @@ static void              bus_registry_remove_all        (BusRegistry        *reg
 G_DEFINE_TYPE (BusRegistry, bus_registry, IBUS_TYPE_OBJECT)
 
 static void
-bus_registry_class_init (BusRegistryClass *klass)
+bus_registry_class_init (BusRegistryClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     _signals[CHANGED] =
         g_signal_new (I_("changed"),
@@ -192,7 +192,9 @@ bus_registry_load (BusRegistry *registry)
     bus_registry_load_in_dir (registry, dirname);
 
     g_free (dirname);
+
 #if 0
+    /* FIXME Should we support install some IME in user dir? */
     dirname = g_build_filename (g_get_user_data_dir (), "ibus", "component", NULL);
 
     path = ibus_observed_path_new (dirname, TRUE);

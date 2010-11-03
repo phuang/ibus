@@ -213,7 +213,6 @@ main (gint argc, gchar **argv)
     ibus_set_log_handler(g_verbose);
 
     /* check if ibus-daemon is running in this session */
-#if 0
     if (ibus_get_address () != NULL) {
         IBusBus *bus = ibus_bus_new ();
 
@@ -230,7 +229,7 @@ main (gint argc, gchar **argv)
         g_object_unref (bus);
         bus = NULL;
     }
-#endif
+
     bus_server_init ();
     /* FIXME */
     if (!single) {

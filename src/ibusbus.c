@@ -141,6 +141,7 @@ ibus_bus_class_init (IBusBusClass *class)
 
     g_type_class_add_private (class, sizeof (IBusBusPrivate));
 }
+
 #if 0
 static gboolean
 _connection_ibus_signal_cb (GDBusConnection *connection,
@@ -469,7 +470,7 @@ const gchar *
 ibus_bus_hello (IBusBus *bus)
 {
     g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
-    /* FIXME */
+    /* FIXME gdbus connection will say hello by self. */
 #if 1
     if (bus->priv->connection)
         return g_dbus_connection_get_unique_name (bus->priv->connection);

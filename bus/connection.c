@@ -61,9 +61,9 @@ static GQuark   bus_connection_quark        (void);
 G_DEFINE_TYPE (BusConnection, bus_connection, IBUS_TYPE_OBJECT)
 
 static void
-bus_connection_class_init (BusConnectionClass *klass)
+bus_connection_class_init (BusConnectionClass *class)
 {
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (klass);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_connection_destroy;
 }
@@ -133,7 +133,7 @@ bus_connection_set_dbus_connection (BusConnection   *connection,
 static GQuark
 bus_connection_quark (void)
 {
-    GQuark quark = 0;
+    static GQuark quark = 0;
     if (quark == 0) {
         quark = g_quark_from_static_string ("BUS_CONNECTION");
     }
@@ -226,21 +226,12 @@ bus_connection_add_match (BusConnection  *connection,
     return TRUE;
 }
 
-gboolean
-bus_connection_remove_match (BusConnection  *connection,
-                             const gchar    *rule)
-{
-    g_assert (BUS_IS_CONNECTION (connection));
-    return FALSE;
-}
-
 GDBusConnection *
 bus_connection_get_dbus_connection (BusConnection *connection)
 {
     g_assert (BUS_IS_CONNECTION (connection));
     return connection->connection;
 }
-
 
 void
 bus_connection_set_filter (BusConnection             *connection,
