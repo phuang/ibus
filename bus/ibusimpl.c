@@ -1188,7 +1188,7 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
         gchar *name;
         GCallback callback;
     } signals [] = {
-        { "request-engine",      G_CALLBACK (_context_request_engine_cb) },
+        { "request-engine", G_CALLBACK (_context_request_engine_cb) },
         { "engine-changed", G_CALLBACK (_context_engine_changed_cb) },
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
@@ -1286,7 +1286,8 @@ _ibus_register_component (BusIBusImpl           *ibus,
     IBusComponent *component = (IBusComponent *)ibus_serializable_deserialize (variant);
 
     if (!IBUS_IS_COMPONENT (component)) {
-        if (component) g_object_unref (component);
+        if (component)
+            g_object_unref (component);
         g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
                         "The first argument should be an IBusComponent.");
         return;

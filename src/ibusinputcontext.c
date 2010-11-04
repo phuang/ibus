@@ -625,13 +625,6 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                                 proxy, sender_name, signal_name, parameters);
 }
 
-typedef struct {
-    IBusInputContext *context;
-    guint32 keyval;
-    guint32 keycode;
-    guint32 state;
-} CallData;
-
 static void
 ibus_input_context_process_key_event_cb (IBusInputContext   *context,
                                          GAsyncResult       *res,
@@ -660,7 +653,7 @@ ibus_input_context_process_key_event_cb (IBusInputContext   *context,
                        data[1],
                        data[2] | IBUS_FORWARD_MASK);
     }
-    g_slice_free1 (sizeof (guint) << 2, data);
+    g_slice_free1 (sizeof (guint[3]), data);
 }
 
 IBusInputContext *
@@ -723,7 +716,7 @@ ibus_input_context_process_key_event (IBusInputContext *context,
     if (state & IBUS_IGNORED_MASK)
         return FALSE;
 
-    guint *data = g_slice_alloc (sizeof (guint) << 2);
+    guint *data = g_slice_alloc (sizeof (guint[3]));
     data[0] = keyval;
     data[1] = keycode;
     data[2] = state;
