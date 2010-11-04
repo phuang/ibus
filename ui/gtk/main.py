@@ -58,7 +58,6 @@ class UIApplication:
                             "Please restart ibus input platform."), \
                             "ibus")
         self.__notify.set_timeout(10 * 1000)
-        self.__notify.attach_to_status_icon (self.__panel.get_status_icon())
         self.__notify.add_action("restart", _("Restart Now"), self.__restart_cb, None)
         self.__notify.add_action("ignore", _("Later"), lambda *args: None, None)
 
