@@ -90,9 +90,9 @@ struct _IBusProxyClass {
     gpointer pdummy[7];
 };
 
-GType            ibus_proxy_get_type        (void);
+GType   ibus_proxy_get_type (void);
 
-void    ibus_proxy_destroy      (IBusProxy      *proxy);
+void    ibus_proxy_destroy  (IBusProxy      *proxy);
 
 G_END_DECLS
 #endif

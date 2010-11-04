@@ -39,25 +39,8 @@ struct _IBusConfigPrivate {
 };
 typedef struct _IBusConfigPrivate IBusConfigPrivate;
 
-#if 0
-struct _BusPair {
-    GValue car;
-    GValue cdr;
-};
-typedef struct _BusPair BusPair;
-#endif
-
 static guint    config_signals[LAST_SIGNAL] = { 0 };
 
-#if 0
-/* functions prototype */
-static BusPair  *bus_pair_new                   (GType                  car_type,
-                                                 GType                  cdr_type,
-                                                 gpointer               car,
-                                                 gpointer               cdr);
-static BusPair  *bus_pair_copy                  (BusPair                *pair);
-static void      bus_pair_free                  (BusPair                *pair);
-#endif
 static void      ibus_config_class_init     (IBusConfigClass    *class);
 static void      ibus_config_init           (IBusConfig         *config);
 static void      ibus_config_real_destroy   (IBusProxy          *proxy);
@@ -195,10 +178,54 @@ ibus_config_get_value (IBusConfig  *config,
         return NULL;
     }
 
-    GVariant *value;
+    GVariant *value = NULL;
     g_variant_get (result, "(v)", &value);
     g_variant_ref (value);
     g_variant_unref (result);
+
+    return value;
+}
+
+void
+ibus_config_get_value_async (IBusConfig         *config,
+                             const gchar        *section,
+                             const gchar        *name,
+                             GCancellable       *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer            user_data)
+{
+    g_return_if_fail (IBUS_IS_CONFIG (config));
+    g_return_if_fail (section != NULL);
+    g_return_if_fail (name != NULL);
+
+    g_dbus_proxy_call ((GDBusProxy *)config,
+                       "GetValue",
+                       g_variant_new ("(ss)", section, name),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+GVariant *
+ibus_config_get_value_async_finish (IBusConfig    *config,
+                                    GAsyncResult  *result,
+                                    GError       **error)
+{
+    g_return_val_if_fail (IBUS_IS_CONFIG (config), NULL);
+    g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
+    g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+    GVariant *value = NULL;
+    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)config,
+                                                 result,
+                                                 error);
+    if (retval != NULL) {
+        g_variant_get (retval, "(v)", &value);
+        g_variant_ref (value);
+        g_variant_unref (retval);
+    }
 
     return value;
 }
