@@ -1,5 +1,7 @@
 import ibus
 bus = ibus.Bus()
-ibus.Engine.new("pinyin", "/aa", bus.get_connection())
-for e in bus.list_engines():
-    print e.name
+if not bus.is_connected():
+    print "Can not connect to ibus-daemon"
+else:
+    for e in bus.list_engines():
+        print e.get_name()

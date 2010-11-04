@@ -4,7 +4,6 @@ from gi.repository.IBus import \
     Bus, \
     Component, \
     Config, \
-    Connection, \
     Engine, \
     EngineDesc, \
     Factory, \
@@ -18,6 +17,5 @@ from gi.repository.IBus import \
     Property, \
     Proxy, \
     Serializable, \
-    Server, \
     Service, \
     Text
