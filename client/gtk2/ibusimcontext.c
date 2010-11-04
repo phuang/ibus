@@ -1089,7 +1089,6 @@ _create_input_context (IBusIMContext *ibusimcontext)
 
     g_assert (ibusimcontext->ibuscontext == NULL);
 
-    g_debug ("create ibus context");
     ibusimcontext->ibuscontext = ibus_bus_create_input_context (_bus, "gtk-im");
 
     g_return_if_fail (ibusimcontext->ibuscontext != NULL);
