@@ -38,7 +38,6 @@ enum {
     PROP_TEXTDOMAIN,
 };
 
-
 /* IBusComponentPriv */
 struct _IBusComponentPrivate {
     gchar *name;
@@ -54,6 +53,15 @@ struct _IBusComponentPrivate {
     gboolean verbose;
     // TRUE if the component needs to be restarted when it dies.
     gboolean restart;
+
+    /* engines */
+    GList *engines;
+
+    /* observed paths */
+    GList *observed_paths;
+
+    GPid     pid;
+    guint    child_source_id;
 };
 
 #define IBUS_COMPONENT_GET_PRIVATE(o)  \
@@ -220,10 +228,12 @@ ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
 
-    component->engines = NULL;
-    component->observed_paths = NULL;
-    component->pid = 0;
-    component->child_source_id = 0;
+    /* FIXME: Is it necessary? */
+#if 0
+    component->priv->engines = NULL;
+    component->priv->observed_paths = NULL;
+    component->priv->pid = 0;
+    component->priv->child_source_id = 0;
 
     component->priv->name = NULL;
     component->priv->description = NULL;
@@ -235,7 +245,7 @@ ibus_component_init (IBusComponent *component)
     component->priv->textdomain = NULL;
     component->priv->verbose = FALSE;
     component->priv->restart = FALSE;
-
+#endif
 }
 
 static void
@@ -261,27 +271,27 @@ ibus_component_destroy (IBusComponent *component)
     component->priv->exec = NULL;
     component->priv->textdomain = NULL;
 
-    g_list_foreach (component->observed_paths, (GFunc)g_object_unref, NULL);
-    g_list_free (component->observed_paths);
-    component->observed_paths = NULL;
+    g_list_foreach (component->priv->observed_paths, (GFunc)g_object_unref, NULL);
+    g_list_free (component->priv->observed_paths);
+    component->priv->observed_paths = NULL;
 
-    for (p = component->engines; p != NULL; p = p->next) {
+    for (p = component->priv->engines; p != NULL; p = p->next) {
         g_object_steal_data ((GObject *)p->data, "component");
         ibus_object_destroy ((IBusObject *)p->data);
         g_object_unref (p->data);
     }
-    g_list_free (component->engines);
-    component->engines = NULL;
+    g_list_free (component->priv->engines);
+    component->priv->engines = NULL;
 
-    if (component->pid != 0) {
+    if (component->priv->pid != 0) {
         ibus_component_stop (component);
-        g_spawn_close_pid (component->pid);
-        component->pid = 0;
+        g_spawn_close_pid (component->priv->pid);
+        component->priv->pid = 0;
     }
 
-    if (component->child_source_id != 0) {
-        g_source_remove (component->child_source_id);
-        component->child_source_id = 0;
+    if (component->priv->child_source_id != 0) {
+        g_source_remove (component->priv->child_source_id);
+        component->priv->child_source_id = 0;
     }
 
     IBUS_OBJECT_CLASS (ibus_component_parent_class)->destroy (IBUS_OBJECT (component));
@@ -389,14 +399,14 @@ ibus_component_serialize (IBusComponent   *component,
     GVariantBuilder *array;
     /* serialize observed paths */
     array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
-    for (p = component->observed_paths; p != NULL; p = p->next) {
+    for (p = component->priv->observed_paths; p != NULL; p = p->next) {
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
 
     /* serialize engine desc list */
     array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
-    for (p = component->engines; p != NULL; p = p->next) {
+    for (p = component->priv->engines; p != NULL; p = p->next) {
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
@@ -426,7 +436,7 @@ ibus_component_deserialize (IBusComponent   *component,
     GVariantIter *iter = NULL;
     g_variant_get_child (variant, retval++, "av", &iter);
     while (g_variant_iter_loop (iter, "v", &var)) {
-        component->observed_paths = g_list_append (component->observed_paths,
+        component->priv->observed_paths = g_list_append (component->priv->observed_paths,
                         IBUS_OBSERVED_PATH (ibus_serializable_deserialize (var)));
     }
     g_variant_iter_free (iter);
@@ -460,11 +470,11 @@ ibus_component_copy (IBusComponent       *dest,
     dest->priv->exec          = g_strdup (src->priv->exec);
     dest->priv->textdomain    = g_strdup (src->priv->textdomain);
 
-    dest->observed_paths = g_list_copy (src->observed_paths);
-    g_list_foreach (dest->observed_paths, (GFunc) g_object_ref, NULL);
+    dest->priv->observed_paths = g_list_copy (src->priv->observed_paths);
+    g_list_foreach (dest->priv->observed_paths, (GFunc) g_object_ref, NULL);
 
-    dest->engines = g_list_copy (src->engines);
-    g_list_foreach (dest->engines, (GFunc) g_object_ref, NULL);
+    dest->priv->engines = g_list_copy (src->priv->engines);
+    g_list_foreach (dest->priv->engines, (GFunc) g_object_ref, NULL);
 
     return TRUE;
 }
@@ -511,11 +521,11 @@ ibus_component_output (IBusComponent *component,
 #undef OUTPUT_ENTRY
 #undef OUTPUT_ENTRY_1
 
-    if (component->observed_paths) {
+    if (component->priv->observed_paths) {
         g_string_append_indent (output, indent + 1);
         g_string_append (output, "<observed-paths>\n");
 
-        for (p = component->observed_paths; p != NULL; p = p->next ) {
+        for (p = component->priv->observed_paths; p != NULL; p = p->next ) {
             IBusObservedPath *path = (IBusObservedPath *) p->data;
 
             g_string_append_indent (output, indent + 2);
@@ -547,7 +557,7 @@ ibus_component_output_engines (IBusComponent  *component,
     g_string_append_indent (output, indent);
     g_string_append (output, "<engines>\n");
 
-    for (p = component->engines; p != NULL; p = p->next) {
+    for (p = component->priv->engines; p != NULL; p = p->next) {
         ibus_engine_desc_output ((IBusEngineDesc *)p->data, output, indent + 2);
     }
 
@@ -677,11 +687,12 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
 
         path = ibus_observed_path_new_from_xml_node ((XMLNode *)p->data, access_fs);
         g_object_ref_sink (path);
-        component->observed_paths = g_list_append (component->observed_paths, path);
+        component->priv->observed_paths = g_list_append (component->priv->observed_paths, path);
 
         if (access_fs && path->is_dir && path->is_exist) {
-            component->observed_paths = g_list_concat (component->observed_paths,
-                                            ibus_observed_path_traverse (path));
+            component->priv->observed_paths =
+                    g_list_concat(component->priv->observed_paths,
+                                  ibus_observed_path_traverse(path));
         }
     }
 }
@@ -797,7 +808,8 @@ ibus_component_new_from_file (const gchar *filename)
     else {
         IBusObservedPath *path;
         path = ibus_observed_path_new (filename, TRUE);
-        component->observed_paths = g_list_prepend (component->observed_paths, path);
+        component->priv->observed_paths =
+                g_list_prepend(component->priv->observed_paths, path);
     }
 
     return component;
@@ -812,11 +824,13 @@ ibus_component_add_observed_path (IBusComponent *component,
 
     p = ibus_observed_path_new (path, access_fs);
     g_object_ref_sink (p);
-    component->observed_paths = g_list_append (component->observed_paths, p);
+    component->priv->observed_paths =
+            g_list_append (component->priv->observed_paths, p);
 
     if (access_fs && p->is_dir && p->is_exist) {
-        component->observed_paths = g_list_concat (component->observed_paths,
-                                                   ibus_observed_path_traverse (p));
+        component->priv->observed_paths =
+                g_list_concat(component->priv->observed_paths,
+                              ibus_observed_path_traverse(p));
     }
 }
 
@@ -828,14 +842,15 @@ ibus_component_add_engine (IBusComponent  *component,
     g_assert (IBUS_IS_ENGINE_DESC (engine));
 
     g_object_ref_sink (engine);
-    component->engines = g_list_append (component->engines, engine);
+    component->priv->engines =
+            g_list_append (component->priv->engines, engine);
     g_object_set_data ((GObject *)engine, "component", component);
 }
 
 GList *
 ibus_component_get_engines (IBusComponent *component)
 {
-    return g_list_copy (component->engines);
+    return g_list_copy (component->priv->engines);
 }
 
 static void
@@ -844,11 +859,11 @@ ibus_component_child_cb (GPid            pid,
                          IBusComponent  *component)
 {
     g_assert (IBUS_IS_COMPONENT (component));
-    g_assert (component->pid == pid);
+    g_assert (component->priv->pid == pid);
 
     g_spawn_close_pid (pid);
-    component->pid = 0;
-    component->child_source_id = 0;
+    component->priv->pid = 0;
+    component->priv->child_source_id = 0;
 
     if (component->priv->restart) {
         ibus_component_start (component, component->priv->verbose);
@@ -860,7 +875,7 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
 {
     g_assert (IBUS_IS_COMPONENT (component));
 
-    if (component->pid != 0)
+    if (component->priv->pid != 0)
         return TRUE;
 
     component->priv->verbose = verbose;
@@ -868,10 +883,8 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
     gint argc;
     gchar **argv;
     gboolean retval;
-    GError *error;
-    GSpawnFlags flags;
 
-    error = NULL;
+    GError *error = NULL;
     if (!g_shell_parse_argv (component->priv->exec, &argc, &argv, &error)) {
         g_warning ("Can not parse component %s exec: %s",
                         component->priv->name, error->message);
@@ -880,14 +893,14 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
     }
 
     error = NULL;
-    flags = G_SPAWN_DO_NOT_REAP_CHILD;
+    GSpawnFlags flags = G_SPAWN_DO_NOT_REAP_CHILD;
     if (!verbose) {
         flags |= G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
     }
     retval = g_spawn_async (NULL, argv, NULL,
                             flags,
                             NULL, NULL,
-                            &(component->pid), &error);
+                            &(component->priv->pid), &error);
     g_strfreev (argv);
     if (!retval) {
         g_warning ("Can not execute component %s: %s",
@@ -896,8 +909,10 @@ ibus_component_start (IBusComponent *component, gboolean verbose)
         return FALSE;
     }
 
-    component->child_source_id =
-        g_child_watch_add (component->pid, (GChildWatchFunc) ibus_component_child_cb, component);
+    component->priv->child_source_id =
+        g_child_watch_add(component->priv->pid,
+                          (GChildWatchFunc)ibus_component_child_cb,
+                          component);
 
     return TRUE;
 }
@@ -907,10 +922,10 @@ ibus_component_stop (IBusComponent *component)
 {
     g_assert (IBUS_IS_COMPONENT (component));
 
-    if (component->pid == 0)
+    if (component->priv->pid == 0)
         return TRUE;
 
-    kill (component->pid, SIGTERM);
+    kill (component->priv->pid, SIGTERM);
     return TRUE;
 }
 
@@ -919,9 +934,8 @@ ibus_component_is_running (IBusComponent *component)
 {
     g_assert (IBUS_IS_COMPONENT (component));
 
-    return (component->pid != 0);
+    return (component->priv->pid != 0);
 }
-
 
 gboolean
 ibus_component_check_modification (IBusComponent *component)
@@ -930,13 +944,12 @@ ibus_component_check_modification (IBusComponent *component)
 
     GList *p;
 
-    for (p = component->observed_paths; p != NULL; p = p->next) {
+    for (p = component->priv->observed_paths; p != NULL; p = p->next) {
         if (ibus_observed_path_check_modification ((IBusObservedPath *)p->data))
             return TRUE;
     }
     return FALSE;
 }
-
 
 IBusComponent *
 ibus_component_get_from_engine (IBusEngineDesc *engine)

@@ -95,18 +95,8 @@ struct _IBusComponent {
 
     /*< public >*/
 
-    /*< private >*/
-    /* engines */
-    GList *engines;
-
-    /* observed paths */
-    GList *observed_paths;
-
-    GPid     pid;
-    guint    child_source_id;
-
     /* padding */
-    gpointer pdummy[5];  // We can add 5 pointers without breaking the ABI.
+    gpointer pdummy[7];  // We can add 5 pointers without breaking the ABI.
 };
 
 struct _IBusComponentClass {

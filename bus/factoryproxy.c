@@ -156,9 +156,12 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     g_assert (BUS_IS_FACTORY_PROXY (factory));
     g_assert (IBUS_IS_ENGINE_DESC (desc));
 
+    /* FIXME: should we check it? */
+#if 0
     if (g_list_find (factory->component->engines, desc) == NULL) {
         return NULL;
     }
+#endif
 
     GError *error = NULL;
     GVariant *retval = g_dbus_proxy_call_sync ((GDBusProxy *)factory,

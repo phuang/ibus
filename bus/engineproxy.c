@@ -517,6 +517,30 @@ bus_engine_proxy_new (const gchar    *path,
 }
 
 void
+bus_engine_proxy_new2(IBusEngineDesc      *desc,
+                      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+                      gpointer             user_data)
+{
+    g_assert(IBUS_IS_ENGINE_DESC(desc));
+    g_assert(callback);
+
+    if (g_cancellable_is_cancelled(cancellable)) {
+        /* FIXME: already cancelled */
+        return;
+    }
+
+    IBusComponent *component = ibus_component_get_from_engine(desc);
+    g_assert(IBUS_IS_COMPONENT(component));
+
+    BusFactoryProxy *factory = bus_factory_proxy_get_from_component(component);
+    if (factory == NULL) {
+    }
+}
+
+BusEngineProxy  *bus_engine_proxy_new_finish        (GAsyncResult          *res,
+                                                     GError               **error);
+void
 bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
                                     guint                keyval,
                                     guint                keycode,

@@ -53,6 +53,12 @@ GType            bus_engine_proxy_get_type          (void);
 BusEngineProxy  *bus_engine_proxy_new               (const gchar           *path,
                                                      IBusEngineDesc        *desc,
                                                      BusConnection         *connection);
+void             bus_engine_proxy_new2              (IBusEngineDesc        *desc,
+                                                     GCancellable          *cancellable,
+                                                     GAsyncReadyCallback    callback,
+                                                     gpointer               user_data);
+BusEngineProxy  *bus_engine_proxy_new_finish        (GAsyncResult          *res,
+                                                     GError               **error);
 IBusEngineDesc  *bus_engine_proxy_get_desc          (BusEngineProxy        *engine);
 void             bus_engine_proxy_process_key_event (BusEngineProxy        *engine,
                                                      guint                  keyval,

@@ -113,15 +113,16 @@ bus_registry_init (BusRegistry *registry)
 
     for (p = registry->components; p != NULL; p = p->next) {
         IBusComponent *comp = (IBusComponent *)p->data;
+        GList *engines = ibus_component_get_engines (comp);
         GList *p1;
-
-        for (p1 = comp->engines; p1 != NULL; p1 = p1->next) {
+        for (p1 = engines; p1 != NULL; p1 = p1->next) {
             IBusEngineDesc *desc = (IBusEngineDesc *)p1->data;
             g_hash_table_insert (registry->engine_table,
                                  (gpointer) ibus_engine_desc_get_name (desc),
                                  desc);
             g_object_set_data ((GObject *)desc, "component", comp);
         }
+        g_list_free (engines);
     }
 }
 
