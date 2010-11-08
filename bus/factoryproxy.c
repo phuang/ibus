@@ -79,31 +79,6 @@ bus_factory_proxy_get_component (BusFactoryProxy *factory)
     return factory->component;
 }
 
-BusFactoryProxy *
-bus_factory_proxy_get_from_component (IBusComponent *component)
-{
-    IBUS_IS_COMPONENT (component);
-
-    BusFactoryProxy *factory;
-
-    factory = (BusFactoryProxy *) g_object_get_data ((GObject *)component, "factory");
-
-    return factory;
-}
-
-BusFactoryProxy *
-bus_factory_proxy_get_from_engine (IBusEngineDesc *desc)
-{
-
-    IBUS_IS_ENGINE_DESC (desc);
-
-    BusFactoryProxy *factory;
-
-    factory = (BusFactoryProxy *) g_object_get_data ((GObject *)desc, "factory");
-
-    return factory;
-}
-
 BusEngineProxy *
 bus_factory_proxy_create_engine (BusFactoryProxy *factory,
                                  IBusEngineDesc  *desc)

@@ -530,7 +530,7 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
         return;
     }
 
-    BusComponent *component = bus_component_get_from_engine(desc);
+    BusComponent *component = bus_component_from_engine(desc);
     g_assert(BUS_IS_COMPONENT(component));
 
     BusFactoryProxy *factory = bus_component_get_factory(component);

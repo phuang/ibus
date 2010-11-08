@@ -138,8 +138,8 @@ bus_registry_init (BusRegistry *registry)
     }
 
     for (p = registry->components; p != NULL; p = p->next) {
-        IBusComponent *comp = (IBusComponent *)p->data;
-        GList *engines = ibus_component_get_engines (comp);
+        BusComponent *comp = (BusComponent *)p->data;
+        GList *engines = bus_component_get_engines (comp);
         GList *p1;
         for (p1 = engines; p1 != NULL; p1 = p1->next) {
             IBusEngineDesc *desc = (IBusEngineDesc *)p1->data;

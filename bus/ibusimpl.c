@@ -331,7 +331,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     ibus->engine_list = engine_list;
 
     if (ibus->engine_list) {
-        BusComponent *component = bus_component_get_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
+        BusComponent *component = bus_component_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
         if (component && !bus_component_is_running (component)) {
             bus_component_start (component, g_verbose);
         }
@@ -775,10 +775,13 @@ _get_factory_proxy(IBusEngineDesc *engine_desc)
 
     GTimer *timer = g_timer_new ();
 
+    BusComponent *component = bus_component_from_engine(engine_desc);
+    g_assert(BUS_IS_COMPONENT(component));
+
     /* Leave the loop, if it spends more than 5 seconds */
     while (g_timer_elapsed (timer, NULL) <= 5.0) {
         if (g_main_context_iteration (NULL, TRUE)) {
-            factory = bus_factory_proxy_get_from_engine (engine_desc);
+            factory = bus_component_get_factory(component);
             if (factory != NULL) {
                 break;
             }
@@ -794,13 +797,13 @@ _get_factory_proxy(IBusEngineDesc *engine_desc)
 static BusEngineProxy *
 bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 {
-    BusFactoryProxy *factory = bus_factory_proxy_get_from_engine (engine_desc);
+    BusComponent *component = bus_component_from_engine(engine_desc);
+    g_assert(BUS_IS_COMPONENT(component));
+
+    BusFactoryProxy *factory = bus_component_get_factory(component);
 
     if (factory == NULL) {
         /* try to execute the engine */
-        BusComponent *component = bus_component_get_from_engine (engine_desc);
-        g_assert (component);
-
         if (!bus_component_is_running (component)) {
             bus_component_start (component, g_verbose);
         }
@@ -1282,11 +1285,12 @@ _ibus_register_component (BusIBusImpl           *ibus,
 
     g_object_ref_sink (component);
     g_object_ref_sink(factory);
-    
+
     BusComponent *buscomp = bus_component_new(component, factory);
+    bus_component_set_destroy_with_factory(buscomp, TRUE);
     g_object_unref(component);
     g_object_unref(factory);
-    
+
     ibus->registered_components = g_list_append(ibus->registered_components,
                                                 g_object_ref_sink(buscomp));
     GList *engines = bus_component_get_engines(buscomp);

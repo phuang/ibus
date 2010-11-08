@@ -49,6 +49,8 @@ struct _BusComponent {
     gboolean verbose;
     // TRUE if the component needs to be restarted when it dies.
     gboolean restart;
+    // TRUE if the component will be destroyed with factory
+    gboolean destroy_with_factory;
 
 
     GPid     pid;
@@ -86,7 +88,7 @@ bus_component_class_init(BusComponentClass *class)
     gobject_class->set_property = (GObjectSetPropertyFunc)bus_component_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc)bus_component_get_property;
     ibus_object_class->destroy = (IBusObjectDestroyFunc)bus_component_destroy;
-    
+
     /* install properties */
     /**
      * IBusComponent:name:
@@ -100,7 +102,7 @@ bus_component_class_init(BusComponentClass *class)
                         "component",
                         IBUS_TYPE_COMPONENT,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-    
+
     g_object_class_install_property(gobject_class,
                     PROP_FACTORY,
                     g_param_spec_object("factory",
@@ -131,7 +133,7 @@ bus_component_constructor(GType                  type,
     if (quark == 0) {
         quark = g_quark_from_static_string("BusComponent");
     }
-    
+
     /* associate each engine with BusComponent */
     GList *engines = ibus_component_get_engines(component->component);
     GList *p;
@@ -223,6 +225,9 @@ bus_component_factory_destroy_cb(BusFactoryProxy *factory,
     g_object_unref (component->factory);
     component->factory = NULL;
     g_object_notify((GObject*)component, "factory");
+
+    if (component->destroy_with_factory)
+        ibus_object_destroy((IBusObject *)component);
 }
 
 IBusComponent *
@@ -241,7 +246,7 @@ bus_component_set_factory(BusComponent    *component,
     if (component->factory == factory) {
         return;
     }
-    
+
     if (component->factory) {
         g_signal_handlers_disconnect_by_func(factory,
                                              bus_component_factory_destroy_cb,
@@ -249,11 +254,11 @@ bus_component_set_factory(BusComponent    *component,
         g_object_unref(component->factory);
         component->factory = NULL;
     }
-    
+
     if (factory) {
         g_assert(BUS_IS_FACTORY_PROXY(factory));
         component->factory = (BusFactoryProxy*)g_object_ref (factory);
-        g_signal_connect(factory, "destroy", 
+        g_signal_connect(factory, "destroy",
                          G_CALLBACK(bus_component_factory_destroy_cb), component);
     }
     g_object_notify((GObject*)component, "factory");
@@ -280,6 +285,15 @@ bus_component_get_engines(BusComponent *component)
     g_assert(BUS_IS_COMPONENT(component));
 
     return ibus_component_get_engines(component->component);
+}
+
+void
+bus_component_set_destroy_with_factory(BusComponent *component,
+                                       gboolean      with_factory)
+{
+    g_assert(BUS_IS_COMPONENT(component));
+
+    component->destroy_with_factory = with_factory;
 }
 
 void
@@ -381,7 +395,7 @@ bus_component_is_running(BusComponent *component)
 }
 
 BusComponent *
-bus_component_get_from_engine (IBusEngineDesc *engine)
+bus_component_from_engine (IBusEngineDesc *engine)
 {
     g_assert(IBUS_IS_ENGINE_DESC(engine));
 

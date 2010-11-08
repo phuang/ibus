@@ -57,14 +57,16 @@ void             bus_component_set_factory       (BusComponent    *compinent,
 BusFactoryProxy *bus_component_get_factory       (BusComponent    *factory);
 const gchar     *bus_component_get_name          (BusComponent    *component);
 GList           *bus_component_get_engines       (BusComponent    *component);
+void             bus_component_set_destroy_with_factory
+                                                 (BusComponent    *component,
+                                                  gboolean         with_factory);
 gboolean         bus_component_start             (BusComponent    *component,
                                                   gboolean         verbose);
 gboolean         bus_component_stop              (BusComponent    *component);
 gboolean         bus_component_is_running        (BusComponent    *component);
 void             bus_component_set_restart       (BusComponent    *component,
                                                   gboolean         restart);
-BusComponent    *bus_component_get_from_engine   (IBusEngineDesc  *engine);
-
+BusComponent    *bus_component_from_engine       (IBusEngineDesc  *engine);
 
 G_END_DECLS
 #endif
