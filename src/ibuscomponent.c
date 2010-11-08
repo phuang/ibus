@@ -49,19 +49,11 @@ struct _IBusComponentPrivate {
     gchar *exec;
     gchar *textdomain;
 
-    // TRUE if the component started in the verbose mode.
-    gboolean verbose;
-    // TRUE if the component needs to be restarted when it dies.
-    gboolean restart;
-
     /* engines */
     GList *engines;
 
     /* observed paths */
     GList *observed_paths;
-
-    GPid     pid;
-    guint    child_source_id;
 };
 
 #define IBUS_COMPONENT_GET_PRIVATE(o)  \
@@ -282,17 +274,6 @@ ibus_component_destroy (IBusComponent *component)
     }
     g_list_free (component->priv->engines);
     component->priv->engines = NULL;
-
-    if (component->priv->pid != 0) {
-        ibus_component_stop (component);
-        g_spawn_close_pid (component->priv->pid);
-        component->priv->pid = 0;
-    }
-
-    if (component->priv->child_source_id != 0) {
-        g_source_remove (component->priv->child_source_id);
-        component->priv->child_source_id = 0;
-    }
 
     IBUS_OBJECT_CLASS (ibus_component_parent_class)->destroy (IBUS_OBJECT (component));
 }
@@ -853,90 +834,6 @@ ibus_component_get_engines (IBusComponent *component)
     return g_list_copy (component->priv->engines);
 }
 
-static void
-ibus_component_child_cb (GPid            pid,
-                         gint            status,
-                         IBusComponent  *component)
-{
-    g_assert (IBUS_IS_COMPONENT (component));
-    g_assert (component->priv->pid == pid);
-
-    g_spawn_close_pid (pid);
-    component->priv->pid = 0;
-    component->priv->child_source_id = 0;
-
-    if (component->priv->restart) {
-        ibus_component_start (component, component->priv->verbose);
-    }
-}
-
-gboolean
-ibus_component_start (IBusComponent *component, gboolean verbose)
-{
-    g_assert (IBUS_IS_COMPONENT (component));
-
-    if (component->priv->pid != 0)
-        return TRUE;
-
-    component->priv->verbose = verbose;
-
-    gint argc;
-    gchar **argv;
-    gboolean retval;
-
-    GError *error = NULL;
-    if (!g_shell_parse_argv (component->priv->exec, &argc, &argv, &error)) {
-        g_warning ("Can not parse component %s exec: %s",
-                        component->priv->name, error->message);
-        g_error_free (error);
-        return FALSE;
-    }
-
-    error = NULL;
-    GSpawnFlags flags = G_SPAWN_DO_NOT_REAP_CHILD;
-    if (!verbose) {
-        flags |= G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
-    }
-    retval = g_spawn_async (NULL, argv, NULL,
-                            flags,
-                            NULL, NULL,
-                            &(component->priv->pid), &error);
-    g_strfreev (argv);
-    if (!retval) {
-        g_warning ("Can not execute component %s: %s",
-                        component->priv->name, error->message);
-        g_error_free (error);
-        return FALSE;
-    }
-
-    component->priv->child_source_id =
-        g_child_watch_add(component->priv->pid,
-                          (GChildWatchFunc)ibus_component_child_cb,
-                          component);
-
-    return TRUE;
-}
-
-gboolean
-ibus_component_stop (IBusComponent *component)
-{
-    g_assert (IBUS_IS_COMPONENT (component));
-
-    if (component->priv->pid == 0)
-        return TRUE;
-
-    kill (component->priv->pid, SIGTERM);
-    return TRUE;
-}
-
-gboolean
-ibus_component_is_running (IBusComponent *component)
-{
-    g_assert (IBUS_IS_COMPONENT (component));
-
-    return (component->priv->pid != 0);
-}
-
 gboolean
 ibus_component_check_modification (IBusComponent *component)
 {
@@ -962,9 +859,3 @@ ibus_component_get_from_engine (IBusEngineDesc *engine)
     return component;
 }
 
-void
-ibus_component_set_restart (IBusComponent *component, gboolean restart)
-{
-    g_assert (IBUS_IS_COMPONENT (component));
-    component->priv->restart = restart;
-}

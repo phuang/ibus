@@ -530,10 +530,10 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
         return;
     }
 
-    IBusComponent *component = ibus_component_get_from_engine(desc);
-    g_assert(IBUS_IS_COMPONENT(component));
+    BusComponent *component = bus_component_get_from_engine(desc);
+    g_assert(BUS_IS_COMPONENT(component));
 
-    BusFactoryProxy *factory = bus_factory_proxy_get_from_component(component);
+    BusFactoryProxy *factory = bus_component_get_factory(component);
     if (factory == NULL) {
     }
 }

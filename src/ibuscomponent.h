@@ -307,35 +307,7 @@ void             ibus_component_output_engines  (IBusComponent  *component,
 gboolean         ibus_component_check_modification
                                                 (IBusComponent  *component);
 
-/**
- * ibus_component_start:
- * @component: An IBusComponent.
- * @verbose: if FALSE, redirect the child output to /dev/null
- * @returns: TRUE if the component is started; FALSE otherwise.
- *
- * Whether the IBusComponent is started.
- */
-gboolean         ibus_component_start           (IBusComponent  *component,
-                                                 gboolean        verbose);
-
-/**
- * ibus_component_stop:
- * @component: An IBusComponent.
- * @returns: TRUE if the component is stopped; FALSE otherwise.
- *
- * Whether the IBusComponent is stopped.
- */
-gboolean         ibus_component_stop            (IBusComponent  *component);
-
-/**
- * ibus_component_is_running:
- * @component: An IBusComponent.
- * @returns: TRUE if the component is running; FALSE otherwise.
- *
- * Whether the IBusComponent is running.
- */
-gboolean         ibus_component_is_running      (IBusComponent  *component);
-
+#if 0
 /**
  * ibus_component_get_from_engine:
  * @engine: A description of an engine.
@@ -344,17 +316,7 @@ gboolean         ibus_component_is_running      (IBusComponent  *component);
  * Get the IBusComponent from an engine description.
  */
 IBusComponent   *ibus_component_get_from_engine (IBusEngineDesc *engine);
-
-/**
- * ibus_component_set_restart:
- * @component: An IBusComponent.
- * @restart: if TRUE, the component will be restartd when it dies.
- *
- * Set whether the component needs to be restarted when it dies.
- */
-void             ibus_component_set_restart     (IBusComponent  *component,
-                                                 gboolean        restart);
-
+#endif
 
 G_END_DECLS
 #endif

@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2010 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2010 Google Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,16 @@ IBusComponent   *bus_component_get_component     (BusComponent    *component);
 void             bus_component_set_factory       (BusComponent    *compinent,
                                                   BusFactoryProxy *factory);
 BusFactoryProxy *bus_component_get_factory       (BusComponent    *factory);
+const gchar     *bus_component_get_name          (BusComponent    *component);
+GList           *bus_component_get_engines       (BusComponent    *component);
+gboolean         bus_component_start             (BusComponent    *component,
+                                                  gboolean         verbose);
+gboolean         bus_component_stop              (BusComponent    *component);
+gboolean         bus_component_is_running        (BusComponent    *component);
+void             bus_component_set_restart       (BusComponent    *component,
+                                                  gboolean         restart);
+BusComponent    *bus_component_get_from_engine   (IBusEngineDesc  *engine);
+
 
 G_END_DECLS
 #endif

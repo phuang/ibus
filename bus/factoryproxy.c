@@ -30,7 +30,6 @@ struct _BusFactoryProxy {
     /* instance members */
 
     IBusComponent *component;
-    GList *engine_list;
 };
 
 struct _BusFactoryProxyClass {
@@ -52,69 +51,25 @@ bus_factory_proxy_class_init (BusFactoryProxyClass *class)
 static void
 bus_factory_proxy_init (BusFactoryProxy *factory)
 {
-    factory->component = NULL;
 }
 
 static void
 bus_factory_proxy_destroy (IBusProxy *proxy)
 {
-    BusFactoryProxy *factory = (BusFactoryProxy *)proxy;
-    GList *p;
-
-    for (p = factory->engine_list; p != NULL ; p = p->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *)p->data;
-        g_object_steal_data ((GObject *)desc, "factory");
-        g_object_unref (desc);
-    }
-    g_list_free (factory->engine_list);
-    factory->engine_list = NULL;
-
-    if (factory->component) {
-        g_object_steal_data ((GObject *)factory->component, "factory");
-        g_object_unref (factory->component);
-        factory->component = NULL;
-    }
-
-    IBUS_PROXY_CLASS(bus_factory_proxy_parent_class)->destroy (IBUS_PROXY (factory));
+    IBUS_PROXY_CLASS(bus_factory_proxy_parent_class)->destroy(IBUS_PROXY (proxy));
 }
 
 BusFactoryProxy *
-bus_factory_proxy_new (IBusComponent *component,
-                       BusConnection *connection)
+bus_factory_proxy_new(BusConnection *connection)
 {
-    g_assert (IBUS_IS_COMPONENT (component));
-
+    g_assert(BUS_IS_CONNECTION(connection));
     BusFactoryProxy *factory;
-    GList *p;
-
-    if (connection == NULL) {
-        const gchar *name = ibus_component_get_name (component);
-        connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, name);
-    }
-
-    if (connection == NULL) {
-        return NULL;
-    }
-
+    
     factory = g_object_new (BUS_TYPE_FACTORY_PROXY,
                             "g-object-path", IBUS_PATH_FACTORY,
                             "g-interface-name", IBUS_INTERFACE_FACTORY,
                             "g-connection", bus_connection_get_dbus_connection (connection),
                             NULL);
-
-    g_object_ref_sink (component);
-    factory->component = component;
-    g_object_set_data ((GObject *)factory->component, "factory", factory);
-
-    factory->engine_list = ibus_component_get_engines (factory->component);
-
-    for (p = factory->engine_list; p != NULL; p = p->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *)p->data;
-        g_object_ref (desc);
-        g_object_set_data ((GObject *)desc, "factory", factory);
-        g_assert (g_object_get_data ((GObject *)desc, "factory") == factory);
-    }
-
     return factory;
 }
 

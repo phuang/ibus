@@ -27,6 +27,7 @@
 #include "types.h"
 #include "option.h"
 #include "marshalers.h"
+#include "dbusimpl.h"
 
 enum {
     CHANGED,
@@ -34,6 +35,31 @@ enum {
 };
 
 static guint             _signals[LAST_SIGNAL] = { 0 };
+
+struct _BusRegistry {
+    IBusObject parent;
+
+    /* instance members */
+    GList *observed_paths;
+    GList *components;
+
+    GHashTable *engine_table;
+    GList *active_engines;
+
+#ifdef G_THREADS_ENABLED
+    GThread *thread;
+    gboolean thread_running;
+    GMutex  *mutex;
+    GCond   *cond;
+    gboolean changed;
+#endif
+};
+
+struct _BusRegistryClass {
+    IBusObjectClass parent;
+
+    /* class members */
+};
 
 /* functions prototype */
 static void              bus_registry_destroy           (BusRegistry        *registry);
@@ -261,8 +287,10 @@ bus_registry_load_cache (BusRegistry *registry)
                 IBusComponent *component;
                 component = ibus_component_new_from_xml_node (pp->data);
                 if (component) {
-                    g_object_ref_sink (component);
-                    registry->components = g_list_append (registry->components, component);
+                    BusComponent *buscomp = bus_component_new(component, NULL);
+                    g_object_ref_sink(buscomp);
+                    registry->components =
+                        g_list_append(registry->components, buscomp);
                 }
             }
 
@@ -286,7 +314,7 @@ bus_registry_check_modification (BusRegistry *registry)
     }
 
     for (p = registry->components; p != NULL; p = p->next) {
-        if (ibus_component_check_modification ((IBusComponent *)p->data))
+        if (ibus_component_check_modification(bus_component_get_component((BusComponent *)p->data)))
             return TRUE;
     }
 
@@ -338,8 +366,8 @@ bus_registry_save_cache (BusRegistry *registry)
         g_string_append_indent (output, 1);
         g_string_append (output, "<components>\n");
         for (p = registry->components; p != NULL; p = p->next) {
-            ibus_component_output ((IBusComponent *)p->data,
-                                      output, 2);
+            ibus_component_output(bus_component_get_component((BusComponent *)p->data),
+                                  output, 2);
         }
         g_string_append_indent (output, 1);
         g_string_append (output, "</components>\n");
@@ -383,8 +411,8 @@ bus_registry_load_in_dir (BusRegistry *registry,
         path = g_build_filename (dirname, filename, NULL);
         component = ibus_component_new_from_file (path);
         if (component != NULL) {
-            g_object_ref_sink (component);
-            registry->components = g_list_append (registry->components, component);
+            BusComponent *buscomp = bus_component_new(component, NULL);
+            registry->components = g_list_append(registry->components, buscomp);
         }
 
         g_free (path);
@@ -403,18 +431,18 @@ bus_registry_new (void)
 }
 
 static gint
-_component_is_name (IBusComponent *component,
-                    const gchar   *name)
+bus_register_component_is_name_cb(BusComponent *component,
+                                  const gchar  *name)
 {
-    g_assert (IBUS_IS_COMPONENT (component));
-    g_assert (name);
+    g_assert(BUS_IS_COMPONENT (component));
+    g_assert(name);
 
-    return g_strcmp0 (ibus_component_get_name (component), name);
+    return g_strcmp0(bus_component_get_name(component), name);
 }
 
-IBusComponent *
-bus_registry_lookup_component_by_name (BusRegistry *registry,
-                                       const gchar *name)
+BusComponent *
+bus_registry_lookup_component_by_name(BusRegistry *registry,
+                                      const gchar *name)
 {
     g_assert (BUS_IS_REGISTRY (registry));
     g_assert (name);
@@ -422,9 +450,9 @@ bus_registry_lookup_component_by_name (BusRegistry *registry,
     GList *p;
     p = g_list_find_custom (registry->components,
                             name,
-                            (GCompareFunc)_component_is_name);
+                            (GCompareFunc)bus_register_component_is_name_cb);
     if (p) {
-        return (IBusComponent *)p->data;
+        return (BusComponent *)p->data;
     }
     else {
         return NULL;
@@ -490,7 +518,7 @@ bus_registry_stop_all_components (BusRegistry *registry)
 {
     g_assert (BUS_IS_REGISTRY (registry));
 
-    g_list_foreach (registry->components, (GFunc) ibus_component_stop, NULL);
+    g_list_foreach (registry->components, (GFunc) bus_component_stop, NULL);
 
 }
 
@@ -569,7 +597,7 @@ bus_registry_is_changed (BusRegistry *registry)
 }
 #endif
 
-BusFactoryProxy *
+void
 bus_registry_name_owner_changed (BusRegistry *registry,
                                  const gchar *name,
                                  const gchar *old_name,
@@ -580,17 +608,17 @@ bus_registry_name_owner_changed (BusRegistry *registry,
     g_assert (old_name);
     g_assert (new_name);
 
-    IBusComponent *component;
+    BusComponent *component;
     BusFactoryProxy *factory;
 
     component = bus_registry_lookup_component_by_name (registry, name);
 
     if (component == NULL) {
-        return NULL;
+        return;
     }
 
     if (g_strcmp0 (old_name, "") != 0) {
-        factory = bus_factory_proxy_get_from_component (component);
+        factory = bus_component_get_factory(component);
 
         if (factory != NULL) {
             ibus_proxy_destroy ((IBusProxy *)factory);
@@ -598,9 +626,17 @@ bus_registry_name_owner_changed (BusRegistry *registry,
     }
 
     if (g_strcmp0 (new_name, "") != 0) {
-        factory = bus_factory_proxy_new (component, NULL);
-        return factory;
-    }
+        BusConnection *connection =
+                bus_dbus_impl_get_connection_by_name(BUS_DEFAULT_DBUS,
+                                                     new_name);
+        if (connection == NULL)
+            return;
 
-    return NULL;
+        factory = bus_factory_proxy_new(connection);
+        if (factory == NULL)
+            return;
+        g_object_ref_sink(factory);
+        bus_component_set_factory(component, factory);
+        g_object_unref(factory);
+    }
 }
