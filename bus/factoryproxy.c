@@ -28,8 +28,6 @@
 struct _BusFactoryProxy {
     IBusProxy parent;
     /* instance members */
-
-    IBusComponent *component;
 };
 
 struct _BusFactoryProxyClass {
@@ -71,12 +69,6 @@ bus_factory_proxy_new(BusConnection *connection)
                             "g-connection", bus_connection_get_dbus_connection (connection),
                             NULL);
     return factory;
-}
-
-IBusComponent *
-bus_factory_proxy_get_component (BusFactoryProxy *factory)
-{
-    return factory->component;
 }
 
 BusEngineProxy *

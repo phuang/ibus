@@ -51,7 +51,6 @@ typedef struct _BusFactoryProxyClass BusFactoryProxyClass;
 
 GType            bus_factory_proxy_get_type     (void);
 BusFactoryProxy *bus_factory_proxy_new          (BusConnection      *connection);
-IBusComponent   *bus_factory_proxy_get_component(BusFactoryProxy    *factory);
 BusEngineProxy  *bus_factory_proxy_create_engine(BusFactoryProxy    *factory,
                                                  IBusEngineDesc     *desc);
 BusFactoryProxy *bus_factory_proxy_get_from_component
