@@ -48,23 +48,13 @@ G_BEGIN_DECLS
 typedef struct _BusComponent BusComponent;
 typedef struct _BusComponentClass BusComponentClass;
 
-struct _BusComponent {
-    IBusObject parent;
-
-    /* instance members */
-    IBusComponent *component;
-    BusFactoryProxy *factory;
-};
-
-struct _BusComponentClass {
-    IBusObjectClass parent;
-    /* class members */
-};
-
 GType            bus_component_get_type          (void);
-BusComponent    *bus_component_new               (IBusComponent   *component);
+BusComponent    *bus_component_new               (IBusComponent   *component,
+                                                  BusFactoryProxy *factory);
+IBusComponent   *bus_component_get_component     (BusComponent    *component);
 void             bus_component_set_factory       (BusComponent    *compinent,
                                                   BusFactoryProxy *factory);
+BusFactoryProxy *bus_component_get_factory       (BusComponent    *factory);
 
 G_END_DECLS
 #endif

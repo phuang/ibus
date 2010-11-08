@@ -29,14 +29,41 @@
 #include "marshalers.h"
 
 enum {
-    FACTORY_CHANGED,
     LAST_SIGNAL,
 };
 
-static guint             _signals[LAST_SIGNAL] = { 0 };
+enum {
+    PROP_0 = 0,
+    PROP_COMPONENT,
+    PROP_FACTORY,
+};
+
+struct _BusComponent {
+    IBusObject parent;
+
+    /* instance members */
+    IBusComponent *component;
+    BusFactoryProxy *factory;
+};
+
+struct _BusComponentClass {
+    IBusObjectClass parent;
+    /* class members */
+};
 
 /* functions prototype */
-static void     bus_component_destroy   (BusComponent        *component);
+static GObject* bus_component_constructor   (GType                  type,
+                                             guint                  n_construct_params,
+                                             GObjectConstructParam *construct_params);
+static void     bus_component_set_property  (BusComponent          *component,
+                                             guint                  prop_id,
+                                             const GValue          *value,
+                                             GParamSpec            *pspec);
+static void     bus_component_get_property  (BusComponent          *component,
+                                             guint                  prop_id,
+                                             GValue                *value,
+                                             GParamSpec            *pspec);
+static void     bus_component_destroy       (BusComponent          *component);
 
 G_DEFINE_TYPE(BusComponent, bus_component, IBUS_TYPE_OBJECT)
 
@@ -46,17 +73,32 @@ bus_component_class_init(BusComponentClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS(class);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS(class);
 
-    _signals[FACTORY_CHANGED] =
-        g_signal_new (I_("factory-changed"),
-            G_TYPE_FROM_CLASS (gobject_class),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            bus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
-
+    gobject_class->constructor = bus_component_constructor;
+    gobject_class->set_property = (GObjectSetPropertyFunc)bus_component_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc)bus_component_get_property;
     ibus_object_class->destroy = (IBusObjectDestroyFunc)bus_component_destroy;
+    
+    /* install properties */
+    /**
+     * IBusComponent:name:
+     *
+     * The name of component
+     */
+    g_object_class_install_property(gobject_class,
+                    PROP_COMPONENT,
+                    g_param_spec_object("component",
+                        "component",
+                        "component",
+                        IBUS_TYPE_COMPONENT,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    
+    g_object_class_install_property(gobject_class,
+                    PROP_FACTORY,
+                    g_param_spec_object("factory",
+                        "factory",
+                        "factory",
+                        BUS_TYPE_FACTORY_PROXY,
+                        G_PARAM_READWRITE));
 }
 
 static void
@@ -64,23 +106,76 @@ bus_component_init(BusComponent *component)
 {
 }
 
+static GObject*
+bus_component_constructor(GType                  type,
+                          guint                  n_construct_params,
+                          GObjectConstructParam *construct_params)
+{
+    GObject *object;
+    object = G_OBJECT_CLASS(bus_component_parent_class)->constructor(type,
+                                                                     n_construct_params,
+                                                                     construct_params);
+    g_assert(((BusComponent *)object)->component);
+    return object;
+}
+
+static void
+bus_component_set_property(BusComponent *component,
+                           guint         prop_id,
+                           const GValue *value,
+                           GParamSpec   *pspec)
+{
+    switch (prop_id) {
+    case PROP_COMPONENT:
+        g_assert(component->component == NULL);
+        component->component = g_value_dup_object(value);
+        break;
+    case PROP_FACTORY:
+        bus_component_set_factory(component, (BusFactoryProxy *)g_value_get_object(value));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID(component, prop_id, pspec);
+    }
+}
+
+static void
+bus_component_get_property(BusComponent *component,
+                           guint         prop_id,
+                           GValue       *value,
+                           GParamSpec   *pspec)
+{
+    switch (prop_id) {
+    case PROP_COMPONENT:
+        g_value_set_object(value, bus_component_get_component(component));
+        break;
+    case PROP_FACTORY:
+        g_value_set_object(value, bus_component_get_factory(component));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
+    }
+}
+
 static void
 bus_component_destroy(BusComponent *component)
 {
+    if (component->component != NULL) {
+        g_object_unref(component->component);
+        component->component = NULL;
+    }
     IBUS_OBJECT_CLASS(bus_component_parent_class)->destroy(IBUS_OBJECT (component));
 }
 
 BusComponent *
-bus_component_new(IBusComponent *component)
+bus_component_new(IBusComponent   *component,
+                  BusFactoryProxy *factory)
 {
     g_assert(IBUS_IS_COMPONENT(component));
 
-    BusComponent *buscomponent;
-    buscomponent = (BusComponent *)g_object_new (BUS_TYPE_COMPONENT, NULL);
-
-    buscomponent->component = (IBusComponent *)g_object_ref_sink (component);
-
-    return buscomponent;
+    return (BusComponent *)g_object_new(BUS_TYPE_COMPONENT,
+                                        "component", component,
+                                        "factory", factory,
+                                        NULL);
 }
 
 static void
@@ -91,7 +186,14 @@ bus_component_factory_destroy_cb(BusFactoryProxy *factory,
 
     g_object_unref (component->factory);
     component->factory = NULL;
-    g_signal_emit (component, _signals[FACTORY_CHANGED], 0);
+    g_object_notify((GObject*)component, "factory");
+}
+
+IBusComponent *
+bus_component_get_component(BusComponent *component)
+{
+    g_assert(BUS_IS_COMPONENT(component));
+    return component->component;
 }
 
 void
@@ -118,6 +220,13 @@ bus_component_set_factory(BusComponent    *component,
         g_signal_connect(factory, "destroy", 
                          G_CALLBACK(bus_component_factory_destroy_cb), component);
     }
-    g_signal_emit (component, _signals[FACTORY_CHANGED], 0);
+    g_object_notify((GObject*)component, "factory");
+}
+
+BusFactoryProxy *
+bus_component_get_factory(BusComponent *component)
+{
+    g_assert(BUS_IS_COMPONENT(component));
+    return component->factory;
 }
 
