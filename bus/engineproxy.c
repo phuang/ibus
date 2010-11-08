@@ -40,7 +40,6 @@ struct _BusEngineProxy {
     IBusEngineDesc *desc;
     IBusKeymap     *keymap;
     IBusPropList *prop_list;
-
     /* private member */
 };
 
@@ -71,24 +70,65 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0 = 0,
+    PROP_ENGINE_DESC,
+};
+
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
 // static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void     bus_engine_proxy_real_destroy   (IBusProxy          *proxy);
+static void     bus_engine_proxy_set_property   (BusEngineProxy      *engine,
+                                                 guint                prop_id,
+                                                 const GValue        *value,
+                                                 GParamSpec          *pspec);
+static void     bus_engine_proxy_get_property   (BusEngineProxy      *engine,
+                                                 guint                prop_id,
+                                                 GValue              *value,
+                                                 GParamSpec          *pspec);
+static void     bus_engine_proxy_real_destroy   (IBusProxy           *proxy);
+static void     bus_engine_proxy_g_signal       (GDBusProxy          *proxy,
+                                                 const gchar         *sender_name,
+                                                 const gchar         *signal_name,
+                                                 GVariant            *parameters);
+static void     bus_engine_proxy_initable_iface_init
+                                                (GInitableIface      *initable_iface);
+static void     bus_engine_proxy_async_initable_iface_init
+                                                (GAsyncInitableIface *async_initable_iface);
 
-static void     bus_engine_proxy_g_signal       (GDBusProxy         *proxy,
-                                                 const gchar        *sender_name,
-                                                 const gchar        *signal_name,
-                                                 GVariant           *parameters);
+G_DEFINE_TYPE_WITH_CODE (BusEngineProxy, bus_engine_proxy, IBUS_TYPE_PROXY,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, bus_engine_proxy_initable_iface_init)
+                         G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, bus_engine_proxy_async_initable_iface_init)
+                        );
 
-G_DEFINE_TYPE (BusEngineProxy, bus_engine_proxy, IBUS_TYPE_PROXY)
+static GInitableIface *parent_initable_iface = NULL;
+static GAsyncInitableIface *parent_async_initable_iface = NULL;
 
 static void
 bus_engine_proxy_class_init (BusEngineProxyClass *class)
 {
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    
+    gobject_class->set_property = (GObjectSetPropertyFunc)bus_engine_proxy_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc)bus_engine_proxy_get_property;
+
     IBUS_PROXY_CLASS (class)->destroy = bus_engine_proxy_real_destroy;
     G_DBUS_PROXY_CLASS (class)->g_signal = bus_engine_proxy_g_signal;
+
+    parent_initable_iface =
+            (GInitableIface *)g_type_interface_peek(bus_engine_proxy_parent_class, G_TYPE_INITABLE);
+    parent_async_initable_iface =
+            (GAsyncInitableIface *)g_type_interface_peek(bus_engine_proxy_parent_class, G_TYPE_ASYNC_INITABLE);
+
+    /* install properties */
+    g_object_class_install_property(gobject_class,
+                    PROP_ENGINE_DESC,
+                    g_param_spec_object("desc",
+                        "desc",
+                        "desc",
+                        IBUS_TYPE_ENGINE_DESC,
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
     engine_signals[COMMIT_TEXT] =
@@ -286,12 +326,43 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
             G_TYPE_NONE,
             1,
             IBUS_TYPE_PROPERTY);
-
 }
 
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
+}
+
+static void
+bus_engine_proxy_set_property (BusEngineProxy *engine,
+                               guint           prop_id,
+                               const GValue   *value,
+                               GParamSpec     *pspec)
+{
+    switch (prop_id) {
+    case PROP_ENGINE_DESC:
+        g_assert (engine->desc == NULL);
+        engine->desc = g_value_dup_object (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
+    }
+}
+
+static void
+bus_engine_proxy_get_property (BusEngineProxy *engine,
+                               guint           prop_id,
+                               GValue         *value,
+                               GParamSpec     *pspec)
+{
+    switch (prop_id) {
+    case PROP_ENGINE_DESC:
+        g_value_set_object (value, bus_engine_proxy_get_desc (engine));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
+    }
+
 }
 
 static void
@@ -515,6 +586,13 @@ bus_engine_proxy_new (const gchar    *path,
     }
     return engine;
 }
+
+typedef struct {
+    IBusEngineDesc  *desc;
+    BusComponent    *component;
+    BusFactoryProxy *factory;
+    BusEngineProxy  *engine;
+} EngineProxyNewData;
 
 void
 bus_engine_proxy_new2(IBusEngineDesc      *desc,
@@ -785,4 +863,56 @@ bus_engine_proxy_is_enabled (BusEngineProxy *engine)
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     return engine->enabled;
+}
+
+static gboolean
+initable_init (GInitable     *initable,
+               GCancellable  *cancellable,
+               GError       **error)
+{
+    return parent_initable_iface->init (initable,
+                                        cancellable,
+                                        error);
+}
+
+static void
+bus_engine_proxy_initable_iface_init (GInitableIface *initable_iface)
+{
+    g_debug ("init");
+    initable_iface->init = initable_init;
+}
+
+static void
+async_initable_init_async (GAsyncInitable      *initable,
+                           gint                 io_priority,
+                           GCancellable        *cancellable,
+                           GAsyncReadyCallback  callback,
+                           gpointer             user_data)
+{
+    BusEngineProxy *engine = BUS_ENGINE_PROXY (initable);
+
+    parent_async_initable_iface->init_async (initable,
+                                             io_priority,
+                                             cancellable,
+                                             callback,
+                                             user_data);
+    engine = NULL;
+}
+
+static gboolean
+async_initable_init_finish (GAsyncInitable *initable,
+                            GAsyncResult   *res,
+                            GError        **error)
+{
+    g_debug ("async_finish");
+    return parent_async_initable_iface->init_finish (initable,
+                                                     res,
+                                                     error);
+}
+
+static void
+bus_engine_proxy_async_initable_iface_init (GAsyncInitableIface *async_initable_iface)
+{
+    async_initable_iface->init_async  = async_initable_init_async;
+    async_initable_iface->init_finish = async_initable_init_finish;
 }

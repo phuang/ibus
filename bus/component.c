@@ -90,11 +90,6 @@ bus_component_class_init(BusComponentClass *class)
     ibus_object_class->destroy = (IBusObjectDestroyFunc)bus_component_destroy;
 
     /* install properties */
-    /**
-     * IBusComponent:name:
-     *
-     * The name of component
-     */
     g_object_class_install_property(gobject_class,
                     PROP_COMPONENT,
                     g_param_spec_object("component",

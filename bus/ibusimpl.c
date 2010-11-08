@@ -156,7 +156,7 @@ static void     bus_ibus_impl_global_engine_changed
 static void     bus_ibus_impl_set_context_engine_from_desc
                                                 (BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
-                                                 IBusEngineDesc     *engine_desc);
+                                                 IBusEngineDesc     *desc);
 static void     bus_ibus_impl_set_context_engine(BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
                                                  BusEngineProxy     *engine);
@@ -765,17 +765,17 @@ _timeout_cb (gpointer data)
 }
 
 static BusFactoryProxy *
-_get_factory_proxy(IBusEngineDesc *engine_desc)
+_get_factory_proxy(IBusEngineDesc *desc)
 {
     BusFactoryProxy *factory = NULL;
 
     /* Add a timeout to wake up g_main_context_iteration in every 0.5 second,
-     * and then to check the factory assocated with the engine_desc */
+     * and then to check the factory assocated with the desc */
     guint timeout_id = g_timeout_add (500, _timeout_cb, NULL);
 
     GTimer *timer = g_timer_new ();
 
-    BusComponent *component = bus_component_from_engine(engine_desc);
+    BusComponent *component = bus_component_from_engine(desc);
     g_assert(BUS_IS_COMPONENT(component));
 
     /* Leave the loop, if it spends more than 5 seconds */
@@ -795,19 +795,21 @@ _get_factory_proxy(IBusEngineDesc *engine_desc)
 }
 
 static BusEngineProxy *
-bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
+bus_ibus_impl_create_engine (IBusEngineDesc *desc)
 {
-    BusComponent *component = bus_component_from_engine(engine_desc);
+    g_assert(IBUS_IS_ENGINE_DESC(desc));
+
+    BusComponent *component = bus_component_from_engine(desc);
     g_assert(BUS_IS_COMPONENT(component));
 
     BusFactoryProxy *factory = bus_component_get_factory(component);
 
     if (factory == NULL) {
         /* try to execute the engine */
-        if (!bus_component_is_running (component)) {
-            bus_component_start (component, g_verbose);
+        if (!bus_component_is_running(component)) {
+            bus_component_start(component, g_verbose);
         }
-        factory = _get_factory_proxy (engine_desc);
+        factory = _get_factory_proxy(desc);
     }
 
     if (factory == NULL) {
@@ -816,7 +818,7 @@ bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
 
     g_object_ref (factory);
     BusEngineProxy *engine =
-            bus_factory_proxy_create_engine (factory, engine_desc);
+            bus_factory_proxy_create_engine (factory, desc);
     g_object_unref (factory);
 
     return engine;
@@ -826,21 +828,21 @@ static IBusEngineDesc *
 _find_engine_desc_by_name(BusIBusImpl *ibus,
                           const gchar *engine_name)
 {
-    IBusEngineDesc *engine_desc = NULL;
+    IBusEngineDesc *desc = NULL;
     GList *p;
 
     /* find engine in registered engine list */
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
-        engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
-            return engine_desc;
+        desc = (IBusEngineDesc *)p->data;
+        if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
+            return desc;
     }
 
     /* find engine in preload engine list */
     for (p = ibus->engine_list; p != NULL; p = p->next) {
-        engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
-            return engine_desc;
+        desc = (IBusEngineDesc *)p->data;
+        if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
+            return desc;
     }
 
     return NULL;
@@ -851,7 +853,7 @@ _context_request_engine_cb (BusInputContext *context,
                             const gchar     *engine_name,
                             BusIBusImpl     *ibus)
 {
-    IBusEngineDesc *engine_desc = NULL;
+    IBusEngineDesc *desc = NULL;
 
     /* context should has focus before request an engine */
     g_return_if_fail (bus_input_context_has_focus (context));
@@ -866,27 +868,27 @@ _context_request_engine_cb (BusInputContext *context,
             else {
                 gchar *name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
                 if (name) {
-                    engine_desc = _find_engine_desc_by_name (ibus, name);
+                    desc = _find_engine_desc_by_name (ibus, name);
                     g_free (name);
                 }
             }
         }
         /* request default engine */
-        if (!engine_desc) {
+        if (!desc) {
             if (ibus->register_engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
+                desc = (IBusEngineDesc *)ibus->register_engine_list->data;
             }
             else if (ibus->engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->engine_list->data;
+                desc = (IBusEngineDesc *)ibus->engine_list->data;
             }
          }
     }
     else {
         /* request engine by name */
-        engine_desc = _find_engine_desc_by_name (ibus, engine_name);
+        desc = _find_engine_desc_by_name (ibus, engine_name);
     }
 
-    bus_ibus_impl_set_context_engine_from_desc (ibus, context, engine_desc);
+    bus_ibus_impl_set_context_engine_from_desc (ibus, context, desc);
 }
 
 static void
@@ -1009,10 +1011,10 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
 static void
 bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                             BusInputContext *context,
-                                            IBusEngineDesc  *engine_desc)
+                                            IBusEngineDesc  *desc)
 {
-    if (engine_desc != NULL) {
-        BusEngineProxy *engine = bus_ibus_impl_create_engine (engine_desc);
+    if (desc != NULL) {
+        BusEngineProxy *engine = bus_ibus_impl_create_engine (desc);
         if (engine != NULL) {
             bus_ibus_impl_set_context_engine (ibus, context, engine);
         }
@@ -1476,9 +1478,9 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         _context_request_engine_cb (ibus->focused_context, new_engine_name, ibus);
     }
     else {
-        IBusEngineDesc *engine_desc = _find_engine_desc_by_name (ibus, new_engine_name);
-        if (engine_desc != NULL) {
-            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (engine_desc);
+        IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, new_engine_name);
+        if (desc != NULL) {
+            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (desc);
             if (new_engine != NULL) {
                 /* Enable the global engine by default, because the user
                  * selected it explicitly. */
