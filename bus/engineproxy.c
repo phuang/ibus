@@ -567,15 +567,11 @@ bus_engine_proxy_new (const gchar    *path,
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
                                            NULL,
+                                           "desc",             desc, 
                                            "g-connection",     bus_connection_get_dbus_connection (connection),
                                            "g-interface-name", IBUS_INTERFACE_ENGINE,
                                            "g-object-path",    path,
                                            NULL);
-    if (engine == NULL)
-        return NULL;
-
-    engine->desc = desc;
-    g_object_ref_sink (desc);
     const gchar *layout = ibus_engine_desc_get_layout (desc);
     if (layout != NULL && layout[0] != '\0') {
         engine->keymap = ibus_keymap_get (layout);
@@ -870,6 +866,14 @@ initable_init (GInitable     *initable,
                GCancellable  *cancellable,
                GError       **error)
 {
+    BusEngineProxy *engine = BUS_ENGINE_PROXY (initable);
+    if (engine->desc == NULL) {
+        *error = g_error_new (G_DBUS_ERROR,
+                              G_DBUS_ERROR_FAILED,
+                              "Desc is NULL");
+        return FALSE;
+    }
+
     return parent_initable_iface->init (initable,
                                         cancellable,
                                         error);
@@ -878,7 +882,6 @@ initable_init (GInitable     *initable,
 static void
 bus_engine_proxy_initable_iface_init (GInitableIface *initable_iface)
 {
-    g_debug ("init");
     initable_iface->init = initable_init;
 }
 
