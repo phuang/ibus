@@ -70,7 +70,7 @@ bus_factory_proxy_new(BusConnection *connection)
                             NULL);
     return factory;
 }
-
+#if 0
 BusEngineProxy *
 bus_factory_proxy_create_engine (BusFactoryProxy *factory,
                                  IBusEngineDesc  *desc)
@@ -107,6 +107,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     g_variant_unref (retval);
     return engine;
 }
+#endif
 
 void
 bus_factory_proxy_create_engine_async (BusFactoryProxy    *factory,

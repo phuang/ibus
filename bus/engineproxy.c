@@ -109,7 +109,7 @@ static void
 bus_engine_proxy_class_init (BusEngineProxyClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
-    
+
     gobject_class->set_property = (GObjectSetPropertyFunc)bus_engine_proxy_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc)bus_engine_proxy_get_property;
 
@@ -573,7 +573,7 @@ bus_engine_proxy_new (const gchar     *path,
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
                                            NULL,
-                                           "desc",             desc, 
+                                           "desc",             desc,
                                            "g-connection",     connection,
                                            "g-interface-name", IBUS_INTERFACE_ENGINE,
                                            "g-object-path",    path,
@@ -594,7 +594,6 @@ typedef struct {
     IBusEngineDesc  *desc;
     BusComponent    *component;
     BusFactoryProxy *factory;
-    BusEngineProxy  *engine;
     guint handler_id;
     guint timeout_id;
     const gchar *error_message;
@@ -614,7 +613,7 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
         g_simple_async_result_complete_in_idle (data->simple);
         return;
     }
-    
+
     BusEngineProxy *engine =
             bus_engine_proxy_new (path,
                                   data->desc,
@@ -636,7 +635,6 @@ notify_factory_cb (BusComponent       *component,
 
     g_signal_handler_disconnect (data->component, data->handler_id);
     data->handler_id = 0;
-    
 
     data->factory = bus_component_get_factory (data->component);
 
@@ -686,7 +684,7 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
     g_assert (callback);
 
     EngineProxyNewData *data = g_slice_new0 (EngineProxyNewData);
-    
+
     data->desc = g_object_ref (desc);
     data->component = g_object_ref (bus_component_from_engine_desc (desc));
 
@@ -694,6 +692,7 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
                                               callback,
                                               user_data,
                                               bus_engine_proxy_new2);
+    g_object_set_data (data->simple, "EngineProxyNewData", data);
 
     data->factory = bus_component_get_factory (data->component);
 
@@ -708,12 +707,12 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
                                                   data);
     }
 
-#if 0 
+#if 0
     BusEngineProxy *engine =
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
                                            NULL,
-                                           "desc",             desc, 
+                                           "desc",             desc,
                                            "g-connection",     bus_connection_get_dbus_connection (connection),
                                            "g-interface-name", IBUS_INTERFACE_ENGINE,
                                            "g-object-path",    path,
@@ -737,8 +736,14 @@ bus_engine_proxy_new2_finish (GAsyncResult   *res,
     GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
 
     g_assert (error == NULL || *error == NULL);
-    
+
     g_assert (g_simple_async_result_get_source_tag (simple) == bus_engine_proxy_new2);
+
+    EngineProxyNewData *data = (EngineProxyNewData *)g_object_get_data (simple, "EngineProxyNewData");
+    g_object_unref (data->desc);
+    g_object_unref (data->component);
+    g_object_unref (data->factory);
+    g_slice_free (EngineProxyNewData, data);
 
     if (g_simple_async_result_propagate_error (simple, error))
         return NULL;
