@@ -559,10 +559,10 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
     g_return_if_reached ();
 }
 
-BusEngineProxy *
-bus_engine_proxy_new (const gchar     *path,
-                      IBusEngineDesc  *desc,
-                      GDBusConnection *connection)
+static BusEngineProxy *
+bus_engine_proxy_new_internal (const gchar     *path,
+                               IBusEngineDesc  *desc,
+                               GDBusConnection *connection)
 {
     g_assert (path);
     g_assert (IBUS_IS_ENGINE_DESC (desc));
@@ -610,19 +610,19 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
                                                                 &error);
     if (path == NULL) {
         g_simple_async_result_set_from_error (data->simple, error);
-        g_simple_async_result_complete_in_idle (data->simple);
+        g_simple_async_result_complete (data->simple);
         return;
     }
 
     BusEngineProxy *engine =
-            bus_engine_proxy_new (path,
-                                  data->desc,
-                                  g_dbus_proxy_get_connection ((GDBusProxy *)data->factory));
+            bus_engine_proxy_new_internal (path,
+                                           data->desc,
+                                           g_dbus_proxy_get_connection ((GDBusProxy *)data->factory));
     g_free (path);
 
     /* FIXME: set destroy callback ? */
     g_simple_async_result_set_op_res_gpointer (data->simple, engine, NULL);
-    g_simple_async_result_complete_in_idle (data->simple);
+    g_simple_async_result_complete (data->simple);
 }
 
 static void
@@ -644,7 +644,7 @@ notify_factory_cb (BusComponent       *component,
                                          G_DBUS_ERROR_FAILED,
                                          data->error_message,
                                          ibus_engine_desc_get_name (data->desc));
-        g_simple_async_result_complete_in_idle (data->simple);
+        g_simple_async_result_complete (data->simple);
         return;
     }
 
@@ -670,12 +670,12 @@ timeout_cb (EngineProxyNewData *data)
                                      G_DBUS_ERROR_FAILED,
                                      data->error_message,
                                      ibus_engine_desc_get_name (data->desc));
-    g_simple_async_result_complete_in_idle (data->simple);
+    g_simple_async_result_complete (data->simple);
     return FALSE;
 }
 
 void
-bus_engine_proxy_new2(IBusEngineDesc      *desc,
+bus_engine_proxy_new (IBusEngineDesc      *desc,
                       GCancellable        *cancellable,
                       GAsyncReadyCallback  callback,
                       gpointer             user_data)
@@ -691,8 +691,8 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
     data->simple = g_simple_async_result_new (NULL,
                                               callback,
                                               user_data,
-                                              bus_engine_proxy_new2);
-    g_object_set_data (data->simple, "EngineProxyNewData", data);
+                                              bus_engine_proxy_new);
+    g_object_set_data ((GObject *)data->simple, "EngineProxyNewData", data);
 
     data->factory = bus_component_get_factory (data->component);
 
@@ -730,16 +730,18 @@ bus_engine_proxy_new2(IBusEngineDesc      *desc,
 }
 
 BusEngineProxy *
-bus_engine_proxy_new2_finish (GAsyncResult   *res,
-                              GError       **error)
+bus_engine_proxy_new_finish (GAsyncResult   *res,
+                             GError       **error)
 {
     GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
 
     g_assert (error == NULL || *error == NULL);
 
-    g_assert (g_simple_async_result_get_source_tag (simple) == bus_engine_proxy_new2);
+    g_assert (g_simple_async_result_get_source_tag (simple) == bus_engine_proxy_new);
 
-    EngineProxyNewData *data = (EngineProxyNewData *)g_object_get_data (simple, "EngineProxyNewData");
+    EngineProxyNewData *data =
+            (EngineProxyNewData *) g_object_get_data ((GObject *) simple,
+                                                      "EngineProxyNewData");
     g_object_unref (data->desc);
     g_object_unref (data->component);
     g_object_unref (data->factory);

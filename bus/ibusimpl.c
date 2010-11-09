@@ -1008,6 +1008,8 @@ bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
     bus_ibus_impl_global_engine_changed (ibus);
 }
 
+/* FIXME: I need make it in aync mode.
+ */
 static void
 bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                             BusInputContext *context,
@@ -1024,22 +1026,23 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
 static void
 bus_ibus_impl_set_context_engine (BusIBusImpl     *ibus,
                                   BusInputContext *context,
-                                  BusEngineProxy  *engine) {
-  g_object_set_data (G_OBJECT (context), "previous-engine-name", NULL);
+                                  BusEngineProxy  *engine)
+{
+    g_object_set_data (G_OBJECT (context), "previous-engine-name", NULL);
 
-  /* If use_global_engine is disabled, then we need to save the previous engine
-   * of each input context. */
-  if (!ibus->use_global_engine) {
-      BusEngineProxy *previous_engine = bus_input_context_get_engine (context);
-      if (previous_engine) {
-          const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (previous_engine));
-          g_object_set_data_full (G_OBJECT (context), "previous-engine-name",
-                                  g_strdup (name),
-                                  g_free);
-      }
-  }
+    /* If use_global_engine is disabled, then we need to save the previous engine
+     * of each input context. */
+    if (!ibus->use_global_engine) {
+        BusEngineProxy *previous_engine = bus_input_context_get_engine (context);
+        if (previous_engine) {
+            const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (previous_engine));
+            g_object_set_data_full (G_OBJECT (context), "previous-engine-name",
+                                    g_strdup (name),
+                                    g_free);
+        }
+    }
 
-  bus_input_context_set_engine (context, engine);
+    bus_input_context_set_engine (context, engine);
 }
 
 static void

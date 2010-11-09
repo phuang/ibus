@@ -67,7 +67,18 @@ void                 bus_input_context_candidate_clicked(BusInputContext    *con
                                                          guint               button,
                                                          guint               state);
 void                 bus_input_context_set_engine       (BusInputContext    *context,
-                                                         BusEngineProxy     *factory);
+                                                         BusEngineProxy     *engine);
+void                 bus_input_context_set_engine_by_desc
+                                                        (BusInputContext    *context,
+                                                         IBusEngineDesc     *desc,
+                                                         gint                timeout,
+                                                         GCancellable       *cancellable,
+                                                         GAsyncReadyCallback callback,
+                                                         gpointer            user_data);
+gboolean             bus_input_context_set_engine_by_desc_finish
+                                                         (BusInputContext   *context,
+                                                          GAsyncResult      *res,
+                                                          GError           **error);
 BusEngineProxy      *bus_input_context_get_engine       (BusInputContext    *context);
 void                 bus_input_context_property_activate(BusInputContext    *context,
                                                          const gchar        *prop_name,

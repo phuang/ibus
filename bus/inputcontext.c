@@ -1868,6 +1868,65 @@ bus_input_context_set_engine (BusInputContext *context,
                    0);
 }
 
+static void
+new_engine_cb (GObject            *obj,
+               GAsyncResult       *res,
+               GSimpleAsyncResult *simple)
+{
+    GError *error = NULL;
+
+    BusEngineProxy *engine = bus_engine_proxy_new_finish (res, &error);
+    
+    if (engine == NULL) {
+        g_simple_async_result_take_error (simple, error);
+    }
+    else {
+        g_simple_async_result_set_op_res_gboolean (simple, TRUE);
+        bus_input_context_set_engine (context, engine);
+    }
+    g_simple_async_result_complete (simple);
+}
+
+void
+bus_input_context_set_engine_by_desc (BusInputContext    *context,
+                                      IBusEngineDesc     *desc,
+                                      gint                timeout,
+                                      GCancellable       *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer            user_data)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_ENGINE_DESC (desc));
+    G_IS_CANCELLABLE (cancellable);
+
+    GSimpleAsyncResult *simple =
+            g_simple_async_result_new (context,
+                                       callback,
+                                       user_data,
+                                       bus_input_context_set_engine_by_desc);
+
+    bus_engine_proxy_new (desc,
+                          cancellable,
+                          (GAsyncReadyCallback) new_engine_cb,
+                          simple);
+}
+
+gboolean
+bus_input_context_set_engine_by_desc_finish (BusInputContext  *context,
+                                             GAsyncResult     *res,
+                                             GError          **error)
+{
+    GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+    
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (g_simple_async_result_get_source_tag (simple) == bus_input_context_set_engine_by_desc);
+
+    if (g_simple_async_result_propagate_error (simple, error))
+        return FALSE;
+
+    return TRUE;
+}
+
 BusEngineProxy *
 bus_input_context_get_engine (BusInputContext *context)
 {
