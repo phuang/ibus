@@ -390,7 +390,7 @@ bus_component_is_running(BusComponent *component)
 }
 
 BusComponent *
-bus_component_from_engine (IBusEngineDesc *engine)
+bus_component_from_engine_desc (IBusEngineDesc *engine)
 {
     g_assert(IBUS_IS_ENGINE_DESC(engine));
 

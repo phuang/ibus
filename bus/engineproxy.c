@@ -128,7 +128,12 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
                         "desc",
                         "desc",
                         IBUS_TYPE_ENGINE_DESC,
-                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY |
+                        G_PARAM_STATIC_NAME |
+                        G_PARAM_STATIC_BLURB |
+                        G_PARAM_STATIC_NICK
+                        ));
 
     /* install signals */
     engine_signals[COMMIT_TEXT] =
@@ -555,14 +560,155 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 }
 
 BusEngineProxy *
-bus_engine_proxy_new (const gchar    *path,
-                      IBusEngineDesc *desc,
-                      BusConnection  *connection)
+bus_engine_proxy_new (const gchar     *path,
+                      IBusEngineDesc  *desc,
+                      GDBusConnection *connection)
 {
     g_assert (path);
     g_assert (IBUS_IS_ENGINE_DESC (desc));
-    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (G_IS_DBUS_CONNECTION (connection));
 
+
+    BusEngineProxy *engine =
+        (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
+                                           NULL,
+                                           NULL,
+                                           "desc",             desc, 
+                                           "g-connection",     connection,
+                                           "g-interface-name", IBUS_INTERFACE_ENGINE,
+                                           "g-object-path",    path,
+                                           NULL);
+    const gchar *layout = ibus_engine_desc_get_layout (desc);
+    if (layout != NULL && layout[0] != '\0') {
+        engine->keymap = ibus_keymap_get (layout);
+    }
+
+    if (engine->keymap == NULL) {
+        engine->keymap = ibus_keymap_get ("us");
+    }
+    return engine;
+}
+
+typedef struct {
+    GSimpleAsyncResult *simple;
+    IBusEngineDesc  *desc;
+    BusComponent    *component;
+    BusFactoryProxy *factory;
+    BusEngineProxy  *engine;
+    guint handler_id;
+    guint timeout_id;
+    const gchar *error_message;
+} EngineProxyNewData;
+
+static void
+create_engine_ready_cb (BusFactoryProxy    *factory,
+                        GAsyncResult       *res,
+                        EngineProxyNewData *data)
+{
+    GError *error = NULL;
+    gchar *path = bus_factory_proxy_create_engine_async_finish (factory,
+                                                                res,
+                                                                &error);
+    if (path == NULL) {
+        g_simple_async_result_set_from_error (data->simple, error);
+        g_simple_async_result_complete_in_idle (data->simple);
+        return;
+    }
+    
+    BusEngineProxy *engine =
+            bus_engine_proxy_new (path,
+                                  data->desc,
+                                  g_dbus_proxy_get_connection ((GDBusProxy *)data->factory));
+    g_free (path);
+
+    /* FIXME: set destroy callback ? */
+    g_simple_async_result_set_op_res_gpointer (data->simple, engine, NULL);
+    g_simple_async_result_complete_in_idle (data->simple);
+}
+
+static void
+notify_factory_cb (BusComponent       *component,
+                   GParamSpec         *spec,
+                   EngineProxyNewData *data)
+{
+    g_source_remove (data->timeout_id);
+    data->timeout_id = 0;
+
+    g_signal_handler_disconnect (data->component, data->handler_id);
+    data->handler_id = 0;
+    
+
+    data->factory = bus_component_get_factory (data->component);
+
+    if (data->factory == NULL) {
+        g_simple_async_result_set_error (data->simple,
+                                         G_DBUS_ERROR,
+                                         G_DBUS_ERROR_FAILED,
+                                         data->error_message,
+                                         ibus_engine_desc_get_name (data->desc));
+        g_simple_async_result_complete_in_idle (data->simple);
+        return;
+    }
+
+    g_object_ref (data->factory);
+    bus_factory_proxy_create_engine_async (data->factory,
+                                           data->desc,
+                                           5 * 1000,
+                                           NULL,
+                                           (GAsyncReadyCallback) create_engine_ready_cb,
+                                           data);
+}
+
+static gboolean
+timeout_cb (EngineProxyNewData *data)
+{
+    data->timeout_id = 0;
+
+    g_signal_handler_disconnect (data->component, data->handler_id);
+    data->handler_id = 0;
+
+    g_simple_async_result_set_error (data->simple,
+                                     G_DBUS_ERROR,
+                                     G_DBUS_ERROR_FAILED,
+                                     data->error_message,
+                                     ibus_engine_desc_get_name (data->desc));
+    g_simple_async_result_complete_in_idle (data->simple);
+    return FALSE;
+}
+
+void
+bus_engine_proxy_new2(IBusEngineDesc      *desc,
+                      GCancellable        *cancellable,
+                      GAsyncReadyCallback  callback,
+                      gpointer             user_data)
+{
+    g_assert (IBUS_IS_ENGINE_DESC (desc));
+    g_assert (callback);
+
+    EngineProxyNewData *data = g_slice_new0 (EngineProxyNewData);
+    
+    data->desc = g_object_ref (desc);
+    data->component = g_object_ref (bus_component_from_engine_desc (desc));
+
+    data->simple = g_simple_async_result_new (NULL,
+                                              callback,
+                                              user_data,
+                                              bus_engine_proxy_new2);
+
+    data->factory = bus_component_get_factory (data->component);
+
+    if (data->factory == NULL) {
+        data->handler_id = g_signal_connect (data->component,
+                                             "notify::factory",
+                                             G_CALLBACK (notify_factory_cb),
+                                             data);
+
+        data->timeout_id = g_timeout_add_seconds (5,
+                                                  (GSourceFunc) timeout_cb,
+                                                  data);
+    }
+
+#if 0 
     BusEngineProxy *engine =
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
@@ -581,39 +727,26 @@ bus_engine_proxy_new (const gchar    *path,
         engine->keymap = ibus_keymap_get ("us");
     }
     return engine;
+#endif
 }
 
-typedef struct {
-    IBusEngineDesc  *desc;
-    BusComponent    *component;
-    BusFactoryProxy *factory;
-    BusEngineProxy  *engine;
-} EngineProxyNewData;
-
-void
-bus_engine_proxy_new2(IBusEngineDesc      *desc,
-                      GCancellable        *cancellable,
-                      GAsyncReadyCallback  callback,
-                      gpointer             user_data)
+BusEngineProxy *
+bus_engine_proxy_new2_finish (GAsyncResult   *res,
+                              GError       **error)
 {
-    g_assert(IBUS_IS_ENGINE_DESC(desc));
-    g_assert(callback);
+    GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
 
-    if (g_cancellable_is_cancelled(cancellable)) {
-        /* FIXME: already cancelled */
-        return;
-    }
+    g_assert (error == NULL || *error == NULL);
+    
+    g_assert (g_simple_async_result_get_source_tag (simple) == bus_engine_proxy_new2);
 
-    BusComponent *component = bus_component_from_engine(desc);
-    g_assert(BUS_IS_COMPONENT(component));
+    if (g_simple_async_result_propagate_error (simple, error))
+        return NULL;
 
-    BusFactoryProxy *factory = bus_component_get_factory(component);
-    if (factory == NULL) {
-    }
+    BusEngineProxy *engine = g_simple_async_result_get_op_res_gpointer (simple);
+    return engine;
 }
 
-BusEngineProxy  *bus_engine_proxy_new_finish        (GAsyncResult          *res,
-                                                     GError               **error);
 void
 bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
                                     guint                keyval,

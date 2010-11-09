@@ -331,7 +331,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     ibus->engine_list = engine_list;
 
     if (ibus->engine_list) {
-        BusComponent *component = bus_component_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
+        BusComponent *component = bus_component_from_engine_desc ((IBusEngineDesc *) ibus->engine_list->data);
         if (component && !bus_component_is_running (component)) {
             bus_component_start (component, g_verbose);
         }
@@ -775,7 +775,7 @@ _get_factory_proxy(IBusEngineDesc *desc)
 
     GTimer *timer = g_timer_new ();
 
-    BusComponent *component = bus_component_from_engine(desc);
+    BusComponent *component = bus_component_from_engine_desc (desc);
     g_assert(BUS_IS_COMPONENT(component));
 
     /* Leave the loop, if it spends more than 5 seconds */
@@ -799,7 +799,7 @@ bus_ibus_impl_create_engine (IBusEngineDesc *desc)
 {
     g_assert(IBUS_IS_ENGINE_DESC(desc));
 
-    BusComponent *component = bus_component_from_engine(desc);
+    BusComponent *component = bus_component_from_engine_desc (desc);
     g_assert(BUS_IS_COMPONENT(component));
 
     BusFactoryProxy *factory = bus_component_get_factory(component);

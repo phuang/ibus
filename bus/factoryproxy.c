@@ -100,10 +100,54 @@ bus_factory_proxy_create_engine (BusFactoryProxy *factory,
     const gchar *object_path = NULL;
     g_variant_get (retval, "(&o)", &object_path);
     GDBusConnection *connection = g_dbus_proxy_get_connection ((GDBusProxy *) factory);
-    BusEngineProxy *engine = bus_engine_proxy_new (object_path,
-                                                   desc,
-                                                   bus_connection_lookup (connection));
+    BusEngineProxy *engine =
+            bus_engine_proxy_new (object_path,
+                                  desc,
+                                  bus_connection_get_dbus_connection (bus_connection_lookup (connection)));
     g_variant_unref (retval);
     return engine;
 }
+
+void
+bus_factory_proxy_create_engine_async (BusFactoryProxy    *factory,
+                                       IBusEngineDesc     *desc,
+                                       gint                timeout,
+                                       GCancellable       *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer            user_data)
+{
+    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    g_assert (IBUS_IS_ENGINE_DESC (desc));
+    g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+    g_assert (cancellable);
+    
+    g_dbus_proxy_call ((GDBusProxy *)factory,
+                       "CreateEngine",
+                       g_variant_new ("(s)", ibus_engine_desc_get_name (desc)),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       timeout,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+gchar *
+bus_factory_proxy_create_engine_async_finish (BusFactoryProxy  *factory,
+                                              GAsyncResult     *res,
+                                              GError          **error)
+{
+
+    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *) factory,
+                                                 res,
+                                                 error);
+    if (retval == NULL)
+        return NULL;
+
+    gchar *object_path = NULL;
+    g_variant_get (retval, "(o)", &object_path);
+    g_variant_unref (retval);
+
+    return object_path;
+}
+
 

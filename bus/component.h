@@ -66,7 +66,7 @@ gboolean         bus_component_stop              (BusComponent    *component);
 gboolean         bus_component_is_running        (BusComponent    *component);
 void             bus_component_set_restart       (BusComponent    *component,
                                                   gboolean         restart);
-BusComponent    *bus_component_from_engine       (IBusEngineDesc  *engine);
+BusComponent    *bus_component_from_engine_desc  (IBusEngineDesc  *engine);
 
 G_END_DECLS
 #endif
