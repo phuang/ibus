@@ -120,7 +120,6 @@ bus_factory_proxy_create_engine_async (BusFactoryProxy    *factory,
     g_assert (BUS_IS_FACTORY_PROXY (factory));
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-    g_assert (cancellable);
     
     g_dbus_proxy_call ((GDBusProxy *)factory,
                        "CreateEngine",

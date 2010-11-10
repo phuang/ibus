@@ -706,27 +706,15 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
                                                   (GSourceFunc) timeout_cb,
                                                   data);
     }
-
-#if 0
-    BusEngineProxy *engine =
-        (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
-                                           NULL,
-                                           NULL,
-                                           "desc",             desc,
-                                           "g-connection",     bus_connection_get_dbus_connection (connection),
-                                           "g-interface-name", IBUS_INTERFACE_ENGINE,
-                                           "g-object-path",    path,
-                                           NULL);
-    const gchar *layout = ibus_engine_desc_get_layout (desc);
-    if (layout != NULL && layout[0] != '\0') {
-        engine->keymap = ibus_keymap_get (layout);
+    else {
+        g_object_ref (data->factory);
+        bus_factory_proxy_create_engine_async (data->factory,
+                                               data->desc,
+                                               5 * 1000,
+                                               NULL,
+                                               (GAsyncReadyCallback) create_engine_ready_cb,
+                                               data);
     }
-
-    if (engine->keymap == NULL) {
-        engine->keymap = ibus_keymap_get ("us");
-    }
-    return engine;
-#endif
 }
 
 BusEngineProxy *
@@ -1047,7 +1035,6 @@ async_initable_init_finish (GAsyncInitable *initable,
                             GAsyncResult   *res,
                             GError        **error)
 {
-    g_debug ("async_finish");
     return parent_async_initable_iface->init_finish (initable,
                                                      res,
                                                      error);

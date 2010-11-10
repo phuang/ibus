@@ -757,7 +757,7 @@ _ibus_get_address (BusIBusImpl           *ibus,
                                            g_variant_new ("(s)", bus_server_get_address ()));
 }
 
-
+#if 0
 static gboolean
 _timeout_cb (gpointer data)
 {
@@ -823,6 +823,7 @@ bus_ibus_impl_create_engine (IBusEngineDesc *desc)
 
     return engine;
 }
+#endif
 
 static IBusEngineDesc *
 _find_engine_desc_by_name(BusIBusImpl *ibus,
@@ -1015,12 +1016,20 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                             BusInputContext *context,
                                             IBusEngineDesc  *desc)
 {
+    bus_input_context_set_engine_by_desc (context,
+                                          desc,
+                                          5000,
+                                          NULL,
+                                          NULL,
+                                          NULL);
+#if 0
     if (desc != NULL) {
         BusEngineProxy *engine = bus_ibus_impl_create_engine (desc);
         if (engine != NULL) {
             bus_ibus_impl_set_context_engine (ibus, context, engine);
         }
     }
+#endif
 }
 
 static void
@@ -1481,7 +1490,15 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         _context_request_engine_cb (ibus->focused_context, new_engine_name, ibus);
     }
     else {
+        /* FXIME */
+#if 0
         IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, new_engine_name);
+        bus_input_context_set_engine_by_desc (context,
+                                              desc,
+                                              5000,
+                                              NULL,
+                                              NULL,
+                                              NULL);
         if (desc != NULL) {
             BusEngineProxy *new_engine = bus_ibus_impl_create_engine (desc);
             if (new_engine != NULL) {
@@ -1499,6 +1516,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
                 g_object_unref (new_engine);
             }
         }
+#endif
     }
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
