@@ -648,6 +648,9 @@ bus_input_context_emit_signal (BusInputContext *context,
                                GVariant        *parameters,
                                GError         **error)
 {
+    if (context->connection == NULL)
+        return TRUE;
+
     GDBusMessage *message = g_dbus_message_new_signal (ibus_service_get_object_path ((IBusService *)context),
                                                        "org.freedesktop.IBus.InputContext",
                                                        signal_name);
@@ -801,20 +804,9 @@ _ic_set_capabilities (BusInputContext       *context,
 {
     guint caps = 0;
     g_variant_get (parameters, "(u)", &caps);
+    
+    bus_input_context_set_capabilities (context, caps);
 
-    if (context->capabilities != caps) {
-        context->capabilities = caps;
-
-        /* If the context does not support IBUS_CAP_FOCUS, then we always assume
-         * it has focus. */
-        if ((caps & IBUS_CAP_FOCUS) == 0) {
-            bus_input_context_focus_in (context);
-        }
-
-        if (context->engine) {
-            bus_engine_proxy_set_capabilities (context->engine, caps);
-        }
-    }
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
@@ -1691,31 +1683,38 @@ BusInputContext *
 bus_input_context_new (BusConnection    *connection,
                        const gchar      *client)
 {
-    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (connection == NULL || BUS_IS_CONNECTION (connection));
     g_assert (client != NULL);
 
-    BusInputContext *context;
-    gchar *path;
+    gchar *path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
 
-    path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
-
-    context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
-                                                "object-path", path,
-                                                "connection",  bus_connection_get_dbus_connection (connection),
-                                                NULL);
+    BusInputContext *context = NULL;
+    if (connection) {
+        context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
+                                                    "object-path", path,
+                                                    "connection", bus_connection_get_dbus_connection (connection),
+                                                    NULL);
+    }
+    else {
+        context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
+                                                    "object-path", path,
+                                                    NULL);
+    }
     g_free (path);
 
-    g_object_ref_sink (connection);
-    context->connection = connection;
     context->client = g_strdup (client);
 
     /* it is a fake input context, just need process hotkey */
     context->fake = (g_strcmp0 (client, "fake") == 0);
 
-    g_signal_connect (context->connection,
-                      "destroy",
-                      (GCallback) _connection_destroy_cb,
-                      context);
+    if (connection) {
+        g_object_ref_sink (connection);
+        context->connection = connection;
+        g_signal_connect (context->connection,
+                          "destroy",
+                          (GCallback) _connection_destroy_cb,
+                          context);
+    }
 
     return context;
 }
@@ -2045,4 +2044,27 @@ bus_input_context_get_capabilities (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     return context->capabilities;
+}
+
+void
+bus_input_context_set_capabilities (BusInputContext    *context,
+                                    guint               capabilities)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    
+    if (context->capabilities != capabilities) {
+        context->capabilities = capabilities;
+
+        /* If the context does not support IBUS_CAP_FOCUS, then we always assume
+         * it has focus. */
+        if ((capabilities & IBUS_CAP_FOCUS) == 0) {
+            bus_input_context_focus_in (context);
+        }
+
+        if (context->engine) {
+            bus_engine_proxy_set_capabilities (context->engine, capabilities);
+        }
+    }
+
+    context->capabilities = capabilities;
 }

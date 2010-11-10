@@ -48,6 +48,9 @@ struct _BusIBusImpl {
     GList *registered_components;
     GList *contexts;
 
+    /* a fake input context for global engine support */
+    BusInputContext *fake_context;
+
     GList *engine_list;
     GList *register_engine_list;
     GList *component_list;
@@ -65,6 +68,7 @@ struct _BusIBusImpl {
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
+
     BusEngineProxy  *global_engine;
     gchar           *global_previous_engine_name;
 
@@ -172,6 +176,11 @@ static void     bus_ibus_impl_save_global_previous_engine_name_to_config
                                                 (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_update_engines_hotkey_profile
                                                 (BusIBusImpl        *ibus);
+static BusInputContext
+               *bus_ibus_impl_create_input_context
+                                                (BusIBusImpl        *ibus,
+                                                 BusConnection      *connection,
+                                                 const gchar        *client);
 
 static const gchar introspection_xml[] =
     "<node>"
@@ -623,6 +632,13 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                             g_str_equal,
                             NULL,
                             (GDestroyNotify) g_object_unref);
+
+    ibus->fake_context =
+            bus_ibus_impl_create_input_context (ibus, NULL, "fake");
+    bus_input_context_set_capabilities (ibus->fake_context,
+                                        IBUS_CAP_PREEDIT_TEXT |
+                                        IBUS_CAP_FOCUS |
+                                        IBUS_CAP_SURROUNDING_TEXT);
 
     ibus->engine_list = NULL;
     ibus->register_engine_list = NULL;
@@ -1134,6 +1150,7 @@ _context_focus_in_cb (BusInputContext *context,
      * - Set the context's enabled state according to the saved state.
      * Note: we get this signal only if the context supports IBUS_CAP_FOCUS. */
     if (ibus->use_global_engine) {
+#if 1
         if (!ibus->global_engine) {
             bus_ibus_impl_set_global_engine (ibus, bus_input_context_get_engine (context));
         }
@@ -1143,6 +1160,7 @@ _context_focus_in_cb (BusInputContext *context,
                 bus_input_context_enable (context);
             }
         }
+#endif
     }
 
     if (ibus->panel != NULL) {
@@ -1184,16 +1202,12 @@ _context_disabled_cb (BusInputContext    *context,
 }
 #endif
 
-static void
-_ibus_create_input_context (BusIBusImpl           *ibus,
-                            GVariant              *parameters,
-                            GDBusMethodInvocation *invocation)
+static BusInputContext *
+bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
+                                    BusConnection *connection,
+                                    const gchar   *client)
 {
-    const gchar *client_name = NULL;
-    g_variant_get (parameters, "(&s)", &client_name);
-
-    BusConnection *connection = bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
-    BusInputContext *context = bus_input_context_new (connection, client_name);
+    BusInputContext *context = bus_input_context_new (connection, client);
     g_object_ref_sink (context);
     ibus->contexts = g_list_append (ibus->contexts, context);
 
@@ -1224,10 +1238,37 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
         bus_input_context_enable (context);
     }
 
-    const gchar *path = ibus_service_get_object_path ((IBusService *) context);
     bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,
                                    (IBusService *)context);
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
+    g_object_ref (context);
+    return context;
+}
+
+static void
+_ibus_create_input_context (BusIBusImpl           *ibus,
+                            GVariant              *parameters,
+                            GDBusMethodInvocation *invocation)
+{
+    const gchar *client_name = NULL;
+    g_variant_get (parameters, "(&s)", &client_name);
+
+    BusConnection *connection =
+            bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
+    BusInputContext *context =
+            bus_ibus_impl_create_input_context (ibus,
+                                                connection,
+                                                client_name);
+    if (context) {
+        const gchar *path = ibus_service_get_object_path ((IBusService *) context);
+        g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
+        g_object_unref (context);
+    }
+    else {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_FAILED,
+                                               "Create input context failed!");
+    }
 }
 
 static void

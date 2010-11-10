@@ -84,6 +84,8 @@ void                 bus_input_context_property_activate(BusInputContext    *con
                                                          const gchar        *prop_name,
                                                          gint                prop_state);
 guint                bus_input_context_get_capabilities (BusInputContext    *context);
+void                 bus_input_context_set_capabilities (BusInputContext    *context,
+                                                         guint               capabilities);
 
 G_END_DECLS
 #endif
