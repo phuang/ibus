@@ -279,10 +279,10 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
             x11ic->input_style = *(gint32 *) ic_attr->value;
         }
         else if (g_strcmp0 (XNClientWindow, ic_attr->name) == 0) {
-            x11ic->client_window =  *(Window *) call_data->ic_attr[i].value;
+            x11ic->client_window =  (Window)(*(CARD32 *) call_data->ic_attr[i].value);
         }
         else if (g_strcmp0 (XNFocusWindow, ic_attr->name) == 0) {
-            x11ic->focus_window =  *(Window *) call_data->ic_attr[i].value;
+            x11ic->focus_window =  (Window)(*(CARD32 *) call_data->ic_attr[i].value);
         }
         else {
             LOG (1, "Unknown ic attribute: %s", ic_attr->name);
