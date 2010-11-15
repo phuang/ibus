@@ -76,31 +76,31 @@ static void     bus_component_get_property  (BusComponent          *component,
                                              GParamSpec            *pspec);
 static void     bus_component_destroy       (BusComponent          *component);
 
-G_DEFINE_TYPE(BusComponent, bus_component, IBUS_TYPE_OBJECT)
+G_DEFINE_TYPE (BusComponent, bus_component, IBUS_TYPE_OBJECT)
 
 static void
-bus_component_class_init(BusComponentClass *class)
+bus_component_class_init (BusComponentClass *class)
 {
-    GObjectClass *gobject_class = G_OBJECT_CLASS(class);
-    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS(class);
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
-    gobject_class->constructor = bus_component_constructor;
-    gobject_class->set_property = (GObjectSetPropertyFunc)bus_component_set_property;
-    gobject_class->get_property = (GObjectGetPropertyFunc)bus_component_get_property;
-    ibus_object_class->destroy = (IBusObjectDestroyFunc)bus_component_destroy;
+    gobject_class->constructor  = bus_component_constructor;
+    gobject_class->set_property = (GObjectSetPropertyFunc) bus_component_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) bus_component_get_property;
+    ibus_object_class->destroy  = (IBusObjectDestroyFunc) bus_component_destroy;
 
     /* install properties */
-    g_object_class_install_property(gobject_class,
+    g_object_class_install_property (gobject_class,
                     PROP_COMPONENT,
-                    g_param_spec_object("component",
+                    g_param_spec_object ("component",
                         "component",
                         "component",
                         IBUS_TYPE_COMPONENT,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
-    g_object_class_install_property(gobject_class,
+    g_object_class_install_property (gobject_class,
                     PROP_FACTORY,
-                    g_param_spec_object("factory",
+                    g_param_spec_object ("factory",
                         "factory",
                         "factory",
                         BUS_TYPE_FACTORY_PROXY,
@@ -108,69 +108,51 @@ bus_component_class_init(BusComponentClass *class)
 }
 
 static void
-bus_component_init(BusComponent *component)
+bus_component_init (BusComponent *component)
 {
 }
 
 static GObject*
-bus_component_constructor(GType                  type,
+bus_component_constructor (GType                  type,
                           guint                  n_construct_params,
                           GObjectConstructParam *construct_params)
 {
     GObject *object;
-    object = G_OBJECT_CLASS(bus_component_parent_class)->constructor(type,
+    object = G_OBJECT_CLASS (bus_component_parent_class)->constructor (type,
                                                                      n_construct_params,
                                                                      construct_params);
     BusComponent *component = (BusComponent *)object;
-    g_assert(IBUS_IS_COMPONENT(component->component));
+    g_assert (IBUS_IS_COMPONENT (component->component));
 
     static GQuark quark = 0;
     if (quark == 0) {
-        quark = g_quark_from_static_string("BusComponent");
+        quark = g_quark_from_static_string ("BusComponent");
     }
 
     /* associate each engine with BusComponent */
-    GList *engines = ibus_component_get_engines(component->component);
+    GList *engines = ibus_component_get_engines (component->component);
     GList *p;
     for (p = engines; p != NULL; p = p->next) {
-        g_object_set_qdata((GObject *)p->data, quark, component);
+        g_object_set_qdata ((GObject *)p->data, quark, component);
     }
-    g_list_free(engines);
+    g_list_free (engines);
 
     return object;
 }
 
 static void
-bus_component_set_property(BusComponent *component,
+bus_component_set_property (BusComponent *component,
                            guint         prop_id,
                            const GValue *value,
                            GParamSpec   *pspec)
 {
     switch (prop_id) {
     case PROP_COMPONENT:
-        g_assert(component->component == NULL);
-        component->component = g_value_dup_object(value);
+        g_assert (component->component == NULL);
+        component->component = g_value_dup_object (value);
         break;
     case PROP_FACTORY:
-        bus_component_set_factory(component, (BusFactoryProxy *)g_value_get_object(value));
-        break;
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID(component, prop_id, pspec);
-    }
-}
-
-static void
-bus_component_get_property(BusComponent *component,
-                           guint         prop_id,
-                           GValue       *value,
-                           GParamSpec   *pspec)
-{
-    switch (prop_id) {
-    case PROP_COMPONENT:
-        g_value_set_object(value, bus_component_get_component(component));
-        break;
-    case PROP_FACTORY:
-        g_value_set_object(value, bus_component_get_factory(component));
+        bus_component_set_factory (component, (BusFactoryProxy *)g_value_get_object (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
@@ -178,149 +160,167 @@ bus_component_get_property(BusComponent *component,
 }
 
 static void
-bus_component_destroy(BusComponent *component)
+bus_component_get_property (BusComponent *component,
+                           guint         prop_id,
+                           GValue       *value,
+                           GParamSpec   *pspec)
+{
+    switch (prop_id) {
+    case PROP_COMPONENT:
+        g_value_set_object (value, bus_component_get_component (component));
+        break;
+    case PROP_FACTORY:
+        g_value_set_object (value, bus_component_get_factory (component));
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
+    }
+}
+
+static void
+bus_component_destroy (BusComponent *component)
 {
     if (component->pid != 0) {
-        bus_component_stop(component);
-        g_spawn_close_pid(component->pid);
+        bus_component_stop (component);
+        g_spawn_close_pid (component->pid);
         component->pid = 0;
     }
 
     if (component->child_source_id != 0) {
-        g_source_remove(component->child_source_id);
+        g_source_remove (component->child_source_id);
         component->child_source_id = 0;
     }
 
     if (component->component != NULL) {
-        g_object_unref(component->component);
+        g_object_unref (component->component);
         component->component = NULL;
     }
 
-    IBUS_OBJECT_CLASS(bus_component_parent_class)->destroy(IBUS_OBJECT (component));
+    IBUS_OBJECT_CLASS (bus_component_parent_class)->destroy (IBUS_OBJECT (component));
 }
 
 BusComponent *
-bus_component_new(IBusComponent   *component,
+bus_component_new (IBusComponent   *component,
                   BusFactoryProxy *factory)
 {
-    g_assert(IBUS_IS_COMPONENT(component));
+    g_assert (IBUS_IS_COMPONENT (component));
 
-    return (BusComponent *)g_object_new(BUS_TYPE_COMPONENT,
+    return (BusComponent *)g_object_new (BUS_TYPE_COMPONENT,
                                         "component", component,
                                         "factory", factory,
                                         NULL);
 }
 
 static void
-bus_component_factory_destroy_cb(BusFactoryProxy *factory,
+bus_component_factory_destroy_cb (BusFactoryProxy *factory,
                                  BusComponent    *component)
 {
-    g_return_if_fail(component->factory == factory);
+    g_return_if_fail (component->factory == factory);
 
     g_object_unref (component->factory);
     component->factory = NULL;
-    g_object_notify((GObject*)component, "factory");
+    g_object_notify ((GObject*)component, "factory");
 
     if (component->destroy_with_factory)
-        ibus_object_destroy((IBusObject *)component);
+        ibus_object_destroy ((IBusObject *)component);
 }
 
 IBusComponent *
-bus_component_get_component(BusComponent *component)
+bus_component_get_component (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
     return component->component;
 }
 
 void
-bus_component_set_factory(BusComponent    *component,
+bus_component_set_factory (BusComponent    *component,
                           BusFactoryProxy *factory)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
     if (component->factory == factory) {
         return;
     }
 
     if (component->factory) {
-        g_signal_handlers_disconnect_by_func(factory,
+        g_signal_handlers_disconnect_by_func (factory,
                                              bus_component_factory_destroy_cb,
                                              component);
-        g_object_unref(component->factory);
+        g_object_unref (component->factory);
         component->factory = NULL;
     }
 
     if (factory) {
-        g_assert(BUS_IS_FACTORY_PROXY(factory));
+        g_assert (BUS_IS_FACTORY_PROXY (factory));
         component->factory = (BusFactoryProxy*)g_object_ref (factory);
-        g_signal_connect(factory, "destroy",
-                         G_CALLBACK(bus_component_factory_destroy_cb), component);
+        g_signal_connect (factory, "destroy",
+                         G_CALLBACK (bus_component_factory_destroy_cb), component);
     }
-    g_object_notify((GObject*)component, "factory");
+    g_object_notify ((GObject*)component, "factory");
 }
 
 BusFactoryProxy *
-bus_component_get_factory(BusComponent *component)
+bus_component_get_factory (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
     return component->factory;
 }
 
 const gchar *
-bus_component_get_name(BusComponent *component)
+bus_component_get_name (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
-    return ibus_component_get_name(component->component);
+    return ibus_component_get_name (component->component);
 }
 
 GList *
-bus_component_get_engines(BusComponent *component)
+bus_component_get_engines (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
-    return ibus_component_get_engines(component->component);
+    return ibus_component_get_engines (component->component);
 }
 
 void
-bus_component_set_destroy_with_factory(BusComponent *component,
+bus_component_set_destroy_with_factory (BusComponent *component,
                                        gboolean      with_factory)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
     component->destroy_with_factory = with_factory;
 }
 
 void
-bus_component_set_restart(BusComponent *component,
+bus_component_set_restart (BusComponent *component,
                           gboolean      restart)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
     component->restart = restart;
 }
 
 static void
-bus_component_child_cb(GPid          pid,
+bus_component_child_cb (GPid          pid,
                        gint          status,
                        BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
-    g_assert(component->pid == pid);
+    g_assert (BUS_IS_COMPONENT (component));
+    g_assert (component->pid == pid);
 
-    g_spawn_close_pid(pid);
+    g_spawn_close_pid (pid);
     component->pid = 0;
     component->child_source_id = 0;
 
     if (component->restart) {
-        bus_component_start(component, component->verbose);
+        bus_component_start (component, component->verbose);
     }
 }
 
 gboolean
-bus_component_start(BusComponent *component,
+bus_component_start (BusComponent *component,
                     gboolean      verbose)
 {
-    g_assert (BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
     if (component->pid != 0)
         return TRUE;
@@ -332,14 +332,14 @@ bus_component_start(BusComponent *component,
     gboolean retval;
 
     GError *error = NULL;
-    if (!g_shell_parse_argv(ibus_component_get_exec(component->component),
+    if (!g_shell_parse_argv (ibus_component_get_exec (component->component),
                                                     &argc,
                                                     &argv,
                                                     &error)) {
-        g_warning("Can not parse component %s exec: %s",
-                  ibus_component_get_name(component->component),
+        g_warning ("Can not parse component %s exec: %s",
+                  ibus_component_get_name (component->component),
                   error->message);
-        g_error_free(error);
+        g_error_free (error);
         return FALSE;
     }
 
@@ -348,21 +348,21 @@ bus_component_start(BusComponent *component,
     if (!verbose) {
         flags |= G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
     }
-    retval = g_spawn_async(NULL, argv, NULL,
+    retval = g_spawn_async (NULL, argv, NULL,
                            flags,
                            NULL, NULL,
                            &(component->pid), &error);
     g_strfreev (argv);
     if (!retval) {
-        g_warning("Can not execute component %s: %s",
-                  ibus_component_get_name(component->component),
+        g_warning ("Can not execute component %s: %s",
+                  ibus_component_get_name (component->component),
                   error->message);
-        g_error_free(error);
+        g_error_free (error);
         return FALSE;
     }
 
     component->child_source_id =
-        g_child_watch_add(component->pid,
+        g_child_watch_add (component->pid,
                           (GChildWatchFunc)bus_component_child_cb,
                           component);
 
@@ -370,9 +370,9 @@ bus_component_start(BusComponent *component,
 }
 
 gboolean
-bus_component_stop(BusComponent *component)
+bus_component_stop (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
     if (component->pid == 0)
         return TRUE;
@@ -382,9 +382,9 @@ bus_component_stop(BusComponent *component)
 }
 
 gboolean
-bus_component_is_running(BusComponent *component)
+bus_component_is_running (BusComponent *component)
 {
-    g_assert(BUS_IS_COMPONENT(component));
+    g_assert (BUS_IS_COMPONENT (component));
 
     return (component->pid != 0);
 }
@@ -392,12 +392,12 @@ bus_component_is_running(BusComponent *component)
 BusComponent *
 bus_component_from_engine_desc (IBusEngineDesc *engine)
 {
-    g_assert(IBUS_IS_ENGINE_DESC(engine));
+    g_assert (IBUS_IS_ENGINE_DESC (engine));
 
     static GQuark quark = 0;
     if (quark == 0) {
-        quark = g_quark_from_static_string("BusComponent");
+        quark = g_quark_from_static_string ("BusComponent");
     }
 
-    return (BusComponent *)g_object_get_qdata((GObject *)engine, quark);
+    return (BusComponent *)g_object_get_qdata ((GObject *)engine, quark);
 }
