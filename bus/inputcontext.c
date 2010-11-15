@@ -287,7 +287,6 @@ static const gchar introspection_xml[] =
 G_DEFINE_TYPE (BusInputContext, bus_input_context, IBUS_TYPE_SERVICE)
 
 /* when send preedit to client */
-/* FIXME */
 #if 1
 #define PREEDIT_CONDITION (context->capabilities & IBUS_CAP_PREEDIT_TEXT)
 #else
@@ -668,20 +667,20 @@ bus_input_context_emit_signal (BusInputContext *context,
 }
 
 static void
-_ic_process_key_event_reply_cb (GObject      *source,
-                                GAsyncResult *result,
-                                gpointer      user_data)
+_ic_process_key_event_reply_cb (GObject               *source,
+                                GAsyncResult          *res,
+                                GDBusMethodInvocation *invocation)
 {
     GError *error = NULL;
-    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)source,
-                    result, &error);
-    if (retval != NULL) {
-        /* FIXME: need check retval is floating? */
-        g_dbus_method_invocation_return_value ((GDBusMethodInvocation *)user_data, retval);
-        g_variant_unref (retval);
+    GVariant *value = g_dbus_proxy_call_finish ((GDBusProxy *)source,
+                                                 res,
+                                                 &error);
+    if (value != NULL) {
+        g_dbus_method_invocation_return_value (invocation, value);
+        g_variant_unref (value);
     }
     else {
-        g_dbus_method_invocation_return_gerror ((GDBusMethodInvocation *)user_data, error);
+        g_dbus_method_invocation_return_gerror (invocation, error);
         g_error_free (error);
     }
 }
@@ -722,7 +721,7 @@ _ic_process_key_event  (BusInputContext       *context,
                                             keyval,
                                             keycode,
                                             modifiers,
-                                            _ic_process_key_event_reply_cb,
+                                            (GAsyncReadyCallback) _ic_process_key_event_reply_cb,
                                             invocation);
     }
     else {
@@ -2003,6 +2002,15 @@ bus_input_context_get_engine (BusInputContext *context)
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     return context->engine;
+}
+
+IBusEngineDesc *
+bus_input_context_get_engine_desc (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    if (context->engine)
+        return bus_engine_proxy_get_desc (context->engine);
+    return NULL;
 }
 
 static gboolean

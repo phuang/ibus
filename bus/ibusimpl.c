@@ -611,13 +611,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
         }
     }
 
-    /* FIXME */
     (void)bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
-#if 0
-    if (factory != NULL) {
-        bus_ibus_impl_add_factory (ibus, factory);
-    }
-#endif
 }
 
 static void
@@ -983,8 +977,6 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
     _context_request_engine_cb (context, engine_name, ibus);
 }
 
-/* FIXME: I need make it in aync mode.
- */
 static void
 bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                             BusInputContext *context,
@@ -1047,12 +1039,9 @@ _context_focus_in_cb (BusInputContext *context,
         bus_input_context_focus_out (ibus->focused_context);
     }
 
-    /* FIXME:
-     * If the use_global_engine option is enabled, then we need:
-     * - Switch the context to use the global engine or save the context's
-     *   existing engine as global engine.
-     * - Set the context's enabled state according to the saved state.
-     * Note: we get this signal only if the context supports IBUS_CAP_FOCUS. */
+    /* If use_gloable_engine option is enabled, we need:
+     * Detach the engine from previous focused context
+     * and attach the engine with the new context */
     if (ibus->use_global_engine) {
         BusInputContext *old_context = NULL;
         if (ibus->focused_context) {
@@ -1446,18 +1435,26 @@ _ibus_get_global_engine (BusIBusImpl           *ibus,
                          GVariant              *parameters,
                          GDBusMethodInvocation *invocation)
 {
-    /* FIXME */
-#if 0
-    if (ibus->use_global_engine && ibus->global_engine) {
-        IBusEngineDesc *desc = bus_engine_proxy_get_desc (ibus->global_engine);
-        if (desc != NULL) {
-            GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)desc);
-            g_dbus_method_invocation_return_value (invocation,
-                            g_variant_new ("(v)", variant));
-            return;
-        }
-    }
-#endif
+    IBusEngineDesc *desc = NULL;
+
+    do {
+        if (!ibus->use_global_engine)
+            break;
+        BusInputContext *context = ibus->focused_context;
+        if (context == NULL)
+            context = ibus->fake_context;
+
+        desc = bus_input_context_get_engine_desc (context);
+
+        if (desc == NULL)
+            break;
+
+        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)desc);
+        g_dbus_method_invocation_return_value (invocation,
+                                               g_variant_new ("(v)", variant));
+        return;
+    } while (0);
+
     g_dbus_method_invocation_return_error (invocation,
                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
                     "No global engine.");
@@ -1539,13 +1536,23 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
                                 GVariant              *parameters,
                                 GDBusMethodInvocation *invocation)
 {
-    /* FIXME */
-#if 0
-    gboolean enabled = (ibus->use_global_engine && ibus->global_engine &&
-                        bus_engine_proxy_is_enabled (ibus->global_engine));
+    gboolean enabled = FALSE;
+
+    do {
+        if (!ibus->use_global_engine)
+            break;
+
+        BusInputContext *context = ibus->focused_context;
+        if (context == NULL)
+            context = ibus->fake_context;
+        if (context == NULL)
+            break;
+
+        enabled = bus_input_context_is_enabled (context);
+    } while (0);
+
     g_dbus_method_invocation_return_value (invocation,
                     g_variant_new ("(b)", enabled));
-#endif
 }
 
 static void

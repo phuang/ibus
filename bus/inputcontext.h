@@ -80,6 +80,7 @@ gboolean             bus_input_context_set_engine_by_desc_finish
                                                           GAsyncResult      *res,
                                                           GError           **error);
 BusEngineProxy      *bus_input_context_get_engine       (BusInputContext    *context);
+IBusEngineDesc      *bus_input_context_get_engine_desc  (BusInputContext    *context);
 void                 bus_input_context_property_activate(BusInputContext    *context,
                                                          const gchar        *prop_name,
                                                          gint                prop_state);
