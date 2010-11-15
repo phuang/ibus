@@ -31,6 +31,13 @@ static BusDBusImpl *dbus = NULL;
 static BusIBusImpl *ibus = NULL;
 static gchar *address = NULL;
 
+/**
+ * bus_new_connection_cb:
+ * @user_data: always NULL.
+ * @returns: TRUE when the function can handle the connection.
+ *
+ * Handle incoming connections.
+ */
 static gboolean
 bus_new_connection_cb (GDBusServer     *server,
                        GDBusConnection *dbus_connection,
@@ -40,6 +47,8 @@ bus_new_connection_cb (GDBusServer     *server,
     bus_dbus_impl_new_connection (dbus, connection);
 
     if (g_object_is_floating (connection)) {
+        /* bus_dbus_impl_new_connection couldn't handle the connection. just delete the connection and return TRUE
+         * (so that other connection handler will not handle the deleted connection.) */
         ibus_object_destroy ((IBusObject *)connection);
         g_object_unref (connection);
     }
@@ -56,8 +65,12 @@ bus_server_init (void)
     /* init server */
     GDBusServerFlags flags = G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS;
     gchar *guid = g_dbus_generate_guid ();
-    server =  g_dbus_server_new_sync (g_address,
-                    flags, guid, NULL, NULL, NULL);
+    server =  g_dbus_server_new_sync (
+                    g_address, /* the place where the socket file lives, e.g. /tmp, abstract namespace, etc. */
+                    flags, guid,
+                    NULL /* observer */,
+                    NULL /* cancellable */,
+                    NULL /* error */);
     g_free (guid);
 
     g_signal_connect (server, "new-connection", G_CALLBACK (bus_new_connection_cb), NULL);
@@ -81,11 +94,13 @@ bus_server_get_address (void)
 void
 bus_server_run (void)
 {
-    /* create main loop */
+    g_return_if_fail (server);
+
+    /* create and run main loop */
     mainloop = g_main_loop_new (NULL, FALSE);
     g_main_loop_run (mainloop);
 
-    /* stop server */
+    /* bus_server_quit is called. stop server */
     g_dbus_server_stop (server);
 
     ibus_object_destroy ((IBusObject *)dbus);
@@ -95,6 +110,8 @@ bus_server_run (void)
     g_object_unref (server);
     g_main_loop_unref (mainloop);
     mainloop = NULL;
+    g_free (address);
+    address = NULL;
 }
 
 void

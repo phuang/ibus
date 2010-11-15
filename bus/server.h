@@ -26,9 +26,35 @@
 
 G_BEGIN_DECLS
 
+/**
+ * bus_server_init:
+ *
+ * Initialize GDBus server and write the server address to a file, which is (usually) in ~/.config/ibus/bus/.
+ * Note that the function does not call g_main_loop_run.
+ */
 void         bus_server_init        (void);
+
+/**
+ * bus_server_run:
+ *
+ * Enter the glib main loop. You have to call bus_server_init before calling this function.
+ */
 void         bus_server_run         (void);
+
+/**
+ * bus_server_quit:
+ *
+ * Quit the glib main loop.
+ */
 void         bus_server_quit        (void);
+
+/**
+ * bus_server_get_address:
+ * @returns: The server address, e.g. "unix:abstract=/tmp/dbus-aEUnr11L,guid=8b343aaa69eabb9b282dce6f4cdbb4aa"
+ *
+ * Get the server address. This function might return NULL if it is called before initializing the server by
+ * calling bus_server_init.
+ */
 const gchar *bus_server_get_address (void);
 
 G_END_DECLS
