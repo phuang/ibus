@@ -67,8 +67,8 @@ static const GOptionEntry entries[] =
     { "single",    's', 0, G_OPTION_ARG_NONE,   &single,    "do not execute panel and config module.", NULL },
     { "xim",       'x', 0, G_OPTION_ARG_NONE,   &xim,       "execute ibus XIM server.", NULL },
     { "desktop",   'n', 0, G_OPTION_ARG_STRING, &desktop,   "specify the name of desktop session. [default=gnome]", "name" },
-    { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program.", "cmdline" },
-    { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program.", "cmdline" },
+    { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program. pass 'disable' not to start a panel program.", "cmdline" },
+    { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program. pass 'disable' not to start a config program.", "cmdline" },
     { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
@@ -82,6 +82,14 @@ static const GOptionEntry entries[] =
     { NULL },
 };
 
+/**
+ * execute_cmdline:
+ * @cmdline: An absolute path of the executable and its parameters, e.g.  "/usr/lib/ibus/ibus-x11 --kill-daemon".
+ * @returns: TRUE if both parsing cmdline and executing the command succeed.
+ *
+ * Execute cmdline. Child process's stdin, stdout, and stderr are attached to /dev/null.
+ * You don't have to handle SIGCHLD from the child process since glib will do.
+ */
 static gboolean
 execute_cmdline (const gchar *cmdline)
 {
@@ -155,6 +163,12 @@ daemon (gint nochdir, gint noclose)
 }
 #endif
 
+/*
+ * _sig_usr2_handler:
+ * @sig: the signal number, which is usually SIGUSR2.
+ *
+ * A signal handler for SIGUSR2 signal. Dump a summary of memory usage to stderr.
+ */
 static void
 _sig_usr2_handler (int sig)
 {
@@ -202,7 +216,7 @@ main (gint argc, gchar **argv)
         }
     }
 
-    /* create a new process group */
+    /* create a new process group. this is important to kill all of its children by SIGTERM at a time in bus_ibus_impl_destroy. */
     setpgid (0, 0);
 
     ibus_init ();
@@ -210,7 +224,7 @@ main (gint argc, gchar **argv)
 #ifdef G_THREADS_ENABLED
     g_thread_init (NULL);
 #endif
-    ibus_set_log_handler(g_verbose);
+    ibus_set_log_handler (g_verbose);
 
     /* check if ibus-daemon is running in this session */
     if (ibus_get_address () != NULL) {
@@ -227,11 +241,9 @@ main (gint argc, gchar **argv)
             }
         }
         g_object_unref (bus);
-        bus = NULL;
     }
 
     bus_server_init ();
-    /* FIXME */
     if (!single) {
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
@@ -249,7 +261,7 @@ main (gint argc, gchar **argv)
                 exit (-1);
         }
 
-        /* execut panel component */
+        /* execute panel component */
         if (g_strcmp0 (panel, "default") == 0) {
             IBusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
@@ -268,7 +280,7 @@ main (gint argc, gchar **argv)
 
     /* execute ibus xim server */
     if (xim) {
-        if (!execute_cmdline (LIBEXECDIR"/ibus-x11 --kill-daemon"))
+        if (!execute_cmdline (LIBEXECDIR "/ibus-x11 --kill-daemon"))
             exit (-1);
     }
 
