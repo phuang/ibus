@@ -94,16 +94,12 @@ static void     bus_engine_proxy_g_signal       (GDBusProxy          *proxy,
                                                  GVariant            *parameters);
 static void     bus_engine_proxy_initable_iface_init
                                                 (GInitableIface      *initable_iface);
-static void     bus_engine_proxy_async_initable_iface_init
-                                                (GAsyncInitableIface *async_initable_iface);
 
 G_DEFINE_TYPE_WITH_CODE (BusEngineProxy, bus_engine_proxy, IBUS_TYPE_PROXY,
                          G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, bus_engine_proxy_initable_iface_init)
-                         G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, bus_engine_proxy_async_initable_iface_init)
                         );
 
 static GInitableIface *parent_initable_iface = NULL;
-static GAsyncInitableIface *parent_async_initable_iface = NULL;
 
 static void
 bus_engine_proxy_class_init (BusEngineProxyClass *class)
@@ -117,14 +113,12 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
     G_DBUS_PROXY_CLASS (class)->g_signal = bus_engine_proxy_g_signal;
 
     parent_initable_iface =
-            (GInitableIface *)g_type_interface_peek(bus_engine_proxy_parent_class, G_TYPE_INITABLE);
-    parent_async_initable_iface =
-            (GAsyncInitableIface *)g_type_interface_peek(bus_engine_proxy_parent_class, G_TYPE_ASYNC_INITABLE);
+            (GInitableIface *)g_type_interface_peek (bus_engine_proxy_parent_class, G_TYPE_INITABLE);
 
     /* install properties */
-    g_object_class_install_property(gobject_class,
+    g_object_class_install_property (gobject_class,
                     PROP_ENGINE_DESC,
-                    g_param_spec_object("desc",
+                    g_param_spec_object ("desc",
                         "desc",
                         "desc",
                         IBUS_TYPE_ENGINE_DESC,
@@ -394,7 +388,7 @@ bus_engine_proxy_real_destroy (IBusProxy *proxy)
         engine->keymap = NULL;
     }
 
-    IBUS_PROXY_CLASS(bus_engine_proxy_parent_class)->destroy ((IBusProxy *)engine);
+    IBUS_PROXY_CLASS (bus_engine_proxy_parent_class)->destroy ((IBusProxy *)engine);
 }
 
 static void
@@ -438,7 +432,7 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
     if (g_strcmp0 (signal_name, "CommitText") == 0) {
         GVariant *arg0 = NULL;
-        g_variant_get(parameters, "(v)", &arg0);
+        g_variant_get (parameters, "(v)", &arg0);
         g_return_if_fail (arg0 != NULL);
 
         IBusText *text = IBUS_TEXT (ibus_serializable_deserialize (arg0));
@@ -1011,38 +1005,4 @@ static void
 bus_engine_proxy_initable_iface_init (GInitableIface *initable_iface)
 {
     initable_iface->init = initable_init;
-}
-
-static void
-async_initable_init_async (GAsyncInitable      *initable,
-                           gint                 io_priority,
-                           GCancellable        *cancellable,
-                           GAsyncReadyCallback  callback,
-                           gpointer             user_data)
-{
-    BusEngineProxy *engine = BUS_ENGINE_PROXY (initable);
-
-    parent_async_initable_iface->init_async (initable,
-                                             io_priority,
-                                             cancellable,
-                                             callback,
-                                             user_data);
-    engine = NULL;
-}
-
-static gboolean
-async_initable_init_finish (GAsyncInitable *initable,
-                            GAsyncResult   *res,
-                            GError        **error)
-{
-    return parent_async_initable_iface->init_finish (initable,
-                                                     res,
-                                                     error);
-}
-
-static void
-bus_engine_proxy_async_initable_iface_init (GAsyncInitableIface *async_initable_iface)
-{
-    async_initable_iface->init_async  = async_initable_init_async;
-    async_initable_iface->init_finish = async_initable_init_finish;
 }
