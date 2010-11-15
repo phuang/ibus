@@ -1882,7 +1882,8 @@ new_engine_cb (GObject         *obj,
     BusEngineProxy *engine = bus_engine_proxy_new_finish (res, &error);
 
     if (engine == NULL) {
-        g_simple_async_result_take_error (context->simple, error);
+        g_simple_async_result_set_from_error (context->simple, error);
+        g_error_free (error);
     }
     else {
         bus_input_context_set_engine (context, engine);
