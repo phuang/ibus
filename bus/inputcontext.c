@@ -639,7 +639,7 @@ bus_input_context_destroy (BusInputContext *context)
         context->client = NULL;
     }
 
-    IBUS_OBJECT_CLASS(bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
+    IBUS_OBJECT_CLASS (bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 static gboolean
@@ -804,7 +804,7 @@ _ic_set_capabilities (BusInputContext       *context,
 {
     guint caps = 0;
     g_variant_get (parameters, "(u)", &caps);
-    
+
     bus_input_context_set_capabilities (context, caps);
 
     g_dbus_method_invocation_return_value (invocation, NULL);
@@ -1069,10 +1069,10 @@ bus_input_context_focus_out (BusInputContext *context)
         }                                                                   \
     }
 
-DEFINE_FUNC(page_up)
-DEFINE_FUNC(page_down)
-DEFINE_FUNC(cursor_up)
-DEFINE_FUNC(cursor_down)
+DEFINE_FUNC (page_up)
+DEFINE_FUNC (page_down)
+DEFINE_FUNC (cursor_up)
+DEFINE_FUNC (cursor_down)
 
 #undef DEFINE_FUNC
 
@@ -1881,7 +1881,7 @@ new_engine_cb (GObject         *obj,
     GError *error = NULL;
 
     BusEngineProxy *engine = bus_engine_proxy_new_finish (res, &error);
-    
+
     if (engine == NULL) {
         g_simple_async_result_take_error (context->simple, error);
     }
@@ -1900,6 +1900,18 @@ new_engine_cancelled_cb (GCancellable    *cancellable,
     g_cancellable_disconnect (cancellable, context->cancelled_handler_id);
     context->cancelled_handler_id = 0;
     g_cancellable_cancel (context->cancellable);
+}
+
+static void
+set_engine_by_desc_ready_cb (BusInputContext *context,
+                             GAsyncResult    *res,
+                             gpointer         user_data)
+{
+    GError *error = NULL;
+    if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
+        g_warning ("%s", error->message);
+        g_error_free (error);
+    }
 }
 
 void
@@ -1929,6 +1941,9 @@ bus_input_context_set_engine_by_desc (BusInputContext    *context,
     g_assert (context->origin_cancellable == NULL);
     g_assert (context->cancelled_handler_id == 0);
 
+    if (callback == NULL)
+        callback = (GAsyncReadyCallback) set_engine_by_desc_ready_cb;
+
     context->simple =
             g_simple_async_result_new ((GObject *) context,
                                        callback,
@@ -1939,7 +1954,7 @@ bus_input_context_set_engine_by_desc (BusInputContext    *context,
 
     if (cancellable) {
         context->origin_cancellable = (GCancellable *) g_object_ref (cancellable);
-        context->cancelled_handler_id = 
+        context->cancelled_handler_id =
                 g_cancellable_connect (context->origin_cancellable,
                                        (GCallback) new_engine_cancelled_cb,
                                        context,
@@ -1958,7 +1973,7 @@ bus_input_context_set_engine_by_desc_finish (BusInputContext  *context,
                                              GError          **error)
 {
     GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
-    
+
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     g_assert (g_simple_async_result_get_source_tag (simple) == bus_input_context_set_engine_by_desc);
     g_assert (context->simple == simple);
@@ -2001,7 +2016,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     gboolean retval = FALSE;
 
     if (context->filter_release){
-        if(modifiers & IBUS_RELEASE_MASK) {
+        if (modifiers & IBUS_RELEASE_MASK) {
             /* filter release key event */
             return TRUE;
         }
@@ -2051,7 +2066,7 @@ bus_input_context_set_capabilities (BusInputContext    *context,
                                     guint               capabilities)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-    
+
     if (context->capabilities != capabilities) {
         context->capabilities = capabilities;
 
