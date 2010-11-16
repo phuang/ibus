@@ -69,6 +69,12 @@ struct _BusInputContext {
 
     /* is fake context */
     gboolean fake;
+
+    /* set engine by desc result, cancellable */
+    GSimpleAsyncResult *simple;
+    GCancellable *cancellable;
+    GCancellable *origin_cancellable;
+    gulong cancelled_handler_id;
 };
 
 struct _BusInputContextClass {
@@ -281,7 +287,6 @@ static const gchar introspection_xml[] =
 G_DEFINE_TYPE (BusInputContext, bus_input_context, IBUS_TYPE_SERVICE)
 
 /* when send preedit to client */
-/* FIXME */
 #if 1
 #define PREEDIT_CONDITION (context->capabilities & IBUS_CAP_PREEDIT_TEXT)
 #else
@@ -633,7 +638,7 @@ bus_input_context_destroy (BusInputContext *context)
         context->client = NULL;
     }
 
-    IBUS_OBJECT_CLASS(bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
+    IBUS_OBJECT_CLASS (bus_input_context_parent_class)->destroy (IBUS_OBJECT (context));
 }
 
 static gboolean
@@ -642,6 +647,9 @@ bus_input_context_emit_signal (BusInputContext *context,
                                GVariant        *parameters,
                                GError         **error)
 {
+    if (context->connection == NULL)
+        return TRUE;
+
     GDBusMessage *message = g_dbus_message_new_signal (ibus_service_get_object_path ((IBusService *)context),
                                                        "org.freedesktop.IBus.InputContext",
                                                        signal_name);
@@ -659,20 +667,20 @@ bus_input_context_emit_signal (BusInputContext *context,
 }
 
 static void
-_ic_process_key_event_reply_cb (GObject      *source,
-                                GAsyncResult *result,
-                                gpointer      user_data)
+_ic_process_key_event_reply_cb (GObject               *source,
+                                GAsyncResult          *res,
+                                GDBusMethodInvocation *invocation)
 {
     GError *error = NULL;
-    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)source,
-                    result, &error);
-    if (retval != NULL) {
-        /* FIXME: need check retval is floating? */
-        g_dbus_method_invocation_return_value ((GDBusMethodInvocation *)user_data, retval);
-        g_variant_unref (retval);
+    GVariant *value = g_dbus_proxy_call_finish ((GDBusProxy *)source,
+                                                 res,
+                                                 &error);
+    if (value != NULL) {
+        g_dbus_method_invocation_return_value (invocation, value);
+        g_variant_unref (value);
     }
     else {
-        g_dbus_method_invocation_return_gerror ((GDBusMethodInvocation *)user_data, error);
+        g_dbus_method_invocation_return_gerror (invocation, error);
         g_error_free (error);
     }
 }
@@ -713,7 +721,7 @@ _ic_process_key_event  (BusInputContext       *context,
                                             keyval,
                                             keycode,
                                             modifiers,
-                                            _ic_process_key_event_reply_cb,
+                                            (GAsyncReadyCallback) _ic_process_key_event_reply_cb,
                                             invocation);
     }
     else {
@@ -796,19 +804,8 @@ _ic_set_capabilities (BusInputContext       *context,
     guint caps = 0;
     g_variant_get (parameters, "(u)", &caps);
 
-    if (context->capabilities != caps) {
-        context->capabilities = caps;
+    bus_input_context_set_capabilities (context, caps);
 
-        /* If the context does not support IBUS_CAP_FOCUS, then we always assume
-         * it has focus. */
-        if ((caps & IBUS_CAP_FOCUS) == 0) {
-            bus_input_context_focus_in (context);
-        }
-
-        if (context->engine) {
-            bus_engine_proxy_set_capabilities (context->engine, caps);
-        }
-    }
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
@@ -1071,10 +1068,10 @@ bus_input_context_focus_out (BusInputContext *context)
         }                                                                   \
     }
 
-DEFINE_FUNC(page_up)
-DEFINE_FUNC(page_down)
-DEFINE_FUNC(cursor_up)
-DEFINE_FUNC(cursor_down)
+DEFINE_FUNC (page_up)
+DEFINE_FUNC (page_down)
+DEFINE_FUNC (cursor_up)
+DEFINE_FUNC (cursor_down)
 
 #undef DEFINE_FUNC
 
@@ -1685,31 +1682,38 @@ BusInputContext *
 bus_input_context_new (BusConnection    *connection,
                        const gchar      *client)
 {
-    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (connection == NULL || BUS_IS_CONNECTION (connection));
     g_assert (client != NULL);
 
-    BusInputContext *context;
-    gchar *path;
+    gchar *path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
 
-    path = g_strdup_printf (IBUS_PATH_INPUT_CONTEXT, ++id);
-
-    context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
-                                                "object-path", path,
-                                                "connection",  bus_connection_get_dbus_connection (connection),
-                                                NULL);
+    BusInputContext *context = NULL;
+    if (connection) {
+        context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
+                                                    "object-path", path,
+                                                    "connection", bus_connection_get_dbus_connection (connection),
+                                                    NULL);
+    }
+    else {
+        context = (BusInputContext *) g_object_new (BUS_TYPE_INPUT_CONTEXT,
+                                                    "object-path", path,
+                                                    NULL);
+    }
     g_free (path);
 
-    g_object_ref_sink (connection);
-    context->connection = connection;
     context->client = g_strdup (client);
 
     /* it is a fake input context, just need process hotkey */
     context->fake = (g_strcmp0 (client, "fake") == 0);
 
-    g_signal_connect (context->connection,
-                      "destroy",
-                      (GCallback) _connection_destroy_cb,
-                      context);
+    if (connection) {
+        g_object_ref_sink (connection);
+        context->connection = connection;
+        g_signal_connect (context->connection,
+                          "destroy",
+                          (GCallback) _connection_destroy_cb,
+                          context);
+    }
 
     return context;
 }
@@ -1868,12 +1872,146 @@ bus_input_context_set_engine (BusInputContext *context,
                    0);
 }
 
+static void
+new_engine_cb (GObject         *obj,
+               GAsyncResult    *res,
+               BusInputContext *context)
+{
+    GError *error = NULL;
+
+    BusEngineProxy *engine = bus_engine_proxy_new_finish (res, &error);
+
+    if (engine == NULL) {
+        g_simple_async_result_set_from_error (context->simple, error);
+        g_error_free (error);
+    }
+    else {
+        bus_input_context_set_engine (context, engine);
+        bus_input_context_enable (context);
+        g_simple_async_result_set_op_res_gboolean (context->simple, TRUE);
+    }
+    g_simple_async_result_complete (context->simple);
+}
+
+static void
+new_engine_cancelled_cb (GCancellable    *cancellable,
+                         BusInputContext *context)
+{
+    g_cancellable_disconnect (cancellable, context->cancelled_handler_id);
+    context->cancelled_handler_id = 0;
+    g_cancellable_cancel (context->cancellable);
+}
+
+static void
+set_engine_by_desc_ready_cb (BusInputContext *context,
+                             GAsyncResult    *res,
+                             gpointer         user_data)
+{
+    GError *error = NULL;
+    if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
+        g_warning ("%s", error->message);
+        g_error_free (error);
+    }
+}
+
+void
+bus_input_context_set_engine_by_desc (BusInputContext    *context,
+                                      IBusEngineDesc     *desc,
+                                      gint                timeout,
+                                      GCancellable       *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer            user_data)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_ENGINE_DESC (desc));
+    g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+    if (context->simple != NULL) {
+        /* We need cancel previous set engine request */
+        g_cancellable_cancel (context->cancellable);
+        g_simple_async_result_set_error (context->simple,
+                                         G_DBUS_ERROR,
+                                         G_DBUS_ERROR_FAILED,
+                                         "Set engine request is overrided.");
+        g_simple_async_result_complete (context->simple);
+    }
+
+    g_assert (context->simple == NULL);
+    g_assert (context->cancellable == NULL);
+    g_assert (context->origin_cancellable == NULL);
+    g_assert (context->cancelled_handler_id == 0);
+
+    if (callback == NULL)
+        callback = (GAsyncReadyCallback) set_engine_by_desc_ready_cb;
+
+    context->simple =
+            g_simple_async_result_new ((GObject *) context,
+                                       callback,
+                                       user_data,
+                                       bus_input_context_set_engine_by_desc);
+    g_object_ref (context->simple);
+    context->cancellable = g_cancellable_new ();
+
+    if (cancellable) {
+        context->origin_cancellable = (GCancellable *) g_object_ref (cancellable);
+        context->cancelled_handler_id =
+                g_cancellable_connect (context->origin_cancellable,
+                                       (GCallback) new_engine_cancelled_cb,
+                                       context,
+                                       NULL);
+    }
+
+    bus_engine_proxy_new (desc,
+                          context->cancellable,
+                          (GAsyncReadyCallback) new_engine_cb,
+                          context);
+}
+
+gboolean
+bus_input_context_set_engine_by_desc_finish (BusInputContext  *context,
+                                             GAsyncResult     *res,
+                                             GError          **error)
+{
+    GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (g_simple_async_result_get_source_tag (simple) == bus_input_context_set_engine_by_desc);
+    g_assert (context->simple == simple);
+
+    gboolean retval = FALSE;
+    if (!g_simple_async_result_propagate_error (simple, error))
+        retval = TRUE;
+
+    /* release async call related resources */
+    g_object_unref (context->simple);
+    context->simple = NULL;
+    g_object_unref (context->cancellable);
+    context->cancellable = NULL;
+    if (context->cancelled_handler_id) {
+        g_cancellable_disconnect (context->origin_cancellable, context->cancelled_handler_id);
+        context->cancelled_handler_id = 0;
+        g_object_unref (context->origin_cancellable);
+        context->origin_cancellable = NULL;
+    }
+
+    return retval;
+}
+
 BusEngineProxy *
 bus_input_context_get_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     return context->engine;
+}
+
+IBusEngineDesc *
+bus_input_context_get_engine_desc (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    if (context->engine)
+        return bus_engine_proxy_get_desc (context->engine);
+    return NULL;
 }
 
 static gboolean
@@ -1887,7 +2025,7 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
     gboolean retval = FALSE;
 
     if (context->filter_release){
-        if(modifiers & IBUS_RELEASE_MASK) {
+        if (modifiers & IBUS_RELEASE_MASK) {
             /* filter release key event */
             return TRUE;
         }
@@ -1930,4 +2068,27 @@ bus_input_context_get_capabilities (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     return context->capabilities;
+}
+
+void
+bus_input_context_set_capabilities (BusInputContext    *context,
+                                    guint               capabilities)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (context->capabilities != capabilities) {
+        context->capabilities = capabilities;
+
+        /* If the context does not support IBUS_CAP_FOCUS, then we always assume
+         * it has focus. */
+        if ((capabilities & IBUS_CAP_FOCUS) == 0) {
+            bus_input_context_focus_in (context);
+        }
+
+        if (context->engine) {
+            bus_engine_proxy_set_capabilities (context->engine, capabilities);
+        }
+    }
+
+    context->capabilities = capabilities;
 }

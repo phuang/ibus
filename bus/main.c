@@ -247,12 +247,12 @@ main (gint argc, gchar **argv)
     if (!single) {
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
-            IBusComponent *component;
+            BusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_CONFIG);
             if (component) {
-                ibus_component_set_restart (component, restart);
+                bus_component_set_restart (component, restart);
             }
-            if (component == NULL || !ibus_component_start (component, g_verbose)) {
+            if (component == NULL || !bus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default config program\n");
                 exit (-1);
             }
@@ -263,12 +263,12 @@ main (gint argc, gchar **argv)
 
         /* execute panel component */
         if (g_strcmp0 (panel, "default") == 0) {
-            IBusComponent *component;
+            BusComponent *component;
             component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
             if (component) {
-                ibus_component_set_restart (component, restart);
+                bus_component_set_restart (component, restart);
             }
-            if (component == NULL || !ibus_component_start (component, g_verbose)) {
+            if (component == NULL || !bus_component_start (component, g_verbose)) {
                 g_printerr ("Can not execute default panel program\n");
                 exit (-1);
             }

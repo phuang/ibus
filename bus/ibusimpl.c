@@ -43,8 +43,13 @@ struct _BusIBusImpl {
     IBusService parent;
     /* instance members */
     GHashTable *factory_dict;
-    GList *factory_list;
+
+    /* registered components */
+    GList *registered_components;
     GList *contexts;
+
+    /* a fake input context for global engine support */
+    BusInputContext *fake_context;
 
     GList *engine_list;
     GList *register_engine_list;
@@ -63,8 +68,9 @@ struct _BusIBusImpl {
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
-    BusEngineProxy  *global_engine;
-    gchar           *global_previous_engine_name;
+
+    gchar *global_engine_name;
+    gchar *global_previous_engine_name;
 
     IBusHotkeyProfile *engines_hotkey_profile;
     GHashTable      *hotkey_to_engines_map;
@@ -91,37 +97,35 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 /* functions prototype */
 static void      bus_ibus_impl_destroy           (BusIBusImpl        *ibus);
 static void      bus_ibus_impl_service_method_call
+                                                 (IBusService        *service,
+                                                  GDBusConnection    *connection,
+                                                  const gchar        *sender,
+                                                  const gchar        *object_path,
+                                                  const gchar        *interface_name,
+                                                  const gchar        *method_name,
+                                                  GVariant           *parameters,
+                                                  GDBusMethodInvocation
+                                                                     *invocation);
+/* TODO use property to replace some getter and setter in future */
+#if 0
+static GVariant *ibus_ibus_impl_service_get_property
                                               (IBusService        *service,
                                                GDBusConnection    *connection,
                                                const gchar        *sender,
                                                const gchar        *object_path,
                                                const gchar        *interface_name,
-                                               const gchar        *method_name,
-                                               GVariant           *parameters,
-                                               GDBusMethodInvocation
-                                                                  *invocation);
-/* FIXME */
-#if 0
-static GVariant *ibus_ibus_impl_service_get_property
-                                             (IBusService        *service,
-                                              GDBusConnection    *connection,
-                                              const gchar        *sender,
-                                              const gchar        *object_path,
-                                              const gchar        *interface_name,
-                                              const gchar        *property_name,
-                                              GError            **error);
+                                               const gchar        *property_name,
+                                               GError            **error);
 static gboolean  ibus_ibus_impl_service_set_property
-                                             (IBusService        *service,
-                                              GDBusConnection    *connection,
-                                              const gchar        *sender,
-                                              const gchar        *object_path,
-                                              const gchar        *interface_name,
-                                              const gchar        *property_name,
-                                              GVariant           *value,
-                                              GError            **error);
+                                              (IBusService        *service,
+                                               GDBusConnection    *connection,
+                                               const gchar        *sender,
+                                               const gchar        *object_path,
+                                               const gchar        *interface_name,
+                                               const gchar        *property_name,
+                                               GVariant           *value,
+                                               GError            **error);
 #endif
-static void     bus_ibus_impl_add_factory       (BusIBusImpl        *ibus,
-                                                 BusFactoryProxy    *factory);
 static void     bus_ibus_impl_set_trigger       (BusIBusImpl        *ibus,
                                                  GVariant           *value);
 static void     bus_ibus_impl_set_next_engine_in_menu
@@ -145,24 +149,13 @@ static void     bus_ibus_impl_set_enable_by_default
 static void     bus_ibus_impl_set_use_global_engine
                                                 (BusIBusImpl        *ibus,
                                                  GVariant           *value);
-static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
-                                                 BusEngineProxy     *engine);
-
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
                                                 (BusIBusImpl        *ibus);
-
-static void     _factory_destroy_cb             (BusFactoryProxy    *factory,
-                                                 BusIBusImpl        *ibus);
-
 static void     bus_ibus_impl_set_context_engine_from_desc
                                                 (BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
-                                                 IBusEngineDesc     *engine_desc);
-static void     bus_ibus_impl_set_context_engine(BusIBusImpl        *ibus,
-                                                 BusInputContext    *context,
-                                                 BusEngineProxy     *engine);
-
+                                                 IBusEngineDesc     *desc);
 static gchar   *bus_ibus_impl_load_global_engine_name_from_config
                                                 (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_save_global_engine_name_to_config
@@ -174,65 +167,73 @@ static void     bus_ibus_impl_save_global_previous_engine_name_to_config
                                                 (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_update_engines_hotkey_profile
                                                 (BusIBusImpl        *ibus);
+static BusInputContext
+               *bus_ibus_impl_create_input_context
+                                                (BusIBusImpl        *ibus,
+                                                 BusConnection      *connection,
+                                                 const gchar        *client);
+/* some callback functions */
+static void     _context_engine_changed_cb      (BusInputContext    *context,
+                                                 BusIBusImpl        *ibus);
 
 static const gchar introspection_xml[] =
-    "<node>"
-    "  <interface name='org.freedesktop.IBus'>"
-    "    <method name='GetAddress'>"
-    "      <arg direction='out' type='s' name='address' />"
-    "    </method>"
-    "    <method name='CreateInputContext'>"
-    "      <arg direction='in'  type='s' name='client_name' />"
-    "      <arg direction='out' type='o' name='object_path' />"
-    "    </method>"
-    "    <method name='CurrentInputContext'>"
-    "      <arg direction='out' type='o' name='object_path' />"
-    "    </method>"
-    "    <method name='RegisterComponent'>"
-    "      <arg direction='in'  type='v' name='component' />"
-    "    </method>"
-    "    <method name='ListEngines'>"
-    "      <arg direction='out' type='av' name='engines' />"
-    "    </method>"
-    "    <method name='ListActiveEngines'>"
-    "      <arg direction='out' type='av' name='engines' />"
-    "    </method>"
-    "    <method name='Exit'>"
-    "      <arg direction='in'  type='b' name='restart' />"
-    "    </method>"
-    "    <method name='Ping'>"
-    "      <arg direction='in'  type='v' name='data' />"
-    "      <arg direction='out' type='v' name='data' />"
-    "    </method>"
-    "    <method name='GetUseSysLayout'>"
-    "      <arg direction='out' type='b' name='enabled' />"
-    "    </method>"
-    "    <method name='GetUseGlobalEngine'>"
-    "      <arg direction='out' type='b' name='enabled' />"
-    "    </method>"
-    "    <method name='GetGlobalEngine'>"
-    "      <arg direction='out' type='v' name='desc' />"
-    "    </method>"
-    "    <method name='SetGlobalEngine'>"
-    "      <arg direction='in'  type='s' name='engine_name' />"
-    "    </method>"
-    "    <method name='IsGlobalEngineEnabled'>"
-    "      <arg direction='out' type='b' name='enabled' />"
-    "    </method>"
-    "    <signal name='RegistryChanged'>"
-    "    </signal>"
-    "    <signal name='GlobalEngineChanged'>"
-    "    </signal>"
-    "  </interface>"
-    "</node>";
+    "<node>\n"
+    "  <interface name='org.freedesktop.IBus'>\n"
+    "    <method name='GetAddress'>\n"
+    "      <arg direction='out' type='s' name='address' />\n"
+    "    </method>\n"
+    "    <method name='CreateInputContext'>\n"
+    "      <arg direction='in'  type='s' name='client_name' />\n"
+    "      <arg direction='out' type='o' name='object_path' />\n"
+    "    </method>\n"
+    "    <method name='CurrentInputContext'>\n"
+    "      <arg direction='out' type='o' name='object_path' />\n"
+    "    </method>\n"
+    "    <method name='RegisterComponent'>\n"
+    "      <arg direction='in'  type='v' name='component' />\n"
+    "    </method>\n"
+    "    <method name='ListEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "    </method>\n"
+    "    <method name='ListActiveEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "    </method>\n"
+    "    <method name='Exit'>\n"
+    "      <arg direction='in'  type='b' name='restart' />\n"
+    "    </method>\n"
+    "    <method name='Ping'>\n"
+    "      <arg direction='in'  type='v' name='data' />\n"
+    "      <arg direction='out' type='v' name='data' />\n"
+    "    </method>\n"
+    "    <method name='GetUseSysLayout'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "    </method>\n"
+    "    <method name='GetUseGlobalEngine'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "    </method>\n"
+    "    <method name='GetGlobalEngine'>\n"
+    "      <arg direction='out' type='v' name='desc' />\n"
+    "    </method>\n"
+    "    <method name='SetGlobalEngine'>\n"
+    "      <arg direction='in'  type='s' name='engine_name' />\n"
+    "    </method>\n"
+    "    <method name='IsGlobalEngineEnabled'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "    </method>\n"
+    "    <signal name='RegistryChanged'>\n"
+    "    </signal>\n"
+    "    <signal name='GlobalEngineChanged'>\n"
+    "    </signal>\n"
+    "  </interface>\n"
+    "</node>\n";
 
 
-G_DEFINE_TYPE(BusIBusImpl, bus_ibus_impl, IBUS_TYPE_SERVICE)
+G_DEFINE_TYPE (BusIBusImpl, bus_ibus_impl, IBUS_TYPE_SERVICE)
 
 static void
 bus_ibus_impl_class_init (BusIBusImplClass *class)
 {
-    IBUS_OBJECT_CLASS(class)->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
+    IBUS_OBJECT_CLASS (class)->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
     IBUS_SERVICE_CLASS (class)->service_method_call = bus_ibus_impl_service_method_call;
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
@@ -333,9 +334,9 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     ibus->engine_list = engine_list;
 
     if (ibus->engine_list) {
-        IBusComponent *component = ibus_component_get_from_engine ((IBusEngineDesc *) ibus->engine_list->data);
-        if (component && !ibus_component_is_running (component)) {
-            ibus_component_start (component, g_verbose);
+        BusComponent *component = bus_component_from_engine_desc ((IBusEngineDesc *) ibus->engine_list->data);
+        if (component && !bus_component_is_running (component)) {
+            bus_component_start (component, g_verbose);
         }
     }
 
@@ -383,17 +384,17 @@ bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
     if (new_value) {
         /* turn on use_global_engine option */
         ibus->use_global_engine = TRUE;
-        BusEngineProxy *engine = ibus->focused_context != NULL ?
-                    bus_input_context_get_engine (ibus->focused_context) : NULL;
-        if (engine != NULL) {
-            bus_ibus_impl_set_global_engine (ibus, engine);
-        }
     }
     else {
         /* turn off use_global_engine option */
-        bus_ibus_impl_set_global_engine (ibus, NULL);
         ibus->use_global_engine = FALSE;
-        g_free (ibus->global_previous_engine_name);
+
+        /* if fake context has the focus, we should focus out it */
+        if (ibus->panel && ibus->focused_context == NULL) {
+            bus_panel_proxy_focus_out (ibus->panel, ibus->fake_context);
+        }
+        /* remove engine in fake context */
+        bus_input_context_set_engine (ibus->fake_context, NULL);
     }
 }
 
@@ -608,12 +609,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
         }
     }
 
-    BusFactoryProxy *factory = bus_registry_name_owner_changed (ibus->registry,
-                                                name, old_name, new_name);
-
-    if (factory != NULL) {
-        bus_ibus_impl_add_factory (ibus, factory);
-    }
+    bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
 }
 
 static void
@@ -624,6 +620,20 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                             g_str_equal,
                             NULL,
                             (GDestroyNotify) g_object_unref);
+
+    ibus->fake_context = bus_input_context_new (NULL, "fake");
+    g_object_ref_sink (ibus->fake_context);
+    bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,
+                                   (IBusService *)ibus->fake_context);
+    bus_input_context_set_capabilities (ibus->fake_context,
+                                        IBUS_CAP_PREEDIT_TEXT |
+                                        IBUS_CAP_FOCUS |
+                                        IBUS_CAP_SURROUNDING_TEXT);
+    g_signal_connect (ibus->fake_context,
+                      "engine-changed",
+                      G_CALLBACK (_context_engine_changed_cb),
+                      ibus);
+    bus_input_context_focus_in (ibus->fake_context);
 
     ibus->engine_list = NULL;
     ibus->register_engine_list = NULL;
@@ -653,7 +663,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->embed_preedit_text = TRUE;
     ibus->enable_by_default = FALSE;
     ibus->use_global_engine = FALSE;
-    ibus->global_engine = NULL;
+    ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
 
     ibus->engines_hotkey_profile = NULL;
@@ -728,12 +738,11 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         ibus->keymap = NULL;
     }
 
-    if (ibus->global_engine) {
-        g_object_unref (ibus->global_engine);
-        ibus->global_engine = NULL;
-    }
+    g_free (ibus->global_engine_name);
+    ibus->global_engine_name = NULL;
 
     g_free (ibus->global_previous_engine_name);
+    ibus->global_previous_engine_name = NULL;
 
     if (ibus->engines_hotkey_profile != NULL) {
         g_object_unref (ibus->engines_hotkey_profile);
@@ -745,8 +754,13 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         ibus->hotkey_to_engines_map = NULL;
     }
 
+    if (ibus->fake_context) {
+        g_object_unref (ibus->fake_context);
+        ibus->fake_context = NULL;
+    }
+
     bus_server_quit ();
-    IBUS_OBJECT_CLASS(bus_ibus_impl_parent_class)->destroy (IBUS_OBJECT (ibus));
+    IBUS_OBJECT_CLASS (bus_ibus_impl_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
 static void
@@ -758,90 +772,25 @@ _ibus_get_address (BusIBusImpl           *ibus,
                                            g_variant_new ("(s)", bus_server_get_address ()));
 }
 
-
-static gboolean
-_timeout_cb (gpointer data)
-{
-    return TRUE;
-}
-
-static BusFactoryProxy *
-_get_factory_proxy(IBusEngineDesc *engine_desc)
-{
-    BusFactoryProxy *factory = NULL;
-
-    /* Add a timeout to wake up g_main_context_iteration in every 0.5 second,
-     * and then to check the factory assocated with the engine_desc */
-    guint timeout_id = g_timeout_add (500, _timeout_cb, NULL);
-
-    GTimer *timer = g_timer_new ();
-
-    /* Leave the loop, if it spends more than 5 seconds */
-    while (g_timer_elapsed (timer, NULL) <= 5.0) {
-        if (g_main_context_iteration (NULL, TRUE)) {
-            factory = bus_factory_proxy_get_from_engine (engine_desc);
-            if (factory != NULL) {
-                break;
-            }
-        }
-    }
-
-    g_source_remove (timeout_id);
-    g_timer_destroy (timer);
-
-    return factory;
-}
-
-static BusEngineProxy *
-bus_ibus_impl_create_engine (IBusEngineDesc *engine_desc)
-{
-    IBusComponent *comp;
-    BusFactoryProxy *factory;
-    BusEngineProxy *engine;
-
-    factory = bus_factory_proxy_get_from_engine (engine_desc);
-
-    if (factory == NULL) {
-        /* try to execute the engine */
-        comp = ibus_component_get_from_engine (engine_desc);
-        g_assert (comp);
-
-        if (!ibus_component_is_running (comp)) {
-            ibus_component_start (comp, g_verbose);
-        }
-        factory = _get_factory_proxy (engine_desc);
-    }
-
-    if (factory == NULL) {
-        return NULL;
-    }
-
-    g_object_ref (factory);
-    engine = bus_factory_proxy_create_engine (factory, engine_desc);
-    g_object_unref (factory);
-
-    return engine;
-}
-
 static IBusEngineDesc *
-_find_engine_desc_by_name(BusIBusImpl *ibus,
+_find_engine_desc_by_name (BusIBusImpl *ibus,
                           const gchar *engine_name)
 {
-    IBusEngineDesc *engine_desc = NULL;
+    IBusEngineDesc *desc = NULL;
     GList *p;
 
     /* find engine in registered engine list */
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
-        engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
-            return engine_desc;
+        desc = (IBusEngineDesc *)p->data;
+        if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
+            return desc;
     }
 
     /* find engine in preload engine list */
     for (p = ibus->engine_list; p != NULL; p = p->next) {
-        engine_desc = (IBusEngineDesc *)p->data;
-        if (g_strcmp0 (ibus_engine_desc_get_name (engine_desc), engine_name) == 0)
-            return engine_desc;
+        desc = (IBusEngineDesc *)p->data;
+        if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
+            return desc;
     }
 
     return NULL;
@@ -852,42 +801,41 @@ _context_request_engine_cb (BusInputContext *context,
                             const gchar     *engine_name,
                             BusIBusImpl     *ibus)
 {
-    IBusEngineDesc *engine_desc = NULL;
+    IBusEngineDesc *desc = NULL;
 
     /* context should has focus before request an engine */
-    g_return_if_fail (bus_input_context_has_focus (context));
+    g_return_if_fail (bus_input_context_has_focus (context) ||
+                      context == ibus->focused_context);
 
-    if (engine_name == NULL || engine_name[0] == '\0') {
+    if (engine_name != NULL && engine_name[0] != '\0') {
+        /* request engine by name */
+        desc = _find_engine_desc_by_name (ibus, engine_name);
+        g_return_if_fail (desc != NULL);
+    }
+    else {
         /* Use global engine if possible. */
         if (ibus->use_global_engine) {
-            if (ibus->global_engine) {
-                bus_ibus_impl_set_context_engine (ibus, context, ibus->global_engine);
-                return;
-            }
-            else {
-                gchar *name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
-                if (name) {
-                    engine_desc = _find_engine_desc_by_name (ibus, name);
-                    g_free (name);
-                }
+            gchar *name = ibus->global_engine_name;
+            if (name == NULL)
+                name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
+            if (name) {
+                desc = _find_engine_desc_by_name (ibus, name);
+                g_free (name);
             }
         }
         /* request default engine */
-        if (!engine_desc) {
+        if (!desc) {
             if (ibus->register_engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
+                desc = (IBusEngineDesc *)ibus->register_engine_list->data;
             }
             else if (ibus->engine_list) {
-                engine_desc = (IBusEngineDesc *)ibus->engine_list->data;
+                desc = (IBusEngineDesc *)ibus->engine_list->data;
             }
          }
-    }
-    else {
-        /* request engine by name */
-        engine_desc = _find_engine_desc_by_name (ibus, engine_name);
+        g_return_if_fail (desc != NULL);
     }
 
-    bus_ibus_impl_set_context_engine_from_desc (ibus, context, engine_desc);
+    bus_ibus_impl_set_context_engine_from_desc (ibus, context, desc);
 }
 
 static void
@@ -953,142 +901,49 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
      * in the menu. This behavior is better than doing nothing.
      */
     if (!engine_name) {
-        bus_ibus_impl_context_request_next_engine_in_menu(ibus, context);
+        bus_ibus_impl_context_request_next_engine_in_menu (ibus, context);
         return;
     }
     _context_request_engine_cb (context, engine_name, ibus);
 }
 
 static void
-_global_engine_destroy_cb (BusEngineProxy *engine,
-                           BusIBusImpl    *ibus)
-{
-    if (ibus->global_engine != engine) {
-        return;
-    }
-
-    g_signal_handlers_disconnect_by_func (ibus->global_engine,
-                G_CALLBACK (_global_engine_destroy_cb), ibus);
-    g_object_unref (ibus->global_engine);
-    ibus->global_engine = NULL;
-}
-
-static void
-bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
-                                 BusEngineProxy *engine)
-{
-    g_assert (ibus->use_global_engine == TRUE);
-
-    if (ibus->global_engine == engine) {
-        return;
-    }
-
-    g_free (ibus->global_previous_engine_name);
-    ibus->global_previous_engine_name = NULL;
-    if (ibus->global_engine) {
-        /* Save the current global engine's name as previous engine. */
-        const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (ibus->global_engine));
-        ibus->global_previous_engine_name = g_strdup (name);
-
-        ibus_proxy_destroy ((IBusProxy *)ibus->global_engine);
-        /* global_engine should be NULL */
-        g_assert (ibus->global_engine == NULL);
-    }
-
-    if (engine != NULL && !IBUS_PROXY_DESTROYED (engine)) {
-        g_object_ref (engine);
-        ibus->global_engine = engine;
-        g_signal_connect (ibus->global_engine, "destroy",
-                G_CALLBACK (_global_engine_destroy_cb), ibus);
-    }
-
-    bus_ibus_impl_save_global_engine_name_to_config (ibus);
-    bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
-    bus_ibus_impl_global_engine_changed (ibus);
-}
-
-static void
 bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                             BusInputContext *context,
-                                            IBusEngineDesc  *engine_desc)
+                                            IBusEngineDesc  *desc)
 {
-    if (engine_desc != NULL) {
-        BusEngineProxy *engine = bus_ibus_impl_create_engine (engine_desc);
-        if (engine != NULL) {
-            bus_ibus_impl_set_context_engine (ibus, context, engine);
-        }
-    }
-}
-
-static void
-bus_ibus_impl_set_context_engine (BusIBusImpl     *ibus,
-                                  BusInputContext *context,
-                                  BusEngineProxy  *engine) {
-  g_object_set_data (G_OBJECT (context), "previous-engine-name", NULL);
-
-  /* If use_global_engine is disabled, then we need to save the previous engine
-   * of each input context. */
-  if (!ibus->use_global_engine) {
-      BusEngineProxy *previous_engine = bus_input_context_get_engine (context);
-      if (previous_engine) {
-          const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (previous_engine));
-          g_object_set_data_full (G_OBJECT (context), "previous-engine-name",
-                                  g_strdup (name),
-                                  g_free);
-      }
-  }
-
-  bus_input_context_set_engine (context, engine);
+    bus_input_context_set_engine_by_desc (context,
+                                          desc,
+                                          5000,
+                                          NULL,
+                                          NULL,
+                                          NULL);
 }
 
 static void
 _context_engine_changed_cb (BusInputContext *context,
                             BusIBusImpl     *ibus)
 {
-    BusEngineProxy *engine;
-
-    if (context != ibus->focused_context || !ibus->use_global_engine) {
+    if (!ibus->use_global_engine)
         return;
+
+    if ((context == ibus->focused_context) ||
+        (ibus->focused_context == NULL && context == ibus->fake_context)) {
+        BusEngineProxy *engine = bus_input_context_get_engine (context);
+        if (engine != NULL) {
+            /* only set global engine if engine is not NULL */
+            const gchar *name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (engine));
+            if (g_strcmp0 (name, ibus->global_engine_name) == 0)
+                return;
+            g_free (ibus->global_previous_engine_name);
+            ibus->global_previous_engine_name = ibus->global_engine_name;
+            ibus->global_engine_name = g_strdup (name);
+            /* save changes */
+            bus_ibus_impl_save_global_engine_name_to_config (ibus);
+            bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
+            bus_ibus_impl_global_engine_changed (ibus);
+        }
     }
-
-    engine = bus_input_context_get_engine (context);
-    if (engine != NULL) {
-        /* only set global engine if engine is not NULL */
-        bus_ibus_impl_set_global_engine (ibus, engine);
-    }
-}
-
-static void
-_context_focus_out_cb (BusInputContext    *context,
-                       BusIBusImpl        *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    /* Do noting if context does not support focus.
-     * Actually, the context should emit focus signals, if it does not support focus */
-    if ((bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) == 0) {
-        return;
-    }
-
-    /* Do noting if it is not focused context. */
-    if (ibus->focused_context != context) {
-        return;
-    }
-
-    ibus->focused_context = NULL;
-
-    if (ibus->panel != NULL) {
-        bus_panel_proxy_focus_out (ibus->panel, context);
-    }
-
-    /* If the use_global_engine option is enabled,
-     * the global engine shoule be detached from the focused context. */
-    if (ibus->use_global_engine) {
-        bus_ibus_impl_set_context_engine (ibus, context, NULL);
-    }
-
-    g_object_unref (context);
 }
 
 static void
@@ -1112,23 +967,33 @@ _context_focus_in_cb (BusInputContext *context,
     if (ibus->focused_context) {
         /* focus out context */
         bus_input_context_focus_out (ibus->focused_context);
-        g_assert (ibus->focused_context == NULL);
     }
 
-    /* If the use_global_engine option is enabled, then we need:
-     * - Switch the context to use the global engine or save the context's
-     *   existing engine as global engine.
-     * - Set the context's enabled state according to the saved state.
-     * Note: we get this signal only if the context supports IBUS_CAP_FOCUS. */
+    /* If use_gloable_engine option is enabled, we need:
+     * Detach the engine from previous focused context
+     * and attach the engine with the new context */
     if (ibus->use_global_engine) {
-        if (!ibus->global_engine) {
-            bus_ibus_impl_set_global_engine (ibus, bus_input_context_get_engine (context));
+        BusInputContext *old_context = NULL;
+        if (ibus->focused_context) {
+            old_context = ibus->focused_context;
+            ibus->focused_context = NULL;
         }
         else {
-            bus_ibus_impl_set_context_engine (ibus, context, ibus->global_engine);
-            if (ibus->global_engine && bus_engine_proxy_is_enabled (ibus->global_engine)) {
+            old_context = ibus->fake_context;
+            g_object_ref (old_context);
+        }
+
+        BusEngineProxy *engine =
+                bus_input_context_get_engine (old_context);
+        bus_input_context_set_engine (old_context, NULL);
+        g_object_unref (old_context);
+
+        if (engine != NULL) {
+            g_object_ref (engine);
+            bus_input_context_set_engine (context, engine);
+            if (bus_engine_proxy_is_enabled (engine))
                 bus_input_context_enable (context);
-            }
+            g_object_unref (engine);
         }
     }
 
@@ -1136,8 +1001,63 @@ _context_focus_in_cb (BusInputContext *context,
         bus_panel_proxy_focus_in (ibus->panel, context);
     }
 
-    g_object_ref (context);
-    ibus->focused_context = context;
+    ibus->focused_context = (BusInputContext *) g_object_ref (context);
+}
+
+static void
+_context_focus_out_cb (BusInputContext    *context,
+                       BusIBusImpl        *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    /* Do noting if context does not support focus.
+     * Actually, the context should emit focus signals, if it does not support focus */
+    if ((bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) == 0) {
+        return;
+    }
+
+    /* Do noting if it is not focused context. */
+    if (ibus->focused_context != context) {
+        return;
+    }
+
+
+    if (!ibus->use_global_engine) {
+
+        g_object_unref (ibus->focused_context);
+        ibus->focused_context = NULL;
+
+        if (ibus->panel != NULL)
+            bus_panel_proxy_focus_out (ibus->panel, context);
+    }
+    else {
+        if (IBUS_OBJECT_DESTROYED (context)) {
+            /* Only focus out context and focus in fake context,
+             * if the context is destroied. */
+
+            g_object_unref (ibus->focused_context);
+            ibus->focused_context = NULL;
+
+            if (ibus->panel != NULL)
+                bus_panel_proxy_focus_out (ibus->panel, context);
+
+            BusEngineProxy *engine = bus_input_context_get_engine (context);
+
+            if (engine != NULL) {
+                g_object_ref (engine);
+                bus_input_context_set_engine (context, NULL);
+                bus_input_context_set_engine (ibus->fake_context, engine);
+
+                if (bus_engine_proxy_is_enabled (engine))
+                    bus_input_context_enable (ibus->fake_context);
+                g_object_unref (engine);
+            }
+
+            if (ibus->panel != NULL)
+                bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
+        }
+    }
 }
 
 static void
@@ -1171,16 +1091,12 @@ _context_disabled_cb (BusInputContext    *context,
 }
 #endif
 
-static void
-_ibus_create_input_context (BusIBusImpl           *ibus,
-                            GVariant              *parameters,
-                            GDBusMethodInvocation *invocation)
+static BusInputContext *
+bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
+                                    BusConnection *connection,
+                                    const gchar   *client)
 {
-    const gchar *client_name = NULL;
-    g_variant_get (parameters, "(&s)", &client_name);
-
-    BusConnection *connection = bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
-    BusInputContext *context = bus_input_context_new (connection, client_name);
+    BusInputContext *context = bus_input_context_new (connection, client);
     g_object_ref_sink (context);
     ibus->contexts = g_list_append (ibus->contexts, context);
 
@@ -1211,10 +1127,37 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
         bus_input_context_enable (context);
     }
 
-    const gchar *path = ibus_service_get_object_path ((IBusService *) context);
     bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,
                                    (IBusService *)context);
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
+    g_object_ref (context);
+    return context;
+}
+
+static void
+_ibus_create_input_context (BusIBusImpl           *ibus,
+                            GVariant              *parameters,
+                            GDBusMethodInvocation *invocation)
+{
+    const gchar *client_name = NULL;
+    g_variant_get (parameters, "(&s)", &client_name);
+
+    BusConnection *connection =
+            bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
+    BusInputContext *context =
+            bus_ibus_impl_create_input_context (ibus,
+                                                connection,
+                                                client_name);
+    if (context) {
+        const gchar *path = ibus_service_get_object_path ((IBusService *) context);
+        g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
+        g_object_unref (context);
+    }
+    else {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_FAILED,
+                                               "Create input context failed!");
+    }
 }
 
 static void
@@ -1234,48 +1177,29 @@ _ibus_current_input_context (BusIBusImpl           *ibus,
 }
 
 static void
-_factory_destroy_cb (BusFactoryProxy    *factory,
-                     BusIBusImpl        *ibus)
+_component_destroy_cb (BusComponent *component,
+                       BusIBusImpl  *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_assert (BUS_IS_FACTORY_PROXY (factory));
+    g_assert (BUS_IS_COMPONENT (component));
 
-    IBusComponent *component;
-    GList *engines, *p;
+    ibus->registered_components = g_list_remove (ibus->registered_components, component);
 
-    ibus->factory_list = g_list_remove (ibus->factory_list, factory);
-
-    component = bus_factory_proxy_get_component (factory);
-
-    if (component != NULL) {
-        p = engines = ibus_component_get_engines (component);
-        for (; p != NULL; p = p->next) {
-            if (g_list_find (ibus->register_engine_list, p->data)) {
-                ibus->register_engine_list = g_list_remove (ibus->register_engine_list, p->data);
-                g_object_unref (p->data);
-            }
+    /* remove engines from engine_list */
+    GList *engines = bus_component_get_engines (component);
+    GList *p;
+    for (p = engines; p != NULL; p = p->next) {
+        if (g_list_find (ibus->register_engine_list, p->data)) {
+            ibus->register_engine_list = g_list_remove (ibus->register_engine_list, p->data);
+            g_object_unref (p->data);
         }
-        g_list_free (engines);
     }
+    g_list_free (engines);
 
-    g_object_unref (factory);
+    g_object_unref (component);
 
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
-
-static void
-bus_ibus_impl_add_factory (BusIBusImpl     *ibus,
-                           BusFactoryProxy *factory)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_assert (BUS_IS_FACTORY_PROXY (factory));
-
-    g_object_ref_sink (factory);
-    ibus->factory_list = g_list_append (ibus->factory_list, factory);
-
-    g_signal_connect (factory, "destroy", G_CALLBACK (_factory_destroy_cb), ibus);
-}
-
 
 static void
 _ibus_register_component (BusIBusImpl           *ibus,
@@ -1293,9 +1217,8 @@ _ibus_register_component (BusIBusImpl           *ibus,
         return;
     }
 
-    g_object_ref_sink (component);
     BusConnection *connection = bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
-    BusFactoryProxy *factory = bus_factory_proxy_new (component, connection);
+    BusFactoryProxy *factory = bus_factory_proxy_new (connection);
 
     if (factory == NULL) {
         g_object_unref (component);
@@ -1304,12 +1227,22 @@ _ibus_register_component (BusIBusImpl           *ibus,
         return;
     }
 
-    bus_ibus_impl_add_factory (ibus, factory);
+    g_object_ref_sink (component);
+    g_object_ref_sink (factory);
 
-    GList *engines = ibus_component_get_engines (component);
-    g_list_foreach (engines, (GFunc) g_object_ref, NULL);
-    ibus->register_engine_list = g_list_concat (ibus->register_engine_list, engines);
+    BusComponent *buscomp = bus_component_new (component, factory);
+    bus_component_set_destroy_with_factory (buscomp, TRUE);
     g_object_unref (component);
+    g_object_unref (factory);
+
+    ibus->registered_components = g_list_append (ibus->registered_components,
+                                                g_object_ref_sink (buscomp));
+    GList *engines = bus_component_get_engines (buscomp);
+    g_list_foreach (engines, (GFunc)g_object_ref, NULL);
+    ibus->register_engine_list = g_list_concat (ibus->register_engine_list,
+                                               engines);
+
+    g_signal_connect (buscomp, "destroy", G_CALLBACK (_component_destroy_cb), ibus);
 
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 
@@ -1432,18 +1365,48 @@ _ibus_get_global_engine (BusIBusImpl           *ibus,
                          GVariant              *parameters,
                          GDBusMethodInvocation *invocation)
 {
-    if (ibus->use_global_engine && ibus->global_engine) {
-        IBusEngineDesc *desc = bus_engine_proxy_get_desc (ibus->global_engine);
-        if (desc != NULL) {
-            GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)desc);
-            g_dbus_method_invocation_return_value (invocation,
-                            g_variant_new ("(v)", variant));
-            return;
-        }
-    }
+    IBusEngineDesc *desc = NULL;
+
+    do {
+        if (!ibus->use_global_engine)
+            break;
+        BusInputContext *context = ibus->focused_context;
+        if (context == NULL)
+            context = ibus->fake_context;
+
+        desc = bus_input_context_get_engine_desc (context);
+
+        if (desc == NULL)
+            break;
+
+        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)desc);
+        g_dbus_method_invocation_return_value (invocation,
+                                               g_variant_new ("(v)", variant));
+        return;
+    } while (0);
+
     g_dbus_method_invocation_return_error (invocation,
                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
                     "No global engine.");
+}
+
+static void
+_ibus_set_global_engine_ready_cb (BusInputContext       *context,
+                                  GAsyncResult          *res,
+                                  GDBusMethodInvocation *invocation)
+{
+    GError *error = NULL;
+    if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
+        g_error_free (error);
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_FAILED,
+                                               "Set global engine failed.");
+
+    }
+    else {
+        g_dbus_method_invocation_return_value (invocation, NULL);
+    }
 }
 
 static void
@@ -1458,55 +1421,44 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         return;
     }
 
+    BusInputContext *context = ibus->focused_context;
+    if (context == NULL)
+        context = ibus->fake_context;
+
     const gchar *new_engine_name = NULL;
     g_variant_get (parameters, "(&s)", &new_engine_name);
     const gchar *old_engine_name = NULL;
 
-    if (ibus->global_engine) {
-        old_engine_name = ibus_engine_desc_get_name (bus_engine_proxy_get_desc (ibus->global_engine));
+    BusEngineProxy *engine = bus_input_context_get_engine (context);
+    if (engine) {
+        old_engine_name =
+                ibus_engine_desc_get_name (bus_engine_proxy_get_desc (engine));
     }
 
     if (g_strcmp0 (new_engine_name, old_engine_name) == 0) {
         /* If the user requested the same global engine, then we just enable the
          * original one. */
-        if (ibus->focused_context) {
-            bus_input_context_enable (ibus->focused_context);
-        }
-        else if (ibus->global_engine) {
-            bus_engine_proxy_enable (ibus->global_engine);
-        }
+        bus_input_context_enable (context);
         g_dbus_method_invocation_return_value (invocation, NULL);
         return;
     }
 
-    /* If there is a focused input context, then we just change the engine of
-     * the focused context, which will then change the global engine
-     * automatically. Otherwise, we need to change the global engine directly.
-     */
-    if (ibus->focused_context) {
-        _context_request_engine_cb (ibus->focused_context, new_engine_name, ibus);
+    IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, new_engine_name);
+    if (desc == NULL) {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_FAILED,
+                                               "Can not find engine %s.",
+                                               new_engine_name);
+        return;
     }
-    else {
-        IBusEngineDesc *engine_desc = _find_engine_desc_by_name (ibus, new_engine_name);
-        if (engine_desc != NULL) {
-            BusEngineProxy *new_engine = bus_ibus_impl_create_engine (engine_desc);
-            if (new_engine != NULL) {
-                /* Enable the global engine by default, because the user
-                 * selected it explicitly. */
-                bus_engine_proxy_enable (new_engine);
 
-                /* Assume the ownership of the new global engine. Normally it's
-                 * done by the input context. But as we need to change the global
-                 * engine directly, so we need to do it here. */
-                g_object_ref_sink (new_engine);
-                bus_ibus_impl_set_global_engine (ibus, new_engine);
-
-                /* The global engine should already be referenced. */
-                g_object_unref (new_engine);
-            }
-        }
-    }
-    g_dbus_method_invocation_return_value (invocation, NULL);
+    bus_input_context_set_engine_by_desc (context,
+                                          desc,
+                                          5000,
+                                          NULL,
+                                          (GAsyncReadyCallback) _ibus_set_global_engine_ready_cb,
+                                          invocation);
 }
 
 static void
@@ -1514,8 +1466,21 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
                                 GVariant              *parameters,
                                 GDBusMethodInvocation *invocation)
 {
-    gboolean enabled = (ibus->use_global_engine && ibus->global_engine &&
-                        bus_engine_proxy_is_enabled (ibus->global_engine));
+    gboolean enabled = FALSE;
+
+    do {
+        if (!ibus->use_global_engine)
+            break;
+
+        BusInputContext *context = ibus->focused_context;
+        if (context == NULL)
+            context = ibus->fake_context;
+        if (context == NULL)
+            break;
+
+        enabled = bus_input_context_is_enabled (context);
+    } while (0);
+
     g_dbus_method_invocation_return_value (invocation,
                     g_variant_new ("(b)", enabled));
 }
@@ -1531,7 +1496,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
                                    GDBusMethodInvocation *invocation)
 {
     if (g_strcmp0 (interface_name, "org.freedesktop.IBus") != 0) {
-        IBUS_SERVICE_CLASS(bus_ibus_impl_parent_class)->service_method_call (
+        IBUS_SERVICE_CLASS (bus_ibus_impl_parent_class)->service_method_call (
                         service, connection, sender, object_path, interface_name, method_name,
                         parameters, invocation);
         return;
@@ -1687,7 +1652,7 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         return (enabled != bus_input_context_is_enabled (context));
     }
     if (event == next) {
-        if (bus_input_context_is_enabled(context)) {
+        if (bus_input_context_is_enabled (context)) {
             bus_ibus_impl_context_request_next_engine_in_menu (ibus, context);
         }
         else {
@@ -1696,7 +1661,7 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         return TRUE;
     }
     if (event == previous) {
-        if (bus_input_context_is_enabled(context)) {
+        if (bus_input_context_is_enabled (context)) {
             bus_ibus_impl_context_request_previous_engine (ibus, context);
         }
         else {
@@ -1771,13 +1736,13 @@ static void
 bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_return_if_fail (IBUS_IS_CONFIG (ibus->config));
 
-    if (ibus->use_global_engine && ibus->global_engine) {
-        IBusEngineDesc *desc = bus_engine_proxy_get_desc (ibus->global_engine);
+    if (ibus->config &&
+        ibus->use_global_engine &&
+        ibus->global_engine_name) {
         ibus_config_set_value (ibus->config,
                         "general", "global_engine",
-                        g_variant_new ("s", ibus_engine_desc_get_name (desc)));
+                        g_variant_new ("s", ibus->global_engine_name));
     }
 }
 
@@ -1800,9 +1765,10 @@ static void
 bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_return_if_fail (IBUS_IS_CONFIG (ibus->config));
 
-    if (ibus->use_global_engine && ibus->global_previous_engine_name) {
+    if (ibus->config &&
+        ibus->use_global_engine &&
+        ibus->global_previous_engine_name) {
         ibus_config_set_value (ibus->config,
                         "general", "global_previous_engine",
                         g_variant_new ("s", ibus->global_previous_engine_name));
@@ -1879,7 +1845,7 @@ bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
         g_hash_table_unref (ibus->hotkey_to_engines_map);
     }
 
-    ibus->engines_hotkey_profile = ibus_hotkey_profile_new();
+    ibus->engines_hotkey_profile = ibus_hotkey_profile_new ();
     ibus->hotkey_to_engines_map =
         g_hash_table_new_full (NULL, NULL, NULL, (GDestroyNotify) g_list_free);
 
@@ -1890,7 +1856,7 @@ bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
 gboolean
 bus_ibus_impl_is_use_sys_layout (BusIBusImpl *ibus)
 {
-    g_assert (BUS_IS_IBUS_IMPL(ibus));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     return ibus->use_sys_layout;
 }
@@ -1898,7 +1864,7 @@ bus_ibus_impl_is_use_sys_layout (BusIBusImpl *ibus)
 BusInputContext *
 bus_ibus_impl_get_focused_input_context (BusIBusImpl *ibus)
 {
-    g_assert (BUS_IS_IBUS_IMPL(ibus));
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     return ibus->focused_context;
 }

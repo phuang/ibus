@@ -50,11 +50,19 @@ typedef struct _BusFactoryProxy BusFactoryProxy;
 typedef struct _BusFactoryProxyClass BusFactoryProxyClass;
 
 GType            bus_factory_proxy_get_type     (void);
-BusFactoryProxy *bus_factory_proxy_new          (IBusComponent      *component,
-                                                 BusConnection      *connection);
-IBusComponent   *bus_factory_proxy_get_component(BusFactoryProxy    *factory);
-BusEngineProxy  *bus_factory_proxy_create_engine(BusFactoryProxy    *factory,
-                                                 IBusEngineDesc     *desc);
+BusFactoryProxy *bus_factory_proxy_new          (BusConnection      *connection);
+void             bus_factory_proxy_create_engine
+                                                (BusFactoryProxy    *factory,
+                                                 IBusEngineDesc     *desc,
+                                                 gint                timeout,
+                                                 GCancellable       *cancellable,
+                                                 GAsyncReadyCallback callback,
+                                                 gpointer            user_data);
+gchar           *bus_factory_proxy_create_engine_finish
+                                                (BusFactoryProxy    *factory,
+                                                 GAsyncResult       *res,
+                                                 GError            **error);
+
 BusFactoryProxy *bus_factory_proxy_get_from_component
                                                 (IBusComponent      *component);
 BusFactoryProxy *bus_factory_proxy_get_from_engine

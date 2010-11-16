@@ -95,7 +95,7 @@ IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
  * @config: An IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
- * @returns: a GVariant.
+ * @returns: A #GVariant or %NULL. Free with g_variant_unref().
  *
  * Get the value of a configuration option.
  *
@@ -113,11 +113,46 @@ GVariant        *ibus_config_get_value      (IBusConfig         *config,
                                              const gchar        *name);
 
 /**
+ * ibus_config_get_value_async:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @name: Name of the configure option.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: Callback function to invoke when the return value is ready.
+ *
+ * Get the value of a configuration option.
+ *
+ * @see_also: ibus_config_get_value.
+ */
+void             ibus_config_get_value_async(IBusConfig         *config,
+                                             const gchar        *section,
+                                             const gchar        *name,
+                                             GCancellable       *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer            user_data);
+
+/**
+ * ibus_config_get_value_async_finish:
+ * @confi: A #IBusConfig.
+ * @result: A #GAsyncResult.
+ * @error: Return location for error or %NULL.
+ * @returns: A #GVariant or %NULL if error is set. Free with g_variant_unref().
+ * 
+ * Finish get value of a configuration option.
+ *
+ * @see_also: ibus_config_get_value_async.
+ */
+GVariant        *ibus_config_get_value_async_finish
+                                            (IBusConfig         *config,
+                                             GAsyncResult       *result,
+                                             GError            **error);
+
+/**
  * ibus_config_set_value:
  * @config: An IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option its self.
- * @value: GValue that holds the value.
+ * @value: A #GVariant that holds the value.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
  * Set the value of a configuration option.
@@ -127,6 +162,43 @@ gboolean         ibus_config_set_value      (IBusConfig         *config,
                                              const gchar        *section,
                                              const gchar        *name,
                                              GVariant           *value);
+
+/**
+ * ibus_config_set_value_async:
+ * @config: An #IBusConfig
+ * @section: Section name of the configuration option.
+ * @name: Name of the configure option.
+ * @value: A #GVariant that holds the value.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: Callback function to invoke when the return value is ready.
+ *
+ * Set the value of a configuration option.
+ *
+ * @see_also: ibus_config_set_value.
+ */
+void             ibus_config_set_value_async(IBusConfig         *config,
+                                             const gchar        *section,
+                                             const gchar        *name,
+                                             GVariant           *value,
+                                             GCancellable       *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer            user_data);
+
+/**
+ * ibus_config_set_value_async_finish:
+ * @confi: A #IBusConfig.
+ * @result: A #GAsyncResult.
+ * @error: Return location for error or %NULL.
+ * @returns: %TRUE or %FALSE if error is set.
+ * 
+ * Finish set value of a configuration option.
+ *
+ * @see_also: ibus_config_set_value_async.
+ */
+gboolean         ibus_config_set_value_async_finish
+                                            (IBusConfig         *config,
+                                             GAsyncResult       *result,
+                                             GError            **error);
 
 /**
  * ibus_config_unset:

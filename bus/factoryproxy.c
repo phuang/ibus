@@ -28,9 +28,6 @@
 struct _BusFactoryProxy {
     IBusProxy parent;
     /* instance members */
-
-    IBusComponent *component;
-    GList *engine_list;
 };
 
 struct _BusFactoryProxyClass {
@@ -52,133 +49,67 @@ bus_factory_proxy_class_init (BusFactoryProxyClass *class)
 static void
 bus_factory_proxy_init (BusFactoryProxy *factory)
 {
-    factory->component = NULL;
 }
 
 static void
 bus_factory_proxy_destroy (IBusProxy *proxy)
 {
-    BusFactoryProxy *factory = (BusFactoryProxy *)proxy;
-    GList *p;
-
-    for (p = factory->engine_list; p != NULL ; p = p->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *)p->data;
-        g_object_steal_data ((GObject *)desc, "factory");
-        g_object_unref (desc);
-    }
-    g_list_free (factory->engine_list);
-    factory->engine_list = NULL;
-
-    if (factory->component) {
-        g_object_steal_data ((GObject *)factory->component, "factory");
-        g_object_unref (factory->component);
-        factory->component = NULL;
-    }
-
-    IBUS_PROXY_CLASS(bus_factory_proxy_parent_class)->destroy (IBUS_PROXY (factory));
+    IBUS_PROXY_CLASS(bus_factory_proxy_parent_class)->destroy(IBUS_PROXY (proxy));
 }
 
 BusFactoryProxy *
-bus_factory_proxy_new (IBusComponent *component,
-                       BusConnection *connection)
+bus_factory_proxy_new(BusConnection *connection)
 {
-    g_assert (IBUS_IS_COMPONENT (component));
-
+    g_assert(BUS_IS_CONNECTION(connection));
     BusFactoryProxy *factory;
-    GList *p;
-
-    if (connection == NULL) {
-        const gchar *name = ibus_component_get_name (component);
-        connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, name);
-    }
-
-    if (connection == NULL) {
-        return NULL;
-    }
-
+    
     factory = g_object_new (BUS_TYPE_FACTORY_PROXY,
                             "g-object-path", IBUS_PATH_FACTORY,
                             "g-interface-name", IBUS_INTERFACE_FACTORY,
                             "g-connection", bus_connection_get_dbus_connection (connection),
                             NULL);
-
-    g_object_ref_sink (component);
-    factory->component = component;
-    g_object_set_data ((GObject *)factory->component, "factory", factory);
-
-    factory->engine_list = ibus_component_get_engines (factory->component);
-
-    for (p = factory->engine_list; p != NULL; p = p->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *)p->data;
-        g_object_ref (desc);
-        g_object_set_data ((GObject *)desc, "factory", factory);
-        g_assert (g_object_get_data ((GObject *)desc, "factory") == factory);
-    }
-
     return factory;
 }
 
-IBusComponent *
-bus_factory_proxy_get_component (BusFactoryProxy *factory)
-{
-    return factory->component;
-}
-
-BusFactoryProxy *
-bus_factory_proxy_get_from_component (IBusComponent *component)
-{
-    IBUS_IS_COMPONENT (component);
-
-    BusFactoryProxy *factory;
-
-    factory = (BusFactoryProxy *) g_object_get_data ((GObject *)component, "factory");
-
-    return factory;
-}
-
-BusFactoryProxy *
-bus_factory_proxy_get_from_engine (IBusEngineDesc *desc)
-{
-
-    IBUS_IS_ENGINE_DESC (desc);
-
-    BusFactoryProxy *factory;
-
-    factory = (BusFactoryProxy *) g_object_get_data ((GObject *)desc, "factory");
-
-    return factory;
-}
-
-BusEngineProxy *
-bus_factory_proxy_create_engine (BusFactoryProxy *factory,
-                                 IBusEngineDesc  *desc)
+void
+bus_factory_proxy_create_engine (BusFactoryProxy    *factory,
+                                 IBusEngineDesc     *desc,
+                                 gint                timeout,
+                                 GCancellable       *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer            user_data)
 {
     g_assert (BUS_IS_FACTORY_PROXY (factory));
     g_assert (IBUS_IS_ENGINE_DESC (desc));
-
-    if (g_list_find (factory->component->engines, desc) == NULL) {
-        return NULL;
-    }
-
-    GError *error = NULL;
-    GVariant *retval = g_dbus_proxy_call_sync ((GDBusProxy *)factory,
-                                               "CreateEngine",
-                                               g_variant_new ("(s)", ibus_engine_desc_get_name (desc)),
-                                               G_DBUS_CALL_FLAGS_NONE,
-                                               -1, NULL, &error);
-    if (retval == NULL) {
-        g_warning ("Create engine failed. %s", error->message);
-        g_error_free (error);
-        return NULL;
-    }
-
-    const gchar *object_path = NULL;
-    g_variant_get (retval, "(&o)", &object_path);
-    GDBusConnection *connection = g_dbus_proxy_get_connection ((GDBusProxy *) factory);
-    BusEngineProxy *engine = bus_engine_proxy_new (object_path,
-                                                   desc,
-                                                   bus_connection_lookup (connection));
-    g_variant_unref (retval);
-    return engine;
+    g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+    
+    g_dbus_proxy_call ((GDBusProxy *)factory,
+                       "CreateEngine",
+                       g_variant_new ("(s)", ibus_engine_desc_get_name (desc)),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       timeout,
+                       cancellable,
+                       callback,
+                       user_data);
 }
+
+gchar *
+bus_factory_proxy_create_engine_finish (BusFactoryProxy  *factory,
+                                        GAsyncResult     *res,
+                                        GError          **error)
+{
+
+    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *) factory,
+                                                 res,
+                                                 error);
+    if (retval == NULL)
+        return NULL;
+
+    gchar *object_path = NULL;
+    g_variant_get (retval, "(o)", &object_path);
+    g_variant_unref (retval);
+
+    return object_path;
+}
+
 

@@ -59,6 +59,8 @@ ibus_daemon_DEPENDENCIES =  \
 	$(NULL)
 ibus_daemon_SOURCES =       \
 	main.c                  \
+	component.c             \
+	component.h             \
 	dbusimpl.c              \
 	dbusimpl.h              \
 	ibusimpl.c              \

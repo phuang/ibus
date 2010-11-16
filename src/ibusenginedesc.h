@@ -72,7 +72,6 @@ G_BEGIN_DECLS
 typedef struct _IBusEngineDesc IBusEngineDesc;
 typedef struct _IBusEngineDescPrivate IBusEngineDescPrivate;
 typedef struct _IBusEngineDescClass IBusEngineDescClass;
-typedef struct _BusComponent BusComponent;
 
 /**
  * IBusEngineDesc:
