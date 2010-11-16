@@ -23,10 +23,12 @@
 import gettext
 import os
 
-_ = lambda a: gettext.dgettext("ibus10", a)
+DOMAINNAME = "ibus10"
+
+_ = lambda a: gettext.dgettext(DOMAINNAME, a)
 N_ = lambda a: a
 
 def init():
     localedir = os.getenv("IBUS_LOCALEDIR")
-    gettext.bindtextdomain("ibus10", localedir)
-    gettext.bind_textdomain_codeset("ibus10", "UTF-8")
+    gettext.bindtextdomain(DOMAINNAME, localedir)
+    gettext.bind_textdomain_codeset(DOMAINNAME, "UTF-8")

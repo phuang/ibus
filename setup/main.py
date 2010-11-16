@@ -37,7 +37,7 @@ from gtk import gdk
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
-from i18n import _, N_, init
+from i18n import DOMAINNAME, _, N_, init as i18n_init
 
 (
     COLUMN_NAME,
@@ -69,7 +69,7 @@ class Setup(object):
         super(Setup, self).__init__()
         gtk_builder_file = path.join(path.dirname(__file__), "./setup.ui")
         self.__builder = gtk.Builder()
-        self.__builder.set_translation_domain("ibus10")
+        self.__builder.set_translation_domain(DOMAINNAME)
         self.__builder.add_from_file(gtk_builder_file);
         self.__bus = None
         self.__init_bus()
@@ -456,7 +456,6 @@ class Setup(object):
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, '')
-    import i18n
-    i18n.init()
+    i18n_init()
     setup = Setup()
     setup.run()
