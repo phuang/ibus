@@ -25,7 +25,7 @@ from gtk import gdk
 import pango
 import ibus
 
-from i18n import *
+from i18n import _, N_
 
 class EngineAbout(gtk.Dialog):
     def __init__(self, enginedesc):
