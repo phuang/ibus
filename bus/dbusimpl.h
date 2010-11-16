@@ -53,21 +53,74 @@ typedef struct _BusDBusImpl BusDBusImpl;
 typedef struct _BusDBusImplClass BusDBusImplClass;
 
 GType            bus_dbus_impl_get_type         (void);
+
+/**
+ * bus_dbus_impl_get_default:
+ * @returns: a BusDBusImpl object which is a singleton.
+ *
+ * Instantiate a BusDBusImpl object (if necessary) and return the object.
+ */
 BusDBusImpl     *bus_dbus_impl_get_default      (void);
+
+/**
+ * bus_dbus_impl_new_connection:
+ * @connection: A new connection.
+ * @returns: TRUE
+ *
+ * Register all IBusServices (e.g. DBus, IBus, IBus.InputContext) to the connection so that the service_method_call function
+ * for each service could be called.
+ */
 gboolean         bus_dbus_impl_new_connection   (BusDBusImpl    *dbus,
                                                  BusConnection  *connection);
+/**
+ * bus_dbus_impl_get_connection_by_name:
+ * @name: A connection name like ":1.0" and "org.freedesktop.IBus.Panel".
+ * @returns: A BusConnection object which corresponds to the name.
+ *
+ * Search for an active connection whose name is name. If not found, return NULL.
+ */
 BusConnection   *bus_dbus_impl_get_connection_by_name
                                                 (BusDBusImpl    *dbus,
                                                  const gchar    *name);
+
+/**
+ * bus_dbus_impl_forward_message:
+ *
+ * Push the message to the queue (dbus->forward_queue) and schedule a idle function call (bus_dbus_impl_forward_message_idle_cb) which
+ * actually forwards the message to the destination. Note that the destination of the message is embedded in the message.
+ */
 void             bus_dbus_impl_forward_message  (BusDBusImpl    *dbus,
                                                  BusConnection  *connection,
                                                  GDBusMessage   *message);
+
+/**
+ * bus_dbus_impl_dispatch_message_by_rule:
+ *
+ * Push the message to the queue (dbus->dispatch_queue) and schedule a idle function call (bus_dbus_impl_dispatch_message_by_rule_idle_cb)
+ * which actually dispatch the message by rule.
+ */
 void             bus_dbus_impl_dispatch_message_by_rule
                                                 (BusDBusImpl    *dbus,
                                                  GDBusMessage   *message,
                                                  BusConnection  *skip_connection);
+
+/**
+ * bus_dbus_impl_register_object:
+ * @object: A new service which implements IBusService, like BusIBusImpl and BusInputContext.
+ * @returns: FALSE if dbus is already destroyed. otherwise TRUE.
+ *
+ * Add the IBusService to the daemon. See bus_dbus_impl_new_connection for details.
+ */
 gboolean         bus_dbus_impl_register_object  (BusDBusImpl    *dbus,
                                                  IBusService    *object);
+
+/**
+ * bus_dbus_impl_unregister_object:
+ * @object: A new service which implements IBusService, like BusIBusImpl and BusInputContext.
+ * @returns: FALSE if dbus is already destroyed. otherwise TRUE.
+ *
+ * Remove the IBusService from the daemon.
+ */
 gboolean         bus_dbus_impl_unregister_object(BusDBusImpl    *dbus,
                                                  IBusService    *object);
 G_END_DECLS
