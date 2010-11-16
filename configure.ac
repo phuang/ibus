@@ -21,10 +21,6 @@
 # Boston, MA  02111-1307  USA
 AC_PREFEQ([2.62])
 
-AC_INIT([ibus], [ibus_version],
-        [http://code.google.com/p/ibus/issues/entry],
-        [ibus])
-
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -45,6 +41,10 @@ m4_define([ibus_api_version], [1.0])
 # Required versions of other packages
 m4_define([glib_required_version], [2.26.0])
 
+
+AC_INIT([ibus], [ibus_version],
+        [http://code.google.com/p/ibus/issues/entry],
+        [ibus])
 
 # Init automake
 AM_INIT_AUTOMAKE([1.10])
