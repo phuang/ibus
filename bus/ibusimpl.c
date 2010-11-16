@@ -1295,6 +1295,10 @@ _ibus_exit (BusIBusImpl     *ibus,
 
     g_dbus_method_invocation_return_value (invocation, NULL);
 
+    /* Make sure the reply has been sent out before exit */
+    g_dbus_connection_flush_sync (g_dbus_method_invocation_get_connection (invocation),
+                                  NULL,
+                                  NULL);
     bus_server_quit ();
 
     if (!restart) {
