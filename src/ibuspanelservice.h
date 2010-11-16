@@ -100,7 +100,6 @@ struct _IBusPanelServiceClass {
                                             IBusProperty           *prop);
     void     (* cursor_down_lookup_table)  (IBusPanelService       *panel);
     void     (* cursor_up_lookup_table)    (IBusPanelService       *panel);
-    void     (* destroy)                   (IBusPanelService       *panel);
     void     (* hide_auxiliary_text)       (IBusPanelService       *panel);
     void     (* hide_language_bar)         (IBusPanelService       *panel);
     void     (* hide_lookup_table)         (IBusPanelService       *panel);

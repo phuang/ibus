@@ -90,6 +90,79 @@ static void      ibus_panel_service_update_property       (IBusPanelService     
 
 G_DEFINE_TYPE (IBusPanelService, ibus_panel_service, IBUS_TYPE_SERVICE)
 
+static const gchar introspection_xml[] =
+    "<node>"
+    "  <interface name='org.freedesktop.IBus.Panel'>"
+    /* Methods */
+    "    <method name='UpdatePreeditText'>"
+    "      <arg direction='in'  type='v' name='text' />"
+    "      <arg direction='in'  type='u' name='cursor_pos' />"
+    "      <arg direction='in'  type='b' name='visible' />"
+    "    </method>"
+    "    <method name='ShowPreeditText' />"
+    "    <method name='HidePreeditText' />"
+    "    <method name='UpdateAuxiliaryText'>"
+    "      <arg direction='in'  type='v' name='text' />"
+    "      <arg direction='in'  type='b' name='visible' />"
+    "    </method>"
+    "    <method name='ShowAuxiliaryText' />"
+    "    <method name='HideAuxiliaryText' />"
+    "    <method name='UpdateLookupTable'>"
+    "      <arg direction='in' type='v' name='table' />"
+    "      <arg direction='in' type='b' name='visible' />"
+    "    </method>"
+    "    <method name='ShowLookupTable' />"
+    "    <method name='HideLookupTable' />"
+    "    <method name='CursorUpLookupTable' />"
+    "    <method name='CursorDownLookupTable' />"
+    "    <method name='PageUpLookupTable' />"
+    "    <method name='PageDownLookupTable' />"
+    "    <method name='RegisterProperties'>"
+    "      <arg direction='in'  type='v' name='props' />"
+    "    </method>"
+    "    <method name='UpdateProperty'>"
+    "      <arg direction='in'  type='v' name='prop' />"
+    "    </method>"
+    "    <method name='FocusIn'>"
+    "      <arg direction='in'  type='o' name='ic' />"
+    "    </method>"
+    "    <method name='FocusOut'>"
+    "      <arg direction='in'  type='o' name='ic' />"
+    "    </method>"
+    "    <method name='SetCursorLocation'>"
+    "      <arg direction='in' type='i' name='x' />"
+    "      <arg direction='in' type='i' name='y' />"
+    "      <arg direction='in' type='i' name='w' />"
+    "      <arg direction='in' type='i' name='h' />"
+    "    </method>"
+    "    <method name='Reset' />"
+    "    <method name='StartSetup' />"
+    "    <method name='StateChanged' />"
+    "    <method name='HideLanguageBar' />"
+    "    <method name='ShowLanguageBar' />"
+    /* Signals */
+    "    <signal name='CursorUp' />"
+    "    <signal name='CursorDown' />"
+    "    <signal name='PageUp' />"
+    "    <signal name='PageDown' />"
+    "    <signal name='PropertyActivate'>"
+    "      <arg type='s' name='prop_name' />"
+    "      <arg type='i' name='prop_state' />"
+    "    </signal>"
+    "    <signal name='PropertyShow'>"
+    "      <arg type='s' name='prop_name' />"
+    "    </signal>"
+    "    <signal name='PropertyHide'>"
+    "      <arg type='s' name='prop_name' />"
+    "    </signal>"
+    "    <signal name='CandidateClicked'>"
+    "      <arg type='u' name='index' />"
+    "      <arg type='u' name='button' />"
+    "      <arg type='u' name='state' />"
+    "    </signal>"
+    "  </interface>"
+    "</node>";
+
 static void
 ibus_panel_service_class_init (IBusPanelServiceClass *class)
 {
@@ -104,6 +177,8 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     IBUS_SERVICE_CLASS (class)->service_get_property = ibus_panel_service_service_get_property;
     IBUS_SERVICE_CLASS (class)->service_set_property = ibus_panel_service_service_set_property;
 
+    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
+
     class->focus_in              = ibus_panel_service_focus_in;
     class->focus_out             = ibus_panel_service_focus_out;
     class->register_properties   = ibus_panel_service_register_properties;
@@ -115,7 +190,6 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     class->cursor_down_lookup_table = ibus_panel_service_not_implemented;
     class->cursor_up_lookup_table   = ibus_panel_service_not_implemented;
-    class->destroy                  = ibus_panel_service_not_implemented;
     class->hide_auxiliary_text      = ibus_panel_service_not_implemented;
     class->hide_language_bar        = ibus_panel_service_not_implemented;
     class->hide_lookup_table        = ibus_panel_service_not_implemented;
@@ -294,7 +368,6 @@ ibus_panel_service_service_method_call (IBusService           *service,
     } no_arg_methods [] = {
         { "CursorUpLookupTable"  , G_STRUCT_OFFSET (IBusPanelServiceClass, cursor_down_lookup_table) },
         { "CursorDownLookupTable", G_STRUCT_OFFSET (IBusPanelServiceClass, cursor_up_lookup_table) },
-        { "Destroy",               G_STRUCT_OFFSET (IBusPanelServiceClass, destroy) },
         { "HideAuxiliaryText",     G_STRUCT_OFFSET (IBusPanelServiceClass, hide_auxiliary_text) },
         { "HideLanguageBar",       G_STRUCT_OFFSET (IBusPanelServiceClass, hide_language_bar) },
         { "HideLookupTable",       G_STRUCT_OFFSET (IBusPanelServiceClass, hide_lookup_table) },
