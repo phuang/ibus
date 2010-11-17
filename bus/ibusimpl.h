@@ -63,18 +63,22 @@ typedef struct _BusIBusImpl BusIBusImpl;
 typedef struct _BusIBusImplClass BusIBusImplClass;
 
 GType            bus_ibus_impl_get_type             (void);
+
+/**
+ * bus_ibus_impl_get_default:
+ * @returns: a BusIBusImpl object which is a singleton.
+ *
+ * Instantiate a BusIBusImpl object (if necessary) and return the object.
+ */
 BusIBusImpl     *bus_ibus_impl_get_default          (void);
-BusFactoryProxy *bus_ibus_impl_get_default_factory  (BusIBusImpl        *ibus);
-BusFactoryProxy *bus_ibus_impl_get_next_factory     (BusIBusImpl        *ibus,
-                                                     BusFactoryProxy    *factory);
-BusFactoryProxy *bus_ibus_impl_get_previous_factory (BusIBusImpl        *ibus,
-                                                     BusFactoryProxy    *factory);
-BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,
-                                                     const gchar        *path);
-IBusHotkeyProfile
-                *bus_ibus_impl_get_hotkey_profile   (BusIBusImpl        *ibus);
-IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
-BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
+
+/**
+ * bus_ibus_impl_filter_keyboard_shortcuts:
+ * @returns: TRUE if the key is consumed by ibus-daemon.
+ *
+ * Check if the keyval and modifiers match one of the global or engine-specific hot keys. If the key is a hot key, update the state of
+ * ibus-daemon (e.g. switch to the next engine.)
+ */
 gboolean         bus_ibus_impl_filter_keyboard_shortcuts
                                                     (BusIBusImpl        *ibus,
                                                      BusInputContext    *context,
@@ -82,8 +86,17 @@ gboolean         bus_ibus_impl_filter_keyboard_shortcuts
                                                      guint               modifiers,
                                                      guint               prev_keyval,
                                                      guint               prev_modifiers);
+
+/* accessors */
+BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,
+                                                     const gchar        *path);
+IBusHotkeyProfile
+                *bus_ibus_impl_get_hotkey_profile   (BusIBusImpl        *ibus);
+IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
+BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
 gboolean         bus_ibus_impl_is_use_sys_layout    (BusIBusImpl        *ibus);
 BusInputContext *bus_ibus_impl_get_focused_input_context
                                                     (BusIBusImpl        *ibus);
+
 G_END_DECLS
 #endif

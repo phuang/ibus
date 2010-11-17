@@ -51,11 +51,15 @@ struct _BusIBusImpl {
     /* a fake input context for global engine support */
     BusInputContext *fake_context;
 
+    /* a list of engines that are preloaded. */
     GList *engine_list;
+    /* a list of engines that are started by a user (without the --ibus command line flag.) */
     GList *register_engine_list;
-    GList *component_list;
 
+    /* if TRUE, ibus-daemon uses a keysym translated by the system (i.e. XKB) as-is.
+     * otherwise, ibus-daemon itself converts keycode into keysym. */
     gboolean use_sys_layout;
+
     gboolean embed_preedit_text;
     gboolean enable_by_default;
 
@@ -64,14 +68,17 @@ struct _BusIBusImpl {
     BusInputContext *focused_context;
     BusPanelProxy   *panel;
     IBusConfig      *config;
+
+    /* global hotkeys such as "trigger" and "next_engine_in_menu" */
     IBusHotkeyProfile *hotkey_profile;
+    /* a key mapping that converts keycode into keysym. the mapping is supposed to be used only when use_sys_layout is FALSE. */
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
-
     gchar *global_engine_name;
     gchar *global_previous_engine_name;
 
+    /* engine-specific hotkeys */
     IBusHotkeyProfile *engines_hotkey_profile;
     GHashTable      *hotkey_to_engines_map;
 };
@@ -176,6 +183,9 @@ static BusInputContext
 static void     _context_engine_changed_cb      (BusInputContext    *context,
                                                  BusIBusImpl        *ibus);
 
+/* The interfaces available in this class, which consists of a list of methods this class implements and
+ * a list of signals this class may emit. Method calls to the interface that are not defined in this XML
+ * will be automatically rejected by the GDBus library (see src/ibusservice.c for details.) */
 static const gchar introspection_xml[] =
     "<node>\n"
     "  <interface name='org.freedesktop.IBus'>\n"
@@ -235,7 +245,9 @@ bus_ibus_impl_class_init (BusIBusImplClass *class)
 {
     IBUS_OBJECT_CLASS (class)->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
+    /* override the parent class's implementation. */
     IBUS_SERVICE_CLASS (class)->service_method_call = bus_ibus_impl_service_method_call;
+    /* register the xml so that bus_ibus_impl_service_method_call will be called on a method call defined in the xml (e.g. 'GetAddress'.) */
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 }
 
@@ -255,7 +267,7 @@ _panel_destroy_cb (BusPanelProxy *panel,
 static void
 bus_ibus_impl_set_hotkey (BusIBusImpl *ibus,
                           GQuark       hotkey,
-                          GVariant     *value)
+                          GVariant    *value)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
@@ -276,6 +288,11 @@ bus_ibus_impl_set_hotkey (BusIBusImpl *ibus,
 
 }
 
+/**
+ * bus_ibus_impl_set_trigger:
+ *
+ * A function to be called when "trigger" config is updated. If the value is NULL, the default trigger (Ctrl+space) is set.
+ */
 static void
 bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
                            GVariant    *value)
@@ -284,6 +301,7 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
     if (value != NULL) {
         bus_ibus_impl_set_hotkey (ibus, hotkey, value);
     }
+#ifndef OS_CHROMEOS
     else {
         /* set default trigger */
         ibus_hotkey_profile_add_hotkey (ibus->hotkey_profile,
@@ -291,16 +309,27 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
                                         IBUS_CONTROL_MASK,
                                         hotkey);
     }
+#endif
 }
 
+/**
+ * bus_ibus_impl_set_next_engine_in_menu:
+ *
+ * A function to be called when "next_engine_in_menu" config is updated.
+ */
 static void
 bus_ibus_impl_set_next_engine_in_menu (BusIBusImpl *ibus,
-                                       GVariant     *value)
+                                       GVariant    *value)
 {
     GQuark hotkey = g_quark_from_static_string ("next-engine-in-menu");
     bus_ibus_impl_set_hotkey (ibus, hotkey, value);
 }
 
+/**
+ * bus_ibus_impl_set_previous_engine:
+ *
+ * A function to be called when "previous_engine" config is updated. 
+ */
 static void
 bus_ibus_impl_set_previous_engine (BusIBusImpl *ibus,
                                    GVariant    *value)
@@ -309,6 +338,11 @@ bus_ibus_impl_set_previous_engine (BusIBusImpl *ibus,
     bus_ibus_impl_set_hotkey (ibus, hotkey, value);
 }
 
+/**
+ * bus_ibus_impl_set_preload_engines:
+ *
+ * A function to be called when "preload_engines" config is updated.
+ */
 static void
 bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
                                    GVariant    *value)
@@ -343,6 +377,11 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
+/**
+ * bus_ibus_impl_set_use_sys_layout:
+ *
+ * A function to be called when "use_system_keyboard_layout" config is updated.
+ */
 static void
 bus_ibus_impl_set_use_sys_layout (BusIBusImpl *ibus,
                                   GVariant    *value)
@@ -352,6 +391,11 @@ bus_ibus_impl_set_use_sys_layout (BusIBusImpl *ibus,
     }
 }
 
+/**
+ * bus_ibus_impl_set_embed_preedit_text:
+ *
+ * A function to be called when "use_embed_preedit_text" config is updated.
+ */
 static void
 bus_ibus_impl_set_embed_preedit_text (BusIBusImpl *ibus,
                                       GVariant    *value)
@@ -361,6 +405,11 @@ bus_ibus_impl_set_embed_preedit_text (BusIBusImpl *ibus,
     }
 }
 
+/**
+ * bus_ibus_impl_set_enable_by_default:
+ *
+ * A function to be called when "enable_by_default" config is updated.
+ */
 static void
 bus_ibus_impl_set_enable_by_default (BusIBusImpl *ibus,
                                      GVariant    *value)
@@ -370,6 +419,11 @@ bus_ibus_impl_set_enable_by_default (BusIBusImpl *ibus,
     }
 }
 
+/**
+ * bus_ibus_impl_set_use_global_engine:
+ *
+ * A function to be called when "use_global_engine" config is updated.
+ */
 static void
 bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
                                      GVariant    *value)
@@ -406,6 +460,11 @@ _engine_desc_cmp (IBusEngineDesc *desc1,
               ((gint) ibus_engine_desc_get_rank (desc2));
 }
 
+/**
+ * bus_ibus_impl_set_default_preload_engines:
+ *
+ * If the "preload_engines" config variable is not set yet, set the default value which is determined based on a current locale (LC_ALL).
+ */
 static void
 bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
 {
@@ -448,8 +507,8 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
     GList *list;
     for (list = engines; list != NULL; list = list->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *)list->data;
-        /* ignore engines with rank <== 0 */
+        IBusEngineDesc *desc = (IBusEngineDesc *) list->data;
+        /* ignore engines with rank <= 0 */
         if (ibus_engine_desc_get_rank (desc) > 0)
             g_variant_builder_add (&builder, "s", ibus_engine_desc_get_name (desc));
     }
@@ -458,10 +517,11 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
     g_list_free (engines);
 }
 
+/* The list of config entries that are related to ibus-daemon. */
 const static struct {
     gchar *section;
     gchar *key;
-    void ( *func) (BusIBusImpl *, GVariant *);
+    void (*func) (BusIBusImpl *, GVariant *);
 } bus_ibus_impl_config_items [] = {
     { "general/hotkey", "trigger",              bus_ibus_impl_set_trigger },
     { "general/hotkey", "next_engine_in_menu",  bus_ibus_impl_set_next_engine_in_menu },
@@ -473,6 +533,11 @@ const static struct {
     { "general", "enable_by_default",           bus_ibus_impl_set_enable_by_default },
 };
 
+/**
+ * bus_ibus_impl_reload_config
+ *
+ * Read config entries (e.g. preload_engines) from the config daemon.
+ */
 static void
 bus_ibus_impl_reload_config (BusIBusImpl *ibus)
 {
@@ -485,11 +550,16 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
             variant = ibus_config_get_value (ibus->config,
                             bus_ibus_impl_config_items[i].section,
                             bus_ibus_impl_config_items[i].key);
-        bus_ibus_impl_config_items[i].func (ibus, variant);
+        bus_ibus_impl_config_items[i].func (ibus, variant); /* variant could be NULL if the deamon is not ready yet. */
         if (variant) g_variant_unref (variant);
     }
 }
 
+/**
+ * _config_value_changed_cb:
+ *
+ * A callback function to be called when the "ValueChanged" D-Bus signal is sent from the config daemon.
+ */
 static void
 _config_value_changed_cb (IBusConfig  *config,
                           gchar       *section,
@@ -533,6 +603,12 @@ _registry_changed_cb (BusRegistry *registry,
     bus_ibus_impl_registry_changed (ibus);
 }
 
+/*
+ * _dbus_name_owner_changed_cb:
+ *
+ * A callback function to be called when the name-owner-changed signal is sent to the dbus object.
+ * This usually means a client (e.g. a panel/config/engine process or an application) is connected/disconnected to/from the bus.
+ */
 static void
 _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                              const gchar *name,
@@ -548,10 +624,11 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
 
     if (g_strcmp0 (name, IBUS_SERVICE_PANEL) == 0) {
         if (g_strcmp0 (new_name, "") != 0) {
+            /* a Panel process is started. */
             BusConnection *connection;
 
             if (ibus->panel != NULL) {
-                ibus_proxy_destroy ((IBusProxy *)ibus->panel);
+                ibus_proxy_destroy ((IBusProxy *) ibus->panel);
                 /* panel should be NULL after destroy */
                 g_assert (ibus->panel == NULL);
             }
@@ -574,20 +651,24 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
     }
     else if (g_strcmp0 (name, IBUS_SERVICE_CONFIG) == 0) {
         if (g_strcmp0 (new_name, "") != 0) {
+            /* a config process is started. */
             BusConnection *connection;
 
             if (ibus->config != NULL) {
-                ibus_proxy_destroy ((IBusProxy *)ibus->config);
+                ibus_proxy_destroy ((IBusProxy *) ibus->config);
                 /* config should be NULL */
                 g_assert (ibus->config == NULL);
             }
 
+            /* get a connection between ibus-daemon and the config daemon. */
             connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name);
             g_return_if_fail (connection != NULL);
 
             ibus->config = g_initable_new (IBUS_TYPE_CONFIG,
                                            NULL,
                                            NULL,
+                                           /* The following properties are necessary to initialize GDBusProxy object
+                                            * which is a parent of the config object. */
                                            "g-object-path", IBUS_PATH_CONFIG,
                                            "g-interface-name", IBUS_INTERFACE_CONFIG,
                                            "g-connection", bus_connection_get_dbus_connection (connection),
@@ -612,6 +693,11 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
     bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
 }
 
+/**
+ * bus_ibus_impl_init:
+ *
+ * The constructor of BusIBusImpl. Initialize all member variables of a BusIBusImpl object.
+ */
 static void
 bus_ibus_impl_init (BusIBusImpl *ibus)
 {
@@ -624,7 +710,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->fake_context = bus_input_context_new (NULL, "fake");
     g_object_ref_sink (ibus->fake_context);
     bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,
-                                   (IBusService *)ibus->fake_context);
+                                   (IBusService *) ibus->fake_context);
     bus_input_context_set_capabilities (ibus->fake_context,
                                         IBUS_CAP_PREEDIT_TEXT |
                                         IBUS_CAP_FOCUS |
@@ -677,6 +763,11 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                       ibus);
 }
 
+/**
+ * bus_ibus_impl_destroy:
+ *
+ * The destructor of BusIBusImpl.
+ */
 static void
 bus_ibus_impl_destroy (BusIBusImpl *ibus)
 {
@@ -703,6 +794,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
                 if (flag == FALSE) {
                     gpointer old;
                     old = signal (SIGTERM, SIG_IGN);
+                    /* send TERM signal to the whole process group (i.e. engines, panel, and config daemon.) */
                     kill (-getpid (), SIGTERM);
                     signal (SIGTERM, old);
                     flag = TRUE;
@@ -713,7 +805,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
                 }
             }
         }
-    };
+    }
 
     g_list_foreach (ibus->engine_list, (GFunc) g_object_unref, NULL);
     g_list_free (ibus->engine_list);
@@ -763,6 +855,11 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     IBUS_OBJECT_CLASS (bus_ibus_impl_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
 
+/**
+ * _ibus_get_address:
+ *
+ * Implement the "GetAddress" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_get_address (BusIBusImpl           *ibus,
                    GVariant              *parameters,
@@ -774,21 +871,21 @@ _ibus_get_address (BusIBusImpl           *ibus,
 
 static IBusEngineDesc *
 _find_engine_desc_by_name (BusIBusImpl *ibus,
-                          const gchar *engine_name)
+                           const gchar *engine_name)
 {
     IBusEngineDesc *desc = NULL;
     GList *p;
 
     /* find engine in registered engine list */
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
-        desc = (IBusEngineDesc *)p->data;
+        desc = (IBusEngineDesc *) p->data;
         if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
             return desc;
     }
 
     /* find engine in preload engine list */
     for (p = ibus->engine_list; p != NULL; p = p->next) {
-        desc = (IBusEngineDesc *)p->data;
+        desc = (IBusEngineDesc *) p->data;
         if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
             return desc;
     }
@@ -796,6 +893,11 @@ _find_engine_desc_by_name (BusIBusImpl *ibus,
     return NULL;
 }
 
+/**
+ * _context_request_engine_cb:
+ *
+ * A callback function to be called when the "request-engine" signal is sent to the context.
+ */
 static void
 _context_request_engine_cb (BusInputContext *context,
                             const gchar     *engine_name,
@@ -826,10 +928,10 @@ _context_request_engine_cb (BusInputContext *context,
         /* request default engine */
         if (!desc) {
             if (ibus->register_engine_list) {
-                desc = (IBusEngineDesc *)ibus->register_engine_list->data;
+                desc = (IBusEngineDesc *) ibus->register_engine_list->data;
             }
             else if (ibus->engine_list) {
-                desc = (IBusEngineDesc *)ibus->engine_list->data;
+                desc = (IBusEngineDesc *) ibus->engine_list->data;
             }
          }
         g_return_if_fail (desc != NULL);
@@ -838,6 +940,11 @@ _context_request_engine_cb (BusInputContext *context,
     bus_ibus_impl_set_context_engine_from_desc (ibus, context, desc);
 }
 
+/**
+ * bus_ibus_impl_context_request_next_engine_in_menu:
+ *
+ * Process the "next_engine_in_menu" hotkey.
+ */
 static void
 bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
                                                    BusInputContext *context)
@@ -871,16 +978,21 @@ bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
     }
     else {
         if (ibus->register_engine_list) {
-            next_desc = (IBusEngineDesc *)ibus->register_engine_list->data;
+            next_desc = (IBusEngineDesc *) ibus->register_engine_list->data;
         }
         else if (ibus->engine_list) {
-            next_desc = (IBusEngineDesc *)ibus->engine_list->data;
+            next_desc = (IBusEngineDesc *) ibus->engine_list->data;
         }
     }
 
     bus_ibus_impl_set_context_engine_from_desc (ibus, context, next_desc);
 }
 
+/**
+ * bus_ibus_impl_context_request_previous_engine:
+ *
+ * Process the "previous_engine" hotkey.
+ */
 static void
 bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
                                                BusInputContext *context)
@@ -914,12 +1026,18 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
 {
     bus_input_context_set_engine_by_desc (context,
                                           desc,
-                                          5000,
+                                          5000, /* timeout in msec. */
                                           NULL,
                                           NULL,
                                           NULL);
 }
 
+/**
+ * _context_engine_changed_cb:
+ *
+ * A callback function to be called when the "engine-changed" signal is sent to the context.
+ * Update global engine as well if necessary.
+ */
 static void
 _context_engine_changed_cb (BusInputContext *context,
                             BusIBusImpl     *ibus)
@@ -946,6 +1064,12 @@ _context_engine_changed_cb (BusInputContext *context,
     }
 }
 
+/**
+ * _context_focus_in_cb:
+ *
+ * A callback function to be called when the "focus-in" signal is sent to the context.
+ * If necessary, enables the global engine on the context and update ibus->focused_context.
+ */
 static void
 _context_focus_in_cb (BusInputContext *context,
                       BusIBusImpl     *ibus)
@@ -1004,6 +1128,11 @@ _context_focus_in_cb (BusInputContext *context,
     ibus->focused_context = (BusInputContext *) g_object_ref (context);
 }
 
+/**
+ * _context_focus_out_cb:
+ *
+ * A callback function to be called when the "focus-out" signal is sent to the context.
+ */
 static void
 _context_focus_out_cb (BusInputContext    *context,
                        BusIBusImpl        *ibus)
@@ -1034,7 +1163,7 @@ _context_focus_out_cb (BusInputContext    *context,
     else {
         if (IBUS_OBJECT_DESTROYED (context)) {
             /* Only focus out context and focus in fake context,
-             * if the context is destroied. */
+             * if the context is destroyed. */
 
             g_object_unref (ibus->focused_context);
             ibus->focused_context = NULL;
@@ -1060,6 +1189,11 @@ _context_focus_out_cb (BusInputContext    *context,
     }
 }
 
+/**
+ * _context_destroy_cb:
+ *
+ * A callback function to be called when the "destroy" signal is sent to the context.
+ */
 static void
 _context_destroy_cb (BusInputContext    *context,
                      BusIBusImpl        *ibus)
@@ -1077,20 +1211,37 @@ _context_destroy_cb (BusInputContext    *context,
     g_object_unref (context);
 }
 
-#if 0
+/**
+ * _context_enabled_cb:
+ *
+ * A callback function to be called when the "enabled" signal is sent to the context.
+ */
 static void
 _context_enabled_cb (BusInputContext    *context,
                      BusIBusImpl        *ibus)
 {
+    /* FIXME implement this. */
 }
 
+/**
+ * _context_disabled_cb:
+ *
+ * A callback function to be called when the "disabled" signal is sent to the context.
+ */
 static void
 _context_disabled_cb (BusInputContext    *context,
                       BusIBusImpl        *ibus)
 {
+    /* FIXME implement this. */
 }
-#endif
 
+/**
+ * bus_ibus_impl_create_input_context:
+ * @client: A name of a client. e.g. "gtk-im"
+ * @returns: A BusInputContext object.
+ *
+ * Create a new BusInputContext object for the client.
+ */
 static BusInputContext *
 bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
                                     BusConnection *connection,
@@ -1100,6 +1251,7 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
     g_object_ref_sink (context);
     ibus->contexts = g_list_append (ibus->contexts, context);
 
+    /* Installs glib signal handlers so that the ibus object could be notified when e.g. an IBus.InputContext D-Bus method is called. */
     static const struct {
         gchar *name;
         GCallback callback;
@@ -1109,10 +1261,8 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
-    #if 0
         { "enabled",        G_CALLBACK (_context_enabled_cb) },
         { "disabled",       G_CALLBACK (_context_disabled_cb) },
-    #endif
     };
 
     gint i;
@@ -1127,18 +1277,24 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
         bus_input_context_enable (context);
     }
 
+    /* register the context object so that the object could handle IBus.InputContext method calls. */
     bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,
-                                   (IBusService *)context);
+                                   (IBusService *) context);
     g_object_ref (context);
     return context;
 }
 
+/**
+ * _ibus_create_input_context:
+ *
+ * Implement the "CreateInputContext" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_create_input_context (BusIBusImpl           *ibus,
                             GVariant              *parameters,
                             GDBusMethodInvocation *invocation)
 {
-    const gchar *client_name = NULL;
+    const gchar *client_name = NULL;  // e.g. "gtk-im"
     g_variant_get (parameters, "(&s)", &client_name);
 
     BusConnection *connection =
@@ -1149,6 +1305,7 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
                                                 client_name);
     if (context) {
         const gchar *path = ibus_service_get_object_path ((IBusService *) context);
+        /* the format-string 'o' is for a D-Bus object path. */
         g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
         g_object_unref (context);
     }
@@ -1160,6 +1317,11 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
     }
 }
 
+/**
+ * _ibus_current_input_context:
+ *
+ * Implement the "CurrentInputContext" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_current_input_context (BusIBusImpl           *ibus,
                              GVariant              *parameters,
@@ -1171,7 +1333,8 @@ _ibus_current_input_context (BusIBusImpl           *ibus,
                         "No focused input context");
     }
     else {
-        const gchar *path = ibus_service_get_object_path ((IBusService *)ibus->focused_context);
+        const gchar *path = ibus_service_get_object_path ((IBusService *) ibus->focused_context);
+        /* the format-string 'o' is for a D-Bus object path. */
         g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
     }
 }
@@ -1201,13 +1364,18 @@ _component_destroy_cb (BusComponent *component,
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
+/**
+ * _ibus_register_component:
+ *
+ * Implement the "RegisterComponent" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_register_component (BusIBusImpl           *ibus,
                           GVariant              *parameters,
                           GDBusMethodInvocation *invocation)
 {
     GVariant *variant = g_variant_get_child_value (parameters, 0);
-    IBusComponent *component = (IBusComponent *)ibus_serializable_deserialize (variant);
+    IBusComponent *component = (IBusComponent *) ibus_serializable_deserialize (variant);
 
     if (!IBUS_IS_COMPONENT (component)) {
         if (component)
@@ -1238,7 +1406,7 @@ _ibus_register_component (BusIBusImpl           *ibus,
     ibus->registered_components = g_list_append (ibus->registered_components,
                                                 g_object_ref_sink (buscomp));
     GList *engines = bus_component_get_engines (buscomp);
-    g_list_foreach (engines, (GFunc)g_object_ref, NULL);
+    g_list_foreach (engines, (GFunc) g_object_ref, NULL);
     ibus->register_engine_list = g_list_concat (ibus->register_engine_list,
                                                engines);
 
@@ -1249,6 +1417,11 @@ _ibus_register_component (BusIBusImpl           *ibus,
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
+/**
+ * _ibus_list_engines:
+ *
+ * Implement the "ListEngines" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_list_engines (BusIBusImpl           *ibus,
                     GVariant              *parameters,
@@ -1260,12 +1433,17 @@ _ibus_list_engines (BusIBusImpl           *ibus,
     GList *engines = bus_registry_get_engines (ibus->registry);
     GList *p;
     for (p = engines; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
+        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
     g_list_free (engines);
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
 }
 
+/**
+ * _ibus_list_active_engines:
+ *
+ * Implement the "ListActiveEngines" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_list_active_engines (BusIBusImpl           *ibus,
                            GVariant              *parameters,
@@ -1276,17 +1454,21 @@ _ibus_list_active_engines (BusIBusImpl           *ibus,
 
     GList *p;
     for (p = ibus->engine_list; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
+        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
+        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
 }
 
-
+/**
+ * _ibus_exit:
+ *
+ * Implement the "Exit" method call of the org.freedesktop.IBus interface.
+ */
 static void
-_ibus_exit (BusIBusImpl     *ibus,
+_ibus_exit (BusIBusImpl           *ibus,
             GVariant              *parameters,
             GDBusMethodInvocation *invocation)
 {
@@ -1313,7 +1495,7 @@ _ibus_exit (BusIBusImpl     *ibus,
         exe = g_file_read_link (exe, NULL);
 
         if (exe == NULL)
-            exe = BINDIR"/ibus-daemon";
+            exe = BINDIR "/ibus-daemon";
 
         /* close all fds except stdin, stdout, stderr */
         for (fd = 3; fd <= sysconf (_SC_OPEN_MAX); fd ++) {
@@ -1338,6 +1520,11 @@ _ibus_exit (BusIBusImpl     *ibus,
     g_assert_not_reached ();
 }
 
+/**
+ * _ibus_ping:
+ *
+ * Implement the "Ping" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_ping (BusIBusImpl           *ibus,
             GVariant              *parameters,
@@ -1346,6 +1533,11 @@ _ibus_ping (BusIBusImpl           *ibus,
     g_dbus_method_invocation_return_value (invocation, parameters);
 }
 
+/**
+ * _ibus_get_use_sys_layout:
+ *
+ * Implement the "GetUseSysLayout" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_get_use_sys_layout (BusIBusImpl           *ibus,
                           GVariant              *parameters,
@@ -1355,6 +1547,11 @@ _ibus_get_use_sys_layout (BusIBusImpl           *ibus,
                     g_variant_new ("(b)", ibus->use_sys_layout));
 }
 
+/**
+ * _ibus_get_use_global_engine:
+ *
+ * Implement the "GetUseGlobalEngine" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_get_use_global_engine (BusIBusImpl           *ibus,
                              GVariant              *parameters,
@@ -1364,6 +1561,11 @@ _ibus_get_use_global_engine (BusIBusImpl           *ibus,
                     g_variant_new ("(b)", ibus->use_global_engine));
 }
 
+/**
+ * _ibus_get_global_engine:
+ *
+ * Implement the "GetGlobalEngine" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_get_global_engine (BusIBusImpl           *ibus,
                          GVariant              *parameters,
@@ -1383,7 +1585,7 @@ _ibus_get_global_engine (BusIBusImpl           *ibus,
         if (desc == NULL)
             break;
 
-        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)desc);
+        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *) desc);
         g_dbus_method_invocation_return_value (invocation,
                                                g_variant_new ("(v)", variant));
         return;
@@ -1413,6 +1615,11 @@ _ibus_set_global_engine_ready_cb (BusInputContext       *context,
     }
 }
 
+/**
+ * _ibus_set_global_engine:
+ *
+ * Implement the "SetGlobalEngine" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_set_global_engine (BusIBusImpl           *ibus,
                          GVariant              *parameters,
@@ -1459,12 +1666,17 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
 
     bus_input_context_set_engine_by_desc (context,
                                           desc,
-                                          5000,
+                                          5000, /* timeout in msec. */
                                           NULL,
                                           (GAsyncReadyCallback) _ibus_set_global_engine_ready_cb,
                                           invocation);
 }
 
+/**
+ * _ibus_is_global_engine_enabled:
+ *
+ * Implement the "IsGlobalEngineEnabled" method call of the org.freedesktop.IBus interface.
+ */
 static void
 _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
                                 GVariant              *parameters,
@@ -1489,6 +1701,11 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
                     g_variant_new ("(b)", enabled));
 }
 
+/**
+ * bus_ibus_impl_service_method_call:
+ *
+ * Handle a D-Bus method call whose destination and interface name are both "org.freedesktop.IBus"
+ */
 static void
 bus_ibus_impl_service_method_call (IBusService           *service,
                                    GDBusConnection       *connection,
@@ -1506,6 +1723,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
         return;
     }
 
+    /* all methods in the xml definition above should be listed here. */
     static const struct {
         const gchar *method_name;
         void (* method_callback) (BusIBusImpl *, GVariant *, GDBusMethodInvocation *);
@@ -1529,10 +1747,12 @@ bus_ibus_impl_service_method_call (IBusService           *service,
     gint i;
     for (i = 0; i < G_N_ELEMENTS (methods); i++) {
         if (g_strcmp0 (methods[i].method_name, method_name) == 0) {
-            methods[i].method_callback ((BusIBusImpl *)service, parameters, invocation);
+            methods[i].method_callback ((BusIBusImpl *) service, parameters, invocation);
             return;
         }
     }
+
+    /* notreached - unknown method calls that are not in the introspection_xml should be handled by the GDBus library. */
     g_return_if_reached ();
 }
 
@@ -1588,10 +1808,15 @@ bus_ibus_impl_get_registry (BusIBusImpl *ibus)
     return ibus->registry;
 }
 
+/**
+ * bus_ibus_impl_emit_signal:
+ *
+ * Send a D-Bus signal to buses (connections) that are listening to the signal.
+ */
 static void
 bus_ibus_impl_emit_signal (BusIBusImpl *ibus,
                            const gchar *signal_name,
-                           GVariant     *parameters)
+                           GVariant    *parameters)
 {
 
     GDBusMessage *message = g_dbus_message_new_signal ("/org/freedesktop/IBus",
@@ -1721,6 +1946,11 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
     return FALSE;
 }
 
+/**
+ * bus_ibus_impl_load_global_engine_name_from_config:
+ *
+ * Retrieve the "global_engine" config from the config daemon. Return NULL if the daemon is not ready.
+ */
 static gchar*
 bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
 {
@@ -1736,6 +1966,11 @@ bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
     return engine_name;
 }
 
+/**
+ * bus_ibus_impl_save_global_engine_name_to_config:
+ *
+ * Save the "global_engine" config value on the config daemon. No-op if the daemon is not ready.
+ */
 static void
 bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
 {
@@ -1750,6 +1985,11 @@ bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
     }
 }
 
+/**
+ * bus_ibus_impl_load_global_previous_engine_name_from_config:
+ *
+ * Retrieve the "global_previous_engine" config from the config daemon. Return NULL if the daemon is not ready.
+ */
 static gchar*
 bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
 {
@@ -1765,6 +2005,11 @@ bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
     return engine_name;
 }
 
+/**
+ * bus_ibus_impl_save_global_previous_engine_name_to_config:
+ *
+ * Save the "global_previous_engine" config value on the config daemon. No-op if the daemon is not ready.
+ */
 static void
 bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
 {
@@ -1779,6 +2024,11 @@ bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
     }
 }
 
+/**
+ * _add_engine_hotkey:
+ *
+ * Check the engine-specific hot key of the engine, and update ibus->engines_hotkey_profile.
+ */
 static void
 _add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
 {
@@ -1838,6 +2088,11 @@ _add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
     g_strfreev (hotkey_list);
 }
 
+/**
+ * bus_ibus_impl_update_engines_hotkey_profile:
+ *
+ * Check engine-specific hot keys of all active engines, and update ibus->engines_hotkey_profile.
+ */
 static void
 bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
 {
