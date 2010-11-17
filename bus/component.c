@@ -42,17 +42,20 @@ struct _BusComponent {
     IBusObject parent;
 
     /* instance members */
+
+    /* an object which represents one XML file in the ibus/component/ directory. */
     IBusComponent *component;
+    /* a proxy object which starts an engine. */
     BusFactoryProxy *factory;
 
-    // TRUE if the component started in the verbose mode.
+    /* TRUE if the component started in the verbose mode. */
     gboolean verbose;
-    // TRUE if the component needs to be restarted when it dies.
+    /* TRUE if the component needs to be restarted when it dies. */
     gboolean restart;
-    // TRUE if the component will be destroyed with factory
+    /* TRUE if the component will be destroyed with factory. */
     gboolean destroy_with_factory;
 
-
+    /* process id of the process (e.g. ibus-config, ibus-engine-*, ..) of the component. */
     GPid     pid;
     guint    child_source_id;
 };
@@ -92,10 +95,10 @@ bus_component_class_init (BusComponentClass *class)
     /* install properties */
     g_object_class_install_property (gobject_class,
                     PROP_COMPONENT,
-                    g_param_spec_object ("component",
-                        "component",
-                        "component",
-                        IBUS_TYPE_COMPONENT,
+                    g_param_spec_object ("component", /* canonical name of the property */
+                        "component", /* nick name */
+                        "component", /* description */
+                        IBUS_TYPE_COMPONENT, /* object type */
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     g_object_class_install_property (gobject_class,
@@ -112,16 +115,22 @@ bus_component_init (BusComponent *component)
 {
 }
 
+/**
+ * bus_component_constructor:
+ *
+ * A constructor method which is called after bus_component_init is called.
+ */
 static GObject*
 bus_component_constructor (GType                  type,
-                          guint                  n_construct_params,
-                          GObjectConstructParam *construct_params)
+                           guint                  n_construct_params,
+                           GObjectConstructParam *construct_params)
 {
     GObject *object;
     object = G_OBJECT_CLASS (bus_component_parent_class)->constructor (type,
-                                                                     n_construct_params,
-                                                                     construct_params);
-    BusComponent *component = (BusComponent *)object;
+                                                                       n_construct_params,
+                                                                       construct_params);
+    BusComponent *component = (BusComponent *) object;
+    /* we have to override the _constructor method since in _init method, the component->component property is not set yet. */
     g_assert (IBUS_IS_COMPONENT (component->component));
 
     static GQuark quark = 0;
@@ -129,11 +138,13 @@ bus_component_constructor (GType                  type,
         quark = g_quark_from_static_string ("BusComponent");
     }
 
-    /* associate each engine with BusComponent */
+    /* associate each engine with BusComponent. a component might have one or more components. For example, ibus-engine-pinyin would
+     * have two - 'pinyin' and 'bopomofo' and ibus-engine-m17n has many. On the other hand, the gtkpanel component does not have an
+     * engine, of course. */
     GList *engines = ibus_component_get_engines (component->component);
     GList *p;
     for (p = engines; p != NULL; p = p->next) {
-        g_object_set_qdata ((GObject *)p->data, quark, component);
+        g_object_set_qdata ((GObject *) p->data, quark, component);
     }
     g_list_free (engines);
 
@@ -142,9 +153,9 @@ bus_component_constructor (GType                  type,
 
 static void
 bus_component_set_property (BusComponent *component,
-                           guint         prop_id,
-                           const GValue *value,
-                           GParamSpec   *pspec)
+                            guint         prop_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
 {
     switch (prop_id) {
     case PROP_COMPONENT:
@@ -152,7 +163,7 @@ bus_component_set_property (BusComponent *component,
         component->component = g_value_dup_object (value);
         break;
     case PROP_FACTORY:
-        bus_component_set_factory (component, (BusFactoryProxy *)g_value_get_object (value));
+        bus_component_set_factory (component, (BusFactoryProxy *) g_value_get_object (value));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (component, prop_id, pspec);
@@ -161,9 +172,9 @@ bus_component_set_property (BusComponent *component,
 
 static void
 bus_component_get_property (BusComponent *component,
-                           guint         prop_id,
-                           GValue       *value,
-                           GParamSpec   *pspec)
+                            guint         prop_id,
+                            GValue       *value,
+                            GParamSpec   *pspec)
 {
     switch (prop_id) {
     case PROP_COMPONENT:
@@ -201,28 +212,30 @@ bus_component_destroy (BusComponent *component)
 
 BusComponent *
 bus_component_new (IBusComponent   *component,
-                  BusFactoryProxy *factory)
+                   BusFactoryProxy *factory)
 {
     g_assert (IBUS_IS_COMPONENT (component));
 
-    return (BusComponent *)g_object_new (BUS_TYPE_COMPONENT,
-                                        "component", component,
-                                        "factory", factory,
-                                        NULL);
+    return (BusComponent *) g_object_new (BUS_TYPE_COMPONENT,
+                                          /* properties below will be set via the bus_component_set_property function. */
+                                          "component", component,
+                                          "factory", factory,
+                                          NULL);
 }
 
 static void
 bus_component_factory_destroy_cb (BusFactoryProxy *factory,
-                                 BusComponent    *component)
+                                  BusComponent    *component)
 {
     g_return_if_fail (component->factory == factory);
 
     g_object_unref (component->factory);
     component->factory = NULL;
-    g_object_notify ((GObject*)component, "factory");
+    /* emit the "notify" signal for the factory property on component. */
+    g_object_notify ((GObject *) component, "factory");
 
     if (component->destroy_with_factory)
-        ibus_object_destroy ((IBusObject *)component);
+        ibus_object_destroy ((IBusObject *) component);
 }
 
 IBusComponent *
@@ -234,7 +247,7 @@ bus_component_get_component (BusComponent *component)
 
 void
 bus_component_set_factory (BusComponent    *component,
-                          BusFactoryProxy *factory)
+                           BusFactoryProxy *factory)
 {
     g_assert (BUS_IS_COMPONENT (component));
 
@@ -244,19 +257,21 @@ bus_component_set_factory (BusComponent    *component,
 
     if (component->factory) {
         g_signal_handlers_disconnect_by_func (factory,
-                                             bus_component_factory_destroy_cb,
-                                             component);
+                                              bus_component_factory_destroy_cb,
+                                              component);
         g_object_unref (component->factory);
         component->factory = NULL;
     }
 
     if (factory) {
         g_assert (BUS_IS_FACTORY_PROXY (factory));
-        component->factory = (BusFactoryProxy*)g_object_ref (factory);
+        component->factory = (BusFactoryProxy *) g_object_ref (factory);
         g_signal_connect (factory, "destroy",
-                         G_CALLBACK (bus_component_factory_destroy_cb), component);
+                          G_CALLBACK (bus_component_factory_destroy_cb), component);
     }
-    g_object_notify ((GObject*)component, "factory");
+
+    /* emit the "notify" signal for the factory property on component. */
+    g_object_notify ((GObject*) component, "factory");
 }
 
 BusFactoryProxy *
@@ -284,7 +299,7 @@ bus_component_get_engines (BusComponent *component)
 
 void
 bus_component_set_destroy_with_factory (BusComponent *component,
-                                       gboolean      with_factory)
+                                        gboolean      with_factory)
 {
     g_assert (BUS_IS_COMPONENT (component));
 
@@ -293,16 +308,21 @@ bus_component_set_destroy_with_factory (BusComponent *component,
 
 void
 bus_component_set_restart (BusComponent *component,
-                          gboolean      restart)
+                           gboolean      restart)
 {
     g_assert (BUS_IS_COMPONENT (component));
     component->restart = restart;
 }
 
+/**
+ * bus_component_child_cb:
+ *
+ * A callback function to be called when the child process is terminated.
+ */
 static void
 bus_component_child_cb (GPid          pid,
-                       gint          status,
-                       BusComponent *component)
+                        gint          status,
+                        BusComponent *component)
 {
     g_assert (BUS_IS_COMPONENT (component));
     g_assert (component->pid == pid);
@@ -318,7 +338,7 @@ bus_component_child_cb (GPid          pid,
 
 gboolean
 bus_component_start (BusComponent *component,
-                    gboolean      verbose)
+                     gboolean      verbose)
 {
     g_assert (BUS_IS_COMPONENT (component));
 
@@ -333,12 +353,12 @@ bus_component_start (BusComponent *component,
 
     GError *error = NULL;
     if (!g_shell_parse_argv (ibus_component_get_exec (component->component),
-                                                    &argc,
-                                                    &argv,
-                                                    &error)) {
+                             &argc,
+                             &argv,
+                             &error)) {
         g_warning ("Can not parse component %s exec: %s",
-                  ibus_component_get_name (component->component),
-                  error->message);
+                   ibus_component_get_name (component->component),
+                   error->message);
         g_error_free (error);
         return FALSE;
     }
@@ -349,22 +369,22 @@ bus_component_start (BusComponent *component,
         flags |= G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
     }
     retval = g_spawn_async (NULL, argv, NULL,
-                           flags,
-                           NULL, NULL,
-                           &(component->pid), &error);
+                            flags,
+                            NULL, NULL,
+                            &(component->pid), &error);
     g_strfreev (argv);
     if (!retval) {
         g_warning ("Can not execute component %s: %s",
-                  ibus_component_get_name (component->component),
-                  error->message);
+                   ibus_component_get_name (component->component),
+                   error->message);
         g_error_free (error);
         return FALSE;
     }
 
     component->child_source_id =
         g_child_watch_add (component->pid,
-                          (GChildWatchFunc)bus_component_child_cb,
-                          component);
+                           (GChildWatchFunc) bus_component_child_cb,
+                           component);
 
     return TRUE;
 }
@@ -399,5 +419,5 @@ bus_component_from_engine_desc (IBusEngineDesc *engine)
         quark = g_quark_from_static_string ("BusComponent");
     }
 
-    return (BusComponent *)g_object_get_qdata ((GObject *)engine, quark);
+    return (BusComponent *) g_object_get_qdata ((GObject *) engine, quark);
 }

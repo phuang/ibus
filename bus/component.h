@@ -55,15 +55,48 @@ IBusComponent   *bus_component_get_component     (BusComponent    *component);
 void             bus_component_set_factory       (BusComponent    *compinent,
                                                   BusFactoryProxy *factory);
 BusFactoryProxy *bus_component_get_factory       (BusComponent    *factory);
-const gchar     *bus_component_get_name          (BusComponent    *component);
-GList           *bus_component_get_engines       (BusComponent    *component);
 void             bus_component_set_destroy_with_factory
                                                  (BusComponent    *component,
                                                   gboolean         with_factory);
+
+/**
+ * bus_component_get_name:
+ *
+ * Return a component name such as "org.freedesktop.IBus.Panel" and "com.google.IBus.Mozc"
+ */
+const gchar     *bus_component_get_name          (BusComponent    *component);
+
+/**
+ * bus_component_get_engines:
+ *
+ * Return a list of IBusEngineDesc objects the component has.
+ */
+GList           *bus_component_get_engines       (BusComponent    *component);
+
+/**
+ * bus_component_start:
+ * @verbose: if TRUE, the stdout and stderr of the child process is not redirected to /dev/null.
+ * @returns: TRUE if the component is successfully started.
+ *
+ * Start the component by forking and executing an executable file for the component.
+ */
 gboolean         bus_component_start             (BusComponent    *component,
                                                   gboolean         verbose);
+
+/**
+ * bus_component_stop:
+ * @returns: TRUE
+ *
+ * Kill a process for the component.
+ */
 gboolean         bus_component_stop              (BusComponent    *component);
+
+/**
+ * bus_component_stop:
+ * @returns: TRUE if a process for the component exists.
+ */
 gboolean         bus_component_is_running        (BusComponent    *component);
+
 void             bus_component_set_restart       (BusComponent    *component,
                                                   gboolean         restart);
 BusComponent    *bus_component_from_engine_desc  (IBusEngineDesc  *engine);
