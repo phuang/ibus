@@ -800,6 +800,7 @@ bus_dbus_impl_service_set_property (IBusService        *service,
  * @returns: A GDBusMessage that will be processed by bus_dbus_impl_service_method_call. NULL when dropping the message.
  *
  * A filter function that is called for all incoming and outgoing messages.
+ * WARNING - this function could be called by the GDBus's worker thread. So you should not call thread unsafe IBus functions.
  */
 static GDBusMessage *
 bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
@@ -1071,12 +1072,16 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
                                BusConnection *connection,
                                GDBusMessage  *message)
 {
+    /* WARNING - this function could be called by the GDBus's worker thread. So you should not call thread unsafe IBus functions. */
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (BUS_IS_CONNECTION (connection));
     g_assert (G_IS_DBUS_MESSAGE (message));
 
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus)))
         return;
+    /* FIXME the check above might not be sufficient. dbus object could be destroyed in the main thread right after the check, though the
+     * dbus structure itself would not be freed (since the dbus object is ref'ed in bus_dbus_impl_new_connection.)
+     * Anyway, it'd be better to investigate whether the thread safety issue could cause any real problems. */
 
     g_mutex_lock (dbus->forward_lock);
     gboolean is_running = (dbus->forward_queue != NULL);
@@ -1085,6 +1090,7 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
     if (!is_running) {
         g_idle_add_full (G_PRIORITY_DEFAULT, (GSourceFunc) bus_dbus_impl_forward_message_idle_cb,
                         g_object_ref (dbus), (GDestroyNotify) g_object_unref);
+        /* the idle callback function will be called from the ibus's main thread. */
     }
 }
 
@@ -1171,13 +1177,14 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
                                         GDBusMessage    *message,
                                         BusConnection   *skip_connection)
 {
+    /* WARNING - this function could be called by the GDBus's worker thread. So you should not call thread unsafe IBus functions. */
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (message != NULL);
     g_assert (skip_connection == NULL || BUS_IS_CONNECTION (skip_connection));
 
-    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
+    if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus)))
         return;
-    }
+    /* FIXME - see the FIXME comment in bus_dbus_impl_forward_message. */
 
     static GQuark dispatched_quark = 0;
     if (dispatched_quark == 0) {
@@ -1201,6 +1208,7 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
                          (GSourceFunc) bus_dbus_impl_dispatch_message_by_rule_idle_cb,
                          g_object_ref (dbus),
                          (GDestroyNotify) g_object_unref);
+        /* the idle callback function will be called from the ibus's main thread. */
     }
 }
 
