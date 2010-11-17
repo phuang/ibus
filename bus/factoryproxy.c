@@ -43,7 +43,7 @@ G_DEFINE_TYPE (BusFactoryProxy, bus_factory_proxy, IBUS_TYPE_PROXY)
 static void
 bus_factory_proxy_class_init (BusFactoryProxyClass *class)
 {
-    IBUS_PROXY_CLASS(class)->destroy = bus_factory_proxy_destroy;
+    IBUS_PROXY_CLASS (class)->destroy = bus_factory_proxy_destroy;
 }
 
 static void
@@ -54,13 +54,13 @@ bus_factory_proxy_init (BusFactoryProxy *factory)
 static void
 bus_factory_proxy_destroy (IBusProxy *proxy)
 {
-    IBUS_PROXY_CLASS(bus_factory_proxy_parent_class)->destroy(IBUS_PROXY (proxy));
+    IBUS_PROXY_CLASS (bus_factory_proxy_parent_class)->destroy (IBUS_PROXY (proxy));
 }
 
 BusFactoryProxy *
 bus_factory_proxy_new(BusConnection *connection)
 {
-    g_assert(BUS_IS_CONNECTION(connection));
+    g_assert (BUS_IS_CONNECTION (connection));
     BusFactoryProxy *factory;
     
     factory = g_object_new (BUS_TYPE_FACTORY_PROXY,
@@ -83,7 +83,7 @@ bus_factory_proxy_create_engine (BusFactoryProxy    *factory,
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
     
-    g_dbus_proxy_call ((GDBusProxy *)factory,
+    g_dbus_proxy_call ((GDBusProxy *) factory,
                        "CreateEngine",
                        g_variant_new ("(s)", ibus_engine_desc_get_name (desc)),
                        G_DBUS_CALL_FLAGS_NONE,

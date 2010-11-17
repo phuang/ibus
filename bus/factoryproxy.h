@@ -50,7 +50,21 @@ typedef struct _BusFactoryProxy BusFactoryProxy;
 typedef struct _BusFactoryProxyClass BusFactoryProxyClass;
 
 GType            bus_factory_proxy_get_type     (void);
+
+/**
+ * bus_factory_proxy_new:
+ * @connection: the connection between ibus-daemon and an engine process.
+ * @returns: a new proxy object.
+ */
 BusFactoryProxy *bus_factory_proxy_new          (BusConnection      *connection);
+
+/**
+ * bus_factory_proxy_create_engine:
+ * @desc: an engine description to create.
+ * @timeout: timeout in msec, or -1 to use the default timeout value.
+ *
+ * Invoke "CreateEngine" method of the "org.freedesktop.IBus.Factory" interface asynchronously.
+ */
 void             bus_factory_proxy_create_engine
                                                 (BusFactoryProxy    *factory,
                                                  IBusEngineDesc     *desc,
@@ -58,15 +72,18 @@ void             bus_factory_proxy_create_engine
                                                  GCancellable       *cancellable,
                                                  GAsyncReadyCallback callback,
                                                  gpointer            user_data);
+
+/**
+ * bus_factory_proxy_create_engine_finish:
+ * @returns: On success, return an D-Bus object path of the new engine. On error, returns NULL.
+ *
+ * Get the result of bus_factory_proxy_create_engine call. You have to call this function in the GAsyncReadyCallback function.
+ */
 gchar           *bus_factory_proxy_create_engine_finish
                                                 (BusFactoryProxy    *factory,
                                                  GAsyncResult       *res,
                                                  GError            **error);
 
-BusFactoryProxy *bus_factory_proxy_get_from_component
-                                                (IBusComponent      *component);
-BusFactoryProxy *bus_factory_proxy_get_from_engine
-                                                (IBusEngineDesc     *desc);
 G_END_DECLS
 #endif
 
