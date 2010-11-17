@@ -48,17 +48,65 @@ typedef struct _BusConnection BusConnection;
 typedef struct _BusConnectionClass BusConnectionClass;
 
 GType            bus_connection_get_type            (void);
+
+/**
+ * bus_connection_new:
+ *
+ * Create a BusConnection object from a low-level GDBus connection.
+ */
 BusConnection   *bus_connection_new                 (GDBusConnection    *connection);
+
+/**
+ * bus_connection_lookup:
+ *
+ * Lookup the BusConnection object which corresponds to the low-level connection.
+ */
 BusConnection   *bus_connection_lookup              (GDBusConnection    *connection);
+
 const gchar     *bus_connection_get_unique_name     (BusConnection      *connection);
 void             bus_connection_set_unique_name     (BusConnection      *connection,
                                                      const gchar        *name);
+
+/**
+ * bus_connection_get_names:
+ *
+ * Get the list of well-known names of the connection.
+ */
 const GList     *bus_connection_get_names           (BusConnection      *connection);
+
+/**
+ * bus_connection_add_name:
+ * @name: a well-known name for the connection.
+ * @returns: g_strdup (name)
+ *
+ * Add the well-known name to the connection.
+ */
 const gchar     *bus_connection_add_name            (BusConnection      *connection,
                                                      const gchar        *name);
+
+/**
+ * bus_connection_add_name:
+ * @name: a well-known name for the connection.
+ * @returns: TRUE on success.
+ *
+ * Remove the well-known name from the connection.
+ */
 gboolean         bus_connection_remove_name         (BusConnection      *connection,
                                                      const gchar        *name);
+
+/**
+ * bus_connection_get_dbus_connection:
+ *
+ * Get the underlying GDBus connection.
+ */
 GDBusConnection *bus_connection_get_dbus_connection (BusConnection      *connection);
+
+/**
+ * bus_connection_set_filter:
+ *
+ * Set a filter function which will be called on all incoming and outgoing messages on the connection.
+ * WARNING - this filter function could be called by the GDBus's worker thread. So the function should not call thread unsafe IBus functions.
+ */
 void             bus_connection_set_filter          (BusConnection      *connection,
                                                      GDBusMessageFilterFunction
                                                                          filter_func,
