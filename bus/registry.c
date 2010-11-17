@@ -40,11 +40,13 @@ struct _BusRegistry {
     IBusObject parent;
 
     /* instance members */
-    GList *observed_paths;
-    GList *components;
 
+    /* a list of IBusObservedPath objects. */
+    GList *observed_paths;
+    /* a list of BusComponent objects that are created from component XML files (or from the cache of them). */
+    GList *components;
+    /* a mapping from an engine name (e.g. 'pinyin') to the corresponding IBusEngineDesc object. */
     GHashTable *engine_table;
-    GList *active_engines;
 
 #ifdef G_THREADS_ENABLED
     GThread *thread;
@@ -83,7 +85,7 @@ bus_registry_class_init (BusRegistryClass *class)
         g_signal_new (I_("changed"),
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
-            0,
+            0, /* does not associate a method in this class. the "changed" signal would be handled in other classes. */
             NULL, NULL,
             bus_marshal_VOID__VOID,
             G_TYPE_NONE,
@@ -138,15 +140,14 @@ bus_registry_init (BusRegistry *registry)
     }
 
     for (p = registry->components; p != NULL; p = p->next) {
-        BusComponent *comp = (BusComponent *)p->data;
+        BusComponent *comp = (BusComponent *) p->data;
         GList *engines = bus_component_get_engines (comp);
         GList *p1;
         for (p1 = engines; p1 != NULL; p1 = p1->next) {
-            IBusEngineDesc *desc = (IBusEngineDesc *)p1->data;
+            IBusEngineDesc *desc = (IBusEngineDesc *) p1->data;
             g_hash_table_insert (registry->engine_table,
                                  (gpointer) ibus_engine_desc_get_name (desc),
                                  desc);
-            g_object_set_data ((GObject *)desc, "component", comp);
         }
         g_list_free (engines);
     }
@@ -178,7 +179,7 @@ bus_registry_destroy (BusRegistry *registry)
         /* Raise a signal to cause the loop in _checks_changes() exits
          * immediately, and then wait until the thread finishes, and release all
          * resources of the thread.
-         * */
+         */
         g_cond_signal (registry->cond);
         g_thread_join (registry->thread);
 
@@ -202,7 +203,11 @@ bus_registry_destroy (BusRegistry *registry)
     IBUS_OBJECT_CLASS (bus_registry_parent_class)->destroy (IBUS_OBJECT (registry));
 }
 
-
+/**
+ * bus_registry_load:
+ *
+ * Read all XML files in the PKGDATADIR (typically /usr/share/ibus/components/*.xml) and update the registry object.
+ */
 static void
 bus_registry_load (BusRegistry *registry)
 {
@@ -227,14 +232,13 @@ bus_registry_load (BusRegistry *registry)
     path = ibus_observed_path_new (dirname, TRUE);
     registry->observed_paths = g_list_append (registry->observed_paths, path);
 
-    if (g_file_test(dirname, G_FILE_TEST_EXISTS)) {
+    if (g_file_test (dirname, G_FILE_TEST_EXISTS)) {
         bus_registry_load_in_dir (registry, dirname);
     }
 
     g_free (dirname);
 #endif
 }
-
 
 #define g_string_append_indent(string, indent)  \
     {                                           \
@@ -287,10 +291,11 @@ bus_registry_load_cache (BusRegistry *registry)
                 IBusComponent *component;
                 component = ibus_component_new_from_xml_node (pp->data);
                 if (component) {
-                    BusComponent *buscomp = bus_component_new(component, NULL);
-                    g_object_ref_sink(buscomp);
+                    BusComponent *buscomp = bus_component_new (component,
+                                                               NULL /* factory */);
+                    g_object_ref_sink (buscomp);
                     registry->components =
-                        g_list_append(registry->components, buscomp);
+                        g_list_append (registry->components, buscomp);
                 }
             }
 
@@ -309,12 +314,12 @@ bus_registry_check_modification (BusRegistry *registry)
     GList *p;
 
     for (p = registry->observed_paths; p != NULL; p = p->next) {
-        if (ibus_observed_path_check_modification ((IBusObservedPath *)p->data))
+        if (ibus_observed_path_check_modification ((IBusObservedPath *) p->data))
             return TRUE;
     }
 
     for (p = registry->components; p != NULL; p = p->next) {
-        if (ibus_component_check_modification(bus_component_get_component((BusComponent *)p->data)))
+        if (ibus_component_check_modification (bus_component_get_component ((BusComponent *) p->data)))
             return TRUE;
     }
 
@@ -355,7 +360,7 @@ bus_registry_save_cache (BusRegistry *registry)
         g_string_append_indent (output, 1);
         g_string_append (output, "<observed-paths>\n");
         for (p = registry->observed_paths; p != NULL; p = p->next) {
-            ibus_observed_path_output ((IBusObservedPath *)p->data,
+            ibus_observed_path_output ((IBusObservedPath *) p->data,
                                       output, 2);
         }
         g_string_append_indent (output, 1);
@@ -366,8 +371,8 @@ bus_registry_save_cache (BusRegistry *registry)
         g_string_append_indent (output, 1);
         g_string_append (output, "<components>\n");
         for (p = registry->components; p != NULL; p = p->next) {
-            ibus_component_output(bus_component_get_component((BusComponent *)p->data),
-                                  output, 2);
+            ibus_component_output (bus_component_get_component ((BusComponent *) p->data),
+                                   output, 2);
         }
         g_string_append_indent (output, 1);
         g_string_append (output, "</components>\n");
@@ -380,6 +385,11 @@ bus_registry_save_cache (BusRegistry *registry)
     return TRUE;
 }
 
+/**
+ * bus_registry_load_in_dir:
+ *
+ * Read all XML files in dirname, create a BusComponent object for each file, and add the component objects to the registry.
+ */
 static void
 bus_registry_load_in_dir (BusRegistry *registry,
                           const gchar *dirname)
@@ -405,14 +415,15 @@ bus_registry_load_in_dir (BusRegistry *registry,
         IBusComponent *component;
 
         size = g_utf8_strlen (filename, -1);
-        if (g_strcmp0 (MAX (filename, filename + size -4), ".xml" ) != 0)
+        if (g_strcmp0 (MAX (filename, filename + size - 4), ".xml") != 0)
             continue;
 
         path = g_build_filename (dirname, filename, NULL);
         component = ibus_component_new_from_file (path);
         if (component != NULL) {
-            BusComponent *buscomp = bus_component_new(component, NULL);
-            registry->components = g_list_append(registry->components, buscomp);
+            BusComponent *buscomp = bus_component_new (component,
+                                                       NULL /* factory */);
+            registry->components = g_list_append (registry->components, buscomp);
         }
 
         g_free (path);
@@ -426,23 +437,23 @@ BusRegistry *
 bus_registry_new (void)
 {
     BusRegistry *registry;
-    registry = (BusRegistry *)g_object_new (BUS_TYPE_REGISTRY, NULL);
+    registry = (BusRegistry *) g_object_new (BUS_TYPE_REGISTRY, NULL);
     return registry;
 }
 
 static gint
-bus_register_component_is_name_cb(BusComponent *component,
-                                  const gchar  *name)
+bus_register_component_is_name_cb (BusComponent *component,
+                                   const gchar  *name)
 {
-    g_assert(BUS_IS_COMPONENT (component));
-    g_assert(name);
+    g_assert (BUS_IS_COMPONENT (component));
+    g_assert (name);
 
-    return g_strcmp0(bus_component_get_name(component), name);
+    return g_strcmp0 (bus_component_get_name (component), name);
 }
 
 BusComponent *
-bus_registry_lookup_component_by_name(BusRegistry *registry,
-                                      const gchar *name)
+bus_registry_lookup_component_by_name (BusRegistry *registry,
+                                       const gchar *name)
 {
     g_assert (BUS_IS_REGISTRY (registry));
     g_assert (name);
@@ -450,9 +461,9 @@ bus_registry_lookup_component_by_name(BusRegistry *registry,
     GList *p;
     p = g_list_find_custom (registry->components,
                             name,
-                            (GCompareFunc)bus_register_component_is_name_cb);
+                            (GCompareFunc) bus_register_component_is_name_cb);
     if (p) {
-        return (BusComponent *)p->data;
+        return (BusComponent *) p->data;
     }
     else {
         return NULL;
@@ -474,7 +485,6 @@ bus_registry_get_engines (BusRegistry *registry)
 
     return g_hash_table_get_values (registry->engine_table);
 }
-
 
 GList *
 bus_registry_get_engines_by_language (BusRegistry *registry,
@@ -574,6 +584,11 @@ _check_changes (BusRegistry *registry)
     return NULL;
 }
 
+/**
+ * bus_registry_start_monitor_changes:
+ *
+ * Start the monitor thread.
+ */
 void
 bus_registry_start_monitor_changes (BusRegistry *registry)
 {
@@ -583,7 +598,7 @@ bus_registry_start_monitor_changes (BusRegistry *registry)
     g_return_if_fail (registry->changed == FALSE);
 
     registry->thread_running = TRUE;
-    registry->thread = g_thread_create ((GThreadFunc)_check_changes,
+    registry->thread = g_thread_create ((GThreadFunc) _check_changes,
                                         registry,
                                         TRUE,
                                         NULL);
@@ -614,29 +629,32 @@ bus_registry_name_owner_changed (BusRegistry *registry,
     component = bus_registry_lookup_component_by_name (registry, name);
 
     if (component == NULL) {
+        /* name is a unique name, or a well-known name we don't know. */
         return;
     }
 
     if (g_strcmp0 (old_name, "") != 0) {
-        factory = bus_component_get_factory(component);
+        /* the component is stopped. */
+        factory = bus_component_get_factory (component);
 
         if (factory != NULL) {
-            ibus_proxy_destroy ((IBusProxy *)factory);
+            ibus_proxy_destroy ((IBusProxy *) factory);
         }
     }
 
     if (g_strcmp0 (new_name, "") != 0) {
+        /* the component is started. */
         BusConnection *connection =
-                bus_dbus_impl_get_connection_by_name(BUS_DEFAULT_DBUS,
-                                                     new_name);
+                bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS,
+                                                      new_name);
         if (connection == NULL)
             return;
 
-        factory = bus_factory_proxy_new(connection);
+        factory = bus_factory_proxy_new (connection);
         if (factory == NULL)
             return;
-        g_object_ref_sink(factory);
-        bus_component_set_factory(component, factory);
-        g_object_unref(factory);
+        g_object_ref_sink (factory);
+        bus_component_set_factory (component, factory);
+        g_object_unref (factory);
     }
 }

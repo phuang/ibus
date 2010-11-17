@@ -50,24 +50,69 @@ typedef struct _BusRegistryClass BusRegistryClass;
 
 GType            bus_registry_get_type          (void);
 BusRegistry     *bus_registry_new               (void);
+
+/**
+ * bus_registry_get_components:
+ * @returns: a list of BusComponent objects. The caller has to call g_list_free for the returned list.
+ */
 GList           *bus_registry_get_components    (BusRegistry    *registry);
+
+/**
+ * bus_registry_get_components:
+ * @returns: a list of all IBusEngineDesc objects available. The caller has to call g_list_free for the returned list.
+ */
 GList           *bus_registry_get_engines       (BusRegistry    *registry);
+
+/**
+ * bus_registry_get_components:
+ * @language: a language name like 'ja'
+ * @returns: a list of IBusEngineDesc objects for the language. The caller has to call g_list_free for the returned list.
+ */
 GList           *bus_registry_get_engines_by_language
                                                 (BusRegistry    *registry,
                                                  const gchar    *language);
+
+/**
+ * bus_registry_stop_all_components:
+ *
+ * Terminate all component processes.
+ */
 void             bus_registry_stop_all_components
                                                 (BusRegistry    *registry);
 
+/**
+ * bus_registry_lookup_component_by_name:
+ * @name: a component name such as 'org.freedesktop.IBus.Panel' and 'com.google.IBus.Mozc'
+ * @returns: a BusComponent object, or NULL if such component is not found.
+ */
 BusComponent    *bus_registry_lookup_component_by_name
                                                 (BusRegistry    *registry,
                                                  const gchar    *name);
+
+/**
+ * bus_registry_find_engine_by_name:
+ * @name: an engine name like 'pinyin'
+ * @returns: an IBusEngineDesc object, or NULL if not found.
+ */
 IBusEngineDesc  *bus_registry_find_engine_by_name
                                                 (BusRegistry    *registry,
                                                  const gchar    *name);
-void             bus_registry_name_owner_changed(BusRegistry    *registry,
+
+/**
+ * bus_registry_name_owner_changed:
+ * @name: a unique or well-known name like ":1.1", "org.freedesktop.IBus.Config", "com.google.IBus.Mozc".
+ * @old_name: a unique name like ":1.1", or empty string "" when the client is started.
+ * @new_name: a unique name like ":1.1", or empty string "" when the client is stopped.
+ *
+ * Handle the "name-owner-changed" glib signal from dbusimpl. If a component is stopped, remove a BusFactoryProxy object from the
+ * bus for the component. If a component is started, create a new BusFactoryProxy object for the bus.
+ */
+void             bus_registry_name_owner_changed
+                                                (BusRegistry    *registry,
                                                  const gchar    *name,
                                                  const gchar    *old_name,
                                                  const gchar    *new_name);
+
 #ifdef G_THREADS_ENABLED
 void             bus_registry_start_monitor_changes
                                                 (BusRegistry    *registry);
