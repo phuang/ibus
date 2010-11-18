@@ -1166,9 +1166,14 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
         }
     }
 
-    return ibus->global_engine != NULL &&
-           g_strcmp0 (name,
-                bus_engine_proxy_get_desc (ibus->global_engine)->name) == 0;
+    gboolean retval = ibus->global_engine != NULL &&
+                      g_strcmp0 (name,
+                                 bus_engine_proxy_get_desc (ibus->global_engine)->name) == 0;
+
+    if (retval && ibus->focused_context)
+        bus_input_context_enable (ibus->focused_context);
+
+    return retval;
 }
 
 static void
@@ -1327,7 +1332,8 @@ _context_focus_in_cb (BusInputContext *context,
         }
         else {
             bus_ibus_impl_set_context_engine (ibus, context, ibus->global_engine);
-            if (ibus->global_engine && bus_engine_proxy_is_enabled (ibus->global_engine)) {
+            if (ibus->global_engine &&
+                bus_engine_proxy_is_enabled (ibus->global_engine)) {
                 bus_input_context_enable (context);
             }
         }
