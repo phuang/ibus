@@ -299,8 +299,8 @@ static void
 _connection_destroy_cb (BusConnection   *connection,
                         BusInputContext *context)
 {
-    BUS_IS_CONNECTION (connection);
-    BUS_IS_INPUT_CONTEXT (context);
+    g_assert (BUS_IS_CONNECTION (connection));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     ibus_object_destroy (IBUS_OBJECT (context));
 }
