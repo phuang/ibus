@@ -20,7 +20,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <glib/gprintf.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
 #include <ibus.h>
