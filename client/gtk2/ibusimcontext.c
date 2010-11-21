@@ -82,6 +82,7 @@ static guint    _key_snooper_id = 0;
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
 static GdkWindow *_input_window = NULL;
+static GtkWidget *_input_widget = NULL;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
@@ -200,6 +201,26 @@ ibus_im_context_new (void)
     return IBUS_IM_CONTEXT (obj);
 }
 
+static gboolean
+_focus_in_cb (GtkWidget     *widget,
+              GdkEventFocus *event,
+              gpointer       user_data)
+{
+    if (_focus_im_context == NULL)
+        ibus_input_context_focus_in (_fake_context);
+    return FALSE;
+}
+
+static gboolean
+_focus_out_cb (GtkWidget     *widget,
+               GdkEventFocus *event,
+               gpointer       user_data)
+{
+    if (_focus_im_context == NULL)
+        ibus_input_context_focus_out (_fake_context);
+    return FALSE;
+}
+
 static gint
 _key_snooper_cb (GtkWidget   *widget,
                  GdkEventKey *event,
@@ -231,13 +252,60 @@ _key_snooper_cb (GtkWidget   *widget,
     if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
         return FALSE;
 
-    if (_fake_context == ibuscontext && _input_window != event->window) {
-        if (_input_window)
-            g_object_unref (_input_window);
-        if (event->window)
-            g_object_ref (event->window);
+    do {
+        if (_fake_context != ibuscontext)
+            break;
+
+        /* window has input focus is not changed */
+        if (_input_window == event->window)
+            break;
+
+        if (_input_window != NULL) {
+            g_object_remove_weak_pointer ((GObject *) _input_window,
+                                          (gpointer *) &_input_window);
+        }
+        if (event->window != NULL) {
+            g_object_add_weak_pointer ((GObject *) event->window,
+                                       (gpointer *) &_input_window);
+        }
         _input_window = event->window;
-    }
+
+        /* Trace widget has input focus, and listen focus events of it.
+         * It is workaround for Alt+Shift+Tab shortcut key issue(crosbug.com/8855).
+         * gtk_get_event_widget returns the widget that is associated with the
+         * GdkWindow of the GdkEvent.
+         * */
+        GtkWidget *widget = gtk_get_event_widget ((GdkEvent *)event);
+        /* g_assert (_input_widget != widget). */
+        if (_input_widget == widget)
+            break;
+
+        if (_input_widget != NULL) {
+            g_signal_handlers_disconnect_by_func (_input_widget,
+                                                  (GCallback) _focus_in_cb,
+                                                  NULL);
+            g_signal_handlers_disconnect_by_func (_input_widget,
+                                                  (GCallback) _focus_out_cb,
+                                                  NULL);
+            g_object_remove_weak_pointer ((GObject *) _input_widget,
+                                          (gpointer *) &_input_widget);
+        }
+
+        if (widget != NULL) {
+            g_signal_connect (widget,
+                              "focus-in-event",
+                              (GCallback) _focus_in_cb,
+                              NULL);
+            g_signal_connect (widget,
+                              "focus-out-event",
+                              (GCallback) _focus_out_cb,
+                              NULL);
+            g_object_add_weak_pointer ((GObject *) widget,
+                                       (gpointer *) &_input_widget);
+        }
+        _input_widget = widget;
+
+    } while (0);
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
