@@ -1,3 +1,4 @@
 ibus-daemon
 test-matchrule
 ibus.desktop
+marshalers.[ch]

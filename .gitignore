@@ -37,6 +37,7 @@ py-compile
 ibus-*.tar.*
 ibus.spec
 ibus-1.0.pc
+xinput-ibus
 i386
 x86_64
 ChangeLog
@@ -46,3 +47,5 @@ intltool-update.in
 mkinstalldirs
 .*
 rpm
+stamp-h2
+memconf.xml.in
