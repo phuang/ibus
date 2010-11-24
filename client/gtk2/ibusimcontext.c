@@ -491,14 +491,6 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 }
 
 static void
-_weak_notify_cb (gpointer data,
-                 GObject *context)
-{
-    if (_focus_im_context == (GtkIMContext *)context)
-        _focus_im_context = NULL;
-}
-
-static void
 ibus_im_context_focus_in (GtkIMContext *context)
 {
     IDEBUG ("%s", __FUNCTION__);
@@ -520,7 +512,8 @@ ibus_im_context_focus_in (GtkIMContext *context)
     _set_cursor_location_internal (context);
 
     if (_focus_im_context != context) {
-        g_object_weak_ref ((GObject *) context, _weak_notify_cb, NULL);
+        g_object_add_weak_pointer ((GObject *) context,
+                                   (gpointer *) &_focus_im_context);
         _focus_im_context = context;
     }
 }
@@ -533,7 +526,8 @@ ibus_im_context_focus_out (GtkIMContext *context)
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
     if (_focus_im_context == context) {
-        g_object_weak_unref ((GObject *)_focus_im_context, _weak_notify_cb, NULL);
+        g_object_remove_weak_pointer ((GObject *) context,
+                                      (gpointer *) &_focus_im_context);
         _focus_im_context = NULL;
     }
 
