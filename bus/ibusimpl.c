@@ -328,7 +328,7 @@ bus_ibus_impl_set_next_engine_in_menu (BusIBusImpl *ibus,
 /**
  * bus_ibus_impl_set_previous_engine:
  *
- * A function to be called when "previous_engine" config is updated. 
+ * A function to be called when "previous_engine" config is updated.
  */
 static void
 bus_ibus_impl_set_previous_engine (BusIBusImpl *ibus,
@@ -637,7 +637,6 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
             g_return_if_fail (connection != NULL);
 
             ibus->panel = bus_panel_proxy_new (connection);
-            g_object_ref_sink (ibus->panel);
 
             g_signal_connect (ibus->panel,
                               "destroy",
@@ -673,7 +672,6 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                                            "g-interface-name", IBUS_INTERFACE_CONFIG,
                                            "g-connection", bus_connection_get_dbus_connection (connection),
                                            NULL);
-            g_object_ref_sink (ibus->config);
 
             g_signal_connect (ibus->config,
                               "value-changed",
@@ -917,9 +915,10 @@ _context_request_engine_cb (BusInputContext *context,
     else {
         /* Use global engine if possible. */
         if (ibus->use_global_engine) {
-            gchar *name = ibus->global_engine_name;
-            if (name == NULL)
+            gchar *name = g_strdup (ibus->global_engine_name);
+            if (name == NULL) {
                 name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
+            }
             if (name) {
                 desc = _find_engine_desc_by_name (ibus, name);
                 g_free (name);
@@ -1161,9 +1160,10 @@ _context_focus_out_cb (BusInputContext    *context,
             bus_panel_proxy_focus_out (ibus->panel, context);
     }
     else {
-        if (IBUS_OBJECT_DESTROYED (context)) {
+        if (IBUS_OBJECT_IN_DESTRUCTION (context) ||
+            IBUS_OBJECT_DESTROYED (context)) {
             /* Only focus out context and focus in fake context,
-             * if the context is destroyed. */
+             * if the context is or to be destroyed. */
 
             g_object_unref (ibus->focused_context);
             ibus->focused_context = NULL;
@@ -1396,7 +1396,6 @@ _ibus_register_component (BusIBusImpl           *ibus,
     }
 
     g_object_ref_sink (component);
-    g_object_ref_sink (factory);
 
     BusComponent *buscomp = bus_component_new (component, factory);
     bus_component_set_destroy_with_factory (buscomp, TRUE);

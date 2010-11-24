@@ -206,7 +206,7 @@ bus_registry_destroy (BusRegistry *registry)
 /**
  * bus_registry_load:
  *
- * Read all XML files in the PKGDATADIR (typically /usr/share/ibus/components/*.xml) and update the registry object.
+ * Read all XML files in the PKGDATADIR (typically /usr/share/ibus/components/ *.xml) and update the registry object.
  */
 static void
 bus_registry_load (BusRegistry *registry)

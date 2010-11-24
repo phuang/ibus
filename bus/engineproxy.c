@@ -588,6 +588,8 @@ typedef struct {
     IBusEngineDesc  *desc;
     BusComponent    *component;
     BusFactoryProxy *factory;
+    GCancellable *cancellable;
+    gulong cancelled_handler_id;
     guint handler_id;
     guint timeout_id;
     const gchar *error_message;
@@ -624,12 +626,6 @@ notify_factory_cb (BusComponent       *component,
                    GParamSpec         *spec,
                    EngineProxyNewData *data)
 {
-    g_source_remove (data->timeout_id);
-    data->timeout_id = 0;
-
-    g_signal_handler_disconnect (data->component, data->handler_id);
-    data->handler_id = 0;
-
     data->factory = bus_component_get_factory (data->component);
 
     if (data->factory == NULL) {
@@ -656,9 +652,6 @@ timeout_cb (EngineProxyNewData *data)
 {
     data->timeout_id = 0;
 
-    g_signal_handler_disconnect (data->component, data->handler_id);
-    data->handler_id = 0;
-
     g_simple_async_result_set_error (data->simple,
                                      G_DBUS_ERROR,
                                      G_DBUS_ERROR_FAILED,
@@ -668,6 +661,17 @@ timeout_cb (EngineProxyNewData *data)
     return FALSE;
 }
 
+static void
+cancelled_cb (GCancellable       *cancellable,
+              EngineProxyNewData *data)
+{
+    g_simple_async_result_set_error (data->simple,
+                                     G_DBUS_ERROR,
+                                     G_DBUS_ERROR_FAILED,
+                                     "Cancelled");
+    g_simple_async_result_complete (data->simple);
+}
+
 void
 bus_engine_proxy_new (IBusEngineDesc      *desc,
                       GCancellable        *cancellable,
@@ -675,6 +679,7 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
                       gpointer             user_data)
 {
     g_assert (IBUS_IS_ENGINE_DESC (desc));
+    g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
     g_assert (callback);
 
     EngineProxyNewData *data = g_slice_new0 (EngineProxyNewData);
@@ -695,17 +700,25 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
                                              "notify::factory",
                                              G_CALLBACK (notify_factory_cb),
                                              data);
-
+        data->error_message = "Time out";
         data->timeout_id = g_timeout_add_seconds (5,
                                                   (GSourceFunc) timeout_cb,
                                                   data);
+        if (cancellable) {
+            data->cancellable = (GCancellable *) g_object_ref (cancellable);
+            data->cancelled_handler_id = g_cancellable_connect (cancellable,
+                                                                (GCallback) cancelled_cb,
+                                                                data,
+                                                                NULL);
+        }
+        bus_component_start (data->component, g_verbose);
     }
     else {
         g_object_ref (data->factory);
         bus_factory_proxy_create_engine (data->factory,
                                          data->desc,
                                          5000,
-                                         NULL,
+                                         cancellable,
                                          (GAsyncReadyCallback) create_engine_ready_cb,
                                          data);
     }
@@ -724,9 +737,23 @@ bus_engine_proxy_new_finish (GAsyncResult   *res,
     EngineProxyNewData *data =
             (EngineProxyNewData *) g_object_get_data ((GObject *) simple,
                                                       "EngineProxyNewData");
+    if (data->cancellable) {
+        g_cancellable_disconnect (data->cancellable, data->cancelled_handler_id);
+        g_object_unref (data->cancellable);
+    }
+
+    if (data->timeout_id != 0)
+        g_source_remove (data->timeout_id);
+
+    if (data->handler_id != 0)
+        g_signal_handler_disconnect (data->component, data->handler_id);
+
     g_object_unref (data->desc);
     g_object_unref (data->component);
-    g_object_unref (data->factory);
+
+    if (data->factory != NULL)
+        g_object_unref (data->factory);
+
     g_slice_free (EngineProxyNewData, data);
 
     if (g_simple_async_result_propagate_error (simple, error))

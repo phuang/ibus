@@ -326,7 +326,6 @@ bus_component_child_cb (GPid          pid,
 {
     g_assert (BUS_IS_COMPONENT (component));
     g_assert (component->pid == pid);
-
     g_spawn_close_pid (pid);
     component->pid = 0;
     component->child_source_id = 0;

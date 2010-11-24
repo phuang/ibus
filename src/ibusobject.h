@@ -67,6 +67,7 @@ typedef enum {
 #define IBUS_OBJECT_FLAGS(obj)             (IBUS_OBJECT (obj)->flags)
 #define IBUS_OBJECT_SET_FLAGS(obj,flag)    G_STMT_START{ (IBUS_OBJECT_FLAGS (obj) |= (flag)); }G_STMT_END
 #define IBUS_OBJECT_UNSET_FLAGS(obj,flag)  G_STMT_START{ (IBUS_OBJECT_FLAGS (obj) &= ~(flag)); }G_STMT_END
+#define IBUS_OBJECT_IN_DESTRUCTION(obj)    (IBUS_OBJECT_FLAGS (obj) & IBUS_IN_DESTRUCTION)
 #define IBUS_OBJECT_DESTROYED(obj)         (IBUS_OBJECT_FLAGS (obj) & IBUS_DESTROYED)
 
 G_BEGIN_DECLS

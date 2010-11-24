@@ -90,7 +90,7 @@ ibus_proxy_constructed (GObject *object)
     GDBusConnection *connection;
     connection = g_dbus_proxy_get_connection ((GDBusProxy *)object);
 
-    g_assert (connection);
+    g_assert (connection != NULL);
     g_assert (!g_dbus_connection_is_closed (connection));
 
     g_signal_connect (connection, "closed",
@@ -118,13 +118,17 @@ static void
 ibus_proxy_real_destroy (IBusProxy *proxy)
 {
     GDBusConnection *connection = g_dbus_proxy_get_connection ((GDBusProxy *) proxy);
-    if (connection != NULL && !g_dbus_connection_is_closed (connection)) {
+    g_assert (connection != NULL);
+    if (!g_dbus_connection_is_closed (connection)) {
         g_dbus_proxy_call ((GDBusProxy *)proxy,
                            "org.freedesktop.IBus.Service.Destroy",
                            NULL,
                            G_DBUS_CALL_FLAGS_NONE,
                            -1, NULL, NULL, NULL);
     }
+    g_signal_handlers_disconnect_by_func (connection,
+                                          (GCallback) ibus_proxy_connection_closed_cb,
+                                          proxy);
 }
 
 static void
@@ -139,7 +143,7 @@ ibus_proxy_connection_closed_cb (GDBusConnection *connection,
 void
 ibus_proxy_destroy (IBusProxy *proxy)
 {
-    g_return_if_fail (IBUS_IS_PROXY (proxy));
+    g_assert (IBUS_IS_PROXY (proxy));
 
     if (! (IBUS_PROXY_FLAGS (proxy) & IBUS_IN_DESTRUCTION)) {
         g_object_run_dispose (G_OBJECT (proxy));
