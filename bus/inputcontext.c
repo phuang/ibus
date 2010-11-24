@@ -1852,7 +1852,7 @@ bus_input_context_set_engine (BusInputContext *context,
     else {
         gint i;
         context->engine = engine;
-        g_object_ref_sink (context->engine);
+        g_object_ref (context->engine);
 
         for (i = 0; signals[i].name != NULL; i++) {
             g_signal_connect (context->engine,

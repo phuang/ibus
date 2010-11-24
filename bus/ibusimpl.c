@@ -1032,6 +1032,63 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
 }
 
 /**
+ * bus_ibus_impl_set_focused_context:
+ *
+ * Set the current focused context.
+ */
+static void
+bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
+                                   BusInputContext *context)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (context == NULL || BUS_IS_INPUT_CONTEXT (context));
+    g_assert (context == NULL || bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS);
+
+    /* Do noting if it is not focused context. */
+    if (ibus->focused_context == context) {
+        return;
+    }
+
+    BusEngineProxy *engine = NULL;
+
+    if (ibus->focused_context) {
+        if (ibus->use_global_engine) {
+            /* dettach engine from the focused context */
+            engine = bus_input_context_get_engine (ibus->focused_context);
+            if (engine) {
+                g_object_ref (engine);
+                bus_input_context_set_engine (ibus->focused_context, NULL);
+            }
+        }
+
+        if (ibus->panel != NULL)
+            bus_panel_proxy_focus_out (ibus->panel, ibus->focused_context);
+
+        g_object_unref (ibus->focused_context);
+        ibus->focused_context = NULL;
+    }
+
+    if (context == NULL && ibus->use_global_engine) {
+        context = ibus->fake_context;
+    }
+
+    if (context) {
+        ibus->focused_context = (BusInputContext *) g_object_ref (context);
+        /* attach engine to the focused context */
+        if (engine != NULL) {
+            bus_input_context_set_engine (context, engine);
+            if (bus_engine_proxy_is_enabled (engine))
+                bus_input_context_enable (context);
+            g_object_unref (engine);
+        }
+
+        if (ibus->panel != NULL)
+            bus_panel_proxy_focus_in (ibus->panel, context);
+    }
+}
+
+
+/**
  * _context_engine_changed_cb:
  *
  * A callback function to be called when the "engine-changed" signal is sent to the context.
@@ -1082,49 +1139,7 @@ _context_focus_in_cb (BusInputContext *context,
         return;
     }
 
-    /* Do nothing if it is focused context already. */
-    if (ibus->focused_context == context) {
-        return;
-    }
-
-    if (ibus->focused_context) {
-        /* focus out context */
-        bus_input_context_focus_out (ibus->focused_context);
-    }
-
-    /* If use_gloable_engine option is enabled, we need:
-     * Detach the engine from previous focused context
-     * and attach the engine with the new context */
-    if (ibus->use_global_engine) {
-        BusInputContext *old_context = NULL;
-        if (ibus->focused_context) {
-            old_context = ibus->focused_context;
-            ibus->focused_context = NULL;
-        }
-        else {
-            old_context = ibus->fake_context;
-            g_object_ref (old_context);
-        }
-
-        BusEngineProxy *engine =
-                bus_input_context_get_engine (old_context);
-        bus_input_context_set_engine (old_context, NULL);
-        g_object_unref (old_context);
-
-        if (engine != NULL) {
-            g_object_ref (engine);
-            bus_input_context_set_engine (context, engine);
-            if (bus_engine_proxy_is_enabled (engine))
-                bus_input_context_enable (context);
-            g_object_unref (engine);
-        }
-    }
-
-    if (ibus->panel != NULL) {
-        bus_panel_proxy_focus_in (ibus->panel, context);
-    }
-
-    ibus->focused_context = (BusInputContext *) g_object_ref (context);
+    bus_ibus_impl_set_focused_context (ibus, context);
 }
 
 /**
@@ -1151,41 +1166,11 @@ _context_focus_out_cb (BusInputContext    *context,
     }
 
 
-    if (!ibus->use_global_engine) {
-
-        g_object_unref (ibus->focused_context);
-        ibus->focused_context = NULL;
-
-        if (ibus->panel != NULL)
-            bus_panel_proxy_focus_out (ibus->panel, context);
-    }
-    else {
-        if (IBUS_OBJECT_IN_DESTRUCTION (context) ||
-            IBUS_OBJECT_DESTROYED (context)) {
-            /* Only focus out context and focus in fake context,
-             * if the context is or to be destroyed. */
-
-            g_object_unref (ibus->focused_context);
-            ibus->focused_context = NULL;
-
-            if (ibus->panel != NULL)
-                bus_panel_proxy_focus_out (ibus->panel, context);
-
-            BusEngineProxy *engine = bus_input_context_get_engine (context);
-
-            if (engine != NULL) {
-                g_object_ref (engine);
-                bus_input_context_set_engine (context, NULL);
-                bus_input_context_set_engine (ibus->fake_context, engine);
-
-                if (bus_engine_proxy_is_enabled (engine))
-                    bus_input_context_enable (ibus->fake_context);
-                g_object_unref (engine);
-            }
-
-            if (ibus->panel != NULL)
-                bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
-        }
+    if (ibus->use_global_engine == FALSE) {
+        /* Do not change the focused context, if use_global_engine option is enabled.
+         * If focused context swith to NULL, users can not swith engine in panel anymore.
+         **/
+        bus_ibus_impl_set_focused_context (ibus, NULL);
     }
 }
 
@@ -1202,9 +1187,7 @@ _context_destroy_cb (BusInputContext    *context,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     if (context == ibus->focused_context) {
-        /* focus out context */
-        bus_input_context_focus_out (ibus->focused_context);
-        g_assert (ibus->focused_context == NULL);
+        bus_ibus_impl_set_focused_context (ibus, NULL);
     }
 
     ibus->contexts = g_list_remove (ibus->contexts, context);
