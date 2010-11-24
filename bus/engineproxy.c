@@ -642,7 +642,7 @@ notify_factory_cb (BusComponent       *component,
     bus_factory_proxy_create_engine (data->factory,
                                      data->desc,
                                      5000,
-                                     NULL,
+                                     data->cancellable,
                                      (GAsyncReadyCallback) create_engine_ready_cb,
                                      data);
 }
