@@ -2039,8 +2039,8 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
         if (keymap != NULL) {
             guint tmp = ibus_keymap_lookup_keysym (keymap,
-                                                 keycode,
-                                                 modifiers);
+                                                   keycode,
+                                                   modifiers);
             if (tmp != IBUS_VoidSymbol)
                 keyval = tmp;
         }

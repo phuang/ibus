@@ -38,6 +38,7 @@ struct _BusEngineProxy {
     gint h;
 
     IBusEngineDesc *desc;
+    /* a key mapping for the engine that converts keycode into keysym. the mapping is used only when use_sys_layout is FALSE. */
     IBusKeymap     *keymap;
     IBusPropList *prop_list;
     /* private member */
@@ -576,10 +577,6 @@ bus_engine_proxy_new_internal (const gchar     *path,
     if (layout != NULL && layout[0] != '\0') {
         engine->keymap = ibus_keymap_get (layout);
     }
-
-    if (engine->keymap == NULL) {
-        engine->keymap = ibus_keymap_get ("us");
-    }
     return engine;
 }
 
@@ -773,15 +770,18 @@ bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
-    /* FIXME */
-#if 0
-    if (keycode != 0 && !BUS_DEFAULT_IBUS->use_sys_layout && engine->keymap != NULL) {
-        guint t = ibus_keymap_lookup_keysym (engine->keymap, keycode, state);
-        if (t != IBUS_VoidSymbol) {
-            keyval = t;
+    if (keycode != 0 && bus_ibus_impl_is_use_sys_layout(BUS_DEFAULT_IBUS) == FALSE) {
+        /* Since use_sys_layout is false, we don't rely on XKB. Try to convert keyval from keycode by using our own mapping. */
+        IBusKeymap *keymap = engine->keymap;
+        if (keymap == NULL)
+            keymap = BUS_DEFAULT_KEYMAP;
+        if (keymap != NULL) {
+            guint t = ibus_keymap_lookup_keysym (engine->keymap, keycode, state);
+            if (t != IBUS_VoidSymbol) {
+                keyval = t;
+            }
         }
     }
-#endif
 
     g_dbus_proxy_call ((GDBusProxy *)engine,
                        "ProcessKeyEvent",

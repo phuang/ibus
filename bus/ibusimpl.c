@@ -71,7 +71,7 @@ struct _BusIBusImpl {
 
     /* global hotkeys such as "trigger" and "next_engine_in_menu" */
     IBusHotkeyProfile *hotkey_profile;
-    /* a key mapping that converts keycode into keysym. the mapping is supposed to be used only when use_sys_layout is FALSE. */
+    /* a default keymap of ibus-daemon (usually "us") which is used only when use_sys_layout is FALSE. */
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
