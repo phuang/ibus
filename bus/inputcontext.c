@@ -1928,9 +1928,8 @@ bus_input_context_enable (BusInputContext *context)
 
     context->enabled = TRUE;
 
-    /* FIXME would be better to call proxy_focus_in first to be consistent with bus_input_context_focus_in and bus_input_context_set_engine? */
-    bus_engine_proxy_enable (context->engine);
     bus_engine_proxy_focus_in (context->engine);
+    bus_engine_proxy_enable (context->engine);
     bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
     bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
 
