@@ -1026,8 +1026,8 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
     bus_input_context_set_engine_by_desc (context,
                                           desc,
                                           5000, /* timeout in msec. */
-                                          NULL,
-                                          NULL,
+                                          NULL, /* we do not cancel the call. */
+                                          NULL, /* use the default callback function. */
                                           NULL);
 }
 
@@ -1649,7 +1649,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
     bus_input_context_set_engine_by_desc (context,
                                           desc,
                                           5000, /* timeout in msec. */
-                                          NULL,
+                                          NULL, /* we do not cancel the call. */
                                           (GAsyncReadyCallback) _ibus_set_global_engine_ready_cb,
                                           invocation);
 }
@@ -2100,6 +2100,14 @@ bus_ibus_impl_is_use_sys_layout (BusIBusImpl *ibus)
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     return ibus->use_sys_layout;
+}
+
+gboolean
+bus_ibus_impl_is_embed_preedit_text (BusIBusImpl *ibus)
+{
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+
+    return ibus->embed_preedit_text;
 }
 
 BusInputContext *

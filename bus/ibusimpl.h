@@ -95,6 +95,8 @@ IBusHotkeyProfile
 IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
 BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
 gboolean         bus_ibus_impl_is_use_sys_layout    (BusIBusImpl        *ibus);
+gboolean         bus_ibus_impl_is_embed_preedit_text
+                                                    (BusIBusImpl        *ibus);
 BusInputContext *bus_ibus_impl_get_focused_input_context
                                                     (BusIBusImpl        *ibus);
 

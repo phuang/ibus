@@ -50,47 +50,165 @@ typedef struct _BusEngineProxy BusEngineProxy;
 typedef struct _BusEngineProxyClass BusEngineProxyClass;
 
 GType            bus_engine_proxy_get_type          (void);
+
+/**
+ * bus_engine_proxy_new:
+ * @desc: the engine to create.
+ * @cancellable: a object that could be used to cancel the operation.
+ * @callback: a function to be called when the method invocation is done.
+ * @user_data: a pointer that will be passed to the callback.
+ */
 void             bus_engine_proxy_new               (IBusEngineDesc        *desc,
                                                      GCancellable          *cancellable,
                                                      GAsyncReadyCallback    callback,
                                                      gpointer               user_data);
+
+/**
+ * bus_engine_proxy_new_finish:
+ * @returns: On success, return an engine object. On error, return NULL.
+ *
+ * Get the result of bus_engine_proxy_new call. You have to call this function in the GAsyncReadyCallback function.
+ */
 BusEngineProxy  *bus_engine_proxy_new_finish        (GAsyncResult          *res,
                                                      GError               **error);
+
+/**
+ * bus_engine_proxy_get_desc:
+ *
+ * Get an IBusEngineDesc object associated with the engine.
+ */
 IBusEngineDesc  *bus_engine_proxy_get_desc          (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_process_key_event:
+ * @callback: a function to be called when the method invocation is done.
+ *
+ * Call "ProcessKeyEvent" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_process_key_event (BusEngineProxy        *engine,
                                                      guint                  keyval,
                                                      guint                  keycode,
                                                      guint                  state,
                                                      GAsyncReadyCallback    callback,
                                                      gpointer               user_data);
+/**
+ * bus_engine_proxy_set_cursor_location:
+ *
+ * Call "SetCursorLocation" method of an engine asynchronously. Unlike bus_engine_proxy_process_key_event, there's no way to know the
+ * result of the method invocation. If the same coordinate is given twice or more, the function does nothing from the second time.
+ */
 void             bus_engine_proxy_set_cursor_location
                                                     (BusEngineProxy        *engine,
                                                      gint                   x,
                                                      gint                   y,
                                                      gint                   w,
                                                      gint                   h);
+/**
+ * bus_engine_proxy_focus_in:
+ *
+ * Call "FocusIn" method of an engine asynchronously. Do nothing if the engine already has a focus.
+ */
 void             bus_engine_proxy_focus_in          (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_focus_out:
+ *
+ * Call "FocusOut" method of an engine asynchronously. Do nothing if the engine does not have a focus.
+ */
 void             bus_engine_proxy_focus_out         (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_reset:
+ *
+ * Call "Reset" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_reset             (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_set_capabilities:
+ *
+ * Call "SetCapabilities" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_set_capabilities  (BusEngineProxy        *engine,
                                                      guint                  caps);
+/**
+ * bus_engine_proxy_page_up:
+ *
+ * Call "PageUp" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_page_up           (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_page_down:
+ *
+ * Call "PageDown" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_page_down         (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_cursor_up:
+ *
+ * Call "CursorUp" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_cursor_up         (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_cursor_down:
+ *
+ * Call "CursorDown" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_cursor_down       (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_candidate_clicked:
+ *
+ * Call "CandidateClicked" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_candidate_clicked (BusEngineProxy        *engine,
                                                      guint                  index,
                                                      guint                  button,
                                                      guint                  state);
+/**
+ * bus_engine_proxy_enable:
+ *
+ * Call "Enable" method of an engine asynchronously. Do nothing if the engine is already enabled.
+ */
 void             bus_engine_proxy_enable            (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_disable:
+ *
+ * Call "Disable" method of an engine asynchronously. Do nothing if the engine is already disabled.
+ */
 void             bus_engine_proxy_disable           (BusEngineProxy        *engine);
+
+/**
+ * bus_engine_proxy_property_activate:
+ *
+ * Call "PropertyActivate" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_property_activate (BusEngineProxy        *engine,
                                                      const gchar           *prop_name,
                                                      guint                  state);
+/**
+ * bus_engine_proxy_property_show:
+ *
+ * Call "PropertyShow" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_property_show     (BusEngineProxy        *engine,
                                                      const gchar           *prop_name);
+/**
+ * bus_engine_proxy_property_hide:
+ *
+ * Call "PropertyHide" method of an engine asynchronously.
+ */
 void             bus_engine_proxy_property_hide     (BusEngineProxy *engine,
                                                      const gchar    *prop_name);
+/**
+ * bus_engine_proxy_is_enabled:
+ * @returns: TRUE if the engine is enabled.
+ */
 gboolean         bus_engine_proxy_is_enabled        (BusEngineProxy *engine);
+
 G_END_DECLS
 #endif

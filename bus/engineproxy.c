@@ -27,20 +27,25 @@
 
 struct _BusEngineProxy {
     IBusProxy parent;
+
     /* instance members */
+    /* TRUE if the engine has a focus (local copy of the engine's status.) */
     gboolean has_focus;
+    /* TRUE if the engine is enabled (local copy of the engine's status.) */
     gboolean enabled;
+    /* A set of capabilities the current client supports (local copy of the engine's flag.) */
     guint capabilities;
-    /* cursor location */
+    /* The current cursor location that are sent to the engine. */
     gint x;
     gint y;
     gint w;
     gint h;
 
+    /* an engine desc used to create the proxy. */
     IBusEngineDesc *desc;
+
     /* a key mapping for the engine that converts keycode into keysym. the mapping is used only when use_sys_layout is FALSE. */
     IBusKeymap     *keymap;
-    IBusPropList *prop_list;
     /* private member */
 };
 
@@ -77,7 +82,6 @@ enum {
 };
 
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
-// static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_engine_proxy_set_property   (BusEngineProxy      *engine,
@@ -130,7 +134,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
                         G_PARAM_STATIC_NICK
                         ));
 
-    /* install signals */
+    /* install glib signals that will be sent when corresponding D-Bus signals are sent from an engine process. */
     engine_signals[COMMIT_TEXT] =
         g_signal_new (I_("commit-text"),
             G_TYPE_FROM_CLASS (class),
@@ -399,6 +403,11 @@ _g_object_unref_if_floating (gpointer instance)
         g_object_unref (instance);
 }
 
+/**
+ * bus_engine_proxy_g_signal:
+ *
+ * Handle all D-Bus signals from the engine process. This function emits corresponding glib signal for the D-Bus signal.
+ */
 static void
 bus_engine_proxy_g_signal (GDBusProxy  *proxy,
                            const gchar *sender_name,
@@ -407,6 +416,7 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 {
     BusEngineProxy *engine = (BusEngineProxy *)proxy;
 
+    /* The list of nullary D-Bus signals. */
     static const struct {
         const gchar *signal_name;
         const guint  signal_id;
@@ -431,6 +441,7 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
         }
     }
 
+    /* Handle D-Bus signals with parameters. Deserialize them and emit a glib signal. */
     if (g_strcmp0 (signal_name, "CommitText") == 0) {
         GVariant *arg0 = NULL;
         g_variant_get (parameters, "(v)", &arg0);
@@ -592,6 +603,12 @@ typedef struct {
     const gchar *error_message;
 } EngineProxyNewData;
 
+/**
+ * create_engine_ready_cb:
+ *
+ * A callback function to be called when bus_factory_proxy_create_engine finishes.
+ * Create an BusEngineProxy object and call the GAsyncReadyCallback.
+ */
 static void
 create_engine_ready_cb (BusFactoryProxy    *factory,
                         GAsyncResult       *res,
@@ -600,7 +617,7 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
     GError *error = NULL;
     gchar *path = bus_factory_proxy_create_engine_finish (factory,
                                                           res,
-                                                         &error);
+                                                          &error);
     if (path == NULL) {
         g_simple_async_result_set_from_error (data->simple, error);
         g_simple_async_result_complete (data->simple);
@@ -618,6 +635,12 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
     g_simple_async_result_complete (data->simple);
 }
 
+/**
+ * notify_factory_cb:
+ *
+ * A callback function to be called when bus_component_start() emits "notify::factory" signal within 5 seconds.
+ * Call bus_factory_proxy_create_engine to create the engine proxy asynchronously.
+ */
 static void
 notify_factory_cb (BusComponent       *component,
                    GParamSpec         *spec,
@@ -644,6 +667,12 @@ notify_factory_cb (BusComponent       *component,
                                      data);
 }
 
+/**
+ * timeout_cb:
+ *
+ * A callback function to be called when bus_component_start() does not emit "notify::factory" signal within 5 seconds.
+ * Call the GAsyncReadyCallback and stop the 5 sec timer.
+ */
 static gboolean
 timeout_cb (EngineProxyNewData *data)
 {
@@ -658,6 +687,12 @@ timeout_cb (EngineProxyNewData *data)
     return FALSE;
 }
 
+/**
+ * cancelled_cb:
+ *
+ * A callback function to be called when someone calls g_cancellable_cancel() for the cancellable object for bus_engine_proxy_new.
+ * Call the GAsyncReadyCallback.
+ */
 static void
 cancelled_cb (GCancellable       *cancellable,
               EngineProxyNewData *data)
@@ -693,6 +728,8 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
     data->factory = bus_component_get_factory (data->component);
 
     if (data->factory == NULL) {
+        /* The factory is not ready yet. Create the factory first, and wait for the "notify::factory" signal.
+         * In the handler of "notify::factory", we'll create the engine proxy. */
         data->handler_id = g_signal_connect (data->component,
                                              "notify::factory",
                                              G_CALLBACK (notify_factory_cb),
@@ -711,6 +748,7 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
         bus_component_start (data->component, g_verbose);
     }
     else {
+        /* The factory is ready. We'll create the engine proxy directly. */
         g_object_ref (data->factory);
         bus_factory_proxy_create_engine (data->factory,
                                          data->desc,
@@ -770,7 +808,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
-    if (keycode != 0 && bus_ibus_impl_is_use_sys_layout(BUS_DEFAULT_IBUS) == FALSE) {
+    if (keycode != 0 && bus_ibus_impl_is_use_sys_layout (BUS_DEFAULT_IBUS) == FALSE) {
         /* Since use_sys_layout is false, we don't rely on XKB. Try to convert keyval from keycode by using our own mapping. */
         IBusKeymap *keymap = engine->keymap;
         if (keymap == NULL)
@@ -888,6 +926,7 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                        NULL);
 }
 
+/* a macro to generate a function to call a nullary D-Bus method. */
 #define DEFINE_FUNCTION(Name, name)                         \
     void                                                    \
     bus_engine_proxy_##name (BusEngineProxy *engine)        \
