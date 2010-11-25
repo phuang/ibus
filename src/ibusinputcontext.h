@@ -174,6 +174,8 @@ void         ibus_input_context_set_cursor_location
  * @capabilities: Capabilities flags of IBusEngine, see #IBusCapabilite
  *
  * Set the capabilities flags of client application.
+ * When IBUS_CAP_FOCUS is not set, IBUS_CAP_PREEDIT_TEXT, IBUS_CAP_AUXILIARY_TEXT, IBUS_CAP_LOOKUP_TABLE, and IBUS_CAP_PROPERTY have to be all set.
+ * The panel component does nothing for an application that doesn't support focus.
  *
  * @see_also: #IBusEngine::set-capabilities
  */

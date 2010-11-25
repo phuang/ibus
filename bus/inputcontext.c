@@ -292,7 +292,8 @@ static const gchar introspection_xml[] =
 
 G_DEFINE_TYPE (BusInputContext, bus_input_context, IBUS_TYPE_SERVICE)
 
-/* TRUE if we can send preedit text to client. FALSE if the panel has to handle it. */
+/* TRUE if we can send preedit text to client. FALSE if the panel has to handle it. Note that we check IBUS_CAP_FOCUS here since
+ * when the capability is not set, the client has to handle a preedit text regardless of the embed_preedit_text config. */
 #define PREEDIT_CONDITION  \
     ((context->capabilities & IBUS_CAP_PREEDIT_TEXT) && \
      (bus_ibus_impl_is_embed_preedit_text (BUS_DEFAULT_IBUS) || (context->capabilities & IBUS_CAP_FOCUS) == 0))
@@ -2289,6 +2290,12 @@ bus_input_context_set_capabilities (BusInputContext    *context,
                                     guint               capabilities)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    /* If the context does not support IBUS_CAP_FOCUS, then the client application have to handle all information such as
+     * preedit and auxiliary text. */
+    if ((capabilities & IBUS_CAP_FOCUS) == 0) {
+        capabilities |= (IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_AUXILIARY_TEXT | IBUS_CAP_LOOKUP_TABLE | IBUS_CAP_PROPERTY);
+    }
 
     if (context->capabilities != capabilities) {
         context->capabilities = capabilities;
