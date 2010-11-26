@@ -559,7 +559,6 @@ _context_update_property_cb (BusInputContext *context,
                                      prop);
 }
 
-#if 0
 static void
 _context_destroy_cb (BusInputContext *context,
                      BusPanelProxy   *panel)
@@ -571,7 +570,6 @@ _context_destroy_cb (BusInputContext *context,
 
     bus_panel_proxy_focus_out (panel, context);
 }
-#endif
 
 #define DEFINE_FUNCTION(name)                                   \
     static void _context_##name##_cb (BusInputContext *context, \
@@ -628,9 +626,7 @@ static const struct {
     { "disabled",                   G_CALLBACK (_context_state_changed_cb) },
     { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
-    /* FIXME re-enable this if needed.
     { "destroy",                    G_CALLBACK (_context_destroy_cb) },
-    */
 };
 
 void
