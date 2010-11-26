@@ -51,6 +51,8 @@ typedef struct _BusPanelProxyClass BusPanelProxyClass;
 
 GType            bus_panel_proxy_get_type           (void);
 BusPanelProxy   *bus_panel_proxy_new                (BusConnection      *connection);
+
+/* functions that invoke D-Bus methods of the panel component. */
 void             bus_panel_proxy_focus_in           (BusPanelProxy      *panel,
                                                      BusInputContext    *context);
 void             bus_panel_proxy_focus_out          (BusPanelProxy      *panel,

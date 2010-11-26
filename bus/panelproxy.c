@@ -23,6 +23,21 @@
 #include "types.h"
 #include "marshalers.h"
 
+/* panelproxy.c is a very simple proxy class for the panel component that does only the following:
+ *
+ * 1. Handle D-Bus signals from the panel process. For the list of the D-Bus signals, you can check the bus_panel_proxy_g_signal function, or
+ *    introspection_xml in src/ibuspanelservice.c. The bus_panel_proxy_g_signal function simply emits a corresponding glib signal for each
+ *    D-Bus signal.
+ * 2. Handle glib signals for a BusPanelProxy object (which is usually emitted by bus_panel_proxy_g_signal.) The list of such glib signals is
+ *    in the bus_panel_proxy_class_init function. The signal handler function, e.g. bus_panel_proxy_candidate_clicked, simply calls the
+ *    corresponding function in inputcontext.c, e.g. bus_input_context_candidate_clicked, using the current focused context.
+ * 3. Provide a way to call D-Bus methods in the panel process. For the list of the D-Bus methods, you can check the header file (panelproxy.h)
+ *    or introspection_xml in src/ibuspanelservice.c. Functions that calls g_dbus_proxy_call, e.g. bus_panel_proxy_set_cursor_location, would
+ *    fall into this category.
+ * 4. Handle glib signals for a BusInputContext object. The list of such glib signals is in the input_context_signals[] array. The signal handler
+ *    function, e.g. _context_set_cursor_location_cb, simply invokes a D-Bus method by calling a function like bus_panel_proxy_set_cursor_location.
+ */
+
 enum {
     PAGE_UP,
     PAGE_DOWN,
@@ -61,7 +76,6 @@ struct _BusPanelProxyClass {
 };
 
 static guint    panel_signals[LAST_SIGNAL] = { 0 };
-// static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     bus_panel_proxy_init            (BusPanelProxy          *panel);
@@ -95,10 +109,10 @@ bus_panel_proxy_new (BusConnection *connection)
     obj = g_initable_new (BUS_TYPE_PANEL_PROXY,
                           NULL,
                           NULL,
-                         "g-object-path", IBUS_PATH_PANEL,
-                         "g-interface-name", IBUS_INTERFACE_PANEL,
-                         "g-connection", bus_connection_get_dbus_connection (connection),
-                         NULL);
+                          "g-object-path", IBUS_PATH_PANEL,
+                          "g-interface-name", IBUS_INTERFACE_PANEL,
+                          "g-connection", bus_connection_get_dbus_connection (connection),
+                          NULL);
 
     return BUS_PANEL_PROXY (obj);
 }
@@ -201,7 +215,7 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
 static void
 bus_panel_proxy_init (BusPanelProxy *panel)
 {
-    panel->focused_context = NULL;
+    /* member variables will automatically be zero-cleared. */
 }
 
 static void
@@ -217,6 +231,11 @@ bus_panel_proxy_real_destroy (IBusProxy *proxy)
     IBUS_PROXY_CLASS(bus_panel_proxy_parent_class)->destroy ((IBusProxy *)panel);
 }
 
+/**
+ * bus_panel_proxy_g_signal:
+ *
+ * Handle all D-Bus signals from the panel process. This function emits a corresponding glib signal for each D-Bus signal.
+ */
 static void
 bus_panel_proxy_g_signal (GDBusProxy  *proxy,
                           const gchar *sender_name,
@@ -225,6 +244,7 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
 {
     BusPanelProxy *panel = (BusPanelProxy *)proxy;
 
+    /* The list of nullary D-Bus signals. */
     static const struct {
         const gchar *signal_name;
         const guint  signal_id;
@@ -243,6 +263,7 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
         }
     }
 
+    /* Handle D-Bus signals with parameters. Deserialize them and emit a glib signal. */
     if (g_strcmp0 ("CandidateClicked", signal_name) == 0) {
         guint index = 0;
         guint button = 0;
@@ -578,10 +599,10 @@ DEFINE_FUNCTION (state_changed)
 
 #undef DEFINE_FUNCTION
 
-static const struct _SignalCallbackTable {
+static const struct {
     gchar *name;
     GCallback callback;
-} __signals[] = {
+} input_context_signals[] = {
     { "set-cursor-location",        G_CALLBACK (_context_set_cursor_location_cb) },
 
     { "update-preedit-text",        G_CALLBACK (_context_update_preedit_text_cb) },
@@ -607,7 +628,9 @@ static const struct _SignalCallbackTable {
     { "disabled",                   G_CALLBACK (_context_state_changed_cb) },
     { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
-    //    { "destroy",                    G_CALLBACK (_context_destroy_cb) },
+    /* FIXME re-enable this if needed.
+    { "destroy",                    G_CALLBACK (_context_destroy_cb) },
+    */
 };
 
 void
@@ -636,10 +659,10 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
 
     /* install signal handlers */
     gint i;
-    for (i = 0; i < G_N_ELEMENTS (__signals); i++) {
+    for (i = 0; i < G_N_ELEMENTS (input_context_signals); i++) {
         g_signal_connect (context,
-                          __signals[i].name,
-                          __signals[i].callback,
+                          input_context_signals[i].name,
+                          input_context_signals[i].callback,
                           panel);
     }
 }
@@ -655,9 +678,9 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
 
     /* uninstall signal handlers */
     gint i;
-    for (i = 0; i < G_N_ELEMENTS (__signals); i++) {
+    for (i = 0; i < G_N_ELEMENTS (input_context_signals); i++) {
         g_signal_handlers_disconnect_by_func (context,
-                                              __signals[i].callback,
+                                              input_context_signals[i].callback,
                                               panel);
     }
 
