@@ -1937,7 +1937,11 @@ static gchar*
 bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_return_val_if_fail (IBUS_IS_CONFIG (ibus->config), NULL);
+    if (ibus->config == NULL) {
+        /* the config component is not started yet. */
+        return NULL;
+    }
+    g_assert (IBUS_IS_CONFIG (ibus->config));
 
     GVariant *variant = ibus_config_get_value (ibus->config, "general", "global_engine");
     gchar *engine_name = NULL;
@@ -1976,7 +1980,11 @@ static gchar*
 bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
 {
     g_assert (BUS_IS_IBUS_IMPL (ibus));
-    g_return_val_if_fail (IBUS_IS_CONFIG (ibus->config), NULL);
+    if (ibus->config == NULL) {
+        /* the config component is not started yet. */
+        return NULL;
+    }
+    g_assert (IBUS_IS_CONFIG (ibus->config));
 
     GVariant *value = ibus_config_get_value (ibus->config, "general", "global_previous_engine");
     if (value == NULL)
