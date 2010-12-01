@@ -858,12 +858,10 @@ _ic_property_activate (BusInputContext       *context,
     /* Global engine is always enabled in chromeos,
      * so pass PropertyActivate signal to the focused context.
      */
-    else {
-        if (context->fake &&
-            BUS_DEFAULT_IBUS->focused_context &&
-            BUS_DEFAULT_IBUS->focused_context->engine) {
-            bus_engine_proxy_property_activate (BUS_DEFAULT_IBUS->focused_context->engine, prop_name, prop_state);
-        }
+    else if (context->fake) {
+        BusInputContext *focused_context = bus_ibus_impl_get_focused_input_context (BUS_DEFAULT_IBUS);
+        if (focused_context && focused_context->engine)
+            bus_engine_proxy_property_activate (focused_context->engine, prop_name, prop_state);
     }
 #endif
 
