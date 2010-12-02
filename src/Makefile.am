@@ -141,7 +141,6 @@ ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
 ibus_privite_headers =      \
-    ibusconfigprivate.h     \
     ibusinternal.h          \
     keyname-table.h         \
     $(NULL)
