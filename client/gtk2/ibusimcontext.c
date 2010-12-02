@@ -212,7 +212,7 @@ _focus_in_cb (GtkWidget     *widget,
               GdkEventFocus *event,
               gpointer       user_data)
 {
-    if (_focus_im_context == NULL)
+    if (_focus_im_context == NULL && _fake_context != NULL)
         ibus_input_context_focus_in (_fake_context);
     return FALSE;
 }
@@ -222,7 +222,7 @@ _focus_out_cb (GtkWidget     *widget,
                GdkEventFocus *event,
                gpointer       user_data)
 {
-    if (_focus_im_context == NULL)
+    if (_focus_im_context == NULL && _fake_context != NULL)
         ibus_input_context_focus_out (_fake_context);
     return FALSE;
 }
