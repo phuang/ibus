@@ -246,21 +246,18 @@ gboolean     ibus_bus_register_component(IBusBus        *bus,
 /**
  * ibus_bus_list_engines:
  * @bus: An IBusBus.
- * @returns: (transfer full) (element-type IBusEngineDesc): A List of engines.
+ * @returns: (transfer container) (element-type IBusEngineDesc): A List of engines.
  *
  * List engines.
- * Note that this function is not yet implemented.
  */
 GList       *ibus_bus_list_engines      (IBusBus        *bus);
 
 /**
  * ibus_bus_list_active_engines:
  * @bus: An IBusBus.
- * @returns: (transfer full) (element-type IBusEngineDesc): A List of active engines.
+ * @returns: (transfer container) (element-type IBusEngineDesc): A List of active engines.
  *
  * List active engines.
- * Note that this function is not yet implemented.
- * <note><para>Not yet implemented.</para></note>
  */
 GList       *ibus_bus_list_active_engines
                                         (IBusBus        *bus);
