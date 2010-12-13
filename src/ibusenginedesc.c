@@ -214,7 +214,7 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                     PROP_RANK,
                     g_param_spec_uint ("rank",
                         "description rank",
-                        "The lank of eingine description",
+                        "The rank of engine description",
                         0,
                         G_MAXUINT,
                         0,

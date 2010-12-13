@@ -265,7 +265,7 @@ void             ibus_component_add_engine      (IBusComponent  *component,
 /**
  * ibus_component_get_engines:
  * @component: An IBusComponent.
- * @returns: (transfer none) (element-type IBusEngineDesc): A newly allocated GList that contains engines.
+ * @returns: (transfer container) (element-type IBusEngineDesc): A newly allocated GList that contains engines.
  *
  * Get the engines of this component.
  */
