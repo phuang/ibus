@@ -268,7 +268,7 @@ _key_snooper_cb (GtkWidget   *widget,
 }
 
 static void
-ibus_im_context_class_init     (IBusIMContextClass *class)
+ibus_im_context_class_init (IBusIMContextClass *class)
 {
     IDEBUG ("%s", __FUNCTION__);
 
@@ -348,7 +348,7 @@ ibus_im_context_class_init     (IBusIMContextClass *class)
     /* init bus object */
     if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
-        _bus = ibus_bus_new();
+        _bus = ibus_bus_new ();
 
         /* init the global fake context */
         if (ibus_bus_is_connected (_bus)) {
@@ -520,9 +520,16 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (_focus_im_context != NULL && _focus_im_context != context) {
-        gtk_im_context_focus_out (_focus_im_context);
-        g_assert (_focus_im_context == NULL);
+    if (_focus_im_context != NULL) {
+        if (_focus_im_context != context) {
+            gtk_im_context_focus_out (_focus_im_context);
+            g_assert (_focus_im_context == NULL);
+        }
+    }
+    else {
+        /* focus out fake context */
+        if (_fake_context)
+            ibus_input_context_focus_out (_fake_context);
     }
 
     ibusimcontext->has_focus = TRUE;
@@ -547,7 +554,6 @@ ibus_im_context_focus_out (GtkIMContext *context)
     IDEBUG ("%s", __FUNCTION__);
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
-
     if (_focus_im_context == context) {
         g_object_remove_weak_pointer ((GObject *) context,
                                       (gpointer *) &_focus_im_context);
@@ -1227,7 +1233,11 @@ _create_fake_input_context (void)
     guint32 caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS | IBUS_CAP_SURROUNDING_TEXT;
     ibus_input_context_set_capabilities (_fake_context, caps);
 
-    ibus_input_context_focus_in (_fake_context);
+    /* focus in/out the fake context */
+    if (_focus_im_context == NULL)
+        ibus_input_context_focus_in (_fake_context);
+    else
+        ibus_input_context_focus_out (_fake_context);
 }
 #else
 static void
