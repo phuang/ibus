@@ -80,6 +80,7 @@ static gboolean _use_key_snooper = ENABLE_SNOOPER;
 static guint    _key_snooper_id = 0;
 
 static GtkIMContext *_focus_im_context = NULL;
+static IBusInputContext *_fake_context = NULL;
 static GdkWindow *_input_window = NULL;
 
 /* functions prototype */
@@ -132,6 +133,9 @@ static void     _slave_delete_surrounding_cb
                                              gint               offset_from_cursor,
                                              guint              nchars,
                                              IBusIMContext       *context);
+static void     _create_fake_input_context  (void);
+
+
 
 static GType                _ibus_type_im_context = 0;
 static GtkIMContextClass    *parent_class = NULL;
@@ -213,6 +217,10 @@ _key_snooper_cb (GtkWidget   *widget,
         if (_use_key_snooper)
             ibuscontext = ibusimcontext->ibuscontext;
     }
+    else {
+        /* If no IC has focus, and fake IC has been created, then pass key events to fake IC. */
+        ibuscontext = _fake_context;
+    }
 
     if (ibuscontext == NULL)
         return FALSE;
@@ -222,6 +230,14 @@ _key_snooper_cb (GtkWidget   *widget,
 
     if (G_UNLIKELY (event->state & IBUS_IGNORED_MASK))
         return FALSE;
+
+    if (_fake_context == ibuscontext && _input_window != event->window) {
+        if (_input_window)
+            g_object_unref (_input_window);
+        if (event->window)
+            g_object_ref (event->window);
+        _input_window = event->window;
+    }
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
@@ -333,6 +349,13 @@ ibus_im_context_class_init     (IBusIMContextClass *class)
     if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
         _bus = ibus_bus_new();
+
+        /* init the global fake context */
+        if (ibus_bus_is_connected (_bus)) {
+            _create_fake_input_context ();
+        }
+
+        g_signal_connect (_bus, "connected", G_CALLBACK (_bus_connected_cb), NULL);
     }
 
 
@@ -537,6 +560,10 @@ ibus_im_context_focus_out (GtkIMContext *context)
     }
 
     gtk_im_context_focus_out (ibusimcontext->slave);
+
+    /* focus in the fake ic */
+    if (_fake_context)
+        ibus_input_context_focus_in (_fake_context);
 }
 
 static void
@@ -693,7 +720,10 @@ _bus_connected_cb (IBusBus          *bus,
                    IBusIMContext    *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
-    _create_input_context (ibusimcontext);
+    if (ibusimcontext)
+        _create_input_context (ibusimcontext);
+    else
+        _create_fake_input_context ();
 }
 
 static void
@@ -1163,3 +1193,46 @@ _slave_delete_surrounding_cb (GtkIMContext  *slave,
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);
 }
 
+#ifdef OS_CHROMEOS
+static void
+_ibus_fake_context_destroy_cb (IBusInputContext *ibuscontext,
+                               gpointer          user_data)
+{
+    /* The fack IC may be destroyed when the connection is lost.
+     * Should release it. */
+    g_assert (ibuscontext == _fake_context);
+    g_object_unref (_fake_context);
+    _fake_context = NULL;
+}
+
+static void
+_create_fake_input_context (void)
+{
+    g_return_if_fail (_fake_context == NULL);
+
+     /* Global engine is always enabled in Chrome OS,
+      * so create fake IC, and set focus if no other IC has focus.
+     */
+    _fake_context = ibus_bus_create_input_context (_bus, "fake");
+    g_return_if_fail (_fake_context != NULL);
+    g_object_ref_sink (_fake_context);
+
+    g_signal_connect (_fake_context, "forward-key-event",
+                      G_CALLBACK (_ibus_context_forward_key_event_cb),
+                      NULL);
+    g_signal_connect (_fake_context, "destroy",
+                      G_CALLBACK (_ibus_fake_context_destroy_cb),
+                      NULL);
+
+    guint32 caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS | IBUS_CAP_SURROUNDING_TEXT;
+    ibus_input_context_set_capabilities (_fake_context, caps);
+
+    ibus_input_context_focus_in (_fake_context);
+}
+#else
+static void
+_create_fake_input_context (void)
+{
+    /* For Linux desktop, do not use fake IC. */
+}
+#endif
