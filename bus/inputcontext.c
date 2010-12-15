@@ -848,7 +848,7 @@ _ic_property_activate (BusInputContext       *context,
 {
     gchar *prop_name = NULL;
     gint prop_state = 0;
-    g_variant_get (parameters, "(&su)", &prop_name, &prop_state);
+    g_variant_get (parameters, "(&si)", &prop_name, &prop_state);
 
     if (context->enabled && context->engine) {
         bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
