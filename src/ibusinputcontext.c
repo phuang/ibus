@@ -774,12 +774,12 @@ ibus_input_context_set_capabilities (IBusInputContext   *context,
 void
 ibus_input_context_property_activate (IBusInputContext *context,
                                       const gchar      *prop_name,
-                                      gint32            state)
+                                      guint32           state)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_dbus_proxy_call ((GDBusProxy *) context,
                        "PropertyActivate",                  /* method_name */
-                       g_variant_new ("(si)",
+                       g_variant_new ("(su)",
                                 prop_name, state),          /* parameters */
                        G_DBUS_CALL_FLAGS_NONE,              /* flags */
                        -1,                                  /* timeout */

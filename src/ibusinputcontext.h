@@ -196,7 +196,7 @@ void         ibus_input_context_set_capabilities
 void         ibus_input_context_property_activate
                                             (IBusInputContext *context,
                                              const gchar      *prop_name,
-                                             gint32            state);
+                                             guint32           state);
 
 /**
  * ibus_input_context_focus_in:
