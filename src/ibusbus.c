@@ -188,13 +188,10 @@ _connection_closed_cb (GDBusConnection  *connection,
 static void
 ibus_bus_connect (IBusBus *bus)
 {
-    IBusBusPrivate *priv;
-    priv = IBUS_BUS_GET_PRIVATE (bus);
-
     /* destry old connection at first */
-    if (priv->connection != NULL) {
-        ibus_object_destroy ((IBusObject *)priv->connection);
-        g_assert (priv->connection == NULL);
+    if (bus->priv->connection != NULL) {
+        g_object_unref (bus->priv->connection);
+        bus->priv->connection = NULL;
     }
 
     if (ibus_get_address () != NULL) {
@@ -217,7 +214,7 @@ ibus_bus_connect (IBusBus *bus)
 
         /* FIXME */
         #if 0
-        if (priv->watch_dbus_signal) {
+        if (bus->priv->watch_dbus_signal) {
             ibus_bus_watch_dbus_signal (bus);
         }
 
@@ -228,7 +225,7 @@ ibus_bus_connect (IBusBus *bus)
             "interface='" IBUS_INTERFACE_IBUS "'";
 
         ibus_bus_add_match (bus, rule);
-        g_signal_connect (priv->connection,
+        g_signal_connect (bus->priv->connection,
                           "ibus-signal",
                           (GCallback) _connection_ibus_signal_cb,
                           bus);
