@@ -29,7 +29,7 @@
 #include <ibus.h>
 #include "ibusimcontext.h"
 
-#if !GTK_CHECK_VERSION (2, 90, 0)
+#if !GTK_CHECK_VERSION (2, 91, 0)
 #  define DEPRECATED_GDK_KEYSYMS 1
 #endif
 
