@@ -188,8 +188,11 @@ _connection_closed_cb (GDBusConnection  *connection,
 static void
 ibus_bus_connect (IBusBus *bus)
 {
-    /* destry old connection at first */
+    /* unref the old connection at first */
     if (bus->priv->connection != NULL) {
+        g_signal_handlers_disconnect_by_func (bus->priv->connection,
+                                              G_CALLBACK (_connection_closed_cb),
+                                              bus);
         g_object_unref (bus->priv->connection);
         bus->priv->connection = NULL;
     }
