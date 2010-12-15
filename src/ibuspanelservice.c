@@ -355,8 +355,8 @@ ibus_panel_service_service_method_call (IBusService           *service,
     }
 
     if (g_strcmp0 (method_name, "SetCursorLocation") == 0) {
-        guint x, y, w, h;
-        g_variant_get (parameters, "(uuuu)", &x, &y, &w, &h);
+        gint x, y, w, h;
+        g_variant_get (parameters, "(iiii)", &x, &y, &w, &h);
         IBUS_PANEL_SERVICE_GET_CLASS (panel)->set_cursor_location (panel, x, y, w, h);
         g_dbus_method_invocation_return_value (invocation, NULL);
         return;
