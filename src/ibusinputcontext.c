@@ -826,7 +826,7 @@ ibus_input_context_is_enabled (IBusInputContext *context)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     GVariant *result;
-    GError *error;
+    GError *error = NULL;
     result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
                                      "IsEnabled",               /* method_name */
                                      NULL,                      /* parameters */
@@ -854,7 +854,7 @@ ibus_input_context_get_engine (IBusInputContext *context)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     GVariant *result;
-    GError *error;
+    GError *error = NULL;
     result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
                                      "GetEngine",               /* method_name */
                                      NULL,                      /* parameters */
