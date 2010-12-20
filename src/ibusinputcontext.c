@@ -28,9 +28,6 @@
 #include "ibuslookuptable.h"
 #include "ibusproplist.h"
 
-#define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
-
 enum {
     ENABLED,
     DISABLED,
@@ -55,15 +52,7 @@ enum {
     LAST_SIGNAL,
 };
 
-
-/* BusInputContextPriv */
-struct _IBusInputContextPrivate {
-    gboolean own;
-};
-typedef struct _IBusInputContextPrivate IBusInputContextPrivate;
-
 static guint            context_signals[LAST_SIGNAL] = { 0 };
-// static guint            context_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void     ibus_input_context_g_signal     (GDBusProxy             *proxy,
@@ -77,8 +66,6 @@ static void
 ibus_input_context_class_init (IBusInputContextClass *class)
 {
     GDBusProxyClass *g_dbus_proxy_class = G_DBUS_PROXY_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusInputContextPrivate));
 
     g_dbus_proxy_class->g_signal = ibus_input_context_g_signal;
 
@@ -447,9 +434,6 @@ ibus_input_context_class_init (IBusInputContextClass *class)
 static void
 ibus_input_context_init (IBusInputContext *context)
 {
-    IBusInputContextPrivate *priv;
-    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
-    priv->own = TRUE;
 }
 
 static void
@@ -686,7 +670,7 @@ ibus_input_context_get_input_context (const gchar        *path,
                                       GDBusConnection     *connection)
 {
     IBusInputContext *context;
-    GError *error;
+    GError *error = NULL;
 
     context = ibus_input_context_new (path, connection, NULL, &error);
     if (!context) {
@@ -695,10 +679,9 @@ ibus_input_context_get_input_context (const gchar        *path,
         return NULL;
     }
 
-    IBusInputContextPrivate *priv;
-    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
-    priv->own = FALSE;
-
+    /* Do not call "org.freedesktop.IBus.Service.Destroy" when the input
+     * context object is disposed. */
+    IBUS_PROXY (context)->own = FALSE;
     return context;
 }
 

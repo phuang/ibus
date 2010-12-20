@@ -78,6 +78,7 @@ struct _IBusProxy {
     GDBusProxy parent;
     /* instance members */
     guint32 flags;
+    gboolean own;
 };
 
 struct _IBusProxyClass {
