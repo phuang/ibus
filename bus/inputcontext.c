@@ -239,7 +239,7 @@ static const gchar introspection_xml[] =
     "    </method>"
     "    <method name='PropertyActivate'>"
     "      <arg direction='in' type='s' name='name' />"
-    "      <arg direction='in' type='i' name='state' />"
+    "      <arg direction='in' type='u' name='state' />"
     "    </method>"
     "    <method name='SetEngine'>"
     "      <arg direction='in' type='s' name='name' />"
