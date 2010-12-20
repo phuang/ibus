@@ -224,7 +224,6 @@ class InputContext(object.Object):
 
     def destroy(self):
         self.detach_signals()
-        self.__context.Destroy()
         super(InputContext, self).destroy()
 
     def get_engine(self):
