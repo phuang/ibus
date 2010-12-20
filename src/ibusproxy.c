@@ -100,6 +100,11 @@ ibus_proxy_constructed (GObject *object)
     /* FIXME add match rules? */
 }
 
+/**
+ * ibus_proxy_dispose:
+ *
+ * Override GObject's dispose function.
+ */
 static void
 ibus_proxy_dispose (GObject *object)
 {
@@ -115,6 +120,11 @@ ibus_proxy_dispose (GObject *object)
     G_OBJECT_CLASS(ibus_proxy_parent_class)->dispose (object);
 }
 
+/**
+ * ibus_proxy_real_destroy:
+ *
+ * Handle "destroy" signal which is emitted by ibus_proxy_dispose.
+ */
 static void
 ibus_proxy_real_destroy (IBusProxy *proxy)
 {

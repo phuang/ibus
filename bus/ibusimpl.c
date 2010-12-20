@@ -251,6 +251,12 @@ bus_ibus_impl_class_init (BusIBusImplClass *class)
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 }
 
+/**
+ * _panel_destroy_cb:
+ *
+ * A callback function which is called when (1) the connection to the panel process is terminated,
+ * or (2) ibus_proxy_destroy (ibus->panel); is called. See src/ibusproxy.c for details.
+ */
 static void
 _panel_destroy_cb (BusPanelProxy *panel,
                    BusIBusImpl   *ibus)
@@ -583,6 +589,12 @@ _config_value_changed_cb (IBusConfig  *config,
     }
 }
 
+/**
+ * _config_destroy_cb:
+ *
+ * A callback function which is called when (1) the connection to the config process is terminated,
+ * or (2) ibus_proxy_destroy (ibus->config); is called. See src/ibusproxy.c for details.
+ */
 static void
 _config_destroy_cb (IBusConfig  *config,
                     BusIBusImpl *ibus)
@@ -629,7 +641,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
 
             if (ibus->panel != NULL) {
                 ibus_proxy_destroy ((IBusProxy *) ibus->panel);
-                /* panel should be NULL after destroy */
+                /* panel should be NULL after destroy. See _panel_destroy_cb for details. */
                 g_assert (ibus->panel == NULL);
             }
 
@@ -655,7 +667,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
 
             if (ibus->config != NULL) {
                 ibus_proxy_destroy ((IBusProxy *) ibus->config);
-                /* config should be NULL */
+                /* config should be NULL after destroy. See _config_destroy_cb for details. */
                 g_assert (ibus->config == NULL);
             }
 

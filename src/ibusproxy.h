@@ -93,6 +93,15 @@ struct _IBusProxyClass {
 
 GType   ibus_proxy_get_type (void);
 
+/**
+ * ibus_proxy_destroy:
+ *
+ * Dispose the proxy object. If the dbus connection is alive and the own variable above
+ * is TRUE (which is the default), org.freedesktop.IBus.Service.Destroy method will be
+ * called. Note that "destroy" signal might be emitted when ibus_proxy_destroy is called
+ * or the underlying dbus connection for the proxy is terminated. In the callback of the
+ * destroy signal, you might have to call something like 'g_object_unref(the_proxy);'.
+ */
 void    ibus_proxy_destroy  (IBusProxy      *proxy);
 
 G_END_DECLS
