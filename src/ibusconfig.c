@@ -147,9 +147,15 @@ ibus_config_new (GDBusConnection  *connection,
                                "g-interface-name",  IBUS_INTERFACE_CONFIG,
                                "g-object-path",     IBUS_PATH_CONFIG,
                                NULL);
-    if (initable != NULL)
-        return IBUS_CONFIG (initable);
-    return NULL;
+    if (initable == NULL)
+        return NULL;
+
+    if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (initable)) == NULL) {
+        /* The configuration daemon, which is usually ibus-gconf, is not started yet. */
+        g_object_unref (initable);
+        return NULL;
+    }
+    return IBUS_CONFIG (initable);
 }
 
 GVariant *
