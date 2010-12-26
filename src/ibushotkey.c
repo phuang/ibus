@@ -79,6 +79,11 @@ static void          ibus_hotkey_profile_trigger    (IBusHotkeyProfile      *pro
                                                      GQuark                  event,
                                                      gpointer                user_data);
 
+// Normalize modifiers by setting necessary modifier bits according to keyval.
+static guint         normalize_modifiers            (guint                   keyval,
+                                                     guint                   modifiers);
+static gboolean      is_modifier                    (guint                   keyval);
+
 static IBusSerializableClass *parent_class = NULL;
 
 static guint profile_signals[LAST_SIGNAL] = { 0 };
@@ -346,6 +351,46 @@ ibus_hotkey_profile_trigger (IBusHotkeyProfile *profile,
     // g_debug ("%s is triggerred", g_quark_to_string (event));
 }
 
+static guint
+normalize_modifiers (guint keyval,
+                     guint modifiers)
+{
+    switch(keyval) {
+    case IBUS_Control_L:
+    case IBUS_Control_R:
+        return modifiers | IBUS_CONTROL_MASK;
+    case IBUS_Shift_L:
+    case IBUS_Shift_R:
+        return modifiers | IBUS_SHIFT_MASK;
+    case IBUS_Alt_L:
+    case IBUS_Alt_R:
+    // Chrome OS does not have Meta key. Instead, shift+alt generates Meta keyval.
+    case IBUS_Meta_L:
+    case IBUS_Meta_R:
+        return modifiers | IBUS_MOD1_MASK;
+    default:
+        return modifiers;
+    }
+}
+
+static gboolean
+is_modifier (guint keyval)
+{
+    switch(keyval) {
+    case IBUS_Control_L:
+    case IBUS_Control_R:
+    case IBUS_Shift_L:
+    case IBUS_Shift_R:
+    case IBUS_Alt_L:
+    case IBUS_Alt_R:
+    case IBUS_Meta_L:
+    case IBUS_Meta_R:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
 gboolean
 ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile *profile,
                                 guint              keyval,
@@ -355,7 +400,8 @@ ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile *profile,
     IBusHotkeyProfilePrivate *priv;
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
-    IBusHotkey *hotkey = ibus_hotkey_new (keyval, modifiers);
+    IBusHotkey *hotkey = ibus_hotkey_new (keyval,
+                                          normalize_modifiers (keyval, modifiers & priv->mask));
 
     /* has the same hotkey in profile */
     if (g_tree_lookup (priv->hotkeys, hotkey) != NULL) {
@@ -407,6 +453,8 @@ ibus_hotkey_profile_remove_hotkey (IBusHotkeyProfile *profile,
 {
     IBusHotkeyProfilePrivate *priv;
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
+
+    modifiers = normalize_modifiers (keyval, modifiers & priv->mask);
 
     IBusHotkey hotkey = {
         .keyval = keyval,
@@ -485,13 +533,35 @@ ibus_hotkey_profile_filter_key_event (IBusHotkeyProfile *profile,
     IBusHotkeyProfilePrivate *priv;
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
+    modifiers = normalize_modifiers (keyval, modifiers & priv->mask);
+    prev_modifiers = normalize_modifiers (prev_keyval, prev_modifiers & priv->mask);
+
     IBusHotkey hotkey = {
         .keyval = keyval,
-        .modifiers = modifiers & priv->mask,
+        .modifiers = modifiers,
     };
 
-    if ((modifiers & IBUS_RELEASE_MASK) && keyval != prev_keyval) {
-        return 0;
+    if (modifiers & IBUS_RELEASE_MASK) {
+        /* previous key event must be a press key event */
+        if (prev_modifiers & IBUS_RELEASE_MASK)
+            return 0;
+
+        /* modifiers should be same except the release bit */
+        if (modifiers != (prev_modifiers | IBUS_RELEASE_MASK))
+            return 0;
+
+        /* If it is release key event,
+         * we need check if keyval is equal to the prev keyval.
+         * If keyval is not equal to the prev keyval,
+         * but both keyvals are modifier keys,
+         * we will still search it in hotkeys.
+         * It is for matching some key sequences like:
+         * Shift Down, Alt Down, Shift Up => Shift+Alt+Release - Shift hotkey
+         **/
+        if ((keyval != prev_keyval) &&
+            (is_modifier (keyval) == FALSE ||
+             is_modifier (prev_keyval) == FALSE))
+            return 0;
     }
 
     GQuark event = (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
@@ -511,9 +581,11 @@ ibus_hotkey_profile_lookup_hotkey (IBusHotkeyProfile *profile,
     IBusHotkeyProfilePrivate *priv;
     priv = IBUS_HOTKEY_PROFILE_GET_PRIVATE (profile);
 
+    modifiers = normalize_modifiers (keyval, modifiers & priv->mask);
+
     IBusHotkey hotkey = {
         .keyval = keyval,
-        .modifiers = modifiers & priv->mask,
+        .modifiers = modifiers,
     };
 
     return (GQuark) GPOINTER_TO_UINT (g_tree_lookup (priv->hotkeys, &hotkey));
