@@ -656,7 +656,7 @@ ibus_input_context_new (const gchar     *path,
                                error,
                                "g-connection",      connection,
                                "g-name",            "org.freedesktop.IBus",
-                               "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                               "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                                "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
                                "g-object-path",     path,
                                NULL);
