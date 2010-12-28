@@ -578,7 +578,7 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
         guint32 keycode;
         guint32 state;
 
-        g_variant_get (parameters, 0, "(uuu)", &keyval, &keycode, &state);
+        g_variant_get (parameters, "(uuu)", &keyval, &keycode, &state);
 
         /* Forward key event back with IBUS_FORWARD_MASK. And process_key_event will
          * not process key event with IBUS_FORWARD_MASK again. */
@@ -595,7 +595,7 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
         gint offset_from_cursor;
         guint nchars;
 
-        g_variant_get (parameters, 0, "(iu)", &offset_from_cursor, &nchars);
+        g_variant_get (parameters, "(iu)", &offset_from_cursor, &nchars);
 
         g_signal_emit (context,
                        context_signals[DELETE_SURROUNDING_TEXT],
