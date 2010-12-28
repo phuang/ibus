@@ -845,9 +845,11 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
                 return message;
             case G_DBUS_MESSAGE_TYPE_SIGNAL:
-            default:
                 /* notreached - signals should not be sent to IBus service. dispatch signal messages by match rule, just in case. */
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
+                g_object_unref (message);
+                g_return_val_if_reached (NULL);  /* return NULL since the service does not handle signals. */
+            default:
                 g_object_unref (message);
                 g_return_val_if_reached (NULL);  /* return NULL since the service does not handle signals. */
             }
@@ -862,9 +864,11 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
                 return message;
             case G_DBUS_MESSAGE_TYPE_SIGNAL:
-            default:
                 /* notreached - signals should not be sent to IBus service. dispatch signal messages by match rule, just in case. */
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
+                g_object_unref (message);
+                g_return_val_if_reached (NULL);  /* return NULL since the service does not handle signals. */
+            default:
                 g_object_unref (message);
                 g_return_val_if_reached (NULL);  /* return NULL since the service does not handle signals. */
             }
@@ -874,18 +878,22 @@ bus_dbus_impl_connection_filter_cb (GDBusConnection *dbus_connection,
              * category since the panel/engine proxies created by ibus-daemon does not set bus name. */
             switch (message_type) {
             case G_DBUS_MESSAGE_TYPE_SIGNAL:
-                /* dispatch signal messages by match rule */
-                bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
-                return message;
             case G_DBUS_MESSAGE_TYPE_METHOD_RETURN:
             case G_DBUS_MESSAGE_TYPE_ERROR:
+                /* dispatch messages by match rule */
+                bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
                 return message;
             case G_DBUS_MESSAGE_TYPE_METHOD_CALL:
-            default:
-                /* notreached. dispatch messages by match rule just in case. */
+                g_warning ("Unknown method call: destination=NULL, path='%s', interface='%s', member='%s'",
+                           g_dbus_message_get_path (message),
+                           g_dbus_message_get_interface (message),
+                           g_dbus_message_get_member (message));
                 bus_dbus_impl_dispatch_message_by_rule (dbus, message, NULL);
+                return message; /* return the message, GDBus library will handle it */
+            default:
+                /* notreached. */
                 g_object_unref (message);
-                g_return_val_if_reached (NULL);  /* return NULL since the service does not handle the message. */
+                g_return_val_if_reached (NULL);  /* return NULL since the service does not handle messages. */
             }
         }
         else {
@@ -1008,6 +1016,12 @@ bus_dbus_impl_get_connection_by_name (BusDBusImpl    *dbus,
     }
 }
 
+typedef struct _BusForwardData BusForwardData;
+struct _BusForwardData {
+    GDBusMessage *message;
+    BusConnection *sender_connection;
+};
+
 /**
  * bus_dbus_impl_forward_message_ible_cb:
  *
@@ -1019,51 +1033,53 @@ bus_dbus_impl_forward_message_idle_cb (BusDBusImpl   *dbus)
     g_return_val_if_fail (dbus->forward_queue != NULL, FALSE);
 
     g_mutex_lock (dbus->forward_lock);
-    GDBusMessage *message = (GDBusMessage *) dbus->forward_queue->data;
+    BusForwardData *data = (BusForwardData *) dbus->forward_queue->data;
     dbus->forward_queue = g_list_delete_link (dbus->forward_queue, dbus->forward_queue);
     gboolean has_message = (dbus->forward_queue != NULL);
     g_mutex_unlock (dbus->forward_lock);
 
-    const gchar *destination = g_dbus_message_get_destination (message);
-    BusConnection *dest_connection = NULL;
-    if (destination != NULL)
+    do {
+        const gchar *destination = g_dbus_message_get_destination (data->message);
+        BusConnection *dest_connection = NULL;
+        if (destination != NULL)
             dest_connection = bus_dbus_impl_get_connection_by_name (dbus, destination);
-    if (dest_connection != NULL) {
-        /* FIXME workaround for gdbus. gdbus can not set an empty body message with signature '()' */
-        if (g_dbus_message_get_body (message) == NULL)
-            g_dbus_message_set_signature (message, NULL);
-        GError *error = NULL;
-        gboolean retval = g_dbus_connection_send_message (
+        if (dest_connection != NULL) {
+            /* FIXME workaround for gdbus. gdbus can not set an empty body message with signature '()' */
+            if (g_dbus_message_get_body (data->message) == NULL)
+                g_dbus_message_set_signature (data->message, NULL);
+            GError *error = NULL;
+            gboolean retval = g_dbus_connection_send_message (
                                         bus_connection_get_dbus_connection (dest_connection),
-                                        message,
+                                        data->message,
                                         G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL,
                                         NULL, &error);
-        if (!retval) {
-            g_warning ("send error failed:  %s.", error->message);
+            if (retval)
+                break;
+            g_warning ("forward message failed:  %s.", error->message);
             g_error_free (error);
         }
-    }
-    else {
-        /* FIXME What should we do, if can not get destination.
-         * It should not happen */
-#if 0
-        if (g_dbus_message_get_message_type (message) == G_DBUS_MESSAGE_TYPE_METHOD_CALL) {
-            /* reply an error message, if the destination does not exist */
-            GDBusMessage *reply_message = g_dbus_message_new_method_error (message,
+        /* can not forward message */
+        if (g_dbus_message_get_message_type (data->message) != G_DBUS_MESSAGE_TYPE_METHOD_CALL) {
+            /* skip non method messages */
+            break;
+        }
+
+        /* reply an error message, if forward method call message failed. */
+        GDBusMessage *reply_message = g_dbus_message_new_method_error (data->message,
                             "org.freedesktop.DBus.Error.ServiceUnknown ",
-                            "No service name is '%s'.", destination);
-            g_dbus_message_set_sender (reply_message, "org.freedesktop.DBus");
-            g_dbus_message_set_destination (reply_message, bus_connection_get_unique_name (connection));
-            g_dbus_connection_send_message (bus_connection_get_dbus_connection (connection),
-                            reply_message, NULL, NULL);
-            g_object_unref (reply_message);
-        }
-        else {
-            /* ignore other messages */
-        }
-#endif
-    }
-    g_object_unref (message);
+                            "The service name is '%s'.", destination);
+        g_dbus_message_set_sender (reply_message, "org.freedesktop.DBus");
+        g_dbus_message_set_destination (reply_message, bus_connection_get_unique_name (data->sender_connection));
+        g_dbus_connection_send_message (bus_connection_get_dbus_connection (data->sender_connection),
+                                        reply_message,
+                                        G_DBUS_SEND_MESSAGE_FLAGS_NONE,
+                                        NULL, NULL);
+        g_object_unref (reply_message);
+    } while (0);
+
+    g_object_unref (data->message);
+    g_object_unref (data->sender_connection);
+    g_slice_free (BusForwardData, data);
     return has_message;
 }
 
@@ -1083,10 +1099,15 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
      * dbus structure itself would not be freed (since the dbus object is ref'ed in bus_dbus_impl_new_connection.)
      * Anyway, it'd be better to investigate whether the thread safety issue could cause any real problems. */
 
+    BusForwardData *data = g_slice_new (BusForwardData);
+    data->message = g_object_ref (message);
+    data->sender_connection = g_object_ref (connection);
+
     g_mutex_lock (dbus->forward_lock);
     gboolean is_running = (dbus->forward_queue != NULL);
-    dbus->forward_queue = g_list_append (dbus->forward_queue, g_object_ref (message));
+    dbus->forward_queue = g_list_append (dbus->forward_queue, data);
     g_mutex_unlock (dbus->forward_lock);
+
     if (!is_running) {
         g_idle_add_full (G_PRIORITY_DEFAULT, (GSourceFunc) bus_dbus_impl_forward_message_idle_cb,
                         g_object_ref (dbus), (GDestroyNotify) g_object_unref);
