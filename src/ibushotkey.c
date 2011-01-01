@@ -60,12 +60,6 @@ static IBusHotkey   *ibus_hotkey_new                (guint                   key
                                                      guint                   modifiers);
 static IBusHotkey   *ibus_hotkey_copy               (const IBusHotkey       *src);
 static void          ibus_hotkey_free               (IBusHotkey             *hotkey);
-/*
-static gboolean      ibus_hotkey_serialize          (IBusHotkey             *hotkey,
-                                                     IBusMessageIter        *iter);
-static gboolean      ibus_hotkey_deserialize        (IBusHotkey             *hotkey,
-                                                     IBusMessageIter        *iter);
-*/
 static void          ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *class);
 static void          ibus_hotkey_profile_init       (IBusHotkeyProfile      *profile);
 static void          ibus_hotkey_profile_destroy    (IBusHotkeyProfile      *profile);
@@ -101,40 +95,6 @@ ibus_hotkey_get_type (void)
 
     return type;
 }
-
-/*
-static gboolean
-ibus_hotkey_serialize (IBusHotkey      *hotkey,
-                       IBusMessageIter *iter)
-{
-    gboolean retval;
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &hotkey->keyval);
-    g_return_val_if_fail (retval, FALSE);
-
-    retval = ibus_message_iter_append (iter, G_TYPE_UINT, &hotkey->modifiers);
-    g_return_val_if_fail (retval, FALSE);
-
-    return TRUE;
-}
-
-static gboolean
-ibus_hotkey_deserialize (IBusHotkey      *hotkey,
-                         IBusMessageIter *iter)
-{
-    gboolean retval;
-
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &hotkey->keyval);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    retval = ibus_message_iter_get (iter, G_TYPE_UINT, &hotkey->modifiers);
-    g_return_val_if_fail (retval, FALSE);
-    ibus_message_iter_next (iter);
-
-    return TRUE;
-}
-*/
 
 static IBusHotkey *
 ibus_hotkey_new (guint keyval,
@@ -265,6 +225,8 @@ ibus_hotkey_profile_init (IBusHotkeyProfile *profile)
     priv->mask = IBUS_SHIFT_MASK |
                  IBUS_CONTROL_MASK |
                  IBUS_MOD1_MASK |
+                 IBUS_SUPER_MASK |
+                 IBUS_HYPER_MASK |
                  IBUS_RELEASE_MASK;
 }
 
@@ -368,6 +330,12 @@ normalize_modifiers (guint keyval,
     case IBUS_Meta_L:
     case IBUS_Meta_R:
         return modifiers | IBUS_MOD1_MASK;
+    case IBUS_Super_L:
+    case IBUS_Super_R:
+        return modifiers | IBUS_SUPER_MASK;
+    case IBUS_Hyper_L:
+    case IBUS_Hyper_R:
+        return modifiers | IBUS_HYPER_MASK;
     default:
         return modifiers;
     }
@@ -385,6 +353,10 @@ is_modifier (guint keyval)
     case IBUS_Alt_R:
     case IBUS_Meta_L:
     case IBUS_Meta_R:
+    case IBUS_Super_L:
+    case IBUS_Super_R:
+    case IBUS_Hyper_L:
+    case IBUS_Hyper_R:
         return TRUE;
     default:
         return FALSE;

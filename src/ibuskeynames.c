@@ -116,7 +116,7 @@ modifier_name[] = {
     NULL, NULL, NULL, NULL, NULL, // 13 - 17
     NULL, NULL, NULL, NULL, NULL, // 18 - 22
     NULL, NULL, NULL, // 23 - 25
-    "Supper",	// 26
+    "Super",	// 26
     "Hyper",	// 27
     "Meta",		// 28
     NULL,		// 29
