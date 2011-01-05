@@ -680,9 +680,11 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
                                            NULL,
                                            /* The following properties are necessary to initialize GDBusProxy object
                                             * which is a parent of the config object. */
-                                           "g-object-path", IBUS_PATH_CONFIG,
-                                           "g-interface-name", IBUS_INTERFACE_CONFIG,
-                                           "g-connection", bus_connection_get_dbus_connection (connection),
+                                           "g-connection",      bus_connection_get_dbus_connection (connection),
+                                           "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                           "g-interface-name",  IBUS_INTERFACE_CONFIG,
+                                           "g-object-path",     IBUS_PATH_CONFIG,
+                                           "g-default-timeout", g_gdbus_timeout,
                                            NULL);
 
             g_signal_connect (ibus->config,
@@ -1037,7 +1039,7 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
 {
     bus_input_context_set_engine_by_desc (context,
                                           desc,
-                                          5000, /* timeout in msec. */
+                                          g_gdbus_timeout, /* timeout in msec. */
                                           NULL, /* we do not cancel the call. */
                                           NULL, /* use the default callback function. */
                                           NULL);
@@ -1660,7 +1662,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
 
     bus_input_context_set_engine_by_desc (context,
                                           desc,
-                                          5000, /* timeout in msec. */
+                                          g_gdbus_timeout, /* timeout in msec. */
                                           NULL, /* we do not cancel the call. */
                                           (GAsyncReadyCallback) _ibus_set_global_engine_ready_cb,
                                           invocation);

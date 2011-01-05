@@ -2175,6 +2175,7 @@ bus_input_context_set_engine_by_desc (BusInputContext    *context,
     /* We can cancel the bus_engine_proxy_new call by calling g_cancellable_cancel() for context->cancellable;
      * See the first part of this function and new_engine_cancelled_cb(). */
     bus_engine_proxy_new (desc,
+                          timeout,
                           context->cancellable,
                           (GAsyncReadyCallback) new_engine_cb,
                           context);

@@ -54,11 +54,13 @@ GType            bus_engine_proxy_get_type          (void);
 /**
  * bus_engine_proxy_new:
  * @desc: the engine to create.
+ * @timeout: timeout in msec, or -1 to use the default timeout value.
  * @cancellable: a object that could be used to cancel the operation.
  * @callback: a function to be called when the method invocation is done.
  * @user_data: a pointer that will be passed to the callback.
  */
 void             bus_engine_proxy_new               (IBusEngineDesc        *desc,
+                                                     gint                   timeout,
                                                      GCancellable          *cancellable,
                                                      GAsyncReadyCallback    callback,
                                                      gpointer               user_data);

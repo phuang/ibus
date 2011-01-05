@@ -48,7 +48,7 @@ gchar *g_address = "unix:tmpdir=/tmp";
 gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
-gint   g_dbus_timeout = 5000;
+gint   g_gdbus_timeout = 5000;
 #ifdef G_THREADS_ENABLED
 gint   g_monitor_timeout = 0;
 #endif
@@ -72,7 +72,7 @@ static const GOptionEntry entries[] =
     { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
-    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_dbus_timeout, "dbus reply timeout in milliseconds.", "timeout [default is 2000]" },
+    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_gdbus_timeout, "gdbus reply timeout in milliseconds. pass -1 to use the default timeout of gdbus.", "timeout [default is 5000]" },
 #ifdef G_THREADS_ENABLED
     { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
 #endif
@@ -188,6 +188,10 @@ main (gint argc, gchar **argv)
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_printerr ("Option parsing failed: %s\n", error->message);
 	g_error_free (error);
+        exit (-1);
+    }
+    if (g_gdbus_timeout < -1) {
+        g_printerr ("Bad timeout (must be >= -1): %d\n", g_gdbus_timeout);
         exit (-1);
     }
 

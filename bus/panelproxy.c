@@ -22,6 +22,7 @@
 #include "panelproxy.h"
 #include "types.h"
 #include "marshalers.h"
+#include "option.h"
 
 /* panelproxy.c is a very simple proxy class for the panel component that does only the following:
  *
@@ -109,9 +110,10 @@ bus_panel_proxy_new (BusConnection *connection)
     obj = g_initable_new (BUS_TYPE_PANEL_PROXY,
                           NULL,
                           NULL,
-                          "g-object-path", IBUS_PATH_PANEL,
-                          "g-interface-name", IBUS_INTERFACE_PANEL,
-                          "g-connection", bus_connection_get_dbus_connection (connection),
+                          "g-object-path",     IBUS_PATH_PANEL,
+                          "g-interface-name",  IBUS_INTERFACE_PANEL,
+                          "g-connection",      bus_connection_get_dbus_connection (connection),
+                          "g-default-timeout", g_gdbus_timeout,
                           NULL);
 
     return BUS_PANEL_PROXY (obj);

@@ -579,10 +579,11 @@ bus_engine_proxy_new_internal (const gchar     *path,
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
                                            NULL,
-                                           "desc",             desc,
-                                           "g-connection",     connection,
-                                           "g-interface-name", IBUS_INTERFACE_ENGINE,
-                                           "g-object-path",    path,
+                                           "desc",              desc,
+                                           "g-connection",      connection,
+                                           "g-interface-name",  IBUS_INTERFACE_ENGINE,
+                                           "g-object-path",     path,
+                                           "g-default-timeout", g_gdbus_timeout,
                                            NULL);
     const gchar *layout = ibus_engine_desc_get_layout (desc);
     if (layout != NULL && layout[0] != '\0') {
@@ -661,7 +662,7 @@ notify_factory_cb (BusComponent       *component,
     g_object_ref (data->factory);
     bus_factory_proxy_create_engine (data->factory,
                                      data->desc,
-                                     5000,
+                                     g_gdbus_timeout,
                                      data->cancellable,
                                      (GAsyncReadyCallback) create_engine_ready_cb,
                                      data);
@@ -706,6 +707,7 @@ cancelled_cb (GCancellable       *cancellable,
 
 void
 bus_engine_proxy_new (IBusEngineDesc      *desc,
+                      gint                 timeout,
                       GCancellable        *cancellable,
                       GAsyncReadyCallback  callback,
                       gpointer             user_data)
@@ -752,7 +754,7 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
         g_object_ref (data->factory);
         bus_factory_proxy_create_engine (data->factory,
                                          data->desc,
-                                         5000,
+                                         timeout,
                                          cancellable,
                                          (GAsyncReadyCallback) create_engine_ready_cb,
                                          data);
