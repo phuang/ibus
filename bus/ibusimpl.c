@@ -946,8 +946,15 @@ _context_request_engine_cb (BusInputContext *context,
             else if (ibus->engine_list) {
                 desc = (IBusEngineDesc *) ibus->engine_list->data;
             }
-         }
-        g_return_if_fail (desc != NULL);
+        }
+        if (!desc) {
+            /* no engine is available. the user hasn't ran ibus-setup yet and
+             * the bus_ibus_impl_set_default_preload_engines() function could
+             * not find any default engines. another possiblity is that the
+             * user hasn't installed an engine yet? just give up. */
+            g_warning ("No engine is available. Run ibus-setup first.");
+            return;
+        }
     }
 
     bus_ibus_impl_set_context_engine_from_desc (ibus, context, desc);
