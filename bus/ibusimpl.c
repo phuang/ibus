@@ -310,6 +310,7 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
 #ifndef OS_CHROMEOS
     else {
         /* set default trigger */
+        ibus_hotkey_profile_remove_hotkey_by_event (ibus->hotkey_profile, hotkey);
         ibus_hotkey_profile_add_hotkey (ibus->hotkey_profile,
                                         IBUS_space,
                                         IBUS_CONTROL_MASK,
