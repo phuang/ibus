@@ -519,8 +519,18 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
         if (ibus_engine_desc_get_rank (desc) > 0)
             g_variant_builder_add (&builder, "s", ibus_engine_desc_get_name (desc));
     }
-    ibus_config_set_value (ibus->config,
-                    "general", "preload_engines", g_variant_builder_end (&builder));
+
+    GVariant *value = g_variant_builder_end (&builder);
+    if (value != NULL) {
+        if (g_variant_n_children (value) > 0) {
+            ibus_config_set_value (ibus->config,
+                                   "general", "preload_engines", value);
+        } else {
+            /* We don't update preload_engines with an empty string for safety.
+             * Just unref the floating value. */
+            g_variant_unref (value);
+        }
+    }
     g_list_free (engines);
 }
 
