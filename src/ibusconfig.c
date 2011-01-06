@@ -146,6 +146,7 @@ ibus_config_new (GDBusConnection  *connection,
                                "g-name",            IBUS_SERVICE_CONFIG,
                                "g-interface-name",  IBUS_INTERFACE_CONFIG,
                                "g-object-path",     IBUS_PATH_CONFIG,
+                               "g-default-timeout", ibus_get_timeout (),
                                NULL);
     if (initable == NULL)
         return NULL;

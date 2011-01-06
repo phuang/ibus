@@ -912,7 +912,7 @@ ibus_bus_call (IBusBus            *bus,
                                           parameters,
                                           reply_type,
                                           G_DBUS_CALL_FLAGS_NO_AUTO_START,
-                                          -1,
+                                          ibus_get_timeout (),
                                           NULL,
                                           &error);
 

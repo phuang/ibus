@@ -194,6 +194,27 @@ ibus_get_socket_path (void)
     return path;
 }
 
+gint
+ibus_get_timeout (void)
+{
+    /* 6000 ms is the default timeout on the ibus-daemon side (5 sec) plus 1. */
+    static const gint default_timeout = 6000;
+
+    static gint64 timeout = -2;
+    if (timeout == -2) {
+        const gchar *timeout_str = g_getenv ("IBUS_TIMEOUT");
+        if (timeout_str == NULL) {
+            timeout = default_timeout;
+        } else {
+            timeout = g_ascii_strtoll(timeout_str, NULL, 10);
+            if (timeout < -1 || timeout == 0 || timeout > G_MAXINT) {
+                timeout = default_timeout;
+            }
+        }
+    }
+    return timeout;
+}
+
 const gchar *
 ibus_get_address (void)
 {
@@ -208,7 +229,7 @@ ibus_get_address (void)
         address = NULL;
     }
 
-    /* get address from evn variable */
+    /* get address from env variable */
     address = g_strdup (g_getenv ("IBUS_ADDRESS"));
     if (address) {
         return address;

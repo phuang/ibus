@@ -659,6 +659,7 @@ ibus_input_context_new (const gchar     *path,
                                "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                                "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
                                "g-object-path",     path,
+                               "g-default-timeout", ibus_get_timeout (),
                                NULL);
     if (initable != NULL)
         return IBUS_INPUT_CONTEXT (initable);

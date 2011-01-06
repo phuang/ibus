@@ -240,6 +240,15 @@ glong            ibus_get_daemon_uid    (void) G_GNUC_DEPRECATED;
 const gchar     *ibus_get_socket_path   (void);
 
 /**
+ * ibus_get_timeout:
+ * @returns: A GDBus timeout in milliseconds. -1 when default timeout for GDBus should be used.
+ *
+ * Get the GDBus timeout in milliseconds. The timeout is for clients (e.g. im-ibus.so), not for ibus-daemon.
+ * Note that the timeout for ibus-daemon could be set by --timeout command line option of the daemon.
+ */
+gint             ibus_get_timeout       (void);
+
+/**
  * ibus_keyval_name:
  * @keyval: Key symbol.
  * @returns: Corresponding key name. %NULL if no such key symbol.
