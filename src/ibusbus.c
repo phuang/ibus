@@ -911,7 +911,7 @@ ibus_bus_call (IBusBus            *bus,
                                           member,
                                           parameters,
                                           reply_type,
-                                          G_DBUS_CALL_FLAGS_NONE,
+                                          G_DBUS_CALL_FLAGS_NO_AUTO_START,
                                           -1,
                                           NULL,
                                           &error);
