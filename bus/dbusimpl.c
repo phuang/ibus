@@ -419,7 +419,7 @@ bus_dbus_impl_get_name_owner (BusDBusImpl           *dbus,
 
     if (g_strcmp0 (name, "org.freedesktop.DBus") == 0 ||
         g_strcmp0 (name, "org.freedesktop.IBus") == 0) {
-        name_owner = "org.freedesktop.DBus";
+        name_owner = name;
     }
     else {
         BusConnection *owner = bus_dbus_impl_get_connection_by_name (dbus, name);

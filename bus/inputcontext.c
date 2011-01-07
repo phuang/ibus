@@ -645,7 +645,7 @@ bus_input_context_emit_signal (BusInputContext *context,
     GDBusMessage *message = g_dbus_message_new_signal (ibus_service_get_object_path ((IBusService *)context),
                                                        "org.freedesktop.IBus.InputContext",
                                                        signal_name);
-    g_dbus_message_set_sender (message, "org.freedesktop.DBus");
+    g_dbus_message_set_sender (message, "org.freedesktop.IBus");
     g_dbus_message_set_destination (message, bus_connection_get_unique_name (context->connection));
     if (parameters != NULL)
         g_dbus_message_set_body (message, parameters);

@@ -1834,9 +1834,9 @@ bus_ibus_impl_emit_signal (BusIBusImpl *ibus,
 {
 
     GDBusMessage *message = g_dbus_message_new_signal ("/org/freedesktop/IBus",
-                                                       "org.freedesktop.DBus",
+                                                       "org.freedesktop.IBus",
                                                        signal_name);
-    g_dbus_message_set_sender (message, "org.freedesktop.DBus");
+    g_dbus_message_set_sender (message, "org.freedesktop.IBus");
     if (parameters)
         g_dbus_message_set_body (message, parameters);
     bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, message, NULL);
