@@ -199,10 +199,11 @@ gchar       *ibus_bus_get_name_owner    (IBusBus        *bus,
  * ibus_bus_exit:
  * @bus: An IBusBus.
  * @restart: Whether restarting the ibus.
+ * @returns: TRUE if the "Exit" call is suceeded, FALSE otherwise.
  *
  * Exit or restart an IBusBus.
  */
-void        ibus_bus_exit              (IBusBus        *bus,
+gboolean     ibus_bus_exit              (IBusBus        *bus,
                                          gboolean        restart);
 
 /**

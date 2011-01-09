@@ -657,7 +657,7 @@ ibus_bus_get_connection (IBusBus *bus)
     return bus->priv->connection;
 }
 
-void
+gboolean
 ibus_bus_exit (IBusBus *bus,
                gboolean restart)
 {
@@ -674,7 +674,9 @@ ibus_bus_exit (IBusBus *bus,
 
     if (result) {
         g_variant_unref (result);
+        return TRUE;
     }
+    return FALSE;
 }
 
 gboolean
