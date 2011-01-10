@@ -696,9 +696,9 @@ ibus_bus_register_component (IBusBus       *bus,
                                       NULL);
     if (result) {
         g_variant_unref (result);
-        return FALSE;
+        return TRUE;
     }
-    return TRUE;
+    return FALSE;
 }
 
 static GList *
@@ -886,9 +886,9 @@ ibus_bus_set_global_engine (IBusBus     *bus,
 
     if (result) {
         g_variant_unref (result);
+        return TRUE;
     }
-
-    return TRUE;
+    return FALSE;
 }
 
 static GVariant *
