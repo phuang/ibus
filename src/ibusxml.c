@@ -176,7 +176,7 @@ static GMarkupParser parser = {
 XMLNode *
 ibus_xml_parse_file (const gchar *filename)
 {
-    gboolean retval;
+    gboolean retval = FALSE;
     GError *error = NULL;
     FILE *pf = fopen (filename, "r");
 
