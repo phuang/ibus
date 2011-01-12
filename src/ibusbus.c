@@ -661,7 +661,7 @@ gboolean
 ibus_bus_exit (IBusBus *bus,
                gboolean restart)
 {
-    g_return_if_fail (IBUS_IS_BUS (bus));
+    g_return_val_if_fail (IBUS_IS_BUS (bus), FALSE);
 
     GVariant *result;
     result = ibus_bus_call (bus,
