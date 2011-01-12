@@ -336,6 +336,7 @@ bus_registry_save_cache (BusRegistry *registry)
     GString *output;
     GList *p;
     FILE *pf;
+    size_t items = 0;
 
     cachedir = g_build_filename (g_get_user_cache_dir (), "ibus", "bus", NULL);
     filename = g_build_filename (cachedir, "registry.xml", NULL);
@@ -379,10 +380,10 @@ bus_registry_save_cache (BusRegistry *registry)
     }
 
     g_string_append (output, "</ibus-registry>\n");
-    fwrite (output->str, output->len, 1, pf);
+    items = fwrite (output->str, output->len, 1, pf);
     g_string_free (output, TRUE);
     fclose (pf);
-    return TRUE;
+    return (items == 1 ? TRUE : FALSE);
 }
 
 /**
