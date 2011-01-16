@@ -114,6 +114,7 @@ bus_panel_proxy_new (BusConnection *connection)
                           "g-interface-name",  IBUS_INTERFACE_PANEL,
                           "g-connection",      bus_connection_get_dbus_connection (connection),
                           "g-default-timeout", g_gdbus_timeout,
+                          "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                           NULL);
 
     return BUS_PANEL_PROXY (obj);

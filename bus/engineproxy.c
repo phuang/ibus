@@ -584,6 +584,7 @@ bus_engine_proxy_new_internal (const gchar     *path,
                                            "g-interface-name",  IBUS_INTERFACE_ENGINE,
                                            "g-object-path",     path,
                                            "g-default-timeout", g_gdbus_timeout,
+                                           "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                                            NULL);
     const gchar *layout = ibus_engine_desc_get_layout (desc);
     if (layout != NULL && layout[0] != '\0') {
