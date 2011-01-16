@@ -146,7 +146,7 @@ DEFAULT_ASYNC_HANDLERS = {
 
 CONFIG_GENERAL_SHORTCUT_TRIGGER     = "/general/keyboard_shortcut_trigger"
 CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT = [
-    "Ctrl+space",
+    "Control+space",
     "Zenkaku_Hankaku",
     "Hangul"]
 CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE = "/general/keyboard_shortcut_next_engine"
