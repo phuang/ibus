@@ -1832,10 +1832,12 @@ bus_ibus_impl_emit_signal (BusIBusImpl *ibus,
                            const gchar *signal_name,
                            GVariant    *parameters)
 {
-
+    static guint32 serial = 0;
     GDBusMessage *message = g_dbus_message_new_signal ("/org/freedesktop/IBus",
                                                        "org.freedesktop.IBus",
                                                        signal_name);
+    /* set a non-zero serial to make libdbus happy */
+    g_dbus_message_set_serial (message, ++serial);
     g_dbus_message_set_sender (message, "org.freedesktop.IBus");
     if (parameters)
         g_dbus_message_set_body (message, parameters);
