@@ -906,8 +906,10 @@ ibus_bus_get_global_engine (IBusBus *bus)
     if (result) {
         GVariant *variant = NULL;
         g_variant_get (result, "(v)", &variant);
-        engine = IBUS_ENGINE_DESC (ibus_serializable_deserialize (variant));
-        g_variant_unref (variant);
+        if (variant) {
+            engine = IBUS_ENGINE_DESC (ibus_serializable_deserialize (variant));
+            g_variant_unref (variant);
+        }
         g_variant_unref (result);
     }
 
