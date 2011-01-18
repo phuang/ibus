@@ -459,6 +459,7 @@ bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
     }
 }
 
+#ifndef OS_CHROMEOS
 static gint
 _engine_desc_cmp (IBusEngineDesc *desc1,
                   IBusEngineDesc *desc2)
@@ -466,6 +467,7 @@ _engine_desc_cmp (IBusEngineDesc *desc1,
     return - ((gint) ibus_engine_desc_get_rank (desc1)) +
               ((gint) ibus_engine_desc_get_rank (desc2));
 }
+#endif
 
 /**
  * bus_ibus_impl_set_default_preload_engines:
@@ -475,6 +477,7 @@ _engine_desc_cmp (IBusEngineDesc *desc1,
 static void
 bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
 {
+#ifndef OS_CHROMEOS
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
     static gboolean done = FALSE;
@@ -532,6 +535,7 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
         }
     }
     g_list_free (engines);
+#endif
 }
 
 /* The list of config entries that are related to ibus-daemon. */
