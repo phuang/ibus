@@ -53,6 +53,8 @@ struct _IBusBusPrivate {
     GFileMonitor *monitor;
     GDBusConnection *connection;
     gboolean watch_dbus_signal;
+    gboolean watch_ibus_signal;
+    guint watch_ibus_signal_id;
     IBusConfig *config;
     gchar *unique_name;
 };
@@ -68,6 +70,8 @@ static GObject  *ibus_bus_constructor           (GType                   type,
 static void      ibus_bus_destroy               (IBusObject             *object);
 static void      ibus_bus_watch_dbus_signal     (IBusBus                *bus);
 static void      ibus_bus_unwatch_dbus_signal   (IBusBus                *bus);
+static void      ibus_bus_watch_ibus_signal     (IBusBus                *bus);
+static void      ibus_bus_unwatch_ibus_signal   (IBusBus                *bus);
 static GVariant *ibus_bus_call                  (IBusBus                *bus,
                                                  const gchar            *service,
                                                  const gchar            *path,
@@ -142,20 +146,24 @@ ibus_bus_class_init (IBusBusClass *class)
     g_type_class_add_private (class, sizeof (IBusBusPrivate));
 }
 
-#if 0
-static gboolean
+static void
 _connection_ibus_signal_cb (GDBusConnection *connection,
-                            IBusMessage    *message,
-                            IBusBus        *bus)
+                            const gchar *sender_name,
+                            const gchar *object_path,
+                            const gchar *interface_name,
+                            const gchar *signal_name,
+                            GVariant *parameters,
+                            gpointer user_data)
 {
-    if (ibus_message_is_signal (message, IBUS_INTERFACE_IBUS,
-                                "GlobalEngineChanged")) {
-        g_signal_emit (bus, bus_signals[GLOBAL_ENGINE_CHANGED], 0);
-        return TRUE;
+    g_return_if_fail (user_data != NULL);
+    g_return_if_fail (IBUS_IS_BUS (user_data));
+
+    if (g_strcmp0 (signal_name, "GlobalEngineChanged") == 0) {
+        g_signal_emit (IBUS_BUS (user_data),
+                       bus_signals[GLOBAL_ENGINE_CHANGED], 0);
     }
-    return FALSE;
+    /* FIXME handle org.freedesktop.IBus.RegistryChanged signal if needed */
 }
-#endif
 
 static void
 _connection_closed_cb (GDBusConnection  *connection,
@@ -171,16 +179,13 @@ _connection_closed_cb (GDBusConnection  *connection,
     g_signal_handlers_disconnect_by_func (bus->priv->connection,
                                           G_CALLBACK (_connection_closed_cb),
                                           bus);
-#if 0
-    g_signal_handlers_disconnect_by_func (bus->priv->connection,
-                                          G_CALLBACK (_connection_ibus_signal_cb),
-                                          bus);
-#endif
     g_object_unref (bus->priv->connection);
     bus->priv->connection = NULL;
 
     g_free (bus->priv->unique_name);
     bus->priv->unique_name = NULL;
+
+    bus->priv->watch_ibus_signal_id = 0;
 
     g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
 }
@@ -215,24 +220,12 @@ ibus_bus_connect (IBusBus *bus)
                           bus);
         g_signal_emit (bus, bus_signals[CONNECTED], 0);
 
-        /* FIXME */
-        #if 0
         if (bus->priv->watch_dbus_signal) {
             ibus_bus_watch_dbus_signal (bus);
         }
-
-        /** Watch ibus signals. */
-        const gchar *rule =
-            "type='signal',"
-            "path='" IBUS_PATH_IBUS "',"
-            "interface='" IBUS_INTERFACE_IBUS "'";
-
-        ibus_bus_add_match (bus, rule);
-        g_signal_connect (bus->priv->connection,
-                          "ibus-signal",
-                          (GCallback) _connection_ibus_signal_cb,
-                          bus);
-        #endif
+        if (bus->priv->watch_ibus_signal) {
+            ibus_bus_watch_ibus_signal (bus);
+        }
     }
 }
 
@@ -266,6 +259,8 @@ ibus_bus_init (IBusBus *bus)
     bus->priv->config = NULL;
     bus->priv->connection = NULL;
     bus->priv->watch_dbus_signal = FALSE;
+    bus->priv->watch_ibus_signal = FALSE;
+    bus->priv->watch_ibus_signal_id = 0;
     bus->priv->unique_name = NULL;
 
     path = g_path_get_dirname (ibus_get_socket_path ());
@@ -462,6 +457,56 @@ ibus_bus_set_watch_dbus_signal (IBusBus        *bus,
         }
         else {
             ibus_bus_unwatch_dbus_signal (bus);
+        }
+    }
+}
+
+static void
+ibus_bus_watch_ibus_signal (IBusBus *bus)
+{
+    g_return_if_fail (bus->priv->connection != NULL);
+    g_return_if_fail (bus->priv->watch_ibus_signal_id == 0);
+
+    /* Subscribe to ibus signals such as GlboalEngineChanged. */
+    bus->priv->watch_ibus_signal_id
+        = g_dbus_connection_signal_subscribe (bus->priv->connection,
+                                              "org.freedesktop.IBus",
+                                              IBUS_INTERFACE_IBUS,
+                                              NULL /* member */,
+                                              IBUS_PATH_IBUS,
+                                              NULL /* arg0 */,
+                                              (GDBusSignalFlags) 0,
+                                              _connection_ibus_signal_cb,
+                                              bus,
+                                              NULL /* user_data_free_func */);
+}
+
+static void
+ibus_bus_unwatch_ibus_signal (IBusBus *bus)
+{
+    g_return_if_fail (bus->priv->watch_ibus_signal_id != 0);
+    g_dbus_connection_signal_unsubscribe (bus->priv->connection,
+                                          bus->priv->watch_ibus_signal_id);
+    bus->priv->watch_ibus_signal_id = 0;
+}
+
+void
+ibus_bus_set_watch_ibus_signal (IBusBus        *bus,
+                                gboolean        watch)
+{
+    g_return_if_fail (IBUS_IS_BUS (bus));
+
+    if (bus->priv->watch_ibus_signal == watch)
+        return;
+
+    bus->priv->watch_ibus_signal = watch;
+
+    if (ibus_bus_is_connected (bus)) {
+        if (watch) {
+            ibus_bus_watch_ibus_signal (bus);
+        }
+        else {
+            ibus_bus_unwatch_ibus_signal (bus);
         }
     }
 }

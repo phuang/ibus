@@ -315,6 +315,18 @@ IBusEngineDesc
 gboolean     ibus_bus_set_global_engine (IBusBus        *bus,
                                          const gchar    *global_engine);
 
+/**
+ * ibus_bus_set_watch_ibus_signal:
+ * @bus: An IBusBus.
+ * @watch: TRUE if you want ibusbus to emit "global-engine-changed" signal when
+ * ibus-daemon emits the GlobalEngineChanged IBus signal.
+ *
+ * Start or stop watching the GlobalEngineChanged IBus signal.
+ */
+void         ibus_bus_set_watch_ibus_signal
+                                        (IBusBus        *bus,
+                                         gboolean        watch);
+
 /* declare config apis */
 /**
  * ibus_bus_get_config:
@@ -323,7 +335,7 @@ gboolean     ibus_bus_set_global_engine (IBusBus        *bus,
  *
  * Get the config instance from IBusBus.
  */
- IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
+IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
 
 G_END_DECLS
 #endif
