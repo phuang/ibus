@@ -331,7 +331,8 @@ void         ibus_bus_set_watch_ibus_signal
 /**
  * ibus_bus_get_config:
  * @bus: An IBusBus.
- * @returns: An newly allocated IBusConfig which is configurable with @bus.
+ * @returns: (transfer none): An IBusConfig object which is configurable with
+ * @bus.
  *
  * Get the config instance from IBusBus.
  */

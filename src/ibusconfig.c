@@ -156,6 +156,10 @@ ibus_config_new (GDBusConnection  *connection,
         g_object_unref (initable);
         return NULL;
     }
+
+    /* clients should not destroy the config service. */
+    IBUS_PROXY (initable)->own = FALSE;
+
     return IBUS_CONFIG (initable);
 }
 
