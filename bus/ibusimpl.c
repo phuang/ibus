@@ -583,6 +583,23 @@ bus_ibus_impl_reload_config (BusIBusImpl *ibus)
     }
 }
 
+struct _SetValueData {
+    void (* func) (BusIBusImpl *, GVariant *);
+    BusIBusImpl *ibus;
+    GVariant *value;
+};
+typedef struct _SetValueData SetValueData;
+
+static gboolean
+_set_value_in_idle_cb (SetValueData *data)
+{
+    data->func (data->ibus, data->value);
+    g_object_unref (data->ibus);
+    g_variant_unref (data->value);
+    g_slice_free (SetValueData, data);
+    return FALSE;
+}
+
 /**
  * _config_value_changed_cb:
  *
@@ -605,7 +622,16 @@ _config_value_changed_cb (IBusConfig  *config,
     for (i = 0; i < G_N_ELEMENTS (bus_ibus_impl_config_items); i++) {
         if (g_strcmp0 (bus_ibus_impl_config_items[i].section, section) == 0 &&
             g_strcmp0 (bus_ibus_impl_config_items[i].key, key) == 0) {
-            bus_ibus_impl_config_items[i].func (ibus, value);
+            SetValueData *data = g_slice_new0 (SetValueData);
+
+            data->func = bus_ibus_impl_config_items[i].func;
+            data->ibus = g_object_ref (ibus);
+            data->value = g_variant_ref_sink (value);
+
+            /* Avoid blocking the connection with config process,
+             * we will use idle callback to delay the set function call.
+             */
+            g_idle_add ((GSourceFunc) _set_value_in_idle_cb, data);
             break;
         }
     }
@@ -1561,6 +1587,32 @@ _ibus_list_engines (BusIBusImpl           *ibus,
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
 }
 
+static void
+_reload_preload_engines (BusIBusImpl     *ibus)
+{
+    // Chrome for Chrome OS sometimes calls set_global_engine and
+    // list_active_engine APIs right after updating preload_engines. In this
+    // case, if _ibus_set_global_engine function is called before
+    // _config_value_changed_cb is called, _ibus_set_global_engine would fail
+    // with the "Invalid engine name" error. The same is true for the list
+    // active engines API -- the function might return an obsolete list.
+    // To resolve the issues, this function force to update ibus->engine_list by
+    // fetching the latest config from the config daemon.
+    //
+    // Note that this is NOT a perfect solution. e.g. other functions that calls
+    // _find_engine_desc_by_name might still fail. We might also have to do the
+    // same for other config keys like "use_global_engine". So, for now, we use
+    // this hack only on Chrome OS.
+    if (ibus->config == NULL)
+        return;
+    GVariant *value = ibus_config_get_value (ibus->config,
+                                             "general", "preload_engines");
+    if (value) {
+        bus_ibus_impl_set_preload_engines (ibus, value);
+        g_variant_unref (value);
+    }
+}
+
 /**
  * _ibus_list_active_engines:
  *
@@ -1573,6 +1625,7 @@ _ibus_list_active_engines (BusIBusImpl           *ibus,
 {
     GVariantBuilder builder;
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
+    _reload_preload_engines (ibus);
 
     GList *p;
     for (p = ibus->engine_list; p != NULL; p = p->next) {
@@ -1776,6 +1829,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         return;
     }
 
+    _reload_preload_engines (ibus);
     IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, new_engine_name);
     if (desc == NULL) {
         g_dbus_method_invocation_return_error (invocation,
