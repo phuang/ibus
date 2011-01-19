@@ -1614,23 +1614,50 @@ _ibus_get_global_engine (BusIBusImpl           *ibus,
                     "No global engine.");
 }
 
+struct _SetGlobalEngineData {
+    BusIBusImpl *ibus;
+    GDBusMethodInvocation *invocation;
+};
+typedef struct _SetGlobalEngineData SetGlobalEngineData;
+
 static void
 _ibus_set_global_engine_ready_cb (BusInputContext       *context,
                                   GAsyncResult          *res,
-                                  GDBusMethodInvocation *invocation)
+                                  SetGlobalEngineData   *data)
 {
+    BusIBusImpl *ibus = data->ibus;
+
     GError *error = NULL;
     if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
         g_error_free (error);
-        g_dbus_method_invocation_return_error (invocation,
+        g_dbus_method_invocation_return_error (data->invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
                                                "Set global engine failed.");
 
     }
     else {
-        g_dbus_method_invocation_return_value (invocation, NULL);
+        g_dbus_method_invocation_return_value (data->invocation, NULL);
+
+        if (ibus->use_global_engine && (context != ibus->focused_context)) {
+            /* context and ibus->focused_context don't match. This means that
+             * the focus is moved before _ibus_set_global_engine() asynchronous
+             * call finishes. In this case, the engine for the context currently
+             * being focused hasn't been updated. Update the engine here so that
+             * subsequent _ibus_get_global_engine() call could return a
+             * consistent engine name. */
+            BusEngineProxy *engine = bus_input_context_get_engine (context);
+            if (engine && ibus->focused_context != NULL) {
+                g_object_ref (engine);
+                bus_input_context_set_engine (context, NULL);
+                bus_input_context_set_engine (ibus->focused_context, engine);
+                g_object_unref (engine);
+            }
+        }
     }
+
+    g_object_unref (ibus);
+    g_slice_free (SetGlobalEngineData, data);
 }
 
 /**
@@ -1682,12 +1709,15 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         return;
     }
 
+    SetGlobalEngineData *data = g_slice_new0 (SetGlobalEngineData);
+    data->ibus = g_object_ref (ibus);
+    data->invocation = invocation;
     bus_input_context_set_engine_by_desc (context,
                                           desc,
                                           g_gdbus_timeout, /* timeout in msec. */
                                           NULL, /* we do not cancel the call. */
                                           (GAsyncReadyCallback) _ibus_set_global_engine_ready_cb,
-                                          invocation);
+                                          data);
 }
 
 /**
