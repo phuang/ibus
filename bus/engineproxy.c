@@ -650,23 +650,28 @@ notify_factory_cb (BusComponent       *component,
 {
     data->factory = bus_component_get_factory (data->component);
 
-    if (data->factory == NULL) {
-        g_simple_async_result_set_error (data->simple,
-                                         G_DBUS_ERROR,
-                                         G_DBUS_ERROR_FAILED,
-                                         data->error_message,
-                                         ibus_engine_desc_get_name (data->desc));
-        g_simple_async_result_complete (data->simple);
-        return;
+    if (data->factory != NULL) {
+        g_object_ref (data->factory);
+        /* Timeout should be removed */
+        if (data->timeout_id != 0) {
+            g_source_remove (data->timeout_id);
+            data->timeout_id = 0;
+        }
+        /* Handler of notify::factory should be removed. */
+        if (data->handler_id != 0) {
+            g_signal_handler_disconnect (data->component, data->handler_id);
+            data->handler_id = 0;
+        }
+        /* Create engine from factory. */
+        bus_factory_proxy_create_engine (data->factory,
+                                         data->desc,
+                                         g_gdbus_timeout,
+                                         data->cancellable,
+                                         (GAsyncReadyCallback) create_engine_ready_cb,
+                                         data);
     }
-
-    g_object_ref (data->factory);
-    bus_factory_proxy_create_engine (data->factory,
-                                     data->desc,
-                                     g_gdbus_timeout,
-                                     data->cancellable,
-                                     (GAsyncReadyCallback) create_engine_ready_cb,
-                                     data);
+    /* If factory is NULL, we will continue wait for
+     * factory notify signal or timeout */
 }
 
 /**
@@ -679,6 +684,12 @@ static gboolean
 timeout_cb (EngineProxyNewData *data)
 {
     data->timeout_id = 0;
+
+    /* Remove the handler of notify::factory. */
+    if (data->handler_id != 0) {
+        g_signal_handler_disconnect (data->component, data->handler_id);
+        data->handler_id = 0;
+    }
 
     g_simple_async_result_set_error (data->simple,
                                      G_DBUS_ERROR,
@@ -699,6 +710,16 @@ static void
 cancelled_cb (GCancellable       *cancellable,
               EngineProxyNewData *data)
 {
+    if (data->timeout_id != 0) {
+        g_source_remove (data->timeout_id);
+        data->timeout_id = 0;
+    }
+
+    if (data->handler_id != 0) {
+        g_signal_handler_disconnect (data->component, data->handler_id);
+        data->handler_id = 0;
+    }
+
     g_simple_async_result_set_error (data->simple,
                                      G_DBUS_ERROR,
                                      G_DBUS_ERROR_FAILED,
