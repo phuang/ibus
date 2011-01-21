@@ -218,14 +218,14 @@ ibus_bus_connect (IBusBus *bus)
                           "closed",
                           (GCallback) _connection_closed_cb,
                           bus);
-        g_signal_emit (bus, bus_signals[CONNECTED], 0);
-
         if (bus->priv->watch_dbus_signal) {
             ibus_bus_watch_dbus_signal (bus);
         }
         if (bus->priv->watch_ibus_signal) {
             ibus_bus_watch_ibus_signal (bus);
         }
+
+        g_signal_emit (bus, bus_signals[CONNECTED], 0);
     }
 }
 
