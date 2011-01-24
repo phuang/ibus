@@ -59,8 +59,8 @@ struct _IBusIMContext {
     GdkRectangle     cursor_area;
     gboolean         has_focus;
 
+    guint32          time;
     gint             caps;
-
 };
 
 struct _IBusIMContextClass {
@@ -307,6 +307,10 @@ _key_snooper_cb (GtkWidget   *widget,
 
     } while (0);
 
+    if (ibusimcontext != NULL) {
+        ibusimcontext->time = event->time;
+    }
+
     switch (event->type) {
     case GDK_KEY_RELEASE:
         retval = ibus_input_context_process_key_event (ibuscontext,
@@ -458,6 +462,7 @@ ibus_im_context_init (GObject *obj)
 
     ibusimcontext->ibuscontext = NULL;
     ibusimcontext->has_focus = FALSE;
+    ibusimcontext->time = GDK_CURRENT_TIME;
     ibusimcontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS | IBUS_CAP_SURROUNDING_TEXT;
 
 
@@ -549,6 +554,10 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
         /* XXX it is a workaround for some applications do not set client window. */
         if (ibusimcontext->client_window == NULL && event->window != NULL)
             gtk_im_context_set_client_window ((GtkIMContext *)ibusimcontext, event->window);
+
+        if (ibusimcontext != NULL) {
+            ibusimcontext->time = event->time;
+        }
 
         switch (event->type) {
         case GDK_KEY_RELEASE:
@@ -892,7 +901,29 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
         event->window = g_object_ref (ibusimcontext->client_window);
     else if (_input_window)
         event->window = g_object_ref (_input_window);
-    event->time = GDK_CURRENT_TIME;
+
+    /* The time is copied the latest value from the previous
+     * GdkKeyEvent in filter_keypress().
+     *
+     * We understand the best way would be to pass the all time value
+     * to IBus functions process_key_event() and IBus DBus functions
+     * ProcessKeyEvent() in IM clients and IM engines so that the
+     * _create_gdk_event() could get the correct time values.
+     * However it would causes to change many functions and the time value
+     * would not provide the useful meanings for each IBus engines but just
+     * pass the original value to ForwardKeyEvent().
+     * We use the saved value at the moment.
+     *
+     * Another idea might be to have the time implementation in X servers
+     * but some Xorg uses clock_gettime() and others use gettimeofday()
+     * and the values would be different in each implementation and 
+     * locale/remote X server. So probably that idea would not work. */
+    if (ibusimcontext) {
+        event->time = ibusimcontext->time;
+    } else {
+        event->time = GDK_CURRENT_TIME;
+    }
+
     event->send_event = FALSE;
     event->state = state;
     event->keyval = keyval;
