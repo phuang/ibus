@@ -103,6 +103,11 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='s' name='section' />"
     "      <arg direction='in'  type='s' name='name' />"
     "    </method>"
+    "    <signal name='ValueChanged'>"
+    "      <arg type='s' name='section' />"
+    "      <arg type='s' name='name' />"
+    "      <arg type='v' name='value' />"
+    "    </signal>"
     "  </interface>"
     "</node>";
 
