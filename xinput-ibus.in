@@ -13,6 +13,8 @@ if test -f /usr/lib64/qt4/plugins/inputmethods/libqtim-ibus.so || \
    test -f /usr/lib/qt4/plugins/inputmethods/libqtim-ibus.so;
 then
     QT_IM_MODULE=ibus
+else
+    QT_IM_MODULE=xim
 fi
 
 # if [ -z "$IBUS_SESSION_ID" ]; then
