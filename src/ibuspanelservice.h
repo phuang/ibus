@@ -182,7 +182,7 @@ void ibus_panel_service_page_down         (IBusPanelService *panel);
 void ibus_panel_service_page_up           (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_property_active
+ * ibus_panel_service_property_activate
  * @panel: An IBusPanelService
  * @prop_name: A property name
  * @prop_state: State of the property
@@ -190,7 +190,7 @@ void ibus_panel_service_page_up           (IBusPanelService *panel);
  * Notify that a property is active
  * by sending a "PropertyActivate" message to IBus service.
  */
-void ibus_panel_service_property_active   (IBusPanelService *panel,
+void ibus_panel_service_property_activate (IBusPanelService *panel,
                                            const gchar      *prop_name,
                                            guint             prop_state);
 /**
