@@ -107,7 +107,7 @@ IBusInputContext
  * ibus_input_context_get_input_context:
  * @path: The path to the object that emitting the signal.
  * @connection: An GDBusConnection.
- * @returns: An existing IBusInputContext.
+ * @returns: (transfer none): An existing IBusInputContext.
  *
  * Gets an existing IBusInputContext.
  */
@@ -142,7 +142,7 @@ IBusInputContext
  *
  * Use ibus_keymap_lookup_keysym() to convert keycode to keysym in given keyboard layout.
  *
- * @see_also: #IBusEngine::process-key-event
+ * see_also: #IBusEngine::process-key-event
  */
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
@@ -160,7 +160,7 @@ gboolean     ibus_input_context_process_key_event
  *
  * Set the cursor location of IBus input context.
  *
- * @see_also: #IBusEngine::set-cursor-location
+ * see_also: #IBusEngine::set-cursor-location
  */
 void         ibus_input_context_set_cursor_location
                                             (IBusInputContext   *context,
@@ -177,7 +177,7 @@ void         ibus_input_context_set_cursor_location
  * When IBUS_CAP_FOCUS is not set, IBUS_CAP_PREEDIT_TEXT, IBUS_CAP_AUXILIARY_TEXT, IBUS_CAP_LOOKUP_TABLE, and IBUS_CAP_PROPERTY have to be all set.
  * The panel component does nothing for an application that doesn't support focus.
  *
- * @see_also: #IBusEngine::set-capabilities
+ * see_also: #IBusEngine::set-capabilities
  */
 void         ibus_input_context_set_capabilities
                                             (IBusInputContext   *context,
@@ -204,7 +204,7 @@ void         ibus_input_context_property_activate
  *
  * Invoked when the client application get focus.
  *
- * @see_also: #IBusEngine::focus_in.
+ * see_also: #IBusEngine::focus_in.
  */
 void         ibus_input_context_focus_in    (IBusInputContext   *context);
 
@@ -214,7 +214,7 @@ void         ibus_input_context_focus_in    (IBusInputContext   *context);
  *
  * Invoked when the client application get focus.
  *
- * @see_also: #IBusEngine::focus_out.
+ * see_also: #IBusEngine::focus_out.
  */
 void         ibus_input_context_focus_out   (IBusInputContext   *context);
 
@@ -225,7 +225,7 @@ void         ibus_input_context_focus_out   (IBusInputContext   *context);
  *
  * Invoked when the IME is reset.
  *
- * @see_also: #IBusEngine::reset
+ * see_also: #IBusEngine::reset
  */
 void         ibus_input_context_reset       (IBusInputContext   *context);
 
@@ -235,7 +235,7 @@ void         ibus_input_context_reset       (IBusInputContext   *context);
  *
  * Invoked when the IME is enabled, either by IME switch hotkey or select from the menu.
  *
- * @see_also: #IBusEngine::enable
+ * see_also: #IBusEngine::enable
  */
 void         ibus_input_context_enable      (IBusInputContext   *context);
 
@@ -245,7 +245,7 @@ void         ibus_input_context_enable      (IBusInputContext   *context);
  *
  * Invoked when the IME is disabled, either by IME switch hotkey or select from the menu.
  *
- * @see_also: #IBusEngine::disable
+ * see_also: #IBusEngine::disable
  */
 void         ibus_input_context_disable     (IBusInputContext   *context);
 
@@ -262,7 +262,7 @@ gboolean     ibus_input_context_is_enabled  (IBusInputContext   *context);
 /**
  * ibus_input_context_get_engine:
  * @context: An IBusInputContext.
- * @returns: An IME engine description for the context
+ * @returns: (transfer none): An IME engine description for the context
  *
  * Returns an IME engine description for the context.
  */

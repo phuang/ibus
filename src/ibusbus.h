@@ -101,7 +101,7 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
 /**
  * ibus_bus_get_connection:
  * @bus: An IBusBus.
- * @returns: TRUE if @bus is connected, FALSE otherwise.
+ * @returns: (transfer none): A GDBusConnection of an IBusIBus instance.
  *
  * Return GDBusConnection of an IBusIBus instance.
  */
