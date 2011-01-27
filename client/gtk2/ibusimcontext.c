@@ -79,6 +79,8 @@ static const gchar *_no_snooper_apps = NO_SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 static guint    _key_snooper_id = 0;
 
+static gboolean _use_sync_mode = FALSE;
+
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
 static GdkWindow *_input_window = NULL;
@@ -221,6 +223,30 @@ _focus_out_cb (GtkWidget     *widget,
     return FALSE;
 }
 
+static void
+_process_key_event_done (GObject      *object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
+{
+    IBusInputContext *context = (IBusInputContext *)object;
+    GdkEventKey *event = (GdkEventKey *) user_data;
+
+    gboolean processed = FALSE;
+    if (!ibus_input_context_process_key_event_finish (context,
+                                                     res,
+                                                     &processed,
+                                                     NULL)) {
+        processed = FALSE;
+    }
+
+    if (!processed) {
+        event->state |= IBUS_IGNORED_MASK;
+        gdk_event_put ((GdkEvent *)event);
+    }
+    gdk_event_free ((GdkEvent *)event);
+}
+
+
 static gint
 _key_snooper_cb (GtkWidget   *widget,
                  GdkEventKey *event,
@@ -313,16 +339,43 @@ _key_snooper_cb (GtkWidget   *widget,
 
     switch (event->type) {
     case GDK_KEY_RELEASE:
-        retval = ibus_input_context_process_key_event (ibuscontext,
-                                                       event->keyval,
-                                                       event->hardware_keycode - 8,
-                                                       event->state | IBUS_RELEASE_MASK);
+        if (_use_sync_mode) {
+            retval = ibus_input_context_process_key_event_sync (ibuscontext,
+                                                            event->keyval,
+                                                            event->hardware_keycode - 8,
+                                                            event->state | IBUS_RELEASE_MASK);
+        }
+        else {
+            ibus_input_context_process_key_event (ibuscontext,
+                                                  event->keyval,
+                                                  event->hardware_keycode - 8,
+                                                  event->state | IBUS_RELEASE_MASK,
+                                                  -1,
+                                                  NULL,
+                                                  _process_key_event_done,
+                                                  gdk_event_copy ((GdkEvent *) event));
+            retval = TRUE;
+
+        }
         break;
     case GDK_KEY_PRESS:
-        retval = ibus_input_context_process_key_event (ibuscontext,
-                                                       event->keyval,
-                                                       event->hardware_keycode - 8,
-                                                       event->state);
+        if (_use_sync_mode) {
+            retval = ibus_input_context_process_key_event_sync (ibuscontext,
+                                                            event->keyval,
+                                                            event->hardware_keycode - 8,
+                                                            event->state);
+        }
+        else {
+            ibus_input_context_process_key_event (ibuscontext,
+                                                  event->keyval,
+                                                  event->hardware_keycode - 8,
+                                                  event->state,
+                                                  -1,
+                                                  NULL,
+                                                  _process_key_event_done,
+                                                  gdk_event_copy ((GdkEvent *) event));
+            retval = TRUE;
+        }
         break;
     default:
         retval = FALSE;
@@ -337,6 +390,25 @@ _key_snooper_cb (GtkWidget   *widget,
     }
 
     return retval;
+}
+
+static gboolean
+_get_boolean_env(const gchar *name,
+                 gboolean     defval)
+{
+    const gchar *value = g_getenv (name);
+
+    if (value == NULL)
+      return defval;
+
+    if (g_strcmp0 (name, "") == 0 ||
+        g_strcmp0 (name, "0") == 0 ||
+        g_strcmp0 (name, "false") == 0 ||
+        g_strcmp0 (name, "False") == 0 ||
+        g_strcmp0 (name, "FALSE") == 0)
+      return FALSE;
+
+    return TRUE;
 }
 
 static void
@@ -383,38 +455,26 @@ ibus_im_context_class_init (IBusIMContextClass *class)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-    const gchar *ibus_disable_snooper = g_getenv ("IBUS_DISABLE_SNOOPER");
-    if (ibus_disable_snooper) {
-        /* env IBUS_DISABLE_SNOOPER exist */
-        if (g_strcmp0 (ibus_disable_snooper, "") == 0 ||
-            g_strcmp0 (ibus_disable_snooper, "0") == 0 ||
-            g_strcmp0 (ibus_disable_snooper, "false") == 0 ||
-            g_strcmp0 (ibus_disable_snooper, "False") == 0 ||
-            g_strcmp0 (ibus_disable_snooper, "FALSE") == 0) {
-            _use_key_snooper = TRUE;
+    _use_key_snooper = !_get_boolean_env ("IBUS_DISABLE_SNOOPER",
+                                          !(ENABLE_SNOOPER));
+    _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", FALSE);
+
+    /* env IBUS_DISABLE_SNOOPER does not exist */
+    if (_use_key_snooper) {
+        /* disable snooper if app is in _no_snooper_apps */
+        const gchar * prgname = g_get_prgname ();
+        if (g_getenv ("IBUS_NO_SNOOPER_APPS")) {
+            _no_snooper_apps = g_getenv ("IBUS_NO_SNOOPER_APPS");
         }
-        else {
-            _use_key_snooper = FALSE;
-        }
-    }
-    else {
-        /* env IBUS_DISABLE_SNOOPER does not exist */
-        if (_use_key_snooper) {
-            /* disable snooper if app is in _no_snooper_apps */
-            const gchar * prgname = g_get_prgname ();
-            if (g_getenv ("IBUS_NO_SNOOPER_APPS")) {
-                _no_snooper_apps = g_getenv ("IBUS_NO_SNOOPER_APPS");
+        gchar **p;
+        gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
+        for (p = apps; *p != NULL; p++) {
+            if (g_regex_match_simple (*p, prgname, 0, 0)) {
+                _use_key_snooper = FALSE;
+                break;
             }
-            gchar **p;
-            gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
-            for (p = apps; *p != NULL; p++) {
-                if (g_regex_match_simple (*p, prgname, 0, 0)) {
-                    _use_key_snooper = FALSE;
-                    break;
-                }
-            }
-            g_strfreev (apps);
         }
+        g_strfreev (apps);
     }
 
     /* init bus object */
@@ -561,16 +621,42 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 
         switch (event->type) {
         case GDK_KEY_RELEASE:
-            retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
-                                                           event->keyval,
-                                                           event->hardware_keycode - 8,
-                                                           event->state | IBUS_RELEASE_MASK);
+            if (_use_sync_mode) {
+                retval = ibus_input_context_process_key_event_sync (ibusimcontext->ibuscontext,
+                                                                    event->keyval,
+                                                                    event->hardware_keycode - 8,
+                                                                    event->state | IBUS_RELEASE_MASK);
+            }
+            else {
+                ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
+                                                      event->keyval,
+                                                      event->hardware_keycode - 8,
+                                                      event->state | IBUS_RELEASE_MASK,
+                                                      -1,
+                                                      NULL,
+                                                      _process_key_event_done,
+                                                      gdk_event_copy ((GdkEvent *) event));
+                retval = TRUE;
+            }
             break;
         case GDK_KEY_PRESS:
-            retval = ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
-                                                           event->keyval,
-                                                           event->hardware_keycode - 8,
-                                                           event->state);
+            if (_use_sync_mode) {
+                retval = ibus_input_context_process_key_event_sync (ibusimcontext->ibuscontext,
+                                                                    event->keyval,
+                                                                    event->hardware_keycode - 8,
+                                                                    event->state);
+            }
+            else {
+                ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
+                                                      event->keyval,
+                                                      event->hardware_keycode - 8,
+                                                      event->state,
+                                                      -1,
+                                                      NULL,
+                                                      _process_key_event_done,
+                                                      gdk_event_copy ((GdkEvent *) event));
+                retval = TRUE;
+            }
             break;
         default:
             retval = FALSE;

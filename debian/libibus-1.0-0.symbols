@@ -136,6 +136,8 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_input_context_page_down@Base 1.3.99.20101019
  ibus_input_context_page_up@Base 1.3.99.20101019
  ibus_input_context_process_key_event@Base 1.3.99.20101019
+ ibus_input_context_process_key_event_finish@Base 1.3.99.20110124
+ ibus_input_context_process_key_event_sync@Base 1.3.99.20110124
  ibus_input_context_property_activate@Base 1.3.99.20101019
  ibus_input_context_property_hide@Base 1.3.99.20101019
  ibus_input_context_property_show@Base 1.3.99.20101019

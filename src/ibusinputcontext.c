@@ -609,37 +609,6 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                                 proxy, sender_name, signal_name, parameters);
 }
 
-static void
-ibus_input_context_process_key_event_cb (IBusInputContext   *context,
-                                         GAsyncResult       *res,
-                                         guint              *data)
-{
-    GError *error = NULL;
-    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context, res, &error);
-
-    gboolean retval = FALSE;
-    if (variant == NULL) {
-        g_warning ("%s.ProcessKeyEvent: %s", IBUS_INTERFACE_INPUT_CONTEXT, error->message);
-        g_error_free (error);
-    }
-    else {
-        g_variant_get (variant, "(b)", &retval);
-        g_variant_unref (variant);
-    }
-
-    if (!retval) {
-        /* Forward key event back with IBUS_FORWARD_MASK. And process_key_event will
-         * not process key event with IBUS_FORWARD_MASK again. */
-        g_signal_emit (context,
-                       context_signals[FORWARD_KEY_EVENT],
-                       0,
-                       data[0],
-                       data[1],
-                       data[2] | IBUS_FORWARD_MASK);
-    }
-    g_slice_free1 (sizeof (guint[3]), data);
-}
-
 IBusInputContext *
 ibus_input_context_new (const gchar     *path,
                         GDBusConnection *connection,
@@ -686,37 +655,111 @@ ibus_input_context_get_input_context (const gchar        *path,
     return context;
 }
 
-gboolean
-ibus_input_context_process_key_event (IBusInputContext *context,
-                                      guint32           keyval,
-                                      guint32           keycode,
-                                      guint32           state)
+static void
+ibus_input_context_process_key_event_done (IBusInputContext   *context,
+                                           GAsyncResult       *res,
+                                           gpointer            user_data)
+{
+    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) user_data;
+    GError *error = NULL;
+    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context, res, &error);
+
+    if (variant == NULL) {
+        /* Replace with g_simple_async_result_take_error in glib 2.28 */
+        g_simple_async_result_set_from_error (simple, error);
+        g_error_free (error);
+    }
+    else {
+        gboolean retval = FALSE;
+
+        g_variant_get (variant, "(b)", &retval);
+        g_variant_unref (variant);
+
+        g_simple_async_result_set_op_res_gboolean (simple, retval);
+        g_simple_async_result_complete (simple);
+    }
+}
+
+
+void
+ibus_input_context_process_key_event (IBusInputContext   *context,
+                                      guint32             keyval,
+                                      guint32             keycode,
+                                      guint32             state,
+                                      gint                timeout_msec,
+                                      GCancellable       *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer            user_data)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
-    if (state & IBUS_HANDLED_MASK)
-        return TRUE;
+    GSimpleAsyncResult *simple = g_simple_async_result_new ((GObject*) context,
+                                                            callback,
+                                                            user_data,
+                                                            ibus_input_context_process_key_event);
 
-    if (state & IBUS_IGNORED_MASK)
-        return FALSE;
-
-    guint *data = g_slice_alloc (sizeof (guint[3]));
-    data[0] = keyval;
-    data[1] = keycode;
-    data[2] = state;
     g_dbus_proxy_call ((GDBusProxy *) context,
                        "ProcessKeyEvent",                   /* method_name */
                        g_variant_new ("(uuu)",
                             keyval, keycode, state),        /* parameters */
                        G_DBUS_CALL_FLAGS_NONE,              /* flags */
-                       -1,                                  /* timeout */
-                       NULL,                                /* cancellable */
-                       (GAsyncReadyCallback) ibus_input_context_process_key_event_cb,
+                       timeout_msec,                        /* timeout */
+                       cancellable,                         /* cancellable */
+                       (GAsyncReadyCallback) ibus_input_context_process_key_event_done,
                                                             /* callback */
-                       data                                 /* user_data */
+                       simple                               /* user_data */
                        );
 
+}
+
+gboolean
+ibus_input_context_process_key_event_finish (IBusInputContext   *context,
+                                             GAsyncResult       *res,
+                                             gboolean           *processed,
+                                             GError            **error)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (g_simple_async_result_is_valid (res, (GObject *) context,
+                                              ibus_input_context_process_key_event));
+
+    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
+    *processed = FALSE;
+
+    if (g_simple_async_result_propagate_error (simple, error))
+        return FALSE;
+
+    *processed = g_simple_async_result_get_op_res_gboolean (simple);
     return TRUE;
+}
+
+
+
+gboolean
+ibus_input_context_process_key_event_sync (IBusInputContext *context,
+                                           guint32           keyval,
+                                           guint32           keycode,
+                                           guint32           state)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    GVariant *result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
+                            "ProcessKeyEvent",                   /* method_name */
+                            g_variant_new ("(uuu)",
+                                 keyval, keycode, state),        /* parameters */
+                            G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                            -1,                                  /* timeout */
+                            NULL,                                /* cancellable */
+                            NULL);
+
+    if (result != NULL) {
+        gboolean processed = FALSE;
+
+        g_variant_get (result, "(b)", &processed);
+        g_variant_unref (result);
+        return processed;
+    }
+
+    return FALSE;
 }
 
 void
