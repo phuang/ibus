@@ -198,7 +198,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_panel_service_new@Base 1.3.99.20101019
  ibus_panel_service_page_down@Base 1.3.99.20101019
  ibus_panel_service_page_up@Base 1.3.99.20101019
- ibus_panel_service_property_active@Base 1.3.99.20101019
+ ibus_panel_service_property_activate@Base 1.3.99.20101019
  ibus_panel_service_property_hide@Base 1.3.99.20101019
  ibus_panel_service_property_show@Base 1.3.99.20101019
  ibus_preedit_focus_mode_get_type@Base 1.3.99.20101019
