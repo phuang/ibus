@@ -401,11 +401,11 @@ _get_boolean_env(const gchar *name,
     if (value == NULL)
       return defval;
 
-    if (g_strcmp0 (name, "") == 0 ||
-        g_strcmp0 (name, "0") == 0 ||
-        g_strcmp0 (name, "false") == 0 ||
-        g_strcmp0 (name, "False") == 0 ||
-        g_strcmp0 (name, "FALSE") == 0)
+    if (g_strcmp0 (value, "") == 0 ||
+        g_strcmp0 (value, "0") == 0 ||
+        g_strcmp0 (value, "false") == 0 ||
+        g_strcmp0 (value, "False") == 0 ||
+        g_strcmp0 (value, "FALSE") == 0)
       return FALSE;
 
     return TRUE;
