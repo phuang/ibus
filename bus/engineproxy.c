@@ -602,8 +602,36 @@ typedef struct {
     gulong cancelled_handler_id;
     guint handler_id;
     guint timeout_id;
-    const gchar *error_message;
+    gint timeout;
 } EngineProxyNewData;
+
+static void
+engine_proxy_new_data_free (EngineProxyNewData *data)
+{
+    if (data->simple != NULL) {
+        if (data->handler_id != 0)
+            g_signal_handler_disconnect (data->component, data->handler_id);
+        g_object_unref (data->simple);
+    }
+
+    if (data->component != NULL)
+        g_object_unref (data->component);
+
+    if (data->factory != NULL)
+        g_object_unref (data->factory);
+
+    if (data->timeout_id != 0)
+        g_source_remove (data->timeout_id);
+
+    if (data->cancellable != NULL) {
+        if (data->cancelled_handler_id != 0)
+            g_cancellable_disconnect (data->cancellable,
+                data->cancelled_handler_id);
+        g_object_unref (data->cancellable);
+    }
+
+    g_slice_free (EngineProxyNewData, data);
+}
 
 /**
  * create_engine_ready_cb:
@@ -616,13 +644,16 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
                         GAsyncResult       *res,
                         EngineProxyNewData *data)
 {
+    g_return_if_fail (data->simple != NULL);
+
     GError *error = NULL;
     gchar *path = bus_factory_proxy_create_engine_finish (factory,
                                                           res,
                                                           &error);
     if (path == NULL) {
         g_simple_async_result_set_from_error (data->simple, error);
-        g_simple_async_result_complete (data->simple);
+        g_simple_async_result_complete_in_idle (data->simple);
+        engine_proxy_new_data_free (data);
         return;
     }
 
@@ -634,7 +665,9 @@ create_engine_ready_cb (BusFactoryProxy    *factory,
 
     /* FIXME: set destroy callback ? */
     g_simple_async_result_set_op_res_gpointer (data->simple, engine, NULL);
-    g_simple_async_result_complete (data->simple);
+    g_simple_async_result_complete_in_idle (data->simple);
+
+    engine_proxy_new_data_free (data);
 }
 
 /**
@@ -662,10 +695,23 @@ notify_factory_cb (BusComponent       *component,
             g_signal_handler_disconnect (data->component, data->handler_id);
             data->handler_id = 0;
         }
+
+        /* We *have to* disconnect the cancelled_cb here, since g_dbus_proxy_call
+         * calls create_engine_ready_cb even if the proxy call is cancelled, and
+         * in this case, create_engine_ready_cb itself will return error using
+         * g_simple_async_result_set_from_error and g_simple_async_result_complete.
+         * Otherwise, g_simple_async_result_complete might be called twice for a
+         * single data->simple twice (first in cancelled_cb and later in
+         * create_engine_ready_cb). */
+        if (data->cancellable && data->cancelled_handler_id != 0) {
+            g_cancellable_disconnect (data->cancellable, data->cancelled_handler_id);
+            data->cancelled_handler_id = 0;
+        }
+
         /* Create engine from factory. */
         bus_factory_proxy_create_engine (data->factory,
                                          data->desc,
-                                         g_gdbus_timeout,
+                                         data->timeout,
                                          data->cancellable,
                                          (GAsyncReadyCallback) create_engine_ready_cb,
                                          data);
@@ -683,20 +729,14 @@ notify_factory_cb (BusComponent       *component,
 static gboolean
 timeout_cb (EngineProxyNewData *data)
 {
-    data->timeout_id = 0;
-
-    /* Remove the handler of notify::factory. */
-    if (data->handler_id != 0) {
-        g_signal_handler_disconnect (data->component, data->handler_id);
-        data->handler_id = 0;
-    }
-
     g_simple_async_result_set_error (data->simple,
                                      G_DBUS_ERROR,
                                      G_DBUS_ERROR_FAILED,
-                                     data->error_message,
-                                     ibus_engine_desc_get_name (data->desc));
-    g_simple_async_result_complete (data->simple);
+                                     "Timeout was reached");
+    g_simple_async_result_complete_in_idle (data->simple);
+
+    engine_proxy_new_data_free (data);
+
     return FALSE;
 }
 
@@ -706,25 +746,26 @@ timeout_cb (EngineProxyNewData *data)
  * A callback function to be called when someone calls g_cancellable_cancel() for the cancellable object for bus_engine_proxy_new.
  * Call the GAsyncReadyCallback.
  */
+static gboolean
+cancelled_idle_cb (EngineProxyNewData *data)
+{
+    g_simple_async_result_set_error (data->simple,
+                                     G_DBUS_ERROR,
+                                     G_DBUS_ERROR_FAILED,
+                                     "Operation was cancelled");
+    g_simple_async_result_complete_in_idle (data->simple);
+
+    engine_proxy_new_data_free (data);
+
+    return FALSE;
+}
+
 static void
 cancelled_cb (GCancellable       *cancellable,
               EngineProxyNewData *data)
 {
-    if (data->timeout_id != 0) {
-        g_source_remove (data->timeout_id);
-        data->timeout_id = 0;
-    }
-
-    if (data->handler_id != 0) {
-        g_signal_handler_disconnect (data->component, data->handler_id);
-        data->handler_id = 0;
-    }
-
-    g_simple_async_result_set_error (data->simple,
-                                     G_DBUS_ERROR,
-                                     G_DBUS_ERROR_FAILED,
-                                     "Cancelled");
-    g_simple_async_result_complete (data->simple);
+    /* Cancel the bus_engine_proxy_new() in idle to avoid deadlock */
+    g_idle_add ((GSourceFunc) cancelled_idle_cb, data);
 }
 
 void
@@ -738,15 +779,29 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
     g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
     g_assert (callback);
 
+    GSimpleAsyncResult *simple =
+        g_simple_async_result_new (NULL,
+                                   callback,
+                                   user_data,
+                                   bus_engine_proxy_new);
+
+    if (g_cancellable_is_cancelled (cancellable)) {
+        g_simple_async_result_set_error (simple,
+                                         G_DBUS_ERROR,
+                                         G_DBUS_ERROR_FAILED,
+                                         "Operation was cancelled");
+        g_simple_async_result_complete_in_idle (simple);
+        g_object_unref (simple);
+        return;
+    }
+
     EngineProxyNewData *data = g_slice_new0 (EngineProxyNewData);
-
     data->desc = g_object_ref (desc);
-    data->component = g_object_ref (bus_component_from_engine_desc (desc));
+    data->component = bus_component_from_engine_desc (desc);
+    g_object_ref (data->component);
+    data->simple = simple;
+    data->timeout = timeout;
 
-    data->simple = g_simple_async_result_new (NULL,
-                                              callback,
-                                              user_data,
-                                              bus_engine_proxy_new);
     g_object_set_data ((GObject *)data->simple, "EngineProxyNewData", data);
 
     data->factory = bus_component_get_factory (data->component);
@@ -758,10 +813,9 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
                                              "notify::factory",
                                              G_CALLBACK (notify_factory_cb),
                                              data);
-        data->error_message = "Time out";
-        data->timeout_id = g_timeout_add_seconds (5,
-                                                  (GSourceFunc) timeout_cb,
-                                                  data);
+        data->timeout_id = g_timeout_add (timeout,
+                                          (GSourceFunc) timeout_cb,
+                                          data);
         if (cancellable) {
             data->cancellable = (GCancellable *) g_object_ref (cancellable);
             data->cancelled_handler_id = g_cancellable_connect (cancellable,
@@ -774,6 +828,11 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
     else {
         /* The factory is ready. We'll create the engine proxy directly. */
         g_object_ref (data->factory);
+
+        /* We don't have to connect to cancelled_cb here, since g_dbus_proxy_call
+         * calls create_engine_ready_cb even if the proxy call is cancelled, and
+         * in this case, create_engine_ready_cb itself can return error using
+         * g_simple_async_result_set_from_error and g_simple_async_result_complete. */
         bus_factory_proxy_create_engine (data->factory,
                                          data->desc,
                                          timeout,
@@ -790,36 +849,12 @@ bus_engine_proxy_new_finish (GAsyncResult   *res,
     GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
 
     g_assert (error == NULL || *error == NULL);
-
     g_assert (g_simple_async_result_get_source_tag (simple) == bus_engine_proxy_new);
-
-    EngineProxyNewData *data =
-            (EngineProxyNewData *) g_object_get_data ((GObject *) simple,
-                                                      "EngineProxyNewData");
-    if (data->cancellable) {
-        g_cancellable_disconnect (data->cancellable, data->cancelled_handler_id);
-        g_object_unref (data->cancellable);
-    }
-
-    if (data->timeout_id != 0)
-        g_source_remove (data->timeout_id);
-
-    if (data->handler_id != 0)
-        g_signal_handler_disconnect (data->component, data->handler_id);
-
-    g_object_unref (data->desc);
-    g_object_unref (data->component);
-
-    if (data->factory != NULL)
-        g_object_unref (data->factory);
-
-    g_slice_free (EngineProxyNewData, data);
 
     if (g_simple_async_result_propagate_error (simple, error))
         return NULL;
 
-    BusEngineProxy *engine = g_simple_async_result_get_op_res_gpointer (simple);
-    return engine;
+    return (BusEngineProxy *) g_simple_async_result_get_op_res_gpointer(simple);
 }
 
 void

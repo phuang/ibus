@@ -26,6 +26,20 @@
 #include "engineproxy.h"
 #include "factoryproxy.h"
 
+struct _SetEngineByDescData {
+    /* context related to the data */
+    BusInputContext *context;
+    /* set engine by desc result, cancellable */
+    GSimpleAsyncResult *simple;
+    /* a object to cancel bus_engine_proxy_new call */
+    GCancellable *cancellable;
+    /* a object being passed to the bus_input_context_set_engine_by_desc function. if origin_cancellable is cancelled by someone,
+     * we cancel the cancellable above as well. */
+    GCancellable *origin_cancellable;
+    gulong cancelled_handler_id;
+};
+typedef struct _SetEngineByDescData SetEngineByDescData;
+
 struct _BusInputContext {
     IBusService parent;
 
@@ -70,14 +84,8 @@ struct _BusInputContext {
     /* is fake context */
     gboolean fake;
 
-    /* set engine by desc result, cancellable */
-    GSimpleAsyncResult *simple;
-    /* a object to cancel bus_engine_proxy_new call */
-    GCancellable *cancellable;
-    /* a object being passed to the bus_input_context_set_engine_by_desc function. if origin_cancellable is cancelled by someone,
-     * we cancel the cancellable above as well. */
-    GCancellable *origin_cancellable;
-    gulong cancelled_handler_id;
+    /* incompleted set engine by desc request */
+    SetEngineByDescData *data;
 };
 
 struct _BusInputContextClass {
@@ -2064,54 +2072,113 @@ bus_input_context_set_engine (BusInputContext *context,
                    0);
 }
 
+static void set_engine_by_desc_data_free (SetEngineByDescData *data)
+{
+    if (data->context != NULL) {
+        if (data->context->data == data)
+            data->context->data = NULL;
+        g_object_unref (data->context);
+    }
+
+    if (data->simple != NULL) {
+        g_object_unref (data->simple);
+    }
+
+    if (data->cancellable != NULL)
+        g_object_unref (data->cancellable);
+
+    if (data->origin_cancellable != NULL) {
+        if (data->cancelled_handler_id != 0)
+            g_cancellable_disconnect (data->origin_cancellable,
+                data->cancelled_handler_id);
+        g_object_unref (data->origin_cancellable);
+    }
+
+    g_slice_free (SetEngineByDescData, data);
+}
+
 /**
  * new_engine_cb:
  *
  * A callback function to be called when bus_engine_proxy_new() is finished.
  */
 static void
-new_engine_cb (GObject         *obj,
-               GAsyncResult    *res,
-               BusInputContext *context)
+new_engine_cb (GObject             *obj,
+               GAsyncResult        *res,
+               SetEngineByDescData *data)
 {
     GError *error = NULL;
-
     BusEngineProxy *engine = bus_engine_proxy_new_finish (res, &error);
 
     if (engine == NULL) {
-        g_simple_async_result_set_from_error (context->simple, error);
+        g_simple_async_result_set_from_error (data->simple, error);
         g_error_free (error);
     }
     else {
-        bus_input_context_set_engine (context, engine);
-        bus_input_context_enable (context);
-        g_simple_async_result_set_op_res_gboolean (context->simple, TRUE);
+        if (data->context->data != data) {
+            /* Request has been overriden or cancelled */
+            g_object_unref (engine);
+            g_simple_async_result_set_error (data->simple,
+                                             G_IO_ERROR,
+                                             G_IO_ERROR_CANCELLED,
+                                             "Opertation was cancelled");
+        }
+        else {
+            bus_input_context_set_engine (data->context, engine);
+            bus_input_context_enable (data->context);
+            g_simple_async_result_set_op_res_gboolean (data->simple, TRUE);
+        }
     }
 
     /* Call the callback function for bus_input_context_set_engine_by_desc(). */
-    g_simple_async_result_complete (context->simple);
+    g_simple_async_result_complete_in_idle (data->simple);
+
+    set_engine_by_desc_data_free (data);
 }
 
-/**
- * new_engine_cancelled_cb:
- *
- * A function to be called when someone called g_cancellable_cancel() for the context->origin_cancellable object.
- * Cancel the outstanding bus_engine_proxy_new call (if any.)
- */
 static void
-new_engine_cancelled_cb (GCancellable    *cancellable,
-                         BusInputContext *context)
+cancel_set_engine_by_desc (SetEngineByDescData *data)
 {
-    g_cancellable_disconnect (cancellable, context->cancelled_handler_id);
-    context->cancelled_handler_id = 0;
-    if (context->cancellable)
-        g_cancellable_cancel (context->cancellable);
+    if (data->context->data == data)
+        data->context->data = NULL;
+
+    if (data->origin_cancellable != NULL) {
+        if (data->cancelled_handler_id != 0) {
+            g_cancellable_disconnect (data->origin_cancellable,
+                                      data->cancelled_handler_id);
+            data->cancelled_handler_id = 0;
+        }
+
+        g_object_unref (data->origin_cancellable);
+        data->origin_cancellable = NULL;
+    }
+
+    if (data->cancellable != NULL) {
+        g_cancellable_cancel (data->cancellable);
+        g_object_unref (data->cancellable);
+        data->cancellable = NULL;
+    }
+}
+
+static gboolean
+set_engine_by_desc_cancelled_idle_cb (SetEngineByDescData *data)
+{
+    cancel_set_engine_by_desc (data);
+    return FALSE;
+}
+
+static void
+set_engine_by_desc_cancelled_cb (GCancellable        *cancellable,
+                                 SetEngineByDescData *data)
+{
+    /* Cancel in idle to avoid deadlock */
+    g_idle_add ((GSourceFunc) set_engine_by_desc_cancelled_idle_cb, data);
 }
 
 /**
  * set_engine_by_desc_ready_cb:
  *
- * A default callback function for bus_input_context_set_engine_by_desc(), which is called by new_engine_cb().
+ * A default callback function for bus_input_context_set_engine_by_desc().
  */
 static void
 set_engine_by_desc_ready_cb (BusInputContext *context,
@@ -2120,7 +2187,7 @@ set_engine_by_desc_ready_cb (BusInputContext *context,
 {
     GError *error = NULL;
     if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
-        g_warning ("%s", error->message);
+        g_warning ("Set context engine failed: %s", error->message);
         g_error_free (error);
     }
 }
@@ -2137,48 +2204,57 @@ bus_input_context_set_engine_by_desc (BusInputContext    *context,
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-    if (context->simple != NULL) {
-        /* We need cancel previous set engine request */
-        g_cancellable_cancel (context->cancellable);
-        g_simple_async_result_set_error (context->simple,
-                                         G_DBUS_ERROR,
-                                         G_DBUS_ERROR_FAILED,
-                                         "Set engine request is overrided.");
-        g_simple_async_result_complete (context->simple);
+    if (context->data != NULL) {
+        /* Cancel previous set_engine_by_desc() request */
+        cancel_set_engine_by_desc (context->data);
     }
 
-    g_assert (context->simple == NULL);
-    g_assert (context->cancellable == NULL);
-    g_assert (context->origin_cancellable == NULL);
-    g_assert (context->cancelled_handler_id == 0);
+    /* Previous request must be completed or cancelled */
+    g_assert (context->data == NULL);
 
     if (callback == NULL)
         callback = (GAsyncReadyCallback) set_engine_by_desc_ready_cb;
 
-    context->simple =
+    GSimpleAsyncResult *simple =
             g_simple_async_result_new ((GObject *) context,
                                        callback,
                                        user_data,
                                        bus_input_context_set_engine_by_desc);
-    g_object_ref (context->simple);
-    context->cancellable = g_cancellable_new ();
 
-    if (cancellable) {
-        context->origin_cancellable = (GCancellable *) g_object_ref (cancellable);
-        context->cancelled_handler_id =
-                g_cancellable_connect (context->origin_cancellable,
-                                       (GCallback) new_engine_cancelled_cb,
-                                       context,
+    if (g_cancellable_is_cancelled (cancellable)) {
+        g_simple_async_result_set_error (simple,
+                                         G_IO_ERROR,
+                                         G_IO_ERROR_CANCELLED,
+                                         "Operation was cancelled");
+        g_simple_async_result_complete_in_idle (simple);
+        g_object_unref (simple);
+        return;
+    }
+
+    SetEngineByDescData *data = g_slice_new0 (SetEngineByDescData);
+    context->data = data;
+    data->context = context;
+    g_object_ref (context);
+    data->simple = simple;
+
+    if (cancellable != NULL) {
+        data->origin_cancellable = cancellable;
+        g_object_ref (cancellable);
+        data->cancelled_handler_id =
+                g_cancellable_connect (data->origin_cancellable,
+                                       (GCallback) set_engine_by_desc_cancelled_cb,
+                                       data,
                                        NULL);
     }
 
-    /* We can cancel the bus_engine_proxy_new call by calling g_cancellable_cancel() for context->cancellable;
-     * See the first part of this function and new_engine_cancelled_cb(). */
+    data->cancellable = g_cancellable_new ();
+    /* We can cancel the bus_engine_proxy_new() call by data->cancellable;
+     * See cancel_set_engine_by_desc() and set_engine_by_desc_cancelled_cb(). */
     bus_engine_proxy_new (desc,
                           timeout,
-                          context->cancellable,
+                          data->cancellable,
                           (GAsyncReadyCallback) new_engine_cb,
-                          context);
+                          data);
 }
 
 gboolean
@@ -2189,26 +2265,12 @@ bus_input_context_set_engine_by_desc_finish (BusInputContext  *context,
     GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
 
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-    g_assert (g_simple_async_result_get_source_tag (simple) == bus_input_context_set_engine_by_desc);
-    g_assert (context->simple == simple);
+    g_assert (g_simple_async_result_get_source_tag (simple) ==
+                bus_input_context_set_engine_by_desc);
 
-    gboolean retval = FALSE;
-    if (!g_simple_async_result_propagate_error (simple, error))
-        retval = TRUE;
-
-    /* release async call related resources */
-    g_object_unref (context->simple);
-    context->simple = NULL;
-    g_object_unref (context->cancellable);
-    context->cancellable = NULL;
-    if (context->cancelled_handler_id) {
-        g_cancellable_disconnect (context->origin_cancellable, context->cancelled_handler_id);
-        context->cancelled_handler_id = 0;
-        g_object_unref (context->origin_cancellable);
-        context->origin_cancellable = NULL;
-    }
-
-    return retval;
+    if (g_simple_async_result_propagate_error (simple, error))
+        return FALSE;
+    return TRUE;
 }
 
 BusEngineProxy *
