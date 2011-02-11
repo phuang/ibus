@@ -44,6 +44,7 @@ enum {
     CONNECTED,
     DISCONNECTED,
     GLOBAL_ENGINE_CHANGED,
+    NAME_OWNER_CHANGED,
     LAST_SIGNAL,
 };
 
@@ -53,6 +54,7 @@ struct _IBusBusPrivate {
     GFileMonitor *monitor;
     GDBusConnection *connection;
     gboolean watch_dbus_signal;
+    guint watch_dbus_signal_id;
     gboolean watch_ibus_signal;
     guint watch_ibus_signal_id;
     IBusConfig *config;
@@ -143,7 +145,48 @@ ibus_bus_class_init (IBusBusClass *class)
             G_TYPE_NONE,
             0);
 
+    /**
+     * IBusBus::name-owner-changed:
+     *
+     * Emitted when D-Bus name owner is changed.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
+    bus_signals[NAME_OWNER_CHANGED] =
+        g_signal_new (I_("name-owner-changed"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            _ibus_marshal_VOID__STRING_STRING_STRING,
+            G_TYPE_NONE, 3,
+            G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+
     g_type_class_add_private (class, sizeof (IBusBusPrivate));
+}
+
+static void
+_connection_dbus_signal_cb (GDBusConnection *connection,
+                            const gchar *sender_name,
+                            const gchar *object_path,
+                            const gchar *interface_name,
+                            const gchar *signal_name,
+                            GVariant *parameters,
+                            gpointer user_data)
+{
+    g_return_if_fail (user_data != NULL);
+    g_return_if_fail (IBUS_IS_BUS (user_data));
+
+    if (g_strcmp0 (signal_name, "NameOwnerChanged") == 0) {
+        gchar *name = NULL;
+        gchar *old_owner = NULL;
+        gchar *new_owner = NULL;
+        g_variant_get (parameters, "(&s&s&s)", &name, &old_owner, &new_owner);
+        g_signal_emit (IBUS_BUS (user_data),
+                       bus_signals[NAME_OWNER_CHANGED], 0,
+                       name, old_owner, new_owner);
+    }
+    /* FIXME handle other D-Bus signals if needed */
 }
 
 static void
@@ -185,6 +228,7 @@ _connection_closed_cb (GDBusConnection  *connection,
     g_free (bus->priv->unique_name);
     bus->priv->unique_name = NULL;
 
+    bus->priv->watch_dbus_signal_id = 0;
     bus->priv->watch_ibus_signal_id = 0;
 
     g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
@@ -259,6 +303,7 @@ ibus_bus_init (IBusBus *bus)
     bus->priv->config = NULL;
     bus->priv->connection = NULL;
     bus->priv->watch_dbus_signal = FALSE;
+    bus->priv->watch_dbus_signal_id = 0;
     bus->priv->watch_ibus_signal = FALSE;
     bus->priv->watch_ibus_signal_id = 0;
     bus->priv->unique_name = NULL;
@@ -418,26 +463,31 @@ ibus_bus_current_input_context (IBusBus      *bus)
 static void
 ibus_bus_watch_dbus_signal (IBusBus *bus)
 {
-    const gchar *rule;
+    g_return_if_fail (bus->priv->connection != NULL);
+    g_return_if_fail (bus->priv->watch_dbus_signal_id == 0);
 
-    rule = "type='signal'," \
-           "path='" DBUS_PATH_DBUS "'," \
-           "interface='" DBUS_INTERFACE_DBUS "'";
-
-    ibus_bus_add_match (bus, rule);
-
+    /* Subscribe to dbus signals such as NameOwnerChanged. */
+    bus->priv->watch_dbus_signal_id
+        = g_dbus_connection_signal_subscribe (bus->priv->connection,
+                                              DBUS_SERVICE_DBUS,
+                                              DBUS_INTERFACE_DBUS,
+                                              "NameOwnerChanged",
+                                              DBUS_PATH_DBUS,
+                                              NULL /* arg0 */,
+                                              (GDBusSignalFlags) 0,
+                                              _connection_dbus_signal_cb,
+                                              bus,
+                                              NULL /* user_data_free_func */);
+    /* FIXME handle other D-Bus signals if needed */
 }
 
 static void
 ibus_bus_unwatch_dbus_signal (IBusBus *bus)
 {
-    const gchar *rule;
-
-    rule = "type='signal'," \
-           "path='" DBUS_PATH_DBUS "'," \
-           "interface='" DBUS_INTERFACE_DBUS "'";
-
-    ibus_bus_remove_match (bus, rule);
+    g_return_if_fail (bus->priv->watch_dbus_signal_id != 0);
+    g_dbus_connection_signal_unsubscribe (bus->priv->connection,
+                                          bus->priv->watch_dbus_signal_id);
+    bus->priv->watch_dbus_signal_id = 0;
 }
 
 void
@@ -472,13 +522,14 @@ ibus_bus_watch_ibus_signal (IBusBus *bus)
         = g_dbus_connection_signal_subscribe (bus->priv->connection,
                                               "org.freedesktop.IBus",
                                               IBUS_INTERFACE_IBUS,
-                                              NULL /* member */,
+                                              "GlobalEngineChanged",
                                               IBUS_PATH_IBUS,
                                               NULL /* arg0 */,
                                               (GDBusSignalFlags) 0,
                                               _connection_ibus_signal_cb,
                                               bus,
                                               NULL /* user_data_free_func */);
+    /* FIXME handle org.freedesktop.IBus.RegistryChanged signal if needed */
 }
 
 static void

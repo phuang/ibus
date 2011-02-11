@@ -316,6 +316,18 @@ gboolean     ibus_bus_set_global_engine (IBusBus        *bus,
                                          const gchar    *global_engine);
 
 /**
+ * ibus_bus_set_watch_dbus_signal:
+ * @bus: An IBusBus.
+ * @watch: TRUE if you want ibusbus to emit "name-owner-changed" signal when
+ * ibus-daemon emits the NameOwnerChanged DBus signal.
+ *
+ * Start or stop watching the NameOwnerChange DBus signal.
+ */
+void         ibus_bus_set_watch_dbus_signal
+                                        (IBusBus        *bus,
+                                         gboolean        watch);
+
+/**
  * ibus_bus_set_watch_ibus_signal:
  * @bus: An IBusBus.
  * @watch: TRUE if you want ibusbus to emit "global-engine-changed" signal when
