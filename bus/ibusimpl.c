@@ -320,6 +320,32 @@ bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
 }
 
 /**
+ * bus_ibus_impl_set_enable_unconditional:
+ *
+ * A function to be called when "enable_unconditional" config is updated.
+ */
+static void
+bus_ibus_impl_set_enable_unconditional (BusIBusImpl *ibus,
+                                        GVariant    *value)
+{
+    GQuark hotkey = g_quark_from_static_string ("enable-unconditional");
+    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
+}
+
+/**
+ * bus_ibus_impl_set_disable_unconditional:
+ *
+ * A function to be called when "disable_unconditional" config is updated.
+ */
+static void
+bus_ibus_impl_set_disable_unconditional (BusIBusImpl *ibus,
+                                         GVariant    *value)
+{
+    GQuark hotkey = g_quark_from_static_string ("disable-unconditional");
+    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
+}
+
+/**
  * bus_ibus_impl_set_next_engine_in_menu:
  *
  * A function to be called when "next_engine_in_menu" config is updated.
@@ -544,14 +570,16 @@ const static struct {
     gchar *key;
     void (*func) (BusIBusImpl *, GVariant *);
 } bus_ibus_impl_config_items [] = {
-    { "general/hotkey", "trigger",              bus_ibus_impl_set_trigger },
-    { "general/hotkey", "next_engine_in_menu",  bus_ibus_impl_set_next_engine_in_menu },
-    { "general/hotkey", "previous_engine",      bus_ibus_impl_set_previous_engine },
-    { "general", "preload_engines",             bus_ibus_impl_set_preload_engines },
-    { "general", "use_system_keyboard_layout",  bus_ibus_impl_set_use_sys_layout },
-    { "general", "use_global_engine",           bus_ibus_impl_set_use_global_engine },
-    { "general", "embed_preedit_text",          bus_ibus_impl_set_embed_preedit_text },
-    { "general", "enable_by_default",           bus_ibus_impl_set_enable_by_default },
+    { "general/hotkey", "trigger",               bus_ibus_impl_set_trigger },
+    { "general/hotkey", "enable_unconditional",  bus_ibus_impl_set_enable_unconditional },
+    { "general/hotkey", "disable_unconditional", bus_ibus_impl_set_disable_unconditional },
+    { "general/hotkey", "next_engine_in_menu",   bus_ibus_impl_set_next_engine_in_menu },
+    { "general/hotkey", "previous_engine",       bus_ibus_impl_set_previous_engine },
+    { "general", "preload_engines",              bus_ibus_impl_set_preload_engines },
+    { "general", "use_system_keyboard_layout",   bus_ibus_impl_set_use_sys_layout },
+    { "general", "use_global_engine",            bus_ibus_impl_set_use_global_engine },
+    { "general", "embed_preedit_text",           bus_ibus_impl_set_embed_preedit_text },
+    { "general", "enable_by_default",            bus_ibus_impl_set_enable_by_default },
 };
 
 /**
@@ -1900,6 +1928,8 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
                                          guint           prev_modifiers)
 {
     static GQuark trigger = 0;
+    static GQuark enable_unconditional = 0;
+    static GQuark disable_unconditional = 0;
     static GQuark next = 0;
     static GQuark previous = 0;
 
@@ -1908,6 +1938,8 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
 
     if (trigger == 0) {
         trigger = g_quark_from_static_string ("trigger");
+        enable_unconditional = g_quark_from_static_string ("enable-unconditional");
+        disable_unconditional = g_quark_from_static_string ("disable-unconditional");
         next = g_quark_from_static_string ("next-engine-in-menu");
         previous = g_quark_from_static_string ("previous-engine");
     }
@@ -1929,6 +1961,20 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
             bus_input_context_enable (context);
         }
         return (enabled != bus_input_context_is_enabled (context));
+    }
+    if (event == enable_unconditional) {
+        gboolean enabled = bus_input_context_is_enabled (context);
+        if (!enabled) {
+            bus_input_context_enable (context);
+        }
+        return bus_input_context_is_enabled (context);
+    }
+    if (event == disable_unconditional) {
+        gboolean enabled = bus_input_context_is_enabled (context);
+        if (enabled) {
+            bus_input_context_disable (context);
+        }
+        return !bus_input_context_is_enabled (context);
     }
     if (event == next) {
         if (bus_input_context_is_enabled (context)) {

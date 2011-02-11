@@ -36,10 +36,9 @@ __all__ = (
         "default_reply_handler",
         "default_error_handler",
         "DEFAULT_ASYNC_HANDLERS",
-        "CONFIG_GENERAL_SHORTCUT_TRIGGER",
-        "CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE",
-        "CONFIG_GENERAL_SHORTCUT_PREV_ENGINE",
         "CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT",
+        "CONFIG_GENERAL_SHORTCUT_ENABLE_DEFAULT",
+        "CONFIG_GENERAL_SHORTCUT_DISABLE_DEFAULT",
         "CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT",
         "CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT",
         "main",
@@ -144,14 +143,13 @@ DEFAULT_ASYNC_HANDLERS = {
     "error_handler" : default_error_handler
 }
 
-CONFIG_GENERAL_SHORTCUT_TRIGGER     = "/general/keyboard_shortcut_trigger"
 CONFIG_GENERAL_SHORTCUT_TRIGGER_DEFAULT = [
     "Control+space",
     "Zenkaku_Hankaku",
     "Hangul"]
-CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE = "/general/keyboard_shortcut_next_engine"
+CONFIG_GENERAL_SHORTCUT_ENABLE_DEFAULT = []
+CONFIG_GENERAL_SHORTCUT_DISABLE_DEFAULT = []
 CONFIG_GENERAL_SHORTCUT_NEXT_ENGINE_DEFAULT = []
-CONFIG_GENERAL_SHORTCUT_PREV_ENGINE = "/general/keyboard_shortcut_prev_engine"
 CONFIG_GENERAL_SHORTCUT_PREV_ENGINE_DEFAULT = []
 
 __mainloop = None
