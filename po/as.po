@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.ibus.as\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-19 17:46+0900\n"
+"POT-Creation-Date: 2011-02-12 00:41+0900\n"
 "PO-Revision-Date: 2010-05-05 16:04+0530\n"
 "Last-Translator: Amitakhya Phukan <aphukan@redhat.com>\n"
 "Language-Team: Assamese <fedora-trans-as@redhat.com>\n"
@@ -32,7 +32,7 @@ msgstr "IBus input method framework"
 msgid "Start IBus Input Method Framework"
 msgstr "IBus input method framework"
 
-#: ../ibus/_config.py.in:38
+#: ../ibus/_config.py.in:39
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -44,15 +44,15 @@ msgstr ""
 msgid "Other"
 msgstr "অন্য"
 
-#: ../ui/gtk/candidatepanel.py:267
+#: ../ui/gtk/candidatepanel.py:264
 msgid "Previous page"
 msgstr "পূৰ্ববৰ্তী পৃষ্ঠা"
 
-#: ../ui/gtk/candidatepanel.py:272
+#: ../ui/gtk/candidatepanel.py:269
 msgid "Next page"
 msgstr "পৰবৰ্তী পৃষ্ঠা"
 
-#: ../ui/gtk/main.py:57
+#: ../ui/gtk/main.py:55
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
@@ -60,91 +60,99 @@ msgstr ""
 "কিছুমান নিবেশ পদ্ধতিক সংস্থাপন, আঁতৰুৱা বা উন্নত কৰা হৈছে । অনুগ্ৰহ কৰি ibus নিবেশৰ "
 "মঞ্চ পুনৰাৰম্ভ কৰক ।"
 
-#: ../ui/gtk/main.py:62
+#: ../ui/gtk/main.py:59
 msgid "Restart Now"
 msgstr "এতিয়া পুনৰাৰম্ভ কৰক"
 
-#: ../ui/gtk/main.py:63
+#: ../ui/gtk/main.py:60
 msgid "Later"
 msgstr "পিছত"
 
-#: ../ui/gtk/panel.py:113
+#: ../ui/gtk/panel.py:109
 msgid "IBus input method framework"
 msgstr "IBus input method framework"
 
-#: ../ui/gtk/panel.py:331
+#: ../ui/gtk/panel.py:327
 msgid "Restart"
 msgstr "পুনৰাৰম্ভ"
 
-#: ../ui/gtk/panel.py:418
+#: ../ui/gtk/panel.py:414
 msgid "Turn off input method"
 msgstr "নিবেশ পদ্ধতি বন্ধ কৰক"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:453
 msgid "No input window"
 msgstr "নিবেশৰ সংযোগক্ষেত্ৰ নাই"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:484
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus এটা Linux/Unix ৰ কাৰণে বুদ্ধিমান নিবেশ bus ।"
 
-#: ../ui/gtk/panel.py:492
+#: ../ui/gtk/panel.py:488
 msgid "translator-credits"
 msgstr "অমিতাক্ষ ফুকন (aphukan@fedoraproject.org)"
 
-#: ../ui/gtk/languagebar.py:108
+#: ../ui/gtk/languagebar.py:106
 msgid "About the input method"
 msgstr "নিবেশ পদ্ধতিৰ বিষয়ে"
 
-#: ../ui/gtk/languagebar.py:216
+#: ../ui/gtk/languagebar.py:214
 msgid "Switch input method"
 msgstr "নিবেশ পদ্ধতি সলনি কৰক"
 
-#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
-#: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
+#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
+#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "বিষয়ে"
 
-#: ../ui/gtk/languagebar.py:363
+#: ../ui/gtk/languagebar.py:361
 msgid "About the Input Method"
 msgstr "নিবেশ পদ্ধতিৰ বিষয়ে"
 
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
+#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
 #, python-format
 msgid "Language: %s\n"
 msgstr "ভাষা: %s\n"
 
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "চাবিৰ ফলকৰ বিন্যাস: %s\n"
 
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Author: %s\n"
 msgstr "লিখক: %s\n"
 
-#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 msgid "Description:\n"
 msgstr "বিৱৰণ:\n"
 
-#: ../setup/main.py:106
+#: ../setup/main.py:102
 msgid "trigger"
 msgstr "ট্ৰিগাৰ"
 
-#: ../setup/main.py:117
+#: ../setup/main.py:113
+msgid "enable"
+msgstr ""
+
+#: ../setup/main.py:124
+msgid "disable"
+msgstr ""
+
+#: ../setup/main.py:135
 msgid "next input method"
 msgstr "পিছৰ নিবেশ পদ্ধতি"
 
-#: ../setup/main.py:128
+#: ../setup/main.py:146
 msgid "previous input method"
 msgstr "আগৰ নিবেশ পদ্ধতি"
 
-#: ../setup/main.py:268
+#: ../setup/main.py:286
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus ডেমন আৰম্ভ কৰা হোৱা নাই । আপুনি ইয়াক এতিয়া আৰম্ভ কৰিব বিচাৰে নেকি ?"
 
-#: ../setup/main.py:283
+#: ../setup/main.py:301
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -158,24 +166,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:298
+#: ../setup/main.py:316
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s ৰ কাৰণে চাবিফলকৰ চমুপথ নিৰ্ব্বাচন কৰক"
 
-#: ../setup/keyboardshortcut.py:55
+#: ../setup/keyboardshortcut.py:52
 msgid "Keyboard shortcuts"
 msgstr "কীবৰ্ডৰ চমুপথবোৰ"
 
-#: ../setup/keyboardshortcut.py:66
+#: ../setup/keyboardshortcut.py:63
 msgid "Key code:"
 msgstr "চাবিৰ কোড:"
 
-#: ../setup/keyboardshortcut.py:81
+#: ../setup/keyboardshortcut.py:78
 msgid "Modifiers:"
 msgstr "পৰিবৰ্তক:"
 
-#: ../setup/keyboardshortcut.py:234
+#: ../setup/keyboardshortcut.py:231
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -183,7 +191,7 @@ msgstr ""
 "অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ) ।\n"
 "চাবি এৰিলে সম্বাদ বন্ধ হ'ব ।"
 
-#: ../setup/keyboardshortcut.py:236
+#: ../setup/keyboardshortcut.py:233
 msgid "Please press a key (or a key combination)"
 msgstr "অনুগ্ৰহ কৰি এটা চাবি টিপক (বা এটা চাবিৰ মিশ্ৰণ)"
 
@@ -192,15 +200,15 @@ msgid "Select an input method"
 msgstr "এটা নিবেশ পদ্ধতি নিৰ্ব্বাচন কৰক"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
+#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
 msgid "Input Method"
 msgstr "নিবেশ পদ্ধতি"
 
-#: ../setup/enginetreeview.py:95
+#: ../setup/enginetreeview.py:92
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
 msgid "IBus Preferences"
 msgstr "IBus পছন্দ"
 
@@ -266,11 +274,11 @@ msgstr "ibus আৰম্ভৰ আগতে কলঘৰ তুলি লওক
 msgid "Prev engine shortcut keys"
 msgstr "পূৰ্ববৰ্তী কলঘৰৰ ছৰ্টকাট চাবি"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "সকলো অনুপ্ৰয়োগৰ মাজত একেই নিবেশ পদ্ধতি অংশীদাৰ কৰক"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "প্ৰণালী ট্ৰত আইকন প্ৰদৰ্শন কৰা হ'ব"
 
@@ -278,7 +286,7 @@ msgstr "প্ৰণালী ট্ৰত আইকন প্ৰদৰ্শন
 msgid "Show input method name"
 msgstr "নিবেশ পদ্ধতিৰ নাম দেখুৱাব"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "ভাষাৰ বাৰত নিবেশ পদ্ধতিৰ নাম দেখুৱাব"
 
@@ -308,7 +316,7 @@ msgstr "তালিকাত উপস্থিত পৰবৰ্তী নি
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "তালিকাত উপস্থিত পূৰ্ববৰ্তী নিবেশ পদ্ধতিলৈ পৰিবৰ্তনৰ বাবে প্ৰযোজ্য ছৰ্ট-কাট চাবি"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "নিবেশ পদ্ধতি খোলা আৰু বন্ধ কৰাৰ বাবে প্ৰয়োজনীয় ছৰ্ট-কাট চাবি নিৰ্ধাৰণ কৰক"
 
@@ -328,11 +336,11 @@ msgstr "ভাষাৰ পেনেলৰ বাবে স্বনিৰ্ব
 msgid "Use global input method"
 msgstr "সৰ্বব্যাপী নিবেশ পদ্ধতি ব্যৱহাৰ কৰক"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "প্ৰণালী চাবিৰ ফলক (XKB) বিন্যাস প্ৰয়োগ কৰা হ'ব"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "প্ৰণালী চাবিৰ ফলক বিন্যাস প্ৰয়োগ কৰা হ'ব"
 
@@ -413,102 +421,110 @@ msgid "Custom"
 msgstr "স্বনিৰ্ধাৰিত"
 
 #: ../setup/setup.ui.h:24
+msgid "Disable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
 msgstr "অনুপ্ৰয়োগৰ সংযোগক্ষেত্ৰত প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:26
 msgid "Embed the preedit text of input method in the application window"
 msgstr "অনুপ্ৰয়োগৰ সংযোগক্ষেত্ৰত নিবেশ পদ্ধতিৰ প্ৰিএডিট টেক্সট প্ৰোথিত কৰক"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:27
 msgid "Embedded in menu"
 msgstr "তালিকাত প্ৰোথিত"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "Enable or disable:"
 msgstr "সক্ৰিয় বা নিষ্ক্ৰিয় কৰক:"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
+msgid "Enable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
 msgid "General"
 msgstr "সাধাৰণ"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Horizontal"
 msgstr "অনুভূমিক"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Language panel position:"
 msgstr "ভাষাৰ পেনেলৰ স্থান:"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "নিৰ্বাচিত নিবেশ পদ্ধতিক সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ তললৈ স্থানান্তৰ কৰক"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "নিৰ্বাচিত নিবেশ পদ্ধতিক সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ ওপৰলৈ স্থানান্তৰ কৰক"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Next input method:"
 msgstr "পিছৰ নিবেশ পদ্ধতি:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Previous input method:"
 msgstr "আগৰ নিবেশ পদ্ধতি"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Remove the selected input method from the enabled input methods"
 msgstr "সক্ৰিয় নিবেশ পদ্ধতিৰ তালিকাৰ পৰা নিৰ্বাচিত নিবেশ পদ্ধতি আঁতৰুৱা হ'ব"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "ভাষাৰ বাৰ প্ৰদৰ্শন আৰু লুকুৱাৰ উদ্দেশ্যে ibus ৰ আচৰণ নিৰ্ধাৰণ কৰক"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Set the orientation of candidates in lookup table"
 msgstr "লুক-আপ টেবুলত প্ৰযোজ্য বিকল্পসমূহৰ দিশ নিৰ্ধাৰণ কৰক"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
 msgstr "নিৰ্বাচিত নিবেশ পদ্ধতি সংক্ৰান্ত তথ্য প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "চেকবক্স নিৰ্বাচিত হ'লে ভাষাৰ বাৰত নিবেশ পদ্ধতিৰ নাম প্ৰদৰ্শন কৰা হ'ব"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Show language panel:"
 msgstr "ভাষাৰ পেনেল দেখুৱাওক:"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:48
 msgid "Start ibus on login"
 msgstr "প্ৰৱেশত ibus আৰম্ভ কৰক"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "তালিকাত উপস্থিত পৰবৰ্তী নিবেশ পদ্ধতিলৈ পৰিবৰ্তনৰ বাবে প্ৰযোজ্য ছৰ্ট-কাট চাবি"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "তালিকাত উপস্থিত পূৰ্ববৰ্তী নিবেশ পদ্ধতিলৈ পৰিবৰ্তনৰ বাবে প্ৰযোজ্য ছৰ্ট-কাট চাবি"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top left corner"
 msgstr "ওপৰৰ বাওঁফালৰ কোণত"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:53
 msgid "Top right corner"
 msgstr "ওপৰৰ সোঁফালৰ কোণত"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:54
 msgid "Use custom font:"
 msgstr "স্বনিৰ্বাচিত ফন্ট ব্যৱহাৰ কৰক:"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "Vertical"
 msgstr "উল্লম্ব"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 msgid "When active"
 msgstr "সক্ৰিয় অৱস্থাত"
 

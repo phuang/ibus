@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-19 17:46+0900\n"
+"POT-Creation-Date: 2011-02-12 00:41+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Héctor Daniel Cabrera <logan@fedoraproject.org>\n"
 "Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
@@ -30,7 +30,7 @@ msgstr "Marco de trabajo para métodos de entrada"
 msgid "Start IBus Input Method Framework"
 msgstr "Inicie el marco de trabajo para métodos de entrada IBus"
 
-#: ../ibus/_config.py.in:38
+#: ../ibus/_config.py.in:39
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -42,15 +42,15 @@ msgstr ""
 msgid "Other"
 msgstr "Otro"
 
-#: ../ui/gtk/candidatepanel.py:267
+#: ../ui/gtk/candidatepanel.py:264
 msgid "Previous page"
 msgstr "Página anterior"
 
-#: ../ui/gtk/candidatepanel.py:272
+#: ../ui/gtk/candidatepanel.py:269
 msgid "Next page"
 msgstr "Siguiente página"
 
-#: ../ui/gtk/main.py:57
+#: ../ui/gtk/main.py:55
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
@@ -58,91 +58,99 @@ msgstr ""
 "Algunos métodos de entrada han sido instalados, eliminados o actualizados. "
 "Por favor, reinicie la plataforma de entrada ibus."
 
-#: ../ui/gtk/main.py:62
+#: ../ui/gtk/main.py:59
 msgid "Restart Now"
 msgstr "Reiniciar ahora"
 
-#: ../ui/gtk/main.py:63
+#: ../ui/gtk/main.py:60
 msgid "Later"
 msgstr "Más tarde"
 
-#: ../ui/gtk/panel.py:113
+#: ../ui/gtk/panel.py:109
 msgid "IBus input method framework"
 msgstr "Marco de trabajo para métodos de entrada IBus"
 
-#: ../ui/gtk/panel.py:331
+#: ../ui/gtk/panel.py:327
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: ../ui/gtk/panel.py:418
+#: ../ui/gtk/panel.py:414
 msgid "Turn off input method"
 msgstr "Desactivar métodos de entrada"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:453
 msgid "No input window"
 msgstr "Sin ventana de entrada"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:484
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus es un bus de entrada inteligente para Linux/Unix."
 
-#: ../ui/gtk/panel.py:492
+#: ../ui/gtk/panel.py:488
 msgid "translator-credits"
 msgstr "Domingo Becker, <domingobecker@gmail.com>, 2009"
 
-#: ../ui/gtk/languagebar.py:108
+#: ../ui/gtk/languagebar.py:106
 msgid "About the input method"
 msgstr "Acerca del método de entrada"
 
-#: ../ui/gtk/languagebar.py:216
+#: ../ui/gtk/languagebar.py:214
 msgid "Switch input method"
 msgstr "Cambiar método de entrada"
 
-#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
-#: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
+#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
+#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Acerca de"
 
-#: ../ui/gtk/languagebar.py:363
+#: ../ui/gtk/languagebar.py:361
 msgid "About the Input Method"
 msgstr "Acerca del Método de Entrada"
 
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
+#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
 #, python-format
 msgid "Language: %s\n"
 msgstr "Idioma: %s\n"
 
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Diseño del teclado: %s\n"
 
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 msgid "Description:\n"
 msgstr "Descripción:\n"
 
-#: ../setup/main.py:106
+#: ../setup/main.py:102
 msgid "trigger"
 msgstr "activador"
 
-#: ../setup/main.py:117
+#: ../setup/main.py:113
+msgid "enable"
+msgstr ""
+
+#: ../setup/main.py:124
+msgid "disable"
+msgstr ""
+
+#: ../setup/main.py:135
 msgid "next input method"
 msgstr "siguiente método de entrada"
 
-#: ../setup/main.py:128
+#: ../setup/main.py:146
 msgid "previous input method"
 msgstr "método de entrada anterior"
 
-#: ../setup/main.py:268
+#: ../setup/main.py:286
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "El demonio IBUS no fue iniciado. ¿Desea iniciarlo ahora?"
 
-#: ../setup/main.py:283
+#: ../setup/main.py:301
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -156,24 +164,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:298
+#: ../setup/main.py:316
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccione la tecla de atajo para %s"
 
-#: ../setup/keyboardshortcut.py:55
+#: ../setup/keyboardshortcut.py:52
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
 
-#: ../setup/keyboardshortcut.py:66
+#: ../setup/keyboardshortcut.py:63
 msgid "Key code:"
 msgstr "Código clave:"
 
-#: ../setup/keyboardshortcut.py:81
+#: ../setup/keyboardshortcut.py:78
 msgid "Modifiers:"
 msgstr "Modificadores:"
 
-#: ../setup/keyboardshortcut.py:234
+#: ../setup/keyboardshortcut.py:231
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -181,7 +189,7 @@ msgstr ""
 "Por favor, presione una tecla (o una combinación de tecla).\n"
 "El diálogo será cerrado cuando la tecla sea soltada."
 
-#: ../setup/keyboardshortcut.py:236
+#: ../setup/keyboardshortcut.py:233
 msgid "Please press a key (or a key combination)"
 msgstr "Por favor, presione una tecla (o combinación de teclas)"
 
@@ -190,15 +198,15 @@ msgid "Select an input method"
 msgstr "Seleccione un método de entrada"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
+#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
 msgid "Input Method"
 msgstr "Métodos de Entrada"
 
-#: ../setup/enginetreeview.py:95
+#: ../setup/enginetreeview.py:92
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
 msgid "IBus Preferences"
 msgstr "Preferencias de IBus"
 
@@ -264,11 +272,11 @@ msgstr "Precargar los motores durante el inicio de ibus"
 msgid "Prev engine shortcut keys"
 msgstr "Atajo de teclado para la máquina previa"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "Compartir el mismo método de entrada con todas las aplicaciones"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "Mostrar un ícono en el área de notificación"
 
@@ -276,7 +284,7 @@ msgstr "Mostrar un ícono en el área de notificación"
 msgid "Show input method name"
 msgstr "Mostrar el nombre del método de entrada"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "Mostrar el nombre del método de entrada en la barra de idioma"
 
@@ -308,7 +316,7 @@ msgstr ""
 "Los atajos de teclado para retroceder al método de entrada anterior en la "
 "lista"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Atajo de teclado para encender o apagar el método de entrada"
 
@@ -328,11 +336,11 @@ msgstr "Usar nombre de fuente personalizada para el panel de idioma"
 msgid "Use global input method"
 msgstr "Utilizar método de entrada global"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "Usar el diseño del teclado del sistema (XKB)"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "Usar el diseño del teclado del sistema"
 
@@ -415,116 +423,124 @@ msgid "Custom"
 msgstr "Personalizado"
 
 #: ../setup/setup.ui.h:24
+msgid "Disable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
 msgstr "Insertar texto previamente editado en la ventana de la aplicación"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:26
 msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 "Insertar el texto previamente editado del método de entrada en la ventana de "
 "la aplicación"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:27
 msgid "Embedded in menu"
 msgstr "Menú incrustado"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:28
 msgid "Enable or disable:"
 msgstr "Habilitar o deshabilitar:"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
+msgid "Enable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
 msgid "General"
 msgstr "General"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 msgid "Language panel position:"
 msgstr "Posición del panel de idioma:"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "Mover abajo el método de entrada seleccionado en los métodos de entrada "
 "habilitados"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "Mover arriba el método de entrada seleccionado en la lista de métodos de "
 "entrada habilitados"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Next input method:"
 msgstr "Siguiente método de entrada:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Previous input method:"
 msgstr "Método de entrada anterior:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "Eliminar el método de entrada seleccionado de los métodos de entrada "
 "habilitados"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 "Configurar el comportamiento de ibus sobre cómo mostrar u ocultar la barra "
 "de idiomas"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Poner la orientación de la tabla de búsqueda de candidatos"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
 msgstr "Mostrar información sobre el método de entrada seleccionado"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "Mostrar el nombre del método de entrada en la barra de idioma cuando se "
 "marque la casilla"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Show language panel:"
 msgstr "Mostrar el panel de idioma:"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:48
 msgid "Start ibus on login"
 msgstr "Iniciar ibus al ingresar"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 "Tecla programada para cambiar al siguiente método de entrada en la lista"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "Tecla programada para cambiar al método de entrada anterior en la lista"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top left corner"
 msgstr "Esquina superior izquierda"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:53
 msgid "Top right corner"
 msgstr "Esquina superior derecha"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:54
 msgid "Use custom font:"
 msgstr "Usar fuente personalizada:"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "Vertical"
 msgstr "Vertical"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 msgid "When active"
 msgstr "Cuando esté activo"
 

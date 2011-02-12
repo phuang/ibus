@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-19 17:46+0900\n"
+"POT-Creation-Date: 2011-02-12 00:41+0900\n"
 "PO-Revision-Date: 2009-09-19 20:43+0200\n"
 "Last-Translator: Patricia Rivera Escuder <patysya@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -44,7 +44,7 @@ msgstr "Entorn de mètodes d'entrada IBus"
 msgid "Start IBus Input Method Framework"
 msgstr "Entorn de mètodes d'entrada IBus"
 
-#: ../ibus/_config.py.in:38
+#: ../ibus/_config.py.in:39
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -54,112 +54,120 @@ msgstr ""
 msgid "Other"
 msgstr "Altres"
 
-#: ../ui/gtk/candidatepanel.py:267
+#: ../ui/gtk/candidatepanel.py:264
 #, fuzzy
 msgid "Previous page"
 msgstr "Anterior mètode d'entrada:"
 
-#: ../ui/gtk/candidatepanel.py:272
+#: ../ui/gtk/candidatepanel.py:269
 msgid "Next page"
 msgstr ""
 
-#: ../ui/gtk/main.py:57
+#: ../ui/gtk/main.py:55
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
 
-#: ../ui/gtk/main.py:62
+#: ../ui/gtk/main.py:59
 #, fuzzy
 msgid "Restart Now"
 msgstr "Reinicia"
 
-#: ../ui/gtk/main.py:63
+#: ../ui/gtk/main.py:60
 #, fuzzy
 msgid "Later"
 msgstr "Altres"
 
-#: ../ui/gtk/panel.py:113
+#: ../ui/gtk/panel.py:109
 msgid "IBus input method framework"
 msgstr "Entorn de mètodes d'entrada IBus"
 
-#: ../ui/gtk/panel.py:331
+#: ../ui/gtk/panel.py:327
 msgid "Restart"
 msgstr "Reinicia"
 
-#: ../ui/gtk/panel.py:418
+#: ../ui/gtk/panel.py:414
 msgid "Turn off input method"
 msgstr "Inhabilita el mètode d'entrada"
 
-#: ../ui/gtk/panel.py:457
+#: ../ui/gtk/panel.py:453
 msgid "No input window"
 msgstr "Cap finestra d'entrada"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:484
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus és un bus d'entrada intel·ligent per a Linux/Unix."
 
-#: ../ui/gtk/panel.py:492
+#: ../ui/gtk/panel.py:488
 msgid "translator-credits"
 msgstr ""
 "Oscar Osta Pueyo <oostap@gmail.com>, 2009\n"
 "Patricia Rivera Escuder <patysya@gmail.com>, 2009\n"
 "Xavier Conde Rueda <xavi.conde@gmail.com>"
 
-#: ../ui/gtk/languagebar.py:108
+#: ../ui/gtk/languagebar.py:106
 #, fuzzy
 msgid "About the input method"
 msgstr "Quant al mètode d'entrada"
 
-#: ../ui/gtk/languagebar.py:216
+#: ../ui/gtk/languagebar.py:214
 msgid "Switch input method"
 msgstr "Canvia el mètode d'entrada"
 
-#: ../ui/gtk/languagebar.py:359 ../ui/gtk/engineabout.py:35
-#: ../setup/engineabout.py:35 ../setup/setup.ui.h:16
+#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
+#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
 msgid "About"
 msgstr "Quant a"
 
-#: ../ui/gtk/languagebar.py:363
+#: ../ui/gtk/languagebar.py:361
 msgid "About the Input Method"
 msgstr "Quant al mètode d'entrada"
 
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
+#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
 #, python-format
 msgid "Language: %s\n"
 msgstr "Idioma: %s\n"
 
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
+#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Disposició del teclat: %s\n"
 
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
+#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: ../ui/gtk/engineabout.py:69 ../setup/engineabout.py:69
+#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 msgid "Description:\n"
 msgstr "Descripció: \n"
 
-#: ../setup/main.py:106
+#: ../setup/main.py:102
 msgid "trigger"
 msgstr "activador"
 
-#: ../setup/main.py:117
+#: ../setup/main.py:113
+msgid "enable"
+msgstr ""
+
+#: ../setup/main.py:124
+msgid "disable"
+msgstr ""
+
+#: ../setup/main.py:135
 msgid "next input method"
 msgstr "següent mètode d'entrada"
 
-#: ../setup/main.py:128
+#: ../setup/main.py:146
 msgid "previous input method"
 msgstr "anterior mètode d'entrada"
 
-#: ../setup/main.py:268
+#: ../setup/main.py:286
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "El dimoni IBus no està iniciat. Voleu iniciar-lo ara?"
 
-#: ../setup/main.py:283
+#: ../setup/main.py:301
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in "
 "$HOME/.bashrc, and relogin your desktop.\n"
@@ -173,24 +181,24 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:298
+#: ../setup/main.py:316
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccioneu la drecera de teclat per a %s"
 
-#: ../setup/keyboardshortcut.py:55
+#: ../setup/keyboardshortcut.py:52
 msgid "Keyboard shortcuts"
 msgstr "Dreceres de teclat"
 
-#: ../setup/keyboardshortcut.py:66
+#: ../setup/keyboardshortcut.py:63
 msgid "Key code:"
 msgstr "Codi de lletra:"
 
-#: ../setup/keyboardshortcut.py:81
+#: ../setup/keyboardshortcut.py:78
 msgid "Modifiers:"
 msgstr "Modificadors:"
 
-#: ../setup/keyboardshortcut.py:234
+#: ../setup/keyboardshortcut.py:231
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -198,7 +206,7 @@ msgstr ""
 "Si us plau premeu una tecla (o una combinació de tecles).\n"
 "El diàleg es tancarà quan es deixi anar la tecla."
 
-#: ../setup/keyboardshortcut.py:236
+#: ../setup/keyboardshortcut.py:233
 msgid "Please press a key (or a key combination)"
 msgstr "Si us plau premeu una tecla (o una combinació de tecles)"
 
@@ -207,15 +215,15 @@ msgid "Select an input method"
 msgstr "Selecciona un mètode d'entrada"
 
 #. create im name & icon column
-#: ../setup/enginetreeview.py:67 ../setup/setup.ui.h:31
+#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
 msgid "Input Method"
 msgstr "Mètode d'entrada"
 
-#: ../setup/enginetreeview.py:95
+#: ../setup/enginetreeview.py:92
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:30
+#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
 msgid "IBus Preferences"
 msgstr "Prefèrencies de l'IBus"
 
@@ -290,11 +298,11 @@ msgstr "Carrega els mètodes d'entrada a l'inici"
 msgid "Prev engine shortcut keys"
 msgstr "Tecla del mètode anterior"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:40
+#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:41
+#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr ""
 
@@ -303,7 +311,7 @@ msgstr ""
 msgid "Show input method name"
 msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
 
@@ -334,7 +342,7 @@ msgid "The shortcut keys for switching to the previous input method"
 msgstr ""
 "La drecera de teclat per canviar a l'anterior mètode d'entrada de la llista"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:49
+#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
 #, fuzzy
 msgid "The shortcut keys for turning input method on or off"
 msgstr ""
@@ -358,11 +366,11 @@ msgstr "Empra el tipus de lletra personalitzat per al quadre d'idiomes"
 msgid "Use global input method"
 msgstr "Selecciona un mètode d'entrada"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:53
+#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "Utilitza la disposició de teclat del sistema (XKB)"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:54
+#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "Utilitza la disposició de teclat del sistema"
 
@@ -445,110 +453,118 @@ msgid "Custom"
 msgstr "Tipus de lletra personalitzada:"
 
 #: ../setup/setup.ui.h:24
-msgid "Embed preedit text in application window"
+msgid "Disable:"
 msgstr ""
 
 #: ../setup/setup.ui.h:25
-msgid "Embed the preedit text of input method in the application window"
+msgid "Embed preedit text in application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:26
-msgid "Embedded in menu"
+msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 
 #: ../setup/setup.ui.h:27
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:28
 msgid "Enable or disable:"
 msgstr "Activa o desactiva:"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:29
+msgid "Enable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
 msgid "General"
 msgstr "General"
 
-#: ../setup/setup.ui.h:29
+#: ../setup/setup.ui.h:31
 #, fuzzy
 msgid "Horizontal"
 msgstr ""
 "Horitzontal\n"
 "Vertical"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:34
 #, fuzzy
 msgid "Language panel position:"
 msgstr "Mostra el quadre d'idiomes:"
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:35
 msgid "Move down the selected input method in the enabled input methods"
 msgstr "Abaixa el mètode d'entrada selecionat als mètodes d'entrada activats"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:36
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr "Apuja el mètode d'entrada seleccionat a la llista de mètodes activats"
 
-#: ../setup/setup.ui.h:35
+#: ../setup/setup.ui.h:37
 msgid "Next input method:"
 msgstr "Següent mètode d'entrada:"
 
-#: ../setup/setup.ui.h:36
+#: ../setup/setup.ui.h:38
 msgid "Previous input method:"
 msgstr "Anterior mètode d'entrada:"
 
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:39
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "Suprimeix el mètode d'entrada seleccionat dels mètodes d'entrada activats"
 
-#: ../setup/setup.ui.h:38
+#: ../setup/setup.ui.h:40
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr "Ajusta com l'ibus mostra o amaga la barra d'idioma"
 
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:41
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Estableix l'orientació dels candidats a la taula de cerca"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
 msgstr "Mostra la informació del mètode d'entrada seleccionat"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:46
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr "Mostra el nom del mètode a la barra d'idioma quan s'activi l'opció"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:47
 msgid "Show language panel:"
 msgstr "Mostra el quadre d'idiomes:"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:48
 msgid "Start ibus on login"
 msgstr "Inicia l'ibus en entrar"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:49
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 "La drecera de teclat per canviar al següent mètode d'entrada de la llista"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 "La drecera de teclat per canviar a l'anterior mètode d'entrada de la llista"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:52
 msgid "Top left corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:53
 msgid "Top right corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:54
 #, fuzzy
 msgid "Use custom font:"
 msgstr "Empra un tipus de lletra personalitzat"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid "Vertical"
 msgstr ""
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 #, fuzzy
 msgid "When active"
 msgstr ""
