@@ -395,7 +395,7 @@ static Bool Xi18nXWait (XIMS ims,
     {
         unsigned char *packet;
         XimProtoHdr *hdr;
-        int connect_id_ret;
+        int connect_id_ret = 0;
 
         XIfEvent (i18n_core->address.dpy,
                   &event,
@@ -496,7 +496,7 @@ static Bool WaitXIMProtocol (Display *dpy,
     XSpecRec *spec = (XSpecRec *) i18n_core->address.connect_addr;
     Bool delete = True;
     unsigned char *packet;
-    int connect_id;
+    int connect_id = 0;
 
     if (((XClientMessageEvent *) ev)->message_type
         == spec->xim_request)
