@@ -498,7 +498,7 @@ _engine_desc_cmp (IBusEngineDesc *desc1,
 /**
  * bus_ibus_impl_set_default_preload_engines:
  *
- * If the "preload_engines" config variable is not set yet, set the default value which is determined based on a current locale (LC_ALL).
+ * If the "preload_engines" config variable is not set yet, set the default value which is determined based on a current locale.
  */
 static void
 bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
@@ -520,7 +520,14 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
     }
 
     done = TRUE;
-    gchar *lang = g_strdup (setlocale (LC_ALL, NULL));
+
+    /* The setlocale call first checks LC_ALL. If it's not available, checks
+     * LC_MESSAGES. If it's also not available, checks LANG. */
+    gchar *lang = g_strdup (setlocale (LC_MESSAGES, NULL));
+    if (lang == NULL) {
+        return;
+    }
+
     gchar *p = index (lang, '.');
     if (p) {
         *p = '\0';
