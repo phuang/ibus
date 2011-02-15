@@ -676,8 +676,8 @@ ibus_input_context_process_key_event_done (IBusInputContext   *context,
         g_variant_unref (variant);
 
         g_simple_async_result_set_op_res_gboolean (simple, retval);
-        g_simple_async_result_complete (simple);
     }
+    g_simple_async_result_complete (simple);
 }
 
 
