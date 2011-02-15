@@ -141,9 +141,10 @@ ibus_bus_class_init (IBusBusClass *class)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            _ibus_marshal_VOID__VOID,
+            _ibus_marshal_VOID__STRING,
             G_TYPE_NONE,
-            0);
+            1,
+            G_TYPE_STRING);
 
     /**
      * IBusBus::name-owner-changed:
@@ -159,7 +160,8 @@ ibus_bus_class_init (IBusBusClass *class)
             0,
             NULL, NULL,
             _ibus_marshal_VOID__STRING_STRING_STRING,
-            G_TYPE_NONE, 3,
+            G_TYPE_NONE,
+            3,
             G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 
     g_type_class_add_private (class, sizeof (IBusBusPrivate));
@@ -202,8 +204,11 @@ _connection_ibus_signal_cb (GDBusConnection *connection,
     g_return_if_fail (IBUS_IS_BUS (user_data));
 
     if (g_strcmp0 (signal_name, "GlobalEngineChanged") == 0) {
+        gchar *engine_name = NULL;
+        g_variant_get (parameters, "(&s)", &engine_name);
         g_signal_emit (IBUS_BUS (user_data),
-                       bus_signals[GLOBAL_ENGINE_CHANGED], 0);
+                       bus_signals[GLOBAL_ENGINE_CHANGED], 0,
+                       engine_name);
     }
     /* FIXME handle org.freedesktop.IBus.RegistryChanged signal if needed */
 }

@@ -233,6 +233,7 @@ static const gchar introspection_xml[] =
     "    <signal name='RegistryChanged'>\n"
     "    </signal>\n"
     "    <signal name='GlobalEngineChanged'>\n"
+    "      <arg type='s' name='engine_name' />\n"
     "    </signal>\n"
     "  </interface>\n"
     "</node>\n";
@@ -1923,7 +1924,9 @@ bus_ibus_impl_registry_changed (BusIBusImpl *ibus)
 static void
 bus_ibus_impl_global_engine_changed (BusIBusImpl *ibus)
 {
-    bus_ibus_impl_emit_signal (ibus, "GlobalEngineChanged", NULL);
+    const gchar *name = ibus->global_engine_name ? ibus->global_engine_name : "";
+    bus_ibus_impl_emit_signal (ibus, "GlobalEngineChanged",
+                               g_variant_new ("(s)", name));
 }
 
 gboolean
