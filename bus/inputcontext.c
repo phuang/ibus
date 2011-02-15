@@ -2311,17 +2311,6 @@ bus_input_context_filter_keyboard_shortcuts (BusInputContext    *context,
         }
     }
 
-    if (keycode != 0 && bus_ibus_impl_is_use_sys_layout (BUS_DEFAULT_IBUS) == FALSE) {
-        IBusKeymap *keymap = BUS_DEFAULT_KEYMAP;
-        if (keymap != NULL) {
-            guint tmp = ibus_keymap_lookup_keysym (keymap,
-                                                   keycode,
-                                                   modifiers);
-            if (tmp != IBUS_VoidSymbol)
-                keyval = tmp;
-        }
-    }
-
     retval = bus_ibus_impl_filter_keyboard_shortcuts (BUS_DEFAULT_IBUS,
                                                       context,
                                                       keyval,
