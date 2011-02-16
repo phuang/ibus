@@ -655,32 +655,6 @@ ibus_input_context_get_input_context (const gchar        *path,
     return context;
 }
 
-static void
-ibus_input_context_process_key_event_done (IBusInputContext   *context,
-                                           GAsyncResult       *res,
-                                           gpointer            user_data)
-{
-    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) user_data;
-    GError *error = NULL;
-    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context, res, &error);
-
-    if (variant == NULL) {
-        /* Replace with g_simple_async_result_take_error in glib 2.28 */
-        g_simple_async_result_set_from_error (simple, error);
-        g_error_free (error);
-    }
-    else {
-        gboolean retval = FALSE;
-
-        g_variant_get (variant, "(b)", &retval);
-        g_variant_unref (variant);
-
-        g_simple_async_result_set_op_res_gboolean (simple, retval);
-    }
-    g_simple_async_result_complete (simple);
-}
-
-
 void
 ibus_input_context_process_key_event (IBusInputContext   *context,
                                       guint32             keyval,
@@ -693,11 +667,6 @@ ibus_input_context_process_key_event (IBusInputContext   *context,
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
-    GSimpleAsyncResult *simple = g_simple_async_result_new ((GObject*) context,
-                                                            callback,
-                                                            user_data,
-                                                            ibus_input_context_process_key_event);
-
     g_dbus_proxy_call ((GDBusProxy *) context,
                        "ProcessKeyEvent",                   /* method_name */
                        g_variant_new ("(uuu)",
@@ -705,9 +674,8 @@ ibus_input_context_process_key_event (IBusInputContext   *context,
                        G_DBUS_CALL_FLAGS_NONE,              /* flags */
                        timeout_msec,                        /* timeout */
                        cancellable,                         /* cancellable */
-                       (GAsyncReadyCallback) ibus_input_context_process_key_event_done,
-                                                            /* callback */
-                       simple                               /* user_data */
+                       callback,                            /* callback */
+                       user_data                            /* user_data */
                        );
 
 }
@@ -719,19 +687,23 @@ ibus_input_context_process_key_event_finish (IBusInputContext   *context,
                                              GError            **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
-    g_assert (g_simple_async_result_is_valid (res, (GObject *) context,
-                                              ibus_input_context_process_key_event));
+    g_assert (G_IS_ASYNC_RESULT (res));
+    g_assert (processed != NULL);
+    g_assert (error == NULL || *error == NULL);
 
-    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
-    *processed = FALSE;
-
-    if (g_simple_async_result_propagate_error (simple, error))
+    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
+                                                   res, error);
+    if (variant == NULL) {
+        *processed = FALSE;
         return FALSE;
-
-    *processed = g_simple_async_result_get_op_res_gboolean (simple);
-    return TRUE;
+    }
+    else {
+        *processed = FALSE;
+        g_variant_get (variant, "(b)", processed);
+        g_variant_unref (variant);
+        return TRUE;
+    }
 }
-
 
 
 gboolean
