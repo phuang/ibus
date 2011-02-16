@@ -74,13 +74,25 @@ static void      ibus_bus_watch_dbus_signal     (IBusBus                *bus);
 static void      ibus_bus_unwatch_dbus_signal   (IBusBus                *bus);
 static void      ibus_bus_watch_ibus_signal     (IBusBus                *bus);
 static void      ibus_bus_unwatch_ibus_signal   (IBusBus                *bus);
-static GVariant *ibus_bus_call                  (IBusBus                *bus,
+static GVariant *ibus_bus_call_sync             (IBusBus                *bus,
                                                  const gchar            *service,
                                                  const gchar            *path,
                                                  const gchar            *interface,
                                                  const gchar            *member,
                                                  GVariant               *parameters,
                                                  const GVariantType     *reply_type);
+static void      ibus_bus_call_async             (IBusBus                *bus,
+                                                  const gchar            *service,
+                                                  const gchar            *path,
+                                                  const gchar            *interface,
+                                                  const gchar            *member,
+                                                  GVariant               *parameters,
+                                                  const GVariantType     *reply_type,
+                                                  gpointer                source_tag,
+                                                  gint                    timeout_msec,
+                                                  GCancellable           *cancellable,
+                                                  GAsyncReadyCallback     callback,
+                                                  gpointer                user_data);
 
 G_DEFINE_TYPE (IBusBus, ibus_bus, IBUS_TYPE_OBJECT)
 
@@ -419,13 +431,13 @@ ibus_bus_create_input_context (IBusBus      *bus,
     gchar *path;
     IBusInputContext *context = NULL;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "CreateInputContext",
-                            g_variant_new ("(s)", client_name),
-                            G_VARIANT_TYPE ("(o)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "CreateInputContext",
+                                 g_variant_new ("(s)", client_name),
+                                 G_VARIANT_TYPE ("(o)"));
 
     if (result != NULL) {
         GError *error = NULL;
@@ -449,13 +461,13 @@ ibus_bus_current_input_context (IBusBus      *bus)
 
     gchar *path = NULL;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "CurrentInputContext",
-                            NULL,
-                            G_VARIANT_TYPE ("(o)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "CurrentInputContext",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(o)"));
 
     if (result != NULL) {
         g_variant_get (result, "(o)", &path);
@@ -584,13 +596,13 @@ ibus_bus_hello (IBusBus *bus)
     g_free (bus->priv->unique_name);
     bus->priv->unique_name = NULL;
 
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "Hello",
-                            NULL,
-                            G_VARIANT_TYPE ("(s)"));
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "Hello",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(s)"));
 
     if (result) {
         g_variant_get (result, "(s)", &bus->priv->unique_name);
@@ -611,13 +623,13 @@ ibus_bus_request_name (IBusBus      *bus,
 
     guint retval = 0;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "RequestName",
-                            g_variant_new ("(su)", name, flags),
-                            G_VARIANT_TYPE ("(u)"));
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "RequestName",
+                                 g_variant_new ("(su)", name, flags),
+                                 G_VARIANT_TYPE ("(u)"));
 
     if (result) {
         g_variant_get (result, "(u)", &retval);
@@ -636,13 +648,13 @@ ibus_bus_release_name (IBusBus      *bus,
 
     guint retval = 0;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "ReleaseName",
-                            g_variant_new ("(s)", name),
-                            G_VARIANT_TYPE ("(u)"));
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "ReleaseName",
+                                 g_variant_new ("(s)", name),
+                                 G_VARIANT_TYPE ("(u)"));
 
     if (result) {
         g_variant_get (result, "(u)", &retval);
@@ -661,13 +673,13 @@ ibus_bus_name_has_owner (IBusBus        *bus,
 
     gboolean retval = FALSE;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "NameHasOwner",
-                            g_variant_new ("(s)", name),
-                            G_VARIANT_TYPE ("(b)"));
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "NameHasOwner",
+                                 g_variant_new ("(s)", name),
+                                 G_VARIANT_TYPE ("(b)"));
 
     if (result) {
         g_variant_get (result, "(b)", &retval);
@@ -692,13 +704,13 @@ ibus_bus_add_match (IBusBus     *bus,
     g_return_if_fail (rule != NULL);
 
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "AddMatch",
-                            g_variant_new ("(s)", rule),
-                            NULL);
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "AddMatch",
+                                 g_variant_new ("(s)", rule),
+                                 NULL);
 
     if (result) {
         g_variant_unref (result);
@@ -713,13 +725,13 @@ ibus_bus_remove_match (IBusBus      *bus,
     g_return_if_fail (rule != NULL);
 
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "RemoveMatch",
-                            g_variant_new ("(s)", rule),
-                            NULL);
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "RemoveMatch",
+                                 g_variant_new ("(s)", rule),
+                                 NULL);
 
     if (result) {
         g_variant_unref (result);
@@ -734,13 +746,13 @@ ibus_bus_get_name_owner (IBusBus        *bus,
 
     gchar *retval = NULL;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            DBUS_SERVICE_DBUS,
-                            DBUS_PATH_DBUS,
-                            DBUS_INTERFACE_DBUS,
-                            "GetNameOwner",
-                            g_variant_new ("(s)", name),
-                            G_VARIANT_TYPE ("(s)"));
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "GetNameOwner",
+                                 g_variant_new ("(s)", name),
+                                 G_VARIANT_TYPE ("(s)"));
 
     if (result) {
         g_variant_get (result, "(s)", &retval);
@@ -765,13 +777,13 @@ ibus_bus_exit (IBusBus *bus,
     g_return_val_if_fail (IBUS_IS_BUS (bus), FALSE);
 
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "Exit",
-                            g_variant_new ("(b)", restart),
-                            NULL);
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "Exit",
+                                 g_variant_new ("(b)", restart),
+                                 NULL);
 
     if (result) {
         g_variant_unref (result);
@@ -788,13 +800,13 @@ ibus_bus_register_component (IBusBus       *bus,
     g_return_val_if_fail (IBUS_IS_COMPONENT (component), FALSE);
 
     GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)component);
-    GVariant *result = ibus_bus_call (bus,
-                                      IBUS_SERVICE_IBUS,
-                                      IBUS_PATH_IBUS,
-                                      IBUS_INTERFACE_IBUS,
-                                      "RegisterComponent",
-                                      g_variant_new ("(v)", variant),
-                                      NULL);
+    GVariant *result = ibus_bus_call_sync (bus,
+                                           IBUS_SERVICE_IBUS,
+                                           IBUS_PATH_IBUS,
+                                           IBUS_INTERFACE_IBUS,
+                                           "RegisterComponent",
+                                           g_variant_new ("(v)", variant),
+                                           NULL);
     if (result) {
         g_variant_unref (result);
         return TRUE;
@@ -809,13 +821,13 @@ ibus_bus_do_list_engines (IBusBus *bus, gboolean active_engines_only)
 
     GList *retval = NULL;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            active_engines_only ? "ListActiveEngines" : "ListEngines",
-                            NULL,
-                            G_VARIANT_TYPE ("(av)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 active_engines_only ? "ListActiveEngines" : "ListEngines",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(av)"));
 
     if (result) {
         GVariantIter *iter = NULL;
@@ -882,13 +894,13 @@ ibus_bus_get_use_sys_layout (IBusBus *bus)
 
     gboolean retval = FALSE;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetUseSysLayout",
-                            NULL,
-                            G_VARIANT_TYPE ("(b)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "GetUseSysLayout",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(b)"));
 
     if (result) {
         g_variant_get (result, "(b)", &retval);
@@ -905,13 +917,13 @@ ibus_bus_get_use_global_engine (IBusBus *bus)
 
     gboolean retval = FALSE;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetUseGlobalEngine",
-                            NULL,
-                            G_VARIANT_TYPE ("(b)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "GetUseGlobalEngine",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(b)"));
 
     if (result) {
         g_variant_get (result, "(b)", &retval);
@@ -928,13 +940,13 @@ ibus_bus_is_global_engine_enabled (IBusBus *bus)
 
     gboolean retval = FALSE;
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "IsGlobalEngineEnabled",
-                            NULL,
-                            G_VARIANT_TYPE ("(b)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "IsGlobalEngineEnabled",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(b)"));
 
     if (result) {
         g_variant_get (result, "(b)", &retval);
@@ -951,13 +963,13 @@ ibus_bus_get_global_engine (IBusBus *bus)
 
     GVariant *result;
     IBusEngineDesc *engine = NULL;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "GetGlobalEngine",
-                            NULL,
-                            G_VARIANT_TYPE ("(v)"));
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "GetGlobalEngine",
+                                 NULL,
+                                 G_VARIANT_TYPE ("(v)"));
 
     if (result) {
         GVariant *variant = NULL;
@@ -979,13 +991,13 @@ ibus_bus_set_global_engine (IBusBus     *bus,
     g_return_val_if_fail (IBUS_IS_BUS (bus), FALSE);
 
     GVariant *result;
-    result = ibus_bus_call (bus,
-                            IBUS_SERVICE_IBUS,
-                            IBUS_PATH_IBUS,
-                            IBUS_INTERFACE_IBUS,
-                            "SetGlobalEngine",
-                            g_variant_new ("(s)", global_engine),
-                            NULL);
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "SetGlobalEngine",
+                                 g_variant_new ("(s)", global_engine),
+                                 NULL);
 
     if (result) {
         g_variant_unref (result);
@@ -994,14 +1006,53 @@ ibus_bus_set_global_engine (IBusBus     *bus,
     return FALSE;
 }
 
+void
+ibus_bus_set_global_engine_async (IBusBus            *bus,
+                                  const gchar        *global_engine,
+                                  gint                timeout_msec,
+                                  GCancellable       *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer            user_data)
+{
+    g_return_if_fail (IBUS_IS_BUS (bus));
+
+    ibus_bus_call_async (bus,
+                         IBUS_SERVICE_IBUS,
+                         IBUS_PATH_IBUS,
+                         IBUS_INTERFACE_IBUS,
+                         "SetGlobalEngine",
+                         g_variant_new ("(s)", global_engine),
+                         NULL, /* no return value */
+                         ibus_bus_set_global_engine_async,
+                         timeout_msec,
+                         cancellable,
+                         callback,
+                         user_data);
+}
+
+gboolean
+ibus_bus_set_global_engine_async_finish (IBusBus      *bus,
+                                         GAsyncResult *res,
+                                         GError      **error)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
+                                              ibus_bus_set_global_engine_async));
+
+    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
+    if (g_simple_async_result_propagate_error (simple, error))
+        return FALSE;
+    return TRUE;
+}
+
 static GVariant *
-ibus_bus_call (IBusBus            *bus,
-               const gchar        *bus_name,
-               const gchar        *path,
-               const gchar        *interface,
-               const gchar        *member,
-               GVariant           *parameters,
-               const GVariantType *reply_type)
+ibus_bus_call_sync (IBusBus            *bus,
+                    const gchar        *bus_name,
+                    const gchar        *path,
+                    const gchar        *interface,
+                    const gchar        *member,
+                    GVariant           *parameters,
+                    const GVariantType *reply_type)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (member != NULL);
@@ -1028,4 +1079,66 @@ ibus_bus_call (IBusBus            *bus,
     }
 
     return result;
+}
+
+static void
+ibus_bus_call_async_done (GDBusConnection *connection,
+                          GAsyncResult    *res,
+                          gpointer         user_data)
+{
+    g_assert (G_IS_DBUS_CONNECTION (connection));
+
+    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) user_data;
+    GError *error = NULL;
+    GVariant *variant = g_dbus_connection_call_finish (connection, res, &error);
+
+    if (variant == NULL) {
+        /* Replace with g_simple_async_result_take_error in glib 2.28 */
+        g_simple_async_result_set_from_error (simple, error);
+        g_error_free (error);
+    }
+    else {
+        /* FIXME If we support IPCs other than ibus_bus_set_global_engine, we
+         * might have to call g_simple_async_result_set_op_res_XXX() here. */
+        g_variant_unref (variant);
+    }
+    g_simple_async_result_complete (simple);
+    g_object_unref (simple);
+}
+
+static void
+ibus_bus_call_async (IBusBus            *bus,
+                     const gchar        *bus_name,
+                     const gchar        *path,
+                     const gchar        *interface,
+                     const gchar        *member,
+                     GVariant           *parameters,
+                     const GVariantType *reply_type,
+                     gpointer            source_tag,
+                     gint                timeout_msec,
+                     GCancellable       *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer            user_data)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (member != NULL);
+    g_return_if_fail (ibus_bus_is_connected (bus));
+
+    GSimpleAsyncResult *simple = g_simple_async_result_new ((GObject*) bus,
+                                                            callback,
+                                                            user_data,
+                                                            source_tag);
+
+    g_dbus_connection_call (bus->priv->connection,
+                            bus_name,
+                            path,
+                            interface,
+                            member,
+                            parameters,
+                            reply_type,
+                            G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                            timeout_msec,
+                            cancellable,
+                            (GAsyncReadyCallback) ibus_bus_call_async_done,
+                            simple);
 }
