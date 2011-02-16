@@ -97,7 +97,7 @@ IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
  * @name: Name of the configure option.
  * @returns: A #GVariant or %NULL. Free with g_variant_unref().
  *
- * Get the value of a configuration option.
+ * Get the value of a configuration option synchronously.
  *
  * GConf stores configure options in a tree-like structure,
  * and the IBus related setting is at /desktop/ibus,
@@ -117,19 +117,22 @@ GVariant        *ibus_config_get_value      (IBusConfig         *config,
  * @config: An IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: Callback function to invoke when the return value is ready.
+ * @user_data: The data to pass to callback.
  *
- * Get the value of a configuration option.
+ * Get the value of a configuration option asynchronously.
  *
  * @see_also: ibus_config_get_value.
  */
-void             ibus_config_get_value_async(IBusConfig         *config,
-                                             const gchar        *section,
-                                             const gchar        *name,
-                                             GCancellable       *cancellable,
-                                             GAsyncReadyCallback callback,
-                                             gpointer            user_data);
+void             ibus_config_get_value_async (IBusConfig         *config,
+                                              const gchar        *section,
+                                              const gchar        *name,
+                                              gint                timeout_ms,
+                                              GCancellable       *cancellable,
+                                              GAsyncReadyCallback callback,
+                                              gpointer            user_data);
 
 /**
  * ibus_config_get_value_async_finish:
@@ -152,10 +155,11 @@ GVariant        *ibus_config_get_value_async_finish
  * @config: An IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option its self.
- * @value: A #GVariant that holds the value.
+ * @value: A #GVariant that holds the value. If the value is floating, the
+ * function takes ownership of it.
  * @returns: TRUE if succeed; FALSE otherwise.
  *
- * Set the value of a configuration option.
+ * Set the value of a configuration option synchronously.
  * @see_also: ibus_config_get_value.
  */
 gboolean         ibus_config_set_value      (IBusConfig         *config,
@@ -168,21 +172,25 @@ gboolean         ibus_config_set_value      (IBusConfig         *config,
  * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
- * @value: A #GVariant that holds the value.
+ * @value: A #GVariant that holds the value. If the value is floating, the
+ * function takes ownership of it.
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: Callback function to invoke when the return value is ready.
+ * @user_data: The data to pass to callback.
  *
- * Set the value of a configuration option.
+ * Set the value of a configuration option asynchronously.
  *
  * @see_also: ibus_config_set_value.
  */
-void             ibus_config_set_value_async(IBusConfig         *config,
-                                             const gchar        *section,
-                                             const gchar        *name,
-                                             GVariant           *value,
-                                             GCancellable       *cancellable,
-                                             GAsyncReadyCallback callback,
-                                             gpointer            user_data);
+void             ibus_config_set_value_async (IBusConfig         *config,
+                                              const gchar        *section,
+                                              const gchar        *name,
+                                              GVariant           *value,
+                                              gint                timeout_ms,
+                                              GCancellable       *cancellable,
+                                              GAsyncReadyCallback callback,
+                                              gpointer            user_data);
 
 /**
  * ibus_config_set_value_async_finish:
@@ -213,6 +221,9 @@ gboolean         ibus_config_set_value_async_finish
 gboolean         ibus_config_unset      (IBusConfig         *config,
                                          const gchar        *section,
                                          const gchar        *name);
+
+/* FIXME add an asynchronous version of unset */
+
 G_END_DECLS
 #endif
 
