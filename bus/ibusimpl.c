@@ -523,8 +523,8 @@ bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
     done = TRUE;
 
     /* The setlocale call first checks LC_ALL. If it's not available, checks
-     * LC_MESSAGES. If it's also not available, checks LANG. */
-    gchar *lang = g_strdup (setlocale (LC_MESSAGES, NULL));
+     * LC_CTYPE. If it's also not available, checks LANG. */
+    gchar *lang = g_strdup (setlocale (LC_CTYPE, NULL));
     if (lang == NULL) {
         return;
     }
