@@ -472,6 +472,9 @@ bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
     if (new_value) {
         /* turn on use_global_engine option */
         ibus->use_global_engine = TRUE;
+        if (ibus->panel && ibus->focused_context == NULL) {
+            bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
+        }
     }
     else {
         /* turn off use_global_engine option */
@@ -708,6 +711,9 @@ _dbus_name_owner_changed_cb (BusDBusImpl *dbus,
 
             if (ibus->focused_context != NULL) {
                 bus_panel_proxy_focus_in (ibus->panel, ibus->focused_context);
+            }
+            else if (ibus->use_global_engine) {
+                bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
             }
         }
     }
