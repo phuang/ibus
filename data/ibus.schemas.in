@@ -24,7 +24,30 @@
 	    <long>The shortcut keys for turning input method on or off</long>
       </locale>
     </schema>
-
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/enable_unconditional</key>
+      <applyto>/desktop/ibus/general/hotkey/enable_unconditional</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+        <short>Enable shortcut keys</short>
+	    <long>The shortcut keys for turning input method on</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/disable_unconditional</key>
+      <applyto>/desktop/ibus/general/hotkey/disable_unconditional</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+        <short>Disable shortcut keys</short>
+	    <long>The shortcut keys for turning input method off</long>
+      </locale>
+    </schema>
     <!-- For backward compatibility -->
     <schema>
       <key>/schemas/desktop/ibus/general/hotkey/next_engine</key>
