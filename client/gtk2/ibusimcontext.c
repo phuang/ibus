@@ -620,6 +620,12 @@ ibus_im_context_finalize (GObject *obj)
         pango_attr_list_unref (ibusimcontext->preedit_attrs);
     }
 
+    if (_key_snooper_id != 0) {
+        IDEBUG ("snooper is terminated.");
+        gtk_key_snooper_remove (_key_snooper_id);
+        _key_snooper_id = 0;
+    }
+
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 }
 
