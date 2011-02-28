@@ -117,7 +117,7 @@ IBusInputContext
                                              GDBusConnection    *connection);
 
 /**
- * ibus_input_context_process_key_event:
+ * ibus_input_context_process_key_event_async:
  * @context: An IBusInputContext.
  * @keyval: Key symbol of a key event.
  * @keycode: Keycode of a key event.
@@ -148,7 +148,7 @@ IBusInputContext
  *
  * see_also: #IBusEngine::process-key-event
  */
-void        ibus_input_context_process_key_event
+void        ibus_input_context_process_key_event_async
                                             (IBusInputContext   *context,
                                              guint32             keyval,
                                              guint32             keycode,
@@ -159,25 +159,25 @@ void        ibus_input_context_process_key_event
                                              gpointer            user_data);
 
 /**
- * ibus_input_context_process_key_event_finish:
+ * ibus_input_context_process_key_event_async_finish:
  * @context: An IBusInputContext.
  * @res: A GAsyncResult obtained from the GAsyncReadyCallback passed to
- *   ibus_input_context_process_key_event().
+ *   ibus_input_context_process_key_event_async().
  * @processed: A point to a bool value. If the the key event is processed, it will
  *      assigned to TRUE, FALSE otherwise.
  * @error: Return location for error or NULL.
  * @returns: TRUE for success; FALSE otherwise.
  *
- * Finishes an operation started with ibus_input_context_process_key_event().
+ * Finishes an operation started with ibus_input_context_process_key_event_async().
  */
-gboolean     ibus_input_context_process_key_event_finish
+gboolean     ibus_input_context_process_key_event_async_finish
                                             (IBusInputContext   *context,
                                              GAsyncResult       *res,
                                              gboolean           *processed,
                                              GError            **error);
 
 /**
- * ibus_input_context_process_key_event_sync:
+ * ibus_input_context_process_key_event:
  * @context: An IBusInputContext.
  * @keyval: Key symbol of a key event.
  * @keycode: Keycode of a key event.
@@ -186,9 +186,9 @@ gboolean     ibus_input_context_process_key_event_finish
  *
  * Pass the key event to input method engine and wait for the reply from ibus.
  *
- * @see_also: ibus_input_context_process_key_event()
+ * @see_also: ibus_input_context_process_key_event_async()
  */
-gboolean     ibus_input_context_process_key_event_sync
+gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
                                              guint32             keyval,
                                              guint32             keycode,

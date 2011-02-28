@@ -656,14 +656,14 @@ ibus_input_context_get_input_context (const gchar        *path,
 }
 
 void
-ibus_input_context_process_key_event (IBusInputContext   *context,
-                                      guint32             keyval,
-                                      guint32             keycode,
-                                      guint32             state,
-                                      gint                timeout_msec,
-                                      GCancellable       *cancellable,
-                                      GAsyncReadyCallback callback,
-                                      gpointer            user_data)
+ibus_input_context_process_key_event_async (IBusInputContext   *context,
+                                            guint32             keyval,
+                                            guint32             keycode,
+                                            guint32             state,
+                                            gint                timeout_msec,
+                                            GCancellable       *cancellable,
+                                            GAsyncReadyCallback callback,
+                                            gpointer            user_data)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
@@ -681,10 +681,10 @@ ibus_input_context_process_key_event (IBusInputContext   *context,
 }
 
 gboolean
-ibus_input_context_process_key_event_finish (IBusInputContext   *context,
-                                             GAsyncResult       *res,
-                                             gboolean           *processed,
-                                             GError            **error)
+ibus_input_context_process_key_event_async_finish (IBusInputContext  *context,
+                                                   GAsyncResult      *res,
+                                                   gboolean          *processed,
+                                                   GError           **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (G_IS_ASYNC_RESULT (res));
@@ -707,20 +707,20 @@ ibus_input_context_process_key_event_finish (IBusInputContext   *context,
 
 
 gboolean
-ibus_input_context_process_key_event_sync (IBusInputContext *context,
-                                           guint32           keyval,
-                                           guint32           keycode,
-                                           guint32           state)
+ibus_input_context_process_key_event (IBusInputContext *context,
+                                      guint32           keyval,
+                                      guint32           keycode,
+                                      guint32           state)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
 
     GVariant *result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
-                            "ProcessKeyEvent",                   /* method_name */
+                            "ProcessKeyEvent",              /* method_name */
                             g_variant_new ("(uuu)",
-                                 keyval, keycode, state),        /* parameters */
-                            G_DBUS_CALL_FLAGS_NONE,              /* flags */
-                            -1,                                  /* timeout */
-                            NULL,                                /* cancellable */
+                                 keyval, keycode, state),   /* parameters */
+                            G_DBUS_CALL_FLAGS_NONE,         /* flags */
+                            -1,                             /* timeout */
+                            NULL,                           /* cancellable */
                             NULL);
 
     if (result != NULL) {

@@ -232,10 +232,8 @@ _process_key_event_done (GObject      *object,
     GdkEventKey *event = (GdkEventKey *) user_data;
 
     gboolean processed = FALSE;
-    if (!ibus_input_context_process_key_event_finish (context,
-                                                     res,
-                                                     &processed,
-                                                     NULL)) {
+    if (!ibus_input_context_process_key_event_async_finish (context,
+            res, &processed, NULL)) {
         processed = FALSE;
     }
 
@@ -337,49 +335,30 @@ _key_snooper_cb (GtkWidget   *widget,
         ibusimcontext->time = event->time;
     }
 
-    switch (event->type) {
-    case GDK_KEY_RELEASE:
-        if (_use_sync_mode) {
-            retval = ibus_input_context_process_key_event_sync (ibuscontext,
-                                                            event->keyval,
-                                                            event->hardware_keycode - 8,
-                                                            event->state | IBUS_RELEASE_MASK);
-        }
-        else {
-            ibus_input_context_process_key_event (ibuscontext,
-                                                  event->keyval,
-                                                  event->hardware_keycode - 8,
-                                                  event->state | IBUS_RELEASE_MASK,
-                                                  -1,
-                                                  NULL,
-                                                  _process_key_event_done,
-                                                  gdk_event_copy ((GdkEvent *) event));
-            retval = TRUE;
+    guint state = event->state;
+    if (event->type == GDK_KEY_RELEASE) {
+        state |= IBUS_RELEASE_MASK;
+    }
 
-        }
-        break;
-    case GDK_KEY_PRESS:
-        if (_use_sync_mode) {
-            retval = ibus_input_context_process_key_event_sync (ibuscontext,
-                                                            event->keyval,
-                                                            event->hardware_keycode - 8,
-                                                            event->state);
-        }
-        else {
-            ibus_input_context_process_key_event (ibuscontext,
-                                                  event->keyval,
-                                                  event->hardware_keycode - 8,
-                                                  event->state,
-                                                  -1,
-                                                  NULL,
-                                                  _process_key_event_done,
-                                                  gdk_event_copy ((GdkEvent *) event));
-            retval = TRUE;
-        }
-        break;
-    default:
-        retval = FALSE;
-        break;
+    if (_use_sync_mode) {
+        retval = ibus_input_context_process_key_event (
+                                        ibuscontext,
+                                        event->keyval,
+                                        event->hardware_keycode - 8,
+                                        state);
+    }
+    else {
+        ibus_input_context_process_key_event_async (
+                                        ibuscontext,
+                                        event->keyval,
+                                        event->hardware_keycode - 8,
+                                        state,
+                                        -1,
+                                        NULL,
+                                        _process_key_event_done,
+                                        gdk_event_copy ((GdkEvent *) event));
+        retval = TRUE;
+
     }
 
     if (retval) {
@@ -657,47 +636,29 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
             ibusimcontext->time = event->time;
         }
 
-        switch (event->type) {
-        case GDK_KEY_RELEASE:
-            if (_use_sync_mode) {
-                retval = ibus_input_context_process_key_event_sync (ibusimcontext->ibuscontext,
-                                                                    event->keyval,
-                                                                    event->hardware_keycode - 8,
-                                                                    event->state | IBUS_RELEASE_MASK);
-            }
-            else {
-                ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
-                                                      event->keyval,
-                                                      event->hardware_keycode - 8,
-                                                      event->state | IBUS_RELEASE_MASK,
-                                                      -1,
-                                                      NULL,
-                                                      _process_key_event_done,
-                                                      gdk_event_copy ((GdkEvent *) event));
-                retval = TRUE;
-            }
-            break;
-        case GDK_KEY_PRESS:
-            if (_use_sync_mode) {
-                retval = ibus_input_context_process_key_event_sync (ibusimcontext->ibuscontext,
-                                                                    event->keyval,
-                                                                    event->hardware_keycode - 8,
-                                                                    event->state);
-            }
-            else {
-                ibus_input_context_process_key_event (ibusimcontext->ibuscontext,
-                                                      event->keyval,
-                                                      event->hardware_keycode - 8,
-                                                      event->state,
-                                                      -1,
-                                                      NULL,
-                                                      _process_key_event_done,
-                                                      gdk_event_copy ((GdkEvent *) event));
-                retval = TRUE;
-            }
-            break;
-        default:
-            retval = FALSE;
+        guint state = event->state;
+        if (event->type == GDK_KEY_RELEASE) {
+            state |= IBUS_RELEASE_MASK;
+        }
+
+        if (_use_sync_mode) {
+            retval = ibus_input_context_process_key_event (
+                                        ibusimcontext->ibuscontext,
+                                        event->keyval,
+                                        event->hardware_keycode - 8,
+                                        state);
+        }
+        else {
+            ibus_input_context_process_key_event_async (
+                                        ibusimcontext->ibuscontext,
+                                        event->keyval,
+                                        event->hardware_keycode - 8,
+                                        state,
+                                        -1,
+                                        NULL,
+                                        _process_key_event_done,
+                                        gdk_event_copy ((GdkEvent *) event));
+            retval = TRUE;
         }
 
         if (retval) {
