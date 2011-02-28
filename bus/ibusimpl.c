@@ -1723,31 +1723,16 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
     if (context == NULL)
         context = ibus->fake_context;
 
-    const gchar *new_engine_name = NULL;
-    g_variant_get (parameters, "(&s)", &new_engine_name);
-    const gchar *old_engine_name = NULL;
+    const gchar *engine_name = NULL;
+    g_variant_get (parameters, "(&s)", &engine_name);
 
-    BusEngineProxy *engine = bus_input_context_get_engine (context);
-    if (engine) {
-        old_engine_name =
-                ibus_engine_desc_get_name (bus_engine_proxy_get_desc (engine));
-    }
-
-    if (g_strcmp0 (new_engine_name, old_engine_name) == 0) {
-        /* If the user requested the same global engine, then we just enable the
-         * original one. */
-        bus_input_context_enable (context);
-        g_dbus_method_invocation_return_value (invocation, NULL);
-        return;
-    }
-
-    IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, new_engine_name);
+    IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, engine_name);
     if (desc == NULL) {
         g_dbus_method_invocation_return_error (invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
                                                "Can not find engine %s.",
-                                               new_engine_name);
+                                               engine_name);
         return;
     }
 

@@ -136,6 +136,9 @@ class Bus(object.Object):
         engines = self.__ibus.ListActiveEngines()
         return map(serializable.deserialize_object, engines)
 
+    def set_global_engine(self, name):
+        return self.__ibus.SetGlobalEngine(name)
+
     def create_input_context(self, client_name):
         return self.__ibus.CreateInputContext(client_name)
 

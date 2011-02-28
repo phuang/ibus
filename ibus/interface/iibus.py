@@ -66,6 +66,9 @@ class IIBus(dbus.service.Object):
     @method(out_signature="av")
     def ListActiveEngines(self, dbusconn): pass
 
+    @method(in_signature="s")
+    def SetGlobalEngine(self, name, dbusconn):pass
+
     @method(in_signature="b")
     def Exit(self, restart, dbusconn): pass
 
