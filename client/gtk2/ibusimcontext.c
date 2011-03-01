@@ -113,7 +113,7 @@ static void     ibus_im_context_set_use_preedit
 
 /* static methods*/
 static void     _create_input_context       (IBusIMContext      *context);
-static void     _set_cursor_location_internal
+static gboolean _set_cursor_location_internal
                                             (GtkIMContext       *context);
 
 static void     _bus_connected_cb           (IBusBus            *bus,
@@ -208,8 +208,9 @@ _focus_in_cb (GtkWidget     *widget,
               GdkEventFocus *event,
               gpointer       user_data)
 {
-    if (_focus_im_context == NULL && _fake_context != NULL)
+    if (_focus_im_context == NULL && _fake_context != NULL) {
         ibus_input_context_focus_in (_fake_context);
+    }
     return FALSE;
 }
 
@@ -218,8 +219,9 @@ _focus_out_cb (GtkWidget     *widget,
                GdkEventFocus *event,
                gpointer       user_data)
 {
-    if (_focus_im_context == NULL && _fake_context != NULL)
+    if (_focus_im_context == NULL && _fake_context != NULL) {
         ibus_input_context_focus_out (_fake_context);
+    }
     return FALSE;
 }
 
@@ -680,18 +682,20 @@ ibus_im_context_focus_in (GtkIMContext *context)
 {
     IDEBUG ("%s", __FUNCTION__);
 
-    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
+    IBusIMContext *ibusimcontext = (IBusIMContext *) context;
 
+    if (ibusimcontext->has_focus)
+        return;
     if (_focus_im_context != NULL) {
-        if (_focus_im_context != context) {
-            gtk_im_context_focus_out (_focus_im_context);
-            g_assert (_focus_im_context == NULL);
-        }
+        g_assert (_focus_im_context != context);
+        gtk_im_context_focus_out (_focus_im_context);
+        g_assert (_focus_im_context == NULL);
     }
     else {
         /* focus out fake context */
-        if (_fake_context)
+        if (_fake_context != NULL) {
             ibus_input_context_focus_out (_fake_context);
+        }
     }
 
     ibusimcontext->has_focus = TRUE;
@@ -701,26 +705,32 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     gtk_im_context_focus_in (ibusimcontext->slave);
 
-    _set_cursor_location_internal (context);
+    /* set_cursor_location_internal() will get origin from X server,
+     * it blocks UI. So delay it to idle callback. */
+    g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+                     (GSourceFunc) _set_cursor_location_internal,
+                     g_object_ref (context),
+                     (GDestroyNotify) g_object_unref);
 
-    if (_focus_im_context != context) {
-        g_object_add_weak_pointer ((GObject *) context,
-                                   (gpointer *) &_focus_im_context);
-        _focus_im_context = context;
-    }
+    g_object_add_weak_pointer ((GObject *) context,
+                               (gpointer *) &_focus_im_context);
+    _focus_im_context = context;
 }
 
 static void
 ibus_im_context_focus_out (GtkIMContext *context)
 {
     IDEBUG ("%s", __FUNCTION__);
+    IBusIMContext *ibusimcontext = (IBusIMContext *) context;
 
-    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
-    if (_focus_im_context == context) {
-        g_object_remove_weak_pointer ((GObject *) context,
-                                      (gpointer *) &_focus_im_context);
-        _focus_im_context = NULL;
+    if (ibusimcontext->has_focus == FALSE) {
+        return;
     }
+
+    g_assert (context == _focus_im_context);
+    g_object_remove_weak_pointer ((GObject *) context,
+                                  (gpointer *) &_focus_im_context);
+    _focus_im_context = NULL;
 
     ibusimcontext->has_focus = FALSE;
     if (ibusimcontext->ibuscontext) {
@@ -730,8 +740,9 @@ ibus_im_context_focus_out (GtkIMContext *context)
     gtk_im_context_focus_out (ibusimcontext->slave);
 
     /* focus in the fake ic */
-    if (_fake_context)
+    if (_fake_context != NULL) {
         ibus_input_context_focus_in (_fake_context);
+    }
 }
 
 static void
@@ -812,15 +823,16 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
         gtk_im_context_set_client_window (ibusimcontext->slave, client);
 }
 
-static void
+static gboolean
 _set_cursor_location_internal (GtkIMContext *context)
 {
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
     GdkRectangle area;
     gint x, y;
 
-    if(ibusimcontext->client_window == NULL || ibusimcontext->ibuscontext == NULL) {
-        return;
+    if(ibusimcontext->client_window == NULL ||
+       ibusimcontext->ibuscontext == NULL) {
+        return FALSE;
     }
 
     area = ibusimcontext->cursor_area;
@@ -836,14 +848,15 @@ _set_cursor_location_internal (GtkIMContext *context)
 #endif
     }
 
-    gdk_window_get_origin (ibusimcontext->client_window, &x, &y);
-    area.x += x;
-    area.y += y;
+    gdk_window_get_root_coords (ibusimcontext->client_window,
+                                area.x, area.y,
+                                &area.x, &area.y);
     ibus_input_context_set_cursor_location (ibusimcontext->ibuscontext,
                                             area.x,
                                             area.y,
                                             area.width,
                                             area.height);
+    return FALSE;
 }
 
 static void
