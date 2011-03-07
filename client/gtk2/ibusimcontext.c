@@ -88,6 +88,7 @@ static GtkWidget *_input_widget = NULL;
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
+static void     ibus_im_context_class_fini  (IBusIMContextClass    *class);
 static void     ibus_im_context_init        (GObject               *obj);
 static void     ibus_im_context_finalize    (GObject               *obj);
 static void     ibus_im_context_reset       (GtkIMContext          *context);
@@ -152,10 +153,10 @@ ibus_im_context_register_type (GTypeModule *type_module)
 
     static const GTypeInfo ibus_im_context_info = {
         sizeof (IBusIMContextClass),
-        (GBaseInitFunc)        NULL,
-        (GBaseFinalizeFunc)     NULL,
+        (GBaseInitFunc)      NULL,
+        (GBaseFinalizeFunc)  NULL,
         (GClassInitFunc)     ibus_im_context_class_init,
-        NULL,            /* class finialize */
+        (GClassFinalizeFunc) ibus_im_context_class_fini,
         NULL,            /* class data */
         sizeof (IBusIMContext),
         0,
@@ -477,6 +478,16 @@ ibus_im_context_class_init (IBusIMContextClass *class)
         _key_snooper_id = gtk_key_snooper_install (_key_snooper_cb, NULL);
 }
 
+static void
+ibus_im_context_class_fini (IBusIMContextClass *class)
+{
+    if (_key_snooper_id != 0) {
+        IDEBUG ("snooper is terminated.");
+        gtk_key_snooper_remove (_key_snooper_id);
+        _key_snooper_id = 0;
+    }
+}
+
 /* Copied from gtk+2.0-2.20.1/modules/input/imcedilla.c to fix crosbug.com/11421.
  * Overwrite the original Gtk+'s compose table in gtk+-2.x.y/gtk/gtkimcontextsimple.c. */
 
@@ -601,12 +612,6 @@ ibus_im_context_finalize (GObject *obj)
         pango_attr_list_unref (ibusimcontext->preedit_attrs);
     }
 
-    if (_key_snooper_id != 0) {
-        IDEBUG ("snooper is terminated.");
-        gtk_key_snooper_remove (_key_snooper_id);
-        _key_snooper_id = 0;
-    }
-
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 }
 
@@ -686,6 +691,7 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     if (ibusimcontext->has_focus)
         return;
+
     if (_focus_im_context != NULL) {
         g_assert (_focus_im_context != context);
         gtk_im_context_focus_out (_focus_im_context);
