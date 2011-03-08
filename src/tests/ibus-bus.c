@@ -5,18 +5,6 @@
 
 static IBusBus *bus;
 
-static gchar *
-get_last_engine_id (const GList *engines)
-{
-    const char *result = NULL;
-    for (; engines; engines = g_list_next (engines)) {
-        IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-        g_assert (engine_desc);
-        result = ibus_engine_desc_get_name (engine_desc);
-    }
-    return g_strdup (result);
-}
-
 static void
 print_engines (const GList *engines)
 {
@@ -58,6 +46,19 @@ test_list_engines (void)
     g_list_free (engines);
 }
 
+#if 0
+static gchar *
+get_last_engine_id (const GList *engines)
+{
+    const char *result = NULL;
+    for (; engines; engines = g_list_next (engines)) {
+        IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
+        g_assert (engine_desc);
+        result = ibus_engine_desc_get_name (engine_desc);
+    }
+    return g_strdup (result);
+}
+
 static void
 test_input_context (void)
 {
@@ -94,6 +95,7 @@ test_input_context (void)
     g_list_foreach (engines, (GFunc) g_object_unref, NULL);
     g_list_free (engines);
 }
+#endif
 
 static void call_next_async_function (void);
 

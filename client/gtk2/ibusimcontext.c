@@ -834,7 +834,6 @@ _set_cursor_location_internal (GtkIMContext *context)
 {
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
     GdkRectangle area;
-    gint x, y;
 
     if(ibusimcontext->client_window == NULL ||
        ibusimcontext->ibuscontext == NULL) {
