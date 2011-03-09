@@ -11,28 +11,60 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_attribute_get_type@Base 1.3.99.20101019
  ibus_attribute_new@Base 1.3.99.20101019
  ibus_bus_add_match@Base 1.3.99.20101019
+ ibus_bus_add_match_async@Base 1.3.99.20110309
+ ibus_bus_add_match_async_finish@Base 1.3.99.20110309
  ibus_bus_create_input_context@Base 1.3.99.20101019
+ ibus_bus_create_input_context_async@Base 1.3.99.20110309
+ ibus_bus_create_input_context_async_finish@Base 1.3.99.20110309
  ibus_bus_current_input_context@Base 1.3.99.20101019
+ ibus_bus_current_input_context_async@Base 1.3.99.20110309
+ ibus_bus_current_input_context_async_finish@Base 1.3.99.20110309
  ibus_bus_exit@Base 1.3.99.20101019
+ ibus_bus_exit_async@Base 1.3.99.20110309
+ ibus_bus_exit_async_finish@Base 1.3.99.20110309
  ibus_bus_get_config@Base 1.3.99.20101019
  ibus_bus_get_connection@Base 1.3.99.20101019
  ibus_bus_get_global_engine@Base 1.3.99.20101019
+ ibus_bus_get_global_engine_async@Base 1.3.99.20110309
+ ibus_bus_get_global_engine_async_finish@Base 1.3.99.20110309
  ibus_bus_get_name_owner@Base 1.3.99.20101019
+ ibus_bus_get_name_owner_async@Base 1.3.99.20110309
+ ibus_bus_get_name_owner_async_finish@Base 1.3.99.20110309
  ibus_bus_get_type@Base 1.3.99.20101019
  ibus_bus_get_use_global_engine@Base 1.3.99.20101019
+ ibus_bus_get_use_global_engine_async@Base 1.3.99.20110309
+ ibus_bus_get_use_global_engine_async_finish@Base 1.3.99.20110309
  ibus_bus_get_use_sys_layout@Base 1.3.99.20101019
+ ibus_bus_get_use_sys_layout_async@Base 1.3.99.20110309
+ ibus_bus_get_use_sys_layout_async_finish@Base 1.3.99.20110309
  ibus_bus_hello@Base 1.3.99.20101019
  ibus_bus_is_connected@Base 1.3.99.20101019
  ibus_bus_is_global_engine_enabled@Base 1.3.99.20101019
+ ibus_bus_is_global_engine_enabled_async@Base 1.3.99.20110309
+ ibus_bus_is_global_engine_enabled_async_finish@Base 1.3.99.20110309
  ibus_bus_list_active_engines@Base 1.3.99.20101019
+ ibus_bus_list_active_engines_async@Base 1.3.99.20110309
+ ibus_bus_list_active_engines_async_finish@Base 1.3.99.20110309
  ibus_bus_list_engines@Base 1.3.99.20101019
+ ibus_bus_list_engines_async@Base 1.3.99.20110309
+ ibus_bus_list_engines_async_finish@Base 1.3.99.20110309
  ibus_bus_list_names@Base 1.3.99.20101019
  ibus_bus_name_has_owner@Base 1.3.99.20101019
+ ibus_bus_name_has_owner_async@Base 1.3.99.20110309
+ ibus_bus_name_has_owner_async_finish@Base 1.3.99.20110309
  ibus_bus_new@Base 1.3.99.20101019
  ibus_bus_register_component@Base 1.3.99.20101019
+ ibus_bus_register_component_async@Base 1.3.99.20110309
+ ibus_bus_register_component_async_finish@Base 1.3.99.20110309
  ibus_bus_release_name@Base 1.3.99.20101019
+ ibus_bus_release_name_async@Base 1.3.99.20110309
+ ibus_bus_release_name_async_finish@Base 1.3.99.20110309
  ibus_bus_remove_match@Base 1.3.99.20101019
+ ibus_bus_remove_match_async@Base 1.3.99.20110309
+ ibus_bus_remove_match_async_finish@Base 1.3.99.20110309
  ibus_bus_request_name@Base 1.3.99.20101019
+ ibus_bus_request_name_async@Base 1.3.99.20110309
+ ibus_bus_request_name_async_finish@Base 1.3.99.20110309
  ibus_bus_set_global_engine@Base 1.3.99.20101019
  ibus_bus_set_global_engine_async@Base 1.3.99.20110217
  ibus_bus_set_global_engine_async_finish@Base 1.3.99.20110217
@@ -140,8 +172,8 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_input_context_page_down@Base 1.3.99.20101019
  ibus_input_context_page_up@Base 1.3.99.20101019
  ibus_input_context_process_key_event@Base 1.3.99.20101019
- ibus_input_context_process_key_event_async_finish@Base 1.3.99.20110124
  ibus_input_context_process_key_event_async@Base 1.3.99.20110124
+ ibus_input_context_process_key_event_async_finish@Base 1.3.99.20110124
  ibus_input_context_property_activate@Base 1.3.99.20101019
  ibus_input_context_property_hide@Base 1.3.99.20101019
  ibus_input_context_property_show@Base 1.3.99.20101019
