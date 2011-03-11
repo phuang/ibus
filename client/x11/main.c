@@ -526,6 +526,7 @@ _free_ic (gpointer data, gpointer user_data)
     g_return_if_fail (x11ic != NULL);
 
     g_free (x11ic->preedit_string);
+    x11ic->preedit_string = NULL;
 
     if (x11ic->preedit_attrs) {
         g_object_unref (x11ic->preedit_attrs);
