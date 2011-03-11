@@ -4,6 +4,7 @@ src/ibusengine.c
 src/ibushotkey.c
 src/ibusinputcontext.c
 src/ibusobject.c
+src/ibuspanelservice.c
 src/ibusproxy.c
 src/ibusservice.c
 src/keyname-table.h
