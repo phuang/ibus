@@ -572,8 +572,8 @@ ibus_service_unregister (IBusService     *service,
     guint *ids = (guint *) g_hash_table_lookup (service->priv->table, connection);
     g_return_if_fail (ids != NULL);
 
-    ibus_service_unregister_cb (connection, ids, service);
     g_hash_table_remove (service->priv->table, connection);
+    ibus_service_unregister_cb (connection, ids, service);
 }
 
 gboolean
