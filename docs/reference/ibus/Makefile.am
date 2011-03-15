@@ -25,11 +25,11 @@ SCANGOBJ_OPTIONS=
 
 # Extra options to supply to gtkdoc-scan.
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
-# SCAN_OPTIONS= --rebuild-sections
+SCAN_OPTIONS= --rebuild-sections
 
 # Extra options to supply to gtkdoc-mkdb.
-# e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
-MKDB_OPTIONS=--sgml-mode --output-format=xml
+# e.g. MKDB_OPTIONS=--xml-mode --output-format=xml
+MKDB_OPTIONS=--xml-mode --output-format=xml
 
 # Extra options to supply to gtkdoc-mktmpl
 # e.g. MKTMPL_OPTIONS=--only-section-tmpl
@@ -45,7 +45,7 @@ FIXXREF_OPTIONS=
 HFILE_GLOB=$(top_srcdir)/src/*.h
 CFILE_GLOB=$(top_srcdir)/src/*.c
 
-# Header files to ignore when scanning.
+# Header files to ignore when scanning. Use base file/dir names
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES= \
 	ibusconfigprivate.h \
@@ -71,29 +71,20 @@ content_files=
 # e.g. expand_content_files=running.sgml
 expand_content_files=
 
-CFLAGS= \
+# CFLAGS and LDFLAGS for compiling gtkdoc-scangobj with your library.
+# Only needed if you are using gtkdoc-scangobj to dynamically query widget
+# signals and properties.
+# e.g. GTKDOC_CFLAGS=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
+# e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
+GTKDOC_CFLAGS= \
 	@GLIB2_CFLAGS@ \
 	@GOBJECT2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
 	@DBUS_CFLAGS@ \
-	$(NULL)
-LDFLAGS= \
-	@GLIB2_LIBS@ \
-	@GOBJECT2_LIBS@ \
-	@GIO2_LIBS@ \
-	@DBUS_LIBS@ \
-	$(NULL)
-
-# CFLAGS and LDFLAGS for compiling gtkdoc-scangobj with your library.
-# Only needed if you are using gtkdoc-scangobj to dynamically query widget
-# signals and properties.
-# e.g. INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GTK_DEBUG_FLAGS)
-# e.g. GTKDOC_LIBS=$(top_builddir)/gtk/$(gtktargetlib)
-INCLUDES = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
 	$(NULL)
-GTKDOC_LIBS = \
+GTKDOC_LIBS= \
 	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la \
 	$(NULL)
 
@@ -109,8 +100,14 @@ EXTRA_DIST +=
 # for --rebuild-sections in $(SCAN_OPTIONS) e.g. $(DOC_MODULE)-sections.txt
 DISTCLEANFILES = $(DOC_MODULE)-sections.txt
 
-# Comment this out if you want your docs-status tested during 'make check'
+# Comment this out if you want 'make check' to test you doc status
+# and run some sanity checks
+if ENABLE_GTK_DOC
+TESTS_ENVIRONMENT = cd $(srcdir) && \
+  DOC_MODULE=$(DOC_MODULE) DOC_MAIN_SGML_FILE=$(DOC_MAIN_SGML_FILE) \
+  SRCDIR=$(abs_srcdir) BUILDDIR=$(abs_builddir)
 #TESTS = $(GTKDOC_CHECK)
+endif
 
 trim-build.stamp: scan-build.stamp
 	$(AM_V_GEN) \

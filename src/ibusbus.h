@@ -452,8 +452,8 @@ gboolean ibus_bus_exit_async_finish (IBusBus      *bus,
  *
  * Create an input context for client synchronously.
  */
-IBusInputContext
-            *ibus_bus_create_input_context
+IBusInputContext *
+            ibus_bus_create_input_context
                                         (IBusBus        *bus,
                                          const gchar    *client_name);
 
@@ -469,7 +469,7 @@ IBusInputContext
  *
  * Create an input context for client asynchronously.
  */
-void         ibus_bus_create_input_context_async
+void        ibus_bus_create_input_context_async
                                         (IBusBus            *bus,
                                          const gchar        *client_name,
                                          gint                timeout_msec,
@@ -488,8 +488,8 @@ void         ibus_bus_create_input_context_async
  *
  * Finishes an operation started with ibus_bus_create_input_context_async().
  */
-IBusInputContext
-            *ibus_bus_create_input_context_async_finish
+IBusInputContext *
+            ibus_bus_create_input_context_async_finish
                                         (IBusBus      *bus,
                                          GAsyncResult *res,
                                          GError      **error);
@@ -503,7 +503,7 @@ IBusInputContext
  *
  * Get the current focused input context synchronously.
  */
-gchar       *ibus_bus_current_input_context(IBusBus        *bus);
+gchar *ibus_bus_current_input_context(IBusBus        *bus);
 
 /**
  * ibus_bus_current_input_context_async:
@@ -793,8 +793,8 @@ gboolean ibus_bus_is_global_engine_enabled_async_finish (IBusBus      *bus,
  *
  * Get the description of current global engine synchronously.
  */
-IBusEngineDesc
-            *ibus_bus_get_global_engine (IBusBus        *bus);
+IBusEngineDesc *
+             ibus_bus_get_global_engine (IBusBus        *bus);
 
 /**
  * ibus_bus_get_global_engine_async:
