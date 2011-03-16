@@ -72,3 +72,5 @@ memconf.xml: memconf.xml.in
 
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src
+
+-include $(top_srcdir)/git.mk

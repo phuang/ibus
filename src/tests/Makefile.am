@@ -63,3 +63,5 @@ ibus_factory_LDADD = $(prog_ldadd)
 
 ibus_configservice_SOURCES = ibus-configservice.c
 ibus_configservice_LDADD = $(prog_ldadd)
+
+-include $(top_srcdir)/git.mk

@@ -72,3 +72,5 @@ EXTRA_DIST = \
 	$(hicolor_icon_48_DATA) \
 	$(hicolor_icon_scalable_DATA) \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

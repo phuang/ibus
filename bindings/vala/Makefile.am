@@ -35,3 +35,5 @@ ibus-@IBUS_API_VERSION@.vapi:
 
 generate-vala:
 	vala-gen-introspect ibus-@IBUS_API_VERSION@ ibus-@IBUS_API_VERSION@
+
+-include $(top_srcdir)/git.mk

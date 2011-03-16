@@ -160,3 +160,5 @@ test: ibus-daemon
 	$(ENV_IBUS_TEST) \
 		G_DEBUG=fatal_warnings \
 		$(builddir)/ibus-daemon -v
+
+-include $(top_srcdir)/git.mk

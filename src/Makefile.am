@@ -220,3 +220,5 @@ CLEANFILES +=                   \
 DISTCLEANFILES =                \
     ibusversion.h               \
     $(NULL)
+
+-include $(top_srcdir)/git.mk

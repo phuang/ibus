@@ -62,3 +62,5 @@ EXTRA_DIST = \
 
 test: all
 	GTK_IM_MODULE=ibus gedit
+
+-include $(top_srcdir)/git.mk

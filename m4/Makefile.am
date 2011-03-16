@@ -23,3 +23,5 @@
 EXTRA_DIST = \
     as-version.m4 \
     $(NULL)
+
+-include $(top_srcdir)/git.mk

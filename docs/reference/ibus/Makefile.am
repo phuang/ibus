@@ -127,3 +127,5 @@ tmpl-build.stamp: trim-build.stamp  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DO
 
 CLEANFILES+= *.stamp
 
+
+-include $(top_srcdir)/git.mk

@@ -166,3 +166,5 @@ git-tag:
 
 git-clean-tree:
 	git clean -d -f -x
+
+-include $(top_srcdir)/git.mk

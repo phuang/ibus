@@ -70,3 +70,5 @@ test:
 		IBUS_LOCALEDIR=@localedir@ \
 		PYTHONPATH=$(top_srcdir) \
 		$(PYTHON) $(srcdir)/main.py
+
+-include $(top_srcdir)/git.mk

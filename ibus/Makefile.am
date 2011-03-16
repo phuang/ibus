@@ -69,3 +69,5 @@ CLEANFILES = \
 DISTCLEANFILES = \
 	_config.py \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

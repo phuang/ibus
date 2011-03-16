@@ -64,3 +64,5 @@ test:
 		IBUS_LOCALEDIR="@localedir@" \
 		$(PYTHON) \
 		$(srcdir)/main.py
+
+-include $(top_srcdir)/git.mk

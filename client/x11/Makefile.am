@@ -70,3 +70,5 @@ locales.h:
 		uniq | sort | \
 		xargs python -c 'import sys;print "#define LOCALES_STRING \"%s\"" % ",".join(sys.argv[1:])' \
 	 ) > $@
+
+-include $(top_srcdir)/git.mk

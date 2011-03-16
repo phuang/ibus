@@ -27,3 +27,5 @@ endif
 SUBDIRS = \
 	$(VALA_DIR) \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

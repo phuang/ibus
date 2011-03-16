@@ -25,3 +25,5 @@ SUBDIRS = \
 	gtk \
 	$(NULL)
 endif
+
+-include $(top_srcdir)/git.mk

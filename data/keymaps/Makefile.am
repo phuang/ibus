@@ -72,3 +72,5 @@ keymapsdir = $(pkgdatadir)/keymaps
 EXTRA_DIST = \
 	$(keymaps) \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

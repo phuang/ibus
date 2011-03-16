@@ -37,3 +37,5 @@ SUBDIRS = \
 	$(GTK3) \
 	$(X11) \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

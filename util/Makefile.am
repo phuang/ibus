@@ -25,3 +25,5 @@ SUBDIRS = \
 	IMdkit \
 	$(NULL)
 endif
+
+-include $(top_srcdir)/git.mk
