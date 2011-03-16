@@ -20,11 +20,13 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "inputcontext.h"
-#include "types.h"
-#include "marshalers.h"
-#include "ibusimpl.h"
+
 #include "engineproxy.h"
 #include "factoryproxy.h"
+#include "ibusimpl.h"
+#include "marshalers.h"
+#include "option.h"
+#include "types.h"
 
 struct _SetEngineByDescData {
     /* context related to the data */
@@ -565,8 +567,8 @@ bus_input_context_class_init (BusInputContextClass *class)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            bus_marshal_VOID__STRING,
-            G_TYPE_NONE,
+            bus_marshal_OBJECT__STRING,
+            IBUS_TYPE_ENGINE_DESC,
             1,
             G_TYPE_STRING);
 
@@ -917,6 +919,26 @@ _ic_is_enabled (BusInputContext       *context,
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(b)", context->enabled));
 }
 
+static void
+_ic_set_engine_done (BusInputContext       *context,
+                     GAsyncResult          *res,
+                     GDBusMethodInvocation *invocation)
+{
+    gboolean retval = FALSE;
+    GError *error = NULL;
+
+    retval = bus_input_context_set_engine_by_desc_finish (context,
+                    res, &error);
+
+    if (!retval) {
+        g_dbus_method_invocation_return_gerror (invocation, error);
+        g_error_free (error);
+    }
+    else {
+        g_dbus_method_invocation_return_value (invocation, NULL);
+    }
+}
+
 /**
  * _ic_set_engine:
  *
@@ -930,16 +952,34 @@ _ic_set_engine (BusInputContext       *context,
     gchar *engine_name = NULL;
     g_variant_get (parameters, "(&s)", &engine_name);
 
-    g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, engine_name);
+    if (!bus_input_context_has_focus (context)) {
+        g_dbus_method_invocation_return_error (invocation,
+                G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                "Context which does not has focus can not change engine to %s.",
+                engine_name);
+        return;
+    }
 
-    if (context->engine == NULL) {
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Can not find engine '%s'.", engine_name);
+    IBusEngineDesc *desc = NULL;
+    g_signal_emit (context,
+                   context_signals[REQUEST_ENGINE], 0,
+                   engine_name,
+                   &desc);
+    if (desc == NULL) {
+        g_dbus_method_invocation_return_error (invocation,
+                        G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                        "Can not find engine %s.", engine_name);
+        return;
     }
-    else {
-        bus_input_context_enable (context);
-        g_dbus_method_invocation_return_value (invocation, NULL);
-    }
+
+    bus_input_context_set_engine_by_desc (context,
+                            desc,
+                            g_gdbus_timeout,
+                            NULL,
+                            (GAsyncReadyCallback)_ic_set_engine_done,
+                            invocation);
+
+    g_object_unref (desc);
 }
 
 /**
@@ -1045,7 +1085,21 @@ bus_input_context_focus_in (BusInputContext *context)
 
     if (context->engine == NULL && context->enabled) {
         /* request an engine, e.g. a global engine if the feature is enabled. */
-        g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
+        IBusEngineDesc *desc = NULL;
+        g_signal_emit (context,
+                       context_signals[REQUEST_ENGINE], 0,
+                       NULL,
+                       &desc);
+
+        if (desc != NULL) {
+            bus_input_context_set_engine_by_desc (context,
+                            desc,
+                            g_gdbus_timeout, /* timeout in msec. */
+                            NULL, /* we do not cancel the call. */
+                            NULL, /* use the default callback function. */
+                            NULL);
+            g_object_unref (desc);
+        }
     }
 
     if (context->engine && context->enabled) {
@@ -1927,7 +1981,20 @@ bus_input_context_enable (BusInputContext *context)
     }
 
     if (context->engine == NULL) {
-        g_signal_emit (context, context_signals[REQUEST_ENGINE], 0, NULL);
+        IBusEngineDesc *desc = NULL;
+        g_signal_emit (context,
+                       context_signals[REQUEST_ENGINE], 0,
+                       NULL,
+                       &desc);
+        if (desc != NULL) {
+            bus_input_context_set_engine_by_desc (context,
+                            desc,
+                            g_gdbus_timeout, /* timeout in msec. */
+                            NULL, /* we do not cancel the call. */
+                            NULL, /* use the default callback function. */
+                            NULL);
+            g_object_unref (desc);
+        }
     }
 
     if (context->engine == NULL)

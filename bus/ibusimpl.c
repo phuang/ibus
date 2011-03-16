@@ -186,6 +186,9 @@ static BusInputContext
                                                 (BusIBusImpl        *ibus,
                                                  BusConnection      *connection,
                                                  const gchar        *client);
+static IBusEngineDesc
+               *bus_ibus_impl_get_engine_desc   (BusIBusImpl        *ibus,
+                                                 const gchar        *engine_name);
 /* some callback functions */
 static void     _context_engine_changed_cb      (BusInputContext    *context,
                                                  BusIBusImpl        *ibus);
@@ -975,21 +978,30 @@ _find_engine_desc_by_name (BusIBusImpl *ibus,
  *
  * A callback function to be called when the "request-engine" signal is sent to the context.
  */
-static void
+static IBusEngineDesc *
 _context_request_engine_cb (BusInputContext *context,
                             const gchar     *engine_name,
                             BusIBusImpl     *ibus)
 {
-    IBusEngineDesc *desc = NULL;
+    return bus_ibus_impl_get_engine_desc (ibus, engine_name);
+}
 
-    /* context should has focus before request an engine */
-    g_return_if_fail (bus_input_context_has_focus (context) ||
-                      context == ibus->focused_context);
+/**
+ * bus_ibus_impl_get_engine_desc:
+ *
+ * Get the IBusEngineDesc by engine_name. If the engine_name is NULL, return
+ * a default engine desc.
+ */
+static IBusEngineDesc *
+bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
+                               const gchar *engine_name)
+{
+    IBusEngineDesc *desc = NULL;
 
     if (engine_name != NULL && engine_name[0] != '\0') {
         /* request engine by name */
         desc = _find_engine_desc_by_name (ibus, engine_name);
-        g_return_if_fail (desc != NULL);
+        g_return_val_if_fail (desc != NULL, NULL);
     }
     else {
         /* Use global engine if possible. */
@@ -1018,11 +1030,11 @@ _context_request_engine_cb (BusInputContext *context,
              * not find any default engines. another possiblity is that the
              * user hasn't installed an engine yet? just give up. */
             g_warning ("No engine is available. Run ibus-setup first.");
-            return;
+            return NULL;
         }
     }
 
-    bus_ibus_impl_set_context_engine_from_desc (ibus, context, desc);
+    return desc;
 }
 
 /**
@@ -1041,7 +1053,11 @@ bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
 
     engine = bus_input_context_get_engine (context);
     if (engine == NULL) {
-        _context_request_engine_cb (context, NULL, ibus);
+        desc = bus_ibus_impl_get_engine_desc (ibus, NULL);
+        if (desc != NULL)
+            bus_ibus_impl_set_context_engine_from_desc (ibus,
+                                                        context,
+                                                        desc);
         return;
     }
 
@@ -1112,7 +1128,14 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
         bus_ibus_impl_context_request_next_engine_in_menu (ibus, context);
         return;
     }
-    _context_request_engine_cb (context, engine_name, ibus);
+
+    IBusEngineDesc *desc = NULL;
+    desc = bus_ibus_impl_get_engine_desc (ibus, engine_name);
+    if (desc != NULL) {
+        bus_ibus_impl_set_context_engine_from_desc (ibus,
+                                                    context,
+                                                    desc);
+    }
 }
 
 static void
@@ -1209,15 +1232,17 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
     if (!ibus->use_global_engine)
         return;
 
+    BusInputContext *context =
+            ibus->focused_context != NULL ? ibus->focused_context : ibus->fake_context;
+
+    if (context == NULL) {
+        return;
+    }
+
     if (g_strcmp0 (name, ibus->global_engine_name) == 0) {
         /* If the user requested the same global engine, then we just enable the
          * original one. */
-        if (ibus->focused_context) {
-            bus_input_context_enable (ibus->focused_context);
-        }
-        else if (ibus->fake_context) {
-            bus_input_context_enable (ibus->fake_context);
-        }
+        bus_input_context_enable (context);
         return;
     }
 
@@ -1225,11 +1250,12 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
      * the focused context, which will then change the global engine
      * automatically. Otherwise, we need to change the global engine directly.
      */
-    if (ibus->focused_context) {
-        _context_request_engine_cb (ibus->focused_context, name, ibus);
-    }
-    else if (ibus->fake_context) {
-        _context_request_engine_cb (ibus->fake_context, name, ibus);
+    IBusEngineDesc *desc = NULL;
+    desc = bus_ibus_impl_get_engine_desc (ibus, name);
+    if (desc != NULL) {
+        bus_ibus_impl_set_context_engine_from_desc (ibus,
+                                                    context,
+                                                    desc);
     }
 }
 
