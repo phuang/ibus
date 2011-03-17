@@ -61,6 +61,9 @@ struct _IBusIMContext {
 
     guint32          time;
     gint             caps;
+
+    /* cancellable */
+    GCancellable    *cancellable;
 };
 
 struct _IBusIMContextClass {
@@ -1279,57 +1282,94 @@ _ibus_context_destroy_cb (IBusInputContext *ibuscontext,
 }
 
 static void
+_create_input_context_done (IBusBus       *bus,
+                            GAsyncResult  *res,
+                            IBusIMContext *ibusimcontext)
+{
+    GError *error = NULL;
+    IBusInputContext *context = ibus_bus_create_input_context_async_finish (
+            _bus, res, &error);
+
+    if (ibusimcontext->cancellable != NULL) {
+        g_object_unref (ibusimcontext->cancellable);
+        ibusimcontext->cancellable = NULL;
+    }
+
+    if (context == NULL) {
+        g_warning ("Create input context failed: %s.", error->message);
+        g_error_free (error);
+    }
+    else {
+
+        ibusimcontext->ibuscontext = context;
+
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "commit-text",
+                          G_CALLBACK (_ibus_context_commit_text_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "forward-key-event",
+                          G_CALLBACK (_ibus_context_forward_key_event_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "delete-surrounding-text",
+                          G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "update-preedit-text",
+                          G_CALLBACK (_ibus_context_update_preedit_text_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "show-preedit-text",
+                          G_CALLBACK (_ibus_context_show_preedit_text_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "hide-preedit-text",
+                          G_CALLBACK (_ibus_context_hide_preedit_text_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "enabled",
+                          G_CALLBACK (_ibus_context_enabled_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext,
+                          "disabled",
+                          G_CALLBACK (_ibus_context_disabled_cb),
+                          ibusimcontext);
+        g_signal_connect (ibusimcontext->ibuscontext, "destroy",
+                          G_CALLBACK (_ibus_context_destroy_cb),
+                          ibusimcontext);
+
+        ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
+
+        if (ibusimcontext->has_focus) {
+            gtk_im_context_focus_in (GTK_IM_CONTEXT (ibusimcontext));
+        }
+    }
+
+    g_object_unref (ibusimcontext);
+}
+
+static void
 _create_input_context (IBusIMContext *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
 
     g_assert (ibusimcontext->ibuscontext == NULL);
 
-    ibusimcontext->ibuscontext = ibus_bus_create_input_context (_bus, "gtk-im");
-
-    g_return_if_fail (ibusimcontext->ibuscontext != NULL);
-
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "commit-text",
-                      G_CALLBACK (_ibus_context_commit_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "forward-key-event",
-                      G_CALLBACK (_ibus_context_forward_key_event_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "delete-surrounding-text",
-                      G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "update-preedit-text",
-                      G_CALLBACK (_ibus_context_update_preedit_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "show-preedit-text",
-                      G_CALLBACK (_ibus_context_show_preedit_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "hide-preedit-text",
-                      G_CALLBACK (_ibus_context_hide_preedit_text_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "enabled",
-                      G_CALLBACK (_ibus_context_enabled_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext,
-                      "disabled",
-                      G_CALLBACK (_ibus_context_disabled_cb),
-                      ibusimcontext);
-    g_signal_connect (ibusimcontext->ibuscontext, "destroy",
-                      G_CALLBACK (_ibus_context_destroy_cb),
-                      ibusimcontext);
-
-    ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
-
-    if (ibusimcontext->has_focus) {
-        gtk_im_context_focus_in (GTK_IM_CONTEXT (ibusimcontext));
+    if (ibusimcontext->cancellable != NULL) {
+        /* Cancel previous create input context request */
+        g_cancellable_cancel (ibusimcontext->cancellable);
+        g_object_unref (ibusimcontext->cancellable);
+        ibusimcontext->cancellable = NULL;
     }
+
+    ibusimcontext->cancellable = g_cancellable_new ();
+
+    ibus_bus_create_input_context_async (_bus,
+            "gtk-im", -1,
+            ibusimcontext->cancellable,
+            (GAsyncReadyCallback)_create_input_context_done,
+            g_object_ref (ibusimcontext));
 }
 
 /* Callback functions for slave context */
@@ -1413,17 +1453,29 @@ _ibus_fake_context_destroy_cb (IBusInputContext *ibuscontext,
     _fake_context = NULL;
 }
 
-static void
-_create_fake_input_context (void)
-{
-    g_return_if_fail (_fake_context == NULL);
+static GCancellable     *_fake_cancellable = NULL;
 
-     /* Global engine is always enabled in Chrome OS,
-      * so create fake IC, and set focus if no other IC has focus.
-     */
-    _fake_context = ibus_bus_create_input_context (_bus, "fake");
-    g_return_if_fail (_fake_context != NULL);
-    g_object_ref_sink (_fake_context);
+static void
+_create_fake_input_context_done (IBusBus       *bus,
+                                 GAsyncResult  *res,
+                                 IBusIMContext *ibusimcontext)
+{
+    GError *error = NULL;
+    IBusInputContext *context = ibus_bus_create_input_context_async_finish (
+            _bus, res, &error);
+
+    if (_fake_cancellable != NULL) {
+        g_object_unref (_fake_cancellable);
+        _fake_cancellable = NULL;
+    }
+
+    if (context == NULL) {
+        g_warning ("Create fake input context failed: %s.", error->message);
+        g_error_free (error);
+        return;
+    }
+
+    _fake_context = context;
 
     g_signal_connect (_fake_context, "forward-key-event",
                       G_CALLBACK (_ibus_context_forward_key_event_cb),
@@ -1440,6 +1492,31 @@ _create_fake_input_context (void)
         ibus_input_context_focus_in (_fake_context);
     else
         ibus_input_context_focus_out (_fake_context);
+}
+
+static void
+_create_fake_input_context (void)
+{
+    g_return_if_fail (_fake_context == NULL);
+
+     /* Global engine is always enabled in Chrome OS,
+      * so create fake IC, and set focus if no other IC has focus.
+     */
+
+    if (_fake_cancellable != NULL) {
+        g_cancellable_cancel (_fake_cancellable);
+        g_object_unref (_fake_cancellable);
+        _fake_cancellable = NULL;
+    }
+
+    _fake_cancellable = g_cancellable_new ();
+
+    ibus_bus_create_input_context_async (_bus,
+            "fake-gtk-im", -1,
+            _fake_cancellable,
+            (GAsyncReadyCallback)_create_fake_input_context_done,
+            NULL);
+
 }
 #else
 static void

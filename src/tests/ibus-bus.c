@@ -252,30 +252,109 @@ start_remove_match_async (void)
                                  NULL); /* user_data */
 }
 
+static int create_input_context_count = 0;
 static void
-finish_create_input_context_async (GObject *source_object,
-                                   GAsyncResult *res,
-                                   gpointer user_data)
+finish_create_input_context_async_sucess (GObject      *source_object,
+                                          GAsyncResult *res,
+                                          gpointer      user_data)
 {
+    GMainLoop *loop = (GMainLoop *)user_data;
     GError *error = NULL;
-    IBusInputContext *context = ibus_bus_create_input_context_async_finish (bus,
-                                                                            res,
-                                                                            &error);
-    g_assert (context != NULL);
+    IBusInputContext *context =
+          ibus_bus_create_input_context_async_finish (bus, res, &error);
+
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_object_unref (context);
-    g_debug ("ibus_bus_create_input_context_finish: OK");
-    call_next_async_function ();
+    g_debug ("ibus_bus_create_input_context_finish (success): OK");
+    if (--create_input_context_count == 0)
+        g_main_loop_quit (loop);
+}
+
+static void
+finish_create_input_context_async_failed (GObject      *source_object,
+                                          GAsyncResult *res,
+                                          gpointer      user_data)
+{
+    GMainLoop *loop = (GMainLoop *)user_data;
+    GError *error = NULL;
+    IBusInputContext *context =
+            ibus_bus_create_input_context_async_finish (bus, res, &error);
+
+        g_assert (context == NULL);
+        g_assert (error != NULL);
+        g_error_free (error);
+        g_debug ("ibus_bus_create_input_context_finish (failed): OK");
+    if (--create_input_context_count <= 0)
+        g_main_loop_quit (loop);
 }
 
 static void
 start_create_input_context_async (void)
 {
+    GMainLoop *loop = NULL;
+    GCancellable *cancellable = NULL;
+
+    /* create an IC */
+    create_input_context_count = 1;
+    loop = g_main_loop_new (NULL, TRUE);
     ibus_bus_create_input_context_async (bus,
-                                         "test-async",
-                                         -1, /* timeout */
-                                         NULL, /* cancellable */
-                                         finish_create_input_context_async,
-                                         NULL); /* user_data */
+            "test-async",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_create_input_context_async_sucess,
+            loop); /* user_data */
+    g_main_loop_run (loop);
+    g_main_loop_unref (loop);
+
+    /* call create, and then cancel */
+    create_input_context_count = 1;
+    loop = g_main_loop_new (NULL, TRUE);
+    cancellable = g_cancellable_new ();
+    ibus_bus_create_input_context_async (bus,
+            "test-async",
+            -1, /* timeout */
+            cancellable, /* cancellable */
+            finish_create_input_context_async_failed,
+            loop); /* user_data */
+    g_cancellable_cancel (cancellable);
+    g_object_unref (cancellable);
+    g_main_loop_run (loop);
+    g_main_loop_unref (loop);
+
+    /* ceate four IC, and cancel two */
+    create_input_context_count = 4;
+    loop = g_main_loop_new (NULL, TRUE);
+    cancellable = g_cancellable_new ();
+    ibus_bus_create_input_context_async (bus,
+            "test-async",
+            -1, /* timeout */
+            cancellable, /* cancellable */
+            finish_create_input_context_async_failed,
+            loop); /* user_data */
+    ibus_bus_create_input_context_async (bus,
+            "test-async",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_create_input_context_async_sucess,
+            loop); /* user_data */
+    ibus_bus_create_input_context_async (bus,
+            "test-async",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_create_input_context_async_sucess,
+            loop); /* user_data */
+    ibus_bus_create_input_context_async (bus,
+            "test-async",
+            -1, /* timeout */
+            cancellable, /* cancellable */
+            finish_create_input_context_async_failed,
+            loop); /* user_data */
+    g_cancellable_cancel (cancellable);
+    g_object_unref (cancellable);
+
+    g_main_loop_run (loop);
+    g_main_loop_unref (loop);
+    call_next_async_function ();
 }
 
 static void

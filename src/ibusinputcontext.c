@@ -620,12 +620,15 @@ ibus_input_context_new (const gchar     *path,
 
     GInitable *initable;
 
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+
     initable = g_initable_new (IBUS_TYPE_INPUT_CONTEXT,
                                cancellable,
                                error,
                                "g-connection",      connection,
-                               "g-name",            "org.freedesktop.IBus",
-                               "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                               "g-name",            IBUS_SERVICE_IBUS,
+                               "g-flags",           flags,
                                "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
                                "g-object-path",     path,
                                "g-default-timeout", ibus_get_timeout (),
@@ -635,17 +638,99 @@ ibus_input_context_new (const gchar     *path,
     return NULL;
 }
 
-IBusInputContext *
-ibus_input_context_get_input_context (const gchar        *path,
-                                      GDBusConnection     *connection)
+void
+ibus_input_context_new_async (const gchar         *path,
+                              GDBusConnection     *connection,
+                              GCancellable        *cancellable,
+                              GAsyncReadyCallback  callback,
+                              gpointer             user_data)
 {
-    IBusInputContext *context;
+    g_assert (path != NULL);
+    g_assert (G_IS_DBUS_CONNECTION (connection));
+    g_assert (callback != NULL);
+
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+    
+    g_async_initable_new_async (IBUS_TYPE_INPUT_CONTEXT,
+                                G_PRIORITY_DEFAULT,
+                                cancellable,
+                                callback,
+                                user_data,
+                                "g-connection",      connection,
+                                "g-name",            IBUS_SERVICE_IBUS,
+                                "g-flags",           flags,
+                                "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
+                                "g-object-path",     path,
+                                "g-default-timeout", ibus_get_timeout (),
+                                NULL);
+}
+
+IBusInputContext *
+ibus_input_context_new_async_finish (GAsyncResult  *res,
+                                     GError       **error)
+{
+    GObject *object = NULL;
+    GObject *source_object = NULL;
+
+    source_object = g_async_result_get_source_object (res);
+    g_assert (source_object != NULL);
+
+    object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
+                                          res,
+                                          error);
+    g_object_unref (source_object);
+
+    if (object != NULL) {
+        return IBUS_INPUT_CONTEXT (object);
+    }
+    else {
+        return NULL;
+    }
+}
+
+IBusInputContext *
+ibus_input_context_get_input_context (const gchar     *path,
+                                      GDBusConnection *connection)
+{
+    IBusInputContext *context = NULL;
     GError *error = NULL;
 
     context = ibus_input_context_new (path, connection, NULL, &error);
-    if (!context) {
+    if (context == NULL) {
         g_warning ("%s", error->message);
         g_error_free (error);
+        return NULL;
+    }
+
+    /* Do not call "org.freedesktop.IBus.Service.Destroy" when the input
+     * context object is disposed. */
+    IBUS_PROXY (context)->own = FALSE;
+    return context;
+}
+
+void
+ibus_input_context_get_input_context_async (const gchar         *path,
+                                            GDBusConnection     *connection,
+                                            GCancellable        *cancellable,
+                                            GAsyncReadyCallback  callback,
+                                            gpointer             user_data)
+{
+    ibus_input_context_new_async (path,
+                                  connection,
+                                  cancellable,
+                                  callback,
+                                  user_data);
+}
+
+IBusInputContext *
+ibus_input_context_get_input_context_async_finish (GAsyncResult  *res,
+                                                   GError       **error)
+{
+    IBusInputContext *context = NULL;
+
+    context = ibus_input_context_new_async_finish (res, error);
+    if (context == NULL) {
         return NULL;
     }
 

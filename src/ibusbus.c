@@ -520,6 +520,60 @@ ibus_bus_create_input_context (IBusBus      *bus,
     return context;
 }
 
+static void
+_create_input_context_async_step_two_done (GObject            *source_object,
+                                           GAsyncResult       *res,
+                                           GSimpleAsyncResult *simple)
+{
+    GError *error = NULL;
+    IBusInputContext *context =
+            ibus_input_context_new_async_finish (res, &error);
+    if (context == NULL) {
+        g_simple_async_result_set_from_error (simple, error);
+        g_error_free (error);
+    }
+    else {
+        g_simple_async_result_set_op_res_gpointer (simple, context, NULL);
+    }
+    g_simple_async_result_complete_in_idle (simple);
+    g_object_unref (simple);
+}
+
+static void
+_create_input_context_async_step_one_done (GDBusConnection    *connection,
+                                           GAsyncResult       *res,
+                                           GSimpleAsyncResult *simple)
+{
+    GError *error = NULL;
+    GVariant *variant = g_dbus_connection_call_finish (connection, res, &error);
+
+    if (variant == NULL) {
+        g_simple_async_result_set_from_error (simple, error);
+        g_error_free (error);
+        g_simple_async_result_complete_in_idle (simple);
+        g_object_unref (simple);
+        return;
+    }
+
+    const gchar *path = NULL;
+    g_variant_get (variant, "(&o)", &path);
+
+    IBusBus *bus = (IBusBus *)g_async_result_get_source_object (
+            (GAsyncResult *)simple);
+    g_assert (IBUS_IS_BUS (bus));
+
+    GCancellable *cancellable =
+            (GCancellable *)g_object_get_data ((GObject *)simple,
+                                               "cancellable");
+
+    ibus_input_context_new_async (path,
+            bus->priv->connection,
+            cancellable,
+            (GAsyncReadyCallback)_create_input_context_async_step_two_done,
+            simple);
+    g_object_unref (bus);
+}
+
 void
 ibus_bus_create_input_context_async (IBusBus            *bus,
                                      const gchar        *client_name,
@@ -530,19 +584,35 @@ ibus_bus_create_input_context_async (IBusBus            *bus,
 {
     g_return_if_fail (IBUS_IS_BUS (bus));
     g_return_if_fail (client_name != NULL);
+    g_return_if_fail (callback != NULL);
 
-    ibus_bus_call_async (bus,
-                         IBUS_SERVICE_IBUS,
-                         IBUS_PATH_IBUS,
-                         IBUS_INTERFACE_IBUS,
-                         "CreateInputContext",
-                         g_variant_new ("(s)", client_name),
-                         G_VARIANT_TYPE ("(o)"),
-                         ibus_bus_create_input_context_async,
-                         timeout_msec,
-                         cancellable,
-                         callback,
-                         user_data);
+    GSimpleAsyncResult *simple = g_simple_async_result_new ((GObject *)bus,
+            callback, user_data, ibus_bus_create_input_context_async);
+
+    if (cancellable != NULL) {
+        g_object_set_data_full ((GObject *)simple,
+                                "concellable",
+                                g_object_ref (cancellable),
+                                (GDestroyNotify)g_object_unref);
+    }
+
+    /* do not use ibus_bus_call_async, instread use g_dbus_connection_call
+     * directly, because we need two async steps for create an IBusInputContext.
+     * 1. Call CreateInputContext to request ibus-daemon create a remote IC.
+     * 2. New local IBusInputContext proxy of the remote IC
+     */
+    g_dbus_connection_call (bus->priv->connection,
+            IBUS_SERVICE_IBUS,
+            IBUS_PATH_IBUS,
+            IBUS_INTERFACE_IBUS,
+            "CreateInputContext",
+            g_variant_new ("(s)", client_name),
+            G_VARIANT_TYPE("(o)"),
+            G_DBUS_CALL_FLAGS_NO_AUTO_START,
+            timeout_msec,
+            cancellable,
+            (GAsyncReadyCallback)_create_input_context_async_step_one_done,
+            simple);
 }
 
 IBusInputContext *
@@ -553,12 +623,14 @@ ibus_bus_create_input_context_async_finish (IBusBus      *bus,
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_create_input_context_async));
-    IBusInputContext *input_context = NULL;
-    gchar *path = _async_finish_object_path (res, error);
-    if (path != NULL) {
-        input_context = ibus_input_context_new (path, bus->priv->connection, NULL, error);
-    }
-    return input_context;
+
+    GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
+    if (g_simple_async_result_propagate_error (simple, error))
+        return NULL;
+    IBusInputContext *context =
+            g_simple_async_result_get_op_res_gpointer (simple);
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    return context;
 }
 
 gchar *

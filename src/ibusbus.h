@@ -459,12 +459,12 @@ IBusInputContext *
 
 /**
  * ibus_bus_create_input_context_async:
- * @bus: An IBusBus.
+ * @bus: An #IBusBus.
  * @client_name: Name of client.
  * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
- * @cancellable: A GCancellable or NULL.
- * @callback: A GAsyncReadyCallback to call when the request is satisfied or NULL
- *      if you don't care about the result of the method invocation.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
+ *      It should not be %NULL.
  * @user_data: The data to pass to callback.
  *
  * Create an input context for client asynchronously.

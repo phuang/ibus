@@ -1211,8 +1211,6 @@ static void
 bus_ibus_impl_set_global_engine (BusIBusImpl    *ibus,
                                  BusEngineProxy *engine)
 {
-    BusInputContext *context = NULL;
-
     if (!ibus->use_global_engine)
         return;
 
@@ -1227,8 +1225,6 @@ static void
 bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
                                          const gchar *name)
 {
-    gchar *old_engine_name = NULL;
-
     if (!ibus->use_global_engine)
         return;
 
@@ -1262,7 +1258,6 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
 static void
 bus_ibus_impl_engines_maybe_removed (BusIBusImpl *ibus)
 {
-    const gchar *old_engine_name = NULL;
     GList *engine_list = NULL;
 
     if (!ibus->use_global_engine || ibus->global_engine_name == NULL)

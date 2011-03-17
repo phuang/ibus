@@ -89,7 +89,7 @@ GType        ibus_input_context_get_type    (void);
 /**
  * ibus_input_context_new:
  * @path: The path to the object that emitting the signal.
- * @connection: An GDBusConnection.
+ * @connection: An #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @error: Return location for error or %NULL.
  *
@@ -97,24 +97,86 @@ GType        ibus_input_context_get_type    (void);
  *
  * New an IBusInputContext.
  */
-IBusInputContext
-            *ibus_input_context_new         (const gchar        *path,
+IBusInputContext *
+             ibus_input_context_new         (const gchar        *path,
                                              GDBusConnection    *connection,
                                              GCancellable       *cancellable,
                                              GError            **error);
+/**
+ * ibus_input_context_new_async:
+ * @path: The path to the object that emitting the signal.
+ * @connection: An #GDBusConnection.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
+ *      The callback should not be %NULL.
+ * @user_data: The data to pass to callback.
+ *
+ * New an #IBusInputContext asynchronously.
+ */
+void         ibus_input_context_new_async   (const gchar        *path,
+                                             GDBusConnection    *connection,
+                                             GCancellable       *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer            user_data);
 
+/**
+ * ibus_input_context_new_async_finish:
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
+ *      ibus_input_context_new_async().
+ * @error: Return location for error or %NULL.
+ *
+ * @returns: A newly allocated #IBusInputContext.
+ *
+ * Finishes an operation started with ibus_input_context_new_async().
+ */
+IBusInputContext *
+             ibus_input_context_new_async_finish
+                                            (GAsyncResult       *res,
+                                             GError            **error);
 /**
  * ibus_input_context_get_input_context:
  * @path: The path to the object that emitting the signal.
- * @connection: An GDBusConnection.
- * @returns: (transfer none): An existing IBusInputContext.
+ * @connection: An #GDBusConnection.
+ * @returns: (transfer none): An existing #IBusInputContext.
  *
  * Gets an existing IBusInputContext.
  */
-IBusInputContext
-            *ibus_input_context_get_input_context
+IBusInputContext *
+             ibus_input_context_get_input_context
                                             (const gchar        *path,
                                              GDBusConnection    *connection);
+/**
+ * ibus_input_context_get_input_context_async:
+ * @path: The path to the object that emitting the signal.
+ * @connection: An #GDBusConnection.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
+ *      The callback should not be %NULL.
+ * @user_data: The data to pass to callback.
+ *
+ * Get an existing #IBusInputContext asynchronously.
+ */
+void         ibus_input_context_get_input_context_async
+                                            (const gchar        *path,
+                                             GDBusConnection    *connection,
+                                             GCancellable       *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer            user_data);
+
+/**
+ * ibus_input_context_get_input_context_async_finish:
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
+ *      ibus_input_context_get_input_context_async().
+ * @error: Return location for error or %NULL.
+ *
+ * @returns: (transfer none): An existing #IBusInputContext.
+ *
+ * Finishes an operation started with ibus_input_contex_get_input_context_async().
+ */
+IBusInputContext *
+             ibus_input_context_get_input_context_async_finish
+                                            (GAsyncResult       *res,
+                                             GError            **error);
 
 /**
  * ibus_input_context_process_key_event_async:

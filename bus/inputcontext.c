@@ -21,6 +21,8 @@
  */
 #include "inputcontext.h"
 
+#include <string.h>
+
 #include "engineproxy.h"
 #include "factoryproxy.h"
 #include "ibusimpl.h"
@@ -1955,7 +1957,7 @@ bus_input_context_new (BusConnection    *connection,
     context->client = g_strdup (client);
 
     /* it is a fake input context, just need process hotkey */
-    context->fake = (g_strcmp0 (client, "fake") == 0);
+    context->fake = (strncmp (client, "fake", 4) == 0);
 
     if (connection) {
         g_object_ref_sink (connection);
