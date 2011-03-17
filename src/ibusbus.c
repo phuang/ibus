@@ -108,10 +108,10 @@ ibus_bus_class_init (IBusBusClass *class)
     /* install signals */
     /**
      * IBusBus::connected:
+     * @bus: The #IBusBus object which recevied the signal
      *
-     * Emitted when IBusBus is connected.
+     * Emitted when #IBusBus is connected to ibus-daemon.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[CONNECTED] =
         g_signal_new (I_("connected"),
@@ -125,10 +125,10 @@ ibus_bus_class_init (IBusBusClass *class)
 
     /**
      * IBusBus::disconnected:
+     * @bus: The #IBusBus object which recevied the signal
      *
-     * Emitted when IBusBus is disconnected.
+     * Emitted when #IBusBus is disconnected from ibus-daemon.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[DISCONNECTED] =
         g_signal_new (I_("disconnected"),
@@ -142,10 +142,11 @@ ibus_bus_class_init (IBusBusClass *class)
 
     /**
      * IBusBus::global-engine-changed:
+     * @bus: The #IBusBus object which recevied the signal
+     * @name: The name of the new global engine.
      *
      * Emitted when global engine is changed.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[GLOBAL_ENGINE_CHANGED] =
         g_signal_new (I_("global-engine-changed"),
@@ -160,10 +161,13 @@ ibus_bus_class_init (IBusBusClass *class)
 
     /**
      * IBusBus::name-owner-changed:
+     * @bus: The #IBusBus object which recevied the signal
+     * @name: The name which ower is changed.
+     * @old_owner: The unique bus name of the old owner.
+     * @new_owner: The unique bus name of the new owner.
      *
      * Emitted when D-Bus name owner is changed.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     bus_signals[NAME_OWNER_CHANGED] =
         g_signal_new (I_("name-owner-changed"),

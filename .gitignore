@@ -9,7 +9,6 @@
 /.deps
 /.gitignore
 /.libs
-/ChangeLog
 /GPATH
 /GRTAGS
 /GSYMS
@@ -28,7 +27,6 @@
 /config.status.lineno
 /configure
 /configure.lineno
-/ibus-*.tar.*
 /ibus-1.0.pc
 /ibus.spec
 /intltool-extract.in
@@ -44,7 +42,6 @@
 /po/POTFILES
 /po/ibus10.pot
 /po/stamp-it
-/ppa
 /so_locations
 /stamp-h1
 /tags
