@@ -265,7 +265,6 @@ finish_create_input_context_async_sucess (GObject      *source_object,
 
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_object_unref (context);
-    g_debug ("ibus_bus_create_input_context_finish (success): OK");
     if (--create_input_context_count == 0)
         g_main_loop_quit (loop);
 }
@@ -283,13 +282,12 @@ finish_create_input_context_async_failed (GObject      *source_object,
         g_assert (context == NULL);
         g_assert (error != NULL);
         g_error_free (error);
-        g_debug ("ibus_bus_create_input_context_finish (failed): OK");
     if (--create_input_context_count <= 0)
         g_main_loop_quit (loop);
 }
 
 static void
-start_create_input_context_async (void)
+test_create_input_context_async (void)
 {
     GMainLoop *loop = NULL;
     GCancellable *cancellable = NULL;
@@ -354,7 +352,6 @@ start_create_input_context_async (void)
 
     g_main_loop_run (loop);
     g_main_loop_unref (loop);
-    call_next_async_function ();
 }
 
 static void
@@ -601,7 +598,6 @@ call_next_async_function (void)
         start_release_name_async,
         start_add_match_async,
         start_remove_match_async,
-        start_create_input_context_async,
         start_current_input_context_async,
         // FIXME test ibus_bus_register_component_async.
         start_list_engines_async,
@@ -634,6 +630,8 @@ main (gint    argc,
 
     g_test_add_func ("/ibus/list-engines", test_list_engines);
     g_test_add_func ("/ibus/list-active-engines", test_list_active_engines);
+    g_test_add_func ("/ibus/create-input-context-async",
+                     test_create_input_context_async);
     g_test_add_func ("/ibus/async-apis", test_async_apis);
 
     // FIXME This test does not pass if global engine is not available. Disabling it for now.
