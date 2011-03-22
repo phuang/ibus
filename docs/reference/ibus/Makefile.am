@@ -85,6 +85,10 @@ GTKDOC_CFLAGS= \
 	-I$(top_builddir)/src \
 	$(NULL)
 GTKDOC_LIBS= \
+	@GLIB2_LIBS@ \
+	@GOBJECT2_LIBS@ \
+	@GIO2_LIBS@ \
+	@DBUS_LIBS@ \
 	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la \
 	$(NULL)
 
