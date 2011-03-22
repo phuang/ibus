@@ -698,7 +698,7 @@ ibus_input_context_get_input_context (const gchar     *path,
 
     context = ibus_input_context_new (path, connection, NULL, &error);
     if (context == NULL) {
-        g_warning ("%s", error->message);
+        g_warning ("ibus_input_context_get_input_context: %s", error->message);
         g_error_free (error);
         return NULL;
     }
@@ -789,7 +789,6 @@ ibus_input_context_process_key_event_async_finish (IBusInputContext  *context,
         return TRUE;
     }
 }
-
 
 gboolean
 ibus_input_context_process_key_event (IBusInputContext *context,
@@ -905,6 +904,45 @@ ibus_input_context_property_hide (IBusInputContext *context,
                        );
 }
 
+void
+ibus_input_context_is_enabled_async (IBusInputContext   *context,
+                                     gint                timeout_msec,
+                                     GCancellable       *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer            user_data)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "IsEnabled",               /* method_name */
+                       NULL,                      /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,    /* flags */
+                       timeout_msec,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+gboolean
+ibus_input_context_is_enabled_async_finish (IBusInputContext   *context,
+                                            GAsyncResult       *res,
+                                            gboolean           *retval,
+                                            GError            **error)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (G_IS_ASYNC_RESULT (res));
+    g_assert (retval != NULL);
+    g_assert (error == NULL || *error == NULL);
+
+    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
+                                                   res, error);
+    if (variant == NULL) {
+        return FALSE;
+    }
+    g_variant_get (variant, "(b)", retval);
+    g_variant_unref (variant);
+    return TRUE;
+}
+
 gboolean
 ibus_input_context_is_enabled (IBusInputContext *context)
 {
@@ -933,6 +971,47 @@ ibus_input_context_is_enabled (IBusInputContext *context)
     return retval;
 }
 
+void
+ibus_input_context_get_engine_async (IBusInputContext   *context,
+                                     gint                timeout_msec,
+                                     GCancellable       *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer            user_data)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "GetEngine",               /* method_name */
+                       NULL,                      /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,    /* flags */
+                       timeout_msec,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+IBusEngineDesc *
+ibus_input_context_get_engine_async_finish (IBusInputContext   *context,
+                                            GAsyncResult       *res,
+                                            GError            **error)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (G_IS_ASYNC_RESULT (res));
+    g_assert (error == NULL || *error == NULL);
+
+    GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
+                                                   res, error);
+    if (variant == NULL) {
+        return NULL;
+    }
+
+    GVariant *engine_desc_variant = g_variant_get_child_value (variant, 0);
+    IBusEngineDesc *desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (engine_desc_variant));
+    g_variant_unref (engine_desc_variant);
+    g_variant_unref (variant);
+
+    return desc;
+}
+
 IBusEngineDesc *
 ibus_input_context_get_engine (IBusInputContext *context)
 {
@@ -954,9 +1033,9 @@ ibus_input_context_get_engine (IBusInputContext *context)
         return NULL;
     }
 
-    GVariant *variant = g_variant_get_child_value (result, 0);
-    IBusEngineDesc *desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (variant));
-    g_variant_unref (variant);
+    GVariant *engine_desc_variant = g_variant_get_child_value (result, 0);
+    IBusEngineDesc *desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (engine_desc_variant));
+    g_variant_unref (engine_desc_variant);
     g_variant_unref (result);
 
     return desc;

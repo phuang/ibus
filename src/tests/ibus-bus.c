@@ -46,57 +46,6 @@ test_list_engines (void)
     g_list_free (engines);
 }
 
-#if 0
-static gchar *
-get_last_engine_id (const GList *engines)
-{
-    const char *result = NULL;
-    for (; engines; engines = g_list_next (engines)) {
-        IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-        g_assert (engine_desc);
-        result = ibus_engine_desc_get_name (engine_desc);
-    }
-    return g_strdup (result);
-}
-
-static void
-test_input_context (void)
-{
-    GList *engines;
-    gchar *active_engine_name = NULL;
-    IBusInputContext *context;
-    IBusEngineDesc *engine_desc;
-    gchar *current_ic;
-
-    engines = ibus_bus_list_active_engines (bus);
-    if (engines == NULL)
-        return;
-    active_engine_name = get_last_engine_id (engines);
-    g_assert (active_engine_name);
-
-    context = ibus_bus_create_input_context (bus, "test");
-    ibus_input_context_set_capabilities (context, IBUS_CAP_FOCUS);
-    ibus_input_context_disable (context);
-    g_assert (ibus_input_context_is_enabled (context) == FALSE);
-    ibus_input_context_enable (context);
-    g_assert (ibus_input_context_is_enabled (context) == TRUE);
-    ibus_input_context_focus_in (context);
-    ibus_input_context_set_engine (context, active_engine_name);
-    current_ic = ibus_bus_current_input_context (bus);
-    g_assert (!strcmp (current_ic, g_dbus_proxy_get_object_path ((GDBusProxy *)context)));
-    engine_desc = ibus_input_context_get_engine (context);
-    g_assert (engine_desc);
-    g_assert (!strcmp (active_engine_name, ibus_engine_desc_get_name(engine_desc)));
-    g_free (current_ic);
-    g_object_unref (engine_desc);
-    g_object_unref (context);
-
-    g_free (active_engine_name);
-    g_list_foreach (engines, (GFunc) g_object_unref, NULL);
-    g_list_free (engines);
-}
-#endif
-
 static void call_next_async_function (void);
 
 static void
@@ -279,9 +228,9 @@ finish_create_input_context_async_failed (GObject      *source_object,
     IBusInputContext *context =
             ibus_bus_create_input_context_async_finish (bus, res, &error);
 
-        g_assert (context == NULL);
-        g_assert (error != NULL);
-        g_error_free (error);
+    g_assert (context == NULL);
+    g_assert (error != NULL);
+    g_error_free (error);
     if (--create_input_context_count <= 0)
         g_main_loop_quit (loop);
 }
@@ -633,9 +582,6 @@ main (gint    argc,
     g_test_add_func ("/ibus/create-input-context-async",
                      test_create_input_context_async);
     g_test_add_func ("/ibus/async-apis", test_async_apis);
-
-    // FIXME This test does not pass if global engine is not available. Disabling it for now.
-    // g_test_add_func ("/ibus/input_context", test_input_context);
 
     result = g_test_run ();
     g_object_unref (bus);

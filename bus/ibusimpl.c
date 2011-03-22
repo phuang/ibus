@@ -1001,7 +1001,10 @@ bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
     if (engine_name != NULL && engine_name[0] != '\0') {
         /* request engine by name */
         desc = _find_engine_desc_by_name (ibus, engine_name);
-        g_return_val_if_fail (desc != NULL, NULL);
+        if (desc == NULL) {
+            g_warning ("_context_request_engine_cb: Invalid engine '%s' is requested.", engine_name);
+            return NULL;
+        }
     }
     else {
         /* Use global engine if possible. */

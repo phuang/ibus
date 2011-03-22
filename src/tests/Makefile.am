@@ -38,6 +38,7 @@ prog_ldadd = 			\
 noinst_PROGRAMS = $(TESTS)
 TESTS =               \
 	ibus-bus          \
+	ibus-inputcontext \
 	ibus-keynames     \
 	ibus-serializable \
 	ibus-share        \
@@ -47,6 +48,9 @@ TESTS =               \
 
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)
+
+ibus_inputcontext_SOURCES = ibus-inputcontext.c
+ibus_inputcontext_LDADD = $(prog_ldadd)
 
 ibus_keynames_SOURCES = ibus-keynames.c
 ibus_keynames_LDADD = $(prog_ldadd)
