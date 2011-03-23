@@ -115,7 +115,7 @@ endif
 
 trim-build.stamp: scan-build.stamp
 	$(AM_V_GEN) \
-	    sed -f $(srcdir)/trim.sed -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt && \
+	    $(SED) -f $(srcdir)/trim.sed -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt && \
 	    $(RM) $(srcdir)/$(DOC_MODULE)-sections.txt.bak && \
 	    touch trim-build.stamp
 
