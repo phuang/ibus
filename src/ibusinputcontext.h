@@ -378,7 +378,7 @@ void         ibus_input_context_is_enabled_async
                                              gpointer            user_data);
 
 /**
- * ibus_input_context_process_key_event_async_finish:
+ * ibus_input_context_is_enabled_async_finish:
  * @context: An #IBusInputContext.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_input_context_is_enabled_async().
@@ -386,7 +386,7 @@ void         ibus_input_context_is_enabled_async
  * @error: Return location for error or %NULL.
  * @returns: %TRUE for success; %FALSE otherwise.
  *
- * Finishes an operation started with ibus_input_context_process_key_event_async().
+ * Finishes an operation started with ibus_input_context_is_enabled_async().
  */
 gboolean     ibus_input_context_is_enabled_async_finish
                                             (IBusInputContext   *context,
@@ -423,14 +423,14 @@ void         ibus_input_context_get_engine_async
                                              gpointer            user_data);
 
 /**
- * ibus_input_context_process_key_event_async_finish:
+ * ibus_input_context_get_engine_async_finish:
  * @context: An #IBusInputContext.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_input_context_get_engine_async().
  * @error: Return location for error or %NULL.
  * @returns: (transfer none): An IME engine description for the context, or %NULL.
  *
- * Finishes an operation started with ibus_input_context_process_key_event_async().
+ * Finishes an operation started with ibus_input_context_get_engine_async().
  */
 IBusEngineDesc *
              ibus_input_context_get_engine_async_finish
@@ -446,8 +446,8 @@ IBusEngineDesc *
  * Returns an IME engine description for the context.
  * A synchronous IPC will be performed.
  */
-IBusEngineDesc
-            *ibus_input_context_get_engine  (IBusInputContext   *context);
+IBusEngineDesc *
+             ibus_input_context_get_engine  (IBusInputContext   *context);
 
 /**
  * ibus_input_context_set_engine:
