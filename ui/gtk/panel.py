@@ -103,6 +103,16 @@ class Panel(ibus.PanelBase):
 
 
         self.__status_icon = gtk.StatusIcon()
+        # gnome-shell checks XClassHint.res_class with ShellTrayIcon.
+        # gtk_status_icon_set_name() can set XClassHint.res_class .
+        # However gtk_status_icon_new() also calls gtk_window_realize() so
+        # gtk_status_icon_set_visible() needs to be called to set WM_CLASS
+        # so that gtk_window_realize() is called later again.
+        # set_title is for gnome-shell notificationDaemon in bottom right.
+        self.__status_icon.set_visible(False)
+        self.__status_icon.set_name('ibus-ui-gtk')
+        self.__status_icon.set_title(_("IBus Panel"))
+        self.__status_icon.set_visible(True)
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
         self.__status_icon.set_from_icon_name(ICON_KEYBOARD)
