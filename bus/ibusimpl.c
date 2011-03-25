@@ -161,7 +161,7 @@ static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
 static void     bus_ibus_impl_set_global_engine_by_name
                                                 (BusIBusImpl        *ibus,
                                                  const gchar        *name);
-static void     bus_ibus_impl_engines_maybe_removed
+static void     bus_ibus_impl_check_global_engine
                                                 (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
@@ -189,6 +189,9 @@ static BusInputContext
 static IBusEngineDesc
                *bus_ibus_impl_get_engine_desc   (BusIBusImpl        *ibus,
                                                  const gchar        *engine_name);
+static void     bus_ibus_impl_set_focused_context
+                                                (BusIBusImpl        *ibus,
+                                                 BusInputContext    *context);
 /* some callback functions */
 static void     _context_engine_changed_cb      (BusInputContext    *context,
                                                  BusIBusImpl        *ibus);
@@ -418,7 +421,7 @@ bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
         }
     }
 
-    bus_ibus_impl_engines_maybe_removed (ibus);
+    bus_ibus_impl_check_global_engine (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
@@ -835,7 +838,9 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->engines_hotkey_profile = NULL;
     ibus->hotkey_to_engines_map = NULL;
 
-    bus_ibus_impl_reload_config (ibus);
+    /* focus the fake_context, if use_global_engine is enabled. */
+    if (ibus->use_global_engine)
+        bus_ibus_impl_set_focused_context (ibus, ibus->fake_context);
 
     g_signal_connect (BUS_DEFAULT_DBUS,
                       "name-owner-changed",
@@ -1258,27 +1263,33 @@ bus_ibus_impl_set_global_engine_by_name (BusIBusImpl *ibus,
     }
 }
 
+/* When preload_engines and register_engiens are changed, this function
+ * will check the global engine. If necessay, it will change the global engine.
+ */
 static void
-bus_ibus_impl_engines_maybe_removed (BusIBusImpl *ibus)
+bus_ibus_impl_check_global_engine (BusIBusImpl *ibus)
 {
     GList *engine_list = NULL;
 
-    if (!ibus->use_global_engine || ibus->global_engine_name == NULL)
+    /* do nothing */
+    if (!ibus->use_global_engine)
         return;
 
     /* The current global engine is not removed, so do nothing. */
-    if (_find_engine_desc_by_name (ibus, ibus->global_engine_name))
+    if (ibus->global_engine_name != NULL &&
+        _find_engine_desc_by_name (ibus, ibus->global_engine_name)) {
         return;
+    }
 
     /* If the previous engine is available, then just switch to it. */
-    if (ibus->global_previous_engine_name &&
+    if (ibus->global_previous_engine_name != NULL &&
         _find_engine_desc_by_name (ibus, ibus->global_previous_engine_name)) {
         bus_ibus_impl_set_global_engine_by_name (
             ibus, ibus->global_previous_engine_name);
         return;
     }
 
-    /* Just choose one in the list. */
+    /* Just switch to the fist engine in the list. */
     engine_list = ibus->register_engine_list;
     if (!engine_list)
         engine_list = ibus->engine_list;
@@ -1550,7 +1561,7 @@ _component_destroy_cb (BusComponent *component,
 
     g_object_unref (component);
 
-    bus_ibus_impl_engines_maybe_removed (ibus);
+    bus_ibus_impl_check_global_engine (ibus);
     bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
