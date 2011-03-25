@@ -37,6 +37,7 @@
 # 	fr-ch \
 # 	hr \
 # 	hu \
+# 	in \
 # 	is \
 # 	it \
 # 	jp \
@@ -64,6 +65,7 @@ keymaps = \
 	us \
 	jp \
 	kr \
+	in \
 	$(NULL)
 
 keymaps_DATA = $(keymaps)
