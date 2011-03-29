@@ -110,7 +110,9 @@ class Panel(ibus.PanelBase):
         # so that gtk_window_realize() is called later again.
         # set_title is for gnome-shell notificationDaemon in bottom right.
         self.__status_icon.set_visible(False)
-        self.__status_icon.set_name('ibus-ui-gtk')
+        # gtk_status_icon_set_name() is not available in pygtk2 2.17
+        if hasattr(self.__status_icon, 'set_name'):
+            self.__status_icon.set_name('ibus-ui-gtk')
         self.__status_icon.set_title(_("IBus Panel"))
         self.__status_icon.set_visible(True)
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
