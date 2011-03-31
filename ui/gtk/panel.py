@@ -37,7 +37,7 @@ from engineabout import EngineAbout
 
 from i18n import _, N_
 
-ICON_KEYBOARD = "ibus-keyboard"
+ICON_KEYBOARD = ibus.get_ICON_KEYBOARD()
 ICON_ENGINE = "ibus-engine"
 
 def show_uri(screen, link):

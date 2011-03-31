@@ -354,6 +354,23 @@ AC_ARG_WITH(no-snooper-apps,
 AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
     [Does not enbale keyboard snooper in those applications])
 
+# GNOME 3 uses the theme's icon
+AC_ARG_WITH(panel-icon-keyboard,
+    AS_HELP_STRING([--with-panel-icon-keyboard[=icon_name]],
+        [Set the default panel icon (default: "input-keyboard-symbolic")]),
+    [if test x"$with_panel_icon_keyboard" = x"yes" -o \
+             x"$with_panel_icon_keyboard" = x; then
+         with_panel_icon_keyboard="input-keyboard-symbolic"
+     fi
+     if test x"$with_panel_icon_keyboard" = x"legacy"; then
+         with_panel_icon_keyboard="ibus-keyboard"
+     fi
+     IBUS_ICON_KEYBOARD=$with_panel_icon_keyboard
+    ],
+    IBUS_ICON_KEYBOARD="input-keyboard-symbolic"
+)
+AC_SUBST(IBUS_ICON_KEYBOARD)
+
 # check iso-codes
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -424,5 +441,6 @@ Build options:
   Build document            $enable_gtk_doc
   Enable key snooper        $enable_key_snooper
   No snooper regexes        "$NO_SNOOPER_APPS"
+  Panel icon                "$IBUS_ICON_KEYBOARD"
 ])
 

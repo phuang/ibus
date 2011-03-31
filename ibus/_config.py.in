@@ -24,6 +24,7 @@ __all__ = (
     "get_version",
     "get_copyright",
     "get_license",
+    "get_ICON_KEYBOARD",
     "ISOCODES_PREFIX",
     "_"
 )
@@ -41,5 +42,13 @@ Copyright (c) 2007-2010 Red Hat, Inc.''')
 
 def get_license():
     return 'LGPL'
+
+def get_ICON_KEYBOARD():
+    import gtk
+    theme = gtk.icon_theme_get_default()
+    icon = '@IBUS_ICON_KEYBOARD@'
+    if not theme.lookup_icon(icon, 18, 0):
+        icon = 'ibus-keyboard'
+    return icon
 
 ISOCODES_PREFIX='@ISOCODES_PREFIX@'
