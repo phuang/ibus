@@ -1,19 +1,20 @@
-# translation of ibus.master.po to Wei Liu
-# Translation for ibus.
+# translation of ibus.master.po to Simplified Chinese
+# Simplified Chinese Translation for ibus.
 # Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Peng Huang <shawn.p.huang@gmail.com>, 2007-2010.
 # Leah Liu <lliu@redhat.com>, 2010.
+# ekd123 <zhtx10@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2010-07-30 10:43+1000\n"
-"Last-Translator: Leah Liu <lliu@redhat.com>\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2011-03-08 12:32+0900\n"
+"PO-Revision-Date: 2011-03-22 15:23+0000\n"
+"Last-Translator: ekd123 <zhtx10@gmail.com>\n"
 "Language-Team: Wei Liu\n"
-"Language: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -132,11 +133,11 @@ msgstr "开关"
 
 #: ../setup/main.py:113
 msgid "enable"
-msgstr ""
+msgstr "应用"
 
 #: ../setup/main.py:124
 msgid "disable"
-msgstr ""
+msgstr "禁用"
 
 #: ../setup/main.py:135
 msgid "next input method"
@@ -152,14 +153,12 @@ msgstr "IBus 守护进程没有启动，您是否想现在启动它？"
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus 已经被成功启动！如果你不能正常使用IBus，请将下面代码加入到$HOME/.bashrc"
-"中，并重新登录桌面。\n"
+"IBus 已经被成功启动！如果你不能正常使用IBus，请将下面代码加入到$HOME/.bashrc中，并重新登录桌面。\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -227,110 +226,126 @@ msgid "Custom font name for language panel"
 msgstr "自定义语言栏字体"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Disable shortcut keys"
+msgstr "禁用快捷键"
+
+#: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text"
 msgstr "内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Embed Preedit Text in Application Window"
 msgstr "在应用程序窗口中启用内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default"
 msgstr "默认启动输入法"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Enable input method by default when the application gets input focus"
 msgstr "当应用程序需要使用输入时自动启用输入法"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
+msgid "Enable shortcut keys"
+msgstr "应用快捷键"
+
+#: ../data/ibus.schemas.in.h:10
 msgid "Language panel position"
 msgstr "语言栏位置"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
 msgstr "下一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Orientation of lookup table"
 msgstr "候选词表方向"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "候选词表方向。0 = 水平，1 = 竖直。"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Preload engines"
 msgstr "预加载引擎"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Preload engines during ibus starts up"
 msgstr "ibus启动时预加载的引擎"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Prev engine shortcut keys"
 msgstr "上一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "在所有应用程序中共享同一个输入法"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "在系统托盘上显示图标"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "Show input method name"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "在语言栏上显示输入法名字"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr "语言栏行为。0 = 嵌入菜单，1 = 自动隐藏，2 = 总是显示。"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "语言栏位置"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "切换下一个输入法快捷键"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "切换上一个输入法快捷键"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:25
+msgid "The shortcut keys for turning input method off"
+msgstr "关闭输入法的快捷键"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The shortcut keys for turning input method on"
+msgstr "开启输入法的快捷键"
+
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "打开关闭输入法的快捷键"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:28
 msgid "Trigger shortcut keys"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:29
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:26
+#: ../data/ibus.schemas.in.h:30
 msgid "Use custom font name for language panel"
 msgstr "语言栏是否使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:27
+#: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
 msgstr "使用全局输入法"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "使用系统键盘布局"
 
@@ -412,7 +427,7 @@ msgstr "自定义"
 
 #: ../setup/setup.ui.h:24
 msgid "Disable:"
-msgstr ""
+msgstr "禁用："
 
 #: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
@@ -432,7 +447,7 @@ msgstr "开关："
 
 #: ../setup/setup.ui.h:29
 msgid "Enable:"
-msgstr ""
+msgstr "应用："
 
 #: ../setup/setup.ui.h:30
 msgid "General"

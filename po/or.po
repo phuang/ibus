@@ -1,14 +1,15 @@
 # translation of ibus.master.or.po to Oriya
+# Oriya translation of ibus.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the ibus package.
 #
-# Manoj Kumar Giri <mgiri@redhat.com>, 2009, 2010.
+# Manoj Kumar Giri <mgiri@redhat.com>, 2009-2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.or\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2010-07-30 13:19+0530\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2011-03-08 12:32+0900\n"
+"PO-Revision-Date: 2011-03-22 15:23+0000\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "Language: or\n"
@@ -16,16 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -64,8 +56,8 @@ msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
-"କିଛି ନିବେଶ ପଦ୍ଧତିକୁ ସ୍ଥାପନ କରାଯାଇଛି, କଢ଼ାଯାଇଛି ଅଥବା ଅଦ୍ୟତନ କରାଯାଇଛି। ଦୟାକରି ibus ନିବେଶ "
-"ପ୍ଲାଟଫର୍ମକୁ ପୁନର୍ଚାଳନ କରନ୍ତୁ।"
+"କିଛି ନିବେଶ ପଦ୍ଧତିକୁ ସ୍ଥାପନ କରାଯାଇଛି, କଢ଼ାଯାଇଛି ଅଥବା ଅଦ୍ୟତନ କରାଯାଇଛି। ଦୟାକରି "
+"ibus ନିବେଶ ପ୍ଲାଟଫର୍ମକୁ ପୁନର୍ଚାଳନ କରନ୍ତୁ।"
 
 #: ../ui/gtk/main.py:59
 msgid "Restart Now"
@@ -141,11 +133,11 @@ msgstr "ଟ୍ରିଗର"
 
 #: ../setup/main.py:113
 msgid "enable"
-msgstr ""
+msgstr "ସକ୍ରିୟ କରନ୍ତୁ"
 
 #: ../setup/main.py:124
 msgid "disable"
-msgstr ""
+msgstr "ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
 
 #: ../setup/main.py:135
 msgid "next input method"
@@ -157,18 +149,17 @@ msgstr "ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀ"
 
 #: ../setup/main.py:286
 msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "IBus ଡେମନଟି ଆରମ୍ଭ ହୋଇନାହିଁ। ଆପଣ ଏହାକୁ ବର୍ତ୍ତମାନ ଆରମ୍ଭ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?"
+msgstr ""
+"IBus ଡେମନଟି ଆରମ୍ଭ ହୋଇନାହିଁ। ଆପଣ ଏହାକୁ ବର୍ତ୍ତମାନ ଆରମ୍ଭ କରିବାକୁ ଚାହୁଁଛନ୍ତି କି?"
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus ଆରମ୍ଭ ହୋଇସାରିଛି! ଯଦି ଆପଣ IBus ବ୍ୟବହାର କରି ନପାରନ୍ତି, ତେବେ ଦୟାକରି ନିମ୍ନଲିଖିତ ଧାଡ଼ିଗୁଡ଼ିକୁ "
-"$HOME/.bashrcରେ ଯୋଗ କରନ୍ତୁ, ଏବଂ ଆପଣଙ୍କର ଡେସ୍କଟପକୁ ପୁଣି ଲଗଇନ କରନ୍ତୁ।\n"
+"IBus ଆରମ୍ଭ ହୋଇସାରିଛି! ଯଦି ଆପଣ IBus ବ୍ୟବହାର କରି ନପାରନ୍ତି, ତେବେ ଦୟାକରି ନିମ୍ନଲିଖିତ ଧାଡ଼ିଗୁଡ଼ିକୁ $HOME/.bashrcରେ ଯୋଗ କରନ୍ତୁ, ଏବଂ ଆପଣଙ୍କର ଡେସ୍କଟପକୁ ପୁଣି ଲଗଇନ କରନ୍ତୁ।\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -236,115 +227,132 @@ msgid "Custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମ"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Disable shortcut keys"
+msgstr "ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
+
+#: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text"
 msgstr "ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Embed Preedit Text in Application Window"
 msgstr "ପ୍ରୟୋଗ ୱିଣ୍ଡୋରେ ଅନ୍ତସ୍ଥାପିତ ପ୍ରୀଡିତ ପାଠ୍ୟ"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default"
 msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଭାବରେ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
-"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଭାବରେ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ କରନ୍ତୁ ଯେତେବେଳେ ପ୍ରୟୋଗକୁ ନିବେଶ ଲକ୍ଷ୍ଯ ମିଳିଥାଏ"
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଭାବରେ ନିବେଶ ପ୍ରଣାଳୀକୁ ସକ୍ରିୟ କରନ୍ତୁ ଯେତେବେଳେ ପ୍ରୟୋଗକୁ ନିବେଶ"
+" ଲକ୍ଷ୍ଯ ମିଳିଥାଏ"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
+msgid "Enable shortcut keys"
+msgstr "ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକୁ ସକ୍ରିୟ କରନ୍ତୁ"
+
+#: ../data/ibus.schemas.in.h:10
 msgid "Language panel position"
 msgstr "ଭାଷା ଫଳକ ଅବସ୍ଥାନ"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
 msgstr "ପରବର୍ତ୍ତି ଯନ୍ତ୍ର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Orientation of lookup table"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "ଅବଲୋକନ ସାରଣୀର ଅନୁସ୍ଥାପନ। 0 = ଭୂ-ସମାନ୍ତର, 1 = ଭୂ-ଲମ୍ବ"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Preload engines"
 msgstr "ଯନ୍ତ୍ରକୁ ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Preload engines during ibus starts up"
 msgstr "ibus ଆରମ୍ଭ ସମୟରେ ଯନ୍ତ୍ର ପ୍ରାକ ଧାରଣ କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Prev engine shortcut keys"
 msgstr "ପୂର୍ବ ଯନ୍ତ୍ରର ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "ସମସ୍ତ ପ୍ରୟୋଗଗୁଡ଼ିକ ମଧ୍ଯରେ ଏକା ପ୍ରକାରର ନିବେଶ ପଦ୍ଧତିକୁ ସହଭାଗ କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "ତନ୍ତ୍ର ଟ୍ରେରେ ଚିତ୍ରସଂକେତଗୁଡ଼ିକୁ ଦର୍ଶାନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "Show input method name"
 msgstr "ନିବେଶ ପଦ୍ଧତି ନାମ ଦର୍ଶାନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ନିବେଶ ପଦ୍ଧତି ନାମ ଦର୍ଶାନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ତାଲିକାରେ ସନ୍ନିହିତ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 = ସର୍ବଦା "
-"ଦର୍ଶାନ୍ତୁ"
+"ଭାଷା ତାଲିକାର ଆଚରଣ। 0 = ତାଲିକାରେ ସନ୍ନିହିତ, 1 = ସ୍ୱୟଂଚାଳିତ ଭାବରେ ଲୁଚାନ୍ତୁ, 2 ="
+" ସର୍ବଦା ଦର୍ଶାନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
-"ଭାଷା ଫଳକର ଅବସ୍ଥାନ। 0 = ଉପର ପାଖ ବାମ କୋଣ, 1 = ଉପର ପାଖ ଡାହାଣ କୋଣ, 2 = ତଳ ପାଖ ବାମ "
-"କୋଣ, 3 = ତଳ ପାଖ ଡ଼ାହାଣ କୋଣ, 4 = ଇଚ୍ଛାମୁତାବକ"
+"ଭାଷା ଫଳକର ଅବସ୍ଥାନ। 0 = ଉପର ପାଖ ବାମ କୋଣ, 1 = ଉପର ପାଖ ଡାହାଣ କୋଣ, 2 = ତଳ ପାଖ "
+"ବାମ କୋଣ, 3 = ତଳ ପାଖ ଡ଼ାହାଣ କୋଣ, 4 = ଇଚ୍ଛାମୁତାବକ"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "ତାଲିକାରେ ପରବର୍ତ୍ତୀ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "ତାଲିକାରେ ପୂର୍ବ ନିବେଶ ପ୍ରଣାଳୀକୁ ବଦଳାଇବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:25
+msgid "The shortcut keys for turning input method off"
+msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅଫ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥ କି ଗୁଡ଼ିକ"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The shortcut keys for turning input method on"
+msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅନ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥ କି ଗୁଡ଼ିକ"
+
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "ନିବେଶ ପଦ୍ଧତିକୁ ଅନ କିମ୍ବା ଅଫ କରିବା ପାଇଁ ସକ୍ଷିପ୍ତ ପଥଗୁଡ଼ିକ"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:28
 msgid "Trigger shortcut keys"
 msgstr "ସଂକ୍ଷିପ୍ତ ପଥ କି'ଗୁଡ଼ିକୁ ଟ୍ରିଗର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:29
 msgid "Use custom font"
 msgstr "ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:26
+#: ../data/ibus.schemas.in.h:30
 msgid "Use custom font name for language panel"
 msgstr "ଭାଷା ତାଲିକା ପାଇଁ ଇଚ୍ଛାମୁତାବକ ଅକ୍ଷରରୂପ ନାମକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:27
+#: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
 msgstr "ସର୍ବସାଧାରଣ ନିବେଶ ପ୍ରଣୀଳୀକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "ତନ୍ତ୍ର କିବୋର୍ଡ (XKB) ବିନ୍ୟାସକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "ତନ୍ତ୍ର କିବୋର୍ଡ ବିନ୍ୟାସକୁ ବ୍ୟବହାର କରନ୍ତୁ"
 
@@ -426,7 +434,7 @@ msgstr "ଇଚ୍ଛାରୂପୀ"
 
 #: ../setup/setup.ui.h:24
 msgid "Disable:"
-msgstr ""
+msgstr "ନିଷ୍କ୍ରିୟ କରନ୍ତୁ:"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
@@ -446,7 +454,7 @@ msgstr "ସକ୍ରିୟ ଅଥବା ନିଷ୍କ୍ରିୟ:"
 
 #: ../setup/setup.ui.h:29
 msgid "Enable:"
-msgstr ""
+msgstr "ସକ୍ରିୟ କରନ୍ତୁ:"
 
 #: ../setup/setup.ui.h:30
 msgid "General"
@@ -494,7 +502,8 @@ msgstr "ବଚ୍ଛିତ ନିବେଶ ପଦ୍ଧତିର ସୂଚନା
 
 #: ../setup/setup.ui.h:46
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr "ନିବେଶ ପଦ୍ଧତି ନାମକୁ ଭାଷା ସୂଚକରେ ଦର୍ଶାନ୍ତୁ ଯେତେବେଳେ ଯାଞ୍ଚବାକ୍ସକୁ ଯାଞ୍ଚକରୁଛନ୍ତି"
+msgstr ""
+"ନିବେଶ ପଦ୍ଧତି ନାମକୁ ଭାଷା ସୂଚକରେ ଦର୍ଶାନ୍ତୁ ଯେତେବେଳେ ଯାଞ୍ଚବାକ୍ସକୁ ଯାଞ୍ଚକରୁଛନ୍ତି"
 
 #: ../setup/setup.ui.h:47
 msgid "Show language panel:"

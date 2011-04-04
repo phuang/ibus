@@ -1,25 +1,24 @@
 # translation of ibus.master.pt_BR.po to Portuguese
-# translation of pt_BR1.po to
-# translation of pt_BR.po to
 # Gujarati translations for el package.
 # Copyright (C) 2010 THE el'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the el package.
+# This file is distributed under the same license as the ibus package.
 #
 # Automatically generated, 2010.
-# Glaucia Cintra <gcintra@redhat.com>, 2010.
+# Glaucia Cintra <gcintra@redhat.com>, 2010-2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.pt_BR\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2010-07-30 11:10+1000\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2011-03-08 12:32+0900\n"
+"PO-Revision-Date: 2011-03-22 15:23+0000\n"
 "Last-Translator: Glaucia Cintra <gcintra@redhat.com>\n"
-"Language-Team: Portuguese <en@li.org>\n"
-"Language: pt\n"
+"Language-Team: Portuguese (Brazilian) <trans-pt_br@lists.fedoraproject.org>\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -135,11 +134,11 @@ msgstr "trigger"
 
 #: ../setup/main.py:113
 msgid "enable"
-msgstr ""
+msgstr "habilitar"
 
 #: ../setup/main.py:124
 msgid "disable"
-msgstr ""
+msgstr "desabiltar"
 
 #: ../setup/main.py:135
 msgid "next input method"
@@ -155,14 +154,12 @@ msgstr "O IBus daemon não foi inciado. Você deseja iniciá-lo agora?"
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -230,68 +227,76 @@ msgid "Custom font name for language panel"
 msgstr "Nome da fonte padrão para o painel de linguagem"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Disable shortcut keys"
+msgstr "Desabilitar teclas de atalho"
+
+#: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text"
 msgstr "Embutir Texto de Pré-Edição "
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Embed Preedit Text in Application Window"
 msgstr "Embutir Texto de Pré-edição na Janela do Aplicativo"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default"
 msgstr "Habilitar método de entrada por padrão"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:8
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
-"Habilitar método de entrada por padrão quando o aplicativo obtiver o foco de "
-"entradas"
+"Habilitar método de entrada por padrão quando o aplicativo obtiver o foco de"
+" entradas"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:9
+msgid "Enable shortcut keys"
+msgstr "Habilitar teclas de atalho"
+
+#: ../data/ibus.schemas.in.h:10
 msgid "Language panel position"
 msgstr "Posição do Painel de Linguagem"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
 msgstr "Próximo mecanismo de teclas de atalho"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Orientation of lookup table"
 msgstr "Orientação da tabela de pesquisa"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Orientação da Tabela de Pesquisa. 0 = Horizontal, 1 = Vertical "
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Preload engines"
 msgstr "Mecanismos de carregamento"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Preload engines during ibus starts up"
 msgstr "Mecanismos de pré-carregamento durante a inicialização do ibus"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Prev engine shortcut keys"
 msgstr "Visualização do mecanismo das teclas de atalho "
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "Compartilhar o mesmo método de entrada entre todos os aplicativos"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "Apresenta um ícone na bandeja do sistema"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "Show input method name"
 msgstr "Apresenta o nome do método de entrada"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "Apresenta o nome do método de entrada na barra de linguagem"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
@@ -299,49 +304,57 @@ msgstr ""
 "O comportamento do painel de linguagem. 0 = Embutido no menu, 1 = Ocultar "
 "automaticamente, 2 = Apresentar sempre"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
 "A posição do painel de linguagem. 0 = Canto esquerdo superior, 1 = Canto "
-"direito superior, 2 = canto esquerdo inferior, 3 = canto direito inferior, 4 "
-"= Padrão "
+"direito superior, 2 = canto esquerdo inferior, 3 = canto direito inferior, 4"
+" = Padrão "
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
 "As teclas de atalho para alteração ao próximo método de entrada na lista "
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "Teclas de atalho para alteração ao método de entrada anterior"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:25
+msgid "The shortcut keys for turning input method off"
+msgstr "As teclas de atalho para desligar o método de entrada"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The shortcut keys for turning input method on"
+msgstr "As teclas de atalho para ligar o método de entrada"
+
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "As teclas de atalho para ligar ou desligar o método de entrada"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:28
 msgid "Trigger shortcut keys"
 msgstr "Realiza o trigger nas teclas de atalho"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:29
 msgid "Use custom font"
 msgstr "Usa a fonte padrão"
 
-#: ../data/ibus.schemas.in.h:26
+#: ../data/ibus.schemas.in.h:30
 msgid "Use custom font name for language panel"
 msgstr "Usa o nome da fonte padrão para o painel de linguagem"
 
-#: ../data/ibus.schemas.in.h:27
+#: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
 msgstr "Use o método de entrada global"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "Usa o desenho do teclado do sistema (XKB)"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "Usa o desenho do teclado do sistema"
 
@@ -391,8 +404,8 @@ msgid ""
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
 "<small><i>O método de entrada padrão é o número um da lista. Você pode usar "
-"os botões para mover o cursor para cima e para baixo para alterá-lo.</i></"
-"small>"
+"os botões para mover o cursor para cima e para baixo para alterá-"
+"lo.</i></small>"
 
 #: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
@@ -425,7 +438,7 @@ msgstr "Padrão"
 
 #: ../setup/setup.ui.h:24
 msgid "Disable:"
-msgstr ""
+msgstr "Desabilitar:"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
@@ -446,7 +459,7 @@ msgstr "Ativa ou desativa:"
 
 #: ../setup/setup.ui.h:29
 msgid "Enable:"
-msgstr ""
+msgstr "Habilitar:"
 
 #: ../setup/setup.ui.h:30
 msgid "General"
@@ -489,8 +502,8 @@ msgstr ""
 #: ../setup/setup.ui.h:40
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
-"Configure o comportamento do ibus para como demonstrar ou ocultar a barra de "
-"linguagem"
+"Configure o comportamento do ibus para como demonstrar ou ocultar a barra de"
+" linguagem"
 
 #: ../setup/setup.ui.h:41
 msgid "Set the orientation of candidates in lookup table"
@@ -521,7 +534,8 @@ msgstr ""
 
 #: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "Teclas de atalho para alteração ao método de entrada anterior da lista"
+msgstr ""
+"Teclas de atalho para alteração ao método de entrada anterior da lista"
 
 #: ../setup/setup.ui.h:52
 msgid "Top left corner"
