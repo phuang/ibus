@@ -212,5 +212,16 @@ void             bus_engine_proxy_property_hide     (BusEngineProxy *engine,
  */
 gboolean         bus_engine_proxy_is_enabled        (BusEngineProxy *engine);
 
+/**
+ * bus_engine_proxy_set_surrounding_text:
+ *
+ * Call "SetSurroundingText" method of an engine asynchronously.
+ */
+void             bus_engine_proxy_set_surrounding_text
+                                                    (BusEngineProxy *engine,
+                                                     IBusText       *text,
+                                                     guint           cursor_pos);
+
+
 G_END_DECLS
 #endif

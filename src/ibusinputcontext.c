@@ -28,6 +28,9 @@
 #include "ibuslookuptable.h"
 #include "ibusproplist.h"
 
+#define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
+
 enum {
     ENABLED,
     DISABLED,
@@ -52,9 +55,25 @@ enum {
     LAST_SIGNAL,
 };
 
+/* IBusInputContextPrivate */
+struct _IBusInputContextPrivate {
+    /* TRUE if the current engine needs surrounding text; FALSE otherwise */
+    gboolean  needs_surrounding_text;
+
+    /* cached surrounding text (see also IBusEnginePrivate and
+       BusEngineProxy) */
+    IBusText *surrounding_text;
+    guint     surrounding_cursor_pos;
+};
+
+typedef struct _IBusInputContextPrivate IBusInputContextPrivate;
+
 static guint            context_signals[LAST_SIGNAL] = { 0 };
 
+static IBusText *text_empty = NULL;
+
 /* functions prototype */
+static void     ibus_input_context_real_destroy (IBusProxy              *context);
 static void     ibus_input_context_g_signal     (GDBusProxy             *proxy,
                                                  const gchar            *sender_name,
                                                  const gchar            *signal_name,
@@ -65,7 +84,12 @@ G_DEFINE_TYPE (IBusInputContext, ibus_input_context, IBUS_TYPE_PROXY)
 static void
 ibus_input_context_class_init (IBusInputContextClass *class)
 {
+    IBusProxyClass *ibus_proxy_class = IBUS_PROXY_CLASS (class);
     GDBusProxyClass *g_dbus_proxy_class = G_DBUS_PROXY_CLASS (class);
+
+    g_type_class_add_private (class, sizeof (IBusInputContextPrivate));
+
+    ibus_proxy_class->destroy = ibus_input_context_real_destroy;
 
     g_dbus_proxy_class->g_signal = ibus_input_context_g_signal;
 
@@ -429,11 +453,33 @@ ibus_input_context_class_init (IBusInputContextClass *class)
             G_TYPE_NONE,
             1,
             IBUS_TYPE_PROPERTY);
+
+    text_empty = ibus_text_new_from_static_string ("");
+    g_object_ref_sink (text_empty);
 }
 
 static void
 ibus_input_context_init (IBusInputContext *context)
 {
+    IBusInputContextPrivate *priv;
+
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
+    priv->surrounding_text = g_object_ref_sink (text_empty);
+    priv->surrounding_cursor_pos = 0;
+}
+
+static void
+ibus_input_context_real_destroy (IBusProxy *context)
+{
+    IBusInputContextPrivate *priv;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (IBUS_INPUT_CONTEXT (context));
+
+    if (priv->surrounding_text) {
+        g_object_unref (priv->surrounding_text);
+        priv->surrounding_text = NULL;
+    }
+
+    IBUS_PROXY_CLASS(ibus_input_context_parent_class)->destroy (context);
 }
 
 static void
@@ -451,8 +497,6 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
         const gchar *signal_name;
         guint signal_id;
     } signals [] = {
-        { "Enabled",                ENABLED                  },
-        { "Disabled",               DISABLED                 },
         { "ShowPreeditText",        SHOW_PREEDIT_TEXT        },
         { "HidePreeditText",        HIDE_PREEDIT_TEXT        },
         { "ShowAuxiliaryText",      SHOW_AUXILIARY_TEXT      },
@@ -602,6 +646,26 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        0,
                        offset_from_cursor,
                        nchars);
+        return;
+    }
+
+    IBusInputContextPrivate *priv;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (IBUS_INPUT_CONTEXT (context));
+
+    if (g_strcmp0 (signal_name, "Enabled") == 0) {
+        priv->needs_surrounding_text = FALSE;
+        g_signal_emit (context, context_signals[ENABLED], 0);
+        return;
+    }
+
+    if (g_strcmp0 (signal_name, "Disabled") == 0) {
+        priv->needs_surrounding_text = FALSE;
+        g_signal_emit (context, context_signals[DISABLED], 0);
+        return;
+    }
+
+    if (g_strcmp0 (signal_name, "RequireSurroundingText") == 0) {
+        priv->needs_surrounding_text = TRUE;
         return;
     }
 
@@ -941,6 +1005,46 @@ ibus_input_context_is_enabled_async_finish (IBusInputContext   *context,
     g_variant_get (variant, "(b)", retval);
     g_variant_unref (variant);
     return TRUE;
+}
+
+void
+ibus_input_context_set_surrounding_text (IBusInputContext   *context,
+                                         IBusText           *text,
+                                         guint32             cursor_pos)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_assert (IBUS_IS_TEXT (text));
+
+    IBusInputContextPrivate *priv;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
+
+    if (priv->surrounding_text == NULL ||
+        g_strcmp0 (text->text, priv->surrounding_text->text) != 0 ||
+        cursor_pos != priv->surrounding_cursor_pos) {
+        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+        if (priv->surrounding_text)
+            g_object_unref (priv->surrounding_text);
+        priv->surrounding_text = (IBusText *) g_object_ref_sink (text);
+        priv->surrounding_cursor_pos = cursor_pos;
+
+        g_dbus_proxy_call ((GDBusProxy *) context,
+                         "SetSurroundingText",              /* method_name */
+                         g_variant_new ("(vu)", variant, cursor_pos), /* parameters */
+                         G_DBUS_CALL_FLAGS_NONE,            /* flags */
+                         -1,                                /* timeout */
+                         NULL,                              /* cancellable */
+                         NULL,                              /* callback */
+                         NULL                               /* user_data */
+                         );
+    }
+}
+
+gboolean
+ibus_input_context_needs_surrounding_text (IBusInputContext *context)
+{
+    IBusInputContextPrivate *priv;
+    priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (IBUS_INPUT_CONTEXT (context));
+    return priv->needs_surrounding_text;
 }
 
 gboolean

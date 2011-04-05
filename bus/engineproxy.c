@@ -47,6 +47,11 @@ struct _BusEngineProxy {
     /* a key mapping for the engine that converts keycode into keysym. the mapping is used only when use_sys_layout is FALSE. */
     IBusKeymap     *keymap;
     /* private member */
+
+    /* cached surrounding text (see also IBusEnginePrivate and
+       IBusInputContextPrivate) */
+    IBusText *surrounding_text;
+    guint     surrounding_cursor_pos;
 };
 
 struct _BusEngineProxyClass {
@@ -58,6 +63,7 @@ enum {
     COMMIT_TEXT,
     FORWARD_KEY_EVENT,
     DELETE_SURROUNDING_TEXT,
+    REQUIRE_SURROUNDING_TEXT,
     UPDATE_PREEDIT_TEXT,
     SHOW_PREEDIT_TEXT,
     HIDE_PREEDIT_TEXT,
@@ -82,6 +88,8 @@ enum {
 };
 
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
+
+static IBusText *text_empty = NULL;
 
 /* functions prototype */
 static void     bus_engine_proxy_set_property   (BusEngineProxy      *engine,
@@ -170,6 +178,16 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
             2,
             G_TYPE_INT,
             G_TYPE_UINT);
+
+    engine_signals[REQUIRE_SURROUNDING_TEXT] =
+        g_signal_new (I_("require-surrounding-text"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0);
 
     engine_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
@@ -330,11 +348,16 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
             G_TYPE_NONE,
             1,
             IBUS_TYPE_PROPERTY);
+
+    text_empty = ibus_text_new_from_static_string ("");
+    g_object_ref_sink (text_empty);
 }
 
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
+    engine->surrounding_text = g_object_ref_sink (text_empty);
+    engine->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -393,6 +416,11 @@ bus_engine_proxy_real_destroy (IBusProxy *proxy)
         engine->keymap = NULL;
     }
 
+    if (engine->surrounding_text) {
+        g_object_unref (engine->surrounding_text);
+        engine->surrounding_text = NULL;
+    }
+
     IBUS_PROXY_CLASS (bus_engine_proxy_parent_class)->destroy ((IBusProxy *)engine);
 }
 
@@ -431,6 +459,7 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
         { "PageDownLookupTable",    PAGE_DOWN_LOOKUP_TABLE },
         { "CursorUpLookupTable",    CURSOR_UP_LOOKUP_TABLE },
         { "CursorDownLookupTable",  CURSOR_DOWN_LOOKUP_TABLE },
+        { "RequireSurroundingText", REQUIRE_SURROUNDING_TEXT },
     };
 
     gint i;
@@ -983,6 +1012,33 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
                        NULL,
                        NULL,
                        NULL);
+}
+
+void bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
+                                            IBusText       *text,
+                                            guint           cursor_pos)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (text != NULL);
+
+    if (!engine->surrounding_text ||
+        g_strcmp0 (text->text, engine->surrounding_text->text) != 0 ||
+        cursor_pos != engine->surrounding_cursor_pos) {
+        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+        if (engine->surrounding_text)
+            g_object_unref (engine->surrounding_text);
+        engine->surrounding_text = (IBusText *) g_object_ref_sink (text);
+        engine->surrounding_cursor_pos = cursor_pos;
+
+        g_dbus_proxy_call ((GDBusProxy *)engine,
+                           "SetSurroundingText",
+                           g_variant_new ("(vu)", variant, cursor_pos),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           NULL,
+                           NULL);
+    }
 }
 
 /* a macro to generate a function to call a nullary D-Bus method. */

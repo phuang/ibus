@@ -259,6 +259,11 @@ static const gchar introspection_xml[] =
     "    <method name='GetEngine'>"
     "      <arg direction='out' type='v' name='desc' />"
     "    </method>"
+    "    <method name='SetSurroundingText'>"
+    "      <arg direction='in' type='v' name='text' />"
+    "      <arg direction='in' type='u' name='cursor_pos' />"
+    "    </method>"
+
     /* signals */
     "    <signal name='CommitText'>"
     "      <arg type='v' name='text' />"
@@ -1011,6 +1016,32 @@ _ic_get_engine (BusInputContext       *context,
  * Handle a D-Bus method call whose destination and interface name are both "org.freedesktop.IBus.InputContext"
  */
 static void
+_ic_set_surrounding_text (BusInputContext       *context,
+                          GVariant              *parameters,
+                          GDBusMethodInvocation *invocation)
+{
+    GVariant *variant = NULL;
+    IBusText *text;
+    guint cursor_pos = 0;
+
+    g_variant_get (parameters, "(vu)", &variant, &cursor_pos);
+    text = IBUS_TEXT (ibus_serializable_deserialize (variant));
+    g_variant_unref (variant);
+
+    if ((context->capabilities & IBUS_CAP_SURROUNDING_TEXT) &&
+         context->has_focus && context->enabled && context->engine) {
+        bus_engine_proxy_set_surrounding_text (context->engine,
+                                               text,
+                                               cursor_pos);
+    }
+
+    if (g_object_is_floating (text))
+        g_object_unref (text);
+
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+static void
 bus_input_context_service_method_call (IBusService            *service,
                                        GDBusConnection        *connection,
                                        const gchar            *sender,
@@ -1049,6 +1080,7 @@ bus_input_context_service_method_call (IBusService            *service,
         { "IsEnabled",         _ic_is_enabled },
         { "SetEngine",         _ic_set_engine },
         { "GetEngine",         _ic_get_engine },
+        { "SetSurroundingText", _ic_set_surrounding_text},
     };
 
     gint i;
@@ -1787,6 +1819,29 @@ _engine_delete_surrounding_text_cb (BusEngineProxy    *engine,
 }
 
 /**
+ * _engine_require_surrounding_text_cb:
+ *
+ * A function to be called when "require-surrounding-text" glib signal is sent to the engine object.
+ */
+static void
+_engine_require_surrounding_text_cb (BusEngineProxy    *engine,
+                                     BusInputContext   *context)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    g_assert (context->engine == engine);
+
+    if (!context->enabled)
+        return;
+
+    bus_input_context_emit_signal (context,
+                                   "RequireSurroundingText",
+                                   NULL,
+                                   NULL);
+}
+
+/**
  * _engine_update_preedit_text_cb:
  *
  * A function to be called when "update-preedit-text" glib signal is sent to the engine object.
@@ -2060,6 +2115,7 @@ const static struct {
     { "commit-text",              G_CALLBACK (_engine_commit_text_cb) },
     { "forward-key-event",        G_CALLBACK (_engine_forward_key_event_cb) },
     { "delete-surrounding-text",  G_CALLBACK (_engine_delete_surrounding_text_cb) },
+    { "require-surrounding-text", G_CALLBACK (_engine_require_surrounding_text_cb) },
     { "update-preedit-text",      G_CALLBACK (_engine_update_preedit_text_cb) },
     { "show-preedit-text",        G_CALLBACK (_engine_show_preedit_text_cb) },
     { "hide-preedit-text",        G_CALLBACK (_engine_hide_preedit_text_cb) },

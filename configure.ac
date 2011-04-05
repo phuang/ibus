@@ -371,6 +371,19 @@ AC_ARG_WITH(panel-icon-keyboard,
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
+# option for enable surrounding-text
+AC_ARG_ENABLE(surrounding-text,
+    AS_HELP_STRING([--enable-surrounding-text],
+        [Enable surrounding-text support]),
+    [enable_surrounding_text=$enableval],
+    [enable_surrounding_text=no]
+)
+if test x"$enable_surrounding_text" = x"yes"; then
+    AC_DEFINE(ENABLE_SURROUNDING, TRUE, [Enable surrounding-text support])
+else
+    enable_surrounding_text="no (disabled, use --enable-surrounding-text to enable)"
+fi
+
 # check iso-codes
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -442,5 +455,6 @@ Build options:
   Enable key snooper        $enable_key_snooper
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
+  Enable surrounding-text   $enable_surrounding_text
 ])
 

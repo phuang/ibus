@@ -50,6 +50,9 @@ class IEngine(dbus.service.Object):
     @method(in_signature="iiii")
     def SetCursorLocation(self, x, y, w, h): pass
 
+    @method(in_signature="vu")
+    def SetSurroundingText(self, text, cursor_index): pass
+
     @method(in_signature="u")
     def SetCapabilities(self, cap): pass
 

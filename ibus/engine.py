@@ -46,6 +46,9 @@ class EngineBase(object.Object):
     def set_cursor_location(self, x, y, w, h):
         pass
 
+    def set_surrounding_text(self, text, cursor_index):
+        pass
+
     def set_capabilities(self, cap):
         pass
 
@@ -162,6 +165,9 @@ class EngineProxy(interface.IEngine):
 
     def SetCursorLocation(self, x, y, w, h):
         return self.__engine.set_cursor_location(x, y, w, h)
+
+    def SetSurroundingText(self, text, cursor_index):
+        return self.__engine.set_surrounding_text(text, cursor_index)
 
     def SetCapabilities(self, caps):
         return self.__engine.set_capabilities(caps)
