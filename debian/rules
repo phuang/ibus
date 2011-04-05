@@ -6,7 +6,11 @@ build: patch
 	ln -sf /usr/share/misc/config.sub config.sub
 	ln -sf /usr/share/misc/config.guess config.guess
 	dh $@ --before auto_configure
-	dh_auto_configure -- --enable-static LDFLAGS="-Wl,--as-needed"
+	dh_auto_configure -- \
+		--enable-static \
+		--enable-surrounding-text \
+		--with-panel-icon-keyboard=ibus-keyboard \
+		LDFLAGS="-Wl,--as-needed"
 	dh $@ --before auto_test
 	cd po; make ibus10.pot # https://bugs.launchpad.net/ubuntu/+source/ibus/+bug/188690
 	dh $@ --after auto_test

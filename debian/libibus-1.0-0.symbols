@@ -121,6 +121,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_engine_desc_output@Base 1.3.99.20101019
  ibus_engine_forward_key_event@Base 1.3.99.20101019
  ibus_engine_get_name@Base 1.3.99.20101019
+ ibus_engine_get_surrounding_text@Base 1.3.99.20110405
  ibus_engine_get_type@Base 1.3.99.20101019
  ibus_engine_hide_auxiliary_text@Base 1.3.99.20101019
  ibus_engine_hide_lookup_table@Base 1.3.99.20101019
@@ -174,6 +175,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_input_context_is_enabled@Base 1.3.99.20101019
  ibus_input_context_is_enabled_async@Base 1.3.99.20110322
  ibus_input_context_is_enabled_async_finish@Base 1.3.99.20110322
+ ibus_input_context_needs_surrounding_text@Base 1.3.99.20110405
  ibus_input_context_new@Base 1.3.99.20101019
  ibus_input_context_new_async@Base 1.3.99.20110316
  ibus_input_context_new_async_finish@Base 1.3.99.20110316
@@ -189,6 +191,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_input_context_set_capabilities@Base 1.3.99.20101019
  ibus_input_context_set_cursor_location@Base 1.3.99.20101019
  ibus_input_context_set_engine@Base 1.3.99.20101019
+ ibus_input_context_set_surrounding_text@Base 1.3.99.20110405
  ibus_key_event_from_string@Base 1.3.99.20101019
  ibus_key_event_to_string@Base 1.3.99.20101019
  ibus_keymap_fill@Base 1.3.99.20101019
