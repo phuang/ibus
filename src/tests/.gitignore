@@ -22,6 +22,7 @@
 /ibus-configservice
 /ibus-factory
 /ibus-inputcontext
+/ibus-inputcontext-create
 /ibus-keynames
 /ibus-serializable
 /ibus-share

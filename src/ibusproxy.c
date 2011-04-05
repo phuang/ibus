@@ -36,7 +36,6 @@ enum {
 static guint            proxy_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void      ibus_proxy_constructed     (GObject            *object);
 static void      ibus_proxy_dispose         (GObject            *object);
 static void      ibus_proxy_real_destroy    (IBusProxy          *proxy);
 
@@ -45,15 +44,19 @@ static void      ibus_proxy_connection_closed_cb
                                              gboolean            remote_peer_vanished,
                                              GError             *error,
                                              IBusProxy          *proxy);
-
-G_DEFINE_TYPE (IBusProxy, ibus_proxy, G_TYPE_DBUS_PROXY)
+static void      initable_iface_init        (GInitableIface     *initable_iface);
+static void      async_initable_iface_init  (GAsyncInitableIface
+                                                                *async_initable_iface);
+G_DEFINE_TYPE_WITH_CODE (IBusProxy, ibus_proxy, G_TYPE_DBUS_PROXY,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, initable_iface_init)
+                         G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, async_initable_iface_init)
+                         );
 
 static void
 ibus_proxy_class_init (IBusProxyClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
-    gobject_class->constructed = ibus_proxy_constructed;
     gobject_class->dispose = ibus_proxy_dispose;
 
     class->destroy = ibus_proxy_real_destroy;
@@ -83,21 +86,6 @@ static void
 ibus_proxy_init (IBusProxy *proxy)
 {
     proxy->own = TRUE;
-}
-
-static void
-ibus_proxy_constructed (GObject *object)
-{
-    GDBusConnection *connection;
-    connection = g_dbus_proxy_get_connection ((GDBusProxy *)object);
-
-    g_assert (connection != NULL);
-    g_assert (!g_dbus_connection_is_closed (connection));
-
-    g_signal_connect (connection, "closed",
-            G_CALLBACK (ibus_proxy_connection_closed_cb), object);
-
-    /* FIXME add match rules? */
 }
 
 /**
@@ -161,3 +149,80 @@ ibus_proxy_destroy (IBusProxy *proxy)
     }
 }
 
+static gboolean
+ibus_proxy_init_finish (IBusProxy  *proxy,
+                        GError    **error)
+{
+    g_assert (IBUS_IS_PROXY (proxy));
+    g_assert (error == NULL || *error == NULL);
+
+    GDBusConnection *connection =
+            g_dbus_proxy_get_connection ((GDBusProxy *)proxy);
+
+    if (connection == NULL || g_dbus_connection_is_closed (connection)) {
+        /*
+         * When proxy is created asynchronously, the connection may be closed
+         * before proxy is ready. In this case, we need override interfaces
+         * GInitable and GAsyncInitable to report the error.
+         */
+        if (error != NULL)
+            *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                    "Connection is closed.");
+        return FALSE;
+    }
+
+    g_signal_connect (connection, "closed",
+            G_CALLBACK (ibus_proxy_connection_closed_cb), proxy);
+
+    return TRUE;
+}
+
+
+static GInitableIface *initable_iface_parent = NULL;
+
+static gboolean
+initable_init (GInitable     *initable,
+               GCancellable  *cancellable,
+               GError       **error)
+{
+    if (!initable_iface_parent->init (initable, cancellable, error))
+        return FALSE;
+    return ibus_proxy_init_finish ((IBusProxy *)initable, error);
+}
+
+static void
+initable_iface_init (GInitableIface *initable_iface)
+{
+    initable_iface_parent = g_type_interface_peek_parent (initable_iface);
+}
+
+static GAsyncInitableIface *async_initable_iface_parent = NULL;
+
+static void
+async_initable_init_async (GAsyncInitable      *initable,
+                           gint                 io_priority,
+                           GCancellable        *cancellable,
+                           GAsyncReadyCallback  callback,
+                           gpointer             user_data)
+{
+    async_initable_iface_parent->init_async (initable,
+            io_priority, cancellable, callback, user_data);
+}
+
+static gboolean
+async_initable_init_finish (GAsyncInitable  *initable,
+                            GAsyncResult    *res,
+                            GError         **error)
+{
+    if (!async_initable_iface_parent->init_finish (initable, res, error))
+        return FALSE;
+    return ibus_proxy_init_finish ((IBusProxy *)initable, error);
+}
+
+static void
+async_initable_iface_init (GAsyncInitableIface *async_initable_iface)
+{
+    async_initable_iface_parent = g_type_interface_peek_parent (async_initable_iface);
+    async_initable_iface->init_async = async_initable_init_async;
+    async_initable_iface->init_finish = async_initable_init_finish;
+}

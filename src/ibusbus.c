@@ -559,8 +559,20 @@ _create_input_context_async_step_one_done (GDBusConnection    *connection,
         return;
     }
 
+    if (g_dbus_connection_is_closed (connection)) {
+        /*
+         * The connection is closed, can not contine next steps, so complete
+         * the asynchronous request with error.
+         */
+        g_simple_async_result_set_error (simple,
+                G_DBUS_ERROR, G_DBUS_ERROR_FAILED, "Connection is closed.");
+        g_simple_async_result_complete_in_idle (simple);
+        return;
+    }
+
     const gchar *path = NULL;
     g_variant_get (variant, "(&o)", &path);
+
 
     IBusBus *bus = (IBusBus *)g_async_result_get_source_object (
             (GAsyncResult *)simple);
@@ -575,6 +587,7 @@ _create_input_context_async_step_one_done (GDBusConnection    *connection,
             cancellable,
             (GAsyncReadyCallback)_create_input_context_async_step_two_done,
             simple);
+    /* release the reference from g_async_result_get_source_object() */
     g_object_unref (bus);
 }
 
