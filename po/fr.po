@@ -4,19 +4,17 @@
 # This file is distributed under the same license as the ibus package.
 #
 #
-# UTUMI Hirosi <utuhiro78@yahoo.co.jp>, 2008.
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
-# Humbert Julien <julroy67@gmail.com>, 2009, 2010.
+# Julien Humbert <julroy67@gmail.com>, 2009, 2010, 2011.
 # Sam Friedmann <sam.friedmann@redhat.com>, 2010.
 # dominique <chepioq@gmail.com>, 2011.
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master.fr\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
 "POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
-"Last-Translator: dominique <chepioq@gmail.com>\n"
+"PO-Revision-Date: 2011-04-08 00:44+0200\n"
+"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
 "Language-Team: French <trans-fr@lists.fedoraproject.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
@@ -97,7 +95,7 @@ msgstr "IBus est un IME intelligent pour Linux/Unix"
 
 #: ../ui/gtk/panel.py:488
 msgid "translator-credits"
-msgstr "HUMBERT Julien <julroy67@gmail.com>"
+msgstr "Julien Humbert <julroy67@gmail.com>"
 
 #: ../ui/gtk/languagebar.py:106
 msgid "About the input method"
@@ -161,12 +159,15 @@ msgstr "Le démon IBus n'est pas démarré. Voulez-vous le démarrer maintenant�
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in "
+"$HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus a été démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter les lignes suivantes dans le fichier « $HOME/.bashrc », et veuillez vous reconnecter.\n"
+"IBus a été démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter "
+"les lignes suivantes dans le fichier « $HOME/.bashrc », et veuillez vous "
+"reconnecter.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -417,8 +418,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"Ajouter la méthode d'entrée selectionnée aux méthodes d'entrée actives"
+msgstr "Ajouter la méthode d'entrée selectionnée aux méthodes d'entrée actives"
 
 #: ../setup/setup.ui.h:18
 msgid "Advanced"
@@ -562,3 +562,5 @@ msgstr "Verticale"
 #: ../setup/setup.ui.h:58
 msgid "When active"
 msgstr "Uniquement lorsque active"
+
+
