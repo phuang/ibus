@@ -123,15 +123,6 @@ void             bus_connection_set_filter          (BusConnection      *connect
                                                      gpointer            user_data,
                                                      GDestroyNotify      user_data_free_func);
 
-/**
- * bus_connection_get_serial:
- * @name: a well-known name for the connection.
- * @returns: the serial number.
- *
- * Get the serial number from the connection.
- */
-guint32          bus_connection_get_serial          (BusConnection      *connection);
-
 G_END_DECLS
 #endif
 

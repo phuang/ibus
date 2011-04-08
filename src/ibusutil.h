@@ -43,10 +43,4 @@
  */
 const gchar *    ibus_get_language_name         (const gchar    *_locale);
 
-/**
- * ibus_is_running_gnome_shell:
- * @returns: TRUE if gnome-shell is running
- */
-gboolean         ibus_is_running_gnome_shell    (void);
-
 #endif

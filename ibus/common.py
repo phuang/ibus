@@ -53,7 +53,6 @@ __all__ = (
         "main_iteration",
         "get_address",
         "get_socket_path",
-        "is_running_gnome_shell",
     )
 
 import os
@@ -111,9 +110,6 @@ get_address.restype=ctypes.c_char_p
 
 get_socket_path = libibus.ibus_get_socket_path
 get_socket_path.restype=ctypes.c_char_p
-
-is_running_gnome_shell = libibus.ibus_is_running_gnome_shell
-is_running_gnome_shell.restype = ctypes.c_bool
 
 # __session_id = os.getenv ("IBUS_SESSION_ID")
 # 

@@ -145,38 +145,3 @@ ibus_get_language_name(const gchar *_locale) {
     }
     return retval;
 }
-
-gboolean
-ibus_is_running_gnome_shell (void)
-{
-    GDBusConnection *connection = NULL;
-    GVariant *result;
-    gboolean is_running = FALSE;
-
-    connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
-    if (connection == NULL) {
-        return FALSE;
-    }
-
-    result = g_dbus_connection_call_sync (connection,
-                                          "org.freedesktop.DBus",
-                                          "/org/freedesktop/DBus",
-                                          "org.freedesktop.DBus",
-                                          "GetNameOwner",
-                                          g_variant_new ("(s)", "org.gnome.Shell"),
-                                          G_VARIANT_TYPE ("(s)"),
-                                          G_DBUS_CALL_FLAGS_NONE,
-                                          -1,
-                                          NULL,
-                                          NULL);
-
-    if (result != NULL) {
-        is_running = TRUE;
-        g_variant_unref (result);
-    } else {
-        is_running = FALSE;
-    }
-    g_object_unref (connection);
-
-    return is_running;
-}

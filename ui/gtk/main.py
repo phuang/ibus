@@ -54,14 +54,8 @@ class UIApplication:
         if replace:
             flag = flag | ibus.BUS_NAME_FLAG_REPLACE_EXISTING
         self.__bus.request_name(ibus.IBUS_SERVICE_PANEL, flag)
-        self.__bus.add_match("type='signal',\
-                             sender='org.freedesktop.DBus',\
-                             member='NameAcquired'")
         self.__bus.get_dbusconn().add_signal_receiver(self.__name_acquired_cb,
                                                       signal_name="NameAcquired")
-        self.__bus.add_match("type='signal',\
-                             sender='org.freedesktop.DBus',\
-                             member='NameLost'")
         self.__bus.get_dbusconn().add_signal_receiver(self.__name_lost_cb,
                                                       signal_name="NameLost")
         self.__notify = pynotify.Notification("IBus", \
@@ -80,11 +74,9 @@ class UIApplication:
         self.__notify.show()
 
     def __name_acquired_cb(self, name):
-        print "Got NameAcquired signal", name
         self.__panel.show()
 
     def __name_lost_cb(self, name):
-        print "Got NameLost signal", name
         self.__panel.hide()
 
     def run(self):
@@ -101,6 +93,7 @@ def launch_panel(replace):
 def print_help(out, v = 0):
     print >> out, "-h, --help             show this message."
     print >> out, "-d, --daemonize        daemonize ibus"
+    print >> out, "-r, --replace          replace existing ibus UI"
     sys.exit(v)
 
 def main():

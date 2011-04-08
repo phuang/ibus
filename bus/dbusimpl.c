@@ -276,7 +276,7 @@ bus_connection_owner_free (BusConnectionOwner *owner)
 }
 
 static GSList *
-_bus_name_service_find_owner_link (BusNameService *service,
+bus_name_service_find_owner_link (BusNameService *service,
                                    BusConnection  *connection)
 {
     GSList *owners = service->owners;
@@ -300,10 +300,10 @@ bus_name_service_new (const gchar *name)
     g_assert (name != NULL);
 
     service = g_slice_new (BusNameService);
-    if (service != NULL) {
-        service->name = g_strdup (name);
-        service->owners = NULL;
-    }
+    g_assert (service != NULL);
+
+    service->name = g_strdup (name);
+    service->owners = NULL;
 
     return service;
 }
@@ -326,13 +326,13 @@ bus_name_service_free (BusNameService *service)
         g_slist_free (service->owners);
         service->owners = NULL;
     }
+
     g_free (service->name);
-    service->name = NULL;
     g_slice_free (BusNameService, service);
 }
 
 static void
-bus_name_service_add_primary_owner (BusNameService     *service,
+bus_name_service_set_primary_owner (BusNameService     *service,
                                     BusConnectionOwner *owner,
                                     BusDBusImpl        *dbus)
 {
@@ -340,11 +340,37 @@ bus_name_service_add_primary_owner (BusNameService     *service,
     g_assert (owner != NULL);
     g_assert (dbus != NULL);
 
+    BusConnectionOwner *old = service->owners != NULL ?
+            (BusConnectionOwner *)service->owners->data : NULL;
+
+    if (old != NULL) {
+        g_signal_emit (dbus,
+                       dbus_signals[NAME_LOST],
+                       0,
+                       old->conn,
+                       service->name);
+    }
+
     g_signal_emit (dbus,
                    dbus_signals[NAME_ACQUIRED],
                    0,
                    owner->conn,
                    service->name ? service->name : "");
+
+    g_signal_emit (dbus,
+                   dbus_signals[NAME_OWNER_CHANGED],
+                   0,
+                   owner->conn,
+                   service->name,
+                   old != NULL ? bus_connection_get_unique_name (old->conn) : "",
+                   bus_connection_get_unique_name (owner->conn));
+
+    if (old != NULL && old->do_not_queue != 0) {
+        /* If old primary owner does not want to be in queue, we remove it. */
+        service->owners = g_slist_remove (service->owners, old);
+        bus_connection_remove_name (old->conn, service->name);
+        bus_connection_owner_free (old);
+    }
 
     service->owners = g_slist_prepend (service->owners, (gpointer) owner);
 }
@@ -362,23 +388,29 @@ bus_name_service_get_primary_owner (BusNameService *service)
 }
 
 static void
-bus_name_service_add_owner (BusNameService     *service,
-                            BusConnectionOwner *owner,
-                            BusDBusImpl        *dbus)
+bus_name_service_add_non_primary_owner (BusNameService     *service,
+                                        BusConnectionOwner *owner,
+                                        BusDBusImpl        *dbus)
 {
     g_assert (service != NULL);
     g_assert (owner != NULL);
     g_assert (dbus != NULL);
-
-    if (service->owners == NULL) {
-        g_signal_emit (dbus,
-                       dbus_signals[NAME_ACQUIRED],
-                       0,
-                       owner->conn,
-                       service->name ? service->name : "");
-    }
+    g_assert (service->owners != NULL);
 
     service->owners = g_slist_append (service->owners, (gpointer) owner);
+}
+
+static BusConnectionOwner *
+bus_name_service_find_owner (BusNameService *service,
+                             BusConnection  *connection)
+{
+    g_assert (service != NULL);
+    g_assert (connection != NULL);
+
+    GSList *owners = bus_name_service_find_owner_link (service, connection);
+    if (owners != NULL)
+        return (BusConnectionOwner *)owners->data;
+    return NULL;
 }
 
 static void
@@ -390,19 +422,39 @@ bus_name_service_remove_owner (BusNameService     *service,
 
     g_assert (service != NULL);
     g_assert (owner != NULL);
-    g_assert (dbus != NULL);
 
-    owners = _bus_name_service_find_owner_link (service, owner->conn);
-    if (owners == NULL) {
-        return;
-    }
+
+    owners = bus_name_service_find_owner_link (service, owner->conn);
+    g_assert (owners != NULL);
 
     if (owners->data == bus_name_service_get_primary_owner (service)) {
-        g_signal_emit (dbus,
-                       dbus_signals[NAME_LOST],
-                       0,
-                       owner->conn,
-                       service->name ? service->name : "");
+        BusConnectionOwner *_new = NULL;
+        if (owners->next != NULL) {
+            _new = (BusConnectionOwner *)owners->next->data;
+        }
+
+        if (dbus != NULL) {
+            g_signal_emit (dbus,
+                           dbus_signals[NAME_LOST],
+                           0,
+                           owner->conn,
+                           service->name);
+            if (_new != NULL) {
+                g_signal_emit (dbus,
+                               dbus_signals[NAME_ACQUIRED],
+                               0,
+                               _new->conn,
+                               service->name);
+            }
+            g_signal_emit (dbus,
+                    dbus_signals[NAME_OWNER_CHANGED],
+                    0,
+                    _new != NULL ? _new->conn : NULL,
+                    service->name,
+                    bus_connection_get_unique_name (owner->conn),
+                    _new != NULL ? bus_connection_get_unique_name (_new->conn) : "");
+
+        }
     }
 
     service->owners = g_slist_remove_link (service->owners, (gpointer) owners);
@@ -490,7 +542,7 @@ bus_dbus_impl_init (BusDBusImpl *dbus)
 {
     dbus->unique_names = g_hash_table_new (g_str_hash, g_str_equal);
     dbus->names = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                         (GDestroyNotify) g_free,
+                                         NULL,
                                          (GDestroyNotify) bus_name_service_free);
 
     dbus->dispatch_lock = g_mutex_new ();
@@ -506,7 +558,8 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
 
     for (p = dbus->objects; p != NULL; p = p->next) {
         IBusService *object = (IBusService *) p->data;
-        g_signal_handlers_disconnect_by_func (object, G_CALLBACK (bus_dbus_impl_object_destroy_cb), dbus);
+        g_signal_handlers_disconnect_by_func (object,
+                G_CALLBACK (bus_dbus_impl_object_destroy_cb), dbus);
         ibus_object_destroy ((IBusObject *) object);
         g_object_unref (object);
     }
@@ -525,7 +578,8 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
 
     for (p = dbus->connections; p != NULL; p = p->next) {
         GDBusConnection *connection = G_DBUS_CONNECTION (p->data);
-        g_signal_handlers_disconnect_by_func (connection, bus_dbus_impl_connection_destroy_cb, dbus);
+        g_signal_handlers_disconnect_by_func (connection,
+                bus_dbus_impl_connection_destroy_cb, dbus);
         /* FIXME should handle result? */
         g_dbus_connection_close (connection, NULL, NULL, NULL);
         g_object_unref (connection);
@@ -883,12 +937,9 @@ bus_dbus_impl_request_name (BusDBusImpl           *dbus,
 {
     const gchar *name = NULL;  // e.g. "org.freedesktop.IBus.Panel"
     guint32 flags = 0;
-    guint32 retval = 0;
-    gchar *old_owner_name = NULL;
     BusNameService *service = NULL;
     BusConnectionOwner *primary_owner = NULL;
     BusConnectionOwner *owner = NULL;
-    BusConnection *old_owner_conn = NULL;
 
     g_variant_get (parameters, "(&su)", &name, &flags);
 
@@ -909,83 +960,82 @@ bus_dbus_impl_request_name (BusDBusImpl           *dbus,
         return;
     }
 
+    enum {
+        ACTION_INVALID,
+        ACTION_IN_QUEUE,
+        ACTION_REPLACE,
+        ACTION_EXISTS,
+        ACTION_ALREADY_OWN,
+    } action = ACTION_INVALID;
+
     service = (BusNameService *) g_hash_table_lookup (dbus->names, name);
 
-    if (service != NULL) {
-        primary_owner = bus_name_service_get_primary_owner (service);
-        if (primary_owner != NULL) {
-            old_owner_conn = primary_owner->conn;
-        } else {
-            old_owner_conn = NULL;
-        }
-    } else {
-        old_owner_conn = NULL;
-    }
-
-    if (old_owner_conn == NULL) {
-        retval = IBUS_BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER;
-    }
-    else if (old_owner_conn == connection) {
-        retval = IBUS_BUS_REQUEST_NAME_REPLY_ALREADY_OWNER;
-        goto out;
-    }
-    else if (((flags & IBUS_BUS_NAME_FLAG_DO_NOT_QUEUE) &&
-             !(bus_name_service_get_allow_replacement (service))) ||
-             ((flags & IBUS_BUS_NAME_FLAG_DO_NOT_QUEUE) &&
-             !(flags & IBUS_BUS_NAME_FLAG_REPLACE_EXISTING))) {
-        retval = IBUS_BUS_REQUEST_NAME_REPLY_EXISTS;
-        goto out;
-    }
-    else if (!(flags & IBUS_BUS_NAME_FLAG_DO_NOT_QUEUE) &&
-             (!(flags & IBUS_BUS_NAME_FLAG_REPLACE_EXISTING) ||
-              !(bus_name_service_get_allow_replacement (service)))) {
-        if (!bus_connection_has_name (connection, name)) {
-            bus_connection_add_name (connection, name);
-        }
-        owner = bus_connection_owner_new (connection, flags);
-        bus_name_service_add_owner (service, owner, dbus);
-        retval = IBUS_BUS_REQUEST_NAME_REPLY_IN_QUEUE;
-        goto out;
-    }
-    else {
-        if (!bus_connection_has_name (connection, name)) {
-            bus_connection_add_name (connection, name);
-        }
-        owner = bus_connection_owner_new (connection, flags);
-        old_owner_name = g_strdup (bus_connection_get_unique_name (primary_owner->conn));
-        bus_name_service_remove_owner (service, primary_owner, dbus);
-        bus_name_service_add_primary_owner (service, owner, dbus);
-        if (primary_owner->do_not_queue == 0) {
-            bus_name_service_add_owner (service, primary_owner, dbus);
-        } else {
-            if (bus_connection_has_name (primary_owner->conn, name)) {
-                bus_connection_remove_name (primary_owner->conn, name);
-            }
-            bus_connection_owner_free (primary_owner);
-        }
-        retval = IBUS_BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER;
-    }
-
+    /* If the name servise does not exist, we will create one. */
     if (service == NULL) {
         service = bus_name_service_new (name);
-        owner = bus_connection_owner_new (connection, flags);
-        bus_name_service_add_owner (service, owner, dbus);
         g_hash_table_insert (dbus->names,
-                             (gpointer) g_strdup (bus_connection_add_name (connection, name)),
+                             service->name,
                              service);
     }
+    else {
+        primary_owner = bus_name_service_get_primary_owner (service);
+    }
 
-    g_signal_emit (dbus,
-                   dbus_signals[NAME_OWNER_CHANGED],
-                   0,
-                   connection,
-                   name,
-                   old_owner_name ? old_owner_name : "",
-                   bus_connection_get_unique_name (connection));
-    g_free (old_owner_name);
+    if (primary_owner != NULL) {
+        if (primary_owner->conn == connection) {
+            action = ACTION_ALREADY_OWN;
+        }
+        else {
+            action = (flags & IBUS_BUS_NAME_FLAG_DO_NOT_QUEUE) ?
+                    ACTION_EXISTS : ACTION_IN_QUEUE;
+            if ((bus_name_service_get_allow_replacement (service) == TRUE) &&
+                (flags & IBUS_BUS_NAME_FLAG_REPLACE_EXISTING)) {
+                action = ACTION_REPLACE;
+            }
+        }
+    }
+    else {
+        action = ACTION_REPLACE;
+    }
 
-out:
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(u)", retval));
+    if (action == ACTION_ALREADY_OWN) {
+        g_dbus_method_invocation_return_value (invocation,
+                g_variant_new ("(u)", IBUS_BUS_REQUEST_NAME_REPLY_ALREADY_OWNER));
+        return;
+    }
+
+    owner = bus_name_service_find_owner (service, connection);
+    /* If connection already in queue, we need remove it at first. */
+    if (owner != NULL) {
+        bus_connection_remove_name (connection, name);
+        bus_name_service_remove_owner (service, owner, NULL);
+        bus_connection_owner_free (owner);
+    }
+
+    switch (action) {
+    case ACTION_EXISTS:
+        g_dbus_method_invocation_return_value (invocation,
+                g_variant_new ("(u)", IBUS_BUS_REQUEST_NAME_REPLY_EXISTS));
+        return;
+
+    case ACTION_IN_QUEUE:
+        owner = bus_connection_owner_new (connection, flags);
+        g_dbus_method_invocation_return_value (invocation,
+                g_variant_new ("(u)", IBUS_BUS_REQUEST_NAME_REPLY_IN_QUEUE));
+        bus_name_service_add_non_primary_owner (service, owner, dbus);
+        return;
+
+    case ACTION_REPLACE:
+        bus_connection_add_name (connection, name);
+        owner = bus_connection_owner_new (connection, flags);
+        g_dbus_method_invocation_return_value (invocation,
+                g_variant_new ("(u)", IBUS_BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER));
+        bus_name_service_set_primary_owner (service, owner, dbus);
+        return;
+
+    default:
+        g_assert_not_reached ();
+    }
 }
 
 /**
@@ -1058,7 +1108,7 @@ bus_dbus_impl_name_owner_changed (BusDBusImpl   *dbus,
     g_dbus_message_set_sender (message, "org.freedesktop.DBus");
 
     /* set a non-zero serial to make libdbus happy */
-    g_dbus_message_set_serial (message, bus_connection_get_serial (connection));
+    g_dbus_message_set_serial (message, 1);
     g_dbus_message_set_body (message,
                              g_variant_new ("(sss)", name, old_owner, new_owner));
 
@@ -1088,7 +1138,7 @@ bus_dbus_impl_name_lost (BusDBusImpl   *dbus,
     g_dbus_message_set_destination (message, bus_connection_get_unique_name (connection));
 
     /* set a non-zero serial to make libdbus happy */
-    g_dbus_message_set_serial (message, bus_connection_get_serial (connection));
+    g_dbus_message_set_serial (message, 1);
     g_dbus_message_set_body (message,
                              g_variant_new ("(s)", name));
 
@@ -1117,7 +1167,7 @@ bus_dbus_impl_name_acquired (BusDBusImpl   *dbus,
     g_dbus_message_set_destination (message, bus_connection_get_unique_name (connection));
 
     /* set a non-zero serial to make libdbus happy */
-    g_dbus_message_set_serial (message, bus_connection_get_serial (connection));
+    g_dbus_message_set_serial (message, 1);
     g_dbus_message_set_body (message,
                              g_variant_new ("(s)", name));
 
@@ -1390,7 +1440,6 @@ bus_dbus_impl_connection_destroy_cb (BusConnection *connection,
     const gchar *unique_name = bus_connection_get_unique_name (connection);
     const GList *names = NULL;
     BusNameService *service = NULL;
-    GSList *owners = NULL;
 
     if (unique_name != NULL) {
         g_hash_table_remove (dbus->unique_names, unique_name);
@@ -1415,67 +1464,19 @@ bus_dbus_impl_connection_destroy_cb (BusConnection *connection,
      */
     names = bus_connection_get_names (connection);
     while (names != NULL) {
-        const gchar *new_name = NULL;
-
+        const gchar *name = (const gchar *)names->data;
         service = (BusNameService *) g_hash_table_lookup (dbus->names,
-                                                          names->data);
-        if (service) {
-            owners = _bus_name_service_find_owner_link (service, connection);
-            if (owners) {
-                BusConnectionOwner *owner = (BusConnectionOwner *) owners->data;
-                bus_name_service_remove_owner (service, owner, dbus);
-                bus_connection_owner_free (owner);
-            }
-            if (service->owners == NULL) {
-                /* g_hash_table_remove() will call bus_name_service_free()
-                 * due to g_hash_table_new_full() */
-                g_hash_table_remove (dbus->names, names->data);
-                service = NULL;
-            } else {
-                BusConnectionOwner *new_owner = bus_name_service_get_primary_owner (service);
-                if (new_owner != NULL) {
-                    new_name = bus_connection_get_unique_name (new_owner->conn);
-                }
-            }
+                                                          name);
+        g_assert (service != NULL);
+        BusConnectionOwner *owner = bus_name_service_find_owner (service,
+                connection);
+        g_assert (owner != NULL);
+        bus_name_service_remove_owner (service, owner, dbus);
+        if (service->owners == NULL) {
+            g_hash_table_remove (dbus->names, service->name);
         }
-        /* if service == NULL, names->data should be removed in
-         * the connection by bus_connection_remove_name().
-         * But connection->names is GSList so it cannot be removed
-         * during this while loop because names->next would
-         * become the wrong pointer here.
-         * the next while loop can call bus_connection_remove_name().
-         */
-
-        g_signal_emit (dbus,
-                       dbus_signals[NAME_OWNER_CHANGED],
-                       0,
-                       connection,
-                       names->data,
-                       unique_name,
-                       new_name ? new_name : "");
+        bus_connection_owner_free (owner);
         names = names->next;
-    }
-
-    while ((names = bus_connection_get_names (connection)) != NULL) {
-        const gchar *name = NULL;
-        service = NULL;
-
-        while (names != NULL) {
-            name = (const gchar *) names->data;
-            service = (BusNameService *) g_hash_table_lookup (dbus->names,
-                                                              name);
-            if (service == NULL) {
-                break;
-            }
-            names = names->next;
-        }
-        if (names == NULL) {
-            break;
-        }
-        if (name == NULL) {
-            break;
-        }
-        bus_connection_remove_name (connection, name);
     }
 
     dbus->connections = g_list_remove (dbus->connections, connection);

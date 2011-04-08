@@ -37,7 +37,6 @@ struct _BusConnection {
     GList  *names;
 
     guint  filter_id;
-    guint32 serial;
 };
 
 struct _BusConnectionClass {
@@ -145,12 +144,9 @@ bus_connection_quark (void)
 BusConnection *
 bus_connection_new (GDBusConnection *dbus_connection)
 {
-    static guint32 serial = 0;
-
     g_return_val_if_fail (bus_connection_lookup (dbus_connection) == NULL, NULL);
     BusConnection *connection = BUS_CONNECTION (g_object_new (BUS_TYPE_CONNECTION, NULL));
     bus_connection_set_dbus_connection (connection, dbus_connection);
-    connection->serial = ++serial;
     return connection;
 }
 
@@ -243,11 +239,4 @@ bus_connection_set_filter (BusConnection             *connection,
                                                               user_data_free_func);
         /* Note: g_dbus_connection_add_filter seems not to return zero as a valid id. */
     }
-}
-
-guint32
-bus_connection_get_serial (BusConnection *connection)
-{
-    g_assert (BUS_IS_CONNECTION (connection));
-    return connection->serial;
 }
