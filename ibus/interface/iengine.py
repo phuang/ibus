@@ -152,3 +152,8 @@ class IEngine(dbus.service.Object):
     @signal(signature="v")
     def UpdateProperty(self, prop): pass
 
+    @signal(signature="iu")
+    def DeleteSurroundingText(self, offset_from_cursor, nchars): pass
+
+    @signal()
+    def RequireSurroundingText(self): pass

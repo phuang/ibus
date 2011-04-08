@@ -28,11 +28,14 @@ import common
 import object
 import serializable
 import interface
+from text import Text
 
 class EngineBase(object.Object):
     def __init__(self, bus, object_path):
         super(EngineBase, self).__init__()
         self.__proxy = EngineProxy (self, bus.get_dbusconn(), object_path)
+        self.__surrounding_text = Text()
+        self.__surrounding_cursor_pos = 0
 
     def process_key_event(self, keyval, keycode, state):
         return False
@@ -46,8 +49,33 @@ class EngineBase(object.Object):
     def set_cursor_location(self, x, y, w, h):
         pass
 
-    def set_surrounding_text(self, text, cursor_index):
-        pass
+    def set_surrounding_text(self, text, cursor_pos):
+        text = serializable.deserialize_object(text)
+        self.__surrounding_text = text
+        self.__surrounding_cursor_pos = cursor_pos
+
+    def get_surrounding_text(self):
+        # Tell the client that this engine will utilize surrounding-text
+        # feature, which causes periodical update.  Note that the client
+        # should request the initial surrounding-text when the engine is
+        # enabled.
+        self.__proxy.RequireSurroundingText()
+        return (self.__surrounding_text, self.__surrounding_cursor_pos)
+
+    def delete_surrounding_text(self, offset_from_cursor, nchars):
+        # Update surrounding-text cache.  This is necessary since some
+        # engines call get_surrounding_text() immediately after
+        # delete_surrounding_text().
+        text = self.__surrounding_text.get_text()
+        cursor_pos = self.__surrounding_cursor_pos + offset_from_cursor
+        if cursor_pos >= 0 and len(text) - cursor_pos >= nchars:
+            text = text[cursor_pos + nchars:]
+            self.__surrounding_text = Text(text)
+            self.__surrounding_cursor_pos = cursor_pos
+        else:
+            self.__surrounding_text = Text()
+            self.__surrounding_cursor_pos = 0
+        self.__proxy.DeleteSurroundingText(offset_from_cursor, nchars)
 
     def set_capabilities(self, cap):
         pass
@@ -166,8 +194,8 @@ class EngineProxy(interface.IEngine):
     def SetCursorLocation(self, x, y, w, h):
         return self.__engine.set_cursor_location(x, y, w, h)
 
-    def SetSurroundingText(self, text, cursor_index):
-        return self.__engine.set_surrounding_text(text, cursor_index)
+    def SetSurroundingText(self, text, cursor_pos):
+        return self.__engine.set_surrounding_text(text, cursor_pos)
 
     def SetCapabilities(self, caps):
         return self.__engine.set_capabilities(caps)
