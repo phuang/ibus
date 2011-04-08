@@ -194,6 +194,7 @@ static void
 initable_iface_init (GInitableIface *initable_iface)
 {
     initable_iface_parent = g_type_interface_peek_parent (initable_iface);
+    initable_iface->init = initable_init;
 }
 
 static GAsyncInitableIface *async_initable_iface_parent = NULL;
