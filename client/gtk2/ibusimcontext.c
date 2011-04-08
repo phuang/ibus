@@ -1426,7 +1426,7 @@ _create_input_context_done (IBusBus       *bus,
         ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
 
         if (ibusimcontext->has_focus) {
-            gtk_im_context_focus_in (GTK_IM_CONTEXT (ibusimcontext));
+            ibus_input_context_focus_in (ibusimcontext->ibuscontext);
         }
     }
 

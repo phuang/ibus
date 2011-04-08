@@ -207,5 +207,11 @@ guint                bus_input_context_get_capabilities (BusInputContext    *con
 void                 bus_input_context_set_capabilities (BusInputContext    *context,
                                                          guint               capabilities);
 
+/**
+ * bus_input_context_get_client:
+ * @returns: context->client.
+ */
+const gchar         *bus_input_context_get_client       (BusInputContext    *context);
+
 G_END_DECLS
 #endif

@@ -2488,3 +2488,11 @@ bus_input_context_set_capabilities (BusInputContext    *context,
 
     context->capabilities = capabilities;
 }
+
+
+const gchar *
+bus_input_context_get_client (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    return context->client;
+}
