@@ -821,15 +821,15 @@ ibus_bus_hello (IBusBus *bus)
     return NULL;
 }
 
-guint
+guint32
 ibus_bus_request_name (IBusBus      *bus,
                        const gchar  *name,
-                       guint         flags)
+                       guint32       flags)
 {
     g_return_val_if_fail (IBUS_IS_BUS (bus), 0);
     g_return_val_if_fail (name != NULL, 0);
 
-    guint retval = 0;
+    guint32 retval = 0;
     GVariant *result;
     result = ibus_bus_call_sync (bus,
                                  DBUS_SERVICE_DBUS,
@@ -943,6 +943,41 @@ ibus_bus_release_name_async_finish (IBusBus      *bus,
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_release_name_async));
     return _async_finish_guint (res, error);
+}
+
+GList *
+ibus_bus_list_queued_owners (IBusBus      *bus,
+                             const gchar  *name)
+{
+    GList *retval = NULL;
+    GVariant *result;
+
+    g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
+    g_return_val_if_fail (name != NULL, NULL);
+
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "ListQueuedOwners",
+                                 g_variant_new ("(s)", name),
+                                 G_VARIANT_TYPE ("(as)"));
+
+    if (result) {
+        GVariantIter *iter = NULL;
+        const gchar *name = NULL;
+        g_variant_get (result, "(as)", &iter);
+        while (g_variant_iter_loop (iter, "&s", &name)) {
+            if (name == NULL) {
+                continue;
+            }
+            retval = g_list_append (retval, g_strdup (name));
+        }
+        g_variant_iter_free (iter);
+        g_variant_unref (result);
+    }
+
+    return retval;
 }
 
 gboolean

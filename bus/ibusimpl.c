@@ -693,11 +693,12 @@ _registry_changed_cb (BusRegistry *registry,
  * This usually means a client (e.g. a panel/config/engine process or an application) is connected/disconnected to/from the bus.
  */
 static void
-_dbus_name_owner_changed_cb (BusDBusImpl *dbus,
-                             const gchar *name,
-                             const gchar *old_name,
-                             const gchar *new_name,
-                             BusIBusImpl *ibus)
+_dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
+                             BusConnection *orig_connection,
+                             const gchar   *name,
+                             const gchar   *old_name,
+                             const gchar   *new_name,
+                             BusIBusImpl   *ibus)
 {
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (name != NULL);

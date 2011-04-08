@@ -38,13 +38,14 @@ INTROSPECTION_GIRS =
 CLEANFILES =
 
 # C preprocessor flags
-AM_CPPFLAGS =                           \
-    -DG_LOG_DOMAIN=\"IBUS\"             \
-    @GLIB2_CFLAGS@                      \
-    @GOBJECT2_CFLAGS@                   \
-    @GIO2_CFLAGS@                       \
-    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"   \
-    -DIBUS_COMPILATION                  \
+AM_CPPFLAGS =                                   \
+    -DG_LOG_DOMAIN=\"IBUS\"                     \
+    @GLIB2_CFLAGS@                              \
+    @GOBJECT2_CFLAGS@                           \
+    @GIO2_CFLAGS@                               \
+    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"           \
+    -DIBUS_COMPILATION                          \
+    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"    \
     $(NULL)
 
 # ibus library
@@ -87,6 +88,7 @@ ibus_sources =              \
     ibusenginedesc.c        \
     ibusobservedpath.c      \
     ibuscomponent.c         \
+    ibusutil.c              \
 $(NULL)
 libibus_1_0_la_SOURCES =    \
     $(ibus_sources)         \
@@ -131,6 +133,7 @@ ibus_headers =              \
     ibusenginedesc.h        \
     ibusobservedpath.h      \
     ibuscomponent.h         \
+    ibusutil.h              \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \

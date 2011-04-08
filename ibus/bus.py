@@ -108,6 +108,9 @@ class Bus(object.Object):
     def release_name(self, name):
         return self.__dbus.ReleaseName(name)
 
+    def list_queued_owners(self, name):
+        return self.__dbus.ListQueuedOwners(name)
+
     def get_name_owner(self, name):
         return self.__dbus.GetNameOwner(name)
 
