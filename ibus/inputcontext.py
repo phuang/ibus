@@ -31,6 +31,7 @@ import dbus.lowlevel
 import object
 import common
 import serializable
+from text import Text
 
 class InputContext(object.Object):
     __gtype_name__ = "PYIBusInputContext"
@@ -124,6 +125,9 @@ class InputContext(object.Object):
         _context = bus.get_dbusconn().get_object(common.IBUS_SERVICE_IBUS, path)
         self.__context = dbus.Interface(_context, dbus_interface="org.freedesktop.IBus.InputContext")
         self.__signal_matches = []
+        self.__needs_surrounding_text = False
+        self.__surrounding_text = Text()
+        self.__surrounding_cursor_pos = 0
 
         if not watch_signals:
             return
@@ -135,6 +139,8 @@ class InputContext(object.Object):
         m = self.__context.connect_to_signal("UpdateAuxiliaryText", self.__update_auxiliary_text_cb)
         self.__signal_matches.append(m)
         m = self.__context.connect_to_signal("UpdateLookupTable", self.__update_lookup_table_cb)
+        self.__signal_matches.append(m)
+        m = self.__context.connect_to_signal("RequireSurroundingText", self.__require_surrounding_text_cb)
         self.__signal_matches.append(m)
 
         m = self.__context.connect_to_signal("Enabled",             lambda *args: self.emit("enabled"))
@@ -181,6 +187,21 @@ class InputContext(object.Object):
         table = serializable.deserialize_object(args[0])
         visible = args[1]
         self.emit("update-lookup-table", table, visible)
+
+    def __require_surrounding_text_cb(self, *args):
+        self.__needs_surrounding_text = True
+
+    def needs_surrounding_text(self):
+        return self.__needs_surrounding_text
+
+    def set_surrounding_text(self, text, cursor_pos):
+        if self.__surrounding_text.get_text() != text or \
+                self.__surrounding_cursor_pos != cursor_pos:
+            self.__surrounding_text = Text(text)
+            self.__surrounding_cursor_pos = cursor_pos
+            text = serializable.serialize_object(self.__surrounding_text)
+            cursor_pos = dbus.UInt32(self.__surrounding_cursor_pos)
+            self.__context.SetSurroundingText(text, cursor_pos)
 
     def process_key_event(self, keyval, keycode, modifiers):
         keyval = dbus.UInt32(keyval)
