@@ -270,7 +270,7 @@ _process_key_event_done (GObject      *object,
 static void
 _request_surrounding_text (IBusIMContext *context, gboolean force)
 {
-    if (context->enable &&
+    if (context && context->enable &&
         (context->caps & IBUS_CAP_SURROUNDING_TEXT) != 0 &&
         (force ||
          ibus_input_context_needs_surrounding_text (context->ibuscontext))) {
@@ -368,9 +368,8 @@ _key_snooper_cb (GtkWidget   *widget,
 
     } while (0);
 
-    _request_surrounding_text (ibusimcontext, FALSE);
-
     if (ibusimcontext != NULL) {
+        _request_surrounding_text (ibusimcontext, FALSE);
         ibusimcontext->time = event->time;
     }
 
