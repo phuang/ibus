@@ -140,10 +140,17 @@ struct _IBusEngineClass {
                                     (IBusEngine     *engine,
                                      IBusText       *text,
                                      guint           cursor_index);
+    void        (* process_hand_writing_event)
+                                    (IBusEngine     *engine,
+                                     const gdouble  *coordinates,
+                                     guint           coordinates_len);
+    void        (* cancel_hand_writing)
+                                    (IBusEngine     *engine,
+                                     guint           n_strokes);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[7];
+    gpointer pdummy[5];
 };
 
 GType        ibus_engine_get_type       (void);

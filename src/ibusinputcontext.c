@@ -805,6 +805,51 @@ ibus_input_context_get_input_context_async_finish (GAsyncResult  *res,
 }
 
 void
+ibus_input_context_process_hand_writing_event (IBusInputContext   *context,
+                                               const gdouble      *coordinates,
+                                               guint               coordinates_len)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_return_if_fail (coordinates != NULL);
+    g_return_if_fail (coordinates_len >= 4); /* The array should contain at least one line. */
+    g_return_if_fail ((coordinates_len & 1) == 0);
+
+    guint i;
+    GVariantBuilder builder;
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("ad"));
+    for (i = 0; i < coordinates_len; i++) {
+        g_variant_builder_add (&builder, "d", coordinates[i]);
+    }
+
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "ProcessHandWritingEvent",           /* method_name */
+                       g_variant_new ("(ad)", &builder),    /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                       -1,                                  /* timeout */
+                       NULL,                                /* cancellable */
+                       NULL,                                /* callback */
+                       NULL                                 /* user_data */
+                       );
+}
+
+void
+ibus_input_context_cancel_hand_writing (IBusInputContext   *context,
+                                        guint               n_strokes)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "CancelHandWriting",                 /* method_name */
+                       g_variant_new ("(u)", n_strokes),    /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                       -1,                                  /* timeout */
+                       NULL,                                /* cancellable */
+                       NULL,                                /* callback */
+                       NULL                                 /* user_data */
+                       );
+}
+
+void
 ibus_input_context_process_key_event_async (IBusInputContext   *context,
                                             guint32             keyval,
                                             guint32             keycode,
@@ -826,7 +871,6 @@ ibus_input_context_process_key_event_async (IBusInputContext   *context,
                        callback,                            /* callback */
                        user_data                            /* user_data */
                        );
-
 }
 
 gboolean

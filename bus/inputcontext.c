@@ -238,6 +238,12 @@ static const gchar introspection_xml[] =
     "      <arg direction='in' type='i' name='w' />"
     "      <arg direction='in' type='i' name='h' />"
     "    </method>"
+    "    <method name='ProcessHandWritingEvent'>"
+    "      <arg direction='in' type='ad' name='coordinates' />"
+    "    </method>"
+    "    <method name='CancelHandWriting'>"
+    "      <arg direction='in' type='u' name='n_strokes' />"
+    "    </method>"
     "    <method name='FocusIn' />"
     "    <method name='FocusOut' />"
     "    <method name='Reset' />"
@@ -779,6 +785,35 @@ _ic_set_cursor_location (BusInputContext       *context,
     }
 }
 
+static void
+_ic_process_hand_writing_event (BusInputContext       *context,
+                                GVariant              *parameters,
+                                GDBusMethodInvocation *invocation)
+{
+    /* do nothing if it is a fake input context */
+    if (context->has_focus && context->enabled &&
+        context->engine && context->fake == FALSE) {
+        bus_engine_proxy_process_hand_writing_event (context->engine, parameters);
+    }
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+static void
+_ic_cancel_hand_writing (BusInputContext       *context,
+                         GVariant              *parameters,
+                         GDBusMethodInvocation *invocation)
+{
+    guint n_strokes = 0;
+    g_variant_get (parameters, "(u)", &n_strokes);
+
+    /* do nothing if it is a fake input context */
+    if (context->has_focus && context->enabled &&
+        context->engine && context->fake == FALSE) {
+        bus_engine_proxy_cancel_hand_writing (context->engine, n_strokes);
+    }
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
 /**
  * _ic_focus_in:
  *
@@ -1070,6 +1105,9 @@ bus_input_context_service_method_call (IBusService            *service,
     } methods [] =  {
         { "ProcessKeyEvent",   _ic_process_key_event },
         { "SetCursorLocation", _ic_set_cursor_location },
+        { "ProcessHandWritingEvent",
+                               _ic_process_hand_writing_event },
+        { "CancelHandWriting", _ic_cancel_hand_writing },
         { "FocusIn",           _ic_focus_in },
         { "FocusOut",          _ic_focus_out },
         { "Reset",             _ic_reset },

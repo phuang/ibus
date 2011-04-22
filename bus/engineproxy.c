@@ -945,6 +945,40 @@ bus_engine_proxy_set_cursor_location (BusEngineProxy *engine,
 }
 
 void
+bus_engine_proxy_process_hand_writing_event
+                                  (BusEngineProxy        *engine,
+                                   GVariant              *coordinates)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    g_dbus_proxy_call ((GDBusProxy *)engine,
+                       "ProcessHandWritingEvent",
+                       coordinates,
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       NULL,
+                       NULL);
+}
+
+void
+bus_engine_proxy_cancel_hand_writing
+                                  (BusEngineProxy        *engine,
+                                   guint                  n_strokes)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    g_dbus_proxy_call ((GDBusProxy *)engine,
+                       "CancelHandWriting",
+                       g_variant_new ("(u)", n_strokes),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       NULL,
+                       NULL);
+}
+
+void
 bus_engine_proxy_set_capabilities (BusEngineProxy *engine,
                                    guint           caps)
 {

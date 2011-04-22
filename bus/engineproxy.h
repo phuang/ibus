@@ -222,6 +222,25 @@ void             bus_engine_proxy_set_surrounding_text
                                                      IBusText       *text,
                                                      guint           cursor_pos);
 
+/**
+ * bus_engine_proxy_process_hand_writing_event:
+ *
+ * Call "ProcessHandWritingEvent" method of an engine asynchronously. The type of the GVariant should be "(ad)".
+ * See ibus_input_context_process_hand_writing_event for details.
+ */
+void             bus_engine_proxy_process_hand_writing_event
+                                                    (BusEngineProxy        *engine,
+                                                     GVariant              *coordinates);
+
+/**
+ * bus_engine_proxy_cancel_hand_writing:
+ *
+ * Call "CancelHandWriting" method of an engine asynchronously.
+ * See ibus_input_context_cancel_hand_writing for details.
+ */
+void             bus_engine_proxy_cancel_hand_writing
+                                                    (BusEngineProxy        *engine,
+                                                     guint                  n_strokes);
 
 G_END_DECLS
 #endif
