@@ -43,10 +43,11 @@ void         bus_server_run         (void);
 
 /**
  * bus_server_quit:
+ * @restart: TRUE if ibus-daemon restarts.
  *
  * Quit the glib main loop.
  */
-void         bus_server_quit        (void);
+void         bus_server_quit        (gboolean restart);
 
 /**
  * bus_server_get_address:

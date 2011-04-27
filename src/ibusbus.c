@@ -236,7 +236,13 @@ _connection_closed_cb (GDBusConnection  *connection,
                        IBusBus          *bus)
 {
     if (error) {
-        g_warning ("_connection_closed_cb: %s", error->message);
+        /* We replaced g_warning with g_debug here because
+         * currently when ibus-daemon restarts, GTK client calls this and
+         * _g_dbus_worker_do_read_cb() sets the error message:
+         * "Underlying GIOStream returned 0 bytes on an async read"
+         * http://git.gnome.org/browse/glib/tree/gio/gdbusprivate.c#n693
+         * However we think the error message is almost harmless. */
+        g_debug ("_connection_closed_cb: %s", error->message);
     }
 
     g_assert (bus->priv->connection == connection);

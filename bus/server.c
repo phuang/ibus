@@ -21,6 +21,8 @@
  */
 #include "server.h"
 #include <gio/gio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "dbusimpl.h"
 #include "ibusimpl.h"
 #include "option.h"
@@ -30,6 +32,40 @@ static GMainLoop *mainloop = NULL;
 static BusDBusImpl *dbus = NULL;
 static BusIBusImpl *ibus = NULL;
 static gchar *address = NULL;
+static gboolean _restart = FALSE;
+
+static void
+_restart_server (void)
+{
+    extern gchar **g_argv;
+    gchar *exe;
+    gint fd;
+
+    exe = g_strdup_printf ("/proc/%d/exe", getpid ());
+    exe = g_file_read_link (exe, NULL);
+
+    if (exe == NULL)
+        exe = BINDIR "/ibus-daemon";
+
+    /* close all fds except stdin, stdout, stderr */
+    for (fd = 3; fd <= sysconf (_SC_OPEN_MAX); fd ++) {
+        close (fd);
+    }
+
+    _restart = FALSE;
+    execv (exe, g_argv);
+
+    /* If the server binary is replaced while the server is running,
+     * "readlink /proc/[pid]/exe" might return a path with " (deleted)"
+     * suffix. */
+    const gchar suffix[] = " (deleted)";
+    if (g_str_has_suffix (exe, suffix)) {
+        exe [strlen (exe) - sizeof (suffix) + 1] = '\0';
+        execv (exe, g_argv);
+    }
+    g_warning ("execv %s failed!", g_argv[0]);
+    exit (-1);
+}
 
 /**
  * bus_new_connection_cb:
@@ -112,11 +148,23 @@ bus_server_run (void)
     mainloop = NULL;
     g_free (address);
     address = NULL;
+
+    /* When _ibus_exit() is called, bus_ibus_impl_destroy() needs
+     * to be called so that waitpid() prevents the processes from
+     * becoming the daemons. So we run execv() after
+     * ibus_object_destroy(ibus) is called here. */
+    if (_restart) {
+        _restart_server ();
+
+        /* should not reach here */
+        g_assert_not_reached ();
+    }
 }
 
 void
-bus_server_quit (void)
+bus_server_quit (gboolean restart)
 {
+    _restart = restart;
     if (mainloop)
         g_main_loop_quit (mainloop);
 }
