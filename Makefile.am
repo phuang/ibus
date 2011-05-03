@@ -119,11 +119,12 @@ srpm: dist @PACKAGE_NAME@.spec
 debian/changelog:
 	$(AM_V_GEN) \
 	( \
+		. /etc/lsb-release; \
 		date=`date -R`; \
 		version=@VERSION@; \
 		serie=$(serie); \
 		if test -z "$$serie"; then \
-		  serie=maverick; \
+		  serie=$$DISTRIB_CODENAME; \
 		fi; \
 		if test -z "$$release"; then \
 		  release=1; \
