@@ -143,7 +143,7 @@ ibus_get_socket_path (void)
         gchar *hostname = "unix";
         gchar *display;
         gchar *displaynumber = "0";
-        gchar *screennumber = "0";
+        /* gchar *screennumber = "0"; */
         gchar *p;
 
         if (_display == NULL) {
@@ -172,7 +172,8 @@ ibus_get_socket_path (void)
             if (*p == '.') {
                 *p = '\0';
                 p++;
-                screennumber = p;
+                /* Do not use screennumber
+                 screennumber = p; */
             }
         }
 
