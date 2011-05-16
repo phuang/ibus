@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-05-13 02:29+0000\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -30,7 +30,7 @@ msgstr "Framework for inputmetode"
 msgid "Start IBus Input Method Framework"
 msgstr "Start IBus, framework for inputmetode"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -50,7 +50,7 @@ msgstr "Forrige side"
 msgid "Next page"
 msgstr "Næste side"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
@@ -58,35 +58,39 @@ msgstr ""
 "Nogen inputmetoder er blevet installeret, fjernet eller opdateret. Genstart "
 "inputplatformen IBus."
 
-#: ../ui/gtk/main.py:59
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
 msgstr "Genstart nu"
 
-#: ../ui/gtk/main.py:60
+#: ../ui/gtk/main.py:67
 msgid "Later"
 msgstr "Senere"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr ""
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
 msgstr "IBus-ramme for inddatametode"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "Genstart"
 
-#: ../ui/gtk/panel.py:414
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
 msgstr "Sluk for inputmetode"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
 msgstr "Intet inputvindue"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus er en intelligent inddatabus til Linux/Unix."
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
 msgstr ""
 "Kris Thomsen\n"
@@ -368,7 +372,7 @@ msgstr "<b>Skrifttype og stil</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input method settings</b>"
-msgstr "Vælg en inddatametode"
+msgstr "<b>Indstillinger for global inputmetode</b>"
 
 #: ../setup/setup.ui.h:4
 msgid "<b>Keyboard Layout</b>"

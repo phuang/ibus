@@ -6,14 +6,15 @@
 # Peng Huang <shawn.p.huang@gmail.com>, 2007-2010.
 # Leah Liu <lliu@redhat.com>, 2010.
 # ekd123 <zhtx10@gmail.com>, 2011.
+# simonyanix <simonyan@fedoraproject.org>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus.master\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
-"Last-Translator: ekd123 <zhtx10@gmail.com>\n"
-"Language-Team: Wei Liu\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-05-14 07:23+0000\n"
+"Last-Translator: simonyanix <simonyan@fedoraproject.org>\n"
+"Language-Team: Chinese (China) (http://www.transifex.net/projects/p/fedora/team/zh_CN/)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +34,7 @@ msgstr "输入法框架"
 msgid "Start IBus Input Method Framework"
 msgstr "启动IBus 输入法框架"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -53,41 +54,45 @@ msgstr "上一页"
 msgid "Next page"
 msgstr "下一页"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr "一些输入法已经被安装，删除或者更新了。请重新启动ibus输入平台。"
 
-#: ../ui/gtk/main.py:59
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
 msgstr "现在重启"
 
-#: ../ui/gtk/main.py:60
+#: ../ui/gtk/main.py:67
 msgid "Later"
 msgstr "稍候"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr "IBus面板"
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
 msgstr "IBus 输入法框架"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../ui/gtk/panel.py:414
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
 msgstr "关闭输入法"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
 msgstr "没有输入窗口"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus is an intelligent input bus for Linux/Unix."
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
 msgstr "Huang Peng <shawn.p.huang@gmail.com>"
 
