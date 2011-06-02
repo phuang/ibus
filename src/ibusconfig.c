@@ -92,8 +92,6 @@ ibus_config_class_init (IBusConfigClass *class)
 static void
 ibus_config_init (IBusConfig *config)
 {
-    IBusConfigPrivate *priv;
-    priv = IBUS_CONFIG_GET_PRIVATE (config);
 }
 
 static void

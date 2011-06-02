@@ -274,7 +274,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     guint32 attrs = 1;
 
     g_return_val_if_fail (x11ic != NULL, 0);
-    for (i=0; i< (int) call_data->ic_attr_num; ++i, ++ic_attr) {
+    for (i = 0; i < (int)call_data->ic_attr_num; ++i, ++ic_attr) {
         if (g_strcmp0 (XNInputStyle, ic_attr->name) == 0) {
             x11ic->input_style = *(gint32 *) ic_attr->value;
         }
@@ -289,7 +289,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
         }
     }
 
-    for (i=0; i< (int) call_data->preedit_attr_num; ++i, ++pre_attr) {
+    for (i = 0; i < (int)call_data->preedit_attr_num; ++i, ++pre_attr) {
         if (g_strcmp0 (XNSpotLocation, pre_attr->name) == 0) {
             x11ic->has_preedit_area = TRUE;
             x11ic->preedit_area.x = ((XPoint *)pre_attr->value)->x;
@@ -313,7 +313,6 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
 {
     static int base_icid = 1;
     X11IC *x11ic;
-    int i;
 
     call_data->icid = base_icid ++;
 
@@ -332,7 +331,7 @@ xim_create_ic (XIMS xims, IMChangeICStruct *call_data)
         g_return_val_if_reached (0);
     }
 
-    i = _xim_store_ic_values (x11ic, call_data);
+    _xim_store_ic_values (x11ic, call_data);
 
     x11ic->context = ibus_bus_create_input_context (_bus, "xim");
 
