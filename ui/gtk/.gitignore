@@ -2,7 +2,6 @@
 /*.lo
 /*.o
 /*.orig
-/*.pyc
 /*.rej
 /*.tab.c
 /*~
@@ -19,8 +18,18 @@
 /Makefile.in
 /TAGS
 /_libs
+/candidatepanel.pyc
+/engineabout.pyc
 /gtkpanel.xml
 /gtkpanel.xml.in
+/handle.pyc
+/i18n.pyc
 /ibus-ui-gtk
+/icon.pyc
+/languagebar.pyc
+/menu.pyc
+/panel.pyc
+/propitem.pyc
 /so_locations
 /tags
+/toolitem.pyc

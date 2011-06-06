@@ -35,8 +35,7 @@ prog_ldadd = 			\
 	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la	\
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
-TESTS =               \
+noinst_PROGRAMS =     \
 	ibus-bus          \
 	ibus-inputcontext \
 	ibus-inputcontext-create \
@@ -45,6 +44,14 @@ TESTS =               \
 	ibus-share        \
 	ibus-factory      \
 	ibus-configservice\
+	$(NULL)
+
+noinst_SCRIPTS =      \
+	ibus-gi.py        \
+	$(NULL)
+
+TESTS = \
+	$(noinst_PROGRAMS) \
 	$(NULL)
 
 ibus_bus_SOURCES = ibus-bus.c
@@ -71,5 +78,9 @@ ibus_factory_LDADD = $(prog_ldadd)
 
 ibus_configservice_SOURCES = ibus-configservice.c
 ibus_configservice_LDADD = $(prog_ldadd)
+
+EXTRA_DIST = \
+	$(noinst_SCRIPTS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk
