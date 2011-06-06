@@ -116,6 +116,16 @@ class InputContext(object.Object):
             gobject.TYPE_NONE,
             ()
         ),
+        "forward-key-event" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)
+        ),
+        "delete-surrounding-text" : (
+            gobject.SIGNAL_RUN_LAST,
+            gobject.TYPE_NONE,
+            (gobject.TYPE_INT, gobject.TYPE_UINT)
+        ),
     }
 
     def __init__(self, bus, path, watch_signals=False):
@@ -142,8 +152,14 @@ class InputContext(object.Object):
         self.__signal_matches.append(m)
         m = self.__context.connect_to_signal("RequireSurroundingText", self.__require_surrounding_text_cb)
         self.__signal_matches.append(m)
+        m = self.__context.connect_to_signal("Enabled", self.__enabled_cb)
+        self.__signal_matches.append(m)
+        m = self.__context.connect_to_signal("Disabled", self.__disabled_cb)
+        self.__signal_matches.append(m)
 
-        m = self.__context.connect_to_signal("Enabled",             lambda *args: self.emit("enabled"))
+        m = self.__context.connect_to_signal("ForwardKeyEvent",            lambda *args: self.emit("forward-key-event", *args))
+        self.__signal_matches.append(m)
+        m = self.__context.connect_to_signal("DeleteSurroundingText",            lambda *args: self.emit("delete-surrounding-text", *args))
         self.__signal_matches.append(m)
         m = self.__context.connect_to_signal("Disabled",            lambda *args: self.emit("disabled"))
         self.__signal_matches.append(m)
@@ -167,6 +183,14 @@ class InputContext(object.Object):
         self.__signal_matches.append(m)
         m = self.__context.connect_to_signal("CursorDownLookupTable", lambda *args: self.emit("cursor-down-lookup-table"))
         self.__signal_matches.append(m)
+
+    def __enabled_cb(self, *args):
+        self.__needs_surrounding_text = False
+        self.emit("enabled")
+
+    def __disabled_cb(self, *args):
+        self.__needs_surrounding_text = False
+        self.emit("disabled")
 
     def __commit_text_cb(self, *args):
         text = serializable.deserialize_object(args[0])

@@ -95,6 +95,9 @@ class IInputContext(dbus.service.Object):
     @signal(signature="uuu")
     def ForwardKeyEvent(self, keyval, keycode, state): pass
 
+    @signal(signature="iu")
+    def DeleteSurroundingText(self, offset_from_cursor, nchars): pass
+
     @signal(signature="vub")
     def UpdatePreeditText(self, text, cursor_pos, visible): pass
 
