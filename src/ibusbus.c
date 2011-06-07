@@ -449,6 +449,7 @@ _async_finish_string (GAsyncResult *res,
 
 static gboolean
 _async_finish_gboolean (GAsyncResult *res,
+                        gboolean     *retval,
                         GError      **error)
 {
     GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
@@ -456,25 +457,25 @@ _async_finish_gboolean (GAsyncResult *res,
         return FALSE;
     GVariant *variant = g_simple_async_result_get_op_res_gpointer (simple);
     g_return_val_if_fail (variant != NULL, FALSE);
-    gboolean retval = FALSE;
-    g_variant_get (variant, "(b)", &retval);
-    return retval;
+    *retval = FALSE;
+    g_variant_get (variant, "(b)", retval);
+    return TRUE;
 }
 
-static guint
+static gboolean
 _async_finish_guint (GAsyncResult *res,
+                     guint        *retval,
                      GError      **error)
 {
-    static const guint bad_id = 0;
     GSimpleAsyncResult *simple = (GSimpleAsyncResult *) res;
     if (g_simple_async_result_propagate_error (simple, error))
-        return bad_id;
+        return FALSE;
     GVariant *variant = g_simple_async_result_get_op_res_gpointer (simple);
-    g_return_val_if_fail (variant != NULL, bad_id);
+    g_return_val_if_fail (variant != NULL, FALSE);
 
-    guint id = 0;
-    g_variant_get (variant, "(u)", &id);
-    return id;
+    *retval = 0;
+    g_variant_get (variant, "(u)", retval);
+    return TRUE;
 }
 
 IBusBus *
@@ -879,15 +880,17 @@ ibus_bus_request_name_async (IBusBus            *bus,
                          user_data);
 }
 
-guint
+gboolean
 ibus_bus_request_name_async_finish (IBusBus      *bus,
                                     GAsyncResult *res,
+                                    guint        *retval,
                                     GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_request_name_async));
-    return _async_finish_guint (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_guint (res, retval, error);
 }
 
 guint
@@ -940,15 +943,17 @@ ibus_bus_release_name_async (IBusBus            *bus,
                          user_data);
 }
 
-guint
+gboolean
 ibus_bus_release_name_async_finish (IBusBus      *bus,
                                     GAsyncResult *res,
+                                    guint        *retval,
                                     GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_release_name_async));
-    return _async_finish_guint (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_guint (res, retval, error);
 }
 
 GList *
@@ -1039,12 +1044,14 @@ ibus_bus_name_has_owner_async (IBusBus            *bus,
 gboolean
 ibus_bus_name_has_owner_async_finish (IBusBus      *bus,
                                       GAsyncResult *res,
+                                      gboolean     *retval,
                                       GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_name_has_owner_async));
-    return _async_finish_gboolean (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_gboolean (res, retval, error);
 }
 
 GList *
@@ -1555,12 +1562,14 @@ ibus_bus_get_use_sys_layout_async (IBusBus            *bus,
 gboolean
 ibus_bus_get_use_sys_layout_async_finish (IBusBus      *bus,
                                           GAsyncResult *res,
+                                          gboolean     *retval,
                                           GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_get_use_sys_layout_async));
-    return _async_finish_gboolean (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_gboolean (res, retval, error);
 }
 
 gboolean
@@ -1612,12 +1621,14 @@ ibus_bus_get_use_global_engine_async (IBusBus            *bus,
 gboolean
 ibus_bus_get_use_global_engine_async_finish (IBusBus      *bus,
                                              GAsyncResult *res,
+                                             gboolean     *retval,
                                              GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_get_use_global_engine_async));
-    return _async_finish_gboolean (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_gboolean (res, retval, error);
 }
 
 gboolean
@@ -1667,12 +1678,14 @@ void ibus_bus_is_global_engine_enabled_async (IBusBus            *bus,
 
 gboolean ibus_bus_is_global_engine_enabled_async_finish (IBusBus      *bus,
                                                          GAsyncResult *res,
+                                                         gboolean     *retval,
                                                          GError      **error)
 {
     g_assert (IBUS_IS_BUS (bus));
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_is_global_engine_enabled_async));
-    return _async_finish_gboolean (res, error);
+    g_assert (retval != NULL);
+    return _async_finish_gboolean (res, retval, error);
 }
 
 IBusEngineDesc *

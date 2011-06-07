@@ -159,14 +159,16 @@ void        ibus_bus_request_name_async (IBusBus        *bus,
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_request_name_async().
+ * @retval: (out): A guint value returned from ibus-daemon.
  * @error: Return location for error or %NULL.
- * @returns: 0 if failed; positive number otherwise.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_request_name_async().
  */
-guint       ibus_bus_request_name_async_finish
+gboolean     ibus_bus_request_name_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         guint          *retval,
                                          GError        **error);
 
 /**
@@ -206,14 +208,16 @@ void         ibus_bus_release_name_async
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_release_name_async().
+ * @retval: (out): A guint value returned from ibus-daemon.
  * @error: Return location for error or %NULL.
- * @returns: 0 if failed; positive number otherwise.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_release_name_async().
  */
-guint        ibus_bus_release_name_async_finish
+gboolean     ibus_bus_release_name_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         guint          *retval,
                                          GError        **error);
 
 /**
@@ -268,14 +272,16 @@ void         ibus_bus_name_has_owner_async
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_name_has_owner_async().
+ * @retval: (out): %TRUE if the name has owner, %FALSE otherwise.
  * @error: Return location for error or %NULL.
- * @returns: %TRUE if the name has owner, %FALSE otherwise.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_name_has_owner_async().
  */
 gboolean     ibus_bus_name_has_owner_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         gboolean       *retval,
                                          GError        **error);
 
 /**
@@ -744,14 +750,16 @@ void         ibus_bus_get_use_sys_layout_async
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_get_use_sys_layout_async().
+ * @retval: (out): TRUE if "use_sys_layout" option is enabled.
  * @error: Return location for error or %NULL.
- * @returns: TRUE if "use_sys_layout" option is enabled.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_get_use_sys_layout_async().
  */
 gboolean     ibus_bus_get_use_sys_layout_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         gboolean       *retval,
                                          GError        **error);
 
 /**
@@ -788,14 +796,16 @@ void         ibus_bus_get_use_global_engine_async
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_get_use_global_engine_async().
+ * @retval: (out): %TRUE if "use_global_engine" option is enabled.
  * @error: Return location for error or %NULL.
- * @returns: %TRUE if "use_global_engine" option is enabled.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_get_use_global_engine_async().
  */
 gboolean     ibus_bus_get_use_global_engine_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         gboolean       *retval,
                                          GError         **error);
 
 /**
@@ -832,14 +842,16 @@ void         ibus_bus_is_global_engine_enabled_async
  * @bus: An #IBusBus.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_is_global_engine_enabled_async().
+ * @retval: (out): %TRUE if the current global engine is enabled.
  * @error: Return location for error or %NULL.
- * @returns: %TRUE if the current global engine is enabled.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_bus_is_global_engine_enabled_async().
  */
 gboolean     ibus_bus_is_global_engine_enabled_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
+                                         gboolean       *retval,
                                          GError        **error);
 
 /**

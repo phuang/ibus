@@ -54,10 +54,13 @@ finish_request_name_async (GObject *source_object,
                            gpointer user_data)
 {
     GError *error = NULL;
-    guint id = ibus_bus_request_name_async_finish (bus,
-                                                   res,
-                                                   &error);
+    guint id = 0;
+    gboolean result = ibus_bus_request_name_async_finish (bus,
+                                                          res,
+                                                          &id,
+                                                          &error);
     g_assert (id != 0);
+    g_assert (result);
     g_debug ("ibus_bus_request_name_async_finish: OK");
     call_next_async_function ();
 }
@@ -81,10 +84,13 @@ finish_name_has_owner_async (GObject *source_object,
                              gpointer user_data)
 {
     GError *error = NULL;
-    gboolean has_owner = ibus_bus_name_has_owner_async_finish (bus,
-                                                               res,
-                                                               &error);
+    gboolean has_owner = FALSE;
+    gboolean result = ibus_bus_name_has_owner_async_finish (bus,
+                                                            res,
+                                                            &has_owner,
+                                                            &error);
     g_assert (has_owner);
+    g_assert (result);
     g_debug ("ibus_bus_name_has_owner_async_finish: OK");
     call_next_async_function ();
 }
@@ -132,10 +138,13 @@ finish_release_name_async (GObject *source_object,
                            gpointer user_data)
 {
     GError *error = NULL;
-    guint id = ibus_bus_release_name_async_finish (bus,
-                                                   res,
-                                                   &error);
+    guint id = 0;
+    gboolean result = ibus_bus_release_name_async_finish (bus,
+                                                          res,
+                                                          &id,
+                                                          &error);
     g_assert (id != 0);
+    g_assert (result);
     g_debug ("ibus_bus_release_name_async_finish: OK");
     call_next_async_function ();
 }
@@ -385,9 +394,12 @@ finish_get_use_sys_layout_async (GObject *source_object,
                                  gpointer user_data)
 {
     GError *error = NULL;
-    ibus_bus_get_use_sys_layout_async_finish (bus,
-                                              res,
-                                              &error);
+    gboolean use_sys_layout = FALSE;
+    gboolean result = ibus_bus_get_use_sys_layout_async_finish (bus,
+                                                                res,
+                                                                &use_sys_layout,
+                                                                &error);
+    g_assert (result);
     g_debug ("ibus_bus_get_use_sys_layout_finish: OK");
     call_next_async_function ();
 }
@@ -408,9 +420,12 @@ finish_get_use_global_engine_async (GObject *source_object,
                                     gpointer user_data)
 {
     GError *error = NULL;
-    ibus_bus_get_use_global_engine_async_finish (bus,
-                                                 res,
-                                                 &error);
+    gboolean use_global_engine = FALSE;
+    gboolean result = ibus_bus_get_use_global_engine_async_finish (bus,
+                                                                   res,
+                                                                   &use_global_engine,
+                                                                   &error);
+    g_assert (result);
     g_debug ("ibus_bus_get_use_global_engine_finish: OK");
     call_next_async_function ();
 }
@@ -431,9 +446,12 @@ finish_is_global_engine_enabled_async (GObject *source_object,
                                        gpointer user_data)
 {
     GError *error = NULL;
-    ibus_bus_is_global_engine_enabled_async_finish (bus,
-                                                    res,
-                                                    &error);
+    gboolean is_enabled = FALSE;
+    gboolean result = ibus_bus_is_global_engine_enabled_async_finish (bus,
+                                                                      res,
+                                                                      &is_enabled,
+                                                                      &error);
+    g_assert (result);
     g_debug ("ibus_bus_is_global_engine_enabled_finish: OK");
     call_next_async_function ();
 }

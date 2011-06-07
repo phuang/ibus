@@ -263,9 +263,9 @@ void        ibus_input_context_process_key_event_async
  * @res: A GAsyncResult obtained from the GAsyncReadyCallback passed to
  *   ibus_input_context_process_key_event_async().
  * @processed: A point to a bool value. If the the key event is processed, it will
- *      assigned to TRUE, FALSE otherwise.
+ *      assigned to %TRUE, %FALSE otherwise.
  * @error: Return location for error or NULL.
- * @returns: TRUE for success; FALSE otherwise.
+ * @returns: %TRUE for success; %FALSE otherwise.
  *
  * Finishes an operation started with ibus_input_context_process_key_event_async().
  */
@@ -281,7 +281,7 @@ gboolean     ibus_input_context_process_key_event_async_finish
  * @keyval: Key symbol of a key event.
  * @keycode: Keycode of a key event.
  * @state: Key modifier flags.
- * @returns: TRUE for successfully process the key; FALSE otherwise.
+ * @returns: %TRUE for successfully process the key; %FALSE otherwise.
  *
  * Pass the key event to input method engine and wait for the reply from ibus (i.e. synchronous IPC).
  *
@@ -434,9 +434,9 @@ gboolean     ibus_input_context_is_enabled_async_finish
 /**
  * ibus_input_context_is_enabled:
  * @context: An IBusInputContext.
- * @returns: TRUE if the IME is enabled on the context.
+ * @returns: %TRUE if the IME is enabled on the context.
  *
- * Returns TRUE if the IME is enabled on the context.
+ * Returns %TRUE if the IME is enabled on the context.
  * A asynchronous IPC will be performed.
  */
 gboolean     ibus_input_context_is_enabled  (IBusInputContext   *context);
