@@ -603,7 +603,8 @@ bus_engine_proxy_new_internal (const gchar     *path,
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (G_IS_DBUS_CONNECTION (connection));
 
-
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
     BusEngineProxy *engine =
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
@@ -613,7 +614,7 @@ bus_engine_proxy_new_internal (const gchar     *path,
                                            "g-interface-name",  IBUS_INTERFACE_ENGINE,
                                            "g-object-path",     path,
                                            "g-default-timeout", g_gdbus_timeout,
-                                           "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                                           "g-flags",           flags,
                                            NULL);
     const gchar *layout = ibus_engine_desc_get_layout (desc);
     if (layout != NULL && layout[0] != '\0') {
@@ -638,24 +639,33 @@ static void
 engine_proxy_new_data_free (EngineProxyNewData *data)
 {
     if (data->simple != NULL) {
-        if (data->handler_id != 0)
-            g_signal_handler_disconnect (data->component, data->handler_id);
         g_object_unref (data->simple);
     }
 
-    if (data->component != NULL)
+    if (data->desc != NULL) {
+        g_object_unref (data->desc);
+    }
+
+    if (data->component != NULL) {
+        if (data->handler_id != 0) {
+            g_signal_handler_disconnect (data->component, data->handler_id);
+        }
         g_object_unref (data->component);
+    }
 
-    if (data->factory != NULL)
+    if (data->factory != NULL) {
         g_object_unref (data->factory);
+    }
 
-    if (data->timeout_id != 0)
+    if (data->timeout_id != 0) {
         g_source_remove (data->timeout_id);
+    }
 
     if (data->cancellable != NULL) {
-        if (data->cancelled_handler_id != 0)
+        if (data->cancelled_handler_id != 0) {
             g_cancellable_disconnect (data->cancellable,
-                data->cancelled_handler_id);
+                                      data->cancelled_handler_id);
+        }
         g_object_unref (data->cancellable);
     }
 
@@ -772,7 +782,8 @@ timeout_cb (EngineProxyNewData *data)
 /**
  * cancelled_cb:
  *
- * A callback function to be called when someone calls g_cancellable_cancel() for the cancellable object for bus_engine_proxy_new.
+ * A callback function to be called when someone calls g_cancellable_cancel()
+ * for the cancellable object for bus_engine_proxy_new.
  * Call the GAsyncReadyCallback.
  */
 static gboolean
@@ -793,8 +804,12 @@ static void
 cancelled_cb (GCancellable       *cancellable,
               EngineProxyNewData *data)
 {
-    /* Cancel the bus_engine_proxy_new() in idle to avoid deadlock */
-    g_idle_add ((GSourceFunc) cancelled_idle_cb, data);
+    /* Cancel the bus_engine_proxy_new() in idle to avoid deadlock.
+     * And use HIGH priority to avoid timeout event happening before
+     * idle callback. */
+    g_idle_add_full (G_PRIORITY_HIGH,
+                    (GSourceFunc) cancelled_idle_cb,
+                    data, NULL);
 }
 
 void
@@ -831,13 +846,12 @@ bus_engine_proxy_new (IBusEngineDesc      *desc,
     data->simple = simple;
     data->timeout = timeout;
 
-    g_object_set_data ((GObject *)data->simple, "EngineProxyNewData", data);
-
     data->factory = bus_component_get_factory (data->component);
 
     if (data->factory == NULL) {
-        /* The factory is not ready yet. Create the factory first, and wait for the "notify::factory" signal.
-         * In the handler of "notify::factory", we'll create the engine proxy. */
+        /* The factory is not ready yet. Create the factory first, and wait for
+         * the "notify::factory" signal. In the handler of "notify::factory",
+         * we'll create the engine proxy. */
         data->handler_id = g_signal_connect (data->component,
                                              "notify::factory",
                                              G_CALLBACK (notify_factory_cb),
