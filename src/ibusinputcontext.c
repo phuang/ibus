@@ -27,6 +27,7 @@
 #include "ibusattribute.h"
 #include "ibuslookuptable.h"
 #include "ibusproplist.h"
+#include "ibuserror.h"
 
 #define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
@@ -1164,7 +1165,7 @@ IBusEngineDesc *
 ibus_input_context_get_engine (IBusInputContext *context)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
-    GVariant *result;
+    GVariant *result = NULL;
     GError *error = NULL;
     result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
                                      "GetEngine",               /* method_name */
@@ -1174,9 +1175,17 @@ ibus_input_context_get_engine (IBusInputContext *context)
                                      NULL,                      /* cancellable */
                                      &error                     /* error */
                                      );
-
     if (result == NULL) {
-        g_warning ("%s.GetEngine: %s", IBUS_INTERFACE_INPUT_CONTEXT, error->message);
+        if (g_error_matches (error, IBUS_ERROR, IBUS_ERROR_NO_ENGINE)) {
+            g_debug ("%s.GetEngine: %s",
+                     IBUS_INTERFACE_INPUT_CONTEXT,
+                     error->message);
+        }
+        else {
+            g_warning ("%s.GetEngine: %s",
+                       IBUS_INTERFACE_INPUT_CONTEXT,
+                       error->message);
+        }
         g_error_free (error);
         return NULL;
     }

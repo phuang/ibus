@@ -70,6 +70,7 @@ ibus_sources =              \
     ibusservice.c           \
     ibusfactory.c           \
     ibusengine.c            \
+    ibuserror.c				\
     ibustext.c              \
     ibuskeymap.c            \
     ibusattribute.c         \
@@ -114,6 +115,7 @@ ibus_headers =              \
     ibusservice.h           \
     ibusfactory.h           \
     ibusengine.h            \
+    ibuserror.h				\
     ibustext.h              \
     ibuskeymap.h            \
     ibusattribute.h         \

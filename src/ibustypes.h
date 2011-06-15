@@ -177,6 +177,15 @@ typedef enum {
 } IBusBusRequestNameReply;
 
 /**
+ * IBusError:
+ * @IBUS_ERROR_NO_ENGINE:
+ * There is no engine associated with input context.
+ */
+typedef enum {
+    IBUS_ERROR_NO_ENGINE,
+} IBusError;
+
+/**
  * IBusRectangle:
  * @x: x coordinate.
  * @y: y coordinate.

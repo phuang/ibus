@@ -318,6 +318,7 @@ void
 ibus_init (void)
 {
     g_type_init ();
+    IBUS_ERROR;
     IBUS_TYPE_TEXT;
     IBUS_TYPE_ATTRIBUTE;
     IBUS_TYPE_ATTR_LIST;

@@ -1040,8 +1040,11 @@ _ic_get_engine (BusInputContext       *context,
                         g_variant_new ("(v)", ibus_serializable_serialize ((IBusSerializable *)desc)));
     }
     else {
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Input context does not have engine.");
+        g_dbus_method_invocation_return_error (
+                invocation,
+                IBUS_ERROR,
+                IBUS_ERROR_NO_ENGINE,
+                "Input context does not have engine.");
     }
 }
 
