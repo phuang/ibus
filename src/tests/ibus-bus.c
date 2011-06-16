@@ -508,6 +508,7 @@ finish_exit_async (GObject *source_object,
                                                   &error);
     g_assert (result);
     g_debug ("ibus_bus_exit_finish: OK");
+    g_usleep (G_USEC_PER_SEC);
     call_next_async_function ();
 }
 

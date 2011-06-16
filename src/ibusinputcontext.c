@@ -877,26 +877,22 @@ ibus_input_context_process_key_event_async (IBusInputContext   *context,
 gboolean
 ibus_input_context_process_key_event_async_finish (IBusInputContext  *context,
                                                    GAsyncResult      *res,
-                                                   gboolean          *processed,
                                                    GError           **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (G_IS_ASYNC_RESULT (res));
-    g_assert (processed != NULL);
     g_assert (error == NULL || *error == NULL);
+
+    gboolean processed = FALSE;
 
     GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
                                                    res, error);
-    if (variant == NULL) {
-        *processed = FALSE;
-        return FALSE;
-    }
-    else {
-        *processed = FALSE;
-        g_variant_get (variant, "(b)", processed);
+    if (variant != NULL) {
+        g_variant_get (variant, "(b)", &processed);
         g_variant_unref (variant);
-        return TRUE;
     }
+
+    return processed;
 }
 
 gboolean
@@ -1034,22 +1030,22 @@ ibus_input_context_is_enabled_async (IBusInputContext   *context,
 gboolean
 ibus_input_context_is_enabled_async_finish (IBusInputContext   *context,
                                             GAsyncResult       *res,
-                                            gboolean           *retval,
                                             GError            **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (G_IS_ASYNC_RESULT (res));
-    g_assert (retval != NULL);
     g_assert (error == NULL || *error == NULL);
+
+    gboolean enabled = FALSE;
 
     GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
                                                    res, error);
-    if (variant == NULL) {
-        return FALSE;
+    if (variant != NULL) {
+        g_variant_get (variant, "(b)", &enabled);
+        g_variant_unref (variant);
     }
-    g_variant_get (variant, "(b)", retval);
-    g_variant_unref (variant);
-    return TRUE;
+
+    return enabled;
 }
 
 void

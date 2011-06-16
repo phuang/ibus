@@ -126,13 +126,10 @@ finish_is_enabled_async (GObject *source_object,
 {
     IBusInputContext *context = IBUS_INPUT_CONTEXT (source_object);
     GError *error = NULL;
-    gboolean retval = FALSE;
     gboolean result = ibus_input_context_is_enabled_async_finish (context,
                                                                   res,
-                                                                  &retval,
                                                                   &error);
     g_assert (result);
-    g_assert (retval);
     g_debug ("ibus_context_is_enabled_async_finish: OK");
     call_next_async_function (context);
 }
@@ -181,12 +178,10 @@ finish_process_key_event_async (GObject *source_object,
 {
     IBusInputContext *context = IBUS_INPUT_CONTEXT (source_object);
     GError *error = NULL;
-    gboolean processed = FALSE;
     gboolean result = ibus_input_context_process_key_event_async_finish (context,
                                                                          res,
-                                                                         &processed,
                                                                          &error);
-    g_assert (result);
+    g_assert (result || error == NULL);
     g_debug ("ibus_context_process_key_event_async_finish: OK");
     call_next_async_function (context);
 }

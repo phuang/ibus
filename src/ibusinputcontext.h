@@ -261,18 +261,16 @@ void        ibus_input_context_process_key_event_async
  * ibus_input_context_process_key_event_async_finish:
  * @context: An IBusInputContext.
  * @res: A GAsyncResult obtained from the GAsyncReadyCallback passed to
- *   ibus_input_context_process_key_event_async().
- * @processed: A point to a bool value. If the the key event is processed, it will
- *      assigned to TRUE, FALSE otherwise.
+ *      ibus_input_context_process_key_event_async().
  * @error: Return location for error or NULL.
- * @returns: TRUE for success; FALSE otherwise.
+ * @returns: %TRUE if the key event is processed;
+ *      %FALSE otherwise or some errors happen and the @error will be set.
  *
  * Finishes an operation started with ibus_input_context_process_key_event_async().
  */
 gboolean     ibus_input_context_process_key_event_async_finish
                                             (IBusInputContext   *context,
                                              GAsyncResult       *res,
-                                             gboolean           *processed,
                                              GError            **error);
 
 /**
@@ -418,17 +416,16 @@ void         ibus_input_context_is_enabled_async
  * ibus_input_context_is_enabled_async_finish:
  * @context: An #IBusInputContext.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
- *   ibus_input_context_is_enabled_async().
- * @retval: If the the context is enabled, it will be assigned to %TRUE, %FALSE otherwise.
+ *      ibus_input_context_is_enabled_async().
  * @error: Return location for error or %NULL.
- * @returns: %TRUE for success; %FALSE otherwise.
+ * @returns: %TRUE if the IME is enabled on the contextfor success;
+ *      %FALSE otherwise or some errors happen and the @error will be set.
  *
  * Finishes an operation started with ibus_input_context_is_enabled_async().
  */
 gboolean     ibus_input_context_is_enabled_async_finish
                                             (IBusInputContext   *context,
                                              GAsyncResult       *res,
-                                             gboolean           *retval,
                                              GError            **error);
 
 /**

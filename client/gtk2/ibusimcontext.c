@@ -246,13 +246,18 @@ _process_key_event_done (GObject      *object,
     IBusInputContext *context = (IBusInputContext *)object;
     GdkEventKey *event = (GdkEventKey *) user_data;
 
-    gboolean processed = FALSE;
-    if (!ibus_input_context_process_key_event_async_finish (context,
-            res, &processed, NULL)) {
-        processed = FALSE;
+    GError *error = NULL;
+    gboolean retval = ibus_input_context_process_key_event_async_finish (
+            context,
+            res,
+            &error);
+
+    if (error != NULL) {
+        g_warning ("Process Key Event failed: %s.", error->message);
+        g_error_free (error);
     }
 
-    if (!processed) {
+    if (retval == FALSE) {
         event->state |= IBUS_IGNORED_MASK;
         gdk_event_put ((GdkEvent *)event);
     }
