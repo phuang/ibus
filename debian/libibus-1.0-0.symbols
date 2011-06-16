@@ -98,6 +98,8 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_config_get_value_async@Base 1.3.99.20101115
  ibus_config_get_value_async_finish@Base 1.3.99.20101115
  ibus_config_new@Base 1.3.99.20101019
+ ibus_config_new_async@Base 1.3.99.20110606
+ ibus_config_new_async_finish@Base 1.3.99.20110606
  ibus_config_service_get_type@Base 1.3.99.20101019
  ibus_config_service_new@Base 1.3.99.20101019
  ibus_config_service_value_changed@Base 1.3.99.20101019
@@ -141,6 +143,8 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_engine_update_preedit_text@Base 1.3.99.20101019
  ibus_engine_update_preedit_text_with_mode@Base 1.3.99.20101019
  ibus_engine_update_property@Base 1.3.99.20101019
+ ibus_error_get_type@Base 1.3.99.20110606
+ ibus_error_quark@Base 1.3.99.20110606
  ibus_factory_add_engine@Base 1.3.99.20101019
  ibus_factory_get_type@Base 1.3.99.20101019
  ibus_factory_new@Base 1.3.99.20101019
