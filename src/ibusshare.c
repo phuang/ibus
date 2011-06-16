@@ -146,6 +146,11 @@ ibus_get_socket_path (void)
         /* gchar *screennumber = "0"; */
         gchar *p;
 
+        path = g_strdup (g_getenv ("IBUS_ADDRESS_FILE"));
+        if (path != NULL) {
+            return path;
+        }
+
         if (_display == NULL) {
             display = g_strdup (g_getenv ("DISPLAY"));
         }
