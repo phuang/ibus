@@ -15,7 +15,6 @@ Build-Depends: debhelper (>= 7),
  iso-codes,
  libgconf2-dev,
  libgtk2.0-dev,
- libgtk-3-dev,
  libtool,
  python-support (>= 0.6),
  python-dev,
@@ -30,7 +29,7 @@ Package: ibus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-glade2,
  python-ibus (= ${source:Version}), python-xdg, librsvg2-common
-Recommends: im-switch, ibus-gtk2, ibus-gtk3, ibus-qt4
+Recommends: im-switch, ibus-gtk2, ibus-qt4
 Conflicts: ibus-anthy (<< 1.2),
  ibus-table (<< 1.2),
  ibus-pinyin (<< 1.2.99),
@@ -78,16 +77,6 @@ Description: New input method framework using dbus
  .
  ibus-gtk2 is the GTK+-2.0 client of ibus, it provide a gtk-immodule for ibus.
 
-Package: ibus-gtk3
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: New input method framework using dbus
- IBus is an Intelligent Input Bus. It is a new input framework for Linux
- OS. It provides full featured and user friendly input method user interface.
- It also may help developers to develop input method easily.
- .
- ibus-gtk3 is the GTK+-3.0 client of ibus, it provide a gtk-immodule for ibus.
- 
 Package: python-ibus
 Section: python
 Architecture: all

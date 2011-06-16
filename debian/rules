@@ -7,7 +7,6 @@ build: patch
 	ln -sf /usr/share/misc/config.guess config.guess
 	dh $@ --before auto_configure
 	dh_auto_configure -- \
-		--enable-gtk3 \
 		--enable-static \
 		--enable-surrounding-text \
 		--enable-gtk-doc \
@@ -22,8 +21,6 @@ install:
 	rm -rf $(CURDIR)/debian/tmp/usr/lib/libibus*.la \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.a \
 		$(CURDIR)/debian/tmp/usr/lib/gtk-2.0/2.10.0/immodules/im-ibus.la \
-		$(CURDIR)/debian/tmp/usr/lib/gtk-3.0/3.0.0/immodules/im-ibus.a \
-		$(CURDIR)/debian/tmp/usr/lib/gtk-3.0/3.0.0/immodules/im-ibus.la \
 		$(CURDIR)/debian/tmp/etc/xdg \
 		$(CURDIR)/debian/tmp/usr/share/applications/ibus.desktop
 	dh_install --list-missing --fail-missing
@@ -31,8 +28,6 @@ install:
 	dh $@ --after installdocs
 	LD_LIBRARY_PATH=debian/libibus-1.0-0/usr/lib:$(LD_LIBRARY_PATH) \
 		dh_gtkmodules -p ibus-gtk2 -s
-	LD_LIBRARY_PATH=debian/libibus-1.0-0/usr/lib:$(LD_LIBRARY_PATH) \
-		dh_gtkmodules -p ibus-gtk3 -s
 
 install-stamp: install
 	touch $@
@@ -48,7 +43,6 @@ binary-indep: install-stamp
 binary-arch: install-stamp
 	dh_strip -s
 	dh_makeshlibs -Nibus-gtk2 -s
-	dh_makeshlibs -Nibus-gtk3 -s
 	dh_shlibdeps -s
 	dh_installdeb -s
 	dh_gencontrol -s
