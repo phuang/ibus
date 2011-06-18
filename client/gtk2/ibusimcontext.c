@@ -125,7 +125,7 @@ static void     ibus_im_context_set_surrounding
 /* static methods*/
 static void     _create_input_context       (IBusIMContext      *context);
 static gboolean _set_cursor_location_internal
-                                            (GtkIMContext       *context);
+                                            (IBusIMContext      *context);
 
 static void     _bus_connected_cb           (IBusBus            *bus,
                                              IBusIMContext      *context);
@@ -762,7 +762,7 @@ ibus_im_context_focus_in (GtkIMContext *context)
      * it blocks UI. So delay it to idle callback. */
     g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
                      (GSourceFunc) _set_cursor_location_internal,
-                     g_object_ref (context),
+                     g_object_ref (ibusimcontext),
                      (GDestroyNotify) g_object_unref);
 
     /* retrieve the initial surrounding-text (regardless of whether
@@ -881,9 +881,8 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
 }
 
 static gboolean
-_set_cursor_location_internal (GtkIMContext *context)
+_set_cursor_location_internal (IBusIMContext *ibusimcontext)
 {
-    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
     GdkRectangle area;
 
     if(ibusimcontext->client_window == NULL ||
@@ -929,7 +928,7 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
         return;
     }
     ibusimcontext->cursor_area = *area;
-    _set_cursor_location_internal (context);
+    _set_cursor_location_internal (ibusimcontext);
     gtk_im_context_set_cursor_location (ibusimcontext->slave, area);
 }
 
@@ -1433,6 +1432,7 @@ _create_input_context_done (IBusBus       *bus,
 
         if (ibusimcontext->has_focus) {
             ibus_input_context_focus_in (ibusimcontext->ibuscontext);
+            _set_cursor_location_internal (ibusimcontext);
         }
     }
 
