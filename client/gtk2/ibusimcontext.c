@@ -934,13 +934,13 @@ ibus_im_context_set_use_preedit (GtkIMContext *context, gboolean use_preedit)
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
+    if (use_preedit) {
+        ibusimcontext->caps |= IBUS_CAP_PREEDIT_TEXT;
+    }
+    else {
+        ibusimcontext->caps &= ~IBUS_CAP_PREEDIT_TEXT;
+    }
     if(ibusimcontext->ibuscontext) {
-        if (use_preedit) {
-            ibusimcontext->caps |= IBUS_CAP_PREEDIT_TEXT;
-        }
-        else {
-            ibusimcontext->caps &= ~IBUS_CAP_PREEDIT_TEXT;
-        }
         ibus_input_context_set_capabilities (ibusimcontext->ibuscontext,
                                              ibusimcontext->caps);
     }
