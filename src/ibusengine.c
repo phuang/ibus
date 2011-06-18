@@ -1382,13 +1382,15 @@ ibus_engine_get_surrounding_text (IBusEngine   *engine,
     IBusEnginePrivate *priv;
 
     g_return_if_fail (IBUS_IS_ENGINE (engine));
-    g_return_if_fail (text != NULL);
-    g_return_if_fail (cursor_pos != NULL);
+    g_return_if_fail ((text != NULL && cursor_pos != NULL) ||
+                      (text == NULL && cursor_pos == NULL));
 
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
-    *text = g_object_ref (priv->surrounding_text);
-    *cursor_pos = priv->surrounding_cursor_pos;
+    if (text && cursor_pos) {
+        *text = g_object_ref (priv->surrounding_text);
+        *cursor_pos = priv->surrounding_cursor_pos;
+    }
 
     /* tell the client that this engine will utilize surrounding-text
      * feature, which causes periodical update.  Note that the client
