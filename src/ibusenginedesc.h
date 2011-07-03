@@ -249,6 +249,16 @@ guint            ibus_engine_desc_get_rank      (IBusEngineDesc *info);
 const gchar     *ibus_engine_desc_get_hotkeys   (IBusEngineDesc *info);
 
 /**
+ * ibus_engine_desc_get_symbol:
+ * @info: An IBusEngineDesc
+ * @returns: symbol property in IBusEngineDesc
+ *
+ * Return the symbol property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_symbol
+                                                (IBusEngineDesc *info);
+
+/**
  * ibus_engine_desc_output:
  * @info: An IBusEngineDesc
  * @output: XML-formatted Input method engine description.
