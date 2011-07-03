@@ -397,15 +397,6 @@ bus_engine_proxy_real_destroy (IBusProxy *proxy)
 {
     BusEngineProxy *engine = (BusEngineProxy *)proxy;
 
-    g_dbus_proxy_call ((GDBusProxy *)proxy,
-                       "org.freedesktop.IBus.Service.Destroy",
-                       NULL,
-                       G_DBUS_CALL_FLAGS_NONE,
-                       -1,
-                       NULL,
-                       NULL,
-                       NULL);
-
     if (engine->desc) {
         g_object_unref (engine->desc);
         engine->desc = NULL;

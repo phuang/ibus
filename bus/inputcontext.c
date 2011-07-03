@@ -1020,8 +1020,6 @@ _ic_set_engine (BusInputContext       *context,
                             NULL,
                             (GAsyncReadyCallback)_ic_set_engine_done,
                             invocation);
-
-    g_object_unref (desc);
 }
 
 /**
@@ -2091,7 +2089,6 @@ bus_input_context_enable (BusInputContext *context)
                             NULL, /* we do not cancel the call. */
                             NULL, /* use the default callback function. */
                             NULL);
-            g_object_unref (desc);
         }
     }
 
@@ -2192,7 +2189,6 @@ bus_input_context_unset_engine (BusInputContext *context)
         for (i = 0; engine_signals[i].name != NULL; i++) {
             g_signal_handlers_disconnect_by_func (context->engine, engine_signals[i].callback, context);
         }
-        /* Do not destroy the engine anymore, because of global engine feature */
         g_object_unref (context->engine);
         context->engine = NULL;
     }
@@ -2291,6 +2287,7 @@ new_engine_cb (GObject             *obj,
         }
         else {
             bus_input_context_set_engine (data->context, engine);
+            g_object_unref (engine);
             bus_input_context_enable (data->context);
             g_simple_async_result_set_op_res_gboolean (data->simple, TRUE);
         }
