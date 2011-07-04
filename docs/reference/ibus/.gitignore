@@ -36,6 +36,8 @@
 /pdf-build.stamp
 /pdf.stamp
 /scan-build.stamp
+/setup-build.stamp
+/setup.stamp
 /sgml-build.stamp
 /sgml.stamp
 /so_locations

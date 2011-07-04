@@ -119,6 +119,7 @@ libibus-1.0.so.0 libibus-1.0-0 #MINVER#
  ibus_engine_desc_get_longname@Base 1.3.99.20101019
  ibus_engine_desc_get_name@Base 1.3.99.20101019
  ibus_engine_desc_get_rank@Base 1.3.99.20101019
+ ibus_engine_desc_get_symbol@Base 1.3.99.20110704
  ibus_engine_desc_get_type@Base 1.3.99.20101019
  ibus_engine_desc_new@Base 1.3.99.20101019
  ibus_engine_desc_new_from_xml_node@Base 1.3.99.20101019

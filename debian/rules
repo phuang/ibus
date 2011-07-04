@@ -10,6 +10,7 @@ build: patch
 		--enable-gtk3 \
 		--enable-static \
 		--enable-surrounding-text \
+		--enable-gtk-doc \
 		--with-panel-icon-keyboard=ibus-keyboard \
 		LDFLAGS="-Wl,--as-needed"
 	dh $@ --before auto_test
