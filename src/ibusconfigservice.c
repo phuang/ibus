@@ -79,6 +79,9 @@ static GVariant *ibus_config_service_get_value       (IBusConfigService      *co
                                                       const gchar            *section,
                                                       const gchar            *name,
                                                       GError                **error);
+static GVariant *ibus_config_service_get_values      (IBusConfigService      *config,
+                                                      const gchar            *section,
+                                                      GError                **error);
 static gboolean  ibus_config_service_unset_value     (IBusConfigService      *config,
                                                       const gchar            *section,
                                                       const gchar            *name,
@@ -98,6 +101,10 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='s' name='section' />"
     "      <arg direction='in'  type='s' name='name' />"
     "      <arg direction='out' type='v' name='value' />"
+    "    </method>"
+    "    <method name='GetValues'>"
+    "      <arg direction='in'  type='s' name='section' />"
+    "      <arg direction='out' type='a{sv}' name='values' />"
     "    </method>"
     "    <method name='UnsetValue'>"
     "      <arg direction='in'  type='s' name='section' />"
@@ -129,6 +136,7 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
 
     class->set_value   = ibus_config_service_set_value;
     class->get_value   = ibus_config_service_get_value;
+    class->get_values  = ibus_config_service_get_values;
     class->unset_value = ibus_config_service_unset_value;
 }
 
@@ -235,6 +243,27 @@ ibus_config_service_service_method_call (IBusService           *service,
         return;
     }
 
+    if (g_strcmp0 (method_name, "GetValues") == 0) {
+        gchar *section;
+        GVariant *value;
+        GError *error = NULL;
+
+        g_variant_get (parameters, "(&s)", &section);
+
+        value = IBUS_CONFIG_SERVICE_GET_CLASS (config)->get_values (config,
+                                                                     section,
+                                                                     &error);
+        if (value) {
+            g_dbus_method_invocation_return_value (invocation,
+                    g_variant_new ("(@a{sv})", value));
+        }
+        else {
+            g_dbus_method_invocation_return_gerror (invocation, error);
+            g_error_free (error);
+        }
+        return;
+    }
+
     if (g_strcmp0 (method_name, "UnsetValue") == 0) {
         gchar *section;
         gchar *name;
@@ -323,6 +352,18 @@ ibus_config_service_get_value (IBusConfigService *config,
     if (error) {
         *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
                               "Cannot get value %s::%s", section, name);
+    }
+    return NULL;
+}
+
+static GVariant *
+ibus_config_service_get_values (IBusConfigService *config,
+                                const gchar       *section,
+                                GError           **error)
+{
+    if (error) {
+        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                              "Cannot get values %s", section);
     }
     return NULL;
 }

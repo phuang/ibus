@@ -48,6 +48,9 @@ static GVariant    *ibus_config_memconf_get_value   (IBusConfigService      *con
                                                      const gchar            *section,
                                                      const gchar            *name,
                                                      GError                **error);
+static GVariant    *ibus_config_memconf_get_values  (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     GError                **error);
 static gboolean     ibus_config_memconf_unset_value (IBusConfigService      *config,
                                                      const gchar            *section,
                                                      const gchar            *name,
@@ -63,6 +66,7 @@ ibus_config_memconf_class_init (IBusConfigMemconfClass *class)
     IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_memconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_memconf_set_value;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value   = ibus_config_memconf_get_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_values  = ibus_config_memconf_get_values;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->unset_value = ibus_config_memconf_unset_value;
 }
 
@@ -130,6 +134,32 @@ ibus_config_memconf_get_value (IBusConfigService *config,
     return value;
 }
 
+static GVariant *
+ibus_config_memconf_get_values (IBusConfigService *config,
+                                const gchar       *section,
+                                GError           **error)
+{
+    g_assert (IBUS_IS_CONFIG_MEMCONF (config));
+    g_assert (section);
+    g_assert (error == NULL || *error == NULL);
+
+    GHashTableIter iter;
+    const gchar *key;
+    GVariant *value;
+    
+    GVariantBuilder *builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+    g_hash_table_iter_init (&iter, IBUS_CONFIG_MEMCONF (config)->values);
+    while (g_hash_table_iter_next (&iter, (gpointer *)&key, (gpointer *)&value)) {
+        gchar **v = g_strsplit (key, ":", 2);
+        if (g_strcmp0 (v[0], section) == 0) {
+            g_variant_builder_add (builder, "{sv}", v[1], value); 
+        }
+        g_strfreev(v);
+    }
+
+    return g_variant_builder_end (builder);
+}
+
 static gboolean
 ibus_config_memconf_unset_value (IBusConfigService *config,
                                  const gchar       *section,
@@ -146,6 +176,10 @@ ibus_config_memconf_unset_value (IBusConfigService *config,
     g_free (key);
 
     if (retval) {
+        ibus_config_service_value_changed (config,
+                                           section,
+                                           name,
+                                           g_variant_new_tuple (NULL, 0));
     }
     else {
         if (error && *error) {

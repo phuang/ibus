@@ -180,6 +180,55 @@ GVariant        *ibus_config_get_value_async_finish
                                              GError            **error);
 
 /**
+ * ibus_config_get_values:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @returns: A #GVariant or %NULL. Free with g_variant_unref().
+ *
+ * Get all values in a section synchronously.
+ *
+ * @see_also: ibus_config_set_value.
+ */
+GVariant        *ibus_config_get_values     (IBusConfig         *config,
+                                             const gchar        *section);
+
+/**
+ * ibus_config_get_values_async:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @timeout_ms: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: Callback function to invoke when the return value is ready.
+ * @user_data: The data to pass to callback.
+ *
+ * Get all values in a section asynchronously.
+ *
+ * @see_also: ibus_config_get_values.
+ */
+void             ibus_config_get_values_async(IBusConfig         *config,
+                                              const gchar        *section,
+                                              gint                timeout_ms,
+                                              GCancellable       *cancellable,
+                                              GAsyncReadyCallback callback,
+                                              gpointer            user_data);
+
+/**
+ * ibus_config_get_values_async_finish:
+ * @config: A #IBusConfig.
+ * @result: A #GAsyncResult.
+ * @error: Return location for error or %NULL.
+ * @returns: A #GVariant or %NULL if error is set. Free with g_variant_unref().
+ * 
+ * Finish get values in a section.
+ *
+ * @see_also: ibus_config_get_values_async.
+ */
+GVariant        *ibus_config_get_values_async_finish
+                                            (IBusConfig         *config,
+                                             GAsyncResult       *result,
+                                             GError            **error);
+
+/**
  * ibus_config_set_value:
  * @config: An IBusConfig
  * @section: Section name of the configuration option.

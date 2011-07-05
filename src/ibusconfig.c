@@ -300,7 +300,7 @@ ibus_config_get_value_async_finish (IBusConfig    *config,
                                                  result,
                                                  error);
     if (retval != NULL) {
-        g_variant_get (retval, "(v)", &value);
+        g_variant_get (retval, "(@a{sv})", &value);
         g_variant_ref (value);
         g_variant_unref (retval);
     }
@@ -308,6 +308,79 @@ ibus_config_get_value_async_finish (IBusConfig    *config,
     return value;
 }
 
+GVariant *
+ibus_config_get_values (IBusConfig  *config,
+                        const gchar *section)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+
+    GError *error = NULL;
+    GVariant *result;
+    result = g_dbus_proxy_call_sync ((GDBusProxy *) config,
+                                     "GetValues",
+                                     g_variant_new ("(s)", section),
+                                     G_DBUS_CALL_FLAGS_NONE,
+                                     -1,
+                                     NULL,
+                                     &error);
+    if (result == NULL) {
+        g_warning ("%s.GetValues: %s", IBUS_INTERFACE_CONFIG, error->message);
+        g_error_free (error);
+        return NULL;
+    }
+
+    GVariant *value = NULL;
+    g_variant_get (result, "(@a{sv})", &value);
+    g_variant_ref (value);
+    g_variant_unref (result);
+
+    return value;
+}
+
+void
+ibus_config_get_values_async (IBusConfig         *config,
+                              const gchar        *section,
+                              gint                timeout_ms,
+                              GCancellable       *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer            user_data)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+
+    g_dbus_proxy_call ((GDBusProxy *)config,
+                       "GetValues",
+                       g_variant_new ("(s)", section),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       timeout_ms,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+GVariant *
+ibus_config_get_values_async_finish (IBusConfig    *config,
+                                     GAsyncResult  *result,
+                                     GError       **error)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (G_IS_ASYNC_RESULT (result));
+    g_assert (error == NULL || *error == NULL);
+
+    GVariant *value = NULL;
+    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)config,
+                                                 result,
+                                                 error);
+    if (retval != NULL) {
+        g_variant_get (retval, "(v)", &value);
+        g_variant_ref (value);
+        g_variant_unref (retval);
+    }
+
+    return value;
+}
+    
 gboolean
 ibus_config_set_value (IBusConfig   *config,
                        const gchar  *section,

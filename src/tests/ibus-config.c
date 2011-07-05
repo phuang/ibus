@@ -70,6 +70,62 @@ test_create_config_async (void)
     g_main_loop_unref (loop);
 }
 
+static void
+test_config_set_get (void)
+{
+    IBusConfig *config = ibus_config_new (ibus_bus_get_connection (bus),
+                                          NULL,
+                                          NULL);
+    g_assert (config);
+
+    ibus_config_set_value (config, "test", "v1", g_variant_new_int32(1));
+    ibus_config_set_value (config, "test", "v2", g_variant_new_string("2"));
+
+    GVariant *var;
+    var = ibus_config_get_value (config, "test", "v1");
+    g_assert (var);
+    g_assert_cmpint (g_variant_get_int32(var), ==, 1);
+    g_variant_unref (var);
+
+    var = ibus_config_get_value (config, "test", "v2");
+    g_assert (var);
+    g_assert_cmpstr (g_variant_get_string(var, NULL), ==, "2");
+    g_variant_unref (var);
+
+    var = ibus_config_get_values (config, "test");
+    g_assert (var);
+
+    GVariantIter iter;
+    gchar *name;
+    GVariant *value;
+    g_variant_iter_init (&iter, var);
+    gint value_bits = 0;
+    while (g_variant_iter_next (&iter, "{&sv}", &name, &value)) {
+        if (g_strcmp0 (name, "v1") == 0) {
+            g_assert_cmpint (g_variant_get_int32(value), ==, 1);
+            value_bits |= 1;
+        }
+        else if (g_strcmp0 (name, "v2") == 0) {
+            g_assert_cmpstr (g_variant_get_string(value, NULL), ==, "2");
+            value_bits |= (1 << 1);
+        }
+        else {
+            g_warning ("unknow value name=%s", name);
+        }
+        ibus_config_unset (config, "test", name);
+        g_variant_unref (value);
+    }
+    g_assert_cmpint (value_bits, ==, 1 | (1 << 1));
+    g_variant_unref (var);
+
+    var = ibus_config_get_values (config, "test");
+    g_assert (var);
+    g_assert_cmpint (g_variant_n_children (var), ==, 0);
+    g_variant_unref (var);
+
+    g_object_unref (config);
+}
+
 gint
 main (gint    argc,
       gchar **argv)
@@ -81,6 +137,7 @@ main (gint    argc,
     bus = ibus_bus_new ();
 
     g_test_add_func ("/ibus/create-config-async", test_create_config_async);
+    g_test_add_func ("/ibus/config-set-get", test_config_set_get);
 
     result = g_test_run ();
     g_object_unref (bus);

@@ -46,6 +46,9 @@ class IConfig(dbus.service.Object):
     @method(in_signature="ss", out_signature="v")
     def GetValue(self, section, name): pass
 
+    @method(in_signature="s", out_signature="s{sv}")
+    def GetValues(self, section): pass
+
     @method(in_signature="ssv")
     def SetValue(self, section, name, value): pass
 
