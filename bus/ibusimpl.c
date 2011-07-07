@@ -2183,8 +2183,8 @@ bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
         ibus->use_global_engine &&
         ibus->global_engine_name) {
         ibus_config_set_value (ibus->config,
-                        "general", "global_engine",
-                        g_variant_new ("s", ibus->global_engine_name));
+                               "general", "global_engine",
+                               g_variant_new_string (ibus->global_engine_name));
     }
 }
 
@@ -2206,8 +2206,7 @@ bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
     GVariant *value = ibus_config_get_value (ibus->config, "general", "global_previous_engine");
     if (value == NULL)
         return NULL;
-    gchar *engine_name = NULL;
-    g_variant_get (value, "(s)", &engine_name);
+    gchar *engine_name = g_variant_dup_string (value, NULL);
     g_variant_unref (value);
     return engine_name;
 }
@@ -2226,8 +2225,8 @@ bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
         ibus->use_global_engine &&
         ibus->global_previous_engine_name) {
         ibus_config_set_value (ibus->config,
-                        "general", "global_previous_engine",
-                        g_variant_new ("s", ibus->global_previous_engine_name));
+                               "general", "global_previous_engine",
+                               g_variant_new_string (ibus->global_previous_engine_name));
     }
 }
 

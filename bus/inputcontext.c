@@ -1171,7 +1171,6 @@ bus_input_context_focus_in (BusInputContext *context)
                             NULL, /* we do not cancel the call. */
                             NULL, /* use the default callback function. */
                             NULL);
-            g_object_unref (desc);
         }
     }
 

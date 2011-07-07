@@ -257,7 +257,6 @@ ibus_config_get_value (IBusConfig  *config,
 
     GVariant *value = NULL;
     g_variant_get (result, "(v)", &value);
-    g_variant_ref (value);
     g_variant_unref (result);
 
     return value;
@@ -300,8 +299,7 @@ ibus_config_get_value_async_finish (IBusConfig    *config,
                                                  result,
                                                  error);
     if (retval != NULL) {
-        g_variant_get (retval, "(@a{sv})", &value);
-        g_variant_ref (value);
+        g_variant_get (retval, "(v)", &value);
         g_variant_unref (retval);
     }
 
@@ -332,7 +330,6 @@ ibus_config_get_values (IBusConfig  *config,
 
     GVariant *value = NULL;
     g_variant_get (result, "(@a{sv})", &value);
-    g_variant_ref (value);
     g_variant_unref (result);
 
     return value;
@@ -373,8 +370,7 @@ ibus_config_get_values_async_finish (IBusConfig    *config,
                                                  result,
                                                  error);
     if (retval != NULL) {
-        g_variant_get (retval, "(v)", &value);
-        g_variant_ref (value);
+        g_variant_get (retval, "(@a{sv})", &value);
         g_variant_unref (retval);
     }
 
