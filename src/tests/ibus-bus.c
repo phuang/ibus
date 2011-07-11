@@ -577,6 +577,8 @@ main (gint    argc,
     g_test_init (&argc, &argv, NULL);
     ibus_init ();
     bus = ibus_bus_new ();
+    g_object_unref (bus);
+    bus = ibus_bus_new (); // crosbug.com/17293
 
     g_test_add_func ("/ibus/list-engines", test_list_engines);
     g_test_add_func ("/ibus/list-active-engines", test_list_active_engines);
