@@ -2163,7 +2163,7 @@ bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
     GVariant *variant = ibus_config_get_value (ibus->config, "general", "global_engine");
     gchar *engine_name = NULL;
     if (variant != NULL) {
-        g_variant_get (variant, "s", &engine_name);
+        engine_name = g_variant_dup_string (variant, NULL);
         g_variant_unref (variant);
     }
     return engine_name;
