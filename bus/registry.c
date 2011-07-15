@@ -424,7 +424,9 @@ bus_registry_load_in_dir (BusRegistry *registry,
         if (component != NULL) {
             BusComponent *buscomp = bus_component_new (component,
                                                        NULL /* factory */);
-            registry->components = g_list_append (registry->components, buscomp);
+            g_object_ref_sink (buscomp);
+            registry->components =
+                g_list_append (registry->components, buscomp);
         }
 
         g_free (path);
@@ -654,7 +656,6 @@ bus_registry_name_owner_changed (BusRegistry *registry,
         factory = bus_factory_proxy_new (connection);
         if (factory == NULL)
             return;
-        g_object_ref_sink (factory);
         bus_component_set_factory (component, factory);
         g_object_unref (factory);
     }
