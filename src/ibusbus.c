@@ -236,7 +236,13 @@ _connection_closed_cb (GDBusConnection  *connection,
                        IBusBus          *bus)
 {
     if (error) {
-        g_warning ("_connection_closed_cb: %s", error->message);
+        /* We replaced g_warning with g_debug here because
+         * currently when ibus-daemon restarts, GTK client calls this and
+         * _g_dbus_worker_do_read_cb() sets the error message:
+         * "Underlying GIOStream returned 0 bytes on an async read"
+         * http://git.gnome.org/browse/glib/tree/gio/gdbusprivate.c#n693
+         * However we think the error message is almost harmless. */
+        g_debug ("_connection_closed_cb: %s", error->message);
     }
 
     g_assert (bus->priv->connection == connection);
@@ -392,8 +398,12 @@ ibus_bus_destroy (IBusObject *object)
     }
 
     if (bus->priv->connection) {
+        g_signal_handlers_disconnect_by_func (bus->priv->connection,
+                                              G_CALLBACK (_connection_closed_cb),
+                                              bus);
         /* FIXME should use async close function */
         g_dbus_connection_close_sync (bus->priv->connection, NULL, NULL);
+        g_object_unref (bus->priv->connection);
         bus->priv->connection = NULL;
     }
 
@@ -821,15 +831,15 @@ ibus_bus_hello (IBusBus *bus)
     return NULL;
 }
 
-guint
+guint32
 ibus_bus_request_name (IBusBus      *bus,
                        const gchar  *name,
-                       guint         flags)
+                       guint32       flags)
 {
     g_return_val_if_fail (IBUS_IS_BUS (bus), 0);
     g_return_val_if_fail (name != NULL, 0);
 
-    guint retval = 0;
+    guint32 retval = 0;
     GVariant *result;
     result = ibus_bus_call_sync (bus,
                                  DBUS_SERVICE_DBUS,
@@ -943,6 +953,41 @@ ibus_bus_release_name_async_finish (IBusBus      *bus,
     g_assert (g_simple_async_result_is_valid (res, (GObject *) bus,
                                               ibus_bus_release_name_async));
     return _async_finish_guint (res, error);
+}
+
+GList *
+ibus_bus_list_queued_owners (IBusBus      *bus,
+                             const gchar  *name)
+{
+    GList *retval = NULL;
+    GVariant *result;
+
+    g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
+    g_return_val_if_fail (name != NULL, NULL);
+
+    result = ibus_bus_call_sync (bus,
+                                 DBUS_SERVICE_DBUS,
+                                 DBUS_PATH_DBUS,
+                                 DBUS_INTERFACE_DBUS,
+                                 "ListQueuedOwners",
+                                 g_variant_new ("(s)", name),
+                                 G_VARIANT_TYPE ("(as)"));
+
+    if (result) {
+        GVariantIter *iter = NULL;
+        const gchar *name = NULL;
+        g_variant_get (result, "(as)", &iter);
+        while (g_variant_iter_loop (iter, "&s", &name)) {
+            if (name == NULL) {
+                continue;
+            }
+            retval = g_list_append (retval, g_strdup (name));
+        }
+        g_variant_iter_free (iter);
+        g_variant_unref (result);
+    }
+
+    return retval;
 }
 
 gboolean

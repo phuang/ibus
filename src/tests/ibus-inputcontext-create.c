@@ -78,7 +78,7 @@ test_failed (void)
 {
     ibus_bus_create_input_context_async (bus,
                                          "test",
-                                         -1,
+                                         1000,
                                          NULL,
                                          create_finish_failed,
                                          NULL);

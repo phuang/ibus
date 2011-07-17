@@ -256,7 +256,7 @@ bus_component_set_factory (BusComponent    *component,
     }
 
     if (component->factory) {
-        g_signal_handlers_disconnect_by_func (factory,
+        g_signal_handlers_disconnect_by_func (component->factory,
                                               bus_component_factory_destroy_cb,
                                               component);
         g_object_unref (component->factory);

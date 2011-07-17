@@ -143,8 +143,13 @@ ibus_get_socket_path (void)
         gchar *hostname = "unix";
         gchar *display;
         gchar *displaynumber = "0";
-        gchar *screennumber = "0";
+        /* gchar *screennumber = "0"; */
         gchar *p;
+
+        path = g_strdup (g_getenv ("IBUS_ADDRESS_FILE"));
+        if (path != NULL) {
+            return path;
+        }
 
         if (_display == NULL) {
             display = g_strdup (g_getenv ("DISPLAY"));
@@ -172,7 +177,8 @@ ibus_get_socket_path (void)
             if (*p == '.') {
                 *p = '\0';
                 p++;
-                screennumber = p;
+                /* Do not use screennumber
+                 screennumber = p; */
             }
         }
 
@@ -317,6 +323,7 @@ void
 ibus_init (void)
 {
     g_type_init ();
+    IBUS_ERROR;
     IBUS_TYPE_TEXT;
     IBUS_TYPE_ATTRIBUTE;
     IBUS_TYPE_ATTR_LIST;

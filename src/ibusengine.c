@@ -47,6 +47,8 @@ enum {
     PROPERTY_HIDE,
     CANDIDATE_CLICKED,
     SET_SURROUNDING_TEXT,
+    PROCESS_HAND_WRITING_EVENT,
+    CANCEL_HAND_WRITING,
     LAST_SIGNAL,
 };
 
@@ -148,6 +150,13 @@ static void      ibus_engine_set_surrounding_text
                                             (IBusEngine         *engine,
                                              IBusText           *text,
                                              guint               cursor_pos);
+static void      ibus_engine_process_hand_writing_event
+                                             (IBusEngine         *engine,
+                                              const gdouble      *coordinates,
+                                              guint               coordinates_len);
+static void      ibus_engine_cancel_hand_writing
+                                             (IBusEngine         *engine,
+                                              guint               n_strokes);
 static void      ibus_engine_emit_signal     (IBusEngine         *engine,
                                               const gchar        *signal_name,
                                               GVariant           *parameters);
@@ -170,6 +179,12 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='i' name='y' />"
     "      <arg direction='in'  type='i' name='w' />"
     "      <arg direction='in'  type='i' name='h' />"
+    "    </method>"
+    "    <method name='ProcessHandWritingEvent'>"
+    "      <arg direction='in'  type='ad' name='coordinates' />"
+    "    </method>"
+    "    <method name='CancelHandWriting'>"
+    "      <arg direction='in'  type='u' name='n_strokes' />"
     "    </method>"
     "    <method name='SetCapabilities'>"
     "      <arg direction='in'  type='u' name='caps' />"
@@ -268,6 +283,9 @@ ibus_engine_class_init (IBusEngineClass *class)
     class->set_cursor_location  = ibus_engine_set_cursor_location;
     class->set_capabilities     = ibus_engine_set_capabilities;
     class->set_surrounding_text = ibus_engine_set_surrounding_text;
+    class->process_hand_writing_event
+                                = ibus_engine_process_hand_writing_event;
+    class->cancel_hand_writing  = ibus_engine_cancel_hand_writing;
 
     /* install properties */
     /**
@@ -633,6 +651,50 @@ ibus_engine_class_init (IBusEngineClass *class)
             1,
             G_TYPE_STRING);
 
+    /**
+     * IBusEngine::process-hand-writing-event:
+     * @engine: An IBusEngine.
+     * @coordinates: An array of double (0.0 to 1.0) which represents a stroke (i.e. [x1, y1, x2, y2, x3, y3, ...]).
+     * @coordinates_len: The number of elements in the array.
+     *
+     * Emitted when a hand writing operation is cancelled.
+     * Implement the member function cancel_hand_writing() in extended class to receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
+    engine_signals[PROCESS_HAND_WRITING_EVENT] =
+        g_signal_new (I_("process-hand-writing-event"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, process_hand_writing_event),
+            NULL, NULL,
+            _ibus_marshal_VOID__POINTER_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_POINTER,
+            G_TYPE_UINT);
+
+    /**
+     * IBusEngine::cancel-hand-writing:
+     * @engine: An IBusEngine.
+     * @n_strokes: The number of strokes to be removed. 0 means "remove all".
+     *
+     * Emitted when a hand writing operation is cancelled.
+     * Implement the member function cancel_hand_writing() in extended class to receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     */
+    engine_signals[CANCEL_HAND_WRITING] =
+        g_signal_new (I_("cancel-hand-writing"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, cancel_hand_writing),
+            NULL, NULL,
+            _ibus_marshal_VOID__UINT,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_UINT);
+
     g_type_class_add_private (class, sizeof (IBusEnginePrivate));
 
     /**
@@ -871,6 +933,30 @@ ibus_engine_service_method_call (IBusService           *service,
         return;
     }
 
+    if (g_strcmp0 (method_name, "ProcessHandWritingEvent") == 0) {
+        const gdouble *coordinates;
+        gsize coordinates_len = 0;
+
+        coordinates = g_variant_get_fixed_array (g_variant_get_child_value (parameters, 0), &coordinates_len, sizeof (gdouble));
+        g_return_if_fail (coordinates != NULL);
+        g_return_if_fail (coordinates_len >= 4); /* The array should contain at least one line. */
+        g_return_if_fail (coordinates_len <= G_MAXUINT); /* to prevent overflow in the cast in g_signal_emit */
+        g_return_if_fail ((coordinates_len & 1) == 0);
+
+        g_signal_emit (engine, engine_signals[PROCESS_HAND_WRITING_EVENT], 0,
+                       coordinates, (guint) coordinates_len);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
+
+    if (g_strcmp0 (method_name, "CancelHandWriting") == 0) {
+        guint n_strokes = 0;
+        g_variant_get (parameters, "(u)", &n_strokes);
+        g_signal_emit (engine, engine_signals[CANCEL_HAND_WRITING], 0, n_strokes);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
+
     /* should not be reached */
     g_return_if_reached ();
 }
@@ -1042,6 +1128,24 @@ ibus_engine_set_surrounding_text (IBusEngine *engine,
     priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
     priv->surrounding_cursor_pos = cursor_pos;
     // g_debug ("set-surrounding-text ('%s', %d)", text->text, cursor_pos);
+}
+
+static void
+ibus_engine_process_hand_writing_event (IBusEngine         *engine,
+                                        const gdouble      *coordinates,
+                                        guint               coordinates_len)
+{
+    // guint i;
+    // g_debug ("process-hand-writing-event (%u)", coordinates_len);
+    // for (i = 0; i < coordinates_len; i++)
+    //     g_debug (" %lf", coordinates[i]);
+}
+
+static void
+ibus_engine_cancel_hand_writing (IBusEngine         *engine,
+                                 guint               n_strokes)
+{
+    // g_debug ("cancel-hand-writing (%u)", n_strokes);
 }
 
 static void
@@ -1278,13 +1382,15 @@ ibus_engine_get_surrounding_text (IBusEngine   *engine,
     IBusEnginePrivate *priv;
 
     g_return_if_fail (IBUS_IS_ENGINE (engine));
-    g_return_if_fail (text != NULL);
-    g_return_if_fail (cursor_pos != NULL);
+    g_return_if_fail ((text != NULL && cursor_pos != NULL) ||
+                      (text == NULL && cursor_pos == NULL));
 
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
-    *text = g_object_ref (priv->surrounding_text);
-    *cursor_pos = priv->surrounding_cursor_pos;
+    if (text && cursor_pos) {
+        *text = g_object_ref (priv->surrounding_text);
+        *cursor_pos = priv->surrounding_cursor_pos;
+    }
 
     /* tell the client that this engine will utilize surrounding-text
      * feature, which causes periodical update.  Note that the client

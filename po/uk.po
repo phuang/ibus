@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-05-13 05:04+0000\n"
 "Last-Translator: yurchor <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Оболонка способів введення"
 msgid "Start IBus Input Method Framework"
 msgstr "Запуск оболонки способів введення IBus"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -49,7 +49,7 @@ msgstr "Попередня сторінка"
 msgid "Next page"
 msgstr "Наступна сторінка"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
@@ -57,35 +57,39 @@ msgstr ""
 "Встановлено, вилучено або оновлено деякі зі способів введення. Будь ласка, "
 "перезапустіть платформу введення ibus."
 
-#: ../ui/gtk/main.py:59
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
 msgstr "Перезапустити зараз"
 
-#: ../ui/gtk/main.py:60
+#: ../ui/gtk/main.py:67
 msgid "Later"
 msgstr "Пізніше"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr "Панель IBus"
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
 msgstr "Оболонка способів введення IBus"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "Перезапустити"
 
-#: ../ui/gtk/panel.py:414
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
 msgstr "Вимкнути спосіб введення"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
 msgstr "Немає вікна введення"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus — інтелектуальний канал введення даних у Linux/Unix."
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 

@@ -217,6 +217,30 @@ ibus_property_new (const gchar   *key,
     return prop;
 }
 
+#define IBUS_PROPERTY_GET_FIELD(field, return_type) \
+return_type                                                             \
+ibus_property_get_ ## field (IBusProperty *prop)                        \
+{                                                                       \
+    return prop->field;                                                 \
+}
+
+IBUS_PROPERTY_GET_FIELD (key, const gchar *)
+IBUS_PROPERTY_GET_FIELD (icon, const gchar *)
+IBUS_PROPERTY_GET_FIELD (label, const IBusText *)
+IBUS_PROPERTY_GET_FIELD (tooltip, const IBusText *)
+IBUS_PROPERTY_GET_FIELD (sensitive, gboolean)
+IBUS_PROPERTY_GET_FIELD (visible, gboolean)
+IBUS_PROPERTY_GET_FIELD (state, IBusPropState)
+IBUS_PROPERTY_GET_FIELD (sub_props, const IBusPropList *)
+#undef IBUS_PROPERTY_GET_FIELD
+
+/* ibus_property_get_type() exists */
+IBusPropType
+ibus_property_get_prop_type (IBusProperty *prop)
+{
+    return prop->type;
+}
+
 void
 ibus_property_set_label (IBusProperty *prop,
                          IBusText     *label)

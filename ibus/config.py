@@ -43,6 +43,9 @@ class ConfigBase(object.Object):
     def get_value(self, section, name):
         pass
 
+    def get_values(self, section):
+        pass
+
     def set_value(self, section, name, value):
         pass
 
@@ -61,6 +64,9 @@ class ConfigProxy(interface.IConfig):
 
     def GetValue(self, section, name):
         return self.__config.get_value(section, name)
+
+    def GetValues(self, section):
+        return self.__config.get_values(section)
 
     def SetValue(self, section, name, value):
         return self.__config.set_value(section, name, value)
@@ -138,6 +144,12 @@ class Config(object.Object):
             return self.__config.GetValue(section, name)
         except:
             return default_value
+
+    def get_values(self, section):
+        try:
+            return self.__config.GetValues(section)
+        except:
+            return None
 
     def set_value(self, section, name, value):
         try:

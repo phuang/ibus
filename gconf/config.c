@@ -30,6 +30,9 @@ static GVariant    *ibus_config_gconf_get_value     (IBusConfigService      *con
                                                      const gchar            *section,
                                                      const gchar            *name,
                                                      GError                **error);
+static GVariant    *ibus_config_gconf_get_values    (IBusConfigService      *config,
+                                                     const gchar            *section,
+                                                     GError                **error);
 static gboolean     ibus_config_gconf_unset_value   (IBusConfigService      *config,
                                                      const gchar            *section,
                                                      const gchar            *name,
@@ -47,6 +50,7 @@ ibus_config_gconf_class_init (IBusConfigGConfClass *class)
     IBUS_OBJECT_CLASS (object_class)->destroy = (IBusObjectDestroyFunc) ibus_config_gconf_destroy;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->set_value   = ibus_config_gconf_set_value;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->get_value   = ibus_config_gconf_get_value;
+    IBUS_CONFIG_SERVICE_CLASS (object_class)->get_values  = ibus_config_gconf_get_values;
     IBUS_CONFIG_SERVICE_CLASS (object_class)->unset_value = ibus_config_gconf_unset_value;
 }
 
@@ -59,15 +63,20 @@ _value_changed_cb (GConfClient     *client,
     gchar *p, *section, *name;
 
     g_return_if_fail (key != NULL);
-    g_return_if_fail (value != NULL);
 
     p = g_strdup (key);
     section = p + sizeof (GCONF_PREFIX);
     name = rindex (p, '/') + 1;
     *(name - 1) = '\0';
-
-
-    GVariant *variant = _from_gconf_value (value);
+    
+    GVariant *variant;
+    if (value) {
+        variant = _from_gconf_value (value);
+    }
+    else {
+        /* Use a empty typle for a unset value */
+        variant = g_variant_new_tuple (NULL, 0);
+    }
     g_return_if_fail (variant != NULL);
     ibus_config_service_value_changed ((IBusConfigService *) config,
                                        section,
@@ -264,7 +273,6 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
                              const gchar            *name,
                              GError                **error)
 {
-
     gchar *key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
 
     GConfValue *gv = gconf_client_get (((IBusConfigGConf *) config)->client, key, NULL);
@@ -281,6 +289,32 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
     gconf_value_free (gv);
 
     return variant;
+}
+
+static GVariant *
+ibus_config_gconf_get_values (IBusConfigService      *config,
+                              const gchar            *section,
+                              GError                **error)
+{
+    gchar *dir = g_strdup_printf (GCONF_PREFIX"/%s", section);
+    gint len = strlen(dir) + 1;
+    GSList *entries = gconf_client_all_entries (((IBusConfigGConf *) config)->client, dir, NULL);
+    g_free (dir);
+
+    GSList *p;
+    GVariantBuilder *builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+    for (p = entries; p != NULL; p = p->next) {
+        GConfEntry *entry = (GConfEntry *)p->data;
+        if (entry->key != NULL && entry->value != NULL) {
+            const gchar *name = entry->key + len;
+            GVariant *value = _from_gconf_value (entry->value);
+            g_variant_builder_add (builder, "{sv}", name, value);
+        }
+        gconf_entry_free (entry);
+    }
+    g_slist_free (entries);
+
+    return g_variant_builder_end (builder);
 }
 
 static gboolean

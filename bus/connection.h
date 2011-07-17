@@ -85,13 +85,23 @@ const gchar     *bus_connection_add_name            (BusConnection      *connect
                                                      const gchar        *name);
 
 /**
- * bus_connection_add_name:
+ * bus_connection_remove_name:
  * @name: a well-known name for the connection.
  * @returns: TRUE on success.
  *
  * Remove the well-known name from the connection.
  */
 gboolean         bus_connection_remove_name         (BusConnection      *connection,
+                                                     const gchar        *name);
+
+/**
+ * bus_connection_has_name:
+ * @name: a well-known name for the connection.
+ * @returns: TRUE if found the name.
+ *
+ * Lookup the well-known name from the connection.
+ */
+gboolean         bus_connection_has_name            (BusConnection      *connection,
                                                      const gchar        *name);
 
 /**

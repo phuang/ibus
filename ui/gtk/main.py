@@ -38,7 +38,7 @@ import pynotify
 from i18n import _, N_
 
 class UIApplication:
-    def __init__ (self):
+    def __init__ (self, replace):
         pynotify.init("ibus")
         self.__bus = ibus.Bus()
         self.__bus.connect("disconnected", gtk.main_quit)
@@ -50,7 +50,14 @@ class UIApplication:
         self.__bus.add_match(match_rule)
 
         self.__panel = panel.Panel(self.__bus)
-        self.__bus.request_name(ibus.IBUS_SERVICE_PANEL, 0)
+        flag = ibus.BUS_NAME_FLAG_ALLOW_REPLACEMENT
+        if replace:
+            flag = flag | ibus.BUS_NAME_FLAG_REPLACE_EXISTING
+        self.__bus.request_name(ibus.IBUS_SERVICE_PANEL, flag)
+        self.__bus.get_dbusconn().add_signal_receiver(self.__name_acquired_cb,
+                                                      signal_name="NameAcquired")
+        self.__bus.get_dbusconn().add_signal_receiver(self.__name_lost_cb,
+                                                      signal_name="NameLost")
         self.__notify = pynotify.Notification("IBus", \
                             _("Some input methods have been installed, removed or updated. " \
                             "Please restart ibus input platform."), \
@@ -66,26 +73,34 @@ class UIApplication:
     def __registry_changed_cb(self, bus):
         self.__notify.show()
 
+    def __name_acquired_cb(self, name):
+        self.__panel.show()
+
+    def __name_lost_cb(self, name):
+        self.__panel.hide()
+
     def run(self):
         try:
             gtk.main()
         except KeyboardInterrupt:
             pass
 
-def launch_panel():
+def launch_panel(replace):
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
     # gtk.rc_parse("./themes/default/gtkrc")
-    UIApplication().run()
+    UIApplication(replace).run()
 
 def print_help(out, v = 0):
     print >> out, "-h, --help             show this message."
     print >> out, "-d, --daemonize        daemonize ibus"
+    print >> out, "-r, --replace          replace existing ibus UI"
     sys.exit(v)
 
 def main():
     daemonize = False
-    shortopt = "hd"
-    longopt = ["help", "daemonize"]
+    replace = False
+    shortopt = "hdr"
+    longopt = ["help", "daemonize", "replace"]
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopt, longopt)
     except getopt.GetoptError, err:
@@ -96,6 +111,8 @@ def main():
             print_help(sys.stdout)
         elif o in("-d", "--daemonize"):
             daemonize = True
+        elif o in("-r", "--replace"):
+            replace = True
         else:
             print >> sys.stderr, "Unknown argument: %s" % o
             print_help(sys.stderr, 1)
@@ -104,7 +121,7 @@ def main():
         if os.fork():
             sys.exit()
 
-    launch_panel()
+    launch_panel(replace)
 
 if __name__ == "__main__":
     import i18n

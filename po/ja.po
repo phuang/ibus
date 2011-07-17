@@ -12,9 +12,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2010-07-30 22:20+0900\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-05-13 02:29+0000\n"
 "Last-Translator: Makoto Mizukami <makoto@fedoraporject.org>\n"
 "Language-Team: Japanese <jp@li.org>\n"
 "Language: ja\n"
@@ -23,8 +23,6 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n"
-"\n"
-"\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -38,7 +36,7 @@ msgstr "インプットメソッドフレームワーク"
 msgid "Start IBus Input Method Framework"
 msgstr "IBus インプットメソッドフレームワークを起動"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -58,43 +56,45 @@ msgstr "前のページ"
 msgid "Next page"
 msgstr "次のページ"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
-msgstr ""
-"いくつかのインプットメソッドがインストール、削除、または更新されています。"
-"IBus 入力プラットフォームを再起動してください。"
+msgstr "いくつかのインプットメソッドがインストール、削除、または更新されています。IBus 入力プラットフォームを再起動してください。"
 
-#: ../ui/gtk/main.py:59
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
 msgstr "今すぐに再起動する"
 
-#: ../ui/gtk/main.py:60
+#: ../ui/gtk/main.py:67
 msgid "Later"
 msgstr "後でする"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr "IBus パネル"
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
 msgstr "IBus インプットメソッドフレームワーク"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "再起動"
 
-#: ../ui/gtk/panel.py:414
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
 msgstr "インプットメソッドをオフにする"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
 msgstr "入力ウィンドウがありません"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は、Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
 msgstr ""
 "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
@@ -143,11 +143,11 @@ msgstr "トリガー"
 
 #: ../setup/main.py:113
 msgid "enable"
-msgstr ""
+msgstr "有効"
 
 #: ../setup/main.py:124
 msgid "disable"
-msgstr ""
+msgstr "無効"
 
 #: ../setup/main.py:135
 msgid "next input method"
@@ -163,14 +163,12 @@ msgstr "IBus デーモンが動いていません。起動しますか？"
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus を開始しました。IBus を使えない場合は次の行を$HOME/.bashrc に書き加えて"
-"再ログインしてください。\n"
+"IBus を開始しました。IBus を使えない場合は次の行を$HOME/.bashrc に書き加えて再ログインしてください。\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -238,116 +236,126 @@ msgid "Custom font name for language panel"
 msgstr "言語パネル用のカスタムフォント名"
 
 #: ../data/ibus.schemas.in.h:4
+msgid "Disable shortcut keys"
+msgstr "ショートカットキーを無効にする"
+
+#: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text"
 msgstr "前編集テキストを組み込む"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:6
 msgid "Embed Preedit Text in Application Window"
 msgstr "アプリケーションウィンドウにプリエディットテキストを組み込む"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:7
 msgid "Enable input method by default"
 msgstr "標準でインプットメソッドを有効にする"
 
-#: ../data/ibus.schemas.in.h:7
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"アプリケーションに入力フォーカスが当たったとき標準でインプットメソッドを有効"
-"にする"
-
 #: ../data/ibus.schemas.in.h:8
+msgid "Enable input method by default when the application gets input focus"
+msgstr "アプリケーションに入力フォーカスが当たったとき標準でインプットメソッドを有効にする"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Enable shortcut keys"
+msgstr "ショートカットキーを有効にする"
+
+#: ../data/ibus.schemas.in.h:10
 msgid "Language panel position"
 msgstr "言語パネルの位置"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
 msgstr "次のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Orientation of lookup table"
 msgstr "検索テーブルの方位"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "検索テーブルの方位。0 = 横、1 = 縦"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Preload engines"
 msgstr "エンジンのプリロード"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "Preload engines during ibus starts up"
 msgstr "ibus の開始中にエンジンをプリロード"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Prev engine shortcut keys"
 msgstr "前のエンジンへのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
 msgstr "すべてのアプリケーション間で同じインプットメソッドを共有する"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
 msgstr "システムトレイにアイコンを表示する"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "Show input method name"
 msgstr "インプットメソッド名を表示する"
 
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
 msgid "Show input method name on language bar"
 msgstr "言語バーにインプットメソッド名を表示する"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
+msgstr "言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタ"
-"ム"
+msgstr "言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタム"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "リスト中の次のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "The shortcut keys for switching to the previous input method"
-msgstr ""
-"リスト中のひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リスト中のひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:25
+msgid "The shortcut keys for turning input method off"
+msgstr "インプットメソッドをオフに切り替えるためのショートカットキー"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The shortcut keys for turning input method on"
+msgstr "インプットメソッドをオンに切り替えるためのショートカットキー"
+
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
 msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:28
 msgid "Trigger shortcut keys"
 msgstr "トリガーショートカットキー"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:29
 msgid "Use custom font"
 msgstr "カスタムフォントを使う"
 
-#: ../data/ibus.schemas.in.h:26
+#: ../data/ibus.schemas.in.h:30
 msgid "Use custom font name for language panel"
 msgstr "言語パネル用にカスタムフォント名を使用する"
 
-#: ../data/ibus.schemas.in.h:27
+#: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
 msgstr "グローバルインプットメソッドを使用する"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
 msgstr "システムキーボード (XKB) レイアウトを使用する"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
 msgstr "システムキーボードレイアウトを使用する"
 
@@ -429,7 +437,7 @@ msgstr "カスタム"
 
 #: ../setup/setup.ui.h:24
 msgid "Disable:"
-msgstr ""
+msgstr "無効:"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
@@ -437,9 +445,7 @@ msgstr "アプリケーションウィンドウに前編集テキストを組み
 
 #: ../setup/setup.ui.h:26
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
-"アプリケーションウィンドウにインプットメソッドのプリエディットテキストを組み"
-"込みます"
+msgstr "アプリケーションウィンドウにインプットメソッドのプリエディットテキストを組み込みます"
 
 #: ../setup/setup.ui.h:27
 msgid "Embedded in menu"
@@ -451,7 +457,7 @@ msgstr "切り替え"
 
 #: ../setup/setup.ui.h:29
 msgid "Enable:"
-msgstr ""
+msgstr "有効:"
 
 #: ../setup/setup.ui.h:30
 msgid "General"
@@ -467,13 +473,11 @@ msgstr "言語パネルの位置"
 
 #: ../setup/setup.ui.h:35
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
 #: ../setup/setup.ui.h:36
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:37
 msgid "Next input method:"
@@ -501,9 +505,7 @@ msgstr "選択したインプットメソッドの情報を表示します"
 
 #: ../setup/setup.ui.h:46
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
-"示します"
+msgstr "チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表示します"
 
 #: ../setup/setup.ui.h:47
 msgid "Show language panel:"
@@ -519,8 +521,7 @@ msgstr "リストの中で次のインプットメソッドに切り替えるた
 
 #: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.ui.h:52
 msgid "Top left corner"

@@ -238,6 +238,12 @@ static const gchar introspection_xml[] =
     "      <arg direction='in' type='i' name='w' />"
     "      <arg direction='in' type='i' name='h' />"
     "    </method>"
+    "    <method name='ProcessHandWritingEvent'>"
+    "      <arg direction='in' type='ad' name='coordinates' />"
+    "    </method>"
+    "    <method name='CancelHandWriting'>"
+    "      <arg direction='in' type='u' name='n_strokes' />"
+    "    </method>"
     "    <method name='FocusIn' />"
     "    <method name='FocusOut' />"
     "    <method name='Reset' />"
@@ -779,6 +785,35 @@ _ic_set_cursor_location (BusInputContext       *context,
     }
 }
 
+static void
+_ic_process_hand_writing_event (BusInputContext       *context,
+                                GVariant              *parameters,
+                                GDBusMethodInvocation *invocation)
+{
+    /* do nothing if it is a fake input context */
+    if (context->has_focus && context->enabled &&
+        context->engine && context->fake == FALSE) {
+        bus_engine_proxy_process_hand_writing_event (context->engine, parameters);
+    }
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+static void
+_ic_cancel_hand_writing (BusInputContext       *context,
+                         GVariant              *parameters,
+                         GDBusMethodInvocation *invocation)
+{
+    guint n_strokes = 0;
+    g_variant_get (parameters, "(u)", &n_strokes);
+
+    /* do nothing if it is a fake input context */
+    if (context->has_focus && context->enabled &&
+        context->engine && context->fake == FALSE) {
+        bus_engine_proxy_cancel_hand_writing (context->engine, n_strokes);
+    }
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
 /**
  * _ic_focus_in:
  *
@@ -985,8 +1020,6 @@ _ic_set_engine (BusInputContext       *context,
                             NULL,
                             (GAsyncReadyCallback)_ic_set_engine_done,
                             invocation);
-
-    g_object_unref (desc);
 }
 
 /**
@@ -1005,8 +1038,11 @@ _ic_get_engine (BusInputContext       *context,
                         g_variant_new ("(v)", ibus_serializable_serialize ((IBusSerializable *)desc)));
     }
     else {
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Input context does not have engine.");
+        g_dbus_method_invocation_return_error (
+                invocation,
+                IBUS_ERROR,
+                IBUS_ERROR_NO_ENGINE,
+                "Input context does not have engine.");
     }
 }
 
@@ -1070,6 +1106,9 @@ bus_input_context_service_method_call (IBusService            *service,
     } methods [] =  {
         { "ProcessKeyEvent",   _ic_process_key_event },
         { "SetCursorLocation", _ic_set_cursor_location },
+        { "ProcessHandWritingEvent",
+                               _ic_process_hand_writing_event },
+        { "CancelHandWriting", _ic_cancel_hand_writing },
         { "FocusIn",           _ic_focus_in },
         { "FocusOut",          _ic_focus_out },
         { "Reset",             _ic_reset },
@@ -1132,7 +1171,6 @@ bus_input_context_focus_in (BusInputContext *context)
                             NULL, /* we do not cancel the call. */
                             NULL, /* use the default callback function. */
                             NULL);
-            g_object_unref (desc);
         }
     }
 
@@ -2050,7 +2088,6 @@ bus_input_context_enable (BusInputContext *context)
                             NULL, /* we do not cancel the call. */
                             NULL, /* use the default callback function. */
                             NULL);
-            g_object_unref (desc);
         }
     }
 
@@ -2151,7 +2188,6 @@ bus_input_context_unset_engine (BusInputContext *context)
         for (i = 0; engine_signals[i].name != NULL; i++) {
             g_signal_handlers_disconnect_by_func (context->engine, engine_signals[i].callback, context);
         }
-        /* Do not destroy the engine anymore, because of global engine feature */
         g_object_unref (context->engine);
         context->engine = NULL;
     }
@@ -2250,6 +2286,7 @@ new_engine_cb (GObject             *obj,
         }
         else {
             bus_input_context_set_engine (data->context, engine);
+            g_object_unref (engine);
             bus_input_context_enable (data->context);
             g_simple_async_result_set_op_res_gboolean (data->simple, TRUE);
         }
@@ -2487,4 +2524,12 @@ bus_input_context_set_capabilities (BusInputContext    *context,
     }
 
     context->capabilities = capabilities;
+}
+
+
+const gchar *
+bus_input_context_get_client (BusInputContext *context)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    return context->client;
 }

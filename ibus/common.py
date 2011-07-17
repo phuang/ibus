@@ -33,6 +33,13 @@ __all__ = (
         "ORIENTATION_HORIZONTAL",
         "ORIENTATION_VERTICAL",
         "ORIENTATION_SYSTEM",
+        "BUS_NAME_FLAG_ALLOW_REPLACEMENT",
+        "BUS_NAME_FLAG_REPLACE_EXISTING",
+        "BUS_NAME_FLAG_DO_NOT_QUEUE",
+        "BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER",
+        "BUS_REQUEST_NAME_REPLY_IN_QUEUE",
+        "BUS_REQUEST_NAME_REPLY_EXISTS",
+        "BUS_REQUEST_NAME_REPLY_ALREADY_OWNER",
         "default_reply_handler",
         "default_error_handler",
         "DEFAULT_ASYNC_HANDLERS",
@@ -45,7 +52,7 @@ __all__ = (
         "main_quit",
         "main_iteration",
         "get_address",
-        "get_socket_path"
+        "get_socket_path",
     )
 
 import os
@@ -131,6 +138,17 @@ IBUS_ENGINE_PREEDIT_COMMIT      = 1
 ORIENTATION_HORIZONTAL  = 0
 ORIENTATION_VERTICAL    = 1
 ORIENTATION_SYSTEM      = 2
+
+# define bus name flag
+BUS_NAME_FLAG_ALLOW_REPLACEMENT   = (1 << 0)
+BUS_NAME_FLAG_REPLACE_EXISTING    = (1 << 1)
+BUS_NAME_FLAG_DO_NOT_QUEUE        = (1 << 2)
+
+# define bus request name reply
+BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1
+BUS_REQUEST_NAME_REPLY_IN_QUEUE      = 2
+BUS_REQUEST_NAME_REPLY_EXISTS        = 3
+BUS_REQUEST_NAME_REPLY_ALREADY_OWNER = 4
 
 def default_reply_handler( *args):
     pass

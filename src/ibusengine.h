@@ -140,10 +140,17 @@ struct _IBusEngineClass {
                                     (IBusEngine     *engine,
                                      IBusText       *text,
                                      guint           cursor_index);
+    void        (* process_hand_writing_event)
+                                    (IBusEngine     *engine,
+                                     const gdouble  *coordinates,
+                                     guint           coordinates_len);
+    void        (* cancel_hand_writing)
+                                    (IBusEngine     *engine,
+                                     guint           n_strokes);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[7];
+    gpointer pdummy[5];
 };
 
 GType        ibus_engine_get_type       (void);
@@ -400,10 +407,15 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
 /**
  * ibus_engine_get_surrounding_text:
  * @engine: An IBusEngine.
- * @text: Location to store surrounding text.
- * @cursor_pos: Cursor position in characters in @text.
+ * @text: (allow-none): Location to store surrounding text.
+ * @cursor_pos: (allow-none): Cursor position in characters in @text.
  *
  * Get surrounding text.
+ *
+ * It is also used to tell the input-context that the engine will
+ * utilize surrounding-text.  In that case, it must be called in
+ * #IBusEngine::enable handler, with both @text and @cursor set to
+ * %NULL.
  *
  * @see_also #IBusEngine::set-surrounding-text
  */

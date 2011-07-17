@@ -93,7 +93,6 @@ bus_test_client_init (BusTestClient *client)
     client->ibuscontext = ibus_bus_create_input_context (_bus, "test-client");
 
     g_return_if_fail (client->ibuscontext != NULL);
-    g_object_ref_sink (client->ibuscontext);
 
     g_signal_connect (client->ibuscontext,
                       "disabled",

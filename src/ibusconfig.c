@@ -92,8 +92,6 @@ ibus_config_class_init (IBusConfigClass *class)
 static void
 ibus_config_init (IBusConfig *config)
 {
-    IBusConfigPrivate *priv;
-    priv = IBUS_CONFIG_GET_PRIVATE (config);
 }
 
 static void
@@ -134,15 +132,18 @@ ibus_config_new (GDBusConnection  *connection,
                  GCancellable     *cancellable,
                  GError          **error)
 {
-    g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+    g_assert (G_IS_DBUS_CONNECTION (connection));
 
     GInitable *initable;
+
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
 
     initable = g_initable_new (IBUS_TYPE_CONFIG,
                                cancellable,
                                error,
                                "g-connection",      connection,
-                               "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+                               "g-flags",           flags,
                                "g-name",            IBUS_SERVICE_CONFIG,
                                "g-interface-name",  IBUS_INTERFACE_CONFIG,
                                "g-object-path",     IBUS_PATH_CONFIG,
@@ -163,14 +164,79 @@ ibus_config_new (GDBusConnection  *connection,
     return IBUS_CONFIG (initable);
 }
 
+void
+ibus_config_new_async (GDBusConnection     *connection,
+                       GCancellable        *cancellable,
+                       GAsyncReadyCallback  callback,
+                       gpointer             user_data)
+{
+    g_assert (G_IS_DBUS_CONNECTION (connection));
+    g_assert (callback != NULL);
+
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+
+    g_async_initable_new_async (IBUS_TYPE_CONFIG,
+                                G_PRIORITY_DEFAULT,
+                                cancellable,
+                                callback,
+                                user_data,
+                                "g-connection",      connection,
+                                "g-flags",           flags,
+                                "g-name",            IBUS_SERVICE_CONFIG,
+                                "g-interface-name",  IBUS_INTERFACE_CONFIG,
+                                "g-object-path",     IBUS_PATH_CONFIG,
+                                "g-default-timeout", ibus_get_timeout (),
+                                NULL);
+}
+
+IBusConfig *
+ibus_config_new_async_finish (GAsyncResult  *res,
+                              GError       **error)
+{
+    g_assert (G_IS_ASYNC_RESULT (res));
+    g_assert (error == NULL || *error == NULL);
+
+    GObject *object = NULL;
+    GObject *source_object = NULL;
+
+    source_object = g_async_result_get_source_object (res);
+    g_assert (source_object != NULL);
+
+    object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object),
+                                          res,
+                                          error);
+    g_object_unref (source_object);
+
+    if (object != NULL) {
+        if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (object)) == NULL) {
+            /* The configuration daemon, which is usually ibus-gconf, 
+             * is not started yet. */
+            if (error != NULL) {
+                *error = g_error_new (G_DBUS_ERROR,
+                                      G_DBUS_ERROR_FAILED,
+                                      IBUS_SERVICE_CONFIG " does not exist.");
+            }
+            g_object_unref (object);
+            return NULL;
+        }
+        /* clients should not destroy the config service. */
+        IBUS_PROXY (object)->own = FALSE;
+        return IBUS_CONFIG (object);
+    }
+    else {
+        return NULL;
+    }
+}
+
 GVariant *
 ibus_config_get_value (IBusConfig  *config,
                        const gchar *section,
                        const gchar *name)
 {
-    g_return_val_if_fail (IBUS_IS_CONFIG (config), NULL);
-    g_return_val_if_fail (section != NULL, NULL);
-    g_return_val_if_fail (name != NULL, NULL);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
 
     GError *error = NULL;
     GVariant *result;
@@ -191,7 +257,6 @@ ibus_config_get_value (IBusConfig  *config,
 
     GVariant *value = NULL;
     g_variant_get (result, "(v)", &value);
-    g_variant_ref (value);
     g_variant_unref (result);
 
     return value;
@@ -206,9 +271,9 @@ ibus_config_get_value_async (IBusConfig         *config,
                              GAsyncReadyCallback callback,
                              gpointer            user_data)
 {
-    g_return_if_fail (IBUS_IS_CONFIG (config));
-    g_return_if_fail (section != NULL);
-    g_return_if_fail (name != NULL);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
 
     g_dbus_proxy_call ((GDBusProxy *)config,
                        "GetValue",
@@ -225,9 +290,9 @@ ibus_config_get_value_async_finish (IBusConfig    *config,
                                     GAsyncResult  *result,
                                     GError       **error)
 {
-    g_return_val_if_fail (IBUS_IS_CONFIG (config), NULL);
-    g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
-    g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (G_IS_ASYNC_RESULT (result));
+    g_assert (error == NULL || *error == NULL);
 
     GVariant *value = NULL;
     GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)config,
@@ -235,23 +300,93 @@ ibus_config_get_value_async_finish (IBusConfig    *config,
                                                  error);
     if (retval != NULL) {
         g_variant_get (retval, "(v)", &value);
-        g_variant_ref (value);
         g_variant_unref (retval);
     }
 
     return value;
 }
 
+GVariant *
+ibus_config_get_values (IBusConfig  *config,
+                        const gchar *section)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+
+    GError *error = NULL;
+    GVariant *result;
+    result = g_dbus_proxy_call_sync ((GDBusProxy *) config,
+                                     "GetValues",
+                                     g_variant_new ("(s)", section),
+                                     G_DBUS_CALL_FLAGS_NONE,
+                                     -1,
+                                     NULL,
+                                     &error);
+    if (result == NULL) {
+        g_warning ("%s.GetValues: %s", IBUS_INTERFACE_CONFIG, error->message);
+        g_error_free (error);
+        return NULL;
+    }
+
+    GVariant *value = NULL;
+    g_variant_get (result, "(@a{sv})", &value);
+    g_variant_unref (result);
+
+    return value;
+}
+
+void
+ibus_config_get_values_async (IBusConfig         *config,
+                              const gchar        *section,
+                              gint                timeout_ms,
+                              GCancellable       *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer            user_data)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+
+    g_dbus_proxy_call ((GDBusProxy *)config,
+                       "GetValues",
+                       g_variant_new ("(s)", section),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       timeout_ms,
+                       cancellable,
+                       callback,
+                       user_data);
+}
+
+GVariant *
+ibus_config_get_values_async_finish (IBusConfig    *config,
+                                     GAsyncResult  *result,
+                                     GError       **error)
+{
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (G_IS_ASYNC_RESULT (result));
+    g_assert (error == NULL || *error == NULL);
+
+    GVariant *value = NULL;
+    GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)config,
+                                                 result,
+                                                 error);
+    if (retval != NULL) {
+        g_variant_get (retval, "(@a{sv})", &value);
+        g_variant_unref (retval);
+    }
+
+    return value;
+}
+    
 gboolean
 ibus_config_set_value (IBusConfig   *config,
                        const gchar  *section,
                        const gchar  *name,
                        GVariant     *value)
 {
-    g_return_val_if_fail (IBUS_IS_CONFIG (config), FALSE);
-    g_return_val_if_fail (section != NULL, FALSE);
-    g_return_val_if_fail (name != NULL, FALSE);
-    g_return_val_if_fail (value != NULL, FALSE);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
+    g_assert (value != NULL);
 
     GError *error = NULL;
     GVariant *result;
@@ -283,10 +418,10 @@ ibus_config_set_value_async (IBusConfig         *config,
                              GAsyncReadyCallback callback,
                              gpointer            user_data)
 {
-    g_return_if_fail (IBUS_IS_CONFIG (config));
-    g_return_if_fail (section != NULL);
-    g_return_if_fail (name != NULL);
-    g_return_if_fail (value != NULL);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
+    g_assert (value != NULL);
 
     g_dbus_proxy_call ((GDBusProxy *) config,
                        "SetValue",                /* method_name */
@@ -304,9 +439,9 @@ ibus_config_set_value_async_finish (IBusConfig         *config,
                                     GAsyncResult       *result,
                                     GError            **error)
 {
-    g_return_val_if_fail (IBUS_IS_CONFIG (config), FALSE);
-    g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-    g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (G_IS_ASYNC_RESULT (result));
+    g_assert (error == NULL || *error == NULL);
 
     GVariant *retval = g_dbus_proxy_call_finish ((GDBusProxy *)config,
                                                  result,
@@ -324,9 +459,9 @@ ibus_config_unset (IBusConfig   *config,
                    const gchar  *section,
                    const gchar  *name)
 {
-    g_return_val_if_fail (IBUS_IS_CONFIG (config), FALSE);
-    g_return_val_if_fail (section != NULL, FALSE);
-    g_return_val_if_fail (name != NULL, FALSE);
+    g_assert (IBUS_IS_CONFIG (config));
+    g_assert (section != NULL);
+    g_assert (name != NULL);
 
     GError *error = NULL;
     GVariant *result;

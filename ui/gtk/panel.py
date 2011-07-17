@@ -114,18 +114,21 @@ class Panel(ibus.PanelBase):
         if hasattr(self.__status_icon, 'set_name'):
             self.__status_icon.set_name('ibus-ui-gtk')
         self.__status_icon.set_title(_("IBus Panel"))
-        self.__status_icon.set_visible(True)
+        # Hide icon until bus get the name owner.
+        #self.__status_icon.set_visible(True)
         self.__status_icon.connect("popup-menu", self.__status_icon_popup_menu_cb)
         self.__status_icon.connect("activate", self.__status_icon_activate_cb)
         self.__status_icon.set_from_icon_name(ICON_KEYBOARD)
         self.__status_icon.set_tooltip(_("IBus input method framework"))
-        self.__status_icon.set_visible(True)
+        # Hide icon until bus get the name owner.
+        #self.__status_icon.set_visible(True)
 
         self.__config_load_lookup_table_orientation()
         self.__config_load_show()
         self.__config_load_position()
         self.__config_load_custom_font()
-        self.__config_load_show_icon_on_systray()
+        # Hide icon until bus get the name owner.
+        #self.__config_load_show_icon_on_systray()
         self.__config_load_show_im_name()
         # self.__bus.request_name(ibus.panel.IBUS_SERVICE_PANEL, 0)
 
@@ -191,6 +194,16 @@ class Panel(ibus.PanelBase):
 
     def get_status_icon(self):
         return self.__status_icon
+
+    def hide(self):
+        if self.__status_icon == None:
+            return
+        self.__status_icon.set_visible(False)
+
+    def show(self):
+        if self.__status_icon == None:
+            return
+        self.__config_load_show_icon_on_systray()
 
     def __set_im_icon(self, icon_name):
         if not icon_name:

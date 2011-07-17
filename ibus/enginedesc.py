@@ -31,7 +31,7 @@ from serializable import *
 class EngineDesc(Serializable):
     __gtype_name__ = "PYIBusEngineDesc"
     __NAME__ = "IBusEngineDesc"
-    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", hotkeys="", rank=0):
+    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", hotkeys="", rank=0, symbol=""):
         super(EngineDesc, self).__init__()
         self.__name = name
         self.__longname = longname
@@ -43,6 +43,7 @@ class EngineDesc(Serializable):
         self.__layout = layout
         self.__rank = rank
         self.__hotkeys = hotkeys
+        self.__symbol = symbol
 
     def get_name(self):
         return self.__name
@@ -74,6 +75,9 @@ class EngineDesc(Serializable):
     def get_hotkeys(self):
         return self.__hotkeys
 
+    def get_symbol(self):
+        return self.__symbol
+
     name        = property(get_name)
     longname    = property(get_longname)
     description = property(get_description)
@@ -84,6 +88,7 @@ class EngineDesc(Serializable):
     layout      = property(get_layout)
     rank        = property(get_rank)
     hotkeys     = property(get_hotkeys)
+    symbol      = property(get_symbol)
 
     def serialize(self, struct):
         super(EngineDesc, self).serialize(struct)
@@ -97,8 +102,7 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__layout))
         struct.append(dbus.UInt32(self.__rank))
         struct.append(dbus.String(self.__hotkeys))
-        # New properties of EngineDesc will use dict for serialize
-        struct.append(dbus.Array({}, signature=None))
+        struct.append(dbus.String(self.__symbol))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
@@ -112,11 +116,10 @@ class EngineDesc(Serializable):
         self.__layout = struct.pop(0)
         self.__rank = struct.pop(0)
         self.__hotkeys = struct.pop(0)
-        # New properties of EngineDesc will use dict for serialize
-        #value = struct.pop(0)
+        self.__symbol = struct.pop(0)
 
 def test():
-    engine = EngineDesc("Hello", "", "", "", "", "", "", "", "")
+    engine = EngineDesc("Hello", "", "", "", "", "", "", "", "", 0, "")
     value = serialize_object(engine)
     engine = deserialize_object(value)
 

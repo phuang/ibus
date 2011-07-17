@@ -180,6 +180,42 @@ IBusInputContext *
                                              GError            **error);
 
 /**
+ * ibus_input_context_process_hand_writing_event
+ * @context: An IBusInputContext.
+ * @coordinates: An array of gdouble (0.0 to 1.0) which represents a stroke (i.e. [x1, y1, x2, y2, x3, y3, ...]).
+ * @coordinates_len: The number of elements in the array. The number should be even and >= 4.
+ *
+ * Pass a handwriting stroke to an input method engine.
+ *
+ * In this API, a coordinate (0.0, 0.0) represents the top-left corner of an area for
+ * handwriting, and (1.0, 1.0) does the bottom-right. Therefore, for example, if
+ * a user writes a character 'L', the array would be something like [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]
+ * and coordinates_len would be 6.
+ *
+ * The function is usually called when a user releases the mouse button in a hand
+ * writing area.
+ *
+ * see_also: #IBusEngine::process-hand-writing-event
+ */
+void         ibus_input_context_process_hand_writing_event
+                                            (IBusInputContext   *context,
+                                             const gdouble      *coordinates,
+                                             guint               coordinates_len);
+
+/**
+ * ibus_input_context_cancel_hand_writing
+ * @context: An IBusInputContext.
+ * @n_strokes: The number of strokes to be removed. Pass 0 to remove all.
+ *
+ * Clear handwriting stroke(s) in the current input method engine.
+ *
+ * see_also: #IBusEngine::cancel-hand-writing
+ */
+void         ibus_input_context_cancel_hand_writing
+                                            (IBusInputContext   *context,
+                                             guint               n_strokes);
+
+/**
  * ibus_input_context_process_key_event_async:
  * @context: An IBusInputContext.
  * @keyval: Key symbol of a key event.
@@ -225,18 +261,16 @@ void        ibus_input_context_process_key_event_async
  * ibus_input_context_process_key_event_async_finish:
  * @context: An IBusInputContext.
  * @res: A GAsyncResult obtained from the GAsyncReadyCallback passed to
- *   ibus_input_context_process_key_event_async().
- * @processed: A point to a bool value. If the the key event is processed, it will
- *      assigned to TRUE, FALSE otherwise.
+ *      ibus_input_context_process_key_event_async().
  * @error: Return location for error or NULL.
- * @returns: TRUE for success; FALSE otherwise.
+ * @returns: %TRUE if the key event is processed;
+ *      %FALSE otherwise or some errors happen and the @error will be set.
  *
  * Finishes an operation started with ibus_input_context_process_key_event_async().
  */
 gboolean     ibus_input_context_process_key_event_async_finish
                                             (IBusInputContext   *context,
                                              GAsyncResult       *res,
-                                             gboolean           *processed,
                                              GError            **error);
 
 /**
@@ -382,17 +416,16 @@ void         ibus_input_context_is_enabled_async
  * ibus_input_context_is_enabled_async_finish:
  * @context: An #IBusInputContext.
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
- *   ibus_input_context_is_enabled_async().
- * @retval: If the the context is enabled, it will be assigned to %TRUE, %FALSE otherwise.
+ *      ibus_input_context_is_enabled_async().
  * @error: Return location for error or %NULL.
- * @returns: %TRUE for success; %FALSE otherwise.
+ * @returns: %TRUE if the IME is enabled on the contextfor success;
+ *      %FALSE otherwise or some errors happen and the @error will be set.
  *
  * Finishes an operation started with ibus_input_context_is_enabled_async().
  */
 gboolean     ibus_input_context_is_enabled_async_finish
                                             (IBusInputContext   *context,
                                              GAsyncResult       *res,
-                                             gboolean           *retval,
                                              GError            **error);
 
 /**

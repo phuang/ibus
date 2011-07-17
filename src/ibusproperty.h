@@ -164,12 +164,12 @@ GType            ibus_property_get_type     ();
  * @key: Unique Identity for the IBusProperty.
  * @type: IBusPropType of IBusProperty.
  * @label: Text shown in UI.
- * @icon: Icon file for the IBusProperty.
+ * @icon: (allow-none): Icon file for the IBusProperty.
  * @tooltip: Message shown if mouse hovered the  IBusProperty.
  * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
  * @visible: Whether the IBusProperty is visible.
  * @state: IBusPropState of IBusProperty.
- * @prop_list: IBusPropList that contains sub IBusProperties.
+ * @prop_list: (allow-none): IBusPropList that contains sub IBusProperties.
  * @returns: A newly allocated IBusProperty.
  *
  * New a IBusProperty.
@@ -185,6 +185,33 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
                                              IBusPropList   *prop_list);
 
 /**
+ * ibus_property_get_key:
+ * @prop: An IBusProperty.
+ * @returns: the key of IBusProperty. Should not be freed.
+ *
+ * Get the key of IBusProperty.
+ */
+const gchar *    ibus_property_get_key      (IBusProperty   *prop);
+
+/**
+ * ibus_property_get_prop_type:
+ * @prop: An IBusProperty.
+ * @returns: the type of IBusProperty.
+ *
+ * Get the type of IBusProperty.
+ */
+IBusPropType     ibus_property_get_prop_type(IBusProperty   *prop);
+
+/**
+ * ibus_property_get_label:
+ * @prop: An IBusProperty.
+ * @returns: the label of IBusProperty. Should not be freed.
+ *
+ * Get the label of IBusProperty.
+ */
+const IBusText * ibus_property_get_label    (IBusProperty   *prop);
+
+/**
  * ibus_property_set_label:
  * @prop: An IBusProperty.
  * @label: Text shown in UI.
@@ -193,6 +220,15 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
  */
 void             ibus_property_set_label    (IBusProperty   *prop,
                                              IBusText       *label);
+
+/**
+ * ibus_property_get_icon:
+ * @prop: An IBusProperty.
+ * @returns: the icon of IBusProperty. Should not be freed.
+ *
+ * Get the icon of IBusProperty.
+ */
+const gchar *    ibus_property_get_icon     (IBusProperty   *prop);
 
 /**
  * ibus_property_set_icon:
@@ -205,6 +241,15 @@ void             ibus_property_set_icon     (IBusProperty   *prop,
                                              const gchar    *icon);
 
 /**
+ * ibus_property_get_tooltip:
+ * @prop: An IBusProperty.
+ * @returns: the tooltip of IBusProperty. Should not be freed.
+ *
+ * Get the tooltip of IBusProperty.
+ */
+const IBusText * ibus_property_get_tooltip  (IBusProperty   *prop);
+
+/**
  * ibus_property_set_tooltip:
  * @prop: An IBusProperty.
  * @tooltip: Text of the tooltip.
@@ -213,6 +258,15 @@ void             ibus_property_set_icon     (IBusProperty   *prop,
  */
 void             ibus_property_set_tooltip  (IBusProperty   *prop,
                                              IBusText       *tooltip);
+
+/**
+ * ibus_property_get_sensitive:
+ * @prop: An IBusProperty.
+ * @returns: the sensitive of IBusProperty.
+ *
+ * Get the sensitive of IBusProperty.
+ */
+gboolean         ibus_property_get_sensitive(IBusProperty   *prop);
 
 /**
  * ibus_property_set_sensitive:
@@ -225,6 +279,15 @@ void             ibus_property_set_sensitive(IBusProperty   *prop,
                                              gboolean        sensitive);
 
 /**
+ * ibus_property_get_visible:
+ * @prop: An IBusProperty.
+ * @returns: the visible of IBusProperty.
+ *
+ * Get the visible of IBusProperty.
+ */
+gboolean         ibus_property_get_visible  (IBusProperty   *prop);
+
+/**
  * ibus_property_set_visible:
  * @prop: An IBusProperty.
  * @visible: Whether the IBusProperty is visible.
@@ -233,6 +296,15 @@ void             ibus_property_set_sensitive(IBusProperty   *prop,
  */
 void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
+
+/**
+ * ibus_property_get_state:
+ * @prop: An IBusProperty.
+ * @returns: the state of IBusProperty.
+ *
+ * Get the state of IBusProperty.
+ */
+IBusPropState    ibus_property_get_state    (IBusProperty   *prop);
 
 /**
  * ibus_property_set_state:
@@ -244,6 +316,15 @@ void             ibus_property_set_visible  (IBusProperty   *prop,
 void             ibus_property_set_state    (IBusProperty   *prop,
                                              IBusPropState   state);
 
+/**
+ * ibus_property_get_sub_props:
+ * @prop: An IBusProperty.
+ * @returns: the IBusPropList of IBusProperty. Should not be freed.
+ *
+ * Get the IBusPropList of IBusProperty.
+ */
+const IBusPropList *
+                 ibus_property_get_sub_props(IBusProperty   *prop);
 
 /**
  * ibus_property_set_sub_props:

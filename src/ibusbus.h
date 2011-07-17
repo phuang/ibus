@@ -123,14 +123,14 @@ const gchar *ibus_bus_hello             (IBusBus        *bus);
  * ibus_bus_request_name:
  * @bus: the IBusBus instance to be processed.
  * @name: Name to be requested.
- * @flags: Flags (FixMe).
- * @returns: 0 if failed; positive number otherwise.
+ * @flags: IBusBusNameFlag.
+ * @returns: 0 if failed; IBusBusRequestNameReply otherwise.
  *
  * Request a name from IBus daemon synchronously.
  */
-guint        ibus_bus_request_name      (IBusBus        *bus,
+guint32      ibus_bus_request_name      (IBusBus        *bus,
                                          const gchar    *name,
-                                         guint           flags);
+                                         guint32         flags);
 
 /**
  * ibus_bus_request_name_async:
@@ -215,6 +215,21 @@ guint        ibus_bus_release_name_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
                                          GError        **error);
+
+/**
+ * ibus_bus_list_queued_owners:
+ * @bus: An IBusBus.
+ * @name: Name to be queried.
+ * @returns: (transfer full) (element-type utf8):
+ *           The unique bus names of connections currently queued for @name.
+ *
+ * Lists the unique bus names of connections currently queued for a bus name.
+ *
+ * FIXME add an asynchronous version.
+ */
+GList *      ibus_bus_list_queued_owners
+                                        (IBusBus      *bus,
+                                         const gchar  *name);
 
 /**
  * ibus_bus_name_has_owner:

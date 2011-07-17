@@ -204,6 +204,14 @@ bus_connection_remove_name (BusConnection     *connection,
     return FALSE;
 }
 
+gboolean
+bus_connection_has_name (BusConnection     *connection,
+                         const gchar       *name)
+{
+    GList *list = g_list_find_custom (connection->names, name, (GCompareFunc) g_strcmp0);
+    return list != NULL;
+}
+
 GDBusConnection *
 bus_connection_get_dbus_connection (BusConnection *connection)
 {

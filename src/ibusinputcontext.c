@@ -27,6 +27,7 @@
 #include "ibusattribute.h"
 #include "ibuslookuptable.h"
 #include "ibusproplist.h"
+#include "ibuserror.h"
 
 #define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
@@ -805,6 +806,51 @@ ibus_input_context_get_input_context_async_finish (GAsyncResult  *res,
 }
 
 void
+ibus_input_context_process_hand_writing_event (IBusInputContext   *context,
+                                               const gdouble      *coordinates,
+                                               guint               coordinates_len)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+    g_return_if_fail (coordinates != NULL);
+    g_return_if_fail (coordinates_len >= 4); /* The array should contain at least one line. */
+    g_return_if_fail ((coordinates_len & 1) == 0);
+
+    guint i;
+    GVariantBuilder builder;
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("ad"));
+    for (i = 0; i < coordinates_len; i++) {
+        g_variant_builder_add (&builder, "d", coordinates[i]);
+    }
+
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "ProcessHandWritingEvent",           /* method_name */
+                       g_variant_new ("(ad)", &builder),    /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                       -1,                                  /* timeout */
+                       NULL,                                /* cancellable */
+                       NULL,                                /* callback */
+                       NULL                                 /* user_data */
+                       );
+}
+
+void
+ibus_input_context_cancel_hand_writing (IBusInputContext   *context,
+                                        guint               n_strokes)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "CancelHandWriting",                 /* method_name */
+                       g_variant_new ("(u)", n_strokes),    /* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                       -1,                                  /* timeout */
+                       NULL,                                /* cancellable */
+                       NULL,                                /* callback */
+                       NULL                                 /* user_data */
+                       );
+}
+
+void
 ibus_input_context_process_key_event_async (IBusInputContext   *context,
                                             guint32             keyval,
                                             guint32             keycode,
@@ -826,32 +872,27 @@ ibus_input_context_process_key_event_async (IBusInputContext   *context,
                        callback,                            /* callback */
                        user_data                            /* user_data */
                        );
-
 }
 
 gboolean
 ibus_input_context_process_key_event_async_finish (IBusInputContext  *context,
                                                    GAsyncResult      *res,
-                                                   gboolean          *processed,
                                                    GError           **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (G_IS_ASYNC_RESULT (res));
-    g_assert (processed != NULL);
     g_assert (error == NULL || *error == NULL);
+
+    gboolean processed = FALSE;
 
     GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
                                                    res, error);
-    if (variant == NULL) {
-        *processed = FALSE;
-        return FALSE;
-    }
-    else {
-        *processed = FALSE;
-        g_variant_get (variant, "(b)", processed);
+    if (variant != NULL) {
+        g_variant_get (variant, "(b)", &processed);
         g_variant_unref (variant);
-        return TRUE;
     }
+
+    return processed;
 }
 
 gboolean
@@ -989,22 +1030,22 @@ ibus_input_context_is_enabled_async (IBusInputContext   *context,
 gboolean
 ibus_input_context_is_enabled_async_finish (IBusInputContext   *context,
                                             GAsyncResult       *res,
-                                            gboolean           *retval,
                                             GError            **error)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (G_IS_ASYNC_RESULT (res));
-    g_assert (retval != NULL);
     g_assert (error == NULL || *error == NULL);
+
+    gboolean enabled = FALSE;
 
     GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) context,
                                                    res, error);
-    if (variant == NULL) {
-        return FALSE;
+    if (variant != NULL) {
+        g_variant_get (variant, "(b)", &enabled);
+        g_variant_unref (variant);
     }
-    g_variant_get (variant, "(b)", retval);
-    g_variant_unref (variant);
-    return TRUE;
+
+    return enabled;
 }
 
 void
@@ -1120,7 +1161,7 @@ IBusEngineDesc *
 ibus_input_context_get_engine (IBusInputContext *context)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
-    GVariant *result;
+    GVariant *result = NULL;
     GError *error = NULL;
     result = g_dbus_proxy_call_sync ((GDBusProxy *) context,
                                      "GetEngine",               /* method_name */
@@ -1130,9 +1171,17 @@ ibus_input_context_get_engine (IBusInputContext *context)
                                      NULL,                      /* cancellable */
                                      &error                     /* error */
                                      );
-
     if (result == NULL) {
-        g_warning ("%s.GetEngine: %s", IBUS_INTERFACE_INPUT_CONTEXT, error->message);
+        if (g_error_matches (error, IBUS_ERROR, IBUS_ERROR_NO_ENGINE)) {
+            g_debug ("%s.GetEngine: %s",
+                     IBUS_INTERFACE_INPUT_CONTEXT,
+                     error->message);
+        }
+        else {
+            g_warning ("%s.GetEngine: %s",
+                       IBUS_INTERFACE_INPUT_CONTEXT,
+                       error->message);
+        }
         g_error_free (error);
         return NULL;
     }

@@ -84,10 +84,39 @@ GType            ibus_config_get_type       (void);
  * @connection: An GDBusConnection.
  * @returns: An newly allocated IBusConfig corresponding to @connection.
  *
- * New a IBusConfig from existing GDBusConnection.
+ * New an #IBusConfig from existing GDBusConnection.
  */
 IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
                                              GCancellable       *cancellable,
+                                             GError            **error);
+
+/**
+ * ibus_config_new_async:
+ * @connection: An #GDBusConnection.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
+ *      The callback should not be %NULL.
+ * @user_data: The data to pass to callback.
+ *
+ * New an #IBusContext asynchronously.
+ */
+void             ibus_config_new_async      (GDBusConnection    *connection,
+                                             GCancellable       *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer            user_data);
+
+/**
+ * ibus_config_new_async_finish:
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
+ *      ibus_config_new_async().
+ * @error: Return location for error or %NULL.
+ *
+ * @returns: A newly allocated #IBusConfig.
+ *
+ * Finishes an operation started with ibus_config_new_async().
+ */
+IBusConfig      *ibus_config_new_async_finish
+                                            (GAsyncResult       *res,
                                              GError            **error);
 
 /**
@@ -146,6 +175,55 @@ void             ibus_config_get_value_async (IBusConfig         *config,
  * @see_also: ibus_config_get_value_async.
  */
 GVariant        *ibus_config_get_value_async_finish
+                                            (IBusConfig         *config,
+                                             GAsyncResult       *result,
+                                             GError            **error);
+
+/**
+ * ibus_config_get_values:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @returns: A #GVariant or %NULL. Free with g_variant_unref().
+ *
+ * Get all values in a section synchronously.
+ *
+ * @see_also: ibus_config_set_value.
+ */
+GVariant        *ibus_config_get_values     (IBusConfig         *config,
+                                             const gchar        *section);
+
+/**
+ * ibus_config_get_values_async:
+ * @config: An IBusConfig
+ * @section: Section name of the configuration option.
+ * @timeout_ms: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: Callback function to invoke when the return value is ready.
+ * @user_data: The data to pass to callback.
+ *
+ * Get all values in a section asynchronously.
+ *
+ * @see_also: ibus_config_get_values.
+ */
+void             ibus_config_get_values_async(IBusConfig         *config,
+                                              const gchar        *section,
+                                              gint                timeout_ms,
+                                              GCancellable       *cancellable,
+                                              GAsyncReadyCallback callback,
+                                              gpointer            user_data);
+
+/**
+ * ibus_config_get_values_async_finish:
+ * @config: A #IBusConfig.
+ * @result: A #GAsyncResult.
+ * @error: Return location for error or %NULL.
+ * @returns: A #GVariant or %NULL if error is set. Free with g_variant_unref().
+ * 
+ * Finish get values in a section.
+ *
+ * @see_also: ibus_config_get_values_async.
+ */
+GVariant        *ibus_config_get_values_async_finish
                                             (IBusConfig         *config,
                                              GAsyncResult       *result,
                                              GError            **error);

@@ -268,3 +268,21 @@ ibus_text_get_length (IBusText *text)
 {
     return g_utf8_strlen (text->text, -1);
 }
+
+gboolean
+ibus_text_get_is_static (IBusText *text)
+{
+    return text->is_static;
+}
+
+const gchar *
+ibus_text_get_text (IBusText *text)
+{
+    return text->text;
+}
+
+const IBusAttrList *
+ibus_text_get_attributes (IBusText *text)
+{
+    return text->attrs;
+}
