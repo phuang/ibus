@@ -1,0 +1,25 @@
+[org.freedesktop.ibus.general]
+embed-preedit-text = /desktop/ibus/general/embed_preedit_text
+enable-by-default = /desktop/ibus/general/enable_by_default
+preload-engines = /desktop/ibus/general/preload_engines
+use-global-engine = /desktop/ibus/general/use_global_engine
+use-system-keyboard-layout = /desktop/ibus/general/use_system_keyboard_layout
+
+[org.freedesktop.ibus.general.hotkey]
+disable-unconditional = /desktop/ibus/general/disable_unconditional
+enable-unconditional = /desktop/ibus/general/enable_unconditional
+next-engine = /desktop/ibus/general/next_engine
+next-engine-in-menu = /desktop/ibus/general/next_engine_in_menu
+prev-engine = /desktop/ibus/general/prev_engine
+previous-engine = /desktop/ibus/general/previous_engine
+trigger = /desktop/ibus/general/trigger
+
+[org.freedesktop.ibus.panel]
+custom-font = /desktop/ibus/general/custom_font
+lookup-table-orientation = /desktop/ibus/general/lookup_table_orientation
+show = /desktop/ibus/general/show
+show-icon-on-systray = /desktop/ibus/general/show_icon_on_systray
+show-im-name = /desktop/ibus/general/show_im_name
+use-custom-font = /desktop/ibus/general/use_custom_font
+x = /desktop/ibus/general/x
+y = /desktop/ibus/general/y

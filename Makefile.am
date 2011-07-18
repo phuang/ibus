@@ -48,6 +48,12 @@ MEMCONF_DIRS = \
 	$(NULL)
 endif
 
+if ENABLE_DCONF
+DCONF_DIRS = \
+	dconf \
+	$(NULL)
+endif
+
 SUBDIRS =           \
 	src             \
 	util            \
@@ -61,6 +67,7 @@ SUBDIRS =           \
 	$(PYTHON_DIRS)  \
 	$(GCONF_DIRS)   \
 	$(MEMCONF_DIRS) \
+	$(DCONF_DIRS)   \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4

@@ -20,36 +20,64 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-SUBDIRS = \
-	icons \
-	keymaps \
+libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
+
+libexec_PROGRAMS = \
+	ibus-dconf \
 	$(NULL)
 
-if ENABLE_DCONF
-SUBDIRS += dconf
-endif
+ibus_dconf_SOURCES = \
+	main.c \
+	config.c \
+	config.h \
+	$(NULL)
+ibus_dconf_CFLAGS = \
+	@GLIB2_CFLAGS@ \
+	@GIO2_CFLAGS@ \
+	@DCONF_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
+	$(NULL)
+ibus_dconf_LDADD = \
+	@GOBJECT2_LIBS@ \
+	@GLIB2_LIBS@ \
+	@GIO2_LIBS@ \
+	@DCONF_LIBS@ \
+	$(libibus) \
+	$(NULL)
+ibus_dconf_DEPENDENCIES = \
+	$(libibus) \
+	$(NULL)
 
-schemasdir = $(GCONF_SCHEMA_FILE_DIR)
-schemas_in_files = ibus.schemas.in
-schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
-@INTLTOOL_SCHEMAS_RULE@
+component_DATA = \
+	dconf.xml \
+	$(NULL)
 
-install-data-local:
-if GCONF_SCHEMAS_INSTALL
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) \
-				--makefile-install-rule $(top_builddir)/data/$$p >&1 > /dev/null; \
-		done \
-	fi
-endif
+componentdir = $(pkgdatadir)/component
 
-EXTRA_DIST = \
-	$(schemas_in_files) \
+CLEANFILES = \
+	dconf.xml \
+	*.pyc \
 	$(NULL)
 
 DISTCLEANFILES = \
-	$(schemas_DATA) \
+	dconf-override-db \
 	$(NULL)
+
+EXTRA_DIST = \
+	dconf.xml.in.in \
+	$(NULL)
+
+dconf.xml: dconf.xml.in
+	$(AM_V_GEN) \
+	( \
+		libexecdir=${libexecdir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
+$(libibus):
+	$(MAKE) -C $(top_builddir)/src
 
 -include $(top_srcdir)/git.mk
