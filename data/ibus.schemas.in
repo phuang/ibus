@@ -6,6 +6,7 @@
       <applyto>/desktop/ibus/general/preload_engines</applyto>
       <owner>ibus</owner>
       <type>list</type>
+      <default>[]</default>
       <list_type>string</list_type>
       <locale name="C">
         <short>Preload engines</short>

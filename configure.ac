@@ -245,6 +245,24 @@ AC_ARG_ENABLE(memconf,
 )
 AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
 
+AC_ARG_ENABLE(dconf,
+    AS_HELP_STRING([--enable-dconf],
+                   [Enable configure base on dconf]),
+    [enable_dconf=$enableval],
+    [enable_dconf=no]
+)
+
+if test x"$enable_dconf" = x"yes"; then
+    # check dconf
+    PKG_CHECK_MODULES(DCONF,
+        [dconf >= 0.7.5], ,
+        enable_dconf=no
+    )
+    # check glib-compile-schemas
+    GLIB_GSETTINGS
+fi
+AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
+
 # check env
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
@@ -412,6 +430,7 @@ util/IMdkit/Makefile
 data/Makefile
 data/icons/Makefile
 data/keymaps/Makefile
+data/dconf/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/ibus/ibus-docs.sgml
@@ -430,6 +449,8 @@ gconf/Makefile
 gconf/gconf.xml.in
 bindings/Makefile
 bindings/vala/Makefile
+dconf/Makefile
+dconf/dconf.xml.in
 ])
 
 AC_OUTPUT
@@ -448,6 +469,7 @@ Build options:
   Build python modules      $enable_python
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
+  Build dconf modules       $enable_dconf
   Build introspection       $found_introspection
   IBus-1.0.gir scannerflags "$IBUS_GIR_SCANNERFLAGS"
   Build vala binding        $enable_vala
