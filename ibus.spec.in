@@ -134,7 +134,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
-rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-2.0.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/libibus-1.0.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk2_binary_version}/immodules/im-ibus.la
 rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-3.0/%{gtk3_binary_version}/immodules/im-ibus.la
 
@@ -148,7 +148,7 @@ desktop-file-install --delete-original          \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications \
   $RPM_BUILD_ROOT%{_datadir}/applications/*
 
-%find_lang %{name}
+%find_lang %{name}10
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -204,7 +204,7 @@ fi
 %postun gtk3
 %{_bindir}/gtk-query-immodules-3.0-%{__isa_bits} --update-cache
 
-%files -f %{name}.lang
+%files -f %{name}10.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README
 %dir %{python_sitelib}/ibus
@@ -224,8 +224,8 @@ fi
 
 %files libs
 %defattr(-,root,root,-)
-%{_libdir}/libibus-2.0.so.*
-%{_libdir}/girepository-1.0/IBus-2.0.typelib
+%{_libdir}/libibus-1.0.so.*
+%{_libdir}/girepository-1.0/IBus-1.0.typelib
 
 %files gtk2
 %defattr(-,root,root,-)
@@ -240,8 +240,9 @@ fi
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/*
 %{_includedir}/*
-%{_datadir}/gir-1.0/IBus-2.0.gir
-%{_datadir}/vala/vapi/ibus-2.0.vapi
+%{_datadir}/gir-1.0/IBus-1.0.gir
+%{_datadir}/vala/vapi/ibus-1.0.vapi
+%{_datadir}/vala/vapi/ibus-1.0.deps
 
 %files devel-docs
 %defattr(-,root,root,-)

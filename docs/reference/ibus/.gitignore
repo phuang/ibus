@@ -46,5 +46,4 @@
 /tmpl.stamp
 /tmpl/*.bak
 /tmpl/ibus-unused.sgml
-/trim-build.stamp
 /xml
