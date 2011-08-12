@@ -52,6 +52,7 @@ struct _BusEngineProxy {
        IBusInputContextPrivate) */
     IBusText *surrounding_text;
     guint     surrounding_cursor_pos;
+    guint     selection_anchor_pos;
 };
 
 struct _BusEngineProxyClass {
@@ -357,7 +358,6 @@ static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
     engine->surrounding_text = g_object_ref_sink (text_empty);
-    engine->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -1055,23 +1055,29 @@ void bus_engine_proxy_property_hide (BusEngineProxy *engine,
 
 void bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
                                             IBusText       *text,
-                                            guint           cursor_pos)
+                                            guint           cursor_pos,
+                                            guint           anchor_pos)
 {
     g_assert (BUS_IS_ENGINE_PROXY (engine));
     g_assert (text != NULL);
 
     if (!engine->surrounding_text ||
         g_strcmp0 (text->text, engine->surrounding_text->text) != 0 ||
-        cursor_pos != engine->surrounding_cursor_pos) {
+        cursor_pos != engine->surrounding_cursor_pos ||
+        anchor_pos != engine->selection_anchor_pos) {
         GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
         if (engine->surrounding_text)
             g_object_unref (engine->surrounding_text);
         engine->surrounding_text = (IBusText *) g_object_ref_sink (text);
         engine->surrounding_cursor_pos = cursor_pos;
+        engine->selection_anchor_pos = anchor_pos;
 
         g_dbus_proxy_call ((GDBusProxy *)engine,
                            "SetSurroundingText",
-                           g_variant_new ("(vu)", variant, cursor_pos),
+                           g_variant_new ("(vuu)",
+                                          variant,
+                                          cursor_pos,
+                                          anchor_pos),
                            G_DBUS_CALL_FLAGS_NONE,
                            -1,
                            NULL,

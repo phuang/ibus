@@ -36,6 +36,7 @@ class EngineBase(object.Object):
         self.__proxy = EngineProxy (self, bus.get_dbusconn(), object_path)
         self.__surrounding_text = Text()
         self.__surrounding_cursor_pos = 0
+        self.__selection_anchor_pos = 0
 
     def process_key_event(self, keyval, keycode, state):
         return False
@@ -49,10 +50,11 @@ class EngineBase(object.Object):
     def set_cursor_location(self, x, y, w, h):
         pass
 
-    def set_surrounding_text(self, text, cursor_pos):
+    def set_surrounding_text(self, text, cursor_pos, anchor_pos):
         text = serializable.deserialize_object(text)
         self.__surrounding_text = text
         self.__surrounding_cursor_pos = cursor_pos
+        self.__selection_anchor_pos = anchor_pos
 
     def get_surrounding_text(self):
         # Tell the client that this engine will utilize surrounding-text
@@ -194,8 +196,8 @@ class EngineProxy(interface.IEngine):
     def SetCursorLocation(self, x, y, w, h):
         return self.__engine.set_cursor_location(x, y, w, h)
 
-    def SetSurroundingText(self, text, cursor_pos):
-        return self.__engine.set_surrounding_text(text, cursor_pos)
+    def SetSurroundingText(self, text, cursor_pos, anchor_pos):
+        return self.__engine.set_surrounding_text(text, cursor_pos, anchor_pos)
 
     def SetCapabilities(self, caps):
         return self.__engine.set_capabilities(caps)
@@ -237,4 +239,3 @@ class EngineProxy(interface.IEngine):
         self.__engine.destroy()
         self.__engine = None
         self.remove_from_connection ()
-

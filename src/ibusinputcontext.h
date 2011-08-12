@@ -498,12 +498,14 @@ void         ibus_input_context_set_engine  (IBusInputContext   *context,
  * ibus_input_context_set_surrounding_text:
  * @context: An #IBusInputContext.
  * @text: An #IBusText surrounding the current cursor on the application.
- * @cursor_po: Current cursor position in characters in @text.
+ * @cursor_pos: Current cursor position in characters in @text.
+ * @anchor_pos: Anchor position of selection in @text.
 */
 void         ibus_input_context_set_surrounding_text
                                             (IBusInputContext   *context,
                                              IBusText           *text,
-                                             guint32             cursor_pos);
+                                             guint32             cursor_pos,
+                                             guint32             anchor_pos);
 
 /**
  * ibus_input_context_needs_surrounding_text:
@@ -518,4 +520,3 @@ gboolean     ibus_input_context_needs_surrounding_text
 
 G_END_DECLS
 #endif
-

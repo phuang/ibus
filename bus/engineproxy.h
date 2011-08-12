@@ -220,7 +220,8 @@ gboolean         bus_engine_proxy_is_enabled        (BusEngineProxy *engine);
 void             bus_engine_proxy_set_surrounding_text
                                                     (BusEngineProxy *engine,
                                                      IBusText       *text,
-                                                     guint           cursor_pos);
+                                                     guint           cursor_pos,
+                                                     guint           anchor_pos);
 
 /**
  * bus_engine_proxy_process_hand_writing_event:

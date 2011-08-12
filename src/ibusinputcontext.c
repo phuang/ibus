@@ -65,6 +65,7 @@ struct _IBusInputContextPrivate {
        BusEngineProxy) */
     IBusText *surrounding_text;
     guint     surrounding_cursor_pos;
+    guint     selection_anchor_pos;
 };
 
 typedef struct _IBusInputContextPrivate IBusInputContextPrivate;
@@ -466,7 +467,6 @@ ibus_input_context_init (IBusInputContext *context)
 
     priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (context);
     priv->surrounding_text = g_object_ref_sink (text_empty);
-    priv->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -1051,7 +1051,8 @@ ibus_input_context_is_enabled_async_finish (IBusInputContext   *context,
 void
 ibus_input_context_set_surrounding_text (IBusInputContext   *context,
                                          IBusText           *text,
-                                         guint32             cursor_pos)
+                                         guint32             cursor_pos,
+                                         guint32             anchor_pos)
 {
     g_assert (IBUS_IS_INPUT_CONTEXT (context));
     g_assert (IBUS_IS_TEXT (text));
@@ -1061,16 +1062,21 @@ ibus_input_context_set_surrounding_text (IBusInputContext   *context,
 
     if (priv->surrounding_text == NULL ||
         g_strcmp0 (text->text, priv->surrounding_text->text) != 0 ||
-        cursor_pos != priv->surrounding_cursor_pos) {
+        cursor_pos != priv->surrounding_cursor_pos ||
+        anchor_pos != priv->selection_anchor_pos) {
         GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
         if (priv->surrounding_text)
             g_object_unref (priv->surrounding_text);
         priv->surrounding_text = (IBusText *) g_object_ref_sink (text);
         priv->surrounding_cursor_pos = cursor_pos;
+        priv->selection_anchor_pos = anchor_pos;
 
         g_dbus_proxy_call ((GDBusProxy *) context,
                          "SetSurroundingText",              /* method_name */
-                         g_variant_new ("(vu)", variant, cursor_pos), /* parameters */
+                         g_variant_new ("(vuu)",
+                                        variant,
+                                        cursor_pos,
+                                        anchor_pos), /* parameters */
                          G_DBUS_CALL_FLAGS_NONE,            /* flags */
                          -1,                                /* timeout */
                          NULL,                              /* cancellable */
@@ -1237,4 +1243,3 @@ DEFINE_FUNC(cursor_down, CursorDown);
 DEFINE_FUNC(enable, Enable);
 DEFINE_FUNC(disable, Disable);
 #undef DEFINE_FUNC
-

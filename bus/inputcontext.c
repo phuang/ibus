@@ -268,6 +268,7 @@ static const gchar introspection_xml[] =
     "    <method name='SetSurroundingText'>"
     "      <arg direction='in' type='v' name='text' />"
     "      <arg direction='in' type='u' name='cursor_pos' />"
+    "      <arg direction='in' type='u' name='anchor_pos' />"
     "    </method>"
 
     /* signals */
@@ -1059,8 +1060,13 @@ _ic_set_surrounding_text (BusInputContext       *context,
     GVariant *variant = NULL;
     IBusText *text;
     guint cursor_pos = 0;
+    guint anchor_pos = 0;
 
-    g_variant_get (parameters, "(vu)", &variant, &cursor_pos);
+    g_variant_get (parameters,
+                   "(vuu)",
+                   &variant,
+                   &cursor_pos,
+                   &anchor_pos);
     text = IBUS_TEXT (ibus_serializable_deserialize (variant));
     g_variant_unref (variant);
 
@@ -1068,7 +1074,8 @@ _ic_set_surrounding_text (BusInputContext       *context,
          context->has_focus && context->enabled && context->engine) {
         bus_engine_proxy_set_surrounding_text (context->engine,
                                                text,
-                                               cursor_pos);
+                                               cursor_pos,
+                                               anchor_pos);
     }
 
     if (g_object_is_floating (text))

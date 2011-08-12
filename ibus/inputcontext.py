@@ -138,6 +138,7 @@ class InputContext(object.Object):
         self.__needs_surrounding_text = False
         self.__surrounding_text = Text()
         self.__surrounding_cursor_pos = 0
+        self.__selection_anchor_pos = 0
 
         if not watch_signals:
             return
@@ -218,14 +219,17 @@ class InputContext(object.Object):
     def needs_surrounding_text(self):
         return self.__needs_surrounding_text
 
-    def set_surrounding_text(self, text, cursor_pos):
+    def set_surrounding_text(self, text, cursor_pos, anchor_pos):
         if self.__surrounding_text.get_text() != text or \
-                self.__surrounding_cursor_pos != cursor_pos:
+                self.__surrounding_cursor_pos != cursor_pos or \
+                self.__selection_anchor_pos != anchor_pos:
             self.__surrounding_text = Text(text)
             self.__surrounding_cursor_pos = cursor_pos
+            self.__selection_anchor_pos = anchor_pos
             text = serializable.serialize_object(self.__surrounding_text)
             cursor_pos = dbus.UInt32(self.__surrounding_cursor_pos)
-            self.__context.SetSurroundingText(text, cursor_pos)
+            anchor_pos = dbus.UInt32(self.__selection_anchor_pos)
+            self.__context.SetSurroundingText(text, cursor_pos, anchor_pos)
 
     def process_key_event(self, keyval, keycode, modifiers):
         keyval = dbus.UInt32(keyval)
@@ -365,4 +369,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-

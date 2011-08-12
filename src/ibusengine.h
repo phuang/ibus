@@ -139,7 +139,8 @@ struct _IBusEngineClass {
     void        (* set_surrounding_text)
                                     (IBusEngine     *engine,
                                      IBusText       *text,
-                                     guint           cursor_index);
+                                     guint           cursor_index,
+                                     guint           anchor_pos);
     void        (* process_hand_writing_event)
                                     (IBusEngine     *engine,
                                      const gdouble  *coordinates,
@@ -409,6 +410,7 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
  * @engine: An IBusEngine.
  * @text: (allow-none): Location to store surrounding text.
  * @cursor_pos: (allow-none): Cursor position in characters in @text.
+ * @anchor_pos: (allow-none): Anchor position of selection in @text.
  *
  * Get surrounding text.
  *
@@ -421,7 +423,8 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
  */
 void ibus_engine_get_surrounding_text(IBusEngine         *engine,
                                       IBusText          **text,
-                                      guint              *cursor_pos);
+                                      guint              *cursor_pos,
+                                      guint              *anchor_pos);
 
 
 /**
@@ -435,4 +438,3 @@ const gchar *ibus_engine_get_name       (IBusEngine         *engine);
 
 G_END_DECLS
 #endif
-
