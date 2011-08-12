@@ -84,6 +84,7 @@ ibus_sources =              \
     ibuspanelservice.c      \
     ibusbus.c               \
     ibuskeynames.c          \
+    ibuskeyuni.c            \
     ibushotkey.c            \
     ibusxml.c               \
     ibusenginedesc.c        \
@@ -128,6 +129,7 @@ ibus_headers =              \
     ibusconfigservice.h     \
     ibuspanelservice.h      \
     ibuskeysyms.h           \
+    ibuskeys.h              \
     ibustypes.h             \
     ibusbus.h               \
     ibushotkey.h            \

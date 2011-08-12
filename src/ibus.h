@@ -42,6 +42,7 @@
 #include <ibusbus.h>
 #include <ibuskeysyms.h>
 #include <ibuskeymap.h>
+#include <ibuskeys.h>
 #include <ibusenumtypes.h>
 #include <ibushotkey.h>
 #include <ibusxml.h>

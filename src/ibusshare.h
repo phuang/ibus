@@ -249,26 +249,6 @@ const gchar     *ibus_get_socket_path   (void);
 gint             ibus_get_timeout       (void);
 
 /**
- * ibus_keyval_name:
- * @keyval: Key symbol.
- * @returns: Corresponding key name. %NULL if no such key symbol.
- *
- * Return the name of a key symbol.
- *
- * Note that the returned string is used internally, so don't free it.
- */
-const gchar     *ibus_keyval_name       (guint           keyval);
-
-/**
- * ibus_keyval_from_name:
- * @keyval_name: Key name in #gdk_keys_by_name.
- * @returns: Corresponding key symbol.
- *
- * Return the key symbol that associate with the key name.
- */
-guint            ibus_keyval_from_name  (const gchar    *keyval_name);
-
-/**
  * ibus_free_strv:
  * @strv: List of strings.
  *

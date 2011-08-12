@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glib/gstdio.h>
-#include "ibusshare.h"
+#include "ibuskeys.h"
 #include "ibuskeysyms.h"
 #include "ibuskeymap.h"
 
