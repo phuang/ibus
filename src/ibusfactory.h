@@ -42,6 +42,7 @@
 
 #include "ibusservice.h"
 #include "ibusserializable.h"
+#include "ibusengine.h"
 
 G_BEGIN_DECLS
 
@@ -127,10 +128,14 @@ struct _IBusFactoryClass {
     IBusServiceClass parent;
 
     /* signals */
+    IBusEngine *
+                (* create_engine)
+                                    (IBusFactory    *factory,
+                                     const gchar    *engine_name);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];
+    gpointer pdummy[7];
 };
 
 /**

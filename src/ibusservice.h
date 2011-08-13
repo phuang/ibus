@@ -135,9 +135,9 @@ IBusService     *ibus_service_new               (GDBusConnection    *connection,
 const gchar     *ibus_service_get_object_path   (IBusService        *service);
 
 /**
- * ibus_service_get_connections:
+ * ibus_service_get_connection:
  * @service: An IBusService.
- * @returns: (transfer all) (element-type GDBusConnection): A newly allocated list of connections.
+ * @returns: (transfer none): A #GDBusConnection of an #IBusService instance.
  *
  * Returns a connections.
  */
@@ -190,7 +190,6 @@ gboolean         ibus_service_emit_signal       (IBusService        *service,
  * ibus_service_class_add_interfaces:
  * @klass: An IBusServiceClass.
  * @xml_data: The introspection xml data.
- * @error: Error.
  *
  * Set the interface introspection information with the service class.
  */
