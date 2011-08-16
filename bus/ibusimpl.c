@@ -1413,30 +1413,6 @@ _context_destroy_cb (BusInputContext    *context,
 }
 
 /**
- * _context_enabled_cb:
- *
- * A callback function to be called when the "enabled" signal is sent to the context.
- */
-static void
-_context_enabled_cb (BusInputContext    *context,
-                     BusIBusImpl        *ibus)
-{
-    /* FIXME implement this. */
-}
-
-/**
- * _context_disabled_cb:
- *
- * A callback function to be called when the "disabled" signal is sent to the context.
- */
-static void
-_context_disabled_cb (BusInputContext    *context,
-                      BusIBusImpl        *ibus)
-{
-    /* FIXME implement this. */
-}
-
-/**
  * bus_ibus_impl_create_input_context:
  * @client: A name of a client. e.g. "gtk-im"
  * @returns: A BusInputContext object.
@@ -1462,8 +1438,6 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
-        { "enabled",        G_CALLBACK (_context_enabled_cb) },
-        { "disabled",       G_CALLBACK (_context_disabled_cb) },
     };
 
     gint i;
@@ -1875,7 +1849,7 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
         if (context == NULL)
             break;
 
-        enabled = bus_input_context_is_enabled (context);
+        enabled = TRUE;
     } while (0);
 
     g_dbus_method_invocation_return_value (invocation,
@@ -2033,6 +2007,8 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
                                          guint           prev_keyval,
                                          guint           prev_modifiers)
 {
+    /* FIXME */
+#if 0
     static GQuark trigger = 0;
     static GQuark enable_unconditional = 0;
     static GQuark disable_unconditional = 0;
@@ -2069,6 +2045,7 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         return (enabled != bus_input_context_is_enabled (context));
     }
     if (event == enable_unconditional) {
+
         gboolean enabled = bus_input_context_is_enabled (context);
         if (!enabled) {
             bus_input_context_enable (context);
@@ -2145,6 +2122,7 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         return TRUE;
     }
 
+#endif
     return FALSE;
 }
 

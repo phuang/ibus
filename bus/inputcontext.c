@@ -53,7 +53,6 @@ struct _BusInputContext {
     gchar *client;
 
     gboolean has_focus;
-    gboolean enabled;
 
     /* client capabilities */
     guint capabilities;
@@ -118,8 +117,6 @@ enum {
     CURSOR_DOWN_LOOKUP_TABLE,
     REGISTER_PROPERTIES,
     UPDATE_PROPERTY,
-    ENABLED,
-    DISABLED,
     ENGINE_CHANGED,
     REQUEST_ENGINE,
     LAST_SIGNAL,
@@ -247,11 +244,6 @@ static const gchar introspection_xml[] =
     "    <method name='FocusIn' />"
     "    <method name='FocusOut' />"
     "    <method name='Reset' />"
-    "    <method name='Enable' />"
-    "    <method name='Disable' />"
-    "    <method name='IsEnabled'>"
-    "      <arg direction='out' type='b' name='enable' />"
-    "    </method>"
     "    <method name='SetCapabilities'>"
     "      <arg direction='in' type='u' name='caps' />"
     "    </method>"
@@ -275,8 +267,6 @@ static const gchar introspection_xml[] =
     "    <signal name='CommitText'>"
     "      <arg type='v' name='text' />"
     "    </signal>"
-    "    <signal name='Enabled'/>"
-    "    <signal name='Disabled'/>"
     "    <signal name='ForwardKeyEvent'>"
     "      <arg type='u' name='keyval' />"
     "      <arg type='u' name='keycode' />"
@@ -543,26 +533,6 @@ bus_input_context_class_init (BusInputContextClass *class)
             1,
             IBUS_TYPE_PROPERTY);
 
-    context_signals[ENABLED] =
-        g_signal_new (I_("enabled"),
-            G_TYPE_FROM_CLASS (class),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            bus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
-
-    context_signals[DISABLED] =
-        g_signal_new (I_("disabled"),
-            G_TYPE_FROM_CLASS (class),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            bus_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0);
-
     context_signals[ENGINE_CHANGED] =
         g_signal_new (I_("engine-changed"),
             G_TYPE_FROM_CLASS (class),
@@ -742,7 +712,7 @@ _ic_process_key_event  (BusInputContext       *context,
     }
 
     /* ignore key events, if it is a fake input context */
-    if (context->has_focus && context->enabled && context->engine && context->fake == FALSE) {
+    if (context->has_focus && context->engine && context->fake == FALSE) {
         bus_engine_proxy_process_key_event (context->engine,
                                             keyval,
                                             keycode,
@@ -770,7 +740,7 @@ _ic_set_cursor_location (BusInputContext       *context,
     g_variant_get (parameters, "(iiii)",
                    &context->x, &context->y, &context->w, &context->h);
 
-    if (context->has_focus && context->enabled && context->engine) {
+    if (context->has_focus && context->engine) {
         bus_engine_proxy_set_cursor_location (context->engine,
                         context->x, context->y, context->w, context->h);
     }
@@ -792,7 +762,7 @@ _ic_process_hand_writing_event (BusInputContext       *context,
                                 GDBusMethodInvocation *invocation)
 {
     /* do nothing if it is a fake input context */
-    if (context->has_focus && context->enabled &&
+    if (context->has_focus &&
         context->engine && context->fake == FALSE) {
         bus_engine_proxy_process_hand_writing_event (context->engine, parameters);
     }
@@ -808,7 +778,7 @@ _ic_cancel_hand_writing (BusInputContext       *context,
     g_variant_get (parameters, "(u)", &n_strokes);
 
     /* do nothing if it is a fake input context */
-    if (context->has_focus && context->enabled &&
+    if (context->has_focus &&
         context->engine && context->fake == FALSE) {
         bus_engine_proxy_cancel_hand_writing (context->engine, n_strokes);
     }
@@ -865,7 +835,7 @@ _ic_reset (BusInputContext       *context,
            GVariant              *parameters,
            GDBusMethodInvocation *invocation)
 {
-    if (context->enabled && context->engine) {
+    if (context->engine) {
         bus_engine_proxy_reset (context->engine);
     }
     g_dbus_method_invocation_return_value (invocation, NULL);
@@ -903,7 +873,7 @@ _ic_property_activate (BusInputContext       *context,
     guint prop_state = 0;
     g_variant_get (parameters, "(&su)", &prop_name, &prop_state);
 
-    if (context->enabled && context->engine) {
+    if (context->engine) {
         bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
     }
 
@@ -919,47 +889,6 @@ _ic_property_activate (BusInputContext       *context,
 #endif
 
     g_dbus_method_invocation_return_value (invocation, NULL);
-}
-
-/**
- * _ic_enable:
- *
- * Implement the "Enable" method call of the org.freedesktop.IBus.InputContext interface.
- */
-static void
-_ic_enable (BusInputContext       *context,
-            GVariant              *parameters,
-            GDBusMethodInvocation *invocation)
-{
-    bus_input_context_enable (context);
-    g_dbus_method_invocation_return_value (invocation, NULL);
-}
-
-/**
- * _ic_disable:
- *
- * Implement the "Disable" method call of the org.freedesktop.IBus.InputContext interface.
- */
-static void
-_ic_disable (BusInputContext       *context,
-             GVariant              *parameters,
-             GDBusMethodInvocation *invocation)
-{
-    bus_input_context_disable (context);
-    g_dbus_method_invocation_return_value (invocation, NULL);
-}
-
-/**
- * _ic_is_enabled:
- *
- * Implement the "IsEnabled" method call of the org.freedesktop.IBus.InputContext interface.
- */
-static void
-_ic_is_enabled (BusInputContext       *context,
-                GVariant              *parameters,
-                GDBusMethodInvocation *invocation)
-{
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(b)", context->enabled));
 }
 
 static void
@@ -1071,7 +1000,7 @@ _ic_set_surrounding_text (BusInputContext       *context,
     g_variant_unref (variant);
 
     if ((context->capabilities & IBUS_CAP_SURROUNDING_TEXT) &&
-         context->has_focus && context->enabled && context->engine) {
+         context->has_focus && context->engine) {
         bus_engine_proxy_set_surrounding_text (context->engine,
                                                text,
                                                cursor_pos,
@@ -1121,9 +1050,6 @@ bus_input_context_service_method_call (IBusService            *service,
         { "Reset",             _ic_reset },
         { "SetCapabilities",   _ic_set_capabilities },
         { "PropertyActivate",  _ic_property_activate },
-        { "Enable",            _ic_enable },
-        { "Disable",           _ic_disable },
-        { "IsEnabled",         _ic_is_enabled },
         { "SetEngine",         _ic_set_engine },
         { "GetEngine",         _ic_get_engine },
         { "SetSurroundingText", _ic_set_surrounding_text},
@@ -1163,7 +1089,7 @@ bus_input_context_focus_in (BusInputContext *context)
     context->prev_keyval = IBUS_VoidSymbol;
     context->prev_modifiers = 0;
 
-    if (context->engine == NULL && context->enabled) {
+    if (context->engine == NULL) {
         /* request an engine, e.g. a global engine if the feature is enabled. */
         IBusEngineDesc *desc = NULL;
         g_signal_emit (context,
@@ -1181,7 +1107,7 @@ bus_input_context_focus_in (BusInputContext *context)
         }
     }
 
-    if (context->engine && context->enabled) {
+    if (context->engine) {
         bus_engine_proxy_focus_in (context->engine);
         bus_engine_proxy_enable (context->engine);
         bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
@@ -1190,7 +1116,7 @@ bus_input_context_focus_in (BusInputContext *context)
 
     if (context->capabilities & IBUS_CAP_FOCUS) {
         g_signal_emit (context, context_signals[FOCUS_IN], 0);
-        if (context->engine && context->enabled) {
+        if (context->engine) {
             /* if necessary, emit glib signals to the context object to update panel status. see the comment for PREEDIT_CONDITION
              * for details. */
             if (context->preedit_visible && !PREEDIT_CONDITION) {
@@ -1252,7 +1178,7 @@ bus_input_context_focus_out (BusInputContext *context)
     bus_input_context_update_lookup_table (context, lookup_table_empty, FALSE);
     bus_input_context_register_properties (context, props_empty);
 
-    if (context->engine && context->enabled) {
+    if (context->engine) {
         bus_engine_proxy_focus_out (context->engine);
     }
 
@@ -1269,7 +1195,7 @@ bus_input_context_focus_out (BusInputContext *context)
     {                                                                       \
         g_assert (BUS_IS_INPUT_CONTEXT (context));                          \
                                                                             \
-        if (context->has_focus && context->enabled && context->engine) {    \
+        if (context->has_focus && context->engine) {    \
             bus_engine_proxy_##name (context->engine);                      \
         }                                                                   \
     }
@@ -1289,7 +1215,7 @@ bus_input_context_candidate_clicked (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context->enabled && context->engine) {
+    if (context->engine) {
         bus_engine_proxy_candidate_clicked (context->engine,
                                             index,
                                             button,
@@ -1304,7 +1230,7 @@ bus_input_context_property_activate (BusInputContext *context,
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context->enabled && context->engine) {
+    if (context->engine) {
         bus_engine_proxy_property_activate (context->engine, prop_name, prop_state);
     }
 }
@@ -1314,9 +1240,6 @@ bus_input_context_commit_text (BusInputContext *context,
                                IBusText        *text)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    if (!context->enabled)
-        return;
 
     if (text == text_empty || text == NULL)
         return;
@@ -1829,9 +1752,6 @@ _engine_forward_key_event_cb (BusEngineProxy    *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
     bus_input_context_emit_signal (context,
                                    "ForwardKeyEvent",
                                    g_variant_new ("(uuu)", keyval, keycode, state),
@@ -1854,9 +1774,6 @@ _engine_delete_surrounding_text_cb (BusEngineProxy    *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
     bus_input_context_emit_signal (context,
                                    "DeleteSurroundingText",
                                    g_variant_new ("(iu)", offset_from_cursor, nchars),
@@ -1876,9 +1793,6 @@ _engine_require_surrounding_text_cb (BusEngineProxy    *engine,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     g_assert (context->engine == engine);
-
-    if (!context->enabled)
-        return;
 
     bus_input_context_emit_signal (context,
                                    "RequireSurroundingText",
@@ -1905,9 +1819,6 @@ _engine_update_preedit_text_cb (BusEngineProxy  *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
     bus_input_context_update_preedit_text (context, text, cursor_pos, visible, mode);
 }
 
@@ -1927,9 +1838,6 @@ _engine_update_auxiliary_text_cb (BusEngineProxy   *engine,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     g_assert (context->engine == engine);
-
-    if (!context->enabled)
-        return;
 
     bus_input_context_update_auxiliary_text (context, text, visible);
 }
@@ -1951,9 +1859,6 @@ _engine_update_lookup_table_cb (BusEngineProxy   *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
     bus_input_context_update_lookup_table (context, table, visible);
 }
 
@@ -1972,9 +1877,6 @@ _engine_register_properties_cb (BusEngineProxy  *engine,
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     g_assert (context->engine == engine);
-
-    if (!context->enabled)
-        return;
 
     bus_input_context_register_properties (context, props);
 }
@@ -1995,9 +1897,6 @@ _engine_update_property_cb (BusEngineProxy  *engine,
 
     g_assert (context->engine == engine);
 
-    if (!context->enabled)
-        return;
-
     bus_input_context_update_property (context, prop);
 }
 
@@ -2010,9 +1909,6 @@ _engine_update_property_cb (BusEngineProxy  *engine,
         g_assert (BUS_IS_INPUT_CONTEXT (context));              \
                                                                 \
         g_assert (context->engine == engine);                   \
-                                                                \
-        if (!context->enabled)                                  \
-            return;                                             \
                                                                 \
         bus_input_context_##name (context);                     \
     }
@@ -2077,7 +1973,6 @@ bus_input_context_enable (BusInputContext *context)
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     if (!context->has_focus) {
-        context->enabled = TRUE;
         /* FIXME Do we need to emit "enabled" signal? */
         return;
     }
@@ -2101,20 +1996,10 @@ bus_input_context_enable (BusInputContext *context)
     if (context->engine == NULL)
         return;
 
-    context->enabled = TRUE;
-
     bus_engine_proxy_focus_in (context->engine);
     bus_engine_proxy_enable (context->engine);
     bus_engine_proxy_set_capabilities (context->engine, context->capabilities);
     bus_engine_proxy_set_cursor_location (context->engine, context->x, context->y, context->w, context->h);
-
-    bus_input_context_emit_signal (context,
-                                   "Enabled",
-                                   NULL,
-                                   NULL);
-    g_signal_emit (context,
-                   context_signals[ENABLED],
-                   0);
 }
 
 void
@@ -2131,24 +2016,6 @@ bus_input_context_disable (BusInputContext *context)
         bus_engine_proxy_focus_out (context->engine);
         bus_engine_proxy_disable (context->engine);
     }
-
-    bus_input_context_emit_signal (context,
-                                   "Disabled",
-                                   NULL,
-                                   NULL);
-    g_signal_emit (context,
-                   context_signals[DISABLED],
-                   0);
-
-    context->enabled = FALSE;
-}
-
-gboolean
-bus_input_context_is_enabled (BusInputContext *context)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    return context->enabled;
 }
 
 /* A list of signals (and their handler functions) that could be emit by the engine proxy object. */
@@ -2228,7 +2095,7 @@ bus_input_context_set_engine (BusInputContext *context,
                               engine_signals[i].callback,
                               context);
         }
-        if (context->has_focus && context->enabled) {
+        if (context->has_focus) {
             bus_engine_proxy_focus_in (context->engine);
             bus_engine_proxy_enable (context->engine);
             bus_engine_proxy_set_capabilities (context->engine, context->capabilities);

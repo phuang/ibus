@@ -92,12 +92,6 @@ void                 bus_input_context_enable           (BusInputContext    *con
 void                 bus_input_context_disable          (BusInputContext    *context);
 
 /**
- * bus_input_context_is_enabled:
- * @returns: context->enabled.
- */
-gboolean             bus_input_context_is_enabled       (BusInputContext    *context);
-
-/**
  * bus_input_context_page_up:
  *
  * Call page_up method of the current engine proxy.

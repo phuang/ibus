@@ -625,8 +625,6 @@ static const struct {
     { "register-properties",        G_CALLBACK (_context_register_properties_cb) },
     { "update-property",            G_CALLBACK (_context_update_property_cb) },
 
-    { "enabled",                    G_CALLBACK (_context_state_changed_cb) },
-    { "disabled",                   G_CALLBACK (_context_state_changed_cb) },
     { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
     { "destroy",                    G_CALLBACK (_context_destroy_cb) },

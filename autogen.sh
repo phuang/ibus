@@ -22,4 +22,4 @@ which gnome-autogen.sh || {
     touch $srcdir/ChangeLog
 }
 
-ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.10 CFLAGS="-Wall -Werror $CFLAGS" . gnome-autogen.sh
+ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.10 CFLAGS="-Wall -Werror -Wno-error=unused-function $CFLAGS" . gnome-autogen.sh
