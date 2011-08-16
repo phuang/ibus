@@ -48,7 +48,7 @@ struct _BusIBusImpl {
 
     /* a fake input context for global engine support */
     BusInputContext *fake_context;
-
+    
     /* a list of engines that are preloaded. */
     GList *engine_list;
     /* a list of engines that are started by a user (without the --ibus command line flag.) */
@@ -214,6 +214,10 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='v' name='component' />\n"
     "    </method>\n"
     "    <method name='ListEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "    </method>\n"
+    "    <method name='GetEnginesByNames'>\n"
+    "      <arg direction='in' type='as' name='names' />\n"
     "      <arg direction='out' type='av' name='engines' />\n"
     "    </method>\n"
     "    <method name='ListActiveEngines'>\n"
@@ -593,6 +597,7 @@ const static struct {
     gchar *key;
     void (*func) (BusIBusImpl *, GVariant *);
 } bus_ibus_impl_config_items [] = {
+#if 0
     { "general/hotkey", "trigger",               bus_ibus_impl_set_trigger },
     { "general/hotkey", "enable_unconditional",  bus_ibus_impl_set_enable_unconditional },
     { "general/hotkey", "disable_unconditional", bus_ibus_impl_set_disable_unconditional },
@@ -603,6 +608,7 @@ const static struct {
     { "general", "use_global_engine",            bus_ibus_impl_set_use_global_engine },
     { "general", "embed_preedit_text",           bus_ibus_impl_set_embed_preedit_text },
     { "general", "enable_by_default",            bus_ibus_impl_set_enable_by_default },
+#endif
 };
 
 /**
@@ -829,8 +835,8 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 
     ibus->use_sys_layout = FALSE;
     ibus->embed_preedit_text = TRUE;
-    ibus->enable_by_default = FALSE;
-    ibus->use_global_engine = FALSE;
+    ibus->enable_by_default = TRUE;
+    ibus->use_global_engine = TRUE;
     ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
 
@@ -972,7 +978,6 @@ _find_engine_desc_by_name (BusIBusImpl *ibus,
         if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
             return desc;
     }
-
     return NULL;
 }
 
@@ -999,6 +1004,14 @@ static IBusEngineDesc *
 bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
                                const gchar *engine_name)
 {
+    /* FIXME */
+#if 1
+    g_return_val_if_fail (engine_name != NULL, NULL);
+    g_return_val_if_fail (engine_name[0] != '\0', NULL);
+
+    return bus_registry_find_engine_by_name (ibus->registry, engine_name);
+
+#else
     IBusEngineDesc *desc = NULL;
 
     if (engine_name != NULL && engine_name[0] != '\0') {
@@ -1041,6 +1054,7 @@ bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
     }
 
     return desc;
+#endif
 }
 
 /**
@@ -1615,6 +1629,37 @@ _ibus_list_engines (BusIBusImpl           *ibus,
 }
 
 /**
+ * _ibus_get_engines_by_names:
+ *
+ * Implement the "GetEnginesByNames" method call of the org.freedesktop.IBus interface.
+ */
+static void
+_ibus_get_engines_by_names (BusIBusImpl           *ibus,
+                            GVariant              *parameters,
+                            GDBusMethodInvocation *invocation)
+{
+    const gchar **names = NULL;
+    g_variant_get (parameters, "(^a&s)", &names);
+
+    g_assert (names != NULL);
+
+    gint i = 0;
+    
+    GVariantBuilder builder;
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
+    while (names[i] != NULL) {
+        IBusEngineDesc *desc = bus_registry_find_engine_by_name (ibus->registry, names[i]);
+        if (desc != NULL) {
+            g_variant_builder_add (&builder,
+                                   "v",
+                                   ibus_serializable_serialize ((IBusSerializable *)desc));
+        }
+        i++;
+    }
+    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
+}
+
+/**
  * _ibus_list_active_engines:
  *
  * Implement the "ListActiveEngines" method call of the org.freedesktop.IBus interface.
@@ -1889,6 +1934,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
         { "CurrentInputContext",   _ibus_current_input_context },
         { "RegisterComponent",     _ibus_register_component },
         { "ListEngines",           _ibus_list_engines },
+        { "GetEnginesByNames",     _ibus_get_engines_by_names },
         { "ListActiveEngines",     _ibus_list_active_engines },
         { "Exit",                  _ibus_exit },
         { "Ping",                  _ibus_ping },

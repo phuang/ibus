@@ -702,6 +702,8 @@ _ic_process_key_event  (BusInputContext       *context,
         }
     }
 
+    /* FIXME */
+#if 0
     if (G_LIKELY (context->has_focus)) {
         gboolean retval = bus_input_context_filter_keyboard_shortcuts (context, keyval, keycode, modifiers);
         /* If it is keyboard shortcut, reply TRUE to client */
@@ -710,6 +712,7 @@ _ic_process_key_event  (BusInputContext       *context,
             return;
         }
     }
+#endif
 
     /* ignore key events, if it is a fake input context */
     if (context->has_focus && context->engine && context->fake == FALSE) {
