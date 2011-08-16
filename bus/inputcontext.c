@@ -95,6 +95,7 @@ struct _BusInputContextClass {
     IBusServiceClass parent;
 
     /* class members */
+    IBusEngineDesc *default_engine_desc;
 };
 
 enum {
@@ -326,6 +327,16 @@ static void
 bus_input_context_class_init (BusInputContextClass *class)
 {
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
+
+    class->default_engine_desc = ibus_engine_desc_new ("dummy",
+                                                       "",
+                                                       "",
+                                                       "",
+                                                       "",
+                                                       "",
+                                                       "ibus-engine",
+                                                       "");
+    g_object_ref_sink (class->default_engine_desc);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) bus_input_context_destroy;
 
@@ -965,18 +976,13 @@ _ic_get_engine (BusInputContext       *context,
                 GVariant              *parameters,
                 GDBusMethodInvocation *invocation)
 {
-    if (context->engine) {
-        IBusEngineDesc *desc = bus_engine_proxy_get_desc (context->engine);
-        g_dbus_method_invocation_return_value (invocation,
-                        g_variant_new ("(v)", ibus_serializable_serialize ((IBusSerializable *)desc)));
-    }
-    else {
-        g_dbus_method_invocation_return_error (
-                invocation,
-                IBUS_ERROR,
-                IBUS_ERROR_NO_ENGINE,
-                "Input context does not have engine.");
-    }
+    IBusEngineDesc *desc = context->engine ?
+            bus_engine_proxy_get_desc (context->engine) :
+            BUS_INPUT_CONTEXT_GET_CLASS (context)->default_engine_desc;
+
+
+    g_dbus_method_invocation_return_value (invocation,
+            g_variant_new ("(v)", ibus_serializable_serialize ((IBusSerializable *)desc)));
 }
 
 /**

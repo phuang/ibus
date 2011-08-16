@@ -416,7 +416,8 @@ class Panel(ibus.PanelBase):
     def __create_im_menu(self):
         # FIXME
         # engines = self.__bus.list_engines()
-        names = self.__config.get_value("general", "preload_engines", ["xkb:us::eng","pinyin"])
+        names = self.__config.get_value("general", "preload_engines",
+                ["xkb:us::eng", "xkb:us:intl:eng", "pinyin"])
         engines = self.__bus.get_engines_by_names(names)
         current_engine = \
             (self.__focus_ic != None and self.__focus_ic.get_engine()) or \
