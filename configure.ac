@@ -105,6 +105,7 @@ AC_SUBST(DATE_DISPLAY)
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
+AM_PROG_VALAC([0.14])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -473,6 +474,7 @@ ui/Makefile
 ui/gtk/Makefile
 ui/gtk/ibus-ui-gtk
 ui/gtk/gtkpanel.xml.in
+ui/gtk3/Makefile
 setup/Makefile
 setup/ibus-setup
 gconf/Makefile

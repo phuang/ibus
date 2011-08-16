@@ -354,7 +354,7 @@ class LanguageBar(gtk.Toolbar):
         self.__properties.append(item)
         menu.insert(item, 0)
 
-        about_label = _("About") + " - " + self.__im_name
+        about_label = _("About") + " - " + (self.__im_name or "")
         prop = ibus.Property(key=u"about",
                              label=unicode(about_label),
                              icon=unicode(gtk.STOCK_ABOUT),

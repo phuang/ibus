@@ -23,6 +23,7 @@
 if ENABLE_PYTHON
 SUBDIRS = \
 	gtk \
+	gtk3 \
 	$(NULL)
 endif
 

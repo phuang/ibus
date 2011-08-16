@@ -50,8 +50,6 @@
 
 #define BUS_DEFAULT_IBUS \
     (bus_ibus_impl_get_default ())
-#define BUS_DEFAULT_HOTKEY_PROFILE \
-    (bus_ibus_impl_get_hotkey_profile (BUS_DEFAULT_IBUS))
 #define BUS_DEFAULT_KEYMAP \
     (bus_ibus_impl_get_keymap (BUS_DEFAULT_IBUS))
 #define BUS_DEFAULT_REGISTRY \
@@ -90,8 +88,6 @@ gboolean         bus_ibus_impl_filter_keyboard_shortcuts
 /* accessors */
 BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,
                                                      const gchar        *path);
-IBusHotkeyProfile
-                *bus_ibus_impl_get_hotkey_profile   (BusIBusImpl        *ibus);
 IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
 BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
 gboolean         bus_ibus_impl_is_use_sys_layout    (BusIBusImpl        *ibus);

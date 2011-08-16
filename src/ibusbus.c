@@ -1478,6 +1478,37 @@ ibus_bus_list_active_engines_async_finish (IBusBus      *bus,
     return ibus_bus_list_engines_async_finish (bus, res, error);
 }
 
+IBusEngineDesc **
+ibus_bus_get_engines_by_names (IBusBus             *bus,
+                               const gchar * const *names)
+{
+    g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
+
+    GVariant *result;
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "GetEnginesByNames",
+                                 g_variant_new("(^as)", names),
+                                 G_VARIANT_TYPE ("(av)"));
+    if (result == NULL)
+        return NULL;
+    
+    GArray *array = g_array_new (TRUE, TRUE, sizeof (IBusEngineDesc *));
+    GVariantIter *iter = NULL;
+    g_variant_get (result, "(av)", &iter);
+    GVariant *var;
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        IBusEngineDesc *desc = (IBusEngineDesc *) ibus_serializable_deserialize (var);
+        g_array_append_val (array, desc);
+    }
+    g_variant_iter_free (iter);
+    g_variant_unref (result);
+
+    return (IBusEngineDesc **)g_array_free (array, FALSE);
+}
+
 static void
 _config_destroy_cb (IBusConfig *config,
                     IBusBus    *bus)

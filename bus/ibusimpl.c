@@ -48,7 +48,7 @@ struct _BusIBusImpl {
 
     /* a fake input context for global engine support */
     BusInputContext *fake_context;
-
+    
     /* a list of engines that are preloaded. */
     GList *engine_list;
     /* a list of engines that are started by a user (without the --ibus command line flag.) */
@@ -65,10 +65,7 @@ struct _BusIBusImpl {
 
     BusInputContext *focused_context;
     BusPanelProxy   *panel;
-    IBusConfig      *config;
 
-    /* global hotkeys such as "trigger" and "next_engine_in_menu" */
-    IBusHotkeyProfile *hotkey_profile;
     /* a default keymap of ibus-daemon (usually "us") which is used only when use_sys_layout is FALSE. */
     IBusKeymap      *keymap;
 
@@ -131,36 +128,6 @@ static gboolean  ibus_ibus_impl_service_set_property
                                                GVariant           *value,
                                                GError            **error);
 #endif
-static void     bus_ibus_impl_set_trigger       (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_next_engine_in_menu
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_previous_engine
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_preload_engines
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_use_sys_layout
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_embed_preedit_text
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_enable_by_default
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_use_global_engine
-                                                (BusIBusImpl        *ibus,
-                                                 GVariant           *value);
-static void     bus_ibus_impl_set_global_engine (BusIBusImpl        *ibus,
-                                                 BusEngineProxy     *engine);
-static void     bus_ibus_impl_set_global_engine_by_name
-                                                (BusIBusImpl        *ibus,
-                                                 const gchar        *name);
-static void     bus_ibus_impl_check_global_engine
-                                                (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
                                                 (BusIBusImpl        *ibus);
@@ -168,15 +135,6 @@ static void     bus_ibus_impl_set_context_engine_from_desc
                                                 (BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
                                                  IBusEngineDesc     *desc);
-static gchar   *bus_ibus_impl_load_global_engine_name_from_config
-                                                (BusIBusImpl        *ibus);
-static void     bus_ibus_impl_save_global_engine_name_to_config
-                                                (BusIBusImpl        *ibus);
-
-static gchar   *bus_ibus_impl_load_global_previous_engine_name_from_config
-                                                (BusIBusImpl        *ibus);
-static void     bus_ibus_impl_save_global_previous_engine_name_to_config
-                                                (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_update_engines_hotkey_profile
                                                 (BusIBusImpl        *ibus);
 static BusInputContext
@@ -214,6 +172,10 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='v' name='component' />\n"
     "    </method>\n"
     "    <method name='ListEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "    </method>\n"
+    "    <method name='GetEnginesByNames'>\n"
+    "      <arg direction='in' type='as' name='names' />\n"
     "      <arg direction='out' type='av' name='engines' />\n"
     "    </method>\n"
     "    <method name='ListActiveEngines'>\n"
@@ -283,398 +245,6 @@ _panel_destroy_cb (BusPanelProxy *panel,
 }
 
 static void
-bus_ibus_impl_set_hotkey (BusIBusImpl *ibus,
-                          GQuark       hotkey,
-                          GVariant    *value)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    ibus_hotkey_profile_remove_hotkey_by_event (ibus->hotkey_profile, hotkey);
-
-    if (value == NULL) {
-        return;
-    }
-
-    GVariantIter iter;
-    g_variant_iter_init (&iter, value);
-    const gchar *str = NULL;
-    while (g_variant_iter_loop (&iter,"&s", &str)) {
-       ibus_hotkey_profile_add_hotkey_from_string (ibus->hotkey_profile,
-                                                   str,
-                                                   hotkey);
-    }
-
-}
-
-/**
- * bus_ibus_impl_set_trigger:
- *
- * A function to be called when "trigger" config is updated. If the value is NULL, the default trigger (Ctrl+space) is set.
- */
-static void
-bus_ibus_impl_set_trigger (BusIBusImpl *ibus,
-                           GVariant    *value)
-{
-    GQuark hotkey = g_quark_from_static_string ("trigger");
-    if (value != NULL) {
-        bus_ibus_impl_set_hotkey (ibus, hotkey, value);
-    }
-#ifndef OS_CHROMEOS
-    else {
-        /* set default trigger */
-        ibus_hotkey_profile_remove_hotkey_by_event (ibus->hotkey_profile, hotkey);
-        ibus_hotkey_profile_add_hotkey (ibus->hotkey_profile,
-                                        IBUS_space,
-                                        IBUS_CONTROL_MASK,
-                                        hotkey);
-    }
-#endif
-}
-
-/**
- * bus_ibus_impl_set_enable_unconditional:
- *
- * A function to be called when "enable_unconditional" config is updated.
- */
-static void
-bus_ibus_impl_set_enable_unconditional (BusIBusImpl *ibus,
-                                        GVariant    *value)
-{
-    GQuark hotkey = g_quark_from_static_string ("enable-unconditional");
-    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
-}
-
-/**
- * bus_ibus_impl_set_disable_unconditional:
- *
- * A function to be called when "disable_unconditional" config is updated.
- */
-static void
-bus_ibus_impl_set_disable_unconditional (BusIBusImpl *ibus,
-                                         GVariant    *value)
-{
-    GQuark hotkey = g_quark_from_static_string ("disable-unconditional");
-    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
-}
-
-/**
- * bus_ibus_impl_set_next_engine_in_menu:
- *
- * A function to be called when "next_engine_in_menu" config is updated.
- */
-static void
-bus_ibus_impl_set_next_engine_in_menu (BusIBusImpl *ibus,
-                                       GVariant    *value)
-{
-    GQuark hotkey = g_quark_from_static_string ("next-engine-in-menu");
-    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
-}
-
-/**
- * bus_ibus_impl_set_previous_engine:
- *
- * A function to be called when "previous_engine" config is updated.
- */
-static void
-bus_ibus_impl_set_previous_engine (BusIBusImpl *ibus,
-                                   GVariant    *value)
-{
-    GQuark hotkey = g_quark_from_static_string ("previous-engine");
-    bus_ibus_impl_set_hotkey (ibus, hotkey, value);
-}
-
-/**
- * bus_ibus_impl_set_preload_engines:
- *
- * A function to be called when "preload_engines" config is updated.
- */
-static void
-bus_ibus_impl_set_preload_engines (BusIBusImpl *ibus,
-                                   GVariant    *value)
-{
-    GList *engine_list = NULL;
-
-    g_list_foreach (ibus->engine_list, (GFunc) g_object_unref, NULL);
-    g_list_free (ibus->engine_list);
-
-    if (value != NULL && g_variant_classify (value) == G_VARIANT_CLASS_ARRAY) {
-        GVariantIter iter;
-        g_variant_iter_init (&iter, value);
-        const gchar *engine_name = NULL;
-        while (g_variant_iter_loop (&iter, "&s", &engine_name)) {
-            IBusEngineDesc *engine = bus_registry_find_engine_by_name (ibus->registry, engine_name);
-            if (engine == NULL || g_list_find (engine_list, engine) != NULL)
-                continue;
-            engine_list = g_list_append (engine_list, engine);
-        }
-    }
-
-    g_list_foreach (engine_list, (GFunc) g_object_ref, NULL);
-    ibus->engine_list = engine_list;
-
-    if (ibus->engine_list) {
-        BusComponent *component = bus_component_from_engine_desc ((IBusEngineDesc *) ibus->engine_list->data);
-        if (component && !bus_component_is_running (component)) {
-            bus_component_start (component, g_verbose);
-        }
-    }
-
-    bus_ibus_impl_check_global_engine (ibus);
-    bus_ibus_impl_update_engines_hotkey_profile (ibus);
-}
-
-/**
- * bus_ibus_impl_set_use_sys_layout:
- *
- * A function to be called when "use_system_keyboard_layout" config is updated.
- */
-static void
-bus_ibus_impl_set_use_sys_layout (BusIBusImpl *ibus,
-                                  GVariant    *value)
-{
-    if (value != NULL && g_variant_classify (value) == G_VARIANT_CLASS_BOOLEAN) {
-        ibus->use_sys_layout = g_variant_get_boolean (value);
-    }
-}
-
-/**
- * bus_ibus_impl_set_embed_preedit_text:
- *
- * A function to be called when "use_embed_preedit_text" config is updated.
- */
-static void
-bus_ibus_impl_set_embed_preedit_text (BusIBusImpl *ibus,
-                                      GVariant    *value)
-{
-    if (value != NULL && g_variant_classify (value) == G_VARIANT_CLASS_BOOLEAN) {
-        ibus->embed_preedit_text = g_variant_get_boolean (value);
-    }
-}
-
-/**
- * bus_ibus_impl_set_enable_by_default:
- *
- * A function to be called when "enable_by_default" config is updated.
- */
-static void
-bus_ibus_impl_set_enable_by_default (BusIBusImpl *ibus,
-                                     GVariant    *value)
-{
-    if (value != NULL && g_variant_classify (value) == G_VARIANT_CLASS_BOOLEAN) {
-        ibus->enable_by_default = g_variant_get_boolean (value);
-    }
-}
-
-/**
- * bus_ibus_impl_set_use_global_engine:
- *
- * A function to be called when "use_global_engine" config is updated.
- */
-static void
-bus_ibus_impl_set_use_global_engine (BusIBusImpl *ibus,
-                                     GVariant    *value)
-{
-    if (value == NULL || g_variant_classify (value) != G_VARIANT_CLASS_BOOLEAN)
-        return;
-
-    gboolean new_value = g_variant_get_boolean (value);
-    if (ibus->use_global_engine == new_value)
-        return;
-
-    if (new_value) {
-        /* turn on use_global_engine option */
-        ibus->use_global_engine = TRUE;
-        if (ibus->panel && ibus->focused_context == NULL) {
-            bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
-        }
-    }
-    else {
-        /* turn off use_global_engine option */
-        ibus->use_global_engine = FALSE;
-
-        /* if fake context has the focus, we should focus out it */
-        if (ibus->panel && ibus->focused_context == NULL) {
-            bus_panel_proxy_focus_out (ibus->panel, ibus->fake_context);
-        }
-        /* remove engine in fake context */
-        bus_input_context_set_engine (ibus->fake_context, NULL);
-    }
-}
-
-#ifndef OS_CHROMEOS
-static gint
-_engine_desc_cmp (IBusEngineDesc *desc1,
-                  IBusEngineDesc *desc2)
-{
-    return - ((gint) ibus_engine_desc_get_rank (desc1)) +
-              ((gint) ibus_engine_desc_get_rank (desc2));
-}
-#endif
-
-/**
- * bus_ibus_impl_set_default_preload_engines:
- *
- * If the "preload_engines" config variable is not set yet, set the default value which is determined based on a current locale.
- */
-static void
-bus_ibus_impl_set_default_preload_engines (BusIBusImpl *ibus)
-{
-#ifndef OS_CHROMEOS
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    static gboolean done = FALSE;
-
-    if (done || ibus->config == NULL) {
-        return;
-    }
-
-    GVariant *variant = ibus_config_get_value (ibus->config, "general", "preload_engines");
-    if (variant != NULL) {
-        done = TRUE;
-        g_variant_unref (variant);
-        return;
-    }
-
-    done = TRUE;
-
-    /* The setlocale call first checks LC_ALL. If it's not available, checks
-     * LC_CTYPE. If it's also not available, checks LANG. */
-    gchar *lang = g_strdup (setlocale (LC_CTYPE, NULL));
-    if (lang == NULL) {
-        return;
-    }
-
-    gchar *p = index (lang, '.');
-    if (p) {
-        *p = '\0';
-    }
-
-    GList *engines = bus_registry_get_engines_by_language (ibus->registry, lang);
-    if (engines == NULL) {
-        p = index (lang, '_');
-        if (p) {
-            *p = '\0';
-            engines = bus_registry_get_engines_by_language (ibus->registry, lang);
-        }
-    }
-    g_free (lang);
-
-    /* sort engines by rank */
-    engines = g_list_sort (engines, (GCompareFunc) _engine_desc_cmp);
-
-    GVariantBuilder builder;
-    g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
-    GList *list;
-    for (list = engines; list != NULL; list = list->next) {
-        IBusEngineDesc *desc = (IBusEngineDesc *) list->data;
-        /* ignore engines with rank <= 0 */
-        if (ibus_engine_desc_get_rank (desc) > 0)
-            g_variant_builder_add (&builder, "s", ibus_engine_desc_get_name (desc));
-    }
-
-    GVariant *value = g_variant_builder_end (&builder);
-    if (value != NULL) {
-        if (g_variant_n_children (value) > 0) {
-            ibus_config_set_value (ibus->config,
-                                   "general", "preload_engines", value);
-        } else {
-            /* We don't update preload_engines with an empty string for safety.
-             * Just unref the floating value. */
-            g_variant_unref (value);
-        }
-    }
-    g_list_free (engines);
-#endif
-}
-
-/* The list of config entries that are related to ibus-daemon. */
-const static struct {
-    gchar *section;
-    gchar *key;
-    void (*func) (BusIBusImpl *, GVariant *);
-} bus_ibus_impl_config_items [] = {
-    { "general/hotkey", "trigger",               bus_ibus_impl_set_trigger },
-    { "general/hotkey", "enable_unconditional",  bus_ibus_impl_set_enable_unconditional },
-    { "general/hotkey", "disable_unconditional", bus_ibus_impl_set_disable_unconditional },
-    { "general/hotkey", "next_engine_in_menu",   bus_ibus_impl_set_next_engine_in_menu },
-    { "general/hotkey", "previous_engine",       bus_ibus_impl_set_previous_engine },
-    { "general", "preload_engines",              bus_ibus_impl_set_preload_engines },
-    { "general", "use_system_keyboard_layout",   bus_ibus_impl_set_use_sys_layout },
-    { "general", "use_global_engine",            bus_ibus_impl_set_use_global_engine },
-    { "general", "embed_preedit_text",           bus_ibus_impl_set_embed_preedit_text },
-    { "general", "enable_by_default",            bus_ibus_impl_set_enable_by_default },
-};
-
-/**
- * bus_ibus_impl_reload_config
- *
- * Read config entries (e.g. preload_engines) from the config daemon.
- */
-static void
-bus_ibus_impl_reload_config (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    gint i;
-    for (i = 0; i < G_N_ELEMENTS (bus_ibus_impl_config_items); i++) {
-        GVariant *variant = NULL;
-        if (ibus->config != NULL)
-            variant = ibus_config_get_value (ibus->config,
-                            bus_ibus_impl_config_items[i].section,
-                            bus_ibus_impl_config_items[i].key);
-        bus_ibus_impl_config_items[i].func (ibus, variant); /* variant could be NULL if the deamon is not ready yet. */
-        if (variant) g_variant_unref (variant);
-    }
-}
-
-/**
- * _config_value_changed_cb:
- *
- * A callback function to be called when the "ValueChanged" D-Bus signal is sent from the config daemon.
- */
-static void
-_config_value_changed_cb (IBusConfig  *config,
-                          gchar       *section,
-                          gchar       *key,
-                          GVariant    *value,
-                          BusIBusImpl *ibus)
-{
-    g_assert (IBUS_IS_CONFIG (config));
-    g_assert (section);
-    g_assert (key);
-    g_assert (value);
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    gint i;
-    for (i = 0; i < G_N_ELEMENTS (bus_ibus_impl_config_items); i++) {
-        if (g_strcmp0 (bus_ibus_impl_config_items[i].section, section) == 0 &&
-            g_strcmp0 (bus_ibus_impl_config_items[i].key, key) == 0) {
-            bus_ibus_impl_config_items[i].func (ibus, value);
-            break;
-        }
-    }
-}
-
-/**
- * _config_destroy_cb:
- *
- * A callback function which is called when (1) the connection to the config process is terminated,
- * or (2) ibus_proxy_destroy (ibus->config); is called. See src/ibusproxy.c for details.
- */
-static void
-_config_destroy_cb (IBusConfig  *config,
-                    BusIBusImpl *ibus)
-{
-    g_assert (IBUS_IS_CONFIG (config));
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    g_assert (ibus->config == config);
-
-    g_object_unref (ibus->config);
-    ibus->config = NULL;
-}
-
-static void
 _registry_changed_cb (BusRegistry *registry,
                       BusIBusImpl *ibus)
 {
@@ -730,47 +300,6 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
             }
         }
     }
-    else if (g_strcmp0 (name, IBUS_SERVICE_CONFIG) == 0) {
-        if (g_strcmp0 (new_name, "") != 0) {
-            /* a config process is started. */
-            BusConnection *connection;
-
-            if (ibus->config != NULL) {
-                ibus_proxy_destroy ((IBusProxy *) ibus->config);
-                /* config should be NULL after destroy. See _config_destroy_cb for details. */
-                g_assert (ibus->config == NULL);
-            }
-
-            /* get a connection between ibus-daemon and the config daemon. */
-            connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name);
-            g_return_if_fail (connection != NULL);
-
-            ibus->config = g_initable_new (IBUS_TYPE_CONFIG,
-                                           NULL,
-                                           NULL,
-                                           /* The following properties are necessary to initialize GDBusProxy object
-                                            * which is a parent of the config object. */
-                                           "g-connection",      bus_connection_get_dbus_connection (connection),
-                                           "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
-                                           "g-interface-name",  IBUS_INTERFACE_CONFIG,
-                                           "g-object-path",     IBUS_PATH_CONFIG,
-                                           "g-default-timeout", g_gdbus_timeout,
-                                           NULL);
-
-            g_signal_connect (ibus->config,
-                              "value-changed",
-                              G_CALLBACK (_config_value_changed_cb),
-                              ibus);
-
-            g_signal_connect (ibus->config,
-                              "destroy",
-                              G_CALLBACK (_config_destroy_cb),
-                              ibus);
-
-            bus_ibus_impl_set_default_preload_engines (ibus);
-            bus_ibus_impl_reload_config (ibus);
-        }
-    }
 
     bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
 }
@@ -808,8 +337,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->contexts = NULL;
     ibus->focused_context = NULL;
     ibus->panel = NULL;
-    ibus->config = NULL;
-
     ibus->registry = bus_registry_new ();
 
     g_signal_connect (ibus->registry,
@@ -824,13 +351,12 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     }
 #endif
 
-    ibus->hotkey_profile = ibus_hotkey_profile_new ();
     ibus->keymap = ibus_keymap_get ("us");
 
     ibus->use_sys_layout = FALSE;
     ibus->embed_preedit_text = TRUE;
-    ibus->enable_by_default = FALSE;
-    ibus->use_global_engine = FALSE;
+    ibus->enable_by_default = TRUE;
+    ibus->use_global_engine = TRUE;
     ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
 
@@ -904,11 +430,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         ibus->factory_dict = NULL;
     }
 
-    if (ibus->hotkey_profile != NULL) {
-        g_object_unref (ibus->hotkey_profile);
-        ibus->hotkey_profile = NULL;
-    }
-
     if (ibus->keymap != NULL) {
         g_object_unref (ibus->keymap);
         ibus->keymap = NULL;
@@ -972,7 +493,6 @@ _find_engine_desc_by_name (BusIBusImpl *ibus,
         if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
             return desc;
     }
-
     return NULL;
 }
 
@@ -999,180 +519,10 @@ static IBusEngineDesc *
 bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
                                const gchar *engine_name)
 {
-    IBusEngineDesc *desc = NULL;
+    g_return_val_if_fail (engine_name != NULL, NULL);
+    g_return_val_if_fail (engine_name[0] != '\0', NULL);
 
-    if (engine_name != NULL && engine_name[0] != '\0') {
-        /* request engine by name */
-        desc = _find_engine_desc_by_name (ibus, engine_name);
-        if (desc == NULL) {
-            g_warning ("_context_request_engine_cb: Invalid engine '%s' is requested.", engine_name);
-            return NULL;
-        }
-    }
-    else {
-        /* Use global engine if possible. */
-        if (ibus->use_global_engine) {
-            gchar *name = g_strdup (ibus->global_engine_name);
-            if (name == NULL) {
-                name = bus_ibus_impl_load_global_engine_name_from_config (ibus);
-            }
-            if (name) {
-                desc = _find_engine_desc_by_name (ibus, name);
-                g_free (name);
-            }
-        }
-        /* request default engine */
-        if (!desc) {
-            if (ibus->register_engine_list) {
-                desc = (IBusEngineDesc *) ibus->register_engine_list->data;
-            }
-            else if (ibus->engine_list) {
-                desc = (IBusEngineDesc *) ibus->engine_list->data;
-            }
-        }
-        if (!desc) {
-            /* no engine is available. the user hasn't ran ibus-setup yet and
-             * the bus_ibus_impl_set_default_preload_engines() function could
-             * not find any default engines. another possiblity is that the
-             * user hasn't installed an engine yet? just give up. */
-            g_warning ("No engine is available. Run ibus-setup first.");
-            return NULL;
-        }
-    }
-
-    return desc;
-}
-
-/**
- * bus_ibus_impl_context_request_rotate_engine_in_menu:
- *
- * Process the "next_engine_in_menu" or "previous_engine" hotkey.
- */
-static void
-bus_ibus_impl_context_request_rotate_engine_in_menu (BusIBusImpl     *ibus,
-                                                     BusInputContext *context,
-                                                     gboolean         is_next)
-{
-    BusEngineProxy *engine;
-    IBusEngineDesc *desc;
-    IBusEngineDesc *next_desc = NULL;
-    GList *p = NULL;
-
-    engine = bus_input_context_get_engine (context);
-    if (engine == NULL) {
-        desc = bus_ibus_impl_get_engine_desc (ibus, NULL);
-        if (desc != NULL)
-            bus_ibus_impl_set_context_engine_from_desc (ibus,
-                                                        context,
-                                                        desc);
-        return;
-    }
-
-    desc = bus_engine_proxy_get_desc (engine);
-
-    p = g_list_find (ibus->register_engine_list, desc);
-    if (p != NULL) {
-        if (is_next) {
-            p = p->next;
-        } else {
-            p = p->prev;
-        }
-    }
-
-    /* Rotate register_engine_list and engine_list. */
-    if (p == NULL && g_list_find (ibus->register_engine_list, desc) != NULL) {
-        if (is_next) {
-            p = ibus->engine_list;
-        } else {
-            p = g_list_last (ibus->engine_list);
-        }
-    }
-
-    if (p == NULL) {
-        p = g_list_find (ibus->engine_list, desc);
-        if (p != NULL) {
-            if (is_next) {
-                p = p->next;
-            } else {
-                p = p->prev;
-            }
-        }
-    }
-
-    /* Rerotate register_engine_list and engine_list. */
-    if (p == NULL && g_list_find (ibus->engine_list, desc) != NULL) {
-        if (is_next) {
-            p = ibus->register_engine_list;
-            if (p == NULL) {
-                p = ibus->engine_list;
-            }
-        } else {
-            p = g_list_last (ibus->register_engine_list);
-            if (p == NULL) {
-                p = g_list_last (ibus->engine_list);
-            }
-        }
-    }
-
-    if (p != NULL) {
-        next_desc = (IBusEngineDesc*) p->data;
-    }
-    else {
-        if (ibus->register_engine_list) {
-            next_desc = (IBusEngineDesc *) ibus->register_engine_list->data;
-        }
-        else if (ibus->engine_list) {
-            next_desc = (IBusEngineDesc *) ibus->engine_list->data;
-        }
-    }
-
-    bus_ibus_impl_set_context_engine_from_desc (ibus, context, next_desc);
-}
-
-/**
- * bus_ibus_impl_context_request_previous_engine:
- *
- * Process the "previous_engine" hotkey.
- */
-static void
-bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
-                                               BusInputContext *context)
-{
-    gchar *engine_name = NULL;
-
-    if (!ibus->use_global_engine) {
-        engine_name = (gchar *) g_object_get_data (G_OBJECT (context), "previous-engine-name");
-    }
-    else {
-        if (!ibus->global_previous_engine_name) {
-            ibus->global_previous_engine_name = bus_ibus_impl_load_global_previous_engine_name_from_config (ibus);
-        }
-        engine_name = ibus->global_previous_engine_name;
-        if (engine_name != NULL) {
-            /* If the previous engine is removed from the engine list or the
-               current engine and the previous engine are the same one, force
-               to pick a new one. */
-            if (!_find_engine_desc_by_name (ibus, engine_name) ||
-                g_strcmp0 (engine_name, ibus->global_engine_name) == 0) {
-                g_free (engine_name);
-                ibus->global_previous_engine_name = engine_name = NULL;
-            }
-        }
-    }
-
-    if (!engine_name) {
-        bus_ibus_impl_context_request_rotate_engine_in_menu (ibus, context,
-                                                             FALSE);
-        return;
-    }
-
-    IBusEngineDesc *desc = NULL;
-    desc = bus_ibus_impl_get_engine_desc (ibus, engine_name);
-    if (desc != NULL) {
-        bus_ibus_impl_set_context_engine_from_desc (ibus,
-                                                    context,
-                                                    desc);
-    }
+    return bus_registry_find_engine_by_name (ibus->registry, engine_name);
 }
 
 static void
@@ -1214,7 +564,8 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
             /* dettach engine from the focused context */
             engine = bus_input_context_get_engine (ibus->focused_context);
             if (engine) {
-                is_enabled = bus_input_context_is_enabled (ibus->focused_context);
+                // is_enabled = bus_input_context_is_enabled (ibus->focused_context);
+                is_enabled = TRUE;
                 g_object_ref (engine);
                 bus_input_context_set_engine (ibus->focused_context, NULL);
             }
@@ -1361,9 +712,6 @@ _context_engine_changed_cb (BusInputContext *context,
             g_free (ibus->global_previous_engine_name);
             ibus->global_previous_engine_name = ibus->global_engine_name;
             ibus->global_engine_name = g_strdup (name);
-            /* save changes */
-            bus_ibus_impl_save_global_engine_name_to_config (ibus);
-            bus_ibus_impl_save_global_previous_engine_name_to_config (ibus);
             bus_ibus_impl_global_engine_changed (ibus);
         }
     }
@@ -1444,30 +792,6 @@ _context_destroy_cb (BusInputContext    *context,
 }
 
 /**
- * _context_enabled_cb:
- *
- * A callback function to be called when the "enabled" signal is sent to the context.
- */
-static void
-_context_enabled_cb (BusInputContext    *context,
-                     BusIBusImpl        *ibus)
-{
-    /* FIXME implement this. */
-}
-
-/**
- * _context_disabled_cb:
- *
- * A callback function to be called when the "disabled" signal is sent to the context.
- */
-static void
-_context_disabled_cb (BusInputContext    *context,
-                      BusIBusImpl        *ibus)
-{
-    /* FIXME implement this. */
-}
-
-/**
  * bus_ibus_impl_create_input_context:
  * @client: A name of a client. e.g. "gtk-im"
  * @returns: A BusInputContext object.
@@ -1493,8 +817,6 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
         { "focus-in",       G_CALLBACK (_context_focus_in_cb) },
         { "focus-out",      G_CALLBACK (_context_focus_out_cb) },
         { "destroy",        G_CALLBACK (_context_destroy_cb) },
-        { "enabled",        G_CALLBACK (_context_enabled_cb) },
-        { "disabled",       G_CALLBACK (_context_disabled_cb) },
     };
 
     gint i;
@@ -1668,6 +990,37 @@ _ibus_list_engines (BusIBusImpl           *ibus,
         g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
     g_list_free (engines);
+    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
+}
+
+/**
+ * _ibus_get_engines_by_names:
+ *
+ * Implement the "GetEnginesByNames" method call of the org.freedesktop.IBus interface.
+ */
+static void
+_ibus_get_engines_by_names (BusIBusImpl           *ibus,
+                            GVariant              *parameters,
+                            GDBusMethodInvocation *invocation)
+{
+    const gchar **names = NULL;
+    g_variant_get (parameters, "(^a&s)", &names);
+
+    g_assert (names != NULL);
+
+    gint i = 0;
+    GVariantBuilder builder;
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
+    while (names[i] != NULL) {
+        IBusEngineDesc *desc = bus_registry_find_engine_by_name (
+                ibus->registry, names[i++]);
+        if (desc == NULL)
+            continue;
+        g_variant_builder_add (
+                &builder,
+                "v",
+                ibus_serializable_serialize ((IBusSerializable *)desc));
+    }
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
 }
 
@@ -1863,7 +1216,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
     const gchar *engine_name = NULL;
     g_variant_get (parameters, "(&s)", &engine_name);
 
-    IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, engine_name);
+    IBusEngineDesc *desc = bus_ibus_impl_get_engine_desc(ibus, engine_name);
     if (desc == NULL) {
         g_dbus_method_invocation_return_error (invocation,
                                                G_DBUS_ERROR,
@@ -1906,7 +1259,7 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
         if (context == NULL)
             break;
 
-        enabled = bus_input_context_is_enabled (context);
+        enabled = TRUE;
     } while (0);
 
     g_dbus_method_invocation_return_value (invocation,
@@ -1946,6 +1299,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
         { "CurrentInputContext",   _ibus_current_input_context },
         { "RegisterComponent",     _ibus_register_component },
         { "ListEngines",           _ibus_list_engines },
+        { "GetEnginesByNames",     _ibus_get_engines_by_names },
         { "ListActiveEngines",     _ibus_list_active_engines },
         { "Exit",                  _ibus_exit },
         { "Ping",                  _ibus_ping },
@@ -1992,14 +1346,6 @@ bus_ibus_impl_lookup_factory (BusIBusImpl *ibus,
     factory = (BusFactoryProxy *) g_hash_table_lookup (ibus->factory_dict, path);
 
     return factory;
-}
-
-IBusHotkeyProfile *
-bus_ibus_impl_get_hotkey_profile (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    return ibus->hotkey_profile;
 }
 
 IBusKeymap *
@@ -2064,205 +1410,7 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
                                          guint           prev_keyval,
                                          guint           prev_modifiers)
 {
-    static GQuark trigger = 0;
-    static GQuark enable_unconditional = 0;
-    static GQuark disable_unconditional = 0;
-    static GQuark next = 0;
-    static GQuark previous = 0;
-
-    GQuark event;
-    GList *engine_list;
-
-    if (trigger == 0) {
-        trigger = g_quark_from_static_string ("trigger");
-        enable_unconditional = g_quark_from_static_string ("enable-unconditional");
-        disable_unconditional = g_quark_from_static_string ("disable-unconditional");
-        next = g_quark_from_static_string ("next-engine-in-menu");
-        previous = g_quark_from_static_string ("previous-engine");
-    }
-
-    /* Try global hotkeys first. */
-    event = ibus_hotkey_profile_filter_key_event (ibus->hotkey_profile,
-                                                  keyval,
-                                                  modifiers,
-                                                  prev_keyval,
-                                                  prev_modifiers,
-                                                  0);
-
-    if (event == trigger) {
-        gboolean enabled = bus_input_context_is_enabled (context);
-        if (enabled) {
-            bus_input_context_disable (context);
-        }
-        else {
-            bus_input_context_enable (context);
-        }
-        return TRUE;
-    }
-    if (event == enable_unconditional) {
-        gboolean enabled = bus_input_context_is_enabled (context);
-        if (!enabled) {
-            bus_input_context_enable (context);
-        }
-        return TRUE;
-    }
-    if (event == disable_unconditional) {
-        gboolean enabled = bus_input_context_is_enabled (context);
-        if (enabled) {
-            bus_input_context_disable (context);
-        }
-        return TRUE;
-    }
-    if (event == next) {
-        if (bus_input_context_is_enabled (context)) {
-            bus_ibus_impl_context_request_rotate_engine_in_menu (ibus, context,
-                                                                 TRUE);
-        }
-        else {
-            bus_input_context_enable (context);
-        }
-        return TRUE;
-    }
-    if (event == previous) {
-        if (bus_input_context_is_enabled (context)) {
-            bus_ibus_impl_context_request_previous_engine (ibus, context);
-        }
-        else {
-            bus_input_context_enable (context);
-        }
-        return TRUE;
-    }
-
-    if (!ibus->engines_hotkey_profile || !ibus->hotkey_to_engines_map) {
-        return FALSE;
-    }
-
-    /* Then try engines hotkeys. */
-    event = ibus_hotkey_profile_filter_key_event (ibus->engines_hotkey_profile,
-                                                  keyval,
-                                                  modifiers,
-                                                  prev_keyval,
-                                                  prev_modifiers,
-                                                  0);
-    if (event == 0) {
-        return FALSE;
-    }
-
-    engine_list = g_hash_table_lookup (ibus->hotkey_to_engines_map,
-                                       GUINT_TO_POINTER (event));
-    if (engine_list) {
-        BusEngineProxy *current_engine = bus_input_context_get_engine (context);
-        IBusEngineDesc *current_engine_desc =
-            (current_engine ? bus_engine_proxy_get_desc (current_engine) : NULL);
-        IBusEngineDesc *new_engine_desc = (IBusEngineDesc *) engine_list->data;
-
-        g_assert (new_engine_desc);
-
-        /* Find out what engine we should switch to. If the current engine has
-         * the same hotkey, then we should switch to the next engine with the
-         * same hotkey in the list. Otherwise, we just switch to the first
-         * engine in the list. */
-        GList *p = engine_list;
-        for (; p->next != NULL; p = p->next) {
-            if (current_engine_desc == (IBusEngineDesc *) p->data) {
-                new_engine_desc = (IBusEngineDesc *) p->next->data;
-                break;
-            }
-        }
-
-        if (current_engine_desc != new_engine_desc) {
-            bus_ibus_impl_set_context_engine_from_desc (ibus, context, new_engine_desc);
-        }
-
-        return TRUE;
-    }
-
     return FALSE;
-}
-
-/**
- * bus_ibus_impl_load_global_engine_name_from_config:
- *
- * Retrieve the "global_engine" config from the config daemon. Return NULL if the daemon is not ready.
- */
-static gchar*
-bus_ibus_impl_load_global_engine_name_from_config (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-    if (ibus->config == NULL) {
-        /* the config component is not started yet. */
-        return NULL;
-    }
-    g_assert (IBUS_IS_CONFIG (ibus->config));
-
-    GVariant *variant = ibus_config_get_value (ibus->config, "general", "global_engine");
-    gchar *engine_name = NULL;
-    if (variant != NULL) {
-        engine_name = g_variant_dup_string (variant, NULL);
-        g_variant_unref (variant);
-    }
-    return engine_name;
-}
-
-/**
- * bus_ibus_impl_save_global_engine_name_to_config:
- *
- * Save the "global_engine" config value on the config daemon. No-op if the daemon is not ready.
- */
-static void
-bus_ibus_impl_save_global_engine_name_to_config (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    if (ibus->config &&
-        ibus->use_global_engine &&
-        ibus->global_engine_name) {
-        ibus_config_set_value (ibus->config,
-                               "general", "global_engine",
-                               g_variant_new_string (ibus->global_engine_name));
-    }
-}
-
-/**
- * bus_ibus_impl_load_global_previous_engine_name_from_config:
- *
- * Retrieve the "global_previous_engine" config from the config daemon. Return NULL if the daemon is not ready.
- */
-static gchar*
-bus_ibus_impl_load_global_previous_engine_name_from_config (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-    if (ibus->config == NULL) {
-        /* the config component is not started yet. */
-        return NULL;
-    }
-    g_assert (IBUS_IS_CONFIG (ibus->config));
-
-    GVariant *value = ibus_config_get_value (ibus->config, "general", "global_previous_engine");
-    if (value == NULL)
-        return NULL;
-    gchar *engine_name = g_variant_dup_string (value, NULL);
-    g_variant_unref (value);
-    return engine_name;
-}
-
-/**
- * bus_ibus_impl_save_global_previous_engine_name_to_config:
- *
- * Save the "global_previous_engine" config value on the config daemon. No-op if the daemon is not ready.
- */
-static void
-bus_ibus_impl_save_global_previous_engine_name_to_config (BusIBusImpl *ibus)
-{
-    g_assert (BUS_IS_IBUS_IMPL (ibus));
-
-    if (ibus->config &&
-        ibus->use_global_engine &&
-        ibus->global_previous_engine_name) {
-        ibus_config_set_value (ibus->config,
-                               "general", "global_previous_engine",
-                               g_variant_new_string (ibus->global_previous_engine_name));
-    }
 }
 
 /**
