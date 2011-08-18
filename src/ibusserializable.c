@@ -164,7 +164,7 @@ _g_value_serialize (GValue          *value)
         {                                                               \
             g##_type v;                                                 \
             v = g_value_get_##_type (value);                            \
-            return g_variant_new ("v", g_variant_new (signature, v));   \
+            return g_variant_new (signature, v);                        \
         }
     CASE_ENTRY(CHAR, char, "y");
     CASE_ENTRY(BOOLEAN, boolean, "b");
@@ -198,14 +198,14 @@ _g_value_deserialize (GVariant *variant)
     }
 
     typedef gchar *gstring;
-#define IF_ENTRY(TYPE, _type, signature)                    \
-    if (type ==  G_VARIANT_TYPE_##TYPE) {                   \
-        g##_type v;                                         \
-        g_variant_get (variant, signature, &v);             \
-        value = g_slice_new0 (GValue);                      \
-        g_value_init (value, G_TYPE_##TYPE);                \
-        g_value_set_##_type (value, v);                     \
-        return value;                                       \
+#define IF_ENTRY(TYPE, _type, signature)                      \
+    if (g_variant_type_equal(type, G_VARIANT_TYPE_##TYPE)) {  \
+        g##_type v;                                           \
+        g_variant_get (variant, signature, &v);               \
+        value = g_slice_new0 (GValue);                        \
+        g_value_init (value, G_TYPE_##TYPE);                  \
+        g_value_set_##_type (value, v);                       \
+        return value;                                         \
     }
 #define G_VARIANT_TYPE_CHAR G_VARIANT_TYPE_BYTE
     IF_ENTRY(CHAR, char, "y");

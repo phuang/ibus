@@ -128,6 +128,39 @@ test_property (void)
     g_variant_type_info_assert_no_infos ();
 }
 
+static void
+test_attachment (void)
+{
+    IBusText *text =  ibus_text_new_from_string ("main text");
+
+    GValue value1 = { 0 };
+    g_value_init(&value1, G_TYPE_INT);
+    g_value_set_int(&value1, 100);
+    ibus_serializable_set_attachment ((IBusSerializable *)text, "key1", &value1);
+
+    GValue value2 = { 0 };
+    g_value_init(&value2, G_TYPE_STRING);
+    g_value_set_string(&value2, "value string");
+    ibus_serializable_set_attachment ((IBusSerializable *)text, "key2", &value2);
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    g_object_unref ((IBusSerializable *)text);
+
+    IBusSerializable *object = (IBusSerializable *) ibus_serializable_deserialize (variant);
+    g_variant_unref (variant);
+
+    g_assert_cmpstr (((IBusText *)object)->text, ==, "main text");
+
+    const GValue *newvalue1 = ibus_serializable_get_attachment (object, "key1");
+    g_assert (newvalue1 != NULL);
+    g_assert (g_value_get_int (newvalue1) == 100);
+
+    const GValue *newvalue2 = ibus_serializable_get_attachment (object, "key2");
+    g_assert (newvalue2 != NULL);
+    g_assert_cmpstr (g_value_get_string (newvalue2), ==, "value string");
+
+    g_variant_type_info_assert_no_infos ();
+}
 
 gint
 main (gint    argc,
@@ -142,6 +175,7 @@ main (gint    argc,
     g_test_add_func ("/ibus/enginedesc", test_engine_desc);
     g_test_add_func ("/ibus/lookuptable", test_lookup_table);
     g_test_add_func ("/ibus/property", test_property);
+    g_test_add_func ("/ibus/attachment", test_attachment);
 
     return g_test_run ();
 }

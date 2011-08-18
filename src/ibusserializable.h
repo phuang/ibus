@@ -87,12 +87,11 @@
  * ibus_serializable_get_attachment:
  * @o: An IBusSerializable.
  * @k: String formatted key for indexing value.
- * @v: Value to be attached. Should be also serializable.
  *
  * Get a value from attachment of an IBusSerializable.
  * This macro is an convenient wrapper of ibus_serializable_get_qattachment().
  */
-#define ibus_serializable_get_attachment(o, k, v)  \
+#define ibus_serializable_get_attachment(o, k)  \
     ibus_serializable_get_qattachment (o, g_quark_from_string (k))
 
 /**
