@@ -12,7 +12,7 @@ void test_serializable (IBusSerializable *object)
     g_variant_get_data (variant);
     s1 = g_variant_print (variant, TRUE);
 
-    object = (IBusSerializable *) ibus_serializable_deserialize (variant);
+    object = ibus_serializable_deserialize (variant);
     g_variant_unref (variant);
 
     variant = ibus_serializable_serialize (object);
@@ -131,34 +131,51 @@ test_property (void)
 static void
 test_attachment (void)
 {
-    IBusText *text =  ibus_text_new_from_string ("main text");
+    IBusText *text =  ibus_text_new_from_static_string ("main text");
 
-    GValue value1 = { 0 };
-    g_value_init(&value1, G_TYPE_INT);
-    g_value_set_int(&value1, 100);
-    ibus_serializable_set_attachment ((IBusSerializable *)text, "key1", &value1);
+    ibus_serializable_set_attachment ((IBusSerializable *)text,
+                                      "key1",
+                                      g_variant_new_int32 (100));
 
-    GValue value2 = { 0 };
-    g_value_init(&value2, G_TYPE_STRING);
-    g_value_set_string(&value2, "value string");
-    ibus_serializable_set_attachment ((IBusSerializable *)text, "key2", &value2);
+    ibus_serializable_set_attachment ((IBusSerializable *)text,
+                                      "key2",
+                                      g_variant_new_string ("value string"));
+
+    ibus_serializable_set_attachment ((IBusSerializable *)text,
+                                      "key3",
+                                      g_variant_new ("(iuds)",1, 2, 3.333, "test value"));
 
     GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
     g_object_unref ((IBusSerializable *)text);
 
-    IBusSerializable *object = (IBusSerializable *) ibus_serializable_deserialize (variant);
+    IBusSerializable *object = ibus_serializable_deserialize (variant);
     g_variant_unref (variant);
 
     g_assert_cmpstr (((IBusText *)object)->text, ==, "main text");
 
-    const GValue *newvalue1 = ibus_serializable_get_attachment (object, "key1");
+    GVariant *newvalue1 = ibus_serializable_get_attachment (object, "key1");
     g_assert (newvalue1 != NULL);
-    g_assert (g_value_get_int (newvalue1) == 100);
+    g_assert_cmpint (g_variant_get_int32 (newvalue1), ==, 100);
 
-    const GValue *newvalue2 = ibus_serializable_get_attachment (object, "key2");
+    GVariant *newvalue2 = ibus_serializable_get_attachment (object, "key2");
     g_assert (newvalue2 != NULL);
-    g_assert_cmpstr (g_value_get_string (newvalue2), ==, "value string");
+    g_assert_cmpstr (g_variant_get_string (newvalue2, NULL), ==, "value string");
 
+    {
+        GVariant *newvalue3 = ibus_serializable_get_attachment (object, "key3");
+        g_assert (newvalue3 != NULL);
+        gint32 i;
+        guint32 u;
+        gdouble d;
+        const gchar *s;
+        g_variant_get (newvalue3, "(iud&s)", &i, &u, &d, &s);
+        g_assert_cmpint (i, ==, 1);
+        g_assert_cmpuint (u, ==, 2);
+        g_assert_cmpfloat (d, ==, 3.333);
+        g_assert_cmpstr (s, ==, "test value");
+    }
+
+    g_object_unref (object);
     g_variant_type_info_assert_no_infos ();
 }
 
