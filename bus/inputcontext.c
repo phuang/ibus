@@ -2292,6 +2292,8 @@ new_engine_cb (GObject             *obj,
                                              "Opertation was cancelled");
         }
         else {
+            /* Let BusEngineProxy call a Disable signal. */
+            bus_input_context_disable (data->context);
             bus_input_context_set_engine (data->context, engine);
             g_object_unref (engine);
             bus_input_context_enable (data->context);
