@@ -38,13 +38,16 @@ DISTCLEANFILES = \
 	$(NULL)
 
 MAINTAINERCLEANFILES = \
-	$(gsettings_schemas_in_files)
+	$(gsettings_schemas_in_files) \
+	$(NULL)
+
+CLEANFILES = \
+	db/ibus \
 	$(NULL)
 
 dconfprofiledir = $(sysconfdir)/dconf
-nobase_dist_dconfprofile_DATA = \
-	db/ibus \
-	profile/ibus
+nobase_dconfprofile_DATA = db/ibus
+nobase_dist_dconfprofile_DATA = profile/ibus
 
 org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
 	$(AM_V_GEN) gsettings-schema-convert --force --gconf --xml \
