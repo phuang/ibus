@@ -1197,7 +1197,8 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
             /* dettach engine from the focused context */
             engine = bus_input_context_get_engine (ibus->focused_context);
             if (engine) {
-                is_enabled = bus_input_context_is_enabled (ibus->focused_context);
+                // is_enabled = bus_input_context_is_enabled (ibus->focused_context);
+                is_enabled = TRUE;
                 g_object_ref (engine);
                 bus_input_context_set_engine (ibus->focused_context, NULL);
             }
