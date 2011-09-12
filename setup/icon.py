@@ -24,12 +24,12 @@ __all__ = (
     "load_icon"
 )
 
-import gtk
-from gtk import gdk
+from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 from os import path
 
 
-icon_theme = gtk.icon_theme_get_default()
+icon_theme = Gtk.IconTheme.get_default()
 dir = path.dirname(__file__)
 icondir = path.join(dir, "..", "icons")
 icon_theme.prepend_search_path(icondir)
@@ -40,22 +40,24 @@ def load_icon(icon, size):
     if (icon, size) in icon_cache:
         return icon_cache[(icon, size)]
 
-    icon_size = gtk.icon_size_lookup(size)[0]
+    icon_size = Gtk.icon_size_lookup(size)[1]
     pixbuf = None
     try:
-        pixbuf = gdk.pixbuf_new_from_file(icon)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)
         w, h = pixbuf.get_width(), pixbuf.get_height()
         rate = max(w, h) / float(icon_size)
         w = int(w / rate)
         h = int(h / rate)
-        pixbuf = pixbuf.scale_simple(w, h, gdk.INTERP_BILINEAR)
+        pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
     except:
         pass
     if pixbuf == None:
         try:
-            theme = gtk.icon_theme_get_default()
-            pixbuf = theme.load_icon(icon, icon_size, 0)
+            pixbuf = icon_theme.load_icon(icon, icon_size, 0)
         except:
             pass
     icon_cache[(icon, size)] = pixbuf
     return pixbuf
+
+if __name__ == "__main__":
+    print load_icon("gtk-about", Gtk.IconSize.LARGE_TOOLBAR)

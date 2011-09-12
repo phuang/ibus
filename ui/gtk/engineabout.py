@@ -20,26 +20,27 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-import gtk
-from gtk import gdk
-import pango
-import ibus
+from gi.repository import GdkPixbuf
+from gi.repository import Gtk
+from gi.repository import Pango
+from gi.repository import IBus
+
 
 from i18n import _, N_
 
-class EngineAbout(gtk.Dialog):
+class EngineAbout(Gtk.Dialog):
     def __init__(self, enginedesc):
         self.__engine_desc = enginedesc
-        super(EngineAbout, self).__init__(_("About"), None, gtk.DIALOG_MODAL, (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        super(EngineAbout, self).__init__(_("About"), None, Gtk.DialogFlags.MODAL, (Gtk.STOCK_CLOSE, Gtk.RESPONSE_CLOSE))
 
         self.__init_ui()
 
     def __init_ui(self):
         self.set_icon_name("gtk-about")
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.__text_view = gtk.TextView()
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.__text_view = Gtk.TextView()
         self.__text_view.set_size_request(400, 400)
         self.__text_view.set_editable(False)
         sw.add(self.__text_view)
@@ -58,7 +59,7 @@ class EngineAbout(gtk.Dialog):
         text_buffer.insert_pixbuf(iter, self.__load_icon(self.__engine_desc.icon))
         text_buffer.insert_with_tags_by_name(iter, "\n%s\n" % self.__engine_desc.longname,
                                              "heading", "left_margin_16")
-        text_buffer.insert_with_tags_by_name(iter, _("Language: %s\n") % ibus.get_language_name(self.__engine_desc.language),
+        text_buffer.insert_with_tags_by_name(iter, _("Language: %s\n") % IBus.get_language_name(self.__engine_desc.get_language()),
                                             "small", "bold", "left_margin_16")
         text_buffer.insert_with_tags_by_name(iter, _("Keyboard layout: %s\n") % self.__engine_desc.layout,
                                             "small", "bold", "left_margin_16")
@@ -72,18 +73,18 @@ class EngineAbout(gtk.Dialog):
 
     def __create_tags(self, text_buffer):
         text_buffer.create_tag("heading",
-                        weight=pango.WEIGHT_BOLD,
-                        size = 16 * pango.SCALE)
+                        weight=Pango.Weight.BOLD,
+                        size = 16 * Pango.SCALE)
         text_buffer.create_tag("bold",
-                        weight=pango.WEIGHT_BOLD)
+                        weight=Pango.Weight.BOLD)
         text_buffer.create_tag("italic",
-                        style=pango.STYLE_ITALIC)
+                        style=Pango.Style.ITALIC)
         text_buffer.create_tag("small",
-                        scale=pango.SCALE_SMALL)
+                        scale=Pango.SCALE_SMALL)
         text_buffer.create_tag("gray_foreground",
                         foreground="dark gray")
         text_buffer.create_tag("wrap_text",
-                        wrap_mode=gtk.WRAP_WORD)
+                        wrap_mode=Gtk.WrapMode.WORD)
         text_buffer.create_tag("left_margin_16",
                         left_margin=16)
         text_buffer.create_tag("left_margin_32",
@@ -91,9 +92,9 @@ class EngineAbout(gtk.Dialog):
 
     def __load_icon(self, icon):
         try:
-            pixbuf = gdk.pixbuf_new_from_file_at_scale(icon, 48, 48, True)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon, 48, 48, True)
         except:
-            theme = gtk.icon_theme_get_default()
+            theme = Gtk.IconThem.get_default()
             icon = theme.lookup_icon("ibus-engine", 48, 0)
             if icon == None:
                 icon = theme.lookup_icon("gtk-missing-image", 48, 0)
