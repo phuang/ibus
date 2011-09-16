@@ -124,6 +124,30 @@ ibus_attribute_new (guint type,
     return attr;
 }
 
+guint
+ibus_attribute_get_attr_type (IBusAttribute *attr)
+{
+    return attr->type;
+}
+
+guint
+ibus_attribute_get_value (IBusAttribute *attr)
+{
+    return attr->value;
+}
+
+guint
+ibus_attribute_get_start_index (IBusAttribute *attr)
+{
+    return attr->start_index;
+}
+
+guint
+ibus_attribute_get_end_index (IBusAttribute *attr)
+{
+    return attr->end_index;
+}
+
 IBusAttribute *
 ibus_attr_underline_new (guint underline_type,
                          guint start_index,
