@@ -177,6 +177,18 @@ typedef enum {
 } IBusBusRequestNameReply;
 
 /**
+ * IBusBusStartServiceByNameReply:
+ * @IBUS_BUS_START_REPLY_SUCCESS:
+ *    same as DBUS_START_REPLY_SUCCESS
+ * @IBUS_BUS_START_REPLY_ALREADY_RUNNING:
+ *    same as DBUS_START_REPLY_ALREADY_RUNNING
+ */
+typedef enum {
+    IBUS_BUS_START_REPLY_SUCCESS = 1,
+    IBUS_BUS_START_REPLY_ALREADY_RUNNING = 2,
+} IBusBusStartServiceByNameReply;
+
+/**
  * IBusError:
  * @IBUS_ERROR_NO_ENGINE:
  * There is no engine associated with input context.

@@ -108,6 +108,9 @@ class Bus(object.Object):
     def release_name(self, name):
         return self.__dbus.ReleaseName(name)
 
+    def start_service_by_name(self, name, flags):
+        return self.__dbus.StartServiceByName(name, dbus.UInt32 (flags))
+
     def list_queued_owners(self, name):
         return self.__dbus.ListQueuedOwners(name)
 

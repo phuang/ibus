@@ -20,6 +20,9 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "dbusimpl.h"
+#include "ibusimpl.h"
+#include "registry.h"
+#include "option.h"
 #include <string.h>
 #include "types.h"
 #include "marshalers.h"
@@ -44,7 +47,7 @@ struct _BusDBusImpl {
     /* instance members */
     /* a map from a unique bus name (e.g. ":1.0") to a BusConnection. */
     GHashTable *unique_names;
-    /* a map from a requested well-known name (e.g. "org.freedesktop.IBus.Panel") to a BusConnection. */
+    /* a map from a requested well-known name (e.g. "org.freedesktop.IBus.Panel") to a BusNameService. */
     GHashTable *names;
     /* a list of IBusService objects. */
     GList *objects;
@@ -60,6 +63,10 @@ struct _BusDBusImpl {
 
     GMutex *forward_lock;
     GList *forward_queue;
+
+    /* a list of BusMethodCall to be used to reply when services are
+       really available */
+    GList *start_service_calls;
 };
 
 struct _BusDBusImplClass {
@@ -99,6 +106,15 @@ struct _BusConnectionOwner {
 
     guint allow_replacement : 1;
     guint do_not_queue : 1;
+};
+
+typedef struct _BusMethodCall BusMethodCall;
+struct _BusMethodCall {
+    BusDBusImpl *dbus;
+    BusConnection *connection;
+    GVariant *parameters;
+    GDBusMethodInvocation *invocation;
+    guint timeout_id;
 };
 
 /* functions prototype */
@@ -474,6 +490,34 @@ bus_name_service_get_allow_replacement (BusNameService *service)
     return owner->allow_replacement;
 }
 
+static BusMethodCall *
+bus_method_call_new (BusDBusImpl           *dbus,
+                     BusConnection         *connection,
+                     GVariant              *parameters,
+                     GDBusMethodInvocation *invocation)
+{
+    BusMethodCall *call = g_slice_new0 (BusMethodCall);
+    call->dbus = g_object_ref (dbus);
+    call->connection = g_object_ref (connection);
+    call->parameters = g_variant_ref (parameters);
+    call->invocation = g_object_ref (invocation);
+    return call;
+}
+
+static void
+bus_method_call_free (BusMethodCall *call)
+{
+    if (call->timeout_id != 0) {
+        g_source_remove (call->timeout_id);
+    }
+
+    g_object_unref (call->dbus);
+    g_object_unref (call->connection);
+    g_variant_unref (call->parameters);
+    g_object_unref (call->invocation);
+    g_slice_free (BusMethodCall, call);
+}
+
 static void
 bus_dbus_impl_class_init (BusDBusImplClass *class)
 {
@@ -591,6 +635,11 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
 
     dbus->unique_names = NULL;
     dbus->names = NULL;
+
+    g_list_foreach (dbus->start_service_calls,
+                    (GFunc) bus_method_call_free, NULL);
+    g_list_free (dbus->start_service_calls);
+    dbus->start_service_calls = NULL;
 
     /* FIXME destruct _lock and _queue members. */
     IBUS_OBJECT_CLASS(bus_dbus_impl_parent_class)->destroy ((IBusObject *) dbus);
@@ -1083,6 +1132,89 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
     g_dbus_method_invocation_return_value (invocation, g_variant_new ("(u)", retval));
 }
 
+static gboolean
+start_service_timeout_cb (BusMethodCall *call)
+{
+    const gchar *name= NULL;
+    guint32 flags;              /* currently not used in the D-Bus spec */
+    g_variant_get (call->parameters, "(&su)", &name, &flags);
+
+    g_dbus_method_invocation_return_error (call->invocation,
+                    G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                    "Timeout reached before starting %s", name);
+
+    GList *p = g_list_find (call->dbus->start_service_calls, call);
+    g_return_val_if_fail (p != NULL, FALSE);
+
+    bus_method_call_free ((BusMethodCall *) p->data);
+    call->dbus->start_service_calls =
+        g_list_delete_link (call->dbus->start_service_calls, p);
+
+    return FALSE;
+}
+
+/**
+ * bus_dbus_impl_start_service_by_name:
+ *
+ * Implement the "StartServiceByName" method call of the
+ * org.freedesktop.DBus interface.
+ */
+static void
+bus_dbus_impl_start_service_by_name (BusDBusImpl           *dbus,
+                                     BusConnection         *connection,
+                                     GVariant              *parameters,
+                                     GDBusMethodInvocation *invocation)
+{
+    const gchar *name= NULL;
+    guint32 flags;              /* currently not used in the D-Bus spec */
+    g_variant_get (parameters, "(&su)", &name, &flags);
+
+    if (name == NULL ||
+        !g_dbus_is_name (name) ||
+        g_dbus_is_unique_name (name)) {
+        g_dbus_method_invocation_return_error (invocation,
+                        G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
+                        "'%s' is not a legal service name.", name);
+        return;
+    }
+
+    if (g_strcmp0 (name, "org.freedesktop.DBus") == 0 ||
+        g_strcmp0 (name, "org.freedesktop.IBus") == 0) {
+        g_dbus_method_invocation_return_error (invocation,
+                        G_DBUS_ERROR, G_DBUS_ERROR_INVALID_ARGS,
+                        "Service name '%s' is owned by IBus.", name);
+        return;
+    }
+
+    if (g_hash_table_lookup (dbus->names, name) != NULL) {
+        g_dbus_method_invocation_return_value (invocation,
+                        g_variant_new ("(u)",
+                                       IBUS_BUS_START_REPLY_ALREADY_RUNNING));
+        return;
+    }
+
+    BusRegistry *registry = BUS_DEFAULT_REGISTRY;
+    BusComponent *component = bus_registry_lookup_component_by_name (registry,
+                                                                     name);
+
+    if (component == NULL || !bus_component_start (component, g_verbose)) {
+        g_dbus_method_invocation_return_error (invocation,
+                        G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                        "Failed to start %s", name);
+        return;
+    }
+
+    BusMethodCall *call = bus_method_call_new (dbus,
+                                               connection,
+                                               parameters,
+                                               invocation);
+    call->timeout_id = g_timeout_add (g_gdbus_timeout,
+                                      (GSourceFunc) start_service_timeout_cb,
+                                      call);
+    dbus->start_service_calls = g_list_prepend (dbus->start_service_calls,
+                                                (gpointer) call);
+}
+
 /**
  * bus_dbus_impl_name_owner_changed:
  *
@@ -1172,6 +1304,26 @@ bus_dbus_impl_name_acquired (BusDBusImpl   *dbus,
 
     bus_dbus_impl_forward_message (dbus, connection, message);
     g_object_unref (message);
+
+    GList *p = dbus->start_service_calls;
+    while (p != NULL) {
+        BusMethodCall *call = p->data;
+        const gchar *_name= NULL;
+        guint32 flags;
+        GList *next = p->next;
+
+        g_variant_get (call->parameters, "(&su)", &_name, &flags);
+        if (g_strcmp0 (name, _name) == 0) {
+            g_dbus_method_invocation_return_value (call->invocation,
+                            g_variant_new ("(u)",
+                                           IBUS_BUS_START_REPLY_SUCCESS));
+            bus_method_call_free ((BusMethodCall *) p->data);
+
+            dbus->start_service_calls =
+                g_list_delete_link (dbus->start_service_calls, p);
+        }
+        p = next;
+    }
 }
 
 /**
@@ -1219,6 +1371,7 @@ bus_dbus_impl_service_method_call (IBusService           *service,
         { "RemoveMatch",        bus_dbus_impl_remove_match },
         { "RequestName",        bus_dbus_impl_request_name },
         { "ReleaseName",        bus_dbus_impl_release_name },
+        { "StartServiceByName", bus_dbus_impl_start_service_by_name },
     };
 
     gint i;
@@ -1441,6 +1594,19 @@ bus_dbus_impl_connection_destroy_cb (BusConnection *connection,
     BusNameService *service = NULL;
 
     if (unique_name != NULL) {
+        GList *p = dbus->start_service_calls;
+        while (p != NULL) {
+            BusMethodCall *call = p->data;
+            GList *next = p->next;
+
+            if (call->connection == connection) {
+                bus_method_call_free ((BusMethodCall *) p->data);
+                dbus->start_service_calls =
+                    g_list_delete_link (dbus->start_service_calls, p);
+            }
+            p = next;
+        }
+
         g_hash_table_remove (dbus->unique_names, unique_name);
         g_signal_emit (dbus,
                        dbus_signals[NAME_OWNER_CHANGED],
