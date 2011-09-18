@@ -160,16 +160,10 @@ ibus_text_new_from_ucs4 (const gunichar *str)
 {
     g_assert (str);
 
-    IBusText *text;
-    gchar *buf;
+    gchar *buf = g_ucs4_to_utf8 (str, -1, NULL, NULL, NULL);
+    g_return_val_if_fail (buf != NULL, NULL);
 
-    buf = g_ucs4_to_utf8 (str, -1, NULL, NULL, NULL);
-
-    if (buf == NULL) {
-        return NULL;
-    }
-
-    text= g_object_new (IBUS_TYPE_TEXT, NULL);
+    IBusText *text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = FALSE;
     text->text = buf;
@@ -206,8 +200,7 @@ ibus_text_new_from_printf (const gchar *format,
     str = g_strdup_vprintf (format, args);
     va_end (args);
 
-    if (str == NULL)
-        return NULL;
+    g_return_val_if_fail (str != NULL, NULL);
 
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
     text->is_static = FALSE;
@@ -222,9 +215,7 @@ ibus_text_new_from_unichar (gunichar c)
     IBusText *text;
     gint len;
 
-    if (!g_unichar_validate (c)) {
-        return NULL;
-    }
+    g_return_val_if_fail (g_unichar_validate (c), NULL);
 
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
