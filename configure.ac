@@ -22,11 +22,11 @@
 
 
 # If ibus_released is 0, append datestamp to the version number.
-m4_define([ibus_released], [0])
+m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [3])
-m4_define([ibus_micro_version], [99])
+m4_define([ibus_minor_version], [4])
+m4_define([ibus_micro_version], [0])
 m4_define([ibus_interface_age], [0])
 m4_define([ibus_binary_age],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
