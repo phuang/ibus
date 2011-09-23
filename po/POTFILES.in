@@ -1,6 +1,7 @@
 src/ibusbus.c
 src/ibusconfig.c
 src/ibusengine.c
+src/ibusfactory.c
 src/ibushotkey.c
 src/ibusinputcontext.c
 src/ibusobject.c
