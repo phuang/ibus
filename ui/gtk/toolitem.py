@@ -73,11 +73,9 @@ class ToolButton(gtk.ToolButton, PropItem):
         self.set_icon_name(self._prop.icon)
 
         if self._prop.visible:
-            self.set_no_show_all(False)
-            self.show_all()
+            self.show()
         else:
-            self.set_no_show_all(True)
-            self.hide_all()
+            self.hide()
 
     def do_clicked(self):
         self.emit("property-activate", self._prop.key, self._prop.state)
@@ -128,11 +126,9 @@ class ToggleToolButton(gtk.ToggleToolButton, PropItem):
         self.set_active(self._prop.state == ibus.PROP_STATE_CHECKED)
         self.set_sensitive(self._prop.sensitive)
         if self._prop.visible:
-            self.set_no_show_all(False)
-            self.show_all()
+            self.show()
         else:
-            self.set_no_show_all(True)
-            self.hide_all()
+            self.hide()
 
     def do_toggled(self):
         # Do not send property-activate to engine in case the event is
