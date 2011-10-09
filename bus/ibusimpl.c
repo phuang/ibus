@@ -2066,21 +2066,21 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
         else {
             bus_input_context_enable (context);
         }
-        return (enabled != bus_input_context_is_enabled (context));
+        return TRUE;
     }
     if (event == enable_unconditional) {
         gboolean enabled = bus_input_context_is_enabled (context);
         if (!enabled) {
             bus_input_context_enable (context);
         }
-        return bus_input_context_is_enabled (context);
+        return TRUE;
     }
     if (event == disable_unconditional) {
         gboolean enabled = bus_input_context_is_enabled (context);
         if (enabled) {
             bus_input_context_disable (context);
         }
-        return !bus_input_context_is_enabled (context);
+        return TRUE;
     }
     if (event == next) {
         if (bus_input_context_is_enabled (context)) {
