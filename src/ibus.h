@@ -52,6 +52,7 @@
 #include <ibusconfig.h>
 #include <ibusconfigservice.h>
 #include <ibuspanelservice.h>
+#include <ibusutil.h>
 
 #undef __IBUS_H_INSIDE__
 
