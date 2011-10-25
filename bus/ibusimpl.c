@@ -1044,13 +1044,14 @@ bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
 }
 
 /**
- * bus_ibus_impl_context_request_next_engine_in_menu:
+ * bus_ibus_impl_context_request_rotate_engine_in_menu:
  *
- * Process the "next_engine_in_menu" hotkey.
+ * Process the "next_engine_in_menu" or "previous_engine" hotkey.
  */
 static void
-bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
-                                                   BusInputContext *context)
+bus_ibus_impl_context_request_rotate_engine_in_menu (BusIBusImpl     *ibus,
+                                                     BusInputContext *context,
+                                                     gboolean         is_next)
 {
     BusEngineProxy *engine;
     IBusEngineDesc *desc;
@@ -1071,12 +1072,20 @@ bus_ibus_impl_context_request_next_engine_in_menu (BusIBusImpl     *ibus,
 
     p = g_list_find (ibus->register_engine_list, desc);
     if (p != NULL) {
-        p = p->next;
+        if (is_next) {
+            p = p->next;
+        } else if (p->prev) {
+            p = p->prev;
+        }
     }
     if (p == NULL) {
         p = g_list_find (ibus->engine_list, desc);
         if (p != NULL) {
-            p = p->next;
+            if (is_next) {
+                p = p->next;
+            } else if (p->prev) {
+                p = p->prev;
+            }
         }
     }
 
@@ -1126,12 +1135,9 @@ bus_ibus_impl_context_request_previous_engine (BusIBusImpl     *ibus,
         }
     }
 
-    /*
-     * If the previous engine name is not found, switch to the next engine
-     * in the menu. This behavior is better than doing nothing.
-     */
     if (!engine_name) {
-        bus_ibus_impl_context_request_next_engine_in_menu (ibus, context);
+        bus_ibus_impl_context_request_rotate_engine_in_menu (ibus, context,
+                                                             FALSE);
         return;
     }
 
@@ -2084,7 +2090,8 @@ bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
     }
     if (event == next) {
         if (bus_input_context_is_enabled (context)) {
-            bus_ibus_impl_context_request_next_engine_in_menu (ibus, context);
+            bus_ibus_impl_context_request_rotate_engine_in_menu (ibus, context,
+                                                                 TRUE);
         }
         else {
             bus_input_context_enable (context);
