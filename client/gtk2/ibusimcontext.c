@@ -734,6 +734,19 @@ ibus_im_context_focus_in (GtkIMContext *context)
     if (ibusimcontext->has_focus)
         return;
 
+    /* don't set focus on password entry */
+    if (ibusimcontext->client_window != NULL) {
+        GtkWidget *widget;
+
+        gdk_window_get_user_data (ibusimcontext->client_window,
+                                  (gpointer *)&widget);
+
+        if (GTK_IS_ENTRY (widget) &&
+            !gtk_entry_get_visibility (GTK_ENTRY (widget))) {
+            return;
+        }
+    }
+
     if (_focus_im_context != NULL) {
         g_assert (_focus_im_context != context);
         gtk_im_context_focus_out (_focus_im_context);
