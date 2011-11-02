@@ -1056,7 +1056,7 @@ bus_ibus_impl_context_request_rotate_engine_in_menu (BusIBusImpl     *ibus,
     BusEngineProxy *engine;
     IBusEngineDesc *desc;
     IBusEngineDesc *next_desc = NULL;
-    GList *p;
+    GList *p = NULL;
 
     engine = bus_input_context_get_engine (context);
     if (engine == NULL) {
@@ -1074,17 +1074,42 @@ bus_ibus_impl_context_request_rotate_engine_in_menu (BusIBusImpl     *ibus,
     if (p != NULL) {
         if (is_next) {
             p = p->next;
-        } else if (p->prev) {
+        } else {
             p = p->prev;
         }
     }
+
+    /* Rotate register_engine_list and engine_list. */
+    if (p == NULL && g_list_find (ibus->register_engine_list, desc) != NULL) {
+        if (is_next) {
+            p = ibus->engine_list;
+        } else {
+            p = g_list_last (ibus->engine_list);
+        }
+    }
+
     if (p == NULL) {
         p = g_list_find (ibus->engine_list, desc);
         if (p != NULL) {
             if (is_next) {
                 p = p->next;
-            } else if (p->prev) {
+            } else {
                 p = p->prev;
+            }
+        }
+    }
+
+    /* Rerotate register_engine_list and engine_list. */
+    if (p == NULL && g_list_find (ibus->engine_list, desc) != NULL) {
+        if (is_next) {
+            p = ibus->register_engine_list;
+            if (p == NULL) {
+                p = ibus->engine_list;
+            }
+        } else {
+            p = g_list_last (ibus->register_engine_list);
+            if (p == NULL) {
+                p = g_list_last (ibus->engine_list);
             }
         }
     }
