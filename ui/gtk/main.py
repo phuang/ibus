@@ -86,6 +86,9 @@ class UIApplication:
             pass
 
 def launch_panel(replace):
+    settings = gtk.settings_get_default()
+    if settings.get_property('gtk-fallback-icon-theme') == None:
+        settings.set_property('gtk-fallback-icon-theme', 'gnome')
     # gtk.settings_get_default().props.gtk_theme_name = "/home/phuang/.themes/aud-Default/gtk-2.0/gtkrc"
     # gtk.rc_parse("./themes/default/gtkrc")
     UIApplication(replace).run()

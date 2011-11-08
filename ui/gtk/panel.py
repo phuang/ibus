@@ -477,7 +477,7 @@ class Panel(ibus.PanelBase):
             menu = gtk.Menu()
             item = gtk.ImageMenuItem(_("No input window"))
             size = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-            item.set_image(_icon.IconWidget("gtk-info", size[0]))
+            item.set_image(_icon.IconWidget("gtk-dialog-info", size[0]))
             menu.add(item)
             menu.show_all()
         else:

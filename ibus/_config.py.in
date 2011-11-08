@@ -45,10 +45,14 @@ def get_license():
 
 def get_ICON_KEYBOARD():
     import gtk
-    theme = gtk.icon_theme_get_default()
     icon = '@IBUS_ICON_KEYBOARD@'
+    fallback_icon = 'ibus-keyboard'
+    settings = gtk.settings_get_default()
+    if settings.get_property('gtk-icon-theme-name') != 'gnome':
+        return fallback_icon
+    theme = gtk.icon_theme_get_default()
     if not theme.lookup_icon(icon, 18, 0):
-        icon = 'ibus-keyboard'
+        return fallback_icon
     return icon
 
 ISOCODES_PREFIX='@ISOCODES_PREFIX@'
