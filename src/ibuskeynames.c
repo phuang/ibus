@@ -95,7 +95,7 @@ ibus_keyval_from_name (const gchar *keyval_name)
   if (found != NULL)
     return found->keyval;
   else
-    return IBUS_VoidSymbol;
+    return IBUS_KEY_VoidSymbol;
 }
 
 static const gchar *
@@ -132,7 +132,7 @@ ibus_key_event_to_string (guint keyval,
 	GString *str;
 	const gchar *keyval_name;
 
-	g_return_val_if_fail (keyval != IBUS_VoidSymbol, NULL);
+	g_return_val_if_fail (keyval != IBUS_KEY_VoidSymbol, NULL);
 
 	keyval_name = ibus_keyval_name (keyval);
 	g_return_val_if_fail (keyval_name != NULL, NULL);
@@ -189,7 +189,7 @@ ibus_key_event_from_string (const gchar *string,
 	}
 
 	*keyval = ibus_keyval_from_name (*p);
-	if (*keyval != IBUS_VoidSymbol)
+	if (*keyval != IBUS_KEY_VoidSymbol)
 		retval = TRUE;
 _out:
 	if (tokens)

@@ -572,7 +572,7 @@ bus_input_context_class_init (BusInputContextClass *class)
 static void
 bus_input_context_init (BusInputContext *context)
 {
-    context->prev_keyval = IBUS_VoidSymbol;
+    context->prev_keyval = IBUS_KEY_VoidSymbol;
     g_object_ref_sink (text_empty);
     context->preedit_text = text_empty;
     context->preedit_mode = IBUS_ENGINE_PREEDIT_CLEAR;
@@ -691,7 +691,7 @@ _ic_process_key_event  (BusInputContext       *context,
                         GVariant              *parameters,
                         GDBusMethodInvocation *invocation)
 {
-    guint keyval = IBUS_VoidSymbol;
+    guint keyval = IBUS_KEY_VoidSymbol;
     guint keycode = 0;
     guint modifiers = 0;
 
@@ -1077,7 +1077,7 @@ bus_input_context_focus_in (BusInputContext *context)
 
     /* To make sure that we won't use an old value left before we losing focus
      * last time. */
-    context->prev_keyval = IBUS_VoidSymbol;
+    context->prev_keyval = IBUS_KEY_VoidSymbol;
     context->prev_modifiers = 0;
 
     if (context->engine == NULL) {

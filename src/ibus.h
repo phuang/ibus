@@ -54,6 +54,10 @@
 #include <ibuspanelservice.h>
 #include <ibusutil.h>
 
+#ifndef IBUS_DISABLE_DEPRECATED
+#include <ibuskeysyms-compat.h>
+#endif
+
 #undef __IBUS_H_INSIDE__
 
 #endif

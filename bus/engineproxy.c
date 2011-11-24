@@ -908,7 +908,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
             keymap = BUS_DEFAULT_KEYMAP;
         if (keymap != NULL) {
             guint t = ibus_keymap_lookup_keysym (keymap, keycode, state);
-            if (t != IBUS_VoidSymbol) {
+            if (t != IBUS_KEY_VoidSymbol) {
                 keyval = t;
             }
         }
