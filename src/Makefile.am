@@ -129,6 +129,7 @@ ibus_headers =              \
     ibusconfigservice.h     \
     ibuspanelservice.h      \
     ibuskeysyms.h           \
+    ibuskeysyms-compat.h    \
     ibuskeys.h              \
     ibustypes.h             \
     ibusbus.h               \
