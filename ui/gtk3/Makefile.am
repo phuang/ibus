@@ -72,13 +72,27 @@ ibus_ui_gtk3_SOURCES = \
 	panel.vala \
 	pango.vala \
 	separator.vala \
-	$(NULL)
-
-ibus_ui_gtk3_CFLAGS = \
-	$(AM_CFLAGS) \
+	switcher.vala \
 	$(NULL)
 
 ibus_ui_gtk3_LDADD = \
+	$(AM_LDADD) \
+	$(NULL)
+
+TESTS = \
+	test-switcher \
+	$(NULL)
+
+noinst_PROGRAMS = $(TESTS)
+
+test_switcher_SOURCES = \
+	iconwidget.vala \
+	keybindingmanager.vala \
+	switcher.vala \
+	switchertest.vala \
+	$(NULL)
+
+test_switcher_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 

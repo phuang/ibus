@@ -1,4 +1,4 @@
-/*
+/* vim:set et sts=4 sw=4:
 valac --pkg gtk+-2.0 --pkg x11 --pkg gdk-x11-2.0 --pkg gee-1.0 keybinding-manager.vala
 */
 
@@ -15,8 +15,7 @@ using GLib;
 using Gtk;
 using X;
 
-class KeybindingManager : GLib.Object
-{
+class KeybindingManager : GLib.Object {
     /**
      * list of binded keybindings
      */
@@ -37,22 +36,38 @@ class KeybindingManager : GLib.Object
         Gdk.ModifierType.MOD2_MASK|Gdk.ModifierType.LOCK_MASK|Gdk.ModifierType.MOD5_MASK
     };
 
+    private uint get_primary_modifier (uint binding_mask) {
+        const uint[] masks = {
+            Gdk.ModifierType.MOD5_MASK,
+            Gdk.ModifierType.MOD4_MASK,
+            Gdk.ModifierType.MOD3_MASK,
+            Gdk.ModifierType.MOD2_MASK,
+            Gdk.ModifierType.MOD1_MASK,
+            Gdk.ModifierType.CONTROL_MASK,
+            Gdk.ModifierType.SHIFT_MASK,
+            Gdk.ModifierType.LOCK_MASK
+        };
+        foreach (var mask in masks) {
+            if ((binding_mask & mask) != 0)
+                return mask;
+        }
+        return 0;
+    }
+
     /**
      * Helper class to store keybinding
      */
-    private class Keybinding
-    {
-        public Keybinding(string accelerator, int keycode,
-            Gdk.ModifierType modifiers, KeybindingHandlerFunc handler)
-        {
+    private class Keybinding {
+        public Keybinding(string accelerator, uint keysym,
+            Gdk.ModifierType modifiers, KeybindingHandlerFunc handler) {
             this.accelerator = accelerator;
-            this.keycode = keycode;
+            this.keysym = keysym;
             this.modifiers = modifiers;
             this.handler = handler;
         }
 
         public string accelerator { get; set; }
-        public int keycode { get; set; }
+        public uint keysym { get; set; }
         public Gdk.ModifierType modifiers { get; set; }
         public unowned KeybindingHandlerFunc handler { get; set; }
     }
@@ -64,13 +79,14 @@ class KeybindingManager : GLib.Object
      */
     public delegate void KeybindingHandlerFunc(Gdk.Event event);
 
-    public KeybindingManager()
-    {
+    public KeybindingManager() {
         // init filter to retrieve X.Events
         Gdk.Window rootwin = Gdk.get_default_root_window();
         if(rootwin != null) {
-            rootwin.add_filter(event_filter);
+            // rootwin.add_filter(event_filter);
         }
+
+        Gdk.Event.handler_set(event_handler);
     }
 
     /**
@@ -79,8 +95,8 @@ class KeybindingManager : GLib.Object
      * @param accelerator accelerator parsable by Gtk.accelerator_parse
      * @param handler handler called when given accelerator is pressed
      */
-    public void bind(string accelerator, KeybindingHandlerFunc handler)
-    {
+    public bool bind(string accelerator,
+                     KeybindingHandlerFunc handler) {
         debug("Binding key " + accelerator);
 
         // convert accelerator
@@ -88,31 +104,39 @@ class KeybindingManager : GLib.Object
         Gdk.ModifierType modifiers;
         Gtk.accelerator_parse(accelerator, out keysym, out modifiers);
 
+        get_primary_modifier(modifiers);
+
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
 
         int keycode = display.keysym_to_keycode(keysym);
 
-        if(keycode != 0) {
-            // trap XErrors to avoid closing of application
-            // even when grabing of key fails
-            Gdk.error_trap_push();
+        if (keycode == 0)
+            return false;
 
-            // grab key finally
-            // also grab all keys which are combined with a lock key such NumLock
-            foreach(uint lock_modifier in lock_modifiers) {
-                display.grab_key(keycode, modifiers|lock_modifier, Gdk.x11_get_default_root_xwindow(), false,
-                    X.GrabMode.Async, X.GrabMode.Async);
-            }
+        // trap XErrors to avoid closing of application
+        // even when grabing of key fails
+        Gdk.error_trap_push();
 
-            // wait until all X request have been processed
-            Gdk.flush();
-
-            // store binding
-            Keybinding binding = new Keybinding(accelerator, keycode, modifiers, handler);
-            bindings.append(binding);
-
-            debug("Successfully binded key " + accelerator);
+        // grab key finally
+        // also grab all keys which are combined with a lock key such NumLock
+        foreach(uint lock_modifier in lock_modifiers) {
+            display.grab_key(keycode, modifiers | lock_modifier,
+                             Gdk.x11_get_default_root_xwindow(), false,
+                             X.GrabMode.Async, X.GrabMode.Async);
         }
+
+        if (Gdk.error_trap_pop() != 0) {
+            debug("grab key failed");
+        }
+        // wait until all X request have been processed
+        Gdk.flush();
+
+        // store binding
+        Keybinding binding = new Keybinding(accelerator, keysym, modifiers, handler);
+        bindings.append(binding);
+
+        debug("Successfully binded key " + accelerator);
+        return true;
     }
 
     /**
@@ -120,8 +144,7 @@ class KeybindingManager : GLib.Object
      *
      * @param accelerator accelerator parsable by Gtk.accelerator_parse
      */
-    public void unbind(string accelerator)
-    {
+    public void unbind(string accelerator) {
         debug("Unbinding key " + accelerator);
 
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
@@ -130,8 +153,11 @@ class KeybindingManager : GLib.Object
         GLib.List<Keybinding> remove_bindings = new GLib.List<Keybinding>();
         foreach(Keybinding binding in bindings) {
             if(str_equal(accelerator, binding.accelerator)) {
+                int keycode = display.keysym_to_keycode(binding.keysym);
                 foreach(uint lock_modifier in lock_modifiers) {
-                    display.ungrab_key(binding.keycode, binding.modifiers | lock_modifier, Gdk.x11_get_default_root_xwindow());
+                    display.ungrab_key(keycode,
+                                       binding.modifiers | lock_modifier,
+                                       Gdk.x11_get_default_root_xwindow());
                 }
                 remove_bindings.append(binding);
             }
@@ -142,11 +168,34 @@ class KeybindingManager : GLib.Object
             bindings.remove(binding);
     }
 
+    public void event_handler(Gdk.Event event) {
+        debug("event_handler");
+        do {
+            if (event.any.window != Gdk.get_default_root_window()) {
+                debug("is not root window");
+                break;
+            }
+
+            debug("is root window");
+            if (event.type == Gdk.EventType.KEY_PRESS) {
+                uint modifiers = event.key.state & ~(lock_modifiers[7]);
+                foreach (var binding in bindings) {
+                    if (event.key.keyval != binding.keysym ||
+                        modifiers != binding.modifiers)
+                        continue;
+                    binding.handler(event);
+                    return;
+                }
+            }
+        } while (false);
+        Gtk.main_do_event(event);
+    }
+
     /**
      * Event filter method needed to fetch X.Events
      */
-    public Gdk.FilterReturn event_filter(Gdk.XEvent gdk_xevent, Gdk.Event gdk_event)
-    {
+    /* 
+    public Gdk.FilterReturn event_filter(Gdk.XEvent gdk_xevent, Gdk.Event gdk_event) {
         Gdk.FilterReturn filter_return = Gdk.FilterReturn.CONTINUE;
 
         void* pointer = &gdk_xevent;
@@ -165,6 +214,7 @@ class KeybindingManager : GLib.Object
 
         return filter_return;
     }
+    */
 }
 
 /*
