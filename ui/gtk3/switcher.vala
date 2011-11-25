@@ -30,16 +30,29 @@ class Switcher : Gtk.Window {
     private IBus.EngineDesc[] m_engines;
 
     public Switcher() {
-        GLib.Object(
-            type : Gtk.WindowType.TOPLEVEL, // TODO POPUP
-            window_position: Gtk.WindowPosition.CENTER
-        );
-        init();
-    }
+        GLib.Object(type : Gtk.WindowType.POPUP);
+        set_can_focus(true);
+        set_decorated(false);
+        set_position(Gtk.WindowPosition.CENTER);
+        add_events(Gdk.EventMask.KEY_PRESS_MASK);
+        add_events(Gdk.EventMask.KEY_RELEASE_MASK);
 
-    private void init() {
+        key_press_event.connect((e) => {
+            debug ("press");
+            if (e.keyval == 0xff1b /* Escape */)
+                hide();
+            return true;
+        });
+
+        key_release_event.connect((e) => {
+            debug ("release");
+            return true;
+        });
+
         m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_box);
+
+        grab_focus();
     }
 
     public void update_engines(IBus.EngineDesc[] engines) {
@@ -64,7 +77,21 @@ class Switcher : Gtk.Window {
             m_buttons += button;
         }
     }
+
+    public void start_switch(Gdk.Event event) {
+        show_all();
+        Gdk.Device device = event.get_device();
+        device.grab(get_window(),
+                    Gdk.GrabOwnership.NONE,
+                    true,
+                    Gdk.EventMask.KEY_PRESS_MASK |
+                    Gdk.EventMask.KEY_RELEASE_MASK,
+                    null,
+                    Gdk.CURRENT_TIME);
+    }
+
+    public override void show() {
+        base.show();
+        get_window().focus(Gdk.CURRENT_TIME);
+    }
 }
-
-
-

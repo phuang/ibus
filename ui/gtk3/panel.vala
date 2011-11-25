@@ -27,11 +27,11 @@ using Gtk;
 class Panel : IBus.PanelService {
     private IBus.Bus m_bus;
     private IBus.Config m_config;
-    // private IBus.PanelService m_service;
     private Gtk.StatusIcon m_status_icon;
     private Gtk.Menu m_ime_menu;
     private IBus.EngineDesc[] m_engines;
     private CandidatePanel m_candidate_panel;
+    private Switcher m_switcher;
 
     public Panel(IBus.Bus bus) {
         assert(bus.is_connected());
@@ -58,6 +58,53 @@ class Panel : IBus.PanelService {
 
         update_engines();
 
+        m_switcher = new Switcher();
+
+        KeybindingManager.get_instance().bind("<Control>space", (e) => {
+            handle_engine_switch(e, false);
+        });
+
+        KeybindingManager.get_instance().bind("<Control><Shift>space", (e) => {
+            handle_engine_switch(e, true);
+        });
+
+    }
+
+    private bool primary_modifier_still_pressed(Gdk.Event event) {
+        Gdk.EventKey keyevent = event.key;
+        uint primary_modifier =
+            KeybindingManager.get_primary_modifier (keyevent.state);
+        if (primary_modifier == 0)
+            return false;
+
+        Gdk.Window window = keyevent.window;
+        Gdk.Display display = window.get_display();
+        Gdk.Device device = display.get_device_manager().get_client_pointer();
+
+        uint modifier = 0;
+        device.get_state(window, null, out modifier);
+        if ((primary_modifier & modifier) == primary_modifier)
+            return true;
+        return false;
+    }
+
+    private void handle_engine_switch(Gdk.Event event, bool revert) {
+        if (!primary_modifier_still_pressed(event)) {
+            /*
+                Switch engine and change the engines order.
+            */
+            debug("Next engine");
+        } else {
+            debug("Popup switcher");
+            /*
+                TODO 
+            */
+            m_switcher.update_engines(m_engines);
+            m_switcher.start_switch(event);
+        }
+        
+
+        /*
         KeybindingManager.get_instance().bind("<Control>space", (d) => {
             // Switch to next engine
             IBus.EngineDesc engine = m_bus.get_global_engine();
@@ -72,6 +119,10 @@ class Panel : IBus.PanelService {
                 return;
             m_bus.set_global_engine(m_engines[i].get_name());
         });
+        */
+    }
+
+    private void switch_engine () {
     }
 
     private void update_engines() {
@@ -79,7 +130,11 @@ class Panel : IBus.PanelService {
         if (variant != null)
             m_engines = m_bus.get_engines_by_names(variant.get_strv());
         else
-            m_engines = m_bus.get_engines_by_names({"xkb:us:eng", "pinyin"});
+            m_engines = m_bus.get_engines_by_names({
+                "xkb:us:eng",
+                "pinyin",
+                "anthy"
+            });
         m_ime_menu = null;
     }
 
@@ -120,7 +175,9 @@ class Panel : IBus.PanelService {
                          Gtk.get_current_event_time());
     }
 
-    public override void set_cursor_location(int x, int y, int width, int height) {
+    /* override virtual functions */
+    public override void set_cursor_location(int x, int y,
+                                             int width, int height) {
         m_candidate_panel.set_cursor_location(x, y, width, height);
     }
 
@@ -163,4 +220,3 @@ class Panel : IBus.PanelService {
         m_candidate_panel.set_lookup_table(null);
     }
 }
-

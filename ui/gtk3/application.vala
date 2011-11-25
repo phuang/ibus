@@ -41,7 +41,6 @@ class Application {
         if (m_bus.is_connected()) {
             init();
         }
-        KeybindingManager.get_instance().bind("<Ctrl><Alt>V", hotkey_triggered);
     }
 
     private void init() {
@@ -94,10 +93,6 @@ class Application {
 
     private void bus_connected(IBus.Bus bus) {
         init();
-    }
-
-    private void hotkey_triggered() {
-        debug("hotkey");
     }
 
     public static void main(string[] argv) {
