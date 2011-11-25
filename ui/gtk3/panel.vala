@@ -32,7 +32,6 @@ class Panel : IBus.PanelService {
     private Gtk.Menu m_ime_menu;
     private IBus.EngineDesc[] m_engines;
     private CandidatePanel m_candidate_panel;
-    private KeybindingManager m_keybinding_manager;
 
     public Panel(IBus.Bus bus) {
         assert(bus.is_connected());
@@ -59,8 +58,7 @@ class Panel : IBus.PanelService {
 
         update_engines();
 
-        m_keybinding_manager = new KeybindingManager();
-        m_keybinding_manager.bind("<Control>space", (d) => {
+        KeybindingManager.get_instance().bind("<Control>space", (d) => {
             // Switch to next engine
             IBus.EngineDesc engine = m_bus.get_global_engine();
             int i;

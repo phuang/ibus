@@ -28,6 +28,7 @@ class Switcher : Gtk.Window {
     private Gtk.Box m_box;
     private Gtk.Button[] m_buttons = {};
     private IBus.EngineDesc[] m_engines;
+
     public Switcher() {
         GLib.Object(
             type : Gtk.WindowType.TOPLEVEL, // TODO POPUP

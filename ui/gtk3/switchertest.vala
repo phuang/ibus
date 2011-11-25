@@ -25,7 +25,19 @@ using Gtk;
 using IBus;
 
 void handler(Gdk.Event event) {
-    debug("handler");
+    var keyevent = event.key;
+    var window = keyevent.window;
+    var display = window.get_display();
+    var device = display.get_device_manager().get_client_pointer();
+    uint state = 0;
+    
+    device.get_state(window, null, out state);
+
+    if ((state & Gdk.ModifierType.CONTROL_MASK) == 0) {
+        debug ("Control is Up state=%08x event.state=%08x", state, keyevent.state);
+    } else {
+        debug ("Control is Down");
+    }
 }
 
 public void main(string[] argv) {
@@ -45,10 +57,8 @@ public void main(string[] argv) {
     switcher.show_all();
 
 
-    var keybinding_manager = new KeybindingManager();
-    keybinding_manager.bind("<Ctrl><Alt>M", handler);
+    KeybindingManager.get_instance().bind("<Ctrl><Alt>M", handler);
 
     Gtk.main();
 }
-
 

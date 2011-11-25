@@ -27,13 +27,11 @@ using Gtk;
 class Application {
     private IBus.Bus m_bus;
     private Panel m_panel;
-    private KeybindingManager m_keybinding_manager;
 
     public Application(string[] argv) {
         IBus.init();
         Gtk.init(ref argv);
 
-        m_keybinding_manager = new KeybindingManager();
         m_bus = new IBus.Bus();
         m_panel = new Panel(m_bus);
 
@@ -43,7 +41,7 @@ class Application {
         if (m_bus.is_connected()) {
             init();
         }
-        m_keybinding_manager.bind("<Ctrl><Alt>V", hotkey_triggered);
+        KeybindingManager.get_instance().bind("<Ctrl><Alt>V", hotkey_triggered);
     }
 
     private void init() {

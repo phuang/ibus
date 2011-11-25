@@ -50,6 +50,7 @@ AM_LDADD = \
 	@GTHREAD2_LIBS@ \
 	@GTK3_LIBS@ \
 	@X11_LIBS@ \
+	-lXi \
 	$(libibus) \
 	$(NULL)
 
@@ -73,6 +74,7 @@ ibus_ui_gtk3_SOURCES = \
 	pango.vala \
 	separator.vala \
 	switcher.vala \
+	grabkeycode.c \
 	$(NULL)
 
 ibus_ui_gtk3_LDADD = \
@@ -90,6 +92,7 @@ test_switcher_SOURCES = \
 	keybindingmanager.vala \
 	switcher.vala \
 	switchertest.vala \
+	grabkeycode.c \
 	$(NULL)
 
 test_switcher_LDADD = \
