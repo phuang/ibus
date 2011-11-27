@@ -37,7 +37,7 @@ gboolean grab_keycode (GdkDisplay *display,
     XIEventMask mask;
     mask.deviceid = XIAllMasterDevices;
     mask.mask_len = XIMaskLen(XI_RawMotion);
-    mask.mask = g_new0 (char, mask.mask_len);
+    mask.mask = g_new0 (unsigned char, mask.mask_len);
     XISetMask (mask.mask, XI_KeyPress);
     XISetMask (mask.mask, XI_KeyRelease);
 

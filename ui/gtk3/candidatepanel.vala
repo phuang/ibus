@@ -23,7 +23,7 @@
 using Gtk;
 using Pango;
 
-class CandidatePanel : Gtk.HBox{
+public class CandidatePanel : Gtk.HBox{
     private bool m_vertical = true;
     private Gtk.Window m_toplevel;
     private Gtk.VBox m_vbox;

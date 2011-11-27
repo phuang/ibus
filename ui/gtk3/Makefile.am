@@ -35,12 +35,15 @@ AM_CFLAGS = \
 	@GTHREAD2_CFLAGS@ \
 	@GTK3_CFLAGS@ \
 	@X11_CFLAGS@ \
+	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DBINDIR=\"@bindir@\" \
     -DIBUS_DISABLE_DEPRECATED \
-	$(INCLUDES) \
+	-Wno-unused-variable \
+	-Wno-unused-but-set-variable \
+	-Wno-unused-function \
 	$(NULL)
 
 AM_LDADD = \
@@ -85,7 +88,7 @@ TESTS = \
 	test-switcher \
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
+# noinst_PROGRAMS = $(TESTS)
 
 test_switcher_SOURCES = \
 	iconwidget.vala \

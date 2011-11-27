@@ -1480,7 +1480,7 @@ ibus_bus_list_active_engines_async_finish (IBusBus      *bus,
 
 IBusEngineDesc **
 ibus_bus_get_engines_by_names (IBusBus             *bus,
-                               const gchar * const *names)
+                               gchar              **names)
 {
     g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
 

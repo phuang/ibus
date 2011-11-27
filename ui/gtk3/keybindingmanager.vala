@@ -23,12 +23,12 @@ extern bool ungrab_keycode (Gdk.Display display,
                             uint keyval,
                             uint modifiers);
 
-class KeybindingManager : GLib.Object {
+public class KeybindingManager : GLib.Object {
     /**
      * list of binded keybindings
      */
     private GLib.List<Keybinding> m_bindings = new GLib.List<Keybinding>();
-    
+
     private static KeybindingManager m_instance = null;
 
     /**
@@ -111,9 +111,9 @@ class KeybindingManager : GLib.Object {
         GLib.List<Keybinding> remove_bindings = new GLib.List<Keybinding>();
         foreach(Keybinding binding in m_bindings) {
             if(str_equal(accelerator, binding.accelerator)) {
-                grab_keycode (Gdk.Display.get_default(),
-                              binding.keysym,
-                              binding.modifiers);
+                ungrab_keycode (Gdk.Display.get_default(),
+                                binding.keysym,
+                                binding.modifiers);
                 remove_bindings.append(binding);
             }
         }
@@ -145,6 +145,54 @@ class KeybindingManager : GLib.Object {
                 return mask;
         }
         return 0;
+    }
+
+    public static bool primary_modifier_still_pressed(Gdk.Event event) {
+        Gdk.EventKey keyevent = event.key;
+        uint primary_modifier = get_primary_modifier(keyevent.state);
+        if (primary_modifier == 0)
+            return false;
+
+        Gdk.Device device = event.get_device();
+        Gdk.Device pointer;
+        if (device.get_source() == Gdk.InputSource.KEYBOARD)
+            pointer = device.get_associated_device();
+        else
+            pointer = device;
+
+        uint modifier = 0;
+        pointer.get_state(keyevent.window, null, out modifier);
+        if ((primary_modifier & modifier) == primary_modifier)
+            return true;
+
+        return false;
+    }
+
+    public static uint keyval_to_modifier (uint keyval) {
+        switch(keyval) {
+            case 0xffe3: /* Control_L */
+            case 0xffe4: /* Control_R */
+                return Gdk.ModifierType.CONTROL_MASK;
+            case 0xffe1: /* Shift_L */
+            case 0xffe2: /* Shift_R */
+                return Gdk.ModifierType.SHIFT_MASK;
+            case 0xffe5: /* Caps_Lock */
+                return Gdk.ModifierType.LOCK_MASK;
+            case 0xffe9: /* Alt_L */
+            case 0xffea: /* Alt_R */
+                return Gdk.ModifierType.MOD1_MASK;
+            case 0xffe7: /* Meta_L */
+            case 0xffe8: /* Meta_R */
+                return Gdk.ModifierType.META_MASK;
+            case 0xffeb: /* Super_L */
+            case 0xffec: /* Super_R */
+                return Gdk.ModifierType.SUPER_MASK;
+            case 0xffed: /* Hyper_L */
+            case 0xffee: /* Hyper_R */
+                return Gdk.ModifierType.HYPER_MASK;
+            default:
+                return 0;
+        }
     }
 
     private void event_handler(Gdk.Event event) {

@@ -70,26 +70,8 @@ class Panel : IBus.PanelService {
 
     }
 
-    private bool primary_modifier_still_pressed(Gdk.Event event) {
-        Gdk.EventKey keyevent = event.key;
-        uint primary_modifier =
-            KeybindingManager.get_primary_modifier (keyevent.state);
-        if (primary_modifier == 0)
-            return false;
-
-        Gdk.Window window = keyevent.window;
-        Gdk.Display display = window.get_display();
-        Gdk.Device device = display.get_device_manager().get_client_pointer();
-
-        uint modifier = 0;
-        device.get_state(window, null, out modifier);
-        if ((primary_modifier & modifier) == primary_modifier)
-            return true;
-        return false;
-    }
-
     private void handle_engine_switch(Gdk.Event event, bool revert) {
-        if (!primary_modifier_still_pressed(event)) {
+        if (!KeybindingManager.primary_modifier_still_pressed(event)) {
             /*
                 Switch engine and change the engines order.
             */
@@ -99,8 +81,7 @@ class Panel : IBus.PanelService {
             /*
                 TODO 
             */
-            m_switcher.update_engines(m_engines);
-            m_switcher.start_switch(event);
+            m_switcher.run(event, m_engines, 0);
         }
         
 
@@ -120,9 +101,6 @@ class Panel : IBus.PanelService {
             m_bus.set_global_engine(m_engines[i].get_name());
         });
         */
-    }
-
-    private void switch_engine () {
     }
 
     private void update_engines() {

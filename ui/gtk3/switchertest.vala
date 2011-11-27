@@ -44,7 +44,8 @@ public void main(string[] argv) {
     Gtk.init(ref argv);
     IBus.init();
     var bus = new IBus.Bus();
-    var engines = bus.get_engines_by_names({"xkb:us:eng", "pinyin", "anthy"});
+    string[] names = { "xkb:us:eng", "pinyin", "anthy" };
+    var engines = bus.get_engines_by_names(names);
     Switcher switcher = new Switcher();
 
     switcher.update_engines(engines);

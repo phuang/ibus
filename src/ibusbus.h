@@ -722,7 +722,7 @@ GList       *ibus_bus_list_active_engines_async_finish
 IBusEngineDesc **
              ibus_bus_get_engines_by_names
                                         (IBusBus             *bus,
-                                         const gchar * const *names);
+                                         gchar              **names);
 /**
  * ibus_bus_get_use_sys_layout:
  * @bus: An #IBusBus.
