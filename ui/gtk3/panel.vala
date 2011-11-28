@@ -70,37 +70,38 @@ class Panel : IBus.PanelService {
 
     }
 
+    private void switch_engine(int i) {
+        //  debug("switch_engine i = %d", i);
+        assert(i >= 0 && i < m_engines.length);
+
+        // Do not need siwtch
+        if (i == 0)
+            return;
+
+        // Move the target engine to the first place.
+        IBus.EngineDesc tmp = m_engines[i];
+        for (int j = i; j > 0; j--) {
+            m_engines[j] = m_engines[j - 1];
+        }
+        m_engines[0] = tmp;
+
+        m_bus.set_global_engine(m_engines[0].get_name());
+    }
+
     private void handle_engine_switch(Gdk.Event event, bool revert) {
         if (!KeybindingManager.primary_modifier_still_pressed(event)) {
-            /*
-                Switch engine and change the engines order.
-            */
-            debug("Next engine");
+            int i = revert ? m_engines.length - 1 : 1;
+            switch_engine(i);
         } else {
-            debug("Popup switcher");
-            /*
-                TODO 
-            */
-            m_switcher.run(event, m_engines, 0);
-        }
-        
-
-        /*
-        KeybindingManager.get_instance().bind("<Control>space", (d) => {
-            // Switch to next engine
-            IBus.EngineDesc engine = m_bus.get_global_engine();
-            int i;
-            for (i = 0; i < m_engines.length && engine != null; i++) {
-                if (m_engines[i].get_name() == engine.get_name())
-                    break;
+            int i = revert ? m_engines.length - 1 : 1;
+            i = m_switcher.run(event, m_engines, i);
+            if (i < 0) {
+                debug("switch cancelled");
+            } else {
+                assert(i < m_engines.length);
+                switch_engine(i);
             }
-            i ++;
-            if (i >= m_engines.length) i = 0;
-            if (i >= m_engines.length)
-                return;
-            m_bus.set_global_engine(m_engines[i].get_name());
-        });
-        */
+        }
     }
 
     private void update_engines() {
@@ -160,11 +161,11 @@ class Panel : IBus.PanelService {
     }
 
     public override void focus_in(string input_context_path) {
-        debug("focus_in ic=%s", input_context_path);
+        // debug("focus_in ic=%s", input_context_path);
     }
 
     public override void focus_out(string input_context_path) {
-        debug("focus_out ic=%s", input_context_path);
+        // debug("focus_out ic=%s", input_context_path);
     }
 
     public override void update_preedit_text(IBus.Text text,

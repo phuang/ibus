@@ -34,13 +34,15 @@ class Switcher : Gtk.Window {
     private int m_result;
 
     public Switcher() {
-        GLib.Object(type : Gtk.WindowType.POPUP);
-        set_accept_focus(true);
-        set_decorated(false);
-        set_position(Gtk.WindowPosition.CENTER);
-        add_events(Gdk.EventMask.KEY_PRESS_MASK);
-        add_events(Gdk.EventMask.KEY_RELEASE_MASK);
-
+        GLib.Object(
+            type : Gtk.WindowType.POPUP,
+            events : Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK,
+            window_position : Gtk.WindowPosition.CENTER,
+            accept_focus : true,
+            decorated : false,
+            modal : true,
+            focus_visible : true
+        );
         m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_box);
 
@@ -51,18 +53,46 @@ class Switcher : Gtk.Window {
         assert (m_loop == null);
         assert (index < engines.length);
 
-        m_selected_engine = index;
         update_engines(engines);
+        m_selected_engine = index;
+        m_buttons[index].grab_focus();
 
         show_all();
+
         Gdk.Device device = event.get_device();
-        device.grab(get_window(),
+        if (device == null) {
+            var display = get_display();
+            var device_manager = display.get_device_manager();
+            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
+        }
+
+        Gdk.Device keyboard;
+        Gdk.Device pointer;
+        if (device.get_source() == Gdk.InputSource.KEYBOARD) {
+            keyboard = device;
+            pointer = device.get_associated_device();
+        } else {
+            pointer = device;
+            keyboard = device.get_associated_device();
+        }
+
+        // Grab all keyboard events
+        keyboard.grab(get_window(),
                     Gdk.GrabOwnership.NONE,
                     true,
                     Gdk.EventMask.KEY_PRESS_MASK |
                     Gdk.EventMask.KEY_RELEASE_MASK,
                     null,
                     Gdk.CURRENT_TIME);
+        // Grab all pointer events
+        pointer.grab(get_window(),
+                     Gdk.GrabOwnership.NONE,
+                     true,
+                     Gdk.EventMask.BUTTON_PRESS_MASK |
+                     Gdk.EventMask.BUTTON_RELEASE_MASK,
+                     null,
+                     Gdk.CURRENT_TIME);
+
         m_primary_modifier =
             KeybindingManager.get_primary_modifier(event.key.state);
 
@@ -70,7 +100,6 @@ class Switcher : Gtk.Window {
         m_loop.run();
         m_loop = null;
         hide();
-        debug("run over");
         return m_result;
     }
 
@@ -88,11 +117,27 @@ class Switcher : Gtk.Window {
         int width, height;
         Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
         m_engines = engines;
-        foreach (var engine in m_engines) {
+        for (int i = 0; i < m_engines.length; i++) {
+            var index = i;
+            var engine = m_engines[i];
             var button = new Gtk.Button.with_label(engine.get_longname());
             button.set_image(new IconWidget(engine.get_icon(), width));
             button.set_relief(Gtk.ReliefStyle.NONE);
             button.show();
+
+            button.enter_notify_event.connect((e) => {
+                button.grab_focus();
+                m_selected_engine = index;
+                return true;
+            });
+
+            button.button_press_event.connect((e) => {
+                m_selected_engine = index;
+                m_result = (int)m_selected_engine;
+                m_loop.quit();
+                return true;
+            });
+
             m_box.pack_start(button, true, true);
             m_buttons += button;
         }
@@ -104,8 +149,6 @@ class Switcher : Gtk.Window {
         else
             m_selected_engine ++;
         set_focus(m_buttons[m_selected_engine]);
-        m_buttons[m_selected_engine].set_state_flags(Gtk.StateFlags.FOCUSED, true);
-        debug("next engine");
     }
 
     private void previous_engine() {
@@ -114,19 +157,12 @@ class Switcher : Gtk.Window {
         else
             m_selected_engine --;
         set_focus(m_buttons[m_selected_engine]);
-        debug("previous engine");
     }
 
     /* override virtual functions */
     public override void show() {
         base.show();
-        debug("is_active = %d", (int)this.is_active);
-    }
-
-    public override void grab_focus() {
-        base.grab_focus();
-        debug("grab_focus");
-        set_focus(m_buttons[m_selected_engine]);
+        set_focus_visible(true);
     }
 
     public override bool key_press_event(Gdk.EventKey e) {
