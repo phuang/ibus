@@ -84,22 +84,4 @@ ibus_ui_gtk3_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 
-TESTS = \
-	test-switcher \
-	$(NULL)
-
-# noinst_PROGRAMS = $(TESTS)
-
-test_switcher_SOURCES = \
-	iconwidget.vala \
-	keybindingmanager.vala \
-	switcher.vala \
-	switchertest.vala \
-	grabkeycode.c \
-	$(NULL)
-
-test_switcher_LDADD = \
-	$(AM_LDADD) \
-	$(NULL)
-
 -include $(top_srcdir)/git.mk
