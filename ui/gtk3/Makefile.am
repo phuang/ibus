@@ -75,6 +75,7 @@ ibus_ui_gtk3_SOURCES = \
 	keybindingmanager.vala \
 	panel.vala \
 	pango.vala \
+	property.vala \
 	separator.vala \
 	switcher.vala \
 	grabkeycode.c \

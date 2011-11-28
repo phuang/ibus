@@ -32,6 +32,7 @@ class Panel : IBus.PanelService {
     private IBus.EngineDesc[] m_engines;
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
+    private PropertyManager m_property_manager;
 
     public Panel(IBus.Bus bus) {
         assert(bus.is_connected());
@@ -67,6 +68,8 @@ class Panel : IBus.PanelService {
         KeybindingManager.get_instance().bind("<Control><Shift>space", (e) => {
             handle_engine_switch(e, true);
         });
+
+        m_property_manager = new PropertyManager();
 
     }
 
@@ -120,7 +123,18 @@ class Panel : IBus.PanelService {
     private void status_icon_popup_menu(Gtk.StatusIcon status_icon,
                                         uint button,
                                         uint activate_time) {
-        debug("popup-menu %u %u", button, activate_time);
+        Gtk.Menu menu = m_property_manager.get_menu();
+        if (menu == null)
+            return;
+
+        menu.show_all();
+        menu.set_take_focus(false);
+
+        menu.popup(null,
+                   null,
+                   m_status_icon.position_menu,
+                   0,
+                   Gtk.get_current_event_time());
     }
 
     private void status_icon_activate(Gtk.StatusIcon status_icon) {
@@ -166,6 +180,14 @@ class Panel : IBus.PanelService {
 
     public override void focus_out(string input_context_path) {
         // debug("focus_out ic=%s", input_context_path);
+    }
+
+    public override void register_properties(IBus.PropList props) {
+        m_property_manager.set_properties(props);
+    }
+
+    public override void update_property(IBus.Property prop) {
+        debug("update property");
     }
 
     public override void update_preedit_text(IBus.Text text,
