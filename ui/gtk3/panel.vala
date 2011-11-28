@@ -106,14 +106,14 @@ class Panel : IBus.PanelService {
 
     private void update_engines() {
         Variant variant = m_config.get_value("general", "preload_engines");
+        string[] engine_names;
+
         if (variant != null)
-            m_engines = m_bus.get_engines_by_names(variant.get_strv());
+            engine_names = variant.dup_strv();
         else
-            m_engines = m_bus.get_engines_by_names({
-                "xkb:us:eng",
-                "pinyin",
-                "anthy"
-            });
+            engine_names = {"xkb:us:eng", "pinyin", "anthy"};
+
+        m_engines = m_bus.get_engines_by_names(engine_names);
         m_ime_menu = null;
     }
 

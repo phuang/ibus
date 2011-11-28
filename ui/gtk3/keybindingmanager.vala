@@ -141,7 +141,7 @@ public class KeybindingManager : GLib.Object {
             Gdk.ModifierType.LOCK_MASK
         };
         foreach (var mask in masks) {
-            if ((binding_mask & mask) != 0)
+            if ((binding_mask & mask) == mask)
                 return mask;
         }
         return 0;
