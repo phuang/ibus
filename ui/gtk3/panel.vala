@@ -33,6 +33,7 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private PropertyManager m_property_manager;
+    private IBus.InputContext m_input_context;
 
     public Panel(IBus.Bus bus) {
         assert(bus.is_connected());
@@ -70,7 +71,10 @@ class Panel : IBus.PanelService {
         });
 
         m_property_manager = new PropertyManager();
-
+        m_property_manager.property_activate.connect((k, s) => {
+            if (m_input_context != null)
+                m_input_context.property_activate(k, s);
+        });
     }
 
     private void switch_engine(int i) {
@@ -175,11 +179,19 @@ class Panel : IBus.PanelService {
     }
 
     public override void focus_in(string input_context_path) {
-        // debug("focus_in ic=%s", input_context_path);
+        try {
+            GLib.Cancellable cancellable = null;
+            m_input_context =
+                new IBus.InputContext(input_context_path,
+                                      m_bus.get_connection(),
+                                      cancellable);
+        } catch (GLib.Error e) {
+            debug("error");
+        }
     }
 
     public override void focus_out(string input_context_path) {
-        // debug("focus_out ic=%s", input_context_path);
+        m_input_context = null;
     }
 
     public override void register_properties(IBus.PropList props) {
@@ -187,7 +199,7 @@ class Panel : IBus.PanelService {
     }
 
     public override void update_property(IBus.Property prop) {
-        debug("update property");
+        m_property_manager.update_property(prop);
     }
 
     public override void update_preedit_text(IBus.Text text,

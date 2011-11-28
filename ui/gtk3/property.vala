@@ -90,10 +90,10 @@ public class PropertyManager {
             if (item != null) {
                 m_prop_map.insert(prop.get_key(), item);
                 menu.append(item as Gtk.MenuItem);
-                // TODO
-                // item.property_activate.connect
+                item.property_activate.connect((k, s) => property_activate(k, s));
             }
         }
+
         if (i == 0)
             return null;
         return menu;
@@ -106,6 +106,8 @@ public class PropertyManager {
         return_if_fail(item != null);
         item.update_property(prop);
     }
+
+    public signal void property_activate(string key, int state); 
 }
 
 public interface IPropItem : GLib.Object {
