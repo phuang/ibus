@@ -23,8 +23,10 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 datarootdir=@datarootdir@
+libexecdir=@libexecdir@
 export IBUS_PREFIX=@prefix@
 export IBUS_DATAROOTDIR=@datarootdir@
 export IBUS_LOCALEDIR=@localedir@
+export IBUS_LIBEXECDIR=${libexecdir}
 exec @PYTHON@ @prefix@/share/ibus/setup/main.py $@
 

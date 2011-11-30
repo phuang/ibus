@@ -238,6 +238,10 @@ class Setup(object):
         button = self.__builder.get_object("button_engine_about")
         button.connect("clicked", self.__button_engine_about_cb)
 
+        self.__engine_setup_exec_list = {}
+        button = self.__builder.get_object("button_engine_preferences")
+        button.connect("clicked", self.__button_engine_preferences_cb)
+
         self.__combobox.connect("notify::active-engine", self.__combobox_notify_active_engine_cb)
         self.__treeview.connect("notify", self.__treeview_notify_cb)
 
@@ -245,6 +249,24 @@ class Setup(object):
         engine = self.__combobox.get_active_engine()
         button = self.__builder.get_object("button_engine_add")
         button.set_sensitive(engine != None and engine not in self.__treeview.get_engines())
+
+    def __get_engine_setup_exec_args(self, engine):
+        args = []
+        if engine == None:
+           return args
+        setup = str(engine.setup)
+        if len(setup) != 0:
+            args = setup.split()
+            args.insert(1, path.basename(args[0]))
+            return args
+        name = str(engine.name)
+        libexecdir = os.environ['IBUS_LIBEXECDIR']
+        setup_path = (libexecdir + '/' + 'ibus-setup-' if libexecdir != None \
+            else 'ibus-setup-') + name.split(':')[0]
+        if path.exists(setup_path):
+            args.append(setup_path)
+            args.append(path.basename(setup_path))
+        return args
 
     def __treeview_notify_cb(self, treeview, property):
         if property.name != "active-engine" and property.name != "engines":
@@ -257,6 +279,12 @@ class Setup(object):
         self.__builder.get_object("button_engine_about").set_sensitive(engine != None)
         self.__builder.get_object("button_engine_up").set_sensitive(engine not in engines[:1])
         self.__builder.get_object("button_engine_down").set_sensitive(engine not in engines[-1:])
+
+        obj = self.__builder.get_object("button_engine_preferences")
+        if len(self.__get_engine_setup_exec_args(engine)) != 0:
+            obj.set_sensitive(True)
+        else:
+            obj.set_sensitive(False)
 
         if property.name == "engines":
             engine_names = map(lambda e: e.name, engines)
@@ -272,6 +300,24 @@ class Setup(object):
             about = EngineAbout(engine)
             about.run()
             about.destroy()
+
+    def __button_engine_preferences_cb(self, button):
+        engine = self.__treeview.get_active_engine()
+        args = self.__get_engine_setup_exec_args(engine)
+        if len(args) == 0:
+            return
+        name = engine.name
+        if name in self.__engine_setup_exec_list.keys():
+            try:
+                wpid, sts = os.waitpid(self.__engine_setup_exec_list[name],
+                                       os.WNOHANG)
+                # the setup is still running.
+                if wpid == 0:
+                    return
+            except OSError:
+                pass
+            del self.__engine_setup_exec_list[name]
+        self.__engine_setup_exec_list[name] = os.spawnl(os.P_NOWAIT, *args)
 
     def __init_bus(self):
         try:
