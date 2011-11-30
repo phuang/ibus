@@ -278,6 +278,11 @@ _request_surrounding_text (IBusIMContext *context)
         IDEBUG ("requesting surrounding text");
         g_signal_emit (context, _signal_retrieve_surrounding_id, 0,
                        &return_value);
+        if (!return_value) {
+            context->caps &= ~IBUS_CAP_SURROUNDING_TEXT;
+            ibus_input_context_set_capabilities (context->ibuscontext,
+                                                 context->caps);
+        }
     }
 }
 
