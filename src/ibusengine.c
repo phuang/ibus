@@ -1132,17 +1132,13 @@ ibus_engine_set_surrounding_text (IBusEngine *engine,
 {
     g_assert (IBUS_IS_ENGINE (engine));
 
-    IBusEnginePrivate *priv;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    if (priv->surrounding_text) {
-        g_object_unref (priv->surrounding_text);
+    if (engine->priv->surrounding_text) {
+        g_object_unref (engine->priv->surrounding_text);
     }
 
-    priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
-    priv->surrounding_cursor_pos = cursor_pos;
-    priv->selection_anchor_pos = anchor_pos;
+    engine->priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
+    engine->priv->surrounding_cursor_pos = cursor_pos;
+    engine->priv->selection_anchor_pos = anchor_pos;
     // g_debug ("set-surrounding-text ('%s', %d, %d)", text->text, cursor_pos, anchor_pos);
 }
 

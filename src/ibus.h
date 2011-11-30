@@ -19,6 +19,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #ifndef __IBUS_H_
 #define __IBUS_H_
 
@@ -35,6 +36,7 @@
 #include <ibusservice.h>
 #include <ibusfactory.h>
 #include <ibusengine.h>
+#include <ibusenginesimple.h>
 #include <ibuserror.h>
 #include <ibusproperty.h>
 #include <ibusproplist.h>

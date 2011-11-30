@@ -91,7 +91,8 @@ ibus_sources =              \
     ibusobservedpath.c      \
     ibuscomponent.c         \
     ibusutil.c              \
-$(NULL)
+	ibusenginesimple.c      \
+	$(NULL)
 libibus_1_0_la_SOURCES =    \
     $(ibus_sources)         \
     ibusmarshalers.c        \
@@ -139,6 +140,7 @@ ibus_headers =              \
     ibusobservedpath.h      \
     ibuscomponent.h         \
     ibusutil.h              \
+	ibusenginesimple.h      \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \
@@ -148,9 +150,10 @@ ibus_public_headers =       \
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
-ibus_privite_headers =      \
-    ibusinternal.h          \
-    keyname-table.h         \
+ibus_privite_headers =       \
+    ibusinternal.h           \
+    keyname-table.h          \
+	gtkimcontextsimpleseqs.h \
     $(NULL)
 noinst_HEADERS =            \
     $(ibus_privite_headers) \
