@@ -331,17 +331,8 @@ bus_name_service_free (BusNameService *service)
 
     g_assert (service != NULL);
 
-    list = service->owners;
-
-    while (list) {
-        bus_connection_owner_free ((BusConnectionOwner *) list->data);
-        list->data = NULL;
-        list = list->next;
-    }
-    if (service->owners) {
-        g_slist_free (service->owners);
-        service->owners = NULL;
-    }
+    g_slist_free_full (service->owners, (GDestroyNotify)bus_connection_owner_free);
+    service->owners = NULL;
 
     g_free (service->name);
     g_slice_free (BusNameService, service);
@@ -636,9 +627,7 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
     dbus->unique_names = NULL;
     dbus->names = NULL;
 
-    g_list_foreach (dbus->start_service_calls,
-                    (GFunc) bus_method_call_free, NULL);
-    g_list_free (dbus->start_service_calls);
+    g_list_free_full (dbus->start_service_calls, (GDestroyNotify)bus_method_call_free);
     dbus->start_service_calls = NULL;
 
     /* FIXME destruct _lock and _queue members. */
@@ -1840,8 +1829,7 @@ bus_dbus_impl_dispatch_message_by_rule_idle_cb (BusDBusImpl *dbus)
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
         /* dbus was destryed */
         g_mutex_lock (dbus->dispatch_lock);
-        g_list_foreach (dbus->dispatch_queue, (GFunc) bus_dispatch_data_free, NULL);
-        g_list_free (dbus->dispatch_queue);
+        g_list_free_full (dbus->dispatch_queue, (GDestroyNotify)bus_dispatch_data_free);
         dbus->dispatch_queue = NULL;
         g_mutex_unlock (dbus->dispatch_lock);
         return FALSE; /* return FALSE to prevent this callback to be called again. */

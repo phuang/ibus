@@ -417,12 +417,10 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         }
     }
 
-    g_list_foreach (ibus->engine_list, (GFunc) g_object_unref, NULL);
-    g_list_free (ibus->engine_list);
+    g_list_free_full (ibus->engine_list, g_object_unref);
     ibus->engine_list = NULL;
 
-    g_list_foreach (ibus->register_engine_list, (GFunc) g_object_unref, NULL);
-    g_list_free (ibus->register_engine_list);
+    g_list_free_full (ibus->register_engine_list, g_object_unref);
     ibus->register_engine_list = NULL;
 
     if (ibus->factory_dict != NULL) {
