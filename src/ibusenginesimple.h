@@ -39,6 +39,10 @@
 
 #include "ibusengine.h"
 
+G_BEGIN_DECLS
+
+#define IBUS_MAX_COMPOSE_LEN 7
+
 /*
  * Type macros.
  */
@@ -56,8 +60,6 @@
     (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_ENGINE_SIMPLE))
 #define IBUS_ENGINE_SIMPLE_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimpleClass))
-
-G_BEGIN_DECLS
 
 typedef struct _IBusEngineSimple IBusEngineSimple;
 typedef struct _IBusEngineSimpleClass IBusEngineSimpleClass;
@@ -91,5 +93,27 @@ struct _IBusEngineSimpleClass {
 };
 
 GType   ibus_engine_simple_get_type       (void);
+
+/**
+ * ibus_engine_simple_add_table:
+ * @simple: An IBusEngineSimple.
+ * @data: The table.
+ * @ max_seq_len: Maximum length of a swquence in the table (cannot be greater
+ *      than %IBUS_MAX_COMPOSE_LEN)
+ *
+ * Adds an additional table to search to the engine. Each row of the table
+ * consists of max_seq_len key symbols followed by two guint16 interpreted as
+ * the high and low words of a gunicode value. Tables are searched starting from
+ * the last added.
+ *
+ * The table must be sorted in dictionary order on the numeric value of the key
+ * symbol fields. (Values beyond the length of the sequence should be zero.)
+ */
+void    ibus_engine_simple_add_table      (IBusEngineSimple     *simple,
+                                           guint16              *data,
+                                           gint                  max_seq_len,
+                                           gint                  n_seqs);
+
+G_END_DECLS
 
 #endif // __IBUS_ENGINE_SIMPLE_H__
