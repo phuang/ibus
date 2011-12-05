@@ -92,7 +92,7 @@ class Panel : IBus.PanelService {
         }
         m_engines[0] = tmp;
 
-        m_bus.set_global_engine(m_engines[0].get_name());
+        switch_engine_by_desc(m_engines[0]);
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
@@ -118,7 +118,7 @@ class Panel : IBus.PanelService {
         if (variant != null)
             engine_names = variant.dup_strv();
         else
-            engine_names = {"xkb:us:eng", "pinyin", "anthy"};
+            engine_names = {"xkb:layout:us", "pinyin", "anthy"};
 
         m_engines = m_bus.get_engines_by_names(engine_names);
         m_ime_menu = null;
@@ -141,6 +141,23 @@ class Panel : IBus.PanelService {
                    Gtk.get_current_event_time());
     }
 
+    private void switch_engine_by_desc(IBus.EngineDesc engine) {
+        if (!m_bus.set_global_engine(engine.get_name())) {
+            warning("Switch engine to %s failed.", engine.get_name());
+            return;
+        }
+        // set xkb layout
+        string cmdline = "setxkbmap %s".printf(engine.get_layout());
+        try {
+            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
+                warning("Switch xkb layout to %s failed.",
+                    engine.get_layout());
+            }
+        } catch (GLib.SpawnError e) {
+            warning("execute setxkblayout failed");
+        }
+    }
+
     private void status_icon_activate(Gtk.StatusIcon status_icon) {
         if (m_ime_menu == null) {
             int width, height;
@@ -158,7 +175,7 @@ class Panel : IBus.PanelService {
                 // https://bugzilla.gnome.org/show_bug.cgi?id=628336
                 var e = engine;
                 item.activate.connect((i) => {
-                    m_bus.set_global_engine(e.get_name());
+                    switch_engine_by_desc(e);
                 });
                 m_ime_menu.add(item);
             }

@@ -315,6 +315,7 @@ check_table (IBusEngineSimple *simple,
              IBusComposeTable *table,
              gint              n_compose)
 {
+    g_debug("check_table");
     IBusEngineSimplePrivate *priv = simple->priv;
     gint row_stride = table->max_seq_len + 2;
     guint16 *seq;
@@ -868,6 +869,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             if (check_table (simple,
                              (IBusComposeTable *)list->data,
                              n_compose)) {
+                g_debug("check_table returns true");
                 return TRUE;
             }
             list = list->next;

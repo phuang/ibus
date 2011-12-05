@@ -8,4 +8,36 @@
 	<license>GPL</license>
 	<homepage>http://code.google.com/p/ibus</homepage>
 	<textdomain>ibus</textdomain>
+	<engines>
+		<engine>
+			<name>xkb:layout:us</name>
+			<language>en</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>us</layout>
+			<longname>English (United States)</longname>
+			<description>English (United States)</description>
+			<rank>99</rank>
+		</engine>
+		<engine>
+			<name>xkb:layout:us-intl</name>
+			<language>en</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>us(intl)</layout>
+			<longname>English (United States)</longname>
+			<description>English (United States)</description>
+			<rank>99</rank>
+		</engine>
+		<engine>
+			<name>xkb:layout:fr</name>
+			<language>fr</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>fr</layout>
+			<longname>France</longname>
+			<description>France</description>
+			<rank>99</rank>
+		</engine>
+	</engines>
 </component>

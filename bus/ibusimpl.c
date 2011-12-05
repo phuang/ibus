@@ -353,7 +353,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 
     ibus->keymap = ibus_keymap_get ("us");
 
-    ibus->use_sys_layout = FALSE;
+    ibus->use_sys_layout = TRUE;
     ibus->embed_preedit_text = TRUE;
     ibus->enable_by_default = TRUE;
     ibus->use_global_engine = TRUE;
