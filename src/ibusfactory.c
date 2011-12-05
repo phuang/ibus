@@ -164,7 +164,7 @@ ibus_factory_class_init (IBusFactoryClass *class)
      * IBusFactory::create-engine:
      * @factory: the factory which received the signal
      * @engine_name: the engine_name which received the signal
-     * @returns: (transfer none): An IBusEngine
+     * @returns: (transfer full): An IBusEngine
      *
      * The ::create-engine signal is a signal to create IBusEngine
      * with @engine_name, which gets emitted when IBusFactory

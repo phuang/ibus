@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component>
+	<name>org.freedesktop.IBus.Simple</name>
+	<description>A table based simple engine</description>
+	<exec>${libexecdir}/ibus-engine-simple</exec>
+	<version>@VERSION@</version>
+	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+	<license>GPL</license>
+	<homepage>http://code.google.com/p/ibus</homepage>
+	<textdomain>ibus</textdomain>
+</component>

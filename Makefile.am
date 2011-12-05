@@ -58,6 +58,7 @@ SUBDIRS =           \
 	src             \
 	util            \
 	client          \
+	engine          \
 	data            \
 	m4              \
 	po              \

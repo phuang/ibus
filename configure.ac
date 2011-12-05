@@ -456,6 +456,8 @@ src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
+engine/Makefile
+engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
