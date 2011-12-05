@@ -86,13 +86,26 @@ class Panel : IBus.PanelService {
             return;
 
         // Move the target engine to the first place.
-        IBus.EngineDesc tmp = m_engines[i];
+        IBus.EngineDesc engine = m_engines[i];
         for (int j = i; j > 0; j--) {
             m_engines[j] = m_engines[j - 1];
         }
-        m_engines[0] = tmp;
+        m_engines[0] = engine;
 
-        switch_engine_by_desc(m_engines[0]);
+        if (!m_bus.set_global_engine(engine.get_name())) {
+            warning("Switch engine to %s failed.", engine.get_name());
+            return;
+        }
+        // set xkb layout
+        string cmdline = "setxkbmap %s".printf(engine.get_layout());
+        try {
+            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
+                warning("Switch xkb layout to %s failed.",
+                    engine.get_layout());
+            }
+        } catch (GLib.SpawnError e) {
+            warning("execute setxkblayout failed");
+        }
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
@@ -121,7 +134,6 @@ class Panel : IBus.PanelService {
             engine_names = {"xkb:layout:us", "pinyin", "anthy"};
 
         m_engines = m_bus.get_engines_by_names(engine_names);
-        m_ime_menu = null;
     }
 
     private void status_icon_popup_menu(Gtk.StatusIcon status_icon,
@@ -141,28 +153,11 @@ class Panel : IBus.PanelService {
                    Gtk.get_current_event_time());
     }
 
-    private void switch_engine_by_desc(IBus.EngineDesc engine) {
-        if (!m_bus.set_global_engine(engine.get_name())) {
-            warning("Switch engine to %s failed.", engine.get_name());
-            return;
-        }
-        // set xkb layout
-        string cmdline = "setxkbmap %s".printf(engine.get_layout());
-        try {
-            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-                warning("Switch xkb layout to %s failed.",
-                    engine.get_layout());
-            }
-        } catch (GLib.SpawnError e) {
-            warning("execute setxkblayout failed");
-        }
-    }
-
     private void status_icon_activate(Gtk.StatusIcon status_icon) {
+        int width, height;
+        Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
         if (m_ime_menu == null) {
-            int width, height;
-            Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
-            m_ime_menu  = new Gtk.Menu();
+            m_ime_menu = new Gtk.Menu();
             foreach (var engine in m_engines) {
                 var lang =  engine.get_language();
                 var name = engine.get_name();
@@ -174,8 +169,13 @@ class Panel : IBus.PanelService {
                 // Make a copy of engine to workaround a bug in vala.
                 // https://bugzilla.gnome.org/show_bug.cgi?id=628336
                 var e = engine;
-                item.activate.connect((i) => {
-                    switch_engine_by_desc(e);
+                item.activate.connect((item) => {
+                    for (int i = 0; i < m_engines.length; i++) {
+                        if (e == m_engines[i]) {
+                            switch_engine(i);
+                            break;
+                        }
+                    }
                 });
                 m_ime_menu.add(item);
             }
