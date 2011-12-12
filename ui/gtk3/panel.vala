@@ -29,7 +29,7 @@ class Panel : IBus.PanelService {
     private IBus.Config m_config;
     private Gtk.StatusIcon m_status_icon;
     private Gtk.Menu m_ime_menu;
-    private IBus.EngineDesc[] m_engines;
+    private IBus.EngineDesc[] m_engines = {};
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private PropertyManager m_property_manager;
@@ -44,6 +44,9 @@ class Panel : IBus.PanelService {
         m_bus = bus;
 
         m_config = bus.get_config();
+        assert(m_config != null);
+
+        m_config.value_changed.connect(handle_config_value_changed);
 
         // init ui
         m_status_icon = new Gtk.StatusIcon();
@@ -58,7 +61,8 @@ class Panel : IBus.PanelService {
         m_candidate_panel.hide();
         m_candidate_panel.show();
 
-        update_engines();
+        Variant variant = m_config.get_value("general", "preload_engines");
+        update_engines(variant);
 
         m_switcher = new Switcher();
 
@@ -77,12 +81,12 @@ class Panel : IBus.PanelService {
         });
     }
 
-    private void switch_engine(int i) {
+    private void switch_engine(int i, bool force = false) {
         //  debug("switch_engine i = %d", i);
         assert(i >= 0 && i < m_engines.length);
 
         // Do not need siwtch
-        if (i == 0)
+        if (i == 0 && !force)
             return;
 
         // Move the target engine to the first place.
@@ -108,6 +112,15 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private void handle_config_value_changed(IBus.Config config,
+                                             string section,
+                                             string name,
+                                             Variant variant) {
+        if (section == "general" && name == "preload_engines") {
+            update_engines(variant);
+        }
+    }
+
     private void handle_engine_switch(Gdk.Event event, bool revert) {
         uint primary_modifiers =
             KeybindingManager.get_primary_modifier(event.key.state);
@@ -127,16 +140,31 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void update_engines() {
-        Variant variant = m_config.get_value("general", "preload_engines");
-        string[] engine_names;
+    private void update_engines(Variant variant) {
+        string[] engine_names = null;
 
         if (variant != null)
             engine_names = variant.dup_strv();
-        else
-            engine_names = {"xkb:layout:us", "pinyin", "anthy"};
+        if (engine_names == null || engine_names.length == 0)
+            engine_names = {"xkb:layout:us"};
 
-        m_engines = m_bus.get_engines_by_names(engine_names);
+        var engines = m_bus.get_engines_by_names(engine_names);
+
+        if (m_engines.length == 0) {
+            m_engines = engines;
+            switch_engine(0, true);
+        } else {
+            var current_engine = m_engines[0];
+            m_engines = engines;
+            int i;
+            for (i = 0; i < m_engines.length; i++) {
+                if (current_engine.get_name() == engines[i].get_name()) {
+                    switch_engine(i);
+                    return;
+                }
+            }
+            switch_engine(0, true);
+        }
     }
 
     private void status_icon_popup_menu(Gtk.StatusIcon status_icon,
