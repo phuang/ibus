@@ -109,7 +109,10 @@ class Panel : IBus.PanelService {
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
-        if (!KeybindingManager.primary_modifier_still_pressed(event)) {
+        uint primary_modifiers =
+            KeybindingManager.get_primary_modifier(event.key.state);
+        if (!KeybindingManager.primary_modifier_still_pressed(event,
+            primary_modifiers)) {
             int i = revert ? m_engines.length - 1 : 1;
             switch_engine(i);
         } else {

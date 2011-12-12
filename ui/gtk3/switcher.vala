@@ -94,12 +94,18 @@ class Switcher : Gtk.Window {
                      Gdk.CURRENT_TIME);
 
         m_primary_modifier =
-            KeybindingManager.get_primary_modifier(event.key.state);
+            KeybindingManager.get_primary_modifier(
+                event.key.state & KeybindingManager.MODIFIER_FILTER);
 
         m_loop = new GLib.MainLoop();
         m_loop.run();
         m_loop = null;
+
         hide();
+        // Make sure the switcher is hidden before returning from this function.
+        while (Gtk.events_pending())
+            Gtk.main_iteration ();
+
         return m_result;
     }
 
@@ -198,11 +204,14 @@ class Switcher : Gtk.Window {
 
     public override bool key_release_event(Gdk.EventKey e) {
         Gdk.EventKey *pe = &e;
-        if (m_primary_modifier != KeybindingManager.keyval_to_modifier(pe->keyval))
+        uint modifier = KeybindingManager.keyval_to_modifier(pe->keyval);
+        if (m_primary_modifier != modifier)
             return true;
 
-        if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe))
+        if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe,
+            m_primary_modifier)) {
             return true;
+        }
 
         m_loop.quit();
         m_result = (int)m_selected_engine;

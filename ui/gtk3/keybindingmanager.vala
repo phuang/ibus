@@ -31,6 +31,12 @@ public class KeybindingManager : GLib.Object {
 
     private static KeybindingManager m_instance = null;
 
+    public static const uint MODIFIER_FILTER = ~(
+        Gdk.ModifierType.MOD2_MASK |
+        Gdk.ModifierType.LOCK_MASK |
+        Gdk.ModifierType.MOD4_MASK |
+        Gdk.ModifierType.MOD5_MASK);
+
     /**
      * Helper class to store keybinding
      */
@@ -147,9 +153,9 @@ public class KeybindingManager : GLib.Object {
         return 0;
     }
 
-    public static bool primary_modifier_still_pressed(Gdk.Event event) {
+    public static bool primary_modifier_still_pressed(Gdk.Event event,
+                                                      uint primary_modifier) {
         Gdk.EventKey keyevent = event.key;
-        uint primary_modifier = get_primary_modifier(keyevent.state);
         if (primary_modifier == 0)
             return false;
 
@@ -201,11 +207,7 @@ public class KeybindingManager : GLib.Object {
                 break;
 
             if (event.type == Gdk.EventType.KEY_PRESS) {
-                const uint modifiers_filter = ~(
-                    Gdk.ModifierType.MOD2_MASK |
-                    Gdk.ModifierType.LOCK_MASK |
-                    Gdk.ModifierType.MOD5_MASK);
-                uint modifiers = event.key.state & modifiers_filter;
+                uint modifiers = event.key.state & MODIFIER_FILTER;
                 foreach (var binding in m_bindings) {
                     if (event.key.keyval != binding.keysym ||
                         modifiers != binding.modifiers)

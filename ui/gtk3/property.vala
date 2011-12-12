@@ -28,7 +28,7 @@ using Gtk;
 public class PropertyManager {
     private IBus.PropList m_props;
     private GLib.HashTable<string, IPropItem> m_prop_map =
-        new GLib.HashTable<string, IPropItem>(GLib.str_hash, null);
+        new GLib.HashTable<string, IPropItem>(GLib.str_hash, GLib.str_equal);
     private Gtk.Menu m_menu;
 
     public void ProperyManager() {
@@ -49,14 +49,13 @@ public class PropertyManager {
     public Gtk.Menu? create_menu(IBus.PropList props) {
         Gtk.Menu menu = new Gtk.Menu();
         int i = 0;
-        GLib.SList<PropRadioMenuItem> group = 
-            new GLib.SList<PropRadioMenuItem>();
+        PropRadioMenuItem last_radio = null;
         while (true) {
             IBus.Property prop = props.get(i);
             if (prop == null)
                 break;
+
             i++;
-            
             IPropItem item = null;
             switch(prop.get_prop_type()) {
                 case IBus.PropType.NORMAL:
@@ -67,9 +66,10 @@ public class PropertyManager {
                     break;
                 case IBus.PropType.RADIO:
                     {
-                        PropRadioMenuItem radio = new PropRadioMenuItem(prop, group);
-                        group.append(radio);
+                        PropRadioMenuItem radio =
+                            new PropRadioMenuItem(prop, last_radio);
                         item = radio;
+                        last_radio = radio;
                     }
                     break;
                 case IBus.PropType.MENU:
@@ -87,6 +87,8 @@ public class PropertyManager {
                     warning("unknown property type %d", (int)prop.get_prop_type());
                     break;
             }
+            if (prop.get_prop_type() != IBus.PropType.RADIO)
+                last_radio = null;
             if (item != null) {
                 m_prop_map.insert(prop.get_key(), item);
                 menu.append(item as Gtk.MenuItem);
@@ -96,18 +98,19 @@ public class PropertyManager {
 
         if (i == 0)
             return null;
+        menu.show_all();
         return menu;
     }
 
     public void update_property(IBus.Property prop) {
         assert(prop != null);
-        
+
         IPropItem item = m_prop_map.lookup(prop.get_key());
         return_if_fail(item != null);
         item.update_property(prop);
     }
 
-    public signal void property_activate(string key, int state); 
+    public signal void property_activate(string key, int state);
 }
 
 public interface IPropItem : GLib.Object {
@@ -181,7 +184,7 @@ public class PropCheckMenuItem : Gtk.RadioMenuItem, IPropItem {
     }
 
     public override void toggled() {
-        IBus.PropState new_state = 
+        IBus.PropState new_state =
             get_active() ? IBus.PropState.CHECKED : IBus.PropState.UNCHECKED;
         if (m_property.get_state() != new_state) {
             m_property.set_state(new_state);
@@ -191,9 +194,12 @@ public class PropCheckMenuItem : Gtk.RadioMenuItem, IPropItem {
 }
 
 public class PropRadioMenuItem : PropCheckMenuItem {
-    public PropRadioMenuItem(IBus.Property property, GLib.SList<PropRadioMenuItem> group) {
+    public PropRadioMenuItem(IBus.Property property,
+        PropRadioMenuItem ?group_source) {
         base(property);
-        set_group(group);
+
+        if (group_source != null)
+            set_group(group_source.get_group());
     }
 }
 
