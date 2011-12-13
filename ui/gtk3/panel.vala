@@ -61,8 +61,8 @@ class Panel : IBus.PanelService {
         m_candidate_panel.hide();
         m_candidate_panel.show();
 
-        Variant variant = m_config.get_value("general", "preload_engines");
-        update_engines(variant);
+        update_engines(m_config.get_value("general", "preload_engines"),
+                       m_config.get_value("general", "engines_order"));
 
         m_switcher = new Switcher();
 
@@ -85,7 +85,7 @@ class Panel : IBus.PanelService {
         //  debug("switch_engine i = %d", i);
         assert(i >= 0 && i < m_engines.length);
 
-        // Do not need siwtch
+        // Do not need switch
         if (i == 0 && !force)
             return;
 
@@ -110,6 +110,14 @@ class Panel : IBus.PanelService {
         } catch (GLib.SpawnError e) {
             warning("execute setxkblayout failed");
         }
+
+        string[] names = {};
+        foreach(var desc in m_engines) {
+            names += desc.get_name();
+        }
+        m_config.set_value("general",
+                           "engines_order",
+                           new GLib.Variant.strv(names));
     }
 
     private void handle_config_value_changed(IBus.Config config,
@@ -117,11 +125,15 @@ class Panel : IBus.PanelService {
                                              string name,
                                              Variant variant) {
         if (section == "general" && name == "preload_engines") {
-            update_engines(variant);
+            update_engines(variant, null);
         }
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
+        // Do not need switch IME
+        if (m_engines.length <= 1)
+            return;
+
         uint primary_modifiers =
             KeybindingManager.get_primary_modifier(event.key.state);
         if (!KeybindingManager.primary_modifier_still_pressed(event,
@@ -140,15 +152,32 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void update_engines(Variant variant) {
+    private void update_engines(GLib.Variant? var_engines,
+                                GLib.Variant? var_order) {
         string[] engine_names = null;
 
-        if (variant != null)
-            engine_names = variant.dup_strv();
+        if (var_engines != null)
+            engine_names = var_engines.dup_strv();
         if (engine_names == null || engine_names.length == 0)
             engine_names = {"xkb:layout:us"};
 
-        var engines = m_bus.get_engines_by_names(engine_names);
+        string[] order_names =
+            (var_order != null) ? var_order.dup_strv() : null;
+
+        string[] names = {};
+
+        foreach (var name in order_names) {
+            if (name in engine_names)
+                names += name;
+        }
+
+        foreach (var name in engine_names) {
+            if (name in names)
+                continue;
+            names += name;
+        }
+
+        var engines = m_bus.get_engines_by_names(names);
 
         if (m_engines.length == 0) {
             m_engines = engines;
