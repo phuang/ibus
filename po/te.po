@@ -1,24 +1,25 @@
-# translation of ibus.master.te.po to Telugu
+# translation of ibus.pot to Telugu
 # Telugu translation of ibus.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-#
-# Krishna Babu K <kkrothap@redhat.com>, 2009, 2010.
-# Praveen_Illa <mail2ipn@gmail.com>, 2011.
+# 
+# Translators:
+# Krishna Babu K <kkrothap@redhat.com>, 2009.
+# ప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.te\n"
+"Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
 "POT-Creation-Date: 2011-05-13 11:21+0900\n"
-"PO-Revision-Date: 2011-05-14 19:25+0000\n"
+"PO-Revision-Date: 2011-10-27 17:27+0000\n"
 "Last-Translator: Praveen_Illa <mail2ipn@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.net/projects/p/fedora/team/te/)\n"
-"Language: te\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"Language: te\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -30,15 +31,15 @@ msgstr "ఇన్‌పుట్ పద్ధతి ఫ్రేమ్‌వర�
 
 #: ../bus/ibus.desktop.in.h:3
 msgid "Start IBus Input Method Framework"
-msgstr "IBus ఇన్‌పుట్ పద్ధతి ఫ్రేమ్‌వర్కును ప్రారంభించుము"
+msgstr "IBus ఇన్‌పుట్ పద్ధతి ఫ్రేమ్‌వర్కును ప్రారంభించు"
 
 #: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
-"కాపీరైట్ (c) 2007-2010 Peng Huang\n"
-"కాపీరైట్ (c) 2007-2010 Red Hat, Inc."
+"నకలుహక్కు (c) 2007-2010 Peng Huang\n"
+"నకలుహక్కు (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41
 msgid "Other"
@@ -96,7 +97,7 @@ msgstr "IBus అనునది Linux/Unix కొరకు తెలివైన
 msgid "translator-credits"
 msgstr ""
 "కృష్ణబాబు కె <kkrothap@redhat.com> 2009.\n"
-"ప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com> 2010."
+"ప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com> 2010-11."
 
 #: ../ui/gtk/languagebar.py:106
 msgid "About the input method"
@@ -104,7 +105,7 @@ msgstr "ఇన్‌పుట్ పద్ధతి గురించి"
 
 #: ../ui/gtk/languagebar.py:214
 msgid "Switch input method"
-msgstr "ఇన్‌పుట్ పద్ధతి మార్చుము"
+msgstr "ఇన్‌పుట్ పద్ధతిని మార్చు"
 
 #: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
 #: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
@@ -227,7 +228,7 @@ msgstr "స్వయంచాలకంగా దాగిఉండు"
 
 #: ../data/ibus.schemas.in.h:2
 msgid "Custom font"
-msgstr "మలచుకొనిన ఫాంటు"
+msgstr "అనురూపిత ఫాంటు"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
@@ -235,7 +236,7 @@ msgstr "భాష ప్యానల్ కొరకు మలచుకొని
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Disable shortcut keys"
-msgstr "లఘు కీ లను అచేతనంచేయి"
+msgstr "అడ్డదారి కీలను అచేతనంచేయి"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Embed Preedit Text"
@@ -293,7 +294,7 @@ msgstr "అన్ని అనువర్తనములనందు యిన�
 
 #: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
-msgstr "సిస్టమ్ ట్రే నందు ప్రతీకను చూపుము"
+msgstr "సిస్టమ్ ట్రే నందు ప్రతీకను చూపించు"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Show input method name"
@@ -353,15 +354,15 @@ msgstr "భాషా ప్యానల్ కొరకు మలచుకొన
 
 #: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
-msgstr "గ్లోబల్ ఇన్‌పుట్ పద్ధతిని ఉపయోగించుము"
+msgstr "గ్లోబల్ ఇన్‌పుట్ పద్ధతిని ఉపయోగించు"
 
 #: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
-msgstr "సిస్టమ్ కీబోర్డు (XKB) నమూనా ఉపయోగించుము"
+msgstr "వ్యవస్థ కీబోర్డు (XKB) నమూనా ఉపయోగించు"
 
 #: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
-msgstr "సిస్టమ్ కీబోర్డు నమూనా ఉపయోగించుము"
+msgstr "వ్యవస్థ కీబోర్డు నమూనా ఉపయోగించు"
 
 #: ../setup/setup.ui.h:1
 msgid "..."
