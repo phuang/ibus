@@ -22,7 +22,7 @@
 
 if ENABLE_PYTHON
 if ENABLE_GTK2
-GTK2_UI = gtk
+GTK2_UI = gtk2
 endif
 endif
 
