@@ -54,6 +54,7 @@ public class PropertyManager {
             IBus.Property prop = props.get(i);
             if (prop == null)
                 break;
+            debug("ins prop = %s", prop.get_key());
 
             i++;
             IPropItem item = null;
@@ -106,6 +107,8 @@ public class PropertyManager {
         assert(prop != null);
 
         IPropItem item = m_prop_map.lookup(prop.get_key());
+        if (item == null)
+            debug("prop = %s", prop.get_key());
         return_if_fail(item != null);
         item.update_property(prop);
     }

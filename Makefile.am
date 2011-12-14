@@ -22,53 +22,58 @@
 
 NULL =
 
+UI_DIR = \
+	ui \
+	$(NULL)
+
 if ENABLE_PYTHON
-PYTHON_DIRS =       \
-	ibus            \
-	ui              \
-	setup           \
+PYTHON_DIRS = \
+	ibus \
+	setup \
 	$(NULL)
 endif
 
 if ENABLE_GCONF
-GCONF_DIRS =        \
-	gconf           \
+GCONF_DIR = \
+	gconf \
 	$(NULL)
 endif
 
 if ENABLE_DAEMON
-DAEMON_DIRS =       \
-	bus             \
+DAEMON_DIR = \
+	bus \
 	$(NULL)
 endif
 
 if ENABLE_MEMCONF
-MEMCONF_DIRS = \
+MEMCONF_DIR = \
 	memconf \
 	$(NULL)
 endif
 
 if ENABLE_DCONF
-DCONF_DIRS = \
+DCONF_DIR = \
 	dconf \
 	$(NULL)
 endif
 
-SUBDIRS =           \
-	src             \
-	util            \
-	client          \
-	engine          \
-	data            \
-	m4              \
-	po              \
-	docs            \
-	bindings        \
-	$(DAEMON_DIRS)  \
-	$(PYTHON_DIRS)  \
-	$(GCONF_DIRS)   \
-	$(MEMCONF_DIRS) \
-	$(DCONF_DIRS)   \
+SUBDIRS = \
+	src \
+	util \
+	client \
+	engine \
+	tools \
+	data \
+	m4 \
+	po \
+	docs \
+	bindings \
+	$(UI_DIR) \
+	$(DAEMON_DIR) \
+	$(GCONF_DIR) \
+	$(MEMCONF_DIR) \
+	$(DCONF_DIR) \
+	$(PYTHON_DIRS) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4

@@ -485,6 +485,7 @@ bindings/Makefile
 bindings/vala/Makefile
 dconf/Makefile
 dconf/dconf.xml.in
+tools/Makefile
 ])
 
 AC_OUTPUT
