@@ -21,10 +21,18 @@
 # Boston, MA  02111-1307  USA
 
 if ENABLE_PYTHON
-SUBDIRS = \
-	gtk \
-	gtk3 \
-	$(NULL)
+if ENABLE_GTK2
+GTK2_UI = gtk
 endif
+endif
+
+if ENABLE_GTK3
+GTK3_UI = gtk3
+endif
+
+SUBDIRS = \
+	$(GTK2_UI) \
+	$(GTK3_UI) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

@@ -64,7 +64,7 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	$(NULL)
 
-bin_PROGRAMS = ibus-ui-gtk3
+libexec_PROGRAMS = ibus-ui-gtk3
 
 ibus_ui_gtk3_SOURCES = \
 	application.vala \

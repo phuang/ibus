@@ -217,7 +217,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/*
 %{_libexecdir}/ibus-gconf
 %{_libexecdir}/ibus-ui-gtk
+%{_libexecdir}/ibus-ui-gtk3
 %{_libexecdir}/ibus-x11
+%{_libexecdir}/ibus-engine-simple
 # %{_sysconfdir}/xdg/autostart/ibus.desktop
 %{_sysconfdir}/gconf/schemas/ibus.schemas
 %config %{_xinputconf}
