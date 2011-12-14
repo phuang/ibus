@@ -136,6 +136,7 @@ class Panel : IBus.PanelService {
 
         uint primary_modifiers =
             KeybindingManager.get_primary_modifier(event.key.state);
+
         if (!KeybindingManager.primary_modifier_still_pressed(event,
             primary_modifiers)) {
             int i = revert ? m_engines.length - 1 : 1;
@@ -262,6 +263,7 @@ class Panel : IBus.PanelService {
                 new IBus.InputContext(input_context_path,
                                       m_bus.get_connection(),
                                       cancellable);
+            m_input_context.own = false;
         } catch (GLib.Error e) {
             debug("error");
         }
