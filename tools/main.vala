@@ -20,34 +20,62 @@
  * Boston, MA  02111-1307  USA
  */
 using GLib;
+using IBus;
+
 
 string opt1 = null;
 
-int list_engine(string[] argv) throws Error {
-    const OptionEntry[] options = {
+class EngineList {
+    public EngineDesc[] data = {};
+}
+
+int list_engine(string[] argv) {
+    const OptionEntry[] options =  {
         { "opt1", 0, 0, OptionArg.STRING, out opt1, "opt1 desc", "opt2 short desc" },
         { null }
     };
 
     var option = new OptionContext("command [OPTIONS]");
     option.add_main_entries(options, "ibus");
-    option.parse(ref argv);
 
-    foreach (var v in argv) {
-        debug("v = %s", v);
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+    }
+
+    IBus.init();
+    var bus = new IBus.Bus();
+
+    var engines = bus.list_engines();
+
+    var map = new HashTable<string, EngineList>(GLib.str_hash, GLib.str_equal);
+
+    foreach (var engine in engines) {
+        var list = map.get(engine.get_language());
+        if (list == null) {
+            list = new EngineList();
+            map.insert(engine.get_language(), list);
+        }
+        list.data += engine;
+    }
+
+    foreach (var language in map.get_keys()) {
+        var list = map.get(language);
+        print("language: %s\n", IBus.get_language_name(language));
+        foreach (var engine in list.data) {
+            print("  %s - %s\n", engine.get_name(), engine.get_longname());
+        }
     }
 
     return 0;
 }
 
-delegate int EntryFunc(string[] argv) throws Error;
+delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
     string name;
     EntryFunc entry;
 }
-
-
 
 public int main(string[] argv) {
     const CommandEntry commands[]  = {
@@ -65,3 +93,4 @@ public int main(string[] argv) {
 
     return -1;
 }
+
