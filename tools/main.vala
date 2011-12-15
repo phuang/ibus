@@ -70,6 +70,13 @@ int list_engine(string[] argv) {
     return 0;
 }
 
+int switch_engine(string[] argv) {
+    IBus.init();
+    var bus = new IBus.Bus();
+    bus.set_global_engine(argv[1]);
+    return 0;
+}
+
 delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
@@ -79,7 +86,8 @@ struct CommandEntry {
 
 public int main(string[] argv) {
     const CommandEntry commands[]  = {
-        { "list-engine", list_engine }
+        { "list-engine", list_engine },
+        { "switch-engine", switch_engine }
     };
 
     if (argv.length >= 2) {
