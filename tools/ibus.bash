@@ -85,7 +85,7 @@ __ibus()
         engine)
             if [[ "$cmd" == "$prev" ]]; then
                 local imes=`ibus list-engine --name-only`
-                COMPREPLY=( $( compgen -W '$imes' -- "$cur" | sed 's/^$cur/$cur_/' ))
+                COMPREPLY=( $( compgen -W "$imes" -- "$cur" | sed "s/^$cur/$cur_/" ))
             fi
             return 0
             ;;
