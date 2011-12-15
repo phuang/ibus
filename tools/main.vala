@@ -23,15 +23,21 @@ using GLib;
 using IBus;
 
 
-string opt1 = null;
+bool name_only = false;
 
 class EngineList {
     public EngineDesc[] data = {};
 }
 
+IBus.Bus get_bus() {
+    IBus.init();
+    var bus = new IBus.Bus();
+    return bus;
+}
+
 int list_engine(string[] argv) {
     const OptionEntry[] options =  {
-        { "opt1", 0, 0, OptionArg.STRING, out opt1, "opt1 desc", "opt2 short desc" },
+        { "name-only", 0, 0, OptionArg.NONE, out name_only, "engine name only", "engine name only" },
         { null }
     };
 
@@ -43,10 +49,16 @@ int list_engine(string[] argv) {
     } catch (OptionError e) {
     }
 
-    IBus.init();
-    var bus = new IBus.Bus();
+    var bus = get_bus();
 
     var engines = bus.list_engines();
+
+    if (name_only) {
+        foreach (var engine in engines) {
+            print("%s\n", engine.get_name());
+        }
+        return 0;
+    }
 
     var map = new HashTable<string, EngineList>(GLib.str_hash, GLib.str_equal);
 
@@ -70,10 +82,22 @@ int list_engine(string[] argv) {
     return 0;
 }
 
-int switch_engine(string[] argv) {
-    IBus.init();
-    var bus = new IBus.Bus();
-    bus.set_global_engine(argv[1]);
+int get_set_engine(string[] argv) {
+    var bus = get_bus();
+    string engine = null;
+    if (argv.length > 1)
+        engine = argv[1];
+
+    if (engine == null) {
+        engine = bus.get_global_engine().get_name();
+        print("%s\n", engine);
+    } else {
+        bus.set_global_engine(engine);
+    }
+    return 0;
+}
+
+int message_watch(string[] argv) {
     return 0;
 }
 
@@ -86,8 +110,9 @@ struct CommandEntry {
 
 public int main(string[] argv) {
     const CommandEntry commands[]  = {
+        { "engine", get_set_engine },
         { "list-engine", list_engine },
-        { "switch-engine", switch_engine }
+        { "watch", message_watch }
     };
 
     if (argv.length >= 2) {

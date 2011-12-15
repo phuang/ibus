@@ -210,6 +210,7 @@ fi
 %dir %{python_sitelib}/ibus
 %{python_sitelib}/ibus/*
 %dir %{_datadir}/ibus/
+%{_bindir}/ibus
 %{_bindir}/ibus-daemon
 %{_bindir}/ibus-setup
 %{_datadir}/ibus/*
@@ -222,6 +223,7 @@ fi
 %{_libexecdir}/ibus-engine-simple
 # %{_sysconfdir}/xdg/autostart/ibus.desktop
 %{_sysconfdir}/gconf/schemas/ibus.schemas
+%{_sysconfdir}/bash_completion.d/ibus.bash
 %config %{_xinputconf}
 
 %files libs

@@ -1,1 +1,1 @@
-../ui/gtk/engineabout.py
+../ui/gtk2/engineabout.py

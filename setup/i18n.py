@@ -1,1 +1,1 @@
-../ui/gtk/i18n.py
+../ui/gtk2/i18n.py

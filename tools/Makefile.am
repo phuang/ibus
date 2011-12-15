@@ -67,4 +67,13 @@ ibus_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 
+bash_completion_SCRIPTS= \
+	ibus.bash \
+	$(NULL)
+bash_completiondir=@sysconfdir@/bash_completion.d
+
+EXTRA_DIST = \
+	ibus.bash \
+	$(NULL)
+
 -include $(top_srcdir)/git.mk
