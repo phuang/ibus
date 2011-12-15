@@ -89,10 +89,27 @@ int get_set_engine(string[] argv) {
         engine = argv[1];
 
     if (engine == null) {
-        engine = bus.get_global_engine().get_name();
-        print("%s\n", engine);
+        var desc = bus.get_global_engine();
+        if (desc == null)
+            return -1;
+        print("%s\n", desc.get_name());
+        return 0;
     } else {
-        bus.set_global_engine(engine);
+        if(!bus.set_global_engine(engine))
+            return -1;
+        var desc = bus.get_global_engine();
+        if (desc == null)
+            return -1;
+        string cmdline = "setxkbmap %s".printf(desc.get_layout());
+        try {
+            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
+                warning("Switch xkb layout to %s failed.",
+                    desc.get_layout());
+            }
+        } catch (GLib.SpawnError e) {
+            warning("execute setxkblayout failed");
+        }
+        return 0;
     }
     return 0;
 }
