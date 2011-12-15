@@ -504,6 +504,8 @@ _context_request_engine_cb (BusInputContext *context,
                             const gchar     *engine_name,
                             BusIBusImpl     *ibus)
 {
+    if (engine_name == NULL || engine_name[0] == '\0')
+        engine_name = "xkb:layout:us";
     return bus_ibus_impl_get_engine_desc (ibus, engine_name);
 }
 
