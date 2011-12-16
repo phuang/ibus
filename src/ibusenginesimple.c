@@ -199,7 +199,6 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
         IBusText *text = ibus_text_new_from_ucs4 (outbuf);
         ibus_text_append_attribute (text,
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
-        // g_debug ("UpdatePreedit text=%s", text->text);
         ibus_engine_update_preedit_text ((IBusEngine *)simple, text, len, TRUE);
     }
 }
@@ -315,7 +314,7 @@ check_table (IBusEngineSimple *simple,
              IBusComposeTable *table,
              gint              n_compose)
 {
-    g_debug("check_table");
+    // g_debug("check_table");
     IBusEngineSimplePrivate *priv = simple->priv;
     gint row_stride = table->max_seq_len + 2;
     guint16 *seq;
@@ -368,7 +367,7 @@ check_table (IBusEngineSimple *simple,
         }
 
         ibus_engine_simple_commit_char (simple, value);
-        g_debug ("U+%04X\n", value);
+        // g_debug ("U+%04X\n", value);
         priv->compose_buffer[0] = 0;
     }
     return TRUE;
@@ -392,12 +391,12 @@ check_compact_table (IBusEngineSimple              *simple,
     if (n_compose > table->max_seq_len)
         return FALSE;
 
-    g_debug ("check_compact_table(n_compose=%d) [%04x, %04x, %04x, %04x]",
-            n_compose,
-            priv->compose_buffer[0],
-            priv->compose_buffer[1],
-            priv->compose_buffer[2],
-            priv->compose_buffer[3]);
+    // g_debug ("check_compact_table(n_compose=%d) [%04x, %04x, %04x, %04x]",
+    //          n_compose,
+    //          priv->compose_buffer[0],
+    //          priv->compose_buffer[1],
+    //          priv->compose_buffer[2],
+    //          priv->compose_buffer[3]);
 
     seq_index = bsearch (priv->compose_buffer,
                          table->data,
@@ -406,16 +405,16 @@ check_compact_table (IBusEngineSimple              *simple,
                          compare_seq_index);
 
     if (seq_index == NULL) {
-        g_debug ("compact: no\n");
+        // g_debug ("compact: no\n");
         return FALSE;
     }
 
     if (n_compose == 1) {
-        g_debug ("compact: yes\n");
+        // g_debug ("compact: yes\n");
         return TRUE;
     }
 
-    g_debug ("compact: %04x ", *seq_index);
+    // g_debug ("compact: %04x ", *seq_index);
     seq = NULL;
 
     for (i = n_compose - 1; i < table->max_seq_len; i++) {
@@ -427,14 +426,14 @@ check_compact_table (IBusEngineSimple              *simple,
                            (seq_index[i + 1] - seq_index[i]) / row_stride,
                            sizeof (guint16) * row_stride,
                            compare_seq);
-            g_debug ("seq = %p", seq);
+            // g_debug ("seq = %p", seq);
 
             if (seq) {
                 if (i == n_compose - 1)
                     break;
                 else {
                     ibus_engine_simple_update_preedit_text (simple);
-                    g_debug ("yes\n");
+                    // g_debug ("yes\n");
                     return TRUE;
                 }
             }
@@ -442,7 +441,7 @@ check_compact_table (IBusEngineSimple              *simple,
     }
 
     if (!seq) {
-        g_debug ("no\n");
+        // g_debug ("no\n");
         return FALSE;
     }
     else {
@@ -452,7 +451,7 @@ check_compact_table (IBusEngineSimple              *simple,
         ibus_engine_simple_commit_char (simple, value);
         priv->compose_buffer[0] = 0;
 
-        g_debug ("U+%04X\n", value);
+        // g_debug ("U+%04X\n", value);
         return TRUE;
     }
 }
@@ -805,7 +804,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         priv->modifiers_dropped = FALSE;
         priv->tentative_match = 0;
 
-        g_debug ("Start HEX MODE");
+        // g_debug ("Start HEX MODE");
 
         ibus_engine_simple_update_preedit_text (simple);
 
@@ -869,7 +868,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             if (check_table (simple,
                              (IBusComposeTable *)list->data,
                              n_compose)) {
-                g_debug("check_table returns true");
+                // g_debug("check_table returns true");
                 return TRUE;
             }
             list = list->next;
