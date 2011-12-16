@@ -21,9 +21,9 @@
 # Boston, MA  02111-1307  USA
 
 from gi.repository import IBus
-from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GdkPixbuf
+from gi.repository import Gtk
 from gi.repository import Pango
 
 from i18n import _, N_
