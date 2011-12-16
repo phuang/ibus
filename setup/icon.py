@@ -51,15 +51,16 @@ def load_icon(icon, size):
         h = int(h / rate)
         pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
     except:
-        import traceback
-        traceback.print_exc()
+        # import traceback
+        # traceback.print_exc()
         pass
     if pixbuf == None:
         try:
             theme = Gtk.IconTheme.get_default()
             pixbuf = theme.load_icon(icon, icon_size, 0)
         except:
-            import traceback
-            traceback.print_exc()
+            # import traceback
+            # traceback.print_exc()
+            pass
     icon_cache[(icon, size)] = pixbuf
     return pixbuf

@@ -66,6 +66,8 @@ class EngineComboBox(Gtk.ComboBox):
         lang = {}
         for e in engines:
             l = IBus.get_language_name(e.get_language())
+            if l == None:
+                l = ""
             if l not in lang:
                 lang[l] = []
             lang[l].append(e)
@@ -107,7 +109,7 @@ class EngineComboBox(Gtk.ComboBox):
             if pixbuf == None:
                 pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
             if pixbuf == None:
-                pixbuf = load_icon("gtk-missing-image",
+                pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
                         Gtk.IconSize.LARGE_TOOLBAR)
             renderer.set_property("pixbuf", pixbuf)
 

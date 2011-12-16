@@ -20,28 +20,28 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-import gtk
-import glib
-import gobject
-import pango
-import ibus
+from gi.repository import GLib
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import IBus
+from gi.repository import Pango
 
 from icon import load_icon
 from i18n import _, N_
 
-class EngineTreeView(gtk.TreeView):
+class EngineTreeView(Gtk.TreeView):
     __gtype_name__ = 'EngineTreeView'
     __gproperties__ = {
         'active-engine' : (
-            gobject.TYPE_PYOBJECT,
+            object,
             'selected engine',
             'selected engine',
-            gobject.PARAM_READABLE),
+            GObject.PARAM_READWRITE),
         'engines' : (
-            gobject.TYPE_PYOBJECT,
+            object,
             'engines',
             'engines',
-            gobject.PARAM_READABLE)
+            GObject.PARAM_READWRITE)
     }
 
     def __init__(self):
@@ -53,7 +53,7 @@ class EngineTreeView(gtk.TreeView):
         # self.set_headers_visible(True)
         self.set_reorderable(True)
 
-        self.__model = gtk.ListStore(gobject.TYPE_PYOBJECT, gobject.TYPE_STRING)
+        self.__model = Gtk.ListStore(GObject.TYPE_PYOBJECT, GObject.TYPE_STRING)
         self.set_model(self.__model)
         self.__model.connect("row-changed", self.__emit_changed_delay_cb, "row-changed")
         self.__model.connect("row-deleted", self.__emit_changed_delay_cb, "row-deleted")
@@ -61,24 +61,24 @@ class EngineTreeView(gtk.TreeView):
         self.__model.connect("rows-reordered", self.__emit_changed_delay_cb, "rows-reordered")
 
         # create im name & icon column
-        column = gtk.TreeViewColumn(_("Input Method"))
+        column = Gtk.TreeViewColumn(_("Input Method"))
         column.set_min_width(220)
 
-        renderer = gtk.CellRendererPixbuf()
+        renderer = Gtk.CellRendererPixbuf()
         renderer.set_property("xalign", 0)
         column.pack_start(renderer, False)
         column.set_cell_data_func(renderer, self.__icon_cell_data_cb)
 
-        renderer = gtk.CellRendererText()
+        renderer = Gtk.CellRendererText()
         renderer.set_property("xalign", 0)
-        renderer.set_property("ellipsize", pango.ELLIPSIZE_END)
+        renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(renderer, True)
         column.set_cell_data_func(renderer, self.__name_cell_data_cb)
         self.append_column(column)
 
         # create im keyboard layout column
-        renderer = gtk.CellRendererCombo()
-        model = gtk.ListStore(gobject.TYPE_STRING)
+        renderer = Gtk.CellRendererCombo()
+        model = Gtk.ListStore(GObject.TYPE_STRING)
         model.append(("us",))
         model.append(("jp",))
         model.append(("xkb",))
@@ -89,10 +89,10 @@ class EngineTreeView(gtk.TreeView):
         renderer.set_property("editable", True)
         renderer.connect("changed", self.__engine_layout_changed_cb)
 
-        column = gtk.TreeViewColumn(_("Kbd"))
+        column = Gtk.TreeViewColumn(_("Kbd"))
         column.set_expand(False)
         column.set_fixed_width(32)
-        column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.pack_start(renderer, False)
         column.set_cell_data_func(renderer, self.__layout_cell_data_cb)
         # self.append_column(column)
@@ -107,45 +107,47 @@ class EngineTreeView(gtk.TreeView):
     def __emit_changed_delay_cb(self, *args):
         if not self.__changed:
             self.__changed = True
-            glib.idle_add(self.__emit_changed)
+            GLib.idle_add(self.__emit_changed)
 
 
-    def __icon_cell_data_cb(self, celllayout, renderer, model, iter):
+    def __icon_cell_data_cb(self, celllayout, renderer, model, iter, data):
         engine = self.__model.get_value(iter, 0)
 
-        icon_size = gtk.icon_size_lookup(gtk.ICON_SIZE_LARGE_TOOLBAR)[0]
-        pixbuf = load_icon(engine.icon, gtk.ICON_SIZE_LARGE_TOOLBAR)
+        icon_size = Gtk.icon_size_lookup(Gtk.IconSize.LARGE_TOOLBAR)[0]
+        pixbuf = load_icon(engine.get_icon(), Gtk.IconSize.LARGE_TOOLBAR)
 
         if pixbuf == None:
-            pixbuf = load_icon("ibus-engine", gtk.ICON_SIZE_LARGE_TOOLBAR)
+            pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
         if pixbuf == None:
-            pixbuf = load_icon("gtk-missing-image", gtk.ICON_SIZE_LARGE_TOOLBAR)
+            pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
+                               Gtk.IconSize.LARGE_TOOLBAR)
 
         renderer.set_property("pixbuf", pixbuf)
 
-    def __name_cell_data_cb(self, celllayout, renderer, model, iter):
+    def __name_cell_data_cb(self, celllayout, renderer, model, iter, data):
         engine = self.__model.get_value(iter, 0)
         renderer.set_property("sensitive", True)
-        language = ibus.get_language_name(engine.language)
-        renderer.set_property("text", "%s - %s" % (language, engine.longname))
-        if self.__model.get_path(iter)[0] == 0:
+        language = IBus.get_language_name(engine.get_language())
+        renderer.set_property("text",
+                "%s - %s" % (language, engine.get_longname()))
+        if self.__model.get_path(iter).get_indices()[0] == 0:
             # default engine
-            renderer.set_property("weight", pango.WEIGHT_BOLD)
+            renderer.set_property("weight", Pango.Weight.BOLD)
         else:
-            renderer.set_property("weight", pango.WEIGHT_NORMAL)
+            renderer.set_property("weight", Pango.Weight.NORMAL)
 
-    def __layout_cell_data_cb(self, celllayout, renderer, model, iter):
+    def __layout_cell_data_cb(self, celllayout, renderer, model, iter, data):
         engine = self.__model.get_value(iter, 0)
         layout = self.__model.get_value(iter, 1)
         renderer.set_property("sensitive", True)
         if not layout:
             layout = engine.layout
         renderer.set_property("text", layout)
-        if self.__model.get_path(iter)[0] == 0:
+        if self.__model.get_path(iter).get_indices()[0] == 0:
             #default engine
-            renderer.set_property("weight", pango.WEIGHT_BOLD)
+            renderer.set_property("weight", Pango.WEIGHT_BOLD)
         else:
-            renderer.set_property("weight", pango.WEIGHT_NORMAL)
+            renderer.set_property("weight", Pango.WEIGHT_NORMAL)
 
     def __engine_layout_changed_cb(self, combo, path, iter):
         return
@@ -153,14 +155,15 @@ class EngineTreeView(gtk.TreeView):
         layout = combo.get_property("model").get_value(iter, 0)
         self.__model.set_value(i, 1, layout)
 
-    def do_get_property(self, property):
-        if property.name == "active-engine":
+    def do_get_property(self, prop):
+        print "do_get_property ", prop
+        if prop.name == "active-engine":
             iter = self.get_selected_iter()
             if iter == None:
                 return None
             row = self.__model.get(iter, 0)
             return row[0]
-        elif property.name == "engines":
+        elif prop.name == "engines":
             engines = [ r[0] for r in self.__model if r[0] != None]
             return engines
         else:
@@ -244,4 +247,12 @@ class EngineTreeView(gtk.TreeView):
         self.__model.swap(iter, self.__model[index + 1].iter)
         self.scroll_to_cell(row.path, None)
 
-gobject.type_register(EngineTreeView)
+GObject.type_register(EngineTreeView)
+
+if __name__ == "__main__":
+    tree = EngineTreeView()
+    tree.set_engines([IBus.EngineDesc(language="zh")])
+    w = Gtk.Window()
+    w.add(tree)
+    w.show_all()
+    Gtk.main()

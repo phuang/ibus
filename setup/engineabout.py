@@ -38,7 +38,7 @@ class EngineAbout(Gtk.Dialog):
         self.__init_ui()
 
     def __init_ui(self):
-        self.set_icon_name("gtk-about")
+        self.set_icon_name(Gtk.STOCK_ABOUT)
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -105,7 +105,7 @@ class EngineAbout(Gtk.Dialog):
             theme = Gtk.IconTheme.get_default()
             icon = theme.lookup_icon("ibus-engine", 48, 0)
             if icon == None:
-                icon = theme.lookup_icon("gtk-missing-image", 48, 0)
+                icon = theme.lookup_icon(Gtk.STOCK_MISSING_IMAGE, 48, 0)
             pixbuf = icon.load_icon()
         return pixbuf
 
