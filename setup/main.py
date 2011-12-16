@@ -20,20 +20,16 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-import gettext
 import os
 import signal
 import sys
 import time
 import gtk
-import gobject
-import pango
 import ibus
 import keyboardshortcut
 import locale
 from os import path
 from xdg import BaseDirectory
-from gtk import gdk
 from enginecombobox import EngineComboBox
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
