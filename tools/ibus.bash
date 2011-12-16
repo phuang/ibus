@@ -1,4 +1,25 @@
+# vim:set et ts=4 sts=4:
 # bash completion for ibus
+#
+# ibus - The Input Bus
+#
+# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2010 Red Hat, Inc.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+# Boston, MA  02111-1307  USA
 
 if ! type _get_comp_words_by_ref >/dev/null 2>&1; then
 if [[ -z ${ZSH_VERSION:+set} ]]; then
@@ -57,6 +78,22 @@ _get_comp_words_by_ref ()
 fi
 fi
 
+__ibus_engine()
+{
+    if [[ "$cmd" == "$prev" ]]; then
+        local imes=$( ibus list-engine --name-only 2>/dev/null )
+        COMPREPLY=( $( compgen -W "$imes" -- "$cur" | sed "s/^$cur/$cur_/" ))
+    fi
+}
+
+__ibus_list_engine()
+{
+   if [[ "$cur" == -* ]]; then
+       local options=( --name-only )
+       COMPREPLY=( $( compgen -W '${options[@]}' -- "$cur" ))
+   fi
+}
+
 __ibus()
 {
     COMPREPLY=()
@@ -83,25 +120,20 @@ __ibus()
 
     case $cmd in
         engine)
-            if [[ "$cmd" == "$prev" ]]; then
-                local imes=`ibus list-engine --name-only`
-                COMPREPLY=( $( compgen -W "$imes" -- "$cur" | sed "s/^$cur/$cur_/" ))
-            fi
+            __ibus_engine;
             return 0
             ;;
         list-engine)
-            if [[ "$cur" == -* ]]; then
-                local options=( --name-only )
-                COMPREPLY=( $( compgen -W '${options[@]}' -- "$cur" ))
-            fi
+            __ibus_list_engine;
             return 0
             ;;
         watch)
             return 0
             ;;
+        *)
+            COMPREPLY=( $( compgen -W '${cmds[@]}' -- "$cur" ))
+            return 0
+            ;;
     esac
-
-    COMPREPLY=( $( compgen -W '${cmds[@]}' -- "$cur" ))
-
 } &&
 complete -o bashdefault -o default -o nospace -F __ibus ibus
