@@ -215,7 +215,8 @@ class Setup(object):
 
         self.__combobox.connect("notify::active-engine",
                 self.__combobox_notify_active_engine_cb)
-        self.__treeview.connect("notify", self.__treeview_notify_cb)
+        self.__treeview.connect("notify::active-engine", self.__treeview_notify_cb)
+        self.__treeview.connect("notify::engines", self.__treeview_notify_cb)
 
     def __init_ui(self):
         # add icon search path
@@ -248,7 +249,7 @@ class Setup(object):
         args = []
         if engine == None:
            return args
-        setup = str(engine.setup)
+        setup = str(engine.get_setup())
         if len(setup) != 0:
             args = setup.split()
             args.insert(1, path.basename(args[0]))
@@ -263,7 +264,7 @@ class Setup(object):
         return args
 
     def __treeview_notify_cb(self, treeview, prop):
-        if prop != "active-engine" and prop != "engines":
+        if prop.name not in ("active-engine", "engines"):
             return
 
         engines = self.__treeview.get_engines()
@@ -274,13 +275,13 @@ class Setup(object):
         self.__builder.get_object("button_engine_up").set_sensitive(engine not in engines[:1])
         self.__builder.get_object("button_engine_down").set_sensitive(engine not in engines[-1:])
 
-        obj = self.__builder.get_object("button_engine_preferences")
-        if len(self.__get_engine_setup_exec_args(engine)) != 0:
-            obj.set_sensitive(True)
-        else:
-            obj.set_sensitive(False)
+        # obj = self.__builder.get_object("button_engine_preferences")
+        # if len(self.__get_engine_setup_exec_args(engine)) != 0:
+        #     obj.set_sensitive(True)
+        # else:
+        #     obj.set_sensitive(False)
 
-        if prop == "engines":
+        if prop.name == "engines":
             engine_names = map(lambda e: e.get_name(), engines)
             value = GLib.Variant.new_strv(engine_names)
             self.__config.set_value("general", "preload_engines", value)

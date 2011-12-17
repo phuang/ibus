@@ -36,12 +36,12 @@ class EngineTreeView(Gtk.TreeView):
             object,
             'selected engine',
             'selected engine',
-            GObject.PARAM_READWRITE),
+            GObject.ParamFlags.READABLE),
         'engines' : (
             object,
             'engines',
             'engines',
-            GObject.PARAM_READWRITE)
+            GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE)
     }
 
     def __init__(self):
@@ -100,9 +100,7 @@ class EngineTreeView(Gtk.TreeView):
         self.get_selection().connect("changed", self.__selection_changed_cb)
 
     def __selection_changed_cb(self, *args):
-        print "Selection Changed args = ", args
         self.notify("active-engine");
-        pass
 
     def __emit_changed(self, *args):
         if self.__changed:
@@ -115,8 +113,8 @@ class EngineTreeView(Gtk.TreeView):
             GLib.idle_add(self.__emit_changed)
 
 
-    def __icon_cell_data_cb(self, celllayout, renderer, model, iter, data):
-        engine = self.__model.get_value(iter, 0)
+    def __icon_cell_data_cb(self, celllayout, renderer, model, it, data):
+        engine = self.__model.get_value(it, 0)
 
         icon_size = Gtk.icon_size_lookup(Gtk.IconSize.LARGE_TOOLBAR)[0]
         pixbuf = load_icon(engine.get_icon(), Gtk.IconSize.LARGE_TOOLBAR)
@@ -129,50 +127,57 @@ class EngineTreeView(Gtk.TreeView):
 
         renderer.set_property("pixbuf", pixbuf)
 
-    def __name_cell_data_cb(self, celllayout, renderer, model, iter, data):
-        engine = self.__model.get_value(iter, 0)
+    def __name_cell_data_cb(self, celllayout, renderer, model, it, data):
+        engine = self.__model.get_value(it, 0)
         renderer.set_property("sensitive", True)
         language = IBus.get_language_name(engine.get_language())
         renderer.set_property("text",
                 "%s - %s" % (language, engine.get_longname()))
-        if self.__model.get_path(iter).get_indices()[0] == 0:
+        if self.__model.get_path(it).get_indices()[0] == 0:
             # default engine
             renderer.set_property("weight", Pango.Weight.BOLD)
         else:
             renderer.set_property("weight", Pango.Weight.NORMAL)
 
-    def __layout_cell_data_cb(self, celllayout, renderer, model, iter, data):
-        engine = self.__model.get_value(iter, 0)
-        layout = self.__model.get_value(iter, 1)
+    def __layout_cell_data_cb(self, celllayout, renderer, model, it, data):
+        engine = self.__model.get_value(it, 0)
+        layout = self.__model.get_value(it, 1)
         renderer.set_property("sensitive", True)
         if not layout:
             layout = engine.layout
         renderer.set_property("text", layout)
-        if self.__model.get_path(iter).get_indices()[0] == 0:
+        if self.__model.get_path(it).get_indices()[0] == 0:
             #default engine
             renderer.set_property("weight", Pango.WEIGHT_BOLD)
         else:
             renderer.set_property("weight", Pango.WEIGHT_NORMAL)
 
-    def __engine_layout_changed_cb(self, combo, path, iter):
+    def __engine_layout_changed_cb(self, combo, path, it):
         return
         i = self.__model.get_iter(path)
-        layout = combo.get_property("model").get_value(iter, 0)
+        layout = combo.get_property("model").get_value(it, 0)
         self.__model.set_value(i, 1, layout)
 
     def do_get_property(self, prop):
-        print "do_get_property ", prop
         if prop.name == "active-engine":
-            iter = self.get_selected_iter()
-            if iter == None:
+            it = self.get_selected_iter()
+            if it == None:
                 return None
-            row = self.__model.get(iter, 0)
+            row = self.__model.get(it, 0)
             return row[0]
         elif prop.name == "engines":
             engines = [ r[0] for r in self.__model if r[0] != None]
             return engines
         else:
-            raise AttributeError, 'unknown property %s' % property.name
+            raise AttributeError, 'unknown property %s' % prop.name
+
+    def do_set_property(self, prop, value):
+        if prop.name == "active-engine":
+            raise AttributeError, "active-engine is readonly"
+        elif prop.name == "engines":
+            set_engines(value)
+        else:
+            raise AttributeError, 'unknown property %s' % prop.name
 
     def set_engines(self, engines):
         self.__model.clear()
@@ -180,8 +185,8 @@ class EngineTreeView(Gtk.TreeView):
         for e in engines:
             if e in self.__engines:
                 continue
-            iter = self.__model.append(None)
-            self.__model.set(iter, 0, e)
+            it = self.__model.append(None)
+            self.__model.set(it, 0, e)
             self.__engines.add(e)
         self.__emit_changed()
 
@@ -199,28 +204,28 @@ class EngineTreeView(Gtk.TreeView):
     def prepend_engine(self, engine):
         if engine == None or engine in self.__engines:
             return
-        iter = self.__model.prepend(None)
-        self.__model.set(iter, 0, engine)
+        it = self.__model.prepend(None)
+        self.__model.set(it, 0, engine)
         self.__engines.add(engine)
         self.scroll_to_cell(self.__model[0].path, None)
 
     def append_engine(self, engine):
         if engine == None or engine in self.__engines:
             return
-        iter = self.__model.append(None)
-        self.__model.set(iter, 0, engine)
+        it = self.__model.append(None)
+        self.__model.set(it, 0, engine)
         self.__engines.add(engine)
         self.scroll_to_cell(self.__model[-1].path, None)
 
     def remove_engine(self):
-        iter = self.get_selected_iter()
-        if iter == None:
+        it = self.get_selected_iter()
+        if it == None:
             return
-        row = self.__model[iter]
+        row = self.__model[it]
         engine = row[0]
         self.__engines.remove(engine)
-        index = row.path[0]
-        self.__model.remove(iter)
+        index = row.path.get_indices()[0]
+        self.__model.remove(it)
         try:
             row = self.__model[index]
             selection = self.get_selection()
@@ -229,27 +234,27 @@ class EngineTreeView(Gtk.TreeView):
             pass
 
     def move_up_engine(self):
-        iter = self.get_selected_iter()
-        if iter == None:
+        it = self.get_selected_iter()
+        if it == None:
             return
-        row = self.__model[iter]
-        index = row.path[0]
+        row = self.__model[it]
+        index = row.path.get_indices()[0]
         if index == 0:
             return
-        self.__model.swap(iter, self.__model[index - 1].iter)
+        self.__model.swap(it, self.__model[index - 1].iter)
         self.scroll_to_cell(row.path, None)
 
     def move_down_engine(self):
-        iter = self.get_selected_iter()
-        if iter == None:
+        it = self.get_selected_iter()
+        if it == None:
             return
-        row = self.__model[iter]
-        index = row.path[0]
+        row = self.__model[it]
+        index = row.path.get_indices()[0]
         last_row = self.__model[-1]
-        last_index = last_row.path[0]
+        last_index = last_row.path.get_indices()[0]
         if index == last_index:
             return
-        self.__model.swap(iter, self.__model[index + 1].iter)
+        self.__model.swap(it, self.__model[index + 1].iter)
         self.scroll_to_cell(row.path, None)
 
 GObject.type_register(EngineTreeView)
