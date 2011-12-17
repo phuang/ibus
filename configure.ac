@@ -446,8 +446,6 @@ Makefile
 ibus-1.0.pc
 ibus.spec
 xinput-ibus
-memconf/Makefile
-memconf/memconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
@@ -479,12 +477,15 @@ ui/gtk2/gtkpanel.xml.in
 ui/gtk3/Makefile
 setup/Makefile
 setup/ibus-setup
-gconf/Makefile
-gconf/gconf.xml.in
 bindings/Makefile
 bindings/vala/Makefile
-dconf/Makefile
-dconf/dconf.xml.in
+conf/Makefile
+conf/gconf/Makefile
+conf/gconf/gconf.xml.in
+conf/dconf/Makefile
+conf/dconf/dconf.xml.in
+conf/memconf/Makefile
+conf/memconf/memconf.xml.in
 tools/Makefile
 ])
 

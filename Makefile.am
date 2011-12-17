@@ -33,33 +33,16 @@ PYTHON_DIRS = \
 	$(NULL)
 endif
 
-if ENABLE_GCONF
-GCONF_DIR = \
-	gconf \
-	$(NULL)
-endif
-
 if ENABLE_DAEMON
 DAEMON_DIR = \
 	bus \
 	$(NULL)
 endif
 
-if ENABLE_MEMCONF
-MEMCONF_DIR = \
-	memconf \
-	$(NULL)
-endif
-
-if ENABLE_DCONF
-DCONF_DIR = \
-	dconf \
-	$(NULL)
-endif
-
 SUBDIRS = \
 	src \
 	util \
+	conf \
 	client \
 	engine \
 	tools \
@@ -70,9 +53,6 @@ SUBDIRS = \
 	bindings \
 	$(UI_DIR) \
 	$(DAEMON_DIR) \
-	$(GCONF_DIR) \
-	$(MEMCONF_DIR) \
-	$(DCONF_DIR) \
 	$(PYTHON_DIRS) \
 	$(NULL)
 
