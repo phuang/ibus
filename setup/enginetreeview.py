@@ -97,7 +97,12 @@ class EngineTreeView(Gtk.TreeView):
         column.set_cell_data_func(renderer, self.__layout_cell_data_cb)
         # self.append_column(column)
 
-        self.get_selection().connect("changed", lambda *args: self.notify("active-engine"))
+        self.get_selection().connect("changed", self.__selection_changed_cb)
+
+    def __selection_changed_cb(self, *args):
+        print "Selection Changed args = ", args
+        self.notify("active-engine");
+        pass
 
     def __emit_changed(self, *args):
         if self.__changed:

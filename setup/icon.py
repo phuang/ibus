@@ -41,7 +41,10 @@ def load_icon(icon, size):
     if (icon, size) in icon_cache:
         return icon_cache[(icon, size)]
 
-    icon_size = Gtk.icon_size_lookup(size)[0]
+    icon_size = Gtk.icon_size_lookup(size)
+    if icon_size[0]:
+        icon_size = icon_size[1]
+
     pixbuf = None
     try:
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)

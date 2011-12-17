@@ -262,8 +262,8 @@ class Setup(object):
             args.append(path.basename(setup_path))
         return args
 
-    def __treeview_notify_cb(self, treeview, name):
-        if name != "active-engine" and name != "engines":
+    def __treeview_notify_cb(self, treeview, prop):
+        if prop != "active-engine" and prop != "engines":
             return
 
         engines = self.__treeview.get_engines()
@@ -280,9 +280,10 @@ class Setup(object):
         else:
             obj.set_sensitive(False)
 
-        if property.name == "engines":
-            engine_names = map(lambda e: e.name, engines)
-            self.__config.set_list("general", "preload_engines", engine_names, "s")
+        if prop == "engines":
+            engine_names = map(lambda e: e.get_name(), engines)
+            value = GLib.Variant.new_strv(engine_names)
+            self.__config.set_value("general", "preload_engines", value)
 
     def __button_engine_add_cb(self, button):
         engine = self.__combobox.get_active_engine()
@@ -325,12 +326,12 @@ class Setup(object):
             while self.__bus == None:
                 message = _("IBus daemon is not started. Do you want to start it now?")
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_QUESTION,
-                        buttons = Gtk.BUTTONS_YES_NO,
+                        buttons = Gtk.ButtonsType.YES_NO,
                         message_format = message)
                 id = dlg.run()
                 dlg.destroy()
                 self.__flush_gtk_events()
-                if id != Gtk.RESPONSE_YES:
+                if id != Gtk.ResponseType.YES:
                     sys.exit(0)
                 pid = os.spawnlp(os.P_NOWAIT, "ibus-daemon", "ibus-daemon", "--xim")
                 time.sleep(1)
@@ -345,14 +346,15 @@ class Setup(object):
                     "  export QT_IM_MODULE=ibus"
                     )
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_INFO,
-                                        buttons = Gtk.BUTTONS_OK,
+                                        buttons = Gtk.ButtonsType.OK,
                                         message_format = message)
                 id = dlg.run()
                 dlg.destroy()
                 self.__flush_gtk_events()
 
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
-        buttons = (Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_OK, Gtk.ResponseType.OK)
         title = _("Select keyboard shortcut for %s") %  _(name)
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
@@ -364,9 +366,9 @@ class Setup(object):
         id = dialog.run()
         shortcuts = dialog.get_shortcuts()
         dialog.destroy()
-        if id != Gtk.RESPONSE_OK:
+        if id != Gtk.ResponseType.OK:
             return
-        self.__config.set_list(section, _name, shortcuts, "s")
+        self.__config.set_value(section, _name, GLib.Variant.new_strv(shortcuts))
         text = "; ".join(shortcuts)
         entry.set_text(text)
         entry.set_tooltip_text(text)
@@ -384,7 +386,7 @@ class Setup(object):
                 self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
-                        buttons = Gtk.BUTTONS_CLOSE,
+                        buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
                 dlg.run()
                 dlg.destroy()
@@ -395,7 +397,7 @@ class Setup(object):
                 self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
                 dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
-                        buttons = Gtk.BUTTONS_CLOSE,
+                        buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
                 dlg.run()
                 dlg.destroy()
@@ -418,11 +420,13 @@ class Setup(object):
         if data[DATA_PRELOAD]:
             if engine not in self.__preload_engines:
                 self.__preload_engines.add(engine)
-                self.__config.set_list("general", "preload_engines", list(self.__preload_engines), "s")
+                value = GLib.Variant.new_strv(list(self.__preload_engines))
+                self.__config.set_value("general", "preload_engines", value)
         else:
             if engine in self.__preload_engines:
                 self.__preload_engines.remove(engine)
-                self.__config.set_list("general", "preload_engines", list(self.__preload_engines), "s")
+                value = GLib.Variant.new_strv(list(self.__preload_engines))
+                self.__config.set_value("general", "preload_engines", value)
 
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
@@ -456,50 +460,58 @@ class Setup(object):
 
     def __combobox_lookup_table_orientation_changed_cb(self, combobox):
         self.__config.set_value(
-            "panel", "lookup_table_orientation",
-            self.__combobox_lookup_table_orientation.get_active())
+                "panel", "lookup_table_orientation",
+                GLib.Variant.new_int32(self.__combobox_lookup_table_orientation.get_active()))
 
     def __combobox_panel_show_changed_cb(self, combobox):
         self.__config.set_value(
-            "panel", "show",
-            self.__combobox_panel_show.get_active())
+                "panel", "show",
+                GLib.Variant.new_int32(self.__combobox_panel_show.get_active()))
 
     def __combobox_panel_position_changed_cb(self, combobox):
         self.__config.set_value(
-            "panel", "position",
-            self.__combobox_panel_position.get_active())
+                "panel", "position",
+                GLib.Variant.new_int32(self.__combobox_panel_position.get_active()))
 
     def __checkbutton_custom_font_toggled_cb(self, button):
         if self.__checkbutton_custom_font.get_active():
             self.__fontbutton_custom_font.set_sensitive(True)
-            self.__config.set_value("panel", "use_custom_font", True)
+            self.__config.set_value("panel", "use_custom_font",
+                    GLib.Variant.new_boolean(True))
         else:
             self.__fontbutton_custom_font.set_sensitive(False)
-            self.__config.set_value("panel", "use_custom_font", False)
+            self.__config.set_value("panel", "use_custom_font",
+                    GLib.Variant.new_boolean(False))
 
     def __fontbutton_custom_font_notify_cb(self, button, arg):
         font_name = self.__fontbutton_custom_font.get_font_name()
         font_name = unicode(font_name, "utf-8")
-        self.__config.set_value("panel", "custom_font", font_name)
+        self.__config.set_value("panel", "custom_font",
+                GLib.Variant.new_string(font_name))
 
     def __checkbutton_show_icon_on_systray_toggled_cb(self, button):
         value = self.__checkbutton_show_icon_on_systray.get_active()
+        value = GLib.Variant.new_boolean(value)
         self.__config.set_value("panel", "show_icon_on_systray", value)
 
     def __checkbutton_show_im_name_toggled_cb(self, button):
         value = self.__checkbutton_show_im_name.get_active()
+        value = GLib.Variant.new_boolean(value)
         self.__config.set_value("panel", "show_im_name", value)
 
     def __checkbutton_embed_preedit_text_toggled_cb(self, button):
         value = self.__checkbutton_embed_preedit_text.get_active()
+        value = GLib.Variant.new_boolean(value)
         self.__config.set_value("general", "embed_preedit_text", value)
 
     def __checkbutton_use_sys_layout_toggled_cb(self, button):
         value = self.__checkbutton_use_sys_layout.get_active()
+        value = GLib.Variant.new_boolean(value)
         self.__config.set_value("general", "use_system_keyboard_layout", value)
 
     def __checkbutton_use_global_engine_toggled_cb(self, button):
         value = self.__checkbutton_use_global_engine.get_active()
+        value = GLib.Variant.new_boolean(value)
         self.__config.set_value("general", "use_global_engine", value)
 
     def __config_value_changed_cb(self, bus, section, name, value):

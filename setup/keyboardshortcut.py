@@ -134,7 +134,8 @@ class KeyboardShortcutSelection(Gtk.VBox):
         added = []
         for shortcut in shortcuts:
             if shortcut not in added:
-                model.insert(-1, (shortcut,))
+                it = model.insert(0)
+                model[it][0] = shortcut
                 added.append(shortcut)
 
     def get_shortcuts(self):
@@ -150,10 +151,10 @@ class KeyboardShortcutSelection(Gtk.VBox):
             return
         if shortcut in self.get_shortcuts():
             return
-        iter = model.insert(0)
-        model[iter][0] = shortcut
+        it = model.insert(0)
+        model[it][0] = shortcut
         self.__add_button.set_sensitive(False)
-        path = model.get_path(iter)
+        path = model.get_path(it)
         self.__shortcut_view.set_cursor(path, None, False)
 
     def __get_shortcut_from_buttons(self):
@@ -197,7 +198,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
     def __del_selected_shortcut(self):
         model = self.__shortcut_view.get_model()
         path, column = self.__shortcut_view.get_cursor()
-        del model[path[0]]
+        model.remove(model.get_iter(path))
         self.__update_add_and_apply_buttons()
 
     def __shortcut_view_cursor_changed_cb(self, treeview):
@@ -230,7 +231,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
 
     def __keycode_button_clicked_cb(self, button):
         out = []
-        dlg = Gtk.MessageDialog(parent = self.get_toplevel(), buttons = Gtk.BUTTONS_CLOSE)
+        dlg = Gtk.MessageDialog(parent = self.get_toplevel(), buttons = Gtk.ButtonsType.CLOSE)
         message = _("Please press a key (or a key combination).\nThe dialog will be closed when the key is released.")
         dlg.set_markup(message)
         dlg.set_title(_("Please press a key (or a key combination)"))
@@ -239,35 +240,37 @@ class KeyboardShortcutSelection(Gtk.VBox):
             out.append(k.copy())
 
         def __key_release_event(d, k, out):
-            d.response(Gtk.RESPONSE_OK)
+            d.response(Gtk.ResponseType.OK)
 
         dlg.connect("key-press-event", __key_press_event, out)
         dlg.connect("key-release-event", __key_release_event, None)
         id = dlg.run()
         dlg.destroy()
-        if id != Gtk.RESPONSE_OK or not out:
+        if id != Gtk.ResponseType.OK or not out:
             return
         keyevent = out[len(out) - 1]
-        state = keyevent.state & (Gdk.CONTROL_MASK | \
-                                  Gdk.SHIFT_MASK   | \
-                                  Gdk.MOD1_MASK    | \
-                                  Gdk.META_MASK    | \
-                                  Gdk.SUPER_MASK   | \
-                                  Gdk.HYPER_MASK)
+        state = keyevent.state & (Gdk.ModifierType.CONTROL_MASK | \
+                                  Gdk.ModifierType.SHIFT_MASK   | \
+                                  Gdk.ModifierType.MOD1_MASK    | \
+                                  Gdk.ModifierType.META_MASK    | \
+                                  Gdk.ModifierType.SUPER_MASK   | \
+                                  Gdk.ModifierType.HYPER_MASK)
+
+
         if state == 0:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Control_L, keysyms.Control_R) and state == Gdk.CONTROL_MASK:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Shift_L, keysyms.Shift_R) and state == Gdk.SHIFT_MASK:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Alt_L, keysyms.Alt_R) and state == Gdk.MOD1_MASK:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Meta_L, keysyms.Meta_R) and state == Gdk.META_MASK:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Super_L, keysyms.Super_R) and state == Gdk.SUPER_MASK:
-            state = state | Gdk.RELEASE_MASK
-        elif keyevent.keyval in (keysyms.Hyper_L, keysyms.Hyper_R) and state == Gdk.HYPER_MASK:
-            state = state | Gdk.RELEASE_MASK
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R) and state == Gdk.ModifierType.CONTROL_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Shift_L, Gdk.KEY_Shift_R) and state == Gdk.ModifierType.SHIFT_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Alt_L, Gdk.KEY_Alt_R) and state == Gdk.ModifierType.MOD1_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Meta_L, Gdk.KEY_Meta_R) and state == Gdk.ModifierType.META_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Super_L, Gdk.KEY_Super_R) and state == Gdk.ModifierType.SUPER_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
+        elif keyevent.keyval in (Gdk.KEY_Hyper_L, Gdk.KEY_Hyper_R) and state == Gdk.ModifierType.HYPER_MASK:
+            state = state | Gdk.ModifierType.RELEASE_MASK
 
         for name, button, mask in self.__modifier_buttons:
             if state & mask:
