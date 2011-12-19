@@ -79,6 +79,8 @@ class Panel : IBus.PanelService {
             if (m_input_context != null)
                 m_input_context.property_activate(k, s);
         });
+
+        state_changed();
     }
 
     private void switch_engine(int i, bool force = false) {
@@ -311,5 +313,18 @@ class Panel : IBus.PanelService {
 
     public override void hide_lookup_table() {
         m_candidate_panel.set_lookup_table(null);
+    }
+
+    public override void state_changed() {
+        var icon_name = "ibus-keyboard";
+
+        var engine = m_bus.get_global_engine();
+        if (engine != null)
+            icon_name = engine.get_icon();
+
+        if (icon_name[0] == '/')
+            m_status_icon.set_from_file(icon_name);
+        else
+            m_status_icon.set_from_icon_name(icon_name);
     }
 }
