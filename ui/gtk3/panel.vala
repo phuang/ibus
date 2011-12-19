@@ -137,11 +137,9 @@ class Panel : IBus.PanelService {
         uint primary_modifiers =
             KeybindingManager.get_primary_modifier(event.key.state);
 
-        if (!KeybindingManager.primary_modifier_still_pressed(event,
-            primary_modifiers)) {
-            int i = revert ? m_engines.length - 1 : 1;
-            switch_engine(i);
-        } else {
+        bool pressed = KeybindingManager.primary_modifier_still_pressed(
+                event, primary_modifiers);
+        if (pressed) {
             int i = revert ? m_engines.length - 1 : 1;
             i = m_switcher.run(event, m_engines, i);
             if (i < 0) {
@@ -150,6 +148,9 @@ class Panel : IBus.PanelService {
                 assert(i < m_engines.length);
                 switch_engine(i);
             }
+        } else {
+            int i = revert ? m_engines.length - 1 : 1;
+            switch_engine(i);
         }
     }
 

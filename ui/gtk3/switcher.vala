@@ -53,11 +53,13 @@ class Switcher : Gtk.Window {
         assert (m_loop == null);
         assert (index < engines.length);
 
+        m_primary_modifier =
+            KeybindingManager.get_primary_modifier(
+                event.key.state & KeybindingManager.MODIFIER_FILTER);
+
         update_engines(engines);
         m_selected_engine = index;
         m_buttons[index].grab_focus();
-
-        show_all();
 
         Gdk.Device device = event.get_device();
         if (device == null) {
@@ -76,26 +78,42 @@ class Switcher : Gtk.Window {
             keyboard = device.get_associated_device();
         }
 
-        // Grab all keyboard events
-        keyboard.grab(get_window(),
-                    Gdk.GrabOwnership.NONE,
-                    true,
-                    Gdk.EventMask.KEY_PRESS_MASK |
-                    Gdk.EventMask.KEY_RELEASE_MASK,
-                    null,
-                    Gdk.CURRENT_TIME);
-        // Grab all pointer events
-        pointer.grab(get_window(),
-                     Gdk.GrabOwnership.NONE,
-                     true,
-                     Gdk.EventMask.BUTTON_PRESS_MASK |
-                     Gdk.EventMask.BUTTON_RELEASE_MASK,
-                     null,
-                     Gdk.CURRENT_TIME);
+        show_all();
 
-        m_primary_modifier =
-            KeybindingManager.get_primary_modifier(
-                event.key.state & KeybindingManager.MODIFIER_FILTER);
+        if (is_composited()) {
+            // Hide the window by set the opactiy to 0.0, because real hiden
+            // window can not grab keyboard and pointer.
+            get_window().set_opacity(0.0);
+
+            // Show window after 1/10 secound
+            GLib.Timeout.add(100, ()=> {
+                get_window().set_opacity(1.0);
+                return false;
+            });
+        }
+
+        Gdk.GrabStatus status;
+        // Grab all keyboard events
+        status = keyboard.grab(get_window(),
+                               Gdk.GrabOwnership.NONE,
+                               true,
+                               Gdk.EventMask.KEY_PRESS_MASK |
+                               Gdk.EventMask.KEY_RELEASE_MASK,
+                               null,
+                               Gdk.CURRENT_TIME);
+        if (status != Gdk.GrabStatus.SUCCESS)
+            warning("Grab keyboard failed! status = %d", status);
+        // Grab all pointer events
+        status = pointer.grab(get_window(),
+                              Gdk.GrabOwnership.NONE,
+                              true,
+                              Gdk.EventMask.BUTTON_PRESS_MASK |
+                              Gdk.EventMask.BUTTON_RELEASE_MASK,
+                              null,
+                              Gdk.CURRENT_TIME);
+        if (status != Gdk.GrabStatus.SUCCESS)
+            warning("Grab pointer failed! status = %d", status);
+
 
         m_loop = new GLib.MainLoop();
         m_loop.run();
