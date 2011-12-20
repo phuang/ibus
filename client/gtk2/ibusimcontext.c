@@ -273,6 +273,7 @@ _request_surrounding_text (IBusIMContext *context)
 {
     if (context && context->enable &&
         (context->caps & IBUS_CAP_SURROUNDING_TEXT) != 0 &&
+        context->ibuscontext != NULL &&
         ibus_input_context_needs_surrounding_text (context->ibuscontext)) {
         gboolean return_value;
         IDEBUG ("requesting surrounding text");
