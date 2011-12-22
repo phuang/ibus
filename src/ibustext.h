@@ -194,8 +194,17 @@ const gchar *    ibus_text_get_text                 (IBusText       *text);
  *
  * Return the attributes in an IBusText. Should not be freed.
  */
-const IBusAttrList *
-                 ibus_text_get_attributes           (IBusText       *text);
+IBusAttrList *   ibus_text_get_attributes           (IBusText       *text);
+
+/**
+ * ibus_text_set_attributes:
+ * @text: An IBusText.
+ * @attrs: An IBusAttrList
+ */
+void             ibus_text_set_attributes           (IBusText       *text,
+                                                     IBusAttrList   *attrs);
+
+
 G_END_DECLS
 #endif
 

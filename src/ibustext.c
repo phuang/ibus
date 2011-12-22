@@ -272,8 +272,18 @@ ibus_text_get_text (IBusText *text)
     return text->text;
 }
 
-const IBusAttrList *
+IBusAttrList *
 ibus_text_get_attributes (IBusText *text)
 {
     return text->attrs;
+}
+
+void
+ibus_text_set_attributes (IBusText     *text,
+                          IBusAttrList *attrs)
+{
+    if (text->attrs)
+        g_object_unref (text->attrs);
+    text->attrs = attrs;
+    g_object_ref_sink (text->attrs);
 }
