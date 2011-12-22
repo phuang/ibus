@@ -50,7 +50,7 @@ struct _BusIBusImpl {
     BusInputContext *fake_context;
     
     /* a list of engines that are preloaded. */
-    GList *engine_list;
+    // GList *engine_list;
     /* a list of engines that are started by a user (without the --ibus command line flag.) */
     GList *register_engine_list;
 
@@ -332,7 +332,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                       ibus);
     bus_input_context_focus_in (ibus->fake_context);
 
-    ibus->engine_list = NULL;
     ibus->register_engine_list = NULL;
     ibus->contexts = NULL;
     ibus->focused_context = NULL;
@@ -417,9 +416,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         }
     }
 
-    g_list_free_full (ibus->engine_list, g_object_unref);
-    ibus->engine_list = NULL;
-
     g_list_free_full (ibus->register_engine_list, g_object_unref);
     ibus->register_engine_list = NULL;
 
@@ -485,12 +481,6 @@ _find_engine_desc_by_name (BusIBusImpl *ibus,
             return desc;
     }
 
-    /* find engine in preload engine list */
-    for (p = ibus->engine_list; p != NULL; p = p->next) {
-        desc = (IBusEngineDesc *) p->data;
-        if (g_strcmp0 (ibus_engine_desc_get_name (desc), engine_name) == 0)
-            return desc;
-    }
     return NULL;
 }
 
@@ -506,6 +496,7 @@ _context_request_engine_cb (BusInputContext *context,
 {
     if (engine_name == NULL || engine_name[0] == '\0')
         engine_name = "xkb:layout:us";
+
     return bus_ibus_impl_get_engine_desc (ibus, engine_name);
 }
 
@@ -522,7 +513,11 @@ bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
     g_return_val_if_fail (engine_name != NULL, NULL);
     g_return_val_if_fail (engine_name[0] != '\0', NULL);
 
-    return bus_registry_find_engine_by_name (ibus->registry, engine_name);
+    IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, engine_name);
+    if (desc == NULL) {
+        desc = bus_registry_find_engine_by_name (ibus->registry, engine_name);
+    }
+    return desc;
 }
 
 static void
@@ -674,8 +669,6 @@ bus_ibus_impl_check_global_engine (BusIBusImpl *ibus)
 
     /* Just switch to the fist engine in the list. */
     engine_list = ibus->register_engine_list;
-    if (!engine_list)
-        engine_list = ibus->engine_list;
 
     if (engine_list) {
         IBusEngineDesc *engine_desc = (IBusEngineDesc *)engine_list->data;
@@ -1038,9 +1031,6 @@ _ibus_list_active_engines (BusIBusImpl           *ibus,
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
 
     GList *p;
-    for (p = ibus->engine_list; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
-    }
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
         g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
@@ -1498,7 +1488,6 @@ bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
         g_hash_table_new_full (NULL, NULL, NULL, (GDestroyNotify) g_list_free);
 
     g_list_foreach (ibus->register_engine_list, (GFunc) _add_engine_hotkey, ibus);
-    g_list_foreach (ibus->engine_list, (GFunc) _add_engine_hotkey, ibus);
 }
 
 gboolean
