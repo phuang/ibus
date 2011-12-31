@@ -188,7 +188,7 @@ const gchar *    ibus_property_get_key      (IBusProperty   *prop);
 /**
  * ibus_property_get_label:
  * @prop: An IBusProperty.
- * @returns: the label of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the label of IBusProperty. Should not be freed.
  *
  * Get the label of IBusProperty.
  */
@@ -226,7 +226,7 @@ void             ibus_property_set_icon     (IBusProperty   *prop,
 /**
  * ibus_property_get_tooltip:
  * @prop: An IBusProperty.
- * @returns: the tooltip of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the tooltip of IBusProperty. Should not be freed.
  *
  * Get the tooltip of IBusProperty.
  */
@@ -311,7 +311,8 @@ void             ibus_property_set_state    (IBusProperty   *prop,
 /**
  * ibus_property_get_sub_props:
  * @prop: An IBusProperty.
- * @returns: the IBusPropList of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the IBusPropList of IBusProperty.
+ *     Should not be freed.
  *
  * Get the IBusPropList of IBusProperty.
  */

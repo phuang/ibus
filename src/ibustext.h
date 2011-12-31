@@ -190,7 +190,7 @@ const gchar *    ibus_text_get_text                 (IBusText       *text);
 /**
  * ibus_text_get_attributes:
  * @text: An IBusText.
- * @returns: the attrs in @text.
+ * @returns: (transfer none): the attrs in @text.
  *
  * Return the attributes in an IBusText. Should not be freed.
  */
