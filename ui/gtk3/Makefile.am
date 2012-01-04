@@ -36,11 +36,13 @@ AM_CFLAGS = \
 	@GTK3_CFLAGS@ \
 	@X11_CFLAGS@ \
 	$(INCLUDES) \
+	-DGETTEXT_PACKAGE=\"@GETTEXT_PACKAGE@\" \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DBINDIR=\"@bindir@\" \
     -DIBUS_DISABLE_DEPRECATED \
+	-DIBUS_VERSION=\"@IBUS_VERSION@\" \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-function \
@@ -59,6 +61,7 @@ AM_LDADD = \
 
 AM_VALAFLAGS = \
 	--vapidir=$(top_builddir)/bindings/vala \
+	--pkg=posix \
 	--pkg=gtk+-3.0 \
 	--pkg=gdk-x11-3.0 \
 	--pkg=ibus-1.0 \

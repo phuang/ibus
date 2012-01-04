@@ -27,27 +27,19 @@ using Gtk;
 
 public class PropertyManager {
     private IBus.PropList m_props;
-    private GLib.HashTable<string, IPropItem> m_prop_map =
-        new GLib.HashTable<string, IPropItem>(GLib.str_hash, GLib.str_equal);
-    private Gtk.Menu m_menu;
 
     public void ProperyManager() {
     }
 
     public void set_properties(IBus.PropList props) {
         m_props = props;
-        m_prop_map.remove_all();
-        if (m_menu != null)
-            m_menu.destroy();
-        m_menu = create_menu(props);
     }
 
-    public Gtk.Menu? get_menu() {
-        return m_menu;
+    public int create_menu_items(Gtk.Menu menu) {
+        return create_menu_items_internal(m_props, menu);
     }
 
-    public Gtk.Menu? create_menu(IBus.PropList props) {
-        Gtk.Menu menu = new Gtk.Menu();
+    private int create_menu_items_internal(IBus.PropList props, Gtk.Menu menu) {
         int i = 0;
         PropRadioMenuItem last_radio = null;
         while (true) {
@@ -77,8 +69,9 @@ public class PropertyManager {
                     {
                         var menuitem = new PropImageMenuItem(prop);
                         item = menuitem;
-                        Gtk.Menu submenu = create_menu(prop.get_sub_props());
-                        menuitem.set_submenu(submenu);
+                        var  submenu = new Gtk.Menu();
+                        if(create_menu_items_internal(prop.get_sub_props(), submenu) > 0)
+                            menuitem.set_submenu(submenu);
                     }
                     break;
                 case IBus.PropType.SEPARATOR:
@@ -91,26 +84,17 @@ public class PropertyManager {
             if (prop.get_prop_type() != IBus.PropType.RADIO)
                 last_radio = null;
             if (item != null) {
-                m_prop_map.insert(prop.get_key(), item);
                 menu.append(item as Gtk.MenuItem);
                 item.property_activate.connect((k, s) => property_activate(k, s));
             }
         }
-
-        if (i == 0)
-            return null;
-        menu.show_all();
-        return menu;
+        return i;
     }
 
     public void update_property(IBus.Property prop) {
         assert(prop != null);
-
-        IPropItem item = m_prop_map.lookup(prop.get_key());
-        if (item == null)
-            debug("prop = %s", prop.get_key());
-        return_if_fail(item != null);
-        item.update_property(prop);
+        if (m_props != null)
+            m_props.update_property(prop);
     }
 
     public signal void property_activate(string key, int state);

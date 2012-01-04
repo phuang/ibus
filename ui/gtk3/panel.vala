@@ -23,20 +23,27 @@
 using IBus;
 using GLib;
 using Gtk;
+using Posix;
+
+public extern const string IBUS_VERSION;
+public extern const string BINDIR;
 
 class Panel : IBus.PanelService {
     private IBus.Bus m_bus;
     private IBus.Config m_config;
     private Gtk.StatusIcon m_status_icon;
     private Gtk.Menu m_ime_menu;
+    private Gtk.Menu m_sys_menu;
     private IBus.EngineDesc[] m_engines = {};
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private PropertyManager m_property_manager;
     private IBus.InputContext m_input_context;
+    private GLib.Pid m_setup_pid = 0;
+    private Gtk.AboutDialog m_about_dialog;
 
     public Panel(IBus.Bus bus) {
-        assert(bus.is_connected());
+        GLib.assert(bus.is_connected());
         // Chain up base class constructor
         GLib.Object(connection : bus.get_connection(),
                     object_path : "/org/freedesktop/IBus/Panel");
@@ -44,16 +51,16 @@ class Panel : IBus.PanelService {
         m_bus = bus;
 
         m_config = bus.get_config();
-        assert(m_config != null);
+        GLib.assert(m_config != null);
 
-        m_config.value_changed.connect(handle_config_value_changed);
+        m_config.value_changed.connect(config_value_changed_cb);
 
         // init ui
         m_status_icon = new Gtk.StatusIcon();
         m_status_icon.set_name("ibus-ui-gtk");
         m_status_icon.set_title("IBus Panel");
-        m_status_icon.popup_menu.connect(status_icon_popup_menu);
-        m_status_icon.activate.connect(status_icon_activate);
+        m_status_icon.popup_menu.connect(status_icon_popup_menu_cb);
+        m_status_icon.activate.connect(status_icon_activate_cb);
         m_status_icon.set_from_icon_name("ibus-keyboard");
 
         m_candidate_panel = new CandidatePanel();
@@ -84,8 +91,7 @@ class Panel : IBus.PanelService {
     }
 
     private void switch_engine(int i, bool force = false) {
-        //  debug("switch_engine i = %d", i);
-        assert(i >= 0 && i < m_engines.length);
+        GLib.assert(i >= 0 && i < m_engines.length);
 
         // Do not need switch
         if (i == 0 && !force)
@@ -122,10 +128,10 @@ class Panel : IBus.PanelService {
                            new GLib.Variant.strv(names));
     }
 
-    private void handle_config_value_changed(IBus.Config config,
-                                             string section,
-                                             string name,
-                                             Variant variant) {
+    private void config_value_changed_cb(IBus.Config config,
+                                         string section,
+                                         string name,
+                                         Variant variant) {
         if (section == "general" && name == "preload_engines") {
             update_engines(variant, null);
         }
@@ -147,7 +153,7 @@ class Panel : IBus.PanelService {
             if (i < 0) {
                 debug("switch cancelled");
             } else {
-                assert(i < m_engines.length);
+                GLib.assert(i < m_engines.length);
                 switch_engine(i);
             }
         } else {
@@ -198,54 +204,137 @@ class Panel : IBus.PanelService {
             }
             switch_engine(0, true);
         }
+
     }
 
-    private void status_icon_popup_menu(Gtk.StatusIcon status_icon,
-                                        uint button,
-                                        uint activate_time) {
-        Gtk.Menu menu = m_property_manager.get_menu();
-        if (menu == null)
-            return;
+    private void show_setup_dialog() {
+        if (m_setup_pid != 0) {
+            if (Posix.kill(m_setup_pid, Posix.SIGUSR1) == 0)
+                return;
+            m_setup_pid = 0;
+        }
 
-        menu.show_all();
-        menu.set_take_focus(false);
+        string binary = GLib.Path.build_path(BINDIR, "ibus-setup", null);
+        try {
+            GLib.Process.spawn_async(null,
+                                     {binary, "ibus-setup"},
+                                     null,
+                                     GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+                                     null,
+                                     out m_setup_pid);
+        } catch (GLib.SpawnError e) {
+            warning("Execute %s failed!", binary);
+            m_setup_pid = 0;
+        }
 
-        menu.popup(null,
-                   null,
-                   m_status_icon.position_menu,
-                   0,
-                   Gtk.get_current_event_time());
+        GLib.ChildWatch.add(m_setup_pid, (pid, state) => {
+            if (pid != m_setup_pid)
+                return;
+            m_setup_pid = 0;
+            GLib.Process.close_pid(pid);
+        });
     }
 
-    private void status_icon_activate(Gtk.StatusIcon status_icon) {
+    private void show_about_dialog() {
+        if (m_about_dialog == null) {
+            m_about_dialog = new Gtk.AboutDialog();
+            m_about_dialog.set_program_name("IBus");
+            m_about_dialog.set_version(IBUS_VERSION);
+
+            string copyright = _(
+                "Copyright (c) 2007-2012 Peng Huang\n" +
+                "Copyright (c) 2007-2010 Red Hat, Inc.\n");
+
+            m_about_dialog.set_copyright(copyright);
+            m_about_dialog.set_license("LGPL");
+            m_about_dialog.set_comments(_("IBus is an intelligent input bus for Linux/Unix."));
+            m_about_dialog.set_website("http://code.google.com/p/ibus");
+            m_about_dialog.set_authors({"Peng Huang <shawn.p.huang@gmail.com>"});
+            m_about_dialog.set_documenters({"Peng Huang <shawn.p.huang@gmail.com>"});
+            m_about_dialog.set_translator_credits(_("translator-credits"));
+            m_about_dialog.set_logo_icon_name("ibus");
+            m_about_dialog.set_icon_name("ibus");
+        }
+
+        if (!m_about_dialog.get_visible()) {
+            m_about_dialog.run();
+            m_about_dialog.hide();
+        } else {
+            m_about_dialog.present();
+        }
+    }
+
+    private void status_icon_popup_menu_cb(Gtk.StatusIcon status_icon,
+                                           uint button,
+                                           uint activate_time) {
+        // Show system menu
+        if (m_sys_menu == null) {
+            Gtk.ImageMenuItem item;
+            m_sys_menu = new Gtk.Menu();
+
+            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.PREFERENCES, null);
+            item.activate.connect((i) => show_setup_dialog());
+            m_sys_menu.append(item);
+
+            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.ABOUT, null);
+            item.activate.connect((i) => show_about_dialog());
+            m_sys_menu.append(item);
+
+            m_sys_menu.append(new SeparatorMenuItem());
+
+            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.QUIT, null);
+            item.set_label(_("Restart"));
+            item.activate.connect((i) => m_bus.exit(true));
+            m_sys_menu.append(item);
+
+            m_sys_menu.show_all();
+        }
+
+        m_sys_menu.popup(null,
+                         null,
+                         m_status_icon.position_menu,
+                         0,
+                         Gtk.get_current_event_time());
+    }
+
+    private void status_icon_activate_cb(Gtk.StatusIcon status_icon) {
+        m_ime_menu = new Gtk.Menu();
+
+        // Show properties and IME switching menu
+        m_property_manager.create_menu_items(m_ime_menu);
+
+        m_ime_menu.append(new SeparatorMenuItem());
+
         int width, height;
         Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
-        if (m_ime_menu == null) {
-            m_ime_menu = new Gtk.Menu();
-            foreach (var engine in m_engines) {
-                var lang =  engine.get_language();
-                var name = engine.get_name();
-                var item = new Gtk.ImageMenuItem.with_label(lang + " - " + name);
-                if (engine.get_icon() != "") {
-                    var icon = new IconWidget(engine.get_icon(), width);
-                     item.set_image(icon);
-                }
-                // Make a copy of engine to workaround a bug in vala.
-                // https://bugzilla.gnome.org/show_bug.cgi?id=628336
-                var e = engine;
-                item.activate.connect((item) => {
-                    for (int i = 0; i < m_engines.length; i++) {
-                        if (e == m_engines[i]) {
-                            switch_engine(i);
-                            break;
-                        }
-                    }
-                });
-                m_ime_menu.add(item);
+
+        // Append IMEs
+        foreach (var engine in m_engines) {
+            var lang =  engine.get_language();
+            var name = engine.get_name();
+            var item = new Gtk.ImageMenuItem.with_label(lang + " - " + name);
+            if (engine.get_icon() != "") {
+                var icon = new IconWidget(engine.get_icon(), width);
+                 item.set_image(icon);
             }
-            m_ime_menu.show_all();
-            m_ime_menu.set_take_focus(false);
+            // Make a copy of engine to workaround a bug in vala.
+            // https://bugzilla.gnome.org/show_bug.cgi?id=628336
+            var e = engine;
+            item.activate.connect((item) => {
+                for (int i = 0; i < m_engines.length; i++) {
+                    if (e == m_engines[i]) {
+                        switch_engine(i);
+                        break;
+                    }
+                }
+            });
+            m_ime_menu.add(item);
         }
+
+        m_ime_menu.show_all();
+
+        // Do not take focuse to avoid some focus related issues.
+        m_ime_menu.set_take_focus(false);
         m_ime_menu.popup(null,
                          null,
                          m_status_icon.position_menu,
