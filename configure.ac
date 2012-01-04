@@ -483,6 +483,7 @@ ui/gtk2/Makefile
 ui/gtk2/ibus-ui-gtk
 ui/gtk2/gtkpanel.xml.in
 ui/gtk3/Makefile
+ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
 bindings/Makefile

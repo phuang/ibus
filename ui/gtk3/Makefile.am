@@ -24,6 +24,19 @@ NULL =
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
+component_DATA = \
+	gtkpanel.xml \
+	$(NULL)
+componentdir = $(pkgdatadir)/component
+
+gtkpanel.xml: gtkpanel.xml.in
+	$(AM_V_GEN) \
+	( \
+		libexecdir=${libexecdir}; \
+		s=`cat $<`; \
+		eval "echo \"$${s}\""; \
+	) > $@
+
 INCLUDES = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
@@ -87,5 +100,14 @@ ibus_ui_gtk3_SOURCES = \
 ibus_ui_gtk3_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
+
+CLEANFILES = \
+	gtkpanel.xml \
+	$(NULL)
+
+EXTRA_DIST = \
+	gtkpanel.xml.in.in \
+	$(NULL)
+
 
 -include $(top_srcdir)/git.mk
