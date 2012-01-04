@@ -108,7 +108,7 @@ __ibus()
     # echo "cwords='${cwords[@]}'"
 
     # Commands
-    local cmds=( engine list-engine watch )
+    local cmds=( engine list-engine watch restart exit )
 
     local i c cmd subcmd
     for (( i=1; i < ${#words[@]}-1; i++)) ; do

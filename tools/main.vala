@@ -118,6 +118,18 @@ int message_watch(string[] argv) {
     return 0;
 }
 
+int restart_daemon(string[] argv) {
+    var bus = get_bus();
+    bus.exit(true);
+    return 0;
+}
+
+int exit_daemon(string[] argv) {
+    var bus = get_bus();
+    bus.exit(false);
+    return 0;
+}
+
 delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
@@ -129,7 +141,9 @@ public int main(string[] argv) {
     const CommandEntry commands[]  = {
         { "engine", get_set_engine },
         { "list-engine", list_engine },
-        { "watch", message_watch }
+        { "watch", message_watch },
+        { "restart", restart_daemon },
+        { "exit", exit_daemon }
     };
 
     if (argv.length >= 2) {
