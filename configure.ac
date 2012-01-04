@@ -309,17 +309,25 @@ AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
 
-AC_ARG_ENABLE(python,
-    AS_HELP_STRING([--disable-python],
-                   [Do not use Python code]),
-    [enable_python=$enableval],
-    [enable_python=yes]
+AC_ARG_ENABLE(python-library,
+    AS_HELP_STRING([--enable-python-library],
+                   [Use ibus python library]),
+    [enable_python_library=$enableval],
+    [enable_python_library=no]
 )
 
-AM_CONDITIONAL([ENABLE_PYTHON], [test x"$enable_python" = x"yes"])
+AC_ARG_ENABLE(setup,
+    AS_HELP_STRING([--disable-setup],
+                   [Do not use setup ui.]),
+    [enable_setup=$enableval],
+    [enable_setup=yes]
+)
+
+AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"])
+AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
-if test x"$enable_python" = x"yes"; then
+if test x"$enable_python_library" = x"yes"; then
     # Check python.
     AM_PATH_PYTHON([2.5])
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
@@ -338,7 +346,7 @@ if test x"$enable_python" = x"yes"; then
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
 else
-    enable_python="no (disabled, use --enable-python to enable)"
+    enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
 
 # Define gtk2 immodule dir.
@@ -502,7 +510,7 @@ Build options:
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
-  Build python modules      $enable_python
+  Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
   Build dconf modules       $enable_dconf

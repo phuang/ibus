@@ -22,15 +22,14 @@
 
 NULL =
 
-UI_DIR = \
-	ui \
-	$(NULL)
+UI_DIR = ui
 
-if ENABLE_PYTHON
-PYTHON_DIRS = \
-	ibus \
-	setup \
-	$(NULL)
+if ENABLE_SETUP
+SETUP_DIR = setup
+endif
+
+if ENABLE_PYTHON_LIBRARY
+PYTHON_LIB_DIRS = ibus
 endif
 
 if ENABLE_DAEMON
@@ -53,7 +52,8 @@ SUBDIRS = \
 	bindings \
 	$(UI_DIR) \
 	$(DAEMON_DIR) \
-	$(PYTHON_DIRS) \
+	$(PYTHON_LIB_DIRS) \
+	$(SETUP_DIR) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4

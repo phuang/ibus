@@ -24,7 +24,6 @@ using IBus;
 using GLib;
 using Gtk;
 
-
 public class PropertyManager {
     private IBus.PropList m_props;
 
