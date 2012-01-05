@@ -37,7 +37,7 @@ AM_CFLAGS =                        \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DBINDIR=\"@bindir@\"          \
-    -DIBUS_DISABLE_DEPRECATED      \
+	-DIBUS_DISABLE_DEPRECATED      \
 	$(INCLUDES)                    \
 	$(NULL)
 AM_LDADD =                  \
