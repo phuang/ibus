@@ -2,6 +2,7 @@
 #!/usr/bin/env python
 
 from xml.dom import minidom
+import cgi
 
 def simplfy_dom(node):
     name = node.nodeName
@@ -75,6 +76,7 @@ def gen_xml():
             ibus_name = "xkb:layout:%s" % name
             layout = name
         for l in languages:
+            desc = cgi.escape(desc)
             out = engine % (ibus_name + u"-" + l, l, layout, desc, desc, 99)
             print out.encode("utf8")
     

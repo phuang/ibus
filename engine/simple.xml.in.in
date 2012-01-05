@@ -2164,8 +2164,8 @@
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>cz(bksl)</layout>
-			<longname>Czech (with <\|> key)</longname>
-			<description>Czech (with <\|> key)</description>
+			<longname>Czech (with &lt;\|&gt; key)</longname>
+			<description>Czech (with &lt;\|&gt; key)</description>
 			<rank>99</rank>
 		</engine>
 		<engine>
