@@ -57,7 +57,6 @@ _iso_codes_parse_xml_node (XMLNode          *node)
             { "iso_639_2B_code", NULL },
             { "iso_639_2T_code", NULL },
             { "iso_639_1_code", NULL },
-            { NULL, NULL },
         };
 
 
@@ -65,9 +64,9 @@ _iso_codes_parse_xml_node (XMLNode          *node)
             continue;
         }
         attributes = sub_node->attributes;
-        for (i = 0; attributes[i]; i+=2) {
+        for (i = 0; attributes[i]; i += 2) {
             if (g_strcmp0 (attributes[i], "name") == 0) {
-                for (j = 0; entries[j].key; j++) {
+                for (j = 0; i < G_N_ELEMENTS (entries); j++) {
                     if (entries[j].value == NULL) {
                         continue;
                     }
@@ -77,7 +76,7 @@ _iso_codes_parse_xml_node (XMLNode          *node)
                     entries[j].value = NULL;
                 }
             } else {
-                for (j = 0; entries[j].key; j++) {
+                for (j = 0; j < G_N_ELEMENTS (entries); j++) {
                     if (g_strcmp0 (attributes[i], entries[j].key) == 0 &&
                         attributes[i + 1] != NULL) {
                         entries[j].value = g_strdup (attributes[i + 1]);

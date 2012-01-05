@@ -65,9 +65,9 @@ def gen_xml():
 		</engine>"""
     footer = u"""\t</engines>
 </component>"""
-    
+
     print header
-    
+
     for name, vname, sdesc, desc, languages in parse_xml():
         if vname:
             ibus_name = "xkb:layout:%s-%s" % (name, vname)
@@ -79,7 +79,7 @@ def gen_xml():
             desc = cgi.escape(desc)
             out = engine % (ibus_name + u"-" + l, l, layout, desc, desc, 99)
             print out.encode("utf8")
-    
+
     print footer
 
 if __name__ == "__main__":

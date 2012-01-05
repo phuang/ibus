@@ -327,9 +327,10 @@ AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"
 AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
+AM_PATH_PYTHON([2.5])
+
 if test x"$enable_python_library" = x"yes"; then
     # Check python.
-    AM_PATH_PYTHON([2.5])
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
     if test x"$PYTHON_CONFIG" = x""; then
         AC_PATH_PROG(PYTHON_CONFIG, python-config)
