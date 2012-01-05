@@ -214,7 +214,7 @@ class Panel : IBus.PanelService {
             m_setup_pid = 0;
         }
 
-        string binary = GLib.Path.build_path(BINDIR, "ibus-setup", null);
+        string binary = GLib.Path.build_filename(BINDIR, "ibus-setup");
         try {
             GLib.Process.spawn_async(null,
                                      {binary, "ibus-setup"},
@@ -223,7 +223,7 @@ class Panel : IBus.PanelService {
                                      null,
                                      out m_setup_pid);
         } catch (GLib.SpawnError e) {
-            warning("Execute %s failed!", binary);
+            warning("Execute %s failed! %s", binary, e.message);
             m_setup_pid = 0;
         }
 
