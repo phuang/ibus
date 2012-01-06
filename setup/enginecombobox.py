@@ -75,6 +75,12 @@ class EngineComboBox(Gtk.ComboBox):
 
         keys = langs.keys()
         keys.sort(locale.strcoll)
+        current_lang = IBus.get_language_name(locale.getlocale()[0])
+        # move current language to the first place
+        if current_lang in keys:
+            keys.remove(current_lang)
+            keys.insert(0, current_lang)
+
         #add "Others" to the end of the combo box
         if IBus.get_language_name("Other") in keys:
             keys.remove(IBus.get_language_name("Other"))
