@@ -1,12 +1,18 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <locale.h>
+
 #include "ibus.h"
 
 int main (int argc, char **argv)
 {
-    g_debug ("%s=%s", "eng", ibus_get_language_name ("eng"));
+    setlocale(LC_ALL, "en_US.Utf-8");
+
+    g_assert_cmpstr (ibus_get_language_name ("eng"), ==, "English");
+
     return 0;
 }
