@@ -169,7 +169,7 @@ class Panel : IBus.PanelService {
         if (var_engines != null)
             engine_names = var_engines.dup_strv();
         if (engine_names == null || engine_names.length == 0)
-            engine_names = {"xkb:layout:us"};
+            engine_names = {"xkb:us::eng"};
 
         string[] order_names =
             (var_order != null) ? var_order.dup_strv() : null;

@@ -20,8 +20,9 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-from xml.dom import minidom
 import cgi
+import urllib2
+from xml.dom import minidom
 
 def simplfy_dom(node):
     name = node.nodeName
@@ -50,7 +51,7 @@ def parse_xml():
         desc = config.get('description', [''])[0]
         languages = config.get('languageList', [{}])[0].get('iso639Id', [])
         variants = layout.get('variantList', [{}])[0].get('variant', [])
-        yield name, None, short_desc, desc, languages
+        yield name, '', short_desc, desc, languages
         for variant in variants:
             variant_config = variant['configItem'][0]
             variant_name = variant_config['name'][0]
@@ -87,19 +88,30 @@ def gen_xml():
 
     print header
 
+    whitelist = parse_whitelist()
     for name, vname, sdesc, desc, languages in parse_xml():
-        if vname:
-            ibus_name = "xkb:layout:%s-%s" % (name, vname)
-            layout = "%s(%s)" % (name, vname)
-        else:
-            ibus_name = "xkb:layout:%s" % name
-            layout = name
-        for l in languages:
+        layout = "%s(%s)" % (name, vname) if vname else name
+        for lang in languages:
+            ibus_name = "xkb:%s:%s:%s" % (name, vname, lang)
+            if ibus_name not in whitelist:
+                continue
             desc = cgi.escape(desc)
-            out = engine % (ibus_name + u"-" + l, l, layout, desc, desc, 99)
+            out = engine % (ibus_name, lang, layout, desc, desc, 99)
             print out.encode("utf8")
 
     print footer
+
+def parse_whitelist():
+    url = "http://git.chromium.org/gitweb/?p=chromium/chromium.git;a=blob_plain;f=chrome/browser/chromeos/input_method/ibus_input_methods.txt;hb=HEAD"
+    whitelist = []
+    for line in urllib2.urlopen(url):
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("#"):
+            continue
+        whitelist.append(line.split()[0])
+    return set(whitelist)
 
 if __name__ == "__main__":
     gen_xml()
