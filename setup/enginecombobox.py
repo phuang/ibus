@@ -63,16 +63,17 @@ class EngineComboBox(Gtk.ComboBox):
 
         iter1 = self.__model.append(None)
         self.__model.set(iter1, 0, 0)
-        lang = {}
+        langs = {}
         for e in engines:
+            print e.get_language()
             l = IBus.get_language_name(e.get_language())
             if l == None:
                 l = ""
-            if l not in lang:
-                lang[l] = []
-            lang[l].append(e)
+            if l not in langs:
+                langs[l] = []
+            langs[l].append(e)
 
-        keys = lang.keys()
+        keys = langs.keys()
         keys.sort(locale.strcoll)
         #add "Others" to the end of the combo box
         if IBus.get_language_name("Other") in keys:
@@ -85,8 +86,8 @@ class EngineComboBox(Gtk.ComboBox):
                 if a.get_rank() == b.get_rank():
                     return locale.strcoll(a.get_longname(), b.get_longname())
                 return int(b.get_rank() - a.get_rank())
-            lang[l].sort(cmp_engine)
-            for e in lang[l]:
+            langs[l].sort(cmp_engine)
+            for e in langs[l]:
                 iter2 = self.__model.append(iter1)
                 self.__model.set(iter2, 0, e)
 

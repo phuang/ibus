@@ -22,6 +22,8 @@
 
 NULL =
 
+DEPS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
+
 INCLUDES =              \
 	-g                  \
 	@GLIB2_CFLAGS@      \
@@ -39,13 +41,14 @@ noinst_PROGRAMS = $(TESTS)
 TESTS =               \
 	ibus-bus          \
 	ibus-config       \
+	ibus-configservice\
+	ibus-factory      \
 	ibus-inputcontext \
 	ibus-inputcontext-create \
 	ibus-keynames     \
 	ibus-serializable \
 	ibus-share        \
-	ibus-factory      \
-	ibus-configservice\
+	ibus-util         \
 	$(NULL)
 
 ibus_bus_SOURCES = ibus-bus.c
@@ -53,6 +56,12 @@ ibus_bus_LDADD = $(prog_ldadd)
 
 ibus_config_SOURCES = ibus-config.c
 ibus_config_LDADD = $(prog_ldadd)
+
+ibus_configservice_SOURCES = ibus-configservice.c
+ibus_configservice_LDADD = $(prog_ldadd)
+
+ibus_factory_SOURCES = ibus-factory.c
+ibus_factory_LDADD = $(prog_ldadd)
 
 ibus_inputcontext_SOURCES = ibus-inputcontext.c
 ibus_inputcontext_LDADD = $(prog_ldadd)
@@ -70,10 +79,7 @@ ibus_share_SOURCES = ibus-share.c
 ibus_share_CFLAGS = @DBUS_CFLAGS@
 ibus_share_LDADD = $(prog_ldadd) @DBUS_LIBS@
 
-ibus_factory_SOURCES = ibus-factory.c
-ibus_factory_LDADD = $(prog_ldadd)
-
-ibus_configservice_SOURCES = ibus-configservice.c
-ibus_configservice_LDADD = $(prog_ldadd)
+ibus_util_SOURCES = ibus-util.c
+ibus_util_LDADD = $(prog_ldadd)
 
 -include $(top_srcdir)/git.mk

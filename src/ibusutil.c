@@ -34,6 +34,8 @@
 #include <libintl.h>
 #endif
 
+#define N_(t) t
+
 static GHashTable *__languages_dict;
 
 static gboolean
@@ -59,19 +61,18 @@ _iso_codes_parse_xml_node (XMLNode          *node)
             { "iso_639_1_code", NULL },
         };
 
-
         if (sub_node->attributes == NULL) {
             continue;
         }
+
         attributes = sub_node->attributes;
         for (i = 0; attributes[i]; i += 2) {
             if (g_strcmp0 (attributes[i], "name") == 0) {
-                for (j = 0; i < G_N_ELEMENTS (entries); j++) {
-                    if (entries[j].value == NULL) {
+                for (j = 0; j < G_N_ELEMENTS (entries); j++) {
+                    if (entries[j].value == NULL)
                         continue;
-                    }
                     g_hash_table_insert (__languages_dict,
-                                         (gpointer) entries[j].value,
+                                         (gpointer) g_strdup (entries[j].value),
                                          (gpointer) g_strdup (attributes[i + 1]));
                     entries[j].value = NULL;
                 }
@@ -79,7 +80,7 @@ _iso_codes_parse_xml_node (XMLNode          *node)
                 for (j = 0; j < G_N_ELEMENTS (entries); j++) {
                     if (g_strcmp0 (attributes[i], entries[j].key) == 0 &&
                         attributes[i + 1] != NULL) {
-                        entries[j].value = g_strdup (attributes[i + 1]);
+                        entries[j].value = attributes[i + 1];
                     }
                 }
             }
@@ -97,7 +98,8 @@ _load_lang()
     struct stat buf;
 
     __languages_dict = g_hash_table_new (g_str_hash, (GEqualFunc) g_str_equal);
-    filename = g_build_filename (ISOCODES_PREFIX,
+    // filename = g_build_filename (ISOCODES_PREFIX,
+    filename = g_build_filename ("/usr",
                                  "share/xml/iso-codes/iso_639.xml",
                                  NULL);
     if (g_stat (filename, &buf) != 0) {
@@ -142,5 +144,11 @@ ibus_get_language_name(const gchar *_locale) {
         return retval;
 #endif
     }
-    return retval;
+    else {
+#ifdef ENABLE_NLS
+        return dgettext("iso_639", N_("Other"));
+#else
+        return N_("Other");
+#endif
+    }
 }
