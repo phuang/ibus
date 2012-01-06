@@ -66,8 +66,8 @@ def gen_xml():
     header = u"""<component>
 	<name>org.freedesktop.IBus.Simple</name>
 	<description>A table based simple engine</description>
-	<exec>/home/penghuang/ibus/libexec/ibus-engine-simple</exec>
-	<version>1.4.99.20120104</version>
+	<exec>${libexecdir}/ibus-engine-simple</exec>
+	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>
 	<homepage>http://code.google.com/p/ibus</homepage>
