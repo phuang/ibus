@@ -70,10 +70,6 @@ struct _BusIBusImpl {
     gboolean use_global_engine;
     gchar *global_engine_name;
     gchar *global_previous_engine_name;
-
-    /* engine-specific hotkeys */
-    IBusHotkeyProfile *engines_hotkey_profile;
-    GHashTable      *hotkey_to_engines_map;
 };
 
 struct _BusIBusImplClass {
@@ -133,8 +129,6 @@ static void     bus_ibus_impl_set_context_engine_from_desc
                                                 (BusIBusImpl        *ibus,
                                                  BusInputContext    *context,
                                                  IBusEngineDesc     *desc);
-static void     bus_ibus_impl_update_engines_hotkey_profile
-                                                (BusIBusImpl        *ibus);
 static BusInputContext
                *bus_ibus_impl_create_input_context
                                                 (BusIBusImpl        *ibus,
@@ -357,9 +351,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
 
-    ibus->engines_hotkey_profile = NULL;
-    ibus->hotkey_to_engines_map = NULL;
-
     /* focus the fake_context, if use_global_engine is enabled. */
     if (ibus->use_global_engine)
         bus_ibus_impl_set_focused_context (ibus, ibus->fake_context);
@@ -432,16 +423,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     g_free (ibus->global_previous_engine_name);
     ibus->global_previous_engine_name = NULL;
-
-    if (ibus->engines_hotkey_profile != NULL) {
-        g_object_unref (ibus->engines_hotkey_profile);
-        ibus->engines_hotkey_profile = NULL;
-    }
-
-    if (ibus->hotkey_to_engines_map) {
-        g_hash_table_unref (ibus->hotkey_to_engines_map);
-        ibus->hotkey_to_engines_map = NULL;
-    }
 
     if (ibus->fake_context) {
         g_object_unref (ibus->fake_context);
@@ -544,7 +525,7 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
     g_assert (context == NULL || BUS_IS_INPUT_CONTEXT (context));
     g_assert (context == NULL || bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS);
 
-    /* Do noting if it is not focused context. */
+    /* Do noting if it is focused context. */
     if (ibus->focused_context == context) {
         return;
     }
@@ -578,12 +559,14 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
         if (engine != NULL) {
             bus_input_context_set_engine (context, engine);
             bus_input_context_enable (context);
-            g_object_unref (engine);
         }
 
         if (ibus->panel != NULL)
             bus_panel_proxy_focus_in (ibus->panel, context);
     }
+
+    if (engine != NULL)
+        g_object_unref (engine);
 }
 
 static void
@@ -902,7 +885,6 @@ _component_destroy_cb (BusComponent *component,
     g_object_unref (component);
 
     bus_ibus_impl_check_global_engine (ibus);
-    bus_ibus_impl_update_engines_hotkey_profile (ibus);
 }
 
 /**
@@ -951,8 +933,6 @@ _ibus_register_component (BusIBusImpl           *ibus,
                                                engines);
 
     g_signal_connect (buscomp, "destroy", G_CALLBACK (_component_destroy_cb), ibus);
-
-    bus_ibus_impl_update_engines_hotkey_profile (ibus);
 
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
@@ -1383,104 +1363,6 @@ bus_ibus_impl_global_engine_changed (BusIBusImpl *ibus)
     const gchar *name = ibus->global_engine_name ? ibus->global_engine_name : "";
     bus_ibus_impl_emit_signal (ibus, "GlobalEngineChanged",
                                g_variant_new ("(s)", name));
-}
-
-gboolean
-bus_ibus_impl_filter_keyboard_shortcuts (BusIBusImpl     *ibus,
-                                         BusInputContext *context,
-                                         guint           keyval,
-                                         guint           modifiers,
-                                         guint           prev_keyval,
-                                         guint           prev_modifiers)
-{
-    return FALSE;
-}
-
-/**
- * _add_engine_hotkey:
- *
- * Check the engine-specific hot key of the engine, and update ibus->engines_hotkey_profile.
- */
-static void
-_add_engine_hotkey (IBusEngineDesc *engine, BusIBusImpl *ibus)
-{
-    const gchar *hotkeys;
-    gchar **hotkey_list;
-    gchar **p;
-    gchar *hotkey;
-    GList *engine_list;
-
-    GQuark event;
-    guint keyval;
-    guint modifiers;
-
-    if (!engine) {
-        return;
-    }
-
-    hotkeys = ibus_engine_desc_get_hotkeys (engine);
-
-    if (!hotkeys || !*hotkeys) {
-        return;
-    }
-
-    hotkey_list = g_strsplit_set (hotkeys, ";,", 0);
-
-    for (p = hotkey_list; p && *p; ++p) {
-        hotkey = g_strstrip (*p);
-        if (!*hotkey || !ibus_key_event_from_string (hotkey, &keyval, &modifiers)) {
-            continue;
-        }
-
-        /* If the hotkey already exists, we won't need to add it again. */
-        event = ibus_hotkey_profile_lookup_hotkey (ibus->engines_hotkey_profile,
-                                                   keyval, modifiers);
-        if (event == 0) {
-            event = g_quark_from_string (hotkey);
-            ibus_hotkey_profile_add_hotkey (ibus->engines_hotkey_profile,
-                                            keyval, modifiers, event);
-        }
-
-        engine_list = g_hash_table_lookup (ibus->hotkey_to_engines_map,
-                                           GUINT_TO_POINTER (event));
-
-        /* As we will rebuild the engines hotkey map whenever an engine was
-         * added or removed, we don't need to hold a reference of the engine
-         * here. */
-        engine_list = g_list_append (engine_list, engine);
-
-        /* We need to steal the value before adding it back, otherwise it will
-         * be destroyed. */
-        g_hash_table_steal (ibus->hotkey_to_engines_map, GUINT_TO_POINTER (event));
-
-        g_hash_table_insert (ibus->hotkey_to_engines_map,
-                             GUINT_TO_POINTER (event), engine_list);
-    }
-
-    g_strfreev (hotkey_list);
-}
-
-/**
- * bus_ibus_impl_update_engines_hotkey_profile:
- *
- * Check engine-specific hot keys of all active engines, and update ibus->engines_hotkey_profile.
- */
-static void
-bus_ibus_impl_update_engines_hotkey_profile (BusIBusImpl *ibus)
-{
-    if (ibus->engines_hotkey_profile) {
-        g_object_unref (ibus->engines_hotkey_profile);
-    }
-
-    if (ibus->hotkey_to_engines_map) {
-        g_hash_table_unref (ibus->hotkey_to_engines_map);
-    }
-
-    ibus->engines_hotkey_profile = ibus_hotkey_profile_new ();
-    ibus->hotkey_to_engines_map =
-        g_hash_table_new_full (NULL, NULL, NULL, (GDestroyNotify) g_list_free);
-
-    g_list_foreach (ibus->register_engine_list, (GFunc) _add_engine_hotkey, ibus);
 }
 
 gboolean

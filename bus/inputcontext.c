@@ -1081,6 +1081,7 @@ bus_input_context_focus_in (BusInputContext *context)
     context->prev_modifiers = 0;
 
     if (context->engine == NULL) {
+#if 0
         /* request an engine, e.g. a global engine if the feature is enabled. */
         IBusEngineDesc *desc = NULL;
         g_signal_emit (context,
@@ -1096,6 +1097,7 @@ bus_input_context_focus_in (BusInputContext *context)
                             NULL, /* use the default callback function. */
                             NULL);
         }
+#endif
     }
 
     if (context->engine) {
@@ -2034,7 +2036,6 @@ const static struct {
     { "register-properties",      G_CALLBACK (_engine_register_properties_cb) },
     { "update-property",          G_CALLBACK (_engine_update_property_cb) },
     { "destroy",                  G_CALLBACK (_engine_destroy_cb) },
-    { NULL, 0 }
 };
 
 static void
@@ -2050,8 +2051,9 @@ bus_input_context_unset_engine (BusInputContext *context)
     if (context->engine) {
         gint i;
         /* uninstall signal handlers for the engine. */
-        for (i = 0; engine_signals[i].name != NULL; i++) {
-            g_signal_handlers_disconnect_by_func (context->engine, engine_signals[i].callback, context);
+        for (i = 0; i < G_N_ELEMENTS(engine_signals); i++) {
+            g_signal_handlers_disconnect_by_func (context->engine,
+                    engine_signals[i].callback, context);
         }
         g_object_unref (context->engine);
         context->engine = NULL;
@@ -2080,7 +2082,7 @@ bus_input_context_set_engine (BusInputContext *context,
         g_object_ref (context->engine);
 
         /* handle signals from the engine. */
-        for (i = 0; engine_signals[i].name != NULL; i++) {
+        for (i = 0; i < G_N_ELEMENTS(engine_signals); i++) {
             g_signal_connect (context->engine,
                               engine_signals[i].name,
                               engine_signals[i].callback,
