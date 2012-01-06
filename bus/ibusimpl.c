@@ -577,9 +577,7 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
         /* attach engine to the focused context */
         if (engine != NULL) {
             bus_input_context_set_engine (context, engine);
-            if (is_enabled) {
-                bus_input_context_enable (context);
-            }
+            bus_input_context_enable (context);
             g_object_unref (engine);
         }
 
