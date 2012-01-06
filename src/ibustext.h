@@ -132,7 +132,7 @@ IBusText        *ibus_text_new_from_static_string   (const gchar    *str);
  * The result of printf expression is stored in the new IBusText instance.
  */
 IBusText        *ibus_text_new_from_printf          (const gchar    *fmt,
-                                                     ...);
+                                                     ...) G_GNUC_PRINTF (1, 2);
 
 /**
  * ibus_text_new_from_unichar:
