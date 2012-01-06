@@ -97,7 +97,8 @@ _load_lang()
     XMLNode *node;
     struct stat buf;
 
-    __languages_dict = g_hash_table_new (g_str_hash, (GEqualFunc) g_str_equal);
+    __languages_dict = g_hash_table_new_full (g_str_hash,
+            g_str_equal, g_free, g_free);
     // filename = g_build_filename (ISOCODES_PREFIX,
     filename = g_build_filename ("/usr",
                                  "share/xml/iso-codes/iso_639.xml",
