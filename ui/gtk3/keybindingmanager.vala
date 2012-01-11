@@ -31,7 +31,8 @@ public class KeybindingManager : GLib.Object {
 
     private static KeybindingManager m_instance = null;
 
-    public static const uint MODIFIER_FILTER = ~(
+    public static const uint MODIFIER_FILTER =
+        Gdk.ModifierType.MODIFIER_MASK & ~(
         Gdk.ModifierType.MOD2_MASK |
         Gdk.ModifierType.LOCK_MASK |
         Gdk.ModifierType.MOD4_MASK |
