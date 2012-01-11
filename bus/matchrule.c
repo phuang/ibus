@@ -321,6 +321,9 @@ bus_match_rule_new (const gchar *text)
     /* parse rule */
     tokens = tokenize_rule (text);
 
+    if (tokens == NULL)
+        goto failed;
+
     for (p = tokens; p != NULL && p->key != 0; p++) {
         if (g_strcmp0 (p->key, "type") == 0) {
             if (g_strcmp0 (p->value, "signal") == 0) {
