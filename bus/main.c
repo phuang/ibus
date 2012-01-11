@@ -31,10 +31,10 @@
 #include <glib.h>
 #include <gio/gio.h>
 #include <ibus.h>
-#include "server.h"
-#include "ibusimpl.h"
 
-gchar **g_argv = NULL;
+#include "global.h"
+#include "ibusimpl.h"
+#include "server.h"
 
 static gboolean daemonize = FALSE;
 static gboolean single = FALSE;
@@ -44,14 +44,6 @@ static gboolean restart = FALSE;
 static gchar *panel = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
-gchar *g_address = "unix:tmpdir=/tmp";
-gchar *g_cache = "auto";
-gboolean g_mempro = FALSE;
-gboolean g_verbose = FALSE;
-gint   g_gdbus_timeout = 5000;
-#ifdef G_THREADS_ENABLED
-gint   g_monitor_timeout = 0;
-#endif
 
 static void
 show_version_and_quit (void)

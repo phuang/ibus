@@ -29,95 +29,75 @@ INCLUDES =                \
 	-I$(top_builddir)/src \
 	$(NULL)
 
-AM_CFLAGS =                        \
-	@GLIB2_CFLAGS@                 \
-	@GIO2_CFLAGS@                  \
-	@GTHREAD2_CFLAGS@              \
-	-DG_LOG_DOMAIN=\"IBUS\"        \
+AM_CFLAGS = \
+	@GLIB2_CFLAGS@ \
+	@GIO2_CFLAGS@ \
+	@GTHREAD2_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
-	-DBINDIR=\"@bindir@\"          \
-	-DIBUS_DISABLE_DEPRECATED      \
-	$(INCLUDES)                    \
+	-DBINDIR=\"@bindir@\" \
+	-DIBUS_DISABLE_DEPRECATED \
+	$(INCLUDES) \
 	$(NULL)
-AM_LDADD =                  \
-	@GOBJECT2_LIBS@         \
-	@GLIB2_LIBS@            \
-	@GIO2_LIBS@             \
-	@GTHREAD2_LIBS@         \
-	$(libibus)              \
+AM_LDADD = \
+	@GOBJECT2_LIBS@ \
+	@GLIB2_LIBS@ \
+	@GIO2_LIBS@ \
+	@GTHREAD2_LIBS@ \
+	$(libibus) \
 	$(NULL)
 
-desktopdir = $(datadir)/applications
-desktop_in_files = ibus.desktop.in
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-@INTLTOOL_DESKTOP_RULE@
+commonsrc = \
+	component.c \
+	component.h \
+	dbusimpl.c \
+	dbusimpl.h \
+	ibusimpl.c \
+	ibusimpl.h \
+	inputcontext.c \
+	inputcontext.h \
+	engineproxy.c \
+	engineproxy.h \
+	panelproxy.c \
+	panelproxy.h \
+	factoryproxy.c \
+	factoryproxy.h \
+	global.c \
+	global.h \
+	server.c \
+	server.h \
+	connection.c \
+	connection.h \
+	matchrule.c \
+	matchrule.h \
+	registry.c \
+	registry.h \
+	option.h \
+	marshalers.c \
+	marshalers.h \
+	types.h \
+	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
 bin_PROGRAMS = ibus-daemon
-ibus_daemon_DEPENDENCIES =  \
-	$(libibus)              \
+ibus_daemon_DEPENDENCIES = \
+	$(libibus) \
 	$(NULL)
-ibus_daemon_SOURCES =       \
-	main.c                  \
-	component.c             \
-	component.h             \
-	dbusimpl.c              \
-	dbusimpl.h              \
-	ibusimpl.c              \
-	ibusimpl.h              \
-	inputcontext.c          \
-	inputcontext.h          \
-	engineproxy.c           \
-	engineproxy.h           \
-	panelproxy.c            \
-	panelproxy.h            \
-	factoryproxy.c          \
-	factoryproxy.h          \
-	server.c                \
-	server.h                \
-	connection.c            \
-	connection.h            \
-	matchrule.c             \
-	matchrule.h             \
-	registry.c              \
-	registry.h              \
-	option.h                \
-	marshalers.c            \
-	marshalers.h            \
-	types.h                 \
+ibus_daemon_SOURCES = \
+	$(commonsrc) \
+	main.c \
 	$(NULL)
-ibus_daemon_CFLAGS =        \
-	$(AM_CFLAGS)            \
+ibus_daemon_CFLAGS = \
+	$(AM_CFLAGS) \
 	$(NULL)
-ibus_daemon_LDADD =         \
-	$(AM_LDADD)             \
+ibus_daemon_LDADD = \
+	$(AM_LDADD) \
 	$(NULL)
 
 BUILT_SOURCES =             \
 	marshalers.h            \
 	marshalers.c            \
 	$(NULL)
-
-# test_registry_SOURCES =     \
-# 	registry.c              \
-# 	registry.h              \
-# 	factoryproxy.c          \
-# 	factoryproxy.h          \
-# 	test-registry.c         \
-# 	$(NULL)
-# 
-# test_matchrule_SOURCES =    \
-# 	connection.c            \
-# 	matchrule.c             \
-# 	test-matchrule.c        \
-# 	$(NULL)
-# test_matchrule_CFLAGS =     \
-# 	$(AM_CFLAGS)            \
-# 	$(NULL)
-# test_matchrule_LDADD =      \
-# 	$(AM_LDADD)             \
-# 	$(NULL)
 
 # gen marshal
 marshalers.h: marshalers.list
@@ -128,6 +108,40 @@ marshalers.c: marshalers.h marshalers.list
 	$(AM_V_GEN) (echo "#include \"marshalers.h\""; \
 	$(GLIB_GENMARSHAL) --prefix=bus_marshal $(srcdir)/marshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
+
+
+TESTS = \
+	test-matchrule \
+	test-registry \
+	test-stress	\
+	$(NULL)
+
+noinst_PROGRAMS = $(TESTS)
+
+test_registry_SOURCES = \
+	$(commonsrc) \
+	test-registry.c \
+	$(NULL)
+test_registry_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(NULL)
+test_registry_LDADD = \
+	$(AM_LDADD) \
+	$(NULL)
+
+test_matchrule_DEPENDENCIES = \
+	$(libibus) \
+	$(NULL)
+test_matchrule_SOURCES = \
+	$(commonsrc) \
+	test-matchrule.c \
+	$(NULL)
+test_matchrule_CFLAGS = \
+	$(AM_CFLAGS) \
+	$(NULL)
+test_matchrule_LDADD = \
+	$(AM_LDADD) \
+	$(NULL)
 
 test_stress_SOURCES = \
 	test-client.c \
@@ -161,5 +175,10 @@ test: ibus-daemon
 	$(ENV_IBUS_TEST) \
 		G_DEBUG=fatal_warnings \
 		$(builddir)/ibus-daemon -v
+
+desktopdir = $(datadir)/applications
+desktop_in_files = ibus.desktop.in
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+@INTLTOOL_DESKTOP_RULE@
 
 -include $(top_srcdir)/git.mk

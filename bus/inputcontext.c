@@ -1014,7 +1014,7 @@ bus_input_context_service_method_call (IBusService            *service,
                                        GVariant               *parameters,
                                        GDBusMethodInvocation  *invocation)
 {
-    if (g_strcmp0 (interface_name, "org.freedesktop.IBus.InputContext") != 0) {
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_INPUT_CONTEXT) != 0) {
         IBUS_SERVICE_CLASS (bus_input_context_parent_class)->service_method_call (
                         service,
                         connection,
