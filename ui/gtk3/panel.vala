@@ -38,7 +38,6 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private PropertyManager m_property_manager;
-    private IBus.InputContext m_input_context;
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
 
@@ -50,10 +49,12 @@ class Panel : IBus.PanelService {
 
         m_bus = bus;
 
-        m_config = bus.get_config();
-        GLib.assert(m_config != null);
+        m_bus.name_owner_changed.connect((bus, name, old_name, new_name) => {
+            if (name == "org.freedesktop.IBus.Config")
+                reinit_config();
+        });
 
-        m_config.value_changed.connect(config_value_changed_cb);
+        m_bus.add_match("type='signal',sender='org.freedesktop.IBus',path='org/freedesktop/IBus'");
 
         // init ui
         m_status_icon = new Gtk.StatusIcon();
@@ -68,8 +69,7 @@ class Panel : IBus.PanelService {
         m_candidate_panel.hide();
         m_candidate_panel.show();
 
-        update_engines(m_config.get_value("general", "preload_engines"),
-                       m_config.get_value("general", "engines_order"));
+        reinit_config();
 
         m_switcher = new Switcher();
 
@@ -83,11 +83,28 @@ class Panel : IBus.PanelService {
 
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((k, s) => {
-            if (m_input_context != null)
-                m_input_context.property_activate(k, s);
+            property_activate(k, s);
         });
 
         state_changed();
+    }
+
+    private void reinit_config() {
+        if (m_config != null) {
+            m_config.value_changed.disconnect(config_value_changed_cb);
+            m_config.destroy();
+            m_config = null;
+        }
+
+        m_config = m_bus.get_config();
+        debug("m_config=%p", m_config);
+        if (m_config != null) {
+            m_config.value_changed.connect(config_value_changed_cb);
+            update_engines(m_config.get_value("general", "preload_engines"),
+                           m_config.get_value("general", "engines_order"));
+        } else {
+            update_engines(null, null);
+        }
     }
 
     private void switch_engine(int i, bool force = false) {
@@ -350,20 +367,9 @@ class Panel : IBus.PanelService {
     }
 
     public override void focus_in(string input_context_path) {
-        try {
-            GLib.Cancellable cancellable = null;
-            m_input_context =
-                new IBus.InputContext(input_context_path,
-                                      m_bus.get_connection(),
-                                      cancellable);
-            m_input_context.own = false;
-        } catch (GLib.Error e) {
-            debug("error");
-        }
     }
 
     public override void focus_out(string input_context_path) {
-        m_input_context = null;
     }
 
     public override void register_properties(IBus.PropList props) {
