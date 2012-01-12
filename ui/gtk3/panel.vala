@@ -140,9 +140,10 @@ class Panel : IBus.PanelService {
         foreach(var desc in m_engines) {
             names += desc.get_name();
         }
-        m_config.set_value("general",
-                           "engines_order",
-                           new GLib.Variant.strv(names));
+        if (m_config != null)
+            m_config.set_value("general",
+                               "engines_order",
+                               new GLib.Variant.strv(names));
     }
 
     private void config_value_changed_cb(IBus.Config config,
