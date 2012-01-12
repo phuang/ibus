@@ -67,6 +67,7 @@ EXTRA_DIST = \
 	$(ibus_pc_in) \
 	ibus.spec.in \
 	python-config.py \
+	xinput-ibus \
 	$(NULL)
 
 noinst_DIST = \

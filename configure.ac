@@ -454,7 +454,6 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-1.0.pc
 ibus.spec
-xinput-ibus
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
