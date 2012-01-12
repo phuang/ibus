@@ -222,9 +222,6 @@ class Switcher : Gtk.Window {
 
     public override bool key_release_event(Gdk.EventKey e) {
         Gdk.EventKey *pe = &e;
-        uint modifier = KeybindingManager.keyval_to_modifier(pe->keyval);
-        if (m_primary_modifier != modifier)
-            return true;
 
         if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe,
             m_primary_modifier)) {
