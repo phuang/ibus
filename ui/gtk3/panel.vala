@@ -66,9 +66,6 @@ class Panel : IBus.PanelService {
 
         m_candidate_panel = new CandidatePanel();
 
-        m_candidate_panel.hide();
-        m_candidate_panel.show();
-
         reinit_config();
 
         m_switcher = new Switcher();

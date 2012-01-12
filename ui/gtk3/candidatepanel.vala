@@ -46,7 +46,8 @@ public class CandidatePanel : Gtk.HBox{
     public CandidatePanel() {
         // Call base class constructor
         GLib.Object(
-            name : "IBusCandidate"
+            name : "IBusCandidate",
+            visible: true
         );
 
         m_toplevel = new Gtk.Window(Gtk.WindowType.POPUP);
@@ -58,9 +59,12 @@ public class CandidatePanel : Gtk.HBox{
             return true;
         });
 
-        m_vbox = new Gtk.VBox(false, 0);
         Handle handle = new Handle();
+        handle.set_visible(true);
         pack_start(handle, false, false, 0);
+
+        m_vbox = new Gtk.VBox(false, 0);
+        m_vbox.set_visible(true);
         pack_start(m_vbox, false, false, 0);
 
         m_toplevel.add(this);
@@ -174,14 +178,15 @@ public class CandidatePanel : Gtk.HBox{
         m_aux_label.set_no_show_all(true);
 
         m_candidate_area = new CandidateArea(m_vertical);
-        m_candidate_area.candidate_clicked.connect((w, i, b, s) => candidate_clicked(i, b, s));
+        m_candidate_area.candidate_clicked.connect(
+                (w, i, b, s) => candidate_clicked(i, b, s));
         m_candidate_area.page_up.connect((c) => page_up());
         m_candidate_area.page_down.connect((c) => page_down());
         m_candidate_area.cursor_up.connect((c) => cursor_up());
         m_candidate_area.cursor_down.connect((c) => cursor_down());
-        m_candidate_area.show();
 
         m_hseparator = new HSeparator();
+        m_hseparator.set_visible(true);
 
         pack_all_widgets();
     }
