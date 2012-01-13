@@ -40,6 +40,8 @@ class Panel : IBus.PanelService {
     private PropertyManager m_property_manager;
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
+    private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
+    private const string ACCELERATOR_SWITCH_IME_BACKWARD = "<Control><Shift>space";
 
     public Panel(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -48,13 +50,6 @@ class Panel : IBus.PanelService {
                     object_path : "/org/freedesktop/IBus/Panel");
 
         m_bus = bus;
-
-        m_bus.name_owner_changed.connect((bus, name, old_name, new_name) => {
-            if (name == "org.freedesktop.IBus.Config")
-                reinit_config();
-        });
-
-        m_bus.add_match("type='signal',sender='org.freedesktop.IBus',path='org/freedesktop/IBus'");
 
         // init ui
         m_status_icon = new Gtk.StatusIcon();
@@ -66,17 +61,14 @@ class Panel : IBus.PanelService {
 
         m_candidate_panel = new CandidatePanel();
 
-        reinit_config();
-
         m_switcher = new Switcher();
 
-        KeybindingManager.get_instance().bind("<Control>space", (e) => {
-            handle_engine_switch(e, false);
-        });
+        var keybinding_manager = KeybindingManager.get_instance();
+        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_FOREWARD,
+                (e) => handle_engine_switch(e, false));
 
-        KeybindingManager.get_instance().bind("<Control><Shift>space", (e) => {
-            handle_engine_switch(e, true);
-        });
+        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_BACKWARD,
+                (e) => handle_engine_switch(e, true));
 
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((k, s) => {
@@ -86,15 +78,19 @@ class Panel : IBus.PanelService {
         state_changed();
     }
 
-    private void reinit_config() {
+    ~Panel() {
+        var keybinding_manager = KeybindingManager.get_instance();
+        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_FOREWARD);
+        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_BACKWARD);
+    }
+
+    public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
-            m_config.destroy();
             m_config = null;
         }
 
-        m_config = m_bus.get_config();
-        debug("m_config=%p", m_config);
+        m_config = config;
         if (m_config != null) {
             m_config.value_changed.connect(config_value_changed_cb);
             update_engines(m_config.get_value("general", "preload_engines"),

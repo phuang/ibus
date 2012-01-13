@@ -27,13 +27,13 @@ using Gtk;
 class Application {
     private IBus.Bus m_bus;
     private Panel m_panel;
+    private IBus.Config m_config;
 
     public Application(string[] argv) {
         IBus.init();
         Gtk.init(ref argv);
 
         m_bus = new IBus.Bus();
-        m_panel = new Panel(m_bus);
 
         m_bus.connected.connect(bus_connected);
         m_bus.disconnected.connect(bus_disconnected);
@@ -49,18 +49,29 @@ class Application {
                                     "org.freedesktop.DBus",
                                     "NameAcquired",
                                     "/org/freedesktop/DBus",
-                                    "org.freedesktop.IBus.Panel",
+                                    IBus.SERVICE_PANEL,
                                     DBusSignalFlags.NONE,
-                                    this.bus_name_acquired);
+                                    bus_name_acquired_cb);
         connection.signal_subscribe("org.freedesktop.DBus",
                                     "org.freedesktop.DBus",
                                     "NameLost",
                                     "/org/freedesktop/DBus",
-                                    "org.freedesktop.IBus.Panel",
+                                    IBus.SERVICE_PANEL,
                                     DBusSignalFlags.NONE,
-                                    this.bus_name_lost);
+                                    bus_name_lost_cb);
+        var flags =
+                IBus.BusNameFlag.ALLOW_REPLACEMENT |
+                IBus.BusNameFlag.REPLACE_EXISTING;
+        m_bus.request_name(IBus.SERVICE_PANEL, flags);
 
-        m_bus.request_name("org.freedesktop.IBus.Panel", 2);
+        m_config = m_bus.get_config();
+        connection.signal_subscribe("org.freedesktop.DBus",
+                                    "org.freedesktop.DBus",
+                                    "NameOwnerChanged",
+                                    "/org/freedesktop/DBus",
+                                    IBus.SERVICE_CONFIG,
+                                    DBusSignalFlags.NONE,
+                                    config_name_owner_changed_cb);
     }
 
     public int run() {
@@ -68,22 +79,43 @@ class Application {
         return 0;
     }
 
-    private void bus_name_acquired(DBusConnection connection,
-                                   string sender_name,
-                                   string object_path,
-                                   string interface_name,
-                                   string signal_name,
-                                   Variant parameters) {
+    private void bus_name_acquired_cb(DBusConnection connection,
+                                      string sender_name,
+                                      string object_path,
+                                      string interface_name,
+                                      string signal_name,
+                                      Variant parameters) {
         debug("signal_name = %s", signal_name);
+        m_panel = new Panel(m_bus);
+        m_panel.set_config(m_config);
     }
 
-    private void bus_name_lost(DBusConnection connection,
-                               string sender_name,
-                               string object_path,
-                               string interface_name,
-                               string signal_name,
-                               Variant parameters) {
+    private void bus_name_lost_cb(DBusConnection connection,
+                                  string sender_name,
+                                  string object_path,
+                                  string interface_name,
+                                  string signal_name,
+                                  Variant parameters) {
         debug("signal_name = %s", signal_name);
+        m_panel = null;
+    }
+
+    private void config_name_owner_changed_cb(DBusConnection connection,
+                                              string sender_name,
+                                              string object_path,
+                                              string interface_name,
+                                              string signal_name,
+                                              Variant parameters) {
+        debug("signal_name = %s", signal_name);
+        string name, new_owner, old_owner;
+        parameters.get("(sss)", out name, out new_owner, out old_owner);
+        if (new_owner == "") {
+            m_config = null;
+        } else {
+            m_config = m_bus.get_config();
+        }
+        if (m_panel != null)
+            m_panel.set_config(m_config);
     }
 
     private void bus_disconnected(IBus.Bus bus) {
