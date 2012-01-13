@@ -159,7 +159,7 @@ typedef struct _Token {
 } Token;
 
 #define SKIP_WHITE(a)   \
-    while (*(a) == ' ' || *(a) == '\t') { (a)++; }
+    while (*(a) == ' ' || *(a) == '\t' || *(a) == '\n') { (a)++; }
 #define IS_ALPHA(a) \
     ((*(a) >= 'a' && *(a) <= 'z') || (*(a) >= 'A' && *(a) <= 'Z'))
 #define IS_NUMBER(a) \
@@ -269,7 +269,7 @@ tokenize_rule (const gchar *text)
     return (Token *)g_array_free (tokens, FALSE);
 
 failed:
-
+    // g_debug("failed at: \"%s\"", p);
     for (i = 0; i < tokens->len; i++) {
         Token *p = &g_array_index (tokens, Token, i);
         g_free (p->key);
