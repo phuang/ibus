@@ -479,9 +479,6 @@ ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
-ui/gtk2/Makefile
-ui/gtk2/ibus-ui-gtk
-ui/gtk2/gtkpanel.xml.in
 ui/gtk3/Makefile
 ui/gtk3/gtkpanel.xml.in
 setup/Makefile

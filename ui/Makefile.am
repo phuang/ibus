@@ -20,18 +20,11 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_PYTHON_LIBRARY
-if ENABLE_GTK2
-GTK2_UI = gtk2
-endif
-endif
-
 if ENABLE_GTK3
 GTK3_UI = gtk3
 endif
 
 SUBDIRS = \
-	$(GTK2_UI) \
 	$(GTK3_UI) \
 	$(NULL)
 
