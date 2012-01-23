@@ -34,7 +34,7 @@ ibus_xml_free (XMLNode *node)
 
     g_strfreev (node->attributes);
 
-    g_list_free_full (node->sub_nodes, (GDestroyNotify)ibus_xml_free);
+    g_list_free_full (node->sub_nodes, (GDestroyNotify) ibus_xml_free);
 
     g_slice_free (XMLNode, node);
 }

@@ -1,5 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
+
 #include "matchrule.h"
+
 struct _BusMatchRule {
     IBusObject parent;
     /* instance members */

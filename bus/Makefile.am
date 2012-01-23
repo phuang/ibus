@@ -73,7 +73,6 @@ commonsrc = \
 	matchrule.h \
 	registry.c \
 	registry.h \
-	option.h \
 	marshalers.c \
 	marshalers.h \
 	types.h \

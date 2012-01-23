@@ -112,7 +112,6 @@ bus_test_client_init (BusTestClient *client)
     ibus_input_context_set_engine (client->ibuscontext, active_engine_name);
     g_free (active_engine_name);
 
-    // ibus_input_context_enable (client->ibuscontext);
     client->enabled = TRUE;
 }
 

@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef __IBUS_KEYSYMS_COMPACT_H__
-#define __IBUS_KEYSYMS_COMPACT_H__
+#ifndef __IBUS_KEYSYMS_COMPAT_H__
+#define __IBUS_KEYSYMS_COMPAT_H__
 
 
 #define IBUS_VoidSymbol 0xffffff
@@ -2096,4 +2096,4 @@
 #define IBUS_braille_dots_2345678 0x10028fe
 #define IBUS_braille_dots_12345678 0x10028ff
 
-#endif /* __IBUS_KEYSYMS_COMPACT_H__ */
+#endif /* __IBUS_KEYSYMS_COMPAT_H__ */

@@ -50,7 +50,7 @@ struct _IBusEngineSimplePrivate {
  */
 #include "gtkimcontextsimpleseqs.h"
 
-/* From the values below, the value 23 means the number of different first keysyms
+/* From the values below, the value 24 means the number of different first keysyms
  * that exist in the Compose file (from Xorg). When running compose-parse.py without
  * parameters, you get the count that you can put here. Needed when updating the
  * gtkimcontextsimpleseqs.h header file (contains the compose sequences).

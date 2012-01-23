@@ -20,17 +20,17 @@
  * Boston, MA 02111-1307, USA.
  */
 #include <config.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <pwd.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <signal.h>
 #include <glib.h>
 #include <gio/gio.h>
 #include <ibus.h>
+#include <locale.h>
+#include <pwd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "global.h"
 #include "ibusimpl.h"

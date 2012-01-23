@@ -3,6 +3,7 @@
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
  * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (c) 2012 Google, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,5 +32,4 @@ gint   g_gdbus_timeout = 5000;
 #ifdef G_THREADS_ENABLED
 gint   g_monitor_timeout = 0;
 #endif
-
 

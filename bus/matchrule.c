@@ -19,9 +19,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #include "matchrule.h"
-#include "dbusimpl.h"
+
 #include <string.h>
+
+#include "dbusimpl.h"
 
 typedef enum {
     MATCH_TYPE          = 1 << 0,
@@ -269,7 +272,6 @@ tokenize_rule (const gchar *text)
     return (Token *)g_array_free (tokens, FALSE);
 
 failed:
-    // g_debug("failed at: \"%s\"", p);
     for (i = 0; i < tokens->len; i++) {
         Token *p = &g_array_index (tokens, Token, i);
         g_free (p->key);

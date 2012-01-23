@@ -70,20 +70,6 @@ GType            bus_ibus_impl_get_type             (void);
  */
 BusIBusImpl     *bus_ibus_impl_get_default          (void);
 
-/**
- * bus_ibus_impl_filter_keyboard_shortcuts:
- * @returns: TRUE if the key is consumed by ibus-daemon.
- *
- * Check if the keyval and modifiers match one of the global or engine-specific hot keys. If the key is a hot key, update the state of
- * ibus-daemon (e.g. switch to the next engine.)
- */
-gboolean         bus_ibus_impl_filter_keyboard_shortcuts
-                                                    (BusIBusImpl        *ibus,
-                                                     BusInputContext    *context,
-                                                     guint               keyval,
-                                                     guint               modifiers,
-                                                     guint               prev_keyval,
-                                                     guint               prev_modifiers);
 
 /* accessors */
 BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,

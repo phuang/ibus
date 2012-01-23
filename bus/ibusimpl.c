@@ -20,22 +20,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <unistd.h>
+#include "ibusimpl.h"
+
+#include <locale.h>
+#include <signal.h>
+#include <strings.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <signal.h>
-#include <locale.h>
-#include <strings.h>
-#include "types.h"
-#include "ibusimpl.h"
-#include "dbusimpl.h"
-#include "server.h"
+#include <unistd.h>
+
 #include "connection.h"
-#include "registry.h"
+#include "dbusimpl.h"
 #include "factoryproxy.h"
-#include "panelproxy.h"
+#include "global.h"
 #include "inputcontext.h"
-#include "option.h"
+#include "panelproxy.h"
+#include "registry.h"
+#include "server.h"
+#include "types.h"
 
 struct _BusIBusImpl {
     IBusService parent;
@@ -57,7 +59,6 @@ struct _BusIBusImpl {
     gboolean use_sys_layout;
 
     gboolean embed_preedit_text;
-    gboolean enable_by_default;
 
     BusRegistry     *registry;
 
@@ -346,7 +347,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
 
     ibus->use_sys_layout = TRUE;
     ibus->embed_preedit_text = TRUE;
-    ibus->enable_by_default = TRUE;
     ibus->use_global_engine = TRUE;
     ibus->global_engine_name = NULL;
     ibus->global_previous_engine_name = NULL;
@@ -474,7 +474,7 @@ _context_request_engine_cb (BusInputContext *context,
                             BusIBusImpl     *ibus)
 {
     if (engine_name == NULL || engine_name[0] == '\0')
-        engine_name = "xkb:us::eng";
+        engine_name = DEFAULT_ENGINE;
 
     return bus_ibus_impl_get_engine_desc (ibus, engine_name);
 }
@@ -796,9 +796,7 @@ bus_ibus_impl_create_input_context (BusIBusImpl   *ibus,
                           ibus);
     }
 
-    if (ibus->enable_by_default) {
-        bus_input_context_enable (context);
-    }
+    bus_input_context_enable (context);
 
     /* register the context object so that the object could handle IBus.InputContext method calls. */
     bus_dbus_impl_register_object (BUS_DEFAULT_DBUS,

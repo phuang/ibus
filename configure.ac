@@ -429,12 +429,12 @@ AC_ARG_WITH(panel-icon-keyboard,
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
-# --enable-surrounding-text option.
+# --disable-surrounding-text option.
 AC_ARG_ENABLE(surrounding-text,
-    AS_HELP_STRING([--enable-surrounding-text],
+    AS_HELP_STRING([--disable-surrounding-text],
         [Enable surrounding-text support]),
     [enable_surrounding_text=$enableval],
-    [enable_surrounding_text=no]
+    [enable_surrounding_text=yes]
 )
 if test x"$enable_surrounding_text" = x"yes"; then
     AC_DEFINE(ENABLE_SURROUNDING, TRUE, [Enable surrounding-text support])

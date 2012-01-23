@@ -20,9 +20,10 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "panelproxy.h"
-#include "types.h"
+
+#include "global.h"
 #include "marshalers.h"
-#include "option.h"
+#include "types.h"
 
 /* panelproxy.c is a very simple proxy class for the panel component that does only the following:
  *

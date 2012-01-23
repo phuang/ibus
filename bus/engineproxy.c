@@ -19,11 +19,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #include "engineproxy.h"
-#include "types.h"
-#include "marshalers.h"
+
+#include "global.h"
 #include "ibusimpl.h"
-#include "option.h"
+#include "marshalers.h"
+#include "types.h"
 
 struct _BusEngineProxy {
     IBusProxy parent;

@@ -25,9 +25,9 @@
 
 #include "engineproxy.h"
 #include "factoryproxy.h"
+#include "global.h"
 #include "ibusimpl.h"
 #include "marshalers.h"
-#include "option.h"
 #include "types.h"
 
 struct _SetEngineByDescData {
@@ -142,25 +142,6 @@ static void     bus_input_context_service_method_call
                                                  const gchar            *method_name,
                                                  GVariant               *parameters,
                                                  GDBusMethodInvocation  *invocation);
-/*
-static GVariant *bus_input_context_service_get_property
-                                                (IBusService            *service,
-                                                 GDBusConnection        *connection,
-                                                 const gchar            *sender,
-                                                 const gchar            *object_path,
-                                                 const gchar            *interface_name,
-                                                 const gchar            *property_name,
-                                                 GError                **error);
-static gboolean bus_input_context_service_set_property
-                                                (IBusService            *service,
-                                                 GDBusConnection        *connection,
-                                                 const gchar            *sender,
-                                                 const gchar            *object_path,
-                                                 const gchar            *interface_name,
-                                                 const gchar            *property_name,
-                                                 GVariant               *value,
-                                                 GError                **error);
-*/
 static void     bus_input_context_unset_engine  (BusInputContext        *context);
 static void     bus_input_context_commit_text   (BusInputContext        *context,
                                                  IBusText               *text);
@@ -1080,26 +1061,6 @@ bus_input_context_focus_in (BusInputContext *context)
     context->prev_keyval = IBUS_KEY_VoidSymbol;
     context->prev_modifiers = 0;
 
-    if (context->engine == NULL) {
-#if 0
-        /* request an engine, e.g. a global engine if the feature is enabled. */
-        IBusEngineDesc *desc = NULL;
-        g_signal_emit (context,
-                       context_signals[REQUEST_ENGINE], 0,
-                       NULL,
-                       &desc);
-
-        if (desc != NULL) {
-            bus_input_context_set_engine_by_desc (context,
-                            desc,
-                            g_gdbus_timeout, /* timeout in msec. */
-                            NULL, /* we do not cancel the call. */
-                            NULL, /* use the default callback function. */
-                            NULL);
-        }
-#endif
-    }
-
     if (context->engine) {
         bus_engine_proxy_focus_in (context->engine);
         bus_engine_proxy_enable (context->engine);
@@ -1966,7 +1927,6 @@ bus_input_context_enable (BusInputContext *context)
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
     if (!context->has_focus) {
-        /* FIXME Do we need to emit "enabled" signal? */
         return;
     }
 

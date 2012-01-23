@@ -1,4 +1,5 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
+/* vim:set et sts=4: */
 /* GDK - The GIMP Drawing Kit
  * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
  *
@@ -55,8 +56,8 @@ ibus_keyval_name (guint keyval)
     }
 
   found = bsearch (&keyval, gdk_keys_by_keyval,
-		   IBUS_NUM_KEYS, sizeof (gdk_key),
-		   gdk_keys_keyval_compare);
+                   IBUS_NUM_KEYS, sizeof (gdk_key),
+           gdk_keys_keyval_compare);
 
   if (found != NULL)
     {
@@ -79,7 +80,7 @@ static int
 gdk_keys_name_compare (const void *pkey, const void *pbase)
 {
   return strcmp ((const char *) pkey,
-		 (const char *) (keynames + ((const gdk_key *) pbase)->offset));
+         (const char *) (keynames + ((const gdk_key *) pbase)->offset));
 }
 
 guint
@@ -90,8 +91,8 @@ ibus_keyval_from_name (const gchar *keyval_name)
   g_return_val_if_fail (keyval_name != NULL, 0);
 
   found = bsearch (keyval_name, gdk_keys_by_name,
-		   IBUS_NUM_KEYS, sizeof (gdk_key),
-		   gdk_keys_name_compare);
+           IBUS_NUM_KEYS, sizeof (gdk_key),
+           gdk_keys_name_compare);
   if (found != NULL)
     return found->keyval;
   else
@@ -100,100 +101,100 @@ ibus_keyval_from_name (const gchar *keyval_name)
 
 static const gchar *
 modifier_name[] = {
-    "Shift",   	// 0
-    "Lock",		// 1
-    "Control",	// 2
-    "Alt",		// 3
-    "Mod2",		// 4
-    "Mod3",		// 5
-    "Mod4",		// 6
-    "Mod5",		// 7
-    "Button1",	// 8
-    "Button2",	// 9
-    "Button3",	// 10
-    "Button4",	// 11
-    "Button5",	// 12
+    "Shift",       // 0
+    "Lock",        // 1
+    "Control",    // 2
+    "Alt",        // 3
+    "Mod2",        // 4
+    "Mod3",        // 5
+    "Mod4",        // 6
+    "Mod5",        // 7
+    "Button1",    // 8
+    "Button2",    // 9
+    "Button3",    // 10
+    "Button4",    // 11
+    "Button5",    // 12
     NULL, NULL, NULL, NULL, NULL, // 13 - 17
     NULL, NULL, NULL, NULL, NULL, // 18 - 22
     NULL, NULL, NULL, // 23 - 25
-    "Super",	// 26
-    "Hyper",	// 27
-    "Meta",		// 28
-    NULL,		// 29
-    "Release",	// 30
-    NULL,		// 31
+    "Super",    // 26
+    "Hyper",    // 27
+    "Meta",        // 28
+    NULL,        // 29
+    "Release",    // 30
+    NULL,        // 31
 };
 
 const gchar *
 ibus_key_event_to_string (guint keyval,
-					      guint modifiers)
+                          guint modifiers)
 {
-	guint i;
-	GString *str;
-	const gchar *keyval_name;
+    guint i;
+    GString *str;
+    const gchar *keyval_name;
 
-	g_return_val_if_fail (keyval != IBUS_KEY_VoidSymbol, NULL);
+    g_return_val_if_fail (keyval != IBUS_KEY_VoidSymbol, NULL);
 
-	keyval_name = ibus_keyval_name (keyval);
-	g_return_val_if_fail (keyval_name != NULL, NULL);
+    keyval_name = ibus_keyval_name (keyval);
+    g_return_val_if_fail (keyval_name != NULL, NULL);
 
-	str = g_string_new ("");
+    str = g_string_new ("");
 
-	for (i = 0; i < 32; i++) {
-		guint mask = 1 << i;
+    for (i = 0; i < 32; i++) {
+        guint mask = 1 << i;
 
-		if ((modifiers & mask) == 0)
-			continue;
-		if (modifier_name[i] == NULL)
-			continue;
+        if ((modifiers & mask) == 0)
+            continue;
+        if (modifier_name[i] == NULL)
+            continue;
 
-		g_string_append (str, modifier_name[i]);
-		g_string_append_c (str, '+');
-	}
+        g_string_append (str, modifier_name[i]);
+        g_string_append_c (str, '+');
+    }
 
-	g_string_append (str, keyval_name);
+    g_string_append (str, keyval_name);
 
-	return g_string_free (str, FALSE);
+    return g_string_free (str, FALSE);
 }
 
 gboolean
 ibus_key_event_from_string (const gchar *string,
-						    guint       *keyval,
-						    guint       *modifiers)
+                            guint       *keyval,
+                            guint       *modifiers)
 {
-	g_return_val_if_fail (string != NULL, FALSE);
-	g_return_val_if_fail (keyval != NULL, FALSE);
-	g_return_val_if_fail (modifiers != NULL, FALSE);
+    g_return_val_if_fail (string != NULL, FALSE);
+    g_return_val_if_fail (keyval != NULL, FALSE);
+    g_return_val_if_fail (modifiers != NULL, FALSE);
 
-	gchar **tokens = NULL;
-	gchar **p;
-	gboolean retval = FALSE;
+    gchar **tokens = NULL;
+    gchar **p;
+    gboolean retval = FALSE;
 
-	tokens = g_strsplit (string, "+", 0);
-	g_return_val_if_fail (tokens != NULL, FALSE);
+    tokens = g_strsplit (string, "+", 0);
+    g_return_val_if_fail (tokens != NULL, FALSE);
 
-	*keyval = 0;
-	*modifiers = 0;
+    *keyval = 0;
+    *modifiers = 0;
 
-	for (p = tokens; *(p + 1) != NULL; p++) {
-		gint i;
-		for (i = 0; i < 32; i++) {
-			if (g_strcmp0 (modifier_name[i], *p) != 0)
-				continue;
-			*modifiers |= (1 << i);
-			break;
-		}
-		if (i == 32) {
-			goto _out;
-		}
-	}
+    for (p = tokens; *(p + 1) != NULL; p++) {
+        gint i;
+        for (i = 0; i < 32; i++) {
+            if (g_strcmp0 (modifier_name[i], *p) != 0)
+                continue;
+            *modifiers |= (1 << i);
+            break;
+        }
+        if (i == 32) {
+            goto _out;
+        }
+    }
 
-	*keyval = ibus_keyval_from_name (*p);
-	if (*keyval != IBUS_KEY_VoidSymbol)
-		retval = TRUE;
+    *keyval = ibus_keyval_from_name (*p);
+    if (*keyval != IBUS_KEY_VoidSymbol)
+        retval = TRUE;
 _out:
-	if (tokens)
-		g_strfreev (tokens);
-	return retval;
+    if (tokens)
+        g_strfreev (tokens);
+    return retval;
 }
 

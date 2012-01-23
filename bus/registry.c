@@ -20,14 +20,16 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "registry.h"
-#include <glib/gstdio.h>
+
 #include <gio/gio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "types.h"
-#include "option.h"
-#include "marshalers.h"
+
 #include "dbusimpl.h"
+#include "global.h"
+#include "marshalers.h"
+#include "types.h"
 
 enum {
     CHANGED,

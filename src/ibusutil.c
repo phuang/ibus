@@ -34,6 +34,7 @@
 #include <libintl.h>
 #endif
 
+/* gettext macro */
 #define N_(t) t
 
 static GHashTable *__languages_dict;
@@ -99,8 +100,7 @@ _load_lang()
 
     __languages_dict = g_hash_table_new_full (g_str_hash,
             g_str_equal, g_free, g_free);
-    // filename = g_build_filename (ISOCODES_PREFIX,
-    filename = g_build_filename ("/usr",
+    filename = g_build_filename (ISOCODES_PREFIX,
                                  "share/xml/iso-codes/iso_639.xml",
                                  NULL);
     if (g_stat (filename, &buf) != 0) {
