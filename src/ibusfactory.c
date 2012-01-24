@@ -114,10 +114,10 @@ _ibus_factory_create_engine (IBusFactory    *factory,
 
     object_path = g_strdup_printf ("/org/freedesktop/IBus/Engine/%d",
                                    ++factory->priv->id);
-    engine = ibus_engine_new_type (engine_type,
-                                   engine_name,
-                                   object_path,
-                                   ibus_service_get_connection ((IBusService *)factory));
+    engine = ibus_engine_new_with_type (engine_type,
+                                        engine_name,
+                                        object_path,
+                                        ibus_service_get_connection ((IBusService *)factory));
     g_free (object_path);
 
     return engine;

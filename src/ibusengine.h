@@ -169,8 +169,8 @@ IBusEngine  *ibus_engine_new            (const gchar        *engine_name,
                                          const gchar        *object_path,
                                          GDBusConnection    *connection);
 /**
- * ibus_engine_new_type:
- * @engine_type: GType of subclass of IBUS_TYPE_ENGINE
+ * ibus_engine_new_with_type:
+ * @engine_type: GType of #IBusEngine.
  * @engine_name: Name of the IBusObject.
  * @object_path: Path for IBusService.
  * @connection: An opened GDBusConnection.
@@ -178,7 +178,7 @@ IBusEngine  *ibus_engine_new            (const gchar        *engine_name,
  *
  * New an IBusEngine.
  */
-IBusEngine  *ibus_engine_new_type       (GType               engine_type,
+IBusEngine  *ibus_engine_new_with_type  (GType               engine_type,
                                          const gchar        *engine_name,
                                          const gchar        *object_path,
                                          GDBusConnection    *connection);
