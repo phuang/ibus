@@ -321,10 +321,8 @@ class Panel : IBus.PanelService {
 
         // Append IMEs
         foreach (var engine in m_engines) {
-            // var lang =  engine.get_language();
-            // var name = engine.get_name();
-            var desc = engine.get_description();
-            var item = new Gtk.ImageMenuItem.with_label(desc);
+            var longname = engine.get_longname();
+            var item = new Gtk.ImageMenuItem.with_label(longname);
             if (engine.get_icon() != "") {
                 var icon = new IconWidget(engine.get_icon(), width);
                  item.set_image(icon);
