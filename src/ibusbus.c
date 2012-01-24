@@ -1381,7 +1381,9 @@ ibus_bus_do_list_engines (IBusBus *bus, gboolean active_engines_only)
         g_variant_get (result, "(av)", &iter);
         GVariant *var;
         while (g_variant_iter_loop (iter, "v", &var)) {
-            retval = g_list_append (retval, ibus_serializable_deserialize (var));
+            IBusSerializable *serializable = ibus_serializable_deserialize (var);
+            g_object_ref_sink (serializable);
+            retval = g_list_append (retval, serializable);
         }
         g_variant_iter_free (iter);
         g_variant_unref (result);
@@ -1435,7 +1437,9 @@ ibus_bus_list_engines_async_finish (IBusBus      *bus,
     g_variant_get (variant, "(av)", &iter);
     GVariant *var;
     while (g_variant_iter_loop (iter, "v", &var)) {
-        retval = g_list_append (retval, ibus_serializable_deserialize (var));
+        IBusSerializable *serializable = ibus_serializable_deserialize (var);
+        g_object_ref_sink (serializable);
+        retval = g_list_append (retval, serializable);
     }
     g_variant_iter_free (iter);
     return retval;
@@ -1501,6 +1505,7 @@ ibus_bus_get_engines_by_names (IBusBus             *bus,
     GVariant *var;
     while (g_variant_iter_loop (iter, "v", &var)) {
         IBusEngineDesc *desc = (IBusEngineDesc *) ibus_serializable_deserialize (var);
+        g_object_ref_sink (desc);
         g_array_append_val (array, desc);
     }
     g_variant_iter_free (iter);
