@@ -26,10 +26,17 @@
 #include "config.h"
 
 #define DCONF_PREFIX "/desktop/ibus"
+#define DCONF_PRESERVE_NAME_PREFIXES_KEY \
+    DCONF_PREFIX"/general/dconf-preserve-name-prefixes"
 
 struct _IBusConfigDConf {
     IBusConfigService parent;
     DConfClient *client;
+
+    /* if a dconf path matches one of preserve_name_prefixes, don't convert
+       key names from/to GSettings key names (see _to_gsettings_name
+       and _from_gsettings_name) */
+    GSList *preserve_name_prefixes;
 };
 
 struct _IBusConfigDConfClass {
@@ -70,6 +77,18 @@ ibus_config_dconf_class_init (IBusConfigDConfClass *class)
     config_class->get_value = ibus_config_dconf_get_value;
     config_class->get_values = ibus_config_dconf_get_values;
     config_class->unset_value = ibus_config_dconf_unset_value;
+}
+
+static gboolean
+_has_prefixes (const gchar *path, GSList *prefixes)
+{
+    GSList *head = prefixes;
+    for (; head; head = head->next) {
+        if (g_str_has_prefix (path, head->data)) {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 /* Convert key names from/to GSettings names.  While GSettings only
@@ -177,7 +196,7 @@ _watch_func (DConfClient         *client,
         GVariant *variant = dconf_client_read (config->client, gkeys[i]);
 
         if (variant == NULL) {
-            /* Use a empty typle for a unset value */
+            /* Use a empty tuple for a unset value */
             variant = g_variant_new_tuple (NULL, 0);
         }
 
@@ -185,15 +204,24 @@ _watch_func (DConfClient         *client,
         g_assert (gname);
         *gname++ = '\0';
 
-        path = _from_gsettings_path (gkeys[i]);
-        name = _from_gsettings_name (gname);
+        if (_has_prefixes (gkeys[i], config->preserve_name_prefixes)) {
+            path = gkeys[i];
+            name = gname;
+        } else {
+            path = _from_gsettings_path (gkeys[i]);
+            name = _from_gsettings_name (gname);
+        }
 
         ibus_config_service_value_changed ((IBusConfigService *) config,
                                            path + sizeof (DCONF_PREFIX),
                                            name,
                                            variant);
-        g_free (path);
-        g_free (name);
+        if (path != gkeys[i]) {
+            g_free (path);
+        }
+        if (name != gname) {
+            g_free (name);
+        }
         g_variant_unref (variant);
     }
     g_strfreev (gkeys);
@@ -202,6 +230,7 @@ _watch_func (DConfClient         *client,
 static void
 ibus_config_dconf_init (IBusConfigDConf *config)
 {
+    GVariant *variant;
     GError *error;
 
     config->client = dconf_client_new ("ibus",
@@ -212,6 +241,24 @@ ibus_config_dconf_init (IBusConfigDConf *config)
     error = NULL;
     if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error))
         g_warning ("Can not watch dconf path %s", DCONF_PREFIX"/");
+
+    config->preserve_name_prefixes = NULL;
+    variant = dconf_client_read (config->client,
+                                 DCONF_PRESERVE_NAME_PREFIXES_KEY);
+    if (variant != NULL) {
+        GVariantIter iter;
+        GVariant *child;
+
+        g_variant_iter_init (&iter, variant);
+        while ((child = g_variant_iter_next_value (&iter))) {
+            char *prefix = g_variant_dup_string (child, NULL);
+            config->preserve_name_prefixes =
+                g_slist_prepend (config->preserve_name_prefixes,
+                                 prefix);
+            g_variant_unref (child);
+        }
+        g_variant_unref (variant);
+    }
 }
 
 static void
@@ -226,6 +273,9 @@ ibus_config_dconf_destroy (IBusConfigDConf *config)
         config->client = NULL;
     }
 
+    g_slist_free_full (config->preserve_name_prefixes, (GDestroyNotify) g_free);
+    config->preserve_name_prefixes = NULL;
+
     IBUS_OBJECT_CLASS (ibus_config_dconf_parent_class)->
         destroy ((IBusObject *)config);
 }
@@ -237,17 +287,25 @@ ibus_config_dconf_set_value (IBusConfigService *config,
                              GVariant          *value,
                              GError           **error)
 {
-    DConfClient *client = ((IBusConfigDConf *)config)->client;
+    IBusConfigDConf *dconf = IBUS_CONFIG_DCONF (config);
+    DConfClient *client = dconf->client;
     gchar *path, *gpath, *gname, *gkey;
     gboolean retval;
 
     path = g_strdup_printf (DCONF_PREFIX"/%s", section);
-
     gpath = _to_gsettings_path (path);
-    gname = _to_gsettings_name (name);
+    g_free (path);
+
+    if (_has_prefixes (gpath, dconf->preserve_name_prefixes)) {
+        gname = (char *) name;
+    } else {
+        gname = _to_gsettings_name (name);
+    }
     gkey = g_strconcat (gpath, "/", gname, NULL);
     g_free (gpath);
-    g_free (gname);
+    if (gname != name) {
+        g_free (gname);
+    }
 
     retval = dconf_client_write (client,
                                  gkey,
@@ -261,7 +319,7 @@ ibus_config_dconf_set_value (IBusConfigService *config,
        call watch_func when the caller is the process itself */
     if (retval) {
         if (value == NULL) {
-            /* Use a empty typle for a unset value */
+            /* Use a empty tuple for a unset value */
             value = g_variant_new_tuple (NULL, 0);
         }
         ibus_config_service_value_changed (config, section, name, value);
@@ -275,17 +333,25 @@ ibus_config_dconf_get_value (IBusConfigService *config,
                              const gchar       *name,
                              GError           **error)
 {
-    DConfClient *client = ((IBusConfigDConf *) config)->client;
+    IBusConfigDConf *dconf = IBUS_CONFIG_DCONF (config);
+    DConfClient *client = dconf->client;
     gchar *path, *gpath, *gname, *gkey;
     GVariant *variant;
 
     path = g_strdup_printf (DCONF_PREFIX"/%s", section);
-
     gpath = _to_gsettings_path (path);
-    gname = _to_gsettings_name (name);
+    g_free (path);
+
+    if (_has_prefixes (gpath, dconf->preserve_name_prefixes)) {
+        gname = (char *) name;
+    } else {
+        gname = _to_gsettings_name (name);
+    }
     gkey = g_strconcat (gpath, "/", gname, NULL);
     g_free (gpath);
-    g_free (gname);
+    if (gname != name) {
+        g_free (gname);
+    }
 
     variant = dconf_client_read (client, gkey);
     g_free (gkey);
@@ -304,15 +370,19 @@ ibus_config_dconf_get_values (IBusConfigService *config,
                               const gchar       *section,
                               GError           **error)
 {
-    DConfClient *client = ((IBusConfigDConf *) config)->client;
+    IBusConfigDConf *dconf = IBUS_CONFIG_DCONF (config);
+    DConfClient *client = dconf->client;
     gchar *dir, *gdir;
     gint len;
     gchar **entries, **p;
     GVariantBuilder *builder;
+    gboolean preserve_name;
 
     dir = g_strdup_printf (DCONF_PREFIX"/%s/", section);
     gdir = _to_gsettings_path (dir);
     g_free (dir);
+
+    preserve_name = _has_prefixes (gdir, dconf->preserve_name_prefixes);
 
     entries = dconf_client_list (client, gdir, &len);
     builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
@@ -321,9 +391,14 @@ ibus_config_dconf_get_values (IBusConfigService *config,
         GVariant *value = dconf_client_read (client, gkey);
         g_free (gkey);
         if (value) {
-            gchar *name = _from_gsettings_name (*p);
+            gchar *name = *p;
+            if (!preserve_name) {
+                name = _from_gsettings_name (*p);
+            }
             g_variant_builder_add (builder, "{sv}", name, value);
-            g_free (name);
+            if (name != *p) {
+                g_free (name);
+            }
             g_variant_unref (value);
         }
     }
