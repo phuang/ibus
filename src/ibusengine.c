@@ -330,7 +330,7 @@ ibus_engine_class_init (IBusEngineClass *class)
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
-            NULL, NULL,
+            g_signal_accumulator_true_handled, NULL,
             _ibus_marshal_BOOL__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
