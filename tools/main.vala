@@ -94,22 +94,21 @@ int get_set_engine(string[] argv) {
             return -1;
         print("%s\n", desc.get_name());
         return 0;
-    } else {
-        if(!bus.set_global_engine(engine))
-            return -1;
-        var desc = bus.get_global_engine();
-        if (desc == null)
-            return -1;
-        string cmdline = "setxkbmap %s".printf(desc.get_layout());
-        try {
-            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-                warning("Switch xkb layout to %s failed.",
-                    desc.get_layout());
-            }
-        } catch (GLib.SpawnError e) {
-            warning("execute setxkblayout failed");
+    }
+
+    if(!bus.set_global_engine(engine))
+        return -1;
+    var desc = bus.get_global_engine();
+    if (desc == null)
+        return -1;
+    string cmdline = "setxkbmap %s".printf(desc.get_layout());
+    try {
+        if (!GLib.Process.spawn_command_line_sync(cmdline)) {
+            warning("Switch xkb layout to %s failed.",
+                desc.get_layout());
         }
-        return 0;
+    } catch (GLib.SpawnError e) {
+        warning("execute setxkblayout failed");
     }
     return 0;
 }
@@ -140,10 +139,10 @@ struct CommandEntry {
 public int main(string[] argv) {
     const CommandEntry commands[]  = {
         { "engine", get_set_engine },
+        { "exit", exit_daemon },
         { "list-engine", list_engine },
         { "watch", message_watch },
-        { "restart", restart_daemon },
-        { "exit", exit_daemon }
+        { "restart", restart_daemon }
     };
 
     if (argv.length >= 2) {

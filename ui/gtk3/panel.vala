@@ -293,9 +293,13 @@ class Panel : IBus.PanelService {
 
             m_sys_menu.append(new SeparatorMenuItem());
 
-            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.QUIT, null);
+            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.REFRESH, null);
             item.set_label(_("Restart"));
             item.activate.connect((i) => m_bus.exit(true));
+            m_sys_menu.append(item);
+
+            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.QUIT, null);
+            item.activate.connect((i) => m_bus.exit(false));
             m_sys_menu.append(item);
 
             m_sys_menu.show_all();
