@@ -55,7 +55,7 @@ public int main(string[] args) {
 
     factory.create_engine.connect((factory, name) => {
         const string path = "/org/freedesktop/IBus/engine/simple/%d";
-        IBus.Engine engine = new IBus.Engine.type(
+        IBus.Engine engine = new IBus.Engine.with_type(
             typeof(IBus.EngineSimple), name,
             path.printf(++id), bus.get_connection());
         return engine;
