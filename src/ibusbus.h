@@ -845,7 +845,7 @@ gboolean     ibus_bus_is_global_engine_enabled_async_finish
 /**
  * ibus_bus_get_global_engine:
  * @bus: An #IBusBus.
- * @returns: (transfer floating): The description of current global engine,
+ * @returns: (transfer none): The description of current global engine,
  * or %NULL if there is no global engine.
  *
  * Get the description of current global engine synchronously.
@@ -878,7 +878,7 @@ void         ibus_bus_get_global_engine_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_get_global_engine_async_finish().
  * @error: Return location for error or %NULL.
- * @returns: (transfer floating): The description of current global engine,
+ * @returns: (transfer none): The description of current global engine,
  * or %NULL if there is no global engine.
  *
  * Finishes an operation started with ibus_bus_get_global_engine_async_finish().
