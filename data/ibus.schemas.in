@@ -253,7 +253,7 @@
       <applyto>/desktop/ibus/general/dconf_preserve_name_prefixes</applyto>
       <owner>ibus</owner>
       <type>list</type>
-      <default>[/desktop/ibus/engine/pinyin,/desktop/ibus/engine/hangul]</default>
+      <default>[/desktop/ibus/engine/pinyin,/desktop/ibus/engine/bopomofo,/desktop/ibus/engine/hangul]</default>
       <list_type>string</list_type>
       <locale name="C">
         <short>DConf preserve name prefixes</short>
