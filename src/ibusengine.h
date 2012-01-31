@@ -408,9 +408,9 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
 /**
  * ibus_engine_get_surrounding_text:
  * @engine: An IBusEngine.
- * @text: (allow-none): Location to store surrounding text.
- * @cursor_pos: (allow-none): Cursor position in characters in @text.
- * @anchor_pos: (allow-none): Anchor position of selection in @text.
+ * @text: (out) (transfer none) (allow-none): Location to store surrounding text.
+ * @cursor_pos: (out) (allow-none): Cursor position in characters in @text.
+ * @anchor_pos: (out) (allow-none): Anchor position of selection in @text.
  *
  * Get surrounding text.
  *

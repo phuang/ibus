@@ -127,6 +127,7 @@ struct _IBusFactoryClass {
     /*< private >*/
     IBusServiceClass parent;
 
+    /*< public >*/
     /* signals */
     IBusEngine *
                 (* create_engine)

@@ -165,12 +165,12 @@ BUILT_SOURCES =             \
 if HAVE_INTROSPECTION
 introspection_files =           \
     $(ibus_public_headers)      \
-    $(ibus_c_sources)           \
+    $(ibus_sources)             \
     ibusenumtypes.c             \
     ibusenumtypes.h             \
     $(NULL)
 IBus-1.0.gir: $(libibus) Makefile
-IBus_1_0_gir_SCANNERFLAGS = --pkg=glib-2.0 $(IBUS_GIR_SCANNERFLAGS)
+IBus_1_0_gir_SCANNERFLAGS = --pkg=ibus-1.0 $(IBUS_GIR_SCANNERFLAGS)
 IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0 Gio-2.0
 IBus_1_0_gir_LIBS = $(libibus)
 IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
