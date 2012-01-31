@@ -81,6 +81,7 @@ def gen_xml():
 			<layout>%s</layout>
 			<longname>%s</longname>
 			<description>%s</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>%d</rank>
 		</engine>"""
     footer = u"""\t</engines>

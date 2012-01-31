@@ -16,6 +16,7 @@
 			<layout>us</layout>
 			<longname>English (US)</longname>
 			<description>English (US)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -26,6 +27,7 @@
 			<layout>us(intl)</layout>
 			<longname>English (US, international with dead keys)</longname>
 			<description>English (US, international with dead keys)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -36,6 +38,7 @@
 			<layout>us(colemak)</layout>
 			<longname>English (Colemak)</longname>
 			<description>English (Colemak)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -46,6 +49,7 @@
 			<layout>us(dvorak)</layout>
 			<longname>English (Dvorak)</longname>
 			<description>English (Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -56,6 +60,7 @@
 			<layout>us(altgr-intl)</layout>
 			<longname>English (international AltGr dead keys)</longname>
 			<description>English (international AltGr dead keys)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -66,6 +71,7 @@
 			<layout>us(altgr-intl)</layout>
 			<longname>English (international AltGr dead keys)</longname>
 			<description>English (international AltGr dead keys)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -76,6 +82,7 @@
 			<layout>be</layout>
 			<longname>Belgian</longname>
 			<description>Belgian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -86,6 +93,7 @@
 			<layout>be</layout>
 			<longname>Belgian</longname>
 			<description>Belgian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -96,6 +104,7 @@
 			<layout>be</layout>
 			<longname>Belgian</longname>
 			<description>Belgian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -106,6 +115,7 @@
 			<layout>br</layout>
 			<longname>Portuguese (Brazil)</longname>
 			<description>Portuguese (Brazil)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -116,6 +126,7 @@
 			<layout>bg</layout>
 			<longname>Bulgarian</longname>
 			<description>Bulgarian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -126,6 +137,7 @@
 			<layout>bg(phonetic)</layout>
 			<longname>Bulgarian (traditional phonetic)</longname>
 			<description>Bulgarian (traditional phonetic)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -136,6 +148,7 @@
 			<layout>ca</layout>
 			<longname>French (Canada)</longname>
 			<description>French (Canada)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -146,6 +159,7 @@
 			<layout>ca(eng)</layout>
 			<longname>English (Canada)</longname>
 			<description>English (Canada)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -156,6 +170,7 @@
 			<layout>hr</layout>
 			<longname>Croatian</longname>
 			<description>Croatian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -166,6 +181,7 @@
 			<layout>cz</layout>
 			<longname>Czech</longname>
 			<description>Czech</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -176,6 +192,7 @@
 			<layout>dk</layout>
 			<longname>Danish</longname>
 			<description>Danish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -186,6 +203,7 @@
 			<layout>ee</layout>
 			<longname>Estonian</longname>
 			<description>Estonian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -196,6 +214,7 @@
 			<layout>fi</layout>
 			<longname>Finnish</longname>
 			<description>Finnish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -206,6 +225,7 @@
 			<layout>fr</layout>
 			<longname>French</longname>
 			<description>French</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -216,6 +236,7 @@
 			<layout>de</layout>
 			<longname>German</longname>
 			<description>German</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -226,6 +247,7 @@
 			<layout>de(neo)</layout>
 			<longname>German (Neo 2)</longname>
 			<description>German (Neo 2)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -236,6 +258,7 @@
 			<layout>gr</layout>
 			<longname>Greek</longname>
 			<description>Greek</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -246,6 +269,7 @@
 			<layout>hu</layout>
 			<longname>Hungarian</longname>
 			<description>Hungarian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -256,6 +280,7 @@
 			<layout>il</layout>
 			<longname>Hebrew</longname>
 			<description>Hebrew</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -266,6 +291,7 @@
 			<layout>it</layout>
 			<longname>Italian</longname>
 			<description>Italian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -276,6 +302,7 @@
 			<layout>jp</layout>
 			<longname>Japanese</longname>
 			<description>Japanese</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -286,6 +313,7 @@
 			<layout>latam</layout>
 			<longname>Spanish (Latin American)</longname>
 			<description>Spanish (Latin American)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -296,6 +324,7 @@
 			<layout>lt</layout>
 			<longname>Lithuanian</longname>
 			<description>Lithuanian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -306,6 +335,7 @@
 			<layout>lv(apostrophe)</layout>
 			<longname>Latvian (apostrophe variant)</longname>
 			<description>Latvian (apostrophe variant)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -316,6 +346,7 @@
 			<layout>pl</layout>
 			<longname>Polish</longname>
 			<description>Polish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -326,6 +357,7 @@
 			<layout>pt</layout>
 			<longname>Portuguese</longname>
 			<description>Portuguese</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -336,6 +368,7 @@
 			<layout>ro</layout>
 			<longname>Romanian</longname>
 			<description>Romanian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -346,6 +379,7 @@
 			<layout>ru</layout>
 			<longname>Russian</longname>
 			<description>Russian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -356,6 +390,7 @@
 			<layout>ru(phonetic)</layout>
 			<longname>Russian (phonetic)</longname>
 			<description>Russian (phonetic)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -366,6 +401,7 @@
 			<layout>rs</layout>
 			<longname>Serbian</longname>
 			<description>Serbian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -376,6 +412,7 @@
 			<layout>si</layout>
 			<longname>Slovenian</longname>
 			<description>Slovenian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -386,6 +423,7 @@
 			<layout>sk</layout>
 			<longname>Slovak</longname>
 			<description>Slovak</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -396,6 +434,7 @@
 			<layout>es</layout>
 			<longname>Spanish</longname>
 			<description>Spanish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -406,6 +445,7 @@
 			<layout>es(cat)</layout>
 			<longname>Catalan (Spain, with middle-dot L)</longname>
 			<description>Catalan (Spain, with middle-dot L)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -416,6 +456,7 @@
 			<layout>se</layout>
 			<longname>Swedish</longname>
 			<description>Swedish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -426,6 +467,7 @@
 			<layout>ch</layout>
 			<longname>German (Switzerland)</longname>
 			<description>German (Switzerland)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -436,6 +478,7 @@
 			<layout>ch(fr)</layout>
 			<longname>French (Switzerland)</longname>
 			<description>French (Switzerland)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -446,6 +489,7 @@
 			<layout>tr</layout>
 			<longname>Turkish</longname>
 			<description>Turkish</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -456,6 +500,7 @@
 			<layout>ua</layout>
 			<longname>Ukrainian</longname>
 			<description>Ukrainian</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -466,6 +511,7 @@
 			<layout>gb(extd)</layout>
 			<longname>English (UK, extended WinKeys)</longname>
 			<description>English (UK, extended WinKeys)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -476,6 +522,7 @@
 			<layout>gb(dvorak)</layout>
 			<longname>English (UK, Dvorak)</longname>
 			<description>English (UK, Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
@@ -486,6 +533,7 @@
 			<layout>kr(kr104)</layout>
 			<longname>Korean (101/104 key compatible)</longname>
 			<description>Korean (101/104 key compatible)</description>
+                        <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 	</engines>
