@@ -59,3 +59,4 @@ db/ibus: $(srcdir)/make-dconf-override-db.sh $(gsettings_SCHEMAS)
 	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh $@ || \
 		{ rc=$$?; $(RM) -rf $@; exit $$rc; }
 
+-include $(top_srcdir)/git.mk

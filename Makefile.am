@@ -104,6 +104,15 @@ dist-hook:
 		git log --name-status --date=iso > $(distdir)/ChangeLog ; \
 	fi
 
+distclean-local:
+	if test "x$(srcdir)" = "x."; then :; else \
+		rm -f ChangeLog; \
+	fi
+
+MAINTAINERCLEANFILES = \
+	$(srcdir)/ChangeLog \
+	$(NULL)
+
 rpm: dist @PACKAGE_NAME@.spec
 	rpmbuild -bb \
 			--define "_sourcedir `pwd`" \
@@ -174,5 +183,22 @@ git-tag:
 
 git-clean-tree:
 	git clean -d -f -x
+
+GITIGNOREFILES = \
+	INSTALL \
+	aclocal.m4 \
+	compile \
+	config.guess \
+	config.h.in \
+	config.sub \
+	depcomp \
+	gtk-doc.make \
+	install-sh \
+	ltmain.sh \
+	missing \
+	mkinstalldirs \
+	py-compile \
+	stamp-h* \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk
