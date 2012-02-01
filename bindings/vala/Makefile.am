@@ -26,14 +26,26 @@ dist_vapi_DATA = \
 	ibus-@IBUS_API_VERSION@.deps \
 	$(NULL)
 
-ibus-@IBUS_API_VERSION@.vapi:
-	vapigen --library ibus-@IBUS_API_VERSION@ \
-			--pkg gio-2.0 \
-			--metadata=ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.metadata \
-			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@.gi \
-			ibus-@IBUS_API_VERSION@/ibus-@IBUS_API_VERSION@-custom.vala
+# Don't rebuild vapi every time gir is updated.
+vapi_deps = \
+	$(srcdir)/IBus-1.0.metadata \
+	$(srcdir)/IBus-1.0-custom.vala \
+	| \
+	$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
+	$(NULL)
 
-generate-vala:
-	vala-gen-introspect ibus-@IBUS_API_VERSION@ ibus-@IBUS_API_VERSION@
+ibus-@IBUS_API_VERSION@.vapi: $(vapi_deps)
+	$(AM_V_GEN) $(VAPIGEN) --library ibus-@IBUS_API_VERSION@ \
+			--pkg gio-2.0 \
+			--metadatadir=$(srcdir) \
+			$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
+			$(srcdir)/IBus-1.0-custom.vala
+
+EXTRA_DIST = \
+	IBus-1.0.metadata \
+	IBus-1.0-custom.vala \
+	$(NULL)
+
+MAINTAINERCLEANFILES = ibus-@IBUS_API_VERSION@.vapi
 
 -include $(top_srcdir)/git.mk

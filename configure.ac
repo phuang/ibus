@@ -171,6 +171,9 @@ AC_ARG_ENABLE(vala,
     [enable_vala=$enableval],
     [enable_vala=yes]
 )
+if test x"$enable_vala" = x"yes"; then
+    AC_PATH_PROG([VAPIGEN], [vapigen], [false])
+fi
 AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
 if test x"$enable_vala" != x"yes"; then
     enable_vala="no (disabled, use --enable-vala to enable)"
