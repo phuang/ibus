@@ -303,7 +303,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     }
 
     for (i=0; i< (int) call_data->status_attr_num; ++i, ++sts_attr) {
-        LOG (1, "Unkown status attribute: %s", sts_attr->name);
+        LOG (1, "Unknown status attribute: %s", sts_attr->name);
     }
 
     return attrs;
@@ -774,7 +774,7 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
         LOG (1, "XIM_SYNC_REPLY");
         return 0;
     default:
-        LOG (1, "Unkown (%d)", call_data->major_code);
+        LOG (1, "Unknown (%d)", call_data->major_code);
         return 0;
     }
 }
