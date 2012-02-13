@@ -149,7 +149,7 @@ AM_CONDITIONAL([ENABLE_GTK2], [test x"$enable_gtk2" = x"yes"])
 # --disable-gtk3 option.
 AC_ARG_ENABLE(gtk3,
     AS_HELP_STRING([--disable-gtk3],
-                   [Build gtk3 im module]),
+                   [Do not build gtk3 im module]),
     [enable_gtk3=$enableval],
     [enable_gtk3=yes]
 )
