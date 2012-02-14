@@ -283,7 +283,7 @@ gboolean     ibus_input_context_process_key_event_async_finish
  *
  * Pass the key event to input method engine and wait for the reply from ibus (i.e. synchronous IPC).
  *
- * @see_also: ibus_input_context_process_key_event_async()
+ * See also: ibus_input_context_process_key_event_async()
  */
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
@@ -333,7 +333,7 @@ void         ibus_input_context_set_capabilities
  *
  * Activate the property asynchronously.
  *
- * @see_also: #IBusEngine::property_activate
+ * See also: #IBusEngine::property_activate
  */
 void         ibus_input_context_property_activate
                                             (IBusInputContext *context,

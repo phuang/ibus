@@ -102,9 +102,9 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
 /**
  * ibus_bus_get_connection:
  * @bus: An #IBusBus.
- * @returns: (transfer none): A #GDBusConnection of an #IBusIBus instance.
+ * @returns: (transfer none): A #GDBusConnection of an #IBusBus instance.
  *
- * Return #GDBusConnection of an #IBusIBus instance.
+ * Return #GDBusConnection of an #IBusBus instance.
  */
 GDBusConnection *
              ibus_bus_get_connection    (IBusBus        *bus);
@@ -112,7 +112,7 @@ GDBusConnection *
 /**
  * ibus_bus_hello:
  * @bus: An #IBusBus.
- * @returns: The unique name of #IBus process in DBus.
+ * @returns: The unique name of IBus process in DBus.
  *
  * This function sends a "HELLO" message to DBus daemon,
  * which replies the unique name of current IBus process.

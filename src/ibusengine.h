@@ -158,8 +158,8 @@ GType        ibus_engine_get_type       (void);
 
 /**
  * ibus_engine_new:
- * @name: Name of the IBusObject.
- * @path: Path for IBusService.
+ * @engine_name: Name of the IBusObject.
+ * @object_path: Path for IBusService.
  * @connection: An opened GDBusConnection.
  * @returns: A newly allocated IBusEngine.
  *

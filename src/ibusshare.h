@@ -188,7 +188,7 @@ void             ibus_set_display       (const gchar    *display);
  *    <listitem><para>Socket file under ~/.config/ibus/bus/</para></listitem>
  * </orderedlist>
  *
- * @see_also: ibus_write_address().
+ * See also: ibus_write_address().
  */
 const gchar     *ibus_get_address       (void);
 
@@ -198,7 +198,7 @@ const gchar     *ibus_get_address       (void);
  *
  * Write D-Bus address to socket file.
  *
- * @see_also: ibus_get_address().
+ * See also: ibus_get_address().
  */
 void             ibus_write_address     (const gchar    *address);
 
@@ -302,7 +302,7 @@ void             ibus_init              (void);
  *
  * Runs an IBus main loop until ibus_quit() is called in the loop.
  *
- * @see_also: ibus_quit().
+ * See also: ibus_quit().
  */
 void             ibus_main              (void);
 
@@ -312,7 +312,7 @@ void             ibus_main              (void);
  * Stops an IBus from running.
  *
  * Any calls to ibus_quit() for the loop will return.
- * @see_also: ibus_main().
+ * See also: ibus_main().
  */
 void             ibus_quit              (void);
 
@@ -325,7 +325,7 @@ void             ibus_quit              (void);
  *
  * (ibus-daemon:7088): IBUS-DEBUG: 18:06:45.822819: ibus-daemon started
  *
- * If @verbose is TRUE, all levels of messages will be logged. Otherwise,
+ * If @verbose is %TRUE, all levels of messages will be logged. Otherwise,
  * DEBUG and WARNING messages will be ignored.  The function is used in
  * ibus-daemon, but can be useful for IBus client programs as well for
  * debugging. It's totally fine for not calling this function. If you
