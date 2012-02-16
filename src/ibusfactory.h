@@ -168,6 +168,17 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
                                                  const gchar    *engine_name,
                                                  GType           engine_type);
 
+/**
+ * ibus_factory_create_engine:
+ * @factory: An #IBusFactory.
+ * @engine_name: Name of an engine.
+ * @returns: (transfer full): #IBusEngine with @engine_name.
+ *
+ * Create an #IBusEngine with @engine_name.
+ */
+IBusEngine      *ibus_factory_create_engine     (IBusFactory    *factory,
+                                                 const gchar    *engine_name);
+
 G_END_DECLS
 #endif
 

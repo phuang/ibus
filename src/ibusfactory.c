@@ -100,8 +100,8 @@ static const gchar introspection_xml[] =
     "</node>";
 
 static IBusEngine *
-_ibus_factory_create_engine (IBusFactory    *factory,
-                             const gchar    *engine_name)
+ibus_factory_real_create_engine (IBusFactory    *factory,
+                                 const gchar    *engine_name)
 {
     GType engine_type;
     gchar *object_path = NULL;
@@ -154,7 +154,7 @@ ibus_factory_class_init (IBusFactoryClass *class)
     IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_factory_service_method_call;
     IBUS_SERVICE_CLASS (class)->service_get_property = ibus_factory_service_get_property;
     IBUS_SERVICE_CLASS (class)->service_set_property = ibus_factory_service_set_property;
-    class->create_engine = _ibus_factory_create_engine;
+    class->create_engine = ibus_factory_real_create_engine;
 
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 
@@ -371,4 +371,18 @@ ibus_factory_add_engine (IBusFactory *factory,
     g_return_if_fail (g_type_is_a (engine_type, IBUS_TYPE_ENGINE));
 
     g_hash_table_insert (factory->priv->engine_table, g_strdup (engine_name), (gpointer) engine_type);
+}
+
+IBusEngine *
+ibus_factory_create_engine (IBusFactory    *factory,
+                            const gchar    *engine_name)
+{
+    IBusEngine *engine = NULL;
+
+    g_assert (engine_name != NULL);
+
+    g_signal_emit (factory, factory_signals[CREATE_ENGINE],
+                   0, engine_name, &engine);
+
+    return engine;
 }

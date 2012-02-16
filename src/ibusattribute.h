@@ -130,7 +130,7 @@ GType                ibus_attribute_get_type    ();
  * @value: Value of the attribute.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: A newly allocated IBusAttribute.
+ * @returns: (transfer none): A newly allocated IBusAttribute.
  *
  * New an IBusAttribute.
  */
@@ -182,7 +182,7 @@ guint                ibus_attribute_get_end_index
  * @underline_type: Type of underline.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: A newly allocated #IBusAttribute.
+ * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
  * New an underline #IBusAttribute.
  */
@@ -194,7 +194,7 @@ IBusAttribute       *ibus_attr_underline_new    (guint           underline_type,
  * @color: Color in RGB.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: A newly allocated #IBusAttribute.
+ * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
  * New an foreground #IBusAttribute.
  */
@@ -206,7 +206,7 @@ IBusAttribute       *ibus_attr_foreground_new   (guint           color,
  * @color: Color in RGB.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: A newly allocated #IBusAttribute.
+ * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
  * New an background #IBusAttribute.
  */
