@@ -334,5 +334,12 @@ void             ibus_quit              (void);
  */
 void             ibus_set_log_handler   (gboolean verbose);
 
+/**
+ * ibus_unset_log_handler:
+ *
+ * Remove the log handler which is set by ibus_set_log_handler.
+ */
+void             ibus_unset_log_handler (void);
+
 G_END_DECLS
 #endif

@@ -354,6 +354,7 @@ ibus_quit (void)
 }
 
 static gboolean ibus_log_handler_is_verbose = FALSE;
+static guint ibus_log_handler_id = 0;
 
 static void
 ibus_log_handler (const gchar    *log_domain,
@@ -387,6 +388,22 @@ ibus_log_handler (const gchar    *log_domain,
 void
 ibus_set_log_handler (gboolean verbose)
 {
+    if (ibus_log_handler_id != 0) {
+        g_log_remove_handler (G_LOG_DOMAIN, ibus_log_handler_id);
+    }
+
     ibus_log_handler_is_verbose = verbose;
-    g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MASK, ibus_log_handler, NULL);
+    ibus_log_handler_id = g_log_set_handler (G_LOG_DOMAIN,
+                                             G_LOG_LEVEL_MASK,
+                                             ibus_log_handler,
+                                             NULL);
+}
+
+void
+ibus_unset_log_handler (void)
+{
+    if (ibus_log_handler_id != 0) {
+        g_log_remove_handler (G_LOG_DOMAIN, ibus_log_handler_id);
+        ibus_log_handler_id = 0;
+    }
 }
