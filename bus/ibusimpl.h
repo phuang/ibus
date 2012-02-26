@@ -50,8 +50,6 @@
 
 #define BUS_DEFAULT_IBUS \
     (bus_ibus_impl_get_default ())
-#define BUS_DEFAULT_HOTKEY_PROFILE \
-    (bus_ibus_impl_get_hotkey_profile (BUS_DEFAULT_IBUS))
 #define BUS_DEFAULT_KEYMAP \
     (bus_ibus_impl_get_keymap (BUS_DEFAULT_IBUS))
 #define BUS_DEFAULT_REGISTRY \
@@ -72,26 +70,10 @@ GType            bus_ibus_impl_get_type             (void);
  */
 BusIBusImpl     *bus_ibus_impl_get_default          (void);
 
-/**
- * bus_ibus_impl_filter_keyboard_shortcuts:
- * @returns: TRUE if the key is consumed by ibus-daemon.
- *
- * Check if the keyval and modifiers match one of the global or engine-specific hot keys. If the key is a hot key, update the state of
- * ibus-daemon (e.g. switch to the next engine.)
- */
-gboolean         bus_ibus_impl_filter_keyboard_shortcuts
-                                                    (BusIBusImpl        *ibus,
-                                                     BusInputContext    *context,
-                                                     guint               keyval,
-                                                     guint               modifiers,
-                                                     guint               prev_keyval,
-                                                     guint               prev_modifiers);
 
 /* accessors */
 BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,
                                                      const gchar        *path);
-IBusHotkeyProfile
-                *bus_ibus_impl_get_hotkey_profile   (BusIBusImpl        *ibus);
 IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
 BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
 gboolean         bus_ibus_impl_is_use_sys_layout    (BusIBusImpl        *ibus);

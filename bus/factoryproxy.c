@@ -20,10 +20,11 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "factoryproxy.h"
-#include "types.h"
-#include "marshalers.h"
+
 #include "dbusimpl.h"
-#include "option.h"
+#include "global.h"
+#include "marshalers.h"
+#include "types.h"
 
 struct _BusFactoryProxy {
     IBusProxy parent;

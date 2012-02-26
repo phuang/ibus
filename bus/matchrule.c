@@ -19,9 +19,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #include "matchrule.h"
-#include "dbusimpl.h"
+
 #include <string.h>
+
+#include "dbusimpl.h"
 
 typedef enum {
     MATCH_TYPE          = 1 << 0,
@@ -159,7 +162,7 @@ typedef struct _Token {
 } Token;
 
 #define SKIP_WHITE(a)   \
-    while (*(a) == ' ' || *(a) == '\t') { (a)++; }
+    while (*(a) == ' ' || *(a) == '\t' || *(a) == '\n') { (a)++; }
 #define IS_ALPHA(a) \
     ((*(a) >= 'a' && *(a) <= 'z') || (*(a) >= 'A' && *(a) <= 'Z'))
 #define IS_NUMBER(a) \
@@ -269,7 +272,6 @@ tokenize_rule (const gchar *text)
     return (Token *)g_array_free (tokens, FALSE);
 
 failed:
-
     for (i = 0; i < tokens->len; i++) {
         Token *p = &g_array_index (tokens, Token, i);
         g_free (p->key);
@@ -320,6 +322,9 @@ bus_match_rule_new (const gchar *text)
 
     /* parse rule */
     tokens = tokenize_rule (text);
+
+    if (tokens == NULL)
+        goto failed;
 
     for (p = tokens; p != NULL && p->key != 0; p++) {
         if (g_strcmp0 (p->key, "type") == 0) {

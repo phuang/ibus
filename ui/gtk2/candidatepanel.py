@@ -202,7 +202,6 @@ class CandidatePanel(gtk.VBox):
             gdk.BUTTON_PRESS_MASK | \
             gdk.BUTTON_RELEASE_MASK | \
             gdk.BUTTON1_MOTION_MASK)
-        self.__begin_move = False
         self.__toplevel.connect("size-allocate", lambda w, a: self.__check_position())
 
         self.__orientation = ibus.ORIENTATION_VERTICAL

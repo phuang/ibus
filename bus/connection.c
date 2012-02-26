@@ -101,8 +101,7 @@ bus_connection_destroy (BusConnection *connection)
         connection->unique_name = NULL;
     }
 
-    g_list_foreach (connection->names, (GFunc) g_free, NULL);
-    g_list_free (connection->names);
+    g_list_free_full (connection->names, g_free);
     connection->names = NULL;
 
     IBUS_OBJECT_CLASS(bus_connection_parent_class)->destroy (IBUS_OBJECT (connection));

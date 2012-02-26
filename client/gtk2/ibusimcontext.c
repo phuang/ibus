@@ -47,8 +47,6 @@ struct _IBusIMContext {
     GtkIMContext *slave;
     GdkWindow *client_window;
 
-    /* enabled */
-    gboolean        enable;
     IBusInputContext *ibuscontext;
 
     /* preedit status */
@@ -271,7 +269,7 @@ _process_key_event_done (GObject      *object,
 static void
 _request_surrounding_text (IBusIMContext *context)
 {
-    if (context && context->enable &&
+    if (context &&
         (context->caps & IBUS_CAP_SURROUNDING_TEXT) != 0 &&
         context->ibuscontext != NULL &&
         ibus_input_context_needs_surrounding_text (context->ibuscontext)) {
@@ -566,9 +564,6 @@ ibus_im_context_init (GObject *obj)
 
     ibusimcontext->client_window = NULL;
 
-    // Init ibus status
-    ibusimcontext->enable = FALSE;
-
     // Init preedit status
     ibusimcontext->preedit_string = NULL;
     ibusimcontext->preedit_attrs = NULL;
@@ -840,36 +835,31 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibusimcontext->enable) {
-        if (ibusimcontext->preedit_visible) {
-            if (str) {
-                *str = g_strdup (ibusimcontext->preedit_string ? ibusimcontext->preedit_string: "");
-            }
-
-            if (attrs) {
-                *attrs = ibusimcontext->preedit_attrs ?
-                            pango_attr_list_ref (ibusimcontext->preedit_attrs):
-                            pango_attr_list_new ();
-            }
-
-            if (cursor_pos) {
-                *cursor_pos = ibusimcontext->preedit_cursor_pos;
-            }
+    if (ibusimcontext->preedit_visible) {
+        if (str) {
+            *str = g_strdup (ibusimcontext->preedit_string ? ibusimcontext->preedit_string: "");
         }
-        else {
-            if (str) {
-                *str = g_strdup ("");
-            }
-            if (attrs) {
-                *attrs = pango_attr_list_new ();
-            }
-            if (cursor_pos) {
-                *cursor_pos = 0;
-            }
+
+        if (attrs) {
+            *attrs = ibusimcontext->preedit_attrs ?
+                        pango_attr_list_ref (ibusimcontext->preedit_attrs):
+                        pango_attr_list_new ();
+        }
+
+        if (cursor_pos) {
+            *cursor_pos = ibusimcontext->preedit_cursor_pos;
         }
     }
     else {
-        gtk_im_context_get_preedit_string (ibusimcontext->slave, str, attrs, cursor_pos);
+        if (str) {
+            *str = g_strdup ("");
+        }
+        if (attrs) {
+            *attrs = pango_attr_list_new ();
+        }
+        if (cursor_pos) {
+            *cursor_pos = 0;
+        }
     }
     IDEBUG ("str=%s", *str);
 }
@@ -1040,7 +1030,7 @@ ibus_im_context_set_surrounding (GtkIMContext  *context,
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         IBusText *ibustext;
         guint cursor_pos;
         guint utf8_len;
@@ -1400,36 +1390,6 @@ _ibus_context_hide_preedit_text_cb (IBusInputContext *ibuscontext,
 }
 
 static void
-_ibus_context_enabled_cb (IBusInputContext *ibuscontext,
-                          IBusIMContext    *ibusimcontext)
-{
-    IDEBUG ("%s", __FUNCTION__);
-
-    ibusimcontext->enable = TRUE;
-
-    /* retrieve the initial surrounding-text (regardless of whether
-     * the current IBus engine needs surrounding-text) */
-    _request_surrounding_text (ibusimcontext);
-}
-
-static void
-_ibus_context_disabled_cb (IBusInputContext *ibuscontext,
-                           IBusIMContext    *ibusimcontext)
-{
-    IDEBUG ("%s", __FUNCTION__);
-    ibusimcontext->enable = FALSE;
-
-    /* clear preedit */
-    ibusimcontext->preedit_visible = FALSE;
-    ibusimcontext->preedit_cursor_pos = 0;
-    g_free (ibusimcontext->preedit_string);
-    ibusimcontext->preedit_string = NULL;
-
-    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
-}
-
-static void
 _ibus_context_destroy_cb (IBusInputContext *ibuscontext,
                           IBusIMContext    *ibusimcontext)
 {
@@ -1438,8 +1398,6 @@ _ibus_context_destroy_cb (IBusInputContext *ibuscontext,
 
     g_object_unref (ibusimcontext->ibuscontext);
     ibusimcontext->ibuscontext = NULL;
-
-    ibusimcontext->enable = FALSE;
 
     /* clear preedit */
     ibusimcontext->preedit_visible = FALSE;
@@ -1497,14 +1455,6 @@ _create_input_context_done (IBusBus       *bus,
                           "hide-preedit-text",
                           G_CALLBACK (_ibus_context_hide_preedit_text_cb),
                           ibusimcontext);
-        g_signal_connect (ibusimcontext->ibuscontext,
-                          "enabled",
-                          G_CALLBACK (_ibus_context_enabled_cb),
-                          ibusimcontext);
-        g_signal_connect (ibusimcontext->ibuscontext,
-                          "disabled",
-                          G_CALLBACK (_ibus_context_disabled_cb),
-                          ibusimcontext);
         g_signal_connect (ibusimcontext->ibuscontext, "destroy",
                           G_CALLBACK (_ibus_context_destroy_cb),
                           ibusimcontext);
@@ -1549,10 +1499,6 @@ _slave_commit_cb (GtkIMContext  *slave,
                   gchar         *string,
                   IBusIMContext *ibusimcontext)
 {
-#if 0
-    if ((GtkIMContext *)context == CURRENT_CONTEXT && ibus_im_client_is_enabled (_client))
-        return;
-#endif
     g_signal_emit (ibusimcontext, _signal_commit_id, 0, string);
 }
 
@@ -1560,7 +1506,7 @@ static void
 _slave_preedit_changed_cb (GtkIMContext  *slave,
                            IBusIMContext *ibusimcontext)
 {
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         return;
     }
 
@@ -1571,7 +1517,7 @@ static void
 _slave_preedit_start_cb (GtkIMContext  *slave,
                          IBusIMContext *ibusimcontext)
 {
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         return;
     }
 
@@ -1582,7 +1528,7 @@ static void
 _slave_preedit_end_cb (GtkIMContext  *slave,
                        IBusIMContext *ibusimcontext)
 {
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         return;
     }
     g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
@@ -1594,7 +1540,7 @@ _slave_retrieve_surrounding_cb (GtkIMContext  *slave,
 {
     gboolean return_value;
 
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_retrieve_surrounding_id, 0,
@@ -1610,7 +1556,7 @@ _slave_delete_surrounding_cb (GtkIMContext  *slave,
 {
     gboolean return_value;
 
-    if (ibusimcontext->enable && ibusimcontext->ibuscontext) {
+    if (ibusimcontext->ibuscontext) {
         return FALSE;
     }
     g_signal_emit (ibusimcontext, _signal_delete_surrounding_id, 0, offset_from_cursor, nchars, &return_value);

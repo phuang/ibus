@@ -164,7 +164,7 @@ ibus_factory_class_init (IBusFactoryClass *class)
      * IBusFactory::create-engine:
      * @factory: the factory which received the signal
      * @engine_name: the engine_name which received the signal
-     * @returns: (transfer none): An IBusEngine
+     * @returns: (transfer full): An IBusEngine
      *
      * The ::create-engine signal is a signal to create IBusEngine
      * with @engine_name, which gets emitted when IBusFactory
@@ -201,9 +201,8 @@ ibus_factory_destroy (IBusFactory *factory)
     GList *list;
 
     list = g_list_copy (factory->priv->engine_list);
-    g_list_foreach (list, (GFunc) ibus_object_destroy, NULL);
-    g_list_free (factory->priv->engine_list);
-    g_list_free (list);
+    g_list_free_full (list, (GDestroyNotify)ibus_object_destroy);
+    g_list_free(factory->priv->engine_list);
     factory->priv->engine_list = NULL;
 
     if (factory->priv->engine_table) {

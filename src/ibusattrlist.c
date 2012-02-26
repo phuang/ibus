@@ -110,7 +110,8 @@ ibus_attr_list_deserialize (IBusAttrList    *attr_list,
     g_variant_get_child (variant, retval++, "av", &iter);
     GVariant *var;
     while (g_variant_iter_loop (iter, "v", &var)) {
-        ibus_attr_list_append (attr_list, IBUS_ATTRIBUTE (ibus_serializable_deserialize (var)));
+        IBusAttribute *attr = IBUS_ATTRIBUTE (ibus_serializable_deserialize (var));
+        ibus_attr_list_append (attr_list, attr);
     }
     g_variant_iter_free (iter);
 

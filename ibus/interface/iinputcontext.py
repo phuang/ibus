@@ -61,15 +61,6 @@ class IInputContext(dbus.service.Object):
     @method()
     def Reset(self): pass
 
-    @method()
-    def Enable(self): pass
-
-    @method()
-    def Disable(self): pass
-
-    @method(out_signature="b")
-    def IsEnabled(self): pass
-
     @method(in_signature="u")
     def SetCapabilities(self, caps): pass
 
@@ -85,12 +76,6 @@ class IInputContext(dbus.service.Object):
     #sigals
     @signal(signature="v")
     def CommitText(self, text): pass
-
-    @signal()
-    def Enabled(self): pass
-
-    @signal()
-    def Disabled(self): pass
 
     @signal(signature="uuu")
     def ForwardKeyEvent(self, keyval, keycode, state): pass

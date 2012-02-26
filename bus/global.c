@@ -1,8 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
-/* bus - The Input Bus
+/* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
  * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (c) 2012 Google, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -11,7 +12,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.     See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
@@ -19,17 +20,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#ifndef __BUS_OPTION_H_
-#define __BUS_OPTION_H_
 
-G_BEGIN_DECLS
+#include "global.h"
 
-extern gchar *g_cache;
-extern gboolean g_mempro;
-extern gboolean g_verbose;
-extern gint   g_gdbus_timeout;
-extern gchar *g_address;
-
-G_END_DECLS
+gchar **g_argv = NULL;
+gchar *g_address = "unix:tmpdir=/tmp";
+gchar *g_cache = "auto";
+gboolean g_mempro = FALSE;
+gboolean g_verbose = FALSE;
+gint   g_gdbus_timeout = 5000;
+#ifdef G_THREADS_ENABLED
+gint   g_monitor_timeout = 0;
 #endif
 

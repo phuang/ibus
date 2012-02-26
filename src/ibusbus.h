@@ -711,6 +711,19 @@ GList       *ibus_bus_list_active_engines_async_finish
                                          GError         **error);
 
 /**
+ * ibus_bus_get_engines_by_names:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of names.
+ * @returns: (array zero-terminated=1) (transfer full): A %NULL-terminated array of engines.
+ *
+ * Get engines by given names synchronously.
+ * TODO(penghuang): add asynchronous version
+ */
+IBusEngineDesc **
+             ibus_bus_get_engines_by_names
+                                        (IBusBus             *bus,
+                                         const gchar * const *names);
+/**
  * ibus_bus_get_use_sys_layout:
  * @bus: An #IBusBus.
  * @returns: %TRUE if "use_sys_layout" option is enabled.

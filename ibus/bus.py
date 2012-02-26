@@ -137,6 +137,10 @@ class Bus(object.Object):
     def list_engines(self):
         engines = self.__ibus.ListEngines()
         return map(serializable.deserialize_object, engines)
+    
+    def get_engines_by_names(self, names):
+        engines = self.__ibus.GetEnginesByNames(names)
+        return map(serializable.deserialize_object, engines)
 
     def list_active_engines(self):
         engines = self.__ibus.ListActiveEngines()

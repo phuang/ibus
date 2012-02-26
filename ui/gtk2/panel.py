@@ -220,7 +220,7 @@ class Panel(ibus.PanelBase):
     def focus_in(self, ic):
         self.reset()
         self.__focus_ic = ibus.InputContext(self.__bus, ic)
-        enabled = self.__focus_ic.is_enabled()
+        enabled = True or self.__focus_ic.is_enabled()
         self.__language_bar.set_enabled(enabled)
 
         if not enabled:
@@ -414,7 +414,11 @@ class Panel(ibus.PanelBase):
     #     return menu
 
     def __create_im_menu(self):
-        engines = self.__bus.list_active_engines()
+        # FIXME
+        # engines = self.__bus.list_engines()
+        names = self.__config.get_value("general", "preload_engines",
+                ["xkb:us::eng", "xkb:us:intl:eng", "pinyin"])
+        engines = self.__bus.get_engines_by_names(names)
         current_engine = \
             (self.__focus_ic != None and self.__focus_ic.get_engine()) or \
             (engines and engines[0]) or \
@@ -439,7 +443,7 @@ class Panel(ibus.PanelBase):
         item = gtk.ImageMenuItem(_("Turn off input method"))
         item.set_image(_icon.IconWidget("gtk-close", size[0]))
         item.connect("activate", self.__im_menu_item_activate_cb, None)
-        if self.__focus_ic == None or not self.__focus_ic.is_enabled():
+        if self.__focus_ic == None:
             item.set_sensitive(False)
         menu.add(item)
 

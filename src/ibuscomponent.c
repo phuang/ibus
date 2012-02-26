@@ -259,8 +259,7 @@ ibus_component_destroy (IBusComponent *component)
     component->priv->exec = NULL;
     component->priv->textdomain = NULL;
 
-    g_list_foreach (component->priv->observed_paths, (GFunc)g_object_unref, NULL);
-    g_list_free (component->priv->observed_paths);
+    g_list_free_full (component->priv->observed_paths, g_object_unref);
     component->priv->observed_paths = NULL;
 
     for (p = component->priv->engines; p != NULL; p = p->next) {

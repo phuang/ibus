@@ -22,11 +22,11 @@
 
 
 # If ibus_released is 0, append datestamp to the version number.
-m4_define([ibus_released], [1])
+m4_define([ibus_released], [0])
 
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [4])
-m4_define([ibus_micro_version], [1])
+m4_define([ibus_micro_version], [99])
 m4_define([ibus_interface_age], [0])
 m4_define([ibus_binary_age],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
@@ -105,6 +105,7 @@ AC_SUBST(DATE_DISPLAY)
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
+AM_PROG_VALAC([0.14])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -308,19 +309,28 @@ AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
 
-AC_ARG_ENABLE(python,
-    AS_HELP_STRING([--disable-python],
-                   [Do not use Python code]),
-    [enable_python=$enableval],
-    [enable_python=yes]
+AC_ARG_ENABLE(python-library,
+    AS_HELP_STRING([--enable-python-library],
+                   [Use ibus python library]),
+    [enable_python_library=$enableval],
+    [enable_python_library=no]
 )
 
-AM_CONDITIONAL([ENABLE_PYTHON], [test x"$enable_python" = x"yes"])
+AC_ARG_ENABLE(setup,
+    AS_HELP_STRING([--disable-setup],
+                   [Do not use setup ui.]),
+    [enable_setup=$enableval],
+    [enable_setup=yes]
+)
+
+AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"])
+AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
-if test x"$enable_python" = x"yes"; then
+AM_PATH_PYTHON([2.5])
+
+if test x"$enable_python_library" = x"yes"; then
     # Check python.
-    AM_PATH_PYTHON([2.5])
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
     if test x"$PYTHON_CONFIG" = x""; then
         AC_PATH_PROG(PYTHON_CONFIG, python-config)
@@ -337,7 +347,7 @@ if test x"$enable_python" = x"yes"; then
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
 else
-    enable_python="no (disabled, use --enable-python to enable)"
+    enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
 
 # Define gtk2 immodule dir.
@@ -419,12 +429,12 @@ AC_ARG_WITH(panel-icon-keyboard,
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
-# --enable-surrounding-text option.
+# --disable-surrounding-text option.
 AC_ARG_ENABLE(surrounding-text,
-    AS_HELP_STRING([--enable-surrounding-text],
+    AS_HELP_STRING([--disable-surrounding-text],
         [Enable surrounding-text support]),
     [enable_surrounding_text=$enableval],
-    [enable_surrounding_text=no]
+    [enable_surrounding_text=yes]
 )
 if test x"$enable_surrounding_text" = x"yes"; then
     AC_DEFINE(ENABLE_SURROUNDING, TRUE, [Enable surrounding-text support])
@@ -444,9 +454,6 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-1.0.pc
 ibus.spec
-xinput-ibus
-memconf/Makefile
-memconf/memconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
@@ -455,6 +462,8 @@ src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
+engine/Makefile
+engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
@@ -470,17 +479,20 @@ ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
-ui/gtk/Makefile
-ui/gtk/ibus-ui-gtk
-ui/gtk/gtkpanel.xml.in
+ui/gtk3/Makefile
+ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
-gconf/Makefile
-gconf/gconf.xml.in
 bindings/Makefile
 bindings/vala/Makefile
-dconf/Makefile
-dconf/dconf.xml.in
+conf/Makefile
+conf/gconf/Makefile
+conf/gconf/gconf.xml.in
+conf/dconf/Makefile
+conf/dconf/dconf.xml.in
+conf/memconf/Makefile
+conf/memconf/memconf.xml.in
+tools/Makefile
 ])
 
 AC_OUTPUT
@@ -496,7 +508,7 @@ Build options:
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
-  Build python modules      $enable_python
+  Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
   Build dconf modules       $enable_dconf

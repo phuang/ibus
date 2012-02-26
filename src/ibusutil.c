@@ -34,6 +34,9 @@
 #include <libintl.h>
 #endif
 
+/* gettext macro */
+#define N_(t) t
+
 static GHashTable *__languages_dict;
 
 static gboolean
@@ -57,30 +60,28 @@ _iso_codes_parse_xml_node (XMLNode          *node)
             { "iso_639_2B_code", NULL },
             { "iso_639_2T_code", NULL },
             { "iso_639_1_code", NULL },
-            { NULL, NULL },
         };
-
 
         if (sub_node->attributes == NULL) {
             continue;
         }
+
         attributes = sub_node->attributes;
-        for (i = 0; attributes[i]; i+=2) {
+        for (i = 0; attributes[i]; i += 2) {
             if (g_strcmp0 (attributes[i], "name") == 0) {
-                for (j = 0; entries[j].key; j++) {
-                    if (entries[j].value == NULL) {
+                for (j = 0; j < G_N_ELEMENTS (entries); j++) {
+                    if (entries[j].value == NULL)
                         continue;
-                    }
                     g_hash_table_insert (__languages_dict,
-                                         (gpointer) entries[j].value,
+                                         (gpointer) g_strdup (entries[j].value),
                                          (gpointer) g_strdup (attributes[i + 1]));
                     entries[j].value = NULL;
                 }
             } else {
-                for (j = 0; entries[j].key; j++) {
+                for (j = 0; j < G_N_ELEMENTS (entries); j++) {
                     if (g_strcmp0 (attributes[i], entries[j].key) == 0 &&
                         attributes[i + 1] != NULL) {
-                        entries[j].value = g_strdup (attributes[i + 1]);
+                        entries[j].value = attributes[i + 1];
                     }
                 }
             }
@@ -97,7 +98,8 @@ _load_lang()
     XMLNode *node;
     struct stat buf;
 
-    __languages_dict = g_hash_table_new (g_str_hash, (GEqualFunc) g_str_equal);
+    __languages_dict = g_hash_table_new_full (g_str_hash,
+            g_str_equal, g_free, g_free);
     filename = g_build_filename (ISOCODES_PREFIX,
                                  "share/xml/iso-codes/iso_639.xml",
                                  NULL);
@@ -143,5 +145,11 @@ ibus_get_language_name(const gchar *_locale) {
         return retval;
 #endif
     }
-    return retval;
+    else {
+#ifdef ENABLE_NLS
+        return dgettext("iso_639", N_("Other"));
+#else
+        return N_("Other");
+#endif
+    }
 }

@@ -22,52 +22,38 @@
 
 NULL =
 
-if ENABLE_PYTHON
-PYTHON_DIRS =       \
-	ibus            \
-	ui              \
-	setup           \
-	$(NULL)
+UI_DIR = ui
+
+if ENABLE_SETUP
+SETUP_DIR = setup
 endif
 
-if ENABLE_GCONF
-GCONF_DIRS =        \
-	gconf           \
-	$(NULL)
+if ENABLE_PYTHON_LIBRARY
+PYTHON_LIB_DIRS = ibus
 endif
 
 if ENABLE_DAEMON
-DAEMON_DIRS =       \
-	bus             \
+DAEMON_DIR = \
+	bus \
 	$(NULL)
 endif
 
-if ENABLE_MEMCONF
-MEMCONF_DIRS = \
-	memconf \
-	$(NULL)
-endif
-
-if ENABLE_DCONF
-DCONF_DIRS = \
-	dconf \
-	$(NULL)
-endif
-
-SUBDIRS =           \
-	src             \
-	util            \
-	client          \
-	data            \
-	m4              \
-	po              \
-	docs            \
-	bindings        \
-	$(DAEMON_DIRS)  \
-	$(PYTHON_DIRS)  \
-	$(GCONF_DIRS)   \
-	$(MEMCONF_DIRS) \
-	$(DCONF_DIRS)   \
+SUBDIRS = \
+	src \
+	util \
+	conf \
+	client \
+	engine \
+	tools \
+	data \
+	m4 \
+	po \
+	docs \
+	bindings \
+	$(UI_DIR) \
+	$(DAEMON_DIR) \
+	$(PYTHON_LIB_DIRS) \
+	$(SETUP_DIR) \
 	$(NULL)
 
 ACLOCAL_AMFLAGS = -I m4
@@ -81,6 +67,7 @@ EXTRA_DIST = \
 	$(ibus_pc_in) \
 	ibus.spec.in \
 	python-config.py \
+	xinput-ibus \
 	$(NULL)
 
 noinst_DIST = \

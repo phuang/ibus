@@ -19,11 +19,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
 #include "engineproxy.h"
-#include "types.h"
-#include "marshalers.h"
+
+#include "global.h"
 #include "ibusimpl.h"
-#include "option.h"
+#include "marshalers.h"
+#include "types.h"
 
 struct _BusEngineProxy {
     IBusProxy parent;
@@ -908,7 +910,7 @@ bus_engine_proxy_process_key_event (BusEngineProxy      *engine,
             keymap = BUS_DEFAULT_KEYMAP;
         if (keymap != NULL) {
             guint t = ibus_keymap_lookup_keysym (keymap, keycode, state);
-            if (t != IBUS_VoidSymbol) {
+            if (t != IBUS_KEY_VoidSymbol) {
                 keyval = t;
             }
         }

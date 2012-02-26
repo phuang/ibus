@@ -23,6 +23,7 @@
 #define __BUS_INPUT_CONTEXT_H_
 
 #include <ibus.h>
+
 #include "connection.h"
 #include "factoryproxy.h"
 
@@ -90,12 +91,6 @@ void                 bus_input_context_enable           (BusInputContext    *con
  * of the engine for the context, and then emit glib and D-Bus "enabled" signals.
  */
 void                 bus_input_context_disable          (BusInputContext    *context);
-
-/**
- * bus_input_context_is_enabled:
- * @returns: context->enabled.
- */
-gboolean             bus_input_context_is_enabled       (BusInputContext    *context);
 
 /**
  * bus_input_context_page_up:

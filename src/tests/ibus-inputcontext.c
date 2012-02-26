@@ -56,10 +56,6 @@ call_basic_ipcs (IBusInputContext *context)
     ibus_input_context_set_capabilities (context, IBUS_CAP_FOCUS);
     ibus_input_context_property_activate (context, "dummy.prop.name", PROP_STATE_CHECKED);
     ibus_input_context_reset (context);
-    ibus_input_context_disable (context);
-    /* g_assert (ibus_input_context_is_enabled (context) == FALSE); */ /* see below. */
-    ibus_input_context_enable (context);
-    /* g_assert (ibus_input_context_is_enabled (context) == TRUE); */ /* see below. */
 
     /* When enable() is called, ibus-daemon may start a global (or preloaded,
      * or default) engine in an asynchrnous manner and return immediately.
@@ -117,31 +113,6 @@ test_input_context (void)
     g_free (active_engine_name);
     g_list_foreach (engines, (GFunc) g_object_unref, NULL);
     g_list_free (engines);
-}
-
-static void
-finish_is_enabled_async (GObject *source_object,
-                         GAsyncResult *res,
-                         gpointer user_data)
-{
-    IBusInputContext *context = IBUS_INPUT_CONTEXT (source_object);
-    GError *error = NULL;
-    gboolean result = ibus_input_context_is_enabled_async_finish (context,
-                                                                  res,
-                                                                  &error);
-    g_assert (result);
-    g_debug ("ibus_context_is_enabled_async_finish: OK");
-    call_next_async_function (context);
-}
-
-static void
-start_is_enabled_async (IBusInputContext *context)
-{
-    ibus_input_context_is_enabled_async (context,
-                                         -1, /* timeout */
-                                         NULL, /* cancellable */
-                                         finish_is_enabled_async,
-                                         NULL); /* user_data */
 }
 
 static void
@@ -220,7 +191,6 @@ static void
 call_next_async_function (IBusInputContext *context)
 {
     static void (*async_functions[])(IBusInputContext *) = {
-        start_is_enabled_async,
         start_get_engine_async,
         start_process_key_event_async,
     };
