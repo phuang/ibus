@@ -65,7 +65,8 @@ class Switcher : Gtk.Window {
         if (device == null) {
             var display = get_display();
             var device_manager = display.get_device_manager();
-            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
+            unowned GLib.List<Gdk.Device> devices = device_manager.list_devices(Gdk.DeviceType.MASTER);
+            device = devices.data;
         }
 
         Gdk.Device keyboard;
