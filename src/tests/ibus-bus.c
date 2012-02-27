@@ -539,6 +539,7 @@ test_get_engines_by_names (void)
         "xkb:ca:eng:eng",
         "xkb:fr::fra",
         "xkb:jp::jpn",
+        "invalid_engine_name",
         NULL,
     };
 
@@ -556,7 +557,12 @@ test_get_engines_by_names (void)
         // The ref should be zero, *p is released.
         g_assert (!IBUS_IS_ENGINE_DESC (*p));
     }
+
+    // The last engine does not exist.
+    g_assert_cmpint (i, ==, G_N_ELEMENTS(names) - 2);
+
     g_free (engines);
+
     engines = NULL;
 }
 
