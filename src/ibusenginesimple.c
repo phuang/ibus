@@ -32,8 +32,6 @@ struct _IBusComposeTableCompact
     gint n_index_stride;
 };
 
-
-typedef struct _IBusEngineSimplePrivate IBusEngineSimplePrivate;
 struct _IBusEngineSimplePrivate {
     GSList     *tables;
     guint       compose_buffer[IBUS_MAX_COMPOSE_LEN + 1];
