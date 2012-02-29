@@ -23,6 +23,7 @@
 #include "ibusmarshalers.h"
 #include "ibusshare.h"
 #include "ibusconfig.h"
+#include "ibusbus.h"
 
 #define IBUS_CONFIG_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG, IBusConfigPrivate))
@@ -35,9 +36,9 @@ enum {
 
 /* IBusConfigPriv */
 struct _IBusConfigPrivate {
-    gpointer pad;
+    GArray *watch_rules;
+    guint watch_config_signal_id;
 };
-typedef struct _IBusConfigPrivate IBusConfigPrivate;
 
 static guint    config_signals[LAST_SIGNAL] = { 0 };
 
@@ -50,7 +51,22 @@ static void      ibus_config_g_signal       (GDBusProxy         *proxy,
                                              const gchar        *signal_name,
                                              GVariant           *parameters);
 
-G_DEFINE_TYPE (IBusConfig, ibus_config, IBUS_TYPE_PROXY)
+static void      initable_iface_init        (GInitableIface     *initable_iface);
+static void      async_initable_iface_init  (GAsyncInitableIface
+                                                                *async_initable_iface);
+
+static gchar    *_make_match_rule           (const gchar        *section,
+                                             const gchar        *name);
+static guint     _signal_subscribe          (GDBusProxy         *proxy);
+static void      _signal_unsubscribe        (GDBusProxy         *proxy,
+                                             guint               signal_id);
+
+static void      _remove_all_match_rules    (IBusConfig         *config);
+
+G_DEFINE_TYPE_WITH_CODE (IBusConfig, ibus_config, IBUS_TYPE_PROXY,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, initable_iface_init)
+                         G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, async_initable_iface_init)
+                         );
 
 static void
 ibus_config_class_init (IBusConfigClass *class)
@@ -92,11 +108,19 @@ ibus_config_class_init (IBusConfigClass *class)
 static void
 ibus_config_init (IBusConfig *config)
 {
+    config->priv = IBUS_CONFIG_GET_PRIVATE (config);
+    config->priv->watch_rules = g_array_new (FALSE, FALSE, sizeof (gchar *));
 }
 
 static void
 ibus_config_real_destroy (IBusProxy *proxy)
 {
+    IBusConfigPrivate *priv = IBUS_CONFIG_GET_PRIVATE (proxy);
+
+    _signal_unsubscribe (G_DBUS_PROXY (proxy), priv->watch_config_signal_id);
+    _remove_all_match_rules (IBUS_CONFIG (proxy));
+    g_array_free (priv->watch_rules, FALSE);
+
     IBUS_PROXY_CLASS(ibus_config_parent_class)->destroy (proxy);
 }
 
@@ -127,6 +151,133 @@ ibus_config_g_signal (GDBusProxy  *proxy,
     g_return_if_reached ();
 }
 
+static void
+_connection_signal_cb (GDBusConnection *connection,
+                       const gchar     *sender_name,
+                       const gchar     *object_path,
+                       const gchar     *interface_name,
+                       const gchar     *signal_name,
+                       GVariant        *parameters,
+                       IBusConfig      *config)
+{
+    g_return_if_fail (IBUS_IS_CONFIG (config));
+
+    ibus_config_g_signal (G_DBUS_PROXY (config),
+                          sender_name,
+                          signal_name,
+                          parameters);
+}
+
+static gchar *
+_make_match_rule (const gchar *section,
+                  const gchar *name)
+{
+    GString *str = g_string_new ("type='signal',"
+                                 "interface='" IBUS_INTERFACE_CONFIG "',"
+                                 "path='" IBUS_PATH_CONFIG "',"
+                                 "member='ValueChanged'");
+    if (section != NULL) {
+        g_string_append_printf (str, ",arg0='%s'", section);
+        if (name != NULL)
+            g_string_append_printf (str, ",arg1='%s'", name);
+    }
+    return g_string_free (str, FALSE);
+}
+
+static void
+_remove_all_match_rules (IBusConfig *config)
+{
+    gint i;
+
+    for (i = 0; i < config->priv->watch_rules->len; i++) {
+        IBusBus *bus = ibus_bus_new ();
+        gchar *rule = g_array_index (config->priv->watch_rules, gchar *, i);
+        ibus_bus_remove_match (bus, rule);
+        g_object_unref (bus);
+        g_free (rule);
+    }
+    g_array_set_size (config->priv->watch_rules, 0);
+}
+
+gboolean
+ibus_config_watch (IBusConfig  *config,
+                   const gchar *section,
+                   const gchar *name)
+{
+    g_return_val_if_fail (IBUS_IS_CONFIG (config), FALSE);
+    g_assert ((section != NULL) || (section == NULL && name == NULL));
+
+    IBusBus *bus = ibus_bus_new ();
+    gchar *rule;
+    gboolean retval;
+
+    if (section == NULL && name == NULL) {
+        _remove_all_match_rules (config);
+
+        rule = _make_match_rule (NULL, NULL);
+        retval = ibus_bus_add_match (bus, rule);
+        g_object_unref (bus);
+        g_free (rule);
+
+        return retval;
+    }
+
+    if (config->priv->watch_rules->len == 0) {
+        rule = _make_match_rule (NULL, NULL);
+        retval = ibus_bus_remove_match (bus, rule);
+        g_free (rule);
+        if (!retval) {
+            g_object_unref (bus);
+            return FALSE;
+        }
+    }
+
+    rule = _make_match_rule (section, name);
+    retval = ibus_bus_add_match (bus, rule);
+    g_object_unref (bus);
+    if (!retval) {
+        g_free (rule);
+        return FALSE;
+    }
+
+    g_array_append_val (config->priv->watch_rules, rule);
+    return TRUE;
+}
+
+gboolean
+ibus_config_unwatch (IBusConfig  *config,
+                     const gchar *section,
+                     const gchar *name)
+{
+    g_return_val_if_fail (IBUS_IS_CONFIG (config), FALSE);
+    g_assert ((section != NULL) || (section == NULL && name == NULL));
+
+    IBusBus *bus = ibus_bus_new ();
+    gchar *rule = _make_match_rule (section, name);
+    gboolean retval;
+
+    retval = ibus_bus_remove_match (bus, rule);
+    g_object_unref (bus);
+    if (retval && (section != NULL || name != NULL)) {
+        /* Remove the previously registered match rule from
+           config->priv->watch_rules. */
+        gint i;
+        for (i = 0; i < config->priv->watch_rules->len; i++) {
+            gchar *_rule = g_array_index (config->priv->watch_rules, gchar *,
+                                          i);
+            if (g_strcmp0 (_rule, rule) == 0) {
+                config->priv->watch_rules =
+                    g_array_remove_index_fast (config->priv->watch_rules, i);
+                g_free (_rule);
+                break;
+            }
+        }
+    }
+    g_free (rule);
+
+    return TRUE;
+}
+
 IBusConfig *
 ibus_config_new (GDBusConnection  *connection,
                  GCancellable     *cancellable,
@@ -137,7 +288,8 @@ ibus_config_new (GDBusConnection  *connection,
     GInitable *initable;
 
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS;
 
     initable = g_initable_new (IBUS_TYPE_CONFIG,
                                cancellable,
@@ -174,7 +326,8 @@ ibus_config_new_async (GDBusConnection     *connection,
     g_assert (callback != NULL);
 
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
+                            G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS;
 
     g_async_initable_new_async (IBUS_TYPE_CONFIG,
                                 G_PRIORITY_DEFAULT,
@@ -481,4 +634,89 @@ ibus_config_unset (IBusConfig   *config,
     }
     g_variant_unref (result);
     return TRUE;
+}
+
+static guint
+_signal_subscribe (GDBusProxy *proxy)
+{
+    GDBusConnection *connection = g_dbus_proxy_get_connection (proxy);
+    return g_dbus_connection_signal_subscribe (connection,
+                                               NULL,
+                                               IBUS_INTERFACE_CONFIG,
+                                               NULL,
+                                               NULL,
+                                               NULL,
+                                               G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE,
+                                               (GDBusSignalCallback) _connection_signal_cb,
+                                               g_object_ref (proxy),
+                                               (GDestroyNotify) g_object_unref);
+}
+
+static void
+_signal_unsubscribe (GDBusProxy *proxy, guint signal_id)
+{
+    GDBusConnection *connection = g_dbus_proxy_get_connection (proxy);
+    g_dbus_connection_signal_unsubscribe (connection, signal_id);
+}
+
+static GInitableIface *initable_iface_parent = NULL;
+
+static gboolean
+initable_init (GInitable     *initable,
+               GCancellable  *cancellable,
+               GError       **error)
+{
+    if (!initable_iface_parent->init (initable, cancellable, error))
+        return FALSE;
+
+    IBusConfig *config = IBUS_CONFIG (initable);
+    config->priv->watch_config_signal_id =
+        _signal_subscribe (G_DBUS_PROXY (initable));
+    return ibus_config_watch (config, NULL, NULL);
+}
+
+static void
+initable_iface_init (GInitableIface *initable_iface)
+{
+    initable_iface_parent = g_type_interface_peek_parent (initable_iface);
+    initable_iface->init = initable_init;
+}
+
+static GAsyncInitableIface *async_initable_iface_parent = NULL;
+
+static void
+async_initable_init_async (GAsyncInitable      *initable,
+                           gint                 io_priority,
+                           GCancellable        *cancellable,
+                           GAsyncReadyCallback  callback,
+                           gpointer             user_data)
+{
+    async_initable_iface_parent->init_async (initable,
+                                             io_priority,
+                                             cancellable,
+                                             callback,
+                                             user_data);
+}
+
+static gboolean
+async_initable_init_finish (GAsyncInitable  *initable,
+                            GAsyncResult    *res,
+                            GError         **error)
+{
+    if (!async_initable_iface_parent->init_finish (initable, res, error))
+        return FALSE;
+
+    IBusConfig *config = IBUS_CONFIG (initable);
+    config->priv->watch_config_signal_id =
+        _signal_subscribe (G_DBUS_PROXY (initable));
+    return ibus_config_watch (config, NULL, NULL);
+}
+
+static void
+async_initable_iface_init (GAsyncInitableIface *async_initable_iface)
+{
+    async_initable_iface_parent =
+        g_type_interface_peek_parent (async_initable_iface);
+    async_initable_iface->init_async = async_initable_init_async;
+    async_initable_iface->init_finish = async_initable_init_finish;
 }

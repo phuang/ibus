@@ -61,6 +61,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusConfig IBusConfig;
 typedef struct _IBusConfigClass IBusConfigClass;
+typedef struct _IBusConfigPrivate IBusConfigPrivate;
 
 /**
  * IBusConfig:
@@ -68,12 +69,17 @@ typedef struct _IBusConfigClass IBusConfigClass;
  * An opaque data type representing an IBusConfig.
  */
 struct _IBusConfig {
-  IBusProxy parent;
-  /* instance members */
+    /*< private >*/
+    IBusProxy parent;
+    IBusConfigPrivate *priv;
+
+    /* instance members */
 };
 
 struct _IBusConfigClass {
+    /*< private >*/
     IBusProxyClass parent;
+
     /* class members */
 };
 
@@ -301,6 +307,45 @@ gboolean         ibus_config_unset      (IBusConfig         *config,
                                          const gchar        *name);
 
 /* FIXME add an asynchronous version of unset */
+
+/**
+ * ibus_config_watch:
+ * @config: An #IBusConfig
+ * @section: (allow-none): Section name of the configuration option.
+ * @name: (allow-none): Name of the configure option its self.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
+ *
+ * Subscribe to the configuration option change notification.
+ *
+ * Until this function is called, every change will be notified to the
+ * client through #IBusConfig::value-changed signal.  Clients should
+ * call ibus_config_watch() with the sections they are interested in,
+ * to reduce the number of D-Bus messages.
+ *
+ * See also: ibus_config_unwatch().
+ */
+gboolean         ibus_config_watch      (IBusConfig         *config,
+                                         const gchar        *section,
+                                         const gchar        *name);
+
+/* FIXME add an asynchronous version of watch */
+
+/**
+ * ibus_config_unwatch:
+ * @config: An #IBusConfig
+ * @section: (allow-none): Section name of the configuration option.
+ * @name: (allow-none): Name of the configure option its self.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
+ *
+ * Unsubscribe from the configuration option change notification.
+ *
+ * See also: ibus_config_watch.
+ */
+gboolean         ibus_config_unwatch    (IBusConfig         *config,
+                                         const gchar        *section,
+                                         const gchar        *name);
+
+/* FIXME add an asynchronous version of unwatch */
 
 G_END_DECLS
 #endif

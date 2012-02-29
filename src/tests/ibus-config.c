@@ -126,6 +126,265 @@ test_config_set_get (void)
     g_object_unref (config);
 }
 
+typedef struct {
+    GMainLoop *loop;
+    gchar *section;
+    gchar *name;
+} WatchData;
+
+static void
+value_changed_cb (IBusConfig  *config,
+                  const gchar *section,
+                  const gchar *name,
+                  GVariant    *value,
+                  gpointer     user_data)
+{
+    WatchData *data = (WatchData *) user_data;
+
+    data->section = g_strdup (section);
+    data->name = g_strdup (name);
+
+    g_main_loop_quit (data->loop);
+}
+
+static gboolean
+timeout_cb (gpointer user_data)
+{
+    WatchData *data = (WatchData *) user_data;
+    g_main_loop_quit (data->loop);
+    return FALSE;
+}
+
+static void
+change_value (IBusConfig  *config,
+              const gchar *section,
+              const gchar *name,
+              WatchData   *data)
+{
+    gboolean retval;
+    guint timeout_id;
+
+    /* Unset won't notify value-changed signal. */
+    retval = ibus_config_unset (config, section, name);
+    g_assert (retval);
+
+    timeout_id = g_timeout_add (1, timeout_cb, data);
+    g_main_loop_run (data->loop);
+    g_source_remove (timeout_id);
+
+    retval = ibus_config_set_value (config, section, name,
+                                    g_variant_new_int32 (1));
+    g_assert (retval);
+
+    timeout_id = g_timeout_add (1, timeout_cb, data);
+    g_main_loop_run (data->loop);
+    g_source_remove (timeout_id);
+}
+
+static void
+test_config_watch (void)
+{
+    IBusConfig *config;
+    WatchData data;
+
+    config = ibus_config_new (ibus_bus_get_connection (bus),
+                              NULL,
+                              NULL);
+    g_assert (config);
+
+    data.loop = g_main_loop_new (NULL, FALSE);
+    g_signal_connect (config, "value-changed",
+                      G_CALLBACK (value_changed_cb), &data);
+
+    /* By default, no watch is set and every change will be notified. */
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s1");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    /* Watch only section. */
+    ibus_config_watch (config, "test/s1", NULL);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s1");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s2", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_unwatch (config, "test/s1", NULL);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_watch (config, NULL, NULL);
+
+    /* Watch only section; multiple watches. */
+    ibus_config_watch (config, "test/s1", NULL);
+    ibus_config_watch (config, "test/s2", NULL);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s1");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s2", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s2");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_unwatch (config, "test/s1", NULL);
+    ibus_config_unwatch (config, "test/s2", NULL);
+    ibus_config_watch (config, NULL, NULL);
+
+    /* Watch both section and name. */
+    ibus_config_watch (config, "test/s1", "n1");
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s1");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n2", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s2", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_unwatch (config, "test/s1", "n1");
+    ibus_config_watch (config, NULL, NULL);
+
+    /* Watch both section and name; multiple watches. */
+    ibus_config_watch (config, "test/s1", "n1");
+    ibus_config_watch (config, "test/s2", "n2");
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s1");
+    g_assert_cmpstr (data.name, ==, "n1");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n2", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s2", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s2", "n2", &data);
+
+    g_assert_cmpstr (data.section, ==, "test/s2");
+    g_assert_cmpstr (data.name, ==, "n2");
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_unwatch (config, "test/s1", "n1");
+
+    data.section = NULL;
+    data.name = NULL;
+
+    change_value (config, "test/s1", "n1", &data);
+
+    g_assert_cmpstr (data.section, ==, NULL);
+    g_assert_cmpstr (data.name, ==, NULL);
+
+    g_free (data.section);
+    g_free (data.name);
+
+    ibus_config_unwatch (config, "test/s2", "n2");
+    ibus_config_watch (config, NULL, NULL);
+
+    g_main_loop_unref (data.loop);
+    g_object_unref (config);
+}
+
 gint
 main (gint    argc,
       gchar **argv)
@@ -136,6 +395,7 @@ main (gint    argc,
     ibus_init ();
     bus = ibus_bus_new ();
 
+    g_test_add_func ("/ibus/config-watch", test_config_watch);
     g_test_add_func ("/ibus/create-config-async", test_create_config_async);
     g_test_add_func ("/ibus/config-set-get", test_config_set_get);
 

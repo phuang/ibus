@@ -47,5 +47,26 @@
  */
 #define I_(string) g_intern_static_string (string)
 
+/**
+ * DBUS_SERVICE_DBUS:
+ *
+ * Address of D-Bus service.
+ */
+#define DBUS_SERVICE_DBUS "org.freedesktop.DBus"
+
+/**
+ * DBUS_PATH_DBUS:
+ *
+ * D-Bus path for D-Bus.
+ */
+#define DBUS_PATH_DBUS "/org/freedesktop/DBus"
+
+/**
+ * DBUS_INTERFACE_DBUS:
+ *
+ * D-Bus interface for D-Bus.
+ */
+#define DBUS_INTERFACE_DBUS "org.freedesktop.DBus"
+
 #endif
 
