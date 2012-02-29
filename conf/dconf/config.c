@@ -315,15 +315,6 @@ ibus_config_dconf_set_value (IBusConfigService *config,
                                  error);
     g_free (gkey);
 
-    /* notify the caller that the value has changed, as dconf does not
-       call watch_func when the caller is the process itself */
-    if (retval) {
-        if (value == NULL) {
-            /* Use a empty tuple for a unset value */
-            value = g_variant_new_tuple (NULL, 0);
-        }
-        ibus_config_service_value_changed (config, section, name, value);
-    }
     return retval;
 }
 
