@@ -661,7 +661,11 @@ no_sequence_matches (IBusEngineSimple *simple,
         }
 
         ch = ibus_keyval_to_unicode (keyval);
-        if (ch != 0 && !g_unichar_iscntrl (ch)) {
+        /* IBUS_CHANGE: RH#769133
+         * Since we use ibus xkb engines as the disable state,
+         * do not commit the characters locally without in_hex_sequence. */
+        if (ch != 0 && !g_unichar_iscntrl (ch) &&
+            priv->in_hex_sequence) {
             ibus_engine_simple_commit_char (simple, ch);
             return TRUE;
         }
