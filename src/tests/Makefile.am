@@ -55,7 +55,6 @@ ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)
 
 ibus_config_SOURCES = ibus-config.c
-ibus_config_CFLAGS = -DSET_VALUE_PROGRAM=\"$(builddir)/ibus-config-set-value\"
 ibus_config_LDADD = $(prog_ldadd)
 
 ibus_configservice_SOURCES = ibus-configservice.c

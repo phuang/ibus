@@ -132,6 +132,111 @@ typedef struct {
     gchar *name;
 } WatchData;
 
+typedef struct {
+    gchar *section;
+    gchar *name;
+} WatchKey;
+
+typedef struct {
+    WatchKey *watched;          /* watched keys (null-terminated) */
+    WatchKey *changed;          /* changed keys (null-terminated) */
+    WatchKey *notified;         /* notified keys (same length as
+                                   changed, not null-terminated) */
+} WatchTestData;
+
+static WatchKey default_watched[] = {
+    { NULL }
+};
+static WatchKey default_changed[] = {
+    { "test/s1", "n1" },
+    { "test/s1", "n2" },
+    { "test/s2", "n1" },
+    { "test/s2", "n2" },
+    { NULL }
+};
+static WatchKey default_notified[] = {
+    { "test/s1", "n1" },
+    { "test/s1", "n2" },
+    { "test/s2", "n1" },
+    { "test/s2", "n2" }
+};
+static WatchTestData default_data = {
+    default_watched,
+    default_changed,
+    default_notified
+};
+
+static WatchKey section_watched[] = {
+    { "test/s1", NULL },
+    { NULL }
+};
+static WatchKey section_notified[] = {
+    { "test/s1", "n1" },
+    { "test/s1", "n2" },
+    { NULL, NULL },
+    { NULL, NULL },
+};
+static WatchTestData section_data = {
+    section_watched,
+    default_changed,
+    section_notified
+};
+
+static WatchKey section_multiple_watched[] = {
+    { "test/s1", NULL },
+    { "test/s2", NULL },
+    { NULL }
+};
+static WatchKey section_multiple_notified[] = {
+    { "test/s1", "n1" },
+    { "test/s1", "n2" },
+    { "test/s2", "n1" },
+    { "test/s2", "n2" },
+};
+static WatchTestData section_multiple_data = {
+    section_multiple_watched,
+    default_changed,
+    section_multiple_notified
+};
+
+static WatchKey section_name_watched[] = {
+    { "test/s1", "n1" },
+    { NULL }
+};
+static WatchKey section_name_notified[] = {
+    { "test/s1", "n1" },
+    { NULL, NULL },
+    { NULL, NULL },
+    { NULL, NULL },
+};
+static WatchTestData section_name_data = {
+    section_name_watched,
+    default_changed,
+    section_name_notified
+};
+
+static WatchKey section_name_multiple_watched[] = {
+    { "test/s1", "n1" },
+    { "test/s2", "n2" },
+    { NULL }
+};
+static WatchKey section_name_multiple_notified[] = {
+    { "test/s1", "n1" },
+    { NULL, NULL },
+    { NULL, NULL },
+    { "test/s2", "n2" },
+};
+static WatchTestData section_name_multiple_data = {
+    section_name_multiple_watched,
+    default_changed,
+    section_name_multiple_notified
+};
+
+typedef struct {
+    IBusConfig *config;
+    WatchData data;
+} WatchFixture;
+
 static void
 value_changed_cb (IBusConfig  *config,
                   const gchar *section,
@@ -156,13 +261,18 @@ timeout_cb (gpointer user_data)
 }
 
 static void
-change_value (IBusConfig  *config,
-              const gchar *section,
-              const gchar *name,
-              WatchData   *data)
+change_and_test (IBusConfig  *config,
+                 const gchar *section,
+                 const gchar *name,
+                 const gchar *expected_section,
+                 const gchar *expected_name,
+                 WatchData   *data)
 {
     gboolean retval;
     guint timeout_id;
+
+    data->section = NULL;
+    data->name = NULL;
 
     /* Unset won't notify value-changed signal. */
     retval = ibus_config_unset (config, section, name);
@@ -179,210 +289,78 @@ change_value (IBusConfig  *config,
     timeout_id = g_timeout_add (1, timeout_cb, data);
     g_main_loop_run (data->loop);
     g_source_remove (timeout_id);
+
+    g_assert_cmpstr (data->section, ==, expected_section);
+    g_assert_cmpstr (data->name, ==, expected_name);
+
+    g_free (data->section);
+    g_free (data->name);
 }
 
 static void
-test_config_watch (void)
+watch_fixture_setup (WatchFixture *fixture, gconstpointer user_data)
 {
-    IBusConfig *config;
-    WatchData data;
-
-    config = ibus_config_new (ibus_bus_get_connection (bus),
-                              NULL,
-                              NULL);
-    g_assert (config);
-
-    data.loop = g_main_loop_new (NULL, FALSE);
-    g_signal_connect (config, "value-changed",
-                      G_CALLBACK (value_changed_cb), &data);
-
-    /* By default, no watch is set and every change will be notified. */
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s1");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    /* Watch only section. */
-    ibus_config_watch (config, "test/s1", NULL);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s1");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s2", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_unwatch (config, "test/s1", NULL);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_watch (config, NULL, NULL);
-
-    /* Watch only section; multiple watches. */
-    ibus_config_watch (config, "test/s1", NULL);
-    ibus_config_watch (config, "test/s2", NULL);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s1");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s2", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s2");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_unwatch (config, "test/s1", NULL);
-    ibus_config_unwatch (config, "test/s2", NULL);
-    ibus_config_watch (config, NULL, NULL);
-
-    /* Watch both section and name. */
-    ibus_config_watch (config, "test/s1", "n1");
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s1");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n2", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s2", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_unwatch (config, "test/s1", "n1");
-    ibus_config_watch (config, NULL, NULL);
-
-    /* Watch both section and name; multiple watches. */
-    ibus_config_watch (config, "test/s1", "n1");
-    ibus_config_watch (config, "test/s2", "n2");
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s1");
-    g_assert_cmpstr (data.name, ==, "n1");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n2", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s2", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s2", "n2", &data);
-
-    g_assert_cmpstr (data.section, ==, "test/s2");
-    g_assert_cmpstr (data.name, ==, "n2");
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_unwatch (config, "test/s1", "n1");
-
-    data.section = NULL;
-    data.name = NULL;
-
-    change_value (config, "test/s1", "n1", &data);
-
-    g_assert_cmpstr (data.section, ==, NULL);
-    g_assert_cmpstr (data.name, ==, NULL);
-
-    g_free (data.section);
-    g_free (data.name);
-
-    ibus_config_unwatch (config, "test/s2", "n2");
-    ibus_config_watch (config, NULL, NULL);
-
-    g_main_loop_unref (data.loop);
-    g_object_unref (config);
+    fixture->config = ibus_config_new (ibus_bus_get_connection (bus),
+                                       NULL,
+                                       NULL);
+    g_assert (fixture->config);
+
+    fixture->data.loop = g_main_loop_new (NULL, FALSE);
+    g_signal_connect (fixture->config, "value-changed",
+                      G_CALLBACK (value_changed_cb), &fixture->data);
+}
+
+static void
+watch_fixture_teardown (WatchFixture *fixture, gconstpointer user_data)
+{
+    g_main_loop_unref (fixture->data.loop);
+
+    ibus_proxy_destroy (IBUS_PROXY (fixture->config));
+    g_object_unref (fixture->config);
+}
+
+static void
+test_config_watch (WatchFixture *fixture, gconstpointer user_data)
+{
+    const WatchTestData *data = user_data;
+    gint i;
+
+    for (i = 0; data->watched[i].section != NULL; i++) {
+        ibus_config_watch (fixture->config,
+                           data->watched[i].section,
+                           data->watched[i].name);
+    }
+    for (i = 0; data->changed[i].section != NULL; i++) {
+        change_and_test (fixture->config,
+                         data->changed[i].section,
+                         data->changed[i].name,
+                         data->notified[i].section,
+                         data->notified[i].name,
+                         &fixture->data);
+    }
+    for (i = 0; data->watched[i].section != NULL; i++) {
+        ibus_config_unwatch (fixture->config,
+                             data->watched[i].section,
+                             data->watched[i].name);
+    }
+    if (i > 0) {
+        /* Check if the above unwatch takes effect. */
+        for (i = 0; data->changed[i].section != NULL; i++) {
+            change_and_test (fixture->config,
+                             data->changed[i].section,
+                             data->changed[i].name,
+                             NULL,
+                             NULL,
+                             &fixture->data);
+        }
+    } else {
+        /* If ibus_config_unwatch has not been called, need to manually
+           unwatch the default rule here, otherwise the recipient of
+           the default match rule will be ref'd twice on the next
+           ibus_config_new(), since we reuse single D-Bus
+           connection. */
+        ibus_config_unwatch (fixture->config, NULL, NULL);
+    }
 }
 
 gint
@@ -395,7 +373,41 @@ main (gint    argc,
     ibus_init ();
     bus = ibus_bus_new ();
 
-    g_test_add_func ("/ibus/config-watch", test_config_watch);
+    g_test_add ("/ibus/config-watch/default",
+                WatchFixture,
+                &default_data,
+                watch_fixture_setup,
+                test_config_watch,
+                watch_fixture_teardown);
+
+    g_test_add ("/ibus/config-watch/section",
+                WatchFixture,
+                &section_data,
+                watch_fixture_setup,
+                test_config_watch,
+                watch_fixture_teardown);
+
+    g_test_add ("/ibus/config-watch/section-multiple",
+                WatchFixture,
+                &section_multiple_data,
+                watch_fixture_setup,
+                test_config_watch,
+                watch_fixture_teardown);
+
+    g_test_add ("/ibus/config-watch/section-name",
+                WatchFixture,
+                &section_name_data,
+                watch_fixture_setup,
+                test_config_watch,
+                watch_fixture_teardown);
+
+    g_test_add ("/ibus/config-watch/section-name-multiple",
+                WatchFixture,
+                &section_name_multiple_data,
+                watch_fixture_setup,
+                test_config_watch,
+                watch_fixture_teardown);
+
     g_test_add_func ("/ibus/create-config-async", test_create_config_async);
     g_test_add_func ("/ibus/config-set-get", test_config_set_get);
 
