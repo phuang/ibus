@@ -50,7 +50,8 @@ class Handle : Gtk.EventBox {
     public override bool button_press_event(Gdk.EventButton event) {
         if (event.button != 1)
             return false;
-        m_workarea = {0, 0, int.MAX, int.MAX};
+        m_workarea = Gdk.Rectangle(){
+            x = 0, y = 0, width = int.MAX, height = int.MAX};
         do {
             Gdk.Window root = Gdk.get_default_root_window();
             Gdk.Atom property = Gdk.Atom.intern("_NET_CURRENT_DESKTOP", false);
@@ -153,7 +154,7 @@ class Handle : Gtk.EventBox {
             Gtk.StyleContext context = get_style_context();
             Gtk.Allocation allocation;
             get_allocation(out allocation);
-            Gtk.render_handle(context, cr,
+            context.render_handle(cr,
                 allocation.x, allocation.y + (allocation.height - 40) / 2, allocation.width, 40.0);
         }
         return false;

@@ -80,7 +80,8 @@ public class CandidatePanel : Gtk.HBox{
     }
 
     public void set_cursor_location(int x, int y, int width, int height) {
-        Gdk.Rectangle location = { x, y, width, height };
+        Gdk.Rectangle location = Gdk.Rectangle(){
+            x = x, y = y, width = width, height = height };
         if (m_cursor_location == location)
             return;
         m_cursor_location = location;
