@@ -324,9 +324,13 @@ class Setup(object):
             # self.__bus.config_add_watch("/general/hotkey")
             # self.__bus.config_add_watch("/panel")
         except:
-            while self.__bus == None:
+            pass
+        finally:
+            if self.__bus != None and self.__bus.is_connected():
+                return
+            while self.__bus == None or not self.__bus.is_connected():
                 message = _("IBus daemon is not started. Do you want to start it now?")
-                dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_QUESTION,
+                dlg = Gtk.MessageDialog(type = Gtk.MessageType.QUESTION,
                         buttons = Gtk.ButtonsType.YES_NO,
                         message_format = message)
                 id = dlg.run()
@@ -337,21 +341,23 @@ class Setup(object):
                 pid = os.spawnlp(os.P_NOWAIT, "ibus-daemon", "ibus-daemon", "--xim")
                 time.sleep(1)
                 try:
+                    if self.__bus != None:
+                        self.__bus.destroy()
                     self.__bus = IBus.Bus()
                 except:
                     continue
-                message = _("IBus has been started! "
-                    "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
-                    "  export GTK_IM_MODULE=ibus\n"
-                    "  export XMODIFIERS=@im=ibus\n"
-                    "  export QT_IM_MODULE=ibus"
-                    )
-                dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_INFO,
-                                        buttons = Gtk.ButtonsType.OK,
-                                        message_format = message)
-                id = dlg.run()
-                dlg.destroy()
-                self.__flush_gtk_events()
+            message = _("IBus has been started! "
+                "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+                "  export GTK_IM_MODULE=ibus\n"
+                "  export XMODIFIERS=@im=ibus\n"
+                "  export QT_IM_MODULE=ibus"
+                )
+            dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
+                                    buttons = Gtk.ButtonsType.OK,
+                                    message_format = message)
+            id = dlg.run()
+            dlg.destroy()
+            self.__flush_gtk_events()
 
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
