@@ -254,7 +254,7 @@ class Setup(object):
             args = setup.split()
             args.insert(1, path.basename(args[0]))
             return args
-        name = str(engine.name)
+        name = str(engine.get_name())
         libexecdir = os.environ['IBUS_LIBEXECDIR']
         setup_path = (libexecdir + '/' + 'ibus-setup-' if libexecdir != None \
             else 'ibus-setup-') + name.split(':')[0]
@@ -275,11 +275,11 @@ class Setup(object):
         self.__builder.get_object("button_engine_up").set_sensitive(engine not in engines[:1])
         self.__builder.get_object("button_engine_down").set_sensitive(engine not in engines[-1:])
 
-        # obj = self.__builder.get_object("button_engine_preferences")
-        # if len(self.__get_engine_setup_exec_args(engine)) != 0:
-        #     obj.set_sensitive(True)
-        # else:
-        #     obj.set_sensitive(False)
+        obj = self.__builder.get_object("button_engine_preferences")
+        if len(self.__get_engine_setup_exec_args(engine)) != 0:
+            obj.set_sensitive(True)
+        else:
+            obj.set_sensitive(False)
 
         if prop.name == "engines":
             engine_names = map(lambda e: e.get_name(), engines)
@@ -302,7 +302,7 @@ class Setup(object):
         args = self.__get_engine_setup_exec_args(engine)
         if len(args) == 0:
             return
-        name = engine.name
+        name = engine.get_name()
         if name in self.__engine_setup_exec_list.keys():
             try:
                 wpid, sts = os.waitpid(self.__engine_setup_exec_list[name],

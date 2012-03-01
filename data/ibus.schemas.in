@@ -14,6 +14,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/engines_order</key>
+      <applyto>/desktop/ibus/general/engines_order</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>Engines order</short>
+            <long>Saved engines order in input method list</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>
