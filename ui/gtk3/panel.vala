@@ -60,6 +60,8 @@ class Panel : IBus.PanelService {
         m_status_icon.set_from_icon_name("ibus-keyboard");
 
         m_candidate_panel = new CandidatePanel();
+        m_candidate_panel.page_up.connect((w) => this.page_up());
+        m_candidate_panel.page_down.connect((w) => this.page_down());
 
         m_switcher = new Switcher();
 
