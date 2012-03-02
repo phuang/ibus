@@ -316,36 +316,31 @@ class Setup(object):
         self.__engine_setup_exec_list[name] = os.spawnl(os.P_NOWAIT, *args)
 
     def __init_bus(self):
-        try:
-            self.__bus = IBus.Bus()
-            # self.__bus.connect("config-value-changed", self.__config_value_changed_cb)
-            # self.__bus.connect("config-reloaded", self.__config_reloaded_cb)
-            # self.__bus.config_add_watch("/general")
-            # self.__bus.config_add_watch("/general/hotkey")
-            # self.__bus.config_add_watch("/panel")
-        except:
-            pass
-        finally:
-            if self.__bus != None and self.__bus.is_connected():
-                return
-            while self.__bus == None or not self.__bus.is_connected():
-                message = _("IBus daemon is not started. Do you want to start it now?")
-                dlg = Gtk.MessageDialog(type = Gtk.MessageType.QUESTION,
-                        buttons = Gtk.ButtonsType.YES_NO,
-                        message_format = message)
-                id = dlg.run()
-                dlg.destroy()
-                self.__flush_gtk_events()
-                if id != Gtk.ResponseType.YES:
-                    sys.exit(0)
-                pid = os.spawnlp(os.P_NOWAIT, "ibus-daemon", "ibus-daemon", "--xim")
-                time.sleep(1)
-                try:
-                    if self.__bus != None:
-                        self.__bus.destroy()
-                    self.__bus = IBus.Bus()
-                except:
-                    continue
+        self.__bus = IBus.Bus()
+        if self.__bus.is_connected():
+            return
+
+        message = _("IBus daemon is not started. Do you want to start it now?")
+        dlg = Gtk.MessageDialog(type = Gtk.MessageType.QUESTION,
+                                buttons = Gtk.ButtonsType.YES_NO,
+                                text = message)
+        id = dlg.run()
+        dlg.destroy()
+        self.__flush_gtk_events()
+        if id != Gtk.ResponseType.YES:
+            sys.exit(0)
+
+        main_loop = GLib.MainLoop()
+
+        timeout = 5
+        GLib.timeout_add_seconds(timeout, lambda *args: main_loop.quit())
+        self.__bus.connect("connected", lambda *args: main_loop.quit())
+
+        os.spawnlp(os.P_NOWAIT, "ibus-daemon", "ibus-daemon", "--xim")
+
+        main_loop.run()
+
+        if self.__bus.is_connected():
             message = _("IBus has been started! "
                 "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
                 "  export GTK_IM_MODULE=ibus\n"
@@ -354,10 +349,19 @@ class Setup(object):
                 )
             dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
-                                    message_format = message)
+                                    text = message)
             id = dlg.run()
             dlg.destroy()
             self.__flush_gtk_events()
+        else:
+            message = _("IBus daemon coundn't be started in %d seconds")
+            dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
+                                    buttons = Gtk.ButtonsType.OK,
+                                    text = message % timeout)
+            id = dlg.run()
+            dlg.destroy()
+            self.__flush_gtk_events()
+            sys.exit(0)
 
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
