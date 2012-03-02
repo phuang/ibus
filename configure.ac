@@ -27,14 +27,15 @@ m4_define([ibus_released], [0])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [4])
 m4_define([ibus_micro_version], [99])
-m4_define([ibus_interface_age], [0])
-m4_define([ibus_binary_age],
+m4_define([ibus_abi_current], [5])
+m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
+m4_define([ibus_abi_age], [0])
 m4_define([ibus_maybe_datestamp],
     m4_esyscmd([test x]ibus_released[ != x1 && date +.%Y%m%d | tr -d '\n\r']))
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
-m4_define([ibus_api_version], [1.0])
+m4_define([ibus_api_version], [ibus_major_version.0])
 
 AC_PREFEQ([2.62])
 AC_INIT([ibus], [ibus_version],
@@ -44,7 +45,10 @@ AC_INIT([ibus], [ibus_version],
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-m4_define([ibus_binary_version], [1.0.0])
+m4_define([ibus_abi_current_minus_age],
+          [m4_eval(ibus_abi_current - ibus_abi_age)])
+m4_define([ibus_binary_version],
+          [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
 
 # Required versions of other packages.
 m4_define([glib_required_version], [2.26.0])
@@ -64,25 +68,33 @@ AM_SILENT_RULES([yes])
 IBUS_MAJOR_VERSION=ibus_major_version
 IBUS_MINOR_VERSION=ibus_minor_version
 IBUS_MICRO_VERSION=ibus_micro_version
-IBUS_INTERFACE_AGE=ibus_interface_age
-IBUS_BINARY_AGE=ibus_binary_age
+IBUS_ABI_CURRENT=ibus_abi_current
+IBUS_ABI_REVISION=ibus_abi_revision
+IBUS_ABI_AGE=ibus_abi_age
 IBUS_VERSION=ibus_version
 IBUS_API_VERSION=ibus_api_version
 IBUS_BINARY_VERSION=ibus_binary_version
 AC_SUBST(IBUS_MAJOR_VERSION)
 AC_SUBST(IBUS_MINOR_VERSION)
 AC_SUBST(IBUS_MICRO_VERSION)
-AC_SUBST(IBUS_INTERFACE_AGE)
-AC_SUBST(IBUS_BINARY_AGE)
+AC_SUBST(IBUS_ABI_CURRENT)
+AC_SUBST(IBUS_ABI_REVISION)
+AC_SUBST(IBUS_ABI_AGE)
 AC_SUBST(IBUS_API_VERSION)
 AC_SUBST(IBUS_VERSION)
 AC_SUBST(IBUS_BINARY_VERSION)
 
 # libtool versioning
-m4_define([lt_current],
-          [m4_eval(100 * ibus_minor_version + ibus_micro_version - ibus_interface_age)])
-m4_define([lt_revision], [ibus_interface_age])
-m4_define([lt_age], [m4_eval(ibus_binary_age - ibus_interface_age)])
+#
+# If LT_VERSION_INFO="lt_current:lt_revision:lt_age", libibus is
+# libibus-ibus_api_version.so.(lt_current - lt_age).lt_age.lt_revision
+# If the abi is changed, but it is compatible with last version,
+# ibus_abi_current++, ibus_abi_age++;
+# If the abi is not compatible with last version,
+# ibus_abi_current++, ibus_abi_age = 0;
+m4_define([lt_current], [ibus_abi_current])
+m4_define([lt_revision], [ibus_abi_revision])
+m4_define([lt_age], [ibus_abi_age])
 LT_VERSION_INFO="lt_current:lt_revision:lt_age"
 LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
 AC_SUBST(LT_VERSION_INFO)
