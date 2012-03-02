@@ -392,7 +392,7 @@ class Setup(object):
             try:
                 self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
-                dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
+                dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
                 dlg.run()
@@ -403,7 +403,7 @@ class Setup(object):
             try:
                 self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception, e:
-                dlg = Gtk.MessageDialog(type = Gtk.MESSAGE_ERROR,
+                dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
                 dlg.run()
