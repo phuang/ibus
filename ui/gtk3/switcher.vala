@@ -65,8 +65,15 @@ class Switcher : Gtk.Window {
         if (device == null) {
             var display = get_display();
             var device_manager = display.get_device_manager();
+/* The macro VALA_X_Y supports even numbers.
+ * http://git.gnome.org/browse/vala/commit/?id=294b374af6
+ */
+#if VALA_0_16
+            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
+#else
             unowned GLib.List<Gdk.Device> devices = device_manager.list_devices(Gdk.DeviceType.MASTER);
             device = devices.data;
+#endif
         }
 
         Gdk.Device keyboard;
