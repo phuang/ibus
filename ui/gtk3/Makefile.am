@@ -82,7 +82,7 @@ AM_VALAFLAGS = \
 
 libexec_PROGRAMS = ibus-ui-gtk3
 
-ibus_ui_gtk3_SOURCES = \
+ibus_ui_gtk3_valas = \
 	application.vala \
 	candidatearea.vala \
 	candidatepanel.vala \
@@ -94,6 +94,11 @@ ibus_ui_gtk3_SOURCES = \
 	property.vala \
 	separator.vala \
 	switcher.vala \
+	$(NULL)
+ibus_ui_gtk3_vala_cfiles = $(ibus_ui_gtk3_valas:.vala=.c)
+
+ibus_ui_gtk3_SOURCES = \
+	$(ibus_ui_gtk3_valas) \
 	grabkeycode.c \
 	$(NULL)
 
@@ -103,6 +108,7 @@ ibus_ui_gtk3_LDADD = \
 
 CLEANFILES = \
 	gtkpanel.xml \
+	$(ibus_ui_gtk3_vala_cfiles) \
 	$(NULL)
 
 EXTRA_DIST = \

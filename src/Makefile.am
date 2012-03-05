@@ -22,7 +22,11 @@
 
 NULL =
 
-SUBDIRS = . tests
+if ENABLE_TESTS
+TESTS = tests
+endif
+
+SUBDIRS = . $(TESTS)
 
 # libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la
@@ -94,9 +98,9 @@ ibus_sources =              \
 	ibusenginesimple.c      \
 	$(NULL)
 libibus_1_0_la_SOURCES =    \
-    $(ibus_sources)         \
     ibusmarshalers.c        \
     ibusenumtypes.c         \
+    $(ibus_sources)         \
     $(NULL)
 ibus_marshalers_sources =   \
     ibusmarshalers.h        \

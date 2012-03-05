@@ -1,0 +1,14 @@
+# Files with translatable strings.
+# Please keep this file in alphabetical order.
+ibus/_config.py
+ui/gtk3/application.c
+ui/gtk3/candidatearea.c
+ui/gtk3/candidatepanel.c
+ui/gtk3/handle.c
+ui/gtk3/iconwidget.c
+ui/gtk3/keybindingmanager.c
+ui/gtk3/panel.c
+ui/gtk3/pango.c
+ui/gtk3/property.c
+ui/gtk3/separator.c
+ui/gtk3/switcher.c

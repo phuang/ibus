@@ -150,6 +150,18 @@ PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
 
+# --disable-tests option.
+AC_ARG_ENABLE(tests,
+    AS_HELP_STRING([--disable-tests],
+                   [Do not run tests]),
+    [enable_tests=$enableval],
+    [enable_tests=yes]
+)
+AM_CONDITIONAL([ENABLE_TESTS], [test x"$enable_tests" = x"yes"])
+if test x"$enable_tests" != x"yes"; then
+    enable_tests="no (disabled, use --enable-tests to enable)"
+fi
+
 # --disable-gtk2 option.
 AC_ARG_ENABLE(gtk2,
     AS_HELP_STRING([--disable-gtk2],
@@ -532,5 +544,6 @@ Build options:
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text   $enable_surrounding_text
+  Run test cases            $enable_tests
 ])
 

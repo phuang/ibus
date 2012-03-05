@@ -109,11 +109,13 @@ marshalers.c: marshalers.h marshalers.list
 	mv $@.tmp $@
 
 
+if ENABLE_TESTS
 TESTS = \
 	test-matchrule \
 	test-registry \
 	test-stress	\
 	$(NULL)
+endif
 
 noinst_PROGRAMS = $(TESTS)
 
