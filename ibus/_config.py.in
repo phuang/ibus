@@ -25,6 +25,7 @@ __all__ = (
     "get_copyright",
     "get_license",
     "get_ICON_KEYBOARD",
+    "LIBIBUS_SONAME",
     "ISOCODES_PREFIX",
     "_"
 )
@@ -55,4 +56,5 @@ def get_ICON_KEYBOARD():
         return fallback_icon
     return icon
 
+LIBIBUS_SONAME='libibus-@IBUS_API_VERSION@.so.@LT_CURRENT_MINUS_AGE@'
 ISOCODES_PREFIX='@ISOCODES_PREFIX@'
