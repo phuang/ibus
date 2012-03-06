@@ -89,12 +89,15 @@ class Panel : IBus.PanelService {
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
+            m_config.watch(null, null);
             m_config = null;
         }
 
         m_config = config;
         if (m_config != null) {
             m_config.value_changed.connect(config_value_changed_cb);
+            m_config.watch("general", "preload_engines");
+            m_config.watch("general", "engines_order");
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
         } else {
