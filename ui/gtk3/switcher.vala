@@ -173,6 +173,9 @@ class Switcher : Gtk.Window {
             m_box.pack_start(button, true, true);
             m_buttons += button;
         }
+
+        // Cause window recalculate the perferred size.
+        resize(1, 1);
     }
 
     private void next_engine() {
