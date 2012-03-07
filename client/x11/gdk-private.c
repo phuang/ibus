@@ -38,10 +38,6 @@ translate_key_event (GdkDisplay *display,
 		     XEvent     *xevent)
 {
   GdkKeymap *keymap = gdk_keymap_get_for_display (display);
-#if 0
-  gunichar c = 0;
-  gchar buf[7];
-#endif
 
   event->key.type = xevent->xany.type == KeyPress ? GDK_KEY_PRESS : GDK_KEY_RELEASE;
   event->key.time = xevent->xkey.time;
@@ -64,10 +60,6 @@ translate_key_event (GdkDisplay *display,
 				       event->key.group,
 				       &event->key.keyval,
 				       NULL, NULL, NULL);
-#if 0
-  _gdk_keymap_add_virtual_modifiers (keymap, &event->key.state);
-  event->key.is_modifier = _gdk_keymap_key_is_modifier (keymap, event->key.hardware_keycode);
-#endif
   event->key.is_modifier = 0;
 
   /* Fill in event->string crudely, since various programs
@@ -76,62 +68,6 @@ translate_key_event (GdkDisplay *display,
   event->key.string = NULL;
   event->key.length = 0;
 
-  /* Don't need event->string.
-   */
-#if 0
-  if (event->key.keyval != GDK_VoidSymbol)
-    c = gdk_keyval_to_unicode (event->key.keyval);
-
-  if (c)
-    {
-      gsize bytes_written;
-      gint len;
-
-      /* Apply the control key - Taken from Xlib
-       */
-      if (event->key.state & GDK_CONTROL_MASK)
-	{
-	  if ((c >= '@' && c < '\177') || c == ' ') c &= 0x1F;
-	  else if (c == '2')
-	    {
-	      event->key.string = g_memdup ("\0\0", 2);
-	      event->key.length = 1;
-	      buf[0] = '\0';
-	      goto out;
-	    }
-	  else if (c >= '3' && c <= '7') c -= ('3' - '\033');
-	  else if (c == '8') c = '\177';
-	  else if (c == '/') c = '_' & 0x1F;
-	}
-
-      len = g_unichar_to_utf8 (c, buf);
-      buf[len] = '\0';
-
-      event->key.string = g_locale_from_utf8 (buf, len,
-					      NULL, &bytes_written,
-					      NULL);
-      if (event->key.string)
-	event->key.length = bytes_written;
-    }
-  else if (event->key.keyval == GDK_Escape)
-    {
-      event->key.length = 1;
-      event->key.string = g_strdup ("\033");
-    }
-  else if (event->key.keyval == GDK_Return ||
-	  event->key.keyval == GDK_KP_Enter)
-    {
-      event->key.length = 1;
-      event->key.string = g_strdup ("\r");
-    }
-
-  if (!event->key.string)
-    {
-      event->key.length = 0;
-      event->key.string = g_strdup ("");
-    }
- out:
-#endif
   return;
 }
 

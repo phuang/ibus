@@ -219,21 +219,6 @@ static void
 ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
-
-    /* FIXME: Is it necessary? */
-#if 0
-    component->priv->engines = NULL;
-    component->priv->observed_paths = NULL;
-
-    component->priv->name = NULL;
-    component->priv->description = NULL;
-    component->priv->version = NULL;
-    component->priv->license = NULL;
-    component->priv->author = NULL;
-    component->priv->homepage = NULL;
-    component->priv->exec = NULL;
-    component->priv->textdomain = NULL;
-#endif
 }
 
 static void

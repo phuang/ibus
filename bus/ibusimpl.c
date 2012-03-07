@@ -103,26 +103,6 @@ static void      bus_ibus_impl_service_method_call
                                                   GVariant           *parameters,
                                                   GDBusMethodInvocation
                                                                      *invocation);
-/* TODO use property to replace some getter and setter in future */
-#if 0
-static GVariant *ibus_ibus_impl_service_get_property
-                                              (IBusService        *service,
-                                               GDBusConnection    *connection,
-                                               const gchar        *sender,
-                                               const gchar        *object_path,
-                                               const gchar        *interface_name,
-                                               const gchar        *property_name,
-                                               GError            **error);
-static gboolean  ibus_ibus_impl_service_set_property
-                                              (IBusService        *service,
-                                               GDBusConnection    *connection,
-                                               const gchar        *sender,
-                                               const gchar        *object_path,
-                                               const gchar        *interface_name,
-                                               const gchar        *property_name,
-                                               GVariant           *value,
-                                               GError            **error);
-#endif
 static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
                                                 (BusIBusImpl        *ibus);

@@ -30,19 +30,9 @@ enum {
     PROP_0,
 };
 
-// static guint            config_service_signals[LAST_SIGNAL] = { 0 };
-
 /* functions prototype */
 static void      ibus_config_service_class_init      (IBusConfigServiceClass *class);
 static void      ibus_config_service_init            (IBusConfigService      *config);
-static void      ibus_config_service_set_property    (IBusConfigService      *config,
-                                                      guint                   prop_id,
-                                                      const GValue           *value,
-                                                      GParamSpec             *pspec);
-static void      ibus_config_service_get_property    (IBusConfigService      *config,
-                                                      guint                   prop_id,
-                                                      GValue                 *value,
-                                                      GParamSpec             *pspec);
 static void      ibus_config_service_destroy         (IBusConfigService      *config);
 static void      ibus_config_service_service_method_call
                                                      (IBusService            *service,
@@ -123,9 +113,6 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
-    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_config_service_set_property;
-    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_config_service_get_property;
-
     IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) ibus_config_service_destroy;
 
     IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_config_service_service_method_call;
@@ -143,34 +130,6 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
 static void
 ibus_config_service_init (IBusConfigService *config)
 {
-}
-
-static void
-ibus_config_service_set_property (IBusConfigService *config,
-                                  guint              prop_id,
-                                  const GValue      *value,
-                                  GParamSpec        *pspec)
-{
-    switch (prop_id) {
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
-    }
-}
-
-static void
-ibus_config_service_get_property (IBusConfigService *config,
-                                  guint              prop_id,
-                                  GValue            *value,
-                                  GParamSpec        *pspec)
-{
-    switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        break;
-    #endif
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
-    }
 }
 
 static void

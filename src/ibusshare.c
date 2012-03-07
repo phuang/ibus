@@ -69,63 +69,12 @@ const gchar *
 ibus_get_user_name (void)
 {
     return g_get_user_name ();
-#if 0
-    static gchar *username = NULL;
-    if (username == NULL) {
-        username = g_strdup (getlogin());
-        if (username == NULL)
-            username = g_strdup (g_getenv("SUDO_USER"));
-        if (username == NULL) {
-            const gchar *uid = g_getenv ("USERHELPER_UID");
-            if (uid != NULL) {
-                gchar *end;
-                uid_t id = (uid_t)strtol(uid, &end, 10);
-                if (uid != end) {
-                    struct passwd *pw = getpwuid (id);
-                    if (pw != NULL) {
-                        username = g_strdup (pw->pw_name);
-                    }
-                }
-            }
-        }
-        if (username == NULL)
-            username = g_strdup (g_getenv("USERNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LOGNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("USER"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LNAME"));
-
-    }
-    return username;
-#endif
 }
 
 glong
 ibus_get_daemon_uid (void)
 {
     return getuid ();
-#if 0
-    struct passwd *pwd;
-    uid_t uid;
-    const gchar *username;
-
-    uid = getuid ();
-
-    if (uid != 0)
-        return uid;
-
-    username = ibus_get_user_name ();
-    if (username == NULL)
-        return 0;
-
-    pwd = getpwnam (username);
-    if (pwd == NULL)
-        return 0;
-
-    return pwd->pw_uid;
-#endif
 }
 
 const gchar *
