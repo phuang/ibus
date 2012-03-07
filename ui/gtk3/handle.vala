@@ -111,7 +111,8 @@ class Handle : Gtk.EventBox {
         int x, y;
         Gtk.Window toplevel = (Gtk.Window)get_toplevel();
         toplevel.get_position(out x, out y);
-        m_press_pos = { (int)event.x_root - x, (int)event.y_root - y };
+        m_press_pos.x = (int)event.x_root - x;
+        m_press_pos.y = (int)event.y_root - y;
         move_begin();
         return true;
     }
@@ -120,7 +121,8 @@ class Handle : Gtk.EventBox {
         if (event.button != 1)
             return false;
         m_move_begined = false;
-        m_press_pos = { 0, 0 };
+        m_press_pos.x = 0;
+        m_press_pos.y = 0;
         get_window().set_cursor(new Gdk.Cursor(Gdk.CursorType.LEFT_PTR));
         move_end();
         return true;
