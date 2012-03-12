@@ -127,6 +127,9 @@ class Switcher : Gtk.Window {
         m_loop.run();
         m_loop = null;
 
+        keyboard.ungrab(Gdk.CURRENT_TIME);
+        pointer.ungrab(Gdk.CURRENT_TIME);
+
         hide();
         // Make sure the switcher is hidden before returning from this function.
         while (Gtk.events_pending())
@@ -237,6 +240,11 @@ class Switcher : Gtk.Window {
         if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe,
             m_primary_modifier)) {
             return true;
+        }
+
+        // if e.type == Gdk.EventType.KEY_RELEASE, m_loop is already null.
+        if (m_loop == null) {
+            return false;
         }
 
         m_loop.quit();
