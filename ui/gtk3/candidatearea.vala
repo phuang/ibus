@@ -34,6 +34,11 @@ class CandidateArea : Gtk.Box {
     private uint m_focus_candidate;
     private bool m_show_cursor;
 
+    private const string LABELS[] = {
+        "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.",
+        "9.", "0.", "a.", "b.", "c.", "d.", "e.", "f."
+    };
+
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void page_up();
     public signal void page_down();
@@ -61,19 +66,12 @@ class CandidateArea : Gtk.Box {
             show_all();
     }
 
-    public void set_labels(string[] labels) {
-        if (labels == null) {
-            const string labels[] = {
-                "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.",
-                "9.", "0.", "a.", "b.", "c.", "d.", "e.", "f."
-            };
-            for (int i = 0 ; i < 16; i++)
-                m_labels[i].set_text(labels[i]);
-        } else {
-            int i = 0;
-            foreach (string label in labels)
-                m_labels[i].set_text(label);
-        }
+    public void set_labels(IBus.Text[] labels) {
+        int i;
+        for (i = 0; i < int.min(16, labels.length); i++)
+            m_labels[i].set_text(labels[i].get_text());
+        for (; i < 16; i++)
+            m_labels[i].set_text(LABELS[i]);
     }
 
     public void set_candidates(IBus.Text[] candidates,
@@ -130,11 +128,6 @@ class CandidateArea : Gtk.Box {
             w.destroy();
         }
 
-        const string labels[] = {
-            "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.",
-            "9.", "0.", "a.", "b.", "c.", "d.", "e.", "f."
-        };
-
         Gtk.Button prev_button = new Gtk.Button();
         prev_button.clicked.connect((b) => page_up());
         prev_button.set_image(new Gtk.Image.from_icon_name(Gtk.Stock.GO_UP, Gtk.IconSize.MENU));
@@ -171,7 +164,7 @@ class CandidateArea : Gtk.Box {
             m_candidates = {};
             m_widgets = {};
             for (int i = 0; i < 16; i++) {
-                Gtk.Label label = new Gtk.Label(labels[i]);
+                Gtk.Label label = new Gtk.Label(LABELS[i]);
                 label.set_alignment(0.0f, 0.5f);
                 label.show();
                 m_labels += label;
@@ -215,7 +208,7 @@ class CandidateArea : Gtk.Box {
             m_candidates = {};
             m_widgets = {};
             for (int i = 0; i < 16; i++) {
-                Gtk.Label label = new Gtk.Label(labels[i]);
+                Gtk.Label label = new Gtk.Label(LABELS[i]);
                 label.set_alignment(0.0f, 0.5f);
                 label.show();
                 m_labels += label;

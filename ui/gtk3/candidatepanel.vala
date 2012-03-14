@@ -79,6 +79,20 @@ public class CandidatePanel : Gtk.HBox{
         m_candidate_area.set_vertical(vertical);
     }
 
+    private void set_orientation(IBus.Orientation orientation) {
+        switch (orientation) {
+        case IBus.Orientation.VERTICAL:
+            m_candidate_area.set_vertical(true);
+            break;
+        case IBus.Orientation.HORIZONTAL:
+            m_candidate_area.set_vertical(false);
+            break;
+        case IBus.Orientation.SYSTEM:
+            m_candidate_area.set_vertical(m_vertical);
+            break;
+        }
+    }
+
     public void set_cursor_location(int x, int y, int width, int height) {
         Gdk.Rectangle location = Gdk.Rectangle(){
             x = x, y = y, width = width, height = height };
@@ -88,7 +102,7 @@ public class CandidatePanel : Gtk.HBox{
         adjust_window_position();
     }
 
-    public void set_labels(string[] labels) {
+    private void set_labels(IBus.Text[] labels) {
         m_candidate_area.set_labels(labels);
     }
 
@@ -118,6 +132,8 @@ public class CandidatePanel : Gtk.HBox{
         IBus.Text[] candidates = {};
         uint cursor_in_page = 0;
         bool show_cursor = true;
+        IBus.Text[] labels = {};
+        IBus.Orientation orientation = IBus.Orientation.SYSTEM;
 
         if (table != null) {
             uint page_size = table.get_page_size();
@@ -130,8 +146,19 @@ public class CandidatePanel : Gtk.HBox{
             uint page_end_pos = uint.min(page_start_pos + page_size, ncandidates);
             for (uint i = page_start_pos; i < page_end_pos; i++)
                 candidates += table.get_candidate(i);
+
+            for (uint i = 0; i < page_size; i++) {
+                IBus.Text? label = table.get_label(i);
+                if (label != null)
+                    labels += label;
+            }
+
+            orientation = (IBus.Orientation)table.get_orientation();
         }
         m_candidate_area.set_candidates(candidates, cursor_in_page, show_cursor);
+        set_labels(labels);
+        set_orientation(orientation);
+
         if (candidates.length != 0)
             m_candidate_area.show_all();
         else
