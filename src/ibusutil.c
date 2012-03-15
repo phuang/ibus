@@ -147,7 +147,7 @@ ibus_get_language_name(const gchar *_locale) {
     }
     else {
 #ifdef ENABLE_NLS
-        return dgettext("iso_639", N_("Other"));
+        return dgettext(GETTEXT_PACKAGE, N_("Other"));
 #else
         return N_("Other");
 #endif
