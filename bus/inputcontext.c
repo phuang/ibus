@@ -2015,6 +2015,10 @@ bus_input_context_unset_engine (BusInputContext *context)
             g_signal_handlers_disconnect_by_func (context->engine,
                     engine_signals[i].callback, context);
         }
+        /* focus out engine so that the next call of
+           bus_engine_proxy_focus_in() will take effect and trigger
+           RegisterProperties. */
+        bus_engine_proxy_focus_out (context->engine);
         g_object_unref (context->engine);
         context->engine = NULL;
     }
