@@ -155,9 +155,22 @@ class Switcher : Gtk.Window {
         for (int i = 0; i < m_engines.length; i++) {
             var index = i;
             var engine = m_engines[i];
-            var button = new Gtk.Button.with_label(engine.get_longname());
+            var longname = engine.get_longname();
+            var language = engine.get_language();
+            var symbol = engine.get_symbol();
+            var id = language;
+
+            if (id.length > 2) {
+                id = id[0:2];
+            }
+            if (symbol.length != 0) {
+                id = symbol;
+            }
+            var label = "%-15s %s".printf(longname, id);
+            var button = new Gtk.Button.with_label(label);
             button.set_image(new IconWidget(engine.get_icon(), width));
             button.set_relief(Gtk.ReliefStyle.NONE);
+            button.set_alignment(1.0f, 0.0f);
             button.show();
 
             button.enter_notify_event.connect((e) => {
