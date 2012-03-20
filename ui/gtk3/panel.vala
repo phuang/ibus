@@ -40,6 +40,7 @@ class Panel : IBus.PanelService {
     private PropertyManager m_property_manager;
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
+    private Gtk.CssProvider m_css_provider;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
     private const string ACCELERATOR_SWITCH_IME_BACKWARD = "<Control><Shift>space";
 
@@ -86,6 +87,63 @@ class Panel : IBus.PanelService {
         keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_BACKWARD);
     }
 
+    private void set_custom_font() {
+        Gdk.Display display = Gdk.Display.get_default();
+        Gdk.Screen screen = (display != null) ?
+                display.get_default_screen() : null;
+
+        if (screen == null) {
+            warning("Could not open display.");
+            return;
+        }
+
+        bool use_custom_font = false;
+        GLib.Variant var_use_custom_font = m_config.get_value("panel",
+                                                              "use_custom_font");
+
+        if (var_use_custom_font != null) {
+            use_custom_font = var_use_custom_font.get_boolean();
+        }
+
+        if (m_css_provider != null) {
+            Gtk.StyleContext.remove_provider_for_screen(screen,
+                                                        m_css_provider);
+            m_css_provider = null;
+        }
+
+        if (use_custom_font == false) {
+            return;
+        }
+
+        string font_name = null;
+        GLib.Variant var_custom_font = m_config.get_value("panel",
+                                                          "custom_font");
+        if (var_custom_font != null) {
+            font_name = var_custom_font.dup_string();
+        }
+
+        if (font_name == null) {
+            warning("No config panel:custom_font.");
+            return;
+        }
+
+        string data_format = "GtkLabel { font: %s; }";
+        string data = data_format.printf(font_name);
+        m_css_provider = new Gtk.CssProvider();
+
+        try {
+            m_css_provider.load_from_data(data, -1);
+        } catch (GLib.Error e) {
+            warning("Failed css_provider_from_data: %s: %s", font_name,
+                                                             e.message);
+            return;
+        }
+
+        Gtk.StyleContext.add_provider_for_screen(screen,
+                                                 m_css_provider,
+                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
+
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
@@ -98,11 +156,15 @@ class Panel : IBus.PanelService {
             m_config.value_changed.connect(config_value_changed_cb);
             m_config.watch("general", "preload_engines");
             m_config.watch("general", "engines_order");
+            m_config.watch("panel", "custom_font");
+            m_config.watch("panel", "use_custom_font");
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
         } else {
             update_engines(null, null);
         }
+
+        set_custom_font();
     }
 
     private void switch_engine(int i, bool force = false) {
@@ -150,6 +212,13 @@ class Panel : IBus.PanelService {
                                          Variant variant) {
         if (section == "general" && name == "preload_engines") {
             update_engines(variant, null);
+            return;
+        }
+
+        if (section == "panel" && (name == "custom_font" ||
+                                   name == "use_custom_font")) {
+            set_custom_font();
+            return;
         }
     }
 
