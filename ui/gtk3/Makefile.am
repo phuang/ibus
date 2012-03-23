@@ -50,6 +50,7 @@ AM_CFLAGS = \
 	@X11_CFLAGS@ \
 	$(INCLUDES) \
 	-DGETTEXT_PACKAGE=\"@GETTEXT_PACKAGE@\" \
+	-DGLIB_LOCALE_DIR=\"@GLIB_LOCALE_DIR@\" \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \

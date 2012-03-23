@@ -24,12 +24,17 @@ using IBus;
 using GLib;
 using Gtk;
 
+public extern const string GETTEXT_PACKAGE;
+public extern const string GLIB_LOCALE_DIR;
+
 class Application {
     private IBus.Bus m_bus;
     private Panel m_panel;
     private IBus.Config m_config;
 
     public Application(string[] argv) {
+        GLib.Intl.bindtextdomain(GETTEXT_PACKAGE, GLIB_LOCALE_DIR);
+        GLib.Intl.bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
         IBus.init();
         Gtk.init(ref argv);
 

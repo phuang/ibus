@@ -105,6 +105,9 @@ GETTEXT_PACKAGE=ibus10
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for out gettext translation domains.])
+GLIB_DEFINE_LOCALEDIR(GLIB_LOCALE_DIR)
+GLIB_LOCALE_DIR=$localedir
+AC_SUBST(GLIB_LOCALE_DIR)
 
 # For dislpay date.
 m4_define(ibus_datedisplay,
