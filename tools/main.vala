@@ -23,6 +23,8 @@ using GLib;
 using IBus;
 
 
+public extern const string IBUS_VERSION;
+
 bool name_only = false;
 
 class EngineList {
@@ -129,6 +131,11 @@ int exit_daemon(string[] argv) {
     return 0;
 }
 
+int print_version (string[] argv) {
+    print("IBus %s\n", IBUS_VERSION);
+    return 0;
+}
+
 delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
@@ -142,10 +149,17 @@ public int main(string[] argv) {
         { "exit", exit_daemon },
         { "list-engine", list_engine },
         { "watch", message_watch },
-        { "restart", restart_daemon }
+        { "restart", restart_daemon },
+        { "version", print_version }
     };
 
     if (argv.length >= 2) {
+        if (argv[1] == "--help" || argv[1] == "help") {
+            foreach (var command in commands) {
+                print ("  %s\n", command.name);
+            }
+            return 0;
+        }
         string[] new_argv = argv[1:argv.length];
         foreach (var command in commands) {
             if (command.name == argv[1])

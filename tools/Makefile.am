@@ -38,6 +38,7 @@ AM_CFLAGS = \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DBINDIR=\"@bindir@\" \
+	-DIBUS_VERSION=\"@IBUS_VERSION@\" \
     -DIBUS_DISABLE_DEPRECATED \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
