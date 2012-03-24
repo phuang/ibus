@@ -156,7 +156,7 @@ gboolean         ibus_hotkey_profile_remove_hotkey_by_event
  *
  * Emit a <constant>::trigger</constant> signal when a hotkey is in a profile.
  *
- * @see_also: ::trigger
+ * See also: ::trigger
  */
 GQuark           ibus_hotkey_profile_filter_key_event
                                                 (IBusHotkeyProfile  *profile,

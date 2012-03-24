@@ -188,7 +188,7 @@ void             ibus_set_display       (const gchar    *display);
  *    <listitem><para>Socket file under ~/.config/ibus/bus/</para></listitem>
  * </orderedlist>
  *
- * @see_also: ibus_write_address().
+ * See also: ibus_write_address().
  */
 const gchar     *ibus_get_address       (void);
 
@@ -198,7 +198,7 @@ const gchar     *ibus_get_address       (void);
  *
  * Write D-Bus address to socket file.
  *
- * @see_also: ibus_get_address().
+ * See also: ibus_get_address().
  */
 void             ibus_write_address     (const gchar    *address);
 
@@ -247,26 +247,6 @@ const gchar     *ibus_get_socket_path   (void);
  * Note that the timeout for ibus-daemon could be set by --timeout command line option of the daemon.
  */
 gint             ibus_get_timeout       (void);
-
-/**
- * ibus_keyval_name:
- * @keyval: Key symbol.
- * @returns: Corresponding key name. %NULL if no such key symbol.
- *
- * Return the name of a key symbol.
- *
- * Note that the returned string is used internally, so don't free it.
- */
-const gchar     *ibus_keyval_name       (guint           keyval);
-
-/**
- * ibus_keyval_from_name:
- * @keyval_name: Key name in #gdk_keys_by_name.
- * @returns: Corresponding key symbol.
- *
- * Return the key symbol that associate with the key name.
- */
-guint            ibus_keyval_from_name  (const gchar    *keyval_name);
 
 /**
  * ibus_free_strv:
@@ -322,7 +302,7 @@ void             ibus_init              (void);
  *
  * Runs an IBus main loop until ibus_quit() is called in the loop.
  *
- * @see_also: ibus_quit().
+ * See also: ibus_quit().
  */
 void             ibus_main              (void);
 
@@ -332,7 +312,7 @@ void             ibus_main              (void);
  * Stops an IBus from running.
  *
  * Any calls to ibus_quit() for the loop will return.
- * @see_also: ibus_main().
+ * See also: ibus_main().
  */
 void             ibus_quit              (void);
 
@@ -345,7 +325,7 @@ void             ibus_quit              (void);
  *
  * (ibus-daemon:7088): IBUS-DEBUG: 18:06:45.822819: ibus-daemon started
  *
- * If @verbose is TRUE, all levels of messages will be logged. Otherwise,
+ * If @verbose is %TRUE, all levels of messages will be logged. Otherwise,
  * DEBUG and WARNING messages will be ignored.  The function is used in
  * ibus-daemon, but can be useful for IBus client programs as well for
  * debugging. It's totally fine for not calling this function. If you
@@ -353,6 +333,13 @@ void             ibus_quit              (void);
  * be used.
  */
 void             ibus_set_log_handler   (gboolean verbose);
+
+/**
+ * ibus_unset_log_handler:
+ *
+ * Remove the log handler which is set by ibus_set_log_handler.
+ */
+void             ibus_unset_log_handler (void);
 
 G_END_DECLS
 #endif

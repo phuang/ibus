@@ -115,8 +115,9 @@ endif
 
 trim-build.stamp: scan-build.stamp
 	$(AM_V_GEN) \
-	    $(SED) -f $(srcdir)/trim.sed -i.bak $(srcdir)/$(DOC_MODULE)-sections.txt && \
-	    $(RM) $(srcdir)/$(DOC_MODULE)-sections.txt.bak && \
+	    $(SED) -f $(srcdir)/trim.sed -i.bak \
+			$(builddir)/$(DOC_MODULE)-sections.txt && \
+	    $(RM) $(builddir)/$(DOC_MODULE)-sections.txt.bak && \
 	    touch trim-build.stamp
 
 tmpl-build.stamp: trim-build.stamp  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-overrides.txt

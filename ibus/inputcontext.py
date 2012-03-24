@@ -138,6 +138,7 @@ class InputContext(object.Object):
         self.__needs_surrounding_text = False
         self.__surrounding_text = Text()
         self.__surrounding_cursor_pos = 0
+        self.__selection_anchor_pos = 0
 
         if not watch_signals:
             return
@@ -151,10 +152,6 @@ class InputContext(object.Object):
         m = self.__context.connect_to_signal("UpdateLookupTable", self.__update_lookup_table_cb)
         self.__signal_matches.append(m)
         m = self.__context.connect_to_signal("RequireSurroundingText", self.__require_surrounding_text_cb)
-        self.__signal_matches.append(m)
-        m = self.__context.connect_to_signal("Enabled", self.__enabled_cb)
-        self.__signal_matches.append(m)
-        m = self.__context.connect_to_signal("Disabled", self.__disabled_cb)
         self.__signal_matches.append(m)
 
         m = self.__context.connect_to_signal("ForwardKeyEvent",            lambda *args: self.emit("forward-key-event", *args))
@@ -184,14 +181,6 @@ class InputContext(object.Object):
         m = self.__context.connect_to_signal("CursorDownLookupTable", lambda *args: self.emit("cursor-down-lookup-table"))
         self.__signal_matches.append(m)
 
-    def __enabled_cb(self, *args):
-        self.__needs_surrounding_text = False
-        self.emit("enabled")
-
-    def __disabled_cb(self, *args):
-        self.__needs_surrounding_text = False
-        self.emit("disabled")
-
     def __commit_text_cb(self, *args):
         text = serializable.deserialize_object(args[0])
         self.emit("commit-text", text)
@@ -218,14 +207,17 @@ class InputContext(object.Object):
     def needs_surrounding_text(self):
         return self.__needs_surrounding_text
 
-    def set_surrounding_text(self, text, cursor_pos):
+    def set_surrounding_text(self, text, cursor_pos, anchor_pos):
         if self.__surrounding_text.get_text() != text or \
-                self.__surrounding_cursor_pos != cursor_pos:
+                self.__surrounding_cursor_pos != cursor_pos or \
+                self.__selection_anchor_pos != anchor_pos:
             self.__surrounding_text = Text(text)
             self.__surrounding_cursor_pos = cursor_pos
+            self.__selection_anchor_pos = anchor_pos
             text = serializable.serialize_object(self.__surrounding_text)
             cursor_pos = dbus.UInt32(self.__surrounding_cursor_pos)
-            self.__context.SetSurroundingText(text, cursor_pos)
+            anchor_pos = dbus.UInt32(self.__selection_anchor_pos)
+            self.__context.SetSurroundingText(text, cursor_pos, anchor_pos)
 
     def process_key_event(self, keyval, keycode, modifiers):
         keyval = dbus.UInt32(keyval)
@@ -248,15 +240,6 @@ class InputContext(object.Object):
 
     def reset(self):
         return self.__context.Reset()
-
-    def enable(self):
-        return self.__context.Enable()
-
-    def disable(self):
-        return self.__context.Disable()
-
-    def is_enabled(self):
-        return self.__context.IsEnabled()
 
     def set_capabilities(self, caps):
         caps = dbus.UInt32(caps)
@@ -315,8 +298,6 @@ def test():
             self.__context.connect("show-preedit-text", self.__show_preedit_text_cb)
             self.__context.connect("update-auxiliary-text", self.__update_auxiliary_text_cb)
             self.__context.connect("update-lookup-table", self.__update_lookup_table_cb)
-            self.__context.connect("enabled", self.__enabled_cb)
-            self.__context.connect("disabled", self.__disabled_cb)
 
             self.set_events(gtk.gdk.KEY_PRESS_MASK | gtk.gdk.KEY_RELEASE_MASK | gtk.gdk.FOCUS_CHANGE_MASK)
 
@@ -346,14 +327,6 @@ def test():
         def __update_lookup_table_cb(self, context, table, visible):
             print "update-lookup-table:", visible
 
-        def __enabled_cb(self, context):
-            print "enabled"
-            info = context.get_factory_info()
-            print "factory = %s" % info.name
-
-        def __disabled_cb(self, context):
-            print "disabled"
-
         def __key_press_event_cb(self, widget, event):
             self.__context.process_key_event(event.keyval, event.state)
 
@@ -365,4 +338,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-

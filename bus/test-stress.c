@@ -97,9 +97,9 @@ main (gint argc, gchar **argv)
                 count = g_rand_int_range (rnd, 0, MAX_RANDOM_SPACE) + 1;
             }
             if (count-- == 1) {
-                keysym = IBUS_Return;
+                keysym = IBUS_KEY_Return;
             } else {
-                keysym = IBUS_space;
+                keysym = IBUS_KEY_space;
             }
         } else {
             /* send random a-z key */

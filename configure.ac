@@ -19,78 +19,126 @@
 # License along with this program; if not, write to the
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
-AC_PREFEQ([2.62])
-
-AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_MACRO_DIR([m4])
 
 
-# if not 1, append datestamp to the version number.
+# If ibus_released is 0, append datestamp to the version number.
 m4_define([ibus_released], [0])
+
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [3])
+m4_define([ibus_minor_version], [4])
 m4_define([ibus_micro_version], [99])
-m4_define(ibus_maybe_datestamp,
-    m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
+m4_define([ibus_abi_current], [5])
+m4_define([ibus_abi_revision],
+          [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
+m4_define([ibus_abi_age], [0])
+m4_define([ibus_maybe_datestamp],
+    m4_esyscmd([test x]ibus_released[ != x1 && date +.%Y%m%d | tr -d '\n\r']))
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
-# This is the X.Y used in -libus-X.Y
-m4_define([ibus_api_version], [1.0])
+m4_define([ibus_api_version], [ibus_major_version.0])
 
-
-# Required versions of other packages
-m4_define([glib_required_version], [2.26.0])
-
-
+AC_PREFEQ([2.62])
 AC_INIT([ibus], [ibus_version],
         [http://code.google.com/p/ibus/issues/entry],
         [ibus])
 
-# Init automake
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+
+m4_define([ibus_abi_current_minus_age],
+          [m4_eval(ibus_abi_current - ibus_abi_age)])
+m4_define([ibus_binary_version],
+          [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
+
+# Required versions of other packages.
+m4_define([glib_required_version], [2.26.0])
+
+
+# Init automake.
 AM_INIT_AUTOMAKE([1.10])
 AM_MAINTAINER_MODE([enable])
 AC_GNU_SOURCE
 
-# Support silent build
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+# Support silent build rules. Disable
+# by either passing --disable-silent-rules to configure or passing V=1
+# to make
+AM_SILENT_RULES([yes])
 
 # Define sustituted variables:
 IBUS_MAJOR_VERSION=ibus_major_version
 IBUS_MINOR_VERSION=ibus_minor_version
 IBUS_MICRO_VERSION=ibus_micro_version
+IBUS_ABI_CURRENT=ibus_abi_current
+IBUS_ABI_REVISION=ibus_abi_revision
+IBUS_ABI_AGE=ibus_abi_age
+IBUS_VERSION=ibus_version
 IBUS_API_VERSION=ibus_api_version
+IBUS_BINARY_VERSION=ibus_binary_version
 AC_SUBST(IBUS_MAJOR_VERSION)
 AC_SUBST(IBUS_MINOR_VERSION)
 AC_SUBST(IBUS_MICRO_VERSION)
+AC_SUBST(IBUS_ABI_CURRENT)
+AC_SUBST(IBUS_ABI_REVISION)
+AC_SUBST(IBUS_ABI_AGE)
 AC_SUBST(IBUS_API_VERSION)
+AC_SUBST(IBUS_VERSION)
+AC_SUBST(IBUS_BINARY_VERSION)
 
-# Check for programs
+# libtool versioning
+#
+# If LT_VERSION_INFO="lt_current:lt_revision:lt_age", libibus is
+# libibus-ibus_api_version.so.(lt_current - lt_age).lt_age.lt_revision
+# If the abi is changed, but it is compatible with last version,
+# ibus_abi_current++, ibus_abi_age++;
+# If the abi is not compatible with last version,
+# ibus_abi_current++, ibus_abi_age = 0;
+m4_define([lt_current], [ibus_abi_current])
+m4_define([lt_revision], [ibus_abi_revision])
+m4_define([lt_age], [ibus_abi_age])
+LT_VERSION_INFO="lt_current:lt_revision:lt_age"
+LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
+AC_SUBST(LT_VERSION_INFO)
+AC_SUBST(LT_CURRENT_MINUS_AGE)
+
+# Define GETTEXT_* variables.
+GETTEXT_PACKAGE=ibus10
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
+                   [The prefix for out gettext translation domains.])
+GLIB_DEFINE_LOCALEDIR(GLIB_LOCALE_DIR)
+GLIB_LOCALE_DIR=$localedir
+AC_SUBST(GLIB_LOCALE_DIR)
+
+# For dislpay date.
+m4_define(ibus_datedisplay,
+    m4_esyscmd(date '+%a %b %d %Y' | tr -d '\n\r'))
+DATE_DISPLAY="ibus_datedisplay"
+AC_SUBST(DATE_DISPLAY)
+
+
+# Check for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
+AM_PROG_VALAC([0.14])
 AC_PROG_INSTALL
-AC_PROG_CXX
+AC_PROG_MAKE_SET
 
-# define PACKAGE_VERSION_* variables
+# i18n stuff
+AM_GLIB_GNU_GETTEXT
+
+# Define PACKAGE_VERSION_* variables.
 AM_DISABLE_STATIC
 AC_ISC_POSIX
 AC_HEADER_STDC
 AM_PROG_LIBTOOL
 IT_PROG_INTLTOOL([0.35.0])
 
-# If only source code changed, lt_revision + 1
-# If any interface added, lt_age + 1
-# If any interfaces changed or removed, lt_current + 1, lt_revision = 0, lt_age = 0
-m4_define([lt_current], [0])
-m4_define([lt_revision], [0])
-m4_define([lt_age], [0])
-LT_VERSION_INFO="lt_current:lt_revision:lt_age"
-AC_SUBST(LT_VERSION_INFO)
-
-# check funcs
+# Check functions.
 AC_CHECK_FUNCS(daemon)
 
-# check glib2
+# Check packages.
+# Check glib2.
 AM_PATH_GLIB_2_0
 PKG_CHECK_MODULES(GLIB2, [
     glib-2.0 >= glib_required_version
@@ -105,6 +153,19 @@ PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
 
+# --disable-tests option.
+AC_ARG_ENABLE(tests,
+    AS_HELP_STRING([--disable-tests],
+                   [Do not run tests]),
+    [enable_tests=$enableval],
+    [enable_tests=yes]
+)
+AM_CONDITIONAL([ENABLE_TESTS], [test x"$enable_tests" = x"yes"])
+if test x"$enable_tests" != x"yes"; then
+    enable_tests="no (disabled, use --enable-tests to enable)"
+fi
+
+# --disable-gtk2 option.
 AC_ARG_ENABLE(gtk2,
     AS_HELP_STRING([--disable-gtk2],
                    [Do not build gtk2 im module]),
@@ -113,14 +174,16 @@ AC_ARG_ENABLE(gtk2,
 )
 AM_CONDITIONAL([ENABLE_GTK2], [test x"$enable_gtk2" = x"yes"])
 
+# --disable-gtk3 option.
 AC_ARG_ENABLE(gtk3,
-    AS_HELP_STRING([--enable-gtk3],
-                   [Build gtk3 im module]),
+    AS_HELP_STRING([--disable-gtk3],
+                   [Do not build gtk3 im module]),
     [enable_gtk3=$enableval],
-    [enable_gtk3=no]
+    [enable_gtk3=yes]
 )
 AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"yes"])
 
+# --disable-xim option.
 AC_ARG_ENABLE(xim,
     AS_HELP_STRING([--disable-xim],
                    [Do not build xim server]),
@@ -129,12 +192,16 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
+# --disable-vala option.
 AC_ARG_ENABLE(vala,
     AS_HELP_STRING([--disable-vala],
                    [Do not build ibus vala binding]),
     [enable_vala=$enableval],
     [enable_vala=yes]
 )
+if test x"$enable_vala" = x"yes"; then
+    AC_PATH_PROG([VAPIGEN], [vapigen], [false])
+fi
 AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
 if test x"$enable_vala" != x"yes"; then
     enable_vala="no (disabled, use --enable-vala to enable)"
@@ -200,17 +267,18 @@ if test x"$found_introspection" = x"yes" ; then
 fi
 AC_SUBST(IBUS_GIR_SCANNERFLAGS)
 
-# check for gtk-doc
+# Check for gtk-doc.
 GTK_DOC_CHECK(1.9)
 if test x"$enable_gtk_doc" = x"no"; then
     enable_gtk_doc="no (disabled, use --enable-gtk-doc to enable)"
 fi
 
-# check for dbus
+# Check for dbus.
 PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
+# --disable-gconf option.
 AC_ARG_ENABLE(gconf,
     AS_HELP_STRING([--disable-gconf],
                    [Do not use GConf code]),
@@ -237,6 +305,7 @@ else
     enable_gconf="no (disabled, use --enable-gconf to enable)"
 fi
 
+# --enable-memconf option.
 AC_ARG_ENABLE(memconf,
     AS_HELP_STRING([--enable-memconf],
                    [Enable configure base on memory]),
@@ -263,23 +332,32 @@ if test x"$enable_dconf" = x"yes"; then
 fi
 AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
-# check env
+# Check env.
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
 
-AC_ARG_ENABLE(python,
-    AS_HELP_STRING([--disable-python],
-                   [Do not use Python code]),
-    [enable_python=$enableval],
-    [enable_python=yes]
+AC_ARG_ENABLE(python-library,
+    AS_HELP_STRING([--enable-python-library],
+                   [Use ibus python library]),
+    [enable_python_library=$enableval],
+    [enable_python_library=no]
 )
 
-AM_CONDITIONAL([ENABLE_PYTHON], [test x"$enable_python" = x"yes"])
+AC_ARG_ENABLE(setup,
+    AS_HELP_STRING([--disable-setup],
+                   [Do not use setup ui.]),
+    [enable_setup=$enableval],
+    [enable_setup=yes]
+)
+
+AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"])
+AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
-if test x"$enable_python" = x"yes"; then
-    # check python
-    AM_PATH_PYTHON([2.5])
+AM_PATH_PYTHON([2.5])
+
+if test x"$enable_python_library" = x"yes"; then
+    # Check python.
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
     if test x"$PYTHON_CONFIG" = x""; then
         AC_PATH_PROG(PYTHON_CONFIG, python-config)
@@ -296,21 +374,10 @@ if test x"$enable_python" = x"yes"; then
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
 else
-    enable_python="no (disabled, use --enable-python to enable)"
+    enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
 
-#
-# REBUILD = \#
-# AC_SUBST(REBUILD)
-
-# define GETTEXT_* variables
-GETTEXT_PACKAGE=ibus10
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
-
-AM_GLIB_GNU_GETTEXT
-
-# define gtk2 immodule dir
+# Define gtk2 immodule dir.
 AC_ARG_WITH(gtk2-im-module-dir,
     AS_HELP_STRING([--with-gtk2-im-module-dir[=DIR]],
         [Select gtk2 immodule dir]),
@@ -318,7 +385,7 @@ AC_ARG_WITH(gtk2-im-module-dir,
 )
 AC_SUBST(GTK2_IM_MODULEDIR)
 
-# define gtk3 immodule dir
+# Define gtk3 immodule dir.
 AC_ARG_WITH(gtk3-im-module-dir,
     AS_HELP_STRING([--with-gtk3-im-module-dir[=DIR]],
         [Select gtk3 immodule dir]),
@@ -327,7 +394,7 @@ AC_ARG_WITH(gtk3-im-module-dir,
 AC_SUBST(GTK3_IM_MODULEDIR)
 
 if test x"$enable_python" = x"yes"; then
-    # check for dbus-python
+    # Check for dbus-python.
     AC_ARG_ENABLE(dbus-python-check,
         AS_HELP_STRING([--disable-dbus-python-check],
             [Do not check dbus-python]),
@@ -348,7 +415,7 @@ if test x"$enable_python" = x"yes"; then
     fi
 fi
 
-# option for always disable snooper applications
+# Option for always disable snooper applications.
 AC_ARG_ENABLE(key-snooper,
     AS_HELP_STRING([--disable-key-snooper],
         [Always disable key snooper in gtk im module]),
@@ -362,7 +429,7 @@ else
     enable_key_snooper="no (disabled, use --enable-key-snooper to enable)"
 fi
 
-# option for no snooper applications
+# Option for no snooper applications.
 AC_ARG_WITH(no-snooper-apps,
     AS_HELP_STRING([--with-no-snooper-apps[=regex1,regex2]],
         [Does not enable keyboard snooper in those applications (like: .*chrome.*,firefox.*)]),
@@ -372,7 +439,7 @@ AC_ARG_WITH(no-snooper-apps,
 AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
     [Does not enbale keyboard snooper in those applications])
 
-# GNOME 3 uses the theme's icon
+# GNOME 3 uses the theme's icon.
 AC_ARG_WITH(panel-icon-keyboard,
     AS_HELP_STRING([--with-panel-icon-keyboard[=icon_name]],
         [Set the default panel icon (default: "input-keyboard-symbolic")]),
@@ -389,12 +456,12 @@ AC_ARG_WITH(panel-icon-keyboard,
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
-# option for enable surrounding-text
+# --disable-surrounding-text option.
 AC_ARG_ENABLE(surrounding-text,
-    AS_HELP_STRING([--enable-surrounding-text],
+    AS_HELP_STRING([--disable-surrounding-text],
         [Enable surrounding-text support]),
     [enable_surrounding_text=$enableval],
-    [enable_surrounding_text=no]
+    [enable_surrounding_text=yes]
 )
 if test x"$enable_surrounding_text" = x"yes"; then
     AC_DEFINE(ENABLE_SURROUNDING, TRUE, [Enable surrounding-text support])
@@ -402,7 +469,7 @@ else
     enable_surrounding_text="no (disabled, use --enable-surrounding-text to enable)"
 fi
 
-# check iso-codes
+# Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
 ])
@@ -414,9 +481,6 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-1.0.pc
 ibus.spec
-xinput-ibus
-memconf/Makefile
-memconf/memconf.xml.in
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
@@ -425,6 +489,8 @@ src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
+engine/Makefile
+engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
@@ -440,23 +506,26 @@ ibus/_config.py
 ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
-ui/gtk/Makefile
-ui/gtk/ibus-ui-gtk
-ui/gtk/gtkpanel.xml.in
+ui/gtk3/Makefile
+ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
-gconf/Makefile
-gconf/gconf.xml.in
 bindings/Makefile
 bindings/vala/Makefile
-dconf/Makefile
-dconf/dconf.xml.in
+conf/Makefile
+conf/gconf/Makefile
+conf/gconf/gconf.xml.in
+conf/dconf/Makefile
+conf/dconf/dconf.xml.in
+conf/memconf/Makefile
+conf/memconf/memconf.xml.in
+tools/Makefile
 ])
 
 AC_OUTPUT
 AC_MSG_RESULT([
 Build options:
-  Version                   $VERSION
+  Version                   $IBUS_VERSION
   Install prefix            $prefix
   Build shared libs         $enable_shared
   Build static libs         $enable_static
@@ -466,7 +535,7 @@ Build options:
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
-  Build python modules      $enable_python
+  Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
   Build dconf modules       $enable_dconf
@@ -478,5 +547,6 @@ Build options:
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text   $enable_surrounding_text
+  Run test cases            $enable_tests
 ])
 

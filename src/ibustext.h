@@ -132,7 +132,7 @@ IBusText        *ibus_text_new_from_static_string   (const gchar    *str);
  * The result of printf expression is stored in the new IBusText instance.
  */
 IBusText        *ibus_text_new_from_printf          (const gchar    *fmt,
-                                                     ...);
+                                                     ...) G_GNUC_PRINTF (1, 2);
 
 /**
  * ibus_text_new_from_unichar:
@@ -190,12 +190,21 @@ const gchar *    ibus_text_get_text                 (IBusText       *text);
 /**
  * ibus_text_get_attributes:
  * @text: An IBusText.
- * @returns: the attrs in @text.
+ * @returns: (transfer none): the attrs in @text.
  *
  * Return the attributes in an IBusText. Should not be freed.
  */
-const IBusAttrList *
-                 ibus_text_get_attributes           (IBusText       *text);
+IBusAttrList *   ibus_text_get_attributes           (IBusText       *text);
+
+/**
+ * ibus_text_set_attributes:
+ * @text: An IBusText.
+ * @attrs: An IBusAttrList
+ */
+void             ibus_text_set_attributes           (IBusText       *text,
+                                                     IBusAttrList   *attrs);
+
+
 G_END_DECLS
 #endif
 

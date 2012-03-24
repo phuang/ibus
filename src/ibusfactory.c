@@ -21,6 +21,7 @@
  */
 #include "ibusfactory.h"
 #include "ibusengine.h"
+#include "ibusmarshalers.h"
 #include "ibusshare.h"
 #include "ibusinternal.h"
 
@@ -28,6 +29,7 @@
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))
 
 enum {
+    CREATE_ENGINE,
     LAST_SIGNAL,
 };
 
@@ -41,6 +43,8 @@ struct _IBusFactoryPrivate {
     GList          *engine_list;
     GHashTable     *engine_table;
 };
+
+static guint            factory_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
 static void      ibus_factory_destroy        (IBusFactory        *factory);
@@ -95,6 +99,47 @@ static const gchar introspection_xml[] =
     "  </interface>"
     "</node>";
 
+static IBusEngine *
+ibus_factory_real_create_engine (IBusFactory    *factory,
+                                 const gchar    *engine_name)
+{
+    GType engine_type;
+    gchar *object_path = NULL;
+    IBusEngine *engine = NULL;
+
+    engine_type = (GType) g_hash_table_lookup (factory->priv->engine_table,
+                                               engine_name);
+
+    g_return_val_if_fail (engine_type != G_TYPE_INVALID, NULL);
+
+    object_path = g_strdup_printf ("/org/freedesktop/IBus/Engine/%d",
+                                   ++factory->priv->id);
+    engine = ibus_engine_new_with_type (engine_type,
+                                        engine_name,
+                                        object_path,
+                                        ibus_service_get_connection ((IBusService *)factory));
+    g_free (object_path);
+
+    return engine;
+}
+
+static gboolean
+_ibus_factory_create_engine_accumulator (GSignalInvocationHint *ihint,
+                                         GValue                *return_accu,
+                                         const GValue          *handler_return,
+                                         gpointer               dummy)
+{
+    gboolean retval = TRUE;
+    GObject *object = g_value_get_object (handler_return);
+
+    if (object != NULL) {
+        g_value_copy (handler_return, return_accu);
+        retval = FALSE;
+    }
+
+    return retval;
+}
+
 static void
 ibus_factory_class_init (IBusFactoryClass *class)
 {
@@ -109,10 +154,34 @@ ibus_factory_class_init (IBusFactoryClass *class)
     IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_factory_service_method_call;
     IBUS_SERVICE_CLASS (class)->service_get_property = ibus_factory_service_get_property;
     IBUS_SERVICE_CLASS (class)->service_set_property = ibus_factory_service_set_property;
+    class->create_engine = ibus_factory_real_create_engine;
 
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 
     g_type_class_add_private (class, sizeof (IBusFactoryPrivate));
+
+    /**
+     * IBusFactory::create-engine:
+     * @factory: the factory which received the signal
+     * @engine_name: the engine_name which received the signal
+     * @returns: (transfer full): An IBusEngine
+     *
+     * The ::create-engine signal is a signal to create IBusEngine
+     * with @engine_name, which gets emitted when IBusFactory
+     * received CreateEngine dbus method. The callback functions
+     * will be called until a callback returns a non-null object
+     * of IBusEngine. */
+    factory_signals[CREATE_ENGINE] =
+        g_signal_new (I_("create-engine"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusFactoryClass, create_engine),
+            _ibus_factory_create_engine_accumulator,
+            NULL,
+            _ibus_marshal_OBJECT__STRING,
+            IBUS_TYPE_ENGINE,
+            1,
+            G_TYPE_STRING);
 }
 
 static void
@@ -132,9 +201,8 @@ ibus_factory_destroy (IBusFactory *factory)
     GList *list;
 
     list = g_list_copy (factory->priv->engine_list);
-    g_list_foreach (list, (GFunc) ibus_object_destroy, NULL);
-    g_list_free (factory->priv->engine_list);
-    g_list_free (list);
+    g_list_free_full (list, (GDestroyNotify)ibus_object_destroy);
+    g_list_free(factory->priv->engine_list);
     factory->priv->engine_list = NULL;
 
     if (factory->priv->engine_table) {
@@ -190,25 +258,23 @@ ibus_factory_service_method_call (IBusService           *service,
 
     if (g_strcmp0 (method_name, "CreateEngine") == 0) {
         gchar *engine_name = NULL;
-        g_variant_get (parameters, "(&s)", &engine_name);
-        GType engine_type = (GType )g_hash_table_lookup (factory->priv->engine_table, engine_name);
+        IBusEngine *engine = NULL;
 
-        if (engine_type == G_TYPE_INVALID) {
-            gchar *error_message = g_strdup_printf ("Can not fond engine %s", engine_name);
-            g_dbus_method_invocation_return_error (invocation,
-                                                   G_DBUS_ERROR,
-                                                   G_DBUS_ERROR_FAILED,
-                                                   error_message);
-            g_free (error_message);
-        }
-        else {
-            gchar *object_path = g_strdup_printf ("/org/freedesktop/IBus/Engine/%d",
-                                            ++factory->priv->id);
-            IBusEngine *engine = ibus_engine_new_type (engine_type,
-                                                       engine_name,
-                                                       object_path,
-                                                       ibus_service_get_connection ((IBusService *)factory));
+        g_variant_get (parameters, "(&s)", &engine_name);
+        g_signal_emit (factory, factory_signals[CREATE_ENGINE],
+                       0, engine_name, &engine);
+
+        if (engine != NULL) {
+            gchar *object_path = NULL;
+            GValue value = { 0, };
+
+            g_value_init (&value, G_TYPE_STRING);
+            g_object_get_property (G_OBJECT (engine), "object-path", &value);
+            object_path = g_value_dup_string (&value);
+            g_value_unset (&value);
+
             g_assert (engine != NULL);
+            g_assert (object_path != NULL);
             g_object_ref_sink (engine);
             factory->priv->engine_list = g_list_append (factory->priv->engine_list, engine);
             g_signal_connect (engine,
@@ -218,6 +284,14 @@ ibus_factory_service_method_call (IBusService           *service,
             g_dbus_method_invocation_return_value (invocation,
                                                    g_variant_new ("(o)", object_path));
             g_free (object_path);
+        }
+        else {
+            gchar *error_message = g_strdup_printf ("Can not fond engine %s", engine_name);
+            g_dbus_method_invocation_return_error (invocation,
+                                                   G_DBUS_ERROR,
+                                                   G_DBUS_ERROR_FAILED,
+                                                   error_message);
+            g_free (error_message);
         }
         return;
     }
@@ -296,4 +370,18 @@ ibus_factory_add_engine (IBusFactory *factory,
     g_return_if_fail (g_type_is_a (engine_type, IBUS_TYPE_ENGINE));
 
     g_hash_table_insert (factory->priv->engine_table, g_strdup (engine_name), (gpointer) engine_type);
+}
+
+IBusEngine *
+ibus_factory_create_engine (IBusFactory    *factory,
+                            const gchar    *engine_name)
+{
+    IBusEngine *engine = NULL;
+
+    g_assert (engine_name != NULL);
+
+    g_signal_emit (factory, factory_signals[CREATE_ENGINE],
+                   0, engine_name, &engine);
+
+    return engine;
 }

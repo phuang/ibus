@@ -24,4 +24,11 @@ EXTRA_DIST = \
     as-version.m4 \
     $(NULL)
 
+GITIGNOREFILES = \
+	gtk-doc.m4 \
+	intltool.m4 \
+	libtool.m4 \
+	lt*.m4 \
+	$(NULL)
+
 -include $(top_srcdir)/git.mk

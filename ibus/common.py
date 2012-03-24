@@ -59,6 +59,7 @@ import os
 import sys
 from xdg import BaseDirectory
 import ctypes
+import _config
 
 # __display = os.environ["DISPLAY"]
 # __hostname, __display_screen = __display.split(":", 1)
@@ -104,7 +105,7 @@ import ctypes
 #         return None
 #     return address
 
-libibus = ctypes.CDLL("libibus-1.0.so.0")
+libibus = ctypes.CDLL(_config.LIBIBUS_SONAME)
 get_address = libibus.ibus_get_address
 get_address.restype=ctypes.c_char_p
 

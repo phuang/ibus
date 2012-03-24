@@ -102,9 +102,9 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
 /**
  * ibus_bus_get_connection:
  * @bus: An #IBusBus.
- * @returns: (transfer none): A #GDBusConnection of an #IBusIBus instance.
+ * @returns: (transfer none): A #GDBusConnection of an #IBusBus instance.
  *
- * Return #GDBusConnection of an #IBusIBus instance.
+ * Return #GDBusConnection of an #IBusBus instance.
  */
 GDBusConnection *
              ibus_bus_get_connection    (IBusBus        *bus);
@@ -112,7 +112,7 @@ GDBusConnection *
 /**
  * ibus_bus_hello:
  * @bus: An #IBusBus.
- * @returns: The unique name of #IBus process in DBus.
+ * @returns: The unique name of IBus process in DBus.
  *
  * This function sends a "HELLO" message to DBus daemon,
  * which replies the unique name of current IBus process.
@@ -711,6 +711,20 @@ GList       *ibus_bus_list_active_engines_async_finish
                                          GError         **error);
 
 /**
+ * ibus_bus_get_engines_by_names:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of names.
+ * @returns: (array zero-terminated=1) (transfer full): A %NULL-terminated array of engines.
+ *
+ * Get engines by given names synchronously. If some engine names do not exist, this function
+ * will simplly ignore them, and return rest of engines.
+ * TODO(penghuang): add asynchronous version
+ */
+IBusEngineDesc **
+             ibus_bus_get_engines_by_names
+                                        (IBusBus             *bus,
+                                         const gchar * const *names);
+/**
  * ibus_bus_get_use_sys_layout:
  * @bus: An #IBusBus.
  * @returns: %TRUE if "use_sys_layout" option is enabled.
@@ -845,8 +859,8 @@ gboolean     ibus_bus_is_global_engine_enabled_async_finish
 /**
  * ibus_bus_get_global_engine:
  * @bus: An #IBusBus.
- * @returns: The description of current global engine, or %NULL if there is no
- * global engine.
+ * @returns: (transfer none): The description of current global engine,
+ * or %NULL if there is no global engine.
  *
  * Get the description of current global engine synchronously.
  */
@@ -878,8 +892,8 @@ void         ibus_bus_get_global_engine_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_get_global_engine_async_finish().
  * @error: Return location for error or %NULL.
- * @returns:  The description of current global engine, or %NULL if there is no
- * global engine.
+ * @returns: (transfer none): The description of current global engine,
+ * or %NULL if there is no global engine.
  *
  * Finishes an operation started with ibus_bus_get_global_engine_async_finish().
  */

@@ -255,8 +255,16 @@ const gchar     *ibus_engine_desc_get_hotkeys   (IBusEngineDesc *info);
  *
  * Return the symbol property in IBusEngineDesc. It should not be freed.
  */
-const gchar     *ibus_engine_desc_get_symbol
-                                                (IBusEngineDesc *info);
+const gchar     *ibus_engine_desc_get_symbol    (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_setup:
+ * @info: An IBusEngineDesc
+ * @returns: setup property in IBusEngineDesc
+ *
+ * Return the setup property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_setup     (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_output:

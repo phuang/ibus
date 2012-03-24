@@ -69,63 +69,12 @@ const gchar *
 ibus_get_user_name (void)
 {
     return g_get_user_name ();
-#if 0
-    static gchar *username = NULL;
-    if (username == NULL) {
-        username = g_strdup (getlogin());
-        if (username == NULL)
-            username = g_strdup (g_getenv("SUDO_USER"));
-        if (username == NULL) {
-            const gchar *uid = g_getenv ("USERHELPER_UID");
-            if (uid != NULL) {
-                gchar *end;
-                uid_t id = (uid_t)strtol(uid, &end, 10);
-                if (uid != end) {
-                    struct passwd *pw = getpwuid (id);
-                    if (pw != NULL) {
-                        username = g_strdup (pw->pw_name);
-                    }
-                }
-            }
-        }
-        if (username == NULL)
-            username = g_strdup (g_getenv("USERNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LOGNAME"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("USER"));
-        if (username == NULL)
-            username = g_strdup (g_getenv("LNAME"));
-
-    }
-    return username;
-#endif
 }
 
 glong
 ibus_get_daemon_uid (void)
 {
     return getuid ();
-#if 0
-    struct passwd *pwd;
-    uid_t uid;
-    const gchar *username;
-
-    uid = getuid ();
-
-    if (uid != 0)
-        return uid;
-
-    username = ibus_get_user_name ();
-    if (username == NULL)
-        return 0;
-
-    pwd = getpwnam (username);
-    if (pwd == NULL)
-        return 0;
-
-    return pwd->pw_uid;
-#endif
 }
 
 const gchar *
@@ -354,6 +303,7 @@ ibus_quit (void)
 }
 
 static gboolean ibus_log_handler_is_verbose = FALSE;
+static guint ibus_log_handler_id = 0;
 
 static void
 ibus_log_handler (const gchar    *log_domain,
@@ -387,6 +337,22 @@ ibus_log_handler (const gchar    *log_domain,
 void
 ibus_set_log_handler (gboolean verbose)
 {
+    if (ibus_log_handler_id != 0) {
+        g_log_remove_handler (G_LOG_DOMAIN, ibus_log_handler_id);
+    }
+
     ibus_log_handler_is_verbose = verbose;
-    g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MASK, ibus_log_handler, NULL);
+    ibus_log_handler_id = g_log_set_handler (G_LOG_DOMAIN,
+                                             G_LOG_LEVEL_MASK,
+                                             ibus_log_handler,
+                                             NULL);
+}
+
+void
+ibus_unset_log_handler (void)
+{
+    if (ibus_log_handler_id != 0) {
+        g_log_remove_handler (G_LOG_DOMAIN, ibus_log_handler_id);
+        ibus_log_handler_id = 0;
+    }
 }

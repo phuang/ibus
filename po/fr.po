@@ -1,29 +1,29 @@
-# translation of ibus.master.fr.po to French
+# translation of ibus.pot to French
 # French translation of ibus.
-# Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-#
-#
+# 
+# Translators:
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009.
 # Julien Humbert <julroy67@gmail.com>, 2009, 2010, 2011.
 # Sam Friedmann <sam.friedmann@redhat.com>, 2010.
-# dominique <chepioq@gmail.com>, 2011.
+# dominique bribanick <chepioq@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.fr\n"
+"Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-04-08 00:44+0200\n"
-"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-07-16 04:21+0000\n"
+"Last-Translator: dominique <chepioq@gmail.com>\n"
 "Language-Team: French <trans-fr@lists.fedoraproject.org>\n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Generator: Lokalize 1.2\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -37,7 +37,7 @@ msgstr "Framework de méthode de saisie"
 msgid "Start IBus Input Method Framework"
 msgstr "Démarrer le framework de méthode de saisie IBus"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
@@ -57,7 +57,7 @@ msgstr "Page précédente"
 msgid "Next page"
 msgstr "Page suivante"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
@@ -65,35 +65,39 @@ msgstr ""
 "Certaines méthodes d'entrée ont été installées, supprimées ou mises à jour. "
 "Veuillez redémarrer iBus."
 
-#: ../ui/gtk/main.py:59
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
 msgstr "Redémarrer IBus maintenant"
 
-#: ../ui/gtk/main.py:60
+#: ../ui/gtk/main.py:67
 msgid "Later"
 msgstr "Plus tard"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr "Tableau de bord IBus"
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
 msgstr "Framework de méthode de saisie iBus"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "Redémarrer IBus"
 
-#: ../ui/gtk/panel.py:414
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
 msgstr "Désactiver la méthode d'entrée"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
 msgstr "Aucune fenêtre de saisie"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus est un IME intelligent pour Linux/Unix"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
 msgstr "Julien Humbert <julroy67@gmail.com>"
 
@@ -159,15 +163,12 @@ msgstr "Le démon IBus n'est pas démarré. Voulez-vous le démarrer maintenant�
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus a été démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter "
-"les lignes suivantes dans le fichier « $HOME/.bashrc », et veuillez vous "
-"reconnecter.\n"
+"IBus a été démarré ! Si vous ne pouvez pas utiliser IBus, veuillez ajouter les lignes suivantes dans le fichier « $HOME/.bashrc », et veuillez vous reconnecter.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -418,7 +419,8 @@ msgstr ""
 
 #: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
-msgstr "Ajouter la méthode d'entrée selectionnée aux méthodes d'entrée actives"
+msgstr ""
+"Ajouter la méthode d'entrée selectionnée aux méthodes d'entrée actives"
 
 #: ../setup/setup.ui.h:18
 msgid "Advanced"

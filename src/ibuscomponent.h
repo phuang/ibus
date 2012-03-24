@@ -84,7 +84,7 @@ typedef struct _IBusComponentPrivate IBusComponentPrivate;
  * license: Distribution license of this component.
  * author: Author(s) of the component.
  * homepage: Homepage of the component.
- * exec: path to component executable.
+ * command_line: path to component executable.
  * textdomain: Domain name for dgettext()
  */
 struct _IBusComponent {
@@ -115,7 +115,7 @@ GType            ibus_component_get_type        (void);
  * @license: Distribution license of this component.
  * @author: Author(s) of the component.
  * @homepage: Homepage of the component.
- * @exec: path to component executable.
+ * @command_line: path to component executable.
  * @textdomain: Domain name for dgettext()
  * @returns: A newly allocated IBusComponent.
  *
@@ -127,7 +127,7 @@ IBusComponent   *ibus_component_new             (const gchar    *name,
                                                  const gchar    *license,
                                                  const gchar    *author,
                                                  const gchar    *homepage,
-                                                 const gchar    *exec,
+                                                 const gchar    *command_line,
                                                  const gchar    *textdomain);
 
 /**
@@ -139,7 +139,7 @@ IBusComponent   *ibus_component_new             (const gchar    *name,
  * ibus_component_new_varargs() supports the va_list format.
  * name property is required. e.g.
  * IBusComponent *component = ibus_component_new_varargs ("name", "ibus-foo",
- *                                                     "exec", "/usr/libexec/ibus-engine-foo --ibus",
+ *                                                        "command_line", "/usr/libexec/ibus-engine-foo --ibus",
  *                                                     NULL)
  */
 IBusComponent   *ibus_component_new_varargs     (const gchar    *first_property_name,

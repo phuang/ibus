@@ -112,7 +112,6 @@ bus_test_client_init (BusTestClient *client)
     ibus_input_context_set_engine (client->ibuscontext, active_engine_name);
     g_free (active_engine_name);
 
-    ibus_input_context_enable (client->ibuscontext);
     client->enabled = TRUE;
 }
 
@@ -180,7 +179,7 @@ bus_test_client_send_key (BusTestClient *client,
         gboolean is_shift_set = _is_shift_set (client);
 
         if (is_upper && !is_shift_set) {
-            _store_modifier_state (client, IBUS_Shift_L);
+            _store_modifier_state (client, IBUS_KEY_Shift_L);
         }
         keycode = _get_keysym_to_keycode (keysym);
         state = _get_modifiers_to_mask (client);
@@ -194,7 +193,7 @@ bus_test_client_send_key (BusTestClient *client,
                                               keycode,
                                               state);
         if (is_upper && !is_shift_set) {
-            _store_modifier_state (client, IBUS_Shift_L);
+            _store_modifier_state (client, IBUS_KEY_Shift_L);
         }
     }
     return TRUE;
@@ -221,7 +220,7 @@ _get_active_engine_name (void)
 
     IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
     if (engine_desc != NULL) {
-        result = g_strdup (engine_desc->name);
+        result = g_strdup (ibus_engine_desc_get_name(engine_desc));
     } else {
         result = NULL;
     }
@@ -239,38 +238,38 @@ _store_modifier_state (BusTestClient    *client,
                        guint         modifier)
 {
     switch(modifier) {
-    case IBUS_Shift_L:
-    case IBUS_Shift_R:
+    case IBUS_KEY_Shift_L:
+    case IBUS_KEY_Shift_R:
         /* ShiftMask */
         client->modifier[0] = !client->modifier[0];
         break;
-    case IBUS_Shift_Lock:
-    case IBUS_Caps_Lock:
+    case IBUS_KEY_Shift_Lock:
+    case IBUS_KEY_Caps_Lock:
         /* LockMask */
         client->modifier[1] = !client->modifier[1];
         break;
-    case IBUS_Control_L:
-    case IBUS_Control_R:
+    case IBUS_KEY_Control_L:
+    case IBUS_KEY_Control_R:
         /* ControlMask */
         client->modifier[2] = !client->modifier[2];
         break;
-    case IBUS_Alt_L:
-    case IBUS_Alt_R:
-    case IBUS_Meta_L:
+    case IBUS_KEY_Alt_L:
+    case IBUS_KEY_Alt_R:
+    case IBUS_KEY_Meta_L:
         /* Mod1Mask */
         client->modifier[3] = !client->modifier[3];
         break;
-    case IBUS_Num_Lock:
+    case IBUS_KEY_Num_Lock:
         /* Mod2Mask */
         client->modifier[4] = !client->modifier[4];
         break;
-    case IBUS_Super_L:
-    case IBUS_Hyper_L:
+    case IBUS_KEY_Super_L:
+    case IBUS_KEY_Hyper_L:
         /* Mod4Mask */
         client->modifier[5] = !client->modifier[5];
         break;
-    case IBUS_ISO_Level3_Shift:
-    case IBUS_Mode_switch:
+    case IBUS_KEY_ISO_Level3_Shift:
+    case IBUS_KEY_Mode_switch:
         /* Mod5Mask */
         client->modifier[6] = !client->modifier[6];
         break;
@@ -296,32 +295,32 @@ _is_modifier_set (BusTestClient *client,
                   guint      modifier)
 {
     switch(modifier) {
-    case IBUS_Shift_L:
-    case IBUS_Shift_R:
+    case IBUS_KEY_Shift_L:
+    case IBUS_KEY_Shift_R:
         /* ShiftMask */
         return client->modifier[0];
-    case IBUS_Shift_Lock:
-    case IBUS_Caps_Lock:
+    case IBUS_KEY_Shift_Lock:
+    case IBUS_KEY_Caps_Lock:
         /* LockMask */
         return client->modifier[1];
-    case IBUS_Control_L:
-    case IBUS_Control_R:
+    case IBUS_KEY_Control_L:
+    case IBUS_KEY_Control_R:
         /* ControlMask */
         return client->modifier[2];
-    case IBUS_Alt_L:
-    case IBUS_Alt_R:
-    case IBUS_Meta_L:
+    case IBUS_KEY_Alt_L:
+    case IBUS_KEY_Alt_R:
+    case IBUS_KEY_Meta_L:
         /* Mod1Mask */
         return client->modifier[3];
-    case IBUS_Num_Lock:
+    case IBUS_KEY_Num_Lock:
         /* Mod2Mask */
         return client->modifier[4];
-    case IBUS_Super_L:
-    case IBUS_Hyper_L:
+    case IBUS_KEY_Super_L:
+    case IBUS_KEY_Hyper_L:
         /* Mod4Mask */
         return client->modifier[5];
-    case IBUS_ISO_Level3_Shift:
-    case IBUS_Mode_switch:
+    case IBUS_KEY_ISO_Level3_Shift:
+    case IBUS_KEY_Mode_switch:
         /* Mod5Mask */
         return client->modifier[6];
     default:
@@ -333,20 +332,20 @@ static gboolean
 _is_modifier_key (guint modifier)
 {
     switch(modifier) {
-    case IBUS_Shift_L:
-    case IBUS_Shift_R:
-    case IBUS_Shift_Lock:
-    case IBUS_Caps_Lock:
-    case IBUS_Control_L:
-    case IBUS_Control_R:
-    case IBUS_Alt_L:
-    case IBUS_Alt_R:
-    case IBUS_Meta_L:
-    case IBUS_Num_Lock:
-    case IBUS_Super_L:
-    case IBUS_Hyper_L:
-    case IBUS_ISO_Level3_Shift:
-    case IBUS_Mode_switch:
+    case IBUS_KEY_Shift_L:
+    case IBUS_KEY_Shift_R:
+    case IBUS_KEY_Shift_Lock:
+    case IBUS_KEY_Caps_Lock:
+    case IBUS_KEY_Control_L:
+    case IBUS_KEY_Control_R:
+    case IBUS_KEY_Alt_L:
+    case IBUS_KEY_Alt_R:
+    case IBUS_KEY_Meta_L:
+    case IBUS_KEY_Num_Lock:
+    case IBUS_KEY_Super_L:
+    case IBUS_KEY_Hyper_L:
+    case IBUS_KEY_ISO_Level3_Shift:
+    case IBUS_KEY_Mode_switch:
         return TRUE;
     default:
         return FALSE;

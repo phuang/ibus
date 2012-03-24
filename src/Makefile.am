@@ -22,9 +22,13 @@
 
 NULL =
 
-SUBDIRS = . tests
+if ENABLE_TESTS
+TESTS = tests
+endif
 
-# libibus = libsibus-@IBUS_API_VERSION@.la
+SUBDIRS = . $(TESTS)
+
+# libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la
 
 # gobject introspection
@@ -84,17 +88,19 @@ ibus_sources =              \
     ibuspanelservice.c      \
     ibusbus.c               \
     ibuskeynames.c          \
+    ibuskeyuni.c            \
     ibushotkey.c            \
     ibusxml.c               \
     ibusenginedesc.c        \
     ibusobservedpath.c      \
     ibuscomponent.c         \
     ibusutil.c              \
-$(NULL)
+	ibusenginesimple.c      \
+	$(NULL)
 libibus_1_0_la_SOURCES =    \
-    $(ibus_sources)         \
     ibusmarshalers.c        \
     ibusenumtypes.c         \
+    $(ibus_sources)         \
     $(NULL)
 ibus_marshalers_sources =   \
     ibusmarshalers.h        \
@@ -128,6 +134,8 @@ ibus_headers =              \
     ibusconfigservice.h     \
     ibuspanelservice.h      \
     ibuskeysyms.h           \
+    ibuskeysyms-compat.h    \
+    ibuskeys.h              \
     ibustypes.h             \
     ibusbus.h               \
     ibushotkey.h            \
@@ -136,6 +144,7 @@ ibus_headers =              \
     ibusobservedpath.h      \
     ibuscomponent.h         \
     ibusutil.h              \
+	ibusenginesimple.h      \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \
@@ -145,9 +154,10 @@ ibus_public_headers =       \
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
-ibus_privite_headers =      \
-    ibusinternal.h          \
-    keyname-table.h         \
+ibus_privite_headers =       \
+    ibusinternal.h           \
+    keyname-table.h          \
+	gtkimcontextsimpleseqs.h \
     $(NULL)
 noinst_HEADERS =            \
     $(ibus_privite_headers) \
@@ -163,12 +173,12 @@ BUILT_SOURCES =             \
 if HAVE_INTROSPECTION
 introspection_files =           \
     $(ibus_public_headers)      \
-    $(ibus_c_sources)           \
+    $(ibus_sources)             \
     ibusenumtypes.c             \
     ibusenumtypes.h             \
     $(NULL)
 IBus-1.0.gir: $(libibus) Makefile
-IBus_1_0_gir_SCANNERFLAGS = --pkg=glib-2.0 $(IBUS_GIR_SCANNERFLAGS)
+IBus_1_0_gir_SCANNERFLAGS = --pkg-export=ibus-1.0 $(IBUS_GIR_SCANNERFLAGS)
 IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0 Gio-2.0
 IBus_1_0_gir_LIBS = $(libibus)
 IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))

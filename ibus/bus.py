@@ -108,6 +108,9 @@ class Bus(object.Object):
     def release_name(self, name):
         return self.__dbus.ReleaseName(name)
 
+    def start_service_by_name(self, name, flags):
+        return self.__dbus.StartServiceByName(name, dbus.UInt32 (flags))
+
     def list_queued_owners(self, name):
         return self.__dbus.ListQueuedOwners(name)
 
@@ -133,6 +136,10 @@ class Bus(object.Object):
 
     def list_engines(self):
         engines = self.__ibus.ListEngines()
+        return map(serializable.deserialize_object, engines)
+    
+    def get_engines_by_names(self, names):
+        engines = self.__ibus.GetEnginesByNames(names)
         return map(serializable.deserialize_object, engines)
 
     def list_active_engines(self):

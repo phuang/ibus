@@ -31,6 +31,7 @@ dist_gsettingsconvert_DATA = ibus.convert
 EXTRA_DIST = \
 	$(gsettings_schemas_in_files) \
 	make-dconf-override-db.sh \
+	profile/ibus \
 	$(NULL)
 
 DISTCLEANFILES = \
@@ -38,13 +39,15 @@ DISTCLEANFILES = \
 	$(NULL)
 
 MAINTAINERCLEANFILES = \
-	$(gsettings_schemas_in_files)
+	$(gsettings_schemas_in_files) \
+	$(NULL)
+
+CLEANFILES = \
+	db/ibus \
 	$(NULL)
 
 dconfprofiledir = $(sysconfdir)/dconf
-nobase_dist_dconfprofile_DATA = \
-	db/ibus \
-	profile/ibus
+nobase_dconfprofile_DATA = db/ibus profile/ibus
 
 org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
 	$(AM_V_GEN) gsettings-schema-convert --force --gconf --xml \
@@ -56,3 +59,4 @@ db/ibus: $(srcdir)/make-dconf-override-db.sh $(gsettings_SCHEMAS)
 	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh $@ || \
 		{ rc=$$?; $(RM) -rf $@; exit $$rc; }
 
+-include $(top_srcdir)/git.mk

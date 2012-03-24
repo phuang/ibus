@@ -67,6 +67,7 @@ struct _IBusEnginePrivate {
        BusEngineProxy) */
     IBusText *surrounding_text;
     guint surrounding_cursor_pos;
+    guint selection_anchor_pos;
 };
 
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
@@ -149,7 +150,8 @@ static void      ibus_engine_property_hide   (IBusEngine         *engine,
 static void      ibus_engine_set_surrounding_text
                                             (IBusEngine         *engine,
                                              IBusText           *text,
-                                             guint               cursor_pos);
+                                             guint               cursor_pos,
+                                             guint               anchor_pos);
 static void      ibus_engine_process_hand_writing_event
                                              (IBusEngine         *engine,
                                               const gdouble      *coordinates,
@@ -216,6 +218,7 @@ static const gchar introspection_xml[] =
     "    <method name='SetSurroundingText'>"
     "      <arg direction='in'  type='v' name='text' />"
     "      <arg direction='in'  type='u' name='cursor_pos' />"
+    "      <arg direction='in'  type='u' name='anchor_pos' />"
     "    </method>"
     /* FIXME signals */
     "    <signal name='CommitText'>"
@@ -327,7 +330,7 @@ ibus_engine_class_init (IBusEngineClass *class)
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
-            NULL, NULL,
+            g_signal_accumulator_true_handled, NULL,
             _ibus_marshal_BOOL__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
@@ -700,9 +703,14 @@ ibus_engine_class_init (IBusEngineClass *class)
     /**
      * IBusEngine::set-surrounding-text:
      * @engine: An IBusEngine.
+     * @text: The surrounding text.
+     * @cursor_pos: The cursor position on surrounding text.
+     * @anchor_pos: The anchor position on selection area.
      *
      * Emitted when a surrounding text is set.
      * Implement the member function set_surrounding_text() in extended class to receive this signal.
+     * If anchor_pos equals to cursor_pos, it means "there are no selection" or "does not support
+     * selection retrival".
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -712,10 +720,11 @@ ibus_engine_class_init (IBusEngineClass *class)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, set_surrounding_text),
             NULL, NULL,
-            _ibus_marshal_VOID__OBJECT_UINT,
+            _ibus_marshal_VOID__OBJECT_UINT_UINT,
             G_TYPE_NONE,
-            2,
+            3,
             G_TYPE_OBJECT,
+            G_TYPE_UINT,
             G_TYPE_UINT);
 
     text_empty = ibus_text_new_from_static_string ("");
@@ -728,7 +737,6 @@ ibus_engine_init (IBusEngine *engine)
     engine->priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
     engine->priv->surrounding_text = g_object_ref_sink (text_empty);
-    engine->priv->surrounding_cursor_pos = 0;
 }
 
 static void
@@ -917,15 +925,21 @@ ibus_engine_service_method_call (IBusService           *service,
         GVariant *variant = NULL;
         IBusText *text;
         guint cursor_pos;
+        guint anchor_pos;
 
-        g_variant_get (parameters, "(vu)", &variant, &cursor_pos);
+        g_variant_get (parameters,
+                       "(vuu)",
+                       &variant,
+                       &cursor_pos,
+                       &anchor_pos);
         text = IBUS_TEXT (ibus_serializable_deserialize (variant));
         g_variant_unref (variant);
 
         g_signal_emit (engine, engine_signals[SET_SURROUNDING_TEXT],
                        0,
                        text,
-                       cursor_pos);
+                       cursor_pos,
+                       anchor_pos);
         if (g_object_is_floating (text)) {
             g_object_unref (text);
         }
@@ -1113,21 +1127,19 @@ ibus_engine_property_hide (IBusEngine *engine, const gchar *prop_name)
 static void
 ibus_engine_set_surrounding_text (IBusEngine *engine,
                                   IBusText   *text,
-                                  guint       cursor_pos)
+                                  guint       cursor_pos,
+                                  guint       anchor_pos)
 {
     g_assert (IBUS_IS_ENGINE (engine));
 
-    IBusEnginePrivate *priv;
-
-    priv = IBUS_ENGINE_GET_PRIVATE (engine);
-
-    if (priv->surrounding_text) {
-        g_object_unref (priv->surrounding_text);
+    if (engine->priv->surrounding_text) {
+        g_object_unref (engine->priv->surrounding_text);
     }
 
-    priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
-    priv->surrounding_cursor_pos = cursor_pos;
-    // g_debug ("set-surrounding-text ('%s', %d)", text->text, cursor_pos);
+    engine->priv->surrounding_text = (IBusText *) g_object_ref_sink (text ? text : text_empty);
+    engine->priv->surrounding_cursor_pos = cursor_pos;
+    engine->priv->selection_anchor_pos = anchor_pos;
+    // g_debug ("set-surrounding-text ('%s', %d, %d)", text->text, cursor_pos, anchor_pos);
 }
 
 static void
@@ -1166,17 +1178,17 @@ ibus_engine_new (const gchar     *engine_name,
                  const gchar     *object_path,
                  GDBusConnection *connection)
 {
-    return ibus_engine_new_type (IBUS_TYPE_ENGINE,
-                                 engine_name,
-                                 object_path,
-                                 connection);
+    return ibus_engine_new_with_type (IBUS_TYPE_ENGINE,
+                                      engine_name,
+                                      object_path,
+                                      connection);
 }
 
 IBusEngine  *
-ibus_engine_new_type (GType            engine_type,
-                      const gchar     *engine_name,
-                      const gchar     *object_path,
-                      GDBusConnection *connection)
+ibus_engine_new_with_type (GType            engine_type,
+                           const gchar     *engine_name,
+                           const gchar     *object_path,
+                           GDBusConnection *connection)
 {
     g_return_val_if_fail (g_type_is_a (engine_type, IBUS_TYPE_ENGINE), NULL);
     g_return_val_if_fail (engine_name != NULL, NULL);
@@ -1377,19 +1389,26 @@ void ibus_engine_delete_surrounding_text (IBusEngine      *engine,
 void
 ibus_engine_get_surrounding_text (IBusEngine   *engine,
                                   IBusText    **text,
-                                  guint        *cursor_pos)
+                                  guint        *cursor_pos,
+                                  guint        *anchor_pos)
 {
     IBusEnginePrivate *priv;
 
     g_return_if_fail (IBUS_IS_ENGINE (engine));
-    g_return_if_fail ((text != NULL && cursor_pos != NULL) ||
-                      (text == NULL && cursor_pos == NULL));
+    const gboolean signal_only = (text == NULL);
+
+    g_return_if_fail (( signal_only && (cursor_pos == NULL)) ||
+                      (!signal_only && (cursor_pos != NULL)));
+
+    g_return_if_fail (( signal_only && (anchor_pos == NULL)) ||
+                      (!signal_only && (anchor_pos != NULL)));
 
     priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
-    if (text && cursor_pos) {
+    if (!signal_only) {
         *text = g_object_ref (priv->surrounding_text);
         *cursor_pos = priv->surrounding_cursor_pos;
+        *anchor_pos = priv->selection_anchor_pos;
     }
 
     /* tell the client that this engine will utilize surrounding-text
@@ -1401,7 +1420,7 @@ ibus_engine_get_surrounding_text (IBusEngine   *engine,
                              "RequireSurroundingText",
                              NULL);
 
-    // g_debug ("get-surrounding-text ('%s', %d)", (*text)->text, *cursor_pos);
+    // g_debug ("get-surrounding-text ('%s', %d, %d)", (*text)->text, *cursor_pos, *anchor_pos);
 }
 
 void
@@ -1461,4 +1480,3 @@ ibus_engine_get_name (IBusEngine *engine)
     g_return_val_if_fail (IBUS_IS_ENGINE (engine), NULL);
     return engine->priv->engine_name;
 }
-

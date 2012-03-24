@@ -1,0 +1,22 @@
+prefix=/usr
+exec_prefix=${prefix}
+
+XIM=ibus
+XIM_PROGRAM="${exec_prefix}/bin/ibus-daemon"
+ICON=ibus
+XIM_ARGS="--xim"
+PREFERENCE_PROGRAM="${exec_prefix}/bin/ibus-setup"
+SHORT_DESC="IBus"
+GTK_IM_MODULE=ibus
+
+if test -f /usr/lib64/qt4/plugins/inputmethods/libqtim-ibus.so || \
+   test -f /usr/lib/qt4/plugins/inputmethods/libqtim-ibus.so;
+then
+    QT_IM_MODULE=ibus
+else
+    QT_IM_MODULE=xim
+fi
+
+# if [ -z "$IBUS_SESSION_ID" ]; then
+#   export IBUS_SESSION_ID=`mktemp -u XXXXXXXX`
+# fi

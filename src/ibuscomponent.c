@@ -34,7 +34,7 @@ enum {
     PROP_LICENSE,
     PROP_AUTHOR,
     PROP_HOMEPAGE,
-    PROP_EXEC,
+    PROP_COMMAND_LINE,
     PROP_TEXTDOMAIN,
 };
 
@@ -188,15 +188,15 @@ ibus_component_class_init (IBusComponentClass *class)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /**
-     * IBusComponent:exec:
+     * IBusComponent:command-line:
      *
      * The exec path of component
      */
     g_object_class_install_property (gobject_class,
-                    PROP_EXEC,
-                    g_param_spec_string ("exec",
-                        "component exec",
-                        "The exec path of component",
+                    PROP_COMMAND_LINE,
+                    g_param_spec_string ("command-line",
+                        "component command-line",
+                        "The command line of component",
                         NULL,
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
@@ -219,21 +219,6 @@ static void
 ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
-
-    /* FIXME: Is it necessary? */
-#if 0
-    component->priv->engines = NULL;
-    component->priv->observed_paths = NULL;
-
-    component->priv->name = NULL;
-    component->priv->description = NULL;
-    component->priv->version = NULL;
-    component->priv->license = NULL;
-    component->priv->author = NULL;
-    component->priv->homepage = NULL;
-    component->priv->exec = NULL;
-    component->priv->textdomain = NULL;
-#endif
 }
 
 static void
@@ -259,8 +244,7 @@ ibus_component_destroy (IBusComponent *component)
     component->priv->exec = NULL;
     component->priv->textdomain = NULL;
 
-    g_list_foreach (component->priv->observed_paths, (GFunc)g_object_unref, NULL);
-    g_list_free (component->priv->observed_paths);
+    g_list_free_full (component->priv->observed_paths, g_object_unref);
     component->priv->observed_paths = NULL;
 
     for (p = component->priv->engines; p != NULL; p = p->next) {
@@ -305,7 +289,7 @@ ibus_component_set_property (IBusComponent *component,
         g_assert (component->priv->homepage == NULL);
         component->priv->homepage = g_value_dup_string (value);
         break;
-    case PROP_EXEC:
+    case PROP_COMMAND_LINE:
         g_assert (component->priv->exec == NULL);
         component->priv->exec = g_value_dup_string (value);
         break;
@@ -343,7 +327,7 @@ ibus_component_get_property (IBusComponent *component,
     case PROP_HOMEPAGE:
         g_value_set_string (value, ibus_component_get_homepage (component));
         break;
-    case PROP_EXEC:
+    case PROP_COMMAND_LINE:
         g_value_set_string (value, ibus_component_get_exec (component));
         break;
     case PROP_TEXTDOMAIN:
@@ -698,7 +682,7 @@ ibus_component_new (const gchar *name,
                     const gchar *license,
                     const gchar *author,
                     const gchar *homepage,
-                    const gchar *exec,
+                    const gchar *command_line,
                     const gchar *textdomain)
 {
     return ibus_component_new_varargs ("name", name,
@@ -707,7 +691,7 @@ ibus_component_new (const gchar *name,
                                        "license", license,
                                        "author", author,
                                        "homepage", homepage,
-                                       "exec", exec,
+                                       "command-line", command_line,
                                        "textdomain", textdomain,
                                        NULL);
 }

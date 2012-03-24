@@ -20,9 +20,10 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "panelproxy.h"
-#include "types.h"
+
+#include "global.h"
 #include "marshalers.h"
-#include "option.h"
+#include "types.h"
 
 /* panelproxy.c is a very simple proxy class for the panel component that does only the following:
  *
@@ -625,8 +626,6 @@ static const struct {
     { "register-properties",        G_CALLBACK (_context_register_properties_cb) },
     { "update-property",            G_CALLBACK (_context_update_property_cb) },
 
-    { "enabled",                    G_CALLBACK (_context_state_changed_cb) },
-    { "disabled",                   G_CALLBACK (_context_state_changed_cb) },
     { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
     { "destroy",                    G_CALLBACK (_context_destroy_cb) },

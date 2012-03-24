@@ -14,6 +14,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/engines_order</key>
+      <applyto>/desktop/ibus/general/engines_order</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>Engines order</short>
+            <long>Saved engines order in input method list</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>
@@ -245,6 +257,19 @@
         <short>Enable input method by default</short>
 	    <long>Enable input method by default when the application gets input
             focus</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/ibus/general/dconf_preserve_name_prefixes</key>
+      <applyto>/desktop/ibus/general/dconf_preserve_name_prefixes</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[/desktop/ibus/engine/pinyin,/desktop/ibus/engine/bopomofo,/desktop/ibus/engine/hangul]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>DConf preserve name prefixes</short>
+	    <long>Prefixes of DConf keys to stop name conversion</long>
       </locale>
     </schema>
   </schemalist>

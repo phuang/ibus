@@ -68,9 +68,12 @@ print OUT_IBUSKEYSYMS<<EOF;
  * Boston, MA 02111-1307, USA.
  */
 
+#if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
+#error "Only <ibus.h> can be included directly"
+#endif
+
 #ifndef __IBUS_KEYSYMS_H__
 #define __IBUS_KEYSYMS_H__
-
 
 EOF
 
@@ -88,7 +91,7 @@ while (<IN_KEYSYMDEF>)
 	$_ = $keysymelements[2];
 	die "Internal error, was expecting \"0x*\", found: $_\n" if ( ! /^0x/ );
 
-	$keysymelements[1] =~ s/^XK_/IBUS_/g;
+	$keysymelements[1] =~ s/^XK_/IBUS_KEY_/g;
 
 	printf OUT_IBUSKEYSYMS "#define %s 0x%03x\n", $keysymelements[1], hex($keysymelements[2]);
 }

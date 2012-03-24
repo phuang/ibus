@@ -40,6 +40,7 @@ enum {
     PROP_RANK,
     PROP_HOTKEYS,
     PROP_SYMBOL,
+    PROP_SETUP,
 };
 
 
@@ -56,6 +57,7 @@ struct _IBusEngineDescPrivate {
     guint       rank;
     gchar      *hotkeys;
     gchar      *symbol;
+    gchar      *setup;
 };
 
 #define IBUS_ENGINE_DESC_GET_PRIVATE(o)  \
@@ -247,6 +249,19 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                         "The icon symbol chars of engine description",
                         "",
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:setup:
+     *
+     * The exec lists of the engine setup command
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_SETUP,
+                    g_param_spec_string ("setup",
+                        "setup args",
+                        "The exec lists of the engine setup command",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -265,6 +280,7 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->priv->rank = 0;
     desc->priv->hotkeys = NULL;
     desc->priv->symbol = NULL;
+    desc->priv->setup = NULL;
 }
 
 static void
@@ -280,6 +296,7 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->priv->layout);
     g_free (desc->priv->hotkeys);
     g_free (desc->priv->symbol);
+    g_free (desc->priv->setup);
 
     IBUS_OBJECT_CLASS (ibus_engine_desc_parent_class)->destroy (IBUS_OBJECT (desc));
 }
@@ -334,6 +351,10 @@ ibus_engine_desc_set_property (IBusEngineDesc *desc,
         g_assert (desc->priv->symbol == NULL);
         desc->priv->symbol = g_value_dup_string (value);
         break;
+    case PROP_SETUP:
+        g_assert (desc->priv->setup == NULL);
+        desc->priv->setup = g_value_dup_string (value);
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
     }
@@ -379,6 +400,9 @@ ibus_engine_desc_get_property (IBusEngineDesc *desc,
     case PROP_SYMBOL:
         g_value_set_string (value, ibus_engine_desc_get_symbol (desc));
         break;
+    case PROP_SETUP:
+        g_value_set_string (value, ibus_engine_desc_get_setup (desc));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
     }
@@ -410,6 +434,7 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_variant_builder_add (builder, "u", desc->priv->rank);
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->hotkeys));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->symbol));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->setup));
 #undef NOTNULL
 
     return TRUE;
@@ -439,6 +464,7 @@ ibus_engine_desc_deserialize (IBusEngineDesc *desc,
     g_variant_get_child (variant, retval++, "u", &desc->priv->rank);
     g_variant_get_child (variant, retval++, "s", &desc->priv->hotkeys);
     g_variant_get_child (variant, retval++, "s", &desc->priv->symbol);
+    g_variant_get_child (variant, retval++, "s", &desc->priv->setup);
 
     return retval;
 }
@@ -464,6 +490,7 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
     dest->priv->rank             = src->priv->rank;
     dest->priv->hotkeys          = g_strdup (src->priv->hotkeys);
     dest->priv->symbol           = g_strdup (src->priv->symbol);
+    dest->priv->setup            = g_strdup (src->priv->setup);
     return TRUE;
 }
 
@@ -502,6 +529,7 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(layout);
     OUTPUT_ENTRY_1(hotkeys);
     OUTPUT_ENTRY_1(symbol);
+    OUTPUT_ENTRY_1(setup);
     g_string_append_indent (output, indent + 1);
     g_string_append_printf (output, "<rank>%u</rank>\n", desc->priv->rank);
 #undef OUTPUT_ENTRY
@@ -536,6 +564,7 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(layout);
         PARSE_ENTRY_1(hotkeys);
         PARSE_ENTRY_1(symbol);
+        PARSE_ENTRY_1(setup);
 #undef PARSE_ENTRY
 #undef PARSE_ENTRY_1
         if (g_strcmp0 (sub_node->name , "rank") == 0) {
@@ -565,6 +594,7 @@ IBUS_ENGINE_DESC_GET_PROPERTY (layout, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (rank, guint)
 IBUS_ENGINE_DESC_GET_PROPERTY (hotkeys, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (symbol, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (setup, const gchar *)
 #undef IBUS_ENGINE_DESC_GET_PROPERTY
 
 IBusEngineDesc *
@@ -613,6 +643,7 @@ ibus_engine_desc_new_varargs (const gchar *first_property_name, ...)
     g_assert (desc->priv->layout);
     g_assert (desc->priv->hotkeys);
     g_assert (desc->priv->symbol);
+    g_assert (desc->priv->setup);
 
     return desc;
 }

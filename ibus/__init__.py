@@ -20,6 +20,10 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
+import warnings
+warnings.warn("The ibus module is deprecated; "
+    "Please use gobject-introspection instead", DeprecationWarning)
+
 from object import *
 from attribute import *
 from property import *

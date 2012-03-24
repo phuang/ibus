@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glib/gstdio.h>
-#include "ibusshare.h"
+#include "ibuskeys.h"
 #include "ibuskeysyms.h"
 #include "ibuskeymap.h"
 
@@ -51,7 +51,7 @@ ibus_keymap_init (IBusKeymap *keymap)
     gint i;
     keymap->name = NULL;
     for (i = 0; i < sizeof (keymap->keymap) / sizeof (guint); i++) {
-        ((guint *)keymap->keymap)[i] = IBUS_VoidSymbol;
+        ((guint *)keymap->keymap)[i] = IBUS_KEY_VoidSymbol;
     }
 }
 
@@ -136,7 +136,7 @@ ibus_keymap_parse_line (gchar  *str,
 
     keysym = ibus_keyval_from_name (p1);
 
-    if (keysym == IBUS_VoidSymbol)
+    if (keysym == IBUS_KEY_VoidSymbol)
         return FALSE;
 
     if (i == 0 &&
@@ -202,23 +202,23 @@ ibus_keymap_fill (KEYMAP keymap)
     gint i;
     for (i = 0; i < 256; i++) {
         /* fill shift */
-        if (keymap[i][1] == IBUS_VoidSymbol)
+        if (keymap[i][1] == IBUS_KEY_VoidSymbol)
             keymap[i][1] = keymap[i][0];
 
         /* fill capslock */
-        if (keymap[i][2] == IBUS_VoidSymbol)
+        if (keymap[i][2] == IBUS_KEY_VoidSymbol)
             keymap[i][2] = keymap[i][0];
 
         /* fill shift capslock */
-        if (keymap[i][3] == IBUS_VoidSymbol)
+        if (keymap[i][3] == IBUS_KEY_VoidSymbol)
             keymap[i][3] = keymap[i][1];
 
         /* fill altgr */
-        if (keymap[i][4] == IBUS_VoidSymbol)
+        if (keymap[i][4] == IBUS_KEY_VoidSymbol)
             keymap[i][4] = keymap[i][0];
 
         /* fill shift altgr */
-        if (keymap[i][5] == IBUS_VoidSymbol)
+        if (keymap[i][5] == IBUS_KEY_VoidSymbol)
             keymap[i][5] = keymap[i][1];
     }
 }
@@ -283,7 +283,8 @@ ibus_keymap_lookup_keysym (IBusKeymap *keymap,
 
     if (keycode < 256) {
         /* numlock */
-        if ((state & IBUS_MOD2_MASK) && (keymap->keymap[keycode][6] != IBUS_VoidSymbol)) {
+        if ((state & IBUS_MOD2_MASK) &&
+            (keymap->keymap[keycode][6] != IBUS_KEY_VoidSymbol)) {
             return keymap->keymap[keycode][6];
         }
 
@@ -309,5 +310,5 @@ ibus_keymap_lookup_keysym (IBusKeymap *keymap,
         }
     }
 
-    return IBUS_VoidSymbol;
+    return IBUS_KEY_VoidSymbol;
 }

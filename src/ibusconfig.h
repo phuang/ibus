@@ -61,6 +61,7 @@ G_BEGIN_DECLS
 
 typedef struct _IBusConfig IBusConfig;
 typedef struct _IBusConfigClass IBusConfigClass;
+typedef struct _IBusConfigPrivate IBusConfigPrivate;
 
 /**
  * IBusConfig:
@@ -68,12 +69,17 @@ typedef struct _IBusConfigClass IBusConfigClass;
  * An opaque data type representing an IBusConfig.
  */
 struct _IBusConfig {
-  IBusProxy parent;
-  /* instance members */
+    /*< private >*/
+    IBusProxy parent;
+    IBusConfigPrivate *priv;
+
+    /* instance members */
 };
 
 struct _IBusConfigClass {
+    /*< private >*/
     IBusProxyClass parent;
+
     /* class members */
 };
 
@@ -81,10 +87,10 @@ GType            ibus_config_get_type       (void);
 
 /**
  * ibus_config_new:
- * @connection: An GDBusConnection.
- * @returns: An newly allocated IBusConfig corresponding to @connection.
+ * @connection: A #GDBusConnection.
+ * @returns: An newly allocated #IBusConfig corresponding to @connection.
  *
- * New an #IBusConfig from existing GDBusConnection.
+ * New an #IBusConfig from existing #GDBusConnection.
  */
 IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
                                              GCancellable       *cancellable,
@@ -98,7 +104,7 @@ IBusConfig      *ibus_config_new            (GDBusConnection    *connection,
  *      The callback should not be %NULL.
  * @user_data: The data to pass to callback.
  *
- * New an #IBusContext asynchronously.
+ * New an #IBusConfig asynchronously.
  */
 void             ibus_config_new_async      (GDBusConnection    *connection,
                                              GCancellable       *cancellable,
@@ -121,7 +127,7 @@ IBusConfig      *ibus_config_new_async_finish
 
 /**
  * ibus_config_get_value:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
  * @returns: A #GVariant or %NULL. Free with g_variant_unref().
@@ -135,7 +141,7 @@ IBusConfig      *ibus_config_new_async_finish
  *
  * ibus-chewing, for example, stores its setting in /desktop/ibus/engine/Chewing,
  * so the section name for it is "engine/Chewing".
- * @see_also: ibus_config_set_value.
+ * See also: ibus_config_set_value().
  */
 GVariant        *ibus_config_get_value      (IBusConfig         *config,
                                              const gchar        *section,
@@ -143,17 +149,17 @@ GVariant        *ibus_config_get_value      (IBusConfig         *config,
 
 /**
  * ibus_config_get_value_async:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option.
- * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @timeout_ms: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: Callback function to invoke when the return value is ready.
  * @user_data: The data to pass to callback.
  *
  * Get the value of a configuration option asynchronously.
  *
- * @see_also: ibus_config_get_value.
+ * See also: ibus_config_get_value().
  */
 void             ibus_config_get_value_async (IBusConfig         *config,
                                               const gchar        *section,
@@ -165,14 +171,14 @@ void             ibus_config_get_value_async (IBusConfig         *config,
 
 /**
  * ibus_config_get_value_async_finish:
- * @confi: A #IBusConfig.
+ * @config: A #IBusConfig.
  * @result: A #GAsyncResult.
  * @error: Return location for error or %NULL.
  * @returns: A #GVariant or %NULL if error is set. Free with g_variant_unref().
  * 
  * Finish get value of a configuration option.
  *
- * @see_also: ibus_config_get_value_async.
+ * See also: ibus_config_get_value_async().
  */
 GVariant        *ibus_config_get_value_async_finish
                                             (IBusConfig         *config,
@@ -181,20 +187,20 @@ GVariant        *ibus_config_get_value_async_finish
 
 /**
  * ibus_config_get_values:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @returns: A #GVariant or %NULL. Free with g_variant_unref().
  *
  * Get all values in a section synchronously.
  *
- * @see_also: ibus_config_set_value.
+ * See also: ibus_config_set_value().
  */
 GVariant        *ibus_config_get_values     (IBusConfig         *config,
                                              const gchar        *section);
 
 /**
  * ibus_config_get_values_async:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @timeout_ms: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
@@ -203,7 +209,7 @@ GVariant        *ibus_config_get_values     (IBusConfig         *config,
  *
  * Get all values in a section asynchronously.
  *
- * @see_also: ibus_config_get_values.
+ * See also: ibus_config_get_values().
  */
 void             ibus_config_get_values_async(IBusConfig         *config,
                                               const gchar        *section,
@@ -221,7 +227,7 @@ void             ibus_config_get_values_async(IBusConfig         *config,
  * 
  * Finish get values in a section.
  *
- * @see_also: ibus_config_get_values_async.
+ * See also: ibus_config_get_values_async().
  */
 GVariant        *ibus_config_get_values_async_finish
                                             (IBusConfig         *config,
@@ -230,15 +236,15 @@ GVariant        *ibus_config_get_values_async_finish
 
 /**
  * ibus_config_set_value:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option its self.
  * @value: A #GVariant that holds the value. If the value is floating, the
  * function takes ownership of it.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Set the value of a configuration option synchronously.
- * @see_also: ibus_config_get_value.
+ * See also: ibus_config_get_value().
  */
 gboolean         ibus_config_set_value      (IBusConfig         *config,
                                              const gchar        *section,
@@ -252,14 +258,14 @@ gboolean         ibus_config_set_value      (IBusConfig         *config,
  * @name: Name of the configure option.
  * @value: A #GVariant that holds the value. If the value is floating, the
  * function takes ownership of it.
- * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @timeout_ms: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: Callback function to invoke when the return value is ready.
  * @user_data: The data to pass to callback.
  *
  * Set the value of a configuration option asynchronously.
  *
- * @see_also: ibus_config_set_value.
+ * See also: ibus_config_set_value().
  */
 void             ibus_config_set_value_async (IBusConfig         *config,
                                               const gchar        *section,
@@ -272,14 +278,14 @@ void             ibus_config_set_value_async (IBusConfig         *config,
 
 /**
  * ibus_config_set_value_async_finish:
- * @confi: A #IBusConfig.
+ * @config: A #IBusConfig.
  * @result: A #GAsyncResult.
  * @error: Return location for error or %NULL.
  * @returns: %TRUE or %FALSE if error is set.
  * 
  * Finish set value of a configuration option.
  *
- * @see_also: ibus_config_set_value_async.
+ * See also: ibus_config_set_value_async().
  */
 gboolean         ibus_config_set_value_async_finish
                                             (IBusConfig         *config,
@@ -288,19 +294,58 @@ gboolean         ibus_config_set_value_async_finish
 
 /**
  * ibus_config_unset:
- * @config: An IBusConfig
+ * @config: An #IBusConfig
  * @section: Section name of the configuration option.
  * @name: Name of the configure option its self.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Remove an entry of a configuration option.
- * @see_also: ibus_config_get_value.
+ * See also: ibus_config_get_value().
  */
 gboolean         ibus_config_unset      (IBusConfig         *config,
                                          const gchar        *section,
                                          const gchar        *name);
 
 /* FIXME add an asynchronous version of unset */
+
+/**
+ * ibus_config_watch:
+ * @config: An #IBusConfig
+ * @section: (allow-none): Section name of the configuration option.
+ * @name: (allow-none): Name of the configure option its self.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
+ *
+ * Subscribe to the configuration option change notification.
+ *
+ * Until this function is called, every change will be notified to the
+ * client through #IBusConfig::value-changed signal.  Clients should
+ * call ibus_config_watch() with the sections they are interested in,
+ * to reduce the number of D-Bus messages.
+ *
+ * See also: ibus_config_unwatch().
+ */
+gboolean         ibus_config_watch      (IBusConfig         *config,
+                                         const gchar        *section,
+                                         const gchar        *name);
+
+/* FIXME add an asynchronous version of watch */
+
+/**
+ * ibus_config_unwatch:
+ * @config: An #IBusConfig
+ * @section: (allow-none): Section name of the configuration option.
+ * @name: (allow-none): Name of the configure option its self.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
+ *
+ * Unsubscribe from the configuration option change notification.
+ *
+ * See also: ibus_config_watch.
+ */
+gboolean         ibus_config_unwatch    (IBusConfig         *config,
+                                         const gchar        *section,
+                                         const gchar        *name);
+
+/* FIXME add an asynchronous version of unwatch */
 
 G_END_DECLS
 #endif

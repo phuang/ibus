@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-05-13 11:21+0900\n"
-"PO-Revision-Date: 2011-05-13 02:29+0000\n"
+"POT-Creation-Date: 2011-12-13 16:43+0900\n"
+"PO-Revision-Date: 2011-12-13 18:00+0000\n"
 "Last-Translator: Makoto Mizukami <makoto@fedoraporject.org>\n"
 "Language-Team: Japanese <jp@li.org>\n"
 "Language: ja\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
@@ -157,11 +157,11 @@ msgstr "次のインプットメソッド"
 msgid "previous input method"
 msgstr "ひとつ前のインプットメソッド"
 
-#: ../setup/main.py:286
+#: ../setup/main.py:332
 msgid "IBus daemon is not started. Do you want to start it now?"
 msgstr "IBus デーモンが動いていません。起動しますか？"
 
-#: ../setup/main.py:301
+#: ../setup/main.py:347
 msgid ""
 "IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -173,7 +173,7 @@ msgstr ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:316
+#: ../setup/main.py:362
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
@@ -331,7 +331,7 @@ msgstr "インプットメソッドをオフに切り替えるためのショー
 msgid "The shortcut keys for turning input method on"
 msgstr "インプットメソッドをオンに切り替えるためのショートカットキー"
 
-#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:52
 msgid "The shortcut keys for turning input method on or off"
 msgstr "インプットメソッドをオン、オフするためのショートカットキーを設定します"
 
@@ -351,11 +351,11 @@ msgstr "言語パネル用にカスタムフォント名を使用する"
 msgid "Use global input method"
 msgstr "グローバルインプットメソッドを使用する"
 
-#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:56
 msgid "Use system keyboard (XKB) layout"
 msgstr "システムキーボード (XKB) レイアウトを使用する"
 
-#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:57
 msgid "Use system keyboard layout"
 msgstr "システムキーボードレイアウトを使用する"
 
@@ -512,33 +512,37 @@ msgid "Show language panel:"
 msgstr "言語パネルの表示:"
 
 #: ../setup/setup.ui.h:48
+msgid "Show setup of the selected input method"
+msgstr "選択したインプットメソッドの設定を表示します"
+
+#: ../setup/setup.ui.h:49
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:50
 msgid "The shortcut keys for switching to next input method in the list"
 msgstr "リストの中で次のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:51
 msgid "The shortcut keys for switching to previous input method in the list"
 msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:53
 msgid "Top left corner"
 msgstr "左上隅"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:54
 msgid "Top right corner"
 msgstr "右上隅"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:55
 msgid "Use custom font:"
 msgstr "カスタムフォントを使う:"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:58
 msgid "Vertical"
 msgstr "縦"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:59
 msgid "When active"
 msgstr "アクティブであるとき"

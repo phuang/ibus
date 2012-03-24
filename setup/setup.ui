@@ -264,7 +264,7 @@
                                     <property name="visible">True</property>
                                     <property name="spacing">6</property>
                                     <child>
-                                      <object class="GtkEntry" id="entry_enable">
+                                      <object class="GtkEntry" id="entry_enable_unconditional">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="editable">False</property>
@@ -274,7 +274,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="button_enable">
+                                      <object class="GtkButton" id="button_enable_unconditional">
                                         <property name="label" translatable="yes">...</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -312,7 +312,7 @@
                                     <property name="visible">True</property>
                                     <property name="spacing">6</property>
                                     <child>
-                                      <object class="GtkEntry" id="entry_disable">
+                                      <object class="GtkEntry" id="entry_disable_unconditional">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="editable">False</property>
@@ -322,7 +322,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="button_disable">
+                                      <object class="GtkButton" id="button_disable_unconditional">
                                         <property name="label" translatable="yes">...</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -724,6 +724,22 @@
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
                                     <property name="position">4</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_engine_preferences">
+                                    <property name="label">gtk-preferences</property>
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Show setup of the selected input method</property>
+                                    <property name="use_stock">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">5</property>
                                   </packing>
                                 </child>
                               </object>

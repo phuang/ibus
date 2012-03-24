@@ -114,6 +114,7 @@ typedef enum {
 
 typedef struct _IBusProperty IBusProperty;
 typedef struct _IBusPropertyClass IBusPropertyClass;
+typedef struct _IBusPropertyPrivate IBusPropertyPrivate;
 
 #ifndef __PROPLIST_DEFINED
 #define __PROPLIST_DEFINED
@@ -137,20 +138,11 @@ typedef struct _IBusPropListClass IBusPropListClass;
  * UI component for input method engine property.
  */
 struct _IBusProperty {
+    /*< private >*/
     IBusSerializable parent;
+    IBusPropertyPrivate *priv;
 
-    /*< public >*/
-    gchar    *key;
-    gchar    *icon;
-    IBusText *label;
-    IBusText *tooltip;
-
-    gboolean sensitive;
-    gboolean visible;
-    guint type;
-    guint state;
-
-    IBusPropList *sub_props;
+    gpointer pdummy[7];
 };
 
 struct _IBusPropertyClass {
@@ -194,22 +186,13 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
 const gchar *    ibus_property_get_key      (IBusProperty   *prop);
 
 /**
- * ibus_property_get_prop_type:
- * @prop: An IBusProperty.
- * @returns: the type of IBusProperty.
- *
- * Get the type of IBusProperty.
- */
-IBusPropType     ibus_property_get_prop_type(IBusProperty   *prop);
-
-/**
  * ibus_property_get_label:
  * @prop: An IBusProperty.
- * @returns: the label of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the label of IBusProperty. Should not be freed.
  *
  * Get the label of IBusProperty.
  */
-const IBusText * ibus_property_get_label    (IBusProperty   *prop);
+IBusText *      ibus_property_get_label    (IBusProperty   *prop);
 
 /**
  * ibus_property_set_label:
@@ -243,11 +226,11 @@ void             ibus_property_set_icon     (IBusProperty   *prop,
 /**
  * ibus_property_get_tooltip:
  * @prop: An IBusProperty.
- * @returns: the tooltip of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the tooltip of IBusProperty. Should not be freed.
  *
  * Get the tooltip of IBusProperty.
  */
-const IBusText * ibus_property_get_tooltip  (IBusProperty   *prop);
+IBusText *      ibus_property_get_tooltip  (IBusProperty   *prop);
 
 /**
  * ibus_property_set_tooltip:
@@ -298,6 +281,15 @@ void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
 
 /**
+ * ibus_property_get_property_type:
+ * @prop: An IBusProperty.
+ * @returns: the type of IBusProperty.
+ *
+ * Get the type of IBusProperty.
+ */
+IBusPropType     ibus_property_get_prop_type(IBusProperty   *prop);
+
+/**
  * ibus_property_get_state:
  * @prop: An IBusProperty.
  * @returns: the state of IBusProperty.
@@ -319,12 +311,12 @@ void             ibus_property_set_state    (IBusProperty   *prop,
 /**
  * ibus_property_get_sub_props:
  * @prop: An IBusProperty.
- * @returns: the IBusPropList of IBusProperty. Should not be freed.
+ * @returns: (transfer none): the IBusPropList of IBusProperty.
+ *     Should not be freed.
  *
  * Get the IBusPropList of IBusProperty.
  */
-const IBusPropList *
-                 ibus_property_get_sub_props(IBusProperty   *prop);
+IBusPropList *   ibus_property_get_sub_props(IBusProperty   *prop);
 
 /**
  * ibus_property_set_sub_props:

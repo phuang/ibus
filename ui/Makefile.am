@@ -20,10 +20,12 @@
 # Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 # Boston, MA  02111-1307  USA
 
-if ENABLE_PYTHON
-SUBDIRS = \
-	gtk \
-	$(NULL)
+if ENABLE_GTK3
+GTK3_UI = gtk3
 endif
+
+SUBDIRS = \
+	$(GTK3_UI) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

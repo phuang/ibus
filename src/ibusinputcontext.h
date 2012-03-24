@@ -283,7 +283,7 @@ gboolean     ibus_input_context_process_key_event_async_finish
  *
  * Pass the key event to input method engine and wait for the reply from ibus (i.e. synchronous IPC).
  *
- * @see_also: ibus_input_context_process_key_event_async()
+ * See also: ibus_input_context_process_key_event_async()
  */
 gboolean     ibus_input_context_process_key_event
                                             (IBusInputContext   *context,
@@ -333,7 +333,7 @@ void         ibus_input_context_set_capabilities
  *
  * Activate the property asynchronously.
  *
- * @see_also: #IBusEngine::property_activate
+ * See also: #IBusEngine::property_activate
  */
 void         ibus_input_context_property_activate
                                             (IBusInputContext *context,
@@ -370,73 +370,6 @@ void         ibus_input_context_focus_out   (IBusInputContext   *context);
  * see_also: #IBusEngine::reset
  */
 void         ibus_input_context_reset       (IBusInputContext   *context);
-
-/**
- * ibus_input_context_enable:
- * @context: An IBusInputContext.
- *
- * Invoked when the IME is enabled, either by IME switch hotkey or select from the menu.
- * An asynchronous IPC will be performed.
- *
- * see_also: #IBusEngine::enable
- */
-void         ibus_input_context_enable      (IBusInputContext   *context);
-
-/**
- * ibus_input_context_disable:
- * @context: An IBusInputContext.
- *
- * Invoked when the IME is disabled, either by IME switch hotkey or select from the menu.
- * An asynchronous IPC will be performed.
- *
- * see_also: #IBusEngine::disable
- */
-void         ibus_input_context_disable     (IBusInputContext   *context);
-
-
-/**
- * ibus_input_context_is_enabled_async:
- * @context: An #IBusInputContext.
- * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
- * @cancellable: A #GCancellable or %NULL.
- * @callback: A #GAsyncReadyCallback to call when the request is satisfied or %NULL
- *      if you don't care about the result of the method invocation.
- * @user_data: The data to pass to callback.
- *
- * An asynchronous IPC will be performed.
- */
-void         ibus_input_context_is_enabled_async
-                                            (IBusInputContext   *context,
-                                             gint                timeout_msec,
-                                             GCancellable       *cancellable,
-                                             GAsyncReadyCallback callback,
-                                             gpointer            user_data);
-
-/**
- * ibus_input_context_is_enabled_async_finish:
- * @context: An #IBusInputContext.
- * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
- *      ibus_input_context_is_enabled_async().
- * @error: Return location for error or %NULL.
- * @returns: %TRUE if the IME is enabled on the contextfor success;
- *      %FALSE otherwise or some errors happen and the @error will be set.
- *
- * Finishes an operation started with ibus_input_context_is_enabled_async().
- */
-gboolean     ibus_input_context_is_enabled_async_finish
-                                            (IBusInputContext   *context,
-                                             GAsyncResult       *res,
-                                             GError            **error);
-
-/**
- * ibus_input_context_is_enabled:
- * @context: An IBusInputContext.
- * @returns: TRUE if the IME is enabled on the context.
- *
- * Returns TRUE if the IME is enabled on the context.
- * A asynchronous IPC will be performed.
- */
-gboolean     ibus_input_context_is_enabled  (IBusInputContext   *context);
 
 /**
  * ibus_input_context_get_engine_async:
@@ -498,12 +431,14 @@ void         ibus_input_context_set_engine  (IBusInputContext   *context,
  * ibus_input_context_set_surrounding_text:
  * @context: An #IBusInputContext.
  * @text: An #IBusText surrounding the current cursor on the application.
- * @cursor_po: Current cursor position in characters in @text.
+ * @cursor_pos: Current cursor position in characters in @text.
+ * @anchor_pos: Anchor position of selection in @text.
 */
 void         ibus_input_context_set_surrounding_text
                                             (IBusInputContext   *context,
                                              IBusText           *text,
-                                             guint32             cursor_pos);
+                                             guint32             cursor_pos,
+                                             guint32             anchor_pos);
 
 /**
  * ibus_input_context_needs_surrounding_text:
@@ -518,4 +453,3 @@ gboolean     ibus_input_context_needs_surrounding_text
 
 G_END_DECLS
 #endif
-

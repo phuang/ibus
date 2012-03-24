@@ -20,14 +20,16 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "registry.h"
-#include <glib/gstdio.h>
+
 #include <gio/gio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "types.h"
-#include "option.h"
-#include "marshalers.h"
+
 #include "dbusimpl.h"
+#include "global.h"
+#include "marshalers.h"
+#include "types.h"
 
 enum {
     CHANGED,
@@ -156,12 +158,10 @@ bus_registry_init (BusRegistry *registry)
 static void
 bus_registry_remove_all (BusRegistry *registry)
 {
-    g_list_foreach (registry->observed_paths, (GFunc) g_object_unref, NULL);
-    g_list_free (registry->observed_paths);
+    g_list_free_full (registry->observed_paths, g_object_unref);
     registry->observed_paths = NULL;
 
-    g_list_foreach (registry->components, (GFunc) g_object_unref, NULL);
-    g_list_free (registry->components);
+    g_list_free_full (registry->components, g_object_unref);
     registry->components = NULL;
 
     g_hash_table_remove_all (registry->engine_table);

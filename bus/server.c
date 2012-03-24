@@ -20,12 +20,15 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "server.h"
+
 #include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "dbusimpl.h"
 #include "ibusimpl.h"
-#include "option.h"
+#include "global.h"
+
 
 static GDBusServer *server = NULL;
 static GMainLoop *mainloop = NULL;

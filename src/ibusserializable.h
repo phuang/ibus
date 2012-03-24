@@ -29,8 +29,8 @@
  * @short_description: A serializable object.
  * @stability: Stable
  *
- * An IBusSerializable is an IBus object which can be serialized, that is,
- * to be to and from an IBusMessage.
+ * An #IBusSerializable is an IBus object which can be serialized, that is,
+ * to be to and from a #GVariant.
  *
  * This class is to be extended by other class that requires serialization.
  * An extended class should overrides following methods:
@@ -85,22 +85,21 @@
 
 /**
  * ibus_serializable_get_attachment:
- * @o: An IBusSerializable.
+ * @o: An #IBusSerializable.
  * @k: String formatted key for indexing value.
- * @v: Value to be attached. Should be also serializable.
  *
- * Get a value from attachment of an IBusSerializable.
+ * Get a value from attachment of an #IBusSerializable.
  * This macro is an convenient wrapper of ibus_serializable_get_qattachment().
  */
-#define ibus_serializable_get_attachment(o, k, v)  \
+#define ibus_serializable_get_attachment(o, k)  \
     ibus_serializable_get_qattachment (o, g_quark_from_string (k))
 
 /**
  * ibus_serializable_remove_attachment:
- * @o: An IBusSerializable.
+ * @o: An #IBusSerializable.
  * @k: String formatted key for indexing value.
  *
- * Remove a value from attachment of an IBusSerializable.
+ * Remove a value from attachment of an #IBusSerializable.
  * This macro is an convenient wrapper of ibus_serializable_remove_qattachment().
  */
 #define ibus_serializable_remove_attachment(o, k)  \
@@ -127,39 +126,40 @@ struct _IBusSerializable {
 
 /**
  * IBusSerializableSerializeFunc:
- * @object: An IBusSerializable.
- * @iter: An IBusMessageIter.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @serializable: An #IBusSerializable.
+ * @builder: A #GVariantBuilder.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Prototype of serialize function.
- * Serialize function convert an IBusSerializable to IBusMessageIter.
+ * Serialize function convert an #IBusSerializable to #GVariantBuilder.
  * Returns a gboolean value which indicates whether the conversion is success.
- * Return TRUE if succeed.
+ * Return %TRUE if succeed.
  */
-typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       *object,
+typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       *serializable,
                                                          GVariantBuilder        *builder);
 
 /**
  * IBusSerializableDeserializeFunc:
- * @object: An IBusSerializable.
- * @iter: An IBusMessageIter.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @serializable: An #IBusSerializable.
+ * @variant: A #GVariant contains a tuple.
+ * @returns: The number of values in the variant(tuple) are consumed.
  *
  * Prototype of deserialize function.
- * Deserialize function convert an IBusMessageIter to IBusSerializable.
- * Returns a gboolean value which indicates whether the conversion is success.
+ * Deserialize function convert a #GVariant to #IBusSerializable.
+ * Returns an integer value which indicates how many values in
+ * the variant(tuple) are consumed.
  */
-typedef gint        (* IBusSerializableDeserializeFunc) (IBusSerializable       *object,
+typedef gint        (* IBusSerializableDeserializeFunc) (IBusSerializable       *serializable,
                                                          GVariant               *variant);
 
 /**
  * IBusSerializableCopyFunc:
- * @dest: The destination IBusSerializable.
- * @src: A source IBusMessageIter.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @dest: The destination #IBusSerializable.
+ * @src: A source #IBusSerializable.
+ * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Prototype of copy function.
- * Copy function copy from source IBusSerializable to the destination one.
+ * Copy function copy from source #IBusSerializable to the destination one.
  * Returns a gboolean value which indicates whether the copying is success.
  */
 typedef gboolean    (* IBusSerializableCopyFunc)        (IBusSerializable       *dest,
@@ -189,82 +189,80 @@ GType                ibus_serializable_get_type         (void);
  *
  * Returns: a new instance of #IBusSerializable.
  */
-IBusSerializable *   ibus_serializable_new              (void);
+IBusSerializable    *ibus_serializable_new              (void);
 
 /**
  * ibus_serializable_set_qattachment:
- * @object: An IBusSerializable.
+ * @serializable: An #IBusSerializable.
  * @key: String formatted key for indexing value.
- * @value: Value to be attached. Should be also serializable.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @value: Value to be attached or %NULL to remove any prevoius value.
  *
- * Attach a value to an IBusSerializable. The value should be serializable as well.
- * Basic type such as integer, string are deemed to be serializable.
+ * Attach a value to an #IBusSerializable. If the value is floating,
+ * the serializable will take the ownership.
  *
- * @see_also: ibus_serializable_set_attachment().
+ * See also: ibus_serializable_set_attachment().
  */
-gboolean             ibus_serializable_set_qattachment  (IBusSerializable   *object,
+void                 ibus_serializable_set_qattachment  (IBusSerializable   *serializable,
                                                          GQuark              key,
-                                                         const GValue       *value);
+                                                         GVariant           *value);
 
 /**
  * ibus_serializable_get_qattachment:
- * @object: An IBusSerializable.
+ * @serializable: An #IBusSerializable.
  * @key: String formatted key for indexing value.
- * @returns: The attached value; or NULL if fail to retrieve the value.
+ * @returns: The attached value; or %NULL if fail to retrieve the value.
  *
- * Get a value from attachment of an IBusSerializable.
- * @see_also: ibus_serializable_set_attachment().
+ * Get a value from attachment of an #IBusSerializable.
+ * See also: ibus_serializable_set_attachment().
  */
-const GValue        *ibus_serializable_get_qattachment  (IBusSerializable   *object,
+GVariant            *ibus_serializable_get_qattachment  (IBusSerializable   *serializable,
                                                          GQuark              key);
 
 /**
  * ibus_serializable_remove_qattachment:
- * @object: An IBusSerializable.
+ * @serializable: An #IBusSerializable.
  * @key: String formatted key for indexing value.
  *
- * Remove a value from attachment of an IBusSerializable.
- * @see_also: ibus_serializable_remove_attachment().
+ * Remove a value from attachment of an #IBusSerializable.
+ * See also: ibus_serializable_remove_attachment().
  */
 void                 ibus_serializable_remove_qattachment
-                                                        (IBusSerializable   *object,
+                                                        (IBusSerializable   *serializable,
                                                          GQuark              key);
 
 /**
  * ibus_serializable_copy:
- * @object: An IBusSerializable.
- * @returns: A newly allocated clone object; or NULL if @object is not serializable.
+ * @serializable: An #IBusSerializable.
+ * @returns: A newly allocated clone object; or %NULL if @object is not serializable.
  *
- * Clone an IBusSerializable.
+ * Clone an #IBusSerializable.
  * The copy method should be implemented in extended class.
  *
- * @see_also: IBusSerializableCopyFunc().
+ * See also: IBusSerializableCopyFunc().
  */
-IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *object);
+IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *serializable);
 
 /**
  * ibus_serializable_serialize:
- * @object: An IBusSerializable.
- * @iter: An IBusMessageIter.
- * @returns: TRUE if succeed; FALSE otherwise.
+ * @serializable: An #IBusSerializable.
+ * @returns: A #GVariant.
  *
- * Serialize an IBusSerializable to an IBusMessageIter.
+ * Serialize an #IBusSerializable to a #GVariant.
  * The serialize method should be implemented in extended class.
  *
- * @see_also: IBusSerializableCopyFunc().
+ * See also: IBusSerializableCopyFunc().
  */
-GVariant            *ibus_serializable_serialize        (IBusSerializable   *object);
+GVariant            *ibus_serializable_serialize        (IBusSerializable   *serializable);
 
 /**
  * ibus_serializable_deserialize:
- * @iter: An IBusMessageIter.
- * @returns: The deserialized IBusSerializable.
+ * @variant: A #GVariant.
+ * @returns: The deserialized #IBusSerializable.
  *
- * Deserialize an IBusMessageIter to an IBusSerializable/
+ * Deserialize a #GVariant to an #IBusSerializable/
  * The deserialize method should be implemented in extended class.
  *
- * @see_also: IBusSerializableCopyFunc().
+ * See also: IBusSerializableCopyFunc().
  */
 IBusSerializable    *ibus_serializable_deserialize      (GVariant           *variant);
 

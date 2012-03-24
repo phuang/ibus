@@ -1,103 +1,117 @@
-# Translation of the IBus master
-# Copyright (C) 2009 
-# This file is distributed under the same license as the IBus package.
+# translation of ibus.pot to Hungarian
+# Hungarian translation of ibus.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
+# This file is distributed under the same license as the ibus package.
+# 
+# Translators:
+# kelemeng <kelemeng@gnome.hu>, 2011.
 # Sulyok Péter <peti@fedoraproject.org>, 2009.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: IBus master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2009-04-11 10:58+0200\n"
-"Last-Translator: Sulyok Péter <peti@fedoraproject.org>\n"
-"Language-Team: Hungarian <fedora-trans-hu@redhat.com>\n"
-"Language: hu\n"
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"PO-Revision-Date: 2011-09-01 00:45+0000\n"
+"Last-Translator: kelemeng <kelemeng@gnome.hu>\n"
+"Language-Team: Hungarian <trans-hu@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../bus/ibus.desktop.in.h:1
 msgid "IBus"
 msgstr "IBus"
 
 #: ../bus/ibus.desktop.in.h:2
-#, fuzzy
 msgid "Input Method Framework"
-msgstr "IBus bevitel eljárás keretrendszer"
+msgstr "Bevitelimód-keretrendszer"
 
 #: ../bus/ibus.desktop.in.h:3
-#, fuzzy
 msgid "Start IBus Input Method Framework"
-msgstr "IBus bevitel eljárás keretrendszer"
+msgstr "IBus bevitelimód-keretrendszer elindítása"
 
-#: ../ibus/_config.py.in:39
+#: ../ibus/_config.py.in:40
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41
 msgid "Other"
 msgstr "Más"
 
 #: ../ui/gtk/candidatepanel.py:264
-#, fuzzy
 msgid "Previous page"
-msgstr "Előző bevitel eljárás:"
+msgstr "Előző oldal"
 
 #: ../ui/gtk/candidatepanel.py:269
 msgid "Next page"
-msgstr ""
+msgstr "Következő oldal"
 
-#: ../ui/gtk/main.py:55
+#: ../ui/gtk/main.py:62
 msgid ""
 "Some input methods have been installed, removed or updated. Please restart "
 "ibus input platform."
 msgstr ""
+"Néhány beviteli mód telepítésre, eltávolításra vagy frissítésre került. "
+"Indítsa újra az ibus beviteli rendszert."
 
-#: ../ui/gtk/main.py:59
-#, fuzzy
+#: ../ui/gtk/main.py:66
 msgid "Restart Now"
-msgstr "Újraindítás"
+msgstr "Újraindítás most"
 
-#: ../ui/gtk/main.py:60
-#, fuzzy
+#: ../ui/gtk/main.py:67
 msgid "Later"
-msgstr "Más"
+msgstr "Később"
 
-#: ../ui/gtk/panel.py:109
+#: ../ui/gtk/panel.py:116
+msgid "IBus Panel"
+msgstr "IBus panel"
+
+#: ../ui/gtk/panel.py:122
 msgid "IBus input method framework"
-msgstr "IBus bevitel eljárás keretrendszer"
+msgstr "IBus bevitelimód-keretrendszer"
 
-#: ../ui/gtk/panel.py:327
+#: ../ui/gtk/panel.py:352
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: ../ui/gtk/panel.py:414
-#, fuzzy
+#: ../ui/gtk/panel.py:439
 msgid "Turn off input method"
-msgstr "Nincs bevitel eljárás"
+msgstr "Beviteli mód kikapcsolása"
 
-#: ../ui/gtk/panel.py:453
+#: ../ui/gtk/panel.py:478
 msgid "No input window"
-msgstr ""
+msgstr "Nincs beviteli ablak"
 
-#: ../ui/gtk/panel.py:484
+#: ../ui/gtk/panel.py:509
 msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "IBus egy okos bemenő csatorna Linux/Unixhoz"
+msgstr "Az IBus egy intelligens beviteli busz Linux/Unix rendszerekhez"
 
-#: ../ui/gtk/panel.py:488
+#: ../ui/gtk/panel.py:513
 msgid "translator-credits"
-msgstr "Sulyok Péter <peti@fedoraproject.org>, 2009."
+msgstr ""
+"Sulyok Péter <peti@fedoraproject.org>, 2009.\n"
+"\n"
+"Launchpad Contributions:\n"
+"  Gabor Kelemen https://launchpad.net/~kelemeng\n"
+"  Muszela Balázs https://launchpad.net/~bazsi86-deactivatedaccount\n"
+"  Ocsovszki Dorián https://launchpad.net/~gorkhaan\n"
+"  Robert Roth https://launchpad.net/~evfool\n"
+"  Token https://launchpad.net/~kozmad\n"
+"  fergekolferol https://launchpad.net/~ferge-kolferol"
 
 #: ../ui/gtk/languagebar.py:106
-#, fuzzy
 msgid "About the input method"
-msgstr "Bevitel eljárások"
+msgstr "A beviteli mód névjegye"
 
 #: ../ui/gtk/languagebar.py:214
 msgid "Switch input method"
-msgstr "Bevitel eljárás átváltás"
+msgstr "Beviteli mód váltása"
 
 #: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
 #: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
@@ -105,48 +119,47 @@ msgid "About"
 msgstr "Névjegy"
 
 #: ../ui/gtk/languagebar.py:361
-#, fuzzy
 msgid "About the Input Method"
-msgstr "Bevitel eljárások"
+msgstr "A beviteli mód névjegye"
 
 #: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
 #, python-format
 msgid "Language: %s\n"
-msgstr ""
+msgstr "Nyelv: %s\n"
 
 #: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
-#, fuzzy, python-format
+#, python-format
 msgid "Keyboard layout: %s\n"
-msgstr "Gyorsbillentyűk"
+msgstr "Billentyűzetkiosztás: %s\n"
 
 #: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
 #, python-format
 msgid "Author: %s\n"
-msgstr ""
+msgstr "Szerző: %s\n"
 
 #: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
 msgid "Description:\n"
-msgstr ""
+msgstr "Leírás:\n"
 
 #: ../setup/main.py:102
 msgid "trigger"
-msgstr "ravasz"
+msgstr "aktiváló"
 
 #: ../setup/main.py:113
 msgid "enable"
-msgstr ""
+msgstr "engedélyezés"
 
 #: ../setup/main.py:124
 msgid "disable"
-msgstr ""
+msgstr "letiltás"
 
 #: ../setup/main.py:135
 msgid "next input method"
-msgstr "következő bevitel eljárás"
+msgstr "következő beviteli mód"
 
 #: ../setup/main.py:146
 msgid "previous input method"
-msgstr "előző bevitel eljárás"
+msgstr "előző beviteli mód"
 
 #: ../setup/main.py:286
 msgid "IBus daemon is not started. Do you want to start it now?"
@@ -154,8 +167,7 @@ msgstr "Az IBus szolgáltatás áll. Beindítja?"
 
 #: ../setup/main.py:301
 msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
+"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -163,8 +175,7 @@ msgstr ""
 "IBus működik! Ha nem tudja IBus-t használni, kérem fűzze az \n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibussorokat a $HOME/.bashrc fájlhoz, majd lépjen be "
-"újra."
+"  export QT_IM_MODULE=ibussorokat a $HOME/.bashrc fájlhoz, majd lépjen be újra."
 
 #: ../setup/main.py:316
 #, python-format
@@ -177,7 +188,7 @@ msgstr "Gyorsbillentyűk"
 
 #: ../setup/keyboardshortcut.py:63
 msgid "Key code:"
-msgstr "Kulcs kód:"
+msgstr "Billentyűkód:"
 
 #: ../setup/keyboardshortcut.py:78
 msgid "Modifiers:"
@@ -188,176 +199,176 @@ msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr ""
-"Kérem nyomjon egy billentyűt (vagy kombinációt).\n"
-"Az ablak bezárul, amint a billentyűt felengedi."
+"Nyomjon meg egy billentyűt (vagy billentyűkombinációt).\n"
+"Az ablak a billentyű felengedésekor bezáródik."
 
 #: ../setup/keyboardshortcut.py:233
 msgid "Please press a key (or a key combination)"
-msgstr "Kérem nyomjon egy billentyűt (vagy kombinációt)."
+msgstr "Nyomjon meg egy billentyűt (vagy billentyűkombinációt)."
 
 #: ../setup/enginecombobox.py:120
 msgid "Select an input method"
-msgstr "Bevitel eljárás kiválasztása"
+msgstr "Válasszon beviteli módot"
 
 #. create im name & icon column
 #: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
-#, fuzzy
 msgid "Input Method"
-msgstr "Bevitel eljárások"
+msgstr "Beviteli mód"
 
 #: ../setup/enginetreeview.py:92
 msgid "Kbd"
-msgstr ""
+msgstr "Bill"
 
 #: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
 msgid "IBus Preferences"
-msgstr "IBus beállítás"
+msgstr "IBus beállítások"
 
 #: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
 msgid "Set IBus Preferences"
-msgstr "IBus beállítás"
+msgstr "IBus beállításai"
 
 #: ../data/ibus.schemas.in.h:1
-#, fuzzy
 msgid "Auto hide"
-msgstr "Önműködő rejtés"
+msgstr "Automatikus elrejtés"
 
 #: ../data/ibus.schemas.in.h:2
-#, fuzzy
 msgid "Custom font"
-msgstr "Saját betű:"
+msgstr "Egyéni betűkészlet"
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Custom font name for language panel"
-msgstr "Saját betű neve a nyelv panelen"
+msgstr "Egyéni betűkészlet neve a nyelv panelhez"
 
 #: ../data/ibus.schemas.in.h:4
-msgid "Embed Preedit Text"
-msgstr ""
+msgid "Disable shortcut keys"
+msgstr "Gyorsbillentyűk letiltása"
 
 #: ../data/ibus.schemas.in.h:5
-msgid "Embed Preedit Text in Application Window"
-msgstr ""
+msgid "Embed Preedit Text"
+msgstr "Előszerkesztett szöveg beágyazása"
 
 #: ../data/ibus.schemas.in.h:6
-#, fuzzy
-msgid "Enable input method by default"
-msgstr "következő bevitel eljárás"
+msgid "Embed Preedit Text in Application Window"
+msgstr "Előszerkesztett szöveg beágyazása az alkalmazásablakba"
 
 #: ../data/ibus.schemas.in.h:7
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
+msgid "Enable input method by default"
+msgstr "Beviteli mód engedélyezése alapértelmezésben"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
-msgid "Language panel position"
-msgstr "Nyelv panel mutatása:"
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+"Beviteli mód engedélyezése alapértelmezésben, amikor az alkalmazás beviteli "
+"fókuszba kerül"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
-msgid "Next engine shortcut keys"
-msgstr "Következő eljárás gyorsbillentyű"
+msgid "Enable shortcut keys"
+msgstr "Gyorsbillentyűk engedélyezése"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
-msgid "Orientation of lookup table"
-msgstr "Kereső táblázat iránya"
+msgid "Language panel position"
+msgstr "Nyelvi panel pozíciója"
 
 #: ../data/ibus.schemas.in.h:11
-#, fuzzy
-msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
-msgstr "Kereső táblázat iránya. 0 = vízszintes, 1 = függőleges"
+msgid "Next engine shortcut keys"
+msgstr "Következő alrendszer gyorsbillentyűi"
 
 #: ../data/ibus.schemas.in.h:12
-#, fuzzy
-msgid "Preload engines"
-msgstr "Eljárások előtöltése"
+msgid "Orientation of lookup table"
+msgstr "Keresési tábla tájolása"
 
 #: ../data/ibus.schemas.in.h:13
-#, fuzzy
-msgid "Preload engines during ibus starts up"
-msgstr "Eljárások előre betöltése ibus indulásakor"
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "Kikeresési tábla tájolása. 0 = vízszintes, 1 = függőleges"
 
 #: ../data/ibus.schemas.in.h:14
-#, fuzzy
+msgid "Preload engines"
+msgstr "Alrendszerek előtöltése"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Preload engines during ibus starts up"
+msgstr "Alrendszerek előtöltése  az ibus indításakor"
+
+#: ../data/ibus.schemas.in.h:16
 msgid "Prev engine shortcut keys"
-msgstr "Előző eljárás gyorsbillentyű"
+msgstr "Előző alrendszer gyorsbillentyűi"
 
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
+#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
 msgid "Share the same input method among all applications"
-msgstr ""
+msgstr "Azonos beviteli mód megosztása minden alkalmazás közt"
 
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
+#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
 msgid "Show icon on system tray"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:17
-#, fuzzy
-msgid "Show input method name"
-msgstr "Saját betű neve a nyelv panelen"
-
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "Saját betű neve a nyelv panelen"
+msgstr "Ikon megjelenítése az értesítési területen"
 
 #: ../data/ibus.schemas.in.h:19
-#, fuzzy
+msgid "Show input method name"
+msgstr "Beviteli mód megjelenítése"
+
+#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
+msgid "Show input method name on language bar"
+msgstr "Beviteli mód megjelenítése a nyelvi eszköztáron"
+
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr ""
-"A nyelv panel viselkedése. 0 = mindig rejtve, 1 = rejtőzködő, 2 = mindig "
-"látható"
+"A nyelvi panel viselkedése. 0 = beágyazva a menübe, 1 = automatikus "
+"elrejtés, 2 = megjelenítés mindig"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr ""
+"A nyelv panel pozíciója. 0 = bal felső sarok, 1 = jobb felső sarok, 2 = bal "
+"alsó sarok, 3 = jobb alsó sarok, 4 = egyéni"
 
-#: ../data/ibus.schemas.in.h:21
-#, fuzzy
+#: ../data/ibus.schemas.in.h:23
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
-"A következő eljárás gyorsbillentyű a következő bevitel eljárásra kapcsol"
-
-#: ../data/ibus.schemas.in.h:22
-#, fuzzy
-msgid "The shortcut keys for switching to the previous input method"
-msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
-
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
-#, fuzzy
-msgid "The shortcut keys for turning input method on or off"
-msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
+"A lista következő beviteli módjára váltáshoz használandó gyorsbillentyű"
 
 #: ../data/ibus.schemas.in.h:24
-#, fuzzy
-msgid "Trigger shortcut keys"
-msgstr "Ravasz gyorsbillentyű"
+msgid "The shortcut keys for switching to the previous input method"
+msgstr "A lista előző beviteli módjára váltáshoz használandó gyorsbillentyű"
 
 #: ../data/ibus.schemas.in.h:25
-msgid "Use custom font"
-msgstr "Saját betű használata"
+msgid "The shortcut keys for turning input method off"
+msgstr "Gyorsbillentyűk a beviteli mód kikapcsolásához "
 
 #: ../data/ibus.schemas.in.h:26
+msgid "The shortcut keys for turning input method on"
+msgstr "Gyorsbillentyűk a beviteli mód bekapcsolásához "
+
+#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
+msgid "The shortcut keys for turning input method on or off"
+msgstr "Gyorsbillentyűk a beviteli mód ki- vagy bekapcsolásához"
+
+#: ../data/ibus.schemas.in.h:28
+msgid "Trigger shortcut keys"
+msgstr "Aktiváló gyorsbillentyűk"
+
+#: ../data/ibus.schemas.in.h:29
+msgid "Use custom font"
+msgstr "Egyéni betűkészlet használata"
+
+#: ../data/ibus.schemas.in.h:30
 msgid "Use custom font name for language panel"
-msgstr "Saját betű használata a nyelv panelen"
+msgstr "Egyéni betűkészlet használata a nyelv panelen"
 
-#: ../data/ibus.schemas.in.h:27
-#, fuzzy
+#: ../data/ibus.schemas.in.h:31
 msgid "Use global input method"
-msgstr "Bevitel eljárás kiválasztása"
+msgstr "Globális beviteli mód használata"
 
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
+#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
 msgid "Use system keyboard (XKB) layout"
-msgstr ""
+msgstr "A rendszer billentyűzetkiosztásának (XKB) használata"
 
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
+#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
 msgid "Use system keyboard layout"
-msgstr ""
+msgstr "Rendszer-billentyűzetkiosztás használata"
 
 #: ../setup/setup.ui.h:1
 msgid "..."
@@ -365,16 +376,15 @@ msgstr "…"
 
 #: ../setup/setup.ui.h:2
 msgid "<b>Font and Style</b>"
-msgstr "<b>Betűtípus és stílus</b>"
+msgstr "<b>Betűkészlet és stílus</b>"
 
 #: ../setup/setup.ui.h:3
 msgid "<b>Global input method settings</b>"
-msgstr "Bevitel eljárás kiválasztása"
+msgstr "<b>Globális bevitelimód-beállítások</b>"
 
 #: ../setup/setup.ui.h:4
-#, fuzzy
 msgid "<b>Keyboard Layout</b>"
-msgstr "<b>Gyorsbillentyűk</b>"
+msgstr "<b>Billentyűzetkiosztás</b>"
 
 #: ../setup/setup.ui.h:5
 msgid "<b>Keyboard Shortcuts</b>"
@@ -394,7 +404,7 @@ msgid ""
 "\n"
 msgstr ""
 "<big><b>IBus</b></big>\n"
-"<small>Az okos bemenő csatorna</small>\n"
+"<small>Az intelligens beviteli busz</small>\n"
 "Honlap: http://code.google.com/p/ibus\n"
 "\n"
 "\n"
@@ -405,196 +415,149 @@ msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
 msgstr ""
+"<small><i>Az alapértelmezett beviteli mód a listában a legfelső.\n"
+"Ezt a fel/le billentyűk segítségével változtathatja meg.</i></small>"
 
 #: ../setup/setup.ui.h:17
 msgid "Add the selected input method into the enabled input methods"
 msgstr ""
+"A kiválasztott beviteli mód hozzáadása az engedélyezett beviteli módokhoz"
 
 #: ../setup/setup.ui.h:18
 msgid "Advanced"
-msgstr ""
+msgstr "Speciális"
 
 #: ../setup/setup.ui.h:19
 msgid "Always"
-msgstr ""
+msgstr "Mindig"
 
 #: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
-msgstr ""
+msgstr "Bal alsó sarok"
 
 #: ../setup/setup.ui.h:21
 msgid "Bottom right corner"
-msgstr ""
+msgstr "Jobb alsó sarok"
 
 #: ../setup/setup.ui.h:22
 msgid "Candidates orientation:"
-msgstr "Jelöltek iránya:"
+msgstr "Jelöltek tájolása:"
 
 #: ../setup/setup.ui.h:23
-#, fuzzy
 msgid "Custom"
-msgstr "Saját betű:"
+msgstr "Egyéni"
 
 #: ../setup/setup.ui.h:24
 msgid "Disable:"
-msgstr ""
+msgstr "Letiltás:"
 
 #: ../setup/setup.ui.h:25
 msgid "Embed preedit text in application window"
-msgstr ""
+msgstr "Előszerkesztett szöveg beágyazása az alkalmazásablakba"
 
 #: ../setup/setup.ui.h:26
 msgid "Embed the preedit text of input method in the application window"
 msgstr ""
+"A beviteli mód előszerkesztett szövegének beágyazása az alkalmazásablakba"
 
 #: ../setup/setup.ui.h:27
 msgid "Embedded in menu"
-msgstr ""
+msgstr "Beágyazva a menübe"
 
 #: ../setup/setup.ui.h:28
 msgid "Enable or disable:"
-msgstr "Engedés vagy tiltás"
+msgstr "Engedélyezés vagy tiltás:"
 
 #: ../setup/setup.ui.h:29
 msgid "Enable:"
-msgstr ""
+msgstr "Engedélyezés:"
 
 #: ../setup/setup.ui.h:30
 msgid "General"
 msgstr "Általános"
 
 #: ../setup/setup.ui.h:31
-#, fuzzy
 msgid "Horizontal"
-msgstr ""
-"vízszintes\n"
-"függőleges"
+msgstr "Vízszintes"
 
 #: ../setup/setup.ui.h:34
-#, fuzzy
 msgid "Language panel position:"
-msgstr "Nyelv panel mutatása:"
+msgstr "A nyelvi panel elhelyezése:"
 
 #: ../setup/setup.ui.h:35
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
+"A kiválasztott beviteli mód mozgatása lefelé az engedélyezett beviteli módok"
+" között"
 
 #: ../setup/setup.ui.h:36
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
+"A kiválasztott beviteli mód mozgatása felfelé az engedélyezett beviteli "
+"módok között"
 
 #: ../setup/setup.ui.h:37
 msgid "Next input method:"
-msgstr "Következő bevitel eljárás:"
+msgstr "Következő beviteli mód:"
 
 #: ../setup/setup.ui.h:38
 msgid "Previous input method:"
-msgstr "Előző bevitel eljárás:"
+msgstr "Előző beviteli mód:"
 
 #: ../setup/setup.ui.h:39
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
+"A kiválasztott beviteli mód eltávolítása az engedélyezett beviteli módok "
+"közül"
 
 #: ../setup/setup.ui.h:40
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
+msgstr "A nyelv panel megjelenítési vagy elrejtési módjának beállítása"
 
 #: ../setup/setup.ui.h:41
-#, fuzzy
 msgid "Set the orientation of candidates in lookup table"
-msgstr "Kereső táblázat iránya"
+msgstr "Jelöltek tájolásának beállítása a keresési táblában"
 
 #: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
-msgstr ""
+msgstr "Információk megjelenítése a kiválasztott beviteli módról"
 
 #: ../setup/setup.ui.h:46
-#, fuzzy
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr "Saját betű neve a nyelv panelen"
+msgstr "Beviteli mód nevének megjelenítése a nyelv panelen"
 
 #: ../setup/setup.ui.h:47
 msgid "Show language panel:"
-msgstr "Nyelv panel mutatása:"
+msgstr "Nyelv panel megjelenítése:"
 
 #: ../setup/setup.ui.h:48
 msgid "Start ibus on login"
-msgstr "Belépve ibus indítása"
+msgstr "Az IBus indítása bejelentkezéskor"
 
 #: ../setup/setup.ui.h:49
-#, fuzzy
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"A következő eljárás gyorsbillentyű a következő bevitel eljárásra kapcsol"
+msgstr "Gyorsbillentyűk a következő beviteli módra váltáshoz"
 
 #: ../setup/setup.ui.h:50
-#, fuzzy
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
+msgstr "Gyorsbillentyűk az előző beviteli módra való váltáshoz"
 
 #: ../setup/setup.ui.h:52
 msgid "Top left corner"
-msgstr ""
+msgstr "Bal felső sarok"
 
 #: ../setup/setup.ui.h:53
 msgid "Top right corner"
-msgstr ""
+msgstr "Jobb felső sarok"
 
 #: ../setup/setup.ui.h:54
-#, fuzzy
 msgid "Use custom font:"
-msgstr "Saját betű használata"
+msgstr "Egyéni betűkészlet használata:"
 
 #: ../setup/setup.ui.h:57
 msgid "Vertical"
-msgstr ""
+msgstr "Függőleges"
 
 #: ../setup/setup.ui.h:58
-#, fuzzy
 msgid "When active"
-msgstr ""
-"soha\n"
-"aktívan\n"
-"mindig"
-
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Eljárások előtöltése"
-
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "Nyelv panel mutatása:"
-
-#~ msgid "Custom font:"
-#~ msgstr "Saját betű:"
-
-#, fuzzy
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "Saját betű neve a nyelv panelen"
-
-#, fuzzy
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "Saját betű használata a nyelv panelen"
-
-#~ msgid "Custom Font"
-#~ msgstr "Saját betű"
-
-#, fuzzy
-#~ msgid "Show IM name on language bar"
-#~ msgstr "Saját betű neve a nyelv panelen"
-
-#~ msgid "Use Custom Font"
-#~ msgstr "Saját betű használata"
-
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr ""
-#~ "A következő eljárás gyorsbillentyű a következő bevitel eljárásra kapcsol"
-
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr "Az előző eljárás gyorsbillentyű az előző bevitel eljárásra kapcsol"
-
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "A ravasz gyorsbillentyű engedi vagy tiltja bevitel környezetet"
-
-#~ msgid "[Control+space]"
-#~ msgstr "[Ctrl+szóköz]"
+msgstr "Amikor aktív"

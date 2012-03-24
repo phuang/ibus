@@ -531,6 +531,42 @@ test_async_apis_finish (gpointer user_data)
 }
 
 static void
+test_get_engines_by_names (void)
+{
+    IBusEngineDesc **engines = NULL;
+    const gchar *names[] = {
+        "xkb:us::eng",
+        "xkb:ca:eng:eng",
+        "xkb:fr::fra",
+        "xkb:jp::jpn",
+        "invalid_engine_name",
+        NULL,
+    };
+
+    engines = ibus_bus_get_engines_by_names (bus, names);
+
+    g_assert(engines != NULL);
+    IBusEngineDesc **p;
+
+    gint i = 0;
+    for (p = engines; *p != NULL; p++) {
+        g_assert (IBUS_IS_ENGINE_DESC (*p));
+        g_assert_cmpstr (names[i], ==, ibus_engine_desc_get_name (*p));
+        i++;
+        g_object_unref (*p);
+        // The ref should be zero, *p is released.
+        g_assert (!IBUS_IS_ENGINE_DESC (*p));
+    }
+
+    // The last engine does not exist.
+    g_assert_cmpint (i, ==, G_N_ELEMENTS(names) - 2);
+
+    g_free (engines);
+
+    engines = NULL;
+}
+
+static void
 test_async_apis (void)
 {
     g_debug ("start");
@@ -584,6 +620,7 @@ main (gint    argc,
     g_test_add_func ("/ibus/list-active-engines", test_list_active_engines);
     g_test_add_func ("/ibus/create-input-context-async",
                      test_create_input_context_async);
+    g_test_add_func ("/ibus/get-engines-by-names", test_get_engines_by_names);
     g_test_add_func ("/ibus/async-apis", test_async_apis);
 
     result = g_test_run ();
