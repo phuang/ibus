@@ -352,10 +352,10 @@ ibus_factory_new (GDBusConnection *connection)
 {
     g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
 
-    IBusEngine *object = g_object_new (IBUS_TYPE_FACTORY,
-                                       "object-path", IBUS_PATH_FACTORY,
-                                       "connection", connection,
-                                       NULL);
+    IBusFactory *object = g_object_new (IBUS_TYPE_FACTORY,
+                                        "object-path", IBUS_PATH_FACTORY,
+                                        "connection", connection,
+                                        NULL);
 
     return IBUS_FACTORY (object);
 }
