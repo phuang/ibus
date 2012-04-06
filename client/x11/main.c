@@ -464,6 +464,13 @@ _process_key_event_done (GObject      *object,
         g_error_free (error);
     }
 
+    if (g_hash_table_lookup (_connections,
+                             GINT_TO_POINTER ((gint) pfe->connect_id))
+        == NULL) {
+        g_slice_free (IMForwardEventStruct, pfe);
+        return;
+    }
+
     if (retval == FALSE) {
         IMForwardEvent (_xims, (XPointer) pfe);
     }
@@ -600,27 +607,50 @@ _free_ic (gpointer data, gpointer user_data)
 }
 
 static int
-xim_close (XIMS ims, IMCloseStruct *call_data)
+_free_x11_iconn_from_id (CARD16 connect_id)
 {
     X11ICONN *conn;
 
-    LOG (1, "XIM_CLOSE connect_id=%d",
-                call_data->connect_id);
-
     conn = (X11ICONN *) g_hash_table_lookup (_connections,
-                                             GINT_TO_POINTER ((gint) call_data->connect_id));
-    g_return_val_if_fail (conn != NULL, 0);
+                                             GINT_TO_POINTER ((gint) connect_id));
 
-    g_list_foreach (conn->clients, _free_ic, NULL);
+    if (conn == NULL) {
+        return 0;
+    }
 
-    g_list_free (conn->clients);
+    g_list_free_full (conn->clients, (GDestroyNotify) _free_ic);
 
     g_hash_table_remove (_connections,
-                         GINT_TO_POINTER ((gint) call_data->connect_id));
+                         GINT_TO_POINTER ((gint) connect_id));
 
     g_slice_free (X11ICONN, conn);
 
     return 1;
+}
+
+static int
+xim_close (XIMS xims, IMCloseStruct *call_data)
+{
+    CARD16 connect_id = call_data->connect_id;
+
+    LOG (1, "XIM_CLOSE connect_id=%d", connect_id);
+
+    return _free_x11_iconn_from_id (connect_id);
+}
+
+static int
+xim_disconnect_ic (XIMS xims, IMDisConnectStruct *call_data)
+{
+    CARD16 connect_id = call_data->connect_id;
+
+    LOG (1, "XIM_DISCONNECT connect_id=%d", connect_id);
+
+    _free_x11_iconn_from_id (connect_id);
+
+    /* I am not sure if this can return 1 because I have not experienced
+     * that xim_disconnect_ic() is called. But I wish connect_id is
+     * released from _connections to avoid SEGV. */
+    return 0;
 }
 
 
@@ -745,6 +775,8 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
         return xim_open (xims, (IMOpenStruct *)call_data);
     case XIM_CLOSE:
         return xim_close (xims, (IMCloseStruct *)call_data);
+    case XIM_DISCONNECT:
+        return xim_disconnect_ic (xims, (IMDisConnectStruct *)call_data);
     case XIM_CREATE_IC:
         return xim_create_ic (xims, (IMChangeICStruct *)call_data);
     case XIM_DESTROY_IC:
