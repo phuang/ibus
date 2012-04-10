@@ -36,7 +36,12 @@ public class KeybindingManager : GLib.Object {
         Gdk.ModifierType.MOD2_MASK |
         Gdk.ModifierType.LOCK_MASK |
         Gdk.ModifierType.MOD4_MASK |
-        Gdk.ModifierType.MOD5_MASK);
+        Gdk.ModifierType.MOD5_MASK |
+        Gdk.ModifierType.BUTTON1_MASK |
+        Gdk.ModifierType.BUTTON2_MASK |
+        Gdk.ModifierType.BUTTON3_MASK |
+        Gdk.ModifierType.BUTTON4_MASK |
+        Gdk.ModifierType.BUTTON5_MASK);
 
     /**
      * Helper class to store keybinding
@@ -84,8 +89,6 @@ public class KeybindingManager : GLib.Object {
         uint keysym;
         Gdk.ModifierType modifiers;
         Gtk.accelerator_parse(accelerator, out keysym, out modifiers);
-
-        get_primary_modifier(modifiers);
 
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
 
@@ -147,7 +150,7 @@ public class KeybindingManager : GLib.Object {
             Gdk.ModifierType.SHIFT_MASK,
             Gdk.ModifierType.LOCK_MASK
         };
-        foreach (var mask in masks) {
+        foreach (uint mask in masks) {
             if ((binding_mask & mask) == mask)
                 return mask;
         }
