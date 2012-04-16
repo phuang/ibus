@@ -92,7 +92,10 @@ class Application {
                                       Variant parameters) {
         debug("signal_name = %s", signal_name);
         m_panel = new Panel(m_bus);
-        m_panel.set_config(m_config);
+
+        if (m_config != null) {
+            m_panel.set_config(m_config);
+        }
     }
 
     private void bus_name_lost_cb(DBusConnection connection,
@@ -113,7 +116,8 @@ class Application {
                                               Variant parameters) {
         debug("signal_name = %s", signal_name);
         string name, new_owner, old_owner;
-        parameters.get("(sss)", out name, out new_owner, out old_owner);
+        parameters.get("(sss)", out name, out old_owner, out new_owner);
+
         if (new_owner == "") {
             m_config = null;
         } else {

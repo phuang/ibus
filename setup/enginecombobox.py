@@ -75,7 +75,11 @@ class EngineComboBox(Gtk.ComboBox):
 
         keys = langs.keys()
         keys.sort(locale.strcoll)
-        current_lang = IBus.get_language_name(locale.getlocale()[0])
+        loc = locale.getlocale()[0]
+        # None on C locale
+        if loc == None:
+            loc = 'en_US'
+        current_lang = IBus.get_language_name(loc)
         # move current language to the first place
         if current_lang in keys:
             keys.remove(current_lang)
