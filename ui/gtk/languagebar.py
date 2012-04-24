@@ -245,6 +245,9 @@ class LanguageBar(gtk.Toolbar):
 
     def set_position(self, x, y):
         w, h = self.__screen.get_width(), self.__screen.get_height()
+        if self.__screen.get_n_monitors() > 1:
+            rect = self.__screen.get_monitor_geometry(0)
+            w, h = rect.width, rect.height
         if x < 0 or y < 0:
             x = w - 20
             y = h - 40
