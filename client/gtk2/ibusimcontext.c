@@ -1413,20 +1413,34 @@ _ibus_context_enabled_cb (IBusInputContext *ibuscontext,
 }
 
 static void
+_ibus_im_context_clear (IBusIMContext    *ibusimcontext)
+{
+    gboolean flag = FALSE;
+
+    ibusimcontext->enable = FALSE;
+
+    /* clear preedit */
+    flag = ibusimcontext->preedit_visible;
+    ibusimcontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_cursor_pos = 0;
+    flag &= (ibusimcontext->preedit_string != NULL &&
+             *ibusimcontext->preedit_string != '\0');
+    g_free (ibusimcontext->preedit_string);
+    ibusimcontext->preedit_string = NULL;
+
+    if (flag) {
+        g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
+        g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
+    }
+}
+
+static void
 _ibus_context_disabled_cb (IBusInputContext *ibuscontext,
                            IBusIMContext    *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
-    ibusimcontext->enable = FALSE;
 
-    /* clear preedit */
-    ibusimcontext->preedit_visible = FALSE;
-    ibusimcontext->preedit_cursor_pos = 0;
-    g_free (ibusimcontext->preedit_string);
-    ibusimcontext->preedit_string = NULL;
-
-    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
+    _ibus_im_context_clear (ibusimcontext);
 }
 
 static void
@@ -1439,16 +1453,7 @@ _ibus_context_destroy_cb (IBusInputContext *ibuscontext,
     g_object_unref (ibusimcontext->ibuscontext);
     ibusimcontext->ibuscontext = NULL;
 
-    ibusimcontext->enable = FALSE;
-
-    /* clear preedit */
-    ibusimcontext->preedit_visible = FALSE;
-    ibusimcontext->preedit_cursor_pos = 0;
-    g_free (ibusimcontext->preedit_string);
-    ibusimcontext->preedit_string = NULL;
-
-    g_signal_emit (ibusimcontext, _signal_preedit_changed_id, 0);
-    g_signal_emit (ibusimcontext, _signal_preedit_end_id, 0);
+    _ibus_im_context_clear (ibusimcontext);
 }
 
 static void
