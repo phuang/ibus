@@ -23,7 +23,6 @@
 
 #include <ibus.h>
 #include <locale.h>
-#include <gtk/gtk.h>
 #include <glib.h>
 #include "test-client.h"
 
@@ -33,7 +32,7 @@
 static gboolean
 _sleep_cb (gpointer user_data)
 {
-    gtk_main_quit ();
+    ibus_quit ();
     return FALSE;
 }
 
@@ -41,7 +40,7 @@ static void
 _sleep (guint millisecond)
 {
     g_timeout_add (millisecond, (GSourceFunc) _sleep_cb, NULL);
-    gtk_main ();
+    ibus_main ();
 }
 
 /* ibus stress test
@@ -61,8 +60,7 @@ main (gint argc, gchar **argv)
     int send_key_num = 0;
 
     setlocale (LC_ALL, "");
-    gtk_set_locale ();
-    gtk_init (&argc, &argv);
+    ibus_init ();
 
     /* need to set active engine */
     client = bus_test_client_new ();

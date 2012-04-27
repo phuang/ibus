@@ -20,8 +20,8 @@
  */
 
 #include <ibus.h>
-#include <gtk/gtk.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 #include "test-client.h"
 
@@ -67,7 +67,7 @@ bus_test_client_class_init (BusTestClientClass *class)
 
     /* init display object */
     if (_xdisplay == NULL) {
-        _xdisplay = XOpenDisplay (gdk_display_get_name (gdk_display_get_default ()));
+        _xdisplay = XOpenDisplay (NULL);
     }
 
     /* init bus object */
@@ -175,7 +175,19 @@ bus_test_client_send_key (BusTestClient *client,
         _store_modifier_state (client, keysym);
     } else {
         IDEBUG ("key: %d is not modifier.", keysym);
-        gboolean is_upper = !gdk_keyval_is_lower (keysym);
+        /* This is an example code. If you use the keysym >= 0x01000000,
+         * gdk_keyval_is_upper may be useful since 
+         * XConvertCase supports implementation-independent conversions.
+         */
+        KeySym xlower = 0;
+        KeySym xupper = 0;
+        gboolean is_upper = FALSE;
+
+        if (keysym) {
+            XConvertCase (keysym, &xlower, &xupper);
+            is_upper = ((guint) xupper == keysym);
+        }
+
         gboolean is_shift_set = _is_shift_set (client);
 
         if (is_upper && !is_shift_set) {
