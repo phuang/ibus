@@ -44,7 +44,11 @@ ibus_get_local_machine_id (void)
         if (!g_file_get_contents ("/var/lib/dbus/machine-id",
                                   &machine_id,
                                   NULL,
-                                  &error)) {
+                                  &error) &&
+            !g_file_get_contents ("/etc/machine-id",
+                                  &machine_id,
+                                  NULL,
+                                  NULL)) {
             g_warning ("Unable to load /var/lib/dbus/machine-id: %s", error->message);
             g_error_free (error);
             machine_id = "machine-id";
