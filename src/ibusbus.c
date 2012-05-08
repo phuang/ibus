@@ -258,7 +258,7 @@ _connection_closed_cb (GDBusConnection  *connection,
 }
 
 static void
-ibus_bus_connect (IBusBus *bus)
+ibus_bus_disconnect (IBusBus *bus)
 {
     /* unref the old connection at first */
     if (bus->priv->connection != NULL) {
@@ -268,15 +268,11 @@ ibus_bus_connect (IBusBus *bus)
         g_object_unref (bus->priv->connection);
         bus->priv->connection = NULL;
     }
+}
 
-    if (ibus_get_address () != NULL) {
-        bus->priv->connection =
-            g_dbus_connection_new_for_address_sync (ibus_get_address (),
-                                                    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-                                                    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-                                                    NULL, NULL, NULL);
-    }
-
+static void
+ibus_bus_connect_finish (IBusBus *bus)
+{
     if (bus->priv->connection) {
         /* FIXME */
         ibus_bus_hello (bus);
@@ -294,6 +290,63 @@ ibus_bus_connect (IBusBus *bus)
 
         g_signal_emit (bus, bus_signals[CONNECTED], 0);
     }
+}
+
+static void
+_bus_connect_async_cb (GObject      *source_object,
+                        GAsyncResult *res,
+                        gpointer      user_data)
+{
+    g_return_if_fail (user_data != NULL);
+    g_return_if_fail (IBUS_IS_BUS (user_data));
+
+    IBusBus *bus   = IBUS_BUS (user_data);
+    GError  *error = NULL;
+
+    bus->priv->connection = g_dbus_connection_new_for_address_finish (res, &error);
+
+    if (error != NULL) {
+        g_warning ("Unable to connect to ibus: %s", error->message);
+        g_error_free (error);
+        error = NULL;
+    }
+
+    if (bus->priv->connection)
+        ibus_bus_connect_finish (bus);
+
+    /* unref the ref from ibus_bus_connect */
+    g_object_unref (bus);
+}
+
+static void
+ibus_bus_connect_async (IBusBus *bus)
+{
+    ibus_bus_disconnect (bus);
+
+    if (ibus_get_address () != NULL) {
+        g_object_ref (bus);
+        g_dbus_connection_new_for_address (ibus_get_address (),
+                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+                                           G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+                                           NULL, NULL,
+                                           _bus_connect_async_cb, bus);
+    }
+}
+
+static void
+ibus_bus_connect (IBusBus *bus)
+{
+    ibus_bus_disconnect (bus);
+
+    if (ibus_get_address () != NULL) {
+        bus->priv->connection =
+            g_dbus_connection_new_for_address_sync (ibus_get_address (),
+                                                    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+                                                    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+                                                    NULL, NULL, NULL);
+    }
+
+    ibus_bus_connect_finish (bus);
 }
 
 static void
@@ -342,8 +395,6 @@ ibus_bus_init (IBusBus *bus)
             return;
         }
     }
-
-    ibus_bus_connect (bus);
 
     file = g_file_new_for_path (ibus_get_socket_path ());
     bus->priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
@@ -482,8 +533,23 @@ ibus_bus_new (void)
 {
     IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS, NULL));
 
+    if (!ibus_bus_is_connected(bus))
+        ibus_bus_connect (bus);
+
     return bus;
 }
+
+IBusBus *
+ibus_bus_new_async (void)
+{
+    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS, NULL));
+
+    if (!ibus_bus_is_connected(bus))
+        ibus_bus_connect_async (bus);
+
+    return bus;
+}
+
 
 
 gboolean

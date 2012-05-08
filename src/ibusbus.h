@@ -91,6 +91,16 @@ GType        ibus_bus_get_type          (void);
 IBusBus     *ibus_bus_new               (void);
 
 /**
+ * ibus_bus_new_async:
+ * @returns: A newly allocated #IBusBus instance, and the instance is not floating.
+ *
+ * New an #IBusBus instance. The instance will asynchronously connect to the IBus
+ * daemon.
+ */
+IBusBus     *ibus_bus_new_async         (void);
+
+
+/**
  * ibus_bus_is_connected:
  * @bus: An #IBusBus.
  * @returns: %TRUE if @bus is connected, %FALSE otherwise.
