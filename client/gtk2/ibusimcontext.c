@@ -502,7 +502,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     /* init bus object */
     if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
-        _bus = ibus_bus_new ();
+        _bus = ibus_bus_new_async ();
 
         /* init the global fake context */
         if (ibus_bus_is_connected (_bus)) {
