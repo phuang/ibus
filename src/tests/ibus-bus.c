@@ -604,6 +604,23 @@ call_next_async_function (void)
         (*async_functions[index++])();
 }
 
+static void
+_bus_connected_cb (IBusBus *bus,
+                   gpointer user_data)
+{
+    g_assert (ibus_bus_is_connected (bus));
+    ibus_quit ();
+}
+
+static void
+test_bus_new_async (void)
+{
+    g_object_unref (bus);
+    bus = ibus_bus_new_async ();
+    g_signal_connect (bus, "connected", G_CALLBACK (_bus_connected_cb), NULL);
+    ibus_main ();
+}
+
 gint
 main (gint    argc,
       gchar **argv)
@@ -622,6 +639,13 @@ main (gint    argc,
                      test_create_input_context_async);
     g_test_add_func ("/ibus/get-engines-by-names", test_get_engines_by_names);
     g_test_add_func ("/ibus/async-apis", test_async_apis);
+    g_test_add_func ("/ibus/bus-new-async", test_bus_new_async);
+    g_test_add_func ("/ibus/bus-new-async/list-engines", test_list_engines);
+    g_test_add_func ("/ibus/bus-new-async/list-active-engines", test_list_active_engines);
+    g_test_add_func ("/ibus/bus-new-async/create-input-context-async",
+                     test_create_input_context_async);
+    g_test_add_func ("/ibus/bus-new-async/get-engines-by-names", test_get_engines_by_names);
+    g_test_add_func ("/ibus/bus-new-async/async-apis", test_async_apis);
 
     result = g_test_run ();
     g_object_unref (bus);
