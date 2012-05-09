@@ -618,7 +618,7 @@ ibus_bus_create_input_context_async (IBusBus            *bus,
 
     if (cancellable != NULL) {
         g_object_set_data_full ((GObject *)simple,
-                                "concellable",
+                                "cancellable",
                                 g_object_ref (cancellable),
                                 (GDestroyNotify)g_object_unref);
     }
