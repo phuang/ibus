@@ -44,6 +44,10 @@ enum {
     LAST_SIGNAL,
 };
 
+enum {
+    PROP_0 = 0,
+    PROP_CONNECT_ASYNC,
+};
 
 /* IBusBusPriv */
 struct _IBusBusPrivate {
@@ -55,6 +59,7 @@ struct _IBusBusPrivate {
     guint watch_ibus_signal_id;
     IBusConfig *config;
     gchar *unique_name;
+    gboolean connect_async;
 };
 
 static guint    bus_signals[LAST_SIGNAL] = { 0 };
@@ -89,6 +94,14 @@ static void      ibus_bus_call_async             (IBusBus                *bus,
                                                   GCancellable           *cancellable,
                                                   GAsyncReadyCallback     callback,
                                                   gpointer                user_data);
+static void      ibus_bus_set_property           (IBusBus                *bus,
+                                                  guint                   prop_id,
+                                                  const GValue           *value,
+                                                  GParamSpec             *pspec);
+static void      ibus_bus_get_property           (IBusBus                *bus,
+                                                  guint                   prop_id,
+                                                  GValue                 *value,
+                                                  GParamSpec             *pspec);
 
 G_DEFINE_TYPE (IBusBus, ibus_bus, IBUS_TYPE_OBJECT)
 
@@ -99,7 +112,24 @@ ibus_bus_class_init (IBusBusClass *class)
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     gobject_class->constructor = ibus_bus_constructor;
+    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_bus_set_property;
+    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_bus_get_property;
     ibus_object_class->destroy = ibus_bus_destroy;
+
+    /* install properties */
+    /**
+     * IBusBus:connect-async:
+     *
+     * Whether the #IBusBus object should connect asynchronously to the bus.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_CONNECT_ASYNC,
+                                     g_param_spec_boolean ("connect-async",
+                                                           "Connect Async",
+                                                           "Connect asynchronously to the bus",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
     /**
@@ -383,6 +413,7 @@ ibus_bus_init (IBusBus *bus)
     bus->priv->watch_ibus_signal = FALSE;
     bus->priv->watch_ibus_signal_id = 0;
     bus->priv->unique_name = NULL;
+    bus->priv->connect_async = FALSE;
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
@@ -405,6 +436,36 @@ ibus_bus_init (IBusBus *bus)
     g_free (path);
 }
 
+static void
+ibus_bus_set_property (IBusBus      *bus,
+                       guint         prop_id,
+                       const GValue *value,
+                       GParamSpec   *pspec)
+{
+    switch (prop_id) {
+    case PROP_CONNECT_ASYNC:
+        bus->priv->connect_async = g_value_get_boolean (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (bus, prop_id, pspec);
+    }
+}
+
+static void
+ibus_bus_get_property (IBusBus    *bus,
+                       guint       prop_id,
+                       GValue     *value,
+                       GParamSpec *pspec)
+{
+    switch (prop_id) {
+    case PROP_CONNECT_ASYNC:
+        g_value_set_boolean (value, bus->priv->connect_async);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (bus, prop_id, pspec);
+    }
+}
+
 static GObject*
 ibus_bus_constructor (GType                  type,
                       guint                  n_params,
@@ -418,6 +479,11 @@ ibus_bus_constructor (GType                  type,
         /* make bus object sink */
         g_object_ref_sink (object);
         _bus = IBUS_BUS (object);
+
+        if (_bus->priv->connect_async)
+            ibus_bus_connect_async (_bus);
+        else
+            ibus_bus_connect (_bus);
     }
     else {
         object = g_object_ref (_bus);
@@ -531,10 +597,9 @@ _async_finish_guint (GAsyncResult *res,
 IBusBus *
 ibus_bus_new (void)
 {
-    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS, NULL));
-
-    if (!ibus_bus_is_connected(bus))
-        ibus_bus_connect (bus);
+    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS,
+                                           "connect-async", FALSE,
+                                           NULL));
 
     return bus;
 }
@@ -542,15 +607,12 @@ ibus_bus_new (void)
 IBusBus *
 ibus_bus_new_async (void)
 {
-    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS, NULL));
-
-    if (!ibus_bus_is_connected(bus))
-        ibus_bus_connect_async (bus);
+    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS,
+                                           "connect-async", TRUE,
+                                           NULL));
 
     return bus;
 }
-
-
 
 gboolean
 ibus_bus_is_connected (IBusBus *bus)
@@ -562,7 +624,6 @@ ibus_bus_is_connected (IBusBus *bus)
 
     return TRUE;
 }
-
 
 IBusInputContext *
 ibus_bus_create_input_context (IBusBus      *bus,
