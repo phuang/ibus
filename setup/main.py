@@ -320,7 +320,7 @@ class Setup(object):
         if self.__bus.is_connected():
             return
 
-        message = _("IBus daemon is not started. Do you want to start it now?")
+        message = _("The IBus daemon is not running. Do you wish to start it?")
         dlg = Gtk.MessageDialog(type = Gtk.MessageType.QUESTION,
                                 buttons = Gtk.ButtonsType.YES_NO,
                                 text = message)
@@ -342,7 +342,7 @@ class Setup(object):
 
         if self.__bus.is_connected():
             message = _("IBus has been started! "
-                "If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
+                "If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
                 "  export GTK_IM_MODULE=ibus\n"
                 "  export XMODIFIERS=@im=ibus\n"
                 "  export QT_IM_MODULE=ibus"
