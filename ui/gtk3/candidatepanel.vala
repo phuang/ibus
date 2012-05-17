@@ -155,9 +155,15 @@ public class CandidatePanel : Gtk.HBox{
 
             orientation = (IBus.Orientation)table.get_orientation();
         }
+
         m_candidate_area.set_candidates(candidates, cursor_in_page, show_cursor);
         set_labels(labels);
-        set_orientation(orientation);
+
+        if (table != null) {
+            // Do not change orientation if table is null to avoid recreate
+            // candidates area.
+            set_orientation(orientation);
+        }
 
         if (candidates.length != 0)
             m_candidate_area.show_all();
