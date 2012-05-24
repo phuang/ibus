@@ -32,6 +32,7 @@ EXTRA_DIST = \
 	$(gsettings_schemas_in_files) \
 	make-dconf-override-db.sh \
 	profile/ibus \
+	00-upstream-settings \
 	$(NULL)
 
 DISTCLEANFILES = \
@@ -40,23 +41,26 @@ DISTCLEANFILES = \
 
 MAINTAINERCLEANFILES = \
 	$(gsettings_schemas_in_files) \
+	00-upstream-settings \
 	$(NULL)
 
-CLEANFILES = \
-	db/ibus \
-	$(NULL)
+dconfprofiledir = $(sysconfdir)/dconf/profile
+dconfprofile_DATA = profile/ibus
 
-dconfprofiledir = $(sysconfdir)/dconf
-nobase_dconfprofile_DATA = db/ibus profile/ibus
+dconfdbdir = $(sysconfdir)/dconf/db/ibus.d
+dconfdb_DATA = 00-upstream-settings
 
 org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
 	$(AM_V_GEN) gsettings-schema-convert --force --gconf --xml \
 		--schema-id "org.freedesktop.ibus" \
 		--output $@ $<
 
-db/ibus: $(srcdir)/make-dconf-override-db.sh $(gsettings_SCHEMAS)
+00-upstream-settings: $(srcdir)/make-dconf-override-db.sh $(gsettings_SCHEMAS)
 	@$(MKDIR_P) db
-	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh $@ || \
+	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh > $@ || \
 		{ rc=$$?; $(RM) -rf $@; exit $$rc; }
+
+install-data-hook:
+	dconf update
 
 -include $(top_srcdir)/git.mk

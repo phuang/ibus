@@ -126,7 +126,8 @@ public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
 
     private void sync() {
         set_label(m_property.get_label().get_text());
-        set_icon(m_property.get_icon());
+        if (m_property.get_icon() != "")
+            set_icon(m_property.get_icon());
         set_visible(m_property.get_visible());
         set_sensitive(m_property.get_sensitive());
     }

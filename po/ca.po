@@ -2,398 +2,235 @@
 # Catalan translation of ibus.
 # Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# 
+#
 # Translators:
 # Oscar Osta <oostap.listas@gmail.com>, 2011.
 # Oscar Osta Pueyo <oostap@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-05-13 11:21+0900\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-16 10:14+0900\n"
 "PO-Revision-Date: 2011-05-24 07:17+0000\n"
 "Last-Translator: oostap <oostap.listas@gmail.com>\n"
 "Language-Team: Catalan <fedora@llistes.softcatala.org>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../bus/ibus.desktop.in.h:1
-msgid "IBus"
-msgstr "IBus"
+#: ../setup/setup.ui.h:1
+msgid "Horizontal"
+msgstr "Horitzontal"
 
-#: ../bus/ibus.desktop.in.h:2
-msgid "Input Method Framework"
-msgstr "Entorn de mètodes d'entrada"
+#: ../setup/setup.ui.h:2
+msgid "Vertical"
+msgstr "Vertical"
 
-#: ../bus/ibus.desktop.in.h:3
-msgid "Start IBus Input Method Framework"
-msgstr "Inicia l'entorn de mètodes d'entrada IBus"
+#: ../setup/setup.ui.h:3
+msgid "Embedded in menu"
+msgstr "Incrusta al menú"
 
-#: ../ibus/_config.py.in:40
-msgid ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+#: ../setup/setup.ui.h:4
+msgid "When active"
+msgstr "Quan estigui actiu"
 
-#: ../ibus/lang.py:41
-msgid "Other"
-msgstr "Altres"
+#: ../setup/setup.ui.h:5
+msgid "Always"
+msgstr "Sempre"
 
-#: ../ui/gtk/candidatepanel.py:264
-msgid "Previous page"
-msgstr "Pàgina anterior"
+#: ../setup/setup.ui.h:6
+msgid "Top left corner"
+msgstr "Cantonada superior esquerra"
 
-#: ../ui/gtk/candidatepanel.py:269
-msgid "Next page"
-msgstr "Pàgina següent"
+#: ../setup/setup.ui.h:7
+msgid "Top right corner"
+msgstr "Cantonada superior dreta"
 
-#: ../ui/gtk/main.py:62
-msgid ""
-"Some input methods have been installed, removed or updated. Please restart "
-"ibus input platform."
-msgstr ""
-"S'han instal·lat, suprimit o actualitzat alguns mètodes d'entrada. Reinicieu"
-" la plataforma d'entrada IBus."
+#: ../setup/setup.ui.h:8
+msgid "Bottom left corner"
+msgstr "Cantonada inferior esquerra"
 
-#: ../ui/gtk/main.py:66
-msgid "Restart Now"
-msgstr "Reinicia ara"
+#: ../setup/setup.ui.h:9
+msgid "Bottom right corner"
+msgstr "Cantonada inferior dreta"
 
-#: ../ui/gtk/main.py:67
-msgid "Later"
-msgstr "Després"
+#: ../setup/setup.ui.h:10
+msgid "Custom"
+msgstr "Personalitzat"
 
-#: ../ui/gtk/panel.py:116
-msgid "IBus Panel"
-msgstr "Quadre de l'IBus"
-
-#: ../ui/gtk/panel.py:122
-msgid "IBus input method framework"
-msgstr "Entorn de mètodes d'entrada IBus"
-
-#: ../ui/gtk/panel.py:352
-msgid "Restart"
-msgstr "Reinicia"
-
-#: ../ui/gtk/panel.py:439
-msgid "Turn off input method"
-msgstr "Inhabilita el mètode d'entrada"
-
-#: ../ui/gtk/panel.py:478
-msgid "No input window"
-msgstr "Cap finestra d'entrada"
-
-#: ../ui/gtk/panel.py:509
-msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "L'IBus és un bus d'entrada intel·ligent per al Linux/Unix."
-
-#: ../ui/gtk/panel.py:513
-msgid "translator-credits"
-msgstr ""
-"Oscar Osta Pueyo <oostap@gmail.com>, 2009\n"
-"Patricia Rivera Escuder <patysya@gmail.com>, 2009\n"
-"Xavier Conde Rueda <xavi.conde@gmail.com>\n"
-"Joan Duran <jodufi@gmail.com>"
-
-#: ../ui/gtk/languagebar.py:106
-msgid "About the input method"
-msgstr "Quant al mètode d'entrada"
-
-#: ../ui/gtk/languagebar.py:214
-msgid "Switch input method"
-msgstr "Commuta el mètode d'entrada"
-
-#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
-#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
-msgid "About"
-msgstr "Quant a"
-
-#: ../ui/gtk/languagebar.py:361
-msgid "About the Input Method"
-msgstr "Quant al mètode d'entrada"
-
-#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
-#, python-format
-msgid "Language: %s\n"
-msgstr "Idioma: %s\n"
-
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
-#, python-format
-msgid "Keyboard layout: %s\n"
-msgstr "Disposició del teclat: %s\n"
-
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
-#, python-format
-msgid "Author: %s\n"
-msgstr "Autor: %s\n"
-
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
-msgid "Description:\n"
-msgstr "Descripció: \n"
-
-#: ../setup/main.py:102
-msgid "trigger"
-msgstr "activador"
-
-#: ../setup/main.py:113
-msgid "enable"
-msgstr "habilita"
-
-#: ../setup/main.py:124
-msgid "disable"
-msgstr "inhabilita"
-
-#: ../setup/main.py:135
-msgid "next input method"
-msgstr "mètode d'entrada següent"
-
-#: ../setup/main.py:146
-msgid "previous input method"
-msgstr "mètode d'entrada anterior"
-
-#: ../setup/main.py:286
-msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "No s'ha iniciat el dimoni de l'IBus. Voleu iniciar-lo ara?"
-
-#: ../setup/main.py:301
-msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-msgstr ""
-"S'ha iniciat l'IBus. Si no podeu utilitzar l'IBus, afegiu les línies següents a $HOME/.bashrc, i torneu a entrar a l'escriptori.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-
-#: ../setup/main.py:316
-#, python-format
-msgid "Select keyboard shortcut for %s"
-msgstr "Seleccioneu la drecera de teclat per a %s"
-
-#: ../setup/keyboardshortcut.py:52
-msgid "Keyboard shortcuts"
-msgstr "Dreceres de teclat"
-
-#: ../setup/keyboardshortcut.py:63
-msgid "Key code:"
-msgstr "Codi de lletra:"
-
-#: ../setup/keyboardshortcut.py:78
-msgid "Modifiers:"
-msgstr "Modificadors:"
-
-#: ../setup/keyboardshortcut.py:231
-msgid ""
-"Please press a key (or a key combination).\n"
-"The dialog will be closed when the key is released."
-msgstr ""
-"Premeu una tecla (o una combinació de tecles).\n"
-"El diàleg es tancarà quan es deixi anar la tecla."
-
-#: ../setup/keyboardshortcut.py:233
-msgid "Please press a key (or a key combination)"
-msgstr "Premeu una tecla (o una combinació de tecles)"
-
-#: ../setup/enginecombobox.py:120
-msgid "Select an input method"
-msgstr "Seleccioneu un mètode d'entrada"
-
-#. create im name & icon column
-#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
-msgid "Input Method"
-msgstr "Mètode d'entrada"
-
-#: ../setup/enginetreeview.py:92
-msgid "Kbd"
-msgstr "Kbd"
-
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "Preferències de l'IBus"
 
-#: ../setup/ibus-setup.desktop.in.h:2
-msgid "Set IBus Preferences"
-msgstr "Estableix les preferències de l'IBus"
-
-#: ../data/ibus.schemas.in.h:1
-msgid "Auto hide"
-msgstr "Oculta automàticament"
-
-#: ../data/ibus.schemas.in.h:2
-msgid "Custom font"
-msgstr "Tipus de lletra personalitzat"
-
-#: ../data/ibus.schemas.in.h:3
-msgid "Custom font name for language panel"
-msgstr "Tipus de lletra personalitzat per al quadre d'idiomes"
-
-#: ../data/ibus.schemas.in.h:4
-msgid "Disable shortcut keys"
-msgstr "Inhabilita les dreceres de teclat"
-
-#: ../data/ibus.schemas.in.h:5
-msgid "Embed Preedit Text"
-msgstr "Integra el text editat prèviament"
-
-#: ../data/ibus.schemas.in.h:6
-msgid "Embed Preedit Text in Application Window"
-msgstr "Integra el text editat prèviament en la finestra de l'aplicació"
-
-#: ../data/ibus.schemas.in.h:7
-msgid "Enable input method by default"
-msgstr "Habilita els mètodes d'entrada per defecte"
-
-#: ../data/ibus.schemas.in.h:8
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"Habilita els mètodes d'entrada per defecte quan l'aplicació obté el focus "
-"d'entrada"
-
-#: ../data/ibus.schemas.in.h:9
-msgid "Enable shortcut keys"
-msgstr "Habilita les dreceres de teclat"
-
-#: ../data/ibus.schemas.in.h:10
-msgid "Language panel position"
-msgstr "Posició del quadre d'idiomes"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Next engine shortcut keys"
-msgstr "Dreceres de teclat del motor següent"
-
-#: ../data/ibus.schemas.in.h:12
-msgid "Orientation of lookup table"
-msgstr "Orientació de la taula de cerca"
-
-#: ../data/ibus.schemas.in.h:13
-msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
-msgstr "Orientació de la taula de cerca. 0 = horitzontal, 1 = vertical"
-
-#: ../data/ibus.schemas.in.h:14
-msgid "Preload engines"
-msgstr "Precarrega els motors"
-
-#: ../data/ibus.schemas.in.h:15
-msgid "Preload engines during ibus starts up"
-msgstr "Precarrega els motors durant l'inici de l'IBus"
-
-#: ../data/ibus.schemas.in.h:16
-msgid "Prev engine shortcut keys"
-msgstr "Dreceres de teclat del motor anterior"
-
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
-msgid "Share the same input method among all applications"
-msgstr "Comparteix el mateix mètode d'entrada en totes les aplicacions"
-
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
-msgid "Show icon on system tray"
-msgstr "Mostra la icona a la safata del sistema"
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Show input method name"
-msgstr "Mostra el nom del mètode d'entrada"
-
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
-msgid "Show input method name on language bar"
-msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
-
-#: ../data/ibus.schemas.in.h:21
-msgid ""
-"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
-"Always show"
-msgstr ""
-"El comportament del quadre d'idiomes. 0 = incrustat al menú, 1 = oculta "
-"automàticament, 2 = mostra sempre"
-
-#: ../data/ibus.schemas.in.h:22
-msgid ""
-"The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"La posició del quadre d'idiomes. 0 = cantonada superior esquerra, 1 = "
-"cantonada superior dreta, 2 = cantonada inferior esquerra, 3 = cantonada "
-"inferior dreta, 4 = personalitzat"
-
-#: ../data/ibus.schemas.in.h:23
-msgid "The shortcut keys for switching to the next input method in the list"
+#: ../setup/setup.ui.h:12
+msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 "Les dreceres de teclat per commutar al mètode d'entrada següent de la llista"
 
-#: ../data/ibus.schemas.in.h:24
-msgid "The shortcut keys for switching to the previous input method"
+#: ../setup/setup.ui.h:13
+msgid "Next input method:"
+msgstr "Mètode d'entrada següent:"
+
+#: ../setup/setup.ui.h:14
+msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
-"Les dreceres de teclat per commutar al mètode d'entrada anterior de la "
-"llista"
+"Les dreceres de teclat per canviar al mètode d'entrada anterior de la llista"
 
-#: ../data/ibus.schemas.in.h:25
-msgid "The shortcut keys for turning input method off"
-msgstr "Les dreceres de teclat per inhabilitar el mètode d'entrada"
+#: ../setup/setup.ui.h:15
+msgid "Previous input method:"
+msgstr "Mètode d'entrada anterior:"
 
-#: ../data/ibus.schemas.in.h:26
-msgid "The shortcut keys for turning input method on"
-msgstr "Les dreceres de teclat per habilitar el mètode d'entrada"
-
-#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
-msgid "The shortcut keys for turning input method on or off"
-msgstr ""
-"Les dreceres de teclat per habilitar o inhabilitar el mètode d'entrada"
-
-#: ../data/ibus.schemas.in.h:28
-msgid "Trigger shortcut keys"
-msgstr "Dreceres de teclat de l'activador"
-
-#: ../data/ibus.schemas.in.h:29
-msgid "Use custom font"
-msgstr "Utilitza un tipus de lletra personalitzat"
-
-#: ../data/ibus.schemas.in.h:30
-msgid "Use custom font name for language panel"
-msgstr "Utilitza un tipus de lletra personalitzat per al quadre d'idiomes"
-
-#: ../data/ibus.schemas.in.h:31
-msgid "Use global input method"
-msgstr "Utilitza el mètode d'entrada global"
-
-#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
-msgid "Use system keyboard (XKB) layout"
-msgstr "Utilitza la disposició de teclat del sistema (XKB)"
-
-#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
-msgid "Use system keyboard layout"
-msgstr "Utilitza la disposició de teclat del sistema"
-
-#: ../setup/setup.ui.h:1
+#: ../setup/setup.ui.h:16
 msgid "..."
 msgstr "..."
 
-#: ../setup/setup.ui.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>Tipus de lletra i estil</b>"
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:6
+msgid "The shortcut keys for turning input method on or off"
+msgstr "Les dreceres de teclat per habilitar o inhabilitar el mètode d'entrada"
 
-#: ../setup/setup.ui.h:3
-msgid "<b>Global input method settings</b>"
-msgstr "<b>Paràmetres del mètode d'entrada global</b>"
+#: ../setup/setup.ui.h:18
+msgid "Enable or disable:"
+msgstr "Habilita o inhabilita:"
 
-#: ../setup/setup.ui.h:4
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>Disposició del teclat</b>"
+#: ../setup/setup.ui.h:19
+msgid "Enable:"
+msgstr "Habilita:"
 
-#: ../setup/setup.ui.h:5
+#: ../setup/setup.ui.h:20
+msgid "Disable:"
+msgstr "Inhabilita:"
+
+#: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Dreceres de teclat</b>"
 
-#: ../setup/setup.ui.h:6
-msgid "<b>Startup</b>"
-msgstr "<b>Inici</b>"
+#: ../setup/setup.ui.h:22
+msgid "Set the orientation of candidates in lookup table"
+msgstr "Estableix l'orientació dels candidats a la taula de cerca"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:23
+msgid "Candidates orientation:"
+msgstr "Orientació dels candidats:"
+
+#: ../setup/setup.ui.h:24
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+"Estableix el comportament de l'IBus sobre com mostrar o ocultar la barra "
+"d'idiomes"
+
+#: ../setup/setup.ui.h:25
+msgid "Show language panel:"
+msgstr "Mostra el quadre d'idiomes:"
+
+#: ../setup/setup.ui.h:26
+msgid "Language panel position:"
+msgstr "Posició del quadre d'idiomes:"
+
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:21
+msgid "Show icon on system tray"
+msgstr "Mostra la icona a la safata del sistema"
+
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:23
+msgid "Show input method name on language bar"
+msgstr "Mostra el nom del mètode d'entrada a la barra d'idioma"
+
+#: ../setup/setup.ui.h:29
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+"Mostra el nom del mètode d'entrada a la barra d'idiomes quan s'activi la "
+"casella de selecció"
+
+#: ../setup/setup.ui.h:30
+msgid "Embed preedit text in application window"
+msgstr "Incrusta el text editat prèviament en la finestra d'aplicació"
+
+#: ../setup/setup.ui.h:31
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+"Incrusta el text editat prèviament del mètode d'entrada en la finestra "
+"d'aplicació"
+
+#: ../setup/setup.ui.h:32
+msgid "Use custom font:"
+msgstr "Utilitza un tipus de lletra personalitzat:"
+
+#: ../setup/setup.ui.h:33
+msgid "<b>Font and Style</b>"
+msgstr "<b>Tipus de lletra i estil</b>"
+
+#: ../setup/setup.ui.h:34
+msgid "General"
+msgstr "General"
+
+#: ../setup/setup.ui.h:35
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
+"Afegeix el mètode d'entrada seleccionat als mètodes d'entrada habilitats"
+
+#: ../setup/setup.ui.h:36
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+"Suprimeix el mètode d'entrada seleccionat dels mètodes d'entrada habilitats"
+
+#: ../setup/setup.ui.h:37
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+"Puja el mètode d'entrada seleccionat en la llista de mètodes habilitats"
+
+#: ../setup/setup.ui.h:38
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+"Baixa el mètode d'entrada seleccionat en els mètodes d'entrada habilitats"
+
+#: ../setup/setup.ui.h:39
+msgid "Show information of the selected input method"
+msgstr "Mostra la informació del mètode d'entrada seleccionat"
+
+#: ../setup/setup.ui.h:40
+#, fuzzy
+msgid "Show setup of the selected input method"
+msgstr "Mostra la informació del mètode d'entrada seleccionat"
+
+#: ../setup/setup.ui.h:41
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+"<small><i>El mètode d'entrada predeterminat és el primer de la llista.\n"
+"Podeu utilitzar els botons de pujar i baixar per canviar-lo.</i></small>"
+
+#. create im name & icon column
+#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
+msgid "Input Method"
+msgstr "Mètode d'entrada"
+
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:24
+msgid "Use system keyboard layout"
+msgstr "Utilitza la disposició de teclat del sistema"
+
+#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:25
+msgid "Use system keyboard (XKB) layout"
+msgstr "Utilitza la disposició de teclat del sistema (XKB)"
+
+#: ../setup/setup.ui.h:46
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>Disposició del teclat</b>"
+
+#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:33
+msgid "Share the same input method among all applications"
+msgstr "Comparteix el mateix mètode d'entrada en totes les aplicacions"
+
+#: ../setup/setup.ui.h:48
+msgid "<b>Global input method settings</b>"
+msgstr "<b>Paràmetres del mètode d'entrada global</b>"
+
+#: ../setup/setup.ui.h:49
+msgid "Advanced"
+msgstr "Avançat"
+
+#: ../setup/setup.ui.h:50
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -409,160 +246,341 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:14
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>El mètode d'entrada predeterminat és el primer de la llista.\n"
-"Podeu utilitzar els botons de pujar i baixar per canviar-lo.</i></small>"
-
-#: ../setup/setup.ui.h:17
-msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"Afegeix el mètode d'entrada seleccionat als mètodes d'entrada habilitats"
-
-#: ../setup/setup.ui.h:18
-msgid "Advanced"
-msgstr "Avançat"
-
-#: ../setup/setup.ui.h:19
-msgid "Always"
-msgstr "Sempre"
-
-#: ../setup/setup.ui.h:20
-msgid "Bottom left corner"
-msgstr "Cantonada inferior esquerra"
-
-#: ../setup/setup.ui.h:21
-msgid "Bottom right corner"
-msgstr "Cantonada inferior dreta"
-
-#: ../setup/setup.ui.h:22
-msgid "Candidates orientation:"
-msgstr "Orientació dels candidats:"
-
-#: ../setup/setup.ui.h:23
-msgid "Custom"
-msgstr "Personalitzat"
-
-#: ../setup/setup.ui.h:24
-msgid "Disable:"
-msgstr "Inhabilita:"
-
-#: ../setup/setup.ui.h:25
-msgid "Embed preedit text in application window"
-msgstr "Incrusta el text editat prèviament en la finestra d'aplicació"
-
-#: ../setup/setup.ui.h:26
-msgid "Embed the preedit text of input method in the application window"
-msgstr ""
-"Incrusta el text editat prèviament del mètode d'entrada en la finestra "
-"d'aplicació"
-
-#: ../setup/setup.ui.h:27
-msgid "Embedded in menu"
-msgstr "Incrusta al menú"
-
-#: ../setup/setup.ui.h:28
-msgid "Enable or disable:"
-msgstr "Habilita o inhabilita:"
-
-#: ../setup/setup.ui.h:29
-msgid "Enable:"
-msgstr "Habilita:"
-
-#: ../setup/setup.ui.h:30
-msgid "General"
-msgstr "General"
-
-#: ../setup/setup.ui.h:31
-msgid "Horizontal"
-msgstr "Horitzontal"
-
-#: ../setup/setup.ui.h:34
-msgid "Language panel position:"
-msgstr "Posició del quadre d'idiomes:"
-
-#: ../setup/setup.ui.h:35
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"Baixa el mètode d'entrada seleccionat en els mètodes d'entrada habilitats"
-
-#: ../setup/setup.ui.h:36
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"Puja el mètode d'entrada seleccionat en la llista de mètodes habilitats"
-
-#: ../setup/setup.ui.h:37
-msgid "Next input method:"
-msgstr "Mètode d'entrada següent:"
-
-#: ../setup/setup.ui.h:38
-msgid "Previous input method:"
-msgstr "Mètode d'entrada anterior:"
-
-#: ../setup/setup.ui.h:39
-msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"Suprimeix el mètode d'entrada seleccionat dels mètodes d'entrada habilitats"
-
-#: ../setup/setup.ui.h:40
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr ""
-"Estableix el comportament de l'IBus sobre com mostrar o ocultar la barra "
-"d'idiomes"
-
-#: ../setup/setup.ui.h:41
-msgid "Set the orientation of candidates in lookup table"
-msgstr "Estableix l'orientació dels candidats a la taula de cerca"
-
-#: ../setup/setup.ui.h:44
-msgid "Show information of the selected input method"
-msgstr "Mostra la informació del mètode d'entrada seleccionat"
-
-#: ../setup/setup.ui.h:46
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"Mostra el nom del mètode d'entrada a la barra d'idiomes quan s'activi la "
-"casella de selecció"
-
-#: ../setup/setup.ui.h:47
-msgid "Show language panel:"
-msgstr "Mostra el quadre d'idiomes:"
-
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
 msgstr "Inicia l'IBus en entrar"
 
-#: ../setup/setup.ui.h:49
-msgid "The shortcut keys for switching to next input method in the list"
+#: ../setup/setup.ui.h:58
+msgid "<b>Startup</b>"
+msgstr "<b>Inici</b>"
+
+#: ../setup/setup.ui.h:59 ../setup/engineabout.py:34
+msgid "About"
+msgstr "Quant a"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2
+msgid "Input Method Framework"
+msgstr "Entorn de mètodes d'entrada"
+
+#: ../bus/ibus.desktop.in.h:3
+msgid "Start IBus Input Method Framework"
+msgstr "Inicia l'entorn de mètodes d'entrada IBus"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Preload engines"
+msgstr "Precarrega els motors"
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Preload engines during ibus starts up"
+msgstr "Precarrega els motors durant l'inici de l'IBus"
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Engines order"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Saved engines order in input method list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Trigger shortcut keys"
+msgstr "Dreceres de teclat de l'activador"
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable shortcut keys"
+msgstr "Habilita les dreceres de teclat"
+
+#: ../data/ibus.schemas.in.h:8
+msgid "The shortcut keys for turning input method on"
+msgstr "Les dreceres de teclat per habilitar el mètode d'entrada"
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Disable shortcut keys"
+msgstr "Inhabilita les dreceres de teclat"
+
+#: ../data/ibus.schemas.in.h:10
+msgid "The shortcut keys for turning input method off"
+msgstr "Les dreceres de teclat per inhabilitar el mètode d'entrada"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Next engine shortcut keys"
+msgstr "Dreceres de teclat del motor següent"
+
+#: ../data/ibus.schemas.in.h:12
+msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
 "Les dreceres de teclat per commutar al mètode d'entrada següent de la llista"
 
-#: ../setup/setup.ui.h:50
-msgid "The shortcut keys for switching to previous input method in the list"
+#: ../data/ibus.schemas.in.h:13
+msgid "Prev engine shortcut keys"
+msgstr "Dreceres de teclat del motor anterior"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "The shortcut keys for switching to the previous input method"
 msgstr ""
-"Les dreceres de teclat per canviar al mètode d'entrada anterior de la llista"
+"Les dreceres de teclat per commutar al mètode d'entrada anterior de la llista"
 
-#: ../setup/setup.ui.h:52
-msgid "Top left corner"
-msgstr "Cantonada superior esquerra"
+#: ../data/ibus.schemas.in.h:15
+msgid "Auto hide"
+msgstr "Oculta automàticament"
 
-#: ../setup/setup.ui.h:53
-msgid "Top right corner"
-msgstr "Cantonada superior dreta"
+#: ../data/ibus.schemas.in.h:16
+msgid ""
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
+msgstr ""
+"El comportament del quadre d'idiomes. 0 = incrustat al menú, 1 = oculta "
+"automàticament, 2 = mostra sempre"
 
-#: ../setup/setup.ui.h:54
-msgid "Use custom font:"
-msgstr "Utilitza un tipus de lletra personalitzat:"
+#: ../data/ibus.schemas.in.h:17
+msgid "Language panel position"
+msgstr "Posició del quadre d'idiomes"
 
-#: ../setup/setup.ui.h:57
-msgid "Vertical"
-msgstr "Vertical"
+#: ../data/ibus.schemas.in.h:18
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
+msgstr ""
+"La posició del quadre d'idiomes. 0 = cantonada superior esquerra, 1 = "
+"cantonada superior dreta, 2 = cantonada inferior esquerra, 3 = cantonada "
+"inferior dreta, 4 = personalitzat"
 
-#: ../setup/setup.ui.h:58
-msgid "When active"
-msgstr "Quan estigui actiu"
+#: ../data/ibus.schemas.in.h:19
+msgid "Orientation of lookup table"
+msgstr "Orientació de la taula de cerca"
 
+#: ../data/ibus.schemas.in.h:20
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "Orientació de la taula de cerca. 0 = horitzontal, 1 = vertical"
 
+#: ../data/ibus.schemas.in.h:22
+msgid "Show input method name"
+msgstr "Mostra el nom del mètode d'entrada"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "Use custom font"
+msgstr "Utilitza un tipus de lletra personalitzat"
+
+#: ../data/ibus.schemas.in.h:27
+msgid "Use custom font name for language panel"
+msgstr "Utilitza un tipus de lletra personalitzat per al quadre d'idiomes"
+
+#: ../data/ibus.schemas.in.h:28
+msgid "Custom font"
+msgstr "Tipus de lletra personalitzat"
+
+#: ../data/ibus.schemas.in.h:29
+msgid "Custom font name for language panel"
+msgstr "Tipus de lletra personalitzat per al quadre d'idiomes"
+
+#: ../data/ibus.schemas.in.h:30
+msgid "Embed Preedit Text"
+msgstr "Integra el text editat prèviament"
+
+#: ../data/ibus.schemas.in.h:31
+msgid "Embed Preedit Text in Application Window"
+msgstr "Integra el text editat prèviament en la finestra de l'aplicació"
+
+#: ../data/ibus.schemas.in.h:32
+msgid "Use global input method"
+msgstr "Utilitza el mètode d'entrada global"
+
+#: ../data/ibus.schemas.in.h:34
+msgid "Enable input method by default"
+msgstr "Habilita els mètodes d'entrada per defecte"
+
+#: ../data/ibus.schemas.in.h:35
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+"Habilita els mètodes d'entrada per defecte quan l'aplicació obté el focus "
+"d'entrada"
+
+#: ../data/ibus.schemas.in.h:36
+msgid "DConf preserve name prefixes"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:37
+msgid "Prefixes of DConf keys to stop name conversion"
+msgstr ""
+
+#: ../ibus/_config.py.in:41
+msgid ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+
+#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+msgid "Other"
+msgstr "Altres"
+
+#: ../setup/engineabout.py:67
+#, python-format
+msgid "Language: %s\n"
+msgstr "Idioma: %s\n"
+
+#: ../setup/engineabout.py:70
+#, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "Disposició del teclat: %s\n"
+
+#: ../setup/engineabout.py:73
+#, python-format
+msgid "Author: %s\n"
+msgstr "Autor: %s\n"
+
+#: ../setup/engineabout.py:76
+msgid "Description:\n"
+msgstr "Descripció: \n"
+
+#: ../setup/enginecombobox.py:136
+msgid "Select an input method"
+msgstr "Seleccioneu un mètode d'entrada"
+
+#: ../setup/enginetreeview.py:92
+msgid "Kbd"
+msgstr "Kbd"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+msgid "Set IBus Preferences"
+msgstr "Estableix les preferències de l'IBus"
+
+#: ../setup/keyboardshortcut.py:54
+msgid "Keyboard shortcuts"
+msgstr "Dreceres de teclat"
+
+#: ../setup/keyboardshortcut.py:65
+msgid "Key code:"
+msgstr "Codi de lletra:"
+
+#: ../setup/keyboardshortcut.py:80
+msgid "Modifiers:"
+msgstr "Modificadors:"
+
+#: ../setup/keyboardshortcut.py:235
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+"Premeu una tecla (o una combinació de tecles).\n"
+"El diàleg es tancarà quan es deixi anar la tecla."
+
+#: ../setup/keyboardshortcut.py:237
+msgid "Please press a key (or a key combination)"
+msgstr "Premeu una tecla (o una combinació de tecles)"
+
+#: ../setup/main.py:79
+msgid "trigger"
+msgstr "activador"
+
+#: ../setup/main.py:80
+msgid "enable"
+msgstr "habilita"
+
+#: ../setup/main.py:81
+msgid "disable"
+msgstr "inhabilita"
+
+#: ../setup/main.py:323
+#, fuzzy
+msgid "The IBus daemon is not running. Do you wish to start it?"
+msgstr "No s'ha iniciat el dimoni de l'IBus. Voleu iniciar-lo ara?"
+
+#: ../setup/main.py:344
+#, fuzzy
+msgid ""
+"IBus has been started! If you cannot use IBus, add the following lines to "
+"your $HOME/.bashrc; then relog into your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+"S'ha iniciat l'IBus. Si no podeu utilitzar l'IBus, afegiu les línies "
+"següents a $HOME/.bashrc, i torneu a entrar a l'escriptori.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+
+#: ../setup/main.py:357
+#, python-format
+msgid "IBus daemon coundn't be started in %d seconds"
+msgstr ""
+
+#: ../setup/main.py:369
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "Seleccioneu la drecera de teclat per a %s"
+
+#: ../ui/gtk3/panel.vala:330
+#, fuzzy
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+
+#: ../ui/gtk3/panel.vala:335
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "L'IBus és un bus d'entrada intel·ligent per al Linux/Unix."
+
+#: ../ui/gtk3/panel.vala:339
+msgid "translator-credits"
+msgstr ""
+"Oscar Osta Pueyo <oostap@gmail.com>, 2009\n"
+"Patricia Rivera Escuder <patysya@gmail.com>, 2009\n"
+"Xavier Conde Rueda <xavi.conde@gmail.com>\n"
+"Joan Duran <jodufi@gmail.com>"
+
+#: ../ui/gtk3/panel.vala:371
+msgid "Restart"
+msgstr "Reinicia"
+
+#~ msgid "Previous page"
+#~ msgstr "Pàgina anterior"
+
+#~ msgid "Next page"
+#~ msgstr "Pàgina següent"
+
+#~ msgid ""
+#~ "Some input methods have been installed, removed or updated. Please "
+#~ "restart ibus input platform."
+#~ msgstr ""
+#~ "S'han instal·lat, suprimit o actualitzat alguns mètodes d'entrada. "
+#~ "Reinicieu la plataforma d'entrada IBus."
+
+#~ msgid "Restart Now"
+#~ msgstr "Reinicia ara"
+
+#~ msgid "Later"
+#~ msgstr "Després"
+
+#~ msgid "IBus Panel"
+#~ msgstr "Quadre de l'IBus"
+
+#~ msgid "IBus input method framework"
+#~ msgstr "Entorn de mètodes d'entrada IBus"
+
+#~ msgid "Turn off input method"
+#~ msgstr "Inhabilita el mètode d'entrada"
+
+#~ msgid "No input window"
+#~ msgstr "Cap finestra d'entrada"
+
+#~ msgid "About the input method"
+#~ msgstr "Quant al mètode d'entrada"
+
+#~ msgid "Switch input method"
+#~ msgstr "Commuta el mètode d'entrada"
+
+#~ msgid "About the Input Method"
+#~ msgstr "Quant al mètode d'entrada"
+
+#~ msgid "next input method"
+#~ msgstr "mètode d'entrada següent"
+
+#~ msgid "previous input method"
+#~ msgstr "mètode d'entrada anterior"

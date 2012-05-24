@@ -469,6 +469,30 @@ else
     enable_surrounding_text="no (disabled, use --enable-surrounding-text to enable)"
 fi
 
+# --disable-ui
+AC_ARG_ENABLE(ui,
+    AS_HELP_STRING([--disable-ui],
+                   [Disable ibus default user interface]),
+    [enable_ui=$enableval],
+    [enable_ui=yes]
+)
+AM_CONDITIONAL([ENABLE_UI], [test x"$enable_ui" = x"yes"])
+if test x"$enable_ui" = x"yes"; then
+    enable_ui="yes (enabled, use --disable-ui to disable)"
+fi
+
+# --disable-engine
+AC_ARG_ENABLE(engine,
+    AS_HELP_STRING([--disable-engine],
+                   [Disable ibus simple engine]),
+    [enable_engine=$enableval],
+    [enable_engine=yes]
+)
+AM_CONDITIONAL([ENABLE_ENGINE], [test x"$enable_engine" = x"yes"])
+if test x"$enable_engine" = x"yes"; then
+    enable_engine="yes (enabled, use --disable-engine to disable)"
+fi
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -543,6 +567,8 @@ Build options:
   IBus-1.0.gir scannerflags "$IBUS_GIR_SCANNERFLAGS"
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
+  Build UI                  $enable_ui
+  Build engine              $enable_engine
   Enable key snooper        $enable_key_snooper
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"

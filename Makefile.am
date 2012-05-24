@@ -22,7 +22,13 @@
 
 NULL =
 
+if ENABLE_UI
 UI_DIR = ui
+endif
+
+if ENABLE_ENGINE
+ENGINE_DIR = engine
+endif
 
 if ENABLE_SETUP
 SETUP_DIR = setup
@@ -44,12 +50,12 @@ SUBDIRS = \
 	util \
 	conf \
 	client \
-	engine \
 	tools \
 	data \
 	m4 \
 	po \
 	docs \
+	$(ENGINE_DIR) \
 	$(UI_DIR) \
 	$(DAEMON_DIR) \
 	$(PYTHON_LIB_DIRS) \
