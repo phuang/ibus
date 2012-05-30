@@ -174,12 +174,7 @@ class Panel : IBus.PanelService {
         if (i == 0 && !force)
             return;
 
-        // Move the target engine to the first place.
         IBus.EngineDesc engine = m_engines[i];
-        for (int j = i; j > 0; j--) {
-            m_engines[j] = m_engines[j - 1];
-        }
-        m_engines[0] = engine;
 
         if (!m_bus.set_global_engine(engine.get_name())) {
             warning("Switch engine to %s failed.", engine.get_name());
@@ -195,15 +190,6 @@ class Panel : IBus.PanelService {
         } catch (GLib.SpawnError e) {
             warning("execute setxkblayout failed");
         }
-
-        string[] names = {};
-        foreach(var desc in m_engines) {
-            names += desc.get_name();
-        }
-        if (m_config != null)
-            m_config.set_value("general",
-                               "engines_order",
-                               new GLib.Variant.strv(names));
     }
 
     private void config_value_changed_cb(IBus.Config config,
@@ -494,5 +480,36 @@ class Panel : IBus.PanelService {
             m_status_icon.set_from_file(icon_name);
         else
             m_status_icon.set_from_icon_name(icon_name);
+
+        if (engine == null)
+            return;
+
+        int i;
+        for (i = 0; i < m_engines.length; i++) {
+            if (m_engines[i].get_name() == engine.get_name())
+                break;
+        }
+
+        // engine is first engine in m_engines.
+        if (i == 0)
+            return;
+
+        // engine is not in m_engines.
+        if (i >= m_engines.length)
+            return;
+
+        for (int j = i; j > 0; j--) {
+            m_engines[j] = m_engines[j - 1];
+        }
+        m_engines[0] = engine;
+
+        string[] names = {};
+        foreach(var desc in m_engines) {
+            names += desc.get_name();
+        }
+        if (m_config != null)
+            m_config.set_value("general",
+                               "engines_order",
+                               new GLib.Variant.strv(names));
     }
 }
