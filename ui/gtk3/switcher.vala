@@ -20,13 +20,50 @@
  * Boston, MA  02111-1307  USA
  */
 
-using IBus;
+using Atk;
 using GLib;
 using Gtk;
+using IBus;
+using Pango;
 
 class Switcher : Gtk.Window {
+    private const int DEFAULT_FONT_SIZE = 16;
+    private const int DESC_LABEL_MAX_LEN = 20;
+
+    private class IBusEngineButton : Gtk.Button {
+        public IBusEngineButton(IBus.EngineDesc engine) {
+            GLib.Object();
+            this.longname = engine.get_longname();
+            var language = engine.get_language();
+            var symbol = engine.get_symbol();
+            var id = language;
+
+            if (id.length > 2) {
+                id = id[0:2];
+            }
+            if (symbol.length != 0) {
+                id = symbol;
+            }
+
+            Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+            add(align);
+            Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            align.add(box);
+
+            Gtk.Label label = new Gtk.Label(id);
+            string id_font = "%d".printf(DEFAULT_FONT_SIZE);
+            string markup = "<span font=\"%s\">%s</span>".printf(id_font, id);
+
+            label.set_markup(markup);
+            box.pack_start(label, false, false, 0);
+        }
+
+        public string longname { get; set; }
+    }
+
     private Gtk.Box m_box;
-    private Gtk.Button[] m_buttons = {};
+    private Gtk.Label m_label;
+    private IBusEngineButton[] m_buttons = {};
     private IBus.EngineDesc[] m_engines;
     private uint m_selected_engine;
     private uint m_primary_modifier;
@@ -43,8 +80,23 @@ class Switcher : Gtk.Window {
             modal : true,
             focus_visible : true
         );
-        m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-        add(m_box);
+        Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        add(vbox);
+        Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+        vbox.pack_start(align, true, true, 0);
+        m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        align.add(m_box);
+        m_label = new Gtk.Label("");
+
+        /* Set the accessible role of the label to a status bar so it
+         * will emit name changed events that can be used by screen
+         * readers.
+         */
+        Atk.Object obj = m_label.get_accessible();
+        obj.set_role (Atk.Role.STATUSBAR);
+
+        m_label.set_padding(3, 3);
+        vbox.pack_end(m_label, false, false, 0);
 
         grab_focus();
     }
@@ -59,6 +111,7 @@ class Switcher : Gtk.Window {
 
         update_engines(engines);
         m_selected_engine = index;
+        m_label.set_text(m_buttons[index].longname);
         m_buttons[index].grab_focus();
 
         Gdk.Device device = event.get_device();
@@ -138,6 +191,7 @@ class Switcher : Gtk.Window {
         return m_result;
     }
 
+    /* Based on metacity/src/ui/tabpopup.c:meta_ui_tab_popup_new */
     private void update_engines(IBus.EngineDesc[] engines) {
         foreach (var button in m_buttons) {
             button.destroy();
@@ -149,28 +203,15 @@ class Switcher : Gtk.Window {
             return;
         }
 
-        int width, height;
-        Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
         m_engines = engines;
+        int max_label_width = 0;
+
         for (int i = 0; i < m_engines.length; i++) {
             var index = i;
             var engine = m_engines[i];
+            var button = new IBusEngineButton(engine);
             var longname = engine.get_longname();
-            var language = engine.get_language();
-            var symbol = engine.get_symbol();
-            var id = language;
-
-            if (id.length > 2) {
-                id = id[0:2];
-            }
-            if (symbol.length != 0) {
-                id = symbol;
-            }
-            var label = "%-15s %s".printf(longname, id);
-            var button = new Gtk.Button.with_label(label);
-            button.set_image(new IconWidget(engine.get_icon(), width));
             button.set_relief(Gtk.ReliefStyle.NONE);
-            button.set_alignment(1.0f, 0.0f);
             button.show();
 
             button.enter_notify_event.connect((e) => {
@@ -186,12 +227,40 @@ class Switcher : Gtk.Window {
                 return true;
             });
 
+            if (longname.length > DESC_LABEL_MAX_LEN) {
+                longname = longname[0:DESC_LABEL_MAX_LEN];
+            }
+
+            button.longname = longname;
+            m_label.set_label(longname);
+
+            int width;
+            m_label.get_preferred_width(null, out width);
+            max_label_width = int.max(max_label_width, width);
+
             m_box.pack_start(button, true, true);
             m_buttons += button;
         }
 
-        // Cause window recalculate the perferred size.
-        resize(1, 1);
+        m_label.set_text(m_buttons[0].longname);
+        m_label.set_ellipsize(Pango.EllipsizeMode.END);
+
+        Gdk.Display display = Gdk.Display.get_default();
+        Gdk.Screen screen = (display != null) ?
+                display.get_default_screen() : null;
+        int screen_width = 0;
+
+        if (screen != null) {
+            screen_width = screen.get_width();
+        }
+
+        if (screen_width > 0 && max_label_width > (screen_width / 4)) {
+            max_label_width = screen_width / 4;
+        }
+
+        /* add random padding */
+        max_label_width += 20;
+        set_default_size(max_label_width, -1);
     }
 
     private void next_engine() {
@@ -199,6 +268,7 @@ class Switcher : Gtk.Window {
             m_selected_engine = 0;
         else
             m_selected_engine ++;
+        m_label.set_text(m_buttons[m_selected_engine].longname);
         set_focus(m_buttons[m_selected_engine]);
     }
 
@@ -207,6 +277,7 @@ class Switcher : Gtk.Window {
             m_selected_engine = m_engines.length - 1;
         else
             m_selected_engine --;
+        m_label.set_text(m_buttons[m_selected_engine].longname);
         set_focus(m_buttons[m_selected_engine]);
     }
 
@@ -227,18 +298,18 @@ class Switcher : Gtk.Window {
                     previous_engine();
                 break;
             case 0x08fb: /* leftarrow */
-            case 0xff51: /* Down */
+            case 0xff51: /* Left */
+                previous_engine();
                 break;
             case 0x08fc: /* uparrow */
             case 0xff52: /* Up */
-                previous_engine();
                 break;
             case 0x08fd: /* rightarrow */
             case 0xff53: /* Right */
+                next_engine();
                 break;
             case 0x08fe: /* downarrow */
             case 0xff54: /* Down */
-                next_engine();
                 break;
             default:
                 debug("0x%04x", pe->keyval);
