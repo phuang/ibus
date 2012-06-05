@@ -42,6 +42,8 @@ INCLUDES = \
 	-I$(top_builddir)/src \
 	$(NULL)
 
+USE_SYMBOL_ICON = FALSE
+
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
@@ -57,6 +59,7 @@ AM_CFLAGS = \
 	-DBINDIR=\"@bindir@\" \
     -DIBUS_DISABLE_DEPRECATED \
 	-DIBUS_VERSION=\"@IBUS_VERSION@\" \
+	-DSWITCHER_USE_SYMBOL_ICON=$(USE_SYMBOL_ICON) \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-function \

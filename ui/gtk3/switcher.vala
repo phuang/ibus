@@ -21,41 +21,51 @@
  */
 
 using Atk;
+using Cairo;
+using Gdk;
 using GLib;
 using Gtk;
 using IBus;
 using Pango;
 
 class Switcher : Gtk.Window {
+    public extern const bool USE_SYMBOL_ICON;
     private const int DEFAULT_FONT_SIZE = 16;
     private const int DESC_LABEL_MAX_LEN = 20;
+    private const int ICON_SIZE = 48;
 
     private class IBusEngineButton : Gtk.Button {
         public IBusEngineButton(IBus.EngineDesc engine) {
             GLib.Object();
-            this.longname = engine.get_longname();
-            var language = engine.get_language();
-            var symbol = engine.get_symbol();
-            var id = language;
 
-            if (id.length > 2) {
-                id = id[0:2];
-            }
-            if (symbol.length != 0) {
-                id = symbol;
-            }
+            this.longname = engine.get_longname();
 
             Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
             add(align);
-            Gtk.Box box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-            align.add(box);
 
-            Gtk.Label label = new Gtk.Label(id);
-            string id_font = "%d".printf(DEFAULT_FONT_SIZE);
-            string markup = "<span font=\"%s\">%s</span>".printf(id_font, id);
+            if (!USE_SYMBOL_ICON) {
+                IconWidget icon = new IconWidget(engine.get_icon(), ICON_SIZE);
+                align.add(icon);
+            } else {
+                var language = engine.get_language();
+                var symbol = engine.get_symbol();
+                var id = language;
 
-            label.set_markup(markup);
-            box.pack_start(label, false, false, 0);
+                if (id.length > 2) {
+                    id = id[0:2];
+                }
+
+                if (symbol.length != 0) {
+                    id = symbol;
+                }
+
+                Gtk.Label label = new Gtk.Label(id);
+                string id_font = "%d".printf(DEFAULT_FONT_SIZE);
+                string markup = "<span font=\"%s\">%s</span>".printf(id_font, id);
+
+                label.set_markup(markup);
+                align.add(label);
+            }
         }
 
         public string longname { get; set; }
