@@ -47,17 +47,14 @@ public class KeybindingManager : GLib.Object {
      * Helper class to store keybinding
      */
     private class Keybinding {
-        public Keybinding(string accelerator,
-                          uint keysym,
+        public Keybinding(uint keysym,
                           Gdk.ModifierType modifiers,
                           KeybindingHandlerFunc handler) {
-            this.accelerator = accelerator;
             this.keysym = keysym;
             this.modifiers = modifiers;
             this.handler = handler;
         }
 
-        public string accelerator { get; set; }
         public uint keysym { get; set; }
         public Gdk.ModifierType modifiers { get; set; }
         public unowned KeybindingHandlerFunc handler { get; set; }
@@ -78,18 +75,13 @@ public class KeybindingManager : GLib.Object {
     /**
      * Bind accelerator to given handler
      *
-     * @param accelerator accelerator parsable by Gtk.accelerator_parse
+     * @param keysym
+     * @param modifiers
      * @param handler handler called when given accelerator is pressed
      */
-    public bool bind(string accelerator,
+    public bool bind(uint keysym,
+                     Gdk.ModifierType modifiers,
                      KeybindingHandlerFunc handler) {
-        debug("Binding key " + accelerator);
-
-        // convert accelerator
-        uint keysym;
-        Gdk.ModifierType modifiers;
-        Gtk.accelerator_parse(accelerator, out keysym, out modifiers);
-
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
 
         int keycode = display.keysym_to_keycode(keysym);
@@ -100,27 +92,24 @@ public class KeybindingManager : GLib.Object {
         grab_keycode (Gdk.Display.get_default(), keysym, modifiers);
 
         // store binding
-        Keybinding binding = new Keybinding(accelerator,
-                                            keysym, modifiers,
-                                            handler);
+        Keybinding binding = new Keybinding(keysym, modifiers, handler);
         m_bindings.append(binding);
 
-        debug("Successfully binded key " + accelerator);
         return true;
     }
 
     /**
      * Unbind given accelerator.
      *
-     * @param accelerator accelerator parsable by Gtk.accelerator_parse
+     * @param keysym
+     * @param modifiers
      */
-    public void unbind (string accelerator) {
-        debug("Unbinding key " + accelerator);
-
+    public void unbind(uint keysym,
+                       Gdk.ModifierType modifiers) {
         // unbind all keys with given accelerator
         GLib.List<Keybinding> remove_bindings = new GLib.List<Keybinding>();
         foreach(Keybinding binding in m_bindings) {
-            if(str_equal(accelerator, binding.accelerator)) {
+            if (binding.keysym == keysym && binding.modifiers == modifiers) {
                 ungrab_keycode (Gdk.Display.get_default(),
                                 binding.keysym,
                                 binding.modifiers);
@@ -139,8 +128,8 @@ public class KeybindingManager : GLib.Object {
         return m_instance;
     }
 
-    public static uint get_primary_modifier (uint binding_mask) {
-        const uint[] masks = {
+    public static Gdk.ModifierType get_primary_modifier (uint binding_mask) {
+        const Gdk.ModifierType[] masks = {
             Gdk.ModifierType.MOD5_MASK,
             Gdk.ModifierType.MOD4_MASK,
             Gdk.ModifierType.MOD3_MASK,
@@ -150,7 +139,7 @@ public class KeybindingManager : GLib.Object {
             Gdk.ModifierType.SHIFT_MASK,
             Gdk.ModifierType.LOCK_MASK
         };
-        foreach (uint mask in masks) {
+        foreach (Gdk.ModifierType mask in masks) {
             if ((binding_mask & mask) == mask)
                 return mask;
         }

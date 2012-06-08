@@ -42,7 +42,9 @@ class Panel : IBus.PanelService {
     private Gtk.AboutDialog m_about_dialog;
     private Gtk.CssProvider m_css_provider;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
-    private const string ACCELERATOR_SWITCH_IME_BACKWARD = "<Control><Shift>space";
+
+    private uint m_switch_keysym = 0;
+    private Gdk.ModifierType m_switch_modifiers = 0;
 
     public Panel(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -65,13 +67,7 @@ class Panel : IBus.PanelService {
         m_candidate_panel.page_down.connect((w) => this.page_down());
 
         m_switcher = new Switcher();
-
-        var keybinding_manager = KeybindingManager.get_instance();
-        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_FOREWARD,
-                (e) => handle_engine_switch(e, false));
-
-        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_BACKWARD,
-                (e) => handle_engine_switch(e, true));
+        bind_switch_shortcut();
 
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((k, s) => {
@@ -82,9 +78,45 @@ class Panel : IBus.PanelService {
     }
 
     ~Panel() {
+        unbind_switch_shortcut();
+    }
+
+    private void bind_switch_shortcut() {
         var keybinding_manager = KeybindingManager.get_instance();
-        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_FOREWARD);
-        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_BACKWARD);
+
+        Gtk.accelerator_parse(ACCELERATOR_SWITCH_IME_FOREWARD,
+                out m_switch_keysym, out m_switch_modifiers);
+
+        if (m_switch_keysym == 0 && m_switch_modifiers == 0) {
+            warning("Parse accelerator '%s' failed!",
+                    ACCELERATOR_SWITCH_IME_FOREWARD);
+            return;
+        }
+
+        keybinding_manager.bind(m_switch_keysym, m_switch_modifiers,
+                (e) => handle_engine_switch(e, false));
+
+        // accelerator already has Shift mask
+        if ((m_switch_modifiers & Gdk.ModifierType.SHIFT_MASK) != 0)
+            return;
+
+        keybinding_manager.bind(m_switch_keysym,
+                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK,
+                (e) => handle_engine_switch(e, true));
+    }
+
+    private void unbind_switch_shortcut() {
+        var keybinding_manager = KeybindingManager.get_instance();
+
+        if (m_switch_keysym == 0 && m_switch_modifiers == 0)
+            return;
+
+        keybinding_manager.unbind(m_switch_keysym, m_switch_modifiers);
+        keybinding_manager.unbind(m_switch_keysym,
+                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK);
+
+        m_switch_keysym = 0;
+        m_switch_modifiers = 0;
     }
 
     private void set_custom_font() {
@@ -220,7 +252,8 @@ class Panel : IBus.PanelService {
                 event, primary_modifiers);
         if (pressed) {
             int i = revert ? m_engines.length - 1 : 1;
-            i = m_switcher.run(event, m_engines, i);
+            i = m_switcher.run(m_switch_keysym, m_switch_modifiers, event,
+                    m_engines, i);
             if (i < 0) {
                 debug("switch cancelled");
             } else {

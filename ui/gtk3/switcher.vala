@@ -76,7 +76,9 @@ class Switcher : Gtk.Window {
     private IBusEngineButton[] m_buttons = {};
     private IBus.EngineDesc[] m_engines;
     private uint m_selected_engine;
-    private uint m_primary_modifier;
+    private uint m_keyval;
+    private uint m_modifiers;
+    private Gdk.ModifierType m_primary_modifier;
     private GLib.MainLoop m_loop;
     private int m_result;
 
@@ -111,13 +113,19 @@ class Switcher : Gtk.Window {
         grab_focus();
     }
 
-    public int run(Gdk.Event event, IBus.EngineDesc[] engines, int index) {
+    public int run(uint keyval,
+                   uint state,
+                   Gdk.Event event,
+                   IBus.EngineDesc[] engines,
+                   int index) {
         assert (m_loop == null);
         assert (index < engines.length);
 
+        m_keyval = keyval;
+        m_modifiers = state;
         m_primary_modifier =
             KeybindingManager.get_primary_modifier(
-                event.key.state & KeybindingManager.MODIFIER_FILTER);
+                state & KeybindingManager.MODIFIER_FILTER);
 
         update_engines(engines);
         m_selected_engine = index;
@@ -134,7 +142,8 @@ class Switcher : Gtk.Window {
 #if VALA_0_16
             device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
 #else
-            unowned GLib.List<Gdk.Device> devices = device_manager.list_devices(Gdk.DeviceType.MASTER);
+            unowned GLib.List<Gdk.Device> devices =
+                    device_manager.list_devices(Gdk.DeviceType.MASTER);
             device = devices.data;
 #endif
         }
@@ -298,34 +307,46 @@ class Switcher : Gtk.Window {
     }
 
     public override bool key_press_event(Gdk.EventKey e) {
+        bool retval = true;
         Gdk.EventKey *pe = &e;
-        switch (pe->keyval) {
-            case 0x0020: /* space */
-            case 0xff80: /* KP_Space */
-                if ((pe->state & Gdk.ModifierType.SHIFT_MASK) == 0)
+
+        do {
+            uint modifiers = KeybindingManager.MODIFIER_FILTER & pe->state;
+
+            if ((modifiers != m_modifiers) &&
+                (modifiers != (m_modifiers | Gdk.ModifierType.SHIFT_MASK))) {
+                break;
+            }
+
+            if (pe->keyval == m_keyval) {
+                if (modifiers == m_modifiers)
                     next_engine();
-                else
+                else // modififers == m_modifiers | SHIFT_MASK
                     previous_engine();
                 break;
-            case 0x08fb: /* leftarrow */
-            case 0xff51: /* Left */
-                previous_engine();
-                break;
-            case 0x08fc: /* uparrow */
-            case 0xff52: /* Up */
-                break;
-            case 0x08fd: /* rightarrow */
-            case 0xff53: /* Right */
-                next_engine();
-                break;
-            case 0x08fe: /* downarrow */
-            case 0xff54: /* Down */
-                break;
-            default:
-                debug("0x%04x", pe->keyval);
-                break;
-        }
-        return true;
+            }
+
+            switch (pe->keyval) {
+                case 0x08fb: /* leftarrow */
+                case 0xff51: /* Left */
+                    previous_engine();
+                    break;
+                case 0x08fc: /* uparrow */
+                case 0xff52: /* Up */
+                    break;
+                case 0x08fd: /* rightarrow */
+                case 0xff53: /* Right */
+                    next_engine();
+                    break;
+                case 0x08fe: /* downarrow */
+                case 0xff54: /* Down */
+                    break;
+                default:
+                    debug("0x%04x", pe->keyval);
+                    break;
+            }
+        } while (false);
+        return retval;
     }
 
     public override bool key_release_event(Gdk.EventKey e) {
