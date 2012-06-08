@@ -42,14 +42,14 @@ gboolean grab_keycode (GdkDisplay *display,
     XISetMask (mask.mask, XI_KeyRelease);
 
     XIGrabModifiers ximodifiers[] = {
-        {modifiers, 0},
-        {Mod2Mask | modifiers, 0},
-        {LockMask | modifiers, 0},
-        {Mod5Mask | modifiers, 0},
-        {Mod2Mask | LockMask | modifiers, 0},
-        {Mod2Mask | Mod5Mask | modifiers, 0},
-        {LockMask | Mod5Mask | modifiers, 0},
-        {Mod2Mask | LockMask | Mod5Mask | modifiers, 0},
+        { modifiers, 0 },
+        { LockMask | modifiers, 0 },
+        { Mod2Mask | modifiers, 0 },
+        { Mod5Mask | modifiers, 0 },
+        { LockMask | Mod2Mask | modifiers, 0 },
+        { Mod2Mask | Mod5Mask | modifiers, 0 },
+        { LockMask | Mod5Mask | modifiers, 0 },
+        { LockMask | Mod2Mask | Mod5Mask | modifiers, 0 },
     };
 
     int retval = XIGrabKeycode (xdisplay,

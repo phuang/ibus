@@ -84,12 +84,32 @@ class Panel : IBus.PanelService {
     private void bind_switch_shortcut() {
         var keybinding_manager = KeybindingManager.get_instance();
 
-        Gtk.accelerator_parse(ACCELERATOR_SWITCH_IME_FOREWARD,
+        var accelerator = ACCELERATOR_SWITCH_IME_FOREWARD;
+        Gtk.accelerator_parse(accelerator,
                 out m_switch_keysym, out m_switch_modifiers);
 
+        // Map virtual modifiers to (i.e.Mod2, Mod3, ...)
+        const Gdk.ModifierType VIRTUAL_MODIFIERS = (
+                Gdk.ModifierType.SUPER_MASK |
+                Gdk.ModifierType.HYPER_MASK |
+                Gdk.ModifierType.META_MASK);
+        if ((m_switch_modifiers & VIRTUAL_MODIFIERS) != 0) {
+        // workaround a bug in gdk vapi vala > 0.18
+        // https://bugzilla.gnome.org/show_bug.cgi?id=677559
+#if VALA_0_18
+            Gdk.Keymap.get_default().map_virtual_modifiers(
+                    ref m_switch_modifiers);
+#else
+            if ((m_switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
+                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+            if ((m_switch_modifiers & Gdk.ModifierType.HYPER_MASK) != 0)
+                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+#endif
+            m_switch_modifiers &= ~VIRTUAL_MODIFIERS;
+        }
+
         if (m_switch_keysym == 0 && m_switch_modifiers == 0) {
-            warning("Parse accelerator '%s' failed!",
-                    ACCELERATOR_SWITCH_IME_FOREWARD);
+            warning("Parse accelerator '%s' failed!", accelerator);
             return;
         }
 

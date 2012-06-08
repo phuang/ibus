@@ -33,15 +33,20 @@ public class KeybindingManager : GLib.Object {
 
     public static const uint MODIFIER_FILTER =
         Gdk.ModifierType.MODIFIER_MASK & ~(
-        Gdk.ModifierType.MOD2_MASK |
-        Gdk.ModifierType.LOCK_MASK |
-        Gdk.ModifierType.MOD4_MASK |
-        Gdk.ModifierType.MOD5_MASK |
+        Gdk.ModifierType.LOCK_MASK |  // Caps Lock
+        // Gdk.ModifierType.MOD1_MASK |  // Alt
+        Gdk.ModifierType.MOD2_MASK |  // Num Lock
+        // Gdk.ModifierType.MOD3_MASK |
+        // Gdk.ModifierType.MOD4_MASK |  // Super, Hyper
+        // Gdk.ModifierType.MOD5_MASK |  //
         Gdk.ModifierType.BUTTON1_MASK |
         Gdk.ModifierType.BUTTON2_MASK |
         Gdk.ModifierType.BUTTON3_MASK |
         Gdk.ModifierType.BUTTON4_MASK |
-        Gdk.ModifierType.BUTTON5_MASK);
+        Gdk.ModifierType.BUTTON5_MASK |
+        Gdk.ModifierType.SUPER_MASK |
+        Gdk.ModifierType.HYPER_MASK |
+        Gdk.ModifierType.META_MASK);
 
     /**
      * Helper class to store keybinding
@@ -196,8 +201,9 @@ public class KeybindingManager : GLib.Object {
 
     private void event_handler(Gdk.Event event) {
         do {
-            if (event.any.window != Gdk.get_default_root_window())
+            if (event.any.window != Gdk.get_default_root_window()) {
                 break;
+            }
 
             if (event.type == Gdk.EventType.KEY_PRESS) {
                 uint modifiers = event.key.state & MODIFIER_FILTER;
