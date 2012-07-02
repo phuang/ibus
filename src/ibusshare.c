@@ -40,14 +40,22 @@ ibus_get_local_machine_id (void)
     static gchar *machine_id = NULL;
 
     if (machine_id == NULL) {
-        GError *error = NULL;
         if (!g_file_get_contents ("/var/lib/dbus/machine-id",
                                   &machine_id,
                                   NULL,
-                                  &error)) {
-            g_warning ("Unable to load /var/lib/dbus/machine-id: %s", error->message);
-            g_error_free (error);
-            machine_id = "machine-id";
+                                  NULL) &&
+            /* /etc/machine-id is a fallback since dbus 1.6 */
+            !g_file_get_contents ("/etc/machine-id",
+                                  &machine_id,
+                                  NULL,
+                                  NULL) &&
+            /* ultimately fallback on the kernel's boot-id */
+            !g_file_get_contents ("/proc/sys/kernel/random/boot_id",
+                                  &machine_id,
+                                  NULL,
+                                  NULL)) {
+            g_warning ("Unable to find suitable machine-id");
+            machine_id = g_strdup("machine-id");
         }
         else {
             g_strstrip (machine_id);
