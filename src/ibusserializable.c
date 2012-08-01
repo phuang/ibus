@@ -161,7 +161,6 @@ ibus_serializable_real_deserialize (IBusSerializable *object,
                                           key,
                                           attachment);
         g_variant_unref (attachment);
-        g_variant_unref (value);
     }
     g_variant_iter_free (iter);
     return 2;
