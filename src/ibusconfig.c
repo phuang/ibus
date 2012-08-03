@@ -24,6 +24,7 @@
 #include "ibusshare.h"
 #include "ibusconfig.h"
 #include "ibusbus.h"
+#include "ibuserror.h"
 
 #define IBUS_CONFIG_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG, IBusConfigPrivate))
@@ -306,6 +307,10 @@ ibus_config_new (GDBusConnection  *connection,
 
     if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (initable)) == NULL) {
         /* The configuration daemon, which is usually ibus-gconf, is not started yet. */
+        g_set_error (error,
+                     IBUS_ERROR,
+                     IBUS_ERROR_NO_CONFIG,
+                     "Configuration daemon is not running.");
         g_object_unref (initable);
         return NULL;
     }
@@ -365,11 +370,10 @@ ibus_config_new_async_finish (GAsyncResult  *res,
         if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (object)) == NULL) {
             /* The configuration daemon, which is usually ibus-gconf, 
              * is not started yet. */
-            if (error != NULL) {
-                *error = g_error_new (G_DBUS_ERROR,
-                                      G_DBUS_ERROR_FAILED,
-                                      IBUS_SERVICE_CONFIG " does not exist.");
-            }
+            g_set_error (error,
+                         IBUS_ERROR,
+                         IBUS_ERROR_NO_CONFIG,
+                         "Configuration daemon is not running.");
             g_object_unref (object);
             return NULL;
         }
@@ -672,7 +676,14 @@ initable_init (GInitable     *initable,
     IBusConfig *config = IBUS_CONFIG (initable);
     config->priv->watch_config_signal_id =
         _signal_subscribe (G_DBUS_PROXY (initable));
-    return ibus_config_watch (config, NULL, NULL);
+
+    gboolean retval = ibus_config_watch (config, NULL, NULL);
+    if (!retval)
+        g_set_error (error,
+                     IBUS_ERROR,
+                     IBUS_ERROR_FAILED,
+                     "Cannot watch configuration change.");
+    return retval;
 }
 
 static void
