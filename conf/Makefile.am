@@ -26,11 +26,9 @@ GCONF_DIR = \
 	$(NULL)
 endif
 
-if ENABLE_MEMCONF
 MEMCONF_DIR = \
 	memconf \
 	$(NULL)
-endif
 
 if ENABLE_DCONF
 DCONF_DIR = \

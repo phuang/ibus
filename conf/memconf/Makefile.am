@@ -22,9 +22,15 @@
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-libexec_PROGRAMS = \
+memconf_programs = \
 	ibus-memconf \
 	$(NULL)
+
+if ENABLE_MEMCONF
+libexec_PROGRAMS = $(memconf_programs)
+else
+noinst_PROGRAMS = $(memconf_programs)
+endif
 
 ibus_memconf_SOURCES = \
 	main.c \
@@ -48,11 +54,13 @@ ibus_memconf_DEPENDENCIES = \
 	$(libibus) \
 	$(NULL)
 
+if ENABLE_MEMCONF
 component_DATA = \
 	memconf.xml \
 	$(NULL)
 
 componentdir = $(pkgdatadir)/component
+endif
 
 CLEANFILES = \
 	memconf.xml \
