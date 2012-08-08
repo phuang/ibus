@@ -254,8 +254,11 @@ ibus_config_dconf_init (IBusConfigDConf *config)
                                        NULL);
 
     error = NULL;
-    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error))
-        g_warning ("Can not watch dconf path %s", DCONF_PREFIX"/");
+    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+        g_warning ("Can not watch dconf path %s: %s",
+                   DCONF_PREFIX"/", error->message);
+        g_error_free (error);
+    }
 #endif
 
     config->preserve_name_prefixes = NULL;
@@ -285,8 +288,11 @@ ibus_config_dconf_destroy (IBusConfigDConf *config)
         dconf_client_unwatch_fast (config->client, DCONF_PREFIX"/");
 #else
         GError *error = NULL;
-        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error))
-            g_warning ("Can not unwatch dconf path %s", DCONF_PREFIX"/");
+        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+            g_warning ("Can not unwatch dconf path %s: %s",
+                       DCONF_PREFIX"/", error->message);
+            g_error_free (error);
+        }
 #endif
 
         g_object_unref (config->client);
@@ -372,8 +378,11 @@ ibus_config_dconf_get_value (IBusConfigService *config,
     g_free (gkey);
 
     if (variant == NULL) {
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Config value [%s:%s] does not exist.", section, name);
+        g_set_error (error,
+                     G_DBUS_ERROR,
+                     G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.",
+                     section, name);
         return NULL;
     }
 
