@@ -81,7 +81,7 @@ test_input_context (void)
     if (engines != NULL) {
         active_engine_name = get_last_engine_id (engines);
     } else {
-        active_engine_name = g_strdup ("dummy-engine-name");
+        active_engine_name = g_strdup ("dummy");
     }
     g_assert (active_engine_name);
     g_debug ("Use '%s' for testing.", active_engine_name);

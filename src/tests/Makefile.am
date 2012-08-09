@@ -51,6 +51,15 @@ TESTS =               \
 	ibus-util         \
 	$(NULL)
 
+TESTS_ENVIRONMENT = \
+	top_builddir=$(top_builddir) \
+	top_srcdir=$(top_srcdir) \
+	buiddir=$(buiddir) \
+	$(builddir)/setupenv \
+	$(NULL)
+
+EXTRA_DIST = setupenv
+
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)
 
