@@ -26,7 +26,7 @@ m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [4])
-m4_define([ibus_micro_version], [1])
+m4_define([ibus_micro_version], [2])
 m4_define([ibus_interface_age], [0])
 m4_define([ibus_binary_age],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
