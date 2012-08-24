@@ -51,10 +51,14 @@ TESTS =               \
 	ibus-util         \
 	$(NULL)
 
+if ENABLE_ENGINE
+TESTS += ibus-engine-switch
+endif
+
 TESTS_ENVIRONMENT = \
 	top_builddir=$(top_builddir) \
 	top_srcdir=$(top_srcdir) \
-	buiddir=$(buiddir) \
+	builddir=$(builddir) \
 	$(builddir)/setupenv \
 	$(NULL)
 
@@ -68,6 +72,9 @@ ibus_config_LDADD = $(prog_ldadd)
 
 ibus_configservice_SOURCES = ibus-configservice.c
 ibus_configservice_LDADD = $(prog_ldadd)
+
+ibus_engine_switch_SOURCES = ibus-engine-switch.c
+ibus_engine_switch_LDADD = $(prog_ldadd)
 
 ibus_factory_SOURCES = ibus-factory.c
 ibus_factory_LDADD = $(prog_ldadd)

@@ -147,9 +147,15 @@ bus_registry_init (BusRegistry *registry)
         GList *p1;
         for (p1 = engines; p1 != NULL; p1 = p1->next) {
             IBusEngineDesc *desc = (IBusEngineDesc *) p1->data;
-            g_hash_table_insert (registry->engine_table,
-                                 (gpointer) ibus_engine_desc_get_name (desc),
-                                 desc);
+            const gchar *name = ibus_engine_desc_get_name (desc);
+            if (g_hash_table_lookup (registry->engine_table, name) == NULL) {
+                g_hash_table_insert (registry->engine_table,
+                                     (gpointer) name,
+                                     desc);
+            } else {
+                g_message ("Engine %s is already registered by other component",
+                           name);
+            }
         }
         g_list_free (engines);
     }

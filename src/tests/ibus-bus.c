@@ -621,26 +621,6 @@ test_bus_new_async (void)
     ibus_main ();
 }
 
-static void
-test_global_engine (void)
-{
-    IBusEngineDesc *engine_desc;
-    const gchar *engine_name;
-
-    if (!ibus_bus_get_use_global_engine (bus))
-        return;
-
-    engine_name = "xkb:us::eng";
-    ibus_bus_set_global_engine (bus, engine_name);
-    engine_desc = ibus_bus_get_global_engine (bus);
-    g_assert_cmpstr (ibus_engine_desc_get_name (engine_desc), ==, engine_name);
-
-    engine_name = "xkb:jp::jpn";
-    ibus_bus_set_global_engine (bus, engine_name);
-    engine_desc = ibus_bus_get_global_engine (bus);
-    g_assert_cmpstr (ibus_engine_desc_get_name (engine_desc), ==, engine_name);
-}
-
 gint
 main (gint    argc,
       gchar **argv)
@@ -666,7 +646,6 @@ main (gint    argc,
                      test_create_input_context_async);
     g_test_add_func ("/ibus/bus-new-async/get-engines-by-names", test_get_engines_by_names);
     g_test_add_func ("/ibus/bus-new-async/async-apis", test_async_apis);
-    g_test_add_func ("/ibus/global-engine", test_global_engine);
 
     result = g_test_run ();
     g_object_unref (bus);
