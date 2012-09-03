@@ -20,10 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Cairo;
-using Gdk;
-using Gtk;
-
 class Handle : Gtk.EventBox {
     private bool m_move_begined;
     private Gdk.Rectangle m_workarea;

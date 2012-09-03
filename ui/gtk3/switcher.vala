@@ -20,14 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Atk;
-using Cairo;
-using Gdk;
-using GLib;
-using Gtk;
-using IBus;
-using Pango;
-
 class Switcher : Gtk.Window {
     public extern const bool USE_SYMBOL_ICON;
     private const int DEFAULT_FONT_SIZE = 16;

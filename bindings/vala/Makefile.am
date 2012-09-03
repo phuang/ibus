@@ -44,6 +44,7 @@ ibus-@IBUS_API_VERSION@.vapi: $(vapi_deps)
 EXTRA_DIST = \
 	IBus-1.0.metadata \
 	IBus-1.0-custom.vala \
+	config.vapi \
 	$(NULL)
 
 MAINTAINERCLEANFILES = ibus-@IBUS_API_VERSION@.vapi

@@ -20,8 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Gtk;
-
 class HSeparator : Gtk.HSeparator {
     public HSeparator() {
         GLib.Object(

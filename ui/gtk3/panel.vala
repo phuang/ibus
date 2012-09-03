@@ -20,14 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using IBus;
-using GLib;
-using Gtk;
-using Posix;
-
-public extern const string IBUS_VERSION;
-public extern const string BINDIR;
-
 class Panel : IBus.PanelService {
     private IBus.Bus m_bus;
     private IBus.Config m_config;
@@ -240,7 +232,7 @@ class Panel : IBus.PanelService {
                     engine.get_layout());
             }
         } catch (GLib.SpawnError e) {
-            warning("execute setxkblayout failed");
+            warning("Execute setxkbmap failed: %s", e.message);
         }
     }
 
@@ -338,7 +330,7 @@ class Panel : IBus.PanelService {
             m_setup_pid = 0;
         }
 
-        string binary = GLib.Path.build_filename(BINDIR, "ibus-setup");
+        string binary = GLib.Path.build_filename(Config.BINDIR, "ibus-setup");
         try {
             GLib.Process.spawn_async(null,
                                      {binary, "ibus-setup"},
@@ -363,7 +355,7 @@ class Panel : IBus.PanelService {
         if (m_about_dialog == null) {
             m_about_dialog = new Gtk.AboutDialog();
             m_about_dialog.set_program_name("IBus");
-            m_about_dialog.set_version(IBUS_VERSION);
+            m_about_dialog.set_version(Config.PACKAGE_VERSION);
 
             string copyright = _(
                 "Copyright (c) 2007-2012 Peng Huang\n" +
@@ -404,7 +396,7 @@ class Panel : IBus.PanelService {
             item.activate.connect((i) => show_about_dialog());
             m_sys_menu.append(item);
 
-            m_sys_menu.append(new SeparatorMenuItem());
+            m_sys_menu.append(new Gtk.SeparatorMenuItem());
 
             item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.REFRESH, null);
             item.set_label(_("Restart"));
@@ -431,7 +423,7 @@ class Panel : IBus.PanelService {
         // Show properties and IME switching menu
         m_property_manager.create_menu_items(m_ime_menu);
 
-        m_ime_menu.append(new SeparatorMenuItem());
+        m_ime_menu.append(new Gtk.SeparatorMenuItem());
 
         int width, height;
         Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);

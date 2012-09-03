@@ -20,10 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Gdk;
-using GLib;
-using Gtk;
-
 class IconWidget: Gtk.Image {
     public IconWidget(string icon, int size) {
         Gdk.Pixbuf pixbuf = null;

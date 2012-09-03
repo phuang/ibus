@@ -10,11 +10,6 @@ valac --pkg gtk+-2.0 --pkg x11 --pkg gdk-x11-2.0 --pkg gee-1.0 keybinding-manage
  * @author Oliver Sauder <os@esite.ch>
  */
 
-using Gdk;
-using GLib;
-using Gtk;
-using X;
-
 extern bool grab_keycode (Gdk.Display display,
                           uint keyval,
                           uint modifiers);

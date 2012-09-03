@@ -20,9 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Gtk;
-using Pango;
-
 public class CandidatePanel : Gtk.HBox{
     private bool m_vertical = true;
     private Gtk.Window m_toplevel;

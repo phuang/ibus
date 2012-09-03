@@ -19,39 +19,43 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA  02111-1307  USA
  */
-using GLib;
-using IBus;
-
-
-public extern const string IBUS_VERSION;
 
 bool name_only = false;
 
 class EngineList {
-    public EngineDesc[] data = {};
+    public IBus.EngineDesc[] data = {};
 }
 
-IBus.Bus get_bus() {
+IBus.Bus? get_bus() {
     IBus.init();
     var bus = new IBus.Bus();
+    if (!bus.is_connected ())
+        return null;
     return bus;
 }
 
 int list_engine(string[] argv) {
-    const OptionEntry[] options =  {
-        { "name-only", 0, 0, OptionArg.NONE, out name_only, "engine name only", "engine name only" },
+    const OptionEntry[] options = {
+        { "name-only", 0, 0, OptionArg.NONE, out name_only,
+          N_("List engine name only"), null },
         { null }
     };
 
-    var option = new OptionContext("command [OPTIONS]");
+    var option = new OptionContext(_("command [OPTIONS]"));
     option.add_main_entries(options, "ibus");
 
     try {
         option.parse(ref argv);
     } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
     }
 
     var bus = get_bus();
+    if (bus == null) {
+        stderr.printf(_("Can't connect to IBus.\n"));
+        return Posix.EXIT_FAILURE;
+    }
 
     var engines = bus.list_engines();
 
@@ -59,7 +63,7 @@ int list_engine(string[] argv) {
         foreach (var engine in engines) {
             print("%s\n", engine.get_name());
         }
-        return 0;
+        return Posix.EXIT_SUCCESS;
     }
 
     var map = new HashTable<string, EngineList>(GLib.str_hash, GLib.str_equal);
@@ -75,13 +79,13 @@ int list_engine(string[] argv) {
 
     foreach (var language in map.get_keys()) {
         var list = map.get(language);
-        print("language: %s\n", IBus.get_language_name(language));
+        print(_("language: %s\n"), IBus.get_language_name(language));
         foreach (var engine in list.data) {
             print("  %s - %s\n", engine.get_name(), engine.get_longname());
         }
     }
 
-    return 0;
+    return Posix.EXIT_SUCCESS;
 }
 
 int get_set_engine(string[] argv) {
@@ -92,48 +96,70 @@ int get_set_engine(string[] argv) {
 
     if (engine == null) {
         var desc = bus.get_global_engine();
-        if (desc == null)
-            return -1;
+        if (desc == null) {
+            stderr.printf(_("No engine is set.\n"));
+            return Posix.EXIT_FAILURE;
+        }
         print("%s\n", desc.get_name());
-        return 0;
+        return Posix.EXIT_SUCCESS;
     }
 
-    if(!bus.set_global_engine(engine))
-        return -1;
+    if(!bus.set_global_engine(engine)) {
+        stderr.printf(_("Set global engine failed.\n"));
+        return Posix.EXIT_FAILURE;
+    }
     var desc = bus.get_global_engine();
-    if (desc == null)
-        return -1;
+    if (desc == null) {
+        stderr.printf(_("Get global engine failed.\n"));
+        return Posix.EXIT_FAILURE;
+    }
+
     string cmdline = "setxkbmap %s".printf(desc.get_layout());
     try {
         if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-            warning("Switch xkb layout to %s failed.",
-                desc.get_layout());
+            stderr.printf(_("Switch xkb layout to %s failed."),
+                          desc.get_layout());
+            return Posix.EXIT_FAILURE;
         }
     } catch (GLib.SpawnError e) {
-        warning("execute setxkblayout failed");
+        stderr.printf("Execute setxkbmap failed: %s", e.message);
+        return Posix.EXIT_FAILURE;
     }
-    return 0;
+    return Posix.EXIT_SUCCESS;
 }
 
 int message_watch(string[] argv) {
-    return 0;
+    return Posix.EXIT_SUCCESS;
 }
 
 int restart_daemon(string[] argv) {
     var bus = get_bus();
+    if (bus == null) {
+        stderr.printf(_("Can't connect to IBus.\n"));
+        return Posix.EXIT_FAILURE;
+    }
     bus.exit(true);
-    return 0;
+    return Posix.EXIT_SUCCESS;
 }
 
 int exit_daemon(string[] argv) {
     var bus = get_bus();
+    if (bus == null) {
+        stderr.printf(_("Can't connect to IBus.\n"));
+        return Posix.EXIT_FAILURE;
+    }
     bus.exit(false);
-    return 0;
+    return Posix.EXIT_SUCCESS;
 }
 
-int print_version (string[] argv) {
-    print("IBus %s\n", IBUS_VERSION);
-    return 0;
+int print_version(string[] argv) {
+    print("IBus %s\n", Config.PACKAGE_VERSION);
+    return Posix.EXIT_SUCCESS;
+}
+
+int print_help(string[] argv) {
+    print_usage(stdout);
+    return Posix.EXIT_SUCCESS;
 }
 
 delegate int EntryFunc(string[] argv);
@@ -143,31 +169,43 @@ struct CommandEntry {
     EntryFunc entry;
 }
 
-public int main(string[] argv) {
-    const CommandEntry commands[]  = {
-        { "engine", get_set_engine },
-        { "exit", exit_daemon },
-        { "list-engine", list_engine },
-        { "watch", message_watch },
-        { "restart", restart_daemon },
-        { "version", print_version }
-    };
+static const CommandEntry commands[]  = {
+    { "engine", get_set_engine },
+    { "exit", exit_daemon },
+    { "list-engine", list_engine },
+    { "watch", message_watch },
+    { "restart", restart_daemon },
+    { "version", print_version },
+    { "help", print_help }
+};
 
-    if (argv.length >= 2) {
-        if (argv[1] == "--help" || argv[1] == "help") {
-            foreach (var command in commands) {
-                print ("  %s\n", command.name);
-            }
-            return 0;
-        }
-        string[] new_argv = argv[1:argv.length];
-        foreach (var command in commands) {
-            if (command.name == argv[1])
-                return command.entry(new_argv);
-        }
-        warning("%s is unknown command!", argv[1]);
+static string program_name;
+
+void print_usage(FileStream stream) {
+    stream.printf(_("Usage: %s COMMAND [OPTION...]\n\n"), program_name);
+    stream.printf(_("Commands:\n"));
+    foreach (var command in commands) {
+        stream.printf("  %s\n", command.name);
     }
-
-    return -1;
 }
 
+public int main(string[] argv) {
+    GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
+    GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+
+    program_name = Path.get_basename(argv[0]);
+    if (argv.length < 2) {
+        print_usage(stderr);
+        return Posix.EXIT_FAILURE;
+    }
+
+    string[] new_argv = argv[1:argv.length];
+    foreach (var command in commands) {
+        if (command.name == argv[1])
+            return command.entry(new_argv);
+    }
+
+    stderr.printf(_("%s is unknown command!\n"), argv[1]);
+    print_usage(stderr);
+    return Posix.EXIT_FAILURE;
+}
