@@ -10,14 +10,6 @@ valac --pkg gtk+-2.0 --pkg x11 --pkg gdk-x11-2.0 --pkg gee-1.0 keybinding-manage
  * @author Oliver Sauder <os@esite.ch>
  */
 
-extern bool grab_keycode (Gdk.Display display,
-                          uint keyval,
-                          uint modifiers);
-
-extern bool ungrab_keycode (Gdk.Display display,
-                            uint keyval,
-                            uint modifiers);
-
 public class KeybindingManager : GLib.Object {
     /**
      * list of binded keybindings
@@ -212,6 +204,81 @@ public class KeybindingManager : GLib.Object {
             }
         } while (false);
         Gtk.main_do_event(event);
+    }
+
+    // Get union of given modifiers and all the combination of the
+    // modifiers in ignored_modifiers.
+    XI.GrabModifiers[] get_grab_modifiers(uint modifiers) {
+        const int[] ignored_modifiers = {
+            X.KeyMask.LockMask,
+            X.KeyMask.Mod2Mask,
+            X.KeyMask.Mod5Mask
+        };
+        int[] masks = {};
+        foreach (var modifier in ignored_modifiers) {
+            masks += modifier;
+
+            int length = masks.length;
+            for (int j = 0; j < length - 1; j++) {
+                masks += masks[j] | modifier;
+            }
+        }
+        masks += 0;
+
+        XI.GrabModifiers[] ximodifiers = {};
+        foreach (var mask in masks) {
+            ximodifiers += XI.GrabModifiers() {
+                modifiers = mask | modifiers,
+                status = 0
+            };
+        }
+
+        return ximodifiers;
+    }
+
+    bool grab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+        int keycode = xdisplay.keysym_to_keycode(keyval);
+        if (keycode == 0) {
+            warning("Can not convert keyval=%u to keycode!", keyval);
+            return false;
+        }
+
+        XI.EventMask evmask = XI.EventMask() {
+            deviceid = XI.AllMasterDevices,
+            mask = new uchar[(XI.LASTEVENT + 7) / 8]
+        };
+        XI.set_mask(evmask.mask, XI.EventType.KeyPress);
+        XI.set_mask(evmask.mask, XI.EventType.KeyRelease);
+
+        int retval = XI.grab_keycode (xdisplay,
+                                      XI.AllMasterDevices,
+                                      keycode,
+                                      xdisplay.default_root_window(),
+                                      X.GrabMode.Async,
+                                      X.GrabMode.Async,
+                                      true,
+                                      evmask,
+                                      get_grab_modifiers(modifiers));
+            
+        return retval == 0;
+    }
+
+    bool ungrab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+        int keycode = xdisplay.keysym_to_keycode(keyval);
+        if (keycode == 0) {
+            warning("Can not convert keyval=%u to keycode!", keyval);
+            return false;
+        }
+
+        int retval = XI.ungrab_keycode (xdisplay,
+                                        XI.AllMasterDevices,
+                                        keycode,
+                                        xdisplay.default_root_window(),
+                                        get_grab_modifiers(modifiers));
+
+        return retval == 0;
     }
 }
 

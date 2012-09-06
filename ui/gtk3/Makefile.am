@@ -82,6 +82,7 @@ AM_VALAFLAGS = \
 	--pkg=gdk-x11-3.0 \
 	--pkg=ibus-1.0 \
 	--pkg=config \
+	--pkg=xi \
 	$(NULL)
 
 libexec_PROGRAMS = ibus-ui-gtk3
@@ -98,7 +99,6 @@ ibus_ui_gtk3_SOURCES = \
 	property.vala \
 	separator.vala \
 	switcher.vala \
-	grabkeycode.c \
 	$(NULL)
 
 ibus_ui_gtk3_LDADD = \
