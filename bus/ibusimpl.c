@@ -711,13 +711,7 @@ _context_focus_out_cb (BusInputContext    *context,
         return;
     }
 
-
-    if (ibus->use_global_engine == FALSE) {
-        /* Do not change the focused context, if use_global_engine option is enabled.
-         * If focused context swith to NULL, users can not swith engine in panel anymore.
-         **/
-        bus_ibus_impl_set_focused_context (ibus, NULL);
-    }
+    bus_ibus_impl_set_focused_context (ibus, NULL);
 }
 
 /**
