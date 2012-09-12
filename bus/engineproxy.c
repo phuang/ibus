@@ -55,11 +55,16 @@ struct _BusEngineProxy {
     IBusText *surrounding_text;
     guint     surrounding_cursor_pos;
     guint     selection_anchor_pos;
+
+    /* cached properties */
+    IBusPropList *prop_list;
 };
 
 struct _BusEngineProxyClass {
     IBusProxyClass parent;
     /* class members */
+    void (* register_properties) (IBusPropList *prop_list);
+    void (* update_property) (IBusProperty *prop);
 };
 
 enum {
@@ -103,6 +108,12 @@ static void     bus_engine_proxy_get_property   (BusEngineProxy      *engine,
                                                  guint                prop_id,
                                                  GValue              *value,
                                                  GParamSpec          *pspec);
+static void     bus_engine_proxy_real_register_properties
+                                                (BusEngineProxy      *engine,
+                                                 IBusPropList        *prop_list);
+static void     bus_engine_proxy_real_update_property
+                                                (BusEngineProxy      *engine,
+                                                 IBusProperty        *prop);
 static void     bus_engine_proxy_real_destroy   (IBusProxy           *proxy);
 static void     bus_engine_proxy_g_signal       (GDBusProxy          *proxy,
                                                  const gchar         *sender_name,
@@ -124,6 +135,9 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
 
     gobject_class->set_property = (GObjectSetPropertyFunc)bus_engine_proxy_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc)bus_engine_proxy_get_property;
+
+    class->register_properties = bus_engine_proxy_real_register_properties;
+    class->update_property = bus_engine_proxy_real_update_property;
 
     IBUS_PROXY_CLASS (class)->destroy = bus_engine_proxy_real_destroy;
     G_DBUS_PROXY_CLASS (class)->g_signal = bus_engine_proxy_g_signal;
@@ -334,7 +348,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
         g_signal_new (I_("register-properties"),
             G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
-            0,
+            G_STRUCT_OFFSET (BusEngineProxyClass, register_properties),
             NULL, NULL,
             bus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
@@ -345,7 +359,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
         g_signal_new (I_("update-property"),
             G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
-            0,
+            G_STRUCT_OFFSET (BusEngineProxyClass, update_property),
             NULL, NULL,
             bus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
@@ -395,6 +409,24 @@ bus_engine_proxy_get_property (BusEngineProxy *engine,
 }
 
 static void
+bus_engine_proxy_real_register_properties (BusEngineProxy *engine,
+                                           IBusPropList   *prop_list)
+{
+    if (engine->prop_list)
+        g_object_unref (engine->prop_list);
+    engine->prop_list = (IBusPropList *) g_object_ref_sink (prop_list);
+}
+
+static void
+bus_engine_proxy_real_update_property (BusEngineProxy *engine,
+                                       IBusProperty   *prop)
+{
+    g_return_if_fail (prop);
+    if (engine->prop_list)
+        ibus_prop_list_update_property (engine->prop_list, prop);
+}
+
+static void
 bus_engine_proxy_real_destroy (IBusProxy *proxy)
 {
     BusEngineProxy *engine = (BusEngineProxy *)proxy;
@@ -412,6 +444,11 @@ bus_engine_proxy_real_destroy (IBusProxy *proxy)
     if (engine->surrounding_text) {
         g_object_unref (engine->surrounding_text);
         engine->surrounding_text = NULL;
+    }
+
+    if (engine->prop_list) {
+        g_object_unref (engine->prop_list);
+        engine->prop_list = NULL;
     }
 
     IBUS_PROXY_CLASS (bus_engine_proxy_parent_class)->destroy ((IBusProxy *)engine);
@@ -1201,6 +1238,14 @@ bus_engine_proxy_get_desc (BusEngineProxy *engine)
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     return engine->desc;
+}
+
+IBusPropList *
+bus_engine_proxy_get_properties (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    return engine->prop_list;
 }
 
 gboolean
