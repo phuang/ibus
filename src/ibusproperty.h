@@ -24,6 +24,12 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_PROPERTY_H_
+#define __IBUS_PROPERTY_H_
+
+#include "ibusserializable.h"
+#include "ibustext.h"
+
 /**
  * SECTION: ibusproperty
  * @short_description: UI component for input method engine property.
@@ -37,14 +43,8 @@
  * pressing ctrl-space or click on the Eng/Chi switch button.
  * And the IBusProperty shows the change correspondingly.
  *
- * @see_also: #IBusPropList, #IBusEngine
+ * see_also: #IBusPropList, #IBusEngine
  */
-#ifndef __IBUS_PROPERTY_H_
-#define __IBUS_PROPERTY_H_
-
-#include "ibusserializable.h"
-#include "ibustext.h"
-
 G_BEGIN_DECLS
 
 /*
@@ -90,7 +90,7 @@ typedef enum {
  * @PROP_STATE_INCONSISTENT: The state is inconsistent with the associated IME
  * property.
  *
- * State of IBusProperty. The actual effect depends on #IBusPropType of the
+ * State of #IBusProperty. The actual effect depends on #IBusPropType of the
  * IBusProperty.
  *
  * <variablelist>
@@ -127,6 +127,7 @@ typedef struct _IBusPropListClass IBusPropListClass;
  * @key: Unique Identity for the IBusProperty.
  * @icon: Icon file for the IBusProperty.
  * @label: Text shown in UI.
+ * @symbol: A symbol char showned on a button or status icon for IBusProperty.
  * @tooltip: Message shown if mouse hovered the  IBusProperty.
  * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
  * @visible: Whether the IBusProperty is visible.
@@ -153,18 +154,18 @@ GType            ibus_property_get_type     ();
 
 /**
  * ibus_property_new:
- * @key: Unique Identity for the IBusProperty.
- * @type: IBusPropType of IBusProperty.
+ * @key: Unique Identity for the #IBusProperty.
+ * @type: #IBusPropType of #IBusProperty.
  * @label: Text shown in UI.
- * @icon: (allow-none): Icon file for the IBusProperty.
- * @tooltip: Message shown if mouse hovered the  IBusProperty.
- * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
- * @visible: Whether the IBusProperty is visible.
- * @state: IBusPropState of IBusProperty.
- * @prop_list: (allow-none): IBusPropList that contains sub IBusProperties.
- * @returns: A newly allocated IBusProperty.
+ * @icon: (allow-none): Icon file for the #IBusProperty.
+ * @tooltip: Message shown if mouse hovered the  #IBusProperty.
+ * @sensitive: Whether the #IBusProperty is sensitive to keyboard and mouse event.
+ * @visible: Whether the #IBusProperty is visible.
+ * @state: IBusPropState of #IBusProperty.
+ * @prop_list: (allow-none): #IBusPropList that contains sub IBusProperties.
+ * @returns: A newly allocated #IBusProperty.
  *
- * New a IBusProperty.
+ * New a #IBusProperty.
  */
 IBusProperty    *ibus_property_new          (const gchar    *key,
                                              IBusPropType    type,
@@ -177,151 +178,183 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
                                              IBusPropList   *prop_list);
 
 /**
- * ibus_property_get_key:
- * @prop: An IBusProperty.
- * @returns: the key of IBusProperty. Should not be freed.
+ * ibus_property_new_varargs:
+ * @first_property_name: Name of the first property.
+ * @Varargs: the NULL-terminated arguments of the properties and values.
  *
- * Get the key of IBusProperty.
+ * New a #IBusProperty.
+ * ibus_property_new_varargs() supports the va_list format.
+ * name property is required. e.g.
+ * ibus_property_new_varargs("key", "TypingMode", "type", PROP_TYPE_MENU, NULL)
+ */
+IBusProperty    *ibus_property_new_varargs  (const gchar    *first_property_name,
+                                                             ...);
+
+/**
+ * ibus_property_get_key:
+ * @prop: An #IBusProperty.
+ * @returns: the key of #IBusProperty. Should not be freed.
+ *
+ * Get the key of #IBusProperty.
  */
 const gchar *    ibus_property_get_key      (IBusProperty   *prop);
 
 /**
  * ibus_property_get_label:
- * @prop: An IBusProperty.
- * @returns: (transfer none): the label of IBusProperty. Should not be freed.
+ * @prop: An #IBusProperty.
+ * @returns: (transfer none): the label of #IBusProperty. Should not be freed.
  *
- * Get the label of IBusProperty.
+ * Get the label of #IBusProperty.
  */
-IBusText *      ibus_property_get_label    (IBusProperty   *prop);
+IBusText *       ibus_property_get_label    (IBusProperty   *prop);
 
 /**
  * ibus_property_set_label:
- * @prop: An IBusProperty.
+ * @prop: An #IBusProperty.
  * @label: Text shown in UI.
  *
- * Set the label of IBusProperty.
+ * Set the label of #IBusProperty.
  */
 void             ibus_property_set_label    (IBusProperty   *prop,
                                              IBusText       *label);
 
 /**
- * ibus_property_get_icon:
- * @prop: An IBusProperty.
- * @returns: the icon of IBusProperty. Should not be freed.
+ * ibus_property_get_symbol:
+ * @prop: An #IBusProperty.
+ * @returns: (transfer none): the symbol of #IBusProperty. Should not be freed.
  *
- * Get the icon of IBusProperty.
+ * Get the symbol of #IBusProperty.
+ */
+IBusText *       ibus_property_get_symbol   (IBusProperty   *prop);
+
+/**
+ * ibus_property_set_symbol:
+ * @prop: An #IBusProperty.
+ * @symbol: Text shown in UI.
+ *
+ * Set the symbol of #IBusProperty.
+ */
+void             ibus_property_set_symbol   (IBusProperty   *prop,
+                                             IBusText       *symbol);
+
+/**
+ * ibus_property_get_icon:
+ * @prop: An #IBusProperty.
+ * @returns: the icon of #IBusProperty. Should not be freed.
+ *
+ * Get the icon of #IBusProperty.
  */
 const gchar *    ibus_property_get_icon     (IBusProperty   *prop);
 
 /**
  * ibus_property_set_icon:
- * @prop: An IBusProperty.
+ * @prop: An #IBusProperty.
  * @icon: Icon shown in UI. It could be a full path of an icon file or an icon name.
  *
- * Set the icon of IBusProperty.
+ * Set the icon of #IBusProperty.
  */
 void             ibus_property_set_icon     (IBusProperty   *prop,
                                              const gchar    *icon);
 
 /**
  * ibus_property_get_tooltip:
- * @prop: An IBusProperty.
- * @returns: (transfer none): the tooltip of IBusProperty. Should not be freed.
+ * @prop: An #IBusProperty.
+ * @returns: (transfer none): the tooltip of #IBusProperty. Should not be freed.
  *
- * Get the tooltip of IBusProperty.
+ * Get the tooltip of #IBusProperty.
  */
-IBusText *      ibus_property_get_tooltip  (IBusProperty   *prop);
+IBusText *       ibus_property_get_tooltip  (IBusProperty   *prop);
 
 /**
  * ibus_property_set_tooltip:
- * @prop: An IBusProperty.
+ * @prop: An #IBusProperty.
  * @tooltip: Text of the tooltip.
  *
- * Set the tooltip of IBusProperty.
+ * Set the tooltip of #IBusProperty.
  */
 void             ibus_property_set_tooltip  (IBusProperty   *prop,
                                              IBusText       *tooltip);
 
 /**
  * ibus_property_get_sensitive:
- * @prop: An IBusProperty.
- * @returns: the sensitive of IBusProperty.
+ * @prop: An #IBusProperty.
+ * @returns: the sensitive of #IBusProperty.
  *
- * Get the sensitive of IBusProperty.
+ * Get the sensitive of #IBusProperty.
  */
 gboolean         ibus_property_get_sensitive(IBusProperty   *prop);
 
 /**
  * ibus_property_set_sensitive:
- * @prop: An IBusProperty.
- * @sensitive: Whether the IBusProperty is sensitive.
+ * @prop: An #IBusProperty.
+ * @sensitive: Whether the #IBusProperty is sensitive.
  *
- * Set whether the IBusProperty is sensitive.
+ * Set whether the #IBusProperty is sensitive.
  */
 void             ibus_property_set_sensitive(IBusProperty   *prop,
                                              gboolean        sensitive);
 
 /**
  * ibus_property_get_visible:
- * @prop: An IBusProperty.
- * @returns: the visible of IBusProperty.
+ * @prop: An #IBusProperty.
+ * @returns: the visible of #IBusProperty.
  *
- * Get the visible of IBusProperty.
+ * Get the visible of #IBusProperty.
  */
 gboolean         ibus_property_get_visible  (IBusProperty   *prop);
 
 /**
  * ibus_property_set_visible:
- * @prop: An IBusProperty.
- * @visible: Whether the IBusProperty is visible.
+ * @prop: An #IBusProperty.
+ * @visible: Whether the #IBusProperty is visible.
  *
- * Set whether the IBusProperty is visible.
+ * Set whether the #IBusProperty is visible.
  */
 void             ibus_property_set_visible  (IBusProperty   *prop,
                                              gboolean        visible);
 
 /**
  * ibus_property_get_property_type:
- * @prop: An IBusProperty.
- * @returns: the type of IBusProperty.
+ * @prop: An #IBusProperty.
+ * @returns: the type of #IBusProperty.
  *
- * Get the type of IBusProperty.
+ * Get the type of #IBusProperty.
  */
 IBusPropType     ibus_property_get_prop_type(IBusProperty   *prop);
 
 /**
  * ibus_property_get_state:
- * @prop: An IBusProperty.
- * @returns: the state of IBusProperty.
+ * @prop: An #IBusProperty.
+ * @returns: the state of #IBusProperty.
  *
- * Get the state of IBusProperty.
+ * Get the state of #IBusProperty.
  */
 IBusPropState    ibus_property_get_state    (IBusProperty   *prop);
 
 /**
  * ibus_property_set_state:
- * @prop: An IBusProperty.
- * @state: The state of the IBusProperty.
+ * @prop: An #IBusProperty.
+ * @state: The state of the #IBusProperty.
  *
- * Set the state of the IBusProperty.
+ * Set the state of the #IBusProperty.
  */
 void             ibus_property_set_state    (IBusProperty   *prop,
                                              IBusPropState   state);
 
 /**
  * ibus_property_get_sub_props:
- * @prop: An IBusProperty.
- * @returns: (transfer none): the IBusPropList of IBusProperty.
+ * @prop: An #IBusProperty.
+ * @returns: (transfer none): the IBusPropList of #IBusProperty.
  *     Should not be freed.
  *
- * Get the IBusPropList of IBusProperty.
+ * Get the IBusPropList of #IBusProperty.
  */
 IBusPropList *   ibus_property_get_sub_props(IBusProperty   *prop);
 
 /**
  * ibus_property_set_sub_props:
- * @prop: An IBusProperty.
- * @prop_list: IBusPropList that contains sub IBusProperties.
+ * @prop: An #IBusProperty.
+ * @prop_list: #IBusPropList that contains sub IBusProperties.
  *
  * Set the sub IBusProperties.
  */
@@ -330,12 +363,12 @@ void             ibus_property_set_sub_props(IBusProperty   *prop,
 
 /**
  * ibus_property_update:
- * @prop: An IBusProperty.
- * @prop_update: IBusPropList that contains sub IBusProperties.
+ * @prop: An #IBusProperty.
+ * @prop_update: #IBusPropList that contains sub IBusProperties.
  * @returns: TRUE for update suceeded; FALSE otherwise.
  *
- * Update the content of an IBusProperty.
- * IBusProperty @prop_update can either be sub-property of @prop,
+ * Update the content of an #IBusProperty.
+ * #IBusProperty @prop_update can either be sub-property of @prop,
  * or holds new values for @prop.
  */
 
