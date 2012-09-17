@@ -63,8 +63,10 @@ struct _BusEngineProxy {
 struct _BusEngineProxyClass {
     IBusProxyClass parent;
     /* class members */
-    void (* register_properties) (IBusPropList *prop_list);
-    void (* update_property) (IBusProperty *prop);
+    void (* register_properties) (BusEngineProxy      *engine,
+                                  IBusPropList *prop_list);
+    void (* update_property) (BusEngineProxy      *engine,
+                              IBusProperty *prop);
 };
 
 enum {
@@ -98,6 +100,7 @@ enum {
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
 
 static IBusText *text_empty = NULL;
+static IBusPropList *prop_list_empty = NULL;
 
 /* functions prototype */
 static void     bus_engine_proxy_set_property   (BusEngineProxy      *engine,
@@ -368,12 +371,16 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
 
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);
+
+    prop_list_empty = ibus_prop_list_new ();
+    g_object_ref_sink (prop_list_empty);
 }
 
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
     engine->surrounding_text = g_object_ref_sink (text_empty);
+    engine->prop_list = g_object_ref_sink (prop_list_empty);
 }
 
 static void
@@ -412,7 +419,9 @@ static void
 bus_engine_proxy_real_register_properties (BusEngineProxy *engine,
                                            IBusPropList   *prop_list)
 {
-    if (engine->prop_list)
+    g_assert (IBUS_IS_PROP_LIST (prop_list));
+
+    if (engine->prop_list != prop_list_empty)
         g_object_unref (engine->prop_list);
     engine->prop_list = (IBusPropList *) g_object_ref_sink (prop_list);
 }
