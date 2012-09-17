@@ -59,7 +59,7 @@ TESTS_ENVIRONMENT = \
 	top_builddir=$(top_builddir) \
 	top_srcdir=$(top_srcdir) \
 	builddir=$(builddir) \
-	$(builddir)/setupenv \
+	$(srcdir)/setupenv \
 	$(NULL)
 
 EXTRA_DIST = setupenv
