@@ -124,16 +124,16 @@ typedef struct _IBusPropListClass IBusPropListClass;
 
 /**
  * IBusProperty:
- * @key: Unique Identity for the IBusProperty.
- * @icon: Icon file for the IBusProperty.
- * @label: Text shown in UI.
- * @symbol: A symbol char showned on a button or status icon for IBusProperty.
- * @tooltip: Message shown if mouse hovered the  IBusProperty.
- * @sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
- * @visible: Whether the IBusProperty is visible.
- * @type: IBusPropType of IBusProperty.
- * @state: IBusPropState of IBusProperty.
- * @sub_props: IBusPropList that contains sub IBusProperties. These IBusProperties are usually
+ * key: Unique Identity for the IBusProperty.
+ * icon: Icon file for the IBusProperty.
+ * label: Text shown in UI.
+ * symbol: A symbol char showned on a button or status icon for IBusProperty.
+ * tooltip: Message shown if mouse hovered the  IBusProperty.
+ * sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
+ * visible: Whether the IBusProperty is visible.
+ * type: IBusPropType of IBusProperty.
+ * state: IBusPropState of IBusProperty.
+ * sub_props: IBusPropList that contains sub IBusProperties. These IBusProperties are usually
  * shown as sub menu item.
  *
  * UI component for input method engine property.
