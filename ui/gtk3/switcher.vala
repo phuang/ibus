@@ -120,6 +120,9 @@ class Switcher : Gtk.Window {
                 state & KeybindingManager.MODIFIER_FILTER);
 
         update_engines(engines);
+        /* Let gtk recalculate the window size. */
+        resize(1, 1);
+
         m_selected_engine = index;
         m_label.set_text(m_buttons[index].longname);
         m_buttons[index].grab_focus();
