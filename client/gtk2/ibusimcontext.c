@@ -298,7 +298,7 @@ _key_snooper_cb (GtkWidget   *widget,
     IBusInputContext *ibuscontext = NULL;
 
     if (!_use_key_snooper)
-        return;
+        return FALSE;
 
     if (_focus_im_context != NULL &&
         ((IBusIMContext *) _focus_im_context)->has_focus == TRUE) {
