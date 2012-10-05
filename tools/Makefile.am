@@ -29,17 +29,16 @@ INCLUDES = \
 	-I$(top_builddir)/src \
 	$(NULL)
 
+# force include config.h before gi18n.h.
+AM_CPPFLAGS = -include $(CONFIG_HEADER)
+
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
 	@GTHREAD2_CFLAGS@ \
 	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
-	-DPKGDATADIR=\"$(pkgdatadir)\" \
-	-DLIBEXECDIR=\"$(libexecdir)\" \
-	-DBINDIR=\"@bindir@\" \
-	-DIBUS_VERSION=\"@IBUS_VERSION@\" \
-    -DIBUS_DISABLE_DEPRECATED \
+	-DIBUS_DISABLE_DEPRECATED \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-function \
@@ -55,7 +54,10 @@ AM_LDADD = \
 
 AM_VALAFLAGS = \
 	--vapidir=$(top_builddir)/bindings/vala \
+	--vapidir=$(top_srcdir)/bindings/vala \
 	--pkg=ibus-1.0 \
+	--pkg=posix \
+	--pkg=config \
 	$(NULL)
 
 bin_PROGRAMS = ibus

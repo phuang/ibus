@@ -1,6 +1,7 @@
 # Files with translatable strings.
 # Please keep this file in alphabetical order.
 ibus/_config.py
+tools/main.c
 ui/gtk3/application.c
 ui/gtk3/candidatearea.c
 ui/gtk3/candidatepanel.c

@@ -35,7 +35,7 @@ EXTRA_DIST = \
 	00-upstream-settings \
 	$(NULL)
 
-DISTCLEANFILES = \
+CLEANFILES = \
 	$(gsettings_SCHEMAS) \
 	$(NULL)
 
@@ -55,7 +55,7 @@ org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
 		--schema-id "org.freedesktop.ibus" \
 		--output $@ $<
 
-00-upstream-settings: $(srcdir)/make-dconf-override-db.sh $(gsettings_SCHEMAS)
+00-upstream-settings: $(srcdir)/make-dconf-override-db.sh | $(gsettings_SCHEMAS)
 	@$(MKDIR_P) db
 	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh > $@ || \
 		{ rc=$$?; $(RM) -rf $@; exit $$rc; }

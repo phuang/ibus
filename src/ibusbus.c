@@ -60,6 +60,8 @@ struct _IBusBusPrivate {
     IBusConfig *config;
     gchar *unique_name;
     gboolean connect_async;
+    gchar *bus_address;
+    GCancellable *cancellable;
 };
 
 static guint    bus_signals[LAST_SIGNAL] = { 0 };
@@ -102,6 +104,8 @@ static void      ibus_bus_get_property           (IBusBus                *bus,
                                                   guint                   prop_id,
                                                   GValue                 *value,
                                                   GParamSpec             *pspec);
+
+static void     ibus_bus_close_connection        (IBusBus                *bus);
 
 G_DEFINE_TYPE (IBusBus, ibus_bus, IBUS_TYPE_OBJECT)
 
@@ -270,56 +274,57 @@ _connection_closed_cb (GDBusConnection  *connection,
          * However we think the error message is almost harmless. */
         g_debug ("_connection_closed_cb: %s", error->message);
     }
+    ibus_bus_close_connection (bus);
+}
 
-    g_assert (bus->priv->connection == connection);
-    g_signal_handlers_disconnect_by_func (bus->priv->connection,
-                                          G_CALLBACK (_connection_closed_cb),
-                                          bus);
-    g_object_unref (bus->priv->connection);
-    bus->priv->connection = NULL;
-
+static void
+ibus_bus_close_connection (IBusBus *bus)
+{
     g_free (bus->priv->unique_name);
     bus->priv->unique_name = NULL;
 
     bus->priv->watch_dbus_signal_id = 0;
     bus->priv->watch_ibus_signal_id = 0;
 
-    g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
-}
+    g_free (bus->priv->bus_address);
+    bus->priv->bus_address = NULL;
 
-static void
-ibus_bus_disconnect (IBusBus *bus)
-{
+    /* Cancel ongoing connect request. */
+    g_cancellable_cancel (bus->priv->cancellable);
+    g_cancellable_reset (bus->priv->cancellable);
+
     /* unref the old connection at first */
     if (bus->priv->connection != NULL) {
         g_signal_handlers_disconnect_by_func (bus->priv->connection,
                                               G_CALLBACK (_connection_closed_cb),
                                               bus);
+        if (!g_dbus_connection_is_closed(bus->priv->connection))
+            g_dbus_connection_close(bus->priv->connection, NULL, NULL, NULL);
         g_object_unref (bus->priv->connection);
         bus->priv->connection = NULL;
+        g_signal_emit (bus, bus_signals[DISCONNECTED], 0);
     }
 }
 
 static void
-ibus_bus_connect_finish (IBusBus *bus)
+ibus_bus_connect_completed (IBusBus *bus)
 {
-    if (bus->priv->connection) {
-        /* FIXME */
-        ibus_bus_hello (bus);
+    g_assert (bus->priv->connection);
+    /* FIXME */
+    ibus_bus_hello (bus);
 
-        g_signal_connect (bus->priv->connection,
-                          "closed",
-                          (GCallback) _connection_closed_cb,
-                          bus);
-        if (bus->priv->watch_dbus_signal) {
-            ibus_bus_watch_dbus_signal (bus);
-        }
-        if (bus->priv->watch_ibus_signal) {
-            ibus_bus_watch_ibus_signal (bus);
-        }
-
-        g_signal_emit (bus, bus_signals[CONNECTED], 0);
+    g_signal_connect (bus->priv->connection,
+                      "closed",
+                      (GCallback) _connection_closed_cb,
+                      bus);
+    if (bus->priv->watch_dbus_signal) {
+        ibus_bus_watch_dbus_signal (bus);
     }
+    if (bus->priv->watch_ibus_signal) {
+        ibus_bus_watch_ibus_signal (bus);
+    }
+
+    g_signal_emit (bus, bus_signals[CONNECTED], 0);
 }
 
 static void
@@ -333,7 +338,8 @@ _bus_connect_async_cb (GObject      *source_object,
     IBusBus *bus   = IBUS_BUS (user_data);
     GError  *error = NULL;
 
-    bus->priv->connection = g_dbus_connection_new_for_address_finish (res, &error);
+    bus->priv->connection =
+                g_dbus_connection_new_for_address_finish (res, &error);
 
     if (error != NULL) {
         g_warning ("Unable to connect to ibus: %s", error->message);
@@ -341,8 +347,13 @@ _bus_connect_async_cb (GObject      *source_object,
         error = NULL;
     }
 
-    if (bus->priv->connection)
-        ibus_bus_connect_finish (bus);
+    if (bus->priv->connection != NULL) {
+        ibus_bus_connect_completed (bus);
+    }
+    else {
+        g_free (bus->priv->bus_address);
+        bus->priv->bus_address = NULL;
+    }
 
     /* unref the ref from ibus_bus_connect */
     g_object_unref (bus);
@@ -351,32 +362,52 @@ _bus_connect_async_cb (GObject      *source_object,
 static void
 ibus_bus_connect_async (IBusBus *bus)
 {
-    ibus_bus_disconnect (bus);
+    const gchar *bus_address = ibus_get_address ();
 
-    if (ibus_get_address () != NULL) {
-        g_object_ref (bus);
-        g_dbus_connection_new_for_address (ibus_get_address (),
-                                           G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-                                           G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-                                           NULL, NULL,
-                                           _bus_connect_async_cb, bus);
-    }
+    if (bus_address == NULL)
+        return;
+
+    if (g_strcmp0 (bus->priv->bus_address, bus_address) == 0)
+        return;
+
+    /* Close current connection and cancel ongoing connect request. */
+    ibus_bus_close_connection (bus);
+
+    bus->priv->bus_address = g_strdup (bus_address);
+    g_object_ref (bus);
+    g_dbus_connection_new_for_address (
+            bus_address,
+            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+            G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+            NULL,
+            bus->priv->cancellable,
+            _bus_connect_async_cb, bus);
 }
 
 static void
 ibus_bus_connect (IBusBus *bus)
 {
-    ibus_bus_disconnect (bus);
+    const gchar *bus_address = ibus_get_address ();
 
-    if (ibus_get_address () != NULL) {
-        bus->priv->connection =
-            g_dbus_connection_new_for_address_sync (ibus_get_address (),
-                                                    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-                                                    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-                                                    NULL, NULL, NULL);
+    if (bus_address == NULL)
+        return;
+
+    if (g_strcmp0 (bus_address, bus->priv->bus_address) == 0 &&
+        bus->priv->connection != NULL)
+        return;
+
+    /* Close current connection and cancel ongoing connect request. */
+    ibus_bus_close_connection (bus);
+
+    bus->priv->connection = g_dbus_connection_new_for_address_sync (
+            bus_address,
+            G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+            G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+            NULL, NULL, NULL);
+    if (bus->priv->connection) {
+        bus->priv->bus_address = g_strdup (bus_address);
+        ibus_bus_connect_completed (bus);
     }
-
-    ibus_bus_connect_finish (bus);
 }
 
 static void
@@ -391,10 +422,7 @@ _changed_cb (GFileMonitor       *monitor,
         event_type != G_FILE_MONITOR_EVENT_DELETED)
         return;
 
-    if (ibus_bus_is_connected (bus))
-        return;
-
-    ibus_bus_connect (bus);
+    ibus_bus_connect_async (bus);
 }
 
 static void
@@ -414,6 +442,8 @@ ibus_bus_init (IBusBus *bus)
     bus->priv->watch_ibus_signal_id = 0;
     bus->priv->unique_name = NULL;
     bus->priv->connect_async = FALSE;
+    bus->priv->bus_address = NULL;
+    bus->priv->cancellable = g_cancellable_new ();
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
@@ -522,6 +552,13 @@ ibus_bus_destroy (IBusObject *object)
 
     g_free (bus->priv->unique_name);
     bus->priv->unique_name = NULL;
+
+    g_free (bus->priv->bus_address);
+    bus->priv->bus_address = NULL;
+
+    g_cancellable_cancel (bus->priv->cancellable);
+    g_object_unref (bus->priv->cancellable);
+    bus->priv->cancellable = NULL;
 
     IBUS_OBJECT_CLASS (ibus_bus_parent_class)->destroy (object);
 }
@@ -1621,7 +1658,7 @@ ibus_bus_get_engines_by_names (IBusBus             *bus,
                                  G_VARIANT_TYPE ("(av)"));
     if (result == NULL)
         return NULL;
-    
+
     GArray *array = g_array_new (TRUE, TRUE, sizeof (IBusEngineDesc *));
     GVariantIter *iter = NULL;
     g_variant_get (result, "(av)", &iter);

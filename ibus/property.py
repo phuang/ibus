@@ -63,11 +63,13 @@ class Property(Serializable):
     __gtype_name__ = "PYIBusProperty"
     __NAME__ = "IBusProperty"
     def __init__(self, key="", type=PROP_TYPE_NORMAL, label=u"", icon=u"", tooltip=u"",
-                 sensitive=True, visible=True, state=PROP_STATE_UNCHECKED):
+                 sensitive=True, visible=True, state=PROP_STATE_UNCHECKED,
+                 symbol=u""):
         super(Property, self).__init__()
         self.__key = _to_unicode(key)
         self.__type = type
         self.label = label
+        self.symbol = symbol
         self.icon = icon
         self.tooltip = tooltip
         self.sensitive = sensitive
@@ -92,6 +94,12 @@ class Property(Serializable):
 
     def get_label(self):
         return self.__label
+
+    def set_symbol(self, symbol):
+        self.__symbol = _to_text(symbol)
+
+    def get_symbol(self):
+        return self.__symbol
 
     def set_icon(self, icon):
         self.__icon = _to_unicode(icon)
@@ -126,6 +134,7 @@ class Property(Serializable):
     key         = property(get_key)
     type        = property(get_type)
     label       = property(get_label, set_label)
+    symbol      = property(get_symbol, set_symbol)
     icon        = property(get_icon, set_icon)
     tooltip     = property(get_tooltip, set_tooltip)
     state       = property(get_state, set_state)
@@ -139,6 +148,7 @@ class Property(Serializable):
         if not test_all:
             return True
         if self.__label != prop.__label or \
+            self.__symbol != prop.__symbol or \
             self.__icon != prop.__icon or \
             self.__tooltip != prop.__tooltip or \
             self.__sensitive != prop.__sensitive or \
@@ -160,6 +170,7 @@ class Property(Serializable):
         struct.append(dbus.UInt32(self.__state))
         sub_props = serialize_object(self.__sub_props)
         struct.append(sub_props)
+        struct.append(serialize_object(self.__symbol))
 
     def deserialize(self, struct):
         super(Property, self).deserialize(struct)
@@ -174,6 +185,7 @@ class Property(Serializable):
         props = struct.pop(0)
 
         self.__sub_props = deserialize_object(props)
+        self.__symbol    = deserialize_object(struct.pop(0))
 
 class PropList(Serializable):
     __gtype_name__ = "PYIBusPropList"

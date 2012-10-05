@@ -20,14 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using IBus;
-using GLib;
-using Gtk;
-using Posix;
-
-public extern const string IBUS_VERSION;
-public extern const string BINDIR;
-
 class Panel : IBus.PanelService {
     private IBus.Bus m_bus;
     private IBus.Config m_config;
@@ -42,7 +34,9 @@ class Panel : IBus.PanelService {
     private Gtk.AboutDialog m_about_dialog;
     private Gtk.CssProvider m_css_provider;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
-    private const string ACCELERATOR_SWITCH_IME_BACKWARD = "<Control><Shift>space";
+
+    private uint m_switch_keysym = 0;
+    private Gdk.ModifierType m_switch_modifiers = 0;
 
     public Panel(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -65,13 +59,7 @@ class Panel : IBus.PanelService {
         m_candidate_panel.page_down.connect((w) => this.page_down());
 
         m_switcher = new Switcher();
-
-        var keybinding_manager = KeybindingManager.get_instance();
-        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_FOREWARD,
-                (e) => handle_engine_switch(e, false));
-
-        keybinding_manager.bind(ACCELERATOR_SWITCH_IME_BACKWARD,
-                (e) => handle_engine_switch(e, true));
+        bind_switch_shortcut();
 
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((k, s) => {
@@ -82,9 +70,65 @@ class Panel : IBus.PanelService {
     }
 
     ~Panel() {
+        unbind_switch_shortcut();
+    }
+
+    private void bind_switch_shortcut() {
         var keybinding_manager = KeybindingManager.get_instance();
-        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_FOREWARD);
-        keybinding_manager.unbind(ACCELERATOR_SWITCH_IME_BACKWARD);
+
+        var accelerator = ACCELERATOR_SWITCH_IME_FOREWARD;
+        Gtk.accelerator_parse(accelerator,
+                out m_switch_keysym, out m_switch_modifiers);
+
+        // Map virtual modifiers to (i.e.Mod2, Mod3, ...)
+        const Gdk.ModifierType VIRTUAL_MODIFIERS = (
+                Gdk.ModifierType.SUPER_MASK |
+                Gdk.ModifierType.HYPER_MASK |
+                Gdk.ModifierType.META_MASK);
+        if ((m_switch_modifiers & VIRTUAL_MODIFIERS) != 0) {
+        // workaround a bug in gdk vapi vala > 0.18
+        // https://bugzilla.gnome.org/show_bug.cgi?id=677559
+#if VALA_0_18
+            Gdk.Keymap.get_default().map_virtual_modifiers(
+                    ref m_switch_modifiers);
+#else
+            if ((m_switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
+                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+            if ((m_switch_modifiers & Gdk.ModifierType.HYPER_MASK) != 0)
+                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+#endif
+            m_switch_modifiers &= ~VIRTUAL_MODIFIERS;
+        }
+
+        if (m_switch_keysym == 0 && m_switch_modifiers == 0) {
+            warning("Parse accelerator '%s' failed!", accelerator);
+            return;
+        }
+
+        keybinding_manager.bind(m_switch_keysym, m_switch_modifiers,
+                (e) => handle_engine_switch(e, false));
+
+        // accelerator already has Shift mask
+        if ((m_switch_modifiers & Gdk.ModifierType.SHIFT_MASK) != 0)
+            return;
+
+        keybinding_manager.bind(m_switch_keysym,
+                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK,
+                (e) => handle_engine_switch(e, true));
+    }
+
+    private void unbind_switch_shortcut() {
+        var keybinding_manager = KeybindingManager.get_instance();
+
+        if (m_switch_keysym == 0 && m_switch_modifiers == 0)
+            return;
+
+        keybinding_manager.unbind(m_switch_keysym, m_switch_modifiers);
+        keybinding_manager.unbind(m_switch_keysym,
+                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK);
+
+        m_switch_keysym = 0;
+        m_switch_modifiers = 0;
     }
 
     private void set_custom_font() {
@@ -174,12 +218,7 @@ class Panel : IBus.PanelService {
         if (i == 0 && !force)
             return;
 
-        // Move the target engine to the first place.
         IBus.EngineDesc engine = m_engines[i];
-        for (int j = i; j > 0; j--) {
-            m_engines[j] = m_engines[j - 1];
-        }
-        m_engines[0] = engine;
 
         if (!m_bus.set_global_engine(engine.get_name())) {
             warning("Switch engine to %s failed.", engine.get_name());
@@ -193,17 +232,8 @@ class Panel : IBus.PanelService {
                     engine.get_layout());
             }
         } catch (GLib.SpawnError e) {
-            warning("execute setxkblayout failed");
+            warning("Execute setxkbmap failed: %s", e.message);
         }
-
-        string[] names = {};
-        foreach(var desc in m_engines) {
-            names += desc.get_name();
-        }
-        if (m_config != null)
-            m_config.set_value("general",
-                               "engines_order",
-                               new GLib.Variant.strv(names));
     }
 
     private void config_value_changed_cb(IBus.Config config,
@@ -234,7 +264,8 @@ class Panel : IBus.PanelService {
                 event, primary_modifiers);
         if (pressed) {
             int i = revert ? m_engines.length - 1 : 1;
-            i = m_switcher.run(event, m_engines, i);
+            i = m_switcher.run(m_switch_keysym, m_switch_modifiers, event,
+                    m_engines, i);
             if (i < 0) {
                 debug("switch cancelled");
             } else {
@@ -299,7 +330,7 @@ class Panel : IBus.PanelService {
             m_setup_pid = 0;
         }
 
-        string binary = GLib.Path.build_filename(BINDIR, "ibus-setup");
+        string binary = GLib.Path.build_filename(Config.BINDIR, "ibus-setup");
         try {
             GLib.Process.spawn_async(null,
                                      {binary, "ibus-setup"},
@@ -324,7 +355,7 @@ class Panel : IBus.PanelService {
         if (m_about_dialog == null) {
             m_about_dialog = new Gtk.AboutDialog();
             m_about_dialog.set_program_name("IBus");
-            m_about_dialog.set_version(IBUS_VERSION);
+            m_about_dialog.set_version(Config.PACKAGE_VERSION);
 
             string copyright = _(
                 "Copyright (c) 2007-2012 Peng Huang\n" +
@@ -365,7 +396,7 @@ class Panel : IBus.PanelService {
             item.activate.connect((i) => show_about_dialog());
             m_sys_menu.append(item);
 
-            m_sys_menu.append(new SeparatorMenuItem());
+            m_sys_menu.append(new Gtk.SeparatorMenuItem());
 
             item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.REFRESH, null);
             item.set_label(_("Restart"));
@@ -392,7 +423,7 @@ class Panel : IBus.PanelService {
         // Show properties and IME switching menu
         m_property_manager.create_menu_items(m_ime_menu);
 
-        m_ime_menu.append(new SeparatorMenuItem());
+        m_ime_menu.append(new Gtk.SeparatorMenuItem());
 
         int width, height;
         Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
@@ -494,5 +525,36 @@ class Panel : IBus.PanelService {
             m_status_icon.set_from_file(icon_name);
         else
             m_status_icon.set_from_icon_name(icon_name);
+
+        if (engine == null)
+            return;
+
+        int i;
+        for (i = 0; i < m_engines.length; i++) {
+            if (m_engines[i].get_name() == engine.get_name())
+                break;
+        }
+
+        // engine is first engine in m_engines.
+        if (i == 0)
+            return;
+
+        // engine is not in m_engines.
+        if (i >= m_engines.length)
+            return;
+
+        for (int j = i; j > 0; j--) {
+            m_engines[j] = m_engines[j - 1];
+        }
+        m_engines[0] = engine;
+
+        string[] names = {};
+        foreach(var desc in m_engines) {
+            names += desc.get_name();
+        }
+        if (m_config != null)
+            m_config.set_value("general",
+                               "engines_order",
+                               new GLib.Variant.strv(names));
     }
 }

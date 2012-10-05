@@ -182,10 +182,10 @@ ibus_config_memconf_unset_value (IBusConfigService *config,
                                            g_variant_new_tuple (NULL, 0));
     }
     else {
-        if (error && *error) {
-            *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                                  "Config value [%s:%s] does not exist.", section, name);
-        }
+        g_set_error (error,
+                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.",
+                     section, name);
     }
     return retval;
 }

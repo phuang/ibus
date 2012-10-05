@@ -147,9 +147,15 @@ bus_registry_init (BusRegistry *registry)
         GList *p1;
         for (p1 = engines; p1 != NULL; p1 = p1->next) {
             IBusEngineDesc *desc = (IBusEngineDesc *) p1->data;
-            g_hash_table_insert (registry->engine_table,
-                                 (gpointer) ibus_engine_desc_get_name (desc),
-                                 desc);
+            const gchar *name = ibus_engine_desc_get_name (desc);
+            if (g_hash_table_lookup (registry->engine_table, name) == NULL) {
+                g_hash_table_insert (registry->engine_table,
+                                     (gpointer) name,
+                                     desc);
+            } else {
+                g_message ("Engine %s is already registered by other component",
+                           name);
+            }
         }
         g_list_free (engines);
     }
@@ -213,31 +219,40 @@ bus_registry_load (BusRegistry *registry)
 {
     g_assert (BUS_IS_REGISTRY (registry));
 
-    gchar *dirname;
-    IBusObservedPath *path;
+    const gchar *envstr;
+    GPtrArray *path;
+    gchar *dirname, **d, **search_path;
+
+    path = g_ptr_array_new();
+
+    envstr = g_getenv ("IBUS_COMPONENT_PATH");
+    if (envstr) {
+        char **dirs = g_strsplit (envstr, G_SEARCHPATH_SEPARATOR_S, 0);
+        for (d = dirs; *d != NULL; d++)
+            g_ptr_array_add (path, *d);
+        g_free (dirs);
+    }
 
     dirname = g_build_filename (PKGDATADIR, "component", NULL);
-
-    path = ibus_observed_path_new (dirname, TRUE);
-    registry->observed_paths = g_list_append (registry->observed_paths, path);
-
-    bus_registry_load_in_dir (registry, dirname);
-
-    g_free (dirname);
+    g_ptr_array_add (path, dirname);
 
 #if 0
     /* FIXME Should we support install some IME in user dir? */
     dirname = g_build_filename (g_get_user_data_dir (), "ibus", "component", NULL);
-
-    path = ibus_observed_path_new (dirname, TRUE);
-    registry->observed_paths = g_list_append (registry->observed_paths, path);
-
-    if (g_file_test (dirname, G_FILE_TEST_EXISTS)) {
-        bus_registry_load_in_dir (registry, dirname);
-    }
-
-    g_free (dirname);
+    g_ptr_array_add (path, dirname);
 #endif
+
+    g_ptr_array_add (path, NULL);
+    search_path = (char**) g_ptr_array_free (path, FALSE);
+    for (d = search_path; *d != NULL; d++) {
+        IBusObservedPath *observed_path = ibus_observed_path_new (*d, TRUE);
+
+        registry->observed_paths = g_list_append (registry->observed_paths,
+                                                  observed_path);
+
+        bus_registry_load_in_dir (registry, *d);
+    }
+    g_strfreev (search_path);
 }
 
 #define g_string_append_indent(string, indent)  \

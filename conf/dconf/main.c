@@ -23,7 +23,7 @@
 #include <ibus.h>
 #include <stdlib.h>
 #include <locale.h>
-#include "config.h"
+#include "config-private.h"
 
 static IBusBus *bus = NULL;
 static IBusConfigDConf *config = NULL;
@@ -70,6 +70,7 @@ main (gint argc, gchar **argv)
     GOptionContext *context;
 
     setlocale (LC_ALL, "");
+    g_setenv ("DCONF_PROFILE", "ibus", FALSE);
 
     context = g_option_context_new ("- ibus dconf component");
 

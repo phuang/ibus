@@ -10,7 +10,7 @@
 
 int main (int argc, char **argv)
 {
-    setlocale(LC_ALL, "en_US.Utf-8");
+    setlocale(LC_ALL, "C");
 
     g_assert_cmpstr (ibus_get_language_name ("eng"), ==, "English");
 

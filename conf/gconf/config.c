@@ -249,9 +249,10 @@ ibus_config_gconf_set_value (IBusConfigService      *config,
     gv = _to_gconf_value (value);
     if (gv == NULL) {
         gchar *str = g_variant_print (value, TRUE);
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Can not set config value [%s:%s] to %s.",
-                        section, name, str);
+        g_set_error (error,
+                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "Can not set config value [%s:%s] to %s.",
+                     section, name, str);
         g_free (str);
         return FALSE;
     }
@@ -280,8 +281,9 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
     g_free (key);
 
     if (gv == NULL) {
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Config value [%s:%s] does not exist.", section, name);
+        g_set_error (error,
+                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.", section, name);
         return NULL;
     }
 
@@ -325,13 +327,10 @@ ibus_config_gconf_unset_value (IBusConfigService      *config,
 {
     gchar *key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
 
-    gconf_client_unset (((IBusConfigGConf *)config)->client, key, error);
+    gboolean retval = gconf_client_unset (((IBusConfigGConf *)config)->client, key, error);
     g_free (key);
 
-    if (*error != NULL) {
-        return FALSE;
-    }
-    return TRUE;
+    return retval;
 }
 
 IBusConfigGConf *

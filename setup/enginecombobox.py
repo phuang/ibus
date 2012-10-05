@@ -65,7 +65,6 @@ class EngineComboBox(Gtk.ComboBox):
         self.__model.set(iter1, 0, 0)
         langs = {}
         for e in engines:
-            print e.get_language()
             l = IBus.get_language_name(e.get_language())
             if l == None:
                 l = ""

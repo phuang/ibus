@@ -1,0 +1,42 @@
+#!/bin/sh
+
+: ${top_builddir:=../..}
+: ${top_srcdir:=../..}
+: ${builddir:=.}
+
+trap 'exit' 1 2 3 15
+trap '. $IBUS_ADDRESS_FILE; kill $IBUS_DAEMON_PID &> /dev/null; rm -fr components $IBUS_ADDRESS_FILE' EXIT
+
+# copy some component files necessary for testing, under components/
+copy_component() {
+    file=$1
+    base=`basename $file`
+    if test -f $file.in; then
+	mkdir -p components
+	( libexecdir=`dirname $file`;
+	    s=`cat $file.in`;
+	    eval "echo \"${s}\"" ) > components/$base
+    fi
+}
+copy_component "$top_srcdir/engine/simple.xml"
+copy_component "$top_srcdir/conf/memconf/memconf.xml"
+
+# start ibus-daemon
+IBUS_COMPONENT_PATH=$PWD/components
+export IBUS_COMPONENT_PATH
+
+IBUS_ADDRESS_FILE=$PWD/ibus-daemon.log
+export IBUS_ADDRESS_FILE
+
+$top_builddir/bus/ibus-daemon \
+    --daemonize \
+    --cache=none \
+    --panel=disable \
+    --config=default \
+    --verbose
+
+# wait until all necessary components are up
+sleep 1
+
+# run tests
+"$@"

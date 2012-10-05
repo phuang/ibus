@@ -20,10 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using Gtk;
-using IBus;
-using Pango;
-
 class CandidateArea : Gtk.Box {
     private bool m_vertical;
     private Gtk.Label[] m_labels;

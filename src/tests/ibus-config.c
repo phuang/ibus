@@ -270,13 +270,22 @@ change_and_test (IBusConfig  *config,
 {
     gboolean retval;
     guint timeout_id;
+    GVariant *var;
 
     data->section = NULL;
     data->name = NULL;
 
     /* Unset won't notify value-changed signal. */
-    retval = ibus_config_unset (config, section, name);
-    g_assert (retval);
+    var = ibus_config_get_values (config, section);
+    if (var != NULL) {
+        GVariant *value = g_variant_lookup_value (var, name,
+                                                  G_VARIANT_TYPE_VARIANT);
+        if (value != NULL) {
+            ibus_config_unset (config, section, name);
+            g_variant_unref (value);
+        }
+        g_variant_unref (var);
+    }
 
     timeout_id = g_timeout_add (1, timeout_cb, data);
     g_main_loop_run (data->loop);

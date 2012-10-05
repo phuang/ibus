@@ -192,9 +192,15 @@ typedef enum {
  * IBusError:
  * @IBUS_ERROR_NO_ENGINE:
  * There is no engine associated with input context.
+ * @IBUS_ERROR_NO_CONFIG:
+ * There is no config module running.
+ * @IBUS_ERROR_FAILED:
+ * General failure.
  */
 typedef enum {
     IBUS_ERROR_NO_ENGINE,
+    IBUS_ERROR_NO_CONFIG,
+    IBUS_ERROR_FAILED
 } IBusError;
 
 /**

@@ -294,14 +294,17 @@ _key_snooper_cb (GtkWidget   *widget,
     IDEBUG ("%s", __FUNCTION__);
     gboolean retval = FALSE;
 
-    IBusIMContext *ibusimcontext = (IBusIMContext *) _focus_im_context;
+    IBusIMContext *ibusimcontext = NULL;
     IBusInputContext *ibuscontext = NULL;
 
-    if (ibusimcontext != NULL &&
-        ibusimcontext->has_focus == TRUE) {
-        /* has IC with focus and use_key_snooper is true */
-        if (_use_key_snooper)
-            ibuscontext = ibusimcontext->ibuscontext;
+    if (!_use_key_snooper)
+        return FALSE;
+
+    if (_focus_im_context != NULL &&
+        ((IBusIMContext *) _focus_im_context)->has_focus == TRUE) {
+        ibusimcontext = (IBusIMContext *) _focus_im_context;
+        /* has IC with focus */
+        ibuscontext = ibusimcontext->ibuscontext;
     }
     else {
         /* If no IC has focus, and fake IC has been created, then pass key events to fake IC. */
@@ -373,6 +376,13 @@ _key_snooper_cb (GtkWidget   *widget,
     } while (0);
 
     if (ibusimcontext != NULL) {
+        /* "retrieve-surrounding" signal sometimes calls unref by
+         * gtk_im_multicontext_get_slave() because priv->context_id is not
+         * the latest than global_context_id in GtkIMMulticontext.
+         * Since _focus_im_context is gotten by the focus_in event,
+         * it would be good to call ref here.
+         */
+        g_object_ref (ibusimcontext);
         _request_surrounding_text (ibusimcontext);
         ibusimcontext->time = event->time;
     }
@@ -408,6 +418,13 @@ _key_snooper_cb (GtkWidget   *widget,
     }
     else {
         event->state |= IBUS_IGNORED_MASK;
+    }
+
+    if (ibusimcontext != NULL) {
+        /* unref ibusimcontext could call ibus_im_context_finalize here
+         * because "retrieve-surrounding" signal could call unref.
+         */
+        g_object_unref (ibusimcontext);
     }
 
     return retval;
@@ -769,10 +786,10 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     /* set_cursor_location_internal() will get origin from X server,
      * it blocks UI. So delay it to idle callback. */
-    g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-                     (GSourceFunc) _set_cursor_location_internal,
-                     g_object_ref (ibusimcontext),
-                     (GDestroyNotify) g_object_unref);
+    gdk_threads_add_idle_full (G_PRIORITY_DEFAULT_IDLE,
+                               (GSourceFunc) _set_cursor_location_internal,
+                               g_object_ref (ibusimcontext),
+                               (GDestroyNotify) g_object_unref);
 
     /* retrieve the initial surrounding-text (regardless of whether
      * the current IBus engine needs surrounding-text) */

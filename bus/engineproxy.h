@@ -243,5 +243,12 @@ void             bus_engine_proxy_cancel_hand_writing
                                                     (BusEngineProxy        *engine,
                                                      guint                  n_strokes);
 
+/**
+ * bus_engine_proxy_get_properties:
+ *
+ * Get an IBusPropList object associated with the engine.
+ */
+IBusPropList    *bus_engine_proxy_get_properties    (BusEngineProxy        *engine);
+
 G_END_DECLS
 #endif

@@ -248,6 +248,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
         if (g_strcmp0 (new_name, "") != 0) {
             /* a Panel process is started. */
             BusConnection *connection;
+            BusInputContext *context = NULL;
 
             if (ibus->panel != NULL) {
                 ibus_proxy_destroy ((IBusProxy *) ibus->panel);
@@ -266,10 +267,24 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
                               ibus);
 
             if (ibus->focused_context != NULL) {
-                bus_panel_proxy_focus_in (ibus->panel, ibus->focused_context);
+                context = ibus->focused_context;
             }
             else if (ibus->use_global_engine) {
-                bus_panel_proxy_focus_in (ibus->panel, ibus->fake_context);
+                context = ibus->fake_context;
+            }
+
+            if (context != NULL) {
+                BusEngineProxy *engine;
+
+                bus_panel_proxy_focus_in (ibus->panel, context);
+
+                engine = bus_input_context_get_engine (context);
+                if (engine != NULL) {
+                    IBusPropList *prop_list =
+                        bus_engine_proxy_get_properties (engine);
+                    bus_panel_proxy_register_properties (ibus->panel,
+                                                         prop_list);
+                }
             }
         }
     }
@@ -711,13 +726,7 @@ _context_focus_out_cb (BusInputContext    *context,
         return;
     }
 
-
-    if (ibus->use_global_engine == FALSE) {
-        /* Do not change the focused context, if use_global_engine option is enabled.
-         * If focused context swith to NULL, users can not swith engine in panel anymore.
-         **/
-        bus_ibus_impl_set_focused_context (ibus, NULL);
-    }
+    bus_ibus_impl_set_focused_context (ibus, NULL);
 }
 
 /**

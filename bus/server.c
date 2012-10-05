@@ -122,6 +122,10 @@ bus_server_init (void)
 
     /* write address to file */
     ibus_write_address (address);
+
+    /* own a session bus name so that third parties can easily track our life-cycle */
+    g_bus_own_name (G_BUS_TYPE_SESSION, IBUS_SERVICE_IBUS, G_BUS_NAME_OWNER_FLAGS_NONE,
+                    NULL, NULL, NULL, NULL, NULL);
 }
 
 const gchar *

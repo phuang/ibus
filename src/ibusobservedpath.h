@@ -75,6 +75,7 @@ struct _IBusObservedPath {
     IBusSerializable parent;
     /* instance members */
 
+    /*< public >*/
     gchar *path;
     glong mtime;
     gboolean is_dir;

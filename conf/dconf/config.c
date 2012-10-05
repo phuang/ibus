@@ -23,7 +23,7 @@
 
 #include <string.h>
 #include <ibus.h>
-#include "config.h"
+#include "config-private.h"
 
 #define DCONF_PREFIX "/desktop/ibus"
 #define DCONF_PRESERVE_NAME_PREFIXES_KEY \
@@ -159,12 +159,19 @@ static void
 _watch_func (DConfClient         *client,
              const gchar         *gpath,
              const gchar * const *items,
+#ifndef DCONF_0_13_4
              gint                 n_items,
+#endif
              const gchar         *tag,
              IBusConfigDConf     *config)
 {
     gchar **gkeys = NULL;
     gint i;
+#ifdef DCONF_0_13_4
+    gint n_items;
+
+    n_items = g_strv_length ((gchar **)items);
+#endif
 
     g_return_if_fail (gpath != NULL);
     g_return_if_fail (n_items >= 0);
@@ -231,6 +238,14 @@ static void
 ibus_config_dconf_init (IBusConfigDConf *config)
 {
     GVariant *variant;
+#ifdef DCONF_0_13_4
+    config->client = dconf_client_new ();
+
+    g_signal_connect (config->client, "changed",
+                      G_CALLBACK (_watch_func), config);
+
+    dconf_client_watch_fast (config->client, DCONF_PREFIX"/");
+#else
     GError *error;
 
     config->client = dconf_client_new ("ibus",
@@ -239,8 +254,12 @@ ibus_config_dconf_init (IBusConfigDConf *config)
                                        NULL);
 
     error = NULL;
-    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error))
-        g_warning ("Can not watch dconf path %s", DCONF_PREFIX"/");
+    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+        g_warning ("Can not watch dconf path %s: %s",
+                   DCONF_PREFIX"/", error->message);
+        g_error_free (error);
+    }
+#endif
 
     config->preserve_name_prefixes = NULL;
     variant = dconf_client_read (config->client,
@@ -265,9 +284,16 @@ static void
 ibus_config_dconf_destroy (IBusConfigDConf *config)
 {
     if (config->client) {
+#ifdef DCONF_0_13_4
+        dconf_client_unwatch_fast (config->client, DCONF_PREFIX"/");
+#else
         GError *error = NULL;
-        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error))
-            g_warning ("Can not unwatch dconf path %s", DCONF_PREFIX"/");
+        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+            g_warning ("Can not unwatch dconf path %s: %s",
+                       DCONF_PREFIX"/", error->message);
+            g_error_free (error);
+        }
+#endif
 
         g_object_unref (config->client);
         config->client = NULL;
@@ -307,12 +333,16 @@ ibus_config_dconf_set_value (IBusConfigService *config,
         g_free (gname);
     }
 
+#ifdef DCONF_0_13_4
+    retval = dconf_client_write_fast (client, gkey, value, error);
+#else
     retval = dconf_client_write (client,
                                  gkey,
                                  value,
                                  NULL,   /* tag */
                                  NULL,   /* cancellable */
                                  error);
+#endif
     g_free (gkey);
 
     return retval;
@@ -348,8 +378,11 @@ ibus_config_dconf_get_value (IBusConfigService *config,
     g_free (gkey);
 
     if (variant == NULL) {
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Config value [%s:%s] does not exist.", section, name);
+        g_set_error (error,
+                     G_DBUS_ERROR,
+                     G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.",
+                     section, name);
         return NULL;
     }
 

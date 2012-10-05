@@ -1214,7 +1214,7 @@ main (int argc, char **argv)
     signal (SIGTERM, _sighandler);
 
     if (_kill_daemon)
-        g_atexit (_atexit_cb);
+        atexit (_atexit_cb);
 
     _xim_init_IMdkit ();
     gtk_main();

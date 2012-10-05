@@ -20,9 +20,6 @@
  * Boston, MA  02111-1307  USA
  */
 
-using IBus;
-using Pango;
-
 Pango.AttrList get_pango_attr_list_from_ibus_text(IBus.Text text) {
     Pango.AttrList pango_attrs = new Pango.AttrList();
     unowned IBus.AttrList attrs = text.get_attributes();

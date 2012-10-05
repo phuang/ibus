@@ -84,14 +84,30 @@ class KeyboardShortcutSelection(Gtk.VBox):
 
         table = Gtk.Table(4, 2)
         self.__modifier_buttons = []
-        self.__modifier_buttons.append(("Control",  Gtk.CheckButton("_Control"),    Gdk.ModifierType.CONTROL_MASK))
-        self.__modifier_buttons.append(("Alt",      Gtk.CheckButton("A_lt"),        Gdk.ModifierType.MOD1_MASK))
-        self.__modifier_buttons.append(("Shift",    Gtk.CheckButton("_Shift"),      Gdk.ModifierType.SHIFT_MASK))
-        self.__modifier_buttons.append(("Meta",     Gtk.CheckButton("_Meta"),       Gdk.ModifierType.META_MASK))
-        self.__modifier_buttons.append(("Super",    Gtk.CheckButton("S_uper"),      Gdk.ModifierType.SUPER_MASK))
-        self.__modifier_buttons.append(("Hyper",    Gtk.CheckButton("_Hyper"),      Gdk.ModifierType.HYPER_MASK))
-        self.__modifier_buttons.append(("Capslock", Gtk.CheckButton("Capsloc_k"),   Gdk.ModifierType.LOCK_MASK))
-        self.__modifier_buttons.append(("Release",  Gtk.CheckButton("_Release"),    Gdk.ModifierType.RELEASE_MASK))
+        self.__modifier_buttons.append(("Control",
+                                        Gtk.CheckButton.new_with_mnemonic("_Control"),
+                                        Gdk.ModifierType.CONTROL_MASK))
+        self.__modifier_buttons.append(("Alt",
+                                        Gtk.CheckButton.new_with_mnemonic("A_lt"),
+                                        Gdk.ModifierType.MOD1_MASK))
+        self.__modifier_buttons.append(("Shift",
+                                        Gtk.CheckButton.new_with_mnemonic("_Shift"),
+                                        Gdk.ModifierType.SHIFT_MASK))
+        self.__modifier_buttons.append(("Meta",
+                                        Gtk.CheckButton.new_with_mnemonic("_Meta"),
+                                        Gdk.ModifierType.META_MASK))
+        self.__modifier_buttons.append(("Super",
+                                        Gtk.CheckButton.new_with_mnemonic("S_uper"),
+                                        Gdk.ModifierType.SUPER_MASK))
+        self.__modifier_buttons.append(("Hyper",
+                                        Gtk.CheckButton.new_with_mnemonic("_Hyper"),
+                                        Gdk.ModifierType.HYPER_MASK))
+        self.__modifier_buttons.append(("Capslock",
+                                        Gtk.CheckButton.new_with_mnemonic("Capsloc_k"),
+                                        Gdk.ModifierType.LOCK_MASK))
+        self.__modifier_buttons.append(("Release",
+                                        Gtk.CheckButton.new_with_mnemonic("_Release"),
+                                        Gdk.ModifierType.RELEASE_MASK))
         for name, button, mask in self.__modifier_buttons:
             button.connect("toggled", self.__modifier_button_toggled_cb, name)
 
@@ -203,8 +219,8 @@ class KeyboardShortcutSelection(Gtk.VBox):
 
     def __shortcut_view_cursor_changed_cb(self, treeview):
         shortcut = self.__get_selected_shortcut()
-        self.__set_shortcut_to_buttons(shortcut)
         if shortcut != None:
+            self.__set_shortcut_to_buttons(shortcut)
             self.__delete_button.set_sensitive(True)
         else:
             self.__delete_button.set_sensitive(False)
