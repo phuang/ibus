@@ -549,7 +549,12 @@ class Setup(object):
         Gtk.main()
 
 if __name__ == "__main__":
-    locale.setlocale(locale.LC_ALL, '')
+    try:
+        locale.setlocale(locale.LC_ALL, '')
+    except locale.Error:
+        print >> sys.stderr, "Using the fallback 'C' locale"
+        locale.setlocale(locale.LC_ALL, 'C')
+
     i18n_init()
     setup = Setup()
     setup.run()
