@@ -362,7 +362,8 @@ class Setup(object):
             dlg.destroy()
             self.__flush_gtk_events()
         else:
-            message = _("IBus daemon coundn't be started in %d seconds")
+            # Translators: %d == 5 currently
+            message = _("IBus daemon could not be started in %d seconds")
             dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
                                     text = message % timeout)

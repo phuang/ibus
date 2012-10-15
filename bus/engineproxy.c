@@ -63,10 +63,10 @@ struct _BusEngineProxy {
 struct _BusEngineProxyClass {
     IBusProxyClass parent;
     /* class members */
-    void (* register_properties) (BusEngineProxy      *engine,
-                                  IBusPropList *prop_list);
-    void (* update_property) (BusEngineProxy      *engine,
-                              IBusProperty *prop);
+    void (* register_properties) (BusEngineProxy   *engine,
+                                  IBusPropList     *prop_list);
+    void (* update_property) (BusEngineProxy       *engine,
+                              IBusProperty         *prop);
 };
 
 enum {
