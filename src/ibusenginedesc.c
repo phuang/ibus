@@ -37,6 +37,8 @@ enum {
     PROP_AUTHOR,
     PROP_ICON,
     PROP_LAYOUT,
+    PROP_LAYOUT_VARIANT,
+    PROP_LAYOUT_OPTION,
     PROP_RANK,
     PROP_HOTKEYS,
     PROP_SYMBOL,
@@ -54,6 +56,8 @@ struct _IBusEngineDescPrivate {
     gchar      *author;
     gchar      *icon;
     gchar      *layout;
+    gchar      *layout_variant;
+    gchar      *layout_option;
     guint       rank;
     gchar      *hotkeys;
     gchar      *symbol;
@@ -210,6 +214,32 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /**
+     * IBusEngineDesc:layout-variant:
+     *
+     * The keyboard variant of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_LAYOUT_VARIANT,
+                    g_param_spec_string ("layout-variant",
+                        "description keyboard variant",
+                        "The keyboard variant of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:layout-option:
+     *
+     * The keyboard option of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_LAYOUT_OPTION,
+                    g_param_spec_string ("layout-option",
+                        "description keyboard option",
+                        "The keyboard option of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
      * IBusEngineDesc:rank:
      *
      * The rank of engine description
@@ -277,6 +307,8 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->priv->author = NULL;
     desc->priv->icon = NULL;
     desc->priv->layout = NULL;
+    desc->priv->layout_variant = NULL;
+    desc->priv->layout_option = NULL;
     desc->priv->rank = 0;
     desc->priv->hotkeys = NULL;
     desc->priv->symbol = NULL;
@@ -294,6 +326,8 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->priv->author);
     g_free (desc->priv->icon);
     g_free (desc->priv->layout);
+    g_free (desc->priv->layout_variant);
+    g_free (desc->priv->layout_option);
     g_free (desc->priv->hotkeys);
     g_free (desc->priv->symbol);
     g_free (desc->priv->setup);
@@ -339,6 +373,14 @@ ibus_engine_desc_set_property (IBusEngineDesc *desc,
     case PROP_LAYOUT:
         g_assert (desc->priv->layout == NULL);
         desc->priv->layout = g_value_dup_string (value);
+        break;
+    case PROP_LAYOUT_VARIANT:
+        g_assert (desc->priv->layout_variant == NULL);
+        desc->priv->layout_variant = g_value_dup_string (value);
+        break;
+    case PROP_LAYOUT_OPTION:
+        g_assert (desc->priv->layout_option == NULL);
+        desc->priv->layout_option = g_value_dup_string (value);
         break;
     case PROP_RANK:
         desc->priv->rank = g_value_get_uint (value);
@@ -391,6 +433,12 @@ ibus_engine_desc_get_property (IBusEngineDesc *desc,
     case PROP_LAYOUT:
         g_value_set_string (value, ibus_engine_desc_get_layout (desc));
         break;
+    case PROP_LAYOUT_VARIANT:
+        g_value_set_string (value, ibus_engine_desc_get_layout_variant (desc));
+        break;
+    case PROP_LAYOUT_OPTION:
+        g_value_set_string (value, ibus_engine_desc_get_layout_option (desc));
+        break;
     case PROP_RANK:
         g_value_set_uint (value, ibus_engine_desc_get_rank (desc));
         break;
@@ -432,9 +480,12 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->icon));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout));
     g_variant_builder_add (builder, "u", desc->priv->rank);
+    /* The serialized order should be kept. */
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->hotkeys));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->symbol));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->setup));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_variant));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_option));
 #undef NOTNULL
 
     return TRUE;
@@ -462,9 +513,14 @@ ibus_engine_desc_deserialize (IBusEngineDesc *desc,
     g_variant_get_child (variant, retval++, "s", &desc->priv->icon);
     g_variant_get_child (variant, retval++, "s", &desc->priv->layout);
     g_variant_get_child (variant, retval++, "u", &desc->priv->rank);
+    /* The serialized order should be kept. */
     g_variant_get_child (variant, retval++, "s", &desc->priv->hotkeys);
     g_variant_get_child (variant, retval++, "s", &desc->priv->symbol);
     g_variant_get_child (variant, retval++, "s", &desc->priv->setup);
+    if (g_variant_n_children (variant) < retval + 2)
+        return retval;
+    g_variant_get_child (variant, retval++, "s", &desc->priv->layout_variant);
+    g_variant_get_child (variant, retval++, "s", &desc->priv->layout_option);
 
     return retval;
 }
@@ -487,6 +543,8 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
     dest->priv->author           = g_strdup (src->priv->author);
     dest->priv->icon             = g_strdup (src->priv->icon);
     dest->priv->layout           = g_strdup (src->priv->layout);
+    dest->priv->layout_variant   = g_strdup (src->priv->layout_variant);
+    dest->priv->layout_option    = g_strdup (src->priv->layout_option);
     dest->priv->rank             = src->priv->rank;
     dest->priv->hotkeys          = g_strdup (src->priv->hotkeys);
     dest->priv->symbol           = g_strdup (src->priv->symbol);
@@ -527,6 +585,8 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(author);
     OUTPUT_ENTRY_1(icon);
     OUTPUT_ENTRY_1(layout);
+    OUTPUT_ENTRY_1(layout_variant);
+    OUTPUT_ENTRY_1(layout_option);
     OUTPUT_ENTRY_1(hotkeys);
     OUTPUT_ENTRY_1(symbol);
     OUTPUT_ENTRY_1(setup);
@@ -562,6 +622,8 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(author);
         PARSE_ENTRY_1(icon);
         PARSE_ENTRY_1(layout);
+        PARSE_ENTRY_1(layout_variant);
+        PARSE_ENTRY_1(layout_option);
         PARSE_ENTRY_1(hotkeys);
         PARSE_ENTRY_1(symbol);
         PARSE_ENTRY_1(setup);
@@ -591,6 +653,8 @@ IBUS_ENGINE_DESC_GET_PROPERTY (license, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (author, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (icon, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (layout, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (layout_variant, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (layout_option, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (rank, guint)
 IBUS_ENGINE_DESC_GET_PROPERTY (hotkeys, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (symbol, const gchar *)
@@ -641,6 +705,8 @@ ibus_engine_desc_new_varargs (const gchar *first_property_name, ...)
     g_assert (desc->priv->author);
     g_assert (desc->priv->icon);
     g_assert (desc->priv->layout);
+    g_assert (desc->priv->layout_variant);
+    g_assert (desc->priv->layout_option);
     g_assert (desc->priv->hotkeys);
     g_assert (desc->priv->symbol);
     g_assert (desc->priv->setup);

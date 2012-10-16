@@ -233,7 +233,8 @@ void                 ibus_serializable_remove_qattachment
 /**
  * ibus_serializable_copy:
  * @serializable: An #IBusSerializable.
- * @returns: A newly allocated clone object; or %NULL if @object is not serializable.
+ * @returns: (transfer none): A newly allocated clone object; or %NULL
+ *     if @object is not serializable.
  *
  * Clone an #IBusSerializable.
  * The copy method should be implemented in extended class.
@@ -257,7 +258,7 @@ GVariant            *ibus_serializable_serialize        (IBusSerializable   *ser
 /**
  * ibus_serializable_deserialize:
  * @variant: A #GVariant.
- * @returns: The deserialized #IBusSerializable.
+ * @returns: (transfer none): The deserialized #IBusSerializable.
  *
  * Deserialize a #GVariant to an #IBusSerializable/
  * The deserialize method should be implemented in extended class.

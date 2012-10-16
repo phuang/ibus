@@ -88,6 +88,56 @@ int list_engine(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+private int exec_setxkbmap(IBus.EngineDesc engine) {
+    string layout = engine.get_layout();
+    string variant = engine.get_layout_variant();
+    string option = engine.get_layout_option();
+    string standard_error = null;
+    int exit_status = 0;
+    string[] args = { "setxkbmap" };
+
+    if (layout != null && layout != "" && layout != "default") {
+        args += "-layout";
+        args += layout;
+    }
+    if (variant != null && variant != "" && variant != "default") {
+        args += "-variant";
+        args += variant;
+    }
+    if (option != null && option != "" && option != "default") {
+        /*TODO: Need to get the session XKB options */
+        args += "-option";
+        args += "-option";
+        args += option;
+    }
+
+    if (args.length == 1) {
+        return Posix.EXIT_FAILURE;
+    }
+
+    try {
+        if (!GLib.Process.spawn_sync(null, args, null,
+                                     GLib.SpawnFlags.SEARCH_PATH,
+                                     null, null,
+                                     out standard_error,
+                                     out exit_status)) {
+            warning("Switch xkb layout to %s failed.",
+                    engine.get_layout());
+            return Posix.EXIT_FAILURE;
+        }
+    } catch (GLib.SpawnError e) {
+        warning("Execute setxkbmap failed: %s", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    if (exit_status != 0) {
+        warning("Execute setxkbmap failed: %s", standard_error ?? "(null)");
+        return Posix.EXIT_FAILURE;
+    }
+
+    return Posix.EXIT_SUCCESS;
+}
+
 int get_set_engine(string[] argv) {
     var bus = get_bus();
     string engine = null;
@@ -114,18 +164,7 @@ int get_set_engine(string[] argv) {
         return Posix.EXIT_FAILURE;
     }
 
-    string cmdline = "setxkbmap %s".printf(desc.get_layout());
-    try {
-        if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-            stderr.printf(_("Switch xkb layout to %s failed."),
-                          desc.get_layout());
-            return Posix.EXIT_FAILURE;
-        }
-    } catch (GLib.SpawnError e) {
-        stderr.printf("Execute setxkbmap failed: %s", e.message);
-        return Posix.EXIT_FAILURE;
-    }
-    return Posix.EXIT_SUCCESS;
+    return exec_setxkbmap(desc);
 }
 
 int message_watch(string[] argv) {

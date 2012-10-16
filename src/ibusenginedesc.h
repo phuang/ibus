@@ -86,6 +86,8 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  * author: Author of the input method engine.
  * icon: Icon file of this engine.
  * layout: Keyboard layout
+ * layout_variant: Keyboard variant
+ * layout_option: Keyboard option
  * rank: Preference rank among engines, the highest ranked IME will put in
  * the front.
  * hotkeys: One or more hotkeys for switching to this engine, separated by
@@ -229,6 +231,26 @@ const gchar     *ibus_engine_desc_get_icon      (IBusEngineDesc *info);
  * Return the layout property in IBusEngineDesc. It should not be freed.
  */
 const gchar     *ibus_engine_desc_get_layout    (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_layout_variant:
+ * @info: An IBusEngineDesc
+ * @returns: keyboard variant property in IBusEngineDesc
+ *
+ * Return the keyboard variant property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_layout_variant
+                                                (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_layout_option:
+ * @info: An IBusEngineDesc
+ * @returns: keyboard option property in IBusEngineDesc
+ *
+ * Return the keyboard option property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_layout_option
+                                                (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_rank:

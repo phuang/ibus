@@ -211,6 +211,51 @@ class Panel : IBus.PanelService {
         set_custom_font();
     }
 
+    private void exec_setxkbmap(IBus.EngineDesc engine) {
+        string layout = engine.get_layout();
+        string variant = engine.get_layout_variant();
+        string option = engine.get_layout_option();
+        string standard_error = null;
+        int exit_status = 0;
+        string[] args = { "setxkbmap" };
+
+        if (layout != null && layout != "" && layout != "default") {
+            args += "-layout";
+            args += layout;
+        }
+        if (variant != null && variant != "" && variant != "default") {
+            args += "-variant";
+            args += variant;
+        }
+        if (option != null && option != "" && option != "default") {
+            /*TODO: Need to get the session XKB options */
+            args += "-option";
+            args += "-option";
+            args += option;
+        }
+
+        if (args.length == 1) {
+            return;
+        }
+
+        try {
+            if (!GLib.Process.spawn_sync(null, args, null,
+                                         GLib.SpawnFlags.SEARCH_PATH,
+                                         null, null,
+                                         out standard_error,
+                                         out exit_status)) {
+                warning("Switch xkb layout to %s failed.",
+                        engine.get_layout());
+            }
+        } catch (GLib.SpawnError e) {
+            warning("Execute setxkbmap failed: %s", e.message);
+        }
+
+        if (exit_status != 0) {
+            warning("Execute setxkbmap failed: %s", standard_error ?? "(null)");
+        }
+    }
+
     private void switch_engine(int i, bool force = false) {
         GLib.assert(i >= 0 && i < m_engines.length);
 
@@ -225,15 +270,7 @@ class Panel : IBus.PanelService {
             return;
         }
         // set xkb layout
-        string cmdline = "setxkbmap %s".printf(engine.get_layout());
-        try {
-            if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-                warning("Switch xkb layout to %s failed.",
-                    engine.get_layout());
-            }
-        } catch (GLib.SpawnError e) {
-            warning("Execute setxkbmap failed: %s", e.message);
-        }
+        exec_setxkbmap(engine);
     }
 
     private void config_value_changed_cb(IBus.Config config,
