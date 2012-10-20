@@ -34,7 +34,8 @@ class EngineDesc(Serializable):
     def __init__(self, name="", longname="", description="", language="",
                  license="", author="", icon="", layout="us", hotkeys="",
                  rank=0, symbol="", setup="",
-                 layout_variant="", layout_option=""):
+                 layout_variant="", layout_option="",
+                 version=""):
         super(EngineDesc, self).__init__()
         self.__name = name
         self.__longname = longname
@@ -50,6 +51,7 @@ class EngineDesc(Serializable):
         self.__hotkeys = hotkeys
         self.__symbol = symbol
         self.__setup = setup
+        self.__version = version
 
     def get_name(self):
         return self.__name
@@ -93,6 +95,9 @@ class EngineDesc(Serializable):
     def get_setup(self):
         return self.__setup
 
+    def get_version(self):
+        return self.__version
+
     name                = property(get_name)
     longname            = property(get_longname)
     description         = property(get_description)
@@ -107,6 +112,7 @@ class EngineDesc(Serializable):
     hotkeys             = property(get_hotkeys)
     symbol              = property(get_symbol)
     setup               = property(get_setup)
+    version             = property(get_version)
 
     def serialize(self, struct):
         super(EngineDesc, self).serialize(struct)
@@ -125,6 +131,7 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__setup))
         struct.append(dbus.String(self.__layout_variant))
         struct.append(dbus.String(self.__layout_option))
+        struct.append(dbus.String(self.__version))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
@@ -145,6 +152,9 @@ class EngineDesc(Serializable):
             return
         self.__layout_variant   = struct.pop(0)
         self.__layout_option    = struct.pop(0)
+        if len(struct) < 1:
+            return
+        self.__version          = struct.pop(0)
 
 def test():
     engine = EngineDesc("Hello", "", "", "", "", "", "", "", "", 0, "", "")

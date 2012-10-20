@@ -92,6 +92,8 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  * the front.
  * hotkeys: One or more hotkeys for switching to this engine, separated by
  *  semi-colon.
+ * setup: Exec lists of the engine setup command.
+ * version: Version number of the input method engine.
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
@@ -287,6 +289,15 @@ const gchar     *ibus_engine_desc_get_symbol    (IBusEngineDesc *info);
  * Return the setup property in IBusEngineDesc. It should not be freed.
  */
 const gchar     *ibus_engine_desc_get_setup     (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_version:
+ * @info: An IBusEngineDesc
+ * @returns: version in IBusEngineDesc
+ *
+ * Return the version property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_version   (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_output:
