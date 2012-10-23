@@ -221,29 +221,33 @@ bus_registry_load (BusRegistry *registry)
 
     const gchar *envstr;
     GPtrArray *path;
-    gchar *dirname, **d, **search_path;
+    gchar **d, **search_path;
 
     path = g_ptr_array_new();
 
     envstr = g_getenv ("IBUS_COMPONENT_PATH");
     if (envstr) {
-        char **dirs = g_strsplit (envstr, G_SEARCHPATH_SEPARATOR_S, 0);
+        gchar **dirs = g_strsplit (envstr, G_SEARCHPATH_SEPARATOR_S, 0);
         for (d = dirs; *d != NULL; d++)
             g_ptr_array_add (path, *d);
         g_free (dirs);
-    }
+    } else {
+        gchar *dirname;
 
-    dirname = g_build_filename (PKGDATADIR, "component", NULL);
-    g_ptr_array_add (path, dirname);
+        dirname = g_build_filename (PKGDATADIR, "component", NULL);
+        g_ptr_array_add (path, dirname);
 
 #if 0
-    /* FIXME Should we support install some IME in user dir? */
-    dirname = g_build_filename (g_get_user_data_dir (), "ibus", "component", NULL);
-    g_ptr_array_add (path, dirname);
+        /* FIXME Should we support install some IME in user dir? */
+        dirname = g_build_filename (g_get_user_data_dir (),
+                                    "ibus", "component",
+                                    NULL);
+        g_ptr_array_add (path, dirname);
 #endif
+    }
 
     g_ptr_array_add (path, NULL);
-    search_path = (char**) g_ptr_array_free (path, FALSE);
+    search_path = (gchar **) g_ptr_array_free (path, FALSE);
     for (d = search_path; *d != NULL; d++) {
         IBusObservedPath *observed_path = ibus_observed_path_new (*d, TRUE);
 
