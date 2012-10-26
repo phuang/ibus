@@ -631,9 +631,9 @@ ibus_component_parse_engines (IBusComponent *component,
 }
 
 static void
-ibus_component_parse_observed_paths (IBusComponent    *component,
-                                    XMLNode         *node,
-                                    gboolean         access_fs)
+ibus_component_parse_observed_paths (IBusComponent *component,
+                                     XMLNode       *node,
+                                     gboolean       access_fs)
 {
     g_assert (IBUS_IS_COMPONENT (component));
     g_assert (node);
@@ -652,8 +652,8 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
 
         if (access_fs && path->is_dir && path->is_exist) {
             component->priv->observed_paths =
-                    g_list_concat(component->priv->observed_paths,
-                                  ibus_observed_path_traverse(path));
+                    g_list_concat (component->priv->observed_paths,
+                                   ibus_observed_path_traverse (path, TRUE));
         }
     }
 }
@@ -790,8 +790,8 @@ ibus_component_add_observed_path (IBusComponent *component,
 
     if (access_fs && p->is_dir && p->is_exist) {
         component->priv->observed_paths =
-                g_list_concat(component->priv->observed_paths,
-                              ibus_observed_path_traverse(p));
+                g_list_concat (component->priv->observed_paths,
+                               ibus_observed_path_traverse (p, TRUE));
     }
 }
 
@@ -825,4 +825,11 @@ ibus_component_check_modification (IBusComponent *component)
             return TRUE;
     }
     return FALSE;
+}
+
+GList *
+ibus_component_get_observed_paths (IBusComponent *component)
+{
+    g_assert (IBUS_IS_COMPONENT (component));
+    return g_list_copy (component->priv->observed_paths);
 }

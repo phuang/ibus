@@ -29,7 +29,3 @@ gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
 gint   g_gdbus_timeout = 5000;
-#ifdef G_THREADS_ENABLED
-gint   g_monitor_timeout = 0;
-#endif
-

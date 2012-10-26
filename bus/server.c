@@ -40,7 +40,6 @@ static gboolean _restart = FALSE;
 static void
 _restart_server (void)
 {
-    extern gchar **g_argv;
     gchar *exe;
     gint fd;
 

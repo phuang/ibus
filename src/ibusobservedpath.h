@@ -116,12 +116,14 @@ IBusObservedPath    *ibus_observed_path_new                 (const gchar        
 /**
  * ibus_observed_path_traverse:
  * @path: An IBusObservedPath.
+ * @dir_only: Only looks for subdirs, not files
  * @returns: (element-type IBusObservedPath): A newly allocate GList which holds content in path; NULL if @path is not directory.
  *
  * Recursively traverse the path and put the files and subdirectory in to a newly allocated
  * GLists, if the @path is a directory. Otherwise returns NULL.
  */
-GList               *ibus_observed_path_traverse            (IBusObservedPath   *path);
+GList               *ibus_observed_path_traverse            (IBusObservedPath   *path,
+                                                             gboolean            dir_only);
 
 /**
  * ibus_observed_path_check_modification:

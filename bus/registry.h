@@ -58,13 +58,13 @@ BusRegistry     *bus_registry_new               (void);
 GList           *bus_registry_get_components    (BusRegistry    *registry);
 
 /**
- * bus_registry_get_components:
+ * bus_registry_get_engines:
  * @returns: a list of all IBusEngineDesc objects available. The caller has to call g_list_free for the returned list.
  */
 GList           *bus_registry_get_engines       (BusRegistry    *registry);
 
 /**
- * bus_registry_get_components:
+ * bus_registry_get_engines_by_language:
  * @language: a language name like 'ja'
  * @returns: a list of IBusEngineDesc objects for the language. The caller has to call g_list_free for the returned list.
  */
@@ -113,11 +113,9 @@ void             bus_registry_name_owner_changed
                                                  const gchar    *old_name,
                                                  const gchar    *new_name);
 
-#ifdef G_THREADS_ENABLED
 void             bus_registry_start_monitor_changes
                                                 (BusRegistry    *registry);
 gboolean         bus_registry_is_changed        (BusRegistry    *registry);
-#endif
 
 G_END_DECLS
 #endif

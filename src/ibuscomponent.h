@@ -306,6 +306,18 @@ void             ibus_component_output_engines  (IBusComponent  *component,
  */
 gboolean         ibus_component_check_modification
                                                 (IBusComponent  *component);
+
+/**
+ * ibus_component_get_observed_paths:
+ * @component: An IBusComponent.
+ * @returns: (transfer container) (element-type IBusObservedPath): A
+ * newly allocated GList that contains observed paths.
+ *
+ * Get the observed paths of this component.
+ */
+GList           *ibus_component_get_observed_paths
+                                                (IBusComponent *component);
+
 G_END_DECLS
 #endif
 

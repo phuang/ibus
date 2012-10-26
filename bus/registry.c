@@ -49,14 +49,10 @@ struct _BusRegistry {
     GList *components;
     /* a mapping from an engine name (e.g. 'pinyin') to the corresponding IBusEngineDesc object. */
     GHashTable *engine_table;
-
-#ifdef G_THREADS_ENABLED
-    GThread *thread;
-    gboolean thread_running;
-    GMutex  *mutex;
-    GCond   *cond;
     gboolean changed;
-#endif
+    /* a mapping from GFile to GFileMonitor. */
+    GHashTable *monitor_table;
+    guint monitor_timeout_id;
 };
 
 struct _BusRegistryClass {
@@ -103,22 +99,12 @@ bus_registry_init (BusRegistry *registry)
     registry->observed_paths = NULL;
     registry->components = NULL;
     registry->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
-
-#ifdef G_THREADS_ENABLED
-    /* If glib supports thread, we'll create a thread to monitor changes in IME
-     * XML files and related files, so users can use newly installed IMEs
-     * immediatlly.
-     * Note that we don't use GFileMonitor for watching as we need to monitor
-     * not only XML files but also other related files that can be scattered in
-     * many places. Monitoring these files with GFileMonitor would be make it
-     * complicated. hence we use a thread to poll the changes.
-     */
-    registry->thread = NULL;
-    registry->thread_running = TRUE;
-    registry->mutex = g_mutex_new ();
-    registry->cond = g_cond_new ();
     registry->changed = FALSE;
-#endif
+    registry->monitor_table =
+        g_hash_table_new_full (g_file_hash,
+                               (GEqualFunc) g_file_equal,
+                               (GDestroyNotify) g_object_unref,
+                               (GDestroyNotify) g_object_unref);
 
     if (g_strcmp0 (g_cache, "none") == 0) {
         /* Only load registry, but not read and write cache. */
@@ -171,40 +157,24 @@ bus_registry_remove_all (BusRegistry *registry)
     registry->components = NULL;
 
     g_hash_table_remove_all (registry->engine_table);
+    g_hash_table_remove_all (registry->monitor_table);
 }
 
 static void
 bus_registry_destroy (BusRegistry *registry)
 {
-#ifdef G_THREADS_ENABLED
-    if (registry->thread) {
-        g_mutex_lock (registry->mutex);
-        registry->thread_running = FALSE;
-        g_mutex_unlock (registry->mutex);
-
-        /* Raise a signal to cause the loop in _checks_changes() exits
-         * immediately, and then wait until the thread finishes, and release all
-         * resources of the thread.
-         */
-        g_cond_signal (registry->cond);
-        g_thread_join (registry->thread);
-
-        registry->thread = NULL;
-    }
-#endif
-
     bus_registry_remove_all (registry);
 
     g_hash_table_destroy (registry->engine_table);
     registry->engine_table = NULL;
 
-#ifdef G_THREADS_ENABLED
-    g_cond_free (registry->cond);
-    registry->cond = NULL;
+    g_hash_table_destroy (registry->monitor_table);
+    registry->monitor_table = NULL;
 
-    g_mutex_free (registry->mutex);
-    registry->mutex = NULL;
-#endif
+    if (registry->monitor_timeout_id > 0) {
+        g_source_remove (registry->monitor_timeout_id);
+        registry->monitor_timeout_id = 0;
+    }
 
     IBUS_OBJECT_CLASS (bus_registry_parent_class)->destroy (IBUS_OBJECT (registry));
 }
@@ -554,56 +524,42 @@ bus_registry_stop_all_components (BusRegistry *registry)
 
 }
 
-#ifdef G_THREADS_ENABLED
 static gboolean
-_emit_changed_signal_cb (BusRegistry *registry)
+_monitor_timeout_cb (BusRegistry *registry)
 {
-    g_assert (BUS_IS_REGISTRY (registry));
-
+    g_hash_table_remove_all (registry->monitor_table);
+    registry->changed = TRUE;
     g_signal_emit (registry, _signals[CHANGED], 0);
+    registry->monitor_timeout_id = 0;
     return FALSE;
 }
 
-static gpointer
-_check_changes (BusRegistry *registry)
+static void
+_monitor_changed_cb (GFileMonitor     *monitor,
+                     GFile            *file,
+                     GFile            *other_file,
+                     GFileMonitorEvent event_type,
+                     BusRegistry      *registry)
 {
     g_assert (BUS_IS_REGISTRY (registry));
 
-    g_mutex_lock (registry->mutex);
-    while (registry->thread_running == TRUE && registry->changed == FALSE) {
-        extern gint g_monitor_timeout;
-        GTimeVal tv;
-        g_get_current_time (&tv);
-        g_time_val_add (&tv, g_monitor_timeout * G_USEC_PER_SEC);
-        /* Wait for the condition change or timeout. It will also unlock
-         * the mutex, so that other thread could obay the lock and modify
-         * the condition value.
-         * Note that we use g_cond_timed_wait() here rather than sleep() so
-         * that the loop can terminate immediately when the registry object
-         * is destroyed. See also comments in bus_registry_destroy().
-         */
-        if (g_cond_timed_wait (registry->cond, registry->mutex, &tv) == FALSE) {
-            /* Timeout happens. We check the modification of all IMEs' xml files
-             * and related files specified in <observed-paths> in xml files.
-             * If any file is changed, the changed signal will be emitted in
-             * main thread. It is for finding install/uninstall/upgrade of IMEs.
-             * On Linux desktop, ibus will popup UI to notificate users that
-             * some IMEs are changed and ibus need a restart.
-             */
-            if (bus_registry_check_modification (registry)) {
-                /* Emit the changed signal in main thread, and terminate
-                 * this thread.
-                 */
-                registry->changed = TRUE;
-                g_idle_add ((GSourceFunc) _emit_changed_signal_cb, registry);
-                break;
-            }
-        }
-        else
-            g_warn_if_fail (registry->thread_running == FALSE);
-    }
-    g_mutex_unlock (registry->mutex);
-    return NULL;
+    if (event_type != G_FILE_MONITOR_EVENT_CHANGED &&
+        event_type != G_FILE_MONITOR_EVENT_DELETED &&
+        event_type != G_FILE_MONITOR_EVENT_CREATED &&
+        event_type != G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED)
+        return;
+
+    /* Merge successive file changes into one, with a low priority
+       timeout handler. */
+    if (registry->monitor_timeout_id > 0)
+        return;
+
+    registry->monitor_timeout_id =
+        g_timeout_add_full (G_PRIORITY_DEFAULT_IDLE,
+                            5000,
+                            (GSourceFunc) _monitor_timeout_cb,
+                            g_object_ref (registry),
+                            (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -614,16 +570,53 @@ _check_changes (BusRegistry *registry)
 void
 bus_registry_start_monitor_changes (BusRegistry *registry)
 {
+    GList *observed_paths, *p;
+
     g_assert (BUS_IS_REGISTRY (registry));
 
-    g_return_if_fail (registry->thread == NULL);
-    g_return_if_fail (registry->changed == FALSE);
+    g_hash_table_remove_all (registry->monitor_table);
 
-    registry->thread_running = TRUE;
-    registry->thread = g_thread_create ((GThreadFunc) _check_changes,
-                                        registry,
-                                        TRUE,
-                                        NULL);
+    observed_paths = g_list_copy (registry->observed_paths);
+    for (p = registry->components; p != NULL; p = p->next) {
+        BusComponent *buscomp = (BusComponent *) p->data;
+        IBusComponent *component = bus_component_get_component (buscomp);
+        GList *component_observed_paths =
+            ibus_component_get_observed_paths (component);
+        observed_paths = g_list_concat (observed_paths,
+                                        component_observed_paths);
+    }
+
+    for (p = observed_paths; p != NULL; p = p->next) {
+        IBusObservedPath *path = (IBusObservedPath *) p->data;
+        GFile *file = g_file_new_for_path (path->path);
+        if (g_hash_table_lookup (registry->monitor_table,file) == NULL) {
+            GFileMonitor *monitor;
+            GError *error;
+
+            error = NULL;
+            monitor = g_file_monitor (file,
+                                      G_FILE_MONITOR_NONE,
+                                      NULL,
+                                      &error);
+
+            if (monitor != NULL) {
+                g_signal_connect (monitor, "changed",
+                                  G_CALLBACK (_monitor_changed_cb),
+                                  registry);
+
+                g_hash_table_replace (registry->monitor_table,
+                                      g_object_ref (file),
+                                      monitor);
+            } else {
+                g_warning ("Can't monitor directory %s: %s",
+                           path->path,
+                           error->message);
+                g_error_free (error);
+            }
+        }
+        g_object_unref (file);
+    }
+    g_list_free (observed_paths);
 }
 
 gboolean
@@ -632,7 +625,6 @@ bus_registry_is_changed (BusRegistry *registry)
     g_assert (BUS_IS_REGISTRY (registry));
     return (registry->changed != 0);
 }
-#endif
 
 void
 bus_registry_name_owner_changed (BusRegistry *registry,

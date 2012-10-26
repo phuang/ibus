@@ -185,7 +185,8 @@ ibus_observed_path_fill_stat (IBusObservedPath *path)
 }
 
 GList *
-ibus_observed_path_traverse (IBusObservedPath *path)
+ibus_observed_path_traverse (IBusObservedPath *path,
+                             gboolean          dir_only)
 {
     g_assert (IBUS_IS_OBSERVED_PATH (path));
 
@@ -206,10 +207,13 @@ ibus_observed_path_traverse (IBusObservedPath *path)
         sub->path = g_build_filename (path->path, name, NULL);
 
         ibus_observed_path_fill_stat (sub);
-        paths = g_list_append (paths, sub);
-
-        if (sub->is_exist && sub->is_dir)
-            paths = g_list_concat (paths, ibus_observed_path_traverse (sub));
+        if (sub->is_exist && sub->is_dir) {
+            paths = g_list_append (paths, sub);
+            paths = g_list_concat (paths,
+                                   ibus_observed_path_traverse (sub, dir_only));
+        } else if (!dir_only) {
+            paths = g_list_append (paths, sub);
+        }
     }
     g_dir_close (dir);
 

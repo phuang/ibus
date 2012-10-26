@@ -34,9 +34,6 @@ extern gchar *g_cache;
 extern gboolean g_mempro;
 extern gboolean g_verbose;
 extern gint   g_gdbus_timeout;
-#ifdef G_THREADS_ENABLED
-extern gint   g_monitor_timeout;
-#endif
 
 G_END_DECLS
 
