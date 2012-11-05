@@ -223,8 +223,8 @@ static string program_name;
 void print_usage(FileStream stream) {
     stream.printf(_("Usage: %s COMMAND [OPTION...]\n\n"), program_name);
     stream.printf(_("Commands:\n"));
-    foreach (var command in commands) {
-        stream.printf("  %s\n", command.name);
+    for (int i = 0; i < commands.length; i++) {
+        stream.printf("  %s\n", commands[i].name);
     }
 }
 
@@ -239,9 +239,9 @@ public int main(string[] argv) {
     }
 
     string[] new_argv = argv[1:argv.length];
-    foreach (var command in commands) {
-        if (command.name == argv[1])
-            return command.entry(new_argv);
+    for (int i = 0; i < commands.length; i++) {
+        if (commands[i].name == argv[1])
+            return commands[i].entry(new_argv);
     }
 
     stderr.printf(_("%s is unknown command!\n"), argv[1]);

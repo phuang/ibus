@@ -330,8 +330,6 @@ bus_name_service_new (const gchar *name)
 static void
 bus_name_service_free (BusNameService *service)
 {
-    GSList *list = NULL;
-
     g_assert (service != NULL);
 
     g_slist_free_full (service->owners,

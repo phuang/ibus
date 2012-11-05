@@ -23,7 +23,7 @@
 public class CandidatePanel : Gtk.HBox{
     private bool m_vertical = true;
     private Gtk.Window m_toplevel;
-    private Gtk.VBox m_vbox;
+    private Gtk.Box m_vbox;
 
     private Gtk.Label m_preedit_label;
     private Gtk.Label m_aux_label;
@@ -60,7 +60,7 @@ public class CandidatePanel : Gtk.HBox{
         handle.set_visible(true);
         pack_start(handle, false, false, 0);
 
-        m_vbox = new Gtk.VBox(false, 0);
+        m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         m_vbox.set_visible(true);
         pack_start(m_vbox, false, false, 0);
 

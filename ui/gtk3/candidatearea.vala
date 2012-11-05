@@ -136,10 +136,12 @@ class CandidateArea : Gtk.Box {
 
         if (m_vertical) {
             // Add Candidates
-            Gtk.HBox candidates_hbox = new Gtk.HBox(false, 0);
+            Gtk.Box candidates_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             pack_start(candidates_hbox, false, false, 0);
-            Gtk.VBox labels_vbox = new Gtk.VBox(true, 0);
-            Gtk.VBox candidates_vbox = new Gtk.VBox(true, 0);
+            Gtk.Box labels_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            labels_vbox.set_homogeneous(true);
+            Gtk.Box candidates_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            candidates_vbox.set_homogeneous(true);
             candidates_hbox.pack_start(labels_vbox, false, false, 4);
             candidates_hbox.pack_start(new VSeparator(), false, false, 0);
             candidates_hbox.pack_start(candidates_vbox, true, true, 4);
@@ -148,7 +150,7 @@ class CandidateArea : Gtk.Box {
             pack_start(new HSeparator(), false, false, 0);
 
             // Add buttons
-            Gtk.HBox buttons_hbox = new Gtk.HBox(false, 0);
+            Gtk.Box buttons_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             Gtk.Label state_label = new Gtk.Label(null);
             state_label.set_size_request(20, -1);
             buttons_hbox.pack_start(state_label, true, true, 0);
@@ -197,7 +199,7 @@ class CandidateArea : Gtk.Box {
                 m_widgets += candidate_ebox;
             }
         } else {
-            Gtk.HBox hbox = new Gtk.HBox(false, 0);
+            Gtk.Box hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             add(hbox);
 
             m_labels = {};
@@ -214,7 +216,7 @@ class CandidateArea : Gtk.Box {
                 candidate.show();
                 m_candidates += candidate;
 
-                Gtk.HBox candidate_hbox = new Gtk.HBox(false, 0);
+                Gtk.Box candidate_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
                 candidate_hbox.show();
                 candidate_hbox.pack_start(label, false, false, 2);
                 candidate_hbox.pack_start(candidate, false, false, 2);
