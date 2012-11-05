@@ -26,6 +26,17 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/switcher-delay-time</key>
+      <applyto>/desktop/ibus/general/switcher-delay-time</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>400</default>
+      <locale name="C">
+        <short>Popup delay milliseconds for IME switcher window</short>
+            <long>Set popup delay milliseconds to show IME switcher window</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>

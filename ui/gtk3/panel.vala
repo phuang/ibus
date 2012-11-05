@@ -204,6 +204,9 @@ class Panel : IBus.PanelService {
             m_config.watch("panel", "use_custom_font");
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
+            uint delay_time = (uint) m_config.get_value(
+                    "general", "switcher-delay-time").get_int32();
+            m_switcher.set_popup_delay_time(delay_time);
         } else {
             update_engines(null, null);
         }

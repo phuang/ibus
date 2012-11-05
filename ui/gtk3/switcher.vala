@@ -73,6 +73,10 @@ class Switcher : Gtk.Window {
     private Gdk.ModifierType m_primary_modifier;
     private GLib.MainLoop m_loop;
     private int m_result;
+    private uint m_popup_delay_time = 400;
+    private uint m_popup_delay_time_id;
+    private int m_root_x;
+    private int m_root_y;
 
     public Switcher() {
         GLib.Object(
@@ -153,19 +157,19 @@ class Switcher : Gtk.Window {
             keyboard = device.get_associated_device();
         }
 
+        get_position(out m_root_x, out m_root_y);
+        // Pull the window from the screen so that the window gets
+        // the key press and release events but mouse does not select
+        // an IME unexpectedly.
+        move(-1000, -1000);
         show_all();
 
-        if (is_composited()) {
-            // Hide the window by set the opactiy to 0.0, because real hiden
-            // window can not grab keyboard and pointer.
-            get_window().set_opacity(0.0);
-
-            // Show window after 1/10 secound
-            GLib.Timeout.add(100, ()=> {
-                get_window().set_opacity(1.0);
-                return false;
-            });
-        }
+        // Restore the window position after m_popup_delay_time
+        m_popup_delay_time_id = GLib.Timeout.add(m_popup_delay_time,
+                                                 () => {
+            restore_window_position("timeout");
+            return false;
+        });
 
         Gdk.GrabStatus status;
         // Grab all keyboard events
@@ -295,6 +299,19 @@ class Switcher : Gtk.Window {
         set_focus(m_buttons[m_selected_engine]);
     }
 
+    private void restore_window_position(string debug_str) {
+        debug("restore_window_position %s: (%ld, %ld)\n",
+                debug_str, m_root_x, m_root_y);
+
+        if (m_popup_delay_time_id == 0) {
+            return;
+        }
+
+        GLib.Source.remove(m_popup_delay_time_id);
+        m_popup_delay_time_id = 0;
+        move(m_root_x, m_root_y);
+    }
+
     /* override virtual functions */
     public override void show() {
         base.show();
@@ -304,6 +321,8 @@ class Switcher : Gtk.Window {
     public override bool key_press_event(Gdk.EventKey e) {
         bool retval = true;
         Gdk.EventKey *pe = &e;
+
+        restore_window_position("pressed");
 
         do {
             uint modifiers = KeybindingManager.MODIFIER_FILTER & pe->state;
@@ -357,8 +376,17 @@ class Switcher : Gtk.Window {
             return false;
         }
 
+        if (m_popup_delay_time_id != 0) {
+            GLib.Source.remove(m_popup_delay_time_id);
+            m_popup_delay_time_id = 0;
+        }
+
         m_loop.quit();
         m_result = (int)m_selected_engine;
         return true;
+    }
+
+    public void set_popup_delay_time(uint popup_delay_time) {
+        m_popup_delay_time = popup_delay_time;
     }
 }
