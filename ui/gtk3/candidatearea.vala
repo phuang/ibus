@@ -35,6 +35,16 @@ class CandidateArea : Gtk.Box {
         "9.", "0.", "a.", "b.", "c.", "d.", "e.", "f."
     };
 
+    private const string PREV_PAGE_ICONS[] = {
+        Gtk.Stock.GO_BACK,
+        Gtk.Stock.GO_UP
+    };
+
+    private const string NEXT_PAGE_ICONS[] = {
+        Gtk.Stock.GO_FORWARD,
+        Gtk.Stock.GO_DOWN
+    };
+
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void page_up();
     public signal void page_down();
@@ -42,24 +52,27 @@ class CandidateArea : Gtk.Box {
     public signal void cursor_down();
 
     public CandidateArea(bool vertical) {
-        GLib.Object(
-            orientation: vertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-        );
-        m_vertical = vertical;
-        recreate_ui();
-        show_all();
+        GLib.Object();
+        set_vertical(vertical, true);
     }
 
-    public void set_vertical(bool vertical) {
-        if (m_vertical == vertical)
+    public void set_vertical(bool vertical, bool force = false) {
+        if (!force && m_vertical == vertical)
             return;
         m_vertical = vertical;
+        orientation = vertical ?
+            Gtk.Orientation.VERTICAL :
+            Gtk.Orientation.HORIZONTAL;
         recreate_ui();
 
-        // Workaround a vala issue https://bugzilla.gnome.org/show_bug.cgi?id=661130
-        set_candidates((owned)m_ibus_candidates, m_focus_candidate, m_show_cursor);
-        if (m_candidates.length > 0)
+        if (m_ibus_candidates.length > 0) {
+            // Workaround a vala issue
+            // https://bugzilla.gnome.org/show_bug.cgi?id=661130
+            set_candidates((owned)m_ibus_candidates,
+                           m_focus_candidate,
+                           m_show_cursor);
             show_all();
+        }
     }
 
     public void set_labels(IBus.Text[] labels) {
@@ -126,12 +139,16 @@ class CandidateArea : Gtk.Box {
 
         Gtk.Button prev_button = new Gtk.Button();
         prev_button.clicked.connect((b) => page_up());
-        prev_button.set_image(new Gtk.Image.from_icon_name(Gtk.Stock.GO_UP, Gtk.IconSize.MENU));
+        prev_button.set_image(new Gtk.Image.from_stock(
+                                  PREV_PAGE_ICONS[orientation],
+                                  Gtk.IconSize.MENU));
         prev_button.set_relief(Gtk.ReliefStyle.NONE);
 
         Gtk.Button next_button = new Gtk.Button();
         next_button.clicked.connect((b) => page_down());
-        next_button.set_image(new Gtk.Image.from_icon_name(Gtk.Stock.GO_DOWN, Gtk.IconSize.MENU));
+        next_button.set_image(new Gtk.Image.from_stock(
+                                  NEXT_PAGE_ICONS[orientation],
+                                  Gtk.IconSize.MENU));
         next_button.set_relief(Gtk.ReliefStyle.NONE);
 
         if (m_vertical) {
