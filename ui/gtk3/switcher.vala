@@ -73,8 +73,8 @@ class Switcher : Gtk.Window {
     private Gdk.ModifierType m_primary_modifier;
     private GLib.MainLoop m_loop;
     private int m_result;
-    private uint m_popup_delay_time = 400;
-    private uint m_popup_delay_time_id;
+    private uint m_popup_delay_time = 0;
+    private uint m_popup_delay_time_id = 0;
     private int m_root_x;
     private int m_root_y;
 
@@ -157,19 +157,25 @@ class Switcher : Gtk.Window {
             keyboard = device.get_associated_device();
         }
 
-        get_position(out m_root_x, out m_root_y);
-        // Pull the window from the screen so that the window gets
-        // the key press and release events but mouse does not select
-        // an IME unexpectedly.
-        move(-1000, -1000);
+        // Avoid regressions.
+        if (m_popup_delay_time > 0) {
+            get_position(out m_root_x, out m_root_y);
+            // Pull the window from the screen so that the window gets
+            // the key press and release events but mouse does not select
+            // an IME unexpectedly.
+            move(-1000, -1000);
+        }
+
         show_all();
 
-        // Restore the window position after m_popup_delay_time
-        m_popup_delay_time_id = GLib.Timeout.add(m_popup_delay_time,
-                                                 () => {
-            restore_window_position("timeout");
-            return false;
-        });
+        if (m_popup_delay_time > 0) {
+            // Restore the window position after m_popup_delay_time
+            m_popup_delay_time_id = GLib.Timeout.add(m_popup_delay_time,
+                                                     () => {
+                restore_window_position("timeout");
+                return false;
+            });
+        }
 
         Gdk.GrabStatus status;
         // Grab all keyboard events
@@ -322,7 +328,9 @@ class Switcher : Gtk.Window {
         bool retval = true;
         Gdk.EventKey *pe = &e;
 
-        restore_window_position("pressed");
+        if (m_popup_delay_time > 0) {
+            restore_window_position("pressed");
+        }
 
         do {
             uint modifiers = KeybindingManager.MODIFIER_FILTER & pe->state;
@@ -376,9 +384,11 @@ class Switcher : Gtk.Window {
             return false;
         }
 
-        if (m_popup_delay_time_id != 0) {
-            GLib.Source.remove(m_popup_delay_time_id);
-            m_popup_delay_time_id = 0;
+        if (m_popup_delay_time > 0) {
+            if (m_popup_delay_time_id != 0) {
+                GLib.Source.remove(m_popup_delay_time_id);
+                m_popup_delay_time_id = 0;
+            }
         }
 
         m_loop.quit();

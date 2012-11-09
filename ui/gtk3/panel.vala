@@ -33,6 +33,7 @@ class Panel : IBus.PanelService {
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
     private Gtk.CssProvider m_css_provider;
+    private int m_switcher_delay_time = 400;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
 
     private uint m_switch_keysym = 0;
@@ -60,6 +61,10 @@ class Panel : IBus.PanelService {
 
         m_switcher = new Switcher();
         bind_switch_shortcut();
+
+        if (m_switcher_delay_time >= 0) {
+            m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
+        }
 
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((k, s) => {
@@ -188,6 +193,25 @@ class Panel : IBus.PanelService {
                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
+    private void set_switcher_delay_time(Variant? variant) {
+        Variant var_switcher_delay_time = variant;
+
+        if (var_switcher_delay_time == null) {
+            var_switcher_delay_time = m_config.get_value("general",
+                                                         "switcher-delay-time");
+        }
+
+        if (var_switcher_delay_time == null) {
+            return;
+        }
+
+        m_switcher_delay_time = var_switcher_delay_time.get_int32();
+
+        if (m_switcher_delay_time >= 0) {
+            m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
+        }
+    }
+
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
@@ -200,13 +224,12 @@ class Panel : IBus.PanelService {
             m_config.value_changed.connect(config_value_changed_cb);
             m_config.watch("general", "preload_engines");
             m_config.watch("general", "engines_order");
+            m_config.watch("general", "switcher_delay_time");
             m_config.watch("panel", "custom_font");
             m_config.watch("panel", "use_custom_font");
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
-            uint delay_time = (uint) m_config.get_value(
-                    "general", "switcher-delay-time").get_int32();
-            m_switcher.set_popup_delay_time(delay_time);
+            set_switcher_delay_time(null);
         } else {
             update_engines(null, null);
         }
@@ -290,6 +313,10 @@ class Panel : IBus.PanelService {
             set_custom_font();
             return;
         }
+
+        if (section == "general" && name == "switcher_delay_time") {
+            set_switcher_delay_time(variant);
+        }
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
@@ -302,7 +329,7 @@ class Panel : IBus.PanelService {
 
         bool pressed = KeybindingManager.primary_modifier_still_pressed(
                 event, primary_modifiers);
-        if (pressed) {
+        if (pressed && m_switcher_delay_time >= 0) {
             int i = revert ? m_engines.length - 1 : 1;
             i = m_switcher.run(m_switch_keysym, m_switch_modifiers, event,
                     m_engines, i);

@@ -33,7 +33,12 @@
       <default>400</default>
       <locale name="C">
         <short>Popup delay milliseconds for IME switcher window</short>
-            <long>Set popup delay milliseconds to show IME switcher window</long>
+            <long>Set popup delay milliseconds to show IME switcher window.
+                  The default is 400.
+                  0 = Show the window immediately.
+                  0 &lt; Delay milliseconds.
+                  0 &gt; Do not show the window and switch prev/next engines.
+            </long>
       </locale>
     </schema>
     <schema>
