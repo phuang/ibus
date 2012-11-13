@@ -24,7 +24,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>us(intl)</layout>
+			<layout>us</layout>
+			<layout_variant>intl</layout_variant>
 			<longname>English (US, international with dead keys)</longname>
 			<description>English (US, international with dead keys)</description>
                         <icon>ibus-keyboard</icon>
@@ -35,7 +36,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>us(colemak)</layout>
+			<layout>us</layout>
+			<layout_variant>colemak</layout_variant>
 			<longname>English (Colemak)</longname>
 			<description>English (Colemak)</description>
                         <icon>ibus-keyboard</icon>
@@ -46,7 +48,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>us(dvorak)</layout>
+			<layout>us</layout>
+			<layout_variant>dvorak</layout_variant>
 			<longname>English (Dvorak)</longname>
 			<description>English (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
@@ -57,20 +60,21 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>us(altgr-intl)</layout>
+			<layout>us</layout>
+			<layout_variant>altgr-intl</layout_variant>
 			<longname>English (international AltGr dead keys)</longname>
 			<description>English (international AltGr dead keys)</description>
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
 		<engine>
-			<name>xkb:us:altgr-intl:eng</name>
-			<language>eng</language>
+			<name>xkb:ara::ara</name>
+			<language>ara</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>us(altgr-intl)</layout>
-			<longname>English (international AltGr dead keys)</longname>
-			<description>English (international AltGr dead keys)</description>
+			<layout>ara</layout>
+			<longname>Arabic</longname>
+			<description>Arabic</description>
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
@@ -119,6 +123,18 @@
 			<rank>99</rank>
 		</engine>
 		<engine>
+			<name>xkb:br:dvorak:por</name>
+			<language>por</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>br</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>Portuguese (Brazil, Dvorak)</longname>
+			<description>Portuguese (Brazil, Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
 			<name>xkb:bg::bul</name>
 			<language>bul</language>
 			<license>GPL</license>
@@ -134,7 +150,8 @@
 			<language>bul</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>bg(phonetic)</layout>
+			<layout>bg</layout>
+			<layout_variant>phonetic</layout_variant>
 			<longname>Bulgarian (traditional phonetic)</longname>
 			<description>Bulgarian (traditional phonetic)</description>
                         <icon>ibus-keyboard</icon>
@@ -156,7 +173,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>ca(eng)</layout>
+			<layout>ca</layout>
+			<layout_variant>eng</layout_variant>
 			<longname>English (Canada)</longname>
 			<description>English (Canada)</description>
                         <icon>ibus-keyboard</icon>
@@ -229,6 +247,18 @@
 			<rank>99</rank>
 		</engine>
 		<engine>
+			<name>xkb:fr:dvorak:fra</name>
+			<language>fra</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>fr</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>French (Dvorak)</longname>
+			<description>French (Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
 			<name>xkb:de::ger</name>
 			<language>ger</language>
 			<license>GPL</license>
@@ -240,11 +270,24 @@
 			<rank>99</rank>
 		</engine>
 		<engine>
+			<name>xkb:de:dvorak:ger</name>
+			<language>ger</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>de</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>German (Dvorak)</longname>
+			<description>German (Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
 			<name>xkb:de:neo:ger</name>
 			<language>ger</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>de(neo)</layout>
+			<layout>de</layout>
+			<layout_variant>neo</layout_variant>
 			<longname>German (Neo 2)</longname>
 			<description>German (Neo 2)</description>
                         <icon>ibus-keyboard</icon>
@@ -332,7 +375,8 @@
 			<language>lav</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>lv(apostrophe)</layout>
+			<layout>lv</layout>
+			<layout_variant>apostrophe</layout_variant>
 			<longname>Latvian (apostrophe variant)</longname>
 			<description>Latvian (apostrophe variant)</description>
                         <icon>ibus-keyboard</icon>
@@ -346,6 +390,18 @@
 			<layout>pl</layout>
 			<longname>Polish</longname>
 			<description>Polish</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
+			<name>xkb:pl:dvorak:pol</name>
+			<language>pol</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>pl</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>Polish (Dvorak)</longname>
+			<description>Polish (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
@@ -387,7 +443,8 @@
 			<language>rus</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>ru(phonetic)</layout>
+			<layout>ru</layout>
+			<layout_variant>phonetic</layout_variant>
 			<longname>Russian (phonetic)</longname>
 			<description>Russian (phonetic)</description>
                         <icon>ibus-keyboard</icon>
@@ -442,7 +499,8 @@
 			<language>cat</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>es(cat)</layout>
+			<layout>es</layout>
+			<layout_variant>cat</layout_variant>
 			<longname>Catalan (Spain, with middle-dot L)</longname>
 			<description>Catalan (Spain, with middle-dot L)</description>
                         <icon>ibus-keyboard</icon>
@@ -456,6 +514,18 @@
 			<layout>se</layout>
 			<longname>Swedish</longname>
 			<description>Swedish</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
+			<name>xkb:se:dvorak:swe</name>
+			<language>swe</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>se</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>Swedish (Dvorak)</longname>
+			<description>Swedish (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
@@ -475,7 +545,8 @@
 			<language>fra</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>ch(fr)</layout>
+			<layout>ch</layout>
+			<layout_variant>fr</layout_variant>
 			<longname>French (Switzerland)</longname>
 			<description>French (Switzerland)</description>
                         <icon>ibus-keyboard</icon>
@@ -508,7 +579,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>gb(extd)</layout>
+			<layout>gb</layout>
+			<layout_variant>extd</layout_variant>
 			<longname>English (UK, extended WinKeys)</longname>
 			<description>English (UK, extended WinKeys)</description>
                         <icon>ibus-keyboard</icon>
@@ -519,7 +591,8 @@
 			<language>eng</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>gb(dvorak)</layout>
+			<layout>gb</layout>
+			<layout_variant>dvorak</layout_variant>
 			<longname>English (UK, Dvorak)</longname>
 			<description>English (UK, Dvorak)</description>
                         <icon>ibus-keyboard</icon>
@@ -530,7 +603,8 @@
 			<language>kor</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>kr(kr104)</layout>
+			<layout>kr</layout>
+			<layout_variant>kr104</layout_variant>
 			<longname>Korean (101/104 key compatible)</longname>
 			<description>Korean (101/104 key compatible)</description>
                         <icon>ibus-keyboard</icon>
