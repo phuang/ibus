@@ -445,7 +445,7 @@ AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
 # GNOME 3 uses the theme's icon.
 AC_ARG_WITH(panel-icon-keyboard,
     AS_HELP_STRING([--with-panel-icon-keyboard[=icon_name]],
-        [Set the default panel icon (default: "input-keyboard-symbolic")]),
+        [Set the default panel icon (default: "ibus-keyboard")]),
     [if test x"$with_panel_icon_keyboard" = x"yes" -o \
              x"$with_panel_icon_keyboard" = x; then
          with_panel_icon_keyboard="input-keyboard-symbolic"
@@ -455,7 +455,7 @@ AC_ARG_WITH(panel-icon-keyboard,
      fi
      IBUS_ICON_KEYBOARD=$with_panel_icon_keyboard
     ],
-    IBUS_ICON_KEYBOARD="input-keyboard-symbolic"
+    IBUS_ICON_KEYBOARD="ibus-keyboard"
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
