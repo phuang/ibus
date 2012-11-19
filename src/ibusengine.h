@@ -33,7 +33,7 @@
  * An IBusEngine provides infrastructure for input method engine.
  * Developers can "extend" this class for input method engine development.
  *
- * @see_also: #IBusComponent, #IBusEngineDesc
+ * see_also: #IBusComponent, #IBusEngineDesc
  */
 #ifndef __IBUS_ENGINE_H_
 #define __IBUS_ENGINE_H_
@@ -423,7 +423,7 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
  * #IBusEngine::enable handler, with both @text and @cursor set to
  * %NULL.
  *
- * @see_also #IBusEngine::set-surrounding-text
+ * see_also #IBusEngine::set-surrounding-text
  */
 void ibus_engine_get_surrounding_text(IBusEngine         *engine,
                                       IBusText          **text,

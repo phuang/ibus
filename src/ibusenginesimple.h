@@ -32,7 +32,7 @@
  *
  * An IBusEngineSimple provides table-based input method logic.
  *
- * @see_also: #IBusEngine
+ * see_also: #IBusEngine
  */
 #ifndef __IBUS_ENGINE_SIMPLE_H__
 #define __IBUS_ENGINE_SIMPLE_H__
@@ -97,8 +97,9 @@ GType   ibus_engine_simple_get_type       (void);
 /**
  * ibus_engine_simple_add_table:
  * @simple: An IBusEngineSimple.
- * @data: The table.
- * @ max_seq_len: Maximum length of a swquence in the table (cannot be greater
+ * @data: (transfer container) (element-type guint16) (array):
+ *      The table.
+ * @max_seq_len: Maximum length of a swquence in the table (cannot be greater
  *      than %IBUS_MAX_COMPOSE_LEN)
  *
  * Adds an additional table to search to the engine. Each row of the table
