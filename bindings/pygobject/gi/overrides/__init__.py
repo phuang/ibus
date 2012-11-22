@@ -1,9 +1,9 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
+# Copyright (c) 2011 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA  02110-1301  USA
 
-if ENABLE_VALA
-VALA_DIR = vala
-endif
+from pkgutil import extend_path
+__path__ = extend_path(__path__, __name__)
 
-if ENABLE_PYGOBJECT
-PYGOBJECT_DIR = pygobject
-endif
-
-SUBDIRS = \
-	$(VALA_DIR) \
-	$(PYGOBJECT_DIR) \
-	$(NULL)
-
--include $(top_srcdir)/git.mk
+__path__.reverse()
+from __init__ import *
+__path__.reverse()

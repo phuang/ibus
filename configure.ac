@@ -359,6 +359,20 @@ AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
 AM_PATH_PYTHON([2.5])
 
+PYGOBJECT_REQUIRED=3.0.0
+
+PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
+                 [enable_pygobject=yes],[enable_pygobject=no])
+
+if test "x$enable_pygobject" = "xyes"; then
+	PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+
+	pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
+	AC_SUBST(pyoverridesdir)
+fi
+
+AM_CONDITIONAL(ENABLE_PYGOBJECT, test x"$enable_pygobject" = "xyes")
+
 if test x"$enable_python_library" = x"yes"; then
     # Check python.
     AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
@@ -538,6 +552,7 @@ ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
 bindings/Makefile
+bindings/pygobject/Makefile
 bindings/vala/Makefile
 conf/Makefile
 conf/gconf/Makefile

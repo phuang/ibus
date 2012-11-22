@@ -1,9 +1,9 @@
-# vim:set noet ts=4:
+# vim:set et sts=4 sw=4:
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
+# Copyright (c) 2011 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,20 +17,28 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+# Boston, MA  02110-1301  USA
 
-if ENABLE_VALA
-VALA_DIR = vala
-endif
+NULL =
 
-if ENABLE_PYGOBJECT
-PYGOBJECT_DIR = pygobject
-endif
+overridesdir = $(pyoverridesdir)
+overrides_PYTHON =				\
+	gi/overrides/IBus.py			\
+	$(NULL)
 
-SUBDIRS = \
-	$(VALA_DIR) \
-	$(PYGOBJECT_DIR) \
+TESTS = test-override-ibus.py
+
+TESTS_ENVIRONMENT = \
+	PYTHONPATH=$(top_srcdir)/tests:$${PYTHONPATH:+:$$PYTHONPATH} \
+	LD_LIBRARY_PATH=$(top_builddir)/src/.libs:$$LD_LIBRARY_PATH \
+	GI_TYPELIB_PATH=$(top_builddir)/src:$$GI_TYPELIB_PATH \
+	$(PYTHON) -B \
+	$(NULL)
+
+EXTRA_DIST =					\
+	gi/__init__.py				\
+	gi/overrides/__init__.py		\
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
