@@ -118,13 +118,6 @@ class EngineTreeView(Gtk.TreeView):
 
         icon_size = Gtk.icon_size_lookup(Gtk.IconSize.LARGE_TOOLBAR)[0]
         pixbuf = load_icon(engine.get_icon(), Gtk.IconSize.LARGE_TOOLBAR)
-
-        if pixbuf == None:
-            pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
-        if pixbuf == None:
-            pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
-                               Gtk.IconSize.LARGE_TOOLBAR)
-
         renderer.set_property("pixbuf", pixbuf)
 
     def __name_cell_data_cb(self, celllayout, renderer, model, it, data):

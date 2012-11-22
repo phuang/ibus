@@ -129,9 +129,7 @@ public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
     }
 
     private void set_icon(string icon) {
-        int width, height;
-        Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
-        set_image(new IconWidget(icon, width));
+        set_image(new IconWidget(icon, Gtk.IconSize.MENU));
     }
 
     public override void activate() {

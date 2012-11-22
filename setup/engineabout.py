@@ -38,7 +38,8 @@ class EngineAbout(Gtk.Dialog):
         self.__init_ui()
 
     def __init_ui(self):
-        self.set_icon_name(Gtk.STOCK_ABOUT)
+        # set_icon_name() cannot fallback any stock ids to the real files.
+        self.set_icon_name('help-about')
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)

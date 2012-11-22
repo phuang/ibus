@@ -492,9 +492,6 @@ class Panel : IBus.PanelService {
 
         m_ime_menu.append(new Gtk.SeparatorMenuItem());
 
-        int width, height;
-        Gtk.icon_size_lookup(Gtk.IconSize.MENU, out width, out height);
-
         // Append IMEs
         foreach (var engine in m_engines) {
             var language = engine.get_language();
@@ -502,7 +499,7 @@ class Panel : IBus.PanelService {
             var item = new Gtk.ImageMenuItem.with_label(
                 "%s - %s".printf (IBus.get_language_name(language), longname));
             if (engine.get_icon() != "") {
-                var icon = new IconWidget(engine.get_icon(), width);
+                var icon = new IconWidget(engine.get_icon(), Gtk.IconSize.MENU);
                  item.set_image(icon);
             }
             // Make a copy of engine to workaround a bug in vala.
@@ -590,8 +587,14 @@ class Panel : IBus.PanelService {
 
         if (icon_name[0] == '/')
             m_status_icon.set_from_file(icon_name);
-        else
-            m_status_icon.set_from_icon_name(icon_name);
+        else {
+            var theme = Gtk.IconTheme.get_default();
+            if (theme.lookup_icon(icon_name, 48, 0) != null) {
+                m_status_icon.set_from_icon_name(icon_name);
+            } else {
+                m_status_icon.set_from_icon_name("ibus-engine");
+            }
+        }
 
         if (engine == null)
             return;

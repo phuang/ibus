@@ -37,9 +37,14 @@ icon_theme.prepend_search_path(icondir)
 
 icon_cache = {}
 
-def load_icon(icon, size):
-    if (icon, size) in icon_cache:
-        return icon_cache[(icon, size)]
+# load_icon:
+# @icon_name_or_path: Can be a name or path but not stock id
+#     because gtk_icon_theme_load_icon() cannot fallback the stock id to
+#     a real file name against gtk_image_new_from_stock().
+# @size: #GtkIconSize
+def load_icon(icon_name_or_path, size):
+    if (icon_name_or_path, size) in icon_cache:
+        return icon_cache[(icon_name_or_path, size)]
 
     icon_size = Gtk.icon_size_lookup(size)
     if icon_size[0]:
@@ -47,7 +52,7 @@ def load_icon(icon, size):
 
     pixbuf = None
     try:
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_name_or_path)
         w, h = pixbuf.get_width(), pixbuf.get_height()
         rate = max(w, h) / float(icon_size)
         w = int(w / rate)
@@ -60,10 +65,26 @@ def load_icon(icon, size):
     if pixbuf == None:
         try:
             theme = Gtk.IconTheme.get_default()
-            pixbuf = theme.load_icon(icon, icon_size, 0)
+            pixbuf = theme.load_icon(icon_name_or_path, icon_size, 0)
         except:
             # import traceback
             # traceback.print_exc()
             pass
-    icon_cache[(icon, size)] = pixbuf
+    if pixbuf == None:
+        try:
+            theme = Gtk.IconTheme.get_default()
+            pixbuf = theme.load_icon('ibus-engine', icon_size, 0)
+        except:
+            # import traceback
+            # traceback.print_exc()
+            pass
+    if pixbuf == None:
+        try:
+            theme = Gtk.IconTheme.get_default()
+            pixbuf = theme.load_icon('image-missing', icon_size, 0)
+        except:
+            # import traceback
+            # traceback.print_exc()
+            pass
+    icon_cache[(icon_name_or_path, size)] = pixbuf
     return pixbuf
