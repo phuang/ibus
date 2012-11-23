@@ -31,14 +31,14 @@ vapi_deps = \
 	$(srcdir)/IBus-1.0.metadata \
 	$(srcdir)/IBus-1.0-custom.vala \
 	| \
-	$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
+	$(top_builddir)/src/IBus-@IBUS_API_VERSION@.gir \
 	$(NULL)
 
 ibus-@IBUS_API_VERSION@.vapi: $(vapi_deps)
 	$(AM_V_GEN) $(VAPIGEN) --library ibus-@IBUS_API_VERSION@ \
 			--pkg gio-2.0 \
 			--metadatadir=$(srcdir) \
-			$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
+			$(top_builddir)/src/IBus-@IBUS_API_VERSION@.gir \
 			$(srcdir)/IBus-1.0-custom.vala
 
 EXTRA_DIST = \

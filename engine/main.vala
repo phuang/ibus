@@ -34,7 +34,7 @@ const uint16 cedilla_compose_seqs[] = {
   (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_C,  (uint16) IBus.KEY_apostrophe, 0,      0,
     0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
   (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_c,  (uint16) IBus.KEY_apostrophe, 0,      0,
-    0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
+    0x00E7 /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
 };
 
 class DummyEngine : IBus.EngineSimple {

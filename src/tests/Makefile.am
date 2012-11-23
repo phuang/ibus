@@ -29,6 +29,7 @@ INCLUDES =              \
 	@GLIB2_CFLAGS@      \
 	@GIO2_CFLAGS@       \
 	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
 
 prog_ldadd = 			\
