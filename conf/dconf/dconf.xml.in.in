@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <!-- filename: dconf.xml -->
 <component>
 	<name>org.freedesktop.IBus.Config</name>
