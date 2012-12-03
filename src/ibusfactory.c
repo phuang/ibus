@@ -170,7 +170,8 @@ ibus_factory_class_init (IBusFactoryClass *class)
      * with @engine_name, which gets emitted when IBusFactory
      * received CreateEngine dbus method. The callback functions
      * will be called until a callback returns a non-null object
-     * of IBusEngine. */
+     * of IBusEngine.
+     */
     factory_signals[CREATE_ENGINE] =
         g_signal_new (I_("create-engine"),
             G_TYPE_FROM_CLASS (gobject_class),
