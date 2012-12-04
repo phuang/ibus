@@ -120,7 +120,7 @@ AC_SUBST(DATE_DISPLAY)
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_STDC
-AM_PROG_VALAC([0.14])
+AM_PROG_VALAC([0.16])
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -192,21 +192,6 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
-# --disable-vala option.
-AC_ARG_ENABLE(vala,
-    AS_HELP_STRING([--disable-vala],
-                   [Do not build ibus vala binding]),
-    [enable_vala=$enableval],
-    [enable_vala=yes]
-)
-if test x"$enable_vala" = x"yes"; then
-    AC_PATH_PROG([VAPIGEN], [vapigen], [false])
-fi
-AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
-if test x"$enable_vala" != x"yes"; then
-    enable_vala="no (disabled, use --enable-vala to enable)"
-fi
-
 if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
     # check for gtk2
     PKG_CHECK_MODULES(GTK2, [
@@ -266,6 +251,9 @@ if test x"$found_introspection" = x"yes" ; then
     fi
 fi
 AC_SUBST(IBUS_GIR_SCANNERFLAGS)
+
+# Check vapigen.
+VAPIGEN_CHECK([0.16])
 
 # Check for gtk-doc.
 GTK_DOC_CHECK(1.9)

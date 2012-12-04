@@ -22,6 +22,7 @@
 
 EXTRA_DIST = \
     as-version.m4 \
+    vapigen.m4 \
     $(NULL)
 
 GITIGNOREFILES = \
