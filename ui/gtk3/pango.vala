@@ -50,17 +50,17 @@ Pango.AttrList get_pango_attr_list_from_ibus_text(IBus.Text text) {
         switch(attr.type) {
         case IBus.AttrType.FOREGROUND:
             {
-                uint16 r = (uint16)(attr.value & 0x00ff0000) >> 8;
+                uint16 r = (uint16)((attr.value & 0x00ff0000) >> 8);
                 uint16 g = (uint16)(attr.value & 0x0000ff00);
-                uint16 b = (uint16)(attr.value & 0x000000ff) << 8;
+                uint16 b = (uint16)((attr.value & 0x000000ff) << 8);
                 pango_attr = Pango.attr_foreground_new(r, g, b);
                 break;
             }
         case IBus.AttrType.BACKGROUND:
             {
-                uint16 r = (uint16)(attr.value & 0x00ff0000) >> 8;
+                uint16 r = (uint16)((attr.value & 0x00ff0000) >> 8);
                 uint16 g = (uint16)(attr.value & 0x0000ff00);
-                uint16 b = (uint16)(attr.value & 0x000000ff) << 8;
+                uint16 b = (uint16)((attr.value & 0x000000ff) << 8);
                 pango_attr = Pango.attr_background_new(r, g, b);
                 break;
             }
