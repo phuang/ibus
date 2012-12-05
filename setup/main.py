@@ -83,22 +83,23 @@ class Setup(object):
         self.__init_ui()
 
     def __init_hotkey(self):
-        default_values = {
-            "trigger" : (N_("trigger"), ["Control+space"]),
-            "enable_unconditional" : (N_("enable"), []),
-            "disable_unconditional" : (N_("disable"), [])
-        }
+        name = 'triggers'
+        label = 'switch_engine'
+        variant = self.__config.get_value('general/hotkey', name)
+        if variant != None:
+            shortcuts = variant.dup_strv()
+        else:
+            shortcuts =  ['<Control>space']
 
-        values = dict(self.__config.get_values("general/hotkey"))
-
-        for name, (label, shortcuts) in default_values.items():
-            shortcuts = values.get(name, shortcuts)
-            button = self.__builder.get_object("button_%s" % name)
-            entry = self.__builder.get_object("entry_%s" % name)
-            entry.set_text("; ".join(shortcuts))
-            entry.set_tooltip_text("\n".join(shortcuts))
-            button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    label, "general/hotkey", name, entry)
+        button = self.__builder.get_object("button_%s" % label)
+        entry = self.__builder.get_object("entry_%s" % label)
+        entry.set_text("; ".join(shortcuts))
+        tooltip = "\n".join(shortcuts)
+        tooltip += "\n" + \
+            _("Use shortcut with shift to switch to the previous input method") 
+        entry.set_tooltip_text(tooltip)
+        button.connect("clicked", self.__shortcut_button_clicked_cb,
+                name, "general/hotkey", label, entry)
 
     def __init_panel(self):
         values = dict(self.__config.get_values("panel"))
@@ -375,7 +376,8 @@ class Setup(object):
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                 Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        title = _("Select keyboard shortcut for %s") %  _(name)
+        title = _("Select keyboard shortcut for %s") % \
+                _("switching input methods")
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
         if text:
@@ -388,11 +390,13 @@ class Setup(object):
         dialog.destroy()
         if id != Gtk.ResponseType.OK:
             return
-        self.__config.set_value(section, _name, GLib.Variant.new_strv(shortcuts))
+        self.__config.set_value(section, name, GLib.Variant.new_strv(shortcuts))
         text = "; ".join(shortcuts)
         entry.set_text(text)
-        entry.set_tooltip_text(text)
-
+        tooltip = "\n".join(shortcuts)
+        tooltip += "\n" + \
+            _("Use shortcut with shift to switch to the previous input method") 
+        entry.set_tooltip_text(tooltip)
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):
 

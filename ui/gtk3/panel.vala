@@ -21,6 +21,20 @@
  */
 
 class Panel : IBus.PanelService {
+    private class Keybinding {
+        public Keybinding(uint keysym,
+                          Gdk.ModifierType modifiers,
+                          bool reverse) {
+            this.keysym = keysym;
+            this.modifiers = modifiers;
+            this.reverse = reverse;
+        }
+
+        public uint keysym { get; set; }
+        public Gdk.ModifierType modifiers { get; set; }
+        public bool reverse { get; set; }
+    }
+
     private IBus.Bus m_bus;
     private IBus.Config m_config;
     private Gtk.StatusIcon m_status_icon;
@@ -36,8 +50,7 @@ class Panel : IBus.PanelService {
     private int m_switcher_delay_time = 400;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
 
-    private uint m_switch_keysym = 0;
-    private Gdk.ModifierType m_switch_modifiers = 0;
+    private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
     public Panel(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -60,7 +73,8 @@ class Panel : IBus.PanelService {
         m_candidate_panel.page_down.connect((w) => this.page_down());
 
         m_switcher = new Switcher();
-        bind_switch_shortcut();
+        // The initial shortcut is "<Control>space"
+        bind_switch_shortcut(null);
 
         if (m_switcher_delay_time >= 0) {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
@@ -78,62 +92,101 @@ class Panel : IBus.PanelService {
         unbind_switch_shortcut();
     }
 
-    private void bind_switch_shortcut() {
-        var keybinding_manager = KeybindingManager.get_instance();
+    private void keybinding_manager_bind(KeybindingManager keybinding_manager,
+                                         string?           accelerator) {
+        uint switch_keysym = 0;
+        Gdk.ModifierType switch_modifiers = 0;
+        Gdk.ModifierType reverse_modifier = Gdk.ModifierType.SHIFT_MASK;
+        Keybinding keybinding;
 
-        var accelerator = ACCELERATOR_SWITCH_IME_FOREWARD;
         Gtk.accelerator_parse(accelerator,
-                out m_switch_keysym, out m_switch_modifiers);
+                out switch_keysym, out switch_modifiers);
 
-        // Map virtual modifiers to (i.e.Mod2, Mod3, ...)
+        // Map virtual modifiers to (i.e. Mod2, Mod3, ...)
         const Gdk.ModifierType VIRTUAL_MODIFIERS = (
                 Gdk.ModifierType.SUPER_MASK |
                 Gdk.ModifierType.HYPER_MASK |
                 Gdk.ModifierType.META_MASK);
-        if ((m_switch_modifiers & VIRTUAL_MODIFIERS) != 0) {
+        if ((switch_modifiers & VIRTUAL_MODIFIERS) != 0) {
         // workaround a bug in gdk vapi vala > 0.18
         // https://bugzilla.gnome.org/show_bug.cgi?id=677559
 #if VALA_0_18
             Gdk.Keymap.get_default().map_virtual_modifiers(
-                    ref m_switch_modifiers);
+                    ref switch_modifiers);
 #else
-            if ((m_switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
-                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
-            if ((m_switch_modifiers & Gdk.ModifierType.HYPER_MASK) != 0)
-                m_switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+            if ((switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
+                switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
+            if ((switch_modifiers & Gdk.ModifierType.HYPER_MASK) != 0)
+                switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
 #endif
-            m_switch_modifiers &= ~VIRTUAL_MODIFIERS;
+            switch_modifiers &= ~VIRTUAL_MODIFIERS;
         }
 
-        if (m_switch_keysym == 0 && m_switch_modifiers == 0) {
+        if (switch_keysym == 0 && switch_modifiers == 0) {
             warning("Parse accelerator '%s' failed!", accelerator);
             return;
         }
 
-        keybinding_manager.bind(m_switch_keysym, m_switch_modifiers,
+        keybinding = new Keybinding(switch_keysym,
+                                    switch_modifiers,
+                                    false);
+        m_keybindings.append(keybinding);
+
+        keybinding_manager.bind(switch_keysym, switch_modifiers,
                 (e) => handle_engine_switch(e, false));
 
         // accelerator already has Shift mask
-        if ((m_switch_modifiers & Gdk.ModifierType.SHIFT_MASK) != 0)
+        if ((switch_modifiers & reverse_modifier) != 0) {
             return;
+        }
 
-        keybinding_manager.bind(m_switch_keysym,
-                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK,
+        switch_modifiers |= reverse_modifier;
+
+        keybinding = new Keybinding(switch_keysym,
+                                    switch_modifiers,
+                                    true);
+        m_keybindings.append(keybinding);
+
+        keybinding_manager.bind(switch_keysym, switch_modifiers,
                 (e) => handle_engine_switch(e, true));
+    }
+
+    private void bind_switch_shortcut(Variant? variant) {
+        string[] accelerators = {};
+        Variant var_trigger = variant;
+
+        if (var_trigger == null && m_config != null) {
+            var_trigger = m_config.get_value("general/hotkey",
+                                             "triggers");
+        }
+
+        if (var_trigger != null) {
+            accelerators = var_trigger.dup_strv();
+        } else {
+            accelerators += ACCELERATOR_SWITCH_IME_FOREWARD;
+        }
+
+        var keybinding_manager = KeybindingManager.get_instance();
+
+        foreach (var accelerator in accelerators) {
+            keybinding_manager_bind(keybinding_manager, accelerator);
+        }
     }
 
     private void unbind_switch_shortcut() {
         var keybinding_manager = KeybindingManager.get_instance();
 
-        if (m_switch_keysym == 0 && m_switch_modifiers == 0)
-            return;
+        unowned GLib.List<Keybinding> keybindings = m_keybindings;
 
-        keybinding_manager.unbind(m_switch_keysym, m_switch_modifiers);
-        keybinding_manager.unbind(m_switch_keysym,
-                m_switch_modifiers | Gdk.ModifierType.SHIFT_MASK);
+        while (keybindings != null) {
+            Keybinding keybinding = keybindings.data;
 
-        m_switch_keysym = 0;
-        m_switch_modifiers = 0;
+            keybinding_manager.unbind(keybinding.keysym,
+                                      keybinding.modifiers);
+            keybindings = keybindings.next;
+        }
+
+        m_keybindings = null;
     }
 
     private void set_custom_font() {
@@ -225,10 +278,13 @@ class Panel : IBus.PanelService {
             m_config.watch("general", "preload_engines");
             m_config.watch("general", "engines_order");
             m_config.watch("general", "switcher_delay_time");
+            m_config.watch("general/hotkey", "triggers");
             m_config.watch("panel", "custom_font");
             m_config.watch("panel", "use_custom_font");
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
+            unbind_switch_shortcut();
+            bind_switch_shortcut(null);
             set_switcher_delay_time(null);
         } else {
             update_engines(null, null);
@@ -308,6 +364,12 @@ class Panel : IBus.PanelService {
             return;
         }
 
+        if (section == "general/hotkey" && name == "triggers") {
+            unbind_switch_shortcut();
+            bind_switch_shortcut(variant);
+            return;
+        }
+
         if (section == "panel" && (name == "custom_font" ||
                                    name == "use_custom_font")) {
             set_custom_font();
@@ -316,6 +378,7 @@ class Panel : IBus.PanelService {
 
         if (section == "general" && name == "switcher_delay_time") {
             set_switcher_delay_time(variant);
+            return;
         }
     }
 
@@ -324,15 +387,22 @@ class Panel : IBus.PanelService {
         if (m_engines.length <= 1)
             return;
 
+        uint keyval = event.key.keyval;
+        uint modifiers = KeybindingManager.MODIFIER_FILTER & event.key.state;
+
         uint primary_modifiers =
             KeybindingManager.get_primary_modifier(event.key.state);
 
         bool pressed = KeybindingManager.primary_modifier_still_pressed(
                 event, primary_modifiers);
+
+        if (revert) {
+            modifiers &= ~Gdk.ModifierType.SHIFT_MASK;
+        }
+
         if (pressed && m_switcher_delay_time >= 0) {
             int i = revert ? m_engines.length - 1 : 1;
-            i = m_switcher.run(m_switch_keysym, m_switch_modifiers, event,
-                    m_engines, i);
+            i = m_switcher.run(keyval, modifiers, event, m_engines, i);
             if (i < 0) {
                 debug("switch cancelled");
             } else {

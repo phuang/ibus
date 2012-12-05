@@ -50,7 +50,19 @@
       <default>[Control+space,Zenkaku_Hankaku,Alt+Kanji,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
       <locale name="C">
         <short>Trigger shortcut keys</short>
-	    <long>The shortcut keys for turning input method on or off</long>
+          <long>The shortcut keys for turning input method on or off</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/triggers</key>
+      <applyto>/desktop/ibus/general/hotkey/triggers</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[&lt;Control&gt;space]</default>
+      <locale name="C">
+        <short>Trigger shortcut keys for gtk_accelerator_parse</short>
+          <long>The shortcut keys for turning input method on or off</long>
       </locale>
     </schema>
     <schema>
