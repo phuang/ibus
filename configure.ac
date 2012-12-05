@@ -266,12 +266,12 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# --disable-gconf option.
+# --enable-gconf option.
 AC_ARG_ENABLE(gconf,
-    AS_HELP_STRING([--disable-gconf],
-                   [Do not use GConf code]),
+    AS_HELP_STRING([--enable-gconf],
+                   [Use GConf code]),
     [enable_gconf=$enableval],
-    [enable_gconf=yes]
+    [enable_gconf=no]
 )
 AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
 
@@ -303,25 +303,25 @@ AC_ARG_ENABLE(memconf,
 AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
 
 AC_ARG_ENABLE(dconf,
-    AS_HELP_STRING([--enable-dconf],
-                   [Enable configure base on dconf]),
+    AS_HELP_STRING([--disable-dconf],
+                   [Disable configure base on dconf]),
     [enable_dconf=$enableval],
-    [enable_dconf=no]
+    [enable_dconf=yes]
 )
+AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 if test x"$enable_dconf" = x"yes"; then
     # check dconf
     PKG_CHECK_MODULES(DCONF,
-        [dconf >= 0.7.5], ,
-        enable_dconf=no
+        [dconf >= 0.7.5],
     )
     PKG_CHECK_EXISTS([dconf >= 0.13.4],
         [AC_DEFINE(DCONF_0_13_4, TRUE, [dconf is 0.13.4 or later])],
         [])
     # check glib-compile-schemas
     GLIB_GSETTINGS
+    enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
-AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 # Check env.
 AC_PATH_PROG(ENV_IBUS_TEST, env)
