@@ -87,7 +87,7 @@ public int main(string[] args) {
         if (lang != null && 
             lang.ascii_ncasecmp("pt_br", "pt_br".length) == 0) {
             IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
-            simple.add_table((uint16[]) cedilla_compose_seqs,
+            simple.add_table(cedilla_compose_seqs,
                              4,
                              cedilla_compose_seqs.length / (4 + 2));
         }

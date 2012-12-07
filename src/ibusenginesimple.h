@@ -97,8 +97,8 @@ GType   ibus_engine_simple_get_type       (void);
 /**
  * ibus_engine_simple_add_table:
  * @simple: An IBusEngineSimple.
- * @data: (transfer container) (element-type guint16) (array):
- *      The table.
+ * @data: (element-type guint16) (array): The table which must be available
+ *      during the whole life of the simple engine.
  * @max_seq_len: Maximum length of a swquence in the table (cannot be greater
  *      than %IBUS_MAX_COMPOSE_LEN)
  *
@@ -111,7 +111,7 @@ GType   ibus_engine_simple_get_type       (void);
  * symbol fields. (Values beyond the length of the sequence should be zero.)
  */
 void    ibus_engine_simple_add_table      (IBusEngineSimple     *simple,
-                                           guint16              *data,
+                                           const guint16        *data,
                                            gint                  max_seq_len,
                                            gint                  n_seqs);
 

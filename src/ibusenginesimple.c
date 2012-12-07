@@ -892,7 +892,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
 void
 ibus_engine_simple_add_table (IBusEngineSimple *simple,
-                              guint16          *data,
+                              const guint16    *data,
                               gint              max_seq_len,
                               gint              n_seqs)
 {
