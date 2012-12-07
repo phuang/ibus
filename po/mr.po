@@ -1,22 +1,24 @@
 # translation of mr.po to Marathi
 # Marathi translation of ibus.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-#
-# Sandeep Shedmake <sshedmak@redhat.com>, 2010-2011.
+# 
+# Translators:
+# Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2009.
+# Sandeep Shedmake <sshedmak@redhat.com>, 2009,2012.
+# sandeeps <sshedmak@redhat.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: mr\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 10:14+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
-"Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-10-23 17:37+0000\n"
+"Last-Translator: sandeeps <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
-"Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"Language: mr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../setup/setup.ui.h:1
@@ -28,36 +30,36 @@ msgid "Vertical"
 msgstr "उभे"
 
 #: ../setup/setup.ui.h:3
-msgid "Embedded in menu"
-msgstr "मेन्यू मध्ये एम्बेड केले"
-
-#: ../setup/setup.ui.h:4
-msgid "When active"
-msgstr "सक्रीय असल्यावर"
-
-#: ../setup/setup.ui.h:5
-msgid "Always"
-msgstr "नेहमी"
-
-#: ../setup/setup.ui.h:6
 msgid "Top left corner"
 msgstr "वरील डावा कोपरा"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:4
 msgid "Top right corner"
 msgstr "वरील उजवा कोपरा"
 
-#: ../setup/setup.ui.h:8
+#: ../setup/setup.ui.h:5
 msgid "Bottom left corner"
 msgstr "तळापासून डावा कोपरा"
 
-#: ../setup/setup.ui.h:9
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr "तळापासून उजवा कोपरा"
 
-#: ../setup/setup.ui.h:10
+#: ../setup/setup.ui.h:7
 msgid "Custom"
 msgstr "मनपसंत"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr "मेन्यू मध्ये एम्बेड केले"
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr "सक्रीय असल्यावर"
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "नेहमी"
 
 #: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -176,17 +178,14 @@ msgid "Show information of the selected input method"
 msgstr "नीवडलेल्या इंपुट पद्धत विषयी माहिती दाखवा"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show setup of the selected input method"
-msgstr "नीवडलेल्या इंपुट पद्धत विषयी माहिती दाखवा"
+msgstr "नीवडलेल्या इंपुट पद्धतीची मांडणी दाखवा"
 
 #: ../setup/setup.ui.h:41
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>यादीतील प्रथम इन्पुट पद्धती मुलभूत नुरूप आहे.\n"
-"बदलण्याकरीता तुम्ही वर/खाली बटणांचा वापर करू शकता.</i></small>"
+msgstr "<small><i>यादीतील प्रथम इन्पुट पद्धती मुलभूत नुरूप आहे.\nबदलण्याकरीता तुम्ही वर/खाली बटणांचा वापर करू शकता.</i></small>"
 
 #. create im name & icon column
 #: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
@@ -225,13 +224,7 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>हुशार इनपुट बस</small>\n"
-"मुख्यपान: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>हुशार इनपुट बस</small>\nमुख्यपान: http://code.google.com/p/ibus\n\n\n\n"
 
 #: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
@@ -267,11 +260,11 @@ msgstr "ibus सुरू होतेवेळी इंजीन आधिप�
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Engines order"
-msgstr ""
+msgstr "इंजिनचे क्रम"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Saved engines order in input method list"
-msgstr ""
+msgstr "इंपुट मेथड सूचमध्ये इंजिनचे क्रम साठवे"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Trigger shortcut keys"
@@ -327,9 +320,7 @@ msgstr "भाषा पटलचे स्थान"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"भाषा पटलाचे स्थान. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left "
-"corner, 3 = Bottom right corner, 4 = Custom"
+msgstr "भाषा पटलाचे स्थान. 0 = Top left corner, 1 = Top right corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Orientation of lookup table"
@@ -381,19 +372,17 @@ msgstr "ऍप्लिकेशनला इंपुट फोकस प्र
 
 #: ../data/ibus.schemas.in.h:36
 msgid "DConf preserve name prefixes"
-msgstr ""
+msgstr "DConf प्रिझर्व्ह नेम प्रिफिक्सेस्"
 
 #: ../data/ibus.schemas.in.h:37
 msgid "Prefixes of DConf keys to stop name conversion"
-msgstr ""
+msgstr "नाव रूपांतर थांबवण्याकरीता DConf किज्चे प्रिफिक्सेस्"
 
 #: ../ibus/_config.py.in:41
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"सर्वहक्काधिकार (c) 2007-2010 पेंग हुआंग\n"
-"सर्वहक्काधिकार (c) 2007-2010 Red Hat, Inc."
+msgstr "सर्वहक्काधिकार (c) 2007-2010 पेंग हुआंग\nसर्वहक्काधिकार (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -418,7 +407,7 @@ msgstr "लेखक: %s\n"
 msgid "Description:\n"
 msgstr "वर्णन:\n"
 
-#: ../setup/enginecombobox.py:136
+#: ../setup/enginecombobox.py:135
 msgid "Select an input method"
 msgstr "इंपुट पद्धत नीवडा"
 
@@ -442,120 +431,118 @@ msgstr "कि कोड:"
 msgid "Modifiers:"
 msgstr "मॉडिफायर:"
 
-#: ../setup/keyboardshortcut.py:235
+#: ../setup/keyboardshortcut.py:251
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"कृपया कि (किंवा कि जोडणी) दाबा.\n"
-"कि सोडल्यावर संवाद बंद होईल."
+msgstr "कृपया कि (किंवा कि जोडणी) दाबा.\nकि सोडल्यावर संवाद बंद होईल."
 
-#: ../setup/keyboardshortcut.py:237
+#: ../setup/keyboardshortcut.py:253
 msgid "Please press a key (or a key combination)"
 msgstr "कृपया कि (किंवा कि जोडणी) दाबा"
 
-#: ../setup/main.py:79
+#: ../setup/main.py:87
 msgid "trigger"
 msgstr "ट्रिगर"
 
-#: ../setup/main.py:80
+#: ../setup/main.py:88
 msgid "enable"
 msgstr "सुरू करा"
 
-#: ../setup/main.py:81
+#: ../setup/main.py:89
 msgid "disable"
 msgstr "बंद करा"
 
-#: ../setup/main.py:323
-#, fuzzy
+#: ../setup/main.py:331
 msgid "The IBus daemon is not running. Do you wish to start it?"
-msgstr "IBus डिमन सुरू केले गेले नाही. तुम्हाला आता सुरू करायचे?"
+msgstr "IBus डिमन सुरू नाही. तुम्हाला ते सुरू करायचे?"
 
-#: ../setup/main.py:344
-#, fuzzy
+#: ../setup/main.py:352
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus सुरू केले गेले आहे! तुम्ही IBus चा वापर करत नसल्यास, कृपया खालिल ओळ $HOME/.bashrc "
-"अंतर्गत समावेष करा, व पुन्हा डेस्कटॉपवर पुन्हा प्रवेश करा.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
+msgstr "IBus सुरू झाले! IBus चा वापर न केल्यास, खालील ओळींना $HOME/.bashrc मध्ये समाविष्ट करा; व त्यानंतर डेस्कटॉपमध्ये पुनः प्रवेश करा.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:357
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
 #, python-format
-msgid "IBus daemon coundn't be started in %d seconds"
-msgstr ""
+msgid "IBus daemon could not be started in %d seconds"
+msgstr "IBus डिमन %d सेकंदात सुरू करणे अशक्य"
 
-#: ../setup/main.py:369
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s करीता कळफलक शार्टकट नीवडा"
 
-#: ../ui/gtk3/panel.vala:330
-#, fuzzy
-msgid "Copyright (c) 2007-2012 Peng Huang\n"
-msgstr ""
-"सर्वहक्काधिकार (c) 2007-2010 पेंग हुआंग\n"
-"सर्वहक्काधिकार (c) 2007-2010 Red Hat, Inc."
+#: ../tools/main.vala:40
+msgid "List engine name only"
+msgstr "फक्त इंजिन नाव सूचीत दाखवा"
 
-#: ../ui/gtk3/panel.vala:335
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr "आदेश [OPTIONS]"
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr "IBus शी जोडणी अशक्य.\n"
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr "भाषा: %s\n"
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr "इंजिन ठरवले नाही.\n"
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr "ग्रोबल इंजिन ठरवण्यास अपयशी.\n"
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr "ग्रोबल इंजिन ठरवण्यास अपयशी.\n"
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr "xkb मांडणीला %s करीता बदलण्यास अपयशी."
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr "वापर: %s COMMAND [OPTION...]\n\n"
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr "आदेश:\n"
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr "%s अपरिचीत आदेश आहे!\n"
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr "सर्वहक्काधिकार (c) 2007-2012 पेंग हुआंग\n"
+
+#: ../ui/gtk3/panel.vala:366
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix करीता IBus हे एक हुशार इनपुट बस आहे."
 
-#: ../ui/gtk3/panel.vala:339
+#: ../ui/gtk3/panel.vala:370
 msgid "translator-credits"
-msgstr ""
-"संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat."
-"com>, 2009, 2010."
+msgstr "संदिप शेडमाके <sandeep.shedmake@gmail.com>, 2009; संदिप शेडमाके <sshedmak@redhat.com>, 2009, 2010."
 
-#: ../ui/gtk3/panel.vala:371
+#: ../ui/gtk3/panel.vala:402
 msgid "Restart"
 msgstr "पुन्हा चालू करा"
-
-#~ msgid "Previous page"
-#~ msgstr "पूर्वीचे पान"
-
-#~ msgid "Next page"
-#~ msgstr "पुढचे पान"
-
-#~ msgid ""
-#~ "Some input methods have been installed, removed or updated. Please "
-#~ "restart ibus input platform."
-#~ msgstr ""
-#~ "काहिक इंपुट पद्धत प्रतिष्ठापीत, काढून टाकले किंवा सुधारीत केले आहे. कृपया ibus इंपुट "
-#~ "प्लॅटफॉर्म पुनः सुरू करा."
-
-#~ msgid "Restart Now"
-#~ msgstr "आत्ता पुनः सुरू करा"
-
-#~ msgid "Later"
-#~ msgstr "पुढे"
-
-#~ msgid "IBus input method framework"
-#~ msgstr "IBus इन्पुट पद्धती फ्रेमवर्क"
-
-#~ msgid "Turn off input method"
-#~ msgstr "इंपुट पद्धत बंद करा"
-
-#~ msgid "No input window"
-#~ msgstr "इंपुट खिडकी आढळली नाही"
-
-#~ msgid "About the input method"
-#~ msgstr "इंपुट पद्धत विषयी"
-
-#~ msgid "Switch input method"
-#~ msgstr "इंपुट पद्धत बदला"
-
-#~ msgid "About the Input Method"
-#~ msgstr "इंपुट पद्धत विषयी"
-
-#~ msgid "next input method"
-#~ msgstr "पुढिल इंपुट पद्धत"
-
-#~ msgid "previous input method"
-#~ msgstr "मागील इंपुट पद्धत"

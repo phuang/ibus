@@ -1,22 +1,23 @@
 # translation of uk.po to Ukrainian
 # Ukrainian translation of ibus.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-#
-# Yuri Chornoivan <yurchor@ukr.net>, 2011.
+# 
+# Translators:
+# Yuri Chornoivan <yurchor@ukr.net>, 2011-2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 10:14+0900\n"
-"PO-Revision-Date: 2011-05-13 05:04+0000\n"
-"Last-Translator: yurchor <yurchor@ukr.net>\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-10-15 04:49+0000\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
-"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -27,36 +28,36 @@ msgid "Vertical"
 msgstr "Вертикально"
 
 #: ../setup/setup.ui.h:3
-msgid "Embedded in menu"
-msgstr "Вбудувати у меню"
-
-#: ../setup/setup.ui.h:4
-msgid "When active"
-msgstr "Якщо активна"
-
-#: ../setup/setup.ui.h:5
-msgid "Always"
-msgstr "Завжди"
-
-#: ../setup/setup.ui.h:6
 msgid "Top left corner"
 msgstr "У верхньому лівому куті"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:4
 msgid "Top right corner"
 msgstr "У верхньому правому куті"
 
-#: ../setup/setup.ui.h:8
+#: ../setup/setup.ui.h:5
 msgid "Bottom left corner"
 msgstr "У нижньому лівому куті"
 
-#: ../setup/setup.ui.h:9
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr "У нижньому правому куті"
 
-#: ../setup/setup.ui.h:10
+#: ../setup/setup.ui.h:7
 msgid "Custom"
 msgstr "Нетиповий"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr "Вбудувати у меню"
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr "Якщо активна"
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "Завжди"
 
 #: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -64,8 +65,7 @@ msgstr "Налаштування IBus"
 
 #: ../setup/setup.ui.h:12
 msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
+msgstr "Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
 
 #: ../setup/setup.ui.h:13
 msgid "Next input method:"
@@ -73,8 +73,7 @@ msgstr "Наступний спосіб введення:"
 
 #: ../setup/setup.ui.h:14
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"Клавіатурне скорочення для перемикання на попередній спосіб введення у списку"
+msgstr "Клавіатурне скорочення для перемикання на попередній спосіб введення у списку"
 
 #: ../setup/setup.ui.h:15
 msgid "Previous input method:"
@@ -134,8 +133,7 @@ msgstr "Показувати назву способу введення на м�
 
 #: ../setup/setup.ui.h:29
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"Показати назву способу введення на мовній панелі, якщо позначено цей пункт"
+msgstr "Показати назву способу введення на мовній панелі, якщо позначено цей пункт"
 
 #: ../setup/setup.ui.h:30
 msgid "Embed preedit text in application window"
@@ -159,42 +157,33 @@ msgstr "Загальне"
 
 #: ../setup/setup.ui.h:35
 msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"Додати позначений спосіб введення до списку увімкнених способів введення"
+msgstr "Додати позначений спосіб введення до списку увімкнених способів введення"
 
 #: ../setup/setup.ui.h:36
 msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"Вилучити позначений спосіб введення зі списку увімкнених способів введення"
+msgstr "Вилучити позначений спосіб введення зі списку увімкнених способів введення"
 
 #: ../setup/setup.ui.h:37
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"Пересунути вгору позначений спосіб введення у списку увімкнених способів "
-"введення"
+msgstr "Пересунути вгору позначений спосіб введення у списку увімкнених способів введення"
 
 #: ../setup/setup.ui.h:38
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"Пересунути нижче позначений спосіб введення у списку увімкнених способів "
-"введення"
+msgstr "Пересунути нижче позначений спосіб введення у списку увімкнених способів введення"
 
 #: ../setup/setup.ui.h:39
 msgid "Show information of the selected input method"
 msgstr "Показати відомості щодо вибраного способу введення"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show setup of the selected input method"
-msgstr "Показати відомості щодо вибраного способу введення"
+msgstr "Показати панель налаштовування позначеного способу введення"
 
 #: ../setup/setup.ui.h:41
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>Типовий спосіб введення — найвищий пункт у списку.\n"
-"Змінити порядок пунктів можна за допомогою кнопок «Вгору/Вниз».</i></small>"
+msgstr "<small><i>Типовий спосіб введення — найвищий пункт у списку.\nЗмінити порядок пунктів можна за допомогою кнопок «Вгору/Вниз».</i></small>"
 
 #. create im name & icon column
 #: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
@@ -233,13 +222,7 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>Інтелектуальний канал введення</small>\n"
-"Домашня сторінка: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>Інтелектуальний канал введення</small>\nДомашня сторінка: http://code.google.com/p/ibus\n\n\n\n"
 
 #: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
@@ -275,11 +258,11 @@ msgstr "Попередньо завантажувати рушії під час
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Engines order"
-msgstr ""
+msgstr "Порядок рушіїв"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Saved engines order in input method list"
-msgstr ""
+msgstr "Збережений порядок рушіїв у списку способів введення"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Trigger shortcut keys"
@@ -307,8 +290,7 @@ msgstr "Скорочення для наступного рушія"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "The shortcut keys for switching to the next input method in the list"
-msgstr ""
-"Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
+msgstr "Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Prev engine shortcut keys"
@@ -326,9 +308,7 @@ msgstr "Автоматично ховати"
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"Поведінка мовної панелі. 0 = вбудувати до меню, 1 = автоматично ховати, 2 = "
-"завжди показувати"
+msgstr "Поведінка мовної панелі. 0 = вбудувати до меню, 1 = автоматично ховати, 2 = завжди показувати"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "Language panel position"
@@ -338,10 +318,7 @@ msgstr "Розташування мовної панелі"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"Розташування мовної панелі. 0 = у верхньому лівому куті, 1 = у верхньому "
-"правому куті, 2 = у нижньому лівому куті, 3 = у нижньому правому куті, 4 = "
-"нетипове"
+msgstr "Розташування мовної панелі. 0 = у верхньому лівому куті, 1 = у верхньому правому куті, 2 = у нижньому лівому куті, 3 = у нижньому правому куті, 4 = нетипове"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Orientation of lookup table"
@@ -393,19 +370,17 @@ msgstr "Типово увімкнути спосіб введення, коли 
 
 #: ../data/ibus.schemas.in.h:36
 msgid "DConf preserve name prefixes"
-msgstr ""
+msgstr "Збереження DConf префіксів назв"
 
 #: ../data/ibus.schemas.in.h:37
 msgid "Prefixes of DConf keys to stop name conversion"
-msgstr ""
+msgstr "Префікси ключів DConf для припинення перетворення назв"
 
 #: ../ibus/_config.py.in:41
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"© Peng Huang, 2007–2010\n"
-"© Red Hat, Inc., 2007–2010"
+msgstr "© Peng Huang, 2007–2010\n© Red Hat, Inc., 2007–2010"
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -430,7 +405,7 @@ msgstr "Автор: %s\n"
 msgid "Description:\n"
 msgstr "Опис:\n"
 
-#: ../setup/enginecombobox.py:136
+#: ../setup/enginecombobox.py:135
 msgid "Select an input method"
 msgstr "Виберіть спосіб введення"
 
@@ -454,122 +429,118 @@ msgstr "Код клавіші:"
 msgid "Modifiers:"
 msgstr "Модифікатори:"
 
-#: ../setup/keyboardshortcut.py:235
+#: ../setup/keyboardshortcut.py:251
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"Будь ласка, натисніть клавішу (або комбінацію клавіш).\n"
-"Діалогове вікно буде закрито після відпускання клавіші."
+msgstr "Будь ласка, натисніть клавішу (або комбінацію клавіш).\nДіалогове вікно буде закрито після відпускання клавіші."
 
-#: ../setup/keyboardshortcut.py:237
+#: ../setup/keyboardshortcut.py:253
 msgid "Please press a key (or a key combination)"
 msgstr "Будь ласка, натисніть клавішу (або комбінацію клавіш)"
 
-#: ../setup/main.py:79
+#: ../setup/main.py:87
 msgid "trigger"
 msgstr "перемикач"
 
-#: ../setup/main.py:80
+#: ../setup/main.py:88
 msgid "enable"
 msgstr "увімкнути"
 
-#: ../setup/main.py:81
+#: ../setup/main.py:89
 msgid "disable"
 msgstr "вимкнути"
 
-#: ../setup/main.py:323
-#, fuzzy
+#: ../setup/main.py:331
 msgid "The IBus daemon is not running. Do you wish to start it?"
-msgstr "Фонову службу не запущено IBus. Запустити її зараз?"
+msgstr "Фонову службу IBus не запущено. Хочете її запустити?"
 
-#: ../setup/main.py:344
-#, fuzzy
+#: ../setup/main.py:352
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus запущено! Якщо ви не можете скористатися IBus, будь ласка, додайте "
-"наведені нижче рядки до вашого файла $HOME/.bashrc, вийдіть з облікового "
-"запису і знову до нього увійдіть.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
+msgstr "IBus запущено! Якщо ви не можете скористатися IBus, додайте вказані нижче рядки до файла $HOME/.bashrc; потім вийдіть зі стільничного середовища і увійдіть до нього знову.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:357
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
 #, python-format
-msgid "IBus daemon coundn't be started in %d seconds"
-msgstr ""
+msgid "IBus daemon could not be started in %d seconds"
+msgstr "Не вдалося запустити фонову службу IBus протягом %d секунд"
 
-#: ../setup/main.py:369
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Виберіть клавіатурне скорочення для дії %s"
 
-#: ../ui/gtk3/panel.vala:330
-#, fuzzy
-msgid "Copyright (c) 2007-2012 Peng Huang\n"
-msgstr ""
-"© Peng Huang, 2007–2010\n"
-"© Red Hat, Inc., 2007–2010"
+#: ../tools/main.vala:40
+msgid "List engine name only"
+msgstr "Показати лише список рушіїв"
 
-#: ../ui/gtk3/panel.vala:335
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr "команда [ПАРАМЕТРИ]"
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr "Не вдалося встановити зв’язок з IBus.\n"
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr "мова: %s\n"
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr "Рушій не встановлено.\n"
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr "Спроба встановлення загального рушія зазнала невдачі.\n"
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr "Спроба отримання назви загального рушія зазнала невдачі.\n"
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr "Спроба перемикання розкладки xkb на розкладку %s зазнала невдачі."
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr "Користування: %s КОМАНДА [ПАРАМЕТР...]\n\n"
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr "Команди:\n"
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr "Команда %s є невідомою програмі!\n"
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr "© Peng Huang, 2007–2012\n"
+
+#: ../ui/gtk3/panel.vala:366
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus — інтелектуальний канал введення даних у Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:339
+#: ../ui/gtk3/panel.vala:370
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 
-#: ../ui/gtk3/panel.vala:371
+#: ../ui/gtk3/panel.vala:402
 msgid "Restart"
 msgstr "Перезапустити"
-
-#~ msgid "Previous page"
-#~ msgstr "Попередня сторінка"
-
-#~ msgid "Next page"
-#~ msgstr "Наступна сторінка"
-
-#~ msgid ""
-#~ "Some input methods have been installed, removed or updated. Please "
-#~ "restart ibus input platform."
-#~ msgstr ""
-#~ "Встановлено, вилучено або оновлено деякі зі способів введення. Будь "
-#~ "ласка, перезапустіть платформу введення ibus."
-
-#~ msgid "Restart Now"
-#~ msgstr "Перезапустити зараз"
-
-#~ msgid "Later"
-#~ msgstr "Пізніше"
-
-#~ msgid "IBus Panel"
-#~ msgstr "Панель IBus"
-
-#~ msgid "IBus input method framework"
-#~ msgstr "Оболонка способів введення IBus"
-
-#~ msgid "Turn off input method"
-#~ msgstr "Вимкнути спосіб введення"
-
-#~ msgid "No input window"
-#~ msgstr "Немає вікна введення"
-
-#~ msgid "About the input method"
-#~ msgstr "Про спосіб введення"
-
-#~ msgid "Switch input method"
-#~ msgstr "Перемкнути спосіб введення"
-
-#~ msgid "About the Input Method"
-#~ msgstr "Про спосіб введення"
-
-#~ msgid "next input method"
-#~ msgstr "наступний спосіб введення"
-
-#~ msgid "previous input method"
-#~ msgstr "попередній спосіб введення"

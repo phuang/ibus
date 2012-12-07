@@ -1,23 +1,26 @@
-# translation of ibus.master.ko.po to Korean
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
+# translation of ibus.pot to Korean
+# Korean translation of ibus.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
+# This file is distributed under the same license as the ibus package.
+# 
+# Translators:
 # Eunju Kim <eukim@redhat.com>, 2009.
+# Eun-Ju Kim <eukim@redhat.com>, 2012.
 # Hyunsok Oh <hoh@redhat.com>, 2010.
+# Michelle Kim <mkim33@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ko\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 10:14+0900\n"
-"PO-Revision-Date: 2010-08-03 15:01+1000\n"
-"Last-Translator: \n"
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-12-05 03:56+0000\n"
+"Last-Translator: Michelle Kim <mkim33@gmail.com>\n"
 "Language-Team: Korean <en@li.org>\n"
-"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=1; plural=0;\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -28,36 +31,36 @@ msgid "Vertical"
 msgstr "세로"
 
 #: ../setup/setup.ui.h:3
-msgid "Embedded in menu"
-msgstr "메뉴에 포함"
-
-#: ../setup/setup.ui.h:4
-msgid "When active"
-msgstr "활성화 되었을 때"
-
-#: ../setup/setup.ui.h:5
-msgid "Always"
-msgstr "항상"
-
-#: ../setup/setup.ui.h:6
 msgid "Top left corner"
 msgstr "왼쪽 위"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:4
 msgid "Top right corner"
 msgstr "오른쪽 위"
 
-#: ../setup/setup.ui.h:8
+#: ../setup/setup.ui.h:5
 msgid "Bottom left corner"
 msgstr "왼쪽 아래"
 
-#: ../setup/setup.ui.h:9
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr "오른쪽 아래"
 
-#: ../setup/setup.ui.h:10
+#: ../setup/setup.ui.h:7
 msgid "Custom"
 msgstr "사용자 정의"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr "메뉴에 포함"
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr "활성화 되었을 때"
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "항상"
 
 #: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -93,11 +96,11 @@ msgstr "활성화 또는 비활성화:  "
 
 #: ../setup/setup.ui.h:19
 msgid "Enable:"
-msgstr ""
+msgstr "활성화: "
 
 #: ../setup/setup.ui.h:20
 msgid "Disable:"
-msgstr ""
+msgstr "비활성화: "
 
 #: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
@@ -176,17 +179,14 @@ msgid "Show information of the selected input method"
 msgstr "선택한 입력 방식의 정보 보여주기"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show setup of the selected input method"
-msgstr "선택한 입력 방식의 정보 보여주기"
+msgstr "선택한 입력 방식 설정 보기 "
 
 #: ../setup/setup.ui.h:41
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>기본 입력 방식은 목록의 맨 위에 있습니다.\n"
-"위로/아래 버튼을 사용하여 변경할 수 있습니다.</i></small> "
+msgstr "<small><i>기본 입력 방식은 목록의 맨 위에 있습니다.\n위로/아래 버튼을 사용하여 변경할 수 있습니다.</i></small> "
 
 #. create im name & icon column
 #: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
@@ -225,13 +225,7 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>지능형 입력 버스</small>\n"
-"홈페이지: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>지능형 입력 버스</small>\n홈페이지: http://code.google.com/p/ibus\n\n\n\n"
 
 #: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
@@ -278,24 +272,20 @@ msgid "Trigger shortcut keys"
 msgstr "트리거 단축키"
 
 #: ../data/ibus.schemas.in.h:7
-#, fuzzy
 msgid "Enable shortcut keys"
-msgstr "트리거 단축키"
+msgstr "단축키 활성화 "
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "The shortcut keys for turning input method on"
-msgstr "입력 방식을 활성 또는 해제하기 위한 단축키"
+msgstr "입력 방식 전환을 위한 단축키 활성화 "
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Disable shortcut keys"
-msgstr "트리거 단축키"
+msgstr "단축키 비활성화 "
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "The shortcut keys for turning input method off"
-msgstr "입력 방식을 활성 또는 해제하기 위한 단축키"
+msgstr "입력 방식 전환을 위한 단축키 비활성화 "
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
@@ -331,9 +321,7 @@ msgstr "언어 패널 위치"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"언어 패널의 위치. 0 = 왼쪽 위, 1 = 오른쪽 위, 2 = 왼쪽 아래, 3 = 오른쪽 아"
-"래, 4 = 사용자 지정"
+msgstr "언어 패널의 위치. 0 = 왼쪽 위, 1 = 오른쪽 위, 2 = 왼쪽 아래, 3 = 오른쪽 아래, 4 = 사용자 지정"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Orientation of lookup table"
@@ -395,9 +383,7 @@ msgstr ""
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "Copyright (c) 2007-2010 Peng Huang\nCopyright (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -422,7 +408,7 @@ msgstr "저자: %s\n"
 msgid "Description:\n"
 msgstr "설명:\n"
 
-#: ../setup/enginecombobox.py:136
+#: ../setup/enginecombobox.py:135
 msgid "Select an input method"
 msgstr "입력 방식을 선택합니다"
 
@@ -436,7 +422,7 @@ msgstr "IBus 환경 설정"
 
 #: ../setup/keyboardshortcut.py:54
 msgid "Keyboard shortcuts"
-msgstr "단축키들 "
+msgstr "단축키"
 
 #: ../setup/keyboardshortcut.py:65
 msgid "Key code:"
@@ -446,118 +432,118 @@ msgstr "키 코드:  "
 msgid "Modifiers:"
 msgstr "수정자:  "
 
-#: ../setup/keyboardshortcut.py:235
+#: ../setup/keyboardshortcut.py:251
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"키 또는 키 조합을 입력하십시오.\n"
-"키를 입력하면 대화 상자가 닫히게 됩니다."
+msgstr "키 또는 키 조합을 입력하십시오.\n키를 입력하면 대화 상자가 닫히게 됩니다."
 
-#: ../setup/keyboardshortcut.py:237
+#: ../setup/keyboardshortcut.py:253
 msgid "Please press a key (or a key combination)"
 msgstr "키 또는 키 조합을 입력하십시오. "
 
-#: ../setup/main.py:79
+#: ../setup/main.py:87
 msgid "trigger"
 msgstr "트리거  "
 
-#: ../setup/main.py:80
+#: ../setup/main.py:88
 msgid "enable"
-msgstr ""
+msgstr "활성화 "
 
-#: ../setup/main.py:81
+#: ../setup/main.py:89
 msgid "disable"
+msgstr "비활성화 "
+
+#: ../setup/main.py:331
+msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr ""
 
-#: ../setup/main.py:323
-#, fuzzy
-msgid "The IBus daemon is not running. Do you wish to start it?"
-msgstr "Bus 데몬이 시작되지 않았습니다. 지금 시작하시겠습니까?  "
-
-#: ../setup/main.py:344
-#, fuzzy
+#: ../setup/main.py:352
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus를 시작했습니다! IBus를 사용할 수 없는 경우, 다음을 $HOME/.bashrc에 추가"
-"하고 다시 로그인하십시오.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus "
 
-#: ../setup/main.py:357
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
 #, python-format
-msgid "IBus daemon coundn't be started in %d seconds"
+msgid "IBus daemon could not be started in %d seconds"
 msgstr ""
 
-#: ../setup/main.py:369
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s의 단축키를 선택"
 
-#: ../ui/gtk3/panel.vala:330
-#, fuzzy
-msgid "Copyright (c) 2007-2012 Peng Huang\n"
+#: ../tools/main.vala:40
+msgid "List engine name only"
 msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
 
-#: ../ui/gtk3/panel.vala:335
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr ""
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr ""
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr ""
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr ""
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr ""
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr ""
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr ""
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr "Copyright (c) 2007-2012 Peng Huang\n"
+
+#: ../ui/gtk3/panel.vala:366
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus는 Linux/Unix를 위한 지능형 입력 버스입니다. "
 
-#: ../ui/gtk3/panel.vala:339
+#: ../ui/gtk3/panel.vala:370
 msgid "translator-credits"
 msgstr "김은주(eukim@redhat.com)"
 
-#: ../ui/gtk3/panel.vala:371
+#: ../ui/gtk3/panel.vala:402
 msgid "Restart"
 msgstr "재시작"
-
-#~ msgid "Previous page"
-#~ msgstr "이전 페이지"
-
-#~ msgid "Next page"
-#~ msgstr "다음 페이지"
-
-#~ msgid ""
-#~ "Some input methods have been installed, removed or updated. Please "
-#~ "restart ibus input platform."
-#~ msgstr ""
-#~ "입력 방식이 몇가지 설치되거나, 삭제되거나, 업데이트되었습니다. ibus 입력 "
-#~ "플랫폼을 재시작 하십시오."
-
-#~ msgid "Restart Now"
-#~ msgstr "지금 재시작"
-
-#~ msgid "Later"
-#~ msgstr "나중에"
-
-#~ msgid "IBus input method framework"
-#~ msgstr "IBus 입력 방식 프레임워크"
-
-#~ msgid "Turn off input method"
-#~ msgstr "입력 방식 해제"
-
-#~ msgid "No input window"
-#~ msgstr "입력 창이 없음  "
-
-#~ msgid "About the input method"
-#~ msgstr "입력 방식 정보"
-
-#~ msgid "Switch input method"
-#~ msgstr "입력 방식 전환  "
-
-#~ msgid "About the Input Method"
-#~ msgstr "입력 방식 정보"
-
-#~ msgid "next input method"
-#~ msgstr "다음 입력 방식   "
-
-#~ msgid "previous input method"
-#~ msgstr "이전 입력 방식  "

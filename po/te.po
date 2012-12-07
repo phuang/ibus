@@ -2,24 +2,24 @@
 # Telugu translation of ibus.
 # Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-#
+# 
 # Translators:
 # Krishna Babu K <kkrothap@redhat.com>, 2009.
+# Krishnababu Krothapalli <krisnababu@gmail.com>, 2012.
 # ప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 10:14+0900\n"
-"PO-Revision-Date: 2011-10-27 17:27+0000\n"
-"Last-Translator: Praveen_Illa <mail2ipn@gmail.com>\n"
-"Language-Team: Telugu (http://www.transifex.net/projects/p/fedora/team/te/)\n"
-"Language: te\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-11-28 13:00+0000\n"
+"Last-Translator: Krishnababu Krothapalli <krisnababu@gmail.com>\n"
+"Language-Team: Telugu <trans-te@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: te\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -30,36 +30,36 @@ msgid "Vertical"
 msgstr "నిలువుగా"
 
 #: ../setup/setup.ui.h:3
-msgid "Embedded in menu"
-msgstr "మెనూనందు ఎంబెడెడ్ చేయబడెను"
-
-#: ../setup/setup.ui.h:4
-msgid "When active"
-msgstr "క్రియాశీలముగా ఉన్నప్పుడు"
-
-#: ../setup/setup.ui.h:5
-msgid "Always"
-msgstr "ఎల్లప్పుడు"
-
-#: ../setup/setup.ui.h:6
 msgid "Top left corner"
 msgstr "పై ఎడమ మూల"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:4
 msgid "Top right corner"
 msgstr "పై కుడి మూల"
 
-#: ../setup/setup.ui.h:8
+#: ../setup/setup.ui.h:5
 msgid "Bottom left corner"
 msgstr "క్రింది ఎడమ మూల"
 
-#: ../setup/setup.ui.h:9
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr "క్రింది కుడి మూల"
 
-#: ../setup/setup.ui.h:10
+#: ../setup/setup.ui.h:7
 msgid "Custom"
 msgstr "మలచుకొనిన"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr "మెనూనందు ఎంబెడెడ్ చేయబడెను"
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr "క్రియాశీలముగా ఉన్నప్పుడు"
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "ఎల్లప్పుడు"
 
 #: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -178,17 +178,14 @@ msgid "Show information of the selected input method"
 msgstr "ఎంచుకున్న ఇన్‌పుట్ పద్ధతి యొక్క సమాచారాన్ని చూపించు"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show setup of the selected input method"
-msgstr "ఎంచుకున్న ఇన్‌పుట్ పద్ధతి యొక్క సమాచారాన్ని చూపించు"
+msgstr "ఎంపికచేసిన యిన్పట్ పద్దతి అమర్పును చూపుము"
 
 #: ../setup/setup.ui.h:41
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>జాబితాలో పైన వున్నది అప్రమేయ ఇన్‌పుట్ విధానం అవుతుంది.\n"
-"దానిని మార్చుటకు మీరు పైకి/క్రిందకు బటన్సును వుపయోగించవచ్చు.</i></small>"
+msgstr "<small><i>జాబితాలో పైన వున్నది అప్రమేయ ఇన్‌పుట్ విధానం అవుతుంది.\nదానిని మార్చుటకు మీరు పైకి/క్రిందకు బటన్సును వుపయోగించవచ్చు.</i></small>"
 
 #. create im name & icon column
 #: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
@@ -227,13 +224,7 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>తెలివైన ఇన్‌పుట్ బస్</small>\n"
-"నివాసపుట: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>తెలివైన ఇన్‌పుట్ బస్</small>\nనివాసపుట: http://code.google.com/p/ibus\n\n\n\n"
 
 #: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
@@ -269,11 +260,11 @@ msgstr "ibus ప్రారంభమునందు ఇంజన్లు మ�
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Engines order"
-msgstr ""
+msgstr "ఇంజన్ల క్రమం"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Saved engines order in input method list"
-msgstr ""
+msgstr "ఇన్పుట్ మెథడ్ జాబితా నందు దాచిన యింజన్ల క్రమం"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Trigger shortcut keys"
@@ -319,9 +310,7 @@ msgstr "స్వయంచాలకంగా దాగిఉండు"
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = మెనూనందు యెంబెడ్‌చేయి, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = "
-"ఎల్లప్పుడూ చూపించు"
+msgstr "భాషా ప్యానల్ యొక్క ప్రవర్తన. 0 = మెనూనందు యెంబెడ్‌చేయి, 1 = స్వయంచాలకంగా మరుగునవుంచు, 2 = ఎల్లప్పుడూ చూపించు"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "Language panel position"
@@ -331,9 +320,7 @@ msgstr "భాషా ప్యానల్ స్థానము"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"భాషా ప్యానల్ యొక్క స్థానము. 0 = పై ఎడమ మూల, 1 = పై కుడి మూల, 2 = క్రింది ఎడమ మూల, 3 = క్రింది "
-"కుడి మూల, 4 = మలచుకొనిన"
+msgstr "భాషా ప్యానల్ యొక్క స్థానము. 0 = పై ఎడమ మూల, 1 = పై కుడి మూల, 2 = క్రింది ఎడమ మూల, 3 = క్రింది కుడి మూల, 4 = మలచుకొనిన"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Orientation of lookup table"
@@ -385,19 +372,17 @@ msgstr "అనువర్తనము ఇన్‌పుట్ ఫోకస్�
 
 #: ../data/ibus.schemas.in.h:36
 msgid "DConf preserve name prefixes"
-msgstr ""
+msgstr "DConf వుంచిన పేరు ప్రిఫిక్సెస్"
 
 #: ../data/ibus.schemas.in.h:37
 msgid "Prefixes of DConf keys to stop name conversion"
-msgstr ""
+msgstr "పేరు మార్పును ఆపుటకు DConf కీల ప్రిఫిక్సులు"
 
 #: ../ibus/_config.py.in:41
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"నకలుహక్కు (c) 2007-2010 Peng Huang\n"
-"నకలుహక్కు (c) 2007-2010 Red Hat, Inc."
+msgstr "నకలుహక్కు (c) 2007-2010 Peng Huang\nనకలుహక్కు (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -422,7 +407,7 @@ msgstr "మూలకర్త: %s\n"
 msgid "Description:\n"
 msgstr "వివరణ:\n"
 
-#: ../setup/enginecombobox.py:136
+#: ../setup/enginecombobox.py:135
 msgid "Select an input method"
 msgstr "ఒక ఇన్‌పుట్ పద్ధతిని ఎంచుకోండి"
 
@@ -446,123 +431,118 @@ msgstr "కీ కోడ్:"
 msgid "Modifiers:"
 msgstr "సవరణిలు:"
 
-#: ../setup/keyboardshortcut.py:235
+#: ../setup/keyboardshortcut.py:251
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"దయచేసి వొక కీను వత్తండి (లేదా కీ మిశ్రమాన్ని).\n"
-"కీ వదిలినప్పుడు డైలాగు మూయబడుతుంది."
+msgstr "దయచేసి వొక కీను వత్తండి (లేదా కీ మిశ్రమాన్ని).\nకీ వదిలినప్పుడు డైలాగు మూయబడుతుంది."
 
-#: ../setup/keyboardshortcut.py:237
+#: ../setup/keyboardshortcut.py:253
 msgid "Please press a key (or a key combination)"
 msgstr "దయచేసి కీను వత్తండి (లేదా కీ మిశ్రమాన్ని)"
 
-#: ../setup/main.py:79
+#: ../setup/main.py:87
 msgid "trigger"
 msgstr "ట్రిగ్గర్"
 
-#: ../setup/main.py:80
+#: ../setup/main.py:88
 msgid "enable"
 msgstr "చేతనపరుచు"
 
-#: ../setup/main.py:81
+#: ../setup/main.py:89
 msgid "disable"
 msgstr "అచేతనపరుచు"
 
-#: ../setup/main.py:323
-#, fuzzy
+#: ../setup/main.py:331
 msgid "The IBus daemon is not running. Do you wish to start it?"
-msgstr "IBus డెమోన్ ప్రారంభమవలేదు. మీరు దానిని ప్రారంభించాలని అనుకొనుచున్నారా?"
+msgstr "IBus డెమోన్ నడుచుటలేదు. మీరు ప్రారంభించాలని అనుకొనుచున్నారా?"
 
-#: ../setup/main.py:344
-#, fuzzy
+#: ../setup/main.py:352
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus ప్రారంభమైంది! మీరు IBus ఉపయోగించలేక పోతే, క్రింది వాటిని $HOME/.bashrc నందు జతచేయుము, "
-"మరియు మీ డెస్కుటాపునకు తిరిగి లాగిన్ అవ్వుము.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
+msgstr "IBus ప్రారంభమైంది! మీరు IBus వుపయోగించలేకుంటే, మీ $HOME/.bashrc కు కింది పంక్తులను జతచేయండి; అప్పుడు తిరిగి డెస్కుటాప్‌కు ప్రవేశించండి.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:357
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
 #, python-format
-msgid "IBus daemon coundn't be started in %d seconds"
-msgstr ""
+msgid "IBus daemon could not be started in %d seconds"
+msgstr "IBus డీమన్ %d క్షణాలలో ప్రారంభం కాలేకపోయింది"
 
-#: ../setup/main.py:369
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s కొరకు కీబోర్డు లఘువును ఎంచుకోండి"
 
-#: ../ui/gtk3/panel.vala:330
-#, fuzzy
-msgid "Copyright (c) 2007-2012 Peng Huang\n"
-msgstr ""
-"నకలుహక్కు (c) 2007-2010 Peng Huang\n"
-"నకలుహక్కు (c) 2007-2010 Red Hat, Inc."
+#: ../tools/main.vala:40
+msgid "List engine name only"
+msgstr "ఇంజన్ పేరు మాత్రమే జాబితాచేయి"
 
-#: ../ui/gtk3/panel.vala:335
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr "ఆదేశం [ఐచ్చికాలు]"
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr "IBus కు అనుసంధానం కాలేదు.\n"
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr "భాష: %s\n"
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr "ఏ యింజన్ అమర్చలేదు.\n"
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr "గ్లోబల్ యింజన్ అమర్చుట విఫలమైంది.\n"
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr "గ్లోబల్ యింజన్ పొందుట విఫలమైంది.\n"
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr "xkb లేఅవుట్ %s కు మార్చుట విఫలమైంది."
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr "వాడుక: %s COMMAND [OPTION...]\n\n"
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr "ఆదేశాలు:\n"
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr "%s తెలియని ఆదేశం!\n"
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr "కాపీరైట్ (c) 2007-2012 Peng Huang\n"
+
+#: ../ui/gtk3/panel.vala:366
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus అనునది Linux/Unix కొరకు తెలివైన ఇన్‌పుట్ బస్."
 
-#: ../ui/gtk3/panel.vala:339
+#: ../ui/gtk3/panel.vala:370
 msgid "translator-credits"
-msgstr ""
-"కృష్ణబాబు కె <kkrothap@redhat.com> 2009.\n"
-"ప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com> 2010-11."
+msgstr "కృష్ణబాబు కె <kkrothap@redhat.com> 2009.\nప్రవీణ్ యిళ్ళ <mail2ipn@gmail.com> 2010-11."
 
-#: ../ui/gtk3/panel.vala:371
+#: ../ui/gtk3/panel.vala:402
 msgid "Restart"
 msgstr "పునఃప్రారంభించు"
-
-#~ msgid "Previous page"
-#~ msgstr "మునుపటి పేజి"
-
-#~ msgid "Next page"
-#~ msgstr "తరువాతి పేజి"
-
-#~ msgid ""
-#~ "Some input methods have been installed, removed or updated. Please "
-#~ "restart ibus input platform."
-#~ msgstr ""
-#~ "కొన్ని ఇన్‌పుట్ విధానములు సంస్థాపించబడెను, తీసివేయబడెను, లేదా నవీకరించబడెను. దయచేసి ibus ఇన్‌పుట్ "
-#~ "ప్లాట్‌ఫాంను పునఃప్రారంభించుము."
-
-#~ msgid "Restart Now"
-#~ msgstr "ఇప్పుడు పునఃప్రారంభించుము"
-
-#~ msgid "Later"
-#~ msgstr "తరువాత"
-
-#~ msgid "IBus Panel"
-#~ msgstr "IBus ప్యానల్"
-
-#~ msgid "IBus input method framework"
-#~ msgstr "IBus ఇన్‌పుట్ పద్ధతి ఆకృతి"
-
-#~ msgid "Turn off input method"
-#~ msgstr "ఇన్‌పుట్ పద్ధతి ఆపు"
-
-#~ msgid "No input window"
-#~ msgstr "ఇన్‌పుట్ విండో లేదు"
-
-#~ msgid "About the input method"
-#~ msgstr "ఇన్‌పుట్ పద్ధతి గురించి"
-
-#~ msgid "Switch input method"
-#~ msgstr "ఇన్‌పుట్ పద్ధతిని మార్చు"
-
-#~ msgid "About the Input Method"
-#~ msgstr "ఇన్‌పుట్ పద్ధతి గురించి"
-
-#~ msgid "next input method"
-#~ msgstr "తరువాతి ఇన్‌పుట్ పద్ధతి"
-
-#~ msgid "previous input method"
-#~ msgstr "మునుపటి ఇన్‌పుట్ పద్ధతి"
