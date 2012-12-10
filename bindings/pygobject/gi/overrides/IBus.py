@@ -45,7 +45,7 @@ class Component(IBus.Component):
                  name='',
                  description='',
                  version='',
-                 laicense='',
+                 license='',
                  author='',
                  homepage='',
                  command_line='',
@@ -198,12 +198,12 @@ class Property(IBus.Property):
                  state=IBus.PropState.UNCHECKED,
                  symbol='',
                  **kwargs):
-        prop_type = kwargs.get('prop_type', type)
-        if not isinstance(label, IBus.Text):
+        prop_type = kwargs.pop('prop_type', type)
+        if label != None and not isinstance(label, IBus.Text):
             label = Text(label)
-        if not isinstance(tooltip, IBus.Text):
+        if tooltip != None and not isinstance(tooltip, IBus.Text):
             tooltip = Text(tooltip)
-        if not isinstance(symbol, IBus.Text):
+        if symbol != None and not isinstance(symbol, IBus.Text):
             symbol = Text(symbol)
         super(Property, self).__init__(key=key,
                                        prop_type=prop_type,
