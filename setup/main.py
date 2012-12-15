@@ -87,7 +87,7 @@ class Setup(object):
         label = 'switch_engine'
         variant = self.__config.get_value('general/hotkey', name)
         if variant != None:
-            shortcuts = variant.dup_strv()
+            shortcuts = variant.unpack()
         else:
             shortcuts =  ['<Control>space']
 
