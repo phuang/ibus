@@ -39,6 +39,7 @@ TESTS_ENVIRONMENT = \
 EXTRA_DIST =					\
 	gi/__init__.py				\
 	gi/overrides/__init__.py		\
+	test-override-ibus.py                   \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
