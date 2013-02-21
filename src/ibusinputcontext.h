@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_INPUT_CONTEXT_H_
+#define __IBUS_INPUT_CONTEXT_H_
+
 /**
  * SECTION: ibusinputcontext
  * @short_description: IBus input context proxy object.
@@ -36,9 +39,6 @@
  * Clients call the IBusInputContext to invoke BusInputContext,
  * through which invokes IBusEngine.
  */
-#ifndef __IBUS_INPUT_CONTEXT_H_
-#define __IBUS_INPUT_CONTEXT_H_
-
 #include "ibusproxy.h"
 #include "ibusenginedesc.h"
 #include "ibustext.h"
@@ -93,7 +93,6 @@ GType        ibus_input_context_get_type    (void);
  * @connection: An #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @error: Return location for error or %NULL.
- *
  * @returns: A newly allocated IBusInputContext.
  *
  * New an IBusInputContext.
@@ -125,7 +124,6 @@ void         ibus_input_context_new_async   (const gchar        *path,
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_new_async().
  * @error: Return location for error or %NULL.
- *
  * @returns: A newly allocated #IBusInputContext.
  *
  * Finishes an operation started with ibus_input_context_new_async().
@@ -169,7 +167,6 @@ void         ibus_input_context_get_input_context_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_get_input_context_async().
  * @error: Return location for error or %NULL.
- *
  * @returns: (transfer none): An existing #IBusInputContext.
  *
  * Finishes an operation started with ibus_input_contex_get_input_context_async().
@@ -180,7 +177,7 @@ IBusInputContext *
                                              GError            **error);
 
 /**
- * ibus_input_context_process_hand_writing_event
+ * ibus_input_context_process_hand_writing_event:
  * @context: An IBusInputContext.
  * @coordinates: An array of gdouble (0.0 to 1.0) which represents a stroke (i.e. [x1, y1, x2, y2, x3, y3, ...]).
  * @coordinates_len: The number of elements in the array. The number should be even and >= 4.
@@ -203,7 +200,7 @@ void         ibus_input_context_process_hand_writing_event
                                              guint               coordinates_len);
 
 /**
- * ibus_input_context_cancel_hand_writing
+ * ibus_input_context_cancel_hand_writing:
  * @context: An IBusInputContext.
  * @n_strokes: The number of strokes to be removed. Pass 0 to remove all.
  *
@@ -326,7 +323,7 @@ void         ibus_input_context_set_capabilities
                                              guint32             capabilities);
 
 /**
- * ibus_input_context_property_activate
+ * ibus_input_context_property_activate:
  * @context: An IBusInputContext.
  * @prop_name: A property name (e.g. "InputMode.WideLatin")
  * @state: A status of the property (e.g. PROP_STATE_CHECKED)

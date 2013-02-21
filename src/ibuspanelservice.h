@@ -23,6 +23,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_PANEL_SERVICE_H_
+#define __IBUS_PANEL_SERVICE_H_
+
 /**
  * SECTION: ibuspanelservice
  * @short_description: Panel service back-end.
@@ -31,9 +34,6 @@
  * An IBusPanelService is a base class for UI services.
  * Developers can "extend" this class for panel UI development.
  */
-#ifndef __IBUS_PANEL_SERVICE_H_
-#define __IBUS_PANEL_SERVICE_H_
-
 #include "ibuslookuptable.h"
 #include "ibusservice.h"
 #include "ibusproplist.h"
@@ -131,7 +131,7 @@ GType            ibus_panel_service_get_type  (void);
 IBusPanelService *ibus_panel_service_new (GDBusConnection    *connection);
 
 /**
- * ibus_panel_service_candidate_clicked
+ * ibus_panel_service_candidate_clicked:
  * @panel: An IBusPanelService
  * @index: Index in the Lookup table
  * @button: GdkEventButton::button (1: left button, etc.)
@@ -146,7 +146,7 @@ void ibus_panel_service_candidate_clicked (IBusPanelService *panel,
                                            guint             state);
 
 /**
- * ibus_panel_service_cursor_down
+ * ibus_panel_service_cursor_down:
  * @panel: An IBusPanelService
  *
  * Notify that the cursor is down
@@ -155,7 +155,7 @@ void ibus_panel_service_candidate_clicked (IBusPanelService *panel,
 void ibus_panel_service_cursor_down       (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_cursor_up
+ * ibus_panel_service_cursor_up:
  * @panel: An IBusPanelService
  *
  * Notify that the cursor is up
@@ -164,7 +164,7 @@ void ibus_panel_service_cursor_down       (IBusPanelService *panel);
 void ibus_panel_service_cursor_up         (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_page_down
+ * ibus_panel_service_page_down:
  * @panel: An IBusPanelService
  *
  * Notify that the page is down
@@ -173,7 +173,7 @@ void ibus_panel_service_cursor_up         (IBusPanelService *panel);
 void ibus_panel_service_page_down         (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_page_up
+ * ibus_panel_service_page_up:
  * @panel: An IBusPanelService
  *
  * Notify that the page is up
@@ -182,7 +182,7 @@ void ibus_panel_service_page_down         (IBusPanelService *panel);
 void ibus_panel_service_page_up           (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_property_activate
+ * ibus_panel_service_property_activate:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  * @prop_state: State of the property
@@ -194,7 +194,7 @@ void ibus_panel_service_property_activate (IBusPanelService *panel,
                                            const gchar      *prop_name,
                                            guint             prop_state);
 /**
- * ibus_panel_service_property_show
+ * ibus_panel_service_property_show:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  *
@@ -205,7 +205,7 @@ void ibus_panel_service_property_show     (IBusPanelService *panel,
                                            const gchar      *prop_name);
 
 /**
- * ibus_panel_service_property_hide
+ * ibus_panel_service_property_hide:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  *

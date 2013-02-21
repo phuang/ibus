@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_BUS_H_
+#define __IBUS_BUS_H_
+
 /**
  * SECTION: ibusbus
  * @short_description: Connect with IBus daemon.
@@ -31,9 +34,6 @@
  *
  * An IBusBus connects with IBus daemon.
  */
-#ifndef __IBUS_BUS_H_
-#define __IBUS_BUS_H_
-
 #include <gio/gio.h>
 #include "ibusinputcontext.h"
 #include "ibusconfig.h"
@@ -489,8 +489,8 @@ gboolean    ibus_bus_exit_async_finish  (IBusBus        *bus,
  * ibus_bus_create_input_context:
  * @bus: An #IBusBus.
  * @client_name: Name of client.
- * @returns: An newly allocated #IBusInputContext if the "CreateInputContext"
- *      call is suceeded, %NULL otherwise.
+ * @returns: (transfer full): An newly allocated #IBusInputContext if the
+ *      "CreateInputContext" call is suceeded, %NULL otherwise.
  *
  * Create an input context for client synchronously.
  */
@@ -526,8 +526,8 @@ void        ibus_bus_create_input_context_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_create_input_context_async().
  * @error: Return location for error or %NULL.
- * @returns: An newly allocated #IBusInputContext if the "CreateInputContext"
- *      call is suceeded, %NULL otherwise.
+ * @returns: (transfer full): An newly allocated #IBusInputContext if the
+ *      "CreateInputContext" call is suceeded, %NULL otherwise.
  *
  * Finishes an operation started with ibus_bus_create_input_context_async().
  */
