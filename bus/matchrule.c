@@ -198,30 +198,31 @@ failed:
 static gchar *
 find_value (const gchar **p)
 {
-    GString *text;
-
-    text = g_string_new ("");
-
     SKIP_WHITE (*p);
 
-    if (**p != '\'')
-        goto failed;
-    (*p) ++;
-
-    while (**p != '\'') {
-        if (**p == '\0')
-            goto failed;
-        if (**p == '\\')
-            (*p) ++;
-        g_string_append_c (text, **p);
+    if (**p == '\'') {
+        GString *text = g_string_new ("");
         (*p) ++;
+        while (**p != '\'') {
+            if (**p == '\0') {
+                g_string_free (text, TRUE);
+                return NULL;
+            }
+            if (**p == '\\')
+                (*p) ++;
+            g_string_append_c (text, **p);
+            (*p) ++;
+        }
+        (*p) ++;
+        return g_string_free (text, FALSE);
+    } else if (strncmp (*p, "true", 4) == 0) {
+        *p += 4;
+        return g_strdup ("true");
+    } else if (strncmp (*p, "false", 5) == 0) {
+        *p += 5;
+        return g_strdup ("false");
     }
-    (*p) ++;
 
-    return g_string_free (text, FALSE);
-
-failed:
-    g_string_free (text, TRUE);
     return NULL;
 }
 
@@ -371,6 +372,11 @@ bus_match_rule_new (const gchar *text)
             if (! _atoi (p->key + 3, &i))
                 goto failed;
             bus_match_rule_set_arg (rule, i, p->value);
+        }
+        else if (g_strcmp0 (p->key, "eavesdrop") == 0) {
+            if (g_strcmp0 (p->value, "true") != 0 &&
+                g_strcmp0 (p->value, "false") != 0)
+                goto failed;
         }
         else
             goto failed;

@@ -55,6 +55,10 @@ main(gint argc, gchar **argv)
 
     rule = bus_match_rule_new ("type='method_call',interface='org.freedesktop.IBus ");
     g_assert (rule == NULL);
+
+    rule = bus_match_rule_new ("eavesdrop=true");
+    g_assert (rule != NULL);
+    g_object_unref (rule);
     
     return 0;
 }
