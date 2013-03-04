@@ -224,7 +224,7 @@
       <applyto>/desktop/ibus/general/use_system_keyboard_layout</applyto>
       <owner>ibus</owner>
       <type>bool</type>
-      <default>true</default>
+      <default>false</default>
       <locale name="C">
         <short>Use system keyboard layout</short>
 	    <long>Use system keyboard (XKB) layout</long>

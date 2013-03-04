@@ -48,6 +48,7 @@ class Panel : IBus.PanelService {
     private Gtk.AboutDialog m_about_dialog;
     private Gtk.CssProvider m_css_provider;
     private int m_switcher_delay_time = 400;
+    private bool m_use_system_keyboard_layout = false;
     private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
@@ -265,6 +266,22 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private void set_use_system_keyboard_layout(Variant? variant) {
+        Variant var_use_system_kbd_layout = variant;
+
+        if (var_use_system_kbd_layout == null) {
+            var_use_system_kbd_layout = m_config.get_value(
+                    "general",
+                    "use_system_keyboard_layout");
+        }
+
+        if (var_use_system_kbd_layout == null) {
+            return;
+        }
+
+        m_use_system_keyboard_layout = var_use_system_kbd_layout.get_boolean();
+    }
+
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
@@ -278,6 +295,7 @@ class Panel : IBus.PanelService {
             m_config.watch("general", "preload_engines");
             m_config.watch("general", "engines_order");
             m_config.watch("general", "switcher_delay_time");
+            m_config.watch("general", "use_system_keyboard_layout");
             m_config.watch("general/hotkey", "triggers");
             m_config.watch("panel", "custom_font");
             m_config.watch("panel", "use_custom_font");
@@ -286,6 +304,7 @@ class Panel : IBus.PanelService {
             unbind_switch_shortcut();
             bind_switch_shortcut(null);
             set_switcher_delay_time(null);
+            set_use_system_keyboard_layout(null);
         } else {
             update_engines(null, null);
         }
@@ -352,7 +371,9 @@ class Panel : IBus.PanelService {
             return;
         }
         // set xkb layout
-        exec_setxkbmap(engine);
+        if (!m_use_system_keyboard_layout) {
+            exec_setxkbmap(engine);
+        }
     }
 
     private void config_value_changed_cb(IBus.Config config,
@@ -378,6 +399,11 @@ class Panel : IBus.PanelService {
 
         if (section == "general" && name == "switcher_delay_time") {
             set_switcher_delay_time(variant);
+            return;
+        }
+
+        if (section == "general" && name == "use_system_keyboard_layout") {
+            set_use_system_keyboard_layout(variant);
             return;
         }
     }
