@@ -299,12 +299,14 @@ class Panel : IBus.PanelService {
             m_config.watch("general/hotkey", "triggers");
             m_config.watch("panel", "custom_font");
             m_config.watch("panel", "use_custom_font");
+            // Update m_use_system_keyboard_layout before update_engines()
+            // is called.
+            set_use_system_keyboard_layout(null);
             update_engines(m_config.get_value("general", "preload_engines"),
                            m_config.get_value("general", "engines_order"));
             unbind_switch_shortcut();
             bind_switch_shortcut(null);
             set_switcher_delay_time(null);
-            set_use_system_keyboard_layout(null);
         } else {
             update_engines(null, null);
         }
