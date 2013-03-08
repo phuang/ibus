@@ -176,6 +176,9 @@ static const gchar introspection_xml[] =
     "    <method name='IsGlobalEngineEnabled'>\n"
     "      <arg direction='out' type='b' name='enabled' />\n"
     "    </method>\n"
+    "    <method name='PreloadEngines'>\n"
+    "      <arg direction='in' type='as' name='names' />\n"
+    "    </method>\n"
     "    <signal name='RegistryChanged'>\n"
     "    </signal>\n"
     "    <signal name='GlobalEngineChanged'>\n"
@@ -1211,6 +1214,70 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
 }
 
 /**
+ * _ibus_preload_engines:
+ *
+ * Implement the "PreloadEngines" method call of the
+ * org.freedesktop.IBus interface.
+ */
+static void
+_ibus_preload_engines (BusIBusImpl           *ibus,
+                       GVariant              *parameters,
+                       GDBusMethodInvocation *invocation)
+{
+    int i, j;
+    const gchar **names = NULL;
+    IBusEngineDesc *desc = NULL;
+    BusComponent *component = NULL;
+    BusFactoryProxy *factory = NULL;
+    GPtrArray *array = g_ptr_array_new ();
+
+    g_variant_get (parameters, "(^a&s)", &names);
+
+    for (i = 0; names[i] != NULL; i++) {
+        gboolean has_component = FALSE;
+
+        desc = bus_ibus_impl_get_engine_desc(ibus, names[i]);
+
+        if (desc == NULL) {
+            g_dbus_method_invocation_return_error (invocation,
+                                                   G_DBUS_ERROR,
+                                                   G_DBUS_ERROR_FAILED,
+                                                   "Can not find engine %s.",
+                                                   names[i]);
+            g_ptr_array_free (array, FALSE);
+            return;
+        }
+
+        component = bus_component_from_engine_desc (desc);
+        factory = bus_component_get_factory (component);
+
+        if (factory != NULL) {
+            continue;
+        }
+
+        for (j = 0; j < array->len; j++) {
+            if (component == (BusComponent *) g_ptr_array_index (array, j)) {
+                has_component = TRUE;
+                break;
+            }
+        }
+
+        if (!has_component) {
+            g_ptr_array_add (array, component);
+        }
+    }
+
+    for (j = 0; j < array->len; j++) {
+        bus_component_start ((BusComponent *) g_ptr_array_index (array, j),
+                             g_verbose);
+    }
+
+    g_ptr_array_free (array, FALSE);
+
+    g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+/**
  * bus_ibus_impl_service_method_call:
  *
  * Handle a D-Bus method call whose destination and interface name are both "org.freedesktop.IBus"
@@ -1252,6 +1319,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
         { "GetGlobalEngine",       _ibus_get_global_engine },
         { "SetGlobalEngine",       _ibus_set_global_engine },
         { "IsGlobalEngineEnabled", _ibus_is_global_engine_enabled },
+        { "PreloadEngines",        _ibus_preload_engines },
     };
 
     gint i;

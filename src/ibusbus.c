@@ -2006,6 +2006,68 @@ ibus_bus_set_global_engine_async_finish (IBusBus      *bus,
     return _async_finish_void (res, error);
 }
 
+gboolean
+ibus_bus_preload_engines (IBusBus             *bus,
+                          const gchar * const *names)
+{
+    GVariant *result;
+
+    g_return_val_if_fail (IBUS_IS_BUS (bus), FALSE);
+    g_return_val_if_fail (names != NULL && names[0] != NULL, FALSE);
+
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 IBUS_INTERFACE_IBUS,
+                                 "PreloadEngines",
+                                 g_variant_new("(^as)", names),
+                                 NULL);
+
+    if (result) {
+        g_variant_unref (result);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+void
+ibus_bus_preload_engines_async (IBusBus             *bus,
+                                const gchar * const *names,
+                                gint                 timeout_msec,
+                                GCancellable        *cancellable,
+                                GAsyncReadyCallback  callback,
+                                gpointer             user_data)
+{
+    g_return_if_fail (IBUS_IS_BUS (bus));
+    g_return_if_fail (names != NULL && names[0] != NULL);
+
+    ibus_bus_call_async (bus,
+                         IBUS_SERVICE_IBUS,
+                         IBUS_PATH_IBUS,
+                         IBUS_INTERFACE_IBUS,
+                         "PreloadEngines",
+                         g_variant_new("(^as)", names),
+                         NULL, /* no return value */
+                         ibus_bus_preload_engines_async,
+                         timeout_msec,
+                         cancellable,
+                         callback,
+                         user_data);
+}
+
+gboolean
+ibus_bus_preload_engines_async_finish (IBusBus       *bus,
+                                       GAsyncResult  *res,
+                                       GError       **error)
+{
+    g_assert (IBUS_IS_BUS (bus));
+    g_assert (g_simple_async_result_is_valid (
+            res, (GObject *) bus,
+            ibus_bus_preload_engines_async));
+    return _async_finish_void (res, error);
+}
+
 static GVariant *
 ibus_bus_call_sync (IBusBus            *bus,
                     const gchar        *bus_name,

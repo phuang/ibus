@@ -443,6 +443,17 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private void run_preload_engines(IBus.EngineDesc[] engines, int index) {
+        string[] names = {};
+
+        if (engines.length <= index) {
+            return;
+        }
+
+        names += engines[index].get_name();
+        m_bus.preload_engines_async(names, -1, null);
+    }
+
     private void update_engines(GLib.Variant? var_engines,
                                 GLib.Variant? var_order) {
         string[] engine_names = null;
@@ -473,6 +484,7 @@ class Panel : IBus.PanelService {
         if (m_engines.length == 0) {
             m_engines = engines;
             switch_engine(0, true);
+            run_preload_engines(engines, 1);
         } else {
             var current_engine = m_engines[0];
             m_engines = engines;
@@ -480,10 +492,16 @@ class Panel : IBus.PanelService {
             for (i = 0; i < m_engines.length; i++) {
                 if (current_engine.get_name() == engines[i].get_name()) {
                     switch_engine(i);
+                    if (i != 0) {
+                        run_preload_engines(engines, 0);
+                    } else {
+                        run_preload_engines(engines, 1);
+                    }
                     return;
                 }
             }
             switch_engine(0, true);
+            run_preload_engines(engines, 1);
         }
 
     }

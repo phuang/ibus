@@ -995,5 +995,53 @@ void         ibus_bus_set_watch_ibus_signal
  */
 IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
 
+/**
+ * ibus_bus_preload_engines:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of engine names.
+ * @returns: %TRUE if components start. %FALSE otherwise.
+ *
+ * Start bus components by engine names synchronously.
+ */
+gboolean     ibus_bus_preload_engines   (IBusBus        *bus,
+                                         const gchar * const *names);
+
+/**
+ * ibus_bus_preload_engines_async:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of engine names.
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied
+ *      or %NULL if you don't care about the result of the method invocation.
+ * @user_data: The data to pass to callback.
+ *
+ * Start bus components by engine names asynchronously.
+ */
+void         ibus_bus_preload_engines_async
+                                        (IBusBus        *bus,
+                                         const gchar * const
+                                                        *names,
+                                         gint            timeout_msec,
+                                         GCancellable   *cancellable,
+                                         GAsyncReadyCallback
+                                                         callback,
+                                         gpointer        user_data);
+
+/**
+ * ibus_bus_preload_engines_async_finish:
+ * @bus: An #IBusBus.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
+ *   ibus_bus_preload_engines_async().
+ * @error: Return location for error or %NULL.
+ * @returns: %TRUE if component starts. %FALSE otherwise.
+ *
+ * Finishes an operation started with ibus_bus_preload_engines_async().
+ */
+gboolean     ibus_bus_preload_engines_async_finish
+                                        (IBusBus        *bus,
+                                         GAsyncResult   *res,
+                                         GError        **error);
+
 G_END_DECLS
 #endif

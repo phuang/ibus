@@ -498,6 +498,31 @@ start_set_global_engine_async (void)
 }
 
 static void
+finish_preload_engines_async (GObject      *source_object,
+                              GAsyncResult *res,
+                              gpointer      user_data)
+{
+    GError *error = NULL;
+    ibus_bus_preload_engines_async_finish (bus, res, &error);
+    g_debug ("ibus_bus_preload_engines_async_finish: OK");
+    call_next_async_function ();
+}
+
+static void
+start_preload_engines_async (void)
+{
+    const gchar *preload_engines[] = { "xkb:us::eng", NULL };
+
+    ibus_bus_preload_engines_async (
+            bus,
+            preload_engines,
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_preload_engines_async,
+            NULL); /* user_data */
+}
+
+static void
 finish_exit_async (GObject *source_object,
                    GAsyncResult *res,
                    gpointer user_data)
@@ -593,6 +618,7 @@ call_next_async_function (void)
         start_is_global_engine_enabled_async,
         start_set_global_engine_async,
         start_get_global_engine_async,
+        start_preload_engines_async,
         start_exit_async,
     };
     static guint index = 0;
