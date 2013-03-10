@@ -63,10 +63,11 @@ def parse_xml():
             yield name, variant_name, variant_short_desc, variant_desc, languages + variant_languages
 
 def gen_xml():
-    header = u"""<component>
+    header = u"""<?xml version="1.0" encoding="utf-8"?>
+<component>
 	<name>org.freedesktop.IBus.Simple</name>
 	<description>A table based simple engine</description>
-	<exec>${libexecdir}/ibus-engine-simple</exec>
+	<exec>@libexecdir@/ibus-engine-simple</exec>
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 	<license>GPL</license>

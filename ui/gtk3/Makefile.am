@@ -30,12 +30,10 @@ component_DATA = \
 componentdir = $(pkgdatadir)/component
 
 gtkpanel.xml: gtkpanel.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' \
+		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+		mv $@.tmp $@
 
 INCLUDES = \
 	-I$(top_srcdir)/src \
@@ -110,7 +108,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	gtkpanel.xml.in.in \
+	gtkpanel.xml.in \
 	$(NULL)
 
 

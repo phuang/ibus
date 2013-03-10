@@ -67,16 +67,14 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	memconf.xml.in.in \
+	memconf.xml.in \
 	$(NULL)
 
 memconf.xml: memconf.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' \
+		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+		mv $@.tmp $@
 
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src

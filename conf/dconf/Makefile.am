@@ -66,16 +66,14 @@ DISTCLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	dconf.xml.in.in \
+	dconf.xml.in \
 	$(NULL)
 
 dconf.xml: dconf.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' \
+		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+		mv $@.tmp $@
 
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src

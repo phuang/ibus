@@ -52,16 +52,14 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	ibus-ui-gtk.in \
-	gtkpanel.xml.in.in \
+	gtkpanel.xml.in \
 	$(NULL)
 
 gtkpanel.xml: gtkpanel.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' \
+		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+		mv $@.tmp $@
 
 test:
 	$(ENV) DBUS_DEBUG=true \

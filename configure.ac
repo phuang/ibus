@@ -519,7 +519,6 @@ src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
 engine/Makefile
-engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
@@ -536,7 +535,6 @@ ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
 ui/gtk3/Makefile
-ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
 bindings/Makefile
@@ -544,11 +542,8 @@ bindings/pygobject/Makefile
 bindings/vala/Makefile
 conf/Makefile
 conf/gconf/Makefile
-conf/gconf/gconf.xml.in
 conf/dconf/Makefile
-conf/dconf/dconf.xml.in
 conf/memconf/Makefile
-conf/memconf/memconf.xml.in
 tools/Makefile
 ])
 
