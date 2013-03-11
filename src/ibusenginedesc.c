@@ -44,6 +44,7 @@ enum {
     PROP_SYMBOL,
     PROP_SETUP,
     PROP_VERSION,
+    PROP_TEXTDOMAIN,
 };
 
 
@@ -64,6 +65,7 @@ struct _IBusEngineDescPrivate {
     gchar      *symbol;
     gchar      *setup;
     gchar      *version;
+    gchar      *textdomain;
 };
 
 #define IBUS_ENGINE_DESC_GET_PRIVATE(o)  \
@@ -307,6 +309,19 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                         "The version number of engine description",
                         "",
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:textdomain:
+     *
+     * The textdomain of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_TEXTDOMAIN,
+                    g_param_spec_string ("textdomain",
+                        "textdomain",
+                        "The textdomain of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -329,6 +344,7 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->priv->symbol = NULL;
     desc->priv->setup = NULL;
     desc->priv->version = NULL;
+    desc->priv->textdomain = NULL;
 }
 
 static void
@@ -348,6 +364,7 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->priv->symbol);
     g_free (desc->priv->setup);
     g_free (desc->priv->version);
+    g_free (desc->priv->textdomain);
 
     IBUS_OBJECT_CLASS (ibus_engine_desc_parent_class)->destroy (IBUS_OBJECT (desc));
 }
@@ -418,6 +435,10 @@ ibus_engine_desc_set_property (IBusEngineDesc *desc,
         g_assert (desc->priv->version == NULL);
         desc->priv->version = g_value_dup_string (value);
         break;
+    case PROP_TEXTDOMAIN:
+        g_assert (desc->priv->textdomain == NULL);
+        desc->priv->textdomain = g_value_dup_string (value);
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
     }
@@ -475,6 +496,9 @@ ibus_engine_desc_get_property (IBusEngineDesc *desc,
     case PROP_VERSION:
         g_value_set_string (value, ibus_engine_desc_get_version (desc));
         break;
+    case PROP_TEXTDOMAIN:
+        g_value_set_string (value, ibus_engine_desc_get_textdomain (desc));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
     }
@@ -511,6 +535,7 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_variant));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_option));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->version));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->textdomain));
 #undef NOTNULL
 
     return TRUE;
@@ -549,6 +574,9 @@ ibus_engine_desc_deserialize (IBusEngineDesc *desc,
     if (g_variant_n_children (variant) < retval + 1)
         return retval;
     g_variant_get_child (variant, retval++, "s", &desc->priv->version);
+    if (g_variant_n_children (variant) < retval + 1)
+        return retval;
+    g_variant_get_child (variant, retval++, "s", &desc->priv->textdomain);
 
     return retval;
 }
@@ -578,6 +606,7 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
     dest->priv->symbol           = g_strdup (src->priv->symbol);
     dest->priv->setup            = g_strdup (src->priv->setup);
     dest->priv->version          = g_strdup (src->priv->version);
+    dest->priv->textdomain       = g_strdup (src->priv->textdomain);
     return TRUE;
 }
 
@@ -620,6 +649,7 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(symbol);
     OUTPUT_ENTRY_1(setup);
     OUTPUT_ENTRY_1(version);
+    OUTPUT_ENTRY_1(textdomain);
     g_string_append_indent (output, indent + 1);
     g_string_append_printf (output, "<rank>%u</rank>\n", desc->priv->rank);
 #undef OUTPUT_ENTRY
@@ -658,6 +688,7 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(symbol);
         PARSE_ENTRY_1(setup);
         PARSE_ENTRY_1(version);
+        PARSE_ENTRY_1(textdomain);
 #undef PARSE_ENTRY
 #undef PARSE_ENTRY_1
         if (g_strcmp0 (sub_node->name , "rank") == 0) {
@@ -691,6 +722,7 @@ IBUS_ENGINE_DESC_GET_PROPERTY (hotkeys, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (symbol, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (setup, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (version, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (textdomain, const gchar *)
 #undef IBUS_ENGINE_DESC_GET_PROPERTY
 
 IBusEngineDesc *
@@ -743,6 +775,7 @@ ibus_engine_desc_new_varargs (const gchar *first_property_name, ...)
     g_assert (desc->priv->symbol);
     g_assert (desc->priv->setup);
     g_assert (desc->priv->version);
+    g_assert (desc->priv->textdomain);
 
     return desc;
 }

@@ -94,6 +94,7 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  *  semi-colon.
  * setup: Exec lists of the engine setup command.
  * version: Version number of the input method engine.
+ * textdomain: Domain name for dgettext()
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
@@ -298,6 +299,16 @@ const gchar     *ibus_engine_desc_get_setup     (IBusEngineDesc *info);
  * Return the version property in IBusEngineDesc. It should not be freed.
  */
 const gchar     *ibus_engine_desc_get_version   (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_textdomain:
+ * @info: An IBusEngineDesc
+ * @returns: textdomain in IBusEngineDesc
+ *
+ * Return the textdomain property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_textdomain
+                                                (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_output:

@@ -107,6 +107,7 @@ class EngineDesc(IBus.EngineDesc):
                  layout_variant='',
                  layout_option='',
                  version='',
+                 textdomain='',
                  **kwargs):
         super(EngineDesc, self).__init__(name=name,
                                          longname=longname,
@@ -123,6 +124,7 @@ class EngineDesc(IBus.EngineDesc):
                                          layout_variant=layout_variant,
                                          layout_option=layout_option,
                                          version=version,
+                                         textdomain=textdomain,
                                          **kwargs)
 
 EngineDesc = override(EngineDesc)
