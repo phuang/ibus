@@ -70,7 +70,7 @@ ibus_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 
-bash_completion_SCRIPTS= \
+bash_completion_DATA= \
 	ibus.bash \
 	$(NULL)
 bash_completiondir=@sysconfdir@/bash_completion.d
