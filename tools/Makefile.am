@@ -73,7 +73,7 @@ ibus_LDADD = \
 bash_completion_DATA= \
 	ibus.bash \
 	$(NULL)
-bash_completiondir=@sysconfdir@/bash_completion.d
+bash_completiondir=@datadir@/bash-completion/completions
 
 EXTRA_DIST = \
 	ibus.bash \
