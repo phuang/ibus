@@ -61,6 +61,19 @@ class Switcher : Gtk.Window {
         }
 
         public string longname { get; set; }
+
+        public override bool draw(Cairo.Context cr) {
+            base.draw(cr);
+            if (is_focus) {
+                cr.save();
+                cr.rectangle(
+                        0, 0, get_allocated_width(), get_allocated_height());
+                cr.set_source_rgba(0.0, 0.0, 1.0, 0.1);
+                cr.fill();
+                cr.restore();
+            }
+            return true;
+        }
     }
 
     private Gtk.Box m_box;
