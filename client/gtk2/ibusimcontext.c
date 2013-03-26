@@ -562,8 +562,12 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 
 
     /* always install snooper */
-    if (_key_snooper_id == 0)
+    if (_key_snooper_id == 0) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         _key_snooper_id = gtk_key_snooper_install (_key_snooper_cb, NULL);
+#pragma GCC diagnostic pop
+    }
 
     _daemon_name_watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
                                               IBUS_SERVICE_IBUS,
@@ -579,7 +583,10 @@ ibus_im_context_class_fini (IBusIMContextClass *class)
 {
     if (_key_snooper_id != 0) {
         IDEBUG ("snooper is terminated.");
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         gtk_key_snooper_remove (_key_snooper_id);
+#pragma GCC diagnostic pop
         _key_snooper_id = 0;
     }
 
@@ -1528,7 +1535,7 @@ _create_input_context_done (IBusBus       *bus,
 
         if (!g_queue_is_empty (ibusimcontext->events_queue)) {
             GdkEventKey *event;
-            while (event = g_queue_pop_head (ibusimcontext->events_queue)) {
+            while ((event = g_queue_pop_head (ibusimcontext->events_queue))) {
                 _process_key_event (context, event);
                 gdk_event_free ((GdkEvent *)event);
             }

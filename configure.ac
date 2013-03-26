@@ -51,7 +51,7 @@ m4_define([ibus_binary_version],
           [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
 
 # Required versions of other packages.
-m4_define([glib_required_version], [2.26.0])
+m4_define([glib_required_version], [2.32.0])
 
 
 # Init automake.
@@ -350,7 +350,7 @@ AM_PATH_PYTHON([2.5])
 PYGOBJECT_REQUIRED=3.0.0
 
 PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
-                 [enable_pygobject=yes],[enable_pygobject=no])
+                 [enable_pygobject=yes], [enable_pygobject=no])
 
 if test "x$enable_pygobject" = "xyes"; then
 	PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])

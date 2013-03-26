@@ -214,9 +214,6 @@ main (gint argc, gchar **argv)
 
     ibus_init ();
 
-#ifdef G_THREADS_ENABLED
-    g_thread_init (NULL);
-#endif
     ibus_set_log_handler (g_verbose);
 
     /* check if ibus-daemon is running in this session */

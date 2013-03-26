@@ -257,7 +257,12 @@ dconf update &> /dev/null || :
 %{_bindir}/ibus
 %{_bindir}/ibus-daemon
 %{_bindir}/ibus-setup
-%{_datadir}/ibus/*
+%{_datadir}/ibus/component/gtkpanel.xml
+%{_datadir}/ibus/component/simple.xml
+%{_datadir}/ibus/keymaps/*
+%{_datadir}/ibus/setup/*
+
+
 %{_datadir}/applications/*
 %{_datadir}/icons/hicolor/*/apps/*
 %if %{build_python_library}
@@ -267,7 +272,7 @@ dconf update &> /dev/null || :
 %{_libexecdir}/ibus-x11
 %{_libexecdir}/ibus-engine-simple
 # %{_sysconfdir}/xdg/autostart/ibus.desktop
-%{_sysconfdir}/bash_completion.d/ibus.bash
+%{_datadir}/bash-completion/completions/ibus.bash
 %config %{_xinputconf}
 
 %files libs
@@ -277,11 +282,13 @@ dconf update &> /dev/null || :
 
 %files gconf
 %defattr(-,root,root,-)
+%{_datadir}/ibus/component/gconf.xml
 %{_libexecdir}/ibus-gconf
 %{_sysconfdir}/gconf/schemas/ibus.schemas
 
 %files dconf
 %defattr(-,root,root,-)
+%{_datadir}/ibus/component/dconf.xml
 %{_libexecdir}/ibus-dconf
 %{_sysconfdir}/dconf/db/ibus.d
 %{_sysconfdir}/dconf/profile/ibus
