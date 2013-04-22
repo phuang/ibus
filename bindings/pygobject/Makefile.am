@@ -27,7 +27,11 @@ overrides_PYTHON =				\
 	gi/overrides/IBus.py			\
 	$(NULL)
 
-TESTS = test-override-ibus.py
+TESTS =
+
+if ENABLE_TESTS
+TESTS += test-override-ibus.py
+endif
 
 TESTS_ENVIRONMENT = \
 	PYTHONPATH=$(top_srcdir)/tests:$${PYTHONPATH:+:$$PYTHONPATH} \

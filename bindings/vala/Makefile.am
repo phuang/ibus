@@ -50,4 +50,6 @@ EXTRA_DIST = \
 	xi.vapi \
 	$(NULL)
 
+DIST_SOURCES = $(VAPIGEN_VAPIS)
+
 -include $(top_srcdir)/git.mk
