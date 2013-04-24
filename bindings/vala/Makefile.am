@@ -42,14 +42,15 @@ ibus_1_0_vapi_FILES = \
 vapidir = $(datadir)/vala/vapi
 vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
 
+MAINTAINERCLEANFILES = $(VAPIGEN_VAPIS)
+
 EXTRA_DIST = \
+	$(VAPIGEN_VAPIS) \
 	IBus-1.0.metadata \
 	IBus-1.0-custom.vala \
 	ibus-1.0.deps \
 	config.vapi \
 	xi.vapi \
 	$(NULL)
-
-DIST_SOURCES = $(VAPIGEN_VAPIS)
 
 -include $(top_srcdir)/git.mk
