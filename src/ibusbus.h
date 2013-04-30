@@ -1043,5 +1043,29 @@ gboolean     ibus_bus_preload_engines_async_finish
                                          GAsyncResult   *res,
                                          GError        **error);
 
+/**
+ * ibus_bus_get_ibus_property:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Get
+ * @returns: (transfer full): The value in org.freedesktop.DBus.Properties.Get
+ *           The returned value must be freed with g_variant_unref().
+ *
+ * Get org.freedesktop.DBus.Properties.
+ */
+GVariant *   ibus_bus_get_ibus_property (IBusBus        *bus,
+                                         const gchar    *property_name);
+
+/**
+ * ibus_bus_set_ibus_property:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Set
+ * @value: value in org.freedesktop.DBus.Properties.Set
+ *
+ * Set org.freedesktop.DBus.Properties.
+ */
+void         ibus_bus_set_ibus_property (IBusBus        *bus,
+                                         const gchar    *property_name,
+                                         GVariant       *value);
+
 G_END_DECLS
 #endif

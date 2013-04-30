@@ -2068,6 +2068,60 @@ ibus_bus_preload_engines_async_finish (IBusBus       *bus,
     return _async_finish_void (res, error);
 }
 
+GVariant *
+ibus_bus_get_ibus_property (IBusBus     *bus,
+                            const gchar *property_name)
+{
+    GVariant *result;
+    GVariant *retval = NULL;
+
+    g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
+    g_return_val_if_fail (property_name != NULL, NULL);
+
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 "org.freedesktop.DBus.Properties",
+                                 "Get",
+                                 g_variant_new ("(ss)",
+                                                IBUS_INTERFACE_IBUS,
+                                                property_name),
+                                 G_VARIANT_TYPE ("(v)"));
+
+    if (result) {
+        g_variant_get (result, "(v)", &retval);
+        g_variant_unref (result);
+    }
+
+    return retval;
+}
+
+void
+ibus_bus_set_ibus_property (IBusBus     *bus,
+                            const gchar *property_name,
+                            GVariant    *value)
+{
+    GVariant *result;
+
+    g_return_if_fail (IBUS_IS_BUS (bus));
+    g_return_if_fail (property_name != NULL);
+
+    result = ibus_bus_call_sync (bus,
+                                 IBUS_SERVICE_IBUS,
+                                 IBUS_PATH_IBUS,
+                                 "org.freedesktop.DBus.Properties",
+                                 "Set",
+                                 g_variant_new ("(ssv)",
+                                                IBUS_INTERFACE_IBUS,
+                                                property_name,
+                                                value),
+                                 NULL);
+
+    if (result) {
+        g_variant_unref (result);
+    }
+}
+
 static GVariant *
 ibus_bus_call_sync (IBusBus            *bus,
                     const gchar        *bus_name,

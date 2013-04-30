@@ -282,6 +282,22 @@ class Panel : IBus.PanelService {
         m_use_system_keyboard_layout = var_use_system_kbd_layout.get_boolean();
     }
 
+    private void set_embed_preedit_text(Variant? variant) {
+        Variant var_embed_preedit = variant;
+
+        if (var_embed_preedit == null) {
+            var_embed_preedit = m_config.get_value("general",
+                                                   "embed_preedit_text");
+        }
+
+        if (var_embed_preedit == null) {
+            return;
+        }
+
+        m_bus.set_ibus_property("EmbedPreeditText",
+                                var_embed_preedit);
+    }
+
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
@@ -293,6 +309,7 @@ class Panel : IBus.PanelService {
         if (m_config != null) {
             m_config.value_changed.connect(config_value_changed_cb);
             m_config.watch("general", "preload_engines");
+            m_config.watch("general", "embed_preedit_text");
             m_config.watch("general", "engines_order");
             m_config.watch("general", "switcher_delay_time");
             m_config.watch("general", "use_system_keyboard_layout");
@@ -307,6 +324,7 @@ class Panel : IBus.PanelService {
             unbind_switch_shortcut();
             bind_switch_shortcut(null);
             set_switcher_delay_time(null);
+            set_embed_preedit_text(null);
         } else {
             update_engines(null, null);
         }
@@ -406,6 +424,11 @@ class Panel : IBus.PanelService {
 
         if (section == "general" && name == "use_system_keyboard_layout") {
             set_use_system_keyboard_layout(variant);
+            return;
+        }
+
+        if (section == "general" && name == "embed_preedit_text") {
+            set_embed_preedit_text(variant);
             return;
         }
     }

@@ -51,11 +51,13 @@ struct _BusIBusImpl {
     /* a fake input context for global engine support */
     BusInputContext *fake_context;
     
-    /* a list of engines that are started by a user (without the --ibus command line flag.) */
+    /* a list of engines that are started by a user (without the --ibus
+     * command line flag.) */
     GList *register_engine_list;
 
-    /* if TRUE, ibus-daemon uses a keysym translated by the system (i.e. XKB) as-is.
-     * otherwise, ibus-daemon itself converts keycode into keysym. */
+    /* if TRUE, ibus-daemon uses a keysym translated by the system
+     * (i.e. XKB) as-is. otherwise, ibus-daemon itself converts keycode
+     * into keysym. */
     gboolean use_sys_layout;
 
     gboolean embed_preedit_text;
@@ -65,7 +67,8 @@ struct _BusIBusImpl {
     BusInputContext *focused_context;
     BusPanelProxy   *panel;
 
-    /* a default keymap of ibus-daemon (usually "us") which is used only when use_sys_layout is FALSE. */
+    /* a default keymap of ibus-daemon (usually "us") which is used only
+     * when use_sys_layout is FALSE. */
     IBusKeymap      *keymap;
 
     gboolean use_global_engine;
@@ -92,45 +95,70 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 */
 
 /* functions prototype */
-static void      bus_ibus_impl_destroy           (BusIBusImpl        *ibus);
+static void      bus_ibus_impl_destroy  (BusIBusImpl        *ibus);
 static void      bus_ibus_impl_service_method_call
-                                                 (IBusService        *service,
-                                                  GDBusConnection    *connection,
-                                                  const gchar        *sender,
-                                                  const gchar        *object_path,
-                                                  const gchar        *interface_name,
-                                                  const gchar        *method_name,
-                                                  GVariant           *parameters,
-                                                  GDBusMethodInvocation
-                                                                     *invocation);
-static void     bus_ibus_impl_registry_changed  (BusIBusImpl        *ibus);
+                                        (IBusService        *service,
+                                         GDBusConnection    *connection,
+                                         const gchar        *sender,
+                                         const gchar        *object_path,
+                                         const gchar        *interface_name,
+                                         const gchar        *method_name,
+                                         GVariant           *parameters,
+                                         GDBusMethodInvocation
+                                                            *invocation);
+static GVariant *
+                bus_ibus_impl_service_get_property
+                                        (IBusService        *service,
+                                         GDBusConnection    *connection,
+                                         const gchar        *sender,
+                                         const gchar        *object_path,
+                                         const gchar        *interface_name,
+                                         const gchar        *property_name,
+                                         GError            **error);
+static gboolean
+                bus_ibus_impl_service_set_property
+                                        (IBusService        *service,
+                                         GDBusConnection    *connection,
+                                         const gchar        *sender,
+                                         const gchar        *object_path,
+                                         const gchar        *interface_name,
+                                         const gchar        *property_name,
+                                         GVariant           *value,
+                                         GError            **error);
+static void     bus_ibus_impl_registry_changed
+                                        (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_global_engine_changed
-                                                (BusIBusImpl        *ibus);
+                                        (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_set_context_engine_from_desc
-                                                (BusIBusImpl        *ibus,
-                                                 BusInputContext    *context,
-                                                 IBusEngineDesc     *desc);
+                                        (BusIBusImpl        *ibus,
+                                         BusInputContext    *context,
+                                         IBusEngineDesc     *desc);
 static BusInputContext
                *bus_ibus_impl_create_input_context
-                                                (BusIBusImpl        *ibus,
-                                                 BusConnection      *connection,
-                                                 const gchar        *client);
+                                        (BusIBusImpl        *ibus,
+                                         BusConnection      *connection,
+                                         const gchar        *client);
 static IBusEngineDesc
-               *bus_ibus_impl_get_engine_desc   (BusIBusImpl        *ibus,
-                                                 const gchar        *engine_name);
+               *bus_ibus_impl_get_engine_desc
+                                        (BusIBusImpl        *ibus,
+                                         const gchar        *engine_name);
 static void     bus_ibus_impl_set_focused_context
-                                                (BusIBusImpl        *ibus,
-                                                 BusInputContext    *context);
+                                        (BusIBusImpl        *ibus,
+                                         BusInputContext    *context);
 /* some callback functions */
-static void     _context_engine_changed_cb      (BusInputContext    *context,
-                                                 BusIBusImpl        *ibus);
+static void     _context_engine_changed_cb
+                                        (BusInputContext    *context,
+                                         BusIBusImpl        *ibus);
 
-/* The interfaces available in this class, which consists of a list of methods this class implements and
- * a list of signals this class may emit. Method calls to the interface that are not defined in this XML
- * will be automatically rejected by the GDBus library (see src/ibusservice.c for details.) */
+/* The interfaces available in this class, which consists of a list of
+ * methods this class implements and a list of signals this class may emit.
+ * Method calls to the interface that are not defined in this XML will 
+ * be automatically rejected by the GDBus library (see src/ibusservice.c
+ * for details.) */
 static const gchar introspection_xml[] =
     "<node>\n"
     "  <interface name='org.freedesktop.IBus'>\n"
+    "    <property name='EmbedPreeditText' type='b' access='readwrite' />\n"
     "    <method name='GetAddress'>\n"
     "      <arg direction='out' type='s' name='address' />\n"
     "    </method>\n"
@@ -193,12 +221,20 @@ G_DEFINE_TYPE (BusIBusImpl, bus_ibus_impl, IBUS_TYPE_SERVICE)
 static void
 bus_ibus_impl_class_init (BusIBusImplClass *class)
 {
-    IBUS_OBJECT_CLASS (class)->destroy = (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
+    IBUS_OBJECT_CLASS (class)->destroy =
+            (IBusObjectDestroyFunc) bus_ibus_impl_destroy;
 
     /* override the parent class's implementation. */
-    IBUS_SERVICE_CLASS (class)->service_method_call = bus_ibus_impl_service_method_call;
-    /* register the xml so that bus_ibus_impl_service_method_call will be called on a method call defined in the xml (e.g. 'GetAddress'.) */
-    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
+    IBUS_SERVICE_CLASS (class)->service_method_call =
+            bus_ibus_impl_service_method_call;
+    IBUS_SERVICE_CLASS (class)->service_get_property =
+            bus_ibus_impl_service_get_property;
+    IBUS_SERVICE_CLASS (class)->service_set_property =
+            bus_ibus_impl_service_set_property;
+    /* register the xml so that bus_ibus_impl_service_method_call will be
+     * called on a method call defined in the xml (e.g. 'GetAddress'.) */
+    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class),
+                                       introspection_xml);
 }
 
 /**
@@ -1278,9 +1314,49 @@ _ibus_preload_engines (BusIBusImpl           *ibus,
 }
 
 /**
+ * _ibus_get_embed_preedit_text:
+ *
+ * Implement the "EmbedPreeditText" method call of
+ * the org.freedesktop.IBus interface.
+ */
+static GVariant *
+_ibus_get_embed_preedit_text (BusIBusImpl     *ibus,
+                              GDBusConnection *connection,
+                              GError         **error)
+{
+    if (error) {
+        *error = NULL;
+    }
+
+    return g_variant_new_boolean (ibus->embed_preedit_text);
+}
+
+/**
+ * _ibus_set_embed_preedit_text:
+ *
+ * Implement the "EmbedPreeditText" method call of
+ * the org.freedesktop.IBus interface.
+ */
+static gboolean
+_ibus_set_embed_preedit_text (BusIBusImpl     *ibus,
+                              GDBusConnection *connection,
+                              GVariant        *value,
+                              GError         **error)
+{
+    if (error) {
+        *error = NULL;
+    }
+
+    ibus->embed_preedit_text = g_variant_get_boolean (value);
+
+    return TRUE;
+}
+
+/**
  * bus_ibus_impl_service_method_call:
  *
- * Handle a D-Bus method call whose destination and interface name are both "org.freedesktop.IBus"
+ * Handle a D-Bus method call whose destination and interface name are
+ * both "org.freedesktop.IBus"
  */
 static void
 bus_ibus_impl_service_method_call (IBusService           *service,
@@ -1294,7 +1370,8 @@ bus_ibus_impl_service_method_call (IBusService           *service,
 {
     if (g_strcmp0 (interface_name, "org.freedesktop.IBus") != 0) {
         IBUS_SERVICE_CLASS (bus_ibus_impl_parent_class)->service_method_call (
-                        service, connection, sender, object_path, interface_name, method_name,
+                        service, connection, sender, object_path,
+                        interface_name, method_name,
                         parameters, invocation);
         return;
     }
@@ -1325,13 +1402,164 @@ bus_ibus_impl_service_method_call (IBusService           *service,
     gint i;
     for (i = 0; i < G_N_ELEMENTS (methods); i++) {
         if (g_strcmp0 (methods[i].method_name, method_name) == 0) {
-            methods[i].method_callback ((BusIBusImpl *) service, parameters, invocation);
+            methods[i].method_callback ((BusIBusImpl *) service,
+                                        parameters,
+                                        invocation);
             return;
         }
     }
 
-    /* notreached - unknown method calls that are not in the introspection_xml should be handled by the GDBus library. */
-    g_return_if_reached ();
+    g_warning ("service_method_call received an unknown method: %s",
+               method_name ? method_name : "(null)");
+}
+
+/**
+ * bus_ibus_impl_service_get_property:
+ *
+ * Handle org.freedesktop.DBus.Properties.Get
+ */
+static GVariant *
+bus_ibus_impl_service_get_property (IBusService     *service,
+                                    GDBusConnection *connection,
+                                    const gchar     *sender,
+                                    const gchar     *object_path,
+                                    const gchar     *interface_name,
+                                    const gchar     *property_name,
+                                    GError         **error)
+{
+    gint i;
+
+    static const struct {
+        const gchar *method_name;
+        GVariant * (* method_callback) (BusIBusImpl *,
+                                        GDBusConnection *,
+                                        GError **);
+    } methods [] =  {
+        { "EmbedPreeditText",      _ibus_get_embed_preedit_text },
+    };
+
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_IBUS) != 0) {
+        return IBUS_SERVICE_CLASS (
+                bus_ibus_impl_parent_class)->service_get_property (
+                        service, connection, sender, object_path,
+                        interface_name, property_name,
+                        error);
+    }
+
+    for (i = 0; i < G_N_ELEMENTS (methods); i++) {
+        if (g_strcmp0 (methods[i].method_name, property_name) == 0) {
+            return methods[i].method_callback ((BusIBusImpl *) service,
+                                               connection,
+                                               error);
+        }
+    }
+
+    g_warning ("service_get_property received an unknown property: %s",
+               property_name ? property_name : "(null)");
+    return NULL;
+}
+
+static void
+_emit_properties_changed (BusIBusImpl     *service,
+                          GDBusConnection *connection,
+                          const gchar     *object_path,
+                          const gchar     *interface_name,
+                          const gchar     *property_name,
+                          GVariant        *value,
+                          gboolean         is_changed)
+{
+    GVariantBuilder *builder;
+    GVariantBuilder *invalidated_builder;
+    GError *error = NULL;
+
+    builder = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
+    invalidated_builder = g_variant_builder_new (G_VARIANT_TYPE ("as"));
+
+    if (is_changed) {
+        g_variant_builder_add (builder, "{sv}", property_name, value);
+    } else {
+        g_variant_builder_add (invalidated_builder, "s", property_name);
+    }
+
+    g_dbus_connection_emit_signal (connection,
+                                   NULL,
+                                   object_path,
+                                   "org.freedesktop.DBus.Properties",
+                                   "PropertiesChanged",
+                                   g_variant_new ("(sa{sv}as)",
+                                                  interface_name,
+                                                  builder,
+                                                  invalidated_builder),
+                                   &error);
+
+    if (error) {
+        g_warning ("Failed to emit property %s in %s.%s: %s",
+                   property_name,
+                   "org.freedesktop.DBus.Properties",
+                   "PropertiesChanged",
+                   error->message);
+        g_error_free (error);
+    }
+}
+
+/**
+ * bus_ibus_impl_service_set_property:
+ *
+ * Handle org.freedesktop.DBus.Properties.Set
+ */
+static gboolean
+bus_ibus_impl_service_set_property (IBusService     *service,
+                                    GDBusConnection *connection,
+                                    const gchar     *sender,
+                                    const gchar     *object_path,
+                                    const gchar     *interface_name,
+                                    const gchar     *property_name,
+                                    GVariant        *value,
+                                    GError         **error)
+{
+    gint i;
+
+    static const struct {
+        const gchar *method_name;
+        gboolean (* method_callback) (BusIBusImpl *,
+                                      GDBusConnection *,
+                                      GVariant *,
+                                      GError **);
+    } methods [] =  {
+        { "EmbedPreeditText",      _ibus_set_embed_preedit_text },
+    };
+
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_IBUS) != 0) {
+        return IBUS_SERVICE_CLASS (
+                bus_ibus_impl_parent_class)->service_set_property (
+                        service, connection, sender, object_path,
+                        interface_name, property_name,
+                        value, error);
+    }
+
+    for (i = 0; i < G_N_ELEMENTS (methods); i++) {
+        if (g_strcmp0 (methods[i].method_name, property_name) == 0) {
+            gboolean retval = methods[i].method_callback (
+                    (BusIBusImpl *) service,
+                    connection,
+                    value,
+                    error);
+
+            _emit_properties_changed ((BusIBusImpl *) service,
+                                      connection,
+                                      object_path,
+                                      interface_name,
+                                      property_name,
+                                      value,
+                                      retval);
+
+            return retval;
+        }
+    }
+
+    g_warning ("service_set_property received an unknown property: %s",
+               property_name ? property_name : "(null)");
+    return FALSE;
 }
 
 BusIBusImpl *
