@@ -803,6 +803,18 @@ ibus_im_context_focus_in (GtkIMContext *context)
         return;
 
     /* don't set focus on password entry */
+#if GTK_CHECK_VERSION (3, 6, 0)
+    {
+        GtkInputPurpose purpose;
+
+        g_object_get (G_OBJECT (context),
+                      "input-purpose", &purpose,
+                      NULL);
+
+        if (purpose == GTK_INPUT_PURPOSE_PASSWORD)
+            return;
+    }
+#endif
     if (ibusimcontext->client_window != NULL) {
         GtkWidget *widget;
 
