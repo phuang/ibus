@@ -59,7 +59,7 @@
       <owner>ibus</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[&lt;Control&gt;space]</default>
+      <default>[&lt;Super&gt;space]</default>
       <locale name="C">
         <short>Trigger shortcut keys for gtk_accelerator_parse</short>
           <long>The shortcut keys for turning input method on or off</long>

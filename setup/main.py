@@ -89,7 +89,7 @@ class Setup(object):
         if variant != None:
             shortcuts = variant.unpack()
         else:
-            shortcuts =  ['<Control>space']
+            shortcuts =  ['<Super>space']
 
         button = self.__builder.get_object("button_%s" % label)
         entry = self.__builder.get_object("entry_%s" % label)

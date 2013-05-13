@@ -49,7 +49,7 @@ class Panel : IBus.PanelService {
     private Gtk.CssProvider m_css_provider;
     private int m_switcher_delay_time = 400;
     private bool m_use_system_keyboard_layout = false;
-    private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Control>space";
+    private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Super>space";
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -74,7 +74,7 @@ class Panel : IBus.PanelService {
         m_candidate_panel.page_down.connect((w) => this.page_down());
 
         m_switcher = new Switcher();
-        // The initial shortcut is "<Control>space"
+        // The initial shortcut is "<Super>space"
         bind_switch_shortcut(null);
 
         if (m_switcher_delay_time >= 0) {
