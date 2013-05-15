@@ -1,0 +1,77 @@
+.\" This file is distributed under the same license as the ibus
+.\" package.
+.\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2013.
+.\" Copyright (c) Peng Huang <shawn.p.huang@gmail.com>, 2013.
+.\"
+.TH IBUS-DAEMON "1" "April 2010" "@VERSION@" "User Commands"
+.SH NAME
+.B ibus\-daemon
+\- daemon program for ibus
+
+.SH SYNOPSIS
+.B ibus\-daemon
+[\fIOPTION\fR]...
+
+.SH DESCRIPTION
+
+.PP
+IBus is an Intelligent Input Bus. It is a new input framework for Linux
+OS. It provides full featured and user friendly input method user
+interface.  It also may help developers to develop input method easily.
+
+.PP
+.B ibus\-daemon
+is a daemon program for ibus and it is also a start up program for users
+to activate ibus daemon, engines and panel.
+
+.SS "Help Options:"
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Show help options
+
+.SS "Application Options:"
+.TP
+\fB\-d\fR, \fB\-\-daemonize\fR
+run ibus as background process.
+.TP
+\fB\-s\fR, \fB\-\-single\fR
+do not execute panel and config module.
+.TP
+\fB\-x\fR, \fB\-\-xim\fR
+execute ibus XIM server.
+.TP
+\fB\-n\fR, \fB\-\-desktop\fR=\fIname\fR
+specify the name of desktop session. [default=gnome]
+.TP
+\fB\-p\fR, \fB\-\-panel\fR=\fIcmdline\fR
+specify the cmdline of panel program.
+.TP
+\fB\-c\fR, \fB\-\-config\fR=\fIcmdline\fR
+specify the cmdline of config program.
+.TP
+\fB\-a\fR, \fB\-\-address\fR=\fIaddress\fR
+specify the address of ibus daemon.
+.TP
+\fB\-r\fR, \fB\-\-replace\fR
+if there is an old ibus\-daemon is running, it will be replaced.
+.TP
+\fB\-t\fR, \fB\-\-re\-scan\fR
+force to re\-scan components, and re\-create registry cache.
+.TP
+\fB\-o\fR, \fB\-\-timeout\fR=\fItimeout\fR [default is 2000]
+dbus reply timeout in milliseconds.
+.TP
+\fB\-j\fR, \fB\-\-monitor\-timeout\fR=\fItimeout\fR [default is 0]
+timeout of poll changes of engines in seconds. 0 to disable it.
+.TP
+\fB\-m\fR, \fB\-\-mem\-profile\fR
+enable memory profile, send SIGUSR2 to print out the memory profile.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+verbose.
+
+.SH BUGS
+If you find a bug, please report it at http://code.google.com/p/ibus/issues/list
+
+.SH "SEE ALSO"
+.BR ibus (1)

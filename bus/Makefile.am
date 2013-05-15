@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -162,11 +162,17 @@ test_stress_LDADD = \
 
 EXTRA_DIST =                \
 	$(desktop_in_files)     \
+	$(man_one_in_files)     \
 	marshalers.list         \
 	$(NULL)
 
 DISTCLEANFILES =            \
 	$(desktop_DATA)         \
+	$(NULL)
+
+CLEANFILES = \
+	$(man_one_DATA)            \
+	$(man_one_files)        \
 	$(NULL)
 
 $(libibus):
@@ -181,5 +187,16 @@ desktopdir = $(datadir)/applications
 desktop_in_files = ibus.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
+
+man_one_in_files = ibus-daemon.1.in
+man_one_files = $(man_one_in_files:.1.in=.1)
+man_one_DATA =$(man_one_files:.1=.1.gz) 
+man_onedir = $(datadir)/man/man1
+%.1: %.1.in
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' $< > $@.tmp && \
+		mv $@.tmp $@
+%.1.gz: %.1
+	$(AM_V_GEN) gzip -c $< > $@.tmp && mv $@.tmp $@
 
 -include $(top_srcdir)/git.mk
