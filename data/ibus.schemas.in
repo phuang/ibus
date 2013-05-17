@@ -42,6 +42,20 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/version</key>
+      <applyto>/desktop/ibus/general/version</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+        <short>Saved version number</short>
+            <long>The saved version number will be used to check the
+                  difference between the version of the previous installed
+                  ibus and one of the current ibus.
+            </long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>

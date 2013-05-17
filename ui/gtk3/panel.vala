@@ -298,6 +298,95 @@ class Panel : IBus.PanelService {
                                 var_embed_preedit);
     }
 
+    private int compare_versions(string version1, string version2) {
+        string[] version1_list = version1.split(".");
+        string[] version2_list = version2.split(".");
+        int major1, minor1, micro1, major2, minor2, micro2;
+
+        if (version1 == version2) {
+            return 0;
+        }
+
+        // The initial dconf value of "version" is "".
+        if (version1 == "") {
+            return -1;
+        }
+        if (version2 == "") {
+            return 1;
+        }
+
+        assert(version1_list.length >= 3);
+        assert(version2_list.length >= 3);
+
+        major1 = int.parse(version1_list[0]);
+        minor1 = int.parse(version1_list[1]);
+        micro1 = int.parse(version1_list[2]);
+
+        major2 = int.parse(version2_list[0]);
+        minor2 = int.parse(version2_list[1]);
+        micro2 = int.parse(version2_list[2]);
+
+        if (major1 == minor1 && minor1 == minor2 && micro1 == micro2) {
+            return 0;
+        }
+        if ((major1 > major2) ||
+            (major1 == major2 && minor1 > minor2) ||
+            (major1 == major2 && minor1 == minor2 &&
+             micro1 > micro2)) {
+            return 1;
+        }
+        return -1;
+    }
+
+    private void update_version_1_5_3() {
+#if ENABLE_LIBNOTIFY
+        if (!Notify.is_initted()) {
+            Notify.init ("ibus");
+        }
+
+        var notification = new Notify.Notification(
+                _("IBus Update"),
+                _("Super+space is now the default hotkey."),
+                "ibus");
+        notification.set_timeout(30 * 1000);
+        notification.set_category("hotkey");
+
+        try {
+            notification.show();
+        } catch (GLib.Error e){
+            warning ("Notification is failed for IBus 1.5.3: %s", e.message);
+        }
+#else
+        warning(_("Super+space is now the default hotkey."));
+#endif
+    }
+
+    private void set_version() {
+        Variant var_prev_version = m_config.get_value("general", "version");
+        Variant var_current_version = null;
+        string prev_version = "".dup();
+        string current_version = null;
+
+        if (var_prev_version != null) {
+            prev_version = var_prev_version.dup_string();
+        }
+
+        if (compare_versions(prev_version, "1.5.3") < 0) {
+            update_version_1_5_3();
+        }
+
+        current_version = "%d.%d.%d".printf(IBus.MAJOR_VERSION,
+                                            IBus.MINOR_VERSION,
+                                            IBus.MICRO_VERSION);
+
+        if (prev_version == current_version) {
+            return;
+        }
+
+        var_current_version = new Variant.string(current_version);
+        m_config.set_value("general", "version", var_current_version);
+    }
+
     public void set_config(IBus.Config config) {
         if (m_config != null) {
             m_config.value_changed.disconnect(config_value_changed_cb);
@@ -325,11 +414,12 @@ class Panel : IBus.PanelService {
             bind_switch_shortcut(null);
             set_switcher_delay_time(null);
             set_embed_preedit_text(null);
+            set_custom_font();
+
+            set_version();
         } else {
             update_engines(null, null);
         }
-
-        set_custom_font();
     }
 
     private void exec_setxkbmap(IBus.EngineDesc engine) {

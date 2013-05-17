@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -82,6 +82,21 @@ AM_VALAFLAGS = \
 	--pkg=config \
 	--pkg=xi \
 	$(NULL)
+
+if ENABLE_LIBNOTIFY
+AM_CFLAGS += \
+	@LIBNOTIFY_CFLAGS@ \
+	$(NULL)
+
+AM_LDADD += \
+	@LIBNOTIFY_LIBS@ \
+	$(NULL)
+
+AM_VALAFLAGS += \
+	--pkg=libnotify \
+	-D ENABLE_LIBNOTIFY \
+	$(NULL)
+endif
 
 libexec_PROGRAMS = ibus-ui-gtk3
 

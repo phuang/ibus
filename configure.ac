@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -498,6 +498,21 @@ if test x"$enable_engine" = x"yes"; then
     enable_engine="yes (enabled, use --disable-engine to disable)"
 fi
 
+# --disable-libnotify
+AC_ARG_ENABLE(libnotify,
+    AS_HELP_STRING([--disable-libnotify],
+                   [Disable to link libnotify]),
+    [enable_libnotify=$enableval],
+    [enable_libnotify=yes]
+)
+AM_CONDITIONAL([ENABLE_LIBNOTIFY], [test x"$enable_libnotify" = x"yes"])
+if test x"$enable_libnotify" = x"yes"; then
+    PKG_CHECK_MODULES(LIBNOTIFY, [
+        libnotify >= 0.7
+    ])
+    enable_libnotify="yes (enabled, use --disable-libnotify to disable)"
+fi
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -574,6 +589,7 @@ Build options:
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text   $enable_surrounding_text
+  Enable libnotify          $enable_libnotify
   Run test cases            $enable_tests
 ])
 
