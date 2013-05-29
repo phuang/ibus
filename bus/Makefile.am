@@ -161,13 +161,8 @@ test_stress_LDADD = \
 	$(NULL)
 
 EXTRA_DIST =                \
-	$(desktop_in_files)     \
 	$(man_one_in_files)     \
 	marshalers.list         \
-	$(NULL)
-
-DISTCLEANFILES =            \
-	$(desktop_DATA)         \
 	$(NULL)
 
 CLEANFILES = \
@@ -182,11 +177,6 @@ test: ibus-daemon
 	$(ENV_IBUS_TEST) \
 		G_DEBUG=fatal_warnings \
 		$(builddir)/ibus-daemon -v
-
-desktopdir = $(datadir)/applications
-desktop_in_files = ibus.desktop.in
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-@INTLTOOL_DESKTOP_RULE@
 
 man_one_in_files = ibus-daemon.1.in
 man_one_files = $(man_one_in_files:.1.in=.1)
