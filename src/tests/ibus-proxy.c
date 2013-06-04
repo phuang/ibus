@@ -9,10 +9,12 @@ _value_changed_cb (IBusConfig *config, gchar *section, gchar *name, GValue *valu
 
 int main()
 {
-	g_type_init ();
-
 	IBusBus *bus;
 	IBusConfig *config;
+
+#if !GLIB_CHECK_VERSION(2,35,0)
+	g_type_init ();
+#endif
 
 	bus = ibus_bus_new ();
 	config = ibus_bus_get_config (bus);

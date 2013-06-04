@@ -291,9 +291,7 @@ gboolean         ibus_key_event_from_string
 /**
  * ibus_init:
  *
- * Init the ibus types.
- *
- * It is actually a wrapper of g_type_init().
+ * Initialize the ibus types.
  */
 void             ibus_init              (void);
 

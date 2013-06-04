@@ -733,7 +733,8 @@ bus_dbus_impl_name_has_owner (BusDBusImpl           *dbus,
         g_dbus_method_invocation_return_error (invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
-                                               "'%s' is not a legal bus name");
+                                               "'%s' is not a legal bus name",
+                                               name ? name : "(null)");
         return;
     }
 

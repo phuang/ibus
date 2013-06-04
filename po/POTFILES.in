@@ -3,7 +3,6 @@
 [type: gettext/glade]setup/setup.ui
 bus/dbusimpl.c
 bus/engineproxy.c
-bus/ibus.desktop.in
 bus/inputcontext.c
 bus/panelproxy.c
 bus/registry.c

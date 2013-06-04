@@ -275,7 +275,9 @@ ibus_free_strv (gchar **strv)
 void
 ibus_init (void)
 {
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
     IBUS_ERROR;
     IBUS_TYPE_TEXT;
     IBUS_TYPE_ATTRIBUTE;

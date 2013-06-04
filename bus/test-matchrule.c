@@ -20,7 +20,9 @@ int
 main(gint argc, gchar **argv)
 {
     BusMatchRule *rule, *rule1;
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
 
     rule = bus_match_rule_new (" type='signal' , interface = 'org.freedesktop.IBus' ");
     g_assert (rule->message_type == G_DBUS_MESSAGE_TYPE_SIGNAL);

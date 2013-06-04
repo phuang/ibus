@@ -81,6 +81,7 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	--pkg=config \
 	--pkg=xi \
+	--target-glib="$(GLIB_VERSION)" \
 	$(NULL)
 
 if ENABLE_LIBNOTIFY

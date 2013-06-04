@@ -11,7 +11,9 @@ gint
 main (gint    argc,
       gchar **argv)
 {
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
     g_test_init (&argc, &argv, NULL);
 
     g_test_add_func ("/ibus/keyname", test_keyname);

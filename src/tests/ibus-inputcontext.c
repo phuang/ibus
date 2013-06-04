@@ -208,9 +208,8 @@ main (gint    argc,
       gchar **argv)
 {
     gint result;
-    g_type_init ();
-    g_test_init (&argc, &argv, NULL);
     ibus_init ();
+    g_test_init (&argc, &argv, NULL);
     bus = ibus_bus_new ();
 
     g_test_add_func ("/ibus/input_context", test_input_context);

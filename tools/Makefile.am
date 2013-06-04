@@ -58,6 +58,7 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	--pkg=posix \
 	--pkg=config \
+	--target-glib="$(GLIB_VERSION)" \
 	$(NULL)
 
 bin_PROGRAMS = ibus

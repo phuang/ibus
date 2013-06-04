@@ -153,6 +153,9 @@ PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
 
+GLIB_VERSION=`$PKG_CONFIG --modversion glib-2.0`
+AC_SUBST(GLIB_VERSION)
+
 # --disable-tests option.
 AC_ARG_ENABLE(tests,
     AS_HELP_STRING([--disable-tests],

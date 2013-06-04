@@ -48,11 +48,11 @@ change_global_engine_cb (IBusBus *bus)
 
 int main()
 {
-	g_type_init ();
-
 	IBusBus *bus;
 
+#if !GLIB_CHECK_VERSION(2,35,0)
 	g_type_init ();
+#endif
 	IBUS_TYPE_ENGINE_DESC;
 
 	bus = ibus_bus_new ();
