@@ -60,10 +60,11 @@ TESTS_ENVIRONMENT = \
 	top_builddir=$(top_builddir) \
 	top_srcdir=$(top_srcdir) \
 	builddir=$(builddir) \
-	$(srcdir)/setupenv \
 	$(NULL)
 
-EXTRA_DIST = setupenv
+LOG_COMPILER = $(srcdir)/runtest
+
+EXTRA_DIST = runtest
 
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)

@@ -1,0 +1,117 @@
+#!/bin/sh
+
+# Run a test case given by the first argument in a separate directory.
+# This script may also launch $top_builddir/bus/ibus-daemon for testing.
+
+# Executing a test that uses this file
+# ====================================
+#
+# Running a single test:
+#
+#   $ make check TESTS=ibus-foo
+#
+#   or
+#
+#   $ top_builddir=<...> top_srcdir=<...> builddir=<...> ./runtest ibus-foo
+
+: ${top_builddir:=../..}
+: ${top_srcdir:=../..}
+: ${builddir:=.}
+
+BUS_REQUIRED_TESTS="
+ibus-bus
+ibus-config
+ibus-configservice
+ibus-factory
+ibus-inputcontext
+ibus-inputcontext-create
+ibus-engine-switch
+"
+
+# Portable replacement of basename.
+func_basename () {
+  case "$1" in
+    */*)
+      expr "$1" : '.*/\(.*\)'
+      ;;
+    *)
+      echo "$1"
+  esac
+}
+
+# Portable replacement of dirname.
+func_dirname () {
+  case "$1" in
+    */*)
+      expr "$1" : '\(.*\)/.*'
+      ;;
+    *)
+      echo .
+  esac
+}
+
+# Kill ibus-daemon process and remove temporary files.
+func_cleanup () {
+  tstdir=$1
+  if test -f $tstdir/ibus-daemon.pid; then
+    . $tstdir/ibus-daemon.pid
+    kill $IBUS_DAEMON_PID &> /dev/null
+  fi
+  rm -fr $tstdir
+}
+
+# Prepare component files necessary for testing, under components/.
+func_copy_component () {
+  file=$1
+  base=`func_basename $file`
+  if test -f $file.in; then
+    mkdir -p components
+    sed 's|@libexecdir@|'`func_dirname $file`'|g' < $file.in > components/$base
+  fi
+}
+
+trap 'func_cleanup $tstdir' 1 2 3 15
+
+tst=$1; shift
+tstdir=tmp-`func_basename $tst`
+
+test -d $tstdir || mkdir $tstdir
+
+( cd $tstdir
+
+  need_bus=no
+  for t in $BUS_REQUIRED_TESTS; do
+    if test $t = `func_basename $tst`; then
+      need_bus=yes
+    fi
+  done
+
+  if test $need_bus = yes; then
+    func_copy_component "../$top_srcdir/engine/simple.xml"
+    func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
+
+    IBUS_COMPONENT_PATH=$PWD/components
+    export IBUS_COMPONENT_PATH
+
+    IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
+    export IBUS_ADDRESS_FILE
+
+    # Start ibus-daemon.
+    ../$top_builddir/bus/ibus-daemon \
+    --daemonize \
+    --cache=none \
+    --panel=disable \
+    --config=default \
+    --verbose;
+
+    # Wait until all necessary components are up.
+    sleep 1
+  fi
+
+  exec "../$tst" ${1+"$@"} )
+
+retval=$?
+
+func_cleanup $tstdir
+
+exit $retval

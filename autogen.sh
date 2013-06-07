@@ -25,4 +25,4 @@ which gnome-autogen.sh || {
 CFLAGS=${CFLAGS-"-Wall -Werror"}
 
 # need --enable-gtk-doc for gnome-autogen.sh to make dist
-ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.10 CFLAGS="$CFLAGS" . gnome-autogen.sh "$@"
+ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.11 CFLAGS="$CFLAGS" . gnome-autogen.sh "$@"

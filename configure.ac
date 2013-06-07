@@ -55,7 +55,7 @@ m4_define([glib_required_version], [2.32.0])
 
 
 # Init automake.
-AM_INIT_AUTOMAKE([1.10])
+AM_INIT_AUTOMAKE([1.11.1 parallel-tests])
 AM_MAINTAINER_MODE([enable])
 AC_GNU_SOURCE
 
