@@ -24,7 +24,7 @@ NULL =
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-INCLUDES =                \
+AM_CPPFLAGS =                \
 	-I$(top_srcdir)/src   \
 	-I$(top_builddir)/src \
 	$(NULL)
@@ -38,7 +38,6 @@ AM_CFLAGS = \
 	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DBINDIR=\"@bindir@\" \
 	-DIBUS_DISABLE_DEPRECATED \
-	$(INCLUDES) \
 	$(NULL)
 AM_LDADD = \
 	@GOBJECT2_LIBS@ \

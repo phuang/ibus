@@ -22,7 +22,7 @@
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
 	$(NULL)
@@ -31,7 +31,6 @@ AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
 	@GTHREAD2_CFLAGS@ \
-	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DLIBEXECDIR=\"$(libexecdir)\" \

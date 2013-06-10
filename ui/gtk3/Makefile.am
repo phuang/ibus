@@ -35,15 +35,14 @@ gtkpanel.xml: gtkpanel.xml.in
 		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
 		mv $@.tmp $@
 
-INCLUDES = \
+# force include config.h before gi18n.h.
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
+	-include $(CONFIG_HEADER) \
 	$(NULL)
 
 USE_SYMBOL_ICON = FALSE
-
-# force include config.h before gi18n.h.
-AM_CPPFLAGS = -include $(CONFIG_HEADER)
 
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
@@ -51,7 +50,6 @@ AM_CFLAGS = \
 	@GTHREAD2_CFLAGS@ \
 	@GTK3_CFLAGS@ \
 	@X11_CFLAGS@ \
-	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DBINDIR=\"$(bindir)\" \
 	-DIBUS_DISABLE_DEPRECATED \

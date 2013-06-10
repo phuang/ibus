@@ -24,7 +24,7 @@ NULL =
 
 DEPS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-INCLUDES =              \
+AM_CPPFLAGS =              \
 	-g                  \
 	@GLIB2_CFLAGS@      \
 	@GIO2_CFLAGS@       \

@@ -22,7 +22,7 @@
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
 	$(NULL)

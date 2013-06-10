@@ -24,19 +24,17 @@ NULL =
 
 libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-INCLUDES = \
+# force include config.h before gi18n.h.
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
+	-include $(CONFIG_HEADER) \
 	$(NULL)
-
-# force include config.h before gi18n.h.
-AM_CPPFLAGS = -include $(CONFIG_HEADER)
 
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
 	@GTHREAD2_CFLAGS@ \
-	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DIBUS_DISABLE_DEPRECATED \
 	-Wno-unused-variable \
