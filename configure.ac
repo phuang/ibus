@@ -53,6 +53,11 @@ m4_define([ibus_binary_version],
 # Required versions of other packages.
 m4_define([glib_required_version], [2.32.0])
 
+# VALA_TARGET_GLIB_VERSION is used by valac --ccode --target-glib .
+# VALA_TARGET_GLIB_VERSION and glib_required_version will be different
+# in the future.
+VALA_TARGET_GLIB_VERSION=2.32
+AC_SUBST(VALA_TARGET_GLIB_VERSION)
 
 # Init automake.
 AM_INIT_AUTOMAKE([1.11.1 parallel-tests])
@@ -152,9 +157,6 @@ PKG_CHECK_MODULES(GIO2, [
 PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
-
-GLIB_VERSION=`$PKG_CONFIG --modversion glib-2.0`
-AC_SUBST(GLIB_VERSION)
 
 # --disable-tests option.
 AC_ARG_ENABLE(tests,
