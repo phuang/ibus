@@ -24,12 +24,13 @@ NULL =
 
 DEPS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-AM_CPPFLAGS =              \
-	-g                  \
-	@GLIB2_CFLAGS@      \
-	@GIO2_CFLAGS@       \
-	-I$(top_srcdir)/src \
-	-I$(top_builddir)/src \
+AM_CPPFLAGS = \
+	-g                                      \
+	@GLIB2_CFLAGS@                          \
+	@GIO2_CFLAGS@                           \
+	-DIBUS_DISABLE_DEPRECATION_WARNINGS     \
+	-I$(top_srcdir)/src                     \
+	-I$(top_builddir)/src                   \
 	$(NULL)
 
 prog_ldadd = 			\

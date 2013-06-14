@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -152,34 +152,37 @@ static void     _context_engine_changed_cb
 
 /* The interfaces available in this class, which consists of a list of
  * methods this class implements and a list of signals this class may emit.
- * Method calls to the interface that are not defined in this XML will 
+ * Method calls to the interface that are not defined in this XML will
  * be automatically rejected by the GDBus library (see src/ibusservice.c
- * for details.) */
+ * for details.)
+ * Implement org.freedesktop.DBus.Properties
+ * http://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces-properties */
 static const gchar introspection_xml[] =
     "<node>\n"
     "  <interface name='org.freedesktop.IBus'>\n"
-    "    <property name='EmbedPreeditText' type='b' access='readwrite' />\n"
-    "    <method name='GetAddress'>\n"
-    "      <arg direction='out' type='s' name='address' />\n"
-    "    </method>\n"
+    "    <property name='Address' type='s' access='read' />\n"
+    "    <property name='CurrentInputContext' type='o' access='read' />\n"
+    "    <property name='Engines' type='av' access='read' />\n"
+    "    <property name='GlobalEngine' type='v' access='read' />\n"
+    "    <property name='PreloadEngines' type='as' access='write'>\n"
+    "      <annotation\n"
+    "          name='org.freedesktop.DBus.Property.EmitsChangedSignal'\n"
+    "          value='true' />\n"
+    "    </property>\n"
+    "    <property name='EmbedPreeditText' type='b' access='readwrite'>\n"
+    "      <annotation\n"
+    "          name='org.freedesktop.DBus.Property.EmitsChangedSignal'\n"
+    "          value='true' />\n"
+    "    </property>\n"
     "    <method name='CreateInputContext'>\n"
     "      <arg direction='in'  type='s' name='client_name' />\n"
-    "      <arg direction='out' type='o' name='object_path' />\n"
-    "    </method>\n"
-    "    <method name='CurrentInputContext'>\n"
     "      <arg direction='out' type='o' name='object_path' />\n"
     "    </method>\n"
     "    <method name='RegisterComponent'>\n"
     "      <arg direction='in'  type='v' name='component' />\n"
     "    </method>\n"
-    "    <method name='ListEngines'>\n"
-    "      <arg direction='out' type='av' name='engines' />\n"
-    "    </method>\n"
     "    <method name='GetEnginesByNames'>\n"
-    "      <arg direction='in' type='as' name='names' />\n"
-    "      <arg direction='out' type='av' name='engines' />\n"
-    "    </method>\n"
-    "    <method name='ListActiveEngines'>\n"
+    "      <arg direction='in'  type='as' name='names' />\n"
     "      <arg direction='out' type='av' name='engines' />\n"
     "    </method>\n"
     "    <method name='Exit'>\n"
@@ -189,29 +192,46 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='v' name='data' />\n"
     "      <arg direction='out' type='v' name='data' />\n"
     "    </method>\n"
-    "    <method name='GetUseSysLayout'>\n"
-    "      <arg direction='out' type='b' name='enabled' />\n"
-    "    </method>\n"
-    "    <method name='GetUseGlobalEngine'>\n"
-    "      <arg direction='out' type='b' name='enabled' />\n"
-    "    </method>\n"
-    "    <method name='GetGlobalEngine'>\n"
-    "      <arg direction='out' type='v' name='desc' />\n"
-    "    </method>\n"
     "    <method name='SetGlobalEngine'>\n"
     "      <arg direction='in'  type='s' name='engine_name' />\n"
-    "    </method>\n"
-    "    <method name='IsGlobalEngineEnabled'>\n"
-    "      <arg direction='out' type='b' name='enabled' />\n"
-    "    </method>\n"
-    "    <method name='PreloadEngines'>\n"
-    "      <arg direction='in' type='as' name='names' />\n"
     "    </method>\n"
     "    <signal name='RegistryChanged'>\n"
     "    </signal>\n"
     "    <signal name='GlobalEngineChanged'>\n"
     "      <arg type='s' name='engine_name' />\n"
     "    </signal>\n"
+    "    <property name='ActiveEngines' type='av' access='read' />\n"
+    "    <method name='GetAddress'>\n"
+    "      <arg direction='out' type='s' name='address' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='CurrentInputContext'>\n"
+    "      <arg direction='out' type='o' name='object_path' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='ListEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='ListActiveEngines'>\n"
+    "      <arg direction='out' type='av' name='engines' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='GetUseSysLayout'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='GetUseGlobalEngine'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "    </method>\n"
+    "    <method name='IsGlobalEngineEnabled'>\n"
+    "      <arg direction='out' type='b' name='enabled' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
+    "    <method name='GetGlobalEngine'>\n"
+    "      <arg direction='out' type='v' name='desc' />\n"
+    "      <annotation name='org.freedesktop.DBus.Deprecated' value='true'/>\n"
+    "    </method>\n"
     "  </interface>\n"
     "</node>\n";
 
@@ -463,15 +483,38 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 /**
  * _ibus_get_address:
  *
- * Implement the "GetAddress" method call of the org.freedesktop.IBus interface.
+ * Implement the "Address" method call of the org.freedesktop.IBus interface.
  */
-static void
-_ibus_get_address (BusIBusImpl           *ibus,
-                   GVariant              *parameters,
-                   GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_address (BusIBusImpl     *ibus,
+                   GDBusConnection *connection,
+                   GError         **error)
 {
+    if (error) {
+        *error = NULL;
+    }
+
+    return g_variant_new_string (bus_server_get_address ());
+}
+
+static void
+_ibus_get_address_depre (BusIBusImpl           *ibus,
+                         GVariant              *parameters,
+                         GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.GetAddress() is deprecated!");
+
+    variant = _ibus_get_address (ibus, connection, &error);
+
     g_dbus_method_invocation_return_value (invocation,
-                                           g_variant_new ("(s)", bus_server_get_address ()));
+            g_variant_new ("(s)", g_variant_get_string (variant, NULL)));
+
+    g_variant_unref (variant);
 }
 
 static IBusEngineDesc *
@@ -861,24 +904,58 @@ _ibus_create_input_context (BusIBusImpl           *ibus,
 }
 
 /**
- * _ibus_current_input_context:
+ * _ibus_get_current_input_context:
  *
- * Implement the "CurrentInputContext" method call of the org.freedesktop.IBus interface.
+ * Implement the "CurrentInputContext" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_current_input_context (BusIBusImpl           *ibus,
-                             GVariant              *parameters,
-                             GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_current_input_context (BusIBusImpl     *ibus,
+                                 GDBusConnection *connection,
+                                 GError         **error)
 {
+    if (error) {
+        *error = NULL;
+    }
+
     if (!ibus->focused_context)
     {
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "No focused input context");
+        g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "No focused input context");
+        return NULL;
     }
     else {
-        const gchar *path = ibus_service_get_object_path ((IBusService *) ibus->focused_context);
+        const gchar *path = ibus_service_get_object_path (
+                (IBusService *) ibus->focused_context);
         /* the format-string 'o' is for a D-Bus object path. */
-        g_dbus_method_invocation_return_value (invocation, g_variant_new ("(o)", path));
+        return g_variant_new_object_path (path);
+    }
+}
+
+static void
+_ibus_current_input_context_depre (BusIBusImpl           *ibus,
+                                   GVariant              *parameters,
+                                   GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GVariant *variant = NULL;
+    GError *error = NULL;
+
+    g_warning ("org.freedesktop.IBus.CurrentInputContext() is deprecated!");
+
+    variant = _ibus_get_current_input_context (ibus, connection, &error);
+
+    if (variant == NULL) {
+        g_dbus_method_invocation_return_error (
+                invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                error->message);
+        g_error_free (error);
+    } else {
+        const gchar *path = g_variant_get_string (variant, NULL);
+        g_dbus_method_invocation_return_value (invocation,
+                                               g_variant_new ("(o)", path));
+        g_variant_unref (variant);
     }
 }
 
@@ -910,7 +987,8 @@ _component_destroy_cb (BusComponent *component,
 /**
  * _ibus_register_component:
  *
- * Implement the "RegisterComponent" method call of the org.freedesktop.IBus interface.
+ * Implement the "RegisterComponent" method call of the
+ * org.freedesktop.IBus interface.
  */
 static void
 _ibus_register_component (BusIBusImpl           *ibus,
@@ -918,23 +996,27 @@ _ibus_register_component (BusIBusImpl           *ibus,
                           GDBusMethodInvocation *invocation)
 {
     GVariant *variant = g_variant_get_child_value (parameters, 0);
-    IBusComponent *component = (IBusComponent *) ibus_serializable_deserialize (variant);
+    IBusComponent *component =
+            (IBusComponent *) ibus_serializable_deserialize (variant);
 
     if (!IBUS_IS_COMPONENT (component)) {
         if (component)
             g_object_unref (component);
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "The first argument should be an IBusComponent.");
+        g_dbus_method_invocation_return_error (
+                invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                "The first argument should be an IBusComponent.");
         return;
     }
 
-    BusConnection *connection = bus_connection_lookup (g_dbus_method_invocation_get_connection (invocation));
+    BusConnection *connection = bus_connection_lookup (
+            g_dbus_method_invocation_get_connection (invocation));
     BusFactoryProxy *factory = bus_factory_proxy_new (connection);
 
     if (factory == NULL) {
         g_object_unref (component);
-        g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Create factory failed.");
+        g_dbus_method_invocation_return_error (
+                invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                "Create factory failed.");
         return;
     }
 
@@ -952,31 +1034,63 @@ _ibus_register_component (BusIBusImpl           *ibus,
     ibus->register_engine_list = g_list_concat (ibus->register_engine_list,
                                                engines);
 
-    g_signal_connect (buscomp, "destroy", G_CALLBACK (_component_destroy_cb), ibus);
+    g_signal_connect (buscomp,
+                      "destroy",
+                      G_CALLBACK (_component_destroy_cb),
+                      ibus);
 
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
 /**
- * _ibus_list_engines:
+ * _ibus_get_engines:
  *
- * Implement the "ListEngines" method call of the org.freedesktop.IBus interface.
+ * Implement the "Engines" method call of the org.freedesktop.IBus interface.
  */
-static void
-_ibus_list_engines (BusIBusImpl           *ibus,
-                    GVariant              *parameters,
-                    GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_engines (BusIBusImpl     *ibus,
+                   GDBusConnection *connection,
+                   GError         **error)
 {
     GVariantBuilder builder;
+    GList *engines = NULL;
+    GList *p;
+
+    if (error) {
+        *error = NULL;
+    }
+
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
 
-    GList *engines = bus_registry_get_engines (ibus->registry);
-    GList *p;
+    engines = bus_registry_get_engines (ibus->registry);
+
     for (p = engines; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
+        g_variant_builder_add (
+                &builder, "v",
+                ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
+
     g_list_free (engines);
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
+
+    return g_variant_builder_end (&builder);
+}
+
+static void
+_ibus_list_engines_depre (BusIBusImpl           *ibus,
+                          GVariant              *parameters,
+                          GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.ListEngines() is deprecated!");
+
+    variant = _ibus_get_engines (ibus, connection, &error);
+
+    g_dbus_method_invocation_return_value (invocation,
+                                           g_variant_new ("(@av)", variant));
 }
 
 /**
@@ -1011,23 +1125,50 @@ _ibus_get_engines_by_names (BusIBusImpl           *ibus,
 }
 
 /**
- * _ibus_list_active_engines:
+ * _ibus_get_active_engines:
  *
- * Implement the "ListActiveEngines" method call of the org.freedesktop.IBus interface.
+ * Implement the "ActiveEngines" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_list_active_engines (BusIBusImpl           *ibus,
-                           GVariant              *parameters,
-                           GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_active_engines (BusIBusImpl     *ibus,
+                          GDBusConnection *connection,
+                          GError         **error)
 {
     GVariantBuilder builder;
+    GList *p;
+
+    if (error) {
+        *error = NULL;
+    }
+
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
 
-    GList *p;
     for (p = ibus->register_engine_list; p != NULL; p = p->next) {
-        g_variant_builder_add (&builder, "v", ibus_serializable_serialize ((IBusSerializable *) p->data));
+        g_variant_builder_add (
+                &builder, "v",
+                ibus_serializable_serialize ((IBusSerializable *) p->data));
     }
-    g_dbus_method_invocation_return_value (invocation, g_variant_new ("(av)", &builder));
+
+    return g_variant_builder_end (&builder);
+}
+
+static void
+_ibus_list_active_engines_depre (BusIBusImpl           *ibus,
+                                 GVariant              *parameters,
+                                 GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.ListActiveEngines() is deprecated!");
+
+    variant = _ibus_get_active_engines (ibus, connection, &error);
+
+    g_dbus_method_invocation_return_value (invocation,
+                                           g_variant_new ("(@av)", variant));
 }
 
 /**
@@ -1046,9 +1187,10 @@ _ibus_exit (BusIBusImpl           *ibus,
     g_dbus_method_invocation_return_value (invocation, NULL);
 
     /* Make sure the reply has been sent out before exit */
-    g_dbus_connection_flush_sync (g_dbus_method_invocation_get_connection (invocation),
-                                  NULL,
-                                  NULL);
+    g_dbus_connection_flush_sync (
+            g_dbus_method_invocation_get_connection (invocation),
+            NULL,
+            NULL);
 
     bus_server_quit (restart);
 }
@@ -1069,42 +1211,95 @@ _ibus_ping (BusIBusImpl           *ibus,
 /**
  * _ibus_get_use_sys_layout:
  *
- * Implement the "GetUseSysLayout" method call of the org.freedesktop.IBus interface.
+ * Implement the "UseSysLayout" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_get_use_sys_layout (BusIBusImpl           *ibus,
-                          GVariant              *parameters,
-                          GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_use_sys_layout (BusIBusImpl     *ibus,
+                          GDBusConnection *connection,
+                          GError         **error)
 {
+    if (error) {
+        *error = NULL;
+    }
+
+    return g_variant_new_boolean (ibus->use_sys_layout);
+}
+
+static void
+_ibus_get_use_sys_layout_depre (BusIBusImpl           *ibus,
+                                GVariant              *parameters,
+                                GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.GetUseSysLayout() is deprecated!");
+
+    variant = _ibus_get_use_sys_layout (ibus, connection, &error);
+
     g_dbus_method_invocation_return_value (invocation,
-                    g_variant_new ("(b)", ibus->use_sys_layout));
+            g_variant_new ("(b)", g_variant_get_boolean (variant)));
+
+    g_variant_unref (variant);
 }
 
 /**
  * _ibus_get_use_global_engine:
  *
- * Implement the "GetUseGlobalEngine" method call of the org.freedesktop.IBus interface.
+ * Implement the "UseGlobalEngine" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_get_use_global_engine (BusIBusImpl           *ibus,
-                             GVariant              *parameters,
-                             GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_use_global_engine (BusIBusImpl     *ibus,
+                             GDBusConnection *connection,
+                             GError         **error)
 {
+    if (error) {
+        *error = NULL;
+    }
+
+    return g_variant_new_boolean (ibus->use_global_engine);
+}
+
+static void
+_ibus_get_use_global_engine_depre (BusIBusImpl           *ibus,
+                                   GVariant              *parameters,
+                                   GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.GetUseGlobalEngine() is deprecated!");
+
+    variant = _ibus_get_use_global_engine (ibus, connection, &error);
+
     g_dbus_method_invocation_return_value (invocation,
-                    g_variant_new ("(b)", ibus->use_global_engine));
+            g_variant_new ("(b)", g_variant_get_boolean (variant)));
+
+    g_variant_unref (variant);
 }
 
 /**
  * _ibus_get_global_engine:
  *
- * Implement the "GetGlobalEngine" method call of the org.freedesktop.IBus interface.
+ * Implement the "GlobalEngine" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_get_global_engine (BusIBusImpl           *ibus,
-                         GVariant              *parameters,
-                         GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_global_engine (BusIBusImpl     *ibus,
+                         GDBusConnection *connection,
+                         GError         **error)
 {
     IBusEngineDesc *desc = NULL;
+
+    if (error) {
+        *error = NULL;
+    }
 
     do {
         if (!ibus->use_global_engine)
@@ -1118,15 +1313,44 @@ _ibus_get_global_engine (BusIBusImpl           *ibus,
         if (desc == NULL)
             break;
 
-        GVariant *variant = ibus_serializable_serialize ((IBusSerializable *) desc);
-        g_dbus_method_invocation_return_value (invocation,
-                                               g_variant_new ("(v)", variant));
-        return;
+        GVariant *variant = ibus_serializable_serialize (
+                (IBusSerializable *) desc);
+        // Set type "v" for introspection_xml.
+        return g_variant_new_variant (variant);
     } while (0);
 
-    g_dbus_method_invocation_return_error (invocation,
-                    G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                    "No global engine.");
+    g_set_error (error,
+                 G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                 "No global engine.");
+    return NULL;
+}
+
+static void
+_ibus_get_global_engine_depre (BusIBusImpl           *ibus,
+                               GVariant              *parameters,
+                               GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.GetGlobalEngine() is deprecated!");
+
+    variant = _ibus_get_global_engine (ibus, connection, &error);
+
+    if (variant == NULL) {
+        g_dbus_method_invocation_return_error (
+                invocation,
+                G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                error->message);
+        g_error_free (error);
+    } else {
+        GVariant *retval = g_variant_get_variant (variant);
+        g_dbus_method_invocation_return_value (invocation,
+                g_variant_new ("(v)", retval));
+        g_variant_unref (variant);
+    }
 }
 
 struct _SetGlobalEngineData {
@@ -1149,7 +1373,6 @@ _ibus_set_global_engine_ready_cb (BusInputContext       *context,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
                                                "Set global engine failed.");
-
     }
     else {
         g_dbus_method_invocation_return_value (data->invocation, NULL);
@@ -1178,7 +1401,8 @@ _ibus_set_global_engine_ready_cb (BusInputContext       *context,
 /**
  * _ibus_set_global_engine:
  *
- * Implement the "SetGlobalEngine" method call of the org.freedesktop.IBus interface.
+ * Implement the "SetGlobalEngine" method call of the
+ * org.freedesktop.IBus interface.
  */
 static void
 _ibus_set_global_engine (BusIBusImpl           *ibus,
@@ -1221,16 +1445,21 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
 }
 
 /**
- * _ibus_is_global_engine_enabled:
+ * _ibus_get_global_engine_enabled:
  *
- * Implement the "IsGlobalEngineEnabled" method call of the org.freedesktop.IBus interface.
+ * Implement the "GlobalEngineEnabled" method call of the
+ * org.freedesktop.IBus interface.
  */
-static void
-_ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
-                                GVariant              *parameters,
-                                GDBusMethodInvocation *invocation)
+static GVariant *
+_ibus_get_global_engine_enabled (BusIBusImpl     *ibus,
+                                 GDBusConnection *connection,
+                                 GError         **error)
 {
     gboolean enabled = FALSE;
+
+    if (error) {
+        *error = NULL;
+    }
 
     do {
         if (!ibus->use_global_engine)
@@ -1245,20 +1474,40 @@ _ibus_is_global_engine_enabled (BusIBusImpl           *ibus,
         enabled = TRUE;
     } while (0);
 
+    return g_variant_new_boolean (enabled);
+}
+
+static void
+_ibus_is_global_engine_enabled_depre (BusIBusImpl           *ibus,
+                                      GVariant              *parameters,
+                                      GDBusMethodInvocation *invocation)
+{
+    GDBusConnection *connection =
+            g_dbus_method_invocation_get_connection (invocation);
+    GError *error = NULL;
+    GVariant *variant = NULL;
+
+    g_warning ("org.freedesktop.IBus.IsGlobalEngineEnabled() is deprecated!");
+
+    variant = _ibus_get_global_engine_enabled (ibus, connection, &error);
+
     g_dbus_method_invocation_return_value (invocation,
-                    g_variant_new ("(b)", enabled));
+            g_variant_new ("(b)", g_variant_get_boolean (variant)));
+
+    g_variant_unref (variant);
 }
 
 /**
- * _ibus_preload_engines:
+ * _ibus_set_preload_engines:
  *
  * Implement the "PreloadEngines" method call of the
  * org.freedesktop.IBus interface.
  */
-static void
-_ibus_preload_engines (BusIBusImpl           *ibus,
-                       GVariant              *parameters,
-                       GDBusMethodInvocation *invocation)
+static gboolean
+_ibus_set_preload_engines (BusIBusImpl     *ibus,
+                           GDBusConnection *connection,
+                           GVariant        *value,
+                           GError         **error)
 {
     int i, j;
     const gchar **names = NULL;
@@ -1267,7 +1516,11 @@ _ibus_preload_engines (BusIBusImpl           *ibus,
     BusFactoryProxy *factory = NULL;
     GPtrArray *array = g_ptr_array_new ();
 
-    g_variant_get (parameters, "(^a&s)", &names);
+    if (error) {
+        *error = NULL;
+    }
+
+    g_variant_get (value, "^a&s", &names);
 
     for (i = 0; names[i] != NULL; i++) {
         gboolean has_component = FALSE;
@@ -1275,13 +1528,13 @@ _ibus_preload_engines (BusIBusImpl           *ibus,
         desc = bus_ibus_impl_get_engine_desc(ibus, names[i]);
 
         if (desc == NULL) {
-            g_dbus_method_invocation_return_error (invocation,
-                                                   G_DBUS_ERROR,
-                                                   G_DBUS_ERROR_FAILED,
-                                                   "Can not find engine %s.",
-                                                   names[i]);
+            g_set_error (error,
+                         G_DBUS_ERROR,
+                         G_DBUS_ERROR_FAILED,
+                         "Can not find engine %s.",
+                         names[i]);
             g_ptr_array_free (array, FALSE);
-            return;
+            return FALSE;
         }
 
         component = bus_component_from_engine_desc (desc);
@@ -1310,7 +1563,7 @@ _ibus_preload_engines (BusIBusImpl           *ibus,
 
     g_ptr_array_free (array, FALSE);
 
-    g_dbus_method_invocation_return_value (invocation, NULL);
+    return TRUE;
 }
 
 /**
@@ -1368,7 +1621,7 @@ bus_ibus_impl_service_method_call (IBusService           *service,
                                    GVariant              *parameters,
                                    GDBusMethodInvocation *invocation)
 {
-    if (g_strcmp0 (interface_name, "org.freedesktop.IBus") != 0) {
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_IBUS) != 0) {
         IBUS_SERVICE_CLASS (bus_ibus_impl_parent_class)->service_method_call (
                         service, connection, sender, object_path,
                         interface_name, method_name,
@@ -1379,24 +1632,27 @@ bus_ibus_impl_service_method_call (IBusService           *service,
     /* all methods in the xml definition above should be listed here. */
     static const struct {
         const gchar *method_name;
-        void (* method_callback) (BusIBusImpl *, GVariant *, GDBusMethodInvocation *);
+        void (* method_callback) (BusIBusImpl *,
+                                  GVariant *,
+                                  GDBusMethodInvocation *);
     } methods [] =  {
         /* IBus interface */
-        { "GetAddress",            _ibus_get_address },
         { "CreateInputContext",    _ibus_create_input_context },
-        { "CurrentInputContext",   _ibus_current_input_context },
         { "RegisterComponent",     _ibus_register_component },
-        { "ListEngines",           _ibus_list_engines },
         { "GetEnginesByNames",     _ibus_get_engines_by_names },
-        { "ListActiveEngines",     _ibus_list_active_engines },
         { "Exit",                  _ibus_exit },
         { "Ping",                  _ibus_ping },
-        { "GetUseSysLayout",       _ibus_get_use_sys_layout },
-        { "GetUseGlobalEngine",    _ibus_get_use_global_engine },
-        { "GetGlobalEngine",       _ibus_get_global_engine },
         { "SetGlobalEngine",       _ibus_set_global_engine },
-        { "IsGlobalEngineEnabled", _ibus_is_global_engine_enabled },
-        { "PreloadEngines",        _ibus_preload_engines },
+        /* Start of deprecated methods */
+        { "GetAddress",            _ibus_get_address_depre },
+        { "CurrentInputContext",   _ibus_current_input_context_depre },
+        { "ListEngines",           _ibus_list_engines_depre },
+        { "ListActiveEngines",     _ibus_list_active_engines_depre },
+        { "GetUseSysLayout",       _ibus_get_use_sys_layout_depre },
+        { "GetUseGlobalEngine",    _ibus_get_use_global_engine_depre },
+        { "GetGlobalEngine",       _ibus_get_global_engine_depre },
+        { "IsGlobalEngineEnabled", _ibus_is_global_engine_enabled_depre },
+        /* End of deprecated methods */
     };
 
     gint i;
@@ -1435,6 +1691,11 @@ bus_ibus_impl_service_get_property (IBusService     *service,
                                         GDBusConnection *,
                                         GError **);
     } methods [] =  {
+        { "Address",               _ibus_get_address },
+        { "CurrentInputContext",   _ibus_get_current_input_context },
+        { "Engines",               _ibus_get_engines },
+        { "ActiveEngines",         _ibus_get_active_engines },
+        { "GlobalEngine",          _ibus_get_global_engine },
         { "EmbedPreeditText",      _ibus_get_embed_preedit_text },
     };
 
@@ -1526,6 +1787,7 @@ bus_ibus_impl_service_set_property (IBusService     *service,
                                       GVariant *,
                                       GError **);
     } methods [] =  {
+        { "PreloadEngines",        _ibus_set_preload_engines },
         { "EmbedPreeditText",      _ibus_set_embed_preedit_text },
     };
 

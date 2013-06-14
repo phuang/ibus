@@ -38,6 +38,12 @@
 
 #include <glib.h>
 
+#ifdef IBUS_DISABLE_DEPRECATION_WARNINGS
+#define IBUS_DEPRECATED
+#else
+#define IBUS_DEPRECATED G_DEPRECATED
+#endif
+
 /**
  * IBUS_SERVICE_IBUS:
  *

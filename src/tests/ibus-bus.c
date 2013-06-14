@@ -20,6 +20,7 @@ print_engines (const GList *engines)
     }
 }
 
+#ifndef IBUS_DISABLE_DEPRECATED
 static void
 test_list_active_engines (void)
 {
@@ -32,6 +33,7 @@ test_list_active_engines (void)
     g_list_foreach (engines, (GFunc) g_object_unref, NULL);
     g_list_free (engines);
 }
+#endif /* IBUS_DISABLE_DEPRECATED */
 
 static void
 test_list_engines (void)
@@ -353,6 +355,7 @@ start_list_engines_async (void)
                                  NULL); /* user_data */
 }
 
+#ifndef IBUS_DISABLE_DEPRECATED
 static void
 finish_list_active_engines_async (GObject *source_object,
                                   GAsyncResult *res,
@@ -447,6 +450,7 @@ start_is_global_engine_enabled_async (void)
                                              finish_is_global_engine_enabled_async,
                                              NULL); /* user_data */
 }
+#endif /* IBUS_DISABLE_DEPRECATED */
 
 static void
 finish_get_global_engine_async (GObject *source_object,
@@ -519,6 +523,233 @@ start_preload_engines_async (void)
             -1, /* timeout */
             NULL, /* cancellable */
             finish_preload_engines_async,
+            NULL); /* user_data */
+}
+
+static void
+test_get_address (void)
+{
+    GVariant *result;
+
+    result = ibus_bus_get_ibus_property (bus, "Address");
+    g_variant_get_string (result, NULL);
+    g_variant_unref (result);
+}
+
+static void
+test_get_current_input_context (void)
+{
+    GVariant *result;
+
+    result = ibus_bus_get_ibus_property (bus, "CurrentInputContext");
+    g_variant_get_string (result, NULL);
+    g_variant_unref (result);
+}
+
+static void
+test_get_engines (void)
+{
+    GVariant *result, *var;
+    GVariantIter *iter;
+    GList *engines = NULL;
+
+    result = ibus_bus_get_ibus_property (bus, "Engines");
+    iter = g_variant_iter_new (result);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        IBusSerializable *serializable = ibus_serializable_deserialize (var);
+        g_object_ref_sink (serializable);
+        engines = g_list_append (engines, serializable);
+    }
+    g_variant_iter_free (iter);
+    g_variant_unref (result);
+
+    print_engines (engines);
+
+    g_list_foreach (engines, (GFunc) g_object_unref, NULL);
+    g_list_free (engines);
+}
+
+static void
+test_get_global_engine (void)
+{
+    GVariant *result, *obj;
+    IBusEngineDesc *desc = NULL;
+
+    result = ibus_bus_get_ibus_property (bus, "GlobalEngine");
+    obj = g_variant_get_variant (result);
+    desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (obj));
+    g_variant_unref (obj);
+    g_variant_unref (result);
+
+    if (desc)
+        g_object_unref (desc);
+}
+
+static void
+test_set_preload_engines (void)
+{
+    const gchar *preload_engines[] = { "xkb:us::eng", "xkb:jp::jpn", NULL };
+    GVariant *variant;
+
+    variant = g_variant_new_strv (preload_engines, -1);
+    ibus_bus_set_ibus_property (bus, "PreloadEngines", variant);
+}
+
+static void
+finish_get_address_async (GObject      *source_object,
+                          GAsyncResult *res,
+                          gpointer      user_data)
+{
+    GError *error = NULL;
+    GVariant *result;
+
+    result = ibus_bus_get_ibus_property_async_finish (bus, res, &error);
+    g_variant_get_string (result, NULL);
+    g_variant_unref (result);
+    g_debug ("finish_get_address_async: OK");
+    call_next_async_function ();
+}
+
+static void
+start_get_address_async (void)
+{
+    ibus_bus_get_ibus_property_async (
+            bus,
+            "Address",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_get_address_async,
+            NULL); /* user_data */
+}
+
+static void
+finish_get_current_input_context_async (GObject      *source_object,
+                                        GAsyncResult *res,
+                                        gpointer      user_data)
+{
+    GError *error = NULL;
+    GVariant *result;
+
+    result = ibus_bus_get_ibus_property_async_finish (bus, res, &error);
+    g_variant_get_string (result, NULL);
+    g_variant_unref (result);
+    g_debug ("finish_get_current_input_context_async: OK");
+    call_next_async_function ();
+}
+
+static void
+start_get_current_input_context_async (void)
+{
+    ibus_bus_get_ibus_property_async (
+            bus,
+            "CurrentInputContext",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_get_current_input_context_async,
+            NULL); /* user_data */
+}
+
+static void
+finish_get_engines_async (GObject      *source_object,
+                          GAsyncResult *res,
+                          gpointer      user_data)
+{
+    GError *error = NULL;
+    GVariant *result, *var;
+    GVariantIter *iter;
+    GList *engines = NULL;
+
+    result = ibus_bus_get_ibus_property_async_finish (bus, res, &error);
+    iter = g_variant_iter_new (result);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        IBusSerializable *serializable = ibus_serializable_deserialize (var);
+        g_object_ref_sink (serializable);
+        engines = g_list_append (engines, serializable);
+    }
+    g_variant_iter_free (iter);
+    g_variant_unref (result);
+
+    print_engines (engines);
+
+    g_list_foreach (engines, (GFunc) g_object_unref, NULL);
+    g_list_free (engines);
+
+    g_debug ("finish_get_engines_async: OK");
+    call_next_async_function ();
+}
+
+static void
+start_get_engines_async (void)
+{
+    ibus_bus_get_ibus_property_async (
+            bus,
+            "Engines",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_get_engines_async,
+            NULL); /* user_data */
+}
+
+static void
+finish_get_prop_global_engine_async (GObject *source_object,
+                                     GAsyncResult *res,
+                                     gpointer user_data)
+{
+    GError *error = NULL;
+    GVariant *result, *obj;
+    IBusEngineDesc *desc = NULL;
+
+    result = ibus_bus_get_ibus_property_async_finish (bus, res, &error);
+    obj = g_variant_get_variant (result);
+    desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (obj));
+    g_variant_unref (obj);
+    g_variant_unref (result);
+
+    if (desc)
+        g_object_unref (desc);
+
+    g_debug ("finish_get_prop_global_engine_async: OK");
+    call_next_async_function ();
+}
+
+static void
+start_get_prop_global_engine_async (void)
+{
+    ibus_bus_get_ibus_property_async (
+            bus,
+            "GlobalEngine",
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_get_prop_global_engine_async,
+            NULL); /* user_data */
+}
+
+static void
+finish_set_preload_engines_async (GObject      *source_object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data)
+{
+    GError *error = NULL;
+
+    ibus_bus_set_ibus_property_async_finish (bus, res, &error);
+    g_debug ("finish_set_preload_engines_async: OK");
+    call_next_async_function ();
+}
+
+static void
+start_set_preload_engines_async (void)
+{
+    const gchar *preload_engines[] = { "xkb:us::eng", "xkb:jp::jpn", NULL };
+    GVariant *variant;
+
+    variant = g_variant_new_strv (preload_engines, -1);
+    ibus_bus_set_ibus_property_async (
+            bus,
+            "PreloadEngines",
+            variant,
+            -1, /* timeout */
+            NULL, /* cancellable */
+            finish_set_preload_engines_async,
             NULL); /* user_data */
 }
 
@@ -619,6 +850,11 @@ call_next_async_function (void)
         start_set_global_engine_async,
         start_get_global_engine_async,
         start_preload_engines_async,
+        start_get_address_async,
+        start_get_current_input_context_async,
+        start_get_engines_async,
+        start_get_prop_global_engine_async,
+        start_set_preload_engines_async,
         start_exit_async,
     };
     static guint index = 0;
@@ -663,6 +899,12 @@ main (gint    argc,
     g_test_add_func ("/ibus/create-input-context-async",
                      test_create_input_context_async);
     g_test_add_func ("/ibus/get-engines-by-names", test_get_engines_by_names);
+    g_test_add_func ("/ibus/get-address", test_get_address);
+    g_test_add_func ("/ibus/get-current-input-context",
+                     test_get_current_input_context);
+    g_test_add_func ("/ibus/get-engines", test_get_engines);
+    g_test_add_func ("/ibus/get-global-engine", test_get_global_engine);
+    g_test_add_func ("/ibus/set-preload-engines", test_set_preload_engines);
     g_test_add_func ("/ibus/async-apis", test_async_apis);
     g_test_add_func ("/ibus/bus-new-async", test_bus_new_async);
     g_test_add_func ("/ibus/bus-new-async/list-engines", test_list_engines);
