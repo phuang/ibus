@@ -57,7 +57,7 @@ __all__ = (
 
 import os
 import sys
-from xdg import BaseDirectory
+#from xdg import BaseDirectory
 import ctypes
 import _config
 

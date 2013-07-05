@@ -29,7 +29,7 @@ Vcs-Browser: https://code.launchpad.net/~lidaobing/ibus/ibus
 Package: ibus
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-glade2,
- python-ibus (= ${source:Version}), python-xdg, librsvg2-common
+ python-ibus (= ${source:Version}), librsvg2-common
 Recommends: im-switch, ibus-gtk2, ibus-gtk3, ibus-qt4
 Conflicts: ibus-anthy (<< 1.2),
  ibus-table (<< 1.2),

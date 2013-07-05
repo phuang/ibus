@@ -47,7 +47,6 @@ Requires:   %{name}-gtk3 = %{version}-%{release}
 Requires:   %{name}-conf = %{version}-%{release}
 
 Requires:   pygtk2
-Requires:   pyxdg
 Requires:   iso-codes
 Requires:   dbus-python >= %{dbus_python_version}
 Requires:   im-chooser >= %{im_chooser_version}
