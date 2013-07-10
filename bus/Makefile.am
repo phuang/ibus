@@ -70,8 +70,6 @@ commonsrc = \
 	connection.h \
 	matchrule.c \
 	matchrule.h \
-	registry.c \
-	registry.h \
 	marshalers.c \
 	marshalers.h \
 	types.h \
@@ -111,23 +109,11 @@ marshalers.c: marshalers.h marshalers.list
 if ENABLE_TESTS
 TESTS = \
 	test-matchrule \
-	test-registry \
 	test-stress	\
 	$(NULL)
 endif
 
 noinst_PROGRAMS = $(TESTS)
-
-test_registry_SOURCES = \
-	$(commonsrc) \
-	test-registry.c \
-	$(NULL)
-test_registry_CFLAGS = \
-	$(AM_CFLAGS) \
-	$(NULL)
-test_registry_LDADD = \
-	$(AM_LDADD) \
-	$(NULL)
 
 test_matchrule_DEPENDENCIES = \
 	$(libibus) \

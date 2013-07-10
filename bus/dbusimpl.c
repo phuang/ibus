@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,6 @@
 #include "ibusimpl.h"
 #include "marshalers.h"
 #include "matchrule.h"
-#include "registry.h"
 #include "types.h"
 
 enum {
@@ -1189,9 +1188,8 @@ bus_dbus_impl_start_service_by_name (BusDBusImpl           *dbus,
         return;
     }
 
-    BusRegistry *registry = BUS_DEFAULT_REGISTRY;
-    BusComponent *component = bus_registry_lookup_component_by_name (registry,
-                                                                     name);
+    BusComponent *component = bus_ibus_impl_lookup_component_by_name (
+            BUS_DEFAULT_IBUS, name);
 
     if (component == NULL || !bus_component_start (component, g_verbose)) {
         g_dbus_method_invocation_return_error (invocation,

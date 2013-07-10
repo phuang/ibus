@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -42,15 +42,16 @@ INTROSPECTION_GIRS =
 CLEANFILES =
 
 # C preprocessor flags
-AM_CPPFLAGS =                                   \
-    -DG_LOG_DOMAIN=\"IBUS\"                     \
-    @GLIB2_CFLAGS@                              \
-    @GOBJECT2_CFLAGS@                           \
-    @GIO2_CFLAGS@                               \
-    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"           \
-    -DIBUS_DISABLE_DEPRECATION_WARNINGS         \
-    -DIBUS_COMPILATION                          \
-    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"    \
+AM_CPPFLAGS =                                           \
+    -DG_LOG_DOMAIN=\"IBUS\"                             \
+    @GLIB2_CFLAGS@                                      \
+    @GOBJECT2_CFLAGS@                                   \
+    @GIO2_CFLAGS@                                       \
+    -DIBUS_CACHE_DIR=\""$(localstatedir)/cache/ibus"\"  \
+    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"                   \
+    -DIBUS_DISABLE_DEPRECATION_WARNINGS                 \
+    -DIBUS_COMPILATION                                  \
+    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"            \
     $(NULL)
 
 # ibus library
@@ -97,6 +98,7 @@ ibus_sources =              \
     ibuscomponent.c         \
     ibusutil.c              \
     ibusenginesimple.c      \
+    ibusregistry.c          \
     $(NULL)
 libibus_1_0_la_SOURCES =    \
     ibusmarshalers.c        \
@@ -145,6 +147,7 @@ ibus_headers =              \
     ibuscomponent.h         \
     ibusutil.h              \
     ibusenginesimple.h      \
+    ibusregistry.h          \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \

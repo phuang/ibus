@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -238,7 +238,8 @@ main (gint argc, gchar **argv)
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
             BusComponent *component;
-            component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_CONFIG);
+            component = bus_ibus_impl_lookup_component_by_name (
+                    BUS_DEFAULT_IBUS, IBUS_SERVICE_CONFIG);
             if (component) {
                 bus_component_set_restart (component, restart);
             }
@@ -254,7 +255,8 @@ main (gint argc, gchar **argv)
         /* execute panel component */
         if (g_strcmp0 (panel, "default") == 0) {
             BusComponent *component;
-            component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
+            component = bus_ibus_impl_lookup_component_by_name (
+                    BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL);
             if (component) {
                 bus_component_set_restart (component, restart);
             }

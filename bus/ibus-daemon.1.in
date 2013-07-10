@@ -55,8 +55,9 @@ specify the address of ibus daemon.
 \fB\-r\fR, \fB\-\-replace\fR
 if there is an old ibus\-daemon is running, it will be replaced.
 .TP
-\fB\-t\fR, \fB\-\-re\-scan\fR
+\fB\-t\fR, \fB\-\-cache\fR=\fImode\fR [default is auto]
 force to re\-scan components, and re\-create registry cache.
+auto, refresh, none is available.
 .TP
 \fB\-o\fR, \fB\-\-timeout\fR=\fItimeout\fR [default is 2000]
 dbus reply timeout in milliseconds.

@@ -35,7 +35,6 @@
 #include "global.h"
 #include "inputcontext.h"
 #include "panelproxy.h"
-#include "registry.h"
 #include "server.h"
 #include "types.h"
 
@@ -62,7 +61,15 @@ struct _BusIBusImpl {
 
     gboolean embed_preedit_text;
 
-    BusRegistry     *registry;
+    IBusRegistry    *registry;
+
+    /* a list of BusComponent objects that are created from component XML
+     * files (or from the cache of them). */
+    GList *components;
+
+    /* a mapping from an engine name (e.g. 'pinyin') to the corresponding
+     * IBusEngineDesc object. */
+    GHashTable *engine_table;
 
     BusInputContext *focused_context;
     BusPanelProxy   *panel;
@@ -95,8 +102,8 @@ static guint            _signals[LAST_SIGNAL] = { 0 };
 */
 
 /* functions prototype */
-static void      bus_ibus_impl_destroy  (BusIBusImpl        *ibus);
-static void      bus_ibus_impl_service_method_call
+static void     bus_ibus_impl_destroy   (BusIBusImpl        *ibus);
+static void     bus_ibus_impl_service_method_call
                                         (IBusService        *service,
                                          GDBusConnection    *connection,
                                          const gchar        *sender,
@@ -125,8 +132,17 @@ static gboolean
                                          const gchar        *property_name,
                                          GVariant           *value,
                                          GError            **error);
+static void     bus_ibus_impl_registry_init
+                                        (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_registry_changed
                                         (BusIBusImpl        *ibus);
+static void     bus_ibus_impl_registry_destroy
+                                        (BusIBusImpl        *ibus);
+static void     bus_ibus_impl_component_name_owner_changed
+                                        (BusIBusImpl        *ibus,
+                                         const gchar        *name,
+                                         const gchar        *old_name,
+                                         const gchar        *new_name);
 static void     bus_ibus_impl_global_engine_changed
                                         (BusIBusImpl        *ibus);
 static void     bus_ibus_impl_set_context_engine_from_desc
@@ -277,8 +293,8 @@ _panel_destroy_cb (BusPanelProxy *panel,
 }
 
 static void
-_registry_changed_cb (BusRegistry *registry,
-                      BusIBusImpl *ibus)
+_registry_changed_cb (IBusRegistry *registry,
+                      BusIBusImpl  *ibus)
 {
     bus_ibus_impl_registry_changed (ibus);
 }
@@ -348,7 +364,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
         }
     }
 
-    bus_registry_name_owner_changed (ibus->registry, name, old_name, new_name);
+    bus_ibus_impl_component_name_owner_changed (ibus, name, old_name, new_name);
 }
 
 /**
@@ -383,13 +399,6 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->contexts = NULL;
     ibus->focused_context = NULL;
     ibus->panel = NULL;
-    ibus->registry = bus_registry_new ();
-
-    g_signal_connect (ibus->registry,
-                      "changed",
-                      G_CALLBACK (_registry_changed_cb),
-                      ibus);
-    bus_registry_start_monitor_changes (ibus->registry);
 
     ibus->keymap = ibus_keymap_get ("us");
 
@@ -407,6 +416,8 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
                       "name-owner-changed",
                       G_CALLBACK (_dbus_name_owner_changed_cb),
                       ibus);
+
+    bus_ibus_impl_registry_init (ibus);
 }
 
 /**
@@ -422,7 +433,7 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
     gint status;
     gboolean flag;
 
-    bus_registry_stop_all_components (ibus->registry);
+    g_list_foreach (ibus->components, (GFunc) bus_component_stop, NULL);
 
     pid = 0;
     timeout = 0;
@@ -476,6 +487,8 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
         g_object_unref (ibus->fake_context);
         ibus->fake_context = NULL;
     }
+
+    bus_ibus_impl_registry_destroy (ibus);
 
     IBUS_OBJECT_CLASS (bus_ibus_impl_parent_class)->destroy (IBUS_OBJECT (ibus));
 }
@@ -565,7 +578,8 @@ bus_ibus_impl_get_engine_desc (BusIBusImpl *ibus,
 
     IBusEngineDesc *desc = _find_engine_desc_by_name (ibus, engine_name);
     if (desc == NULL) {
-        desc = bus_registry_find_engine_by_name (ibus->registry, engine_name);
+        desc = (IBusEngineDesc *) g_hash_table_lookup (ibus->engine_table,
+                                                       engine_name);
     }
     return desc;
 }
@@ -1062,7 +1076,7 @@ _ibus_get_engines (BusIBusImpl     *ibus,
 
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
 
-    engines = bus_registry_get_engines (ibus->registry);
+    engines = g_hash_table_get_values (ibus->engine_table);
 
     for (p = engines; p != NULL; p = p->next) {
         g_variant_builder_add (
@@ -1112,8 +1126,8 @@ _ibus_get_engines_by_names (BusIBusImpl           *ibus,
     GVariantBuilder builder;
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("av"));
     while (names[i] != NULL) {
-        IBusEngineDesc *desc = bus_registry_find_engine_by_name (
-                ibus->registry, names[i++]);
+        IBusEngineDesc *desc = (IBusEngineDesc *) g_hash_table_lookup (
+                ibus->engine_table, names[i++]);
         if (desc == NULL)
             continue;
         g_variant_builder_add (
@@ -1859,13 +1873,177 @@ bus_ibus_impl_get_keymap (BusIBusImpl *ibus)
     return ibus->keymap;
 }
 
-BusRegistry *
-bus_ibus_impl_get_registry (BusIBusImpl *ibus)
+/**
+ * bus_ibus_impl_registry_init:
+ *
+ * Initialize IBusRegistry.
+ */
+static void
+bus_ibus_impl_registry_init (BusIBusImpl *ibus)
 {
+    GList *p;
+    GList *components;
+    IBusRegistry *registry = ibus_registry_new ();
+
+    ibus->registry = NULL;
+    ibus->components = NULL;
+    ibus->engine_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+    if (g_strcmp0 (g_cache, "none") == 0) {
+        /* Only load registry, but not read and write cache. */
+        ibus_registry_load (registry);
+    }
+    else if (g_strcmp0 (g_cache, "refresh") == 0) {
+        /* Load registry and overwrite the cache. */
+        ibus_registry_load (registry);
+        ibus_registry_save_cache (registry, TRUE);
+    }
+    else if (g_strcmp0 (g_cache, "auto") == 0) {
+        /* Load registry from cache. If the cache does not exist or
+         * it is outdated, then generate it.
+         */
+        if (ibus_registry_load_cache (registry, FALSE) == FALSE ||
+            ibus_registry_check_modification (registry)) {
+
+            ibus_object_destroy (IBUS_OBJECT (registry));
+            registry = ibus_registry_new ();
+
+            if (ibus_registry_load_cache (registry, TRUE) == FALSE ||
+                ibus_registry_check_modification (registry)) {
+
+                ibus_object_destroy (IBUS_OBJECT (registry));
+                registry = ibus_registry_new ();
+                ibus_registry_load (registry);
+                ibus_registry_save_cache (registry, TRUE);
+            }
+        }
+    }
+
+    ibus->registry = registry;
+    components = ibus_registry_get_components (registry);
+
+    for (p = components; p != NULL; p = p->next) {
+        IBusComponent *component = (IBusComponent *) p->data;
+        BusComponent *buscomp = bus_component_new (component,
+                                                   NULL /* factory */);
+        GList *engines = NULL;
+        GList *p1;
+
+        g_object_ref_sink (buscomp);
+        ibus->components = g_list_append (ibus->components, buscomp);
+
+        engines = bus_component_get_engines (buscomp);
+        for (p1 = engines; p1 != NULL; p1 = p1->next) {
+            IBusEngineDesc *desc = (IBusEngineDesc *) p1->data;
+            const gchar *name = ibus_engine_desc_get_name (desc);
+            if (g_hash_table_lookup (ibus->engine_table, name) == NULL) {
+                g_hash_table_insert (ibus->engine_table,
+                                     (gpointer) name,
+                                     desc);
+            } else {
+                g_message ("Engine %s is already registered by other component",
+                           name);
+            }
+        }
+        g_list_free (engines);
+    }
+
+    g_list_free (components);
+
+    g_signal_connect (ibus->registry,
+                      "changed",
+                      G_CALLBACK (_registry_changed_cb),
+                      ibus);
+    ibus_registry_start_monitor_changes (ibus->registry);
+}
+
+static void
+bus_ibus_impl_registry_destroy (BusIBusImpl *ibus)
+{
+    g_list_free_full (ibus->components, g_object_unref);
+    ibus->components = NULL;
+
+    g_hash_table_destroy (ibus->engine_table);
+    ibus->engine_table = NULL;
+
+    ibus_object_destroy (IBUS_OBJECT (ibus->registry));
+    ibus->registry = NULL;
+}
+
+static gint
+_component_is_name_cb (BusComponent *component,
+                       const gchar  *name)
+{
+    g_assert (BUS_IS_COMPONENT (component));
+    g_assert (name);
+
+    return g_strcmp0 (bus_component_get_name (component), name);
+}
+
+static void
+bus_ibus_impl_component_name_owner_changed (BusIBusImpl *ibus,
+                                            const gchar *name,
+                                            const gchar *old_name,
+                                            const gchar *new_name)
+{
+    BusComponent *component;
+    BusFactoryProxy *factory;
 
     g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (name);
+    g_assert (old_name);
+    g_assert (new_name);
 
-    return ibus->registry;
+    component = bus_ibus_impl_lookup_component_by_name (ibus, name);
+
+    if (component == NULL) {
+        /* name is a unique name, or a well-known name we don't know. */
+        return;
+    }
+
+    if (g_strcmp0 (old_name, "") != 0) {
+        /* the component is stopped. */
+        factory = bus_component_get_factory (component);
+
+        if (factory != NULL) {
+            ibus_proxy_destroy ((IBusProxy *) factory);
+        }
+    }
+
+    if (g_strcmp0 (new_name, "") != 0) {
+        /* the component is started. */
+        BusConnection *connection =
+                bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS,
+                                                      new_name);
+        if (connection == NULL)
+            return;
+
+        factory = bus_factory_proxy_new (connection);
+        if (factory == NULL)
+            return;
+        bus_component_set_factory (component, factory);
+        g_object_unref (factory);
+    }
+}
+
+BusComponent *
+bus_ibus_impl_lookup_component_by_name (BusIBusImpl *ibus,
+                                        const gchar *name)
+{
+    GList *p;
+
+    g_assert (BUS_IS_IBUS_IMPL (ibus));
+    g_assert (name);
+
+    p = g_list_find_custom (ibus->components,
+                            name,
+                            (GCompareFunc) _component_is_name_cb);
+    if (p) {
+        return (BusComponent *) p->data;
+    }
+    else {
+        return NULL;
+    }
 }
 
 /**

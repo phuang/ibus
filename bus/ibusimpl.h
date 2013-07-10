@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,8 +24,8 @@
 
 #include <ibus.h>
 #include "connection.h"
+#include "component.h"
 #include "inputcontext.h"
-#include "registry.h"
 #include "factoryproxy.h"
 #include "panelproxy.h"
 #include "engineproxy.h"
@@ -52,8 +52,6 @@
     (bus_ibus_impl_get_default ())
 #define BUS_DEFAULT_KEYMAP \
     (bus_ibus_impl_get_keymap (BUS_DEFAULT_IBUS))
-#define BUS_DEFAULT_REGISTRY \
-    (bus_ibus_impl_get_registry (BUS_DEFAULT_IBUS))
 
 G_BEGIN_DECLS
 
@@ -75,7 +73,9 @@ BusIBusImpl     *bus_ibus_impl_get_default          (void);
 BusFactoryProxy *bus_ibus_impl_lookup_factory       (BusIBusImpl        *ibus,
                                                      const gchar        *path);
 IBusKeymap      *bus_ibus_impl_get_keymap           (BusIBusImpl        *ibus);
-BusRegistry     *bus_ibus_impl_get_registry         (BusIBusImpl        *ibus);
+BusComponent    *bus_ibus_impl_lookup_component_by_name
+                                                    (BusIBusImpl        *ibus,
+                                                     const gchar        *name);
 gboolean         bus_ibus_impl_is_use_sys_layout    (BusIBusImpl        *ibus);
 gboolean         bus_ibus_impl_is_embed_preedit_text
                                                     (BusIBusImpl        *ibus);

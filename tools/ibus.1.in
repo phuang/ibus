@@ -51,8 +51,37 @@ Restart ibus-daemon.
 \fBversion\fR
 Show the ibus version.
 .TP
+\fBread\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Show the content of the user registry cache if
+.B \-\-system
+is not given.
+Show the content of the system registry cache if
+.B \-\-system
+is given.
+Show the content of the custom registry cache 
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+.TP
+\fBwrite\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Save the user registry cache if
+.B \-\-system
+is not given.
+Save the system registry cache if
+.B \-\-system
+is given.
+Save the custom registry cache
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+IBUS_COMPONENT_PATH environment valuable is also available for
+the custom component directories, whose delimiter is ':'.
+.TP
 \fBwatch\fR
 Under construction.
+.TP
 
 .SH BUGS
 If you find a bug, please report it at http://code.google.com/p/ibus/issues/list.

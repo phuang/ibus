@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -40,17 +40,18 @@ prog_ldadd = 			\
 	$(NULL)
 
 noinst_PROGRAMS = $(TESTS)
-TESTS =               \
-	ibus-bus          \
-	ibus-config       \
-	ibus-configservice\
-	ibus-factory      \
-	ibus-inputcontext \
-	ibus-inputcontext-create \
-	ibus-keynames     \
-	ibus-serializable \
-	ibus-share        \
-	ibus-util         \
+TESTS = \
+	ibus-bus                        \
+	ibus-config                     \
+	ibus-configservice              \
+	ibus-factory                    \
+	ibus-inputcontext               \
+	ibus-inputcontext-create        \
+	ibus-keynames                   \
+	ibus-registry                   \
+	ibus-serializable               \
+	ibus-share                      \
+	ibus-util                       \
 	$(NULL)
 
 if ENABLE_ENGINE
@@ -90,6 +91,9 @@ ibus_inputcontext_create_LDADD = $(prog_ldadd)
 
 ibus_keynames_SOURCES = ibus-keynames.c
 ibus_keynames_LDADD = $(prog_ldadd)
+
+ibus_registry_SOURCES = ibus-registry.c
+ibus_registry_LDADD = $(prog_ldadd)
 
 ibus_serializable_SOURCES = ibus-serializable.c
 ibus_serializable_LDADD = $(prog_ldadd)

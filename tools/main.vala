@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,9 @@
  */
 
 bool name_only = false;
+/* system() exists as a public API. */
+bool is_system = false;
+string cache_file = null;
 
 class EngineList {
     public IBus.EngineDesc[] data = {};
@@ -41,8 +44,8 @@ int list_engine(string[] argv) {
         { null }
     };
 
-    var option = new OptionContext(_("command [OPTIONS]"));
-    option.add_main_entries(options, "ibus");
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
 
     try {
         option.parse(ref argv);
@@ -196,6 +199,78 @@ int print_version(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+int read_cache (string[] argv) {
+    const OptionEntry[] options = {
+        { "system", 0, 0, OptionArg.NONE, out is_system,
+          N_("Read the system registry cache."), null },
+        { "file", 0, 0, OptionArg.STRING, out cache_file,
+          N_("Read the registry cache FILE."), "FILE" },
+        { null }
+    };
+
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    var registry = new IBus.Registry();
+
+    if (cache_file != null) {
+        if (!registry.load_cache_file(cache_file)) {
+            stderr.printf(_("The registry cache is invalid.\n"));
+            return Posix.EXIT_FAILURE;
+        }
+    } else {
+        if (!registry.load_cache(!is_system)) {
+            stderr.printf(_("The registry cache is invalid.\n"));
+            return Posix.EXIT_FAILURE;
+        }
+    }
+
+    var output = new GLib.StringBuilder();
+    registry.output(output, 1);
+
+    print ("%s\n", output.str);
+    return Posix.EXIT_SUCCESS;
+}
+
+int write_cache (string[] argv) {
+    const OptionEntry[] options = {
+        { "system", 0, 0, OptionArg.NONE, out is_system,
+          N_("Write the system registry cache."), null },
+        { "file", 0, 0, OptionArg.STRING, out cache_file,
+          N_("Write the registry cache FILE."),
+          "FILE" },
+        { null }
+    };
+
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    var registry = new IBus.Registry();
+    registry.load();
+
+    if (cache_file != null) {
+        return registry.save_cache_file(cache_file) ?
+                Posix.EXIT_SUCCESS : Posix.EXIT_FAILURE;
+    }
+
+    return registry.save_cache(!is_system) ?
+            Posix.EXIT_SUCCESS : Posix.EXIT_FAILURE;
+}
+
 int print_help(string[] argv) {
     print_usage(stdout);
     return Posix.EXIT_SUCCESS;
@@ -215,6 +290,8 @@ static const CommandEntry commands[]  = {
     { "watch", message_watch },
     { "restart", restart_daemon },
     { "version", print_version },
+    { "read-cache", read_cache },
+    { "write-cache", write_cache },
     { "help", print_help }
 };
 
@@ -229,6 +306,7 @@ void print_usage(FileStream stream) {
 }
 
 public int main(string[] argv) {
+    GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
     GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
     GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
 
@@ -239,6 +317,7 @@ public int main(string[] argv) {
     }
 
     string[] new_argv = argv[1:argv.length];
+    new_argv[0] = "%s %s".printf(program_name, new_argv[0]);
     for (int i = 0; i < commands.length; i++) {
         if (commands[i].name == argv[1])
             return commands[i].entry(new_argv);
