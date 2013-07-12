@@ -30,11 +30,6 @@ from gi.repository import Gtk
 from gi.repository import IBus
 from os import path
 
-try:
-    from xdg.BaseDirectory import xdg_config_home
-except ImportError:
-    xdg_config_home = ".config"
-
 import keyboardshortcut
 import locale
 from enginecombobox import EngineComboBox
@@ -460,7 +455,8 @@ class Setup(object):
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
 
     def __is_auto_start(self):
-        link_file = path.join(xdg_config_home, "autostart/ibus.desktop")
+        link_file = path.join(GLib.get_user_config_dir(),
+                              "autostart/ibus.desktop")
         ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
                                  "share/applications/ibus.desktop")
 
@@ -473,11 +469,12 @@ class Setup(object):
         return True
 
     def __checkbutton_auto_start_toggled_cb(self, button):
-        auto_start_dir = path.join(xdg_config_home, "autostart")
+        auto_start_dir = path.join(GLib.get_user_config_dir(), "autostart")
         if not path.isdir(auto_start_dir):
             os.makedirs(auto_start_dir)
 
-        link_file = path.join(xdg_config_home, "autostart/ibus.desktop")
+        link_file = path.join(GLib.get_user_config_dir(),
+                              "autostart/ibus.desktop")
         ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
                                  "share/applications/ibus.desktop")
         # unlink file
