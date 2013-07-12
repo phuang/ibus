@@ -285,6 +285,8 @@ ibus_init (void)
     IBUS_TYPE_LOOKUP_TABLE;
     IBUS_TYPE_COMPONENT;
     IBUS_TYPE_ENGINE_DESC;
+    IBUS_TYPE_OBSERVED_PATH;
+    IBUS_TYPE_REGISTRY;
 }
 
 static GMainLoop *main_loop = NULL;

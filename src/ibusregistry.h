@@ -74,14 +74,14 @@ typedef struct _IBusRegistryClass IBusRegistryClass;
 struct _IBusRegistry {
     /* instance members */
     /*< private >*/
-    IBusObject parent;
+    IBusSerializable parent;
     IBusRegistryPrivate *priv;
 };
 
 struct _IBusRegistryClass {
     /* class members */
     /*< private >*/
-    IBusObjectClass parent;
+    IBusSerializableClass parent;
 };
 
 GType            ibus_registry_get_type         (void);

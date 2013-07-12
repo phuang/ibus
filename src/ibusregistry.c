@@ -28,6 +28,9 @@
 #include "ibusmarshalers.h"
 #include "ibusregistry.h"
 
+#define IBUS_CACHE_MAGIC 0x49425553 /* "IBUS" */
+#define IBUS_CACHE_VERSION 0x00010502
+
 enum {
     CHANGED,
     LAST_SIGNAL,
@@ -57,16 +60,29 @@ struct _IBusRegistryPrivate {
 /* functions prototype */
 static void     ibus_registry_destroy        (IBusRegistry           *registry);
 static void     ibus_registry_remove_all     (IBusRegistry           *registry);
+static gboolean ibus_registry_serialize      (IBusRegistry           *registry,
+                                              GVariantBuilder        *builder);
+static gint     ibus_registry_deserialize    (IBusRegistry           *registry,
+                                              GVariant               *variant);
+static gboolean ibus_registry_copy           (IBusRegistry           *dest,
+                                              const IBusRegistry     *src);
 
-G_DEFINE_TYPE (IBusRegistry, ibus_registry, IBUS_TYPE_OBJECT)
+G_DEFINE_TYPE (IBusRegistry, ibus_registry, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_registry_class_init (IBusRegistryClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
     ibus_object_class->destroy = (IBusObjectDestroyFunc) ibus_registry_destroy;
+
+    serializable_class->serialize =
+        (IBusSerializableSerializeFunc) ibus_registry_serialize;
+    serializable_class->deserialize =
+        (IBusSerializableDeserializeFunc) ibus_registry_deserialize;
+    serializable_class->copy = (IBusSerializableCopyFunc) ibus_registry_copy;
 
     g_type_class_add_private (class, sizeof (IBusRegistryPrivate));
 
@@ -122,6 +138,91 @@ ibus_registry_destroy (IBusRegistry *registry)
 
     IBUS_OBJECT_CLASS (ibus_registry_parent_class)->
             destroy (IBUS_OBJECT (registry));
+}
+
+static gboolean
+ibus_registry_serialize (IBusRegistry    *registry,
+                         GVariantBuilder *builder)
+{
+    gboolean retval;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_registry_parent_class)->
+        serialize ((IBusSerializable *)registry, builder);
+    g_return_val_if_fail (retval, FALSE);
+
+    GList *p;
+    GVariantBuilder *array;
+
+    array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
+    for (p = registry->priv->observed_paths; p != NULL; p = p->next) {
+        IBusSerializable *serializable = (IBusSerializable *) p->data;
+        g_variant_builder_add (array,
+                               "v",
+                               ibus_serializable_serialize (serializable));
+    }
+    g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
+
+    array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
+    for (p = registry->priv->components; p != NULL; p = p->next) {
+        IBusSerializable *serializable = (IBusSerializable *) p->data;
+        g_variant_builder_add (array,
+                               "v",
+                               ibus_serializable_serialize (serializable));
+    }
+    g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
+
+    return TRUE;
+}
+
+static gint
+ibus_registry_deserialize (IBusRegistry *registry,
+                           GVariant     *variant)
+{
+    GVariant *var;
+    GVariantIter *iter;
+    gint retval;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_registry_parent_class)->
+        deserialize ((IBusSerializable *)registry, variant);
+    g_return_val_if_fail (retval, 0);
+
+    g_variant_get_child (variant, retval++, "av", &iter);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        IBusSerializable *serializable = ibus_serializable_deserialize (var);
+        registry->priv->observed_paths =
+            g_list_append (registry->priv->observed_paths,
+                           IBUS_OBSERVED_PATH (serializable));
+    }
+    g_variant_iter_free (iter);
+
+    g_variant_get_child (variant, retval++, "av", &iter);
+    while (g_variant_iter_loop (iter, "v", &var)) {
+        IBusSerializable *serializable = ibus_serializable_deserialize (var);
+        registry->priv->components =
+            g_list_append (registry->priv->components,
+                           IBUS_COMPONENT (serializable));
+    }
+    g_variant_iter_free (iter);
+
+    return retval;
+}
+
+static gboolean
+ibus_registry_copy (IBusRegistry       *dest,
+                    const IBusRegistry *src)
+{
+    gboolean retval;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_registry_parent_class)->
+        copy ((IBusSerializable *)dest, (IBusSerializable *)src);
+    g_return_val_if_fail (retval, FALSE);
+
+    dest->priv->components = g_list_copy (src->priv->components);
+    dest->priv->observed_paths = g_list_copy (src->priv->observed_paths);
+
+    return TRUE;
 }
 
 /**
@@ -182,7 +283,8 @@ ibus_registry_load (IBusRegistry *registry)
 }
 
 gboolean
-ibus_registry_load_cache (IBusRegistry *registry, gboolean is_user)
+ibus_registry_load_cache (IBusRegistry *registry,
+                          gboolean      is_user)
 {
     gchar *filename;
     gboolean retval;
@@ -191,10 +293,10 @@ ibus_registry_load_cache (IBusRegistry *registry, gboolean is_user)
 
     if (is_user) {
         filename = g_build_filename (g_get_user_cache_dir (),
-                                     "ibus", "bus", "registry.xml", NULL);
+                                     "ibus", "bus", "registry", NULL);
     } else {
         filename = g_build_filename (IBUS_CACHE_DIR,
-                                     "bus", "registry.xml", NULL);
+                                     "bus", "registry", NULL);
     }
 
     retval = ibus_registry_load_cache_file (registry, filename);
@@ -204,60 +306,63 @@ ibus_registry_load_cache (IBusRegistry *registry, gboolean is_user)
 }
 
 gboolean
-ibus_registry_load_cache_file (IBusRegistry *registry, const gchar *filename)
+ibus_registry_load_cache_file (IBusRegistry *registry,
+                               const gchar  *filename)
 {
-    XMLNode *node;
-    GList *p;
+    gchar *contents, *p;
+    gsize length;
+    GVariant *variant;
+    GError *error;
 
     g_assert (IBUS_IS_REGISTRY (registry));
     g_assert (filename != NULL);
 
-    node = ibus_xml_parse_file (filename);
+    if (!g_file_test (filename, G_FILE_TEST_EXISTS))
+        return FALSE;
 
-    if (node == NULL) {
+    error = NULL;
+    if (!g_file_get_contents (filename, &contents, &length, &error)) {
+        g_warning ("cannot read %s: %s", filename, error->message);
+        g_error_free (error);
         return FALSE;
     }
 
-    if (g_strcmp0 (node->name, "ibus-registry") != 0) {
-        ibus_xml_free (node);
+    p = contents;
+
+    /* read file header including magic and version */
+    if (length < 8) {
+        g_free (contents);
         return FALSE;
     }
 
-    for (p = node->sub_nodes; p != NULL; p = p->next) {
-        XMLNode *sub_node = (XMLNode *) p->data;
+    if (GUINT32_FROM_BE (*(guint32 *) p) != IBUS_CACHE_MAGIC) {
+        g_free (contents);
+        return FALSE;
+    }
+    p += 4;
 
-        if (g_strcmp0 (sub_node->name, "observed-paths") == 0) {
-            GList *pp;
-            for (pp = sub_node->sub_nodes; pp != NULL; pp = pp->next) {
-                IBusObservedPath *path;
-                path = ibus_observed_path_new_from_xml_node (pp->data, FALSE);
-                if (path) {
-                    g_object_ref_sink (path);
-                    registry->priv->observed_paths =
-                            g_list_append (registry->priv->observed_paths,
-                                           path);
-                }
-            }
-            continue;
-        }
-        if (g_strcmp0 (sub_node->name, "components") == 0) {
-            GList *pp;
-            for (pp = sub_node->sub_nodes; pp != NULL; pp = pp->next) {
-                IBusComponent *component;
-                component = ibus_component_new_from_xml_node (pp->data);
-                if (component) {
-                    g_object_ref_sink (component);
-                    registry->priv->components =
-                        g_list_append (registry->priv->components, component);
-                }
-            }
+    if (GUINT32_FROM_BE (*(guint32 *) p) != IBUS_CACHE_VERSION) {
+        g_free (contents);
+        return FALSE;
+    }
+    p += 4;
 
-            continue;
-        }
-        g_warning ("Unknown element <%s>", sub_node->name);
+    /* read serialized IBusRegistry */
+    variant = g_variant_new_from_data (G_VARIANT_TYPE ("(sa{sv}avav)"),
+                                       p,
+                                       length - (p - contents),
+                                       FALSE,
+                                       (GDestroyNotify) g_free,
+                                       NULL);
+    if (variant == NULL) {
+        g_free (contents);
+        return FALSE;
     }
 
-    ibus_xml_free (node);
+    ibus_registry_deserialize (registry, variant);
+    g_variant_unref (variant);
+    g_free (contents);
+
     return TRUE;
 }
 
@@ -283,7 +388,8 @@ ibus_registry_check_modification (IBusRegistry *registry)
 }
 
 gboolean
-ibus_registry_save_cache (IBusRegistry *registry, gboolean is_user)
+ibus_registry_save_cache (IBusRegistry *registry,
+                          gboolean      is_user)
 {
     gchar *filename;
     gboolean retval;
@@ -292,10 +398,10 @@ ibus_registry_save_cache (IBusRegistry *registry, gboolean is_user)
 
     if (is_user) {
         filename = g_build_filename (g_get_user_cache_dir (),
-                                     "ibus", "bus", "registry.xml", NULL);
+                                     "ibus", "bus", "registry", NULL);
     } else {
         filename = g_build_filename (IBUS_CACHE_DIR,
-                                     "bus", "registry.xml", NULL);
+                                     "bus", "registry", NULL);
     }
 
     retval = ibus_registry_save_cache_file (registry, filename);
@@ -305,14 +411,16 @@ ibus_registry_save_cache (IBusRegistry *registry, gboolean is_user)
 }
 
 gboolean
-ibus_registry_save_cache_file (IBusRegistry *registry, const gchar *filename)
+ibus_registry_save_cache_file (IBusRegistry *registry,
+                               const gchar  *filename)
 {
     gchar *cachedir;
-    const gchar *user_cachedir;
-    gboolean is_user = TRUE;
-    GString *output;
-    FILE *pf;
-    size_t items = 0;
+    GVariant *variant;
+    gchar *contents, *p;
+    gsize length;
+    gboolean retval;
+    guint32 intval;
+    GError *error;
 
     g_assert (IBUS_IS_REGISTRY (registry));
     g_assert (filename != NULL);
@@ -320,29 +428,40 @@ ibus_registry_save_cache_file (IBusRegistry *registry, const gchar *filename)
     cachedir = g_path_get_dirname (filename);
     g_mkdir_with_parents (cachedir, 0775);
     g_free (cachedir);
-    pf = g_fopen (filename, "w");
 
-    if (pf == NULL) {
-        g_warning ("create %s failed", filename);
+    variant = ibus_serializable_serialize (IBUS_SERIALIZABLE (registry));
+    length = 8 + g_variant_get_size (variant);
+    p = contents = g_slice_alloc (length);
+
+    /* write file header */
+    intval = GUINT32_TO_BE (IBUS_CACHE_MAGIC);
+    memcpy (p, (gchar *) &intval, 4);
+    p += 4;
+
+    intval = GUINT32_TO_BE (IBUS_CACHE_VERSION);
+    memcpy (p, (gchar *) &intval, 4);
+    p += 4;
+
+    /* write serialized IBusRegistry */
+    g_variant_store (variant, p);
+
+    error = NULL;
+    retval = g_file_set_contents (filename, contents, length, &error);
+
+    g_variant_unref (variant);
+    g_slice_free1 (length, contents);
+
+    if (!retval) {
+        g_warning ("cannot write %s: %s", filename, error->message);
+        g_error_free (error);
         return FALSE;
     }
 
-    output = g_string_new ("");
-
-    ibus_registry_output (registry, output, 1);
-
-    items = fwrite (output->str, output->len, 1, pf);
-    g_string_free (output, TRUE);
-    fclose (pf);
-
-    user_cachedir = g_get_user_cache_dir ();
-    is_user = (strncmp (user_cachedir, filename, strlen (user_cachedir)) == 0);
-
-    if (!is_user) {
+    if (g_str_has_prefix (filename, g_get_user_cache_dir ())) {
         g_chmod (filename, 0644);
     }
 
-    return (items == 1 ? TRUE : FALSE);
+    return TRUE;
 }
 
 #define g_string_append_indent(string, indent)  \
@@ -354,7 +473,9 @@ ibus_registry_save_cache_file (IBusRegistry *registry, const gchar *filename)
     }
 
 void
-ibus_registry_output (IBusRegistry *registry, GString *output, int indent)
+ibus_registry_output (IBusRegistry *registry,
+                      GString      *output,
+                      int           indent)
 {
     GList *p;
 
@@ -362,10 +483,6 @@ ibus_registry_output (IBusRegistry *registry, GString *output, int indent)
     g_return_if_fail (output != NULL);
 
     g_string_append (output, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-    g_string_append (output, "<!-- \n"
-                             "    This file was generated by ibus-daemon. "
-                             "Please don't modify it.\n"
-                             "    -->\n");
     g_string_append (output, "<ibus-registry>\n");
 
     if (registry->priv->observed_paths) {

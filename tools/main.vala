@@ -30,7 +30,6 @@ class EngineList {
 }
 
 IBus.Bus? get_bus() {
-    IBus.init();
     var bus = new IBus.Bus();
     if (!bus.is_connected ())
         return null;
@@ -309,6 +308,8 @@ public int main(string[] argv) {
     GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
     GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
     GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+
+    IBus.init();
 
     program_name = Path.get_basename(argv[0]);
     if (argv.length < 2) {
