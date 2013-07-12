@@ -23,14 +23,12 @@ int main (int argc, char **argv)
     gint fd;
     struct input_event e;
 
-#if !GLIB_CHECK_VERSION(2,35,0)
-    g_type_init ();
-#endif
+    ibus_init ();
 
     IBusKeymap *keymap = ibus_keymap_get (argc > 1 ? argv[1] : "us");
 
     g_object_unref (keymap);
-	return 0;
+    return 0;
 
     fd = open (KEYBOARDPATH, O_RDONLY);
 

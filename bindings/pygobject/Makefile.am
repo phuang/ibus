@@ -37,8 +37,9 @@ TESTS_ENVIRONMENT = \
 	PYTHONPATH=$(top_srcdir)/tests:$${PYTHONPATH:+:$$PYTHONPATH} \
 	LD_LIBRARY_PATH=$(top_builddir)/src/.libs:$$LD_LIBRARY_PATH \
 	GI_TYPELIB_PATH=$(top_builddir)/src:$$GI_TYPELIB_PATH \
-	$(PYTHON) -B \
 	$(NULL)
+
+LOG_COMPILER = $(PYTHON) -B
 
 EXTRA_DIST =					\
 	gi/__init__.py				\

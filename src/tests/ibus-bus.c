@@ -575,14 +575,23 @@ test_get_global_engine (void)
     GVariant *result, *obj;
     IBusEngineDesc *desc = NULL;
 
+    if (!ibus_bus_set_global_engine (bus, "xkb:us::eng"))
+        return;
+
     result = ibus_bus_get_ibus_property (bus, "GlobalEngine");
+    g_assert (result);
+
     obj = g_variant_get_variant (result);
+    g_assert (obj);
+
     desc = IBUS_ENGINE_DESC (ibus_serializable_deserialize (obj));
+    g_assert (desc);
+    g_assert_cmpstr (ibus_engine_desc_get_name (desc), ==, "xkb:us::eng");
+
     g_variant_unref (obj);
     g_variant_unref (result);
 
-    if (desc)
-        g_object_unref (desc);
+    g_object_unref (desc);
 }
 
 static void
