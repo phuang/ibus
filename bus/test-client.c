@@ -35,7 +35,6 @@ static void          bus_test_client_class_init      (BusTestClientClass *class)
 static void          bus_test_client_destroy         (IBusObject         *object);
 
 /* static methods*/
-static gchar*        _get_active_engine_name        (void);
 static void          _store_modifier_state          (BusTestClient      *client,
                                                      guint               modifier);
 static gboolean      _is_shift_set                  (BusTestClient      *client);
@@ -83,7 +82,6 @@ static void
 bus_test_client_init (BusTestClient *client)
 {
     IDEBUG ("%s", __FUNCTION__);
-    gchar *active_engine_name;
     client->connected = FALSE;
     client->enabled = FALSE;
 
@@ -104,13 +102,7 @@ bus_test_client_init (BusTestClient *client)
     client->caps = IBUS_CAP_FOCUS;
     ibus_input_context_set_capabilities (client->ibuscontext, client->caps);
 
-    active_engine_name = _get_active_engine_name ();
-
-    g_return_if_fail (active_engine_name != NULL);
-    IDEBUG ("engine:%s", active_engine_name);
-    ibus_input_context_focus_in (client->ibuscontext);
-    ibus_input_context_set_engine (client->ibuscontext, active_engine_name);
-    g_free (active_engine_name);
+    ibus_bus_set_global_engine (_bus, "xkb:us::eng");
 
     client->enabled = TRUE;
 }
@@ -217,32 +209,6 @@ void bus_test_client_clear_modifier (BusTestClient *client)
     for (i = 0; i < MODIFIER_KEY_NUM; i++) {
         (client->modifier)[i] = FALSE;
     }
-}
-
-static gchar *
-_get_active_engine_name (void)
-{
-    GList *engines;
-    gchar *result;
-
-    engines = ibus_bus_list_active_engines (_bus);
-    if (engines == NULL) {
-        return NULL;
-    }
-
-    IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-    if (engine_desc != NULL) {
-        result = g_strdup (ibus_engine_desc_get_name(engine_desc));
-    } else {
-        result = NULL;
-    }
-
-    for (; engines != NULL; engines = g_list_next (engines)) {
-        g_object_unref (IBUS_ENGINE_DESC (engines->data));
-    }
-    g_list_free (engines);
-
-    return result;
 }
 
 static void
