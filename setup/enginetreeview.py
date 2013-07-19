@@ -59,6 +59,8 @@ class EngineTreeView(Gtk.TreeView):
         self.__model.connect("row-deleted", self.__emit_changed_delay_cb, "row-deleted")
         self.__model.connect("row-inserted", self.__emit_changed_delay_cb, "row-inserted")
         self.__model.connect("rows-reordered", self.__emit_changed_delay_cb, "rows-reordered")
+        self.__model.set_default_sort_func(self.__sort_engines, None)
+        self.__model.set_sort_column_id(-1, Gtk.SortType.ASCENDING)
 
         # create im name & icon column
         column = Gtk.TreeViewColumn(_("Input Method"))
@@ -98,6 +100,15 @@ class EngineTreeView(Gtk.TreeView):
         # self.append_column(column)
 
         self.get_selection().connect("changed", self.__selection_changed_cb)
+
+    def __sort_engines(self, model, a, b, data):
+        engine_a = model[a][0]
+        engine_b = model[b][0]
+        language_a = IBus.get_language_name(engine_a.get_language())
+        language_b = IBus.get_language_name(engine_b.get_language())
+        label_a = "%s - %s" % (language_a, engine_a.get_longname())
+        label_b = "%s - %s" % (language_b, engine_b.get_longname())
+        return cmp(label_a, label_b)
 
     def __selection_changed_cb(self, *args):
         self.notify("active-engine");
