@@ -963,7 +963,7 @@ _ibus_current_input_context_depre (BusIBusImpl           *ibus,
     if (variant == NULL) {
         g_dbus_method_invocation_return_error (
                 invocation, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                error->message);
+                "%s", error->message);
         g_error_free (error);
     } else {
         const gchar *path = g_variant_get_string (variant, NULL);
@@ -1357,7 +1357,7 @@ _ibus_get_global_engine_depre (BusIBusImpl           *ibus,
         g_dbus_method_invocation_return_error (
                 invocation,
                 G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                error->message);
+                "%s", error->message);
         g_error_free (error);
     } else {
         GVariant *retval = g_variant_get_variant (variant);
