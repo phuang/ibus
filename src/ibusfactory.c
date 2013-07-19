@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -287,12 +287,11 @@ ibus_factory_service_method_call (IBusService           *service,
             g_free (object_path);
         }
         else {
-            gchar *error_message = g_strdup_printf ("Can not fond engine %s", engine_name);
             g_dbus_method_invocation_return_error (invocation,
                                                    G_DBUS_ERROR,
                                                    G_DBUS_ERROR_FAILED,
-                                                   error_message);
-            g_free (error_message);
+                                                   "Can not fond engine %s",
+                                                   engine_name);
         }
         return;
     }
