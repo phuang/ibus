@@ -1093,6 +1093,7 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
                             GDBusMethodInvocation *invocation)
 {
     const gchar *name= NULL;
+    BusNameService *service;
     g_variant_get (parameters, "(&s)", &name);
 
     if (name == NULL ||
@@ -1113,11 +1114,25 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
     }
 
     guint retval;
-    if (g_hash_table_lookup (dbus->names, name) == NULL) {
+    service = g_hash_table_lookup (dbus->names, name);
+    if (service == NULL) {
         retval = 2; /* DBUS_RELEASE_NAME_REPLY_NON_EXISTENT */
     }
     else {
+        /* "ReleaseName" method removes the name in connection->names
+         * and the connection owner.
+         * bus_dbus_impl_connection_destroy_cb() removes all
+         * connection->names and the connection owners.
+         * See also comments in bus_dbus_impl_connection_destroy_cb().
+         */
         if (bus_connection_remove_name (connection, name)) {
+            BusConnectionOwner *owner =
+                    bus_name_service_find_owner (service, connection);
+            bus_name_service_remove_owner (service, owner, dbus);
+            if (service->owners == NULL) {
+                g_hash_table_remove (dbus->names, service->name);
+            }
+            bus_connection_owner_free (owner);
             retval = 1; /* DBUS_RELEASE_NAME_REPLY_RELEASED */
         }
         else {

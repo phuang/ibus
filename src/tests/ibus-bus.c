@@ -48,6 +48,16 @@ test_list_engines (void)
     g_list_free (engines);
 }
 
+static void
+name_owner_changed_cb (IBusBus  *bus,
+                       gchar    *name,
+                       gchar    *old,
+                       gchar    *new,
+                       gpointer  data)
+{
+    g_debug ("%s: bus=%s, old=%s, new=%s", G_STRFUNC, name, old, new);
+}
+
 static void call_next_async_function (void);
 
 static void
@@ -56,10 +66,34 @@ finish_request_name_async (GObject *source_object,
                            gpointer user_data)
 {
     GError *error = NULL;
-    guint id = ibus_bus_request_name_async_finish (bus,
-                                                   res,
-                                                   &error);
+    guint id = ibus_bus_request_name_async_finish (bus, res, &error);
+
     g_assert (id != 0);
+
+    g_debug ("request name returned %d: ", id);
+
+    switch (id) {
+    case IBUS_BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER:
+        g_debug ("got ownership");
+        break;
+    case IBUS_BUS_REQUEST_NAME_REPLY_IN_QUEUE:
+        g_debug ("got queued");
+        break;
+    case IBUS_BUS_REQUEST_NAME_REPLY_EXISTS:
+        g_debug ("request already in queue");
+        break;
+    case IBUS_BUS_REQUEST_NAME_REPLY_ALREADY_OWNER:
+        g_debug ("already owner");
+        break;
+    default:
+        g_assert_not_reached ();
+    }
+
+    if (error) {
+        g_warning ("Error %s: %s", G_STRFUNC, error->message);
+        g_error_free (error);
+    }
+
     g_debug ("ibus_bus_request_name_async_finish: OK");
     call_next_async_function ();
 }
@@ -67,9 +101,15 @@ finish_request_name_async (GObject *source_object,
 static void
 start_request_name_async (void)
 {
+    ibus_bus_set_watch_dbus_signal (bus, TRUE);
+    ibus_bus_set_watch_ibus_signal (bus, TRUE);
+
+    g_signal_connect (bus, "name-owner-changed",
+                      (GCallback) name_owner_changed_cb, NULL);
+
     ibus_bus_request_name_async (bus,
                                  "org.freedesktop.IBus.IBusBusTest",
-                                 0,
+                                 IBUS_BUS_NAME_FLAG_REPLACE_EXISTING,
                                  -1, /* timeout */
                                  NULL, /* cancellable */
                                  finish_request_name_async,
@@ -902,6 +942,12 @@ main (gint    argc,
     bus = ibus_bus_new ();
     g_object_unref (bus);
     bus = ibus_bus_new (); // crosbug.com/17293
+
+    if (!ibus_bus_is_connected (bus)) {
+        g_warning ("Not connected to ibus-daemon");
+        g_object_unref (bus);
+        return -1;
+    }
 
     g_test_add_func ("/ibus/list-engines", test_list_engines);
     g_test_add_func ("/ibus/list-active-engines", test_list_active_engines);
