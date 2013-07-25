@@ -161,6 +161,10 @@ static IBusEngineDesc
 static void     bus_ibus_impl_set_focused_context
                                         (BusIBusImpl        *ibus,
                                          BusInputContext    *context);
+static void     bus_ibus_impl_property_changed
+                                        (BusIBusImpl        *service,
+                                         const gchar        *property_name,
+                                         GVariant           *value);
 /* some callback functions */
 static void     _context_engine_changed_cb
                                         (BusInputContext    *context,
@@ -1577,6 +1581,8 @@ _ibus_set_preload_engines (BusIBusImpl     *ibus,
 
     g_ptr_array_free (array, FALSE);
 
+    bus_ibus_impl_property_changed (ibus, "PreloadEngines", value);
+
     return TRUE;
 }
 
@@ -1614,7 +1620,11 @@ _ibus_set_embed_preedit_text (BusIBusImpl     *ibus,
         *error = NULL;
     }
 
-    ibus->embed_preedit_text = g_variant_get_boolean (value);
+    gboolean embed_preedit_text = g_variant_get_boolean (value);
+    if (embed_preedit_text != ibus->embed_preedit_text) {
+        ibus->embed_preedit_text = embed_preedit_text;
+        bus_ibus_impl_property_changed (ibus, "EmbedPreeditText", value);
+    }
 
     return TRUE;
 }
@@ -1734,49 +1744,6 @@ bus_ibus_impl_service_get_property (IBusService     *service,
     return NULL;
 }
 
-static void
-_emit_properties_changed (BusIBusImpl     *service,
-                          GDBusConnection *connection,
-                          const gchar     *object_path,
-                          const gchar     *interface_name,
-                          const gchar     *property_name,
-                          GVariant        *value,
-                          gboolean         is_changed)
-{
-    GVariantBuilder *builder;
-    GVariantBuilder *invalidated_builder;
-    GError *error = NULL;
-
-    builder = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
-    invalidated_builder = g_variant_builder_new (G_VARIANT_TYPE ("as"));
-
-    if (is_changed) {
-        g_variant_builder_add (builder, "{sv}", property_name, value);
-    } else {
-        g_variant_builder_add (invalidated_builder, "s", property_name);
-    }
-
-    g_dbus_connection_emit_signal (connection,
-                                   NULL,
-                                   object_path,
-                                   "org.freedesktop.DBus.Properties",
-                                   "PropertiesChanged",
-                                   g_variant_new ("(sa{sv}as)",
-                                                  interface_name,
-                                                  builder,
-                                                  invalidated_builder),
-                                   &error);
-
-    if (error) {
-        g_warning ("Failed to emit property %s in %s.%s: %s",
-                   property_name,
-                   "org.freedesktop.DBus.Properties",
-                   "PropertiesChanged",
-                   error->message);
-        g_error_free (error);
-    }
-}
-
 /**
  * bus_ibus_impl_service_set_property:
  *
@@ -1815,21 +1782,10 @@ bus_ibus_impl_service_set_property (IBusService     *service,
 
     for (i = 0; i < G_N_ELEMENTS (methods); i++) {
         if (g_strcmp0 (methods[i].method_name, property_name) == 0) {
-            gboolean retval = methods[i].method_callback (
-                    (BusIBusImpl *) service,
-                    connection,
-                    value,
-                    error);
-
-            _emit_properties_changed ((BusIBusImpl *) service,
-                                      connection,
-                                      object_path,
-                                      interface_name,
-                                      property_name,
-                                      value,
-                                      retval);
-
-            return retval;
+            return methods[i].method_callback ((BusIBusImpl *) service,
+                                               connection,
+                                               value,
+                                               error);
         }
     }
 
@@ -2044,6 +2000,38 @@ bus_ibus_impl_lookup_component_by_name (BusIBusImpl *ibus,
     else {
         return NULL;
     }
+}
+
+/**
+ * bus_ibus_impl_property_changed
+ *
+ * Send a "PropertiesChanged" D-Bus signal for a property to buses
+ * (connections) that are listening to the signal.
+ */
+static void
+bus_ibus_impl_property_changed (BusIBusImpl *service,
+                                const gchar *property_name,
+                                GVariant    *value)
+{
+    GDBusMessage *message =
+        g_dbus_message_new_signal ("/org/freedesktop/IBus",
+                                   "org.freedesktop.DBus.Properties",
+                                   "PropertiesChanged");
+
+    /* set a non-zero serial to make libdbus happy */
+    g_dbus_message_set_serial (message, 1);
+    g_dbus_message_set_sender (message, "org.freedesktop.IBus");
+
+    GVariantBuilder *builder = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
+    g_variant_builder_add (builder, "{sv}", property_name, value);
+    g_dbus_message_set_body (message,
+                             g_variant_new ("(sa{sv}as)",
+                                            "org.freedesktop.IBus",
+                                            builder,
+                                            NULL));
+
+    bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, message, NULL);
+    g_object_unref (message);
 }
 
 /**
