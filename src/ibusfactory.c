@@ -290,7 +290,7 @@ ibus_factory_service_method_call (IBusService           *service,
             g_dbus_method_invocation_return_error (invocation,
                                                    G_DBUS_ERROR,
                                                    G_DBUS_ERROR_FAILED,
-                                                   "Can not fond engine %s",
+                                                   "Cannot find engine %s",
                                                    engine_name);
         }
         return;
