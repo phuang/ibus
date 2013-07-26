@@ -396,6 +396,29 @@
 			<rank>99</rank>
 		</engine>
 		<engine>
+			<name>xkb:no::nor</name>
+			<language>nor</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>no</layout>
+			<longname>Norwegian</longname>
+			<description>Norwegian</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
+			<name>xkb:no:dvorak:nor</name>
+			<language>nor</language>
+			<license>GPL</license>
+			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+			<layout>no</layout>
+			<layout_variant>dvorak</layout_variant>
+			<longname>Norwegian (Dvorak)</longname>
+			<description>Norwegian (Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+			<rank>99</rank>
+		</engine>
+		<engine>
 			<name>xkb:pl::pol</name>
 			<language>pol</language>
 			<license>GPL</license>
