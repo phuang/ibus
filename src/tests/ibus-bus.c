@@ -859,8 +859,6 @@ test_get_engines_by_names (void)
         g_assert_cmpstr (names[i], ==, ibus_engine_desc_get_name (*p));
         i++;
         g_object_unref (*p);
-        // The ref should be zero, *p is released.
-        g_assert (!IBUS_IS_ENGINE_DESC (*p));
     }
 
     // The last engine does not exist.
