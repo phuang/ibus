@@ -270,6 +270,11 @@ int write_cache (string[] argv) {
             Posix.EXIT_SUCCESS : Posix.EXIT_FAILURE;
 }
 
+int print_address(string[] argv) {
+    print("%s\n", IBus.get_address());
+    return Posix.EXIT_SUCCESS;
+}
+
 int print_help(string[] argv) {
     print_usage(stdout);
     return Posix.EXIT_SUCCESS;
@@ -278,20 +283,22 @@ int print_help(string[] argv) {
 delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
-    string name;
-    EntryFunc entry;
+    unowned string name;
+    unowned string description;
+    unowned EntryFunc entry;
 }
 
 static const CommandEntry commands[]  = {
-    { "engine", get_set_engine },
-    { "exit", exit_daemon },
-    { "list-engine", list_engine },
-    { "watch", message_watch },
-    { "restart", restart_daemon },
-    { "version", print_version },
-    { "read-cache", read_cache },
-    { "write-cache", write_cache },
-    { "help", print_help }
+    { "engine", N_("Set or get engine"), get_set_engine },
+    { "exit", N_("Exit ibus-daemon"), exit_daemon },
+    { "list-engine", N_("Show available engines"), list_engine },
+    { "watch", N_("(Not implemented)"), message_watch },
+    { "restart", N_("Restart ibus-daemon"), restart_daemon },
+    { "version", N_("Show version"), print_version },
+    { "read-cache", N_("Show the content of registry cache"), read_cache },
+    { "write-cache", N_("Create registry cache"), write_cache },
+    { "address", N_("Print the D-Bus address of ibus-daemon"), print_address },
+    { "help", N_("Show this information"), print_help }
 };
 
 static string program_name;
@@ -300,14 +307,17 @@ void print_usage(FileStream stream) {
     stream.printf(_("Usage: %s COMMAND [OPTION...]\n\n"), program_name);
     stream.printf(_("Commands:\n"));
     for (int i = 0; i < commands.length; i++) {
-        stream.printf("  %s\n", commands[i].name);
+        stream.printf("  %-11s    %s\n",
+                      commands[i].name,
+                      GLib.dgettext(null, commands[i].description));
     }
 }
 
 public int main(string[] argv) {
     GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
-    GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
-    GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+    GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
+    GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
+    GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
 
     IBus.init();
 

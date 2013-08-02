@@ -76,8 +76,14 @@ Save the custom registry cache
 if
 .B \-\-file=FILE
 is given.
-IBUS_COMPONENT_PATH environment valuable is also available for
-the custom component directories, whose delimiter is ':'.
+
+By default, it reads the component XML files from the standard
+component directory (\fI/usr/share/ibus/component\fP), you can set
+\fIIBUS_COMPONENT_PATH\fP environment variable for custom component
+directories, separated by ':'.
+.TP
+\fBaddress\fR
+Show the D-Bus address of ibus-daemon.
 .TP
 \fBwatch\fR
 Under construction.
