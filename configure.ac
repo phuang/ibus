@@ -197,6 +197,15 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
+# --enable-wayland option.
+AC_ARG_ENABLE(wayland,
+    AS_HELP_STRING([--enable-wayland],
+                   [Build wayland support]),
+    [enable_wayland=$enableval],
+    [enable_wayland=no]
+)
+AM_CONDITIONAL([ENABLE_WAYLAND], [test x"$enable_wayland" = x"yes"])
+
 if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
     # check for gtk2
     PKG_CHECK_MODULES(GTK2, [
@@ -240,6 +249,16 @@ if test x"$enable_xim" = x"yes"; then
     AC_CHECK_HEADERS([X11/XKBlib.h])
 else
     enable_xim="no (disabled, use --enable-xim to enable)"
+fi
+
+if test x"$enable_wayland" = x"yes"; then
+    # Check for wayland
+    PKG_CHECK_MODULES(WAYLAND, [
+        wayland-client >= 1.2.0
+        xkbcommon
+    ])
+else
+    enable_wayland="no (disabled, use --enable-wayland to enable)"
 fi
 
 # GObject introspection
@@ -534,6 +553,7 @@ client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
 client/x11/Makefile
+client/wayland/Makefile
 src/Makefile
 src/ibusversion.h
 src/tests/Makefile
@@ -580,6 +600,7 @@ Build options:
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
+  Build wayland support     $enable_wayland
   Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf

@@ -32,10 +32,15 @@ if ENABLE_XIM
 X11 = x11
 endif
 
+if ENABLE_WAYLAND
+WAYLAND = wayland
+endif
+
 SUBDIRS = \
 	$(GTK2) \
 	$(GTK3) \
 	$(X11) \
+	$(WAYLAND) \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
