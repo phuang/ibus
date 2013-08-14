@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -227,6 +227,74 @@ struct _IBusRectangle {
  * Free function prototype.
  */
 typedef void (* IBusFreeFunc) (gpointer object);
+
+/**
+ * IBusInputPurpose:
+ * @IBUS_INPUT_PURPOSE_FREE_FORM: Allow any character
+ * @IBUS_INPUT_PURPOSE_ALPHA: Allow only alphabetic characters
+ * @IBUS_INPUT_PURPOSE_DIGITS: Allow only digits
+ * @IBUS_INPUT_PURPOSE_NUMBER: Edited field expects numbers
+ * @IBUS_INPUT_PURPOSE_PHONE: Edited field expects phone number
+ * @IBUS_INPUT_PURPOSE_URL: Edited field expects URL
+ * @IBUS_INPUT_PURPOSE_EMAIL: Edited field expects email address
+ * @IBUS_INPUT_PURPOSE_NAME: Edited field expects the name of a person
+ * @IBUS_INPUT_PURPOSE_PASSWORD: Like @IBUS_INPUT_PURPOSE_FREE_FORM,
+ * but characters are hidden
+ * @IBUS_INPUT_PURPOSE_PIN: Like @IBUS_INPUT_PURPOSE_DIGITS, but
+ * characters are hidden
+ *
+ * Describes primary purpose of the input context.  This information
+ * is particularly useful to implement intelligent behavior in
+ * engines, such as automatic input-mode switch and text prediction.
+ *
+ * This enumeration may be extended in the future; engines should
+ * interpret unknown values as 'free form'.
+ */
+typedef enum
+{
+  IBUS_INPUT_PURPOSE_FREE_FORM,
+  IBUS_INPUT_PURPOSE_ALPHA,
+  IBUS_INPUT_PURPOSE_DIGITS,
+  IBUS_INPUT_PURPOSE_NUMBER,
+  IBUS_INPUT_PURPOSE_PHONE,
+  IBUS_INPUT_PURPOSE_URL,
+  IBUS_INPUT_PURPOSE_EMAIL,
+  IBUS_INPUT_PURPOSE_NAME,
+  IBUS_INPUT_PURPOSE_PASSWORD,
+  IBUS_INPUT_PURPOSE_PIN
+} IBusInputPurpose;
+
+/**
+ * IBusInputHints:
+ * @IBUS_INPUT_HINT_NONE: No special behaviour suggested
+ * @IBUS_INPUT_HINT_SPELLCHECK: Suggest checking for typos
+ * @IBUS_INPUT_HINT_NO_SPELLCHECK: Suggest not checking for typos
+ * @IBUS_INPUT_HINT_WORD_COMPLETION: Suggest word completion
+ * @IBUS_INPUT_HINT_LOWERCASE: Suggest to convert all text to lowercase
+ * @IBUS_INPUT_HINT_UPPERCASE_CHARS: Suggest to capitalize all text
+ * @IBUS_INPUT_HINT_UPPERCASE_WORDS: Suggest to capitalize the first
+ *     character of each word
+ * @IBUS_INPUT_HINT_UPPERCASE_SENTENCES: Suggest to capitalize the
+ *     first word of each sentence
+ * @IBUS_INPUT_HINT_INHIBIT_OSK: Suggest to not show an onscreen keyboard
+ *     (e.g for a calculator that already has all the keys).
+ *
+ * Describes hints that might be taken into account by engines.  Note
+ * that engines may already tailor their behaviour according to the
+ * #IBusInputPurpose of the entry.
+ */
+typedef enum
+{
+  IBUS_INPUT_HINT_NONE                = 0,
+  IBUS_INPUT_HINT_SPELLCHECK          = 1 << 0,
+  IBUS_INPUT_HINT_NO_SPELLCHECK       = 1 << 1,
+  IBUS_INPUT_HINT_WORD_COMPLETION     = 1 << 2,
+  IBUS_INPUT_HINT_LOWERCASE           = 1 << 3,
+  IBUS_INPUT_HINT_UPPERCASE_CHARS     = 1 << 4,
+  IBUS_INPUT_HINT_UPPERCASE_WORDS     = 1 << 5,
+  IBUS_INPUT_HINT_UPPERCASE_SENTENCES = 1 << 6,
+  IBUS_INPUT_HINT_INHIBIT_OSK         = 1 << 7
+} IBusInputHints;
 
 #endif
 

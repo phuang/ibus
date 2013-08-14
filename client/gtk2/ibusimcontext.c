@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,6 +95,8 @@ static GtkWidget *_input_widget = NULL;
 static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
 static void     ibus_im_context_class_fini  (IBusIMContextClass    *class);
 static void     ibus_im_context_init        (GObject               *obj);
+static void     ibus_im_context_notify      (GObject               *obj,
+                                             GParamSpec            *pspec);
 static void     ibus_im_context_finalize    (GObject               *obj);
 static void     ibus_im_context_reset       (GtkIMContext          *context);
 static gboolean ibus_im_context_filter_keypress
@@ -150,6 +152,7 @@ static gboolean _slave_delete_surrounding_cb
                                              IBusIMContext      *context);
 static void     _request_surrounding_text   (IBusIMContext      *context);
 static void     _create_fake_input_context  (void);
+static void     _set_content_type           (IBusIMContext      *context);
 
 
 
@@ -330,6 +333,26 @@ _request_surrounding_text (IBusIMContext *context)
     }
 }
 
+static void
+_set_content_type (IBusIMContext *context)
+{
+#if GTK_CHECK_VERSION (3, 6, 0)
+    if (context->ibuscontext != NULL) {
+        GtkInputPurpose purpose;
+        GtkInputHints hints;
+
+        g_object_get (G_OBJECT (context),
+                      "input-purpose", &purpose,
+                      "input-hints", &hints,
+                      NULL);
+
+        ibus_input_context_set_content_type (context->ibuscontext,
+                                             purpose,
+                                             hints);
+    }
+#endif
+}
+
 
 static gint
 _key_snooper_cb (GtkWidget   *widget,
@@ -499,6 +522,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
     im_context_class->set_surrounding = ibus_im_context_set_surrounding;
+    gobject_class->notify = ibus_im_context_notify;
     gobject_class->finalize = ibus_im_context_finalize;
 
     _signal_commit_id =
@@ -692,6 +716,18 @@ ibus_im_context_init (GObject *obj)
 }
 
 static void
+ibus_im_context_notify (GObject    *obj,
+                        GParamSpec *pspec)
+{
+    IDEBUG ("%s", __FUNCTION__);
+
+    if (g_strcmp0 (pspec->name, "input-purpose") == 0 ||
+        g_strcmp0 (pspec->name, "input-hints") == 0) {
+        _set_content_type (IBUS_IM_CONTEXT (obj));
+    }
+}
+
+static void
 ibus_im_context_finalize (GObject *obj)
 {
     IDEBUG ("%s", __FUNCTION__);
@@ -803,18 +839,6 @@ ibus_im_context_focus_in (GtkIMContext *context)
         return;
 
     /* don't set focus on password entry */
-#if GTK_CHECK_VERSION (3, 6, 0)
-    {
-        GtkInputPurpose purpose;
-
-        g_object_get (G_OBJECT (context),
-                      "input-purpose", &purpose,
-                      NULL);
-
-        if (purpose == GTK_INPUT_PURPOSE_PASSWORD)
-            return;
-    }
-#endif
     if (ibusimcontext->client_window != NULL) {
         GtkWidget *widget;
 
@@ -845,6 +869,8 @@ ibus_im_context_focus_in (GtkIMContext *context)
     }
 
     gtk_im_context_focus_in (ibusimcontext->slave);
+
+    _set_content_type (ibusimcontext);
 
     /* set_cursor_location_internal() will get origin from X server,
      * it blocks UI. So delay it to idle callback. */

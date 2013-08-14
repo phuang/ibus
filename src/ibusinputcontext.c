@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -685,8 +685,7 @@ ibus_input_context_new (const gchar     *path,
 
     GInitable *initable;
 
-    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
 
     initable = g_initable_new (IBUS_TYPE_INPUT_CONTEXT,
                                cancellable,
@@ -714,8 +713,7 @@ ibus_input_context_new_async (const gchar         *path,
     g_assert (G_IS_DBUS_CONNECTION (connection));
     g_assert (callback != NULL);
 
-    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
 
     g_async_initable_new_async (IBUS_TYPE_INPUT_CONTEXT,
                                 G_PRIORITY_DEFAULT,
@@ -1055,6 +1053,40 @@ ibus_input_context_needs_surrounding_text (IBusInputContext *context)
     IBusInputContextPrivate *priv;
     priv = IBUS_INPUT_CONTEXT_GET_PRIVATE (IBUS_INPUT_CONTEXT (context));
     return priv->needs_surrounding_text;
+}
+
+void
+ibus_input_context_set_content_type (IBusInputContext *context,
+                                     guint             purpose,
+                                     guint             hints)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    GVariant *cached_content_type =
+        g_dbus_proxy_get_cached_property ((GDBusProxy *) context,
+                                          "ContentType");
+    GVariant *content_type = g_variant_new ("(uu)", purpose, hints);
+
+    g_variant_ref_sink (content_type);
+    if (cached_content_type == NULL ||
+        !g_variant_equal (content_type, cached_content_type)) {
+        g_dbus_proxy_call ((GDBusProxy *) context,
+                           "org.freedesktop.DBus.Properties.Set",
+                           g_variant_new ("(ssv)",
+                                          IBUS_INTERFACE_INPUT_CONTEXT,
+                                          "ContentType",
+                                          content_type),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL, /* cancellable */
+                           NULL, /* callback */
+                           NULL  /* user_data */
+                           );
+    }
+
+    if (cached_content_type != NULL)
+        g_variant_unref (cached_content_type);
+    g_variant_unref (content_type);
 }
 
 void

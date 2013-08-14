@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,7 @@ enum {
     SET_SURROUNDING_TEXT,
     PROCESS_HAND_WRITING_EVENT,
     CANCEL_HAND_WRITING,
+    SET_CONTENT_TYPE,
     LAST_SIGNAL,
 };
 
@@ -68,6 +69,10 @@ struct _IBusEnginePrivate {
     IBusText *surrounding_text;
     guint surrounding_cursor_pos;
     guint selection_anchor_pos;
+
+    /* cached content-type */
+    guint content_purpose;
+    guint content_hints;
 };
 
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
@@ -159,9 +164,17 @@ static void      ibus_engine_process_hand_writing_event
 static void      ibus_engine_cancel_hand_writing
                                              (IBusEngine         *engine,
                                               guint               n_strokes);
+static void      ibus_engine_set_content_type
+                                             (IBusEngine         *engine,
+                                              guint               purpose,
+                                              guint               hints);
 static void      ibus_engine_emit_signal     (IBusEngine         *engine,
                                               const gchar        *signal_name,
                                               GVariant           *parameters);
+static void      ibus_engine_dbus_property_changed
+                                             (IBusEngine         *engine,
+                                              const gchar        *property_name,
+                                              GVariant           *value);
 
 
 G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
@@ -249,6 +262,8 @@ static const gchar introspection_xml[] =
     "      <arg type='u' name='keycode' />"
     "      <arg type='u' name='state' />"
     "    </signal>"
+    /* FIXME properties */
+    "    <property name='ContentType' type='(uu)' access='write' />"
     "  </interface>"
     "</node>";
 
@@ -289,6 +304,7 @@ ibus_engine_class_init (IBusEngineClass *class)
     class->process_hand_writing_event
                                 = ibus_engine_process_hand_writing_event;
     class->cancel_hand_writing  = ibus_engine_cancel_hand_writing;
+    class->set_content_type     = ibus_engine_set_content_type;
 
     /* install properties */
     /**
@@ -698,8 +714,6 @@ ibus_engine_class_init (IBusEngineClass *class)
             1,
             G_TYPE_UINT);
 
-    g_type_class_add_private (class, sizeof (IBusEnginePrivate));
-
     /**
      * IBusEngine::set-surrounding-text:
      * @engine: An IBusEngine.
@@ -726,6 +740,40 @@ ibus_engine_class_init (IBusEngineClass *class)
             G_TYPE_OBJECT,
             G_TYPE_UINT,
             G_TYPE_UINT);
+
+    /**
+     * IBusEngine::set-content-type:
+     * @engine: An #IBusEngine.
+     * @purpose: Primary purpose of the input context, as an #IBusInputPurpose.
+     * @hints: Hints that augment @purpose, as an #IBusInputHints.
+     *
+     * Emitted when the client application content-type (primary
+     * purpose and hints) is set.  The engine could change the
+     * behavior according to the content-type.  Implement the member
+     * function set_content_type() in extended class to receive this
+     * signal.
+     *
+     * For example, if the client application wants to restrict input
+     * to numbers, this signal will be emitted with @purpose set to
+     * #IBUS_INPUT_PURPOSE_NUMBER, so the engine can switch the input
+     * mode to latin.
+     *
+     * <note><para>Argument @user_data is ignored in this
+     * function.</para></note>
+     */
+    engine_signals[SET_CONTENT_TYPE] =
+        g_signal_new (I_("set-content-type"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusEngineClass, set_content_type),
+            NULL, NULL,
+            _ibus_marshal_VOID__UINT_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
+
+    g_type_class_add_private (class, sizeof (IBusEnginePrivate));
 
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);
@@ -1004,15 +1052,43 @@ ibus_engine_service_set_property (IBusService        *service,
                                   GVariant           *value,
                                   GError            **error)
 {
-    return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->
-                service_set_property (service,
-                                      connection,
-                                      sender,
-                                      object_path,
-                                      interface_name,
-                                      property_name,
-                                      value,
-                                      error);
+    IBusEngine *engine = IBUS_ENGINE (service);
+
+    if (g_strcmp0 (interface_name, IBUS_INTERFACE_ENGINE) != 0) {
+        return IBUS_SERVICE_CLASS (ibus_engine_parent_class)->
+            service_set_property (service,
+                                  connection,
+                                  sender,
+                                  object_path,
+                                  interface_name,
+                                  property_name,
+                                  value,
+                                  error);
+    }
+
+    if (g_strcmp0 (property_name, "ContentType") == 0) {
+        guint purpose = 0;
+        guint hints = 0;
+
+        g_variant_get (value, "(uu)", &purpose, &hints);
+        if (purpose != engine->priv->content_purpose ||
+            hints != engine->priv->content_hints) {
+            engine->priv->content_purpose = purpose;
+            engine->priv->content_hints = hints;
+
+            g_signal_emit (engine,
+                           engine_signals[SET_CONTENT_TYPE],
+                           0,
+                           purpose,
+                           hints);
+
+            ibus_engine_dbus_property_changed (engine, "ContentType", value);
+        }
+
+        return TRUE;
+    }
+
+    g_return_val_if_reached (FALSE);
 }
 
 static gboolean
@@ -1161,6 +1237,14 @@ ibus_engine_cancel_hand_writing (IBusEngine         *engine,
 }
 
 static void
+ibus_engine_set_content_type (IBusEngine *engine,
+                              guint       purpose,
+                              guint       hints)
+{
+    // g_debug ("set-content-type (%u %u)", purpose, hints);
+}
+
+static void
 ibus_engine_emit_signal (IBusEngine  *engine,
                          const gchar *signal_name,
                          GVariant    *parameters)
@@ -1171,6 +1255,52 @@ ibus_engine_emit_signal (IBusEngine  *engine,
                               signal_name,
                               parameters,
                               NULL);
+}
+
+static void
+ibus_engine_dbus_property_changed (IBusEngine  *engine,
+                                   const gchar *property_name,
+                                   GVariant    *value)
+{
+    const gchar *object_path;
+    GDBusConnection *connection;
+    GDBusMessage *message;
+    GVariantBuilder *builder;
+    gboolean retval;
+    GError *error;
+
+    /* we cannot use ibus_service_emit_signal() here, since we need to
+       set sender of the signal so that GDBusProxy can properly track
+       the property change. */
+    object_path = ibus_service_get_object_path ((IBusService *)engine);
+    message = g_dbus_message_new_signal (object_path,
+                                         "org.freedesktop.DBus.Properties",
+                                         "PropertiesChanged");
+
+    g_dbus_message_set_sender (message, "org.freedesktop.IBus");
+
+    builder = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
+    g_variant_builder_add (builder, "{sv}", property_name, value);
+    g_dbus_message_set_body (message,
+                             g_variant_new ("(sa{sv}as)",
+                                            IBUS_INTERFACE_ENGINE,
+                                            builder,
+                                            NULL));
+
+    error = NULL;
+    connection = ibus_service_get_connection ((IBusService *)engine);
+    retval = g_dbus_connection_send_message (connection,
+                                             message,
+                                             G_DBUS_SEND_MESSAGE_FLAGS_NONE,
+                                             NULL,
+                                             &error);
+    if (!retval) {
+        g_warning ("Failed to emit PropertiesChanged signal: %s",
+                   error->message);
+        g_error_free (error);
+    }
+    g_object_unref (message);
+    return retval;
 }
 
 IBusEngine *
@@ -1421,6 +1551,17 @@ ibus_engine_get_surrounding_text (IBusEngine   *engine,
                              NULL);
 
     // g_debug ("get-surrounding-text ('%s', %d, %d)", (*text)->text, *cursor_pos, *anchor_pos);
+}
+
+void
+ibus_engine_get_content_type (IBusEngine *engine,
+                              guint      *purpose,
+                              guint      *hints)
+{
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+
+    *purpose = engine->priv->content_purpose;
+    *hints = engine->priv->content_hints;
 }
 
 void

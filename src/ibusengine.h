@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,6 +73,8 @@ typedef struct _IBusEnginePrivate IBusEnginePrivate;
  * @has_focus: Whether the engine has focus.
  * @cursor_area: Area of cursor.
  * @client_capabilities: IBusCapabilite (client capabilities) flags.
+ * @client_purpose: IBusInputPurpose (client input purpose).
+ * @client_hints: IBusInputHints (client input hints) flags.
  *
  * IBusEngine properties.
  */
@@ -148,10 +150,14 @@ struct _IBusEngineClass {
     void        (* cancel_hand_writing)
                                     (IBusEngine     *engine,
                                      guint           n_strokes);
+    void        (* set_content_type)
+                                    (IBusEngine     *engine,
+                                     guint           purpose,
+                                     guint           hints);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[5];
+    gpointer pdummy[4];
 };
 
 GType        ibus_engine_get_type       (void);
@@ -423,13 +429,28 @@ void ibus_engine_delete_surrounding_text(IBusEngine         *engine,
  * #IBusEngine::enable handler, with both @text and @cursor set to
  * %NULL.
  *
- * see_also #IBusEngine::set-surrounding-text
+ * See also: #IBusEngine::set-surrounding-text
  */
-void ibus_engine_get_surrounding_text(IBusEngine         *engine,
-                                      IBusText          **text,
-                                      guint              *cursor_pos,
-                                      guint              *anchor_pos);
+void ibus_engine_get_surrounding_text   (IBusEngine         *engine,
+                                         IBusText          **text,
+                                         guint              *cursor_pos,
+                                         guint              *anchor_pos);
 
+
+/**
+ * ibus_engine_get_content_type:
+ * @engine: An #IBusEngine.
+ * @purpose: (out) (allow-none): Primary purpose of the input context.
+ * @hints: (out) (allow-none): Hints that augument @purpose.
+ *
+ * Get content-type (primary purpose and hints) of the current input
+ * context.
+ *
+ * See also: #IBusEngine::set-content-type
+ */
+void ibus_engine_get_content_type       (IBusEngine         *engine,
+                                         guint              *purpose,
+                                         guint              *hints);
 
 /**
  * ibus_engine_get_name:

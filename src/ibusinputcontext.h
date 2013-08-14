@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -447,6 +447,26 @@ void         ibus_input_context_set_surrounding_text
  */
 gboolean     ibus_input_context_needs_surrounding_text
                                             (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_set_content_type:
+ * @context: An #IBusInputContext.
+ * @purpose: Primary purpose of the input context, as an #IBusInputPurpose.
+ * @hints: Hints that augment @purpose, as an #IBusInputHints.
+ *
+ * Set content-type (primary purpose and hints) of the context.  This
+ * information is particularly useful to implement intelligent
+ * behavior in engines, such as automatic input-mode switch and text
+ * prediction.  For example, to restrict input to numbers, the client
+ * can call this function with @purpose set to
+ * #IBUS_INPUT_PURPOSE_NUMBER.
+ *
+ * See also: #IBusEngine::set-content-type
+ */
+void         ibus_input_context_set_content_type
+                                            (IBusInputContext   *context,
+                                             guint               purpose,
+                                             guint               hints);
 
 G_END_DECLS
 #endif

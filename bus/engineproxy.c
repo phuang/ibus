@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -642,8 +642,7 @@ bus_engine_proxy_new_internal (const gchar     *path,
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (G_IS_DBUS_CONNECTION (connection));
 
-    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
     BusEngineProxy *engine =
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
@@ -1132,6 +1131,39 @@ void bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
                            NULL,
                            NULL);
     }
+}
+
+void
+bus_engine_proxy_set_content_type (BusEngineProxy *engine,
+                                   guint           purpose,
+                                   guint           hints)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    GVariant *cached_content_type =
+        g_dbus_proxy_get_cached_property ((GDBusProxy *) engine,
+                                          "ContentType");
+    GVariant *content_type = g_variant_new ("(uu)", purpose, hints);
+
+    g_variant_ref_sink (content_type);
+    if (cached_content_type == NULL ||
+        !g_variant_equal (content_type, cached_content_type)) {
+        g_dbus_proxy_call ((GDBusProxy *) engine,
+                           "org.freedesktop.DBus.Properties.Set",
+                           g_variant_new ("(ssv)",
+                                          IBUS_INTERFACE_ENGINE,
+                                          "ContentType",
+                                          content_type),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           NULL,
+                           NULL);
+    }
+
+    if (cached_content_type != NULL)
+        g_variant_unref (cached_content_type);
+    g_variant_unref (content_type);
 }
 
 /* a macro to generate a function to call a nullary D-Bus method. */
