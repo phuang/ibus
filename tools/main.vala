@@ -2,32 +2,34 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 bool name_only = false;
+/* system() exists as a public API. */
+bool is_system = false;
+string cache_file = null;
 
 class EngineList {
     public IBus.EngineDesc[] data = {};
 }
 
 IBus.Bus? get_bus() {
-    IBus.init();
     var bus = new IBus.Bus();
     if (!bus.is_connected ())
         return null;
@@ -41,8 +43,8 @@ int list_engine(string[] argv) {
         { null }
     };
 
-    var option = new OptionContext(_("command [OPTIONS]"));
-    option.add_main_entries(options, "ibus");
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
 
     try {
         option.parse(ref argv);
@@ -88,6 +90,56 @@ int list_engine(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+private int exec_setxkbmap(IBus.EngineDesc engine) {
+    string layout = engine.get_layout();
+    string variant = engine.get_layout_variant();
+    string option = engine.get_layout_option();
+    string standard_error = null;
+    int exit_status = 0;
+    string[] args = { "setxkbmap" };
+
+    if (layout != null && layout != "" && layout != "default") {
+        args += "-layout";
+        args += layout;
+    }
+    if (variant != null && variant != "" && variant != "default") {
+        args += "-variant";
+        args += variant;
+    }
+    if (option != null && option != "" && option != "default") {
+        /*TODO: Need to get the session XKB options */
+        args += "-option";
+        args += "-option";
+        args += option;
+    }
+
+    if (args.length == 1) {
+        return Posix.EXIT_FAILURE;
+    }
+
+    try {
+        if (!GLib.Process.spawn_sync(null, args, null,
+                                     GLib.SpawnFlags.SEARCH_PATH,
+                                     null, null,
+                                     out standard_error,
+                                     out exit_status)) {
+            warning("Switch xkb layout to %s failed.",
+                    engine.get_layout());
+            return Posix.EXIT_FAILURE;
+        }
+    } catch (GLib.SpawnError e) {
+        warning("Execute setxkbmap failed: %s", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    if (exit_status != 0) {
+        warning("Execute setxkbmap failed: %s", standard_error ?? "(null)");
+        return Posix.EXIT_FAILURE;
+    }
+
+    return Posix.EXIT_SUCCESS;
+}
+
 int get_set_engine(string[] argv) {
     var bus = get_bus();
     string engine = null;
@@ -114,18 +166,7 @@ int get_set_engine(string[] argv) {
         return Posix.EXIT_FAILURE;
     }
 
-    string cmdline = "setxkbmap %s".printf(desc.get_layout());
-    try {
-        if (!GLib.Process.spawn_command_line_sync(cmdline)) {
-            stderr.printf(_("Switch xkb layout to %s failed."),
-                          desc.get_layout());
-            return Posix.EXIT_FAILURE;
-        }
-    } catch (GLib.SpawnError e) {
-        stderr.printf("Execute setxkbmap failed: %s", e.message);
-        return Posix.EXIT_FAILURE;
-    }
-    return Posix.EXIT_SUCCESS;
+    return exec_setxkbmap(desc);
 }
 
 int message_watch(string[] argv) {
@@ -157,6 +198,83 @@ int print_version(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+int read_cache (string[] argv) {
+    const OptionEntry[] options = {
+        { "system", 0, 0, OptionArg.NONE, out is_system,
+          N_("Read the system registry cache."), null },
+        { "file", 0, 0, OptionArg.STRING, out cache_file,
+          N_("Read the registry cache FILE."), "FILE" },
+        { null }
+    };
+
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    var registry = new IBus.Registry();
+
+    if (cache_file != null) {
+        if (!registry.load_cache_file(cache_file)) {
+            stderr.printf(_("The registry cache is invalid.\n"));
+            return Posix.EXIT_FAILURE;
+        }
+    } else {
+        if (!registry.load_cache(!is_system)) {
+            stderr.printf(_("The registry cache is invalid.\n"));
+            return Posix.EXIT_FAILURE;
+        }
+    }
+
+    var output = new GLib.StringBuilder();
+    registry.output(output, 1);
+
+    print ("%s\n", output.str);
+    return Posix.EXIT_SUCCESS;
+}
+
+int write_cache (string[] argv) {
+    const OptionEntry[] options = {
+        { "system", 0, 0, OptionArg.NONE, out is_system,
+          N_("Write the system registry cache."), null },
+        { "file", 0, 0, OptionArg.STRING, out cache_file,
+          N_("Write the registry cache FILE."),
+          "FILE" },
+        { null }
+    };
+
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
+    var registry = new IBus.Registry();
+    registry.load();
+
+    if (cache_file != null) {
+        return registry.save_cache_file(cache_file) ?
+                Posix.EXIT_SUCCESS : Posix.EXIT_FAILURE;
+    }
+
+    return registry.save_cache(!is_system) ?
+            Posix.EXIT_SUCCESS : Posix.EXIT_FAILURE;
+}
+
+int print_address(string[] argv) {
+    print("%s\n", IBus.get_address());
+    return Posix.EXIT_SUCCESS;
+}
+
 int print_help(string[] argv) {
     print_usage(stdout);
     return Posix.EXIT_SUCCESS;
@@ -165,18 +283,22 @@ int print_help(string[] argv) {
 delegate int EntryFunc(string[] argv);
 
 struct CommandEntry {
-    string name;
-    EntryFunc entry;
+    unowned string name;
+    unowned string description;
+    unowned EntryFunc entry;
 }
 
 static const CommandEntry commands[]  = {
-    { "engine", get_set_engine },
-    { "exit", exit_daemon },
-    { "list-engine", list_engine },
-    { "watch", message_watch },
-    { "restart", restart_daemon },
-    { "version", print_version },
-    { "help", print_help }
+    { "engine", N_("Set or get engine"), get_set_engine },
+    { "exit", N_("Exit ibus-daemon"), exit_daemon },
+    { "list-engine", N_("Show available engines"), list_engine },
+    { "watch", N_("(Not implemented)"), message_watch },
+    { "restart", N_("Restart ibus-daemon"), restart_daemon },
+    { "version", N_("Show version"), print_version },
+    { "read-cache", N_("Show the content of registry cache"), read_cache },
+    { "write-cache", N_("Create registry cache"), write_cache },
+    { "address", N_("Print the D-Bus address of ibus-daemon"), print_address },
+    { "help", N_("Show this information"), print_help }
 };
 
 static string program_name;
@@ -184,14 +306,20 @@ static string program_name;
 void print_usage(FileStream stream) {
     stream.printf(_("Usage: %s COMMAND [OPTION...]\n\n"), program_name);
     stream.printf(_("Commands:\n"));
-    foreach (var command in commands) {
-        stream.printf("  %s\n", command.name);
+    for (int i = 0; i < commands.length; i++) {
+        stream.printf("  %-11s    %s\n",
+                      commands[i].name,
+                      GLib.dgettext(null, commands[i].description));
     }
 }
 
 public int main(string[] argv) {
-    GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
-    GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+    GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
+    GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
+    GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
+    GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
+
+    IBus.init();
 
     program_name = Path.get_basename(argv[0]);
     if (argv.length < 2) {
@@ -200,9 +328,10 @@ public int main(string[] argv) {
     }
 
     string[] new_argv = argv[1:argv.length];
-    foreach (var command in commands) {
-        if (command.name == argv[1])
-            return command.entry(new_argv);
+    new_argv[0] = "%s %s".printf(program_name, new_argv[0]);
+    for (int i = 0; i < commands.length; i++) {
+        if (commands[i].name == argv[1])
+            return commands[i].entry(new_argv);
     }
 
     stderr.printf(_("%s is unknown command!\n"), argv[1]);

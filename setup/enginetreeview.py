@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 from gi.repository import GLib
 from gi.repository import GObject
@@ -59,6 +59,8 @@ class EngineTreeView(Gtk.TreeView):
         self.__model.connect("row-deleted", self.__emit_changed_delay_cb, "row-deleted")
         self.__model.connect("row-inserted", self.__emit_changed_delay_cb, "row-inserted")
         self.__model.connect("rows-reordered", self.__emit_changed_delay_cb, "rows-reordered")
+        self.__model.set_default_sort_func(self.__sort_engines, None)
+        self.__model.set_sort_column_id(-1, Gtk.SortType.ASCENDING)
 
         # create im name & icon column
         column = Gtk.TreeViewColumn(_("Input Method"))
@@ -99,6 +101,15 @@ class EngineTreeView(Gtk.TreeView):
 
         self.get_selection().connect("changed", self.__selection_changed_cb)
 
+    def __sort_engines(self, model, a, b, data):
+        engine_a = model[a][0]
+        engine_b = model[b][0]
+        language_a = IBus.get_language_name(engine_a.get_language())
+        language_b = IBus.get_language_name(engine_b.get_language())
+        label_a = "%s - %s" % (language_a, engine_a.get_longname())
+        label_b = "%s - %s" % (language_b, engine_b.get_longname())
+        return cmp(label_a, label_b)
+
     def __selection_changed_cb(self, *args):
         self.notify("active-engine");
 
@@ -118,13 +129,6 @@ class EngineTreeView(Gtk.TreeView):
 
         icon_size = Gtk.icon_size_lookup(Gtk.IconSize.LARGE_TOOLBAR)[0]
         pixbuf = load_icon(engine.get_icon(), Gtk.IconSize.LARGE_TOOLBAR)
-
-        if pixbuf == None:
-            pixbuf = load_icon("ibus-engine", Gtk.IconSize.LARGE_TOOLBAR)
-        if pixbuf == None:
-            pixbuf = load_icon(Gtk.STOCK_MISSING_IMAGE,
-                               Gtk.IconSize.LARGE_TOOLBAR)
-
         renderer.set_property("pixbuf", pixbuf)
 
     def __name_cell_data_cb(self, celllayout, renderer, model, it, data):

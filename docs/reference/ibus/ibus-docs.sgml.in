@@ -89,6 +89,7 @@
       <xi:include href="xml/ibusconfig.xml"/>
       <xi:include href="xml/ibusconfigservice.xml"/>
       <xi:include href="xml/ibusobservedpath.xml"/>
+      <xi:include href="xml/ibusregistry.xml"/>
       <xi:include href="xml/ibusversion.xml"/>
       <xi:include href="xml/ibusxml.xml"/>
   </chapter>

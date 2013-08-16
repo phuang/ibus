@@ -131,7 +131,8 @@ public class KeybindingManager : GLib.Object {
             Gdk.ModifierType.SHIFT_MASK,
             Gdk.ModifierType.LOCK_MASK
         };
-        foreach (Gdk.ModifierType mask in masks) {
+        for (int i = 0; i < masks.length; i++) {
+            Gdk.ModifierType mask = masks[i];
             if ((binding_mask & mask) == mask)
                 return mask;
         }
@@ -215,7 +216,8 @@ public class KeybindingManager : GLib.Object {
             X.KeyMask.Mod5Mask
         };
         int[] masks = {};
-        foreach (var modifier in ignored_modifiers) {
+        for (int i = 0; i < ignored_modifiers.length; i++) {
+            int modifier = ignored_modifiers[i];
             masks += modifier;
 
             int length = masks.length;

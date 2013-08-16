@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 class CandidateArea : Gtk.Box {
@@ -35,6 +35,16 @@ class CandidateArea : Gtk.Box {
         "9.", "0.", "a.", "b.", "c.", "d.", "e.", "f."
     };
 
+    private const string PREV_PAGE_ICONS[] = {
+        Gtk.Stock.GO_BACK,
+        Gtk.Stock.GO_UP
+    };
+
+    private const string NEXT_PAGE_ICONS[] = {
+        Gtk.Stock.GO_FORWARD,
+        Gtk.Stock.GO_DOWN
+    };
+
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void page_up();
     public signal void page_down();
@@ -42,24 +52,27 @@ class CandidateArea : Gtk.Box {
     public signal void cursor_down();
 
     public CandidateArea(bool vertical) {
-        GLib.Object(
-            orientation: vertical ? Gtk.Orientation.VERTICAL : Gtk.Orientation.HORIZONTAL
-        );
-        m_vertical = vertical;
-        recreate_ui();
-        show_all();
+        GLib.Object();
+        set_vertical(vertical, true);
     }
 
-    public void set_vertical(bool vertical) {
-        if (m_vertical == vertical)
+    public void set_vertical(bool vertical, bool force = false) {
+        if (!force && m_vertical == vertical)
             return;
         m_vertical = vertical;
+        orientation = vertical ?
+            Gtk.Orientation.VERTICAL :
+            Gtk.Orientation.HORIZONTAL;
         recreate_ui();
 
-        // Workaround a vala issue https://bugzilla.gnome.org/show_bug.cgi?id=661130
-        set_candidates((owned)m_ibus_candidates, m_focus_candidate, m_show_cursor);
-        if (m_candidates.length > 0)
+        if (m_ibus_candidates.length > 0) {
+            // Workaround a vala issue
+            // https://bugzilla.gnome.org/show_bug.cgi?id=661130
+            set_candidates((owned)m_ibus_candidates,
+                           m_focus_candidate,
+                           m_show_cursor);
             show_all();
+        }
     }
 
     public void set_labels(IBus.Text[] labels) {
@@ -126,20 +139,26 @@ class CandidateArea : Gtk.Box {
 
         Gtk.Button prev_button = new Gtk.Button();
         prev_button.clicked.connect((b) => page_up());
-        prev_button.set_image(new Gtk.Image.from_icon_name(Gtk.Stock.GO_UP, Gtk.IconSize.MENU));
+        prev_button.set_image(new Gtk.Image.from_stock(
+                                  PREV_PAGE_ICONS[orientation],
+                                  Gtk.IconSize.MENU));
         prev_button.set_relief(Gtk.ReliefStyle.NONE);
 
         Gtk.Button next_button = new Gtk.Button();
         next_button.clicked.connect((b) => page_down());
-        next_button.set_image(new Gtk.Image.from_icon_name(Gtk.Stock.GO_DOWN, Gtk.IconSize.MENU));
+        next_button.set_image(new Gtk.Image.from_stock(
+                                  NEXT_PAGE_ICONS[orientation],
+                                  Gtk.IconSize.MENU));
         next_button.set_relief(Gtk.ReliefStyle.NONE);
 
         if (m_vertical) {
             // Add Candidates
-            Gtk.HBox candidates_hbox = new Gtk.HBox(false, 0);
+            Gtk.Box candidates_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             pack_start(candidates_hbox, false, false, 0);
-            Gtk.VBox labels_vbox = new Gtk.VBox(true, 0);
-            Gtk.VBox candidates_vbox = new Gtk.VBox(true, 0);
+            Gtk.Box labels_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            labels_vbox.set_homogeneous(true);
+            Gtk.Box candidates_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            candidates_vbox.set_homogeneous(true);
             candidates_hbox.pack_start(labels_vbox, false, false, 4);
             candidates_hbox.pack_start(new VSeparator(), false, false, 0);
             candidates_hbox.pack_start(candidates_vbox, true, true, 4);
@@ -148,7 +167,7 @@ class CandidateArea : Gtk.Box {
             pack_start(new HSeparator(), false, false, 0);
 
             // Add buttons
-            Gtk.HBox buttons_hbox = new Gtk.HBox(false, 0);
+            Gtk.Box buttons_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             Gtk.Label state_label = new Gtk.Label(null);
             state_label.set_size_request(20, -1);
             buttons_hbox.pack_start(state_label, true, true, 0);
@@ -197,7 +216,7 @@ class CandidateArea : Gtk.Box {
                 m_widgets += candidate_ebox;
             }
         } else {
-            Gtk.HBox hbox = new Gtk.HBox(false, 0);
+            Gtk.Box hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
             add(hbox);
 
             m_labels = {};
@@ -214,7 +233,7 @@ class CandidateArea : Gtk.Box {
                 candidate.show();
                 m_candidates += candidate;
 
-                Gtk.HBox candidate_hbox = new Gtk.HBox(false, 0);
+                Gtk.Box candidate_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
                 candidate_hbox.show();
                 candidate_hbox.pack_start(label, false, false, 2);
                 candidate_hbox.pack_start(candidate, false, false, 2);

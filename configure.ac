@@ -2,31 +2,31 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 
 # If ibus_released is 0, append datestamp to the version number.
-m4_define([ibus_released], [0])
+m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [4])
-m4_define([ibus_micro_version], [99])
+m4_define([ibus_minor_version], [5])
+m4_define([ibus_micro_version], [3])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
@@ -51,11 +51,16 @@ m4_define([ibus_binary_version],
           [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
 
 # Required versions of other packages.
-m4_define([glib_required_version], [2.26.0])
+m4_define([glib_required_version], [2.32.0])
 
+# VALA_TARGET_GLIB_VERSION is used by valac --ccode --target-glib .
+# VALA_TARGET_GLIB_VERSION and glib_required_version will be different
+# in the future.
+VALA_TARGET_GLIB_VERSION=2.32
+AC_SUBST(VALA_TARGET_GLIB_VERSION)
 
 # Init automake.
-AM_INIT_AUTOMAKE([1.10])
+AM_INIT_AUTOMAKE([1.11.1 parallel-tests])
 AM_MAINTAINER_MODE([enable])
 AC_GNU_SOURCE
 
@@ -192,20 +197,14 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
-# --disable-vala option.
-AC_ARG_ENABLE(vala,
-    AS_HELP_STRING([--disable-vala],
-                   [Do not build ibus vala binding]),
-    [enable_vala=$enableval],
-    [enable_vala=yes]
+# --enable-wayland option.
+AC_ARG_ENABLE(wayland,
+    AS_HELP_STRING([--enable-wayland],
+                   [Build wayland support]),
+    [enable_wayland=$enableval],
+    [enable_wayland=no]
 )
-if test x"$enable_vala" = x"yes"; then
-    AC_PATH_PROG([VAPIGEN], [vapigen], [false])
-fi
-AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
-if test x"$enable_vala" != x"yes"; then
-    enable_vala="no (disabled, use --enable-vala to enable)"
-fi
+AM_CONDITIONAL([ENABLE_WAYLAND], [test x"$enable_wayland" = x"yes"])
 
 if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
     # check for gtk2
@@ -252,12 +251,22 @@ else
     enable_xim="no (disabled, use --enable-xim to enable)"
 fi
 
+if test x"$enable_wayland" = x"yes"; then
+    # Check for wayland
+    PKG_CHECK_MODULES(WAYLAND, [
+        wayland-client >= 1.2.0
+        xkbcommon
+    ])
+else
+    enable_wayland="no (disabled, use --enable-wayland to enable)"
+fi
+
 # GObject introspection
 GOBJECT_INTROSPECTION_CHECK([0.6.8])
 
 IBUS_GIR_SCANNERFLAGS=
 if test x"$found_introspection" = x"yes" ; then
-    IBUS_GIR_SCANNERFLAGS="--identifier-prefix=IBus --symbol-prefix=ibus"
+    IBUS_GIR_SCANNERFLAGS="--warn-all --identifier-prefix=IBus --symbol-prefix=ibus"
     PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.9.6],
                      [gir_symbol_prefix=yes],
                      [gir_symbol_prefix=no])
@@ -266,6 +275,9 @@ if test x"$found_introspection" = x"yes" ; then
     fi
 fi
 AC_SUBST(IBUS_GIR_SCANNERFLAGS)
+
+# Check vapigen.
+VAPIGEN_CHECK([0.16])
 
 # Check for gtk-doc.
 GTK_DOC_CHECK(1.9)
@@ -278,12 +290,12 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# --disable-gconf option.
+# --enable-gconf option.
 AC_ARG_ENABLE(gconf,
-    AS_HELP_STRING([--disable-gconf],
-                   [Do not use GConf code]),
+    AS_HELP_STRING([--enable-gconf],
+                   [Use GConf code]),
     [enable_gconf=$enableval],
-    [enable_gconf=yes]
+    [enable_gconf=no]
 )
 AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
 
@@ -315,25 +327,25 @@ AC_ARG_ENABLE(memconf,
 AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
 
 AC_ARG_ENABLE(dconf,
-    AS_HELP_STRING([--enable-dconf],
-                   [Enable configure base on dconf]),
+    AS_HELP_STRING([--disable-dconf],
+                   [Disable configure base on dconf]),
     [enable_dconf=$enableval],
-    [enable_dconf=no]
+    [enable_dconf=yes]
 )
+AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 if test x"$enable_dconf" = x"yes"; then
     # check dconf
     PKG_CHECK_MODULES(DCONF,
-        [dconf >= 0.7.5], ,
-        enable_dconf=no
+        [dconf >= 0.7.5],
     )
     PKG_CHECK_EXISTS([dconf >= 0.13.4],
         [AC_DEFINE(DCONF_0_13_4, TRUE, [dconf is 0.13.4 or later])],
         [])
     # check glib-compile-schemas
     GLIB_GSETTINGS
+    enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
-AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 # Check env.
 AC_PATH_PROG(ENV_IBUS_TEST, env)
@@ -358,6 +370,20 @@ AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
 AM_PATH_PYTHON([2.5])
+
+PYGOBJECT_REQUIRED=3.0.0
+
+PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
+                 [enable_pygobject=yes], [enable_pygobject=no])
+
+if test "x$enable_pygobject" = "xyes"; then
+	PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+
+	pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
+	AC_SUBST(pyoverridesdir)
+fi
+
+AM_CONDITIONAL(ENABLE_PYGOBJECT, test x"$enable_pygobject" = "xyes")
 
 if test x"$enable_python_library" = x"yes"; then
     # Check python.
@@ -445,7 +471,7 @@ AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
 # GNOME 3 uses the theme's icon.
 AC_ARG_WITH(panel-icon-keyboard,
     AS_HELP_STRING([--with-panel-icon-keyboard[=icon_name]],
-        [Set the default panel icon (default: "input-keyboard-symbolic")]),
+        [Set the default panel icon (default: "ibus-keyboard")]),
     [if test x"$with_panel_icon_keyboard" = x"yes" -o \
              x"$with_panel_icon_keyboard" = x; then
          with_panel_icon_keyboard="input-keyboard-symbolic"
@@ -455,7 +481,7 @@ AC_ARG_WITH(panel-icon-keyboard,
      fi
      IBUS_ICON_KEYBOARD=$with_panel_icon_keyboard
     ],
-    IBUS_ICON_KEYBOARD="input-keyboard-symbolic"
+    IBUS_ICON_KEYBOARD="ibus-keyboard"
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
@@ -496,6 +522,21 @@ if test x"$enable_engine" = x"yes"; then
     enable_engine="yes (enabled, use --disable-engine to disable)"
 fi
 
+# --disable-libnotify
+AC_ARG_ENABLE(libnotify,
+    AS_HELP_STRING([--disable-libnotify],
+                   [Disable to link libnotify]),
+    [enable_libnotify=$enableval],
+    [enable_libnotify=yes]
+)
+AM_CONDITIONAL([ENABLE_LIBNOTIFY], [test x"$enable_libnotify" = x"yes"])
+if test x"$enable_libnotify" = x"yes"; then
+    PKG_CHECK_MODULES(LIBNOTIFY, [
+        libnotify >= 0.7
+    ])
+    enable_libnotify="yes (enabled, use --disable-libnotify to disable)"
+fi
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -512,12 +553,12 @@ client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
 client/x11/Makefile
+client/wayland/Makefile
 src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
 engine/Makefile
-engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
@@ -534,18 +575,15 @@ ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
 ui/gtk3/Makefile
-ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
 bindings/Makefile
+bindings/pygobject/Makefile
 bindings/vala/Makefile
 conf/Makefile
 conf/gconf/Makefile
-conf/gconf/gconf.xml.in
 conf/dconf/Makefile
-conf/dconf/dconf.xml.in
 conf/memconf/Makefile
-conf/memconf/memconf.xml.in
 tools/Makefile
 ])
 
@@ -562,6 +600,7 @@ Build options:
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
+  Build wayland support     $enable_wayland
   Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
@@ -576,6 +615,7 @@ Build options:
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text   $enable_surrounding_text
+  Enable libnotify          $enable_libnotify
   Run test cases            $enable_tests
 ])
 

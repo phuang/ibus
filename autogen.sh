@@ -14,7 +14,7 @@ PKG_NAME="ibus"
 }
 
 which gnome-autogen.sh || {
-    echo "You need to install gnome-common from the GNOME CVS"
+    echo "Not found gnome-autogen.sh. You may need to install gnome-common"
     exit 1
 }
 
@@ -22,7 +22,7 @@ which gnome-autogen.sh || {
     touch $srcdir/ChangeLog
 }
 
-CFLAGS=${CFLAGS-"-Wall -Werror"}
+CFLAGS=${CFLAGS-"-Wall -Werror -Wformat -Werror=format-security"}
 
 # need --enable-gtk-doc for gnome-autogen.sh to make dist
-ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.10 CFLAGS="$CFLAGS" . gnome-autogen.sh $@
+ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.11 CFLAGS="$CFLAGS" . gnome-autogen.sh "$@"

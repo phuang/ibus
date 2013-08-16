@@ -1,0 +1,93 @@
+.\" This file is distributed under the same license as the ibus
+.\" package.
+.\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2013.
+.\" Copyright (c) Peng Huang <shawn.p.huang@gmail.com>, 2013.
+.\"
+.TH "IBUS" 1 "May 2013" "@VERSION@" "User Commands"
+.SH NAME
+.B ibus
+\- command line utility for ibus
+
+.SH "SYNOPSIS"
+.B ibus
+\fICOMMAND\fR [\fIOPTION\fR]...
+
+.SH "DESCRIPTION"
+
+.PP
+IBus is an Intelligent Input Bus. It is a new input framework for Linux
+OS. It provides full featured and user friendly input method user
+interface.  It also may help developers to develop input method easily.  
+
+.PP
+.B ibus
+is a command line utility which can restart or exit ibus-daemon,
+get or set the current ibus engine or list the ibus engines.
+
+.PP
+Homepage: http://code.google.com/p/ibus/
+
+.SH "COMMAND"
+.TP
+\fBhelp\fR
+Show the commands list.
+.TP
+\fBengine\fR [\fBENGINE_NAME\fR]
+Show the curent ibus engine when
+.B ENGINE_NAME
+is not given. Set 
+.B ENGINE_NAME
+to the current ibus engine.
+.TP
+\fBexit\fR
+Exit ibus-daemon.
+.TP
+\fBlist-engine\fR
+Show ibus engines list.
+.TP
+\fBrestart\fR
+Restart ibus-daemon.
+.TP
+\fBversion\fR
+Show the ibus version.
+.TP
+\fBread\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Show the content of the user registry cache if
+.B \-\-system
+is not given.
+Show the content of the system registry cache if
+.B \-\-system
+is given.
+Show the content of the custom registry cache 
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+.TP
+\fBwrite\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Save the user registry cache if
+.B \-\-system
+is not given.
+Save the system registry cache if
+.B \-\-system
+is given.
+Save the custom registry cache
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+
+By default, it reads the component XML files from the standard
+component directory (\fI/usr/share/ibus/component\fP), you can set
+\fIIBUS_COMPONENT_PATH\fP environment variable for custom component
+directories, separated by ':'.
+.TP
+\fBaddress\fR
+Show the D-Bus address of ibus-daemon.
+.TP
+\fBwatch\fR
+Under construction.
+.TP
+
+.SH BUGS
+If you find a bug, please report it at http://code.google.com/p/ibus/issues/list.

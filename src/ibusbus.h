@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_BUS_H_
+#define __IBUS_BUS_H_
 
 /**
  * SECTION: ibusbus
@@ -31,13 +34,12 @@
  *
  * An IBusBus connects with IBus daemon.
  */
-#ifndef __IBUS_BUS_H_
-#define __IBUS_BUS_H_
-
 #include <gio/gio.h>
+#include <glib.h>
 #include "ibusinputcontext.h"
 #include "ibusconfig.h"
 #include "ibuscomponent.h"
+#include "ibusshare.h"
 
 /*
  * Type macros.
@@ -489,8 +491,8 @@ gboolean    ibus_bus_exit_async_finish  (IBusBus        *bus,
  * ibus_bus_create_input_context:
  * @bus: An #IBusBus.
  * @client_name: Name of client.
- * @returns: An newly allocated #IBusInputContext if the "CreateInputContext"
- *      call is suceeded, %NULL otherwise.
+ * @returns: (transfer full): An newly allocated #IBusInputContext if the
+ *      "CreateInputContext" call is suceeded, %NULL otherwise.
  *
  * Create an input context for client synchronously.
  */
@@ -526,8 +528,8 @@ void        ibus_bus_create_input_context_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_bus_create_input_context_async().
  * @error: Return location for error or %NULL.
- * @returns: An newly allocated #IBusInputContext if the "CreateInputContext"
- *      call is suceeded, %NULL otherwise.
+ * @returns: (transfer full): An newly allocated #IBusInputContext if the
+ *      "CreateInputContext" call is suceeded, %NULL otherwise.
  *
  * Finishes an operation started with ibus_bus_create_input_context_async().
  */
@@ -676,13 +678,18 @@ GList       *ibus_bus_list_engines_async_finish
                                          GAsyncResult   *res,
                                          GError        **error);
 
+#ifndef IBUS_DISABLE_DEPRECATED
 /**
  * ibus_bus_list_active_engines:
  * @bus: An #IBusBus.
  * @returns: (transfer container) (element-type IBusEngineDesc): A List of active engines.
  *
  * List active engines synchronously.
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/preload-engines instead.
  */
+IBUS_DEPRECATED
 GList       *ibus_bus_list_active_engines
                                         (IBusBus        *bus);
 
@@ -696,7 +703,11 @@ GList       *ibus_bus_list_active_engines
  * @user_data: The data to pass to callback.
  *
  * List active engines asynchronously.
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/preload-engines instead.
  */
+IBUS_DEPRECATED
 void         ibus_bus_list_active_engines_async
                                         (IBusBus        *bus,
                                          gint            timeout_msec,
@@ -714,11 +725,16 @@ void         ibus_bus_list_active_engines_async
  * @returns: (transfer container) (element-type IBusEngineDesc): A List of active engines.
  *
  * Finishes an operation started with ibus_bus_list_active_engines_async().
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/preload-engines instead.
  */
+IBUS_DEPRECATED
 GList       *ibus_bus_list_active_engines_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
                                          GError         **error);
+#endif /* IBUS_DISABLE_DEPRECATED */
 
 /**
  * ibus_bus_get_engines_by_names:
@@ -734,13 +750,18 @@ IBusEngineDesc **
              ibus_bus_get_engines_by_names
                                         (IBusBus             *bus,
                                          const gchar * const *names);
+#ifndef IBUS_DISABLE_DEPRECATED
 /**
  * ibus_bus_get_use_sys_layout:
  * @bus: An #IBusBus.
  * @returns: %TRUE if "use_sys_layout" option is enabled.
  *
  * Check if the bus's "use_sys_layout" option is enabled or not synchronously.
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/use_system_keyboard_layout instead.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_get_use_sys_layout
                                         (IBusBus        *bus);
 
@@ -754,7 +775,11 @@ gboolean     ibus_bus_get_use_sys_layout
  * @user_data: The data to pass to callback.
  *
  * Check if the bus's "use_sys_layout" option is enabled or not asynchronously.
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/use_system_keyboard_layout instead.
  */
+IBUS_DEPRECATED
 void         ibus_bus_get_use_sys_layout_async
                                         (IBusBus        *bus,
                                          gint            timeout_msec,
@@ -772,7 +797,11 @@ void         ibus_bus_get_use_sys_layout_async
  * @returns: TRUE if "use_sys_layout" option is enabled.
  *
  * Finishes an operation started with ibus_bus_get_use_sys_layout_async().
+ *
+ * Deprecated: 1.5.3: Read dconf value
+ * /desktop/ibus/general/use_system_keyboard_layout instead.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_get_use_sys_layout_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
@@ -784,7 +813,10 @@ gboolean     ibus_bus_get_use_sys_layout_async_finish
  * @returns: TRUE if "use_global_engine" option is enabled.
  *
  * Check if the bus's "use_global_engine" option is enabled or not synchronously.
+ *
+ * Deprecated: 1.5.3: Currently global engine is always used.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_get_use_global_engine
                                         (IBusBus        *bus);
 
@@ -798,7 +830,10 @@ gboolean     ibus_bus_get_use_global_engine
  * @user_data: The data to pass to callback.
  *
  * Check if the bus's "use_global_engine" option is enabled or not asynchronously.
+ *
+ * Deprecated: 1.5.3: Currently global engine is always used.
  */
+IBUS_DEPRECATED
 void         ibus_bus_get_use_global_engine_async
                                         (IBusBus        *bus,
                                          gint            timeout_msec,
@@ -816,7 +851,10 @@ void         ibus_bus_get_use_global_engine_async
  * @returns: %TRUE if "use_global_engine" option is enabled.
  *
  * Finishes an operation started with ibus_bus_get_use_global_engine_async().
+ *
+ * Deprecated: 1.5.3: Currently global engine is always used.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_get_use_global_engine_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
@@ -828,7 +866,14 @@ gboolean     ibus_bus_get_use_global_engine_async_finish
  * @returns: %TRUE if the current global engine is enabled.
  *
  * Check if the current global engine is enabled or not synchronously.
+ *
+ * Deprecated: 1.5.3: Probably this would be used for Chrome OS only.
+ * Currently global engine is always used and ibus_bus_get_global_engine()
+ * returns NULL until the first global engine is assigned.
+ * You can use ibus_set_log_handler() to disable a warning when
+ * ibus_bus_get_global_engine() returns NULL.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_is_global_engine_enabled
                                         (IBusBus        *bus);
 
@@ -842,7 +887,14 @@ gboolean     ibus_bus_is_global_engine_enabled
  * @user_data: The data to pass to callback.
  *
  * Check if the current global engine is enabled or not asynchronously.
+ *
+ * Deprecated: 1.5.3: Probably this would be used for Chrome OS only.
+ * Currently global engine is always used and ibus_bus_get_global_engine()
+ * returns NULL until the first global engine is assigned.
+ * You can use ibus_set_log_handler() to disable a warning when
+ * ibus_bus_get_global_engine() returns NULL.
  */
+IBUS_DEPRECATED
 void         ibus_bus_is_global_engine_enabled_async
                                         (IBusBus        *bus,
                                          gint            timeout_msec,
@@ -860,11 +912,19 @@ void         ibus_bus_is_global_engine_enabled_async
  * @returns: %TRUE if the current global engine is enabled.
  *
  * Finishes an operation started with ibus_bus_is_global_engine_enabled_async().
+ *
+ * Deprecated: 1.5.3: Probably this would be used for Chrome OS only.
+ * Currently global engine is always used and ibus_bus_get_global_engine()
+ * returns NULL until the first global engine is assigned.
+ * You can use ibus_set_log_handler() to disable a warning when
+ * ibus_bus_get_global_engine() returns NULL.
  */
+IBUS_DEPRECATED
 gboolean     ibus_bus_is_global_engine_enabled_async_finish
                                         (IBusBus        *bus,
                                          GAsyncResult   *res,
                                          GError        **error);
+#endif /* IBUS_DISABLE_DEPRECATED */
 
 /**
  * ibus_bus_get_global_engine:
@@ -994,6 +1054,153 @@ void         ibus_bus_set_watch_ibus_signal
  * Get the config instance from #IBusBus.
  */
 IBusConfig  *ibus_bus_get_config        (IBusBus        *bus);
+
+/**
+ * ibus_bus_preload_engines:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of engine names.
+ * @returns: %TRUE if components start. %FALSE otherwise.
+ *
+ * Start bus components by engine names synchronously.
+ */
+gboolean     ibus_bus_preload_engines   (IBusBus        *bus,
+                                         const gchar * const *names);
+
+/**
+ * ibus_bus_preload_engines_async:
+ * @bus: An #IBusBus.
+ * @names: (array zero-terminated=1): A %NULL-terminated array of engine names.
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied
+ *      or %NULL if you don't care about the result of the method invocation.
+ * @user_data: The data to pass to callback.
+ *
+ * Start bus components by engine names asynchronously.
+ */
+void         ibus_bus_preload_engines_async
+                                        (IBusBus        *bus,
+                                         const gchar * const
+                                                        *names,
+                                         gint            timeout_msec,
+                                         GCancellable   *cancellable,
+                                         GAsyncReadyCallback
+                                                         callback,
+                                         gpointer        user_data);
+
+/**
+ * ibus_bus_preload_engines_async_finish:
+ * @bus: An #IBusBus.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
+ *   ibus_bus_preload_engines_async().
+ * @error: Return location for error or %NULL.
+ * @returns: %TRUE if component starts. %FALSE otherwise.
+ *
+ * Finishes an operation started with ibus_bus_preload_engines_async().
+ */
+gboolean     ibus_bus_preload_engines_async_finish
+                                        (IBusBus        *bus,
+                                         GAsyncResult   *res,
+                                         GError        **error);
+
+/**
+ * ibus_bus_get_ibus_property:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Get
+ * @returns: (transfer full): The value in org.freedesktop.DBus.Properties.Get
+ *           The returned value must be freed with g_variant_unref().
+ *
+ * Get org.freedesktop.DBus.Properties.
+ */
+GVariant *   ibus_bus_get_ibus_property (IBusBus        *bus,
+                                         const gchar    *property_name);
+
+/**
+ * ibus_bus_get_ibus_property_async:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Get
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied
+ *      or %NULL if you don't care about the result of the method invocation.
+ * @user_data: The data to pass to callback.
+ *
+ * Get org.freedesktop.DBus.Properties asynchronously.
+ */
+void         ibus_bus_get_ibus_property_async
+                                        (IBusBus        *bus,
+                                         const gchar    *property_name,
+                                         gint            timeout_msec,
+                                         GCancellable   *cancellable,
+                                         GAsyncReadyCallback
+                                                         callback,
+                                         gpointer             user_data);
+
+/**
+ * ibus_bus_get_ibus_property_async_finish:
+ * @bus: An #IBusBus.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
+ *   ibus_bus_get_property_async().
+ * @error: Return location for error or %NULL.
+ * @returns: (transfer full): The value in org.freedesktop.DBus.Properties.Get
+ *           The returned value must be freed with g_variant_unref().
+ *
+ * Finishes an operation started with ibus_bus_get_ibus_property_async().
+ */
+GVariant *   ibus_bus_get_ibus_property_async_finish
+                                        (IBusBus        *bus,
+                                         GAsyncResult   *res,
+                                         GError        **error);
+
+/**
+ * ibus_bus_set_ibus_property:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Set
+ * @value: value in org.freedesktop.DBus.Properties.Set
+ *
+ * Set org.freedesktop.DBus.Properties.
+ */
+void         ibus_bus_set_ibus_property (IBusBus        *bus,
+                                         const gchar    *property_name,
+                                         GVariant       *value);
+
+/**
+ * ibus_bus_set_ibus_property_async:
+ * @bus: An #IBusBus.
+ * @property_name: property name in org.freedesktop.DBus.Properties.Set
+ * @value: value in org.freedesktop.DBus.Properties.Set
+ * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
+ * @cancellable: A #GCancellable or %NULL.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied
+ *      or %NULL if you don't care about the result of the method invocation.
+ * @user_data: The data to pass to callback.
+ *
+ * Set org.freedesktop.DBus.Properties asynchronously.
+ */
+void         ibus_bus_set_ibus_property_async
+                                        (IBusBus        *bus,
+                                         const gchar    *property_name,
+                                         GVariant       *value,
+                                         gint            timeout_msec,
+                                         GCancellable   *cancellable,
+                                         GAsyncReadyCallback
+                                                         callback,
+                                         gpointer             user_data);
+
+/**
+ * ibus_bus_set_ibus_property_async_finish:
+ * @bus: An #IBusBus.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
+ *   ibus_bus_set_property_async().
+ * @error: Return location for error or %NULL.
+ * @returns: %TRUE if property is set with async. %FALSE failed.
+ *
+ * Finishes an operation started with ibus_bus_set_ibus_property_async().
+ */
+gboolean     ibus_bus_set_ibus_property_async_finish
+                                        (IBusBus        *bus,
+                                         GAsyncResult   *res,
+                                         GError        **error);
 
 G_END_DECLS
 #endif

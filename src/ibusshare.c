@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include "ibusshare.h"
@@ -275,7 +275,9 @@ ibus_free_strv (gchar **strv)
 void
 ibus_init (void)
 {
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
     IBUS_ERROR;
     IBUS_TYPE_TEXT;
     IBUS_TYPE_ATTRIBUTE;
@@ -283,6 +285,8 @@ ibus_init (void)
     IBUS_TYPE_LOOKUP_TABLE;
     IBUS_TYPE_COMPONENT;
     IBUS_TYPE_ENGINE_DESC;
+    IBUS_TYPE_OBSERVED_PATH;
+    IBUS_TYPE_REGISTRY;
 }
 
 static GMainLoop *main_loop = NULL;

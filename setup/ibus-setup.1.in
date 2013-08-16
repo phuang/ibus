@@ -1,0 +1,33 @@
+.\" This file is distributed under the same license as the ibus
+.\" package.
+.\" Copyright (C) LI Daobing <lidaobing@gmail.com>, 2008.
+.\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2013.
+.\" Copyright (c) Peng Huang <shawn.p.huang@gmail.com>, 2013.
+.\"
+.TH "IBUS-SETUP" 1 "November 2008" "@VERSION@" "User Commands"
+.SH NAME
+.B ibus-setup
+\- configuration program for ibus
+
+.SH "SYNOPSIS"
+.B ibus-setup
+
+.SH "DESCRIPTION"
+
+.PP
+IBus is an Intelligent Input Bus. It is a new input framework for Linux
+OS. It provides full featured and user friendly input method user
+interface.  It also may help developers to develop input method easily.  
+
+.PP
+.B ibus-setup
+is the configuration program for IBus.
+
+.PP
+Homepage: http://code.google.com/p/ibus/
+
+.SH BUGS
+If you find a bug, please report it at http://code.google.com/p/ibus/issues/list
+
+.SH "SEE ALSO"
+.BR ibus (1)

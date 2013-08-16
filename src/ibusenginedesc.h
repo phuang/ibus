@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
@@ -86,10 +86,15 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  * author: Author of the input method engine.
  * icon: Icon file of this engine.
  * layout: Keyboard layout
+ * layout_variant: Keyboard variant
+ * layout_option: Keyboard option
  * rank: Preference rank among engines, the highest ranked IME will put in
  * the front.
  * hotkeys: One or more hotkeys for switching to this engine, separated by
  *  semi-colon.
+ * setup: Exec lists of the engine setup command.
+ * version: Version number of the input method engine.
+ * textdomain: Domain name for dgettext()
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
@@ -231,6 +236,26 @@ const gchar     *ibus_engine_desc_get_icon      (IBusEngineDesc *info);
 const gchar     *ibus_engine_desc_get_layout    (IBusEngineDesc *info);
 
 /**
+ * ibus_engine_desc_get_layout_variant:
+ * @info: An IBusEngineDesc
+ * @returns: keyboard variant property in IBusEngineDesc
+ *
+ * Return the keyboard variant property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_layout_variant
+                                                (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_layout_option:
+ * @info: An IBusEngineDesc
+ * @returns: keyboard option property in IBusEngineDesc
+ *
+ * Return the keyboard option property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_layout_option
+                                                (IBusEngineDesc *info);
+
+/**
  * ibus_engine_desc_get_rank:
  * @info: An IBusEngineDesc
  * @returns: rank property in IBusEngineDesc
@@ -265,6 +290,25 @@ const gchar     *ibus_engine_desc_get_symbol    (IBusEngineDesc *info);
  * Return the setup property in IBusEngineDesc. It should not be freed.
  */
 const gchar     *ibus_engine_desc_get_setup     (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_version:
+ * @info: An IBusEngineDesc
+ * @returns: version in IBusEngineDesc
+ *
+ * Return the version property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_version   (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_textdomain:
+ * @info: An IBusEngineDesc
+ * @returns: textdomain in IBusEngineDesc
+ *
+ * Return the textdomain property in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_textdomain
+                                                (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_output:

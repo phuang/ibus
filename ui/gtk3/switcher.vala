@@ -7,24 +7,23 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 class Switcher : Gtk.Window {
     public extern const bool USE_SYMBOL_ICON;
     private const int DEFAULT_FONT_SIZE = 16;
     private const int DESC_LABEL_MAX_LEN = 20;
-    private const int ICON_SIZE = 48;
 
     private class IBusEngineButton : Gtk.Button {
         public IBusEngineButton(IBus.EngineDesc engine) {
@@ -36,7 +35,8 @@ class Switcher : Gtk.Window {
             add(align);
 
             if (!USE_SYMBOL_ICON) {
-                IconWidget icon = new IconWidget(engine.get_icon(), ICON_SIZE);
+                IconWidget icon = new IconWidget(engine.get_icon(),
+                                                 Gtk.IconSize.DIALOG);
                 align.add(icon);
             } else {
                 var language = engine.get_language();
@@ -61,6 +61,19 @@ class Switcher : Gtk.Window {
         }
 
         public string longname { get; set; }
+
+        public override bool draw(Cairo.Context cr) {
+            base.draw(cr);
+            if (is_focus) {
+                cr.save();
+                cr.rectangle(
+                        0, 0, get_allocated_width(), get_allocated_height());
+                cr.set_source_rgba(0.0, 0.0, 1.0, 0.1);
+                cr.fill();
+                cr.restore();
+            }
+            return true;
+        }
     }
 
     private Gtk.Box m_box;
@@ -73,6 +86,10 @@ class Switcher : Gtk.Window {
     private Gdk.ModifierType m_primary_modifier;
     private GLib.MainLoop m_loop;
     private int m_result;
+    private uint m_popup_delay_time = 0;
+    private uint m_popup_delay_time_id = 0;
+    private int m_root_x;
+    private int m_root_y;
 
     public Switcher() {
         GLib.Object(
@@ -153,16 +170,22 @@ class Switcher : Gtk.Window {
             keyboard = device.get_associated_device();
         }
 
+        // Avoid regressions.
+        if (m_popup_delay_time > 0) {
+            get_position(out m_root_x, out m_root_y);
+            // Pull the window from the screen so that the window gets
+            // the key press and release events but mouse does not select
+            // an IME unexpectedly.
+            move(-1000, -1000);
+        }
+
         show_all();
 
-        if (is_composited()) {
-            // Hide the window by set the opactiy to 0.0, because real hiden
-            // window can not grab keyboard and pointer.
-            get_window().set_opacity(0.0);
-
-            // Show window after 1/10 secound
-            GLib.Timeout.add(100, ()=> {
-                get_window().set_opacity(1.0);
+        if (m_popup_delay_time > 0) {
+            // Restore the window position after m_popup_delay_time
+            m_popup_delay_time_id = GLib.Timeout.add(m_popup_delay_time,
+                                                     () => {
+                restore_window_position("timeout");
                 return false;
             });
         }
@@ -295,6 +318,19 @@ class Switcher : Gtk.Window {
         set_focus(m_buttons[m_selected_engine]);
     }
 
+    private void restore_window_position(string debug_str) {
+        debug("restore_window_position %s: (%ld, %ld)\n",
+                debug_str, m_root_x, m_root_y);
+
+        if (m_popup_delay_time_id == 0) {
+            return;
+        }
+
+        GLib.Source.remove(m_popup_delay_time_id);
+        m_popup_delay_time_id = 0;
+        move(m_root_x, m_root_y);
+    }
+
     /* override virtual functions */
     public override void show() {
         base.show();
@@ -304,6 +340,10 @@ class Switcher : Gtk.Window {
     public override bool key_press_event(Gdk.EventKey e) {
         bool retval = true;
         Gdk.EventKey *pe = &e;
+
+        if (m_popup_delay_time > 0) {
+            restore_window_position("pressed");
+        }
 
         do {
             uint modifiers = KeybindingManager.MODIFIER_FILTER & pe->state;
@@ -357,8 +397,19 @@ class Switcher : Gtk.Window {
             return false;
         }
 
+        if (m_popup_delay_time > 0) {
+            if (m_popup_delay_time_id != 0) {
+                GLib.Source.remove(m_popup_delay_time_id);
+                m_popup_delay_time_id = 0;
+            }
+        }
+
         m_loop.quit();
         m_result = (int)m_selected_engine;
         return true;
+    }
+
+    public void set_popup_delay_time(uint popup_delay_time) {
+        m_popup_delay_time = popup_delay_time;
     }
 }

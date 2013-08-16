@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 __all__ = (
     "KeyboardShortcutSelection",
@@ -102,9 +102,8 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.__modifier_buttons.append(("Hyper",
                                         Gtk.CheckButton.new_with_mnemonic("_Hyper"),
                                         Gdk.ModifierType.HYPER_MASK))
-        self.__modifier_buttons.append(("Capslock",
-                                        Gtk.CheckButton.new_with_mnemonic("Capsloc_k"),
-                                        Gdk.ModifierType.LOCK_MASK))
+        # <CapsLock> is not parsed by gtk_accelerator_parse()
+        # FIXME: Need to check if ibus gtk panel can enable <Release>.
         self.__modifier_buttons.append(("Release",
                                         Gtk.CheckButton.new_with_mnemonic("_Release"),
                                         Gdk.ModifierType.RELEASE_MASK))
@@ -118,7 +117,6 @@ class KeyboardShortcutSelection(Gtk.VBox):
         table.attach(self.__modifier_buttons[4][1], 0, 1, 1, 2)
         table.attach(self.__modifier_buttons[5][1], 1, 2, 1, 2)
         table.attach(self.__modifier_buttons[6][1], 2, 3, 1, 2)
-        table.attach(self.__modifier_buttons[7][1], 3, 4, 1, 2)
         hbox.pack_start(table, True, True, 4)
         self.pack_start(hbox, False, True, 4)
 
@@ -184,19 +182,20 @@ class KeyboardShortcutSelection(Gtk.VBox):
                 modifiers.append(name)
         if keycode.startswith("_"):
             keycode = keycode[1:]
-        keys = modifiers + [keycode]
-        shortcut = "+".join(keys)
+        shortcut = "".join(map(lambda m: '<' + m + '>', modifiers))
+        shortcut += keycode
         return shortcut
 
     def __set_shortcut_to_buttons(self, shortcut):
-        keys = shortcut.split("+")
-        mods = keys[:-1]
+        (keyval, state) = Gtk.accelerator_parse(shortcut)
+        if keyval == 0 and state == 0:
+            return
         for name, button, mask in self.__modifier_buttons:
-            if name in mods:
+            if state & mask:
                 button.set_active(True)
             else:
                 button.set_active(False)
-        self.__keycode_entry.set_text(keys[-1])
+        self.__keycode_entry.set_text(shortcut.rsplit('>', 1)[-1])
 
     def __get_selected_shortcut(self):
         model = self.__shortcut_view.get_model()
@@ -251,49 +250,52 @@ class KeyboardShortcutSelection(Gtk.VBox):
         message = _("Please press a key (or a key combination).\nThe dialog will be closed when the key is released.")
         dlg.set_markup(message)
         dlg.set_title(_("Please press a key (or a key combination)"))
+        sw = Gtk.ScrolledWindow()
 
-        def __key_press_event(d, k, out):
-            out.append(k.copy())
+        def __accel_edited_cb(c, path, keyval, state, keycode):
+            out.append(keyval)
+            out.append(state)
+            out.append(keycode)
+            dlg.response(Gtk.ResponseType.OK)
 
-        def __key_release_event(d, k, out):
-            d.response(Gtk.ResponseType.OK)
-
-        dlg.connect("key-press-event", __key_press_event, out)
-        dlg.connect("key-release-event", __key_release_event, None)
+        model = Gtk.ListStore(GObject.TYPE_INT,
+                              GObject.TYPE_UINT,
+                              GObject.TYPE_UINT)
+        accel_view = Gtk.TreeView(model)
+        sw.add(accel_view)
+        column = Gtk.TreeViewColumn()
+        renderer = Gtk.CellRendererAccel(accel_mode=Gtk.CellRendererAccelMode.OTHER,
+                                         editable=True)
+        renderer.connect('accel-edited', __accel_edited_cb)
+        column.pack_start(renderer, True)
+        column.add_attribute(renderer, 'accel-mods', 0)
+        column.add_attribute(renderer, 'accel-key', 1)
+        column.add_attribute(renderer, 'keycode', 2)
+        accel_view.append_column(column)
+        it = model.append(None)
+        area = dlg.get_message_area()
+        area.pack_end(sw, True, True, 0)
+        sw.show_all()
         id = dlg.run()
         dlg.destroy()
-        if id != Gtk.ResponseType.OK or not out:
+        if id != Gtk.ResponseType.OK or len(out) < 3:
             return
-        keyevent = out[len(out) - 1]
-        state = keyevent.state & (Gdk.ModifierType.CONTROL_MASK | \
-                                  Gdk.ModifierType.SHIFT_MASK   | \
-                                  Gdk.ModifierType.MOD1_MASK    | \
-                                  Gdk.ModifierType.META_MASK    | \
-                                  Gdk.ModifierType.SUPER_MASK   | \
-                                  Gdk.ModifierType.HYPER_MASK)
-
-
-        if state == 0:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Control_L, Gdk.KEY_Control_R) and state == Gdk.ModifierType.CONTROL_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Shift_L, Gdk.KEY_Shift_R) and state == Gdk.ModifierType.SHIFT_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Alt_L, Gdk.KEY_Alt_R) and state == Gdk.ModifierType.MOD1_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Meta_L, Gdk.KEY_Meta_R) and state == Gdk.ModifierType.META_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Super_L, Gdk.KEY_Super_R) and state == Gdk.ModifierType.SUPER_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
-        elif keyevent.keyval in (Gdk.KEY_Hyper_L, Gdk.KEY_Hyper_R) and state == Gdk.ModifierType.HYPER_MASK:
-            state = state | Gdk.ModifierType.RELEASE_MASK
+        keyval = out[0]
+        state = out[1]
+        keycode = out[2]
 
         for name, button, mask in self.__modifier_buttons:
             if state & mask:
                 button.set_active(True)
             else:
                 button.set_active(False)
-        self.__keycode_entry.set_text(Gdk.keyval_name(keyevent.keyval))
+
+        shortcut = Gtk.accelerator_name_with_keycode(None,
+                                                     keyval,
+                                                     keycode,
+                                                     state)
+        shortcut = shortcut.replace('<Primary>', '<Control>')
+        self.__keycode_entry.set_text(shortcut.rsplit('>', 1)[-1])
 
     def __add_button_clicked_cb(self, button):
         shortcut = self.__get_shortcut_from_buttons()

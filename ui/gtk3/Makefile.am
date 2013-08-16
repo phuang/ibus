@@ -2,23 +2,23 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 NULL =
 
@@ -30,22 +30,19 @@ component_DATA = \
 componentdir = $(pkgdatadir)/component
 
 gtkpanel.xml: gtkpanel.xml.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
+	$(AM_V_GEN) sed \
+		-e 's|@VERSION[@]|$(VERSION)|g' \
+		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+		mv $@.tmp $@
 
-INCLUDES = \
+# force include config.h before gi18n.h.
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
+	-include $(CONFIG_HEADER) \
 	$(NULL)
 
 USE_SYMBOL_ICON = FALSE
-
-# force include config.h before gi18n.h.
-AM_CPPFLAGS = -include $(CONFIG_HEADER)
 
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
@@ -53,7 +50,6 @@ AM_CFLAGS = \
 	@GTHREAD2_CFLAGS@ \
 	@GTK3_CFLAGS@ \
 	@X11_CFLAGS@ \
-	$(INCLUDES) \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DBINDIR=\"$(bindir)\" \
 	-DIBUS_DISABLE_DEPRECATED \
@@ -83,7 +79,23 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	--pkg=config \
 	--pkg=xi \
+	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
+
+if ENABLE_LIBNOTIFY
+AM_CFLAGS += \
+	@LIBNOTIFY_CFLAGS@ \
+	$(NULL)
+
+AM_LDADD += \
+	@LIBNOTIFY_LIBS@ \
+	$(NULL)
+
+AM_VALAFLAGS += \
+	--pkg=libnotify \
+	-D ENABLE_LIBNOTIFY \
+	$(NULL)
+endif
 
 libexec_PROGRAMS = ibus-ui-gtk3
 
@@ -110,7 +122,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	gtkpanel.xml.in.in \
+	gtkpanel.xml.in \
 	$(NULL)
 
 

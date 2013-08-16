@@ -1,22 +1,24 @@
-# translation of ibus.master.po to Bengali INDIA
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
+# translation of ibus.pot to Bengali (India)
+# Bengali (India) translation of ibus.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
+# This file is distributed under the same license as the ibus package.
+# 
+# Translators:
 # Runa Bhattacharjee <runab@fedoraproject.org>, 2009.
 # Runa Bhattacharjee <runab@redhat.com>, 2009, 2010.
+#   <runabh@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-16 10:14+0900\n"
-"PO-Revision-Date: 2010-08-02 18:27+0530\n"
-"Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
-"Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
-"Language: \n"
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-11-19 14:18+0000\n"
+"Last-Translator: runa <runabh@gmail.com>\n"
+"Language-Team: Bengali (India) <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"Language: bn_IN\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../setup/setup.ui.h:1
@@ -28,36 +30,36 @@ msgid "Vertical"
 msgstr "উল্লম্ব"
 
 #: ../setup/setup.ui.h:3
-msgid "Embedded in menu"
-msgstr "মেনুর মধ্যে সন্নিবিষ্ট"
-
-#: ../setup/setup.ui.h:4
-msgid "When active"
-msgstr "সক্রিয় অবস্থায়"
-
-#: ../setup/setup.ui.h:5
-msgid "Always"
-msgstr "সর্বদা"
-
-#: ../setup/setup.ui.h:6
 msgid "Top left corner"
 msgstr "উপরে বাঁদিকের কোণায়"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:4
 msgid "Top right corner"
 msgstr "উপরে ডানদিকের কোণায়"
 
-#: ../setup/setup.ui.h:8
+#: ../setup/setup.ui.h:5
 msgid "Bottom left corner"
 msgstr "নীচে বাঁদিকের কোণায়"
 
-#: ../setup/setup.ui.h:9
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr "নীচে ডানদিকের কোণায়"
 
-#: ../setup/setup.ui.h:10
+#: ../setup/setup.ui.h:7
 msgid "Custom"
 msgstr "স্বনির্ধারিত"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr "মেনুর মধ্যে সন্নিবিষ্ট"
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr "সক্রিয় অবস্থায়"
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "সর্বদা"
 
 #: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
@@ -93,11 +95,11 @@ msgstr "সক্রিয় অথা নিষ্ক্রিয় করুন:"
 
 #: ../setup/setup.ui.h:19
 msgid "Enable:"
-msgstr ""
+msgstr "সক্রিয় করুন:"
 
 #: ../setup/setup.ui.h:20
 msgid "Disable:"
-msgstr ""
+msgstr "নিষ্ক্রিয় করুন:"
 
 #: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
@@ -176,18 +178,14 @@ msgid "Show information of the selected input method"
 msgstr "নির্বাচিত ইনপুট পদ্ধতি সংক্রান্ত তথ্য প্রদর্শন করা হবে"
 
 #: ../setup/setup.ui.h:40
-#, fuzzy
 msgid "Show setup of the selected input method"
-msgstr "নির্বাচিত ইনপুট পদ্ধতি সংক্রান্ত তথ্য প্রদর্শন করা হবে"
+msgstr "নির্বাচিত ইনপুট পদ্ধতির সেট-আপ প্রদর্শন করা হবে"
 
 #: ../setup/setup.ui.h:41
 msgid ""
 "<small><i>The default input method is the top one in the list.\n"
 "You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>তালিকার শীর্ষে উপস্থিত ইনপুট পদ্ধতিটি ডিফল্ট পদ্ধতি রূপে ধার্য করা হবে।\n"
-"ডিফল্ট পদ্ধতি পরিবর্তনের জন্য উপর/নীচে চিহ্নকারী বাটনগুলি প্রয়োগ করা যাবে।</i></"
-"small>"
+msgstr "<small><i>তালিকার শীর্ষে উপস্থিত ইনপুট পদ্ধতিটি ডিফল্ট পদ্ধতি রূপে ধার্য করা হবে।\nডিফল্ট পদ্ধতি পরিবর্তনের জন্য উপর/নীচে চিহ্নকারী বাটনগুলি প্রয়োগ করা যাবে।</i></small>"
 
 #. create im name & icon column
 #: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
@@ -226,13 +224,7 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>বুদ্ধিবিশিষ্ট ইনপুট বাস</small>\n"
-"হোম-পেজ: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>বুদ্ধিবিশিষ্ট ইনপুট বাস</small>\nহোম-পেজ: http://code.google.com/p/ibus\n\n\n\n"
 
 #: ../setup/setup.ui.h:57
 msgid "Start ibus on login"
@@ -268,35 +260,31 @@ msgstr "ibus আরম্ভের সময় ইঞ্জিনগুলি প�
 
 #: ../data/ibus.schemas.in.h:3
 msgid "Engines order"
-msgstr ""
+msgstr "ইঞ্জিনের অনুক্রম"
 
 #: ../data/ibus.schemas.in.h:4
 msgid "Saved engines order in input method list"
-msgstr ""
+msgstr "ইনপুট পদ্ধতির তালিকায় সংরক্ষিত ইঞ্জিনের অনুক্রম"
 
 #: ../data/ibus.schemas.in.h:5
 msgid "Trigger shortcut keys"
 msgstr "ট্রিগারের শর্টকাট-কি"
 
 #: ../data/ibus.schemas.in.h:7
-#, fuzzy
 msgid "Enable shortcut keys"
-msgstr "ট্রিগারের শর্টকাট-কি"
+msgstr "শর্ট-কাট কি সক্রিয় করুন"
 
 #: ../data/ibus.schemas.in.h:8
-#, fuzzy
 msgid "The shortcut keys for turning input method on"
-msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ করার জন্য প্রয়োজনীয় শর্ট-কাট কি নির্ধারণ করুন"
+msgstr "ইনপুট পদ্ধতি চালু করার জন্য ব্যবহৃত শর্ট-কাট কি"
 
 #: ../data/ibus.schemas.in.h:9
-#, fuzzy
 msgid "Disable shortcut keys"
-msgstr "ট্রিগারের শর্টকাট-কি"
+msgstr "শর্ট-কাট কি নিষ্ক্রিয় করুন"
 
 #: ../data/ibus.schemas.in.h:10
-#, fuzzy
 msgid "The shortcut keys for turning input method off"
-msgstr "ইনপুট পদ্ধতি খোলা ও বন্ধ করার জন্য প্রয়োজনীয় শর্ট-কাট কি নির্ধারণ করুন"
+msgstr "ইনপুট পদ্ধতি বন্ধ করার জন্য ব্যবহৃত শর্ট-কাট কি"
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Next engine shortcut keys"
@@ -322,9 +310,7 @@ msgstr "স্বয়ংক্রিয়ভাবে আড়াল করা হব
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"ভাষা প্রদর্শনের প্যানেলের আচরণ। 0 (০) = মেনুর মধ্যে সন্নিবেশ করা হবে, 1 (১) = "
-"স্বয়ংক্রিয়ভাবে আড়াল করা হবে, 2 (২) = সর্বদা প্রদর্শন করা হবে"
+msgstr "ভাষা প্রদর্শনের প্যানেলের আচরণ। 0 (০) = মেনুর মধ্যে সন্নিবেশ করা হবে, 1 (১) = স্বয়ংক্রিয়ভাবে আড়াল করা হবে, 2 (২) = সর্বদা প্রদর্শন করা হবে"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "Language panel position"
@@ -334,9 +320,7 @@ msgstr "ভাষার প্যানেলের অবস্থান"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"ভাষার প্যানেলের অবস্থান। 0 = উপরে বাঁদিকের কোণায়, 1 = উপরে ডানদিকের কোণায়, 2 = "
-"নীচে বাঁদিকের কোণায়, 3 = নীচে ডানদিকের কোণায়, 4 = স্বনির্ধারিত"
+msgstr "ভাষার প্যানেলের অবস্থান। 0 = উপরে বাঁদিকের কোণায়, 1 = উপরে ডানদিকের কোণায়, 2 = নীচে বাঁদিকের কোণায়, 3 = নীচে ডানদিকের কোণায়, 4 = স্বনির্ধারিত"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "Orientation of lookup table"
@@ -384,25 +368,21 @@ msgstr "ডিফল্ট অবস্থায় ইনপুট পদ্ধত
 
 #: ../data/ibus.schemas.in.h:35
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"ইনপুট প্রাপ্ত করার উদ্দেশ্যে অ্যাপ্লিকেশনে ফোকাস করা হলে, ডিফল্ট রূপে ইনপুট পদ্ধতি "
-"সক্রিয় করা হবে"
+msgstr "ইনপুট প্রাপ্ত করার উদ্দেশ্যে অ্যাপ্লিকেশনে ফোকাস করা হলে, ডিফল্ট রূপে ইনপুট পদ্ধতি সক্রিয় করা হবে"
 
 #: ../data/ibus.schemas.in.h:36
 msgid "DConf preserve name prefixes"
-msgstr ""
+msgstr "DConf দ্বারা নেম প্রেফিক্স সংরক্ষণ করা হবে"
 
 #: ../data/ibus.schemas.in.h:37
 msgid "Prefixes of DConf keys to stop name conversion"
-msgstr ""
+msgstr "নেম পরিবর্তন প্রতিরোধ করার জন্য DConf-কির প্রেফিক্স"
 
 #: ../ibus/_config.py.in:41
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"স্বত্বাধিকার (c) ২০০৭-২০০৯ পেং হুয়াং\n"
-"স্বত্বাধিকার (c) ২০০৭-২০০৯ Red Hat, Inc."
+msgstr "স্বত্বাধিকার (c) ২০০৭-২০০৯ পেং হুয়াং\nস্বত্বাধিকার (c) ২০০৭-২০০৯ Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -427,7 +407,7 @@ msgstr "নির্মাতা: %s\n"
 msgid "Description:\n"
 msgstr "বিবরণ:\n"
 
-#: ../setup/enginecombobox.py:136
+#: ../setup/enginecombobox.py:135
 msgid "Select an input method"
 msgstr "একটি ইনপুট পদ্ধতি নির্বাচন করুন"
 
@@ -451,118 +431,118 @@ msgstr "কি-র কোড:"
 msgid "Modifiers:"
 msgstr "পরিবর্তক:"
 
-#: ../setup/keyboardshortcut.py:235
+#: ../setup/keyboardshortcut.py:251
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"অনুগ্রহ করে কোনো কি (অথবা কি সংকলন) টিপুন।\n"
-"কি মুক্ত করা হলে এই ডায়লগ বক্সটি বন্ধ করা হবে।"
+msgstr "অনুগ্রহ করে কোনো কি (অথবা কি সংকলন) টিপুন।\nকি মুক্ত করা হলে এই ডায়লগ বক্সটি বন্ধ করা হবে।"
 
-#: ../setup/keyboardshortcut.py:237
+#: ../setup/keyboardshortcut.py:253
 msgid "Please press a key (or a key combination)"
 msgstr "অনুগ্রহ করে একটি কি (অথবা কি সংকলন) টিপুন"
 
-#: ../setup/main.py:79
+#: ../setup/main.py:87
 msgid "trigger"
 msgstr "ট্রিগার"
 
-#: ../setup/main.py:80
+#: ../setup/main.py:88
 msgid "enable"
-msgstr ""
+msgstr "সক্রিয় করুন"
 
-#: ../setup/main.py:81
+#: ../setup/main.py:89
 msgid "disable"
-msgstr ""
+msgstr "নিষ্ক্রিয় করুন"
 
-#: ../setup/main.py:323
-#, fuzzy
+#: ../setup/main.py:331
 msgid "The IBus daemon is not running. Do you wish to start it?"
-msgstr "IBus ডেমন আরম্ভ করা হয়নি। এটি এখন আরম্ভ করা হবে কি?"
+msgstr "IBus ডেমন বর্তমানে চলছে না। এটি আরম্ভ করা হবে কি?"
 
-#: ../setup/main.py:344
-#, fuzzy
+#: ../setup/main.py:352
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus আরম্ভ করা হয়েছে! IBus ব্যবহার করা সম্ভব নয় হলে $HOME/.bashrc ফাইলের মধ্যে "
-"নিম্নলিখিত পংক্তিগুলি যোগ করে ডেস্কটপে পুনরায় লগ-ইন করুন।\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
+msgstr "IBus আরম্ভ করা হয়েছে! IBus ব্যবহার করা সম্ভব না হলে $HOME/.bashrc ফাইলের মধ্যে নিম্নলিখিত পংক্তিগুলি যোগ করে ডেস্কটপে পুনরায় লগ-ইন করুন।\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
-#: ../setup/main.py:357
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
 #, python-format
-msgid "IBus daemon coundn't be started in %d seconds"
-msgstr ""
+msgid "IBus daemon could not be started in %d seconds"
+msgstr "IBus ডেমনটি %d সেকেন্ডে আরম্ভ করা যায়নি।"
 
-#: ../setup/main.py:369
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s-র জন্য কি-বোর্ড শর্ট-কাট ধার্য করুন"
 
-#: ../ui/gtk3/panel.vala:330
-#, fuzzy
-msgid "Copyright (c) 2007-2012 Peng Huang\n"
-msgstr ""
-"স্বত্বাধিকার (c) ২০০৭-২০০৯ পেং হুয়াং\n"
-"স্বত্বাধিকার (c) ২০০৭-২০০৯ Red Hat, Inc."
+#: ../tools/main.vala:40
+msgid "List engine name only"
+msgstr "শুধুমাত্র ইঞ্জিনের নামের তালিকা প্রদর্শন করা হবে"
 
-#: ../ui/gtk3/panel.vala:335
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr "command [OPTIONS]"
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr "IBus-র সাথে সংযোগ করতে ব্যর্থ।\n"
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr "ভাষা: %s\n"
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr "কোনো ইঞ্জিন নির্ধারিত হয়নি।\n"
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr "গ্লোবাল ইঞ্জিন নির্ধারণ করতে ব্যর্থ।\n"
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr "গ্লোবাল ইঞ্জিন প্রাপ্ত করতে ব্যর্থ।\n"
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr "xkb বিন্যাসকে %s-এ পরিবর্তন করতে ব্যর্থ।"
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr "ব্যবহারপ্রণালী: %s COMMAND [OPTION...]\n\n"
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr "কমান্ড:\n"
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr "%s একটি অজানা কমান্ড!\n"
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr "স্বত্বাধিকার (c) ২০০৭-২০১২ পেং হুয়াং\n"
+
+#: ../ui/gtk3/panel.vala:366
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "Linux/Unix-র সাথে ব্যবহারযোগ্য বুদ্ধিবিশিষ্ট ইনপুট বাস হল IBus"
 
-#: ../ui/gtk3/panel.vala:339
+#: ../ui/gtk3/panel.vala:370
 msgid "translator-credits"
 msgstr "রুণা ভট্টাচার্য্য (runab@fedoraproject.org)"
 
-#: ../ui/gtk3/panel.vala:371
+#: ../ui/gtk3/panel.vala:402
 msgid "Restart"
 msgstr "পুনরারম্ভ"
-
-#~ msgid "Previous page"
-#~ msgstr "পূর্ববর্তী পৃষ্ঠা"
-
-#~ msgid "Next page"
-#~ msgstr "পরবর্তী পৃষ্ঠা"
-
-#~ msgid ""
-#~ "Some input methods have been installed, removed or updated. Please "
-#~ "restart ibus input platform."
-#~ msgstr ""
-#~ "কয়েকটি ইনপুট পদ্ধতি ইনস্টল, অপসারণ অথবা আপডেট করা হয়েছে। অনুগ্রহ করে ibus ইনপুট "
-#~ "প্ল্যাটফর্ম পুনরায় আরম্ভ করুন।"
-
-#~ msgid "Restart Now"
-#~ msgstr "অবিলম্বে পুনরারম্ভ"
-
-#~ msgid "Later"
-#~ msgstr "পরে"
-
-#~ msgid "IBus input method framework"
-#~ msgstr "IBus ইনপুট পদ্ধতির পরিকাঠামো"
-
-#~ msgid "Turn off input method"
-#~ msgstr "ইনপুট পদ্ধতি বন্ধ করুন"
-
-#~ msgid "No input window"
-#~ msgstr "ইনপুটের উদ্দেশ্যে উইন্ডো অনুপস্থিত"
-
-#~ msgid "About the input method"
-#~ msgstr "ইনপুট পদ্ধতি পরিচিতি"
-
-#~ msgid "Switch input method"
-#~ msgstr "ইনপুট পদ্ধতি পরিবর্তন করুন"
-
-#~ msgid "About the Input Method"
-#~ msgstr "ইনপুট পদ্ধতি পরিচিতি"
-
-#~ msgid "next input method"
-#~ msgstr "পরবর্তী ইনপুট পদ্ধতি"
-
-#~ msgid "previous input method"
-#~ msgstr "পূর্ববর্তী ইনপুট পদ্ধতি"

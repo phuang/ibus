@@ -8,46 +8,49 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
-vapidir = $(datadir)/vala/vapi
-dist_vapi_DATA = \
-	ibus-@IBUS_API_VERSION@.vapi \
-	ibus-@IBUS_API_VERSION@.deps \
-	$(NULL)
+-include $(VAPIGEN_MAKEFILE)
 
-# Don't rebuild vapi every time gir is updated.
 vapi_deps = \
-	$(srcdir)/IBus-1.0.metadata \
-	$(srcdir)/IBus-1.0-custom.vala \
-	| \
-	$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
-	$(NULL)
-
-ibus-@IBUS_API_VERSION@.vapi: $(vapi_deps)
-	$(AM_V_GEN) $(VAPIGEN) --library ibus-@IBUS_API_VERSION@ \
-			--pkg gio-2.0 \
-			--metadatadir=$(srcdir) \
-			$(top_srcdir)/src/IBus-@IBUS_API_VERSION@.gir \
-			$(srcdir)/IBus-1.0-custom.vala
-
-EXTRA_DIST = \
 	IBus-1.0.metadata \
 	IBus-1.0-custom.vala \
+	$(top_builddir)/src/IBus-1.0.gir \
+	$(NULL)
+
+ibus-1.0.vapi: $(vapi_deps)
+
+VAPIGEN_VAPIS = ibus-1.0.vapi
+
+ibus_1_0_vapi_DEPS = gio-2.0
+ibus_1_0_vapi_METADATADIRS = $(srcdir)
+ibus_1_0_vapi_FILES = \
+	$(top_builddir)/src/IBus-1.0.gir \
+	$(srcdir)/IBus-1.0-custom.vala \
+	$(NULL)
+
+vapidir = $(datadir)/vala/vapi
+vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
+
+MAINTAINERCLEANFILES = $(VAPIGEN_VAPIS)
+
+EXTRA_DIST = \
+	$(VAPIGEN_VAPIS) \
+	IBus-1.0.metadata \
+	IBus-1.0-custom.vala \
+	ibus-1.0.deps \
 	config.vapi \
 	xi.vapi \
 	$(NULL)
-
-MAINTAINERCLEANFILES = ibus-@IBUS_API_VERSION@.vapi
 
 -include $(top_srcdir)/git.mk

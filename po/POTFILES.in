@@ -3,10 +3,8 @@
 [type: gettext/glade]setup/setup.ui
 bus/dbusimpl.c
 bus/engineproxy.c
-bus/ibus.desktop.in
 bus/inputcontext.c
 bus/panelproxy.c
-bus/registry.c
 data/ibus.schemas.in
 ibus/__init__.py
 ibus/_config.py.in
@@ -48,6 +46,7 @@ src/ibusinputcontext.c
 src/ibusobject.c
 src/ibuspanelservice.c
 src/ibusproxy.c
+src/ibusregistry.c
 src/ibusservice.c
 src/ibusutil.c
 src/keyname-table.h

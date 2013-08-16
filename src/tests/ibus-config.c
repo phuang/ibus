@@ -17,6 +17,10 @@ finish_create_config_async_sucess (GObject      *source_object,
           ibus_config_new_async_finish (res, &error);
 
     g_assert (IBUS_IS_CONFIG (config));
+
+    /* Since we reuse single D-Bus connection, we need to remove the
+       default match rule for the next ibus_config_new() call.  */
+    ibus_config_unwatch (config, NULL, NULL);
     g_object_unref (config);
     if (--create_config_count == 0)
         g_main_loop_quit (loop);
@@ -123,6 +127,9 @@ test_config_set_get (void)
     g_assert_cmpint (g_variant_n_children (var), ==, 0);
     g_variant_unref (var);
 
+    /* Since we reuse single D-Bus connection, we need to remove the
+       default match rule for the next ibus_config_new() call.  */
+    ibus_config_unwatch (config, NULL, NULL);
     g_object_unref (config);
 }
 
@@ -363,11 +370,8 @@ test_config_watch (WatchFixture *fixture, gconstpointer user_data)
                              &fixture->data);
         }
     } else {
-        /* If ibus_config_unwatch has not been called, need to manually
-           unwatch the default rule here, otherwise the recipient of
-           the default match rule will be ref'd twice on the next
-           ibus_config_new(), since we reuse single D-Bus
-           connection. */
+        /* Since we reuse single D-Bus connection, we need to remove the
+           default match rule for the next ibus_config_new() call.  */
         ibus_config_unwatch (fixture->config, NULL, NULL);
     }
 }
@@ -377,9 +381,8 @@ main (gint    argc,
       gchar **argv)
 {
     gint result;
-    g_type_init ();
-    g_test_init (&argc, &argv, NULL);
     ibus_init ();
+    g_test_init (&argc, &argv, NULL);
     bus = ibus_bus_new ();
 
     g_test_add ("/ibus/config-watch/default",

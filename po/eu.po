@@ -1,0 +1,546 @@
+# translation of ibus.pot to Basque
+# Basque translation of ibus.
+# Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
+# This file is distributed under the same license as the ibus package.
+# 
+# Translators:
+# Asier Iturralde Sarasola <asier.iturralde@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2012-10-15 11:55+0900\n"
+"PO-Revision-Date: 2012-10-15 03:22+0000\n"
+"Last-Translator: Asier Iturralde Sarasola <asier.iturralde@gmail.com>\n"
+"Language-Team: Basque <trans-eu@lists.fedoraproject.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: eu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../setup/setup.ui.h:1
+msgid "Horizontal"
+msgstr "Horizontala"
+
+#: ../setup/setup.ui.h:2
+msgid "Vertical"
+msgstr "Bertikala"
+
+#: ../setup/setup.ui.h:3
+msgid "Top left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:4
+msgid "Top right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:5
+msgid "Bottom left corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:6
+msgid "Bottom right corner"
+msgstr ""
+
+#: ../setup/setup.ui.h:7
+msgid "Custom"
+msgstr "Pertsonalizatua"
+
+#: ../setup/setup.ui.h:8
+msgid "Embedded in menu"
+msgstr ""
+
+#: ../setup/setup.ui.h:9
+msgid "When active"
+msgstr ""
+
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "Beti"
+
+#: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus hobespenak"
+
+#: ../setup/setup.ui.h:12
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+
+#: ../setup/setup.ui.h:13
+msgid "Next input method:"
+msgstr "Hurrengo sarrera metodoa"
+
+#: ../setup/setup.ui.h:14
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr ""
+
+#: ../setup/setup.ui.h:15
+msgid "Previous input method:"
+msgstr "Aurreko sarrera metodoa"
+
+#: ../setup/setup.ui.h:16
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:6
+msgid "The shortcut keys for turning input method on or off"
+msgstr ""
+
+#: ../setup/setup.ui.h:18
+msgid "Enable or disable:"
+msgstr "Gaitu edo desgaitu:"
+
+#: ../setup/setup.ui.h:19
+msgid "Enable:"
+msgstr "Gaitu:"
+
+#: ../setup/setup.ui.h:20
+msgid "Disable:"
+msgstr "Desgaitu:"
+
+#: ../setup/setup.ui.h:21
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr ""
+
+#: ../setup/setup.ui.h:22
+msgid "Set the orientation of candidates in lookup table"
+msgstr ""
+
+#: ../setup/setup.ui.h:23
+msgid "Candidates orientation:"
+msgstr ""
+
+#: ../setup/setup.ui.h:24
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr ""
+
+#: ../setup/setup.ui.h:25
+msgid "Show language panel:"
+msgstr ""
+
+#: ../setup/setup.ui.h:26
+msgid "Language panel position:"
+msgstr ""
+
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:21
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:23
+msgid "Show input method name on language bar"
+msgstr ""
+
+#: ../setup/setup.ui.h:29
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Embed preedit text in application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:31
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:32
+msgid "Use custom font:"
+msgstr "Erabili letra-tipo pertsonalizatua:"
+
+#: ../setup/setup.ui.h:33
+msgid "<b>Font and Style</b>"
+msgstr "<b>Letra-tipoa eta estiloa</b>"
+
+#: ../setup/setup.ui.h:34
+msgid "General"
+msgstr "Orokorra"
+
+#: ../setup/setup.ui.h:35
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:36
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:37
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
+#: ../setup/setup.ui.h:38
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:39
+msgid "Show information of the selected input method"
+msgstr ""
+
+#: ../setup/setup.ui.h:40
+msgid "Show setup of the selected input method"
+msgstr ""
+
+#: ../setup/setup.ui.h:41
+msgid ""
+"<small><i>The default input method is the top one in the list.\n"
+"You may use up/down buttons to change it.</i></small>"
+msgstr ""
+
+#. create im name & icon column
+#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
+msgid "Input Method"
+msgstr "Sarrera metodoa"
+
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:24
+msgid "Use system keyboard layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:25
+msgid "Use system keyboard (XKB) layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:46
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>Teklatu-diseinua</b>"
+
+#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:33
+msgid "Share the same input method among all applications"
+msgstr ""
+
+#: ../setup/setup.ui.h:48
+msgid "<b>Global input method settings</b>"
+msgstr "<b>Sarrera metodo orokorraren ezarpenak</b>"
+
+#: ../setup/setup.ui.h:49
+msgid "Advanced"
+msgstr "Aurreratua"
+
+#: ../setup/setup.ui.h:50
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: http://code.google.com/p/ibus\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+
+#: ../setup/setup.ui.h:57
+msgid "Start ibus on login"
+msgstr ""
+
+#: ../setup/setup.ui.h:58
+msgid "<b>Startup</b>"
+msgstr ""
+
+#: ../setup/setup.ui.h:59 ../setup/engineabout.py:34
+msgid "About"
+msgstr "Honi buruz"
+
+#: ../bus/ibus.desktop.in.h:1
+msgid "IBus"
+msgstr "IBus"
+
+#: ../bus/ibus.desktop.in.h:2
+msgid "Input Method Framework"
+msgstr ""
+
+#: ../bus/ibus.desktop.in.h:3
+msgid "Start IBus Input Method Framework"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Preload engines"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Preload engines during ibus starts up"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Engines order"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Saved engines order in input method list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Trigger shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Enable shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
+msgid "The shortcut keys for turning input method on"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Disable shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:10
+msgid "The shortcut keys for turning input method off"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Next engine shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:12
+msgid "The shortcut keys for switching to the next input method in the list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+msgid "Prev engine shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:14
+msgid "The shortcut keys for switching to the previous input method"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:15
+msgid "Auto hide"
+msgstr "Ezkutatu automatikoki"
+
+#: ../data/ibus.schemas.in.h:16
+msgid ""
+"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
+"Always show"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:17
+msgid "Language panel position"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:18
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:19
+msgid "Orientation of lookup table"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:22
+msgid "Show input method name"
+msgstr "Erakutsi sarrera metodoaren izena"
+
+#: ../data/ibus.schemas.in.h:26
+msgid "Use custom font"
+msgstr "Erabili letra-tipo pertsonalizatua"
+
+#: ../data/ibus.schemas.in.h:27
+msgid "Use custom font name for language panel"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:28
+msgid "Custom font"
+msgstr "Letra-tipo pertsonalizatua"
+
+#: ../data/ibus.schemas.in.h:29
+msgid "Custom font name for language panel"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:30
+msgid "Embed Preedit Text"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:31
+msgid "Embed Preedit Text in Application Window"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:32
+msgid "Use global input method"
+msgstr "Erabili sarrera metodo orokorra"
+
+#: ../data/ibus.schemas.in.h:34
+msgid "Enable input method by default"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:35
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:36
+msgid "DConf preserve name prefixes"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:37
+msgid "Prefixes of DConf keys to stop name conversion"
+msgstr ""
+
+#: ../ibus/_config.py.in:41
+msgid ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "Copyright-a (c) 2007-2010 Peng Huang\nCopyright-a (c) 2007-2010 Red Hat, Inc."
+
+#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+msgid "Other"
+msgstr "Beste bat"
+
+#: ../setup/engineabout.py:67
+#, python-format
+msgid "Language: %s\n"
+msgstr "Hizkuntza: %s\n"
+
+#: ../setup/engineabout.py:70
+#, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "Teklatu-diseinua: %s\n"
+
+#: ../setup/engineabout.py:73
+#, python-format
+msgid "Author: %s\n"
+msgstr "Egilea: %s\n"
+
+#: ../setup/engineabout.py:76
+msgid "Description:\n"
+msgstr "Deskribapena:\n"
+
+#: ../setup/enginecombobox.py:135
+msgid "Select an input method"
+msgstr "Hautatu sarrera metodo bat"
+
+#: ../setup/enginetreeview.py:92
+msgid "Kbd"
+msgstr ""
+
+#: ../setup/ibus-setup.desktop.in.h:2
+msgid "Set IBus Preferences"
+msgstr "Ezarri IBus hobespenak"
+
+#: ../setup/keyboardshortcut.py:54
+msgid "Keyboard shortcuts"
+msgstr "Teklatu lasterbideak"
+
+#: ../setup/keyboardshortcut.py:65
+msgid "Key code:"
+msgstr "Tekla kodea:"
+
+#: ../setup/keyboardshortcut.py:80
+msgid "Modifiers:"
+msgstr ""
+
+#: ../setup/keyboardshortcut.py:251
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr ""
+
+#: ../setup/keyboardshortcut.py:253
+msgid "Please press a key (or a key combination)"
+msgstr ""
+
+#: ../setup/main.py:87
+msgid "trigger"
+msgstr ""
+
+#: ../setup/main.py:88
+msgid "enable"
+msgstr "gaitu"
+
+#: ../setup/main.py:89
+msgid "disable"
+msgstr "desgaitu"
+
+#: ../setup/main.py:331
+msgid "The IBus daemon is not running. Do you wish to start it?"
+msgstr ""
+
+#: ../setup/main.py:352
+msgid ""
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+
+#. Translators: %d == 5 currently
+#: ../setup/main.py:366
+#, python-format
+msgid "IBus daemon could not be started in %d seconds"
+msgstr ""
+
+#: ../setup/main.py:378
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr ""
+
+#: ../tools/main.vala:40
+msgid "List engine name only"
+msgstr ""
+
+#: ../tools/main.vala:44
+msgid "command [OPTIONS]"
+msgstr ""
+
+#: ../tools/main.vala:56 ../tools/main.vala:138 ../tools/main.vala:148
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr ""
+
+#: ../tools/main.vala:82
+#, c-format
+msgid "language: %s\n"
+msgstr ""
+
+#: ../tools/main.vala:100
+#, c-format
+msgid "No engine is set.\n"
+msgstr ""
+
+#: ../tools/main.vala:108
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:113
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:120
+#, c-format
+msgid "Switch xkb layout to %s failed."
+msgstr ""
+
+#: ../tools/main.vala:185
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr ""
+
+#: ../tools/main.vala:186
+#, c-format
+msgid "Commands:\n"
+msgstr ""
+
+#: ../tools/main.vala:208
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:361
+msgid "Copyright (c) 2007-2012 Peng Huang\n"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:366
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:370
+msgid "translator-credits"
+msgstr "Asier Iturralde Sarasola <asier.iturralde@gmail.com>"
+
+#: ../ui/gtk3/panel.vala:402
+msgid "Restart"
+msgstr "Berrabiarazi"

@@ -6,17 +6,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include <ibus.h>
@@ -35,7 +35,6 @@ static void          bus_test_client_class_init      (BusTestClientClass *class)
 static void          bus_test_client_destroy         (IBusObject         *object);
 
 /* static methods*/
-static gchar*        _get_active_engine_name        (void);
 static void          _store_modifier_state          (BusTestClient      *client,
                                                      guint               modifier);
 static gboolean      _is_shift_set                  (BusTestClient      *client);
@@ -83,7 +82,6 @@ static void
 bus_test_client_init (BusTestClient *client)
 {
     IDEBUG ("%s", __FUNCTION__);
-    gchar *active_engine_name;
     client->connected = FALSE;
     client->enabled = FALSE;
 
@@ -104,13 +102,7 @@ bus_test_client_init (BusTestClient *client)
     client->caps = IBUS_CAP_FOCUS;
     ibus_input_context_set_capabilities (client->ibuscontext, client->caps);
 
-    active_engine_name = _get_active_engine_name ();
-
-    g_return_if_fail (active_engine_name != NULL);
-    IDEBUG ("engine:%s", active_engine_name);
-    ibus_input_context_focus_in (client->ibuscontext);
-    ibus_input_context_set_engine (client->ibuscontext, active_engine_name);
-    g_free (active_engine_name);
+    ibus_bus_set_global_engine (_bus, "xkb:us::eng");
 
     client->enabled = TRUE;
 }
@@ -217,32 +209,6 @@ void bus_test_client_clear_modifier (BusTestClient *client)
     for (i = 0; i < MODIFIER_KEY_NUM; i++) {
         (client->modifier)[i] = FALSE;
     }
-}
-
-static gchar *
-_get_active_engine_name (void)
-{
-    GList *engines;
-    gchar *result;
-
-    engines = ibus_bus_list_active_engines (_bus);
-    if (engines == NULL) {
-        return NULL;
-    }
-
-    IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-    if (engine_desc != NULL) {
-        result = g_strdup (ibus_engine_desc_get_name(engine_desc));
-    } else {
-        result = NULL;
-    }
-
-    for (; engines != NULL; engines = g_list_next (engines)) {
-        g_object_unref (IBUS_ENGINE_DESC (engines->data));
-    }
-    g_list_free (engines);
-
-    return result;
 }
 
 static void

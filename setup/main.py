@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 import os
 import signal
@@ -29,7 +29,6 @@ from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import IBus
 from os import path
-from xdg import BaseDirectory
 
 import keyboardshortcut
 import locale
@@ -83,22 +82,23 @@ class Setup(object):
         self.__init_ui()
 
     def __init_hotkey(self):
-        default_values = {
-            "trigger" : (N_("trigger"), ["Control+space"]),
-            "enable_unconditional" : (N_("enable"), []),
-            "disable_unconditional" : (N_("disable"), [])
-        }
+        name = 'triggers'
+        label = 'switch_engine'
+        variant = self.__config.get_value('general/hotkey', name)
+        if variant != None:
+            shortcuts = variant.unpack()
+        else:
+            shortcuts =  ['<Super>space']
 
-        values = dict(self.__config.get_values("general/hotkey"))
-
-        for name, (label, shortcuts) in default_values.items():
-            shortcuts = values.get(name, shortcuts)
-            button = self.__builder.get_object("button_%s" % name)
-            entry = self.__builder.get_object("entry_%s" % name)
-            entry.set_text("; ".join(shortcuts))
-            entry.set_tooltip_text("\n".join(shortcuts))
-            button.connect("clicked", self.__shortcut_button_clicked_cb,
-                    label, "general/hotkey", name, entry)
+        button = self.__builder.get_object("button_%s" % label)
+        entry = self.__builder.get_object("entry_%s" % label)
+        entry.set_text("; ".join(shortcuts))
+        tooltip = "\n".join(shortcuts)
+        tooltip += "\n" + \
+            _("Use shortcut with shift to switch to the previous input method") 
+        entry.set_tooltip_text(tooltip)
+        button.connect("clicked", self.__shortcut_button_clicked_cb,
+                name, "general/hotkey", label, entry)
 
     def __init_panel(self):
         values = dict(self.__config.get_values("panel"))
@@ -362,7 +362,8 @@ class Setup(object):
             dlg.destroy()
             self.__flush_gtk_events()
         else:
-            message = _("IBus daemon coundn't be started in %d seconds")
+            # Translators: %d == 5 currently
+            message = _("IBus daemon could not be started in %d seconds")
             dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
                                     text = message % timeout)
@@ -374,7 +375,8 @@ class Setup(object):
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
         buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                 Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        title = _("Select keyboard shortcut for %s") %  _(name)
+        title = _("Select keyboard shortcut for %s") % \
+                _("switching input methods")
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
         if text:
@@ -387,11 +389,13 @@ class Setup(object):
         dialog.destroy()
         if id != Gtk.ResponseType.OK:
             return
-        self.__config.set_value(section, _name, GLib.Variant.new_strv(shortcuts))
+        self.__config.set_value(section, name, GLib.Variant.new_strv(shortcuts))
         text = "; ".join(shortcuts)
         entry.set_text(text)
-        entry.set_tooltip_text(text)
-
+        tooltip = "\n".join(shortcuts)
+        tooltip += "\n" + \
+            _("Use shortcut with shift to switch to the previous input method") 
+        entry.set_tooltip_text(tooltip)
 
     def __item_started_column_toggled_cb(self, cell, path_str, model):
 
@@ -451,8 +455,10 @@ class Setup(object):
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
 
     def __is_auto_start(self):
-        link_file = path.join(BaseDirectory.xdg_config_home, "autostart/IBus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/IBus.desktop")
+        link_file = path.join(GLib.get_user_config_dir(),
+                              "autostart/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
+                                 "share/applications/ibus.desktop")
 
         if not path.exists(link_file):
             return False
@@ -463,12 +469,14 @@ class Setup(object):
         return True
 
     def __checkbutton_auto_start_toggled_cb(self, button):
-        auto_start_dir = path.join(BaseDirectory.xdg_config_home, "autostart")
+        auto_start_dir = path.join(GLib.get_user_config_dir(), "autostart")
         if not path.isdir(auto_start_dir):
             os.makedirs(auto_start_dir)
 
-        link_file = path.join(BaseDirectory.xdg_config_home, "autostart/IBus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"), "share/applications/IBus.desktop")
+        link_file = path.join(GLib.get_user_config_dir(),
+                              "autostart/ibus.desktop")
+        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
+                                 "share/applications/ibus.desktop")
         # unlink file
         try:
             os.unlink(link_file)
@@ -548,7 +556,12 @@ class Setup(object):
         Gtk.main()
 
 if __name__ == "__main__":
-    locale.setlocale(locale.LC_ALL, '')
+    try:
+        locale.setlocale(locale.LC_ALL, '')
+    except locale.Error:
+        print >> sys.stderr, "Using the fallback 'C' locale"
+        locale.setlocale(locale.LC_ALL, 'C')
+
     i18n_init()
     setup = Setup()
     setup.run()

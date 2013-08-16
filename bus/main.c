@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.     See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include <config.h>
 #include <fcntl.h>
@@ -65,9 +65,6 @@ static const GOptionEntry entries[] =
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
     { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_gdbus_timeout, "gdbus reply timeout in milliseconds. pass -1 to use the default timeout of gdbus.", "timeout [default is 5000]" },
-#ifdef G_THREADS_ENABLED
-    { "monitor-timeout", 'j', 0, G_OPTION_ARG_INT,    &g_monitor_timeout, "timeout of poll changes of engines in seconds. 0 to disable it. ", "timeout [default is 0]" },
-#endif
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
     { "restart",     'R', 0, G_OPTION_ARG_NONE,   &restart,    "restart panel and config processes when they die.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
@@ -217,9 +214,6 @@ main (gint argc, gchar **argv)
 
     ibus_init ();
 
-#ifdef G_THREADS_ENABLED
-    g_thread_init (NULL);
-#endif
     ibus_set_log_handler (g_verbose);
 
     /* check if ibus-daemon is running in this session */
@@ -244,7 +238,8 @@ main (gint argc, gchar **argv)
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
             BusComponent *component;
-            component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_CONFIG);
+            component = bus_ibus_impl_lookup_component_by_name (
+                    BUS_DEFAULT_IBUS, IBUS_SERVICE_CONFIG);
             if (component) {
                 bus_component_set_restart (component, restart);
             }
@@ -260,7 +255,8 @@ main (gint argc, gchar **argv)
         /* execute panel component */
         if (g_strcmp0 (panel, "default") == 0) {
             BusComponent *component;
-            component = bus_registry_lookup_component_by_name (BUS_DEFAULT_REGISTRY, IBUS_SERVICE_PANEL);
+            component = bus_ibus_impl_lookup_component_by_name (
+                    BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL);
             if (component) {
                 bus_component_set_restart (component, restart);
             }
