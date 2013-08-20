@@ -36,7 +36,9 @@ class Panel : IBus.PanelService {
     }
 
     private IBus.Bus m_bus;
-    private IBus.Config m_config;
+    private GLib.Settings m_settings_general = null;
+    private GLib.Settings m_settings_hotkey = null;
+    private GLib.Settings m_settings_panel = null;
     private Gtk.StatusIcon m_status_icon;
     private Gtk.Menu m_ime_menu;
     private Gtk.Menu m_sys_menu;
@@ -49,7 +51,6 @@ class Panel : IBus.PanelService {
     private Gtk.CssProvider m_css_provider;
     private int m_switcher_delay_time = 400;
     private bool m_use_system_keyboard_layout = false;
-    private const string ACCELERATOR_SWITCH_IME_FOREWARD = "<Super>space";
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -60,6 +61,8 @@ class Panel : IBus.PanelService {
                     object_path : "/org/freedesktop/IBus/Panel");
 
         m_bus = bus;
+
+        init_settings();
 
         // init ui
         m_status_icon = new Gtk.StatusIcon();
@@ -75,7 +78,7 @@ class Panel : IBus.PanelService {
 
         m_switcher = new Switcher();
         // The initial shortcut is "<Super>space"
-        bind_switch_shortcut(null);
+        bind_switch_shortcut();
 
         if (m_switcher_delay_time >= 0) {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
@@ -91,6 +94,44 @@ class Panel : IBus.PanelService {
 
     ~Panel() {
         unbind_switch_shortcut();
+    }
+
+    private void init_settings() {
+        m_settings_general = new GLib.Settings("org.freedesktop.ibus.general");
+        m_settings_hotkey =
+                new GLib.Settings("org.freedesktop.ibus.general.hotkey");
+        m_settings_panel = new GLib.Settings("org.freedesktop.ibus.panel");
+
+        m_settings_general.changed["preload-engines"].connect((key) => {
+                update_engines(m_settings_general.get_strv(key),
+                               null);
+        });
+
+        m_settings_general.changed["switcher-delay-time"].connect((key) => {
+                set_switcher_delay_time();
+        });
+
+        m_settings_general.changed["use-system-keyboard-layout"].connect(
+            (key) => {
+                set_use_system_keyboard_layout();
+        });
+
+        m_settings_general.changed["embed-preedit-text"].connect((key) => {
+                set_embed_preedit_text();
+        });
+
+        m_settings_hotkey.changed["triggers"].connect((key) => {
+                unbind_switch_shortcut();
+                bind_switch_shortcut();
+        });
+
+        m_settings_panel.changed["custom-font"].connect((key) => {
+                set_custom_font();
+        });
+
+        m_settings_panel.changed["use-custom-font"].connect((key) => {
+                set_custom_font();
+        });
     }
 
     private void keybinding_manager_bind(KeybindingManager keybinding_manager,
@@ -152,20 +193,8 @@ class Panel : IBus.PanelService {
                 (e) => handle_engine_switch(e, true));
     }
 
-    private void bind_switch_shortcut(Variant? variant) {
-        string[] accelerators = {};
-        Variant var_trigger = variant;
-
-        if (var_trigger == null && m_config != null) {
-            var_trigger = m_config.get_value("general/hotkey",
-                                             "triggers");
-        }
-
-        if (var_trigger != null) {
-            accelerators = var_trigger.dup_strv();
-        } else {
-            accelerators += ACCELERATOR_SWITCH_IME_FOREWARD;
-        }
+    private void bind_switch_shortcut() {
+        string[] accelerators = m_settings_hotkey.get_strv("triggers");
 
         var keybinding_manager = KeybindingManager.get_instance();
 
@@ -200,13 +229,7 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        bool use_custom_font = false;
-        GLib.Variant var_use_custom_font = m_config.get_value("panel",
-                                                              "use_custom_font");
-
-        if (var_use_custom_font != null) {
-            use_custom_font = var_use_custom_font.get_boolean();
-        }
+        bool use_custom_font = m_settings_panel.get_boolean("use-custom-font");
 
         if (m_css_provider != null) {
             Gtk.StyleContext.remove_provider_for_screen(screen,
@@ -218,15 +241,10 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        string font_name = null;
-        GLib.Variant var_custom_font = m_config.get_value("panel",
-                                                          "custom_font");
-        if (var_custom_font != null) {
-            font_name = var_custom_font.dup_string();
-        }
+        string font_name = m_settings_panel.get_string("custom-font");
 
         if (font_name == null) {
-            warning("No config panel:custom_font.");
+            warning("No config panel:custom-font.");
             return;
         }
 
@@ -247,55 +265,29 @@ class Panel : IBus.PanelService {
                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
-    private void set_switcher_delay_time(Variant? variant) {
-        Variant var_switcher_delay_time = variant;
-
-        if (var_switcher_delay_time == null) {
-            var_switcher_delay_time = m_config.get_value("general",
-                                                         "switcher-delay-time");
-        }
-
-        if (var_switcher_delay_time == null) {
-            return;
-        }
-
-        m_switcher_delay_time = var_switcher_delay_time.get_int32();
+    private void set_switcher_delay_time() {
+        m_switcher_delay_time =
+                m_settings_general.get_int("switcher-delay-time");
 
         if (m_switcher_delay_time >= 0) {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
     }
 
-    private void set_use_system_keyboard_layout(Variant? variant) {
-        Variant var_use_system_kbd_layout = variant;
-
-        if (var_use_system_kbd_layout == null) {
-            var_use_system_kbd_layout = m_config.get_value(
-                    "general",
-                    "use_system_keyboard_layout");
-        }
-
-        if (var_use_system_kbd_layout == null) {
-            return;
-        }
-
-        m_use_system_keyboard_layout = var_use_system_kbd_layout.get_boolean();
+    private void set_use_system_keyboard_layout() {
+        m_use_system_keyboard_layout =
+                m_settings_general.get_boolean("use-system-keyboard-layout");
     }
 
-    private void set_embed_preedit_text(Variant? variant) {
-        Variant var_embed_preedit = variant;
+    private void set_embed_preedit_text() {
+        Variant variant =
+                    m_settings_general.get_value("embed-preedit-text");
 
-        if (var_embed_preedit == null) {
-            var_embed_preedit = m_config.get_value("general",
-                                                   "embed_preedit_text");
-        }
-
-        if (var_embed_preedit == null) {
+        if (variant == null) {
             return;
         }
 
-        m_bus.set_ibus_property("EmbedPreeditText",
-                                var_embed_preedit);
+        m_bus.set_ibus_property("EmbedPreeditText", variant);
     }
 
     private int compare_versions(string version1, string version2) {
@@ -362,14 +354,8 @@ class Panel : IBus.PanelService {
     }
 
     private void set_version() {
-        Variant var_prev_version = m_config.get_value("general", "version");
-        Variant var_current_version = null;
-        string prev_version = "".dup();
+        string prev_version = m_settings_general.get_string("version");
         string current_version = null;
-
-        if (var_prev_version != null) {
-            prev_version = var_prev_version.dup_string();
-        }
 
         if (compare_versions(prev_version, "1.5.3") < 0) {
             update_version_1_5_3();
@@ -383,43 +369,22 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        var_current_version = new Variant.string(current_version);
-        m_config.set_value("general", "version", var_current_version);
+        m_settings_general.set_string("version", current_version);
     }
 
-    public void set_config(IBus.Config config) {
-        if (m_config != null) {
-            m_config.value_changed.disconnect(config_value_changed_cb);
-            m_config.watch(null, null);
-            m_config = null;
-        }
+    public void load_settings() {
+        // Update m_use_system_keyboard_layout before update_engines()
+        // is called.
+        set_use_system_keyboard_layout();
+        update_engines(m_settings_general.get_strv("preload-engines"),
+                       m_settings_general.get_strv("engines-order"));
+        unbind_switch_shortcut();
+        bind_switch_shortcut();
+        set_switcher_delay_time();
+        set_embed_preedit_text();
+        set_custom_font();
 
-        m_config = config;
-        if (m_config != null) {
-            m_config.value_changed.connect(config_value_changed_cb);
-            m_config.watch("general", "preload_engines");
-            m_config.watch("general", "embed_preedit_text");
-            m_config.watch("general", "engines_order");
-            m_config.watch("general", "switcher_delay_time");
-            m_config.watch("general", "use_system_keyboard_layout");
-            m_config.watch("general/hotkey", "triggers");
-            m_config.watch("panel", "custom_font");
-            m_config.watch("panel", "use_custom_font");
-            // Update m_use_system_keyboard_layout before update_engines()
-            // is called.
-            set_use_system_keyboard_layout(null);
-            update_engines(m_config.get_value("general", "preload_engines"),
-                           m_config.get_value("general", "engines_order"));
-            unbind_switch_shortcut();
-            bind_switch_shortcut(null);
-            set_switcher_delay_time(null);
-            set_embed_preedit_text(null);
-            set_custom_font();
-
-            set_version();
-        } else {
-            update_engines(null, null);
-        }
+        set_version();
     }
 
     private void exec_setxkbmap(IBus.EngineDesc engine) {
@@ -486,43 +451,6 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void config_value_changed_cb(IBus.Config config,
-                                         string section,
-                                         string name,
-                                         Variant variant) {
-        if (section == "general" && name == "preload_engines") {
-            update_engines(variant, null);
-            return;
-        }
-
-        if (section == "general/hotkey" && name == "triggers") {
-            unbind_switch_shortcut();
-            bind_switch_shortcut(variant);
-            return;
-        }
-
-        if (section == "panel" && (name == "custom_font" ||
-                                   name == "use_custom_font")) {
-            set_custom_font();
-            return;
-        }
-
-        if (section == "general" && name == "switcher_delay_time") {
-            set_switcher_delay_time(variant);
-            return;
-        }
-
-        if (section == "general" && name == "use_system_keyboard_layout") {
-            set_use_system_keyboard_layout(variant);
-            return;
-        }
-
-        if (section == "general" && name == "embed_preedit_text") {
-            set_embed_preedit_text(variant);
-            return;
-        }
-    }
-
     private void handle_engine_switch(Gdk.Event event, bool revert) {
         // Do not need switch IME
         if (m_engines.length <= 1)
@@ -567,17 +495,12 @@ class Panel : IBus.PanelService {
         m_bus.preload_engines_async(names, -1, null);
     }
 
-    private void update_engines(GLib.Variant? var_engines,
-                                GLib.Variant? var_order) {
-        string[] engine_names = null;
+    private void update_engines(string[]? unowned_engine_names,
+                                string[]? order_names) {
+        string[]? engine_names = unowned_engine_names;
 
-        if (var_engines != null)
-            engine_names = var_engines.dup_strv();
         if (engine_names == null || engine_names.length == 0)
             engine_names = {"xkb:us::eng"};
-
-        string[] order_names =
-            (var_order != null) ? var_order.dup_strv() : null;
 
         string[] names = {};
 
@@ -851,9 +774,6 @@ class Panel : IBus.PanelService {
         foreach(var desc in m_engines) {
             names += desc.get_name();
         }
-        if (m_config != null)
-            m_config.set_value("general",
-                               "engines_order",
-                               new GLib.Variant.strv(names));
+        m_settings_general.set_strv("engines-order", names);
     }
 }
