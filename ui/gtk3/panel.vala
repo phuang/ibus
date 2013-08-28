@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,8 +43,14 @@ class Panel : IBus.PanelService {
     private Gtk.Menu m_ime_menu;
     private Gtk.Menu m_sys_menu;
     private IBus.EngineDesc[] m_engines = {};
+    private GLib.HashTable<string, IBus.EngineDesc> m_engine_contexts =
+            new GLib.HashTable<string, IBus.EngineDesc>(GLib.str_hash,
+                                                        GLib.str_equal);
+    private string m_current_context_path = "";
+    private bool m_use_global_engine = true;
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
+    private bool m_switcher_is_running = false;
     private PropertyManager m_property_manager;
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
@@ -118,6 +124,10 @@ class Panel : IBus.PanelService {
 
         m_settings_general.changed["embed-preedit-text"].connect((key) => {
                 set_embed_preedit_text();
+        });
+
+        m_settings_general.changed["use-global-engine"].connect((key) => {
+                set_use_global_engine();
         });
 
         m_settings_hotkey.changed["triggers"].connect((key) => {
@@ -290,6 +300,11 @@ class Panel : IBus.PanelService {
         m_bus.set_ibus_property("EmbedPreeditText", variant);
     }
 
+    private void set_use_global_engine() {
+        m_use_global_engine =
+                m_settings_general.get_boolean("use-global-engine");
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -376,6 +391,7 @@ class Panel : IBus.PanelService {
         // Update m_use_system_keyboard_layout before update_engines()
         // is called.
         set_use_system_keyboard_layout();
+        set_use_global_engine();
         update_engines(m_settings_general.get_strv("preload-engines"),
                        m_settings_general.get_strv("engines-order"));
         unbind_switch_shortcut();
@@ -432,6 +448,31 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private void engine_contexts_insert(IBus.EngineDesc engine) {
+        if (m_use_global_engine)
+            return;
+
+        if (m_engine_contexts.size() >= 200) {
+            warning ("Contexts by windows are too much counted!");
+            m_engine_contexts.remove_all();
+        }
+
+        m_engine_contexts.replace(m_current_context_path, engine);
+    }
+
+    private void set_engine(IBus.EngineDesc engine) {
+        if (!m_bus.set_global_engine(engine.get_name())) {
+            warning("Switch engine to %s failed.", engine.get_name());
+            return;
+        }
+
+        // set xkb layout
+        if (!m_use_system_keyboard_layout)
+            exec_setxkbmap(engine);
+
+        engine_contexts_insert(engine);
+    }
+
     private void switch_engine(int i, bool force = false) {
         GLib.assert(i >= 0 && i < m_engines.length);
 
@@ -441,14 +482,7 @@ class Panel : IBus.PanelService {
 
         IBus.EngineDesc engine = m_engines[i];
 
-        if (!m_bus.set_global_engine(engine.get_name())) {
-            warning("Switch engine to %s failed.", engine.get_name());
-            return;
-        }
-        // set xkb layout
-        if (!m_use_system_keyboard_layout) {
-            exec_setxkbmap(engine);
-        }
+        set_engine(engine);
     }
 
     private void handle_engine_switch(Gdk.Event event, bool revert) {
@@ -471,7 +505,20 @@ class Panel : IBus.PanelService {
 
         if (pressed && m_switcher_delay_time >= 0) {
             int i = revert ? m_engines.length - 1 : 1;
+
+            /* The flag of m_switcher_is_running avoids the following problem:
+             *
+             * When an IME is chosen on m_switcher, focus_in() is called
+             * for the root window. If an engine is set in focus_in()
+             * during running m_switcher when m_use_global_engine is false,
+             * state_changed() is also called and m_engines[] is modified
+             * in state_changed() and m_switcher.run() returns the index
+             * for m_engines[] but m_engines[] was modified by state_changed()
+             * and the index is not correct. */
+            m_switcher_is_running = true;
             i = m_switcher.run(keyval, modifiers, event, m_engines, i);
+            m_switcher_is_running = false;
+
             if (i < 0) {
                 debug("switch cancelled");
             } else {
@@ -686,9 +733,68 @@ class Panel : IBus.PanelService {
     }
 
     public override void focus_in(string input_context_path) {
+        if (m_use_global_engine)
+            return;
+
+        /* Do not change the order of m_engines during running switcher. */
+        if (m_switcher_is_running)
+            return;
+
+        m_current_context_path = input_context_path;
+
+        var engine = m_engine_contexts[m_current_context_path];
+
+        if (engine == null) {
+            /* If engine == null, need to call set_engine(m_engines[0])
+             * here and update m_engine_contexts[] to avoid the
+             * following problem:
+             *
+             * If context1 is focused and does not set an engine and
+             * return here, the current engine1 is used for context1.
+             * When context2 is focused and switch engine1 to engine2,
+             * the current engine becomes engine2.
+             * And when context1 is focused again, context1 still
+             * does not set an engine and return here,
+             * engine2 is used for context2 instead of engine1. */
+            engine = m_engines.length > 0 ? m_engines[0] : null;
+
+            if (engine == null)
+                return;
+        } else {
+            bool in_engines = false;
+
+            foreach (var e in m_engines) {
+                if (engine.get_name() == e.get_name()) {
+                    in_engines = true;
+                    break;
+                }
+            }
+
+            /* The engine is deleted by ibus-setup before focus_in()
+             * is called. */
+            if (!in_engines)
+                return;
+        }
+
+        set_engine(engine);
     }
 
     public override void focus_out(string input_context_path) {
+        if (m_use_global_engine)
+            return;
+
+        /* Do not change the order of m_engines during running switcher. */
+        if (m_switcher_is_running)
+            return;
+
+        m_current_context_path = "";
+    }
+
+    public override void destroy_context(string input_context_path) {
+        if (m_use_global_engine)
+            return;
+
+        m_engine_contexts.remove(input_context_path);
     }
 
     public override void register_properties(IBus.PropList props) {
@@ -731,6 +837,10 @@ class Panel : IBus.PanelService {
     }
 
     public override void state_changed() {
+        /* Do not change the order of m_engines during running switcher. */
+        if (m_switcher_is_running)
+            return;
+
         var icon_name = "ibus-keyboard";
 
         var engine = m_bus.get_global_engine();

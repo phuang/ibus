@@ -282,7 +282,7 @@
       <applyto>/desktop/ibus/general/use_global_engine</applyto>
       <owner>ibus</owner>
       <type>bool</type>
-      <default>false</default>
+      <default>true</default>
       <locale name="C">
         <short>Use global input method</short>
 	    <long>Share the same input method among all applications</long>

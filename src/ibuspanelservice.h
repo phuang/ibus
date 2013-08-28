@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (c) 2009, Google Inc. All rights reserved.
+ * Copyright (c) 2009-2013 Google Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -76,9 +76,11 @@ struct _IBusPanelServiceClass {
 
     /* class members */
     void     (* focus_in)                  (IBusPanelService       *panel,
-                                            const gchar            *input_context_path);
+                                            const gchar
+                                                   *input_context_path);
     void     (* focus_out)                 (IBusPanelService       *panel,
-                                            const gchar            *input_context_path);
+                                            const gchar
+                                                   *input_context_path);
     void     (* register_properties)       (IBusPanelService       *panel,
                                             IBusPropList           *prop_list);
     void     (* set_cursor_location)       (IBusPanelService       *panel,
@@ -93,7 +95,7 @@ struct _IBusPanelServiceClass {
                                             IBusLookupTable        *lookup_table,
                                             gboolean                visible);
     void     (* update_preedit_text)       (IBusPanelService       *panel,
-                                            IBusText              *text,
+                                            IBusText               *text,
                                             guint                  cursor_pos,
                                             gboolean               visible);
     void     (* update_property)           (IBusPanelService       *panel,
@@ -113,10 +115,13 @@ struct _IBusPanelServiceClass {
     void     (* show_preedit_text)         (IBusPanelService       *panel);
     void     (* start_setup)               (IBusPanelService       *panel);
     void     (* state_changed)             (IBusPanelService       *panel);
+    void     (* destroy_context)           (IBusPanelService       *panel,
+                                            const gchar
+                                                   *input_context_path);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];  // We can add 8 pointers without breaking the ABI.
+    gpointer pdummy[7];  // We can add 8 pointers without breaking the ABI.
 };
 
 GType            ibus_panel_service_get_type  (void);
