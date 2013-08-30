@@ -865,12 +865,11 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     ibusimcontext->has_focus = TRUE;
     if (ibusimcontext->ibuscontext) {
+        _set_content_type (ibusimcontext);
         ibus_input_context_focus_in (ibusimcontext->ibuscontext);
     }
 
     gtk_im_context_focus_in (ibusimcontext->slave);
-
-    _set_content_type (ibusimcontext);
 
     /* set_cursor_location_internal() will get origin from X server,
      * it blocks UI. So delay it to idle callback. */
@@ -1567,6 +1566,13 @@ _create_input_context_done (IBusBus       *bus,
         ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
 
         if (ibusimcontext->has_focus) {
+            /* The time order is _create_input_context() ->
+             * ibus_im_context_notify() -> ibus_im_context_focus_in() ->
+             * _create_input_context_done()
+             * so _set_content_type() is called at the beginning here
+             * because ibusimcontext->ibuscontext == NULL before. */
+            _set_content_type (ibusimcontext);
+
             ibus_input_context_focus_in (ibusimcontext->ibuscontext);
             _set_cursor_location_internal (ibusimcontext);
         }
