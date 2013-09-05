@@ -142,6 +142,10 @@ class Panel : IBus.PanelService {
         m_settings_panel.changed["use-custom-font"].connect((key) => {
                 set_custom_font();
         });
+
+        m_settings_panel.changed["show-icon-on-systray"].connect((key) => {
+                set_show_icon_on_systray();
+        });
     }
 
     private void keybinding_manager_bind(KeybindingManager keybinding_manager,
@@ -305,6 +309,11 @@ class Panel : IBus.PanelService {
                 m_settings_general.get_boolean("use-global-engine");
     }
 
+    private void set_show_icon_on_systray() {
+        m_status_icon.set_visible(
+                m_settings_panel.get_boolean("show-icon-on-systray"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -399,6 +408,7 @@ class Panel : IBus.PanelService {
         set_switcher_delay_time();
         set_embed_preedit_text();
         set_custom_font();
+        set_show_icon_on_systray();
 
         set_version();
     }
