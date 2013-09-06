@@ -81,6 +81,8 @@ class Panel : IBus.PanelService {
         m_candidate_panel = new CandidatePanel();
         m_candidate_panel.page_up.connect((w) => this.page_up());
         m_candidate_panel.page_down.connect((w) => this.page_down());
+        m_candidate_panel.candidate_clicked.connect(
+                (w, i, b, s) => this.candidate_clicked(i, b, s));
 
         m_switcher = new Switcher();
         // The initial shortcut is "<Super>space"
