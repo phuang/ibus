@@ -23,7 +23,6 @@
 class Application {
     private IBus.Bus m_bus;
     private Panel m_panel;
-    private IBus.Config m_config;
 
     public Application(string[] argv) {
         GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE,
@@ -62,15 +61,6 @@ class Application {
                 IBus.BusNameFlag.ALLOW_REPLACEMENT |
                 IBus.BusNameFlag.REPLACE_EXISTING;
         m_bus.request_name(IBus.SERVICE_PANEL, flags);
-
-        m_config = m_bus.get_config();
-        connection.signal_subscribe("org.freedesktop.DBus",
-                                    "org.freedesktop.DBus",
-                                    "NameOwnerChanged",
-                                    "/org/freedesktop/DBus",
-                                    IBus.SERVICE_CONFIG,
-                                    DBusSignalFlags.NONE,
-                                    config_name_owner_changed_cb);
     }
 
     public int run() {
@@ -86,10 +76,7 @@ class Application {
                                       Variant parameters) {
         debug("signal_name = %s", signal_name);
         m_panel = new Panel(m_bus);
-
-        if (m_config != null) {
-            m_panel.set_config(m_config);
-        }
+        m_panel.load_settings();
     }
 
     private void bus_name_lost_cb(DBusConnection connection,
@@ -100,25 +87,6 @@ class Application {
                                   Variant parameters) {
         debug("signal_name = %s", signal_name);
         m_panel = null;
-    }
-
-    private void config_name_owner_changed_cb(DBusConnection connection,
-                                              string sender_name,
-                                              string object_path,
-                                              string interface_name,
-                                              string signal_name,
-                                              Variant parameters) {
-        debug("signal_name = %s", signal_name);
-        string name, new_owner, old_owner;
-        parameters.get("(sss)", out name, out old_owner, out new_owner);
-
-        if (new_owner == "") {
-            m_config = null;
-        } else {
-            m_config = m_bus.get_config();
-        }
-        if (m_panel != null)
-            m_panel.set_config(m_config);
     }
 
     private void bus_disconnected(IBus.Bus bus) {

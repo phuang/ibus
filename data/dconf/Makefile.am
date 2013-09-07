@@ -51,7 +51,7 @@ dconfdbdir = $(sysconfdir)/dconf/db/ibus.d
 dconfdb_DATA = 00-upstream-settings
 
 org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
-	$(AM_V_GEN) gsettings-schema-convert --force --gconf --xml \
+	$(AM_V_GEN) $(GSETTINGS_SCHEMA_CONVERT) --force --gconf --xml \
 		--schema-id "org.freedesktop.ibus" \
 		--output $@ $<
 

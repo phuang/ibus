@@ -826,7 +826,8 @@ _context_focus_out_cb (BusInputContext    *context,
 /**
  * _context_destroy_cb:
  *
- * A callback function to be called when the "destroy" signal is sent to the context.
+ * A callback function to be called when the "destroy" signal is sent to the
+ * context.
  */
 static void
 _context_destroy_cb (BusInputContext    *context,
@@ -835,9 +836,12 @@ _context_destroy_cb (BusInputContext    *context,
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context == ibus->focused_context) {
+    if (context == ibus->focused_context)
         bus_ibus_impl_set_focused_context (ibus, NULL);
-    }
+
+    if (ibus->panel &&
+        bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS)
+        bus_panel_proxy_destroy_context (ibus->panel, context);
 
     ibus->contexts = g_list_remove (ibus->contexts, context);
     g_object_unref (context);

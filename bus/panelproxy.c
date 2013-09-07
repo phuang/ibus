@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -694,3 +694,23 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
     panel->focused_context = NULL;
 }
 
+void
+bus_panel_proxy_destroy_context (BusPanelProxy    *panel,
+                                 BusInputContext  *context)
+{
+    const gchar *path;
+
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    g_object_ref_sink (context);
+    path = ibus_service_get_object_path ((IBusService *)context);
+
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "DestroyContext",
+                       g_variant_new ("(o)", path),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+
+    g_object_unref (context);
+}

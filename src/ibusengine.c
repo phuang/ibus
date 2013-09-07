@@ -1300,7 +1300,6 @@ ibus_engine_dbus_property_changed (IBusEngine  *engine,
         g_error_free (error);
     }
     g_object_unref (message);
-    return retval;
 }
 
 IBusEngine *

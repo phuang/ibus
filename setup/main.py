@@ -25,6 +25,7 @@ import signal
 import sys
 import time
 
+from gi.repository import Gio
 from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import IBus
@@ -66,6 +67,11 @@ class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
 
+        self.__settings_general = Gio.Settings("org.freedesktop.ibus.general");
+        self.__settings_hotkey = Gio.Settings(
+                "org.freedesktop.ibus.general.hotkey");
+        self.__settings_panel = Gio.Settings("org.freedesktop.ibus.panel");
+
         # IBus.Bus() calls ibus_bus_new().
         # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
         # via ibus_im_context_new().
@@ -84,12 +90,7 @@ class Setup(object):
     def __init_hotkey(self):
         name = 'triggers'
         label = 'switch_engine'
-        variant = self.__config.get_value('general/hotkey', name)
-        if variant != None:
-            shortcuts = variant.unpack()
-        else:
-            shortcuts =  ['<Super>space']
-
+        shortcuts = self.__settings_hotkey.get_strv(name)
         button = self.__builder.get_object("button_%s" % label)
         entry = self.__builder.get_object("entry_%s" % label)
         entry.set_text("; ".join(shortcuts))
@@ -101,93 +102,90 @@ class Setup(object):
                 name, "general/hotkey", label, entry)
 
     def __init_panel(self):
-        values = dict(self.__config.get_values("panel"))
-
         # lookup table orientation
         self.__combobox_lookup_table_orientation = self.__builder.get_object(
                 "combobox_lookup_table_orientation")
-        self.__combobox_lookup_table_orientation.set_active(
-                values.get("lookup_table_orientation", 0))
-        self.__combobox_lookup_table_orientation.connect("changed",
-                self.__combobox_lookup_table_orientation_changed_cb)
+        self.__settings_panel.bind('lookup-table-orientation',
+                                   self.__combobox_lookup_table_orientation,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
         # auto hide
         self.__combobox_panel_show = self.__builder.get_object(
                 "combobox_panel_show")
-        self.__combobox_panel_show.set_active(values.get("show", 0))
-        self.__combobox_panel_show.connect("changed",
-                self.__combobox_panel_show_changed_cb)
+        self.__settings_panel.bind('show',
+                                   self.__combobox_panel_show,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
         # panel position
         self.__combobox_panel_position = self.__builder.get_object(
                 "combobox_panel_position")
-        self.__combobox_panel_position.set_active(values.get("position", 3))
-        self.__combobox_panel_position.connect("changed",
-                self.__combobox_panel_position_changed_cb)
+        self.__combobox_panel_position.set_active(3)
+        #self.__settings_panel.bind('position',
+        #                           self.__combobox_panel_position,
+        #                           'active',
+        #                           Gio.SettingsBindFlags.DEFAULT)
 
         # custom font
         self.__checkbutton_custom_font = self.__builder.get_object(
                 "checkbutton_custom_font")
-        self.__checkbutton_custom_font.set_active(
-                values.get("use_custom_font", False))
-        self.__checkbutton_custom_font.connect("toggled",
-                self.__checkbutton_custom_font_toggled_cb)
+        self.__settings_panel.bind('use-custom-font',
+                                   self.__checkbutton_custom_font,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
         self.__fontbutton_custom_font = self.__builder.get_object(
                 "fontbutton_custom_font")
-        if values.get("use_custom_font", False):
-            self.__fontbutton_custom_font.set_sensitive(True)
-        else:
-            self.__fontbutton_custom_font.set_sensitive(False)
-        font_name = Gtk.Settings.get_default().get_property("gtk-font-name")
-        font_name = unicode(font_name, "utf-8")
-        font_name = values.get("custom_font", font_name)
-        self.__fontbutton_custom_font.connect("notify::font-name",
-                self.__fontbutton_custom_font_notify_cb)
-        self.__fontbutton_custom_font.set_font_name(font_name)
+        self.__settings_panel.bind('custom-font',
+                                    self.__fontbutton_custom_font,
+                                   'font-name',
+                                   Gio.SettingsBindFlags.DEFAULT)
+        self.__settings_panel.bind('use-custom-font',
+                                    self.__fontbutton_custom_font,
+                                   'sensitive',
+                                   Gio.SettingsBindFlags.GET)
 
         # show icon on system tray
         self.__checkbutton_show_icon_on_systray = self.__builder.get_object(
                 "checkbutton_show_icon_on_systray")
-        self.__checkbutton_show_icon_on_systray.set_active(
-                values.get("show_icon_on_systray", True))
-        self.__checkbutton_show_icon_on_systray.connect("toggled",
-                self.__checkbutton_show_icon_on_systray_toggled_cb)
+        self.__settings_panel.bind('show-icon-on-systray',
+                                   self.__checkbutton_show_icon_on_systray,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
         # show ime name
         self.__checkbutton_show_im_name = self.__builder.get_object(
                 "checkbutton_show_im_name")
-        self.__checkbutton_show_im_name.set_active(
-                values.get("show_im_name", False))
-        self.__checkbutton_show_im_name.connect("toggled",
-                self.__checkbutton_show_im_name_toggled_cb)
+        self.__settings_panel.bind('show-im-name',
+                                   self.__checkbutton_show_im_name,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
     def __init_general(self):
-        values = dict(self.__config.get_values("general"))
-
         # embed preedit text
         self.__checkbutton_embed_preedit_text = self.__builder.get_object(
                 "checkbutton_embed_preedit_text")
-        self.__checkbutton_embed_preedit_text.set_active(
-                values.get("embed_preedit_text", True))
-        self.__checkbutton_embed_preedit_text.connect("toggled",
-                self.__checkbutton_embed_preedit_text_toggled_cb)
+        self.__settings_general.bind('embed-preedit-text',
+                                    self.__checkbutton_embed_preedit_text,
+                                    'active',
+                                    Gio.SettingsBindFlags.DEFAULT)
 
         # use system keyboard layout setting
         self.__checkbutton_use_sys_layout = self.__builder.get_object(
                 "checkbutton_use_sys_layout")
-        self.__checkbutton_use_sys_layout.set_active(
-                values.get("use_system_keyboard_layout", True))
-        self.__checkbutton_use_sys_layout.connect("toggled",
-                self.__checkbutton_use_sys_layout_toggled_cb)
+        self.__settings_general.bind('use-system-keyboard-layout',
+                                    self.__checkbutton_use_sys_layout,
+                                    'active',
+                                    Gio.SettingsBindFlags.DEFAULT)
 
         # use global ime setting
         self.__checkbutton_use_global_engine = self.__builder.get_object(
                 "checkbutton_use_global_engine")
-        self.__checkbutton_use_global_engine.set_active(
-                values.get("use_global_engine", False))
-        self.__checkbutton_use_global_engine.connect("toggled",
-                self.__checkbutton_use_global_engine_toggled_cb)
+        self.__settings_general.bind('use-global-engine',
+                                    self.__checkbutton_use_global_engine,
+                                    'active',
+                                    Gio.SettingsBindFlags.DEFAULT)
 
         # init engine page
         self.__engines = self.__bus.list_engines()
@@ -197,7 +195,7 @@ class Setup(object):
         tmp_dict = {}
         for e in self.__engines:
             tmp_dict[e.get_name()] = e
-        engine_names = values.get("preload_engines", [])
+        engine_names = self.__settings_general.get_strv('preload-engines')
         engines = [tmp_dict[name] for name in engine_names if name in tmp_dict]
 
         self.__treeview = self.__builder.get_object("treeview_engines")
@@ -240,8 +238,6 @@ class Setup(object):
         self.__checkbutton_auto_start.set_active(self.__is_auto_start())
         self.__checkbutton_auto_start.connect("toggled",
                 self.__checkbutton_auto_start_toggled_cb)
-
-        self.__config = self.__bus.get_config()
 
         self.__init_hotkey()
         self.__init_panel()
@@ -291,8 +287,7 @@ class Setup(object):
 
         if prop.name == "engines":
             engine_names = map(lambda e: e.get_name(), engines)
-            value = GLib.Variant.new_strv(engine_names)
-            self.__config.set_value("general", "preload_engines", value)
+            self.__settings_general.set_strv('preload-engines', engine_names)
 
     def __button_engine_add_cb(self, button):
         engine = self.__combobox.get_active_engine()
@@ -389,7 +384,7 @@ class Setup(object):
         dialog.destroy()
         if id != Gtk.ResponseType.OK:
             return
-        self.__config.set_value(section, name, GLib.Variant.new_strv(shortcuts))
+        self.__settings_hotkey.set_strv(name, shortcuts)
         text = "; ".join(shortcuts)
         entry.set_text(text)
         tooltip = "\n".join(shortcuts)
@@ -443,13 +438,13 @@ class Setup(object):
         if data[DATA_PRELOAD]:
             if engine not in self.__preload_engines:
                 self.__preload_engines.add(engine)
-                value = GLib.Variant.new_strv(list(self.__preload_engines))
-                self.__config.set_value("general", "preload_engines", value)
+                self.__settings_general.set_strv('preload-engines',
+                                                 list(self.__preload_engines))
         else:
             if engine in self.__preload_engines:
                 self.__preload_engines.remove(engine)
-                value = GLib.Variant.new_strv(list(self.__preload_engines))
-                self.__config.set_value("general", "preload_engines", value)
+                self.__settings_general.set_strv('preload-engines',
+                                                 list(self.__preload_engines))
 
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
@@ -484,68 +479,6 @@ class Setup(object):
             pass
         if self.__checkbutton_auto_start.get_active():
             os.symlink(ibus_desktop, link_file)
-
-    def __combobox_lookup_table_orientation_changed_cb(self, combobox):
-        self.__config.set_value(
-                "panel", "lookup_table_orientation",
-                GLib.Variant.new_int32(self.__combobox_lookup_table_orientation.get_active()))
-
-    def __combobox_panel_show_changed_cb(self, combobox):
-        self.__config.set_value(
-                "panel", "show",
-                GLib.Variant.new_int32(self.__combobox_panel_show.get_active()))
-
-    def __combobox_panel_position_changed_cb(self, combobox):
-        self.__config.set_value(
-                "panel", "position",
-                GLib.Variant.new_int32(self.__combobox_panel_position.get_active()))
-
-    def __checkbutton_custom_font_toggled_cb(self, button):
-        if self.__checkbutton_custom_font.get_active():
-            self.__fontbutton_custom_font.set_sensitive(True)
-            self.__config.set_value("panel", "use_custom_font",
-                    GLib.Variant.new_boolean(True))
-        else:
-            self.__fontbutton_custom_font.set_sensitive(False)
-            self.__config.set_value("panel", "use_custom_font",
-                    GLib.Variant.new_boolean(False))
-
-    def __fontbutton_custom_font_notify_cb(self, button, arg):
-        font_name = self.__fontbutton_custom_font.get_font_name()
-        font_name = unicode(font_name, "utf-8")
-        self.__config.set_value("panel", "custom_font",
-                GLib.Variant.new_string(font_name))
-
-    def __checkbutton_show_icon_on_systray_toggled_cb(self, button):
-        value = self.__checkbutton_show_icon_on_systray.get_active()
-        value = GLib.Variant.new_boolean(value)
-        self.__config.set_value("panel", "show_icon_on_systray", value)
-
-    def __checkbutton_show_im_name_toggled_cb(self, button):
-        value = self.__checkbutton_show_im_name.get_active()
-        value = GLib.Variant.new_boolean(value)
-        self.__config.set_value("panel", "show_im_name", value)
-
-    def __checkbutton_embed_preedit_text_toggled_cb(self, button):
-        value = self.__checkbutton_embed_preedit_text.get_active()
-        value = GLib.Variant.new_boolean(value)
-        self.__config.set_value("general", "embed_preedit_text", value)
-
-    def __checkbutton_use_sys_layout_toggled_cb(self, button):
-        value = self.__checkbutton_use_sys_layout.get_active()
-        value = GLib.Variant.new_boolean(value)
-        self.__config.set_value("general", "use_system_keyboard_layout", value)
-
-    def __checkbutton_use_global_engine_toggled_cb(self, button):
-        value = self.__checkbutton_use_global_engine.get_active()
-        value = GLib.Variant.new_boolean(value)
-        self.__config.set_value("general", "use_global_engine", value)
-
-    def __config_value_changed_cb(self, bus, section, name, value):
-        pass
-
-    def __config_reloaded_cb(self, bus):
-        pass
 
     def __sigusr1_cb(self, *args):
         self.__window.present()
