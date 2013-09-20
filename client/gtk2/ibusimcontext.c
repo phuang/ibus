@@ -492,7 +492,13 @@ daemon_name_appeared (GDBusConnection *connection,
                       const gchar     *owner,
                       gpointer         data)
 {
-    _daemon_is_running = TRUE;
+    /* If ibus-daemon is running and run ssh -X localhost,
+     * daemon_name_appeared() is called but ibus_get_address() == NULL
+     * because the hostname and display number are different between
+     * ibus-daemon and clients. So IBusBus would not be connected and
+     * ibusimcontext->ibuscontext == NULL and ibusimcontext->events_queue
+     * could go beyond MAX_QUEUED_EVENTS . */
+    _daemon_is_running = (ibus_get_address () != NULL);
 }
 
 static void
