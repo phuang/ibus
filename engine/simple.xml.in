@@ -249,12 +249,12 @@
 		</engine>
 		<engine>
 			<name>xkb:fr:oss:fra</name>
-			<language>fra<language>
+			<language>fra</language>
 			<license>GPL</license>
 			<author>Julien Humbert &lt;julroy67@gmail.com&gt;</author>
 			<layout>fr</layout>
 			<layout_variant>oss</layout_variant>
-			<longname>French - Alternative</longname>
+			<longname>French (Alternative)</longname>
 			<description>French (Alternative layout)</description>
 			<icon>ibus-keyboard</icon>
 			<rank>99</rank>
