@@ -166,7 +166,7 @@ test: ibus-daemon
 man_one_in_files = ibus-daemon.1.in
 man_one_files = $(man_one_in_files:.1.in=.1)
 man_one_DATA =$(man_one_files:.1=.1.gz) 
-man_onedir = $(datadir)/man/man1
+man_onedir = $(mandir)/man1
 %.1: %.1.in
 	$(AM_V_GEN) sed \
 		-e 's|@VERSION[@]|$(VERSION)|g' $< > $@.tmp && \
