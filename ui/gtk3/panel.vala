@@ -148,6 +148,10 @@ class Panel : IBus.PanelService {
         m_settings_panel.changed["show-icon-on-systray"].connect((key) => {
                 set_show_icon_on_systray();
         });
+
+        m_settings_panel.changed["lookup-table-orientation"].connect((key) => {
+                set_lookup_table_orientation();
+        });
     }
 
     private void keybinding_manager_bind(KeybindingManager keybinding_manager,
@@ -285,7 +289,7 @@ class Panel : IBus.PanelService {
         m_switcher_delay_time =
                 m_settings_general.get_int("switcher-delay-time");
 
-        if (m_switcher_delay_time >= 0) {
+        if (m_switcher != null && m_switcher_delay_time >= 0) {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
     }
@@ -312,8 +316,20 @@ class Panel : IBus.PanelService {
     }
 
     private void set_show_icon_on_systray() {
+        if (m_status_icon == null)
+            return;
+
         m_status_icon.set_visible(
                 m_settings_panel.get_boolean("show-icon-on-systray"));
+    }
+
+    private void set_lookup_table_orientation() {
+        if (m_candidate_panel == null)
+            return;
+
+        m_candidate_panel.set_vertical(
+                m_settings_panel.get_int("lookup-table-orientation")
+                == IBus.Orientation.VERTICAL);
     }
 
     private int compare_versions(string version1, string version2) {
@@ -411,6 +427,7 @@ class Panel : IBus.PanelService {
         set_embed_preedit_text();
         set_custom_font();
         set_show_icon_on_systray();
+        set_lookup_table_orientation();
 
         set_version();
     }
