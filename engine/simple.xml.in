@@ -236,41 +236,53 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
-		<engine>
-			<name>xkb:fr::fra</name>
-			<language>fra</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>fr</layout>
-			<longname>French</longname>
-			<description>French</description>
+                <engine>
+                        <name>xkb:fr::fra</name>
+                        <language>fra</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>fr</layout>
+                        <longname>French</longname>
+                        <description>French</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
-		</engine>
-		<engine>
-			<name>xkb:fr:bepo:fra</name>
-			<language>fra</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>fr</layout>
-			<layout_variant>bepo</layout_variant>
-			<longname>French (Bepo, ergonomic, Dvorak way)</longname>
-			<description>French (Bepo, ergonomic, Dvorak way)</description>
+                        <rank>99</rank>
+                </engine>
+                <engine>
+                        <name>xkb:fr:oss:fra</name>
+                        <language>fra</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>fr</layout>
+                        <layout_variant>oss</layout_variant>
+                        <longname>French (alternative)</longname>
+                        <description>French (alternative)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>1</rank>
-		</engine>
-		<engine>
-			<name>xkb:fr:dvorak:fra</name>
-			<language>fra</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>fr</layout>
-			<layout_variant>dvorak</layout_variant>
-			<longname>French (Dvorak)</longname>
-			<description>French (Dvorak)</description>
+                        <rank>99</rank>
+                </engine>
+                <engine>
+                        <name>xkb:fr:bepo:fra</name>
+                        <language>fra</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>fr</layout>
+                        <layout_variant>bepo</layout_variant>
+                        <longname>French (Bepo, ergonomic, Dvorak way)</longname>
+                        <description>French (Bepo, ergonomic, Dvorak way)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
-		</engine>
+                        <rank>99</rank>
+                </engine>
+                <engine>
+                        <name>xkb:fr:dvorak:fra</name>
+                        <language>fra</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>fr</layout>
+                        <layout_variant>dvorak</layout_variant>
+                        <longname>French (Dvorak)</longname>
+                        <description>French (Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
 		<engine>
 			<name>xkb:de::ger</name>
 			<language>ger</language>
