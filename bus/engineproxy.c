@@ -1159,6 +1159,11 @@ bus_engine_proxy_set_content_type (BusEngineProxy *engine,
                            NULL,
                            NULL,
                            NULL);
+
+        /* Need to update the cache by manual since there is a timing issue. */
+        g_dbus_proxy_set_cached_property ((GDBusProxy *) engine,
+                                          "ContentType",
+                                          content_type);
     }
 
     if (cached_content_type != NULL)
