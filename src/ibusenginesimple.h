@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_ENGINE_SIMPLE_H__
+#define __IBUS_ENGINE_SIMPLE_H__
+
 /**
  * SECTION: ibussimpleengine
  * @short_description: Input method engine supporting table-based input method
@@ -34,8 +37,6 @@
  *
  * see_also: #IBusEngine
  */
-#ifndef __IBUS_ENGINE_SIMPLE_H__
-#define __IBUS_ENGINE_SIMPLE_H__
 
 #include "ibusengine.h"
 
@@ -110,11 +111,23 @@ GType   ibus_engine_simple_get_type       (void);
  * The table must be sorted in dictionary order on the numeric value of the key
  * symbol fields. (Values beyond the length of the sequence should be zero.)
  */
-void    ibus_engine_simple_add_table      (IBusEngineSimple     *simple,
-                                           const guint16        *data,
-                                           gint                  max_seq_len,
-                                           gint                  n_seqs);
+void             ibus_engine_simple_add_table   (IBusEngineSimple  *simple,
+                                                 const guint16     *data,
+                                                 gint               max_seq_len,
+                                                 gint               n_seqs);
 
+/**
+ * ibus_engine_simple_add_table_by_locale:
+ * @simple: An IBusEngineSimple.
+ * @locale: (allow-none): The locale name. If the locale is %NULL,
+ *                        the current locale is used.
+ * @returns: %TRUE if the @locale is matched to the table.
+ *
+ * Call ibus_engine_simple_add_table() internally by locale.
+ */
+gboolean         ibus_engine_simple_add_table_by_locale
+                                                (IBusEngineSimple  *simple,
+                                                 const gchar       *locale);
 G_END_DECLS
 
 #endif // __IBUS_ENGINE_SIMPLE_H__

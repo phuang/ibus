@@ -271,7 +271,8 @@ int write_cache (string[] argv) {
 }
 
 int print_address(string[] argv) {
-    print("%s\n", IBus.get_address());
+    string address = IBus.get_address();
+    print("%s\n", address != null ? address : "(null)");
     return Posix.EXIT_SUCCESS;
 }
 

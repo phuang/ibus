@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,26 +22,11 @@
 
 using IBus;
 
-const uint16 cedilla_compose_seqs[] = {
-  (uint16) IBus.KEY_dead_acute,   (uint16) IBus.KEY_C,      0,      0,      0,
-    0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  (uint16) IBus.KEY_dead_acute,   (uint16) IBus.KEY_c,      0,      0,      0,
-    0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_apostrophe,     (uint16) IBus.KEY_C,  0,      0,
-    0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_apostrophe,     (uint16) IBus.KEY_c,  0,      0,
-    0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_C,  (uint16) IBus.KEY_apostrophe, 0,      0,
-    0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  (uint16) IBus.KEY_Multi_key,    (uint16) IBus.KEY_c,  (uint16) IBus.KEY_apostrophe, 0,      0,
-    0x00E7 /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-};
-
 class DummyEngine : IBus.EngineSimple {
 }
 
 public int main(string[] args) {
-    Intl.setlocale (LocaleCategory.ALL, "");
+    Intl.setlocale(LocaleCategory.ALL, "");
     IBus.init();
 
     IBus.Bus bus = new IBus.Bus();
@@ -61,11 +46,6 @@ public int main(string[] args) {
 
     factory.create_engine.connect((factory, name) => {
         const string path = "/org/freedesktop/IBus/engine/simple/%d";
-        string lang = Intl.setlocale (LocaleCategory.CTYPE, null);
-
-        if (lang == null) {
-            lang = Environment.get_variable("LANG");
-        }
 
         IBus.Engine engine = new IBus.Engine.with_type(
             typeof(IBus.EngineSimple), name,
@@ -84,13 +64,8 @@ public int main(string[] args) {
          * I am not sure if cedilla_compose_seqs is needed for us layout.
          * FIXME: Need to provide the customization.
          */
-        if (lang != null && 
-            lang.ascii_ncasecmp("pt_br", "pt_br".length) == 0) {
-            IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
-            simple.add_table(cedilla_compose_seqs,
-                             4,
-                             cedilla_compose_seqs.length / (4 + 2));
-        }
+        IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
+        simple.add_table_by_locale(null);
 
         return engine;
     });
