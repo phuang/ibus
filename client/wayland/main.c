@@ -538,8 +538,8 @@ input_method_keyboard_modifiers (void               *data,
         wlim->modifiers |= IBUS_META_MASK;
 
     wl_input_method_context_modifiers (context, serial,
-                                       mods_depressed, mods_depressed,
-                                       mods_latched, group);
+                                       mods_depressed, mods_latched,
+                                       mods_locked, group);
 }
 
 static const struct wl_keyboard_listener keyboard_listener = {
