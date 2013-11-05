@@ -266,6 +266,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     /* install signals */
     /**
      * IBusPanelService::update-preedit-text:
+     * @panel: An #IBusPanelService
      * @text: A preedit text to be updated.
      * @cursor_pos: The cursor position of the text.
      * @visible: Whether the update is visible.
@@ -292,6 +293,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-auxiliary-text:
+     * @panel: An #IBusPanelService
      * @text: A preedit text to be updated.
      * @visible: Whether the update is visible.
      *
@@ -316,6 +318,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-lookup-table:
+     * @panel: An #IBusPanelService
      * @lookup_table: A lookup table to be updated.
      * @visible: Whether the update is visible.
      *
@@ -340,6 +343,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::focus-in:
+     * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application get the focus-in.
@@ -362,6 +366,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::focus-out:
+     * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application get the focus-out.
@@ -384,6 +389,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::register-properties:
+     * @panel: An #IBusPanelService
      * @prop_list: An IBusPropList that contains properties.
      *
      * Emitted when the client application get the register-properties.
@@ -406,6 +412,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-property:
+     * @panel: An #IBusPanelService
      * @prop: The IBusProperty to be updated.
      *
      * Emitted when the client application get the update-property.
@@ -428,6 +435,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::set-cursor-location:
+     * @panel: An #IBusPanelService
      * @x: X coordinate of the cursor.
      * @y: Y coordinate of the cursor.
      * @w: Width of the cursor.
@@ -456,6 +464,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::cursor-up-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the cursor-up-lookup-table.
      * Implement the member function cursor_up_lookup_table() in extended
@@ -475,6 +484,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::cursor-down-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the cursor-down-lookup-table.
      * Implement the member function cursor_down_lookup_table() in extended
@@ -494,6 +504,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-auxiliary-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-auxiliary-text.
      * Implement the member function hide_auxiliary_text() in extended class
@@ -513,6 +524,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-language-bar:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-language-bar.
      * Implement the member function hide_language_bar() in extended class to
@@ -532,6 +544,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-lookup-table.
      * Implement the member function hide_lookup_table() in extended class to
@@ -551,6 +564,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-preedit-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-preedit-text.
      * Implement the member function hide_preedit_text() in extended class to
@@ -570,6 +584,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::page-up-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the page-up-lookup-table.
      * Implement the member function page_up_lookup_table() in extended class
@@ -589,6 +604,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::page-down-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the page-down-lookup-table.
      * Implement the member function page_down_lookup_table() in extended
@@ -608,6 +624,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::reset:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the reset.
      * Implement the member function reset() in extended class to receive this
@@ -627,6 +644,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-auxiliary-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-auxiliary-text.
      * Implement the member function show_auxiliary_text() in extended class
@@ -646,6 +664,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-language-bar:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-language-bar.
      * Implement the member function show_language_bar() in extended class to
@@ -665,6 +684,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-lookup-table.
      * Implement the member function show_lookup_table() in extended class to
@@ -684,6 +704,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-preedit-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-preedit-text.
      * Implement the member function show_preedit_text() in extended class to
@@ -703,6 +724,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::start-setup:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the start-setup.
      * Implement the member function start_setup() in extended class to
@@ -722,6 +744,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::state-changed:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the state-changed.
      * Implement the member function state_changed() in extended class to
@@ -741,6 +764,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::destroy-context:
+     * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application destroys.

@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input IBus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_OBSERVED_PATH_H_
+#define __IBUS_OBSERVED_PATH_H_
+
 /**
  * SECTION: ibusobservedpath
  * @short_description: Path object of IBus.
@@ -32,9 +35,6 @@
  * IBusObservedPath provides methods for file path manipulation,
  * such as monitor modification, directory tree traversal.
  */
-
-#ifndef __IBUS_OBSERVED_PATH_H_
-#define __IBUS_OBSERVED_PATH_H_
 
 #include "ibusserializable.h"
 #include "ibusxml.h"
@@ -117,9 +117,11 @@ IBusObservedPath    *ibus_observed_path_new                 (const gchar        
  * ibus_observed_path_traverse:
  * @path: An IBusObservedPath.
  * @dir_only: Only looks for subdirs, not files
- * @returns: (element-type IBusObservedPath): A newly allocate GList which holds content in path; NULL if @path is not directory.
+ * @returns: (transfer full) (element-type IBusObservedPath): A newly allocate
+ * GList which holds content in path; NULL if @path is not directory.
  *
- * Recursively traverse the path and put the files and subdirectory in to a newly allocated
+ * Recursively traverse the path and put the files and subdirectory in to
+ * a newly allocated
  * GLists, if the @path is a directory. Otherwise returns NULL.
  */
 GList               *ibus_observed_path_traverse            (IBusObservedPath   *path,

@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_ENGINE_H_
+#define __IBUS_ENGINE_H_
+
 /**
  * SECTION: ibusengine
  * @short_description: Input method engine abstract.
@@ -35,8 +38,6 @@
  *
  * see_also: #IBusComponent, #IBusEngineDesc
  */
-#ifndef __IBUS_ENGINE_H_
-#define __IBUS_ENGINE_H_
 
 #include "ibusservice.h"
 #include "ibusattribute.h"

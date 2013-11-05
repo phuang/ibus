@@ -24,16 +24,18 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_TYPES_H_
+#define __IBUS_TYPES_H_
+
 /**
  * SECTION: ibustypes
  * @short_description: Generic types for  IBus.
  * @stability: Stable
  *
- * This section consists generic types for IBus, including shift/control key modifiers,
+ * This section consists generic types for IBus, including shift/control key
+ * modifiers,
  * and a rectangle structure.
  */
-#ifndef __IBUS_TYPES_H_
-#define __IBUS_TYPES_H_
 
 /**
  * IBusModifierType:

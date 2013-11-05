@@ -18,6 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  * USA
  */
+
+#ifndef __IBUS_VERSION_H_
+#define __IBUS_VERSION_H_
+
 /**
  * SECTION: ibusversion
  * @short_description: Current version of IBus.
@@ -26,8 +30,6 @@
  * IBusVersion shows the current IBus version.
  */
 
-#ifndef __IBUS_VERSION_H_
-#define __IBUS_VERSION_H_
 /* compile time version
  */
 /**

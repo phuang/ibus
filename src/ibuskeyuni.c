@@ -861,16 +861,6 @@ static const struct {
   { 0xFFFF /* Delete */, '\177' }
 };
 
-/**
- * ibus_keyval_to_unicode:
- * @keyval: an IBus key symbol 
- * 
- * Convert from an IBus key symbol to the corresponding ISO10646 (Unicode)
- * character.
- * 
- * Return value: the corresponding unicode character, or 0 if there
- *               is no corresponding character.
- **/
 gunichar
 ibus_keyval_to_unicode (guint keyval)
 {
@@ -1661,16 +1651,6 @@ static const struct {
   { 0x0ef7, 0x318e }, /*               Hangul_AraeAE ㆎ HANGUL LETTER ARAEAE */
 };
 
-/**
- * ibus_unicode_to_keyval:
- * @wc: a ISO10646 encoded character
- * 
- * Convert from a ISO10646 character to a key symbol.
- * 
- * Return value: the corresponding IBus key symbol, if one exists.
- *               or, if there is no corresponding symbol, 
- *               wc | 0x01000000
- **/
 guint
 ibus_unicode_to_keyval (gunichar wc)
 {

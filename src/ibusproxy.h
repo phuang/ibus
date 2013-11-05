@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,20 +24,24 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_PROXY_H_
+#define __IBUS_PROXY_H_
+
 /**
  * SECTION: ibusproxy
  * @short_description: Base proxy object.
  * @stability: Stable
  *
  * An IBusProxy is the base of all proxy objects,
- * which communicate the corresponding #IBusServices on the other end of IBusConnection.
- * For example, IBus clients (such as editors, web browsers) invoke the proxy object,
- * IBusInputContext to communicate with the InputContext service of the ibus-daemon.
+ * which communicate the corresponding #IBusServices on the other end of
+ * IBusConnection.
+ * For example, IBus clients (such as editors, web browsers) invoke the proxy
+ * object,
+ * IBusInputContext to communicate with the InputContext service of the
+ * ibus-daemon.
  *
  * Almost all services have corresponding proxies, except very simple services.
  */
-#ifndef __IBUS_PROXY_H_
-#define __IBUS_PROXY_H_
 
 #include <gio/gio.h>
 

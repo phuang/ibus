@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2011 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2011 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2011 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_UTIL_H_
+#define __IBUS_UTIL_H_
+
 /**
  * SECTION: ibusutil
  * @short_description: Utilities with C-Language.
@@ -32,9 +35,6 @@
  *
  * Utilized functions are available for miscellaneous purposes.
  */
-
-#ifndef __IBUS_UTIL_H_
-#define __IBUS_UTIL_H_
 
 /**
  * ibus_get_language_name:

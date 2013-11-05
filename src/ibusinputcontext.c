@@ -250,6 +250,8 @@ ibus_input_context_class_init (IBusInputContextClass *class)
     /**
      * IBusInputContext::update-auxiliary-text:
      * @context: An IBusInputContext.
+     * @text: An auxiliary text
+     * @visible: The visibility of @text
      *
      * Emitted to hide auxilary text.
      *

@@ -84,11 +84,11 @@ test_compose_SOURCES = \
         $(NULL)
 test_compose_CFLAGS = \
         $(AM_CFLAGS) \
-	@GTK3_CFLAGS@ \
+        @GTK3_CFLAGS@ \
         $(NULL)
 test_compose_LDADD = \
         $(AM_LDADD) \
-	@GTK3_LIBS@ \
+        @GTK3_LIBS@ \
         $(NULL)
 test_compose_VALAFLAGS = \
         $(AM_VALAFLAGS) \

@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_ENGINE_DESC_H_
+#define __IBUS_ENGINE_DESC_H_
+
 /**
  * SECTION: ibusenginedesc
  * @short_description:  Input method engine description data.
@@ -39,12 +42,9 @@
  * using ibus_component_new_from_file() to load a component file,
  * which also includes engine description data.
  *
- * @see_also: #IBusComponent, #IBusEngine
+ * see_also: #IBusComponent, #IBusEngine
  *
  */
-
-#ifndef __ENGINE_DESC_H_
-#define __ENGINE_DESC_H_
 
 #include "ibusserializable.h"
 #include "ibusxml.h"
