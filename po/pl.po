@@ -2,15 +2,15 @@
 # Polish translation of ibus.
 # Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# 
+#
 # Translators:
 # Piotr Drąg <piotrdrag@gmail.com>, 2011-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2013-08-09 15:07+0900\n"
-"PO-Revision-Date: 2013-08-09 16:52+0000\n"
+"POT-Creation-Date: 2013-11-29 18:44+0900\n"
+"PO-Revision-Date: 2013-12-01 15:22+0000\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -181,40 +181,41 @@ msgstr "Wyświetlanie ustawień zaznaczonej metody wprowadzania"
 
 #: ../setup/setup.ui.h:41
 msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr "<small><i>Domyślna metoda wprowadzania znajduje się na górze listy.\nMożna użyć klawiszy w górę/w dół, aby ją zmienić.</i></small>"
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
+msgstr "<small><i>Aktywna metoda wprowadzania może być przełączana z wybranych metod na powyższej liście za pomocą skrótu klawiszowego lub kliknięcia ikony na panelu.</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:66
+#: ../setup/setup.ui.h:42 ../setup/enginetreeview.py:66
 msgid "Input Method"
 msgstr "Metoda wprowadzania"
 
-#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:29
+#: ../setup/setup.ui.h:43 ../data/ibus.schemas.in.h:29
 msgid "Use system keyboard layout"
 msgstr "Użycie systemowych ustawień układu klawiatury"
 
-#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:30
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:30
 msgid "Use system keyboard (XKB) layout"
 msgstr "Użycie systemowego układu klawiatury (XKB)"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Układ klawiatury</b>"
 
-#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:38
+#: ../setup/setup.ui.h:46 ../data/ibus.schemas.in.h:38
 msgid "Share the same input method among all applications"
 msgstr "Używanie tej samej metody wprowadzania we wszystkich aplikacjach"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
 msgid "<b>Global input method settings</b>"
 msgstr "<b>Ustawienia globalnej metody wprowadzania</b>"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "Advanced"
 msgstr "Zaawansowane"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:49
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -224,15 +225,15 @@ msgid ""
 "\n"
 msgstr "<big><b>IBus</b></big>\n<small>Inteligentna magistrala wprowadzania</small>\nStrona domowa: http://code.google.com/p/ibus\n\n\n\n"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "Start ibus on login"
 msgstr "Uruchamianie IBus podczas logowania"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:57
 msgid "<b>Startup</b>"
 msgstr "<b>Uruchomienie</b>"
 
-#: ../setup/setup.ui.h:59 ../setup/engineabout.py:34
+#: ../setup/setup.ui.h:58 ../setup/engineabout.py:34
 msgid "About"
 msgstr "O programie"
 
@@ -452,15 +453,15 @@ msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy).\nOkno dialogowe z
 msgid "Please press a key (or a key combination)"
 msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy)"
 
-#: ../setup/main.py:98 ../setup/main.py:397
+#: ../setup/main.py:99 ../setup/main.py:392
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Użycie skrótu z klawiszem Shift do przełączania do poprzedniej metody wprowadzania"
 
-#: ../setup/main.py:331
+#: ../setup/main.py:326
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "Usługa IBus nie jest uruchomiona. Uruchomić ją?"
 
-#: ../setup/main.py:352
+#: ../setup/main.py:347
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -469,17 +470,17 @@ msgid ""
 msgstr "IBus został uruchomiony. Jeśli nie można używać iBus, należy dodać poniższe wiersze do pliku $HOME/.bashrc i zalogować się ponownie.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:366
+#: ../setup/main.py:361
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "Nie można uruchomić usługi IBus od %d sekund"
 
-#: ../setup/main.py:378
+#: ../setup/main.py:373
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Wybór skrótu klawiszowego dla %s"
 
-#: ../setup/main.py:379
+#: ../setup/main.py:374
 msgid "switching input methods"
 msgstr "przełączanie metod wprowadzania"
 
@@ -533,83 +534,83 @@ msgstr "Zapisuje pamięć podręczną rejestru systemu."
 msgid "Write the registry cache FILE."
 msgstr "Zapisuje PLIK pamięci podręcznej systemu."
 
-#: ../tools/main.vala:292
+#: ../tools/main.vala:293
 msgid "Set or get engine"
 msgstr "Ustawia lub uzyskuje mechanizm"
 
-#: ../tools/main.vala:293
+#: ../tools/main.vala:294
 msgid "Exit ibus-daemon"
 msgstr "Kończy działanie usługi ibus-daemon"
 
-#: ../tools/main.vala:294
+#: ../tools/main.vala:295
 msgid "Show available engines"
 msgstr "Wyświetla dostępne mechanizmy"
 
-#: ../tools/main.vala:295
+#: ../tools/main.vala:296
 msgid "(Not implemented)"
 msgstr "(Niezaimplementowane)"
 
-#: ../tools/main.vala:296
+#: ../tools/main.vala:297
 msgid "Restart ibus-daemon"
 msgstr "Ponownie uruchamia usługę ibus-daemon"
 
-#: ../tools/main.vala:297
+#: ../tools/main.vala:298
 msgid "Show version"
 msgstr "Wyświetla wersję"
 
-#: ../tools/main.vala:298
+#: ../tools/main.vala:299
 msgid "Show the content of registry cache"
 msgstr "Wyświetla zawartość pamięci podręcznej rejestru"
 
-#: ../tools/main.vala:299
+#: ../tools/main.vala:300
 msgid "Create registry cache"
 msgstr "Tworzy pamięć podręczną rejestru"
 
-#: ../tools/main.vala:300
+#: ../tools/main.vala:301
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "Wyświetla adres D-Bus usługi ibus-daemon"
 
-#: ../tools/main.vala:301
+#: ../tools/main.vala:302
 msgid "Show this information"
 msgstr "Wyświetla tę informację"
 
-#: ../tools/main.vala:307
+#: ../tools/main.vala:308
 #, c-format
 msgid ""
 "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "Użycie %s POLECENIE [OPCJA...]\n\n"
 
-#: ../tools/main.vala:308
+#: ../tools/main.vala:309
 #, c-format
 msgid "Commands:\n"
 msgstr "Polecenia:\n"
 
-#: ../tools/main.vala:337
+#: ../tools/main.vala:338
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s jest nieznanym poleceniem.\n"
 
-#: ../ui/gtk3/panel.vala:348
+#: ../ui/gtk3/panel.vala:382
 msgid "IBus Update"
 msgstr "Aktualizacja IBus"
 
-#: ../ui/gtk3/panel.vala:349 ../ui/gtk3/panel.vala:360
+#: ../ui/gtk3/panel.vala:383 ../ui/gtk3/panel.vala:394
 msgid "Super+space is now the default hotkey."
 msgstr "Domyślnym przełącznikiem są teraz klawisze Super+Spacja."
 
-#: ../ui/gtk3/panel.vala:657
+#: ../ui/gtk3/panel.vala:656
 msgid "Copyright (c) 2007-2012 Peng Huang\n"
 msgstr "Copyright (c) 2007-2012 Peng Huang\n"
 
-#: ../ui/gtk3/panel.vala:662
+#: ../ui/gtk3/panel.vala:661
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus jest inteligentną magistralą wprowadzania dla systemu Linux/UNIX."
 
-#: ../ui/gtk3/panel.vala:666
+#: ../ui/gtk3/panel.vala:665
 msgid "translator-credits"
 msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009"
 
-#: ../ui/gtk3/panel.vala:698
+#: ../ui/gtk3/panel.vala:697
 msgid "Restart"
 msgstr "Uruchom ponownie"
