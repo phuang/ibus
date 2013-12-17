@@ -52,6 +52,7 @@ class Panel : IBus.PanelService {
     private Switcher m_switcher;
     private bool m_switcher_is_running = false;
     private PropertyManager m_property_manager;
+    private PropertyPanel m_property_panel;
     private GLib.Pid m_setup_pid = 0;
     private Gtk.AboutDialog m_about_dialog;
     private Gtk.CssProvider m_css_provider;
@@ -93,7 +94,12 @@ class Panel : IBus.PanelService {
         }
 
         m_property_manager = new PropertyManager();
-        m_property_manager.property_activate.connect((k, s) => {
+        m_property_manager.property_activate.connect((w, k, s) => {
+            property_activate(k, s);
+        });
+
+        m_property_panel = new PropertyPanel();
+        m_property_panel.property_activate.connect((w, k, s) => {
             property_activate(k, s);
         });
 
@@ -151,6 +157,14 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["lookup-table-orientation"].connect((key) => {
                 set_lookup_table_orientation();
+        });
+
+        m_settings_panel.changed["show"].connect((key) => {
+                set_show_property_panel();
+        });
+
+        m_settings_panel.changed["timeout"].connect((key) => {
+                set_timeout_property_panel();
         });
     }
 
@@ -332,6 +346,21 @@ class Panel : IBus.PanelService {
                 == IBus.Orientation.VERTICAL);
     }
 
+    private void set_show_property_panel() {
+        if (m_property_panel == null)
+            return;
+
+        m_property_panel.set_show(m_settings_panel.get_int("show"));
+    }
+
+    private void set_timeout_property_panel() {
+        if (m_property_panel == null)
+            return;
+
+        m_property_panel.set_timeout(
+                (uint) m_settings_panel.get_int("timeout"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -428,6 +457,8 @@ class Panel : IBus.PanelService {
         set_custom_font();
         set_show_icon_on_systray();
         set_lookup_table_orientation();
+        set_show_property_panel();
+        set_timeout_property_panel();
 
         set_version();
     }
@@ -568,7 +599,7 @@ class Panel : IBus.PanelService {
         }
 
         names += engines[index].get_name();
-        m_bus.preload_engines_async(names, -1, null);
+        m_bus.preload_engines_async.begin(names, -1, null);
     }
 
     private void update_engines(string[]? unowned_engine_names,
@@ -652,9 +683,9 @@ class Panel : IBus.PanelService {
             m_about_dialog.set_program_name("IBus");
             m_about_dialog.set_version(Config.PACKAGE_VERSION);
 
-            string copyright = _(
-                "Copyright (c) 2007-2012 Peng Huang\n" +
-                "Copyright (c) 2007-2010 Red Hat, Inc.\n");
+            string copyright =
+                "Copyright © 2007-2013 Peng Huang\n" +
+                "Copyright © 2007-2013 Red Hat, Inc.\n";
 
             m_about_dialog.set_copyright(copyright);
             m_about_dialog.set_license("LGPL");
@@ -759,9 +790,12 @@ class Panel : IBus.PanelService {
     public override void set_cursor_location(int x, int y,
                                              int width, int height) {
         m_candidate_panel.set_cursor_location(x, y, width, height);
+        m_property_panel.set_cursor_location(x, y, width, height);
     }
 
     public override void focus_in(string input_context_path) {
+        m_property_panel.focus_in();
+
         if (m_use_global_engine)
             return;
 
@@ -828,10 +862,12 @@ class Panel : IBus.PanelService {
 
     public override void register_properties(IBus.PropList props) {
         m_property_manager.set_properties(props);
+        m_property_panel.set_properties(props);
     }
 
     public override void update_property(IBus.Property prop) {
         m_property_manager.update_property(prop);
+        m_property_panel.update_property(prop);
     }
 
     public override void update_preedit_text(IBus.Text text,

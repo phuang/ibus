@@ -161,10 +161,10 @@
       <applyto>/desktop/ibus/panel/show</applyto>
       <owner>ibus</owner>
       <type>int</type>
-      <default>0</default>
+      <default>1</default>
       <locale name="C">
         <short>Auto hide</short>
-	    <long>The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = Always show</long>
+	    <long>The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
     <schema>
@@ -200,6 +200,18 @@
       </locale>
     </schema>
     -->
+    <schema>
+      <key>/schemas/desktop/ibus/panel/timeout</key>
+      <applyto>/desktop/ibus/panel/timeout</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>3000</default>
+      <locale name="C">
+        <short>The milliseconds to show property panel</short>
+          <long>The milliseconds to show property panel after focus-in or
+                properties are changed.</long>
+      </locale>
+    </schema>
     <schema>
       <key>/schemas/desktop/ibus/panel/lookup_table_orientation</key>
       <applyto>/desktop/ibus/panel/lookup_table_orientation</applyto>

@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -111,6 +111,9 @@ public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
     }
 
     public void update_property(IBus.Property property) {
+        if (m_property.get_key() != property.get_key())
+            return;
+
         m_property.set_label(property.get_label());
         m_property.set_icon(property.get_icon());
         m_property.set_visible(property.get_visible());
@@ -148,6 +151,9 @@ public class PropCheckMenuItem : Gtk.RadioMenuItem, IPropItem {
     }
 
     public void update_property(IBus.Property property) {
+        if (m_property.get_key() != property.get_key())
+            return;
+
         m_property.set_label(property.get_label());
         m_property.set_icon(property.get_icon());
         m_property.set_visible(property.get_visible());
