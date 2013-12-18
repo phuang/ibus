@@ -62,6 +62,7 @@ public class PropertyPanel : Gtk.Box {
         m_props = props;
 
         create_menu_items();
+        show();
     }
 
     public void update_property(IBus.Property prop) {
@@ -86,8 +87,10 @@ public class PropertyPanel : Gtk.Box {
     }
 
     public new void show() {
-        if (m_show == PanelShow.DO_NOT_SHOW)
+        if (m_show == PanelShow.DO_NOT_SHOW || m_items.length == 0) {
+            m_toplevel.hide();
             return;
+        }
 
         m_toplevel.show_all();
     }
@@ -109,7 +112,19 @@ public class PropertyPanel : Gtk.Box {
         m_timeout = timeout;
     }
 
-    private int create_menu_items() {
+    public override void get_preferred_width(out int minimum_width,
+                                             out int natural_width) {
+        base.get_preferred_width(out minimum_width, out natural_width);
+        m_toplevel.resize(1, 1);
+    }
+
+    public override void get_preferred_height(out int minimum_width,
+                                              out int natural_width) {
+        base.get_preferred_height(out minimum_width, out natural_width);
+        m_toplevel.resize(1, 1);
+    }
+
+    private void create_menu_items() {
         int i = 0;
         while (true) {
             IBus.Property prop = m_props.get(i);
@@ -143,7 +158,6 @@ public class PropertyPanel : Gtk.Box {
                                                property_activate(k, s));
             }
         }
-        return i;
     }
 
     private void move(int x, int y) {
@@ -188,7 +202,7 @@ public class PropertyPanel : Gtk.Box {
         if (m_timeout_id != 0)
             GLib.Source.remove(m_timeout_id);
 
-        m_toplevel.show_all();
+        show();
 
         /* Change the priority because IME typing sometimes freezes. */
         m_timeout_id = GLib.Timeout.add(m_timeout, () => {
