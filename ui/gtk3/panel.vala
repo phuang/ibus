@@ -357,8 +357,8 @@ class Panel : IBus.PanelService {
         if (m_property_panel == null)
             return;
 
-        m_property_panel.set_timeout(
-                (uint) m_settings_panel.get_int("timeout"));
+        m_property_panel.set_auto_hide_timeout(
+                (uint) m_settings_panel.get_int("auto-hide-timeout"));
     }
 
     private int compare_versions(string version1, string version2) {
@@ -873,10 +873,13 @@ class Panel : IBus.PanelService {
     public override void update_preedit_text(IBus.Text text,
                                              uint cursor_pos,
                                              bool visible) {
-        if (visible)
+        if (visible) {
             m_candidate_panel.set_preedit_text(text, cursor_pos);
-        else
+            m_property_panel.set_preedit_text(text, cursor_pos);
+        } else {
             m_candidate_panel.set_preedit_text(null, 0);
+            m_property_panel.set_preedit_text(null, 0);
+        }
     }
 
     public override void hide_preedit_text() {
@@ -886,6 +889,7 @@ class Panel : IBus.PanelService {
     public override void update_auxiliary_text(IBus.Text text,
                                                bool visible) {
         m_candidate_panel.set_auxiliary_text(visible ? text : null);
+        m_property_panel.set_auxiliary_text(visible ? text : null);
     }
 
     public override void hide_auxiliary_text() {
@@ -895,6 +899,7 @@ class Panel : IBus.PanelService {
     public override void update_lookup_table(IBus.LookupTable table,
                                              bool visible) {
         m_candidate_panel.set_lookup_table(visible ? table : null);
+        m_property_panel.set_lookup_table(visible ? table : null);
     }
 
     public override void hide_lookup_table() {

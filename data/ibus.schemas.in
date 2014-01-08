@@ -201,11 +201,11 @@
     </schema>
     -->
     <schema>
-      <key>/schemas/desktop/ibus/panel/timeout</key>
-      <applyto>/desktop/ibus/panel/timeout</applyto>
+      <key>/schemas/desktop/ibus/panel/auto-hide-timeout</key>
+      <applyto>/desktop/ibus/panel/auto-hide-timeout</applyto>
       <owner>ibus</owner>
       <type>int</type>
-      <default>3000</default>
+      <default>10000</default>
       <locale name="C">
         <short>The milliseconds to show property panel</short>
           <long>The milliseconds to show property panel after focus-in or

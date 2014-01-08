@@ -32,10 +32,11 @@ public class PropertyPanel : Gtk.Box {
     private Gtk.Window m_toplevel;
     private IBus.PropList m_props;
     private IPropToolItem[] m_items;
-    private Gdk.Rectangle m_cursor_location;
+    private Gdk.Rectangle m_cursor_location = Gdk.Rectangle(){
+            x = -1, y = -1, width = 0, height = 0 };
     private int m_show = PanelShow.AUTO_HIDE;
-    private uint m_timeout = 3000;
-    private uint m_timeout_id = 0;
+    private uint m_auto_hide_timeout = 10000;
+    private uint m_auto_hide_timeout_id = 0;
 
     public PropertyPanel() {
         /* Chain up base class constructor */
@@ -62,11 +63,13 @@ public class PropertyPanel : Gtk.Box {
         m_props = props;
 
         create_menu_items();
-        show();
     }
 
     public void update_property(IBus.Property prop) {
         GLib.assert(prop != null);
+
+        debug("update_property(prop.key = %s)\n", prop.get_key());
+
         if (m_props != null)
             m_props.update_property(prop);
 
@@ -74,16 +77,82 @@ public class PropertyPanel : Gtk.Box {
         foreach (var item in m_items)
             item.update_property(prop);
 
-        set_show_timer();
+        show_with_auto_hide_timer();
     }
 
     public void set_cursor_location(int x, int y, int width, int height) {
+        /* FIXME: set_cursor_location() has a different behavior
+         * in embedded preedit by applications.
+         * GtkTextView applications, e.g. gedit, always call
+         * set_cursor_location() with and without preedit
+         * but VTE applications, e.g. gnome-terminal, and xterm
+         * do not call set_cursor_location() with preedit.
+         * firefox and thunderbird do not call set_cursor_location()
+         * without preedit.
+         * This may treat GtkIMContext and XIM with different ways.
+         * Maybe get_preedit_string() class method.
+         */
+
+        /* FIXME: When the cursor is at the bottom of the screen,
+         * gedit returns the right cursor position but terminal applications
+         * such as gnome-terminal, xfce4-terminal and etc, the position is
+         * not accurate and the cursor and panel could be overlapped slightly.
+         * Maybe it's a bug in vte.
+         */
         Gdk.Rectangle location = Gdk.Rectangle(){
             x = x, y = y, width = width, height = height };
+
         if (m_cursor_location == location)
             return;
+
+        debug("set_cursor_location(x = %d, y = %d, width = %d, height = %d)\n",
+              x, y, width, height);
+
+        /* Hide the panel in AUTO_HIDE mode when the cursor position is
+         * chagned on the same input context by typing keyboard or
+         * clicking mouse. (But not focus change or property change)
+         */
+        if (m_show == PanelShow.AUTO_HIDE)
+            if (m_cursor_location.x != -1 || m_cursor_location.y != -1) {
+                m_cursor_location = location;
+                hide_if_necessary();
+                adjust_window_position();
+                return;
+            }
+
         m_cursor_location = location;
         adjust_window_position();
+        show_with_auto_hide_timer();
+    }
+
+    public void set_preedit_text(IBus.Text? text, uint cursor) {
+        if (text == null && cursor == 0)
+            return;
+
+        debug("set_preedit_text(text, cursor = %u)\n", cursor);
+
+        /* Hide the panel in AUTO_HIDE mode when embed-preedit-text value
+         * is disabled and the preedit is changed on the same input context.
+         */
+        hide_if_necessary();
+    }
+
+    public void set_auxiliary_text(IBus.Text? text) {
+        if (text == null)
+            return;
+
+        debug("set_auxiliary_text(text)\n");
+
+        hide_if_necessary();
+    }
+
+    public void set_lookup_table(IBus.LookupTable? table) {
+        if (table == null)
+            return;
+
+        debug("set_lookup_table(table)\n");
+
+        hide_if_necessary();
     }
 
     public new void show() {
@@ -91,8 +160,12 @@ public class PropertyPanel : Gtk.Box {
             m_toplevel.hide();
             return;
         }
+        else if (m_show == PanelShow.ALWAYS) {
+            m_toplevel.show_all();
+            return;
+        }
 
-        m_toplevel.show_all();
+        /* Do not change the state here if m_show == AUTO_HIDE. */
     }
 
     public new void hide() {
@@ -100,7 +173,19 @@ public class PropertyPanel : Gtk.Box {
     }
 
     public void focus_in() {
-        set_show_timer();
+        debug("focus_in()\n");
+
+        /* Reset m_auto_hide_timeout_id in previous focus-in */
+        hide_if_necessary();
+
+        /* Invalidate m_cursor_location before set_cursor_location()
+         * is called because the position can be same even if the input
+         * focus is changed.
+         * E.g. Two tabs on gnome-terminal can keep the cursor position.
+         */
+        m_cursor_location = { -1, -1, 0, 0 };
+
+       /* set_cursor_location() will be called later. */
     }
 
     public void set_show(int _show) {
@@ -108,8 +193,8 @@ public class PropertyPanel : Gtk.Box {
         show();
     }
 
-    public void set_timeout(uint timeout) {
-        m_timeout = timeout;
+    public void set_auto_hide_timeout(uint timeout) {
+        m_auto_hide_timeout = timeout;
     }
 
     public override void get_preferred_width(out int minimum_width,
@@ -195,22 +280,30 @@ public class PropertyPanel : Gtk.Box {
         move(x, y);
     }
 
-    private void set_show_timer() {
-        if (m_show != PanelShow.AUTO_HIDE)
+    private void show_with_auto_hide_timer() {
+        if (m_show != PanelShow.AUTO_HIDE || m_items.length == 0)
             return;
 
-        if (m_timeout_id != 0)
-            GLib.Source.remove(m_timeout_id);
+        if (m_auto_hide_timeout_id != 0)
+            GLib.Source.remove(m_auto_hide_timeout_id);
 
-        show();
+        m_toplevel.show_all();
 
         /* Change the priority because IME typing sometimes freezes. */
-        m_timeout_id = GLib.Timeout.add(m_timeout, () => {
+        m_auto_hide_timeout_id = GLib.Timeout.add(m_auto_hide_timeout, () => {
             m_toplevel.hide();
-            m_timeout_id = 0;
+            m_auto_hide_timeout_id = 0;
             return false;
         },
         GLib.Priority.DEFAULT_IDLE);
+    }
+
+    private void hide_if_necessary() {
+        if (m_show == PanelShow.AUTO_HIDE && m_auto_hide_timeout_id != 0) {
+            GLib.Source.remove(m_auto_hide_timeout_id);
+            m_auto_hide_timeout_id = 0;
+            m_toplevel.hide();
+        }
     }
 
     public signal void property_activate(string key, int state);
