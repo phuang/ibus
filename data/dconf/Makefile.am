@@ -61,6 +61,8 @@ org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
 		{ rc=$$?; $(RM) -rf $@; exit $$rc; }
 
 install-data-hook:
-	dconf update
+	if test -z "$(DESTDIR)"; then \
+		dconf update; \
+	fi
 
 -include $(top_srcdir)/git.mk
