@@ -647,7 +647,7 @@ check_duplicated_compose (GList *compose_table)
         int i;
         int n_compose = 0;
 
-        for (i = 0; i <= GTK_MAX_COMPOSE_LEN + 2; i++) {
+        for (i = 0; i < GTK_MAX_COMPOSE_LEN + 2; i++) {
             keysyms[i] = 0;
         }
 
