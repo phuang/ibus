@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,8 @@
 # USA
 
 import locale
+import functools
+import sys
 
 from gi.repository import GObject
 from gi.repository import Gtk
@@ -72,8 +74,8 @@ class EngineComboBox(Gtk.ComboBox):
                 langs[l] = []
             langs[l].append(e)
 
-        keys = langs.keys()
-        keys.sort(locale.strcoll)
+        keys = list(langs.keys())
+        keys.sort(key=functools.cmp_to_key(locale.strcoll))
         loc = locale.getlocale()[0]
         # None on C locale
         if loc == None:
@@ -95,7 +97,7 @@ class EngineComboBox(Gtk.ComboBox):
                 if a.get_rank() == b.get_rank():
                     return locale.strcoll(a.get_longname(), b.get_longname())
                 return int(b.get_rank() - a.get_rank())
-            langs[l].sort(cmp_engine)
+            langs[l].sort(key=functools.cmp_to_key(cmp_engine))
             for e in langs[l]:
                 iter2 = self.__model.append(iter1)
                 self.__model.set(iter2, 0, e)
@@ -106,7 +108,10 @@ class EngineComboBox(Gtk.ComboBox):
     def __icon_cell_data_cb(self, celllayout, renderer, model, iter, data):
         engine = self.__model.get_value(iter, 0)
 
-        if isinstance(engine, str) or isinstance (engine, unicode):
+        if isinstance(engine, str):
+            renderer.set_property("visible", False)
+            renderer.set_property("sensitive", False)
+        elif sys.version < '3' and isinstance (engine, unicode):
             renderer.set_property("visible", False)
             renderer.set_property("sensitive", False)
         elif isinstance(engine, int):
@@ -121,7 +126,11 @@ class EngineComboBox(Gtk.ComboBox):
     def __name_cell_data_cb(self, celllayout, renderer, model, iter, data):
         engine = self.__model.get_value(iter, 0)
 
-        if isinstance (engine, str) or isinstance (engine, unicode):
+        if isinstance (engine, str):
+            renderer.set_property("sensitive", False)
+            renderer.set_property("text", engine)
+            renderer.set_property("weight", Pango.Weight.NORMAL)
+        elif sys.version < '3' and isinstance (engine, unicode):
             renderer.set_property("sensitive", False)
             renderer.set_property("text", engine)
             renderer.set_property("weight", Pango.Weight.NORMAL)
@@ -146,7 +155,7 @@ class EngineComboBox(Gtk.ComboBox):
             iter = self.get_active_iter()
             return self.get_model()[iter][0]
         else:
-            raise AttributeError, 'unknown property %s' % property.name
+            raise AttributeError('unknown property %s' % property.name)
 
     def get_active_engine(self):
         return self.get_property("active-engine")

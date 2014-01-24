@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -108,7 +108,8 @@ class EngineTreeView(Gtk.TreeView):
         language_b = IBus.get_language_name(engine_b.get_language())
         label_a = "%s - %s" % (language_a, engine_a.get_longname())
         label_b = "%s - %s" % (language_b, engine_b.get_longname())
-        return cmp(label_a, label_b)
+        # http://docs.python.org/3.0/whatsnew/3.0.html#ordering-comparisons
+        return (label_a > label_b) - (label_a < label_b)
 
     def __selection_changed_cb(self, *args):
         self.notify("active-engine");
@@ -173,15 +174,15 @@ class EngineTreeView(Gtk.TreeView):
             engines = [ r[0] for r in self.__model if r[0] != None]
             return engines
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def do_set_property(self, prop, value):
         if prop.name == "active-engine":
-            raise AttributeError, "active-engine is readonly"
+            raise AttributeError("active-engine is readonly")
         elif prop.name == "engines":
             set_engines(value)
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def set_engines(self, engines):
         self.__model.clear()
