@@ -380,6 +380,7 @@ AC_ARG_WITH(python,
 )
 
 AM_PATH_PYTHON([2.5])
+AC_PATH_PROG(PYTHON2, python2)
 
 PYGOBJECT_REQUIRED=3.0.0
 
@@ -387,10 +388,16 @@ PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
                  [enable_pygobject=yes], [enable_pygobject=no])
 
 if test "x$enable_pygobject" = "xyes"; then
-	PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+    PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
 
-	pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
-	AC_SUBST(pyoverridesdir)
+    pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
+    AC_SUBST(pyoverridesdir)
+
+    py2overridesdir="$pyoverridesdir"
+    if test x"$PYTHON2" != x""; then
+        py2overridesdir=`$PYTHON2 -c "import gi; print(gi._overridesdir)"`
+    fi
+    AC_SUBST(py2overridesdir)
 fi
 
 AM_CONDITIONAL(ENABLE_PYGOBJECT, test x"$enable_pygobject" = "xyes")

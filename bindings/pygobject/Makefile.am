@@ -22,6 +22,11 @@
 
 NULL =
 
+overrides2dir = $(py2overridesdir)
+overrides2_DATA =				\
+	gi/overrides/IBus.py			\
+	$(NULL)
+
 overridesdir = $(pyoverridesdir)
 overrides_PYTHON =				\
 	gi/overrides/IBus.py			\
