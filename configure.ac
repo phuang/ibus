@@ -344,9 +344,6 @@ if test x"$enable_dconf" = x"yes"; then
         [])
     # check glib-compile-schemas
     GLIB_GSETTINGS
-    AC_PATH_PROG([GSETTINGS_SCHEMA_CONVERT], [gsettings-schema-convert])
-    AS_IF([test x"$ac_cv_path_GSETTINGS_SCHEMA_CONVERT" = x""],
-          [AC_MSG_ERROR([gsettings-schema-convert from GConf2 is required for dconf support])])
     enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
 
