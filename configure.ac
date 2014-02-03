@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -379,6 +379,10 @@ AC_ARG_WITH(python,
 AM_PATH_PYTHON([2.5])
 AC_PATH_PROG(PYTHON2, python2)
 
+if test x"$PYTHON2" = x""; then
+    PYTHON2=$PYTHON
+fi
+
 PYGOBJECT_REQUIRED=3.0.0
 
 PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
@@ -390,10 +394,7 @@ if test "x$enable_pygobject" = "xyes"; then
     pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
     AC_SUBST(pyoverridesdir)
 
-    py2overridesdir="$pyoverridesdir"
-    if test x"$PYTHON2" != x""; then
-        py2overridesdir=`$PYTHON2 -c "import gi; print(gi._overridesdir)"`
-    fi
+    py2overridesdir=`$PYTHON2 -c "import gi; print(gi._overridesdir)"`
     AC_SUBST(py2overridesdir)
 fi
 
@@ -416,6 +417,13 @@ if test x"$enable_python_library" = x"yes"; then
     AC_SUBST(PYTHON_CFLAGS)
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
+
+    PYTHON2_PREFIX=`$PYTHON2 -c "import sys; sys.stdout.write(sys.prefix)"`
+    PYTHON2_VERSION=`$PYTHON2 -c "import sys; sys.stdout.write(sys.version[[:3]])"`
+    PYTHON2_LIBDIR="$PYTHON2_PREFIX/lib/python$PYTHON2_VERSION"
+    python2dir="$PYTHON2_LIBDIR/site-packages"
+    pkgpython2dir="$python2dir/ibus"
+    AC_SUBST(pkgpython2dir)
 else
     enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
@@ -609,7 +617,8 @@ Build options:
   Build shared libs         $enable_shared
   Build static libs         $enable_static
   CFLAGS                    $CFLAGS
-  python                    $PYTHON
+  PYTHON                    $PYTHON
+  PYTHON2                   $PYTHON2
   Gtk2 immodule dir         $GTK2_IM_MODULEDIR
   Gtk3 immodule dir         $GTK3_IM_MODULEDIR
   Build gtk2 immodule       $enable_gtk2
