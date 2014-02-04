@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2013-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2006,47 +2006,49 @@ static const IBusComposeTable ibus_compose_table_el_gr = {
 
 static const guint16 ibus_compose_seqs_fi_fi[] = {
   IBUS_KEY_dead_acute, IBUS_KEY_space, 0, 0,
-    0, 0x00B4, /* # ACUTE ACCENT */
+    0, 0x00B4, /* U00B4  #  ACUTE ACCENT */
   IBUS_KEY_dead_acute, IBUS_KEY_dead_circumflex, IBUS_KEY_E, 0,
-    0, 0x1EC6, /* # LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND ACUTE */
+    0, 0x1EC6, /* U1EC6  #  LATIN CAPITAL LETTER E WITH CIRCUMFLEX AND ACUTE */
   IBUS_KEY_dead_diaeresis, IBUS_KEY_space, 0, 0,
-    0, 0x00A8, /* # DIAERESIS */
+    0, 0x00A8, /* U00A8  #  DIAERESIS */
+  IBUS_KEY_dead_abovering, IBUS_KEY_space, 0, 0,
+    0, 0x02DA, /* U02DA  #  RING ABOVE */
   IBUS_KEY_dead_hook, IBUS_KEY_dead_horn, IBUS_KEY_o, 0,
-    0, 0x1EDD, /* # LATIN SMALL LETTER O WITH HORN AND HOOK ABOVE */
+    0, 0x1EDD, /* U1EDD  #  LATIN SMALL LETTER O WITH HORN AND HOOK ABOVE */
   IBUS_KEY_dead_stroke, IBUS_KEY_D, 0, 0,
-    0, 0x0110, /* # LATIN CAPITAL LETTER D WITH STROKE */
+    0, 0x0110, /* U0110  #  LATIN CAPITAL LETTER D WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_G, 0, 0,
-    0, 0x01E4, /* # LATIN CAPITAL LETTER G WITH STROKE */
+    0, 0x01E4, /* U01E4  #  LATIN CAPITAL LETTER G WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_H, 0, 0,
-    0, 0x0126, /* # LATIN CAPITAL LETTER H WITH STROKE */
+    0, 0x0126, /* U0126  #  LATIN CAPITAL LETTER H WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_L, 0, 0,
-    0, 0x0141, /* # LATIN CAPITAL LETTER L WITH STROKE */
+    0, 0x0141, /* U0141  #  LATIN CAPITAL LETTER L WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_O, 0, 0,
-    0, 0x00D8, /* # LATIN CAPITAL LETTER O WITH STROKE */
+    0, 0x00D8, /* U00D8  #  LATIN CAPITAL LETTER O WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_T, 0, 0,
-    0, 0x0166, /* # LATIN CAPITAL LETTER T WITH STROKE */
+    0, 0x0166, /* U0166  #  LATIN CAPITAL LETTER T WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_d, 0, 0,
-    0, 0x0111, /* # LATIN SMALL LETTER D WITH STROKE */
+    0, 0x0111, /* U0111  #  LATIN SMALL LETTER D WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_g, 0, 0,
-    0, 0x01E5, /* # LATIN SMALL LETTER G WITH STROKE */
+    0, 0x01E5, /* U01E5  #  LATIN SMALL LETTER G WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_h, 0, 0,
-    0, 0x0127, /* # LATIN SMALL LETTER H WITH STROKE */
+    0, 0x0127, /* U0127  #  LATIN SMALL LETTER H WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_l, 0, 0,
-    0, 0x0142, /* # LATIN SMALL LETTER L WITH STROKE */
+    0, 0x0142, /* U0142  #  LATIN SMALL LETTER L WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_o, 0, 0,
-    0, 0x00F8, /* # LATIN SMALL LETTER O WITH STROKE */
+    0, 0x00F8, /* U00F8  #  LATIN SMALL LETTER O WITH STROKE */
   IBUS_KEY_dead_stroke, IBUS_KEY_t, 0, 0,
-    0, 0x0167, /* # LATIN SMALL LETTER T WITH STROKE */
+    0, 0x0167, /* U0167  #  LATIN SMALL LETTER T WITH STROKE */
   IBUS_KEY_dead_belowcomma, IBUS_KEY_S, 0, 0,
-    0, 0x0218, /* # LATIN CAPITAL LETTER S WITH COMMA BELOW */
+    0, 0x0218, /* U0218  #  LATIN CAPITAL LETTER S WITH COMMA BELOW */
   IBUS_KEY_dead_belowcomma, IBUS_KEY_T, 0, 0,
-    0, 0x021A, /* # LATIN CAPITAL LETTER T WITH COMMA BELOW */
+    0, 0x021A, /* U021A  #  LATIN CAPITAL LETTER T WITH COMMA BELOW */
   IBUS_KEY_dead_belowcomma, IBUS_KEY_s, 0, 0,
-    0, 0x0219, /* # LATIN SMALL LETTER S WITH COMMA BELOW */
+    0, 0x0219, /* U0219  #  LATIN SMALL LETTER S WITH COMMA BELOW */
   IBUS_KEY_dead_belowcomma, IBUS_KEY_t, 0, 0,
-    0, 0x021B, /* # LATIN SMALL LETTER T WITH COMMA BELOW */
+    0, 0x021B, /* U021B  #  LATIN SMALL LETTER T WITH COMMA BELOW */
   IBUS_KEY_Multi_key, IBUS_KEY_apostrophe, IBUS_KEY_space, IBUS_KEY_n,
-    0, 0x0149  /* # LATIN SMALL LETTER N PRECEDED BY APOSTROPHE */
+    0, 0x0149  /* U0149  #  LATIN SMALL LETTER N PRECEDED BY APOSTROPHE */
 };
 
 static const IBusComposeTable ibus_compose_table_fi_fi = {
