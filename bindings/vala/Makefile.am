@@ -49,6 +49,7 @@ EXTRA_DIST = \
 	IBus-1.0.metadata \
 	IBus-1.0-custom.vala \
 	ibus-1.0.deps \
+	ibus-private.vapi \
 	config.vapi \
 	xi.vapi \
 	$(NULL)

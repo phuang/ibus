@@ -159,6 +159,7 @@ ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
 ibus_privite_headers =       \
+    ibuscomposetable.h       \
     ibusinternal.h           \
     keyname-table.h          \
     gtkimcontextsimpleseqs.h \
@@ -225,6 +226,24 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	$(AM_V_GEN) (echo "#include \"ibusmarshalers.h\""; \
 	$(GLIB_GENMARSHAL) --prefix=_ibus_marshal $(srcdir)/ibusmarshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
+
+ibuscomposetable.h:
+	$(AM_V_GEN) $(builddir)/gencomposetable > $@.tmp && \
+	mv $@.tmp $@
+	$(NULL)
+
+noinst_PROGRAMS = gencomposetable
+
+gencomposetable_SOURCES = \
+    gencomposetable.c \
+    $(NULL)
+gencomposetable_CFLAGS = \
+    @GLIB_CFLAGS@ \
+    $(NULL)
+gencomposetable_LDADD = \
+    $(libibus) \
+    @GLIB_LIBS@ \
+    $(NULL)
 
 EXTRA_DIST =                    \
     ibusversion.h.in            \

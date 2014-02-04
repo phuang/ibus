@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,17 +23,16 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
-/**
- * SECTION: ibusshare
- * @short_description: Shared utility functions and definition.
- * @stability: Stable
- *
- * This file defines some utility functions and definition
- * which are shared among ibus component and services.
- */
-
 #ifndef __IBUS_ERROR_H_
 #define __IBUS_ERROR_H_
+
+/**
+ * SECTION: ibuserror
+ * @short_description: Error functions and definition.
+ * @stability: Stable
+ *
+ * This file defines some error functions and definition.
+ */
 
 #include <glib.h>
 

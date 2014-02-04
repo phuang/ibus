@@ -2,15 +2,15 @@
 # Dutch translation of ibus.
 # Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# 
+#
 # Translators:
 # Geert Warrink <geert.warrink@onsnet.nu>, 2011-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2013-08-09 15:07+0900\n"
-"PO-Revision-Date: 2013-08-12 14:48+0000\n"
+"POT-Creation-Date: 2013-11-29 18:44+0900\n"
+"PO-Revision-Date: 2013-11-30 12:13+0000\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch <trans-nl@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -181,40 +181,41 @@ msgstr "Toon instelling van de geselecteerde invoermethode"
 
 #: ../setup/setup.ui.h:41
 msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr "<small><i>De standaard invoermethode is de bovenste in de lijst.\nje kunt op/neer toetsen gebruiken om dit te veranderen.</i></small>"
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
+msgstr "<small><i>De actieve invoermethode kan omgeschakeld worden tussen de geselecteerden in de bovenstaande lijst met het induwen van de toetsenbord sneltoets of met het klikken op het paneel icoon.</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:66
+#: ../setup/setup.ui.h:42 ../setup/enginetreeview.py:66
 msgid "Input Method"
 msgstr "Invoermethode"
 
-#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:29
+#: ../setup/setup.ui.h:43 ../data/ibus.schemas.in.h:29
 msgid "Use system keyboard layout"
 msgstr "Gebruik systeem toetsenbordindeling"
 
-#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:30
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:30
 msgid "Use system keyboard (XKB) layout"
 msgstr "Gebruik systeem toetsenbord (XKB) indeling"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Toetsenbordindeling</b>"
 
-#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:38
+#: ../setup/setup.ui.h:46 ../data/ibus.schemas.in.h:38
 msgid "Share the same input method among all applications"
 msgstr "Deel dezelfde input-methode voor alle toepassingen"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
 msgid "<b>Global input method settings</b>"
 msgstr "<b>Globale invoermethode instellingen</b>"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "Advanced"
 msgstr "Geavanceerd"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:49
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -224,15 +225,15 @@ msgid ""
 "\n"
 msgstr "<bib><b>IBus</b></big>\n<small>De intelligente invoer bus</small>\nHomepagina: http://code.google.com/p/ibus\n\n\n\n"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "Start ibus on login"
 msgstr "Start ibus bij inloggen"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:57
 msgid "<b>Startup</b>"
 msgstr "<b>Opstarten</b>"
 
-#: ../setup/setup.ui.h:59 ../setup/engineabout.py:34
+#: ../setup/setup.ui.h:58 ../setup/engineabout.py:34
 msgid "About"
 msgstr "Over"
 
@@ -452,15 +453,15 @@ msgstr "Druk op een toets (of een toetsencombinatie).\nDe dialoog wordt afgeslot
 msgid "Please press a key (or a key combination)"
 msgstr "Druk op een toets (of een toetsencombinatie)"
 
-#: ../setup/main.py:98 ../setup/main.py:397
+#: ../setup/main.py:99 ../setup/main.py:392
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Gebruik snelkoppeling met Shift voor het omschakelen naar de vorige invoermethode"
 
-#: ../setup/main.py:331
+#: ../setup/main.py:326
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "De IBus daemon draait niet. Wil je het starten?"
 
-#: ../setup/main.py:352
+#: ../setup/main.py:347
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -469,17 +470,17 @@ msgid ""
 msgstr "IBus is gestart! Als je IBus niet kunt gebruiken, voeg je de volgende regels toe aan je $HOME/.bashrc; log daarna opnieuw in op je bureaublad.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:366
+#: ../setup/main.py:361
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus daemon kon niet binnen %d seconden gestart worden"
 
-#: ../setup/main.py:378
+#: ../setup/main.py:373
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Selecteer sneltoets voor %s"
 
-#: ../setup/main.py:379
+#: ../setup/main.py:374
 msgid "switching input methods"
 msgstr "bezig met omschakelen van invoermethodes "
 
@@ -533,83 +534,83 @@ msgstr "Schrijf de systeem registry cache."
 msgid "Write the registry cache FILE."
 msgstr "Schrijf het registry cache BESTAND."
 
-#: ../tools/main.vala:292
+#: ../tools/main.vala:293
 msgid "Set or get engine"
 msgstr "Stel engine in of haal deze op"
 
-#: ../tools/main.vala:293
+#: ../tools/main.vala:294
 msgid "Exit ibus-daemon"
 msgstr "Verlaat ibus-daemon"
 
-#: ../tools/main.vala:294
+#: ../tools/main.vala:295
 msgid "Show available engines"
 msgstr "Toon beschikbare engines"
 
-#: ../tools/main.vala:295
+#: ../tools/main.vala:296
 msgid "(Not implemented)"
 msgstr "(Niet geimplementeerd)"
 
-#: ../tools/main.vala:296
+#: ../tools/main.vala:297
 msgid "Restart ibus-daemon"
 msgstr "Start ibus-daemon opnieuw op"
 
-#: ../tools/main.vala:297
+#: ../tools/main.vala:298
 msgid "Show version"
 msgstr "Toon versie"
 
-#: ../tools/main.vala:298
+#: ../tools/main.vala:299
 msgid "Show the content of registry cache"
 msgstr "Toon de inhoud van registry cache"
 
-#: ../tools/main.vala:299
+#: ../tools/main.vala:300
 msgid "Create registry cache"
 msgstr "Maak registry cache aan"
 
-#: ../tools/main.vala:300
+#: ../tools/main.vala:301
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "Print het D-Bus adres van ibus-daemon"
 
-#: ../tools/main.vala:301
+#: ../tools/main.vala:302
 msgid "Show this information"
 msgstr "Toon deze informatie"
 
-#: ../tools/main.vala:307
+#: ../tools/main.vala:308
 #, c-format
 msgid ""
 "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "Gebruik: %s COMMANDO [OPTIE...]\n\n"
 
-#: ../tools/main.vala:308
+#: ../tools/main.vala:309
 #, c-format
 msgid "Commands:\n"
 msgstr "Commando's:\n"
 
-#: ../tools/main.vala:337
+#: ../tools/main.vala:338
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s is een onbekend commando!\n"
 
-#: ../ui/gtk3/panel.vala:348
+#: ../ui/gtk3/panel.vala:382
 msgid "IBus Update"
 msgstr "IBus update"
 
-#: ../ui/gtk3/panel.vala:349 ../ui/gtk3/panel.vala:360
+#: ../ui/gtk3/panel.vala:383 ../ui/gtk3/panel.vala:394
 msgid "Super+space is now the default hotkey."
 msgstr "Super+spatie is nu de standaard snelkoppeling."
 
-#: ../ui/gtk3/panel.vala:657
+#: ../ui/gtk3/panel.vala:656
 msgid "Copyright (c) 2007-2012 Peng Huang\n"
 msgstr "Copyright (c) 2007-2012 Peng Huang\n"
 
-#: ../ui/gtk3/panel.vala:662
+#: ../ui/gtk3/panel.vala:661
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus is een intelligente invoer bus voor Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:666
+#: ../ui/gtk3/panel.vala:665
 msgid "translator-credits"
 msgstr "Geert Warrink"
 
-#: ../ui/gtk3/panel.vala:698
+#: ../ui/gtk3/panel.vala:697
 msgid "Restart"
 msgstr "Opnieuw starten"

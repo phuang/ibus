@@ -14,15 +14,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-09 15:07+0900\n"
-"PO-Revision-Date: 2013-08-09 15:07+0900\n"
+"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"POT-Creation-Date: 2013-11-29 18:44+0900\n"
+"PO-Revision-Date: 2013-11-30 03:26+0000\n"
 "Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../setup/setup.ui.h:1
@@ -79,8 +79,7 @@ msgstr "次のインプットメソッド:"
 
 #: ../setup/setup.ui.h:14
 msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リストの中でひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../setup/setup.ui.h:15
 msgid "Previous input method:"
@@ -140,9 +139,7 @@ msgstr "言語バーにインプットメソッド名を表示する"
 
 #: ../setup/setup.ui.h:29
 msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表"
-"示します"
+msgstr "チェックボックスをチェックしたときに言語バー上でインプットメソッドの名前を表示します"
 
 #: ../setup/setup.ui.h:30
 msgid "Embed preedit text in application window"
@@ -150,9 +147,7 @@ msgstr "アプリケーションウィンドウに前編集テキストを組み
 
 #: ../setup/setup.ui.h:31
 msgid "Embed the preedit text of input method in the application window"
-msgstr ""
-"アプリケーションウィンドウにインプットメソッドのプリエディットテキストを組み"
-"込みます"
+msgstr "アプリケーションウィンドウにインプットメソッドのプリエディットテキストを組み込みます"
 
 #: ../setup/setup.ui.h:32
 msgid "Use custom font:"
@@ -176,13 +171,11 @@ msgstr "選択したインプットメソッドを有効なインプットメソ
 
 #: ../setup/setup.ui.h:37
 msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で上へ移動します"
 
 #: ../setup/setup.ui.h:38
 msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
+msgstr "選択したインプットメソッドを有効なインプットメソッドの中で下へ移動します"
 
 #: ../setup/setup.ui.h:39
 msgid "Show information of the selected input method"
@@ -194,42 +187,41 @@ msgstr "選択したインプットメソッドの設定を表示します"
 
 #: ../setup/setup.ui.h:41
 msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>デフォルトのインプットメソッドはリストの中で一番上のものです。\n"
-"「上へ/下へ」ボタンを使ってデフォルトを変更できます。</i></small>"
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
+msgstr "<small><i>アクティブなインプットメソッドは、キーボードショートカットキーを押すかパネルアイコンをクリックすることによってリストされている中から１つのインプットメソッドを選択することで切り替えることが可能です。</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:66
+#: ../setup/setup.ui.h:42 ../setup/enginetreeview.py:66
 msgid "Input Method"
 msgstr "インプットメソッド"
 
-#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:29
+#: ../setup/setup.ui.h:43 ../data/ibus.schemas.in.h:29
 msgid "Use system keyboard layout"
 msgstr "システムキーボードレイアウトを使用する"
 
-#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:30
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:30
 msgid "Use system keyboard (XKB) layout"
 msgstr "システムキーボード (XKB) レイアウトを使用する"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:45
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>キーボードレイアウト</b>"
 
-#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:38
+#: ../setup/setup.ui.h:46 ../data/ibus.schemas.in.h:38
 msgid "Share the same input method among all applications"
 msgstr "すべてのアプリケーション間で同じインプットメソッドを共有する"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:47
 msgid "<b>Global input method settings</b>"
 msgstr "<b>グローバルインプットメソッドの設定</b>"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:48
 msgid "Advanced"
 msgstr "詳細"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:49
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -237,23 +229,17 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>インテリジェントなインプットバス</small>\n"
-"ホームページ: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>インテリジェントなインプットバス</small>\nホームページ: http://code.google.com/p/ibus\n\n\n\n"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:56
 msgid "Start ibus on login"
 msgstr "ログイン時に IBus を起動"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:57
 msgid "<b>Startup</b>"
 msgstr "<b>スタートアップ</b>"
 
-#: ../setup/setup.ui.h:59 ../setup/engineabout.py:34
+#: ../setup/setup.ui.h:58 ../setup/engineabout.py:34
 msgid "About"
 msgstr "情報"
 
@@ -282,10 +268,7 @@ msgid ""
 "Set popup delay milliseconds to show IME switcher window. The default is "
 "400. 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do "
 "not show the window and switch prev/next engines."
-msgstr ""
-"IME スイッチャーウィンドウを表示するまでのミリ秒単位の遅延を指定してくださ"
-"い。デフォルトは400ミリ秒です。0 = ウィンドウをすぐに表示。0 &lt; ミリ秒単位"
-"の遅延。0 &gt; ウィンドウの表示をせずに、以前と次のエンジンの切り替え。"
+msgstr "IME スイッチャーウィンドウを表示するまでのミリ秒単位の遅延を指定してください。デフォルトは400ミリ秒です。0 = ウィンドウをすぐに表示。0 &lt; ミリ秒単位の遅延。0 &gt; ウィンドウの表示をせずに、以前と次のエンジンの切り替え。"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Saved version number"
@@ -295,9 +278,7 @@ msgstr "保存されているバージョンナンバー"
 msgid ""
 "The saved version number will be used to check the difference between the "
 "version of the previous installed ibus and one of the current ibus."
-msgstr "保存されているバージョンナンバーは以前インストールされていた ibus "
-"のバージョンと現在インストールされている ibus のバージョンの違いを検査する"
-"ために使用されます。"
+msgstr "保存されているバージョンナンバーは以前インストールされていた ibus のバージョンと現在インストールされている ibus のバージョンの違いを検査するために使用されます。"
 
 #: ../data/ibus.schemas.in.h:9
 msgid "Trigger shortcut keys"
@@ -337,8 +318,7 @@ msgstr "前のエンジンへのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:19
 msgid "The shortcut keys for switching to the previous input method"
-msgstr ""
-"リスト中のひとつ前のインプットメソッドに切り替えるためのショートカットキー"
+msgstr "リスト中のひとつ前のインプットメソッドに切り替えるためのショートカットキー"
 
 #: ../data/ibus.schemas.in.h:20
 msgid "Auto hide"
@@ -348,8 +328,7 @@ msgstr "自動的に隠す"
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
-msgstr ""
-"言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
+msgstr "言語パネルの動作。0 = メニューに組み込む、1 = 自動的に隠す、2 = 常に表示"
 
 #: ../data/ibus.schemas.in.h:22
 msgid "Language panel position"
@@ -359,9 +338,7 @@ msgstr "言語パネルの位置"
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタ"
-"ム"
+msgstr "言語パネルの位置。0 = 左上隅、1 = 右上隅、2 = 左下隅、3 = 右下隅、4 = カスタム"
 
 #: ../data/ibus.schemas.in.h:24
 msgid "Orientation of lookup table"
@@ -409,9 +386,7 @@ msgstr "標準でインプットメソッドを有効にする"
 
 #: ../data/ibus.schemas.in.h:40
 msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"アプリケーションに入力フォーカスが当たったとき標準でインプットメソッドを有効"
-"にする"
+msgstr "アプリケーションに入力フォーカスが当たったとき標準でインプットメソッドを有効にする"
 
 #: ../data/ibus.schemas.in.h:41
 msgid "DConf preserve name prefixes"
@@ -425,9 +400,7 @@ msgstr "DConf キーのプレフィックスは名前変換を停止します"
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "Copyright (c) 2007-2010 Peng Huang\nCopyright (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
 msgid "Other"
@@ -480,48 +453,40 @@ msgstr "モディファイア:"
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
-msgstr ""
-"キーもしくはキーの組み合わせを入力してください。\n"
-"キーを離すとダイアログを閉じます"
+msgstr "キーもしくはキーの組み合わせを入力してください。\nキーを離すとダイアログを閉じます"
 
 #: ../setup/keyboardshortcut.py:252
 msgid "Please press a key (or a key combination)"
 msgstr "キーもしくはキーの組み合わせを入力してください"
 
-#: ../setup/main.py:98 ../setup/main.py:397
+#: ../setup/main.py:99 ../setup/main.py:392
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "以前のインプットメソッドに切り替えるを使用する"
 
-#: ../setup/main.py:331
+#: ../setup/main.py:326
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "IBus デーモンは稼働していません。開始しますか？"
 
-#: ../setup/main.py:352
+#: ../setup/main.py:347
 msgid ""
-"IBus has been started! If you cannot use IBus, add the following lines to "
-"your $HOME/.bashrc; then relog into your desktop.\n"
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus は開始しました。もし IBus を利用できない場合、次の環境変数を $HOME/."
-"bashrc へ追記し、デスクトップに再ログインしてください。\n"
-"export GTK_IM_MODULE=ibus\n"
-"export XMODIFIERS=@im=ibus\n"
-"export QT_IM_MODULE=ibus"
+msgstr "IBus は開始しました。もし IBus を利用できない場合、次の環境変数を $HOME/.bashrc へ追記し、デスクトップに再ログインしてください。\nexport GTK_IM_MODULE=ibus\nexport XMODIFIERS=@im=ibus\nexport QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:366
+#: ../setup/main.py:361
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus デーモンは %d 秒以内に開始できませんでした。"
 
-#: ../setup/main.py:378
+#: ../setup/main.py:373
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "%s のキーボードショートカットを選択"
 
-#: ../setup/main.py:379
+#: ../setup/main.py:374
 msgid "switching input methods"
 msgstr "インプットメソッドの切り替え"
 
@@ -575,100 +540,83 @@ msgstr "システムレジストリーキャッシュを書き込む。"
 msgid "Write the registry cache FILE."
 msgstr "レジストリーキャッシュ FILE を書き込む。"
 
-#: ../tools/main.vala:292
+#: ../tools/main.vala:293
 msgid "Set or get engine"
 msgstr "エンジンを設定もしくは表示する。"
 
-#: ../tools/main.vala:293
+#: ../tools/main.vala:294
 msgid "Exit ibus-daemon"
 msgstr "ibus-daemon を終了する"
 
-#: ../tools/main.vala:294
+#: ../tools/main.vala:295
 msgid "Show available engines"
 msgstr "利用可能なエンジンを表示する"
 
-#: ../tools/main.vala:295
+#: ../tools/main.vala:296
 msgid "(Not implemented)"
 msgstr "(実装されていません)"
 
-#: ../tools/main.vala:296
+#: ../tools/main.vala:297
 msgid "Restart ibus-daemon"
 msgstr "ibus-daemon を再起動する"
 
-#: ../tools/main.vala:297
+#: ../tools/main.vala:298
 msgid "Show version"
 msgstr "バージョンを表示する"
 
-#: ../tools/main.vala:298
+#: ../tools/main.vala:299
 msgid "Show the content of registry cache"
 msgstr "レジストリーキャッシュの内容を表示する"
 
-#: ../tools/main.vala:299
+#: ../tools/main.vala:300
 msgid "Create registry cache"
 msgstr "レジストリーキャッシュを作成する"
 
-#: ../tools/main.vala:300
+#: ../tools/main.vala:301
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "ibus-daemon の D-Bus アドレスを表示する"
 
-#: ../tools/main.vala:301
+#: ../tools/main.vala:302
 msgid "Show this information"
 msgstr "この情報を表示する"
 
-#: ../tools/main.vala:307
+#: ../tools/main.vala:308
 #, c-format
 msgid ""
 "Usage: %s COMMAND [OPTION...]\n"
 "\n"
-msgstr ""
-"使い方: %s コマンド [オプション...]\n"
-"\n"
+msgstr "使い方: %s コマンド [オプション...]\n\n"
 
-#: ../tools/main.vala:308
+#: ../tools/main.vala:309
 #, c-format
 msgid "Commands:\n"
 msgstr "コマンド:\n"
 
-#: ../tools/main.vala:337
+#: ../tools/main.vala:338
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s は不明なコマンドです。\n"
 
-#: ../ui/gtk3/panel.vala:348
+#: ../ui/gtk3/panel.vala:382
 msgid "IBus Update"
 msgstr "IBus の更新"
 
-#: ../ui/gtk3/panel.vala:349 ../ui/gtk3/panel.vala:360
+#: ../ui/gtk3/panel.vala:383 ../ui/gtk3/panel.vala:394
 msgid "Super+space is now the default hotkey."
 msgstr "Super+space が現在のデフォルトのホットキーです。"
 
-#: ../ui/gtk3/panel.vala:657
+#: ../ui/gtk3/panel.vala:656
 msgid "Copyright (c) 2007-2012 Peng Huang\n"
 msgstr "Copyright (c) 2007-2012 Peng Huang\n"
 
-#: ../ui/gtk3/panel.vala:662
+#: ../ui/gtk3/panel.vala:661
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk3/panel.vala:666
+#: ../ui/gtk3/panel.vala:665
 msgid "translator-credits"
-msgstr ""
-"UTUMI Hirosi <utuhiro78@yahoo.co.jp>\n"
-"IWAI, Masaharu <iwai@alib.jp>\n"
-"日向原 龍一 <hyu_gabaru@yahoo.co.jp>"
+msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\nIWAI, Masaharu <iwai@alib.jp>\n日向原 龍一 <hyu_gabaru@yahoo.co.jp>"
 
-#: ../ui/gtk3/panel.vala:698
+#: ../ui/gtk3/panel.vala:697
 msgid "Restart"
 msgstr "再起動"
-
-#~ msgid "IBus"
-#~ msgstr "IBus"
-
-#~ msgid "Input Method Framework"
-#~ msgstr "インプットメソッドフレームワーク"
-
-#~ msgid "Start IBus Input Method Framework"
-#~ msgstr "IBus インプットメソッドフレームワークを起動"
-
-#~ msgid "command [OPTIONS]"
-#~ msgstr "コマンド [オプション]"

@@ -22,7 +22,7 @@ which gnome-autogen.sh || {
     touch $srcdir/ChangeLog
 }
 
-CFLAGS=${CFLAGS-"-Wall -Werror -Wformat -Werror=format-security"}
+CFLAGS=${CFLAGS-"-Wall -Wformat -Werror=format-security"}
 
 # need --enable-gtk-doc for gnome-autogen.sh to make dist
 ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.11 CFLAGS="$CFLAGS" . gnome-autogen.sh "$@"

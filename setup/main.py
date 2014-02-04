@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,6 +19,9 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
+
+# for python2
+from __future__ import print_function
 
 import os
 import signal
@@ -45,7 +48,7 @@ from i18n import DOMAINNAME, _, N_, init as i18n_init
     COLUMN_VISIBLE,
     COLUMN_ICON,
     COLUMN_DATA,
-) = range(6)
+) = list(range(6))
 
 (
     DATA_NAME,
@@ -57,7 +60,7 @@ from i18n import DOMAINNAME, _, N_, init as i18n_init
     DATA_EXEC,
     DATA_STARTED,
     DATA_PRELOAD
-) = range(9)
+) = list(range(9))
 
 class Setup(object):
     def __flush_gtk_events(self):
@@ -286,7 +289,7 @@ class Setup(object):
             obj.set_sensitive(False)
 
         if prop.name == "engines":
-            engine_names = map(lambda e: e.get_name(), engines)
+            engine_names = [e.get_name() for e in engines]
             self.__settings_general.set_strv('preload-engines', engine_names)
 
     def __button_engine_add_cb(self, button):
@@ -306,7 +309,7 @@ class Setup(object):
         if len(args) == 0:
             return
         name = engine.get_name()
-        if name in self.__engine_setup_exec_list.keys():
+        if name in list(self.__engine_setup_exec_list.keys()):
             try:
                 wpid, sts = os.waitpid(self.__engine_setup_exec_list[name],
                                        os.WNOHANG)
@@ -402,7 +405,7 @@ class Setup(object):
         if data[DATA_STARTED] == False:
             try:
                 self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
-            except Exception, e:
+            except Exception as e:
                 dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
@@ -413,7 +416,7 @@ class Setup(object):
         else:
             try:
                 self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
-            except Exception, e:
+            except Exception as e:
                 dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
                         buttons = Gtk.ButtonsType.CLOSE,
                         message_format = str(e))
@@ -492,7 +495,7 @@ if __name__ == "__main__":
     try:
         locale.setlocale(locale.LC_ALL, '')
     except locale.Error:
-        print >> sys.stderr, "Using the fallback 'C' locale"
+        print("Using the fallback 'C' locale", file=sys.stderr)
         locale.setlocale(locale.LC_ALL, 'C')
 
     i18n_init()

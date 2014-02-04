@@ -2,19 +2,20 @@
 # German translation of ibus.
 # Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# 
+#
 # Translators:
 # Fabian Affolter <fab@fedoraproject.org>, 2009
 # hpeters <hpeters@redhat.com>, 2009
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2011
+# Rainer <rgromans@redhat.com>, 2013
 # Roman Spirgi <bigant@fedoraproject.org>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2012-12-06 15:35+0900\n"
-"PO-Revision-Date: 2012-12-18 20:39+0000\n"
-"Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
+"POT-Creation-Date: 2013-08-09 15:07+0900\n"
+"PO-Revision-Date: 2013-11-20 11:18+0000\n"
+"Last-Translator: Rainer <rgromans@redhat.com>\n"
 "Language-Team: German <trans-de@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -86,7 +87,7 @@ msgstr "Vorherige Eingabemethode:"
 msgid "..."
 msgstr "..."
 
-#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:8
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:10
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Tastenkombination zum An- oder Ausschalten der Eingabemethode"
 
@@ -126,11 +127,11 @@ msgstr "Sprach-Panel anzeigen:"
 msgid "Language panel position:"
 msgstr "Position des Sprach-Panels:"
 
-#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:24
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:26
 msgid "Show icon on system tray"
 msgstr "Symbol im Benachrichtigungsfeld anzeigen"
 
-#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:26
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:28
 msgid "Show input method name on language bar"
 msgstr "Name der Eingabemethode auf Sprachleiste anzeigen"
 
@@ -189,15 +190,15 @@ msgid ""
 msgstr "<small><i>Die standardmäßige Eingabemethode steht in der Liste an erster Stelle.\nSie können dies mit den Hoch/Runter-Schaltflächen ändern.</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:64
+#: ../setup/setup.ui.h:43 ../setup/enginetreeview.py:66
 msgid "Input Method"
 msgstr "Eingabemethode"
 
-#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:27
+#: ../setup/setup.ui.h:44 ../data/ibus.schemas.in.h:29
 msgid "Use system keyboard layout"
 msgstr "System-Tastaturbelegung verwenden"
 
-#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:28
+#: ../setup/setup.ui.h:45 ../data/ibus.schemas.in.h:30
 msgid "Use system keyboard (XKB) layout"
 msgstr "System-Tastatur (XKB) Belegung verwenden"
 
@@ -205,7 +206,7 @@ msgstr "System-Tastatur (XKB) Belegung verwenden"
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Tastaturbelegung</b>"
 
-#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:36
+#: ../setup/setup.ui.h:47 ../data/ibus.schemas.in.h:38
 msgid "Share the same input method among all applications"
 msgstr "Dieselbe Eingabemethode für alle Anwendungen verwenden"
 
@@ -239,18 +240,6 @@ msgstr "<b>Starten</b>"
 msgid "About"
 msgstr "Info"
 
-#: ../bus/ibus.desktop.in.h:1
-msgid "IBus"
-msgstr "IBus"
-
-#: ../bus/ibus.desktop.in.h:2
-msgid "Input Method Framework"
-msgstr "Eingabemethode-Framework"
-
-#: ../bus/ibus.desktop.in.h:3
-msgid "Start IBus Input Method Framework"
-msgstr "IBus-Eingabemethode-Framework starten"
-
 #: ../data/ibus.schemas.in.h:1
 msgid "Preload engines"
 msgstr "Engines vorladen"
@@ -279,118 +268,128 @@ msgid ""
 msgstr "Popup-Verzögerung für IME-Wechsel-Fenster setzen. Standardmäßig ist der Wert von 400 gesetzt. 0 = Fenster sofort anzeigen. 0 &lt; Verzögerung in Millisekunden. 0 &gt; Fenster nicht anzeigen und zur vorhergehenden/ nachfolgenden Engine wechseln."
 
 #: ../data/ibus.schemas.in.h:7
+msgid "Saved version number"
+msgstr "Gespeicherte Versions-Numnner"
+
+#: ../data/ibus.schemas.in.h:8
+msgid ""
+"The saved version number will be used to check the difference between the "
+"version of the previous installed ibus and one of the current ibus."
+msgstr "Die gespeicherte Versions-Nummer wird verwendet, um den Unterschied zwischen der Version der zuvor installierten ibus und der aktuellen ibus zu überprüfen."
+
+#: ../data/ibus.schemas.in.h:9
 msgid "Trigger shortcut keys"
 msgstr "Auslöser-Tastenkombination"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Trigger shortcut keys for gtk_accelerator_parse"
 msgstr "Tastenkombinationen auslösen für gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:10
+#: ../data/ibus.schemas.in.h:12
 msgid "Enable shortcut keys"
 msgstr "Tastenkürzel aktivieren"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "The shortcut keys for turning input method on"
 msgstr "Tastenkürzel zum Einschalten der Eingabemethoden"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Disable shortcut keys"
 msgstr "Tastenkürzel deaktivieren"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "The shortcut keys for turning input method off"
 msgstr "Tastenkürzel zum Ausschalten der Eingabemethoden"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Next engine shortcut keys"
 msgstr "Nächste Engine-Tastenkombination"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "Tastenkombination zum Wechseln zur nächsten Eingabemethode in der Liste"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Prev engine shortcut keys"
 msgstr "Vorherige Engine-Tastenkombination"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "Tastenkombination zum Wechseln zur vorherigen Eingabemethode"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Auto hide"
 msgstr "Automatisch verstecken"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid ""
 "The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
 "Always show"
 msgstr "Verhalten des Sprach-Panels: 0 = Im Menü einbetten, 1 = Automatisch verstecken, 2 = Immer anzeigen"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid "Language panel position"
 msgstr "Position des Sprach-Panels"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "Die Position des Sprach-Panels: 0 = Ecke oben links, 1 = Ecke oben rechts, 2 = Ecke unten links, 3 = Ecke unten rechts, 4 = Benutzerdefiniert"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "Orientation of lookup table"
 msgstr "Ausrichtung der Lookup-Tabelle"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:25
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Ausrichtung der Lookup-Tabelle. 0 = Horizontal, 1 = Vertikal"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:27
 msgid "Show input method name"
 msgstr "Name der Eingabemethode anzeigen"
 
-#: ../data/ibus.schemas.in.h:29
+#: ../data/ibus.schemas.in.h:31
 msgid "Use custom font"
 msgstr "Benutzerdefinierte Schriftart verwenden"
 
-#: ../data/ibus.schemas.in.h:30
+#: ../data/ibus.schemas.in.h:32
 msgid "Use custom font name for language panel"
 msgstr "Benutzerdefinierte Schriftart für Sprach-Panel verwenden"
 
-#: ../data/ibus.schemas.in.h:31
+#: ../data/ibus.schemas.in.h:33
 msgid "Custom font"
 msgstr "Benutzerdefinierte Schriftart"
 
-#: ../data/ibus.schemas.in.h:32
+#: ../data/ibus.schemas.in.h:34
 msgid "Custom font name for language panel"
 msgstr "Name der benutzerdefinierten Schriftart für Sprach-Panel"
 
-#: ../data/ibus.schemas.in.h:33
+#: ../data/ibus.schemas.in.h:35
 msgid "Embed Preedit Text"
 msgstr "Preedit-Text einbetten"
 
-#: ../data/ibus.schemas.in.h:34
+#: ../data/ibus.schemas.in.h:36
 msgid "Embed Preedit Text in Application Window"
 msgstr "Preedit-Text in Anwendungsfenster einbetten"
 
-#: ../data/ibus.schemas.in.h:35
+#: ../data/ibus.schemas.in.h:37
 msgid "Use global input method"
 msgstr "Globale Eingabemethode wählen"
 
-#: ../data/ibus.schemas.in.h:37
+#: ../data/ibus.schemas.in.h:39
 msgid "Enable input method by default"
 msgstr "Eingabemethode standardmäßig aktivieren"
 
-#: ../data/ibus.schemas.in.h:38
+#: ../data/ibus.schemas.in.h:40
 msgid "Enable input method by default when the application gets input focus"
 msgstr "Eingabemethode standardmäßig aktivieren, wenn die Anwendung Eingabefokus erlangt"
 
-#: ../data/ibus.schemas.in.h:39
+#: ../data/ibus.schemas.in.h:41
 msgid "DConf preserve name prefixes"
 msgstr "Dconf bewahrt Namenspräfixe"
 
-#: ../data/ibus.schemas.in.h:40
+#: ../data/ibus.schemas.in.h:42
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Namenspräfixe von Dconf-Schlüsseln, um Namenskonvertierung anzuhalten"
 
@@ -427,7 +426,7 @@ msgstr "Beschreibung:\n"
 msgid "Select an input method"
 msgstr "Eingabemethode wählen"
 
-#: ../setup/enginetreeview.py:92
+#: ../setup/enginetreeview.py:94
 msgid "Kbd"
 msgstr "Kbd"
 
@@ -457,15 +456,15 @@ msgstr "Bitte eine Taste (oder eine Tastenkombination drücken).\nDer Dialog wir
 msgid "Please press a key (or a key combination)"
 msgstr "Bitte eine Taste (oder eine Tastenkombination drücken)"
 
-#: ../setup/main.py:99 ../setup/main.py:398
+#: ../setup/main.py:98 ../setup/main.py:397
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Tastenkombination mit Umschalttaste benutzen, um zur vorherigen Eingabemethode zu wechseln"
 
-#: ../setup/main.py:332
+#: ../setup/main.py:331
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "Der IBus-Dienst läuft nicht. Möchten Sie ihn starten?"
 
-#: ../setup/main.py:353
+#: ../setup/main.py:352
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -474,82 +473,147 @@ msgid ""
 msgstr "IBus wurde gestartet! Falls Sie IBus nicht nutzen können, fügen Sie bitte in $HOME/.bashrc die nachfolgenden Zeilen an und loggen Sie sich anschließend erneut ein.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:367
+#: ../setup/main.py:366
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus-Dienst konnte innerhalb von %d Sekunden nicht gestartet werden"
 
-#: ../setup/main.py:379
+#: ../setup/main.py:378
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Wählen Sie eine Tastenkombination für %s"
 
-#: ../setup/main.py:380
+#: ../setup/main.py:379
 msgid "switching input methods"
 msgstr "Eingabemethoden wechseln"
 
-#: ../tools/main.vala:40
+#: ../tools/main.vala:42
 msgid "List engine name only"
 msgstr "Nur Engine-Name auflisten"
 
-#: ../tools/main.vala:44
-msgid "command [OPTIONS]"
-msgstr "Befehl [OPTIONEN]"
-
-#: ../tools/main.vala:56 ../tools/main.vala:177 ../tools/main.vala:187
+#: ../tools/main.vala:58 ../tools/main.vala:179 ../tools/main.vala:189
 #, c-format
 msgid "Can't connect to IBus.\n"
 msgstr "Keine Verbindung zu IBus.\n"
 
-#: ../tools/main.vala:82
+#: ../tools/main.vala:84
 #, c-format
 msgid "language: %s\n"
 msgstr "Sprache: %s\n"
 
-#: ../tools/main.vala:150
+#: ../tools/main.vala:152
 #, c-format
 msgid "No engine is set.\n"
 msgstr "Keine Engine gesetzt.\n\n"
 
-#: ../tools/main.vala:158
+#: ../tools/main.vala:160
 #, c-format
 msgid "Set global engine failed.\n"
 msgstr "Setzen der globalen Engine fehlgeschlagen.\n"
 
-#: ../tools/main.vala:163
+#: ../tools/main.vala:165
 #, c-format
 msgid "Get global engine failed.\n"
 msgstr "Auslesen der globalen Engine fehlgeschlagen.\n"
 
-#: ../tools/main.vala:224
+#: ../tools/main.vala:204
+msgid "Read the system registry cache."
+msgstr "Lesen Sie den System-Registry-Cache."
+
+#: ../tools/main.vala:206
+msgid "Read the registry cache FILE."
+msgstr "Lesen Sie die Registry-Cache DATEI."
+
+#: ../tools/main.vala:224 ../tools/main.vala:229
+#, c-format
+msgid "The registry cache is invalid.\n"
+msgstr "Der Registry-Cache ist ungültig.\n"
+
+#: ../tools/main.vala:244
+msgid "Write the system registry cache."
+msgstr "Schreiben Sie den System-Registry-Cache."
+
+#: ../tools/main.vala:246
+msgid "Write the registry cache FILE."
+msgstr "Schreiben Sie die Registry-Cache DATEI."
+
+#: ../tools/main.vala:292
+msgid "Set or get engine"
+msgstr "Setzen oder erhalten Modul"
+
+#: ../tools/main.vala:293
+msgid "Exit ibus-daemon"
+msgstr "Beenden ibus-daemon"
+
+#: ../tools/main.vala:294
+msgid "Show available engines"
+msgstr "Anzeigen verfügbare Module"
+
+#: ../tools/main.vala:295
+msgid "(Not implemented)"
+msgstr "(Nicht implementiert)"
+
+#: ../tools/main.vala:296
+msgid "Restart ibus-daemon"
+msgstr "Neustart ibus-daemon"
+
+#: ../tools/main.vala:297
+msgid "Show version"
+msgstr "Anzeigen Version"
+
+#: ../tools/main.vala:298
+msgid "Show the content of registry cache"
+msgstr "Anzeigen Inhalt des Registry-Cache."
+
+#: ../tools/main.vala:299
+msgid "Create registry cache"
+msgstr "Erstellen Registry-Cache"
+
+#: ../tools/main.vala:300
+msgid "Print the D-Bus address of ibus-daemon"
+msgstr "Ausgabe der D-Bus-Adresse des ibus-Daemon"
+
+#: ../tools/main.vala:301
+msgid "Show this information"
+msgstr "Anzeige dieser Information"
+
+#: ../tools/main.vala:307
 #, c-format
 msgid ""
 "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "Anwendung: %s BEFEHL [OPTION...]\n\n"
 
-#: ../tools/main.vala:225
+#: ../tools/main.vala:308
 #, c-format
 msgid "Commands:\n"
 msgstr "Befehle:\n"
 
-#: ../tools/main.vala:247
+#: ../tools/main.vala:337
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s ist ein unbekannter Befehl!\n"
 
-#: ../ui/gtk3/panel.vala:498
+#: ../ui/gtk3/panel.vala:348
+msgid "IBus Update"
+msgstr "IBus Aktualisierung"
+
+#: ../ui/gtk3/panel.vala:349 ../ui/gtk3/panel.vala:360
+msgid "Super+space is now the default hotkey."
+msgstr "Super+Leerzeichen ist nun der Standard-Hotkey."
+
+#: ../ui/gtk3/panel.vala:657
 msgid "Copyright (c) 2007-2012 Peng Huang\n"
 msgstr "Copyright (c) 2007-2012 Peng Huang\n"
 
-#: ../ui/gtk3/panel.vala:503
+#: ../ui/gtk3/panel.vala:662
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus ist ein intelligenter Eingabe-Bus für Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:507
+#: ../ui/gtk3/panel.vala:666
 msgid "translator-credits"
 msgstr "Fabian Affolter <fab@fedoraproject.org>, 2009.\nHedda Peters <hpeters@redhat.com>, 2009."
 
-#: ../ui/gtk3/panel.vala:539
+#: ../ui/gtk3/panel.vala:698
 msgid "Restart"
 msgstr "Neustart"

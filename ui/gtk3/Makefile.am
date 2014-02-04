@@ -109,6 +109,7 @@ ibus_ui_gtk3_SOURCES = \
 	panel.vala \
 	pango.vala \
 	property.vala \
+	propertypanel.vala \
 	separator.vala \
 	switcher.vala \
 	$(NULL)

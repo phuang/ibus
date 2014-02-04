@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_CONFIG_H_
+#define __IBUS_CONFIG_H_
+
 /**
  * SECTION: ibusconfig
  * @title: IBusConfig
@@ -34,8 +37,6 @@
  *
  * Currently, IBusConfig supports gconf.
  */
-#ifndef __CONFIG_H_
-#define __CONFIG_H_
 
 #include "ibusproxy.h"
 
@@ -116,7 +117,6 @@ void             ibus_config_new_async      (GDBusConnection    *connection,
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_config_new_async().
  * @error: Return location for error or %NULL.
- *
  * @returns: A newly allocated #IBusConfig.
  *
  * Finishes an operation started with ibus_config_new_async().

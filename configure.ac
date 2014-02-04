@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,7 @@ m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [5])
-m4_define([ibus_micro_version], [4])
+m4_define([ibus_micro_version], [5])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
@@ -136,7 +136,7 @@ AM_GLIB_GNU_GETTEXT
 AM_DISABLE_STATIC
 AC_ISC_POSIX
 AC_HEADER_STDC
-AM_PROG_LIBTOOL
+LT_INIT
 IT_PROG_INTLTOOL([0.35.0])
 
 # Check functions.
@@ -344,9 +344,6 @@ if test x"$enable_dconf" = x"yes"; then
         [])
     # check glib-compile-schemas
     GLIB_GSETTINGS
-    AC_PATH_PROG([GSETTINGS_SCHEMA_CONVERT], [gsettings-schema-convert])
-    AS_IF([test x"$ac_cv_path_GSETTINGS_SCHEMA_CONVERT" = x""],
-          [AC_MSG_ERROR([gsettings-schema-convert from GConf2 is required for dconf support])])
     enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
 
@@ -372,7 +369,19 @@ AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"
 AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
+# Define python version
+AC_ARG_WITH(python,
+    AS_HELP_STRING([--with-python[=PATH]],
+        [Select python2 or python3]),
+    [PYTHON=$with_python], []
+)
+
 AM_PATH_PYTHON([2.5])
+AC_PATH_PROG(PYTHON2, python2)
+
+if test x"$PYTHON2" = x""; then
+    PYTHON2=$PYTHON
+fi
 
 PYGOBJECT_REQUIRED=3.0.0
 
@@ -380,10 +389,13 @@ PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
                  [enable_pygobject=yes], [enable_pygobject=no])
 
 if test "x$enable_pygobject" = "xyes"; then
-	PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+    PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
 
-	pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
-	AC_SUBST(pyoverridesdir)
+    pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
+    AC_SUBST(pyoverridesdir)
+
+    py2overridesdir=`$PYTHON2 -c "import gi; print(gi._overridesdir)"`
+    AC_SUBST(py2overridesdir)
 fi
 
 AM_CONDITIONAL(ENABLE_PYGOBJECT, test x"$enable_pygobject" = "xyes")
@@ -405,6 +417,13 @@ if test x"$enable_python_library" = x"yes"; then
     AC_SUBST(PYTHON_CFLAGS)
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
+
+    PYTHON2_PREFIX=`$PYTHON2 -c "import sys; sys.stdout.write(sys.prefix)"`
+    PYTHON2_VERSION=`$PYTHON2 -c "import sys; sys.stdout.write(sys.version[[:3]])"`
+    PYTHON2_LIBDIR="$PYTHON2_PREFIX/lib/python$PYTHON2_VERSION"
+    python2dir="$PYTHON2_LIBDIR/site-packages"
+    pkgpython2dir="$python2dir/ibus"
+    AC_SUBST(pkgpython2dir)
 else
     enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
@@ -598,6 +617,8 @@ Build options:
   Build shared libs         $enable_shared
   Build static libs         $enable_static
   CFLAGS                    $CFLAGS
+  PYTHON                    $PYTHON
+  PYTHON2                   $PYTHON2
   Gtk2 immodule dir         $GTK2_IM_MODULEDIR
   Gtk3 immodule dir         $GTK3_IM_MODULEDIR
   Build gtk2 immodule       $enable_gtk2

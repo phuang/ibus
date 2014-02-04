@@ -55,6 +55,9 @@ public class CandidatePanel : Gtk.HBox{
             set_vertical(!m_vertical);
             return true;
         });
+        m_toplevel.size_allocate.connect((w, a) => {
+            adjust_window_position();
+        });
 
         Handle handle = new Handle();
         handle.set_visible(true);
@@ -96,7 +99,10 @@ public class CandidatePanel : Gtk.HBox{
         if (m_cursor_location == location)
             return;
         m_cursor_location = location;
-        adjust_window_position();
+
+        /* Do not call adjust_window_position() here because
+         * m_toplevel is not shown yet and
+         * m_toplevel.get_allocation() returns height = width = 1 */
     }
 
     private void set_labels(IBus.Text[] labels) {

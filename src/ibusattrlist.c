@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -130,8 +130,8 @@ ibus_attr_list_copy (IBusAttrList       *dest,
                                  (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
-    g_return_val_if_fail (IBUS_IS_ATTRIBUTE (dest), FALSE);
-    g_return_val_if_fail (IBUS_IS_ATTRIBUTE (src), FALSE);
+    g_return_val_if_fail (IBUS_IS_ATTR_LIST (dest), FALSE);
+    g_return_val_if_fail (IBUS_IS_ATTR_LIST (src), FALSE);
 
     gint i;
     for (i = 0; ; i++) {

@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_FACTORY_H_
+#define __IBUS_FACTORY_H_
+
 /**
  * SECTION: ibusfactory
  * @short_description: Factory for creating engine instances.
@@ -34,11 +37,9 @@
  * It provides CreateEngine remote method, which creates an IME instance by name,
  * and returns the D-Bus object path to IBus daemon.
  *
- * @see_also: #IBusEngine
+ * see_also: #IBusEngine
  *
  */
-#ifndef __IBUS_FACTORY_H_
-#define __IBUS_FACTORY_H_
 
 #include "ibusservice.h"
 #include "ibusserializable.h"

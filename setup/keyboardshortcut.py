@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -182,7 +182,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
                 modifiers.append(name)
         if keycode.startswith("_"):
             keycode = keycode[1:]
-        shortcut = "".join(map(lambda m: '<' + m + '>', modifiers))
+        shortcut = "".join(['<' + m + '>' for m in modifiers])
         shortcut += keycode
         return shortcut
 
@@ -335,6 +335,6 @@ if __name__ == "__main__":
                    Gtk.STOCK_OK, Gtk.ResponseType.OK))
     dlg.add_shortcut("Control+Shift+space")
     dlg.set_shortcuts(None)
-    print dlg.run()
-    print dlg.get_shortcuts()
+    print((dlg.run()))
+    print((dlg.get_shortcuts()))
 

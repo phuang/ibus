@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_OBJECT_H_
+#define __IBUS_OBJECT_H_
+
 /**
  * SECTION: ibusobject
  * @short_description: Base object of IBus.
@@ -32,8 +35,6 @@
  *
  * IBusObject is the base object for all objects in IBus.
  */
-#ifndef __IBUS_OBJECT_H_
-#define __IBUS_OBJECT_H_
 
 #include <glib-object.h>
 #include "ibustypes.h"
@@ -90,7 +91,7 @@ struct _IBusObject {
     IBusObjectPrivate *priv;
 };
 
-typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
+typedef void ( *IBusObjectDestroyFunc) (IBusObject *object);
 
 struct _IBusObjectClass {
     GInitiallyUnownedClass parent;

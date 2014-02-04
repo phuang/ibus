@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_KEYMAP_H_
+#define __IBUS_KEYMAP_H_
+
 /**
  * SECTION: ibuskeymap
  * @short_description: Keyboard mapping handling.
@@ -41,12 +44,9 @@
  * Then ibus_keymap_lookup_keysym() can
  * convert scancodes back to the key symbols.
  *
- * @see_also: #IBusComponent, #IBusEngineDesc
+ * see_also: #IBusComponent, #IBusEngineDesc
  *
  */
-
-#ifndef __IBUS_KEYMAP_H_
-#define __IBUS_KEYMAP_H_
 
 #include "ibusobject.h"
 
@@ -129,7 +129,8 @@ IBusKeymap        *ibus_keymap_new                  (const gchar        *name)
 /**
  * ibus_keymap_get:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
+ * @returns: (transfer full): An IBusKeymap associated with the giving name;
+ * or %NULL if failed.
  *
  * Get an IBusKeymap associated with the giving name.
  *

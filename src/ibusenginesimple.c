@@ -29,19 +29,17 @@
 #include "ibuskeys.h"
 #include "ibuskeysyms.h"
 
-#include <stdlib.h>
+#include "ibuscomposetable.h"
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include <memory.h>
+#include <stdlib.h>
 
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
-
-typedef struct _IBusComposeTable IBusComposeTable;
-struct _IBusComposeTable
-{
-    const guint16 *data;
-    gint max_seq_len;
-    gint n_seqs;
-};
 
 typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
 struct _IBusComposeTableCompact
@@ -76,7 +74,7 @@ struct _IBusEngineSimplePrivate {
 static const IBusComposeTableCompact ibus_compose_table_compact = {
     gtk_compose_seqs_compact,
     5,
-    24,
+    25,
     6
 };
 
@@ -929,4 +927,34 @@ ibus_engine_simple_add_table (IBusEngineSimple *simple,
 
     priv->tables = g_slist_prepend (priv->tables, table);
 
+}
+
+gboolean
+ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
+                                        const gchar      *locale)
+{
+    int i;
+
+    if (locale == NULL) {
+#ifdef HAVE_LOCALE_H
+        locale = setlocale (LC_CTYPE, NULL);
+#endif
+        if (locale == NULL)
+            locale = "C";
+    }
+
+    for (i = 0; ibus_compose_table_locale_list[i].locale != NULL; i++) {
+        const gchar *locale2 = ibus_compose_table_locale_list[i].locale;
+        const IBusComposeTable *table = ibus_compose_table_locale_list[i].table;
+
+        if (g_ascii_strncasecmp (locale, locale2 , strlen (locale2)) == 0) {
+            ibus_engine_simple_add_table (simple,
+                                          table->data,
+                                          table->max_seq_len,
+                                          table->n_seqs);
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }

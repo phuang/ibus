@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,9 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
+#ifndef __IBUS_COMPONENT_H_
+#define __IBUS_COMPONENT_H_
+
 /**
  * SECTION: ibuscomponent
  * @short_description:  Component (executable) specification.
@@ -41,8 +44,6 @@
  * The format of a component XML file is described  at
  * <ulink url="http://code.google.com/p/ibus/wiki/DevXML">http://code.google.com/p/ibus/wiki/DevXML</ulink>
  */
-#ifndef __IBUS_COMPONENT_H_
-#define __IBUS_COMPONENT_H_
 
 #include "ibusserializable.h"
 #include "ibusobservedpath.h"

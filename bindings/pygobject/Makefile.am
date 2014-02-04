@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
-# Copyright (c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2014 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,12 @@
 # USA
 
 NULL =
+
+py2_compile = PYTHON=$(PYTHON2) $(SHELL) $(py_compile)
+overrides2dir = $(py2overridesdir)
+overrides2_DATA =				\
+	gi/overrides/IBus.py			\
+	$(NULL)
 
 overridesdir = $(pyoverridesdir)
 overrides_PYTHON =				\
@@ -45,6 +51,16 @@ EXTRA_DIST =					\
 	gi/__init__.py				\
 	gi/overrides/__init__.py		\
 	test-override-ibus.py                   \
+	$(NULL)
+
+install-data-hook:
+	@for data in $(overrides2_DATA); do \
+	    file=`echo $$data | sed -e 's|^.*/||'`; \
+	    dlist="$$dlist $$file"; \
+	done; \
+	$(py2_compile) --destdir "$(DESTDIR)" \
+	               --basedir "$(overrides2dir)" \
+	               $$dlist
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
