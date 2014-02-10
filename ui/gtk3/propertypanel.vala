@@ -2,9 +2,9 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2013 Red Hat, Inc.
- * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2013-2014 Red Hat, Inc.
+ * Copyright(c) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2013-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,6 +56,8 @@ public class PropertyPanel : Gtk.Box {
     }
 
     public void set_properties(IBus.PropList props) {
+        debug("set_properties()\n");
+
         foreach (var item in m_items)
             (item as Gtk.Widget).destroy();
         m_items = {};
@@ -63,6 +65,20 @@ public class PropertyPanel : Gtk.Box {
         m_props = props;
 
         create_menu_items();
+
+        /* show_with_auto_hide_timer() needs to call here because
+         * if the event order is, focus_in(), set_cursor_location() and
+         * set_properties(), m_items.length can be 0 when
+         * set_cursor_location() is called and Property Panel is not shown.
+         *
+         * If all windows are closed, desktop background is focused and
+         * focus_in() and set_properties() are called but
+         * set_cursor_location() is not called.
+         * Then we should not show Property panel when m_cursor_location
+         * is (-1, -1) because of no windows.
+         */
+        if (m_cursor_location.x != -1 && m_cursor_location.y != -1)
+            show_with_auto_hide_timer();
     }
 
     public void update_property(IBus.Property prop) {
@@ -77,7 +93,8 @@ public class PropertyPanel : Gtk.Box {
         foreach (var item in m_items)
             item.update_property(prop);
 
-        show_with_auto_hide_timer();
+        if (m_cursor_location.x != -1 && m_cursor_location.y != -1)
+            show_with_auto_hide_timer();
     }
 
     public void set_cursor_location(int x, int y, int width, int height) {
