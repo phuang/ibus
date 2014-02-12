@@ -17,5 +17,6 @@ ui/gtk3/keybindingmanager.c
 ui/gtk3/panel.c
 ui/gtk3/pango.c
 ui/gtk3/property.c
+ui/gtk3/propertypanel.c
 ui/gtk3/separator.c
 ui/gtk3/switcher.c

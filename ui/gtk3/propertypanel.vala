@@ -37,6 +37,7 @@ public class PropertyPanel : Gtk.Box {
     private int m_show = PanelShow.AUTO_HIDE;
     private uint m_auto_hide_timeout = 10000;
     private uint m_auto_hide_timeout_id = 0;
+    private bool m_follow_input_cursor_when_always_shown = false;
 
     public PropertyPanel() {
         /* Chain up base class constructor */
@@ -53,6 +54,16 @@ public class PropertyPanel : Gtk.Box {
         pack_start(handle, false, false, 0);
 
         m_toplevel.add(this);
+
+        m_toplevel.size_allocate.connect((w, a) => {
+            if (!m_follow_input_cursor_when_always_shown &&
+                m_show == PanelShow.ALWAYS && m_items.length > 0 &&
+                m_cursor_location.x == -1 && m_cursor_location.y == -1) {
+                set_default_location();
+                m_cursor_location.x = 0;
+                m_cursor_location.y = 0;
+            }
+        });
     }
 
     public void set_properties(IBus.PropList props) {
@@ -98,6 +109,10 @@ public class PropertyPanel : Gtk.Box {
     }
 
     public void set_cursor_location(int x, int y, int width, int height) {
+        if (!m_follow_input_cursor_when_always_shown &&
+            m_show == PanelShow.ALWAYS)
+            return;
+
         /* FIXME: set_cursor_location() has a different behavior
          * in embedded preedit by applications.
          * GtkTextView applications, e.g. gedit, always call
@@ -173,7 +188,9 @@ public class PropertyPanel : Gtk.Box {
     }
 
     public new void show() {
-        if (m_show == PanelShow.DO_NOT_SHOW || m_items.length == 0) {
+        /* m_items.length is not checked here because set_properties()
+         * is not called yet when set_show() is called. */
+        if (m_show == PanelShow.DO_NOT_SHOW) {
             m_toplevel.hide();
             return;
         }
@@ -200,7 +217,9 @@ public class PropertyPanel : Gtk.Box {
          * focus is changed.
          * E.g. Two tabs on gnome-terminal can keep the cursor position.
          */
-        m_cursor_location = { -1, -1, 0, 0 };
+        if (m_follow_input_cursor_when_always_shown ||
+            m_show != PanelShow.ALWAYS)
+            m_cursor_location = { -1, -1, 0, 0 };
 
        /* set_cursor_location() will be called later. */
     }
@@ -212,6 +231,10 @@ public class PropertyPanel : Gtk.Box {
 
     public void set_auto_hide_timeout(uint timeout) {
         m_auto_hide_timeout = timeout;
+    }
+
+    public void set_follow_input_cursor_when_always_shown(bool is_follow) {
+        m_follow_input_cursor_when_always_shown = is_follow;
     }
 
     public override void get_preferred_width(out int minimum_width,
@@ -297,9 +320,78 @@ public class PropertyPanel : Gtk.Box {
         move(x, y);
     }
 
+    private void set_default_location() {
+        Gtk.Allocation allocation;
+        m_toplevel.get_allocation(out allocation);
+
+        unowned Gdk.Window root = Gdk.get_default_root_window();
+        int root_width = root.get_width();
+        int root_x = 0;
+        int root_y = 0;
+        int ws_num = 0;
+
+        unowned Gdk.Display display = root.get_display();
+        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+        X.Window xwindow = Gdk.X11Window.get_xid(root);
+
+        X.Atom _net_current_desktop =
+                xdisplay.intern_atom("_NET_CURRENT_DESKTOP", false);
+        X.Atom type = X.None;
+        int format;
+        ulong nitems = 0;
+        ulong bytes_after;
+        void *prop;
+        xdisplay.get_window_property(xwindow,
+                                     _net_current_desktop,
+                                     0, 32, false, X.XA_CARDINAL,
+                                     out type, out format,
+                                     out nitems, out bytes_after,
+                                     out prop);
+
+        if (type != X.None && nitems >= 1)
+            ws_num = (int) ((ulong *)prop)[0];
+
+        X.Atom _net_workarea =
+                xdisplay.intern_atom("_NET_WORKAREA", false);
+        type = X.None;
+        nitems = 0;
+
+        xdisplay.get_window_property(xwindow,
+                                     _net_workarea,
+                                     0, 32, false, X.XA_CARDINAL,
+                                     out type, out format,
+                                     out nitems, out bytes_after,
+                                     out prop);
+
+        if (type != X.None && nitems >= 2) {
+            root_x = (int) ((ulong *)prop)[ws_num * 4];
+            root_y = (int) ((ulong *)prop)[ws_num * 4 + 1];
+        }
+
+        int x, y;
+        /* Translators: If your locale is RTL, the msgstr is "default:RTL".
+         * Otherwise the msgstr is "default:LTR". */
+        if (_("default:LTR") != "default:RTL") {
+            x = root_width - allocation.width;
+            y = root_y;
+        } else {
+            x = root_x;
+            y = root_y;
+        }
+
+        move(x, y);
+    }
+
     private void show_with_auto_hide_timer() {
-        if (m_show != PanelShow.AUTO_HIDE || m_items.length == 0)
+        if (m_items.length == 0) {
+            m_toplevel.hide();
             return;
+        }
+
+        if (m_show != PanelShow.AUTO_HIDE) {
+            show();
+            return;
+        }
 
         if (m_auto_hide_timeout_id != 0)
             GLib.Source.remove(m_auto_hide_timeout_id);

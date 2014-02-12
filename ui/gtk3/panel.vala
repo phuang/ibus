@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -165,6 +165,11 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["timeout"].connect((key) => {
                 set_timeout_property_panel();
+        });
+
+        m_settings_panel.changed["follow-input-cursor-when-always-shown"]
+            .connect((key) => {
+                set_follow_input_cursor_when_always_shown_property_panel();
         });
     }
 
@@ -361,6 +366,15 @@ class Panel : IBus.PanelService {
                 (uint) m_settings_panel.get_int("auto-hide-timeout"));
     }
 
+    private void set_follow_input_cursor_when_always_shown_property_panel() {
+        if (m_property_panel == null)
+            return;
+
+        m_property_panel.set_follow_input_cursor_when_always_shown(
+                m_settings_panel.get_boolean(
+                        "follow-input-cursor-when-always-shown"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -459,6 +473,7 @@ class Panel : IBus.PanelService {
         set_lookup_table_orientation();
         set_show_property_panel();
         set_timeout_property_panel();
+        set_follow_input_cursor_when_always_shown_property_panel();
 
         set_version();
     }
