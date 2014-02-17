@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -100,7 +100,7 @@ public interface IPropItem : GLib.Object {
     public signal void property_activate(string key, int state);
 }
 
-public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
+public class PropImageMenuItem : Gtk.MenuItem, IPropItem {
     private IBus.Property m_property;
     public PropImageMenuItem(IBus.Property property) {
         assert(property != null);
@@ -115,7 +115,6 @@ public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
             return;
 
         m_property.set_label(property.get_label());
-        m_property.set_icon(property.get_icon());
         m_property.set_visible(property.get_visible());
         m_property.set_sensitive(property.get_sensitive());
         m_property.set_tooltip(property.get_tooltip());
@@ -125,14 +124,8 @@ public class PropImageMenuItem : Gtk.ImageMenuItem, IPropItem {
 
     private void sync() {
         set_label(m_property.get_label().get_text());
-        if (m_property.get_icon() != "")
-            set_icon(m_property.get_icon());
         set_visible(m_property.get_visible());
         set_sensitive(m_property.get_sensitive());
-    }
-
-    private void set_icon(string icon) {
-        set_image(new IconWidget(icon, Gtk.IconSize.MENU));
     }
 
     public override void activate() {

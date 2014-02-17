@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,7 @@
  * USA
  */
 
-public class CandidatePanel : Gtk.HBox{
+public class CandidatePanel : Gtk.Box{
     private bool m_vertical = true;
     private Gtk.Window m_toplevel;
     private Gtk.Box m_vbox;
@@ -44,6 +44,7 @@ public class CandidatePanel : Gtk.HBox{
         // Call base class constructor
         GLib.Object(
             name : "IBusCandidate",
+            orientation: Gtk.Orientation.HORIZONTAL,
             visible: true
         );
 

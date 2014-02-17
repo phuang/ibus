@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,13 +36,13 @@ class CandidateArea : Gtk.Box {
     };
 
     private const string PREV_PAGE_ICONS[] = {
-        Gtk.Stock.GO_BACK,
-        Gtk.Stock.GO_UP
+        "go-previous",
+        "go-up"
     };
 
     private const string NEXT_PAGE_ICONS[] = {
-        Gtk.Stock.GO_FORWARD,
-        Gtk.Stock.GO_DOWN
+        "go-next",
+        "go-down"
     };
 
     public signal void candidate_clicked(uint index, uint button, uint state);
@@ -139,14 +139,14 @@ class CandidateArea : Gtk.Box {
 
         Gtk.Button prev_button = new Gtk.Button();
         prev_button.clicked.connect((b) => page_up());
-        prev_button.set_image(new Gtk.Image.from_stock(
+        prev_button.set_image(new Gtk.Image.from_icon_name(
                                   PREV_PAGE_ICONS[orientation],
                                   Gtk.IconSize.MENU));
         prev_button.set_relief(Gtk.ReliefStyle.NONE);
 
         Gtk.Button next_button = new Gtk.Button();
         next_button.clicked.connect((b) => page_down());
-        next_button.set_image(new Gtk.Image.from_stock(
+        next_button.set_image(new Gtk.Image.from_icon_name(
                                   NEXT_PAGE_ICONS[orientation],
                                   Gtk.IconSize.MENU));
         next_button.set_relief(Gtk.ReliefStyle.NONE);
