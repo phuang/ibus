@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,7 @@ class EngineAbout(Gtk.Dialog):
         self.__engine_desc = enginedesc
         super(EngineAbout, self).__init__(_("About"), None,
                 Gtk.DialogFlags.MODAL,
-                (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE))
+                (_("_Close"), Gtk.ResponseType.CLOSE))
 
         self.__init_ui()
 
@@ -99,14 +99,19 @@ class EngineAbout(Gtk.Dialog):
         text_buffer.create_tag("left_margin_32",
                         left_margin=32)
 
-    def __load_icon(self, icon):
+    def __load_icon(self, icon_name):
         try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon, 48, 48, True)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(icon_name,
+                                                             48,
+                                                             48,
+                                                             True)
         except:
             theme = Gtk.IconTheme.get_default()
-            icon = theme.lookup_icon("ibus-engine", 48, 0)
+            icon = theme.lookup_icon(icon_name, 48, 0)
             if icon == None:
-                icon = theme.lookup_icon(Gtk.STOCK_MISSING_IMAGE, 48, 0)
+                icon = theme.lookup_icon("ibus-engine", 48, 0)
+            if icon == None:
+                icon = theme.lookup_icon("image-missing", 48, 0)
             pixbuf = icon.load_icon()
         return pixbuf
 
