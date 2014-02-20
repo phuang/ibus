@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,15 +46,7 @@ class IconWidget: Gtk.Image {
                 var theme = Gtk.IconTheme.get_default();
                 pixbuf = theme.load_icon("ibus-engine", fixed_width, 0);
             } catch (GLib.Error e) {
-                /* "gtk-missing-image.png" is the symlink of
-                 * "image-missing.png" and included in
-                 * gnome-icon-theme-legacy package in fedora.
-                 * gtk_image_set_from_stock() can fallback the stock name
-                 * to the real name instead of gtk_image_set_from_icon_name()
-                 * or gtk_icon_theme_load_icon() and
-                 * could remove gnome-icon-theme-legacy.
-                 */
-                set_from_stock(Gtk.Stock.MISSING_IMAGE, size);
+                set_from_icon_name("image-missing", size);
                 return;
             }
         }

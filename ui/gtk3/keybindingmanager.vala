@@ -152,8 +152,9 @@ public class KeybindingManager : GLib.Object {
         else
             pointer = device;
 
+        double[] axes = null;
         uint modifier = 0;
-        pointer.get_state(keyevent.window, null, out modifier);
+        pointer.get_state(keyevent.window, axes, out modifier);
         if ((primary_modifier & modifier) == primary_modifier)
             return true;
 

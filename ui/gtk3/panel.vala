@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -165,6 +165,11 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["timeout"].connect((key) => {
                 set_timeout_property_panel();
+        });
+
+        m_settings_panel.changed["follow-input-cursor-when-always-shown"]
+            .connect((key) => {
+                set_follow_input_cursor_when_always_shown_property_panel();
         });
     }
 
@@ -361,6 +366,15 @@ class Panel : IBus.PanelService {
                 (uint) m_settings_panel.get_int("auto-hide-timeout"));
     }
 
+    private void set_follow_input_cursor_when_always_shown_property_panel() {
+        if (m_property_panel == null)
+            return;
+
+        m_property_panel.set_follow_input_cursor_when_always_shown(
+                m_settings_panel.get_boolean(
+                        "follow-input-cursor-when-always-shown"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -459,6 +473,7 @@ class Panel : IBus.PanelService {
         set_lookup_table_orientation();
         set_show_property_panel();
         set_timeout_property_panel();
+        set_follow_input_cursor_when_always_shown_property_panel();
 
         set_version();
     }
@@ -711,25 +726,24 @@ class Panel : IBus.PanelService {
                                            uint activate_time) {
         // Show system menu
         if (m_sys_menu == null) {
-            Gtk.ImageMenuItem item;
+            Gtk.MenuItem item;
             m_sys_menu = new Gtk.Menu();
 
-            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.PREFERENCES, null);
+            item = new Gtk.MenuItem.with_label(_("Preferences"));
             item.activate.connect((i) => show_setup_dialog());
             m_sys_menu.append(item);
 
-            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.ABOUT, null);
+            item = new Gtk.MenuItem.with_label(_("About"));
             item.activate.connect((i) => show_about_dialog());
             m_sys_menu.append(item);
 
             m_sys_menu.append(new Gtk.SeparatorMenuItem());
 
-            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.REFRESH, null);
-            item.set_label(_("Restart"));
+            item = new Gtk.MenuItem.with_label(_("Restart"));
             item.activate.connect((i) => m_bus.exit(true));
             m_sys_menu.append(item);
 
-            item = new Gtk.ImageMenuItem.from_stock(Gtk.Stock.QUIT, null);
+            item = new Gtk.MenuItem.with_label(_("Quit"));
             item.activate.connect((i) => m_bus.exit(false));
             m_sys_menu.append(item);
 
@@ -755,12 +769,8 @@ class Panel : IBus.PanelService {
         foreach (var engine in m_engines) {
             var language = engine.get_language();
             var longname = engine.get_longname();
-            var item = new Gtk.ImageMenuItem.with_label(
+            var item = new Gtk.MenuItem.with_label(
                 "%s - %s".printf (IBus.get_language_name(language), longname));
-            if (engine.get_icon() != "") {
-                var icon = new IconWidget(engine.get_icon(), Gtk.IconSize.MENU);
-                 item.set_image(icon);
-            }
             // Make a copy of engine to workaround a bug in vala.
             // https://bugzilla.gnome.org/show_bug.cgi?id=628336
             var e = engine;

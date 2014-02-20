@@ -35,9 +35,10 @@ from i18n import _, N_
 
 MAX_HOTKEY = 6
 
-class KeyboardShortcutSelection(Gtk.VBox):
+class KeyboardShortcutSelection(Gtk.Box):
     def __init__(self, shortcuts = None):
-        super(KeyboardShortcutSelection, self).__init__()
+        super(KeyboardShortcutSelection, self).__init__(
+                orientation=Gtk.Orientation.VERTICAL)
         self.__init_ui()
         self.set_shortcuts(shortcuts)
 
@@ -61,7 +62,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.pack_start(scrolledwindow, True, True, 4)
 
         # key code
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         label = Gtk.Label(_("Key code:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
@@ -76,7 +77,7 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.pack_start(hbox, False, True, 4)
 
         # modifiers
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         label = Gtk.Label(_("Modifiers:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
@@ -121,19 +122,22 @@ class KeyboardShortcutSelection(Gtk.VBox):
         self.pack_start(hbox, False, True, 4)
 
         # buttons
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         # add button
-        self.__add_button = Gtk.Button(stock = Gtk.STOCK_ADD)
+        self.__add_button = Gtk.Button(label = _("_Add"),
+                                       use_underline = True)
         self.__add_button.set_sensitive(False)
         self.__add_button.connect("clicked", self.__add_button_clicked_cb)
         hbox.pack_start(self.__add_button, False, True, 0)
         # apply button
-        self.__apply_button = Gtk.Button(stock = Gtk.STOCK_APPLY)
+        self.__apply_button = Gtk.Button(label = _("_Apply"),
+                                         use_underline = True)
         self.__apply_button.set_sensitive(False)
         self.__apply_button.connect("clicked", self.__apply_button_clicked_cb)
         hbox.pack_start(self.__apply_button, False, True, 0)
         # delete button
-        self.__delete_button = Gtk.Button(stock = Gtk.STOCK_DELETE)
+        self.__delete_button = Gtk.Button(label = _("_Delete"),
+                                          use_underline = True)
         self.__delete_button.set_sensitive(False)
         self.__delete_button.connect("clicked", self.__delete_button_clicked_cb)
         hbox.pack_start(self.__delete_button, False, True, 0)
@@ -331,8 +335,8 @@ class KeyboardShortcutSelectionDialog(Gtk.Dialog):
 if __name__ == "__main__":
     dlg = KeyboardShortcutSelectionDialog(
         title = "Select test",
-        buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                   Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
+                   _("_OK"), Gtk.ResponseType.OK))
     dlg.add_shortcut("Control+Shift+space")
     dlg.set_shortcuts(None)
     print((dlg.run()))

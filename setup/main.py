@@ -371,8 +371,8 @@ class Setup(object):
             sys.exit(0)
 
     def __shortcut_button_clicked_cb(self, button, name, section, _name, entry):
-        buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
+                   _("_OK"), Gtk.ResponseType.OK)
         title = _("Select keyboard shortcut for %s") % \
                 _("switching input methods")
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)

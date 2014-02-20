@@ -63,7 +63,8 @@
     <property name="window_position">center-always</property>
     <property name="icon_name">ibus-setup</property>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkBox" id="vbox1">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">12</property>
@@ -80,7 +81,8 @@
                 <property name="left_padding">12</property>
                 <property name="right_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox5">
+                  <object class="GtkBox" id="vbox5">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="spacing">18</property>
@@ -136,7 +138,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox4">
+                                  <object class="GtkBox" id="hbox4">
+                                    <property name="orientation">horizontal</property>
                                     <property name="no_show_all">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -176,7 +179,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox5">
+                                  <object class="GtkBox" id="hbox5">
+                                    <property name="orientation">horizontal</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -218,7 +222,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox6">
+                                  <object class="GtkBox" id="hbox6">
+                                    <property name="orientation">horizontal</property>
                                     <property name="no_show_all">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -289,7 +294,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox2">
+                                  <object class="GtkBox" id="hbox2">
+                                    <property name="orientation">horizontal</property>
                                     <property name="no_show_all">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -345,7 +351,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox3">
+                                  <object class="GtkBox" id="hbox3">
+                                    <property name="orientation">horizontal</property>
                                     <property name="no_show_all">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -665,7 +672,8 @@
                 <property name="left_padding">12</property>
                 <property name="right_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox2">
+                  <object class="GtkBox" id="vbox2">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -677,7 +685,8 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkVBox" id="vbox3">
+                              <object class="GtkBox" id="vbox3">
+                                <property name="orientation">vertical</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
@@ -739,7 +748,8 @@
                                 <property name="layout_style">start</property>
                                 <child>
                                   <object class="GtkButton" id="button_engine_add">
-                                    <property name="label">gtk-add</property>
+                                    <property name="label" translatable="yes">_Add</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
@@ -747,7 +757,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Add the selected input method into the enabled input methods</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -757,7 +766,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_engine_remove">
-                                    <property name="label">gtk-remove</property>
+                                    <property name="label" translatable="yes">_Remove</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
@@ -765,7 +775,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Remove the selected input method from the enabled input methods</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -775,7 +784,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_engine_up">
-                                    <property name="label">gtk-go-up</property>
+                                    <property name="label" translatable="yes">_Up</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="no_show_all">True</property>
                                     <property name="sensitive">False</property>
@@ -783,7 +793,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Move up the selected input method in the enabled input methods list</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -793,7 +802,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_engine_down">
-                                    <property name="label">gtk-go-down</property>
+                                    <property name="label" translatable="yes">_Down</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="no_show_all">True</property>
                                     <property name="sensitive">False</property>
@@ -801,7 +811,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Move down the selected input method in the enabled input methods</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -811,7 +820,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_engine_about">
-                                    <property name="label">gtk-about</property>
+                                    <property name="label" translatable="yes">_About</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
@@ -819,7 +829,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Show information of the selected input method</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -829,7 +838,8 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_engine_preferences">
-                                    <property name="label">gtk-preferences</property>
+                                    <property name="label" translatable="yes">_Preferences</property>
+                                    <property name="use_underline">True</property>
                                     <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
@@ -837,7 +847,6 @@
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Show setup of the selected input method</property>
                                     <property name="use_action_appearance">False</property>
-                                    <property name="use_stock">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -867,7 +876,8 @@
                         <property name="can_focus">False</property>
                         <property name="top_padding">6</property>
                         <child>
-                          <object class="GtkHBox" id="hbox8">
+                          <object class="GtkBox" id="hbox8">
+                            <property name="orientation">horizontal</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
@@ -875,7 +885,7 @@
                               <object class="GtkImage" id="image1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="stock">gtk-info</property>
+                                <property name="icon-name">dialog-information</property>
                                 <property name="icon-size">2</property>
                               </object>
                               <packing>
@@ -935,7 +945,8 @@
                 <property name="left_padding">12</property>
                 <property name="right_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox7">
+                  <object class="GtkBox" id="vbox7">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
@@ -956,7 +967,8 @@
                                 <property name="top_padding">6</property>
                                 <property name="left_padding">12</property>
                                 <child>
-                                  <object class="GtkVBox" id="vbox8">
+                                  <object class="GtkBox" id="vbox8">
+                                    <property name="orientation">vertical</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -1017,7 +1029,8 @@
                                 <property name="top_padding">6</property>
                                 <property name="left_padding">12</property>
                                 <child>
-                                  <object class="GtkVBox" id="vbox9">
+                                  <object class="GtkBox" id="vbox9">
+                                    <property name="orientation">vertical</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="spacing">6</property>
@@ -1078,7 +1091,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox4">
+              <object class="GtkBox" id="vbox4">
+                <property name="orientation">vertical</property>
                 <property name="can_focus">False</property>
                 <property name="no_show_all">True</property>
                 <child>
@@ -1177,13 +1191,13 @@ Homepage: http://code.google.com/p/ibus
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button_close">
-                <property name="label">gtk-close</property>
+                <property name="label" translatable="yes">_Close</property>
+                <property name="use_underline">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>

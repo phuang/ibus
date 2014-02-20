@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,17 +20,19 @@
  * USA
  */
 
-class HSeparator : Gtk.HSeparator {
+class HSeparator : Gtk.Separator {
     public HSeparator() {
         GLib.Object(
+            orientation : Gtk.Orientation.HORIZONTAL,
             margin : 2
         );
     }
 }
 
-class VSeparator : Gtk.VSeparator {
+class VSeparator : Gtk.Separator {
     public VSeparator() {
         GLib.Object(
+            orientation : Gtk.Orientation.VERTICAL,
             margin : 2
         );
     }
