@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include "engineproxy.h"
@@ -55,11 +55,18 @@ struct _BusEngineProxy {
     IBusText *surrounding_text;
     guint     surrounding_cursor_pos;
     guint     selection_anchor_pos;
+
+    /* cached properties */
+    IBusPropList *prop_list;
 };
 
 struct _BusEngineProxyClass {
     IBusProxyClass parent;
     /* class members */
+    void (* register_properties) (BusEngineProxy   *engine,
+                                  IBusPropList     *prop_list);
+    void (* update_property) (BusEngineProxy       *engine,
+                              IBusProperty         *prop);
 };
 
 enum {
@@ -93,6 +100,7 @@ enum {
 static guint    engine_signals[LAST_SIGNAL] = { 0 };
 
 static IBusText *text_empty = NULL;
+static IBusPropList *prop_list_empty = NULL;
 
 /* functions prototype */
 static void     bus_engine_proxy_set_property   (BusEngineProxy      *engine,
@@ -103,6 +111,12 @@ static void     bus_engine_proxy_get_property   (BusEngineProxy      *engine,
                                                  guint                prop_id,
                                                  GValue              *value,
                                                  GParamSpec          *pspec);
+static void     bus_engine_proxy_real_register_properties
+                                                (BusEngineProxy      *engine,
+                                                 IBusPropList        *prop_list);
+static void     bus_engine_proxy_real_update_property
+                                                (BusEngineProxy      *engine,
+                                                 IBusProperty        *prop);
 static void     bus_engine_proxy_real_destroy   (IBusProxy           *proxy);
 static void     bus_engine_proxy_g_signal       (GDBusProxy          *proxy,
                                                  const gchar         *sender_name,
@@ -124,6 +138,9 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
 
     gobject_class->set_property = (GObjectSetPropertyFunc)bus_engine_proxy_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc)bus_engine_proxy_get_property;
+
+    class->register_properties = bus_engine_proxy_real_register_properties;
+    class->update_property = bus_engine_proxy_real_update_property;
 
     IBUS_PROXY_CLASS (class)->destroy = bus_engine_proxy_real_destroy;
     G_DBUS_PROXY_CLASS (class)->g_signal = bus_engine_proxy_g_signal;
@@ -334,7 +351,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
         g_signal_new (I_("register-properties"),
             G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
-            0,
+            G_STRUCT_OFFSET (BusEngineProxyClass, register_properties),
             NULL, NULL,
             bus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
@@ -345,7 +362,7 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
         g_signal_new (I_("update-property"),
             G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
-            0,
+            G_STRUCT_OFFSET (BusEngineProxyClass, update_property),
             NULL, NULL,
             bus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
@@ -354,12 +371,16 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
 
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);
+
+    prop_list_empty = ibus_prop_list_new ();
+    g_object_ref_sink (prop_list_empty);
 }
 
 static void
 bus_engine_proxy_init (BusEngineProxy *engine)
 {
     engine->surrounding_text = g_object_ref_sink (text_empty);
+    engine->prop_list = g_object_ref_sink (prop_list_empty);
 }
 
 static void
@@ -395,6 +416,26 @@ bus_engine_proxy_get_property (BusEngineProxy *engine,
 }
 
 static void
+bus_engine_proxy_real_register_properties (BusEngineProxy *engine,
+                                           IBusPropList   *prop_list)
+{
+    g_assert (IBUS_IS_PROP_LIST (prop_list));
+
+    if (engine->prop_list != prop_list_empty)
+        g_object_unref (engine->prop_list);
+    engine->prop_list = (IBusPropList *) g_object_ref_sink (prop_list);
+}
+
+static void
+bus_engine_proxy_real_update_property (BusEngineProxy *engine,
+                                       IBusProperty   *prop)
+{
+    g_return_if_fail (prop);
+    if (engine->prop_list)
+        ibus_prop_list_update_property (engine->prop_list, prop);
+}
+
+static void
 bus_engine_proxy_real_destroy (IBusProxy *proxy)
 {
     BusEngineProxy *engine = (BusEngineProxy *)proxy;
@@ -412,6 +453,11 @@ bus_engine_proxy_real_destroy (IBusProxy *proxy)
     if (engine->surrounding_text) {
         g_object_unref (engine->surrounding_text);
         engine->surrounding_text = NULL;
+    }
+
+    if (engine->prop_list) {
+        g_object_unref (engine->prop_list);
+        engine->prop_list = NULL;
     }
 
     IBUS_PROXY_CLASS (bus_engine_proxy_parent_class)->destroy ((IBusProxy *)engine);
@@ -596,8 +642,7 @@ bus_engine_proxy_new_internal (const gchar     *path,
     g_assert (IBUS_IS_ENGINE_DESC (desc));
     g_assert (G_IS_DBUS_CONNECTION (connection));
 
-    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
-                            G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES;
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
     BusEngineProxy *engine =
         (BusEngineProxy *) g_initable_new (BUS_TYPE_ENGINE_PROXY,
                                            NULL,
@@ -1088,6 +1133,44 @@ void bus_engine_proxy_set_surrounding_text (BusEngineProxy *engine,
     }
 }
 
+void
+bus_engine_proxy_set_content_type (BusEngineProxy *engine,
+                                   guint           purpose,
+                                   guint           hints)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    GVariant *cached_content_type =
+        g_dbus_proxy_get_cached_property ((GDBusProxy *) engine,
+                                          "ContentType");
+    GVariant *content_type = g_variant_new ("(uu)", purpose, hints);
+
+    g_variant_ref_sink (content_type);
+    if (cached_content_type == NULL ||
+        !g_variant_equal (content_type, cached_content_type)) {
+        g_dbus_proxy_call ((GDBusProxy *) engine,
+                           "org.freedesktop.DBus.Properties.Set",
+                           g_variant_new ("(ssv)",
+                                          IBUS_INTERFACE_ENGINE,
+                                          "ContentType",
+                                          content_type),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           NULL,
+                           NULL);
+
+        /* Need to update the cache by manual since there is a timing issue. */
+        g_dbus_proxy_set_cached_property ((GDBusProxy *) engine,
+                                          "ContentType",
+                                          content_type);
+    }
+
+    if (cached_content_type != NULL)
+        g_variant_unref (cached_content_type);
+    g_variant_unref (content_type);
+}
+
 /* a macro to generate a function to call a nullary D-Bus method. */
 #define DEFINE_FUNCTION(Name, name)                         \
     void                                                    \
@@ -1201,6 +1284,14 @@ bus_engine_proxy_get_desc (BusEngineProxy *engine)
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     return engine->desc;
+}
+
+IBusPropList *
+bus_engine_proxy_get_properties (BusEngineProxy *engine)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+
+    return engine->prop_list;
 }
 
 gboolean

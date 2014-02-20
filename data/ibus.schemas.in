@@ -14,6 +14,48 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/engines_order</key>
+      <applyto>/desktop/ibus/general/engines_order</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>Engines order</short>
+            <long>Saved engines order in input method list</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/switcher-delay-time</key>
+      <applyto>/desktop/ibus/general/switcher-delay-time</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>400</default>
+      <locale name="C">
+        <short>Popup delay milliseconds for IME switcher window</short>
+            <long>Set popup delay milliseconds to show IME switcher window.
+                  The default is 400.
+                  0 = Show the window immediately.
+                  0 &lt; Delay milliseconds.
+                  0 &gt; Do not show the window and switch prev/next engines.
+            </long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/version</key>
+      <applyto>/desktop/ibus/general/version</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+        <short>Saved version number</short>
+            <long>The saved version number will be used to check the
+                  difference between the version of the previous installed
+                  ibus and one of the current ibus.
+            </long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>
@@ -22,7 +64,19 @@
       <default>[Control+space,Zenkaku_Hankaku,Alt+Kanji,Alt+grave,Hangul,Alt+Release+Alt_R]</default>
       <locale name="C">
         <short>Trigger shortcut keys</short>
-	    <long>The shortcut keys for turning input method on or off</long>
+          <long>The shortcut keys for turning input method on or off</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/triggers</key>
+      <applyto>/desktop/ibus/general/hotkey/triggers</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[&lt;Super&gt;space]</default>
+      <locale name="C">
+        <short>Trigger shortcut keys for gtk_accelerator_parse</short>
+          <long>The shortcut keys for turning input method on or off</long>
       </locale>
     </schema>
     <schema>
@@ -107,10 +161,10 @@
       <applyto>/desktop/ibus/panel/show</applyto>
       <owner>ibus</owner>
       <type>int</type>
-      <default>0</default>
+      <default>1</default>
       <locale name="C">
         <short>Auto hide</short>
-	    <long>The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = Always show</long>
+	    <long>The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always show</long>
       </locale>
     </schema>
     <schema>
@@ -146,6 +200,31 @@
       </locale>
     </schema>
     -->
+    <schema>
+      <key>/schemas/desktop/ibus/panel/follow-input-cursor-when-always-shown</key>
+      <applyto>/desktop/ibus/panel/follow-input-cursor-when-always-shown</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Follow the input cursor in case the panel is always shown</short>
+          <long>If true, the panel follows the input cursor in case the
+                panel is always shown. If false, the panel is shown at
+                a fixed location.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/auto-hide-timeout</key>
+      <applyto>/desktop/ibus/panel/auto-hide-timeout</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>10000</default>
+      <locale name="C">
+        <short>The milliseconds to show property panel</short>
+          <long>The milliseconds to show property panel after focus-in or
+                properties are changed.</long>
+      </locale>
+    </schema>
     <schema>
       <key>/schemas/desktop/ibus/panel/lookup_table_orientation</key>
       <applyto>/desktop/ibus/panel/lookup_table_orientation</applyto>
@@ -184,7 +263,7 @@
       <applyto>/desktop/ibus/general/use_system_keyboard_layout</applyto>
       <owner>ibus</owner>
       <type>bool</type>
-      <default>true</default>
+      <default>false</default>
       <locale name="C">
         <short>Use system keyboard layout</short>
 	    <long>Use system keyboard (XKB) layout</long>
@@ -228,7 +307,7 @@
       <applyto>/desktop/ibus/general/use_global_engine</applyto>
       <owner>ibus</owner>
       <type>bool</type>
-      <default>false</default>
+      <default>true</default>
       <locale name="C">
         <short>Use global input method</short>
 	    <long>Share the same input method among all applications</long>

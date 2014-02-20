@@ -11,7 +11,8 @@ gint
 main (gint    argc,
       gchar **argv)
 {
-    g_type_init ();
+    ibus_init ();
+
     g_test_init (&argc, &argv, NULL);
 
     g_test_add_func ("/ibus/keyname", test_keyname);

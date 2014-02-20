@@ -2,27 +2,31 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2013 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 NULL =
 
-SUBDIRS = . tests
+if ENABLE_TESTS
+TESTS_DIR = tests
+endif
+
+SUBDIRS = . $(TESTS_DIR)
 
 # libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la
@@ -38,14 +42,16 @@ INTROSPECTION_GIRS =
 CLEANFILES =
 
 # C preprocessor flags
-AM_CPPFLAGS =                                   \
-    -DG_LOG_DOMAIN=\"IBUS\"                     \
-    @GLIB2_CFLAGS@                              \
-    @GOBJECT2_CFLAGS@                           \
-    @GIO2_CFLAGS@                               \
-    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"           \
-    -DIBUS_COMPILATION                          \
-    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"    \
+AM_CPPFLAGS =                                           \
+    -DG_LOG_DOMAIN=\"IBUS\"                             \
+    @GLIB2_CFLAGS@                                      \
+    @GOBJECT2_CFLAGS@                                   \
+    @GIO2_CFLAGS@                                       \
+    -DIBUS_CACHE_DIR=\""$(localstatedir)/cache/ibus"\"  \
+    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"                   \
+    -DIBUS_DISABLE_DEPRECATION_WARNINGS                 \
+    -DIBUS_COMPILATION                                  \
+    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"            \
     $(NULL)
 
 # ibus library
@@ -70,7 +76,7 @@ ibus_sources =              \
     ibusservice.c           \
     ibusfactory.c           \
     ibusengine.c            \
-    ibuserror.c				\
+    ibuserror.c             \
     ibustext.c              \
     ibuskeymap.c            \
     ibusattribute.c         \
@@ -91,12 +97,13 @@ ibus_sources =              \
     ibusobservedpath.c      \
     ibuscomponent.c         \
     ibusutil.c              \
-	ibusenginesimple.c      \
-	$(NULL)
+    ibusenginesimple.c      \
+    ibusregistry.c          \
+    $(NULL)
 libibus_1_0_la_SOURCES =    \
-    $(ibus_sources)         \
     ibusmarshalers.c        \
     ibusenumtypes.c         \
+    $(ibus_sources)         \
     $(NULL)
 ibus_marshalers_sources =   \
     ibusmarshalers.h        \
@@ -108,7 +115,6 @@ ibus_enumtypes_sources =    \
     $(NULL)
 ibus_headers =              \
     ibus.h                  \
-    ibusversion.h           \
     ibusshare.h             \
     ibusdebug.h             \
     ibusobject.h            \
@@ -117,7 +123,7 @@ ibus_headers =              \
     ibusservice.h           \
     ibusfactory.h           \
     ibusengine.h            \
-    ibuserror.h				\
+    ibuserror.h             \
     ibustext.h              \
     ibuskeymap.h            \
     ibusattribute.h         \
@@ -140,45 +146,51 @@ ibus_headers =              \
     ibusobservedpath.h      \
     ibuscomponent.h         \
     ibusutil.h              \
-	ibusenginesimple.h      \
+    ibusenginesimple.h      \
+    ibusregistry.h          \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \
     $(ibus_headers)         \
     ibusenumtypes.h         \
+    ibusversion.h           \
     $(NULL)
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
 ibus_privite_headers =       \
+    ibuscomposetable.h       \
     ibusinternal.h           \
     keyname-table.h          \
-	gtkimcontextsimpleseqs.h \
+    gtkimcontextsimpleseqs.h \
     $(NULL)
 noinst_HEADERS =            \
     $(ibus_privite_headers) \
     $(NULL)
 
-BUILT_SOURCES =             \
-    ibusmarshalers.h        \
-    ibusmarshalers.c        \
-    ibusenumtypes.h         \
-    ibusenumtypes.c         \
+BUILT_SOURCES =                 \
+    $(ibus_marshalers_sources)  \
+    $(ibus_enumtypes_sources)   \
     $(NULL)
 
 if HAVE_INTROSPECTION
-introspection_files =           \
-    $(ibus_public_headers)      \
+introspection_sources =         \
+    $(ibus_headers)             \
     $(ibus_sources)             \
-    ibusenumtypes.c             \
-    ibusenumtypes.h             \
+    $(NULL)
+built_introspection_sources =   \
+    $(ibus_enumtypes_sources)   \
+    ibusversion.h               \
     $(NULL)
 IBus-1.0.gir: $(libibus) Makefile
 IBus_1_0_gir_SCANNERFLAGS = --pkg-export=ibus-1.0 $(IBUS_GIR_SCANNERFLAGS)
 IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0 Gio-2.0
 IBus_1_0_gir_LIBS = $(libibus)
-IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
-IBus_1_0_gir_CFLAGS = -DIBUS_COMPILATION
+IBus_1_0_gir_FILES =                                            \
+    $(addprefix $(srcdir)/,$(introspection_sources))            \
+    $(addprefix $(builddir)/,$(built_introspection_sources))    \
+    $(NULL)
+IBus_1_0_gir_CFLAGS = -DIBUS_COMPILATION -I$(srcdir) -I$(builddir)
 INTROSPECTION_GIRS += IBus-1.0.gir
 
 girdir = $(datadir)/gir-1.0
@@ -214,6 +226,24 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	$(AM_V_GEN) (echo "#include \"ibusmarshalers.h\""; \
 	$(GLIB_GENMARSHAL) --prefix=_ibus_marshal $(srcdir)/ibusmarshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
+
+ibuscomposetable.h:
+	$(AM_V_GEN) $(builddir)/gencomposetable > $@.tmp && \
+	mv $@.tmp $@
+	$(NULL)
+
+noinst_PROGRAMS = gencomposetable
+
+gencomposetable_SOURCES = \
+    gencomposetable.c \
+    $(NULL)
+gencomposetable_CFLAGS = \
+    @GLIB_CFLAGS@ \
+    $(NULL)
+gencomposetable_LDADD = \
+    $(libibus) \
+    @GLIB_LIBS@ \
+    $(NULL)
 
 EXTRA_DIST =                    \
     ibusversion.h.in            \

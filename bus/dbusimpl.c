@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include "dbusimpl.h"
@@ -28,7 +28,6 @@
 #include "ibusimpl.h"
 #include "marshalers.h"
 #include "matchrule.h"
-#include "registry.h"
 #include "types.h"
 
 enum {
@@ -61,10 +60,10 @@ struct _BusDBusImpl {
     /* a serial number used to generate a unique name of a bus. */
     guint id;
 
-    GMutex *dispatch_lock;
+    GMutex dispatch_lock;
     GList *dispatch_queue;
 
-    GMutex *forward_lock;
+    GMutex forward_lock;
     GList *forward_queue;
 
     /* a list of BusMethodCall to be used to reply when services are
@@ -330,8 +329,6 @@ bus_name_service_new (const gchar *name)
 static void
 bus_name_service_free (BusNameService *service)
 {
-    GSList *list = NULL;
-
     g_assert (service != NULL);
 
     g_slist_free_full (service->owners,
@@ -584,8 +581,8 @@ bus_dbus_impl_init (BusDBusImpl *dbus)
                                          NULL,
                                          (GDestroyNotify) bus_name_service_free);
 
-    dbus->dispatch_lock = g_mutex_new ();
-    dbus->forward_lock = g_mutex_new ();
+    g_mutex_init (&dbus->dispatch_lock);
+    g_mutex_init (&dbus->forward_lock);
 
     /* other members are automatically zero-initialized. */
 }
@@ -634,6 +631,9 @@ bus_dbus_impl_destroy (BusDBusImpl *dbus)
     g_list_free_full (dbus->start_service_calls,
                       (GDestroyNotify) bus_method_call_free);
     dbus->start_service_calls = NULL;
+
+    g_mutex_clear (&dbus->dispatch_lock);
+    g_mutex_clear (&dbus->forward_lock);
 
     /* FIXME destruct _lock and _queue members. */
     IBUS_OBJECT_CLASS(bus_dbus_impl_parent_class)->destroy ((IBusObject *) dbus);
@@ -732,7 +732,8 @@ bus_dbus_impl_name_has_owner (BusDBusImpl           *dbus,
         g_dbus_method_invocation_return_error (invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
-                                               "'%s' is not a legal bus name");
+                                               "'%s' is not a legal bus name",
+                                               name ? name : "(null)");
         return;
     }
 
@@ -1092,6 +1093,7 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
                             GDBusMethodInvocation *invocation)
 {
     const gchar *name= NULL;
+    BusNameService *service;
     g_variant_get (parameters, "(&s)", &name);
 
     if (name == NULL ||
@@ -1112,11 +1114,25 @@ bus_dbus_impl_release_name (BusDBusImpl           *dbus,
     }
 
     guint retval;
-    if (g_hash_table_lookup (dbus->names, name) == NULL) {
+    service = g_hash_table_lookup (dbus->names, name);
+    if (service == NULL) {
         retval = 2; /* DBUS_RELEASE_NAME_REPLY_NON_EXISTENT */
     }
     else {
+        /* "ReleaseName" method removes the name in connection->names
+         * and the connection owner.
+         * bus_dbus_impl_connection_destroy_cb() removes all
+         * connection->names and the connection owners.
+         * See also comments in bus_dbus_impl_connection_destroy_cb().
+         */
         if (bus_connection_remove_name (connection, name)) {
+            BusConnectionOwner *owner =
+                    bus_name_service_find_owner (service, connection);
+            bus_name_service_remove_owner (service, owner, dbus);
+            if (service->owners == NULL) {
+                g_hash_table_remove (dbus->names, service->name);
+            }
+            bus_connection_owner_free (owner);
             retval = 1; /* DBUS_RELEASE_NAME_REPLY_RELEASED */
         }
         else {
@@ -1187,9 +1203,8 @@ bus_dbus_impl_start_service_by_name (BusDBusImpl           *dbus,
         return;
     }
 
-    BusRegistry *registry = BUS_DEFAULT_REGISTRY;
-    BusComponent *component = bus_registry_lookup_component_by_name (registry,
-                                                                     name);
+    BusComponent *component = bus_ibus_impl_lookup_component_by_name (
+            BUS_DEFAULT_IBUS, name);
 
     if (component == NULL || !bus_component_start (component, g_verbose)) {
         g_dbus_method_invocation_return_error (invocation,
@@ -1713,11 +1728,11 @@ bus_dbus_impl_forward_message_idle_cb (BusDBusImpl   *dbus)
 {
     g_return_val_if_fail (dbus->forward_queue != NULL, FALSE);
 
-    g_mutex_lock (dbus->forward_lock);
+    g_mutex_lock (&dbus->forward_lock);
     BusForwardData *data = (BusForwardData *) dbus->forward_queue->data;
     dbus->forward_queue = g_list_delete_link (dbus->forward_queue, dbus->forward_queue);
     gboolean has_message = (dbus->forward_queue != NULL);
-    g_mutex_unlock (dbus->forward_lock);
+    g_mutex_unlock (&dbus->forward_lock);
 
     do {
         const gchar *destination = g_dbus_message_get_destination (data->message);
@@ -1784,10 +1799,10 @@ bus_dbus_impl_forward_message (BusDBusImpl   *dbus,
     data->message = g_object_ref (message);
     data->sender_connection = g_object_ref (connection);
 
-    g_mutex_lock (dbus->forward_lock);
+    g_mutex_lock (&dbus->forward_lock);
     gboolean is_running = (dbus->forward_queue != NULL);
     dbus->forward_queue = g_list_append (dbus->forward_queue, data);
-    g_mutex_unlock (dbus->forward_lock);
+    g_mutex_unlock (&dbus->forward_lock);
 
     if (!is_running) {
         g_idle_add_full (G_PRIORITY_DEFAULT,
@@ -1834,20 +1849,20 @@ bus_dbus_impl_dispatch_message_by_rule_idle_cb (BusDBusImpl *dbus)
 
     if (G_UNLIKELY (IBUS_OBJECT_DESTROYED (dbus))) {
         /* dbus was destryed */
-        g_mutex_lock (dbus->dispatch_lock);
+        g_mutex_lock (&dbus->dispatch_lock);
         g_list_free_full (dbus->dispatch_queue,
                           (GDestroyNotify) bus_dispatch_data_free);
         dbus->dispatch_queue = NULL;
-        g_mutex_unlock (dbus->dispatch_lock);
+        g_mutex_unlock (&dbus->dispatch_lock);
         return FALSE; /* return FALSE to prevent this callback to be called again. */
     }
 
     /* remove fist node */
-    g_mutex_lock (dbus->dispatch_lock);
+    g_mutex_lock (&dbus->dispatch_lock);
     BusDispatchData *data = (BusDispatchData *) dbus->dispatch_queue->data;
     dbus->dispatch_queue = g_list_delete_link (dbus->dispatch_queue, dbus->dispatch_queue);
     gboolean has_message = (dbus->dispatch_queue != NULL);
-    g_mutex_unlock (dbus->dispatch_lock);
+    g_mutex_unlock (&dbus->dispatch_lock);
 
     GList *link = NULL;
     GList *recipients = NULL;
@@ -1901,11 +1916,11 @@ bus_dbus_impl_dispatch_message_by_rule (BusDBusImpl     *dbus,
     g_object_set_qdata ((GObject *) message, dispatched_quark, GINT_TO_POINTER (1));
 
     /* append dispatch data into the queue, and start idle task if necessary */
-    g_mutex_lock (dbus->dispatch_lock);
+    g_mutex_lock (&dbus->dispatch_lock);
     gboolean is_running = (dbus->dispatch_queue != NULL);
     dbus->dispatch_queue = g_list_append (dbus->dispatch_queue,
                     bus_dispatch_data_new (message, skip_connection));
-    g_mutex_unlock (dbus->dispatch_lock);
+    g_mutex_unlock (&dbus->dispatch_lock);
     if (!is_running) {
         g_idle_add_full (G_PRIORITY_DEFAULT,
                          (GSourceFunc) bus_dbus_impl_dispatch_message_by_rule_idle_cb,

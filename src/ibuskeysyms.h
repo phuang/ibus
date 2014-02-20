@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
@@ -286,6 +286,7 @@
 #define IBUS_KEY_dead_U 0xfe89
 #define IBUS_KEY_dead_small_schwa 0xfe8a
 #define IBUS_KEY_dead_capital_schwa 0xfe8b
+#define IBUS_KEY_dead_greek 0xfe8c
 #define IBUS_KEY_First_Virtual_Screen 0xfed0
 #define IBUS_KEY_Prev_Virtual_Screen 0xfed1
 #define IBUS_KEY_Next_Virtual_Screen 0xfed2
@@ -1632,7 +1633,9 @@
 #define IBUS_KEY_ocaron 0x10001d2
 #define IBUS_KEY_obarred 0x1000275
 #define IBUS_KEY_SCHWA 0x100018f
+#define IBUS_KEY_EZH 0x10001b7
 #define IBUS_KEY_schwa 0x1000259
+#define IBUS_KEY_ezh 0x1000292
 #define IBUS_KEY_Lbelowdot 0x1001e36
 #define IBUS_KEY_lbelowdot 0x1001e37
 #define IBUS_KEY_Abelowdot 0x1001ea0

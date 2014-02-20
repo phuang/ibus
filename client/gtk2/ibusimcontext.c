@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,8 @@
 #else
 #  define IDEBUG(a...)
 #endif
+
+#define MAX_QUEUED_EVENTS 20
 
 struct _IBusIMContext {
     GtkIMContext parent;
@@ -63,6 +65,7 @@ struct _IBusIMContext {
 
     /* cancellable */
     GCancellable    *cancellable;
+    GQueue          *events_queue;
 };
 
 struct _IBusIMContextClass {
@@ -92,6 +95,8 @@ static GtkWidget *_input_widget = NULL;
 static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
 static void     ibus_im_context_class_fini  (IBusIMContextClass    *class);
 static void     ibus_im_context_init        (GObject               *obj);
+static void     ibus_im_context_notify      (GObject               *obj,
+                                             GParamSpec            *pspec);
 static void     ibus_im_context_finalize    (GObject               *obj);
 static void     ibus_im_context_reset       (GtkIMContext          *context);
 static gboolean ibus_im_context_filter_keypress
@@ -147,6 +152,7 @@ static gboolean _slave_delete_surrounding_cb
                                              IBusIMContext      *context);
 static void     _request_surrounding_text   (IBusIMContext      *context);
 static void     _create_fake_input_context  (void);
+static void     _set_content_type           (IBusIMContext      *context);
 
 
 
@@ -154,6 +160,8 @@ static GType                _ibus_type_im_context = 0;
 static GtkIMContextClass    *parent_class = NULL;
 
 static IBusBus              *_bus = NULL;
+static guint                _daemon_name_watch_id = 0;
+static gboolean             _daemon_is_running = FALSE;
 
 void
 ibus_im_context_register_type (GTypeModule *type_module)
@@ -261,6 +269,46 @@ _process_key_event_done (GObject      *object,
     gdk_event_free ((GdkEvent *)event);
 }
 
+static gboolean
+_process_key_event (IBusInputContext *context,
+                    GdkEventKey      *event)
+{
+    guint state = event->state;
+    gboolean retval = FALSE;
+
+    if (event->type == GDK_KEY_RELEASE) {
+        state |= IBUS_RELEASE_MASK;
+    }
+
+    if (_use_sync_mode) {
+        retval = ibus_input_context_process_key_event (context,
+            event->keyval,
+            event->hardware_keycode - 8,
+            state);
+    }
+    else {
+        ibus_input_context_process_key_event_async (context,
+            event->keyval,
+            event->hardware_keycode - 8,
+            state,
+            -1,
+            NULL,
+            _process_key_event_done,
+            gdk_event_copy ((GdkEvent *) event));
+
+        retval = TRUE;
+    }
+
+    if (retval) {
+        event->state |= IBUS_HANDLED_MASK;
+    }
+    else {
+        event->state |= IBUS_IGNORED_MASK;
+    }
+
+    return retval;
+}
+
 
 /* emit "retrieve-surrounding" glib signal of GtkIMContext, if
  * context->caps has IBUS_CAP_SURROUNDING_TEXT and the current IBus
@@ -285,6 +333,26 @@ _request_surrounding_text (IBusIMContext *context)
     }
 }
 
+static void
+_set_content_type (IBusIMContext *context)
+{
+#if GTK_CHECK_VERSION (3, 6, 0)
+    if (context->ibuscontext != NULL) {
+        GtkInputPurpose purpose;
+        GtkInputHints hints;
+
+        g_object_get (G_OBJECT (context),
+                      "input-purpose", &purpose,
+                      "input-hints", &hints,
+                      NULL);
+
+        ibus_input_context_set_content_type (context->ibuscontext,
+                                             purpose,
+                                             hints);
+    }
+#endif
+}
+
 
 static gint
 _key_snooper_cb (GtkWidget   *widget,
@@ -294,14 +362,17 @@ _key_snooper_cb (GtkWidget   *widget,
     IDEBUG ("%s", __FUNCTION__);
     gboolean retval = FALSE;
 
-    IBusIMContext *ibusimcontext = (IBusIMContext *) _focus_im_context;
+    IBusIMContext *ibusimcontext = NULL;
     IBusInputContext *ibuscontext = NULL;
 
-    if (ibusimcontext != NULL &&
-        ibusimcontext->has_focus == TRUE) {
-        /* has IC with focus and use_key_snooper is true */
-        if (_use_key_snooper)
-            ibuscontext = ibusimcontext->ibuscontext;
+    if (!_use_key_snooper)
+        return FALSE;
+
+    if (_focus_im_context != NULL &&
+        ((IBusIMContext *) _focus_im_context)->has_focus == TRUE) {
+        ibusimcontext = (IBusIMContext *) _focus_im_context;
+        /* has IC with focus */
+        ibuscontext = ibusimcontext->ibuscontext;
     }
     else {
         /* If no IC has focus, and fake IC has been created, then pass key events to fake IC. */
@@ -373,41 +444,24 @@ _key_snooper_cb (GtkWidget   *widget,
     } while (0);
 
     if (ibusimcontext != NULL) {
+        /* "retrieve-surrounding" signal sometimes calls unref by
+         * gtk_im_multicontext_get_slave() because priv->context_id is not
+         * the latest than global_context_id in GtkIMMulticontext.
+         * Since _focus_im_context is gotten by the focus_in event,
+         * it would be good to call ref here.
+         */
+        g_object_ref (ibusimcontext);
         _request_surrounding_text (ibusimcontext);
         ibusimcontext->time = event->time;
     }
 
-    guint state = event->state;
-    if (event->type == GDK_KEY_RELEASE) {
-        state |= IBUS_RELEASE_MASK;
-    }
+    retval = _process_key_event (ibuscontext, event);
 
-    if (_use_sync_mode) {
-        retval = ibus_input_context_process_key_event (
-                                        ibuscontext,
-                                        event->keyval,
-                                        event->hardware_keycode - 8,
-                                        state);
-    }
-    else {
-        ibus_input_context_process_key_event_async (
-                                        ibuscontext,
-                                        event->keyval,
-                                        event->hardware_keycode - 8,
-                                        state,
-                                        -1,
-                                        NULL,
-                                        _process_key_event_done,
-                                        gdk_event_copy ((GdkEvent *) event));
-        retval = TRUE;
-
-    }
-
-    if (retval) {
-        event->state |= IBUS_HANDLED_MASK;
-    }
-    else {
-        event->state |= IBUS_IGNORED_MASK;
+    if (ibusimcontext != NULL) {
+        /* unref ibusimcontext could call ibus_im_context_finalize here
+         * because "retrieve-surrounding" signal could call unref.
+         */
+        g_object_unref (ibusimcontext);
     }
 
     return retval;
@@ -433,6 +487,29 @@ _get_boolean_env(const gchar *name,
 }
 
 static void
+daemon_name_appeared (GDBusConnection *connection,
+                      const gchar     *name,
+                      const gchar     *owner,
+                      gpointer         data)
+{
+    /* If ibus-daemon is running and run ssh -X localhost,
+     * daemon_name_appeared() is called but ibus_get_address() == NULL
+     * because the hostname and display number are different between
+     * ibus-daemon and clients. So IBusBus would not be connected and
+     * ibusimcontext->ibuscontext == NULL and ibusimcontext->events_queue
+     * could go beyond MAX_QUEUED_EVENTS . */
+    _daemon_is_running = (ibus_get_address () != NULL);
+}
+
+static void
+daemon_name_vanished (GDBusConnection *connection,
+                      const gchar     *name,
+                      gpointer         data)
+{
+    _daemon_is_running = FALSE;
+}
+
+static void
 ibus_im_context_class_init (IBusIMContextClass *class)
 {
     IDEBUG ("%s", __FUNCTION__);
@@ -451,6 +528,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
     im_context_class->set_surrounding = ibus_im_context_set_surrounding;
+    gobject_class->notify = ibus_im_context_notify;
     gobject_class->finalize = ibus_im_context_finalize;
 
     _signal_commit_id =
@@ -502,7 +580,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     /* init bus object */
     if (_bus == NULL) {
         ibus_set_display (gdk_display_get_name (gdk_display_get_default ()));
-        _bus = ibus_bus_new ();
+        _bus = ibus_bus_new_async ();
 
         /* init the global fake context */
         if (ibus_bus_is_connected (_bus)) {
@@ -514,8 +592,20 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 
 
     /* always install snooper */
-    if (_key_snooper_id == 0)
+    if (_key_snooper_id == 0) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         _key_snooper_id = gtk_key_snooper_install (_key_snooper_cb, NULL);
+#pragma GCC diagnostic pop
+    }
+
+    _daemon_name_watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
+                                              IBUS_SERVICE_IBUS,
+                                              G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                              daemon_name_appeared,
+                                              daemon_name_vanished,
+                                              NULL,
+                                              NULL);
 }
 
 static void
@@ -523,9 +613,14 @@ ibus_im_context_class_fini (IBusIMContextClass *class)
 {
     if (_key_snooper_id != 0) {
         IDEBUG ("snooper is terminated.");
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         gtk_key_snooper_remove (_key_snooper_id);
+#pragma GCC diagnostic pop
         _key_snooper_id = 0;
     }
+
+    g_bus_unwatch_name (_daemon_name_watch_id);
 }
 
 /* Copied from gtk+2.0-2.20.1/modules/input/imcedilla.c to fix crosbug.com/11421.
@@ -585,6 +680,7 @@ ibus_im_context_init (GObject *obj)
     ibusimcontext->caps = IBUS_CAP_PREEDIT_TEXT | IBUS_CAP_FOCUS;
 #endif
 
+    ibusimcontext->events_queue = g_queue_new ();
 
     // Create slave im context
     ibusimcontext->slave = gtk_im_context_simple_new ();
@@ -626,6 +722,18 @@ ibus_im_context_init (GObject *obj)
 }
 
 static void
+ibus_im_context_notify (GObject    *obj,
+                        GParamSpec *pspec)
+{
+    IDEBUG ("%s", __FUNCTION__);
+
+    if (g_strcmp0 (pspec->name, "input-purpose") == 0 ||
+        g_strcmp0 (pspec->name, "input-hints") == 0) {
+        _set_content_type (IBUS_IM_CONTEXT (obj));
+    }
+}
+
+static void
 ibus_im_context_finalize (GObject *obj)
 {
     IDEBUG ("%s", __FUNCTION__);
@@ -633,6 +741,13 @@ ibus_im_context_finalize (GObject *obj)
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (obj);
 
     g_signal_handlers_disconnect_by_func (_bus, G_CALLBACK (_bus_connected_cb), obj);
+
+    if (ibusimcontext->cancellable != NULL) {
+        /* Cancel any ongoing create input context request */
+        g_cancellable_cancel (ibusimcontext->cancellable);
+        g_object_unref (ibusimcontext->cancellable);
+        ibusimcontext->cancellable = NULL;
+    }
 
     if (ibusimcontext->ibuscontext) {
         ibus_proxy_destroy ((IBusProxy *)ibusimcontext->ibuscontext);
@@ -653,6 +768,9 @@ ibus_im_context_finalize (GObject *obj)
         pango_attr_list_unref (ibusimcontext->preedit_attrs);
     }
 
+    g_queue_free_full (ibusimcontext->events_queue,
+                       (GDestroyNotify)gdk_event_free);
+
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 }
 
@@ -664,65 +782,56 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
-    if (G_LIKELY (ibusimcontext->ibuscontext && ibusimcontext->has_focus)) {
-        /* If context does not have focus, ibus will process key event in sync mode.
-         * It is a workaround for increase search in treeview.
-         */
-        gboolean retval = FALSE;
-
-        if (event->state & IBUS_HANDLED_MASK)
-            return TRUE;
-
-        if (event->state & IBUS_IGNORED_MASK)
-            return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
-
-        /* XXX it is a workaround for some applications do not set client window. */
-        if (ibusimcontext->client_window == NULL && event->window != NULL)
-            gtk_im_context_set_client_window ((GtkIMContext *)ibusimcontext, event->window);
-
-        _request_surrounding_text (ibusimcontext);
-
-        if (ibusimcontext != NULL) {
-            ibusimcontext->time = event->time;
-        }
-
-        guint state = event->state;
-        if (event->type == GDK_KEY_RELEASE) {
-            state |= IBUS_RELEASE_MASK;
-        }
-
-        if (_use_sync_mode) {
-            retval = ibus_input_context_process_key_event (
-                                        ibusimcontext->ibuscontext,
-                                        event->keyval,
-                                        event->hardware_keycode - 8,
-                                        state);
-        }
-        else {
-            ibus_input_context_process_key_event_async (
-                                        ibusimcontext->ibuscontext,
-                                        event->keyval,
-                                        event->hardware_keycode - 8,
-                                        state,
-                                        -1,
-                                        NULL,
-                                        _process_key_event_done,
-                                        gdk_event_copy ((GdkEvent *) event));
-            retval = TRUE;
-        }
-
-        if (retval) {
-            event->state |= IBUS_HANDLED_MASK;
-            return TRUE;
-        }
-        else {
-            event->state |= IBUS_IGNORED_MASK;
-            return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
-        }
-    }
-    else {
+    if (!_daemon_is_running)
         return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
+    /* If context does not have focus, ibus will process key event in
+     * sync mode.  It is a workaround for increase search in treeview.
+     */
+    if (!ibusimcontext->has_focus)
+        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
+    if (event->state & IBUS_HANDLED_MASK)
+        return TRUE;
+
+    if (event->state & IBUS_IGNORED_MASK)
+        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+
+    /* XXX it is a workaround for some applications do not set client
+     * window. */
+    if (ibusimcontext->client_window == NULL && event->window != NULL)
+        gtk_im_context_set_client_window ((GtkIMContext *)ibusimcontext,
+                                          event->window);
+
+    _request_surrounding_text (ibusimcontext);
+
+    ibusimcontext->time = event->time;
+
+    if (ibusimcontext->ibuscontext) {
+        if (_process_key_event (ibusimcontext->ibuscontext, event))
+            return TRUE;
+        else
+            return gtk_im_context_filter_keypress (ibusimcontext->slave,
+                                                   event);
     }
+
+    /* At this point we _should_ be waiting for the IBus context to be
+     * created or the connection to IBus to be established. If that's
+     * the case we queue events to be processed when the IBus context
+     * is ready. */
+    g_return_val_if_fail (ibusimcontext->cancellable != NULL ||
+                          ibus_bus_is_connected (_bus) == FALSE,
+                          FALSE);
+    g_queue_push_tail (ibusimcontext->events_queue,
+                       gdk_event_copy ((GdkEvent *)event));
+
+    if (g_queue_get_length (ibusimcontext->events_queue) > MAX_QUEUED_EVENTS) {
+        g_warning ("Events queue growing too big, will start to drop.");
+        gdk_event_free ((GdkEvent *)
+                        g_queue_pop_head (ibusimcontext->events_queue));
+    }
+
+    return TRUE;
 }
 
 static void
@@ -762,6 +871,7 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     ibusimcontext->has_focus = TRUE;
     if (ibusimcontext->ibuscontext) {
+        _set_content_type (ibusimcontext);
         ibus_input_context_focus_in (ibusimcontext->ibuscontext);
     }
 
@@ -769,10 +879,10 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     /* set_cursor_location_internal() will get origin from X server,
      * it blocks UI. So delay it to idle callback. */
-    g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-                     (GSourceFunc) _set_cursor_location_internal,
-                     g_object_ref (ibusimcontext),
-                     (GDestroyNotify) g_object_unref);
+    gdk_threads_add_idle_full (G_PRIORITY_DEFAULT_IDLE,
+                               (GSourceFunc) _set_cursor_location_internal,
+                               g_object_ref (ibusimcontext),
+                               (GDestroyNotify) g_object_unref);
 
     /* retrieve the initial surrounding-text (regardless of whether
      * the current IBus engine needs surrounding-text) */
@@ -1462,8 +1572,23 @@ _create_input_context_done (IBusBus       *bus,
         ibus_input_context_set_capabilities (ibusimcontext->ibuscontext, ibusimcontext->caps);
 
         if (ibusimcontext->has_focus) {
+            /* The time order is _create_input_context() ->
+             * ibus_im_context_notify() -> ibus_im_context_focus_in() ->
+             * _create_input_context_done()
+             * so _set_content_type() is called at the beginning here
+             * because ibusimcontext->ibuscontext == NULL before. */
+            _set_content_type (ibusimcontext);
+
             ibus_input_context_focus_in (ibusimcontext->ibuscontext);
             _set_cursor_location_internal (ibusimcontext);
+        }
+
+        if (!g_queue_is_empty (ibusimcontext->events_queue)) {
+            GdkEventKey *event;
+            while ((event = g_queue_pop_head (ibusimcontext->events_queue))) {
+                _process_key_event (context, event);
+                gdk_event_free ((GdkEvent *)event);
+            }
         }
     }
 
@@ -1477,12 +1602,7 @@ _create_input_context (IBusIMContext *ibusimcontext)
 
     g_assert (ibusimcontext->ibuscontext == NULL);
 
-    if (ibusimcontext->cancellable != NULL) {
-        /* Cancel previous create input context request */
-        g_cancellable_cancel (ibusimcontext->cancellable);
-        g_object_unref (ibusimcontext->cancellable);
-        ibusimcontext->cancellable = NULL;
-    }
+    g_return_if_fail (ibusimcontext->cancellable == NULL);
 
     ibusimcontext->cancellable = g_cancellable_new ();
 

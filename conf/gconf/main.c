@@ -56,6 +56,7 @@ main (gint argc, gchar **argv)
 
     if (!g_option_context_parse (context, &argc, &argv, &error)) {
         g_print ("Option parsing failed: %s\n", error->message);
+        g_error_free (error);
         exit (-1);
     }
 

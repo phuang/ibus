@@ -72,10 +72,14 @@
       <xi:include href="xml/ibuscomponent.xml"/>
       <xi:include href="xml/ibusengine.xml"/>
       <xi:include href="xml/ibusenginedesc.xml"/>
+      <xi:include href="xml/ibusenginesimple.xml"/>
       <xi:include href="xml/ibusfactory.xml"/>
       <xi:include href="xml/ibusinputcontext.xml"/>
+      <xi:include href="xml/ibuskeys.xml"/>
       <xi:include href="xml/ibuskeymap.xml"/>
+      <xi:include href="xml/ibuskeysyms-compat.xml"/>
       <xi:include href="xml/ibuskeysyms.xml"/>
+      <xi:include href="xml/ibusutil.xml"/>
   </chapter>
   <chapter>
       <title>Configuration</title>
@@ -85,6 +89,7 @@
       <xi:include href="xml/ibusconfig.xml"/>
       <xi:include href="xml/ibusconfigservice.xml"/>
       <xi:include href="xml/ibusobservedpath.xml"/>
+      <xi:include href="xml/ibusregistry.xml"/>
       <xi:include href="xml/ibusversion.xml"/>
       <xi:include href="xml/ibusxml.xml"/>
   </chapter>
@@ -92,9 +97,6 @@
       <title>Communication</title>
       <para>Here lists the service communication functions.</para>
       <xi:include href="xml/ibusbus.xml"/>
-      <xi:include href="xml/ibusconnection.xml"/>
-      <xi:include href="xml/ibusmessage.xml"/>
-      <xi:include href="xml/ibuspendingcall.xml"/>
       <xi:include href="xml/ibusproxy.xml"/>
       <xi:include href="xml/ibusserializable.xml"/>
       <xi:include href="xml/ibusservice.xml"/>
@@ -104,11 +106,18 @@
       <para>Definition and functions for IBus internal use.</para>
       <xi:include href="xml/ibusdebug.xml"/>
       <xi:include href="xml/ibuserror.xml"/>
-      <xi:include href="xml/ibusmainloop.xml"/>
       <xi:include href="xml/ibusobject.xml"/>
-      <xi:include href="xml/ibusserver.xml"/>
       <xi:include href="xml/ibusshare.xml"/>
       <xi:include href="xml/ibustypes.xml"/>
   </chapter>
+  <index id="api-index-full">
+    <title>Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-deprecated" role="deprecated">
+    <title>Index of deprecated symbols</title>
+    <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
 </book>
 

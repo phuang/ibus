@@ -1,0 +1,17 @@
+The following two files are generated with wayland-scanner:
+
+input-method-protocol.c
+input-method-client-protocol.h
+
+We include them in the distribution instead of generating them, since
+the Wayland protocol structure will unlikely change.  Do not modify
+those files manually.
+
+To generate them, use the wayland-scanner command as follows.  You can
+find input-method.xml in the Weston source code (maybe it will be
+moved to the Wayland source code later).
+
+$ wayland-scanner code < input-method.xml \
+  > input-method-protocol.c
+$ wayland-scanner client-header < input-method.xml \
+  > input-method-client-protocol.h

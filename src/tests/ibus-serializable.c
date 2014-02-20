@@ -183,8 +183,8 @@ gint
 main (gint    argc,
       gchar **argv)
 {
-    g_mem_set_vtable (glib_mem_profiler_table);
-	g_type_init ();
+    ibus_init ();
+
     g_test_init (&argc, &argv, NULL);
     g_test_add_func ("/ibus/varianttypeinfo", test_varianttypeinfo);
     g_test_add_func ("/ibus/attrlist", test_attr_list);

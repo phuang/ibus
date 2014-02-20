@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_SERIALIZABLE_H_
+#define __IBUS_SERIALIZABLE_H_
 
 /**
  * SECTION: ibusserializable
@@ -48,8 +51,6 @@
  * See IBusSerializableSerializeFunc(), IBusSerializableDeserializeFunc(), IBusSerializableCopyFunc()
  * for function prototype.
  */
-#ifndef __IBUS_SERIALIZABLE_H_
-#define __IBUS_SERIALIZABLE_H_
 
 #include "ibusobject.h"
 
@@ -233,7 +234,8 @@ void                 ibus_serializable_remove_qattachment
 /**
  * ibus_serializable_copy:
  * @serializable: An #IBusSerializable.
- * @returns: A newly allocated clone object; or %NULL if @object is not serializable.
+ * @returns: (transfer none): A newly allocated clone object; or %NULL
+ *     if @object is not serializable.
  *
  * Clone an #IBusSerializable.
  * The copy method should be implemented in extended class.
@@ -257,7 +259,7 @@ GVariant            *ibus_serializable_serialize        (IBusSerializable   *ser
 /**
  * ibus_serializable_deserialize:
  * @variant: A #GVariant.
- * @returns: The deserialized #IBusSerializable.
+ * @returns: (transfer none): The deserialized #IBusSerializable.
  *
  * Deserialize a #GVariant to an #IBusSerializable/
  * The deserialize method should be implemented in extended class.

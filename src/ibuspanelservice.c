@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (c) 2009, Google Inc. All rights reserved.
- * Copyright (C) 2010 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (c) 2009-2013 Google Inc. All rights reserved.
+ * Copyright (C) 2010-2013 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include "ibusshare.h"
 #include "ibuspanelservice.h"
@@ -48,6 +48,7 @@ enum {
     SHOW_PREEDIT_TEXT,
     START_SETUP,
     STATE_CHANGED,
+    DESTROY_CONTEXT,
     LAST_SIGNAL,
 };
 
@@ -58,62 +59,80 @@ enum {
 static guint            panel_signals[LAST_SIGNAL] = { 0 };
 
 /* functions prototype */
-static void      ibus_panel_service_set_property          (IBusPanelService       *panel,
-                                                           guint                   prop_id,
-                                                           const GValue           *value,
-                                                           GParamSpec             *pspec);
-static void      ibus_panel_service_get_property          (IBusPanelService       *panel,
-                                                           guint                   prop_id,
-                                                           GValue                 *value,
-                                                           GParamSpec             *pspec);
-static void      ibus_panel_service_real_destroy          (IBusPanelService       *panel);
-static void      ibus_panel_service_service_method_call   (IBusService            *service,
-                                                           GDBusConnection        *connection,
-                                                           const gchar            *sender,
-                                                           const gchar            *object_path,
-                                                           const gchar            *interface_name,
-                                                           const gchar            *method_name,
-                                                           GVariant               *parameters,
-                                                           GDBusMethodInvocation  *invocation);
-static GVariant *ibus_panel_service_service_get_property  (IBusService            *service,
-                                                           GDBusConnection        *connection,
-                                                           const gchar            *sender,
-                                                           const gchar            *object_path,
-                                                           const gchar            *interface_name,
-                                                           const gchar            *property_name,
-                                                           GError                **error);
-static gboolean  ibus_panel_service_service_set_property  (IBusService            *service,
-                                                           GDBusConnection        *connection,
-                                                           const gchar            *sender,
-                                                           const gchar            *object_path,
-                                                           const gchar            *interface_name,
-                                                           const gchar            *property_name,
-                                                           GVariant               *value,
-                                                           GError                **error);
-static void      ibus_panel_service_not_implemented       (IBusPanelService      *panel);
-static void      ibus_panel_service_focus_in              (IBusPanelService      *panel,
-                                                           const gchar           *input_context_path);
-static void      ibus_panel_service_focus_out             (IBusPanelService      *panel,
-                                                           const gchar           *input_context_path);
-static void      ibus_panel_service_register_properties   (IBusPanelService      *panel,
-                                                           IBusPropList          *prop_list);
-static void      ibus_panel_service_set_cursor_location   (IBusPanelService      *panel,
-                                                           gint                   x,
-                                                           gint                   y,
-                                                           gint                   w,
-                                                           gint                   h);
-static void      ibus_panel_service_update_auxiliary_text (IBusPanelService      *panel,
-                                                           IBusText              *text,
-                                                           gboolean               visible);
-static void      ibus_panel_service_update_lookup_table   (IBusPanelService      *panel,
-                                                           IBusLookupTable       *lookup_table,
-                                                           gboolean               visible);
-static void      ibus_panel_service_update_preedit_text   (IBusPanelService      *panel,
-                                                           IBusText              *text,
-                                                           guint                  cursor_pos,
-                                                           gboolean               visible);
-static void      ibus_panel_service_update_property       (IBusPanelService      *panel,
-                                                           IBusProperty          *prop);
+static void      ibus_panel_service_set_property
+                                   (IBusPanelService       *panel,
+                                    guint                   prop_id,
+                                    const GValue           *value,
+                                    GParamSpec             *pspec);
+static void      ibus_panel_service_get_property
+                                   (IBusPanelService       *panel,
+                                    guint                   prop_id,
+                                    GValue                 *value,
+                                    GParamSpec             *pspec);
+static void      ibus_panel_service_real_destroy
+                                   (IBusPanelService       *panel);
+static void      ibus_panel_service_service_method_call
+                                   (IBusService            *service,
+                                    GDBusConnection        *connection,
+                                    const gchar            *sender,
+                                    const gchar            *object_path,
+                                    const gchar            *interface_name,
+                                    const gchar            *method_name,
+                                    GVariant               *parameters,
+                                    GDBusMethodInvocation  *invocation);
+static GVariant *ibus_panel_service_service_get_property
+                                   (IBusService            *service,
+                                    GDBusConnection        *connection,
+                                    const gchar            *sender,
+                                    const gchar            *object_path,
+                                    const gchar            *interface_name,
+                                    const gchar            *property_name,
+                                    GError                **error);
+static gboolean  ibus_panel_service_service_set_property
+                                   (IBusService            *service,
+                                    GDBusConnection        *connection,
+                                    const gchar            *sender,
+                                    const gchar            *object_path,
+                                    const gchar            *interface_name,
+                                    const gchar            *property_name,
+                                    GVariant               *value,
+                                    GError                **error);
+static void      ibus_panel_service_not_implemented
+                                   (IBusPanelService       *panel);
+static void      ibus_panel_service_focus_in
+                                   (IBusPanelService       *panel,
+                                    const gchar            *input_context_path);
+static void      ibus_panel_service_focus_out
+                                   (IBusPanelService       *panel,
+                                    const gchar            *input_context_path);
+static void      ibus_panel_service_destroy_context
+                                   (IBusPanelService       *panel,
+                                    const gchar            *input_context_path);
+static void      ibus_panel_service_register_properties
+                                   (IBusPanelService       *panel,
+                                    IBusPropList           *prop_list);
+static void      ibus_panel_service_set_cursor_location
+                                   (IBusPanelService       *panel,
+                                    gint                    x,
+                                    gint                    y,
+                                    gint                    w,
+                                    gint                    h);
+static void      ibus_panel_service_update_auxiliary_text
+                                   (IBusPanelService       *panel,
+                                    IBusText               *text,
+                                    gboolean                visible);
+static void      ibus_panel_service_update_lookup_table
+                                   (IBusPanelService       *panel,
+                                    IBusLookupTable        *lookup_table,
+                                    gboolean                visible);
+static void      ibus_panel_service_update_preedit_text
+                                   (IBusPanelService       *panel,
+                                    IBusText               *text,
+                                    guint                   cursor_pos,
+                                    gboolean                visible);
+static void      ibus_panel_service_update_property
+                                   (IBusPanelService       *panel,
+                                    IBusProperty           *prop);
 
 G_DEFINE_TYPE (IBusPanelService, ibus_panel_service, IBUS_TYPE_SERVICE)
 
@@ -156,6 +175,9 @@ static const gchar introspection_xml[] =
     "    <method name='FocusOut'>"
     "      <arg direction='in'  type='o' name='ic' />"
     "    </method>"
+    "    <method name='DestroyContext'>"
+    "      <arg direction='in'  type='o' name='ic' />"
+    "    </method>"
     "    <method name='SetCursorLocation'>"
     "      <arg direction='in' type='i' name='x' />"
     "      <arg direction='in' type='i' name='y' />"
@@ -194,21 +216,30 @@ static void
 ibus_panel_service_class_init (IBusPanelServiceClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
-    ibus_panel_service_parent_class = IBUS_SERVICE_CLASS (g_type_class_peek_parent (class));
+    ibus_panel_service_parent_class =
+            IBUS_SERVICE_CLASS (g_type_class_peek_parent (class));
 
-    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_panel_service_set_property;
-    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_panel_service_get_property;
+    gobject_class->set_property =
+            (GObjectSetPropertyFunc) ibus_panel_service_set_property;
+    gobject_class->get_property =
+            (GObjectGetPropertyFunc) ibus_panel_service_get_property;
 
-    IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) ibus_panel_service_real_destroy;
+    IBUS_OBJECT_CLASS (gobject_class)->destroy =
+            (IBusObjectDestroyFunc) ibus_panel_service_real_destroy;
 
-    IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_panel_service_service_method_call;
-    IBUS_SERVICE_CLASS (class)->service_get_property = ibus_panel_service_service_get_property;
-    IBUS_SERVICE_CLASS (class)->service_set_property = ibus_panel_service_service_set_property;
+    IBUS_SERVICE_CLASS (class)->service_method_call  =
+            ibus_panel_service_service_method_call;
+    IBUS_SERVICE_CLASS (class)->service_get_property =
+            ibus_panel_service_service_get_property;
+    IBUS_SERVICE_CLASS (class)->service_set_property =
+            ibus_panel_service_service_set_property;
 
-    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
+    ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class),
+                                       introspection_xml);
 
     class->focus_in              = ibus_panel_service_focus_in;
     class->focus_out             = ibus_panel_service_focus_out;
+    class->destroy_context       = ibus_panel_service_destroy_context;
     class->register_properties   = ibus_panel_service_register_properties;
     class->set_cursor_location   = ibus_panel_service_set_cursor_location;
     class->update_lookup_table   = ibus_panel_service_update_lookup_table;
@@ -235,14 +266,17 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     /* install signals */
     /**
      * IBusPanelService::update-preedit-text:
+     * @panel: An #IBusPanelService
      * @text: A preedit text to be updated.
      * @cursor_pos: The cursor position of the text.
      * @visible: Whether the update is visible.
      *
      * Emitted when the client application get the update-preedit-text.
-     * Implement the member function update_preedit_text() in extended class to receive this signal.
+     * Implement the member function update_preedit_text() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[UPDATE_PREEDIT_TEXT] =
         g_signal_new (I_("update-preedit-text"),
@@ -259,13 +293,16 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-auxiliary-text:
+     * @panel: An #IBusPanelService
      * @text: A preedit text to be updated.
      * @visible: Whether the update is visible.
      *
      * Emitted when the client application get the update-auxiliary-text.
-     * Implement the member function update_auxiliary_text() in extended class to receive this signal.
+     * Implement the member function update_auxiliary_text() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[UPDATE_AUXILIARY_TEXT] =
         g_signal_new (I_("update-auxiliary-text"),
@@ -281,13 +318,16 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-lookup-table:
+     * @panel: An #IBusPanelService
      * @lookup_table: A lookup table to be updated.
      * @visible: Whether the update is visible.
      *
      * Emitted when the client application get the update-lookup-table.
-     * Implement the member function update_lookup_table() in extended class to receive this signal.
+     * Implement the member function update_lookup_table() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[UPDATE_LOOKUP_TABLE] =
         g_signal_new (I_("update-lookup-table"),
@@ -303,12 +343,15 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::focus-in:
+     * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application get the focus-in.
-     * Implement the member function focus_in() in extended class to receive this signal.
+     * Implement the member function focus_in() in extended class to receive
+     * this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[FOCUS_IN] =
         g_signal_new (I_("focus-in"),
@@ -323,12 +366,15 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::focus-out:
+     * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application get the focus-out.
-     * Implement the member function focus_out() in extended class to receive this signal.
+     * Implement the member function focus_out() in extended class to receive
+     * this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[FOCUS_OUT] =
         g_signal_new (I_("focus-out"),
@@ -343,12 +389,15 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::register-properties:
+     * @panel: An #IBusPanelService
      * @prop_list: An IBusPropList that contains properties.
      *
      * Emitted when the client application get the register-properties.
-     * Implement the member function register_properties() in extended class to receive this signal.
+     * Implement the member function register_properties() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[REGISTER_PROPERTIES] =
         g_signal_new (I_("register-properties"),
@@ -363,12 +412,15 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::update-property:
+     * @panel: An #IBusPanelService
      * @prop: The IBusProperty to be updated.
      *
      * Emitted when the client application get the update-property.
-     * Implement the member function update_property() in extended class to receive this signal.
+     * Implement the member function update_property() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[UPDATE_PROPERTY] =
         g_signal_new (I_("update-property"),
@@ -383,15 +435,18 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::set-cursor-location:
+     * @panel: An #IBusPanelService
      * @x: X coordinate of the cursor.
      * @y: Y coordinate of the cursor.
      * @w: Width of the cursor.
      * @h: Height of the cursor.
      *
      * Emitted when the client application get the set-cursor-location.
-     * Implement the member function set_cursor_location() in extended class to receive this signal.
+     * Implement the member function set_cursor_location() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
@@ -409,11 +464,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::cursor-up-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the cursor-up-lookup-table.
-     * Implement the member function cursor_up_lookup_table() in extended class to receive this signal.
+     * Implement the member function cursor_up_lookup_table() in extended
+     * class to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[CURSOR_UP_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-up-lookup-table"),
@@ -426,11 +484,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::cursor-down-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the cursor-down-lookup-table.
-     * Implement the member function cursor_down_lookup_table() in extended class to receive this signal.
+     * Implement the member function cursor_down_lookup_table() in extended
+     * class to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[CURSOR_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("cursor-down-lookup-table"),
@@ -443,11 +504,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-auxiliary-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-auxiliary-text.
-     * Implement the member function hide_auxiliary_text() in extended class to receive this signal.
+     * Implement the member function hide_auxiliary_text() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[HIDE_AUXILIARY_TEXT] =
         g_signal_new (I_("hide-auxiliary-text"),
@@ -460,11 +524,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-language-bar:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-language-bar.
-     * Implement the member function hide_language_bar() in extended class to receive this signal.
+     * Implement the member function hide_language_bar() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[HIDE_LANGUAGE_BAR] =
         g_signal_new (I_("hide-language-bar"),
@@ -477,11 +544,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-lookup-table.
-     * Implement the member function hide_lookup_table() in extended class to receive this signal.
+     * Implement the member function hide_lookup_table() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[HIDE_LOOKUP_TABLE] =
         g_signal_new (I_("hide-lookup-table"),
@@ -494,11 +564,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::hide-preedit-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the hide-preedit-text.
-     * Implement the member function hide_preedit_text() in extended class to receive this signal.
+     * Implement the member function hide_preedit_text() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[HIDE_PREEDIT_TEXT] =
         g_signal_new (I_("hide-preedit-text"),
@@ -511,11 +584,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::page-up-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the page-up-lookup-table.
-     * Implement the member function page_up_lookup_table() in extended class to receive this signal.
+     * Implement the member function page_up_lookup_table() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[PAGE_UP_LOOKUP_TABLE] =
         g_signal_new (I_("page-up-lookup-table"),
@@ -528,11 +604,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::page-down-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the page-down-lookup-table.
-     * Implement the member function page_down_lookup_table() in extended class to receive this signal.
+     * Implement the member function page_down_lookup_table() in extended
+     * class to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[PAGE_DOWN_LOOKUP_TABLE] =
         g_signal_new (I_("page-down-lookup-table"),
@@ -545,11 +624,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::reset:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the reset.
-     * Implement the member function reset() in extended class to receive this signal.
+     * Implement the member function reset() in extended class to receive this
+     * signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[RESET] =
         g_signal_new (I_("reset"),
@@ -562,11 +644,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-auxiliary-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-auxiliary-text.
-     * Implement the member function show_auxiliary_text() in extended class to receive this signal.
+     * Implement the member function show_auxiliary_text() in extended class
+     * to receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[SHOW_AUXILIARY_TEXT] =
         g_signal_new (I_("show-auxiliary-text"),
@@ -579,11 +664,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-language-bar:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-language-bar.
-     * Implement the member function show_language_bar() in extended class to receive this signal.
+     * Implement the member function show_language_bar() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[SHOW_LANGUAGE_BAR] =
         g_signal_new (I_("show-language-bar"),
@@ -596,11 +684,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-lookup-table:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-lookup-table.
-     * Implement the member function show_lookup_table() in extended class to receive this signal.
+     * Implement the member function show_lookup_table() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[SHOW_LOOKUP_TABLE] =
         g_signal_new (I_("show-lookup-table"),
@@ -613,11 +704,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::show-preedit-text:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the show-preedit-text.
-     * Implement the member function show_preedit_text() in extended class to receive this signal.
+     * Implement the member function show_preedit_text() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[SHOW_PREEDIT_TEXT] =
         g_signal_new (I_("show-preedit-text"),
@@ -630,11 +724,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::start-setup:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the start-setup.
-     * Implement the member function start_setup() in extended class to receive this signal.
+     * Implement the member function start_setup() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[START_SETUP] =
         g_signal_new (I_("start-setup"),
@@ -647,11 +744,14 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
 
     /**
      * IBusPanelService::state-changed:
+     * @panel: An #IBusPanelService
      *
      * Emitted when the client application get the state-changed.
-     * Implement the member function state_changed() in extended class to receive this signal.
+     * Implement the member function state_changed() in extended class to
+     * receive this signal.
      *
-     * <note><para>Argument @user_data is ignored in this function.</para></note>
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
      */
     panel_signals[STATE_CHANGED] =
         g_signal_new (I_("state-changed"),
@@ -661,6 +761,29 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
             NULL, NULL,
             _ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
+
+    /**
+     * IBusPanelService::destroy-context:
+     * @panel: An #IBusPanelService
+     * @input_context_path: Object path of InputContext.
+     *
+     * Emitted when the client application destroys.
+     * Implement the member function destroy_context() in extended class to
+     * receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
+     */
+    panel_signals[DESTROY_CONTEXT] =
+        g_signal_new (I_("destroy-context"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass, destroy_context),
+            NULL, NULL,
+            _ibus_marshal_VOID__STRING,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_STRING);
 }
 
 static void
@@ -790,6 +913,14 @@ ibus_panel_service_service_method_call (IBusService           *service,
         return;
     }
 
+    if (g_strcmp0 (method_name, "DestroyContext") == 0) {
+        const gchar *path;
+        g_variant_get (parameters, "(&o)", &path);
+        g_signal_emit (panel, panel_signals[DESTROY_CONTEXT], 0, path);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
+
     if (g_strcmp0 (method_name, "RegisterProperties") == 0) {
         GVariant *variant = g_variant_get_child_value (parameters, 0);
         IBusPropList *prop_list = IBUS_PROP_LIST (ibus_serializable_deserialize (variant));
@@ -913,6 +1044,13 @@ ibus_panel_service_focus_in (IBusPanelService    *panel,
 static void
 ibus_panel_service_focus_out (IBusPanelService    *panel,
                               const gchar         *input_context_path)
+{
+    ibus_panel_service_not_implemented(panel);
+}
+
+static void
+ibus_panel_service_destroy_context (IBusPanelService    *panel,
+                                    const gchar         *input_context_path)
 {
     ibus_panel_service_not_implemented(panel);
 }

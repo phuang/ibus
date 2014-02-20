@@ -3,7 +3,7 @@
 <component>
 	<name>org.freedesktop.IBus.Config</name>
 	<description>Dconf Config Component</description>
-	<exec>${libexecdir}/ibus-dconf</exec>
+	<exec>@libexecdir@/ibus-dconf</exec>
 	<version>@VERSION@</version>
 	<author>Daiki Ueno &lt;ueno@unixuser.org&gt;</author>
 	<license>GPL</license>

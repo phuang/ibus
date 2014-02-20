@@ -2,39 +2,40 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 
 # If ibus_released is 0, append datestamp to the version number.
-m4_define([ibus_released], [0])
+m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
-m4_define([ibus_minor_version], [4])
-m4_define([ibus_micro_version], [99])
-m4_define([ibus_interface_age], [0])
-m4_define([ibus_binary_age],
+m4_define([ibus_minor_version], [5])
+m4_define([ibus_micro_version], [5])
+m4_define([ibus_abi_current], [5])
+m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
+m4_define([ibus_abi_age], [0])
 m4_define([ibus_maybe_datestamp],
     m4_esyscmd([test x]ibus_released[ != x1 && date +.%Y%m%d | tr -d '\n\r']))
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
-m4_define([ibus_api_version], [1.0])
+m4_define([ibus_api_version], [ibus_major_version.0])
 
 AC_PREFEQ([2.62])
 AC_INIT([ibus], [ibus_version],
@@ -44,14 +45,22 @@ AC_INIT([ibus], [ibus_version],
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-m4_define([ibus_binary_version], [1.0.0])
+m4_define([ibus_abi_current_minus_age],
+          [m4_eval(ibus_abi_current - ibus_abi_age)])
+m4_define([ibus_binary_version],
+          [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
 
 # Required versions of other packages.
-m4_define([glib_required_version], [2.26.0])
+m4_define([glib_required_version], [2.32.0])
 
+# VALA_TARGET_GLIB_VERSION is used by valac --ccode --target-glib .
+# VALA_TARGET_GLIB_VERSION and glib_required_version will be different
+# in the future.
+VALA_TARGET_GLIB_VERSION=2.32
+AC_SUBST(VALA_TARGET_GLIB_VERSION)
 
 # Init automake.
-AM_INIT_AUTOMAKE([1.10])
+AM_INIT_AUTOMAKE([1.11.1 parallel-tests])
 AM_MAINTAINER_MODE([enable])
 AC_GNU_SOURCE
 
@@ -64,25 +73,33 @@ AM_SILENT_RULES([yes])
 IBUS_MAJOR_VERSION=ibus_major_version
 IBUS_MINOR_VERSION=ibus_minor_version
 IBUS_MICRO_VERSION=ibus_micro_version
-IBUS_INTERFACE_AGE=ibus_interface_age
-IBUS_BINARY_AGE=ibus_binary_age
+IBUS_ABI_CURRENT=ibus_abi_current
+IBUS_ABI_REVISION=ibus_abi_revision
+IBUS_ABI_AGE=ibus_abi_age
 IBUS_VERSION=ibus_version
 IBUS_API_VERSION=ibus_api_version
 IBUS_BINARY_VERSION=ibus_binary_version
 AC_SUBST(IBUS_MAJOR_VERSION)
 AC_SUBST(IBUS_MINOR_VERSION)
 AC_SUBST(IBUS_MICRO_VERSION)
-AC_SUBST(IBUS_INTERFACE_AGE)
-AC_SUBST(IBUS_BINARY_AGE)
+AC_SUBST(IBUS_ABI_CURRENT)
+AC_SUBST(IBUS_ABI_REVISION)
+AC_SUBST(IBUS_ABI_AGE)
 AC_SUBST(IBUS_API_VERSION)
 AC_SUBST(IBUS_VERSION)
 AC_SUBST(IBUS_BINARY_VERSION)
 
 # libtool versioning
-m4_define([lt_current],
-          [m4_eval(100 * ibus_minor_version + ibus_micro_version - ibus_interface_age)])
-m4_define([lt_revision], [ibus_interface_age])
-m4_define([lt_age], [m4_eval(ibus_binary_age - ibus_interface_age)])
+#
+# If LT_VERSION_INFO="lt_current:lt_revision:lt_age", libibus is
+# libibus-ibus_api_version.so.(lt_current - lt_age).lt_age.lt_revision
+# If the abi is changed, but it is compatible with last version,
+# ibus_abi_current++, ibus_abi_age++;
+# If the abi is not compatible with last version,
+# ibus_abi_current++, ibus_abi_age = 0;
+m4_define([lt_current], [ibus_abi_current])
+m4_define([lt_revision], [ibus_abi_revision])
+m4_define([lt_age], [ibus_abi_age])
 LT_VERSION_INFO="lt_current:lt_revision:lt_age"
 LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
 AC_SUBST(LT_VERSION_INFO)
@@ -93,6 +110,9 @@ GETTEXT_PACKAGE=ibus10
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for out gettext translation domains.])
+GLIB_DEFINE_LOCALEDIR(GLIB_LOCALE_DIR)
+GLIB_LOCALE_DIR=$localedir
+AC_SUBST(GLIB_LOCALE_DIR)
 
 # For dislpay date.
 m4_define(ibus_datedisplay,
@@ -116,7 +136,7 @@ AM_GLIB_GNU_GETTEXT
 AM_DISABLE_STATIC
 AC_ISC_POSIX
 AC_HEADER_STDC
-AM_PROG_LIBTOOL
+LT_INIT
 IT_PROG_INTLTOOL([0.35.0])
 
 # Check functions.
@@ -137,6 +157,18 @@ PKG_CHECK_MODULES(GIO2, [
 PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
+
+# --disable-tests option.
+AC_ARG_ENABLE(tests,
+    AS_HELP_STRING([--disable-tests],
+                   [Do not run tests]),
+    [enable_tests=$enableval],
+    [enable_tests=yes]
+)
+AM_CONDITIONAL([ENABLE_TESTS], [test x"$enable_tests" = x"yes"])
+if test x"$enable_tests" != x"yes"; then
+    enable_tests="no (disabled, use --enable-tests to enable)"
+fi
 
 # --disable-gtk2 option.
 AC_ARG_ENABLE(gtk2,
@@ -165,20 +197,14 @@ AC_ARG_ENABLE(xim,
 )
 AM_CONDITIONAL([ENABLE_XIM], [test x"$enable_xim" = x"yes"])
 
-# --disable-vala option.
-AC_ARG_ENABLE(vala,
-    AS_HELP_STRING([--disable-vala],
-                   [Do not build ibus vala binding]),
-    [enable_vala=$enableval],
-    [enable_vala=yes]
+# --enable-wayland option.
+AC_ARG_ENABLE(wayland,
+    AS_HELP_STRING([--enable-wayland],
+                   [Build wayland support]),
+    [enable_wayland=$enableval],
+    [enable_wayland=no]
 )
-if test x"$enable_vala" = x"yes"; then
-    AC_PATH_PROG([VAPIGEN], [vapigen], [false])
-fi
-AM_CONDITIONAL([ENABLE_VALA], [test x"$enable_vala" = x"yes"])
-if test x"$enable_vala" != x"yes"; then
-    enable_vala="no (disabled, use --enable-vala to enable)"
-fi
+AM_CONDITIONAL([ENABLE_WAYLAND], [test x"$enable_wayland" = x"yes"])
 
 if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
     # check for gtk2
@@ -225,12 +251,22 @@ else
     enable_xim="no (disabled, use --enable-xim to enable)"
 fi
 
+if test x"$enable_wayland" = x"yes"; then
+    # Check for wayland
+    PKG_CHECK_MODULES(WAYLAND, [
+        wayland-client >= 1.2.0
+        xkbcommon
+    ])
+else
+    enable_wayland="no (disabled, use --enable-wayland to enable)"
+fi
+
 # GObject introspection
 GOBJECT_INTROSPECTION_CHECK([0.6.8])
 
 IBUS_GIR_SCANNERFLAGS=
 if test x"$found_introspection" = x"yes" ; then
-    IBUS_GIR_SCANNERFLAGS="--identifier-prefix=IBus --symbol-prefix=ibus"
+    IBUS_GIR_SCANNERFLAGS="--warn-all --identifier-prefix=IBus --symbol-prefix=ibus"
     PKG_CHECK_EXISTS([gobject-introspection-1.0 >= 0.9.6],
                      [gir_symbol_prefix=yes],
                      [gir_symbol_prefix=no])
@@ -239,6 +275,9 @@ if test x"$found_introspection" = x"yes" ; then
     fi
 fi
 AC_SUBST(IBUS_GIR_SCANNERFLAGS)
+
+# Check vapigen.
+VAPIGEN_CHECK([0.16])
 
 # Check for gtk-doc.
 GTK_DOC_CHECK(1.9)
@@ -251,12 +290,12 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# --disable-gconf option.
+# --enable-gconf option.
 AC_ARG_ENABLE(gconf,
-    AS_HELP_STRING([--disable-gconf],
-                   [Do not use GConf code]),
+    AS_HELP_STRING([--enable-gconf],
+                   [Use GConf code]),
     [enable_gconf=$enableval],
-    [enable_gconf=yes]
+    [enable_gconf=no]
 )
 AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
 
@@ -288,22 +327,25 @@ AC_ARG_ENABLE(memconf,
 AM_CONDITIONAL([ENABLE_MEMCONF], [test "x$enable_memconf" = "xyes"])
 
 AC_ARG_ENABLE(dconf,
-    AS_HELP_STRING([--enable-dconf],
-                   [Enable configure base on dconf]),
+    AS_HELP_STRING([--disable-dconf],
+                   [Disable configure base on dconf]),
     [enable_dconf=$enableval],
-    [enable_dconf=no]
+    [enable_dconf=yes]
 )
+AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 if test x"$enable_dconf" = x"yes"; then
     # check dconf
     PKG_CHECK_MODULES(DCONF,
-        [dconf >= 0.7.5], ,
-        enable_dconf=no
+        [dconf >= 0.7.5],
     )
+    PKG_CHECK_EXISTS([dconf >= 0.13.4],
+        [AC_DEFINE(DCONF_0_13_4, TRUE, [dconf is 0.13.4 or later])],
+        [])
     # check glib-compile-schemas
     GLIB_GSETTINGS
+    enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
-AM_CONDITIONAL([ENABLE_DCONF], [test x"$enable_dconf" = x"yes"])
 
 # Check env.
 AC_PATH_PROG(ENV_IBUS_TEST, env)
@@ -327,7 +369,36 @@ AM_CONDITIONAL([ENABLE_PYTHON_LIBRARY], [test x"$enable_python_library" = x"yes"
 AM_CONDITIONAL([ENABLE_SETUP], [test x"$enable_setup" = x"yes"])
 AM_CONDITIONAL([ENABLE_DAEMON], [true])
 
+# Define python version
+AC_ARG_WITH(python,
+    AS_HELP_STRING([--with-python[=PATH]],
+        [Select python2 or python3]),
+    [PYTHON=$with_python], []
+)
+
 AM_PATH_PYTHON([2.5])
+AC_PATH_PROG(PYTHON2, python2)
+
+if test x"$PYTHON2" = x""; then
+    PYTHON2=$PYTHON
+fi
+
+PYGOBJECT_REQUIRED=3.0.0
+
+PKG_CHECK_EXISTS([pygobject-3.0 >= $PYGOBJECT_REQUIRED],
+                 [enable_pygobject=yes], [enable_pygobject=no])
+
+if test "x$enable_pygobject" = "xyes"; then
+    PKG_CHECK_MODULES(PYTHON, [pygobject-3.0 >= $PYGOBJECT_REQUIRED])
+
+    pyoverridesdir=`$PYTHON -c "import gi; print(gi._overridesdir)"`
+    AC_SUBST(pyoverridesdir)
+
+    py2overridesdir=`$PYTHON2 -c "import gi; print(gi._overridesdir)"`
+    AC_SUBST(py2overridesdir)
+fi
+
+AM_CONDITIONAL(ENABLE_PYGOBJECT, test x"$enable_pygobject" = "xyes")
 
 if test x"$enable_python_library" = x"yes"; then
     # Check python.
@@ -346,6 +417,13 @@ if test x"$enable_python_library" = x"yes"; then
     AC_SUBST(PYTHON_CFLAGS)
     AC_SUBST(PYTHON_INCLUDES)
     AC_SUBST(PYTHON_LIBS)
+
+    PYTHON2_PREFIX=`$PYTHON2 -c "import sys; sys.stdout.write(sys.prefix)"`
+    PYTHON2_VERSION=`$PYTHON2 -c "import sys; sys.stdout.write(sys.version[[:3]])"`
+    PYTHON2_LIBDIR="$PYTHON2_PREFIX/lib/python$PYTHON2_VERSION"
+    python2dir="$PYTHON2_LIBDIR/site-packages"
+    pkgpython2dir="$python2dir/ibus"
+    AC_SUBST(pkgpython2dir)
 else
     enable_python_library="no (disabled, use --enable-python-library to enable)"
 fi
@@ -415,7 +493,7 @@ AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
 # GNOME 3 uses the theme's icon.
 AC_ARG_WITH(panel-icon-keyboard,
     AS_HELP_STRING([--with-panel-icon-keyboard[=icon_name]],
-        [Set the default panel icon (default: "input-keyboard-symbolic")]),
+        [Set the default panel icon (default: "ibus-keyboard")]),
     [if test x"$with_panel_icon_keyboard" = x"yes" -o \
              x"$with_panel_icon_keyboard" = x; then
          with_panel_icon_keyboard="input-keyboard-symbolic"
@@ -425,7 +503,7 @@ AC_ARG_WITH(panel-icon-keyboard,
      fi
      IBUS_ICON_KEYBOARD=$with_panel_icon_keyboard
     ],
-    IBUS_ICON_KEYBOARD="input-keyboard-symbolic"
+    IBUS_ICON_KEYBOARD="ibus-keyboard"
 )
 AC_SUBST(IBUS_ICON_KEYBOARD)
 
@@ -440,6 +518,45 @@ if test x"$enable_surrounding_text" = x"yes"; then
     AC_DEFINE(ENABLE_SURROUNDING, TRUE, [Enable surrounding-text support])
 else
     enable_surrounding_text="no (disabled, use --enable-surrounding-text to enable)"
+fi
+
+# --disable-ui
+AC_ARG_ENABLE(ui,
+    AS_HELP_STRING([--disable-ui],
+                   [Disable ibus default user interface]),
+    [enable_ui=$enableval],
+    [enable_ui=yes]
+)
+AM_CONDITIONAL([ENABLE_UI], [test x"$enable_ui" = x"yes"])
+if test x"$enable_ui" = x"yes"; then
+    enable_ui="yes (enabled, use --disable-ui to disable)"
+fi
+
+# --disable-engine
+AC_ARG_ENABLE(engine,
+    AS_HELP_STRING([--disable-engine],
+                   [Disable ibus simple engine]),
+    [enable_engine=$enableval],
+    [enable_engine=yes]
+)
+AM_CONDITIONAL([ENABLE_ENGINE], [test x"$enable_engine" = x"yes"])
+if test x"$enable_engine" = x"yes"; then
+    enable_engine="yes (enabled, use --disable-engine to disable)"
+fi
+
+# --disable-libnotify
+AC_ARG_ENABLE(libnotify,
+    AS_HELP_STRING([--disable-libnotify],
+                   [Disable to link libnotify]),
+    [enable_libnotify=$enableval],
+    [enable_libnotify=yes]
+)
+AM_CONDITIONAL([ENABLE_LIBNOTIFY], [test x"$enable_libnotify" = x"yes"])
+if test x"$enable_libnotify" = x"yes"; then
+    PKG_CHECK_MODULES(LIBNOTIFY, [
+        libnotify >= 0.7
+    ])
+    enable_libnotify="yes (enabled, use --disable-libnotify to disable)"
 fi
 
 # Check iso-codes.
@@ -458,12 +575,12 @@ client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
 client/x11/Makefile
+client/wayland/Makefile
 src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
 engine/Makefile
-engine/simple.xml.in
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
@@ -480,18 +597,15 @@ ibus/Makefile
 ibus/interface/Makefile
 ui/Makefile
 ui/gtk3/Makefile
-ui/gtk3/gtkpanel.xml.in
 setup/Makefile
 setup/ibus-setup
 bindings/Makefile
+bindings/pygobject/Makefile
 bindings/vala/Makefile
 conf/Makefile
 conf/gconf/Makefile
-conf/gconf/gconf.xml.in
 conf/dconf/Makefile
-conf/dconf/dconf.xml.in
 conf/memconf/Makefile
-conf/memconf/memconf.xml.in
 tools/Makefile
 ])
 
@@ -503,11 +617,14 @@ Build options:
   Build shared libs         $enable_shared
   Build static libs         $enable_static
   CFLAGS                    $CFLAGS
+  PYTHON                    $PYTHON
+  PYTHON2                   $PYTHON2
   Gtk2 immodule dir         $GTK2_IM_MODULEDIR
   Gtk3 immodule dir         $GTK3_IM_MODULEDIR
   Build gtk2 immodule       $enable_gtk2
   Build gtk3 immodule       $enable_gtk3
   Build XIM agent server    $enable_xim
+  Build wayland support     $enable_wayland
   Build python library      $enable_python_library
   Build gconf modules       $enable_gconf
   Build memconf modules     $enable_memconf
@@ -516,9 +633,13 @@ Build options:
   IBus-1.0.gir scannerflags "$IBUS_GIR_SCANNERFLAGS"
   Build vala binding        $enable_vala
   Build document            $enable_gtk_doc
+  Build UI                  $enable_ui
+  Build engine              $enable_engine
   Enable key snooper        $enable_key_snooper
   No snooper regexes        "$NO_SNOOPER_APPS"
   Panel icon                "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text   $enable_surrounding_text
+  Enable libnotify          $enable_libnotify
+  Run test cases            $enable_tests
 ])
 

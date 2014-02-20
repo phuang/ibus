@@ -7,22 +7,25 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_ENGINE_SIMPLE_H__
+#define __IBUS_ENGINE_SIMPLE_H__
 
 /**
  * SECTION: ibussimpleengine
@@ -32,10 +35,8 @@
  *
  * An IBusEngineSimple provides table-based input method logic.
  *
- * @see_also: #IBusEngine
+ * see_also: #IBusEngine
  */
-#ifndef __IBUS_ENGINE_SIMPLE_H__
-#define __IBUS_ENGINE_SIMPLE_H__
 
 #include "ibusengine.h"
 
@@ -97,8 +98,9 @@ GType   ibus_engine_simple_get_type       (void);
 /**
  * ibus_engine_simple_add_table:
  * @simple: An IBusEngineSimple.
- * @data: The table.
- * @ max_seq_len: Maximum length of a swquence in the table (cannot be greater
+ * @data: (element-type guint16) (array): The table which must be available
+ *      during the whole life of the simple engine.
+ * @max_seq_len: Maximum length of a swquence in the table (cannot be greater
  *      than %IBUS_MAX_COMPOSE_LEN)
  *
  * Adds an additional table to search to the engine. Each row of the table
@@ -109,11 +111,23 @@ GType   ibus_engine_simple_get_type       (void);
  * The table must be sorted in dictionary order on the numeric value of the key
  * symbol fields. (Values beyond the length of the sequence should be zero.)
  */
-void    ibus_engine_simple_add_table      (IBusEngineSimple     *simple,
-                                           guint16              *data,
-                                           gint                  max_seq_len,
-                                           gint                  n_seqs);
+void             ibus_engine_simple_add_table   (IBusEngineSimple  *simple,
+                                                 const guint16     *data,
+                                                 gint               max_seq_len,
+                                                 gint               n_seqs);
 
+/**
+ * ibus_engine_simple_add_table_by_locale:
+ * @simple: An IBusEngineSimple.
+ * @locale: (allow-none): The locale name. If the locale is %NULL,
+ *                        the current locale is used.
+ * @returns: %TRUE if the @locale is matched to the table.
+ *
+ * Call ibus_engine_simple_add_table() internally by locale.
+ */
+gboolean         ibus_engine_simple_add_table_by_locale
+                                                (IBusEngineSimple  *simple,
+                                                 const gchar       *locale);
 G_END_DECLS
 
 #endif // __IBUS_ENGINE_SIMPLE_H__

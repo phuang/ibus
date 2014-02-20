@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_INPUT_CONTEXT_H_
+#define __IBUS_INPUT_CONTEXT_H_
 
 /**
  * SECTION: ibusinputcontext
@@ -36,9 +39,6 @@
  * Clients call the IBusInputContext to invoke BusInputContext,
  * through which invokes IBusEngine.
  */
-#ifndef __IBUS_INPUT_CONTEXT_H_
-#define __IBUS_INPUT_CONTEXT_H_
-
 #include "ibusproxy.h"
 #include "ibusenginedesc.h"
 #include "ibustext.h"
@@ -93,7 +93,6 @@ GType        ibus_input_context_get_type    (void);
  * @connection: An #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @error: Return location for error or %NULL.
- *
  * @returns: A newly allocated IBusInputContext.
  *
  * New an IBusInputContext.
@@ -125,7 +124,6 @@ void         ibus_input_context_new_async   (const gchar        *path,
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_new_async().
  * @error: Return location for error or %NULL.
- *
  * @returns: A newly allocated #IBusInputContext.
  *
  * Finishes an operation started with ibus_input_context_new_async().
@@ -169,7 +167,6 @@ void         ibus_input_context_get_input_context_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_get_input_context_async().
  * @error: Return location for error or %NULL.
- *
  * @returns: (transfer none): An existing #IBusInputContext.
  *
  * Finishes an operation started with ibus_input_contex_get_input_context_async().
@@ -180,7 +177,7 @@ IBusInputContext *
                                              GError            **error);
 
 /**
- * ibus_input_context_process_hand_writing_event
+ * ibus_input_context_process_hand_writing_event:
  * @context: An IBusInputContext.
  * @coordinates: An array of gdouble (0.0 to 1.0) which represents a stroke (i.e. [x1, y1, x2, y2, x3, y3, ...]).
  * @coordinates_len: The number of elements in the array. The number should be even and >= 4.
@@ -203,7 +200,7 @@ void         ibus_input_context_process_hand_writing_event
                                              guint               coordinates_len);
 
 /**
- * ibus_input_context_cancel_hand_writing
+ * ibus_input_context_cancel_hand_writing:
  * @context: An IBusInputContext.
  * @n_strokes: The number of strokes to be removed. Pass 0 to remove all.
  *
@@ -326,7 +323,7 @@ void         ibus_input_context_set_capabilities
                                              guint32             capabilities);
 
 /**
- * ibus_input_context_property_activate
+ * ibus_input_context_property_activate:
  * @context: An IBusInputContext.
  * @prop_name: A property name (e.g. "InputMode.WideLatin")
  * @state: A status of the property (e.g. PROP_STATE_CHECKED)
@@ -450,6 +447,26 @@ void         ibus_input_context_set_surrounding_text
  */
 gboolean     ibus_input_context_needs_surrounding_text
                                             (IBusInputContext   *context);
+
+/**
+ * ibus_input_context_set_content_type:
+ * @context: An #IBusInputContext.
+ * @purpose: Primary purpose of the input context, as an #IBusInputPurpose.
+ * @hints: Hints that augment @purpose, as an #IBusInputHints.
+ *
+ * Set content-type (primary purpose and hints) of the context.  This
+ * information is particularly useful to implement intelligent
+ * behavior in engines, such as automatic input-mode switch and text
+ * prediction.  For example, to restrict input to numbers, the client
+ * can call this function with @purpose set to
+ * #IBUS_INPUT_PURPOSE_NUMBER.
+ *
+ * See also: #IBusEngine::set-content-type
+ */
+void         ibus_input_context_set_content_type
+                                            (IBusInputContext   *context,
+                                             guint               purpose,
+                                             guint               hints);
 
 G_END_DECLS
 #endif

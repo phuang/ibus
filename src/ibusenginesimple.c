@@ -1,5 +1,25 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
+/* ibus - The Input Bus
+ * Copyright (C) 2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2013 Red Hat, Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -9,19 +29,17 @@
 #include "ibuskeys.h"
 #include "ibuskeysyms.h"
 
-#include <stdlib.h>
+#include "ibuscomposetable.h"
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include <memory.h>
+#include <stdlib.h>
 
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
-
-typedef struct _IBusComposeTable IBusComposeTable;
-struct _IBusComposeTable
-{
-    const guint16 *data;
-    gint max_seq_len;
-    gint n_seqs;
-};
 
 typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
 struct _IBusComposeTableCompact
@@ -32,8 +50,6 @@ struct _IBusComposeTableCompact
     gint n_index_stride;
 };
 
-
-typedef struct _IBusEngineSimplePrivate IBusEngineSimplePrivate;
 struct _IBusEngineSimplePrivate {
     GSList     *tables;
     guint       compose_buffer[IBUS_MAX_COMPOSE_LEN + 1];
@@ -58,7 +74,7 @@ struct _IBusEngineSimplePrivate {
 static const IBusComposeTableCompact ibus_compose_table_compact = {
     gtk_compose_seqs_compact,
     5,
-    24,
+    25,
     6
 };
 
@@ -663,7 +679,11 @@ no_sequence_matches (IBusEngineSimple *simple,
         }
 
         ch = ibus_keyval_to_unicode (keyval);
-        if (ch != 0 && !g_unichar_iscntrl (ch)) {
+        /* IBUS_CHANGE: RH#769133
+         * Since we use ibus xkb engines as the disable state,
+         * do not commit the characters locally without in_hex_sequence. */
+        if (ch != 0 && !g_unichar_iscntrl (ch) &&
+            priv->in_hex_sequence) {
             ibus_engine_simple_commit_char (simple, ch);
             return TRUE;
         }
@@ -890,7 +910,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
 void
 ibus_engine_simple_add_table (IBusEngineSimple *simple,
-                              guint16          *data,
+                              const guint16    *data,
                               gint              max_seq_len,
                               gint              n_seqs)
 {
@@ -907,4 +927,34 @@ ibus_engine_simple_add_table (IBusEngineSimple *simple,
 
     priv->tables = g_slist_prepend (priv->tables, table);
 
+}
+
+gboolean
+ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
+                                        const gchar      *locale)
+{
+    int i;
+
+    if (locale == NULL) {
+#ifdef HAVE_LOCALE_H
+        locale = setlocale (LC_CTYPE, NULL);
+#endif
+        if (locale == NULL)
+            locale = "C";
+    }
+
+    for (i = 0; ibus_compose_table_locale_list[i].locale != NULL; i++) {
+        const gchar *locale2 = ibus_compose_table_locale_list[i].locale;
+        const IBusComposeTable *table = ibus_compose_table_locale_list[i].table;
+
+        if (g_ascii_strncasecmp (locale, locale2 , strlen (locale2)) == 0) {
+            ibus_engine_simple_add_table (simple,
+                                          table->data,
+                                          table->max_seq_len,
+                                          table->n_seqs);
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }

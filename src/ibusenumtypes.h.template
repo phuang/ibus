@@ -1,4 +1,7 @@
 /*** BEGIN file-header ***/
+#ifndef __IBUS_ENUM_TYPES_H__
+#define __IBUS_ENUM_TYPES_H__
+
 /**
  * SECTION: ibusenumtypes
  * @short_description: Enumeration definition in IBus.
@@ -6,8 +9,6 @@
  *
  * IBusEnumTypes lists IBus enumeration types.
  */
-#ifndef __IBUS_ENUM_TYPES_H__
-#define __IBUS_ENUM_TYPES_H__
 
 #include <glib-object.h>
 

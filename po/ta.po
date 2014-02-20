@@ -1,387 +1,253 @@
-# translation of ibus.master.ta.po to Tamil
+# translation of ibus.pot to Tamil
 # Tamil translation of ibus.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
-# I. Felix <ifelix@redhat.com>, 2009.
-# I Felix <ifelix@redhat.com>, 2010.
-# ifelix <ifelix25@gmail.com>, 2011.
+# Translators:
+# Arun Prakash <arunprakash.pts@gmail.com>, 2012
+# Arun Prakash <arunprakash.pts@gmail.com>, 2012
+# Felix I <ifelix25@gmail.com>, 2011
+# Felix I <ifelix25@gmail.com>, 2011
+# I Felix <ifelix@redhat.com>, 2010
+# I. Felix <ifelix@redhat.com>, 2009
+# shkumar <shkumar@redhat.com>, 2012
+# shkumar <shkumar@redhat.com>, 2012,2014
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus.master.ta\n"
+"Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2011-03-08 12:32+0900\n"
-"PO-Revision-Date: 2011-03-22 15:23+0000\n"
-"Last-Translator: ifelix <ifelix25@gmail.com>\n"
+"POT-Creation-Date: 2014-02-18 13:46+0900\n"
+"PO-Revision-Date: 2014-02-18 05:49+0000\n"
+"Last-Translator: shkumar <shkumar@redhat.com>\n"
 "Language-Team: Tamil <tamil-users@lists.fedoraproject.org>\n"
-"Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"Language: ta\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: ../setup/setup.ui.h:1
+msgid "Horizontal"
+msgstr "கிடைமட்டம்"
 
-#: ../bus/ibus.desktop.in.h:1
-msgid "IBus"
-msgstr "IBus"
+#: ../setup/setup.ui.h:2
+msgid "Vertical"
+msgstr "செங்குத்து"
 
-#: ../bus/ibus.desktop.in.h:2
-msgid "Input Method Framework"
-msgstr "உள்ளீடு முறை ஃபிரேம்வொர்க்"
+#: ../setup/setup.ui.h:3
+msgid "Top left corner"
+msgstr "மேல் இடது ஓரம்"
 
-#: ../bus/ibus.desktop.in.h:3
-msgid "Start IBus Input Method Framework"
-msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்கை துவக்கு"
+#: ../setup/setup.ui.h:4
+msgid "Top right corner"
+msgstr "மேல் வலது ஓரம்"
 
-#: ../ibus/_config.py.in:39
-msgid ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+#: ../setup/setup.ui.h:5
+msgid "Bottom left corner"
+msgstr "கீழ் இடது ஓரம்"
 
-#: ../ibus/lang.py:41
-msgid "Other"
-msgstr "வேறு"
+#: ../setup/setup.ui.h:6
+msgid "Bottom right corner"
+msgstr "கீழ் வலது ஓரம்"
 
-#: ../ui/gtk/candidatepanel.py:264
-msgid "Previous page"
-msgstr "முந்தைய பக்கம்"
+#: ../setup/setup.ui.h:7
+msgid "Custom"
+msgstr "தனிப்பயன்"
 
-#: ../ui/gtk/candidatepanel.py:269
-msgid "Next page"
-msgstr "அடுத்த பக்கம்"
+#: ../setup/setup.ui.h:8
+msgid "Do not show"
+msgstr "காண்பிக்க வேண்டாம்"
 
-#: ../ui/gtk/main.py:55
-msgid ""
-"Some input methods have been installed, removed or updated. Please restart "
-"ibus input platform."
-msgstr ""
-"சில உள்ளீடு முறைகள் நிறுவப்பட்டுள்ளது, நீக்கப்பட்டுள்ளது அல்லது "
-"மேம்படுத்தப்பட்டுள்ளது. ibus உள்ளீட்டை மறுதுவக்கவும்."
+#: ../setup/setup.ui.h:9
+msgid "Hide automatically"
+msgstr "தானாக மறை"
 
-#: ../ui/gtk/main.py:59
-msgid "Restart Now"
-msgstr "இப்போது மறுதுவக்கு"
+#: ../setup/setup.ui.h:10
+msgid "Always"
+msgstr "எப்போதும்"
 
-#: ../ui/gtk/main.py:60
-msgid "Later"
-msgstr "பின்னர்"
-
-#: ../ui/gtk/panel.py:109
-msgid "IBus input method framework"
-msgstr "IBus உள்ளீடு முறை ஃபிரேம்வொர்க்"
-
-#: ../ui/gtk/panel.py:327
-msgid "Restart"
-msgstr "மறுதுவக்கம்"
-
-#: ../ui/gtk/panel.py:414
-msgid "Turn off input method"
-msgstr "உள்ளீடு முறையை நிறுத்து"
-
-#: ../ui/gtk/panel.py:453
-msgid "No input window"
-msgstr "உள்ளீடு சாளரம் இல்லை"
-
-#: ../ui/gtk/panel.py:484
-msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "IBus Linux/Unixக்கான உள்ளிடு பஸ்."
-
-#: ../ui/gtk/panel.py:488
-msgid "translator-credits"
-msgstr "I. Felix <ifelix@redhat.com>"
-
-#: ../ui/gtk/languagebar.py:106
-msgid "About the input method"
-msgstr "உள்ளீடு முறை பற்றி"
-
-#: ../ui/gtk/languagebar.py:214
-msgid "Switch input method"
-msgstr "உள்ளீடு முறையை மாற்று"
-
-#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
-#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
-msgid "About"
-msgstr "பற்றி"
-
-#: ../ui/gtk/languagebar.py:361
-msgid "About the Input Method"
-msgstr "உள்ளீடு முறை பற்றி"
-
-#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
-#, python-format
-msgid "Language: %s\n"
-msgstr "மொழி: %s\n"
-
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
-#, python-format
-msgid "Keyboard layout: %s\n"
-msgstr "விசைப்பலகை அமைப்பு: %s\n"
-
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
-#, python-format
-msgid "Author: %s\n"
-msgstr "ஆசிரியர்: %s\n"
-
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
-msgid "Description:\n"
-msgstr "விளக்கம்:\n"
-
-#: ../setup/main.py:102
-msgid "trigger"
-msgstr "ட்ரிகர்"
-
-#: ../setup/main.py:113
-msgid "enable"
-msgstr "செயல்படுத்து"
-
-#: ../setup/main.py:124
-msgid "disable"
-msgstr "செயல்நீக்கு"
-
-#: ../setup/main.py:135
-msgid "next input method"
-msgstr "அடுத்த உள்ளீடு முறை"
-
-#: ../setup/main.py:146
-msgid "previous input method"
-msgstr "முந்தைய உள்ளீடு முறை"
-
-#: ../setup/main.py:286
-msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "IBus daemon துவக்கப்படவில்லை. இப்போது துவக்க வேண்டுமா?"
-
-#: ../setup/main.py:301
-msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in $HOME/.bashrc, and relogin your desktop.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus துவக்கப்பட்டது! உங்களால் IBusஐ பயன்படுத்த முடியவில்லையெனில், பின்வரும் வரியை சேர்த்து $HOME/.bashrc, உங்கள் பணிமேடையை மறுதுவக்கவும்.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-
-#: ../setup/main.py:316
-#, python-format
-msgid "Select keyboard shortcut for %s"
-msgstr "%sக்கான விசைப்பலகை குறுக்குவழியை தேர்ந்தெடு"
-
-#: ../setup/keyboardshortcut.py:52
-msgid "Keyboard shortcuts"
-msgstr "விசைப்பலகை குறுக்குவழிகள்"
-
-#: ../setup/keyboardshortcut.py:63
-msgid "Key code:"
-msgstr "விசை குறியீடு:"
-
-#: ../setup/keyboardshortcut.py:78
-msgid "Modifiers:"
-msgstr "மாற்றிகள்;"
-
-#: ../setup/keyboardshortcut.py:231
-msgid ""
-"Please press a key (or a key combination).\n"
-"The dialog will be closed when the key is released."
-msgstr ""
-"ஒரு விசையை அழுத்தவும் (அல்லது விசை கலவையை).\n"
-"விசையை விடுத்தால் உரையாடல் மூடப்படும்."
-
-#: ../setup/keyboardshortcut.py:233
-msgid "Please press a key (or a key combination)"
-msgstr "ஒரு விசையை அழுத்தவும் (அல்லது ஒரு விசை கலவையை)"
-
-#: ../setup/enginecombobox.py:120
-msgid "Select an input method"
-msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
-
-#. create im name & icon column
-#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
-msgid "Input Method"
-msgstr "உள்ளீடு முறை"
-
-#: ../setup/enginetreeview.py:92
-msgid "Kbd"
-msgstr "Kbd"
-
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
 msgid "IBus Preferences"
 msgstr "IBus முன்னுரிமைகள்"
 
-#: ../setup/ibus-setup.desktop.in.h:2
-msgid "Set IBus Preferences"
-msgstr "IBus முன்னுரிமைகளை அமை"
+#: ../setup/setup.ui.h:12
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr "பட்டியலில் அடுத்த உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../data/ibus.schemas.in.h:1
-msgid "Auto hide"
-msgstr "தானாக மறை"
+#: ../setup/setup.ui.h:13
+msgid "Next input method:"
+msgstr "அடுத்த உள்ளீடு முறை:"
 
-#: ../data/ibus.schemas.in.h:2
-msgid "Custom font"
-msgstr "தனிபயன் எழுத்துரு"
+#: ../setup/setup.ui.h:14
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr "பட்டியலில் முந்தைய உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
 
-#: ../data/ibus.schemas.in.h:3
-msgid "Custom font name for language panel"
-msgstr "தனிபயன் எழுத்துரு பெயர் மொழி பலகத்துக்கு"
+#: ../setup/setup.ui.h:15
+msgid "Previous input method:"
+msgstr "முந்தைய உள்ளீடு முறை:"
 
-#: ../data/ibus.schemas.in.h:4
-msgid "Disable shortcut keys"
-msgstr "குறுக்குவிசைகளை செயல்நீக்கு"
-
-#: ../data/ibus.schemas.in.h:5
-msgid "Embed Preedit Text"
-msgstr "உட்பொதியப்பட்ட Preedit உரை"
-
-#: ../data/ibus.schemas.in.h:6
-msgid "Embed Preedit Text in Application Window"
-msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட Preedit உரை"
-
-#: ../data/ibus.schemas.in.h:7
-msgid "Enable input method by default"
-msgstr "முன்னிருப்பாக உள்ளீடு முறையை செயல்படுத்து"
-
-#: ../data/ibus.schemas.in.h:8
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"பயன்பாடு உள்ளீடுக்கு உட்படும்போது முன்னிருப்பாக உள்ளீடு முறையை செயல்படுத்து"
-
-#: ../data/ibus.schemas.in.h:9
-msgid "Enable shortcut keys"
-msgstr "குறுக்குவிசைக்களை செயல்படுத்து"
-
-#: ../data/ibus.schemas.in.h:10
-msgid "Language panel position"
-msgstr "மொழி பேனல் இடம்"
-
-#: ../data/ibus.schemas.in.h:11
-msgid "Next engine shortcut keys"
-msgstr "அடுத்த இயந்திர குறுக்குவிசை"
-
-#: ../data/ibus.schemas.in.h:12
-msgid "Orientation of lookup table"
-msgstr "காணும் அட்டவணையின் திசை"
-
-#: ../data/ibus.schemas.in.h:13
-msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
-msgstr "காணும் அட்டவணையின் திசை. 0 = கிடைமட்டம், 1 = செங்குத்து"
-
-#: ../data/ibus.schemas.in.h:14
-msgid "Preload engines"
-msgstr "முன்ஏற்றப்பட்ட இயந்திரங்கள்"
-
-#: ../data/ibus.schemas.in.h:15
-msgid "Preload engines during ibus starts up"
-msgstr "ibus துவங்கும் போது முன்னேற்றப்பட்ட எந்திரங்கள் "
-
-#: ../data/ibus.schemas.in.h:16
-msgid "Prev engine shortcut keys"
-msgstr "முந்தைய இயந்திர குறுக்குவிசைகள்"
-
-#: ../data/ibus.schemas.in.h:17 ../setup/setup.ui.h:42
-msgid "Share the same input method among all applications"
-msgstr "அனைத்து பயன்பாடுகளிலும் சில உள்ளீடு முறையை பகிரவும்"
-
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:43
-msgid "Show icon on system tray"
-msgstr "கணினி தட்டில் சின்னத்தை காட்டு"
-
-#: ../data/ibus.schemas.in.h:19
-msgid "Show input method name"
-msgstr "உள்ளீடு முறையின் பெயரை காட்டு"
-
-#: ../data/ibus.schemas.in.h:20 ../setup/setup.ui.h:45
-msgid "Show input method name on language bar"
-msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
-
-#: ../data/ibus.schemas.in.h:21
-msgid ""
-"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
-"Always show"
-msgstr ""
-"மொழி பலகத்தின் பண்புகள். 0 = மெனுவில் உட்பொதியப்பட்டது, 1 = தானாக மறை, 2 = "
-"எப்போதும் காட்டு"
-
-#: ../data/ibus.schemas.in.h:22
-msgid ""
-"The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"மொழி பேனலின் இடம். 0 = மேல் இடது ஓரம், 1 = மேல் வலது ஓரம், 2 = கீழ் இடது "
-"ஓரம், 3 = கீழ் வலது ஓரம், 4 = தனிபயன்"
-
-#: ../data/ibus.schemas.in.h:23
-msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "பட்டியலில் அடுத்த உள்ளீடு முறைக்கு மாற்றுவதற்கான குறுக்குவழி விசைகள்"
-
-#: ../data/ibus.schemas.in.h:24
-msgid "The shortcut keys for switching to the previous input method"
-msgstr "முந்தைய உள்ளீடு முறைக்கு மாற்றுவதற்கான குறுக்குவழி விசைகள்"
-
-#: ../data/ibus.schemas.in.h:25
-msgid "The shortcut keys for turning input method off"
-msgstr "உள்ளீடு முறையை நிறுத்தும் குறுக்குவிசைகள்"
-
-#: ../data/ibus.schemas.in.h:26
-msgid "The shortcut keys for turning input method on"
-msgstr "உள்ளீடு முறையை இயக்கும் குறுக்குவிசைகள்"
-
-#: ../data/ibus.schemas.in.h:27 ../setup/setup.ui.h:51
-msgid "The shortcut keys for turning input method on or off"
-msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
-
-#: ../data/ibus.schemas.in.h:28
-msgid "Trigger shortcut keys"
-msgstr "ட்ரிகர் குறுக்குவிசை"
-
-#: ../data/ibus.schemas.in.h:29
-msgid "Use custom font"
-msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து"
-
-#: ../data/ibus.schemas.in.h:30
-msgid "Use custom font name for language panel"
-msgstr "மொழி பலகத்தில் தனிபயன் எழுத்துரு பெயர்"
-
-#: ../data/ibus.schemas.in.h:31
-msgid "Use global input method"
-msgstr "பொது உள்ளீடு முறையை பயன்படுத்து"
-
-#: ../data/ibus.schemas.in.h:32 ../setup/setup.ui.h:55
-msgid "Use system keyboard (XKB) layout"
-msgstr "கணினி விசைப்பலகை (XKB) அமைப்பை பயன்படுத்து"
-
-#: ../data/ibus.schemas.in.h:33 ../setup/setup.ui.h:56
-msgid "Use system keyboard layout"
-msgstr "கணினி விசைப்பலகை அமைப்பை பயன்படுத்து"
-
-#: ../setup/setup.ui.h:1
+#: ../setup/setup.ui.h:16
 msgid "..."
 msgstr "..."
 
-#: ../setup/setup.ui.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>எழுத்துரு மற்றும் தோற்றம்</b>"
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:10
+msgid "The shortcut keys for turning input method on or off"
+msgstr "உள்ளீடு முறைமை துவக்க அல்லது நிறுத்த குறுக்குவிசைகளை அமை"
 
-#: ../setup/setup.ui.h:3
-msgid "<b>Global input method settings</b>"
-msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
+#: ../setup/setup.ui.h:18
+msgid "Enable or disable:"
+msgstr "செயல்படுத்து அல்லது செயல்நீக்கு:"
 
-#: ../setup/setup.ui.h:4
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>விசைப்பலகை அமைப்பு</b>"
+#: ../setup/setup.ui.h:19
+msgid "Enable:"
+msgstr "செயல்படுத்து:"
 
-#: ../setup/setup.ui.h:5
+#: ../setup/setup.ui.h:20
+msgid "Disable:"
+msgstr "செயல்நீக்கு:"
+
+#: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>விசைப்பலகை குறுக்குவழிகள்</b>"
 
-#: ../setup/setup.ui.h:6
-msgid "<b>Startup</b>"
-msgstr "<b>துவக்கம்</b>"
+#: ../setup/setup.ui.h:22
+msgid "Set the orientation of candidates in lookup table"
+msgstr "காணும் அட்டவணையில் நபர்களின் திசையமைப்பை அமை"
 
-#: ../setup/setup.ui.h:7
+#: ../setup/setup.ui.h:23
+msgid "Candidates orientation:"
+msgstr "கேண்டிடேட் சார்ந்து:"
+
+#: ../setup/setup.ui.h:24
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "மொழி பட்டையை எவ்வாறு காட்ட அல்லது மறைக்க வேண்டும் என ibus பண்பினை அமை"
+
+#: ../setup/setup.ui.h:25
+msgid "Show property panel:"
+msgstr "பண்புகள் பலகத்தைக் காட்டு:"
+
+#: ../setup/setup.ui.h:26
+msgid "Language panel position:"
+msgstr "மொழி பேனல் படம்:"
+
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:30
+msgid "Show icon on system tray"
+msgstr "கணினி தட்டில் சின்னத்தை காட்டு"
+
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:32
+msgid "Show input method name on language bar"
+msgstr "மொழி பட்டையில் உள்ளீடு முறையின் பெயரை காட்டு"
+
+#: ../setup/setup.ui.h:29
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr "சோதனை பெட்டியை சோதிக்கும் போது உள்ளீடு முறை பெயரை மொழி பட்டையில் காட்டு "
+
+#: ../setup/setup.ui.h:30
+msgid "Embed preedit text in application window"
+msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட preedit உரை"
+
+#: ../setup/setup.ui.h:31
+msgid "Embed the preedit text of input method in the application window"
+msgstr "பயன்பாட்டு சாளரத்தில் preedit உரையின் உள்ளீடு முறையை உட்பொதியவும்"
+
+#: ../setup/setup.ui.h:32
+msgid "Use custom font:"
+msgstr "தனிப்பயன் எழுத்துருவை பயன்படுத்து:"
+
+#: ../setup/setup.ui.h:33
+msgid "<b>Font and Style</b>"
+msgstr "<b>எழுத்துரு மற்றும் தோற்றம்</b>"
+
+#: ../setup/setup.ui.h:34
+msgid "General"
+msgstr "பொது"
+
+#. add button
+#: ../setup/setup.ui.h:35 ../setup/keyboardshortcut.py:127
+msgid "_Add"
+msgstr "சேர் (_A)"
+
+#: ../setup/setup.ui.h:36
+msgid "Add the selected input method into the enabled input methods"
+msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகளில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை சேர்"
+
+#: ../setup/setup.ui.h:37
+msgid "_Remove"
+msgstr "நீக்கு (_R)"
+
+#: ../setup/setup.ui.h:38
+msgid "Remove the selected input method from the enabled input methods"
+msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகளிலிருந்து தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை நீக்கு"
+
+#: ../setup/setup.ui.h:39
+msgid "_Up"
+msgstr "மேலே (_U)"
+
+#: ../setup/setup.ui.h:40
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை மேலே நகர்த்து"
+
+#: ../setup/setup.ui.h:41
+msgid "_Down"
+msgstr "கீழே (_D)"
+
+#: ../setup/setup.ui.h:42
+msgid "Move down the selected input method in the enabled input methods"
+msgstr "செயல்படுத்தப்பட்ட உள்ளீடு முறைகளில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை கீழே நகர்த்து"
+
+#: ../setup/setup.ui.h:43
+msgid "_About"
+msgstr "பற்றி (_A)"
+
+#: ../setup/setup.ui.h:44
+msgid "Show information of the selected input method"
+msgstr "தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையின் தகவலை காட்டு"
+
+#: ../setup/setup.ui.h:45
+msgid "_Preferences"
+msgstr "முன்னுரிமைகள் (_P)"
+
+#: ../setup/setup.ui.h:46
+msgid "Show setup of the selected input method"
+msgstr "தேர்ந்தெடுத்த உள்ளிட்டு முறையின் அமைப்பை காட்டு"
+
+#: ../setup/setup.ui.h:47
+msgid ""
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
+msgstr "<small><i>மேலே உள்ள பட்டியலில் விசைப்பலகைக் குறுக்குவழி விசைகளை அழுத்துவதன் மூலம் அல்லது பலகம் சின்னத்தை சொடுக்குவதன் மூலம், செயலில் உள்ள உள்ளீட்டு முறையை தேர்ந்தெடுத்துள்ள ஒன்றிலிருந்து வேறொன்றுக்கு மாற்ற முடியும்.</i></small>"
+
+#. create im name & icon column
+#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:66
+msgid "Input Method"
+msgstr "உள்ளீடு முறை"
+
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:33
+msgid "Use system keyboard layout"
+msgstr "கணினி விசைப்பலகை அமைப்பை பயன்படுத்து"
+
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:34
+msgid "Use system keyboard (XKB) layout"
+msgstr "கணினி விசைப்பலகை (XKB) அமைப்பை பயன்படுத்து"
+
+#: ../setup/setup.ui.h:51
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>விசைப்பலகை அமைப்பு</b>"
+
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:42
+msgid "Share the same input method among all applications"
+msgstr "அனைத்து பயன்பாடுகளிலும் சில உள்ளீடு முறையை பகிரவும்"
+
+#: ../setup/setup.ui.h:53
+msgid "<b>Global input method settings</b>"
+msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
+
+#: ../setup/setup.ui.h:54
+msgid "Advanced"
+msgstr "கூடுதல்"
+
+#: ../setup/setup.ui.h:55
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -389,162 +255,446 @@ msgid ""
 "\n"
 "\n"
 "\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"முதன்மை பக்கம்: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
+msgstr "<big><b>IBus</b></big>\n<small>The intelligent input bus</small>\nமுதன்மை பக்கம்: http://code.google.com/p/ibus\n\n\n\n"
 
-#: ../setup/setup.ui.h:14
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-"<small><i>பட்டியலில் முன்னிருப்பு உள்ளீடு முறை மேலே இருக்கும்.\n"
-"மேல்/கீழ் பொத்தானை பயன்படுத்தி அதனை மாற்றவும்.</i></small>"
-
-#: ../setup/setup.ui.h:17
-msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"செயல்படுத்தப்பட்ட உள்ளீடு முறைகளில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை சேர்"
-
-#: ../setup/setup.ui.h:18
-msgid "Advanced"
-msgstr "கூடுதல்"
-
-#: ../setup/setup.ui.h:19
-msgid "Always"
-msgstr "எப்போதும்"
-
-#: ../setup/setup.ui.h:20
-msgid "Bottom left corner"
-msgstr "கீழ் இடது ஓரம்"
-
-#: ../setup/setup.ui.h:21
-msgid "Bottom right corner"
-msgstr "கீழ் வலது ஓரம்"
-
-#: ../setup/setup.ui.h:22
-msgid "Candidates orientation:"
-msgstr "கேண்டிடேட் சார்ந்து:"
-
-#: ../setup/setup.ui.h:23
-msgid "Custom"
-msgstr "தனிபயன்"
-
-#: ../setup/setup.ui.h:24
-msgid "Disable:"
-msgstr "செயல்நீக்கு:"
-
-#: ../setup/setup.ui.h:25
-msgid "Embed preedit text in application window"
-msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட preedit உரை"
-
-#: ../setup/setup.ui.h:26
-msgid "Embed the preedit text of input method in the application window"
-msgstr "பயன்பாட்டு சாளரத்தில் preedit உரையின் உள்ளீடு முறையை உட்பொதியவும்"
-
-#: ../setup/setup.ui.h:27
-msgid "Embedded in menu"
-msgstr "மெனுவில் உட்பொதியப்பட்டது"
-
-#: ../setup/setup.ui.h:28
-msgid "Enable or disable:"
-msgstr "செயல்படுத்து அல்லது செயல்நீக்கு:"
-
-#: ../setup/setup.ui.h:29
-msgid "Enable:"
-msgstr "செயல்படுத்து:"
-
-#: ../setup/setup.ui.h:30
-msgid "General"
-msgstr "பொது"
-
-#: ../setup/setup.ui.h:31
-msgid "Horizontal"
-msgstr "கிடைமட்டம்"
-
-#: ../setup/setup.ui.h:34
-msgid "Language panel position:"
-msgstr "மொழி பேனல் படம்:"
-
-#: ../setup/setup.ui.h:35
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"செயல்படுத்தப்பட்ட உள்ளீடு முறைகளில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை கீழே "
-"நகர்த்து"
-
-#: ../setup/setup.ui.h:36
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"செயல்படுத்தப்பட்ட உள்ளீடு முறைகள் பட்டியலில் தேர்ந்தெடுக்கப்பட்ட உள்ளீடு "
-"முறையை மேலே நகர்த்து"
-
-#: ../setup/setup.ui.h:37
-msgid "Next input method:"
-msgstr "அடுத்த உள்ளீடு முறை:"
-
-#: ../setup/setup.ui.h:38
-msgid "Previous input method:"
-msgstr "முந்தைய உள்ளீடு முறை:"
-
-#: ../setup/setup.ui.h:39
-msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"செயல்படுத்தப்பட்ட உள்ளீடு முறைகளிலிருந்து தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையை"
-" நீக்கு"
-
-#: ../setup/setup.ui.h:40
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "மொழி பட்டையை எவ்வாறு காட்ட அல்லது மறைக்க வேண்டும் என ibus பண்பினை அமை"
-
-#: ../setup/setup.ui.h:41
-msgid "Set the orientation of candidates in lookup table"
-msgstr "காணும் அட்டவணையில் நபர்களின் திசையமைப்பை அமை"
-
-#: ../setup/setup.ui.h:44
-msgid "Show information of the selected input method"
-msgstr "தேர்ந்தெடுக்கப்பட்ட உள்ளீடு முறையின் தகவலை காட்டு"
-
-#: ../setup/setup.ui.h:46
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"சோதனை பெட்டியை சோதிக்கும் போது உள்ளீடு முறை பெயரை மொழி பட்டையில் காட்டு "
-
-#: ../setup/setup.ui.h:47
-msgid "Show language panel:"
-msgstr "மொழி பலகத்தை காட்டு:"
-
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:62
 msgid "Start ibus on login"
 msgstr "புகுபதிவில் ibusஐ துவக்கு"
 
-#: ../setup/setup.ui.h:49
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "பட்டியலில் அடுத்த உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
+#: ../setup/setup.ui.h:63
+msgid "<b>Startup</b>"
+msgstr "<b>துவக்கம்</b>"
 
-#: ../setup/setup.ui.h:50
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr "பட்டியலில் முந்தைய உள்ளீடு முறையை மாற்றுவதற்கான குறுக்குவழி விசைகள்"
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:736
+msgid "About"
+msgstr "பற்றி"
 
-#: ../setup/setup.ui.h:52
-msgid "Top left corner"
-msgstr "மேல் இடது ஓரம்"
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:36
+msgid "_Close"
+msgstr "மூடு (_C)"
 
-#: ../setup/setup.ui.h:53
-msgid "Top right corner"
-msgstr "மேல் வலது ஓரம்"
+#: ../data/ibus.schemas.in.h:1
+msgid "Preload engines"
+msgstr "முன்ஏற்றல் இயந்திரங்கள்"
 
-#: ../setup/setup.ui.h:54
-msgid "Use custom font:"
-msgstr "தனிபயன் எழுத்துருவை பயன்படுத்து:"
+#: ../data/ibus.schemas.in.h:2
+msgid "Preload engines during ibus starts up"
+msgstr "ibus துவங்கும் போது முன்னேற்றப்பட்ட எந்திரங்கள் "
 
-#: ../setup/setup.ui.h:57
-msgid "Vertical"
-msgstr "செங்குத்து"
+#: ../data/ibus.schemas.in.h:3
+msgid "Engines order"
+msgstr "எஞ்சின்கள் வரிசை"
 
-#: ../setup/setup.ui.h:58
-msgid "When active"
-msgstr "செயலிலிருக்கும் போது"
+#: ../data/ibus.schemas.in.h:4
+msgid "Saved engines order in input method list"
+msgstr "உள்ளீடு முறை பட்டியலில் எஞ்சின்கள் வரிசை சேமிக்கப்பட்டது"
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Popup delay milliseconds for IME switcher window"
+msgstr "IME மாற்ற சாளரத்திற்கான பாப்-அப் தாமத மில்லிசெகன்ட்"
+
+#: ../data/ibus.schemas.in.h:6
+msgid ""
+"Set popup delay milliseconds to show IME switcher window. The default is "
+"400. 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do "
+"not show the window and switch prev/next engines."
+msgstr "IME மாற்ற சாளரத்தைக் காண்பிக்க, பாப்-அப் தாமத மில்லிசெகன்டை அமைக்கவும். முன்னிருப்பு மதிப்பு400 ஆகும். 0 = உடனடியாக சாளரத்தைக் காண்பிக்க. 0 &lt; தாமத மில்லிசெகன்ட். 0 &gt; சாளரத்தைக் காண்பிக்காமல் முந்தைய/அடுத்த எஞ்சின்களுக்கு மாற்ற."
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Saved version number"
+msgstr "சேமிக்கப்பட்ட பதிப்பு எண்"
+
+#: ../data/ibus.schemas.in.h:8
+msgid ""
+"The saved version number will be used to check the difference between the "
+"version of the previous installed ibus and one of the current ibus."
+msgstr "சேமிக்கப்பட்ட பதிப்பு எண்ணானது முன்னர் நிறுவப்பட்ட ibus மற்றும் தற்போதுள்ள ibus இல் ஒன்று ஆகியவற்றுக்கு இடையே உள்ள வேறுபாட்டைக் கண்டறியப் பயன்படும்."
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Trigger shortcut keys"
+msgstr "குறுக்குவிசைகளை செயல்படுத்து"
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Trigger shortcut keys for gtk_accelerator_parse"
+msgstr "gtk_accelerator_parse க்கான குறுக்கு விசைகளை இயக்கு"
+
+#: ../data/ibus.schemas.in.h:12
+msgid "Enable shortcut keys"
+msgstr "குறுக்குவிசைக்களை செயல்படுத்து"
+
+#: ../data/ibus.schemas.in.h:13
+msgid "The shortcut keys for turning input method on"
+msgstr "உள்ளீடு முறையை இயக்கும் குறுக்குவிசைகள்"
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Disable shortcut keys"
+msgstr "குறுக்குவிசைகளை செயல்நீக்கு"
+
+#: ../data/ibus.schemas.in.h:15
+msgid "The shortcut keys for turning input method off"
+msgstr "உள்ளீடு முறையை நிறுத்தும் குறுக்குவிசைகள்"
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Next engine shortcut keys"
+msgstr "அடுத்த இயந்திர குறுக்குவிசை"
+
+#: ../data/ibus.schemas.in.h:17
+msgid "The shortcut keys for switching to the next input method in the list"
+msgstr "பட்டியலில் அடுத்த உள்ளீடு முறைக்கு மாற்றுவதற்கான குறுக்குவழி விசைகள்"
+
+#: ../data/ibus.schemas.in.h:18
+msgid "Prev engine shortcut keys"
+msgstr "முந்தைய இயந்திர குறுக்குவிசைகள்"
+
+#: ../data/ibus.schemas.in.h:19
+msgid "The shortcut keys for switching to the previous input method"
+msgstr "முந்தைய உள்ளீடு முறைக்கு மாற்றுவதற்கான குறுக்குவழி விசைகள்"
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Auto hide"
+msgstr "தானாக மறை"
+
+#: ../data/ibus.schemas.in.h:21
+msgid ""
+"The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
+"show"
+msgstr "பண்புகள் பலகத்தின் நடத்தை. 0 = காண்பிக்க வேண்டாம், 1 = தானாக மறை, 2 = எப்போதும் காண்பி"
+
+#: ../data/ibus.schemas.in.h:22
+msgid "Language panel position"
+msgstr "மொழி பேனல் இடம்"
+
+#: ../data/ibus.schemas.in.h:23
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
+msgstr "மொழி பேனலின் இடம். 0 = மேல் இடது ஓரம், 1 = மேல் வலது ஓரம், 2 = கீழ் இடது ஓரம், 3 = கீழ் வலது ஓரம், 4 = தனிபயன்"
+
+#: ../data/ibus.schemas.in.h:24
+msgid "Follow the input cursor in case the panel is always shown"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:25
+msgid ""
+"If true, the panel follows the input cursor in case the panel is always "
+"shown. If false, the panel is shown at a fixed location."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The milliseconds to show property panel"
+msgstr "பண்புகள் பலகத்தை காட்ட வேண்டிய மில்லிசெக்கன்ட்"
+
+#: ../data/ibus.schemas.in.h:27
+msgid ""
+"The milliseconds to show property panel after focus-in or properties are "
+"changed."
+msgstr "பண்புகள் பலகத்தில் கவனம் செலுத்திய பிறகு அல்லது பண்புகளை மாற்றிய பிறகு பலகத்தைக் காட்ட வேண்டிய மில்லிசெக்கன்ட்."
+
+#: ../data/ibus.schemas.in.h:28
+msgid "Orientation of lookup table"
+msgstr "காணும் அட்டவணையின் திசை"
+
+#: ../data/ibus.schemas.in.h:29
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr "காணும் அட்டவணையின் திசை. 0 = கிடைமட்டம், 1 = செங்குத்து"
+
+#: ../data/ibus.schemas.in.h:31
+msgid "Show input method name"
+msgstr "உள்ளீடு முறையின் பெயரை காட்டு"
+
+#: ../data/ibus.schemas.in.h:35
+msgid "Use custom font"
+msgstr "தனிப்பயன் எழுத்துருவை பயன்படுத்து"
+
+#: ../data/ibus.schemas.in.h:36
+msgid "Use custom font name for language panel"
+msgstr "மொழி பலகத்தில் தனிபயன் எழுத்துரு பெயர்"
+
+#: ../data/ibus.schemas.in.h:37
+msgid "Custom font"
+msgstr "தனிப்பயன் எழுத்துரு"
+
+#: ../data/ibus.schemas.in.h:38
+msgid "Custom font name for language panel"
+msgstr "மொழி பலகத்துக்கான தனிப்பயன் எழுத்துரு பெயர்"
+
+#: ../data/ibus.schemas.in.h:39
+msgid "Embed Preedit Text"
+msgstr "உட்பொதியப்பட்ட Preedit உரை"
+
+#: ../data/ibus.schemas.in.h:40
+msgid "Embed Preedit Text in Application Window"
+msgstr "பயன்பாடு சாளரத்தில் உட்பொதியப்பட்ட Preedit உரை"
+
+#: ../data/ibus.schemas.in.h:41
+msgid "Use global input method"
+msgstr "பொது உள்ளீடு முறையை பயன்படுத்து"
+
+#: ../data/ibus.schemas.in.h:43
+msgid "Enable input method by default"
+msgstr "முன்னிருப்பாக உள்ளீடு முறையை செயல்படுத்து"
+
+#: ../data/ibus.schemas.in.h:44
+msgid "Enable input method by default when the application gets input focus"
+msgstr "பயன்பாடு உள்ளீடுக்கு உட்படும்போது முன்னிருப்பாக உள்ளீடு முறையை செயல்படுத்து"
+
+#: ../data/ibus.schemas.in.h:45
+msgid "DConf preserve name prefixes"
+msgstr "DConf ஆனது பெயர் முன்னொட்டுகளைப் பாதுகாத்து வைக்கிறது"
+
+#: ../data/ibus.schemas.in.h:46
+msgid "Prefixes of DConf keys to stop name conversion"
+msgstr "பெயர் மரபை நிறுத்த DConf விசைகளின் முன்னொட்டுகள்"
+
+#: ../ibus/_config.py.in:41
+msgid ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "பதிப்புரிமை (c) 2007-2010 Peng Huang\nபதிப்புரிமை (c) 2007-2010 Red Hat, Inc."
+
+#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+msgid "Other"
+msgstr "வேறு"
+
+#: ../setup/engineabout.py:68
+#, python-format
+msgid "Language: %s\n"
+msgstr "மொழி: %s\n"
+
+#: ../setup/engineabout.py:71
+#, python-format
+msgid "Keyboard layout: %s\n"
+msgstr "விசைப்பலகை அமைப்பு: %s\n"
+
+#: ../setup/engineabout.py:74
+#, python-format
+msgid "Author: %s\n"
+msgstr "ஆசிரியர்: %s\n"
+
+#: ../setup/engineabout.py:77
+msgid "Description:\n"
+msgstr "விளக்கம்:\n"
+
+#: ../setup/enginecombobox.py:139
+msgid "Select an input method"
+msgstr "ஒரு உள்ளீடு முறையை தேர்ந்தெடு"
+
+#: ../setup/enginetreeview.py:94
+msgid "Kbd"
+msgstr "Kbd"
+
+#: ../setup/ibus-setup.desktop.in.h:2
+msgid "Set IBus Preferences"
+msgstr "IBus முன்னுரிமைகளை அமை"
+
+#: ../setup/keyboardshortcut.py:55
+msgid "Keyboard shortcuts"
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
+
+#: ../setup/keyboardshortcut.py:66
+msgid "Key code:"
+msgstr "விசை குறியீடு:"
+
+#: ../setup/keyboardshortcut.py:81
+msgid "Modifiers:"
+msgstr "மாற்றிகள்;"
+
+#. apply button
+#: ../setup/keyboardshortcut.py:133
+msgid "_Apply"
+msgstr "செயல்படுத்து (_A)"
+
+#. delete button
+#: ../setup/keyboardshortcut.py:139
+msgid "_Delete"
+msgstr "அழி (_D)"
+
+#: ../setup/keyboardshortcut.py:254
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr "ஒரு விசையை அழுத்தவும் (அல்லது விசை கலவையை).\nவிசையை விடுத்தால் உரையாடல் மூடப்படும்."
+
+#: ../setup/keyboardshortcut.py:256
+msgid "Please press a key (or a key combination)"
+msgstr "ஒரு விசையை அழுத்தவும் (அல்லது ஒரு விசை கலவையை)"
+
+#: ../setup/keyboardshortcut.py:338 ../setup/main.py:374
+msgid "_Cancel"
+msgstr "ரத்து (_C)"
+
+#: ../setup/keyboardshortcut.py:339 ../setup/main.py:375
+msgid "_OK"
+msgstr "சரி (_O)"
+
+#: ../setup/main.py:102 ../setup/main.py:395
+msgid "Use shortcut with shift to switch to the previous input method"
+msgstr "முந்தைய உள்ளீட்டு முறைக்கு மாற குறுக்குவழியை ஷிஃப்ட் விசையுடன் பயன்படுத்தவும்"
+
+#: ../setup/main.py:329
+msgid "The IBus daemon is not running. Do you wish to start it?"
+msgstr "IBus டெமான் இயங்கவில்லை. அதைத் தொடங்க வேண்டுமா?"
+
+#: ../setup/main.py:350
+msgid ""
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr "IBus தொடங்கப்பட்டது! உங்களால் IBus ஐப் பயன்படுத்த முடியாவிட்டால், உங்கள் $HOME/.bashrc; இல் பின்வரும் வரிகளைச் சேர்த்து உங்கள் டெஸ்க்டாப்பில் மீண்டும் புகுபதிவு செய்யவும்.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
+
+#. Translators: %d == 5 currently
+#: ../setup/main.py:364
+#, python-format
+msgid "IBus daemon could not be started in %d seconds"
+msgstr "%d வினாடிகளில் IBus டெமானைத் தொடக்க முடியவில்லை"
+
+#: ../setup/main.py:376
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "%sக்கான விசைப்பலகை குறுக்குவழியை தேர்ந்தெடு"
+
+#: ../setup/main.py:377
+msgid "switching input methods"
+msgstr "உள்ளீட்டு முறைகளை மாற்றுதல்"
+
+#: ../tools/main.vala:42
+msgid "List engine name only"
+msgstr "எஞ்சின் பெயரை மட்டும் பட்டியலிடு"
+
+#: ../tools/main.vala:58 ../tools/main.vala:179 ../tools/main.vala:189
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr "IBus உடன் இணைக்க முடியாது.\n"
+
+#: ../tools/main.vala:84
+#, c-format
+msgid "language: %s\n"
+msgstr "மொழி: %s\n"
+
+#: ../tools/main.vala:152
+#, c-format
+msgid "No engine is set.\n"
+msgstr "எஞ்சின் அமைக்கப்படவில்லை.\n"
+
+#: ../tools/main.vala:160
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr "முழுமைக்குமான எஞ்சினை அமைத்தல் தோல்வி.\n"
+
+#: ../tools/main.vala:165
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr "முழுமைக்குமான எஞ்சினை பெறுதல் தோல்வி.\n"
+
+#: ../tools/main.vala:204
+msgid "Read the system registry cache."
+msgstr "கணினி பதிவக தேக்ககத்தை வாசி."
+
+#: ../tools/main.vala:206
+msgid "Read the registry cache FILE."
+msgstr "பதிவக தேக்கக FILE ஐ வாசி."
+
+#: ../tools/main.vala:224 ../tools/main.vala:229
+#, c-format
+msgid "The registry cache is invalid.\n"
+msgstr "பதிவக தேக்ககம் செல்லுபடியாகாதது.\n"
+
+#: ../tools/main.vala:244
+msgid "Write the system registry cache."
+msgstr "கணினி பதிவக தேக்ககத்தில் எழுது."
+
+#: ../tools/main.vala:246
+msgid "Write the registry cache FILE."
+msgstr "பதிவக தேக்கக FILE இல் எழுது."
+
+#: ../tools/main.vala:293
+msgid "Set or get engine"
+msgstr "எஞ்சினை அமை அல்லது பெறு"
+
+#: ../tools/main.vala:294
+msgid "Exit ibus-daemon"
+msgstr "ibus-daemon இலிருந்து வெளியேறு"
+
+#: ../tools/main.vala:295
+msgid "Show available engines"
+msgstr "இருக்கும் எஞ்சின்களைக் காட்டு"
+
+#: ../tools/main.vala:296
+msgid "(Not implemented)"
+msgstr "(செயல்படுத்தப்படவில்லை)"
+
+#: ../tools/main.vala:297
+msgid "Restart ibus-daemon"
+msgstr "ibus-daemon ஐ மறுதுவக்கு"
+
+#: ../tools/main.vala:298
+msgid "Show version"
+msgstr "பதிப்பைக் காட்டு"
+
+#: ../tools/main.vala:299
+msgid "Show the content of registry cache"
+msgstr "பதிவக தேக்கக உள்ளடக்கத்தைக் காண்பி"
+
+#: ../tools/main.vala:300
+msgid "Create registry cache"
+msgstr "பதிவக தேக்ககத்தை உருவாக்கு"
+
+#: ../tools/main.vala:301
+msgid "Print the D-Bus address of ibus-daemon"
+msgstr "ibus-daemon இன் D-Bus முகவரியை அச்சிடு"
+
+#: ../tools/main.vala:302
+msgid "Show this information"
+msgstr "இந்தத் தகவலைக் காட்டு"
+
+#: ../tools/main.vala:308
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr "பயன்பாடு: %s COMMAND [OPTION...]\n\n"
+
+#: ../tools/main.vala:309
+#, c-format
+msgid "Commands:\n"
+msgstr "கட்டளைகள் :\n"
+
+#: ../tools/main.vala:338
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr "%s என்பது தெரியாத கட்டளை!\n"
+
+#: ../ui/gtk3/panel.vala:425
+msgid "IBus Update"
+msgstr "IBus புதுப்பிப்பு"
+
+#: ../ui/gtk3/panel.vala:426 ../ui/gtk3/panel.vala:437
+msgid "Super+space is now the default hotkey."
+msgstr "இப்போது Super+space என்பது முன்னிருப்பு குறுக்குவிசையாகும்."
+
+#: ../ui/gtk3/panel.vala:707
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus Linux/Unixக்கான உள்ளீடு பஸ்."
+
+#: ../ui/gtk3/panel.vala:711
+msgid "translator-credits"
+msgstr "I. Felix <ifelix@redhat.com>"
+
+#: ../ui/gtk3/panel.vala:732
+msgid "Preferences"
+msgstr "முன்னுரிமைகள் "
+
+#: ../ui/gtk3/panel.vala:742
+msgid "Restart"
+msgstr "மறுதுவக்கம்"
+
+#: ../ui/gtk3/panel.vala:746
+msgid "Quit"
+msgstr "வெளியேறு "
+
+#. Translators: If your locale is RTL, the msgstr is "default:RTL".
+#. * Otherwise the msgstr is "default:LTR".
+#: ../ui/gtk3/propertypanel.vala:374
+msgid "default:LTR"
+msgstr "default:LTR"

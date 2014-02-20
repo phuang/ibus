@@ -2,31 +2,28 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
-using Gtk;
-using Pango;
-
-public class CandidatePanel : Gtk.HBox{
+public class CandidatePanel : Gtk.Box{
     private bool m_vertical = true;
     private Gtk.Window m_toplevel;
-    private Gtk.VBox m_vbox;
+    private Gtk.Box m_vbox;
 
     private Gtk.Label m_preedit_label;
     private Gtk.Label m_aux_label;
@@ -47,6 +44,7 @@ public class CandidatePanel : Gtk.HBox{
         // Call base class constructor
         GLib.Object(
             name : "IBusCandidate",
+            orientation: Gtk.Orientation.HORIZONTAL,
             visible: true
         );
 
@@ -58,12 +56,15 @@ public class CandidatePanel : Gtk.HBox{
             set_vertical(!m_vertical);
             return true;
         });
+        m_toplevel.size_allocate.connect((w, a) => {
+            adjust_window_position();
+        });
 
         Handle handle = new Handle();
         handle.set_visible(true);
         pack_start(handle, false, false, 0);
 
-        m_vbox = new Gtk.VBox(false, 0);
+        m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         m_vbox.set_visible(true);
         pack_start(m_vbox, false, false, 0);
 
@@ -79,15 +80,33 @@ public class CandidatePanel : Gtk.HBox{
         m_candidate_area.set_vertical(vertical);
     }
 
+    private void set_orientation(IBus.Orientation orientation) {
+        switch (orientation) {
+        case IBus.Orientation.VERTICAL:
+            m_candidate_area.set_vertical(true);
+            break;
+        case IBus.Orientation.HORIZONTAL:
+            m_candidate_area.set_vertical(false);
+            break;
+        case IBus.Orientation.SYSTEM:
+            m_candidate_area.set_vertical(m_vertical);
+            break;
+        }
+    }
+
     public void set_cursor_location(int x, int y, int width, int height) {
-        Gdk.Rectangle location = { x, y, width, height };
+        Gdk.Rectangle location = Gdk.Rectangle(){
+            x = x, y = y, width = width, height = height };
         if (m_cursor_location == location)
             return;
         m_cursor_location = location;
-        adjust_window_position();
+
+        /* Do not call adjust_window_position() here because
+         * m_toplevel is not shown yet and
+         * m_toplevel.get_allocation() returns height = width = 1 */
     }
 
-    public void set_labels(string[] labels) {
+    private void set_labels(IBus.Text[] labels) {
         m_candidate_area.set_labels(labels);
     }
 
@@ -117,6 +136,8 @@ public class CandidatePanel : Gtk.HBox{
         IBus.Text[] candidates = {};
         uint cursor_in_page = 0;
         bool show_cursor = true;
+        IBus.Text[] labels = {};
+        IBus.Orientation orientation = IBus.Orientation.SYSTEM;
 
         if (table != null) {
             uint page_size = table.get_page_size();
@@ -129,8 +150,25 @@ public class CandidatePanel : Gtk.HBox{
             uint page_end_pos = uint.min(page_start_pos + page_size, ncandidates);
             for (uint i = page_start_pos; i < page_end_pos; i++)
                 candidates += table.get_candidate(i);
+
+            for (uint i = 0; i < page_size; i++) {
+                IBus.Text? label = table.get_label(i);
+                if (label != null)
+                    labels += label;
+            }
+
+            orientation = (IBus.Orientation)table.get_orientation();
         }
+
         m_candidate_area.set_candidates(candidates, cursor_in_page, show_cursor);
+        set_labels(labels);
+
+        if (table != null) {
+            // Do not change orientation if table is null to avoid recreate
+            // candidates area.
+            set_orientation(orientation);
+        }
+
         if (candidates.length != 0)
             m_candidate_area.show_all();
         else

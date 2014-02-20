@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include "panelproxy.h"
 
@@ -694,3 +694,23 @@ bus_panel_proxy_focus_out (BusPanelProxy    *panel,
     panel->focused_context = NULL;
 }
 
+void
+bus_panel_proxy_destroy_context (BusPanelProxy    *panel,
+                                 BusInputContext  *context)
+{
+    const gchar *path;
+
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    g_object_ref_sink (context);
+    path = ibus_service_get_object_path ((IBusService *)context);
+
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "DestroyContext",
+                       g_variant_new ("(o)", path),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+
+    g_object_unref (context);
+}

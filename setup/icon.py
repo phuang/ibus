@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 __all__ = (
     "load_icon"
@@ -37,9 +37,14 @@ icon_theme.prepend_search_path(icondir)
 
 icon_cache = {}
 
-def load_icon(icon, size):
-    if (icon, size) in icon_cache:
-        return icon_cache[(icon, size)]
+# load_icon:
+# @icon_name_or_path: Can be a name or path but not stock id
+#     because gtk_icon_theme_load_icon() cannot fallback the stock id to
+#     a real file name against gtk_image_new_from_stock().
+# @size: #GtkIconSize
+def load_icon(icon_name_or_path, size):
+    if (icon_name_or_path, size) in icon_cache:
+        return icon_cache[(icon_name_or_path, size)]
 
     icon_size = Gtk.icon_size_lookup(size)
     if icon_size[0]:
@@ -47,7 +52,7 @@ def load_icon(icon, size):
 
     pixbuf = None
     try:
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_name_or_path)
         w, h = pixbuf.get_width(), pixbuf.get_height()
         rate = max(w, h) / float(icon_size)
         w = int(w / rate)
@@ -60,10 +65,26 @@ def load_icon(icon, size):
     if pixbuf == None:
         try:
             theme = Gtk.IconTheme.get_default()
-            pixbuf = theme.load_icon(icon, icon_size, 0)
+            pixbuf = theme.load_icon(icon_name_or_path, icon_size, 0)
         except:
             # import traceback
             # traceback.print_exc()
             pass
-    icon_cache[(icon, size)] = pixbuf
+    if pixbuf == None:
+        try:
+            theme = Gtk.IconTheme.get_default()
+            pixbuf = theme.load_icon('ibus-engine', icon_size, 0)
+        except:
+            # import traceback
+            # traceback.print_exc()
+            pass
+    if pixbuf == None:
+        try:
+            theme = Gtk.IconTheme.get_default()
+            pixbuf = theme.load_icon('image-missing', icon_size, 0)
+        except:
+            # import traceback
+            # traceback.print_exc()
+            pass
+    icon_cache[(icon_name_or_path, size)] = pixbuf
     return pixbuf

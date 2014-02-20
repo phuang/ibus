@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include <glib/gstdio.h>
 #include "ibuscomponent.h"
@@ -219,21 +219,6 @@ static void
 ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
-
-    /* FIXME: Is it necessary? */
-#if 0
-    component->priv->engines = NULL;
-    component->priv->observed_paths = NULL;
-
-    component->priv->name = NULL;
-    component->priv->description = NULL;
-    component->priv->version = NULL;
-    component->priv->license = NULL;
-    component->priv->author = NULL;
-    component->priv->homepage = NULL;
-    component->priv->exec = NULL;
-    component->priv->textdomain = NULL;
-#endif
 }
 
 static void
@@ -646,9 +631,9 @@ ibus_component_parse_engines (IBusComponent *component,
 }
 
 static void
-ibus_component_parse_observed_paths (IBusComponent    *component,
-                                    XMLNode         *node,
-                                    gboolean         access_fs)
+ibus_component_parse_observed_paths (IBusComponent *component,
+                                     XMLNode       *node,
+                                     gboolean       access_fs)
 {
     g_assert (IBUS_IS_COMPONENT (component));
     g_assert (node);
@@ -667,8 +652,8 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
 
         if (access_fs && path->is_dir && path->is_exist) {
             component->priv->observed_paths =
-                    g_list_concat(component->priv->observed_paths,
-                                  ibus_observed_path_traverse(path));
+                    g_list_concat (component->priv->observed_paths,
+                                   ibus_observed_path_traverse (path, TRUE));
         }
     }
 }
@@ -805,8 +790,8 @@ ibus_component_add_observed_path (IBusComponent *component,
 
     if (access_fs && p->is_dir && p->is_exist) {
         component->priv->observed_paths =
-                g_list_concat(component->priv->observed_paths,
-                              ibus_observed_path_traverse(p));
+                g_list_concat (component->priv->observed_paths,
+                               ibus_observed_path_traverse (p, TRUE));
     }
 }
 
@@ -840,4 +825,11 @@ ibus_component_check_modification (IBusComponent *component)
             return TRUE;
     }
     return FALSE;
+}
+
+GList *
+ibus_component_get_observed_paths (IBusComponent *component)
+{
+    g_assert (IBUS_IS_COMPONENT (component));
+    return g_list_copy (component->priv->observed_paths);
 }
