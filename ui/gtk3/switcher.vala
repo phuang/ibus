@@ -339,21 +339,29 @@ class Switcher : Gtk.Window {
 
     public override bool key_press_event(Gdk.EventKey e) {
         bool retval = true;
+
+/* Gdk.EventKey is changed to the pointer.
+ * https://git.gnome.org/browse/vala/commit/?id=598942f1
+ */
+#if VALA_0_24
+        Gdk.EventKey pe = e;
+#else
         Gdk.EventKey *pe = &e;
+#endif
 
         if (m_popup_delay_time > 0) {
             restore_window_position("pressed");
         }
 
         do {
-            uint modifiers = KeybindingManager.MODIFIER_FILTER & pe->state;
+            uint modifiers = KeybindingManager.MODIFIER_FILTER & pe.state;
 
             if ((modifiers != m_modifiers) &&
                 (modifiers != (m_modifiers | Gdk.ModifierType.SHIFT_MASK))) {
                 break;
             }
 
-            if (pe->keyval == m_keyval) {
+            if (pe.keyval == m_keyval) {
                 if (modifiers == m_modifiers)
                     next_engine();
                 else // modififers == m_modifiers | SHIFT_MASK
@@ -361,7 +369,7 @@ class Switcher : Gtk.Window {
                 break;
             }
 
-            switch (pe->keyval) {
+            switch (pe.keyval) {
                 case 0x08fb: /* leftarrow */
                 case 0xff51: /* Left */
                     previous_engine();
@@ -377,7 +385,7 @@ class Switcher : Gtk.Window {
                 case 0xff54: /* Down */
                     break;
                 default:
-                    debug("0x%04x", pe->keyval);
+                    debug("0x%04x", pe.keyval);
                     break;
             }
         } while (false);
@@ -385,9 +393,13 @@ class Switcher : Gtk.Window {
     }
 
     public override bool key_release_event(Gdk.EventKey e) {
+#if VALA_0_24
+        Gdk.EventKey pe = e;
+#else
         Gdk.EventKey *pe = &e;
+#endif
 
-        if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event *)pe,
+        if (KeybindingManager.primary_modifier_still_pressed((Gdk.Event) pe,
             m_primary_modifier)) {
             return true;
         }
