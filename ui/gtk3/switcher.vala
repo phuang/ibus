@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,12 +21,10 @@
  */
 
 class Switcher : Gtk.Window {
-    public extern const bool USE_SYMBOL_ICON;
-    private const int DEFAULT_FONT_SIZE = 16;
     private const int DESC_LABEL_MAX_LEN = 20;
 
     private class IBusEngineButton : Gtk.Button {
-        public IBusEngineButton(IBus.EngineDesc engine) {
+        public IBusEngineButton(IBus.EngineDesc engine, Switcher switcher) {
             GLib.Object();
 
             this.longname = engine.get_longname();
@@ -34,28 +32,28 @@ class Switcher : Gtk.Window {
             Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
             add(align);
 
-            if (!USE_SYMBOL_ICON) {
+            var name = engine.get_name();
+
+            if (name.length < 4 || name[0:4] != "xkb:") {
                 IconWidget icon = new IconWidget(engine.get_icon(),
                                                  Gtk.IconSize.DIALOG);
                 align.add(icon);
             } else {
-                var language = engine.get_language();
-                var symbol = engine.get_symbol();
-                var id = language;
+                var symbol = switcher.get_xkb_symbol(engine);
 
-                if (id.length > 2) {
-                    id = id[0:2];
-                }
-
-                if (symbol.length != 0) {
-                    id = symbol;
-                }
-
-                Gtk.Label label = new Gtk.Label(id);
-                string id_font = "%d".printf(DEFAULT_FONT_SIZE);
-                string markup = "<span font=\"%s\">%s</span>".printf(id_font, id);
+                Gtk.Label label = new Gtk.Label(symbol);
+                string symbol_font = "Monospace Bold 16";
+                string markup = "<span font=\"%s\">%s</span>".
+                        printf(symbol_font, symbol);
 
                 label.set_markup(markup);
+
+                int fixed_width, fixed_height;
+                Gtk.icon_size_lookup(Gtk.IconSize.DIALOG,
+                                     out fixed_width,
+                                     out fixed_height);
+                label.set_size_request(fixed_width, fixed_height);
+
                 align.add(label);
             }
         }
@@ -90,6 +88,9 @@ class Switcher : Gtk.Window {
     private uint m_popup_delay_time_id = 0;
     private int m_root_x;
     private int m_root_y;
+    private GLib.HashTable<string, string> m_xkb_symbols =
+            new GLib.HashTable<string, string>(GLib.str_hash,
+                                               GLib.str_equal);
 
     public Switcher() {
         GLib.Object(
@@ -246,7 +247,7 @@ class Switcher : Gtk.Window {
         for (int i = 0; i < m_engines.length; i++) {
             var index = i;
             var engine = m_engines[i];
-            var button = new IBusEngineButton(engine);
+            var button = new IBusEngineButton(engine, this);
             var longname = engine.get_longname();
             button.set_relief(Gtk.ReliefStyle.NONE);
             button.show();
@@ -423,5 +424,39 @@ class Switcher : Gtk.Window {
 
     public void set_popup_delay_time(uint popup_delay_time) {
         m_popup_delay_time = popup_delay_time;
+    }
+
+    public string get_xkb_symbol(IBus.EngineDesc engine) {
+        var name = engine.get_name();
+
+        assert(name[0:4] == "xkb:");
+
+        var symbol = m_xkb_symbols[name];
+
+        if (symbol != null)
+            return symbol;
+
+        var layout = engine.get_layout();
+
+        /* Maybe invalid layout */
+        if (layout.length < 2)
+            return layout;
+
+        symbol = layout[0:2].up();
+
+        int index = 0;
+
+        foreach (var saved_symbol in m_xkb_symbols.get_values()) {
+            if (symbol == saved_symbol[0:2])
+                index++;
+        }
+
+        if (index > 0) {
+            unichar u = 0x2081 + index;
+            symbol = "%s%s".printf(symbol, u.to_string());
+        }
+
+        m_xkb_symbols.insert(name, symbol);
+        return symbol;
     }
 }

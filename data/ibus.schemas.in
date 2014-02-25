@@ -259,6 +259,26 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/xkb-icon-rgba</key>
+      <applyto>/desktop/ibus/panel/xkb-icon-rgba</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default>#415099</default>
+      <locale name="C">
+        <short>RGBA value of XKB icon</short>
+	    <long>XKB icon shows the layout string and the string is
+                  rendered with the RGBA value. The RGBA value can be
+                  1. a color name from X11, 2. a hex value in form '#rrggbb'
+                  where 'r', 'g' and 'b' are hex digits of the red, green,
+                  and blue, 3. a RGB color in form 'rgb(r,g,b)' or
+                  4. a RGBA color in form 'rgba(r,g,b,a)' where 'r',
+                  'g', and 'b' are either integers in the range 0 to 255
+                  or precentage values in the range 0% to 100%, and
+                  'a' is a floating point value in the range 0 to 1
+                  of the alpha.</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/use_system_keyboard_layout</key>
       <applyto>/desktop/ibus/general/use_system_keyboard_layout</applyto>
       <owner>ibus</owner>

@@ -58,6 +58,11 @@ class Panel : IBus.PanelService {
     private Gtk.CssProvider m_css_provider;
     private int m_switcher_delay_time = 400;
     private bool m_use_system_keyboard_layout = false;
+    private GLib.HashTable<string, Gdk.Pixbuf> m_xkb_icon_pixbufs =
+            new GLib.HashTable<string, Gdk.Pixbuf>(GLib.str_hash,
+                                                   GLib.str_equal);
+    private Gdk.RGBA m_xkb_icon_rgba = Gdk.RGBA(){
+            red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0 };
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -170,6 +175,10 @@ class Panel : IBus.PanelService {
         m_settings_panel.changed["follow-input-cursor-when-always-shown"]
             .connect((key) => {
                 set_follow_input_cursor_when_always_shown_property_panel();
+        });
+
+        m_settings_panel.changed["xkb-icon-rgba"].connect((key) => {
+                set_xkb_icon_rgba();
         });
     }
 
@@ -375,6 +384,26 @@ class Panel : IBus.PanelService {
                         "follow-input-cursor-when-always-shown"));
     }
 
+    private void set_xkb_icon_rgba() {
+        string spec = m_settings_panel.get_string("xkb-icon-rgba");
+
+        Gdk.RGBA rgba = { 0, };
+
+        if (!rgba.parse(spec)) {
+            warning("invalid format of xkb-icon-rgba: %s", spec);
+            m_xkb_icon_rgba = Gdk.RGBA(){
+                    red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0 };
+        } else
+            m_xkb_icon_rgba = rgba;
+
+        if (m_xkb_icon_pixbufs.size() > 0) {
+            m_xkb_icon_pixbufs.remove_all();
+
+            if (m_status_icon != null && m_switcher != null)
+                state_changed();
+        }
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -474,6 +503,7 @@ class Panel : IBus.PanelService {
         set_show_property_panel();
         set_timeout_property_panel();
         set_follow_input_cursor_when_always_shown_property_panel();
+        set_xkb_icon_rgba();
 
         set_version();
     }
@@ -664,6 +694,51 @@ class Panel : IBus.PanelService {
 
     }
 
+    private void context_render_string(Cairo.Context cr,
+                                       string        symbol,
+                                       int           image_width,
+                                       int           image_height) {
+        int lwidth = 0;
+        int lheight = 0;
+        var desc = Pango.FontDescription.from_string("Monospace Bold 22");
+        var layout = Pango.cairo_create_layout(cr);
+
+        if (symbol.length >= 3)
+            desc = Pango.FontDescription.from_string("Monospace Bold 18");
+
+        layout.set_font_description(desc);
+        layout.set_text(symbol, -1);
+        layout.get_size(out lwidth, out lheight);
+        cr.move_to((image_width - lwidth / Pango.SCALE) / 2,
+                   (image_height - lheight / Pango.SCALE) / 2);
+        cr.set_source_rgba(m_xkb_icon_rgba.red,
+                           m_xkb_icon_rgba.green,
+                           m_xkb_icon_rgba.blue,
+                           m_xkb_icon_rgba.alpha);
+        Pango.cairo_show_layout(cr, layout);
+    }
+
+    private Gdk.Pixbuf create_icon_pixbuf_with_string(string symbol) {
+        Gdk.Pixbuf pixbuf = m_xkb_icon_pixbufs[symbol];
+
+        if (pixbuf != null)
+            return pixbuf;
+
+        var image = new Cairo.ImageSurface(Cairo.Format.ARGB32, 48, 48);
+        var cr = new Cairo.Context(image);
+        int width = image.get_width();
+        int height = image.get_height();
+
+        cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+        cr.set_operator(Cairo.Operator.SOURCE);
+        cr.paint();
+        cr.set_operator(Cairo.Operator.OVER);
+        context_render_string(cr, symbol, width, height);
+        pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, width, height);
+        m_xkb_icon_pixbufs.insert(symbol, pixbuf);
+        return pixbuf;
+    }
+
     private void show_setup_dialog() {
         if (m_setup_pid != 0) {
             if (Posix.kill(m_setup_pid, Posix.SIGUSR1) == 0)
@@ -699,8 +774,8 @@ class Panel : IBus.PanelService {
             m_about_dialog.set_version(Config.PACKAGE_VERSION);
 
             string copyright =
-                "Copyright © 2007-2013 Peng Huang\n" +
-                "Copyright © 2007-2013 Red Hat, Inc.\n";
+                "Copyright © 2007-2014 Peng Huang\n" +
+                "Copyright © 2007-2014 Red Hat, Inc.\n";
 
             m_about_dialog.set_copyright(copyright);
             m_about_dialog.set_license("LGPL");
@@ -930,11 +1005,23 @@ class Panel : IBus.PanelService {
         if (icon_name[0] == '/')
             m_status_icon.set_from_file(icon_name);
         else {
-            var theme = Gtk.IconTheme.get_default();
-            if (theme.lookup_icon(icon_name, 48, 0) != null) {
-                m_status_icon.set_from_icon_name(icon_name);
+            string symbol = null;
+
+            if (engine != null) {
+                var name = engine.get_name();
+                if (name.length >= 4 && name[0:4] == "xkb:")
+                    symbol = m_switcher.get_xkb_symbol(engine);
+            }
+
+            if (symbol != null) {
+                Gdk.Pixbuf pixbuf = create_icon_pixbuf_with_string(symbol);
+                m_status_icon.set_from_pixbuf(pixbuf);
             } else {
-                m_status_icon.set_from_icon_name("ibus-engine");
+                var theme = Gtk.IconTheme.get_default();
+                if (theme.lookup_icon(icon_name, 48, 0) != null)
+                    m_status_icon.set_from_icon_name(icon_name);
+                else
+                    m_status_icon.set_from_icon_name("ibus-engine");
             }
         }
 

@@ -42,8 +42,6 @@ AM_CPPFLAGS = \
 	-include $(CONFIG_HEADER) \
 	$(NULL)
 
-USE_SYMBOL_ICON = FALSE
-
 AM_CFLAGS = \
 	@GLIB2_CFLAGS@ \
 	@GIO2_CFLAGS@ \
@@ -53,7 +51,6 @@ AM_CFLAGS = \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DBINDIR=\"$(bindir)\" \
 	-DIBUS_DISABLE_DEPRECATED \
-	-DSWITCHER_USE_SYMBOL_ICON=$(USE_SYMBOL_ICON) \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
 	-Wno-unused-function \
