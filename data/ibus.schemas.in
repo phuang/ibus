@@ -9,8 +9,8 @@
       <default>[]</default>
       <list_type>string</list_type>
       <locale name="C">
-        <short>Preload engines</short>
-	    <long>Preload engines during ibus starts up</long>
+        <short><!-- Translators: Here “Preload” is a verb -->Preload engines</short>
+	    <long><!-- Translators: Tooltip for the button “Preload Engines” -->Preload engines during ibus starts up</long>
       </locale>
     </schema>
     <schema>

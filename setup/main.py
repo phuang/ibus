@@ -374,6 +374,7 @@ class Setup(object):
         buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
                    _("_OK"), Gtk.ResponseType.OK)
         title = _("Select keyboard shortcut for %s") % \
+                # Translators: Title of the window
                 _("switching input methods")
         dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
         text = entry.get_text()
