@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2014-02-18 13:46+0900\n"
-"PO-Revision-Date: 2014-02-18 05:49+0000\n"
+"POT-Creation-Date: 2014-02-26 14:33+0900\n"
+"PO-Revision-Date: 2014-02-28 14:28+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -84,7 +84,7 @@ msgstr "Попередній спосіб введення:"
 msgid "..."
 msgstr "…"
 
-#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:10
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:12
 msgid "The shortcut keys for turning input method on or off"
 msgstr "Клавіатурне скорочення для вмикання і вимикання способів введення"
 
@@ -124,11 +124,11 @@ msgstr "Показ панелі властивостей:"
 msgid "Language panel position:"
 msgstr "Розташування мовної панелі:"
 
-#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:30
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:32
 msgid "Show icon on system tray"
 msgstr "Показувати піктограму у системному лотку"
 
-#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:32
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:34
 msgid "Show input method name on language bar"
 msgstr "Показувати назву способу введення на мовній панелі"
 
@@ -217,11 +217,11 @@ msgstr "<small><i>Активний спосіб введення можна пе
 msgid "Input Method"
 msgstr "Спосіб введення"
 
-#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:33
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:38
 msgid "Use system keyboard layout"
 msgstr "Використовувати розкладку клавіатури системи"
 
-#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:34
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:39
 msgid "Use system keyboard (XKB) layout"
 msgstr "Використовувати розкладку клавіатури системи (XKB)"
 
@@ -229,7 +229,7 @@ msgstr "Використовувати розкладку клавіатури �
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Розкладка клавіатури</b>"
 
-#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:42
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:47
 msgid "Share the same input method among all applications"
 msgstr "Використовувати один спосіб введення для всіх програм"
 
@@ -259,7 +259,7 @@ msgstr "Запускати ibus при вході"
 msgid "<b>Startup</b>"
 msgstr "<b>Запуск</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:736
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:811
 msgid "About"
 msgstr "Інформація"
 
@@ -267,176 +267,194 @@ msgstr "Інформація"
 msgid "_Close"
 msgstr "_Закрити"
 
-#: ../data/ibus.schemas.in.h:1
+#. Translators: Here “Preload” is a verb
+#: ../data/ibus.schemas.in.h:2
 msgid "Preload engines"
 msgstr "Попередньо завантажувати рушії"
 
-#: ../data/ibus.schemas.in.h:2
+#. Translators: Tooltip for the button “Preload Engines”
+#: ../data/ibus.schemas.in.h:4
 msgid "Preload engines during ibus starts up"
 msgstr "Попередньо завантажувати рушії під час запуску ibus"
 
-#: ../data/ibus.schemas.in.h:3
+#: ../data/ibus.schemas.in.h:5
 msgid "Engines order"
 msgstr "Порядок рушіїв"
 
-#: ../data/ibus.schemas.in.h:4
+#: ../data/ibus.schemas.in.h:6
 msgid "Saved engines order in input method list"
 msgstr "Збережений порядок рушіїв у списку способів введення"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 msgid "Popup delay milliseconds for IME switcher window"
 msgstr "Затримка появи контекстного вікна для перемикача способів введення"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid ""
 "Set popup delay milliseconds to show IME switcher window. The default is "
 "400. 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do "
 "not show the window and switch prev/next engines."
 msgstr "Встановити затримку появи контекстного вікна перемикача способів введення у мілісекундах. Типовою є 400. 0 = показувати вікно негайно. 0 &lt; — затримка у мілісекундах. 0 &gt; — не показувати вікно і перемикатися на попередній або наступний рушій."
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Saved version number"
 msgstr "Збережений номер версії"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid ""
 "The saved version number will be used to check the difference between the "
 "version of the previous installed ibus and one of the current ibus."
 msgstr "Збережений номер версії буде використано для визначення відмінностей між попередньою встановленою версією ibus та поточною версією ibus."
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Trigger shortcut keys"
 msgstr "Клавіатурні скорочення-перемикачі"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Trigger shortcut keys for gtk_accelerator_parse"
 msgstr "Комбінації клавіш для перемикання gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Enable shortcut keys"
 msgstr "Увімкнути клавіатурні скорочення"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "The shortcut keys for turning input method on"
 msgstr "Клавіатурне скорочення для вмикання способів введення"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Disable shortcut keys"
 msgstr "Вимкнути клавіатурні скорочення"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "The shortcut keys for turning input method off"
 msgstr "Клавіатурне скорочення для вимикання способів введення"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Next engine shortcut keys"
 msgstr "Скорочення для наступного рушія"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Prev engine shortcut keys"
 msgstr "Скорочення для попереднього рушія"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "Клавіатурне скорочення для перемикання на попередній спосіб введення"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid "Auto hide"
 msgstr "Автоматично ховати"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid ""
 "The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
 "show"
 msgstr "Поведінка панелі властивостей. 0 = не показувати, 1 = автоматично ховати, 2 = завжди показувати"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "Language panel position"
 msgstr "Розташування мовної панелі"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:25
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "Розташування мовної панелі. 0 = у верхньому лівому куті, 1 = у верхньому правому куті, 2 = у нижньому лівому куті, 3 = у нижньому правому куті, 4 = нетипове"
 
-#: ../data/ibus.schemas.in.h:24
+#: ../data/ibus.schemas.in.h:26
 msgid "Follow the input cursor in case the panel is always shown"
 msgstr "Слідувати за курсором введення, якщо панель показано завжди"
 
-#: ../data/ibus.schemas.in.h:25
+#: ../data/ibus.schemas.in.h:27
 msgid ""
 "If true, the panel follows the input cursor in case the panel is always "
 "shown. If false, the panel is shown at a fixed location."
 msgstr "Якщо має значення «true», панель слідуватиме за курсором введення, якщо панель працює у режимі безумовного показу. Якщо має значення «false», панель буде показано у фіксованій позиції."
 
-#: ../data/ibus.schemas.in.h:26
+#: ../data/ibus.schemas.in.h:28
 msgid "The milliseconds to show property panel"
 msgstr "Тривалість показу панелі властивостей у мілісекундах"
 
-#: ../data/ibus.schemas.in.h:27
+#: ../data/ibus.schemas.in.h:29
 msgid ""
 "The milliseconds to show property panel after focus-in or properties are "
 "changed."
 msgstr "Тривалість показу панелі властивостей (у мілісекундах) після фокусування або зміни властивостей."
 
-#: ../data/ibus.schemas.in.h:28
+#: ../data/ibus.schemas.in.h:30
 msgid "Orientation of lookup table"
 msgstr "Орієнтація таблиці пошуку"
 
-#: ../data/ibus.schemas.in.h:29
+#: ../data/ibus.schemas.in.h:31
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Орієнтація таблиці пошуку. 0 = горизонтально, 1 = вертикально"
 
-#: ../data/ibus.schemas.in.h:31
+#: ../data/ibus.schemas.in.h:33
 msgid "Show input method name"
 msgstr "Показувати назву способу введення"
 
 #: ../data/ibus.schemas.in.h:35
+msgid "RGBA value of XKB icon"
+msgstr "Значення RGBA для піктограми XKB"
+
+#: ../data/ibus.schemas.in.h:37
+#, no-c-format
+msgid ""
+"XKB icon shows the layout string and the string is rendered with the RGBA "
+"value. The RGBA value can be 1. a color name from X11, 2. a hex value in "
+"form '#rrggbb' where 'r', 'g' and 'b' are hex digits of the red, green, and "
+"blue, 3. a RGB color in form 'rgb(r,g,b)' or 4. a RGBA color in form "
+"'rgba(r,g,b,a)' where 'r', 'g', and 'b' are either integers in the range 0 "
+"to 255 or precentage values in the range 0% to 100%, and 'a' is a floating "
+"point value in the range 0 to 1 of the alpha."
+msgstr "На піктограмі XKB буде показано рядок розкладки. Для показу цього рядка буде використано вказане значення RGBA. Значенням RGBA може бути: 1. назва кольору у X11, 2. шістнадцяткове число у форматі «#ччззсс», де «ч», «з», «с» є цифрами для червоного, зеленого та синього кольорів, 3. колір RGB у форматі «rgb(ч,з,с)» або 4. колір RGBA у форматі «rgba(ч,з,с,п)», де «ч», «з», «с» є або цілими значеннями у діапазоні від 0 до 255, або відсотковими значеннями від 0% до 100%, а «п» є значенням з рухомою крапкою для прозорості у діапазоні від 0 до 1."
+
+#: ../data/ibus.schemas.in.h:40
 msgid "Use custom font"
 msgstr "Використовувати нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:36
+#: ../data/ibus.schemas.in.h:41
 msgid "Use custom font name for language panel"
 msgstr "Використовувати нетиповий шрифт для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:37
+#: ../data/ibus.schemas.in.h:42
 msgid "Custom font"
 msgstr "Нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:38
+#: ../data/ibus.schemas.in.h:43
 msgid "Custom font name for language panel"
 msgstr "Назва нетипового шрифту для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:39
+#: ../data/ibus.schemas.in.h:44
 msgid "Embed Preedit Text"
 msgstr "Вбудувати попередньо створений текст"
 
-#: ../data/ibus.schemas.in.h:40
+#: ../data/ibus.schemas.in.h:45
 msgid "Embed Preedit Text in Application Window"
 msgstr "Вбудувати попередньо створений текст у вікно програми"
 
-#: ../data/ibus.schemas.in.h:41
+#: ../data/ibus.schemas.in.h:46
 msgid "Use global input method"
 msgstr "Використовувати загальний спосіб введення"
 
-#: ../data/ibus.schemas.in.h:43
+#: ../data/ibus.schemas.in.h:48
 msgid "Enable input method by default"
 msgstr "Типово увімкнути спосіб введення"
 
-#: ../data/ibus.schemas.in.h:44
+#: ../data/ibus.schemas.in.h:49
 msgid "Enable input method by default when the application gets input focus"
 msgstr "Типово увімкнути спосіб введення, коли програма отримує фокус введення"
 
-#: ../data/ibus.schemas.in.h:45
+#: ../data/ibus.schemas.in.h:50
 msgid "DConf preserve name prefixes"
 msgstr "Збереження DConf префіксів назв"
 
-#: ../data/ibus.schemas.in.h:46
+#: ../data/ibus.schemas.in.h:51
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Префікси ключів DConf для припинення перетворення назв"
 
@@ -521,7 +539,7 @@ msgstr "_Скасувати"
 msgid "_OK"
 msgstr "_Гаразд"
 
-#: ../setup/main.py:102 ../setup/main.py:395
+#: ../setup/main.py:102 ../setup/main.py:396
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Використовувати комбінацію з Shift для перемикання на попередній спосіб введення"
 
@@ -548,7 +566,8 @@ msgstr "Не вдалося запустити фонову службу IBus п
 msgid "Select keyboard shortcut for %s"
 msgstr "Виберіть клавіатурне скорочення для дії %s"
 
-#: ../setup/main.py:377
+#. Translators: Title of the window
+#: ../setup/main.py:378
 msgid "switching input methods"
 msgstr "перемикання способів введення"
 
@@ -659,31 +678,31 @@ msgstr "Команди:\n"
 msgid "%s is unknown command!\n"
 msgstr "Команда %s є невідомою програмі!\n"
 
-#: ../ui/gtk3/panel.vala:425
+#: ../ui/gtk3/panel.vala:454
 msgid "IBus Update"
 msgstr "Оновлення IBus"
 
-#: ../ui/gtk3/panel.vala:426 ../ui/gtk3/panel.vala:437
+#: ../ui/gtk3/panel.vala:455 ../ui/gtk3/panel.vala:466
 msgid "Super+space is now the default hotkey."
 msgstr "Тепер типовим клавіатурним скороченням є Super+Пробіл."
 
-#: ../ui/gtk3/panel.vala:707
+#: ../ui/gtk3/panel.vala:782
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus — інтелектуальний канал введення даних у Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:711
+#: ../ui/gtk3/panel.vala:786
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 
-#: ../ui/gtk3/panel.vala:732
+#: ../ui/gtk3/panel.vala:807
 msgid "Preferences"
 msgstr "Параметри"
 
-#: ../ui/gtk3/panel.vala:742
+#: ../ui/gtk3/panel.vala:817
 msgid "Restart"
 msgstr "Перезапустити"
 
-#: ../ui/gtk3/panel.vala:746
+#: ../ui/gtk3/panel.vala:821
 msgid "Quit"
 msgstr "Вийти"
 
