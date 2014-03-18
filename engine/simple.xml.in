@@ -203,6 +203,18 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
+                <engine>
+                        <name>xkb:cz:qwerty:cze</name>
+                        <language>cze</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>cz</layout>
+                        <layout_variant>qwerty</layout_variant>
+                        <longname>Czech (qwerty)</longname>
+                        <description>Czech (qwerty)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>99</rank>
+                </engine>
 		<engine>
 			<name>xkb:dk::dan</name>
 			<language>dan</language>
