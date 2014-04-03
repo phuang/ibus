@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2458,4 +2458,16 @@ bus_input_context_get_client (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
     return context->client;
+}
+
+void
+bus_input_context_get_content_type (BusInputContext *context,
+                                    guint           *purpose,
+                                    guint           *hints)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_return_if_fail (purpose != NULL && hints != NULL);
+
+    *purpose = context->purpose;
+    *hints = context->hints;
 }

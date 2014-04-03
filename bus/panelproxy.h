@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -109,6 +109,10 @@ void             bus_panel_proxy_register_properties
 void             bus_panel_proxy_update_property
                                                (BusPanelProxy     *panel,
                                                 IBusProperty      *prop);
+void             bus_panel_proxy_set_content_type
+                                               (BusPanelProxy     *panel,
+                                                guint              purpose,
+                                                guint              hints);
 G_END_DECLS
 #endif
 

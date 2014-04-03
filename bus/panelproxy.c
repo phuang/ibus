@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -398,6 +398,20 @@ bus_panel_proxy_update_property (BusPanelProxy  *panel,
                        -1, NULL, NULL, NULL);
 }
 
+void
+bus_panel_proxy_set_content_type (BusPanelProxy  *panel,
+                                  guint           purpose,
+                                  guint           hints)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "ContentType",
+                       g_variant_new ("(uu)", purpose, hints),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+}
+
 #define DEFINE_FUNC(name)                                       \
     static void                                                 \
     bus_panel_proxy_##name (BusPanelProxy *panel)               \
@@ -663,6 +677,10 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
                           input_context_signals[i].callback,
                           panel);
     }
+
+    guint purpose, hints;
+    bus_input_context_get_content_type (context, &purpose, &hints);
+    bus_panel_proxy_set_content_type (panel, purpose, hints);
 }
 
 void

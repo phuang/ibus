@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (c) 2009-2013 Google Inc. All rights reserved.
+ * Copyright (c) 2009-2014 Google Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -118,10 +118,13 @@ struct _IBusPanelServiceClass {
     void     (* destroy_context)           (IBusPanelService       *panel,
                                             const gchar
                                                    *input_context_path);
+    void     (* set_content_type)          (IBusPanelService       *panel,
+                                            guint                   purpose,
+                                            guint                   hints);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[7];  // We can add 8 pointers without breaking the ABI.
+    gpointer pdummy[6];  // We can add 8 pointers without breaking the ABI.
 };
 
 GType            ibus_panel_service_get_type  (void);

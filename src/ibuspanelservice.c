@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (c) 2009-2013 Google Inc. All rights reserved.
- * Copyright (C) 2010-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (c) 2009-2014 Google Inc. All rights reserved.
+ * Copyright (C) 2010-2014 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,6 +49,7 @@ enum {
     START_SETUP,
     STATE_CHANGED,
     DESTROY_CONTEXT,
+    SET_CONTENT_TYPE,
     LAST_SIGNAL,
 };
 
@@ -133,6 +134,10 @@ static void      ibus_panel_service_update_preedit_text
 static void      ibus_panel_service_update_property
                                    (IBusPanelService       *panel,
                                     IBusProperty           *prop);
+static void      ibus_panel_service_set_content_type
+                                   (IBusPanelService       *panel,
+                                    guint                   purpose,
+                                    guint                   hints);
 
 G_DEFINE_TYPE (IBusPanelService, ibus_panel_service, IBUS_TYPE_SERVICE)
 
@@ -189,6 +194,10 @@ static const gchar introspection_xml[] =
     "    <method name='StateChanged' />"
     "    <method name='HideLanguageBar' />"
     "    <method name='ShowLanguageBar' />"
+    "    <method name='ContentType'>"
+    "      <arg direction='in'  type='u' name='purpose' />"
+    "      <arg direction='in'  type='u' name='hints' />"
+    "    </method>"
     /* Signals */
     "    <signal name='CursorUp' />"
     "    <signal name='CursorDown' />"
@@ -246,6 +255,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     class->update_auxiliary_text = ibus_panel_service_update_auxiliary_text;
     class->update_preedit_text   = ibus_panel_service_update_preedit_text;
     class->update_property       = ibus_panel_service_update_property;
+    class->set_content_type      = ibus_panel_service_set_content_type;
 
     class->cursor_down_lookup_table = ibus_panel_service_not_implemented;
     class->cursor_up_lookup_table   = ibus_panel_service_not_implemented;
@@ -784,6 +794,31 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
             G_TYPE_NONE,
             1,
             G_TYPE_STRING);
+
+    /**
+     * IBusPanelService::set-content-type:
+     * @panel: An #IBusPanelService
+     * @purpose: Input purpose.
+     * @hints: Input hints.
+     *
+     * Emitted when the client application get the set-content-type.
+     * Implement the member function set_content_type() in extended class to
+     * receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
+     */
+    panel_signals[SET_CONTENT_TYPE] =
+        g_signal_new (I_("set-content-type"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass, set_content_type),
+            NULL, NULL,
+            _ibus_marshal_VOID__UINT_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
 }
 
 static void
@@ -951,6 +986,15 @@ ibus_panel_service_service_method_call (IBusService           *service,
         return;
     }
 
+    if (g_strcmp0 (method_name, "ContentType") == 0) {
+        guint purpose, hints;
+        g_variant_get (parameters, "(uu)", &purpose, &hints);
+        g_signal_emit (panel, panel_signals[SET_CONTENT_TYPE], 0,
+                       purpose, hints);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
+
     const static struct {
         const gchar *name;
         const gint signal_id;
@@ -1100,6 +1144,14 @@ ibus_panel_service_update_preedit_text (IBusPanelService *panel,
 static void
 ibus_panel_service_update_property (IBusPanelService *panel,
                                     IBusProperty     *prop)
+{
+    ibus_panel_service_not_implemented(panel);
+}
+
+static void
+ibus_panel_service_set_content_type (IBusPanelService *panel,
+                                     guint             purpose,
+                                     guint             hints)
 {
     ibus_panel_service_not_implemented(panel);
 }
