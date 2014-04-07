@@ -124,6 +124,7 @@ enum {
     UPDATE_PROPERTY,
     ENGINE_CHANGED,
     REQUEST_ENGINE,
+    SET_CONTENT_TYPE,
     LAST_SIGNAL,
 };
 
@@ -565,6 +566,18 @@ bus_input_context_class_init (BusInputContextClass *class)
             IBUS_TYPE_ENGINE_DESC,
             1,
             G_TYPE_STRING);
+
+    context_signals[SET_CONTENT_TYPE] =
+        g_signal_new (I_("set-content-type"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__UINT_UINT,
+            G_TYPE_NONE,
+            2,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
 
     text_empty = ibus_text_new_from_string ("");
     g_object_ref_sink (text_empty);
@@ -1148,6 +1161,14 @@ bus_input_context_service_set_property (IBusService     *service,
                 bus_engine_proxy_set_content_type (context->engine,
                                                    purpose,
                                                    hints);
+
+            if (context->has_focus) {
+                g_signal_emit (context,
+                               context_signals[SET_CONTENT_TYPE],
+                               0,
+                               context->purpose,
+                               context->hints);
+            }
 
             error = NULL;
             retval = bus_input_context_property_changed (context,

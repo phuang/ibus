@@ -589,6 +589,20 @@ _context_destroy_cb (BusInputContext *context,
     bus_panel_proxy_focus_out (panel, context);
 }
 
+static void
+_context_set_content_type_cb (BusInputContext *context,
+                              guint            purpose,
+                              guint            hints,
+                              BusPanelProxy   *panel)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    g_return_if_fail (panel->focused_context == context);
+
+    bus_panel_proxy_set_content_type (panel, purpose, hints);
+}
+
 #define DEFINE_FUNCTION(name)                                   \
     static void _context_##name##_cb (BusInputContext *context, \
                                       BusPanelProxy   *panel)   \
@@ -643,6 +657,8 @@ static const struct {
     { "engine-changed",             G_CALLBACK (_context_state_changed_cb) },
 
     { "destroy",                    G_CALLBACK (_context_destroy_cb) },
+
+    { "set-content-type",           G_CALLBACK (_context_set_content_type_cb) },
 };
 
 void
