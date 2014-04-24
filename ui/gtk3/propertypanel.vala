@@ -34,7 +34,7 @@ public class PropertyPanel : Gtk.Box {
     private IPropToolItem[] m_items;
     private Gdk.Rectangle m_cursor_location = Gdk.Rectangle(){
             x = -1, y = -1, width = 0, height = 0 };
-    private int m_show = PanelShow.AUTO_HIDE;
+    private int m_show = PanelShow.DO_NOT_SHOW;
     private uint m_auto_hide_timeout = 10000;
     private uint m_auto_hide_timeout_id = 0;
     private bool m_follow_input_cursor_when_always_shown = false;
