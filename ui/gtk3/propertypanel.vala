@@ -81,15 +81,8 @@ public class PropertyPanel : Gtk.Box {
          * if the event order is, focus_in(), set_cursor_location() and
          * set_properties(), m_items.length can be 0 when
          * set_cursor_location() is called and Property Panel is not shown.
-         *
-         * If all windows are closed, desktop background is focused and
-         * focus_in() and set_properties() are called but
-         * set_cursor_location() is not called.
-         * Then we should not show Property panel when m_cursor_location
-         * is (-1, -1) because of no windows.
          */
-        if (m_cursor_location.x != -1 && m_cursor_location.y != -1)
-            show_with_auto_hide_timer();
+        show_with_auto_hide_timer();
     }
 
     public void update_property(IBus.Property prop) {
@@ -104,8 +97,7 @@ public class PropertyPanel : Gtk.Box {
         foreach (var item in m_items)
             item.update_property(prop);
 
-        if (m_cursor_location.x != -1 && m_cursor_location.y != -1)
-            show_with_auto_hide_timer();
+        show_with_auto_hide_timer();
     }
 
     public void set_cursor_location(int x, int y, int width, int height) {
@@ -384,7 +376,12 @@ public class PropertyPanel : Gtk.Box {
 
     private void show_with_auto_hide_timer() {
         if (m_items.length == 0) {
-            m_toplevel.hide();
+            /* Do not blink the panel with focus-in in case the panel
+             * is always shown. */
+            if (m_follow_input_cursor_when_always_shown ||
+                m_show != PanelShow.ALWAYS)
+                m_toplevel.hide();
+
             return;
         }
 
@@ -392,6 +389,15 @@ public class PropertyPanel : Gtk.Box {
             show();
             return;
         }
+
+        /* If all windows are closed, desktop background is focused and
+         * focus_in() and set_properties() are called but
+         * set_cursor_location() is not called.
+         * Then we should not show Property panel when m_cursor_location
+         * is (-1, -1) because of no windows.
+         */
+        if (m_cursor_location.x == -1 && m_cursor_location.y == -1)
+            return;
 
         if (m_auto_hide_timeout_id != 0)
             GLib.Source.remove(m_auto_hide_timeout_id);
