@@ -10,14 +10,14 @@
 # Mike Manilone <zhtx10@gmail.com>, 2011
 # Peng Huang <shawn.p.huang@gmail.com>, 2007
 # simonyanix <simonyan@fedoraproject.org>, 2011
-# Tommy He <lovenemesis@gmail.com>, 2012-2013
+# Tommy He <lovenemesis@gmail.com>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2014-02-18 13:46+0900\n"
-"PO-Revision-Date: 2014-02-18 05:49+0000\n"
-"Last-Translator: Christopher Meng <cickumqt@gmail.com>\n"
+"POT-Creation-Date: 2014-02-26 14:33+0900\n"
+"PO-Revision-Date: 2014-03-19 06:43+0000\n"
+"Last-Translator: Tommy He <lovenemesis@gmail.com>\n"
 "Language-Team: Chinese (China) <trans-zh_cn@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,11 +55,11 @@ msgstr "自定义"
 
 #: ../setup/setup.ui.h:8
 msgid "Do not show"
-msgstr ""
+msgstr "不再显示"
 
 #: ../setup/setup.ui.h:9
 msgid "Hide automatically"
-msgstr ""
+msgstr "自动隐藏"
 
 #: ../setup/setup.ui.h:10
 msgid "Always"
@@ -89,7 +89,7 @@ msgstr "上一输入法："
 msgid "..."
 msgstr "..."
 
-#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:10
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:12
 msgid "The shortcut keys for turning input method on or off"
 msgstr "打开关闭输入法的快捷键"
 
@@ -123,17 +123,17 @@ msgstr "设置如何显示或隐藏语言栏的方式"
 
 #: ../setup/setup.ui.h:25
 msgid "Show property panel:"
-msgstr ""
+msgstr "显示属性栏："
 
 #: ../setup/setup.ui.h:26
 msgid "Language panel position:"
 msgstr "语言栏位置："
 
-#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:30
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:32
 msgid "Show icon on system tray"
 msgstr "在系统托盘上显示图标"
 
-#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:32
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:34
 msgid "Show input method name on language bar"
 msgstr "语言栏上显示输入法名称"
 
@@ -222,11 +222,11 @@ msgstr "<small><i>可以通过敲击键盘快捷键或者点击面板图标来�
 msgid "Input Method"
 msgstr "输入法"
 
-#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:33
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:38
 msgid "Use system keyboard layout"
 msgstr "使用系统键盘布局"
 
-#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:34
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:39
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
@@ -234,7 +234,7 @@ msgstr "使用系统键盘（XKB）布局"
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>键盘布局</b>"
 
-#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:42
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:47
 msgid "Share the same input method among all applications"
 msgstr "在所有应用程序中共享同一个输入法"
 
@@ -264,7 +264,7 @@ msgstr "登录时运行 IBus"
 msgid "<b>Startup</b>"
 msgstr "<b>启动</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:736
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:811
 msgid "About"
 msgstr "关于"
 
@@ -272,176 +272,194 @@ msgstr "关于"
 msgid "_Close"
 msgstr "关闭(_C)"
 
-#: ../data/ibus.schemas.in.h:1
+#. Translators: Here “Preload” is a verb
+#: ../data/ibus.schemas.in.h:2
 msgid "Preload engines"
 msgstr "预加载引擎"
 
-#: ../data/ibus.schemas.in.h:2
+#. Translators: Tooltip for the button “Preload Engines”
+#: ../data/ibus.schemas.in.h:4
 msgid "Preload engines during ibus starts up"
 msgstr "IBus 启动时预加载的引擎"
 
-#: ../data/ibus.schemas.in.h:3
+#: ../data/ibus.schemas.in.h:5
 msgid "Engines order"
 msgstr "引擎顺序"
 
-#: ../data/ibus.schemas.in.h:4
+#: ../data/ibus.schemas.in.h:6
 msgid "Saved engines order in input method list"
 msgstr "保存在输入法选单中的引擎顺序"
 
-#: ../data/ibus.schemas.in.h:5
+#: ../data/ibus.schemas.in.h:7
 msgid "Popup delay milliseconds for IME switcher window"
 msgstr "输入法切换窗口弹出延时微秒数"
 
-#: ../data/ibus.schemas.in.h:6
+#: ../data/ibus.schemas.in.h:8
 msgid ""
 "Set popup delay milliseconds to show IME switcher window. The default is "
 "400. 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do "
 "not show the window and switch prev/next engines."
 msgstr "设定输入法切换窗口弹出的延时微秒数。默认为 400。0 代表立即显示窗口。 0 &lt; 延迟微秒数 0 &gt; 当切换上一个/下一个输入法引擎时不显示窗口。"
 
-#: ../data/ibus.schemas.in.h:7
+#: ../data/ibus.schemas.in.h:9
 msgid "Saved version number"
 msgstr "已储存的版本号"
 
-#: ../data/ibus.schemas.in.h:8
+#: ../data/ibus.schemas.in.h:10
 msgid ""
 "The saved version number will be used to check the difference between the "
 "version of the previous installed ibus and one of the current ibus."
 msgstr "已保存的版本号将被用作检查之前安装的 ibus 版本和当前版本间的区别。"
 
-#: ../data/ibus.schemas.in.h:9
+#: ../data/ibus.schemas.in.h:11
 msgid "Trigger shortcut keys"
 msgstr "触发快捷键"
 
-#: ../data/ibus.schemas.in.h:11
+#: ../data/ibus.schemas.in.h:13
 msgid "Trigger shortcut keys for gtk_accelerator_parse"
 msgstr "为 gtk_accelerator_parse 触发快捷键"
 
-#: ../data/ibus.schemas.in.h:12
+#: ../data/ibus.schemas.in.h:14
 msgid "Enable shortcut keys"
 msgstr "应用快捷键"
 
-#: ../data/ibus.schemas.in.h:13
+#: ../data/ibus.schemas.in.h:15
 msgid "The shortcut keys for turning input method on"
 msgstr "开启输入法的快捷键"
 
-#: ../data/ibus.schemas.in.h:14
+#: ../data/ibus.schemas.in.h:16
 msgid "Disable shortcut keys"
 msgstr "禁用快捷键"
 
-#: ../data/ibus.schemas.in.h:15
+#: ../data/ibus.schemas.in.h:17
 msgid "The shortcut keys for turning input method off"
 msgstr "关闭输入法的快捷键"
 
-#: ../data/ibus.schemas.in.h:16
+#: ../data/ibus.schemas.in.h:18
 msgid "Next engine shortcut keys"
 msgstr "下一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:17
+#: ../data/ibus.schemas.in.h:19
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr "切换到列表中下一个输入法快捷键"
 
-#: ../data/ibus.schemas.in.h:18
+#: ../data/ibus.schemas.in.h:20
 msgid "Prev engine shortcut keys"
 msgstr "上一个引擎快捷键"
 
-#: ../data/ibus.schemas.in.h:19
+#: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "切换到列表中上一个输入法快捷键"
 
-#: ../data/ibus.schemas.in.h:20
+#: ../data/ibus.schemas.in.h:22
 msgid "Auto hide"
 msgstr "自动隐藏"
 
-#: ../data/ibus.schemas.in.h:21
+#: ../data/ibus.schemas.in.h:23
 msgid ""
 "The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
 "show"
-msgstr ""
+msgstr "属性面板的行为。 0 = 不再显示，1 = 自动隐藏，2 = 始终显示"
 
-#: ../data/ibus.schemas.in.h:22
+#: ../data/ibus.schemas.in.h:24
 msgid "Language panel position"
 msgstr "语言栏位置"
 
-#: ../data/ibus.schemas.in.h:23
+#: ../data/ibus.schemas.in.h:25
 msgid ""
 "The position of the language panel. 0 = Top left corner, 1 = Top right "
 "corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
 msgstr "语言栏位置。0 = 左上角，1 = 右上角，2 = 左下角，3 = 右下角，4 = 自定义"
 
-#: ../data/ibus.schemas.in.h:24
-msgid "Follow the input cursor in case the panel is always shown"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:25
-msgid ""
-"If true, the panel follows the input cursor in case the panel is always "
-"shown. If false, the panel is shown at a fixed location."
-msgstr ""
-
 #: ../data/ibus.schemas.in.h:26
-msgid "The milliseconds to show property panel"
-msgstr ""
+msgid "Follow the input cursor in case the panel is always shown"
+msgstr "在始终显示的情况下面板跟随输入光标"
 
 #: ../data/ibus.schemas.in.h:27
 msgid ""
-"The milliseconds to show property panel after focus-in or properties are "
-"changed."
-msgstr ""
+"If true, the panel follows the input cursor in case the panel is always "
+"shown. If false, the panel is shown at a fixed location."
+msgstr "若为真，当面板设为始终显示时面板将跟随输入光标。若为假，面板将在固定位置显示。"
 
 #: ../data/ibus.schemas.in.h:28
+msgid "The milliseconds to show property panel"
+msgstr "以毫秒为单位显示属性面板的时间"
+
+#: ../data/ibus.schemas.in.h:29
+msgid ""
+"The milliseconds to show property panel after focus-in or properties are "
+"changed."
+msgstr "在离开焦点或属性变更后，以毫秒为单位显示属性面板的时间"
+
+#: ../data/ibus.schemas.in.h:30
 msgid "Orientation of lookup table"
 msgstr "候选词表方向"
 
-#: ../data/ibus.schemas.in.h:29
+#: ../data/ibus.schemas.in.h:31
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "候选词表方向。0 = 水平，1 = 竖直。"
 
-#: ../data/ibus.schemas.in.h:31
+#: ../data/ibus.schemas.in.h:33
 msgid "Show input method name"
 msgstr "显示输入法名称"
 
 #: ../data/ibus.schemas.in.h:35
+msgid "RGBA value of XKB icon"
+msgstr "XKB 图标的 RGBA 值"
+
+#: ../data/ibus.schemas.in.h:37
+#, no-c-format
+msgid ""
+"XKB icon shows the layout string and the string is rendered with the RGBA "
+"value. The RGBA value can be 1. a color name from X11, 2. a hex value in "
+"form '#rrggbb' where 'r', 'g' and 'b' are hex digits of the red, green, and "
+"blue, 3. a RGB color in form 'rgb(r,g,b)' or 4. a RGBA color in form "
+"'rgba(r,g,b,a)' where 'r', 'g', and 'b' are either integers in the range 0 "
+"to 255 or precentage values in the range 0% to 100%, and 'a' is a floating "
+"point value in the range 0 to 1 of the alpha."
+msgstr "XKB 图标显示键盘布局字符串并依据 RGBA 值进行渲染。RGBA 值可以是 1. X11 中的颜色名；2. '#rrggbb' 形式的十六进制数，其中 'r', 'g' 和 'b' 分别代表十六进制数字的红、绿和蓝；3. 'rgb(r,g,b)' 形式的 RGB 颜色；或者 4. 'rgba(r,g,b,a)' 形式的 RGBA 颜色，其中 'r', 'g' 和 'b' 分别为 0 到 255 之间的整数值，或者 0% 到 100% 之间的百分比值，而 'a' 为 0 到 1 之间的浮点透明度。"
+
+#: ../data/ibus.schemas.in.h:40
 msgid "Use custom font"
 msgstr "使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:36
+#: ../data/ibus.schemas.in.h:41
 msgid "Use custom font name for language panel"
 msgstr "语言栏上使用自定义字体"
 
-#: ../data/ibus.schemas.in.h:37
+#: ../data/ibus.schemas.in.h:42
 msgid "Custom font"
 msgstr "自定义字体"
 
-#: ../data/ibus.schemas.in.h:38
+#: ../data/ibus.schemas.in.h:43
 msgid "Custom font name for language panel"
 msgstr "自定义语言栏字体"
 
-#: ../data/ibus.schemas.in.h:39
+#: ../data/ibus.schemas.in.h:44
 msgid "Embed Preedit Text"
 msgstr "内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:40
+#: ../data/ibus.schemas.in.h:45
 msgid "Embed Preedit Text in Application Window"
 msgstr "在应用程序窗口中启用内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:41
+#: ../data/ibus.schemas.in.h:46
 msgid "Use global input method"
 msgstr "使用全局输入法"
 
-#: ../data/ibus.schemas.in.h:43
+#: ../data/ibus.schemas.in.h:48
 msgid "Enable input method by default"
 msgstr "默认启动输入法"
 
-#: ../data/ibus.schemas.in.h:44
+#: ../data/ibus.schemas.in.h:49
 msgid "Enable input method by default when the application gets input focus"
 msgstr "当应用程序需要使用输入时自动启用输入法"
 
-#: ../data/ibus.schemas.in.h:45
+#: ../data/ibus.schemas.in.h:50
 msgid "DConf preserve name prefixes"
 msgstr "DConf 保留名称前缀"
 
-#: ../data/ibus.schemas.in.h:46
+#: ../data/ibus.schemas.in.h:51
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "用来停止名称转换的 DConf 键前缀"
 
@@ -526,7 +544,7 @@ msgstr "取消(_C)"
 msgid "_OK"
 msgstr "确定(_O)"
 
-#: ../setup/main.py:102 ../setup/main.py:395
+#: ../setup/main.py:102 ../setup/main.py:396
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "和 SHIFT 一起使用快捷键来切换到先前的输入法"
 
@@ -553,7 +571,8 @@ msgstr "IBus 守护在 %d 秒内无法启动"
 msgid "Select keyboard shortcut for %s"
 msgstr "选择 %s 的快捷键"
 
-#: ../setup/main.py:377
+#. Translators: Title of the window
+#: ../setup/main.py:378
 msgid "switching input methods"
 msgstr "切换输入法"
 
@@ -664,31 +683,31 @@ msgstr "命令：\n"
 msgid "%s is unknown command!\n"
 msgstr "%s 是未知命令！\n"
 
-#: ../ui/gtk3/panel.vala:425
+#: ../ui/gtk3/panel.vala:454
 msgid "IBus Update"
 msgstr "IBus 更新"
 
-#: ../ui/gtk3/panel.vala:426 ../ui/gtk3/panel.vala:437
+#: ../ui/gtk3/panel.vala:455 ../ui/gtk3/panel.vala:466
 msgid "Super+space is now the default hotkey."
 msgstr "Super+space 是目前默认的快捷键。"
 
-#: ../ui/gtk3/panel.vala:707
+#: ../ui/gtk3/panel.vala:782
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus 是一个适用于 Linux/Unix 系统的智能输入平台。"
 
-#: ../ui/gtk3/panel.vala:711
+#: ../ui/gtk3/panel.vala:786
 msgid "translator-credits"
 msgstr "黄鹏 <shawn.p.huang@gmail.com>\nFedora 简体中文组 <trans-zh_cn@lists.fedoraproject.org>"
 
-#: ../ui/gtk3/panel.vala:732
+#: ../ui/gtk3/panel.vala:807
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../ui/gtk3/panel.vala:742
+#: ../ui/gtk3/panel.vala:817
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../ui/gtk3/panel.vala:746
+#: ../ui/gtk3/panel.vala:821
 msgid "Quit"
 msgstr "退出"
 
