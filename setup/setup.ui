@@ -902,6 +902,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="wrap">True</property>
+                                <property name="max_width_chars">74</property>
                                 <property name="label" translatable="yes">&lt;small&gt;&lt;i&gt;The active input method can be switched around from the selected ones in the above list by pressing the keyboard shortcut keys or clicking the panel icon.&lt;/i&gt;&lt;/small&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
