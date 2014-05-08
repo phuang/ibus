@@ -330,6 +330,18 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
+                <engine>
+                        <name>xkb:de:nodeadkeys:ger</name>
+                        <language>ger</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>de</layout>
+                        <layout_variant>nodeadkeys</layout_variant>
+                        <longname>German (eliminate dead keys)</longname>
+                        <description>German (eliminate dead keys)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>99</rank>
+                </engine>
 		<engine>
 			<name>xkb:gr::gre</name>
 			<language>gre</language>
