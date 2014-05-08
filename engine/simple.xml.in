@@ -682,17 +682,5 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
-		<engine>
-			<name>xkb:kr:kr104:kor</name>
-			<language>kor</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>kr</layout>
-			<layout_variant>kr104</layout_variant>
-			<longname>Korean (101/104 key compatible)</longname>
-			<description>Korean (101/104 key compatible)</description>
-                        <icon>ibus-keyboard</icon>
-			<rank>99</rank>
-		</engine>
 	</engines>
 </component>
