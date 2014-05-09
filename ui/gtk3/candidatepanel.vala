@@ -112,8 +112,15 @@ public class CandidatePanel : Gtk.Box{
 
     public void set_preedit_text(IBus.Text? text, uint cursor) {
         if (text != null) {
-            m_preedit_label.set_text(text.get_text());
-            m_preedit_label.show();
+            var str = text.get_text();
+
+            if (str.length > 0) {
+                m_preedit_label.set_text(str);
+                m_preedit_label.show();
+            } else {
+                m_preedit_label.set_text("");
+                m_preedit_label.hide();
+            }
         } else {
             m_preedit_label.set_text("");
             m_preedit_label.hide();
