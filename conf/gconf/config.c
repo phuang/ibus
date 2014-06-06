@@ -290,7 +290,7 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
     GVariant *variant = _from_gconf_value (gv);
     gconf_value_free (gv);
 
-    return variant;
+    return g_variant_ref_sink (variant);
 }
 
 static GVariant *
