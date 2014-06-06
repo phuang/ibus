@@ -737,6 +737,7 @@ _create_input_context_async_step_one_done (GDBusConnection    *connection,
          * The connection is closed, can not contine next steps, so complete
          * the asynchronous request with error.
          */
+        g_variant_unref(variant);
         g_simple_async_result_set_error (simple,
                 G_DBUS_ERROR, G_DBUS_ERROR_FAILED, "Connection is closed.");
         g_simple_async_result_complete_in_idle (simple);
@@ -745,6 +746,7 @@ _create_input_context_async_step_one_done (GDBusConnection    *connection,
 
     const gchar *path = NULL;
     g_variant_get (variant, "(&o)", &path);
+    g_variant_unref(variant);
 
 
     IBusBus *bus = (IBusBus *)g_async_result_get_source_object (
