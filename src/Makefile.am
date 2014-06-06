@@ -158,14 +158,14 @@ ibus_public_headers =       \
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
-ibus_privite_headers =       \
+ibus_private_headers =       \
     ibuscomposetable.h       \
     ibusinternal.h           \
     keyname-table.h          \
     gtkimcontextsimpleseqs.h \
     $(NULL)
 noinst_HEADERS =            \
-    $(ibus_privite_headers) \
+    $(ibus_private_headers) \
     $(NULL)
 
 BUILT_SOURCES =                 \
