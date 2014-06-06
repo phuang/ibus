@@ -24,6 +24,7 @@ change_global_engine (void)
         g_assert_cmpstr (ibus_engine_desc_get_name (engine_desc),
                          ==,
                          engine_names[i]);
+        g_object_unref (G_OBJECT (engine_desc));
     }
 }
 
