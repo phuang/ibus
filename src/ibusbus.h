@@ -743,7 +743,7 @@ GList       *ibus_bus_list_active_engines_async_finish
  * @returns: (array zero-terminated=1) (transfer full): A %NULL-terminated array of engines.
  *
  * Get engines by given names synchronously. If some engine names do not exist, this function
- * will simplly ignore them, and return rest of engines.
+ * will simply ignore them, and return rest of engines.
  * TODO(penghuang): add asynchronous version
  */
 IBusEngineDesc **
