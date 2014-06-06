@@ -68,5 +68,8 @@
  */
 #define DBUS_INTERFACE_DBUS "org.freedesktop.DBus"
 
+G_GNUC_INTERNAL void
+ibus_g_variant_get_child_string (GVariant *variant, gsize index, char **str);
+
 #endif
 

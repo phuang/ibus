@@ -153,3 +153,12 @@ ibus_get_language_name(const gchar *_locale) {
 #endif
     }
 }
+
+void
+ibus_g_variant_get_child_string (GVariant *variant, gsize index, char **str)
+{
+    g_return_if_fail (str != NULL);
+
+    g_free (*str);
+    g_variant_get_child (variant, index, "s", str);
+}

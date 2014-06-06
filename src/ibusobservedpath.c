@@ -21,6 +21,7 @@
  */
 #include <glib/gstdio.h>
 #include <stdlib.h>
+#include "ibusinternal.h"
 #include "ibusobservedpath.h"
 
 
@@ -105,7 +106,7 @@ ibus_observed_path_deserialize (IBusObservedPath *path,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_observed_path_parent_class)->deserialize ((IBusSerializable *)path, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &path->path);
+    ibus_g_variant_get_child_string (variant, retval++, &path->path);
     g_variant_get_child (variant, retval++, "x", &path->mtime);
 
     return retval;

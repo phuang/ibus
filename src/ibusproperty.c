@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  * USA
  */
+#include "ibusinternal.h"
 #include "ibusproperty.h"
 #include "ibusproplist.h"
 #include "ibusenumtypes.h"
@@ -398,7 +399,7 @@ ibus_property_deserialize (IBusProperty *prop,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_property_parent_class)->deserialize ((IBusSerializable *) prop, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &prop->priv->key);
+    ibus_g_variant_get_child_string (variant, retval++, &prop->priv->key);
     g_variant_get_child (variant, retval++, "u", &prop->priv->type);
 
     GVariant *subvar = g_variant_get_child_value (variant, retval++);

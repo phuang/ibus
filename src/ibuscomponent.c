@@ -21,6 +21,7 @@
  */
 #include <glib/gstdio.h>
 #include "ibuscomponent.h"
+#include "ibusinternal.h"
 
 enum {
     LAST_SIGNAL,
@@ -384,14 +385,22 @@ ibus_component_deserialize (IBusComponent   *component,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->deserialize ((IBusSerializable *)component, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &component->priv->name);
-    g_variant_get_child (variant, retval++, "s", &component->priv->description);
-    g_variant_get_child (variant, retval++, "s", &component->priv->version);
-    g_variant_get_child (variant, retval++, "s", &component->priv->license);
-    g_variant_get_child (variant, retval++, "s", &component->priv->author);
-    g_variant_get_child (variant, retval++, "s", &component->priv->homepage);
-    g_variant_get_child (variant, retval++, "s", &component->priv->exec);
-    g_variant_get_child (variant, retval++, "s", &component->priv->textdomain);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->name);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->description);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->version);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->license);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->author);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->homepage);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->exec);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->textdomain);
 
     GVariant *var;
     GVariantIter *iter = NULL;
