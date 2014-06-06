@@ -180,6 +180,7 @@ ibus_config_service_service_method_call (IBusService           *service,
             g_dbus_method_invocation_return_gerror (invocation, error);
             g_error_free (error);
         }
+        g_variant_unref (value);
         return;
     }
 
