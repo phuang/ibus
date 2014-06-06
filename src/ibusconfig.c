@@ -287,6 +287,7 @@ ibus_config_new (GDBusConnection  *connection,
     g_assert (G_IS_DBUS_CONNECTION (connection));
 
     GInitable *initable;
+    char *owner;
 
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START |
                             G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
@@ -305,7 +306,8 @@ ibus_config_new (GDBusConnection  *connection,
     if (initable == NULL)
         return NULL;
 
-    if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (initable)) == NULL) {
+    owner = g_dbus_proxy_get_name_owner (G_DBUS_PROXY (initable));
+    if (owner == NULL) {
         /* The configuration daemon, which is usually ibus-gconf, is not started yet. */
         g_set_error (error,
                      IBUS_ERROR,
@@ -314,6 +316,7 @@ ibus_config_new (GDBusConnection  *connection,
         g_object_unref (initable);
         return NULL;
     }
+    g_free (owner);
 
     /* clients should not destroy the config service. */
     IBUS_PROXY (initable)->own = FALSE;
@@ -367,7 +370,9 @@ ibus_config_new_async_finish (GAsyncResult  *res,
     g_object_unref (source_object);
 
     if (object != NULL) {
-        if (g_dbus_proxy_get_name_owner (G_DBUS_PROXY (object)) == NULL) {
+        char *owner;
+        owner = g_dbus_proxy_get_name_owner (G_DBUS_PROXY (object));
+        if (owner == NULL) {
             /* The configuration daemon, which is usually ibus-gconf, 
              * is not started yet. */
             g_set_error (error,
@@ -377,6 +382,7 @@ ibus_config_new_async_finish (GAsyncResult  *res,
             g_object_unref (object);
             return NULL;
         }
+        g_free (owner);
         /* clients should not destroy the config service. */
         IBUS_PROXY (object)->own = FALSE;
         return IBUS_CONFIG (object);
