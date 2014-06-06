@@ -403,13 +403,19 @@ ibus_property_deserialize (IBusProperty *prop,
     g_variant_get_child (variant, retval++, "u", &prop->priv->type);
 
     GVariant *subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->label != NULL) {
+        g_object_unref (prop->priv->label);
+    }
     prop->priv->label = IBUS_TEXT (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->label);
     g_variant_unref (subvar);
 
-    g_variant_get_child (variant, retval++, "s", &prop->priv->icon);
+    ibus_g_variant_get_child_string (variant, retval++, &prop->priv->icon);
 
     subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->tooltip != NULL) {
+        g_object_unref (prop->priv->tooltip);
+    }
     prop->priv->tooltip = IBUS_TEXT (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->tooltip);
     g_variant_unref (subvar);
@@ -419,12 +425,18 @@ ibus_property_deserialize (IBusProperty *prop,
     g_variant_get_child (variant, retval++, "u", &prop->priv->state);
 
     subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->sub_props != NULL) {
+        g_object_unref (prop->priv->sub_props);
+    }
     prop->priv->sub_props = IBUS_PROP_LIST (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->sub_props);
     g_variant_unref (subvar);
 
     /* Keep the serialized order for the compatibility when add new members. */
     subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->symbol != NULL) {
+        g_object_unref (prop->priv->symbol);
+    }
     prop->priv->symbol = IBUS_TEXT (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->symbol);
     g_variant_unref (subvar);
