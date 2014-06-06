@@ -7,9 +7,9 @@ static IBusBus *bus = NULL;
 static int create_config_count = 0;
 
 static void
-finish_create_config_async_sucess (GObject      *source_object,
-                                   GAsyncResult *res,
-                                   gpointer      user_data)
+finish_create_config_async_success (GObject      *source_object,
+                                    GAsyncResult *res,
+                                    gpointer      user_data)
 {
     GMainLoop *loop = (GMainLoop *)user_data;
     GError *error = NULL;
@@ -54,7 +54,7 @@ test_create_config_async (void)
     loop = g_main_loop_new (NULL, TRUE);
     ibus_config_new_async (ibus_bus_get_connection (bus),
                            NULL,
-                           finish_create_config_async_sucess,
+                           finish_create_config_async_success,
                            loop);
     g_main_loop_run (loop);
     g_main_loop_unref (loop);
