@@ -1286,6 +1286,7 @@ ibus_engine_dbus_property_changed (IBusEngine  *engine,
                                             IBUS_INTERFACE_ENGINE,
                                             builder,
                                             NULL));
+    g_variant_builder_unref (builder);
 
     error = NULL;
     connection = ibus_service_get_connection ((IBusService *)engine);

@@ -399,7 +399,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     gchar *dir, *gdir;
     gint len;
     gchar **entries, **p;
-    GVariantBuilder *builder;
+    GVariantBuilder builder;
     gboolean preserve_name;
 
     dir = g_strdup_printf (DCONF_PREFIX"/%s/", section);
@@ -409,7 +409,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     preserve_name = _has_prefixes (gdir, dconf->preserve_name_prefixes);
 
     entries = dconf_client_list (client, gdir, &len);
-    builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
     for (p = entries; *p != NULL; p++) {
         gchar *gkey = g_strconcat (gdir, *p, NULL);
         GVariant *value = dconf_client_read (client, gkey);
@@ -419,7 +419,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
             if (!preserve_name) {
                 name = _from_gsettings_name (*p);
             }
-            g_variant_builder_add (builder, "{sv}", name, value);
+            g_variant_builder_add (&builder, "{sv}", name, value);
             if (name != *p) {
                 g_free (name);
             }
@@ -429,7 +429,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     g_strfreev (entries);
     g_free (gdir);
 
-    return g_variant_builder_end (builder);
+    return g_variant_builder_end (&builder);
 }
 
 static gboolean

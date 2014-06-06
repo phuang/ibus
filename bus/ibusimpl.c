@@ -2033,6 +2033,7 @@ bus_ibus_impl_property_changed (BusIBusImpl *service,
                                             "org.freedesktop.IBus",
                                             builder,
                                             NULL));
+    g_variant_builder_unref (builder);
 
     bus_dbus_impl_dispatch_message_by_rule (BUS_DEFAULT_DBUS, message, NULL);
     g_object_unref (message);

@@ -365,6 +365,7 @@ ibus_component_serialize (IBusComponent   *component,
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
 
     /* serialize engine desc list */
     array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
@@ -372,6 +373,7 @@ ibus_component_serialize (IBusComponent   *component,
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
 
     return TRUE;
 }
