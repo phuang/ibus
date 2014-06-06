@@ -205,6 +205,7 @@ _watch_func (DConfClient         *client,
         if (variant == NULL) {
             /* Use a empty tuple for a unset value */
             variant = g_variant_new_tuple (NULL, 0);
+            g_variant_ref_sink (variant);
         }
 
         gname = strrchr (gkeys[i], '/');
