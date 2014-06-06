@@ -1450,7 +1450,7 @@ _ibus_set_global_engine (BusIBusImpl           *ibus,
         g_dbus_method_invocation_return_error (invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
-                                               "Can not find engine %s.",
+                                               "Cannot find engine %s.",
                                                engine_name);
         return;
     }
@@ -1553,7 +1553,7 @@ _ibus_set_preload_engines (BusIBusImpl     *ibus,
             g_set_error (error,
                          G_DBUS_ERROR,
                          G_DBUS_ERROR_FAILED,
-                         "Can not find engine %s.",
+                         "Cannot find engine %s.",
                          names[i]);
             g_ptr_array_free (array, FALSE);
             return FALSE;

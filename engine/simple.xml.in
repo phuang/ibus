@@ -477,6 +477,18 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
+                <engine>
+                        <name>xkb:pl:qwertz:pol</name>
+                        <language>pol</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>pl</layout>
+                        <layout_variant>qwertz</layout_variant>
+                        <longname>Polish (qwertz)</longname>
+                        <description>Polish (qwertz)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
 		<engine>
 			<name>xkb:pt::por</name>
 			<language>por</language>
