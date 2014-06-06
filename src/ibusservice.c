@@ -620,7 +620,7 @@ ibus_service_class_add_interfaces (IBusServiceClass   *class,
             g_array_append_val (class->interfaces, *p);
             p++;
         }
-        // g_dbus_node_info_unref (introspection_data);
+        g_dbus_node_info_unref (introspection_data);
         return TRUE;
     }
 }
