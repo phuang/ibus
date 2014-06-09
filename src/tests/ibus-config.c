@@ -135,6 +135,7 @@ test_config_set_get (void)
 
 typedef struct {
     GMainLoop *loop;
+    guint timeout_id;
     gchar *section;
     gchar *name;
 } WatchData;
@@ -264,6 +265,7 @@ timeout_cb (gpointer user_data)
 {
     WatchData *data = (WatchData *) user_data;
     g_main_loop_quit (data->loop);
+    data->timeout_id = 0;
     return FALSE;
 }
 
@@ -276,7 +278,6 @@ change_and_test (IBusConfig  *config,
                  WatchData   *data)
 {
     gboolean retval;
-    guint timeout_id;
     GVariant *var;
 
     data->section = NULL;
@@ -294,17 +295,21 @@ change_and_test (IBusConfig  *config,
         g_variant_unref (var);
     }
 
-    timeout_id = g_timeout_add (1, timeout_cb, data);
+    data->timeout_id = g_timeout_add (1, timeout_cb, data);
     g_main_loop_run (data->loop);
-    g_source_remove (timeout_id);
+    if (data->timeout_id != 0) {
+        g_source_remove (data->timeout_id);
+    }
 
     retval = ibus_config_set_value (config, section, name,
                                     g_variant_new_int32 (1));
     g_assert (retval);
 
-    timeout_id = g_timeout_add (1, timeout_cb, data);
+    data->timeout_id = g_timeout_add (1, timeout_cb, data);
     g_main_loop_run (data->loop);
-    g_source_remove (timeout_id);
+    if (data->timeout_id != 0) {
+        g_source_remove (data->timeout_id);
+    }
 
     g_assert_cmpstr (data->section, ==, expected_section);
     g_assert_cmpstr (data->name, ==, expected_name);
