@@ -693,6 +693,14 @@ no_sequence_matches (IBusEngineSimple *simple,
 }
 
 static gboolean
+is_hex_keyval (guint keyval)
+{
+  gunichar ch = ibus_keyval_to_unicode (keyval);
+
+  return g_unichar_isxdigit (ch);
+}
+
+static gboolean
 ibus_engine_simple_process_key_event (IBusEngine *engine,
                                       guint       keyval,
                                       guint       keycode,
@@ -711,9 +719,6 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
     while (priv->compose_buffer[n_compose] != 0)
         n_compose++;
-
-    if (n_compose >= IBUS_MAX_COMPOSE_LEN)
-        return TRUE;
 
     if (modifiers & IBUS_RELEASE_MASK) {
         if (priv->in_hex_sequence &&
@@ -761,7 +766,32 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
                   keyval == IBUS_KEY_KP_Enter);
     is_backspace = keyval == IBUS_KEY_BackSpace;
     is_escape = keyval == IBUS_KEY_Escape;
-    hex_keyval = keyval;
+    hex_keyval = is_hex_keyval (keyval) ? keyval : 0;
+
+    /* gtkimcontextsimple causes a buffer overflow in priv->compose_buffer.
+     * Add the check code here.
+     */
+    if (n_compose >= IBUS_MAX_COMPOSE_LEN) {
+        if (is_backspace) {
+            priv->compose_buffer[--n_compose] = 0;
+        }
+        else if (is_hex_end) {
+            /* invalid hex sequence */
+            // beep_window (event->window);
+            priv->tentative_match = 0;
+            priv->in_hex_sequence = FALSE;
+            priv->compose_buffer[0] = 0;
+        }
+        else if (is_escape) {
+            ibus_engine_simple_reset (engine);
+            return TRUE;
+        }
+
+        if (have_hex_mods)
+            ibus_engine_simple_update_preedit_text (simple);
+
+        return TRUE;
+    }
 
     /* If we are already in a non-hex sequence, or
      * this keystroke is not hex modifiers + hex digit, don't filter
@@ -787,13 +817,12 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     /* Handle backspace */
     if (priv->in_hex_sequence && have_hex_mods && is_backspace) {
         if (n_compose > 0) {
-        n_compose--;
+            n_compose--;
             priv->compose_buffer[n_compose] = 0;
             check_hex (simple, n_compose);
-    }
-        else {
-        priv->in_hex_sequence = FALSE;
-    }
+        } else {
+            priv->in_hex_sequence = FALSE;
+        }
 
         ibus_engine_simple_update_preedit_text (simple);
 
