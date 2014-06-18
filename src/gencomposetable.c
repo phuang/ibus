@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
- * Copyright (C) 2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2013-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  * USA
+ */
+
+/* This tool converts COMPOSE_FILES[] to ibuscompose.h .
+ * To update ibuscompose.h:
+ * # rm ibuscompose.h
+ * # make ibuscompose.h
+ *
+ * If you copy libX11/nls/??/Compose.pre in xorg git HEAD to
+ * /usr/share/X11/locale/??/Compose , need to convert:
+ * # sed -e 's/^XCOMM/#/' -e 's|X11_LOCALEDATADIR|/usr/share/X11/locale|'
+ *   Compose.pre > /usr/share/X11/locale/foo/Compose
  */
 
 #include <glib.h>
@@ -36,8 +47,8 @@
 "/* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */\n"          \
 "/* vim:set et sts=4: */\n"                                                   \
 "/* ibus - The Input Bus\n"                                                   \
-" * Copyright (C) 2013 Peng Huang <shawn.p.huang@gmail.com>\n"                \
-" * Copyright (C) 2013 Takao Fujiwara <takao.fujiwara1@gmail.com>\n"          \
+" * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>\n"           \
+" * Copyright (C) 2013-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>\n"     \
 " *\n"                                                                        \
 " * This library is free software; you can redistribute it and/or\n"          \
 " * modify it under the terms of the GNU Lesser General Public\n"             \
