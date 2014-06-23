@@ -63,6 +63,8 @@ class Panel : IBus.PanelService {
                                                    GLib.str_equal);
     private Gdk.RGBA m_xkb_icon_rgba = Gdk.RGBA(){
             red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0 };
+    private XKBLayout m_xkblayout = new XKBLayout();
+    private bool inited_engines_order = true;
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -267,6 +269,152 @@ class Panel : IBus.PanelService {
         m_keybindings = null;
     }
 
+    /**
+     * panel_get_engines_from_xkb:
+     * @self: #Panel class
+     * @engines: all engines from ibus_bus_list_engines()
+     * @returns: ibus xkb engines
+     *
+     * Made ibus engines from the current XKB keymaps.
+     * This returns only XKB engines whose name start with "xkb:".
+     */
+    private GLib.List<IBus.EngineDesc>
+            get_engines_from_xkb(GLib.List<IBus.EngineDesc> engines) {
+        string layouts;
+        string variants;
+        string option;
+        XKBLayout.get_layout(out layouts, out variants, out option);
+
+        GLib.List<IBus.EngineDesc> xkb_engines =
+                new GLib.List<IBus.EngineDesc>();
+        IBus.EngineDesc us_engine =
+                new IBus.EngineDesc("xkb:us::eng",
+                                    "", "", "", "", "", "", "");
+        string[] layout_array = layouts.split(",");
+        string[] variant_array = variants.split(",");
+
+        for (int i = 0; i < layout_array.length; i++) {
+            string layout = layout_array[i];
+            string variant = null;
+            IBus.EngineDesc current_engine = null;
+
+            if (i < variant_array.length)
+                variant = variant_array[i];
+
+            /* If variants == "", variants.split(",") is { null }.
+             * To meet engine.get_layout_variant(), convert null to ""
+             * here.
+             */
+            if (variant == null)
+                variant = "";
+
+            foreach (unowned IBus.EngineDesc engine in engines) {
+
+                string name = engine.get_name();
+                if (!name.has_prefix("xkb:"))
+                    continue;
+
+                if (engine.get_layout() == layout &&
+                    engine.get_layout_variant() == variant) {
+                    current_engine = engine;
+                    break;
+                }
+            }
+
+            if (current_engine != null) {
+                xkb_engines.append(current_engine);
+            } else if (xkb_engines.find(us_engine) == null) {
+                warning("Fallback %s(%s) to us layout.", layout, variant);
+                xkb_engines.append(us_engine);
+            }
+        }
+
+        if (xkb_engines.length() == 0)
+            warning("Not found IBus XKB engines from the session.");
+
+        return xkb_engines;
+    }
+
+    /**
+     * panel_get_engines_from_locale:
+     * @self: #Panel class
+     * @engines: all engines from ibus_bus_list_engines()
+     * @returns: ibus im engines
+     *
+     * Made ibus engines from the current locale and IBus.EngineDesc.lang .
+     * This returns non-XKB engines whose name does not start "xkb:".
+     */
+    private GLib.List<IBus.EngineDesc>
+            get_engines_from_locale(GLib.List<IBus.EngineDesc> engines) {
+        string locale = Intl.setlocale(LocaleCategory.CTYPE, null);
+
+        if (locale == null)
+            locale = "C";
+
+        string lang = locale.split(".")[0];
+        GLib.List<IBus.EngineDesc> im_engines =
+                new GLib.List<IBus.EngineDesc>();
+
+        foreach (unowned IBus.EngineDesc engine in engines) {
+            string name = engine.get_name();
+
+            if (name.has_prefix("xkb:"))
+                continue;
+
+            if (engine.get_language() == lang &&
+                engine.get_rank() > 0)
+                im_engines.append(engine);
+        }
+
+        if (im_engines.length() == 0) {
+            lang = lang.split("_")[0];
+
+            foreach (unowned IBus.EngineDesc engine in engines) {
+                string name = engine.get_name();
+
+                if (name.has_prefix("xkb:"))
+                    continue;
+
+                if (engine.get_language() == lang &&
+                    engine.get_rank() > 0)
+                    im_engines.append(engine);
+            }
+        }
+
+        if (im_engines.length() == 0)
+            return im_engines;
+
+        im_engines.sort((a, b) => {
+            return (int) b.get_rank() - (int) a.get_rank();
+        });
+
+        return im_engines;
+    }
+
+    private void init_engines_order() {
+        m_xkblayout.set_latin_layouts(
+                m_settings_general.get_strv("xkb-latin-layouts"));
+
+        if (inited_engines_order)
+            return;
+
+        if (m_settings_general.get_strv("preload-engines").length > 0)
+            return;
+
+        GLib.List<IBus.EngineDesc> engines = m_bus.list_engines();
+        GLib.List<IBus.EngineDesc> xkb_engines = get_engines_from_xkb(engines);
+        GLib.List<IBus.EngineDesc> im_engines =
+                get_engines_from_locale(engines);
+
+        string[] names = {};
+        foreach (unowned IBus.EngineDesc engine in xkb_engines)
+            names += engine.get_name();
+        foreach (unowned IBus.EngineDesc engine in im_engines)
+            names += engine.get_name();
+
+        m_settings_general.set_strv("preload-engines", names);
+    }
+
     private void set_custom_font() {
         Gdk.Display display = Gdk.Display.get_default();
         Gdk.Screen screen = (display != null) ?
@@ -467,13 +615,19 @@ class Panel : IBus.PanelService {
 #endif
     }
 
+    private void update_version_1_5_8() {
+        inited_engines_order = false;
+    }
+
     private void set_version() {
         string prev_version = m_settings_general.get_string("version");
         string current_version = null;
 
-        if (compare_versions(prev_version, "1.5.3") < 0) {
+        if (compare_versions(prev_version, "1.5.3") < 0)
             update_version_1_5_3();
-        }
+
+        if (compare_versions(prev_version, "1.5.8") < 0)
+            update_version_1_5_8();
 
         current_version = "%d.%d.%d".printf(IBus.MAJOR_VERSION,
                                             IBus.MINOR_VERSION,
@@ -487,6 +641,10 @@ class Panel : IBus.PanelService {
     }
 
     public void load_settings() {
+        set_version();
+
+        init_engines_order();
+
         // Update m_use_system_keyboard_layout before update_engines()
         // is called.
         set_use_system_keyboard_layout();
@@ -504,53 +662,6 @@ class Panel : IBus.PanelService {
         set_timeout_property_panel();
         set_follow_input_cursor_when_always_shown_property_panel();
         set_xkb_icon_rgba();
-
-        set_version();
-    }
-
-    private void exec_setxkbmap(IBus.EngineDesc engine) {
-        string layout = engine.get_layout();
-        string variant = engine.get_layout_variant();
-        string option = engine.get_layout_option();
-        string standard_error = null;
-        int exit_status = 0;
-        string[] args = { "setxkbmap" };
-
-        if (layout != null && layout != "" && layout != "default") {
-            args += "-layout";
-            args += layout;
-        }
-        if (variant != null && variant != "" && variant != "default") {
-            args += "-variant";
-            args += variant;
-        }
-        if (option != null && option != "" && option != "default") {
-            /*TODO: Need to get the session XKB options */
-            args += "-option";
-            args += "-option";
-            args += option;
-        }
-
-        if (args.length == 1) {
-            return;
-        }
-
-        try {
-            if (!GLib.Process.spawn_sync(null, args, null,
-                                         GLib.SpawnFlags.SEARCH_PATH,
-                                         null, null,
-                                         out standard_error,
-                                         out exit_status)) {
-                warning("Switch xkb layout to %s failed.",
-                        engine.get_layout());
-            }
-        } catch (GLib.SpawnError e) {
-            warning("Execute setxkbmap failed: %s", e.message);
-        }
-
-        if (exit_status != 0) {
-            warning("Execute setxkbmap failed: %s", standard_error ?? "(null)");
-        }
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {
@@ -573,7 +684,7 @@ class Panel : IBus.PanelService {
 
         // set xkb layout
         if (!m_use_system_keyboard_layout)
-            exec_setxkbmap(engine);
+            m_xkblayout.set_layout(engine);
 
         engine_contexts_insert(engine);
     }

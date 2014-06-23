@@ -56,6 +56,20 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/xkb-latin-layouts</key>
+      <applyto>/desktop/ibus/general/xkb-latin-layouts</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[ara,bg,cz,dev,gr,gur,in,jp(kana),mal,mkd,ru,ua]</default>
+      <locale name="C">
+        <short>Latin layouts which have no ASCII</short>
+           <long>US layout is appended to the latin layouts. variant can be
+                 omitted.
+           </long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>

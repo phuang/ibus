@@ -109,6 +109,7 @@ ibus_ui_gtk3_SOURCES = \
 	propertypanel.vala \
 	separator.vala \
 	switcher.vala \
+	xkblayout.vala \
 	$(NULL)
 
 ibus_ui_gtk3_LDADD = \
