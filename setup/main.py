@@ -274,7 +274,7 @@ class Setup(object):
         if prop.name not in ("active-engine", "engines"):
             return
 
-        engines = self.__treeview.get_engines()
+        engines = self.__treeview.get_sorted_engines()
         engine = self.__treeview.get_active_engine()
 
         self.__builder.get_object("button_engine_remove").set_sensitive(engine != None)
@@ -289,6 +289,7 @@ class Setup(object):
             obj.set_sensitive(False)
 
         if prop.name == "engines":
+            engines = self.__treeview.get_engines()
             engine_names = [e.get_name() for e in engines]
             self.__settings_general.set_strv('preload-engines', engine_names)
 

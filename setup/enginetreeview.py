@@ -47,7 +47,7 @@ class EngineTreeView(Gtk.TreeView):
     def __init__(self):
         super(EngineTreeView, self).__init__()
 
-        self.__engines = set([])
+        self.__engines = []
         self.__changed = False
 
         # self.set_headers_visible(True)
@@ -186,13 +186,13 @@ class EngineTreeView(Gtk.TreeView):
 
     def set_engines(self, engines):
         self.__model.clear()
-        self.__engines = set([])
+        self.__engines = []
         for e in engines:
             if e in self.__engines:
                 continue
             it = self.__model.append(None)
             self.__model.set(it, 0, e)
-            self.__engines.add(e)
+            self.__engines.append(e)
         self.__emit_changed()
 
     def get_selected_iter(self):
@@ -201,6 +201,9 @@ class EngineTreeView(Gtk.TreeView):
             return selection.get_selected()[1]
 
     def get_engines(self):
+        return self.__engines
+
+    def get_sorted_engines(self):
         return self.get_property("engines")
 
     def get_active_engine(self):
@@ -211,7 +214,7 @@ class EngineTreeView(Gtk.TreeView):
             return
         it = self.__model.prepend(None)
         self.__model.set(it, 0, engine)
-        self.__engines.add(engine)
+        self.__engines = [engine] + self.__engines
         self.scroll_to_cell(self.__model[0].path, None)
 
     def append_engine(self, engine):
@@ -219,7 +222,7 @@ class EngineTreeView(Gtk.TreeView):
             return
         it = self.__model.append(None)
         self.__model.set(it, 0, engine)
-        self.__engines.add(engine)
+        self.__engines.append(engine)
         self.scroll_to_cell(self.__model[-1].path, None)
 
     def remove_engine(self):
