@@ -70,6 +70,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/use-xmodmap</key>
+      <applyto>/desktop/ibus/general/use-xmodmap</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Use xmodmap</short>
+          <long>Run xmodmap if .xmodmap or .Xmodmap exists when
+                ibus engines are switched.</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/trigger</key>
       <applyto>/desktop/ibus/general/hotkey/trigger</applyto>
       <owner>ibus</owner>

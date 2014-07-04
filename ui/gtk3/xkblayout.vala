@@ -27,10 +27,14 @@ class XKBLayout
     private const string XKB_COMMAND = "setxkbmap";
     private const string XKB_QUERY_ARG = "-query";
     private const string XKB_LAYOUT_ARG = "-layout";
+    private const string XMODMAP_COMMAND = "xmodmap";
+    private const string[] XMODMAP_KNOWN_FILES = {".xmodmap", ".xmodmaprc",
+                                                  ".Xmodmap", ".Xmodmaprc"};
     private string[] m_xkb_latin_layouts = {};
     private string m_default_layout = "";
     private string m_default_variant = "";
     private string m_default_option = "";
+    private bool m_use_xmodmap = true;
 
     public XKBLayout() {
     }
@@ -198,5 +202,51 @@ class XKBLayout
         if (exit_status != 0)
             warning("Execute setxkbmap failed: %s",
                     standard_error ?? "(null)");
+
+        run_xmodmap();
+    }
+
+    public void run_xmodmap() {
+        if (!m_use_xmodmap) {
+            return;
+        }
+
+        string homedir = GLib.Environment.get_home_dir();
+        foreach (string xmodmap_file in XMODMAP_KNOWN_FILES) {
+            string xmodmap_filepath = GLib.Path.build_filename(homedir,
+                                                               xmodmap_file);
+
+            if (!GLib.FileUtils.test(xmodmap_filepath, GLib.FileTest.EXISTS)) {
+                continue;
+            }
+
+            string[] args = {XMODMAP_COMMAND, xmodmap_filepath};
+
+            /* Call async here because if both setxkbmap and xmodmap is
+             * sync, it seems a DBus timeout happens and xmodmap causes
+             * a loop for a while and users would think panel icon is
+             * frozen in case the global engine mode is disabled.
+             *
+             * Do not return here even if the previous async is running
+             * so that all xmodmap can be done after setxkbmap is called.
+             */
+            try {
+                GLib.Process.spawn_async(null,
+                                         args,
+                                         null,
+                                         GLib.SpawnFlags.SEARCH_PATH,
+                                         null,
+                                         null);
+            } catch (GLib.SpawnError e) {
+                warning("Execute xmodmap is failed: %s\n", e.message);
+                return;
+            }
+
+            break;
+        }
+    }
+
+    public void set_use_xmodmap(bool use_xmodmap) {
+        m_use_xmodmap = use_xmodmap;
     }
 }

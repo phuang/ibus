@@ -145,6 +145,10 @@ class Panel : IBus.PanelService {
                 set_use_global_engine();
         });
 
+        m_settings_general.changed["use-xmodmap"].connect((key) => {
+                set_use_xmodmap();
+        });
+
         m_settings_hotkey.changed["triggers"].connect((key) => {
                 unbind_switch_shortcut();
                 bind_switch_shortcut();
@@ -491,6 +495,11 @@ class Panel : IBus.PanelService {
                 m_settings_general.get_boolean("use-global-engine");
     }
 
+    private void set_use_xmodmap() {
+        m_xkblayout.set_use_xmodmap(
+                m_settings_general.get_boolean("use-xmodmap"));
+    }
+
     private void set_show_icon_on_systray() {
         if (m_status_icon == null)
             return;
@@ -649,6 +658,7 @@ class Panel : IBus.PanelService {
         // is called.
         set_use_system_keyboard_layout();
         set_use_global_engine();
+        set_use_xmodmap();
         update_engines(m_settings_general.get_strv("preload-engines"),
                        m_settings_general.get_strv("engines-order"));
         unbind_switch_shortcut();
