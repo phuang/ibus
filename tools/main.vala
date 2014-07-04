@@ -20,6 +20,12 @@
  * USA
  */
 
+private const string[] IBUS_SCHEMAS = {
+    "org.freedesktop.ibus.general",
+    "org.freedesktop.ibus.general.hotkey",
+    "org.freedesktop.ibus.panel",
+};
+
 bool name_only = false;
 /* system() exists as a public API. */
 bool is_system = false;
@@ -276,6 +282,44 @@ int print_address(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+int read_config(string[] argv) {
+    var output = new GLib.StringBuilder();
+
+    foreach (string schema in IBUS_SCHEMAS) {
+        GLib.Settings settings = new GLib.Settings(schema);
+
+        output.append_printf("SCHEMA: %s\n", schema);
+
+        foreach (string key in settings.list_keys()) {
+            GLib.Variant variant = settings.get_value(key);
+            output.append_printf("  %s: %s\n", key, variant.print(true));
+        }
+    }
+    print("%s", output.str);
+
+    return Posix.EXIT_SUCCESS;
+}
+
+int reset_config(string[] argv) {
+    print("%s\n", _("Resetting…"));
+
+    foreach (string schema in IBUS_SCHEMAS) {
+        GLib.Settings settings = new GLib.Settings(schema);
+
+        print("SCHEMA: %s\n", schema);
+
+        foreach (string key in settings.list_keys()) {
+            print("  %s\n", key);
+            settings.reset(key);
+        }
+    }
+
+    GLib.Settings.sync();
+    print("%s\n", _("Done"));
+
+    return Posix.EXIT_SUCCESS;
+}
+
 int print_help(string[] argv) {
     print_usage(stdout);
     return Posix.EXIT_SUCCESS;
@@ -299,6 +343,8 @@ static const CommandEntry commands[]  = {
     { "read-cache", N_("Show the content of registry cache"), read_cache },
     { "write-cache", N_("Create registry cache"), write_cache },
     { "address", N_("Print the D-Bus address of ibus-daemon"), print_address },
+    { "read-config", N_("Show the configuration values"), read_config },
+    { "reset-config", N_("Reset the configuration values"), reset_config },
     { "help", N_("Show this information"), print_help }
 };
 
@@ -308,7 +354,7 @@ void print_usage(FileStream stream) {
     stream.printf(_("Usage: %s COMMAND [OPTION...]\n\n"), program_name);
     stream.printf(_("Commands:\n"));
     for (int i = 0; i < commands.length; i++) {
-        stream.printf("  %-11s    %s\n",
+        stream.printf("  %-12s    %s\n",
                       commands[i].name,
                       GLib.dgettext(null, commands[i].description));
     }
