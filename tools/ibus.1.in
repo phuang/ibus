@@ -85,6 +85,13 @@ directories, separated by ':'.
 \fBaddress\fR
 Show the D-Bus address of ibus-daemon.
 .TP
+\fBread\-config\fR
+Print the setting values in a gsettings configuration file.
+.TP
+\fBreset\-config\fR
+Reset the user setting values to the default ones in a gsettings
+configuration file.
+.TP
 \fBwatch\fR
 Under construction.
 .TP
