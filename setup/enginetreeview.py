@@ -128,12 +128,25 @@ class EngineTreeView(Gtk.TreeView):
     def __icon_cell_data_cb(self, celllayout, renderer, model, it, data):
         engine = self.__model.get_value(it, 0)
 
+        # When append_engine() is called, self.__model.append(None)
+        # is called internally and engine == None could happen in
+        # a slow system.
+        if engine == None:
+            return
+
         icon_size = Gtk.icon_size_lookup(Gtk.IconSize.LARGE_TOOLBAR)[0]
         pixbuf = load_icon(engine.get_icon(), Gtk.IconSize.LARGE_TOOLBAR)
         renderer.set_property("pixbuf", pixbuf)
 
     def __name_cell_data_cb(self, celllayout, renderer, model, it, data):
         engine = self.__model.get_value(it, 0)
+
+        # When append_engine() is called, self.__model.append(None)
+        # is called internally and engine == None could happen in
+        # a slow system.
+        if engine == None:
+            return
+
         renderer.set_property("sensitive", True)
         language = IBus.get_language_name(engine.get_language())
         renderer.set_property("text",
@@ -215,7 +228,6 @@ class EngineTreeView(Gtk.TreeView):
         it = self.__model.prepend(None)
         self.__model.set(it, 0, engine)
         self.__engines = [engine] + self.__engines
-        self.scroll_to_cell(self.__model[0].path, None)
 
     def append_engine(self, engine):
         if engine == None or engine in self.__engines:
@@ -223,7 +235,6 @@ class EngineTreeView(Gtk.TreeView):
         it = self.__model.append(None)
         self.__model.set(it, 0, engine)
         self.__engines.append(engine)
-        self.scroll_to_cell(self.__model[-1].path, None)
 
     def remove_engine(self):
         it = self.get_selected_iter()
