@@ -28,6 +28,7 @@ import signal
 import sys
 import time
 
+from gi.repository import GdkX11
 from gi.repository import Gio
 from gi.repository import GLib
 from gi.repository import Gtk
@@ -233,6 +234,7 @@ class Setup(object):
         # add icon search path
         self.__window = self.__builder.get_object("window_preferences")
         self.__window.connect("delete-event", Gtk.main_quit)
+        self.__window.connect("notify::window", self.__gdk_window_set_cb)
 
         self.__button_close = self.__builder.get_object("button_close")
         self.__button_close.connect("clicked", Gtk.main_quit)
@@ -247,6 +249,10 @@ class Setup(object):
         self.__init_hotkey()
         self.__init_panel()
         self.__init_general()
+
+    def __gdk_window_set_cb(self, object, pspec):
+        str = '%u' % GdkX11.X11Window.get_xid(object.get_window())
+        GLib.setenv('IBUS_SETUP_XID', str, True)
 
     def __combobox_notify_active_engine_cb(self, combobox, property):
         engine = self.__combobox.get_active_engine()
