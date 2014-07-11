@@ -29,12 +29,14 @@ from gi.repository import Pango
 from i18n import _, N_
 
 class EngineAbout(Gtk.Dialog):
-    def __init__(self, enginedesc):
-        self.__engine_desc = enginedesc
-        super(EngineAbout, self).__init__(_("About"), None,
-                Gtk.DialogFlags.MODAL,
-                (_("_Close"), Gtk.ResponseType.CLOSE))
+    def __init__(self, engine, transient_for = None):
+        self.__engine_desc = engine
+        super(EngineAbout, self).__init__(
+                title = _("About"),
+                transient_for = transient_for)
 
+        buttons = (_("_Close"), Gtk.ResponseType.CLOSE)
+        self.add_buttons(*buttons)
         self.__init_ui()
 
     def __init_ui(self):

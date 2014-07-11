@@ -49,7 +49,8 @@ class KeyboardShortcutSelection(Gtk.Box):
         # self.pack_start(label, False, True, 4)
 
         # shortcuts view
-        self.__shortcut_view = Gtk.TreeView(Gtk.ListStore(GObject.TYPE_STRING))
+        self.__shortcut_view = Gtk.TreeView(
+                model = Gtk.ListStore(GObject.TYPE_STRING))
         self.__shortcut_view.set_size_request(-1, 100)
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Keyboard shortcuts"), renderer, text = 0)
@@ -63,7 +64,7 @@ class KeyboardShortcutSelection(Gtk.Box):
 
         # key code
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        label = Gtk.Label(_("Key code:"))
+        label = Gtk.Label(label = _("Key code:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
         hbox.pack_start(label, False, True, 4)
@@ -71,19 +72,19 @@ class KeyboardShortcutSelection(Gtk.Box):
         self.__keycode_entry = Gtk.Entry()
         self.__keycode_entry.connect("notify::text", self.__keycode_entry_notify_cb)
         hbox.pack_start(self.__keycode_entry, True, True, 4)
-        self.__keycode_button = Gtk.Button("...")
+        self.__keycode_button = Gtk.Button(label = "...")
         self.__keycode_button.connect("clicked", self.__keycode_button_clicked_cb)
         hbox.pack_start(self.__keycode_button, False, True, 4)
         self.pack_start(hbox, False, True, 4)
 
         # modifiers
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        label = Gtk.Label(_("Modifiers:"))
+        label = Gtk.Label(label = _("Modifiers:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0.0, 0.5)
         hbox.pack_start(label, False, True, 4)
 
-        table = Gtk.Table(4, 2)
+        table = Gtk.Table(n_rows = 4, n_columns = 2)
         self.__modifier_buttons = []
         self.__modifier_buttons.append(("Control",
                                         Gtk.CheckButton.new_with_mnemonic("_Control"),
@@ -250,8 +251,10 @@ class KeyboardShortcutSelection(Gtk.Box):
 
     def __keycode_button_clicked_cb(self, button):
         out = []
-        dlg = Gtk.MessageDialog(parent = self.get_toplevel(), buttons = Gtk.ButtonsType.CLOSE)
-        message = _("Please press a key (or a key combination).\nThe dialog will be closed when the key is released.")
+        dlg = Gtk.MessageDialog(transient_for = self.get_toplevel(),
+                                buttons = Gtk.ButtonsType.CLOSE)
+        message = _("Please press a key (or a key combination).\n" \
+                    "The dialog will be closed when the key is released.")
         dlg.set_markup(message)
         dlg.set_title(_("Please press a key (or a key combination)"))
         sw = Gtk.ScrolledWindow()
@@ -265,7 +268,7 @@ class KeyboardShortcutSelection(Gtk.Box):
         model = Gtk.ListStore(GObject.TYPE_INT,
                               GObject.TYPE_UINT,
                               GObject.TYPE_UINT)
-        accel_view = Gtk.TreeView(model)
+        accel_view = Gtk.TreeView(model = model)
         sw.add(accel_view)
         column = Gtk.TreeViewColumn()
         renderer = Gtk.CellRendererAccel(accel_mode=Gtk.CellRendererAccelMode.OTHER,
@@ -315,8 +318,9 @@ class KeyboardShortcutSelection(Gtk.Box):
         self.__apply_button.set_sensitive(False)
 
 class KeyboardShortcutSelectionDialog(Gtk.Dialog):
-    def __init__(self, title = None, parent = None, flags = 0, buttons = None):
-        super(KeyboardShortcutSelectionDialog, self).__init__(title, parent, flags, buttons)
+    def __init__(self, title = None, transient_for = None, flags = 0):
+        super(KeyboardShortcutSelectionDialog, self).__init__(
+                title = title, transient_for = transient_for, flags = flags)
         self.__selection_view = KeyboardShortcutSelection()
         self.vbox.pack_start(self.__selection_view, False, True, 0)
         self.vbox.show_all()
@@ -333,10 +337,10 @@ class KeyboardShortcutSelectionDialog(Gtk.Dialog):
 
 
 if __name__ == "__main__":
-    dlg = KeyboardShortcutSelectionDialog(
-        title = "Select test",
-        buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
-                   _("_OK"), Gtk.ResponseType.OK))
+    dlg = KeyboardShortcutSelectionDialog(title = "Select test")
+    buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
+               _("_OK"), Gtk.ResponseType.OK)
+    dlg.add_buttons(buttons)
     dlg.add_shortcut("Control+Shift+space")
     dlg.set_shortcuts(None)
     print((dlg.run()))

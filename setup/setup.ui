@@ -62,6 +62,8 @@
     <property name="resizable">False</property>
     <property name="window_position">center-always</property>
     <property name="icon_name">ibus-setup</property>
+    <!-- for GtkFontChooserDialog -->
+    <property name="modal">True</property>
     <child>
       <object class="GtkBox" id="vbox1">
         <property name="orientation">vertical</property>

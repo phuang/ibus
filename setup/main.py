@@ -70,10 +70,12 @@ class Setup(object):
     def __init__(self):
         super(Setup, self).__init__()
 
-        self.__settings_general = Gio.Settings("org.freedesktop.ibus.general");
+        self.__settings_general = Gio.Settings(
+                schema = "org.freedesktop.ibus.general");
         self.__settings_hotkey = Gio.Settings(
-                "org.freedesktop.ibus.general.hotkey");
-        self.__settings_panel = Gio.Settings("org.freedesktop.ibus.panel");
+                schema = "org.freedesktop.ibus.general.hotkey");
+        self.__settings_panel = Gio.Settings(
+                schema = "org.freedesktop.ibus.panel");
 
         # IBus.Bus() calls ibus_bus_new().
         # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
@@ -300,7 +302,7 @@ class Setup(object):
     def __button_engine_about_cb(self, button):
         engine = self.__treeview.get_active_engine()
         if engine:
-            about = EngineAbout(engine)
+            about = EngineAbout(engine = engine, transient_for = self.__window)
             about.run()
             about.destroy()
 
@@ -328,7 +330,7 @@ class Setup(object):
             return
 
         message = _("The IBus daemon is not running. Do you wish to start it?")
-        dlg = Gtk.MessageDialog(type = Gtk.MessageType.QUESTION,
+        dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.QUESTION,
                                 buttons = Gtk.ButtonsType.YES_NO,
                                 text = message)
         id = dlg.run()
@@ -354,7 +356,7 @@ class Setup(object):
                 "  export XMODIFIERS=@im=ibus\n"
                 "  export QT_IM_MODULE=ibus"
                 )
-            dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
+            dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
                                     text = message)
             id = dlg.run()
@@ -363,7 +365,7 @@ class Setup(object):
         else:
             # Translators: %d == 5 currently
             message = _("IBus daemon could not be started in %d seconds")
-            dlg = Gtk.MessageDialog(type = Gtk.MessageType.INFO,
+            dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
                                     text = message % timeout)
             id = dlg.run()
@@ -378,7 +380,9 @@ class Setup(object):
         # Translators: Title of the window
         title2 = _("switching input methods")
         title = title1 % title2
-        dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(buttons = buttons, title = title)
+        dialog = keyboardshortcut.KeyboardShortcutSelectionDialog(
+                title = title, transient_for = self.__window)
+        dialog.add_buttons(*buttons)
         text = entry.get_text()
         if text:
             shortcuts = text.split("; ")
@@ -409,9 +413,10 @@ class Setup(object):
             try:
                 self.__bus.register_start_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception as e:
-                dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
+                dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.ERROR,
+                        transient_for = self.__window,
                         buttons = Gtk.ButtonsType.CLOSE,
-                        message_format = str(e))
+                        text = str(e))
                 dlg.run()
                 dlg.destroy()
                 self.__flush_gtk_events()
@@ -420,9 +425,10 @@ class Setup(object):
             try:
                 self.__bus.register_stop_engine(data[DATA_LANG], data[DATA_NAME])
             except Exception as e:
-                dlg = Gtk.MessageDialog(type = Gtk.MessageType.ERROR,
+                dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.ERROR,
+                        transient_for = self.__window,
                         buttons = Gtk.ButtonsType.CLOSE,
-                        message_format = str(e))
+                        text = str(e))
                 dlg.run()
                 dlg.destroy()
                 self.__flush_gtk_events()
