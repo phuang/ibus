@@ -28,9 +28,13 @@ import signal
 import sys
 import time
 
+from gi.repository import GLib
+# set_prgname before importing other modules to show the name in warning
+# messages when import modules are failed.
+GLib.set_prgname('ibus-setup')
+
 from gi.repository import GdkX11
 from gi.repository import Gio
-from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import IBus
 from os import path
