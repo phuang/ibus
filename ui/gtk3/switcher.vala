@@ -29,19 +29,20 @@ class Switcher : Gtk.Window {
 
             this.longname = engine.get_longname();
 
-            Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
-            add(align);
-
             var name = engine.get_name();
 
             if (name.length < 4 || name[0:4] != "xkb:") {
                 IconWidget icon = new IconWidget(engine.get_icon(),
                                                  Gtk.IconSize.DIALOG);
-                align.add(icon);
+                icon.set_halign(Gtk.Align.CENTER);
+                icon.set_valign(Gtk.Align.CENTER);
+                add(icon);
             } else {
                 var symbol = switcher.get_xkb_symbol(engine);
 
                 Gtk.Label label = new Gtk.Label(symbol);
+                label.set_halign(Gtk.Align.CENTER);
+                label.set_valign(Gtk.Align.CENTER);
                 string symbol_font = "Monospace Bold 16";
                 string markup = "<span font=\"%s\">%s</span>".
                         printf(symbol_font, symbol);
@@ -54,7 +55,7 @@ class Switcher : Gtk.Window {
                                      out fixed_height);
                 label.set_size_request(fixed_width, fixed_height);
 
-                align.add(label);
+                add(label);
             }
         }
 
@@ -104,10 +105,10 @@ class Switcher : Gtk.Window {
         );
         Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(vbox);
-        Gtk.Alignment align = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
-        vbox.pack_start(align, true, true, 0);
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        align.add(m_box);
+        m_box.set_halign(Gtk.Align.CENTER);
+        m_box.set_valign(Gtk.Align.CENTER);
+        vbox.pack_start(m_box, true, true, 0);
         m_label = new Gtk.Label("");
 
         /* Set the accessible role of the label to a status bar so it
@@ -117,6 +118,8 @@ class Switcher : Gtk.Window {
         Atk.Object obj = m_label.get_accessible();
         obj.set_role (Atk.Role.STATUSBAR);
 
+        /* Use Gtk.Widget.set_margin_start() and
+         * Gtk.Widget.set_margin_top() since gtk 3.12 */
         m_label.set_padding(3, 3);
         vbox.pack_end(m_label, false, false, 0);
 

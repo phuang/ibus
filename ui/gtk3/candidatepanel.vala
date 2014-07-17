@@ -212,13 +212,17 @@ public class CandidatePanel : Gtk.Box{
     private void create_ui() {
         m_preedit_label = new Gtk.Label(null);
         m_preedit_label.set_size_request(20, -1);
-        m_preedit_label.set_alignment(0.0f, 0.5f);
+        m_preedit_label.set_halign(Gtk.Align.START);
+        m_preedit_label.set_valign(Gtk.Align.CENTER);
+        /* Use Gtk.Widget.set_margin_start() since gtk 3.12 */
         m_preedit_label.set_padding(8, 0);
         m_preedit_label.set_no_show_all(true);
 
         m_aux_label = new Gtk.Label(null);
         m_aux_label.set_size_request(20, -1);
-        m_aux_label.set_alignment(0.0f, 0.5f);
+        m_aux_label.set_halign(Gtk.Align.START);
+        m_aux_label.set_valign(Gtk.Align.CENTER);
+        /* Use Gtk.Widget.set_margin_start() since gtk 3.12 */
         m_aux_label.set_padding(8, 0);
         m_aux_label.set_no_show_all(true);
 

@@ -180,17 +180,20 @@ class CandidateArea : Gtk.Box {
             m_widgets = {};
             for (int i = 0; i < 16; i++) {
                 Gtk.Label label = new Gtk.Label(LABELS[i]);
-                label.set_alignment(0.0f, 0.5f);
+                label.set_halign(Gtk.Align.START);
+                label.set_valign(Gtk.Align.CENTER);
                 label.show();
                 m_labels += label;
 
                 Gtk.Label candidate = new Gtk.Label("test");
-                candidate.set_alignment(0.0f, 0.5f);
+                candidate.set_halign(Gtk.Align.START);
+                candidate.set_valign(Gtk.Align.CENTER);
                 candidate.show();
                 m_candidates += candidate;
 
-                label.set_property("xpad", 8);
-                candidate.set_property("xpad", 8);
+                /* Use Gtk.Widget.set_margin_start() since gtk 3.12 */
+                label.set_padding(8, 0);
+                candidate.set_padding(8, 0);
 
                 // Make a copy of i to workaround a bug in vala.
                 // https://bugzilla.gnome.org/show_bug.cgi?id=628336
@@ -224,12 +227,14 @@ class CandidateArea : Gtk.Box {
             m_widgets = {};
             for (int i = 0; i < 16; i++) {
                 Gtk.Label label = new Gtk.Label(LABELS[i]);
-                label.set_alignment(0.0f, 0.5f);
+                label.set_halign(Gtk.Align.START);
+                label.set_valign(Gtk.Align.CENTER);
                 label.show();
                 m_labels += label;
 
                 Gtk.Label candidate = new Gtk.Label("test");
-                candidate.set_alignment(0.0f, 0.5f);
+                candidate.set_halign(Gtk.Align.START);
+                candidate.set_valign(Gtk.Align.CENTER);
                 candidate.show();
                 m_candidates += candidate;
 

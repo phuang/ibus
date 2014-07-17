@@ -323,9 +323,14 @@ public class PropertyPanel : Gtk.Box {
         int ws_num = 0;
 
         unowned Gdk.Display display = root.get_display();
+#if VALA_0_24
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+        X.Window xwindow = (root as Gdk.X11.Window).get_xid();
+#else
         unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
         X.Window xwindow = Gdk.X11Window.get_xid(root);
-
+#endif
         X.Atom _net_current_desktop =
                 xdisplay.intern_atom("_NET_CURRENT_DESKTOP", false);
         X.Atom type = X.None;

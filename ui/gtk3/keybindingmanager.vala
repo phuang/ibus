@@ -74,7 +74,11 @@ public class KeybindingManager : GLib.Object {
     public bool bind(uint keysym,
                      Gdk.ModifierType modifiers,
                      KeybindingHandlerFunc handler) {
+#if VALA_0_24
+        unowned X.Display display = Gdk.X11.get_default_xdisplay();
+#else
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
+#endif
 
         int keycode = display.keysym_to_keycode(keysym);
 
@@ -240,7 +244,12 @@ public class KeybindingManager : GLib.Object {
     }
 
     bool grab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+#if VALA_0_24
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+#else
         unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+#endif
         int keycode = xdisplay.keysym_to_keycode(keyval);
         if (keycode == 0) {
             warning("Can not convert keyval=%u to keycode!", keyval);
@@ -268,7 +277,12 @@ public class KeybindingManager : GLib.Object {
     }
 
     bool ungrab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+#if VALA_0_24
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+#else
         unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+#endif
         int keycode = xdisplay.keysym_to_keycode(keyval);
         if (keycode == 0) {
             warning("Can not convert keyval=%u to keycode!", keyval);
