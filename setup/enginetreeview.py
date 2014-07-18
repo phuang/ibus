@@ -151,11 +151,7 @@ class EngineTreeView(Gtk.TreeView):
         language = IBus.get_language_name(engine.get_language())
         renderer.set_property("text",
                 "%s - %s" % (language, engine.get_longname()))
-        if self.__model.get_path(it).get_indices()[0] == 0:
-            # default engine
-            renderer.set_property("weight", Pango.Weight.BOLD)
-        else:
-            renderer.set_property("weight", Pango.Weight.NORMAL)
+        renderer.set_property("weight", Pango.Weight.NORMAL)
 
     def __layout_cell_data_cb(self, celllayout, renderer, model, it, data):
         engine = self.__model.get_value(it, 0)
@@ -164,11 +160,7 @@ class EngineTreeView(Gtk.TreeView):
         if not layout:
             layout = engine.layout
         renderer.set_property("text", layout)
-        if self.__model.get_path(it).get_indices()[0] == 0:
-            #default engine
-            renderer.set_property("weight", Pango.Weight.BOLD)
-        else:
-            renderer.set_property("weight", Pango.Weight.NORMAL)
+        renderer.set_property("weight", Pango.Weight.NORMAL)
 
     def __engine_layout_changed_cb(self, combo, path, it):
         return

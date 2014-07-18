@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@ ibussetup_PYTHON = \
 	i18n.py \
 	icon.py \
 	enginecombobox.py \
+	enginedialog.py \
 	enginetreeview.py \
 	engineabout.py \
 	keyboardshortcut.py \

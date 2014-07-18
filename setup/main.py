@@ -42,6 +42,7 @@ from os import path
 import keyboardshortcut
 import locale
 from enginecombobox import EngineComboBox
+from enginedialog import EngineDialog
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
 from i18n import DOMAINNAME, _, N_, init as i18n_init
@@ -90,6 +91,9 @@ class Setup(object):
         # finish function.
         self.__bus = None
         self.__init_bus()
+
+        # Gtk.ListBox has been available since gtk 3.10
+        self.__has_list_box = hasattr(Gtk, 'ListBox')
 
         gtk_builder_file = path.join(path.dirname(__file__), "./setup.ui")
         self.__builder = Gtk.Builder()
@@ -200,7 +204,11 @@ class Setup(object):
         # init engine page
         self.__engines = self.__bus.list_engines()
         self.__combobox = self.__builder.get_object("combobox_engines")
-        self.__combobox.set_engines(self.__engines)
+        if self.__has_list_box:
+            self.__combobox.set_no_show_all(True)
+            self.__combobox.hide()
+        else:
+            self.__combobox.set_engines(self.__engines)
 
         tmp_dict = {}
         for e in self.__engines:
@@ -212,7 +220,11 @@ class Setup(object):
         self.__treeview.set_engines(engines)
 
         button = self.__builder.get_object("button_engine_add")
-        button.connect("clicked", self.__button_engine_add_cb)
+        if self.__has_list_box:
+            button.set_sensitive(True)
+            button.connect("clicked", self.__button_engine_add_cb)
+        else:
+            button.connect("clicked", self.__button_engine_add_cb_deprecate)
         button = self.__builder.get_object("button_engine_remove")
         button.connect("clicked", lambda *args:self.__treeview.remove_engine())
         button = self.__builder.get_object("button_engine_up")
@@ -306,6 +318,20 @@ class Setup(object):
             self.__settings_general.set_strv('preload-engines', engine_names)
 
     def __button_engine_add_cb(self, button):
+        dialog = EngineDialog(transient_for = self.__window)
+        dialog.set_engines(self.__engines)
+        id = dialog.run()
+
+        if id != Gtk.ResponseType.APPLY:
+            dialog.destroy()
+            return
+
+        engine = dialog.get_selected_engine()
+        dialog.destroy()
+
+        self.__treeview.append_engine(engine)
+
+    def __button_engine_add_cb_deprecate(self, button):
         engine = self.__combobox.get_active_engine()
         self.__treeview.append_engine(engine)
 

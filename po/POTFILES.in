@@ -33,6 +33,7 @@ ibus/property.py
 ibus/utility.py
 setup/engineabout.py
 setup/enginecombobox.py
+setup/enginedialog.py
 setup/enginetreeview.py
 setup/ibus-setup.desktop.in
 setup/keyboardshortcut.py
