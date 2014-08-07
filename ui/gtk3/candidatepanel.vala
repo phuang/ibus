@@ -110,6 +110,25 @@ public class CandidatePanel : Gtk.Box{
         m_candidate_area.set_labels(labels);
     }
 
+    private void set_attributes(Gtk.Label label, IBus.Text text) {
+        Pango.AttrList attrs = get_pango_attr_list_from_ibus_text(text);
+
+        Gtk.StyleContext context = label.get_style_context();
+        Gdk.RGBA color;
+
+        if (context.lookup_color("placeholder_text_color", out color)) {
+            Pango.Attribute pango_attr = Pango.attr_foreground_new(
+                        (uint16)(color.red * uint16.MAX),
+                        (uint16)(color.green * uint16.MAX),
+                        (uint16)(color.blue * uint16.MAX));
+            pango_attr.start_index = 0;
+            pango_attr.end_index = label.get_text().length;
+            attrs.insert((owned)pango_attr);
+        }
+
+        label.set_attributes(attrs);
+    }
+
     public void set_preedit_text(IBus.Text? text, uint cursor) {
         if (text != null) {
             var str = text.get_text();
@@ -117,6 +136,7 @@ public class CandidatePanel : Gtk.Box{
             if (str.length > 0) {
                 m_preedit_label.set_text(str);
                 m_preedit_label.show();
+                set_attributes(m_preedit_label, text);
             } else {
                 m_preedit_label.set_text("");
                 m_preedit_label.hide();
