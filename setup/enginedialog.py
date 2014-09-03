@@ -185,7 +185,8 @@ class EngineDialog(Gtk.Dialog):
     def __lang_row_new(self, text):
         row = self.__list_box_row_new(text)
         row.lang_info = True
-        row.untrans = self.__untrans_for_lang[text]
+        if len(self.__untrans_for_lang) != 0:
+            row.untrans = self.__untrans_for_lang[text]
         if not self.__showing_extra and text not in self.__initial_languages:
             row.is_extra = True
         widget = self.__padded_label_new(text,
@@ -324,12 +325,15 @@ class EngineDialog(Gtk.Dialog):
 
             # Retrieve Untranslated language names.
             backup_locale = locale.setlocale(locale.LC_ALL, None)
-            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-            untrans = IBus.get_language_name(e.get_language())
+            try:
+                locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+                untrans = IBus.get_language_name(e.get_language())
+                if untrans == None:
+                    untrans = ''
+                self.__untrans_for_lang[l] = untrans
+            except locale.Error:
+                pass
             locale.setlocale(locale.LC_ALL, backup_locale)
-            if untrans == None:
-                untrans = ''
-            self.__untrans_for_lang[l] = untrans
 
         keys = list(self.__engines_for_lang.keys())
         keys.sort(key=functools.cmp_to_key(locale.strcoll))
