@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2014-07-08 12:15+0900\n"
-"PO-Revision-Date: 2014-07-08 12:54+0000\n"
+"POT-Creation-Date: 2014-07-18 13:09+0900\n"
+"PO-Revision-Date: 2014-07-28 14:08+0000\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -156,7 +156,8 @@ msgid "General"
 msgstr "Ogólne"
 
 #. add button
-#: ../setup/setup.ui.h:35 ../setup/keyboardshortcut.py:127
+#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:60
+#: ../setup/keyboardshortcut.py:128
 msgid "_Add"
 msgstr "_Dodaj"
 
@@ -258,11 +259,11 @@ msgstr "Uruchamianie IBus podczas logowania"
 msgid "<b>Startup</b>"
 msgstr "<b>Uruchomienie</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:932
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35 ../ui/gtk3/panel.vala:932
 msgid "About"
 msgstr "O programie"
 
-#: ../setup/setup.ui.h:65 ../setup/engineabout.py:36
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:38
 msgid "_Close"
 msgstr "Za_mknij"
 
@@ -484,28 +485,37 @@ msgstr "Copyright (c) 2007-2010 Peng Huang\nCopyright (c) 2007-2010 Red Hat, Inc
 msgid "Other"
 msgstr "Inne"
 
-#: ../setup/engineabout.py:68
+#: ../setup/engineabout.py:70
 #, python-format
 msgid "Language: %s\n"
 msgstr "Język: %s\n"
 
-#: ../setup/engineabout.py:71
+#: ../setup/engineabout.py:73
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Układ klawiatury: %s\n"
 
-#: ../setup/engineabout.py:74
+#: ../setup/engineabout.py:76
 #, python-format
 msgid "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: ../setup/engineabout.py:77
+#: ../setup/engineabout.py:79
 msgid "Description:\n"
 msgstr "Opis:\n"
 
-#: ../setup/enginecombobox.py:139
+#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:56
 msgid "Select an input method"
 msgstr "Wybór metodę wprowadzania"
+
+#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:341
+#: ../setup/main.py:413
+msgid "_Cancel"
+msgstr "_Anuluj"
+
+#: ../setup/enginedialog.py:203
+msgid "More…"
+msgstr "Więcej…"
 
 #: ../setup/enginetreeview.py:94
 msgid "Kbd"
@@ -515,55 +525,51 @@ msgstr "KBD"
 msgid "Set IBus Preferences"
 msgstr "Ustawianie preferencji usługi IBus"
 
-#: ../setup/keyboardshortcut.py:55
+#: ../setup/keyboardshortcut.py:56
 msgid "Keyboard shortcuts"
 msgstr "Skróty klawiszowe"
 
-#: ../setup/keyboardshortcut.py:66
+#: ../setup/keyboardshortcut.py:67
 msgid "Key code:"
 msgstr "Kod klawisza:"
 
-#: ../setup/keyboardshortcut.py:81
+#: ../setup/keyboardshortcut.py:82
 msgid "Modifiers:"
 msgstr "Modyfikatory:"
 
 #. apply button
-#: ../setup/keyboardshortcut.py:133
+#: ../setup/keyboardshortcut.py:134
 msgid "_Apply"
 msgstr "_Zastosuj"
 
 #. delete button
-#: ../setup/keyboardshortcut.py:139
+#: ../setup/keyboardshortcut.py:140
 msgid "_Delete"
 msgstr "_Usuń"
 
-#: ../setup/keyboardshortcut.py:254
+#: ../setup/keyboardshortcut.py:256
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy).\nOkno dialogowe zostanie zamknięte po zwolnieniu klawisza."
 
-#: ../setup/keyboardshortcut.py:256
+#: ../setup/keyboardshortcut.py:259
 msgid "Please press a key (or a key combination)"
 msgstr "Proszę nacisnąć klawisz (lub kombinację klawiszy)"
 
-#: ../setup/keyboardshortcut.py:338 ../setup/main.py:375
-msgid "_Cancel"
-msgstr "_Anuluj"
-
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:376
+#: ../setup/keyboardshortcut.py:342 ../setup/main.py:414
 msgid "_OK"
 msgstr "_OK"
 
-#: ../setup/main.py:102 ../setup/main.py:398
+#: ../setup/main.py:113 ../setup/main.py:438
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Użycie skrótu z klawiszem Shift do przełączania do poprzedniej metody wprowadzania"
 
-#: ../setup/main.py:330
+#: ../setup/main.py:368
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "Usługa IBus nie jest uruchomiona. Uruchomić ją?"
 
-#: ../setup/main.py:351
+#: ../setup/main.py:389
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -572,18 +578,18 @@ msgid ""
 msgstr "IBus został uruchomiony. Jeśli nie można używać IBus, należy dodać poniższe wiersze do pliku $HOME/.bashrc i zalogować się ponownie.\n  export GTK_IM_MODULE=ibus\n  export XMODIFIERS=@im=ibus\n  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:365
+#: ../setup/main.py:403
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "Nie można uruchomić usługi IBus od %d sekund"
 
-#: ../setup/main.py:377
+#: ../setup/main.py:415
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Wybór skrótu klawiszowego dla %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:379
+#: ../setup/main.py:417
 msgid "switching input methods"
 msgstr "przełączanie metod wprowadzania"
 
@@ -734,6 +740,6 @@ msgstr "Zakończ"
 
 #. Translators: If your locale is RTL, the msgstr is "default:RTL".
 #. * Otherwise the msgstr is "default:LTR".
-#: ../ui/gtk3/propertypanel.vala:366
+#: ../ui/gtk3/propertypanel.vala:371
 msgid "default:LTR"
 msgstr "default:LTR"
