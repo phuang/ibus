@@ -773,6 +773,34 @@ _ic_process_key_event  (BusInputContext       *context,
         }
     }
 
+    /* If I move the focus from the URL entry box of google-chrome
+     * to the text buffer of gnome-terminal,
+     * focus-in/focus-out of google-chrome is caused after
+     * focus-in of gonme-terminal and gnome-terminal loses the focus.
+     * The following focus events are received in ibusimcontext:
+     * 1) (gnome-terminal:445): IBUS-WARNING **: 15:32:36:717  focus_in
+     * 2) (google-chrome:495): IBUS-WARNING **: 15:32:36:866  focus_out
+     * 3) (google-chrome:495): IBUS-WARNING **: 15:32:36:875  focus_in
+     * 4) (google-chrome:495): IBUS-WARNING **: 15:32:36:890  focus_out
+     * In 2), Just return because focused_context is not google-chrome.
+     * In 3), focused_context is changed from gnome-terminal to google-chrome
+     * In 4), focused_context is changed from google-chrome to faked_context.
+     *
+     * It seems google-chrome has a popup window of the prediction of URL
+     * and async focus-in/focus-out.
+     */
+    if (context->has_focus && context->engine == NULL &&
+        context->fake == FALSE) {
+        BusInputContext *focused_context =
+                bus_ibus_impl_get_focused_input_context (BUS_DEFAULT_IBUS);
+
+        if (focused_context != NULL && context != focused_context &&
+            (context->capabilities & IBUS_CAP_FOCUS) != 0) {
+            context->has_focus = FALSE;
+            bus_input_context_focus_in (context);
+        }
+    }
+
     /* ignore key events, if it is a fake input context */
     if (context->has_focus && context->engine && context->fake == FALSE) {
         bus_engine_proxy_process_key_event (context->engine,
