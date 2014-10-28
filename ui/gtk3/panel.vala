@@ -790,6 +790,15 @@ class Panel : IBus.PanelService {
 
         var engines = m_bus.get_engines_by_names(names);
 
+        /* Fedora internal patch could save engines not in simple.xml
+         * likes 'xkb:cn::chi'.
+         */
+        if (engines.length == 0) {
+            names =  {"xkb:us::eng"};
+            m_settings_general.set_strv("preload-engines", names);
+            engines = m_bus.get_engines_by_names(names);
+	}
+
         if (m_engines.length == 0) {
             m_engines = engines;
             switch_engine(0, true);
