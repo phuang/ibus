@@ -105,20 +105,16 @@ class KeyboardShortcutSelection(Gtk.Box):
                                         Gtk.CheckButton.new_with_mnemonic("_Hyper"),
                                         Gdk.ModifierType.HYPER_MASK))
         # <CapsLock> is not parsed by gtk_accelerator_parse()
-        # FIXME: Need to check if ibus gtk panel can enable <Release>.
-        self.__modifier_buttons.append(("Release",
-                                        Gtk.CheckButton.new_with_mnemonic("_Release"),
-                                        Gdk.ModifierType.RELEASE_MASK))
+        # <Release> is not supported by XIGrabKeycode()
         for name, button, mask in self.__modifier_buttons:
             button.connect("toggled", self.__modifier_button_toggled_cb, name)
 
         table.attach(self.__modifier_buttons[0][1], 0, 1, 0, 1)
         table.attach(self.__modifier_buttons[1][1], 1, 2, 0, 1)
         table.attach(self.__modifier_buttons[2][1], 2, 3, 0, 1)
-        table.attach(self.__modifier_buttons[3][1], 3, 4, 0, 1)
-        table.attach(self.__modifier_buttons[4][1], 0, 1, 1, 2)
-        table.attach(self.__modifier_buttons[5][1], 1, 2, 1, 2)
-        table.attach(self.__modifier_buttons[6][1], 2, 3, 1, 2)
+        table.attach(self.__modifier_buttons[3][1], 0, 1, 1, 2)
+        table.attach(self.__modifier_buttons[4][1], 1, 2, 1, 2)
+        table.attach(self.__modifier_buttons[5][1], 2, 3, 1, 2)
         hbox.pack_start(table, True, True, 4)
         self.pack_start(hbox, False, True, 4)
 
