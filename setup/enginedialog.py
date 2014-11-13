@@ -325,21 +325,26 @@ class EngineDialog(Gtk.Dialog):
 
             # Retrieve Untranslated language names.
             backup_locale = locale.setlocale(locale.LC_ALL, None)
-            try:
-                locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+            def __set_untrans_with_locale(en_locale):
+                locale.setlocale(locale.LC_ALL, en_locale)
                 untrans = IBus.get_language_name(e.get_language())
                 if untrans == None:
                     untrans = ''
                 self.__untrans_for_lang[l] = untrans
+            try:
+                __set_untrans_with_locale('en_US.UTF-8')
             except locale.Error:
-                pass
+                try:
+                    __set_untrans_with_locale('C')
+                except locale.Error:
+                    pass
             locale.setlocale(locale.LC_ALL, backup_locale)
 
         keys = list(self.__engines_for_lang.keys())
         keys.sort(key=functools.cmp_to_key(locale.strcoll))
         loc = locale.getlocale()[0]
         # None on C locale
-        if loc == None:
+        if loc == None or loc == 'C':
             loc = 'en_US'
         current_lang = IBus.get_language_name(loc)
         # move current language to the first place
