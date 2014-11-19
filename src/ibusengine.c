@@ -1422,12 +1422,17 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
                                       IBusLookupTable   *table,
                                       gboolean           visible)
 {
+    /* Note: gnome shell needs the previous page and next page
+       to correctly show the page up/down arrows,
+       send three pages instead of one page. */
+
     g_return_if_fail (IBUS_IS_ENGINE (engine));
     g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
 
     IBusLookupTable *new_table;
     IBusText *text;
     gint page_begin;
+    gint cursor_pos;
     gint i;
 
     if (table->candidates->len < table->page_size << 2) {
@@ -1436,19 +1441,31 @@ ibus_engine_update_lookup_table_fast (IBusEngine        *engine,
     }
 
     page_begin = (table->cursor_pos / table->page_size) * table->page_size;
+    cursor_pos = ibus_lookup_table_get_cursor_in_page (table);
 
-    new_table = ibus_lookup_table_new (table->page_size, 0, table->cursor_visible, table->round);
+    if (table->cursor_pos >= table->page_size) {
+        /* has previous page, adjust the value. */
+        page_begin -= table->page_size;
+        cursor_pos += table->page_size;
+    }
 
-    for (i = page_begin; i < page_begin + table->page_size && i < table->candidates->len; i++) {
-        ibus_lookup_table_append_candidate (new_table, ibus_lookup_table_get_candidate (table, i));
+    new_table = ibus_lookup_table_new
+        (table->page_size, 0, table->cursor_visible, table->round);
+
+    /* '3' means the previous page, current page and next page. */
+    for (i = page_begin; i < page_begin + 3 * table->page_size &&
+             i < table->candidates->len; i++) {
+        ibus_lookup_table_append_candidate
+            (new_table, ibus_lookup_table_get_candidate (table, i));
     }
 
     for (i = 0; (text = ibus_lookup_table_get_label (table, i)) != NULL; i++) {
         ibus_lookup_table_append_label (new_table, text);
     }
 
-    ibus_lookup_table_set_cursor_pos (new_table, ibus_lookup_table_get_cursor_in_page (table));
-    ibus_lookup_table_set_orientation (new_table, ibus_lookup_table_get_orientation (table));
+    ibus_lookup_table_set_cursor_pos (new_table, cursor_pos);
+    ibus_lookup_table_set_orientation
+        (new_table, ibus_lookup_table_get_orientation (table));
 
     ibus_engine_update_lookup_table (engine, new_table, visible);
 
