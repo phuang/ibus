@@ -29,6 +29,7 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
 /**
  * ibus_keyval_name:
  * @keyval: Key symbol.
@@ -73,4 +74,5 @@ guint            ibus_unicode_to_keyval (gunichar        wc);
  **/
 gunichar         ibus_keyval_to_unicode (guint           keyval);
 
+G_END_DECLS
 #endif // __IBUS_KEYS_H_
