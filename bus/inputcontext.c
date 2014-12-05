@@ -1151,6 +1151,47 @@ bus_input_context_service_method_call (IBusService            *service,
     g_return_if_reached ();
 }
 
+static void
+_ic_set_content_type (BusInputContext *context,
+                      GVariant        *value)
+{
+    guint purpose = 0;
+    guint hints = 0;
+
+    g_variant_get (value, "(uu)", &purpose, &hints);
+    if (purpose != context->purpose || hints != context->hints) {
+        GError *error;
+        gboolean retval;
+
+        context->purpose = purpose;
+        context->hints = hints;
+
+        if (context->has_focus && context->engine)
+            bus_engine_proxy_set_content_type (context->engine,
+                                               purpose,
+                                               hints);
+
+        if (context->has_focus) {
+            g_signal_emit (context,
+                           context_signals[SET_CONTENT_TYPE],
+                           0,
+                           context->purpose,
+                           context->hints);
+        }
+
+        error = NULL;
+        retval = bus_input_context_property_changed (context,
+                                                     "ContentType",
+                                                     value,
+                                                     &error);
+        if (!retval) {
+            g_warning ("Failed to emit PropertiesChanged signal: %s",
+                       error->message);
+            g_error_free (error);
+        }
+    }
+}
+
 static gboolean
 bus_input_context_service_set_property (IBusService     *service,
                                         GDBusConnection *connection,
@@ -1175,41 +1216,7 @@ bus_input_context_service_set_property (IBusService     *service,
 
     if (g_strcmp0 (property_name, "ContentType") == 0) {
         BusInputContext *context = (BusInputContext *) service;
-        guint purpose = 0;
-        guint hints = 0;
-
-        g_variant_get (value, "(uu)", &purpose, &hints);
-        if (purpose != context->purpose || hints != context->hints) {
-            GError *error;
-            gboolean retval;
-
-            context->purpose = purpose;
-            context->hints = hints;
-
-            if (context->has_focus && context->engine)
-                bus_engine_proxy_set_content_type (context->engine,
-                                                   purpose,
-                                                   hints);
-
-            if (context->has_focus) {
-                g_signal_emit (context,
-                               context_signals[SET_CONTENT_TYPE],
-                               0,
-                               context->purpose,
-                               context->hints);
-            }
-
-            error = NULL;
-            retval = bus_input_context_property_changed (context,
-                                                         "ContentType",
-                                                         value,
-                                                         &error);
-            if (!retval) {
-                g_warning ("Failed to emit PropertiesChanged signal: %s",
-                           error->message);
-                g_error_free (error);
-            }
-        }
+        _ic_set_content_type (context, value);
         return TRUE;
     }
 
@@ -2520,4 +2527,18 @@ bus_input_context_get_content_type (BusInputContext *context,
 
     *purpose = context->purpose;
     *hints = context->hints;
+}
+
+void
+bus_input_context_set_content_type (BusInputContext *context,
+                                    guint            purpose,
+                                    guint            hints)
+{
+    GVariant *value;
+
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    value = g_variant_ref_sink (g_variant_new ("(uu)", purpose, hints));
+    _ic_set_content_type (context, value);
+    g_variant_unref (value);
 }

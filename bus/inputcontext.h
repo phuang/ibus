@@ -250,5 +250,15 @@ void                 bus_input_context_get_content_type
                                                  guint              *purpose,
                                                  guint              *hints);
 
+/**
+ * bus_input_context_set_content_type:
+ * @purpose: Input purpose.
+ * @hints: Input hints.
+ */
+void                 bus_input_context_set_content_type
+                                                (BusInputContext *context,
+                                                 guint            purpose,
+                                                 guint            hints);
+
 G_END_DECLS
 #endif

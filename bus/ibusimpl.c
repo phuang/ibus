@@ -620,6 +620,8 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
     }
 
     BusEngineProxy *engine = NULL;
+    guint purpose = 0;
+    guint hints = 0;
 
     if (ibus->focused_context) {
         if (ibus->use_global_engine) {
@@ -634,12 +636,16 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
         if (ibus->panel != NULL)
             bus_panel_proxy_focus_out (ibus->panel, ibus->focused_context);
 
+        bus_input_context_get_content_type (ibus->focused_context,
+                                            &purpose, &hints);
         g_object_unref (ibus->focused_context);
         ibus->focused_context = NULL;
     }
 
     if (context == NULL && ibus->use_global_engine) {
         context = ibus->fake_context;
+        if (context)
+            bus_input_context_set_content_type (context, purpose, hints);
     }
 
     if (context) {
