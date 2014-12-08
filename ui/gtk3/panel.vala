@@ -1135,16 +1135,16 @@ class Panel : IBus.PanelService {
         if (icon_name[0] == '/')
             m_status_icon.set_from_file(icon_name);
         else {
-            string symbol = null;
+            string language = null;
 
             if (engine != null) {
                 var name = engine.get_name();
                 if (name.length >= 4 && name[0:4] == "xkb:")
-                    symbol = m_switcher.get_xkb_symbol(engine);
+                    language = m_switcher.get_xkb_language(engine);
             }
 
-            if (symbol != null) {
-                Gdk.Pixbuf pixbuf = create_icon_pixbuf_with_string(symbol);
+            if (language != null) {
+                Gdk.Pixbuf pixbuf = create_icon_pixbuf_with_string(language);
                 m_status_icon.set_from_pixbuf(pixbuf);
             } else {
                 var theme = Gtk.IconTheme.get_default();

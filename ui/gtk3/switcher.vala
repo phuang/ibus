@@ -21,8 +21,6 @@
  */
 
 class Switcher : Gtk.Window {
-    private const int DESC_LABEL_MAX_LEN = 20;
-
     private class IBusEngineButton : Gtk.Button {
         public IBusEngineButton(IBus.EngineDesc engine, Switcher switcher) {
             GLib.Object();
@@ -38,14 +36,14 @@ class Switcher : Gtk.Window {
                 icon.set_valign(Gtk.Align.CENTER);
                 add(icon);
             } else {
-                var symbol = switcher.get_xkb_symbol(engine);
+                var language = switcher.get_xkb_language(engine);
 
-                Gtk.Label label = new Gtk.Label(symbol);
+                Gtk.Label label = new Gtk.Label(language);
                 label.set_halign(Gtk.Align.CENTER);
                 label.set_valign(Gtk.Align.CENTER);
-                string symbol_font = "Monospace Bold 16";
+                string language_font = "Monospace Bold 16";
                 string markup = "<span font=\"%s\">%s</span>".
-                        printf(symbol_font, symbol);
+                        printf(language_font, language);
 
                 label.set_markup(markup);
 
@@ -89,7 +87,7 @@ class Switcher : Gtk.Window {
     private uint m_popup_delay_time_id = 0;
     private int m_root_x;
     private int m_root_y;
-    private GLib.HashTable<string, string> m_xkb_symbols =
+    private GLib.HashTable<string, string> m_xkb_languages =
             new GLib.HashTable<string, string>(GLib.str_hash,
                                                GLib.str_equal);
 
@@ -268,10 +266,6 @@ class Switcher : Gtk.Window {
                 return true;
             });
 
-            if (longname.length > DESC_LABEL_MAX_LEN) {
-                longname = longname[0:DESC_LABEL_MAX_LEN];
-            }
-
             button.longname = longname;
             m_label.set_label(longname);
 
@@ -429,37 +423,37 @@ class Switcher : Gtk.Window {
         m_popup_delay_time = popup_delay_time;
     }
 
-    public string get_xkb_symbol(IBus.EngineDesc engine) {
+    public string get_xkb_language(IBus.EngineDesc engine) {
         var name = engine.get_name();
 
         assert(name[0:4] == "xkb:");
 
-        var symbol = m_xkb_symbols[name];
+        var language = m_xkb_languages[name];
 
-        if (symbol != null)
-            return symbol;
+        if (language != null)
+            return language;
 
-        var layout = engine.get_layout();
+        language = engine.get_language();
 
         /* Maybe invalid layout */
-        if (layout.length < 2)
-            return layout;
+        if (language.length < 2)
+            return language;
 
-        symbol = layout[0:2].up();
+        language = language[0:2].up();
 
         int index = 0;
 
-        foreach (var saved_symbol in m_xkb_symbols.get_values()) {
-            if (symbol == saved_symbol[0:2])
+        foreach (var saved_language in m_xkb_languages.get_values()) {
+            if (language == saved_language[0:2])
                 index++;
         }
 
         if (index > 0) {
             unichar u = 0x2081 + index;
-            symbol = "%s%s".printf(symbol, u.to_string());
+            language = "%s%s".printf(language, u.to_string());
         }
 
-        m_xkb_symbols.insert(name, symbol);
-        return symbol;
+        m_xkb_languages.insert(name, language);
+        return language;
     }
 }
