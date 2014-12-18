@@ -1,7 +1,9 @@
 /******************************************************************
  
-         Copyright 1994, 1995 by Sun Microsystems, Inc.
-         Copyright 1993, 1994 by Hewlett-Packard Company
+         Copyright (C) 1994-1995 Sun Microsystems, Inc.
+         Copyright (C) 1993-1994 Hewlett-Packard Company
+         Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
+         Copyright (C) 2014 Red Hat, Inc.
  
 Permission to use, copy, modify, distribute, and sell this software
 and its documentation for any purpose is hereby granted without fee,
@@ -36,6 +38,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "XimFunc.h"
 
 Xi18nClient *_Xi18nFindClient (Xi18n, CARD16);
+void _Xi18nInitOffsetCache (Xi18nOffsetCache *);
 
 int
 _Xi18nNeedSwap (Xi18n i18n_core, CARD16 connect_id)
@@ -70,7 +73,7 @@ Xi18nClient *_Xi18nNewClient(Xi18n i18n_core)
     client->sync = False;
     client->byte_order = '?'; 	/* initial value */
     memset (&client->pending, 0, sizeof (XIMPending *));
-    client->property_offset = 0;
+    _Xi18nInitOffsetCache (&client->offset_cache);
     client->next = i18n_core->address.clients;
     i18n_core->address.clients = client;
 

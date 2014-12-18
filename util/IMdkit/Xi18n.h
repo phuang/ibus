@@ -1,7 +1,9 @@
 /******************************************************************
  
-         Copyright 1994, 1995 by Sun Microsystems, Inc.
-         Copyright 1993, 1994 by Hewlett-Packard Company
+         Copyright (C) 1994-1995 Sun Microsystems, Inc.
+         Copyright (C) 1993-1994 Hewlett-Packard Company
+         Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
+         Copyright (C) 2014 Red Hat, Inc.
  
 Permission to use, copy, modify, distribute, and sell this software
 and its documentation for any purpose is hereby granted without fee,
@@ -45,6 +47,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define XIM_EXT_MOVE				(0x33)
 #define COMMON_EXTENSIONS_NUM   		3
 
+#include <stddef.h>
 #include <stdlib.h>
 #include "IMdkit.h"
 
@@ -138,6 +141,19 @@ typedef struct
     char	*name;
 } XIMExt;
 
+typedef struct
+{
+    Atom key;
+    unsigned long offset;
+} Xi18nAtomOffsetPair;
+
+typedef struct
+{
+    size_t capacity;
+    size_t size;
+    Xi18nAtomOffsetPair *data;
+} Xi18nOffsetCache;
+
 typedef struct _Xi18nClient
 {
     int		connect_id;
@@ -149,8 +165,7 @@ typedef struct _Xi18nClient
      */
     int		sync;
     XIMPending  *pending;
-    /* property offset to read next data */
-    long        property_offset;
+    Xi18nOffsetCache offset_cache;
     void *trans_rec;		/* contains transport specific data  */
     struct _Xi18nClient *next;
 } Xi18nClient;

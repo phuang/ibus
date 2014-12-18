@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2014 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ libIMdkit_la_SOURCES = \
 	i18nIc.c \
 	i18nIMProto.c \
 	i18nMethod.c \
+	i18nOffsetCache.c \
 	i18nPtHdr.c \
 	i18nUtil.c \
 	i18nX.c \
