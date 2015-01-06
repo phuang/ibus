@@ -28,4 +28,4 @@ gchar *g_address = "unix:tmpdir=/tmp";
 gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
-gint   g_gdbus_timeout = 5000;
+gint   g_gdbus_timeout = 15000;

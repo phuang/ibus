@@ -158,8 +158,9 @@ ibus_get_socket_path (void)
 gint
 ibus_get_timeout (void)
 {
-    /* 6000 ms is the default timeout on the ibus-daemon side (5 sec) plus 1. */
-    static const gint default_timeout = 6000;
+    /* 16000 ms is the default timeout on the ibus-daemon side
+     * (15 sec) plus 1. */
+    static const gint default_timeout = 16000;
 
     static gint64 timeout = -2;
     if (timeout == -2) {

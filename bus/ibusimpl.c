@@ -1396,11 +1396,12 @@ _ibus_set_global_engine_ready_cb (BusInputContext       *context,
 
     GError *error = NULL;
     if (!bus_input_context_set_engine_by_desc_finish (context, res, &error)) {
-        g_error_free (error);
         g_dbus_method_invocation_return_error (data->invocation,
                                                G_DBUS_ERROR,
                                                G_DBUS_ERROR_FAILED,
-                                               "Set global engine failed.");
+                                               "Set global engine failed: %s",
+                                               error->message);
+        g_error_free (error);
     }
     else {
         g_dbus_method_invocation_return_value (data->invocation, NULL);

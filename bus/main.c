@@ -64,7 +64,7 @@ static const GOptionEntry entries[] =
     { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
     { "cache",     't', 0, G_OPTION_ARG_STRING, &g_cache,   "specify the cache mode. [auto/refresh/none]", NULL },
-    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_gdbus_timeout, "gdbus reply timeout in milliseconds. pass -1 to use the default timeout of gdbus.", "timeout [default is 5000]" },
+    { "timeout",   'o', 0, G_OPTION_ARG_INT,    &g_gdbus_timeout, "gdbus reply timeout in milliseconds. pass -1 to use the default timeout of gdbus.", "timeout [default is 15000]" },
     { "mem-profile", 'm', 0, G_OPTION_ARG_NONE,   &g_mempro,   "enable memory profile, send SIGUSR2 to print out the memory profile.", NULL },
     { "restart",     'R', 0, G_OPTION_ARG_NONE,   &restart,    "restart panel and config processes when they die.", NULL },
     { "verbose",   'v', 0, G_OPTION_ARG_NONE,   &g_verbose,   "verbose.", NULL },
