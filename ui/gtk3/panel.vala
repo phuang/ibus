@@ -65,6 +65,8 @@ class Panel : IBus.PanelService {
             red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0 };
     private XKBLayout m_xkblayout = new XKBLayout();
     private bool inited_engines_order = true;
+    private uint m_preload_engines_id;
+    private const uint PRELOAD_ENGINES_DELAY_TIME = 30000;
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -764,8 +766,21 @@ class Panel : IBus.PanelService {
             return;
         }
 
+        if (m_preload_engines_id != 0) {
+            GLib.Source.remove(m_preload_engines_id);
+            m_preload_engines_id = 0;
+        }
+
         names += engines[index].get_name();
-        m_bus.preload_engines_async.begin(names, -1, null);
+        m_preload_engines_id =
+                Timeout.add(
+                        PRELOAD_ENGINES_DELAY_TIME,
+                        () => {
+                            m_bus.preload_engines_async.begin(names,
+                                                              -1,
+                                                              null);
+                            return false;
+                        });
     }
 
     private void update_engines(string[]? unowned_engine_names,
