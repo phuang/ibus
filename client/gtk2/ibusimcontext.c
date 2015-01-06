@@ -857,12 +857,15 @@ ibus_im_context_focus_in (GtkIMContext *context)
         }
     }
 
-    if (_focus_im_context != NULL) {
-        g_assert (_focus_im_context != context);
-        gtk_im_context_focus_out (_focus_im_context);
-        g_assert (_focus_im_context == NULL);
-    }
-    else {
+    /* Do not call gtk_im_context_focus_out() here.
+     * google-chrome's notification popup window (Pushbullet)
+     * takes the focus and the popup window disappears.
+     * So other applications lose the focus because
+     * ibusimcontext->has_focus is FALSE if
+     * gtk_im_context_focus_out() is called here when
+     * _focus_im_context != context.
+     */
+    if (_focus_im_context == NULL) {
         /* focus out fake context */
         if (_fake_context != NULL) {
             ibus_input_context_focus_out (_fake_context);
@@ -903,7 +906,6 @@ ibus_im_context_focus_out (GtkIMContext *context)
         return;
     }
 
-    g_assert (context == _focus_im_context);
     g_object_remove_weak_pointer ((GObject *) context,
                                   (gpointer *) &_focus_im_context);
     _focus_im_context = NULL;
