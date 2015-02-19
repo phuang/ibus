@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -94,6 +94,10 @@ AM_VALAFLAGS += \
 	$(NULL)
 endif
 
+if ENABLE_APPINDICATOR
+AM_VALAFLAGS += --define=INDICATOR
+endif
+
 libexec_PROGRAMS = ibus-ui-gtk3
 
 ibus_ui_gtk3_SOURCES = \
@@ -102,6 +106,7 @@ ibus_ui_gtk3_SOURCES = \
 	candidatepanel.vala \
 	handle.vala \
 	iconwidget.vala \
+	indicator.vala \
 	keybindingmanager.vala \
 	panel.vala \
 	pango.vala \
@@ -110,18 +115,33 @@ ibus_ui_gtk3_SOURCES = \
 	separator.vala \
 	switcher.vala \
 	xkblayout.vala \
+	gen-notification-item.xml.c \
+	gen-notification-watcher.xml.c \
 	$(NULL)
 
 ibus_ui_gtk3_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 
+gen-%.xml.c: %.xml
+	echo "Building $@ from $<"
+	echo "const char * _$(subst -,_,$(subst .,_,$(basename $(notdir $<)))) = " > $@
+	sed -e "s:\":\\\\\":g" -e s:^:\": -e s:\$$:\\\\n\": $< >> $@
+	echo ";" >> $@
+
 CLEANFILES = \
 	gtkpanel.xml \
 	$(NULL)
 
+# References:
+# libappindicator/src/notification-item.xml
+# libappindicator/src/notification-watcher.xml
+# knotifications/src/org.kde.StatusNotifierItem.xml
+# knotifications/src/org.kde.StatusNotifierWatcher.xml
 EXTRA_DIST = \
 	gtkpanel.xml.in \
+	notification-item.xml \
+	notification-watcher.xml \
 	$(NULL)
 
 

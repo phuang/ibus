@@ -3,6 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2015 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,10 +36,20 @@ class Panel : IBus.PanelService {
         public bool reverse { get; set; }
     }
 
+    private enum IconType {
+        STATUS_ICON,
+        INDICATOR,
+    }
+
     private IBus.Bus m_bus;
     private GLib.Settings m_settings_general = null;
     private GLib.Settings m_settings_hotkey = null;
     private GLib.Settings m_settings_panel = null;
+    private IconType m_icon_type = IconType.STATUS_ICON;
+    private Indicator m_indicator;
+#if INDICATOR
+    private GLib.DBusConnection m_session_bus_connection;
+#endif
     private Gtk.StatusIcon m_status_icon;
     private Gtk.Menu m_ime_menu;
     private Gtk.Menu m_sys_menu;
@@ -81,12 +92,15 @@ class Panel : IBus.PanelService {
         init_settings();
 
         // init ui
-        m_status_icon = new Gtk.StatusIcon();
-        m_status_icon.set_name("ibus-ui-gtk");
-        m_status_icon.set_title("IBus Panel");
-        m_status_icon.popup_menu.connect(status_icon_popup_menu_cb);
-        m_status_icon.activate.connect(status_icon_activate_cb);
-        m_status_icon.set_from_icon_name("ibus-keyboard");
+#if INDICATOR
+        if (is_kde()) {
+            init_indicator();
+        } else {
+            init_status_icon();
+        }
+#else
+        init_status_icon();
+#endif
 
         m_candidate_panel = new CandidatePanel();
         m_candidate_panel.page_up.connect((w) => this.page_up());
@@ -188,6 +202,75 @@ class Panel : IBus.PanelService {
         m_settings_panel.changed["xkb-icon-rgba"].connect((key) => {
                 set_xkb_icon_rgba();
         });
+    }
+
+#if INDICATOR
+    private bool is_kde() {
+        if (Environment.get_variable("XDG_CURRENT_DESKTOP") == "KDE")
+            return true;
+        warning ("If you launch KDE5 on xterm, " +
+                 "export XDG_CURRENT_DESKTOP=KDE before launch KDE5.");
+        return false;
+    }
+
+    private void init_indicator() {
+        m_icon_type = IconType.INDICATOR;
+        GLib.Bus.get.begin(GLib.BusType.SESSION, null, (obj, res) => {
+            try {
+                m_session_bus_connection = GLib.Bus.get.end(res);
+                m_indicator =
+                        new Indicator("ibus-ui-gtk3",
+                                      m_session_bus_connection,
+                                      Indicator.Category.APPLICATION_STATUS);
+                m_indicator.title = _("IBus Panel");
+                m_indicator.registered_status_notifier_item.connect(() => {
+                    m_indicator.set_status(Indicator.Status.ACTIVE);
+                    state_changed();
+                });
+                m_indicator.context_menu.connect((b, t) => {
+                    Gtk.Menu menu = create_context_menu();
+                    menu.popup(null,
+                               null,
+                               m_indicator.position_context_menu,
+                               0,
+                               Gtk.get_current_event_time());
+                });
+                m_indicator.activate.connect(() => {
+                    Gtk.Menu menu = create_activate_menu();
+                    menu.popup(null,
+                               null,
+                               m_indicator.position_activate_menu,
+                               0,
+                               Gtk.get_current_event_time());
+                });
+            } catch (GLib.IOError e) {
+                warning("Failed to get the session bus: %s", e.message);
+            }
+        });
+    }
+#endif
+
+    private void init_status_icon() {
+        m_status_icon = new Gtk.StatusIcon();
+        m_status_icon.set_name("ibus-ui-gtk");
+        m_status_icon.set_title(_("IBus Panel"));
+        m_status_icon.popup_menu.connect((b, t) => {
+                Gtk.Menu menu = create_context_menu();
+                menu.popup(null,
+                           null,
+                           m_status_icon.position_menu,
+                           0,
+                           Gtk.get_current_event_time());
+        });
+        m_status_icon.activate.connect(() => {
+                Gtk.Menu menu = create_activate_menu();
+                menu.popup(null,
+                           null,
+                           m_status_icon.position_menu,
+                           0,
+                           Gtk.get_current_event_time());
+        });
+        m_status_icon.set_from_icon_name("ibus-keyboard");
     }
 
     private void keybinding_manager_bind(KeybindingManager keybinding_manager,
@@ -503,11 +586,22 @@ class Panel : IBus.PanelService {
     }
 
     private void set_show_icon_on_systray() {
-        if (m_status_icon == null)
-            return;
+        if (m_icon_type == IconType.STATUS_ICON) {
+            if (m_status_icon == null)
+                return;
 
-        m_status_icon.set_visible(
-                m_settings_panel.get_boolean("show-icon-on-systray"));
+            m_status_icon.set_visible(
+                    m_settings_panel.get_boolean("show-icon-on-systray"));
+        } else if (m_icon_type == IconType.INDICATOR) {
+            if (m_indicator == null)
+                return;
+
+            if (m_settings_panel.get_boolean("show-icon-on-systray")) {
+                m_indicator.set_status(Indicator.Status.ACTIVE);
+            } else {
+                m_indicator.set_status(Indicator.Status.PASSIVE);
+            }
+        }
     }
 
     private void set_lookup_table_orientation() {
@@ -558,8 +652,13 @@ class Panel : IBus.PanelService {
         if (m_xkb_icon_pixbufs.size() > 0) {
             m_xkb_icon_pixbufs.remove_all();
 
-            if (m_status_icon != null && m_switcher != null)
-                state_changed();
+            if (m_icon_type == IconType.STATUS_ICON) {
+                if (m_status_icon != null && m_switcher != null)
+                    state_changed();
+            } else if (m_icon_type == IconType.INDICATOR) {
+                if (m_indicator != null && m_switcher != null)
+                    state_changed();
+            }
         }
     }
 
@@ -941,9 +1040,7 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void status_icon_popup_menu_cb(Gtk.StatusIcon status_icon,
-                                           uint button,
-                                           uint activate_time) {
+    private Gtk.Menu create_context_menu() {
         // Show system menu
         if (m_sys_menu == null) {
             Gtk.MenuItem item;
@@ -970,14 +1067,10 @@ class Panel : IBus.PanelService {
             m_sys_menu.show_all();
         }
 
-        m_sys_menu.popup(null,
-                         null,
-                         m_status_icon.position_menu,
-                         0,
-                         Gtk.get_current_event_time());
+        return m_sys_menu;
     }
 
-    private void status_icon_activate_cb(Gtk.StatusIcon status_icon) {
+    private Gtk.Menu create_activate_menu() {
         m_ime_menu = new Gtk.Menu();
 
         // Show properties and IME switching menu
@@ -1009,11 +1102,8 @@ class Panel : IBus.PanelService {
 
         // Do not take focuse to avoid some focus related issues.
         m_ime_menu.set_take_focus(false);
-        m_ime_menu.popup(null,
-                         null,
-                         m_status_icon.position_menu,
-                         0,
-                         Gtk.get_current_event_time());
+
+        return m_ime_menu;
     }
 
     /* override virtual functions */
@@ -1141,15 +1231,28 @@ class Panel : IBus.PanelService {
         if (m_switcher_is_running)
             return;
 
+        if (m_icon_type == IconType.INDICATOR) {
+            // Wait for the callback of the session bus.
+            if (m_indicator == null)
+                return;
+        }
+
         var icon_name = "ibus-keyboard";
 
         var engine = m_bus.get_global_engine();
         if (engine != null)
             icon_name = engine.get_icon();
 
-        if (icon_name[0] == '/')
-            m_status_icon.set_from_file(icon_name);
-        else {
+        if (icon_name[0] == '/') {
+            if (m_icon_type == IconType.STATUS_ICON) {
+                m_status_icon.set_from_file(icon_name);
+            }
+            else if (m_icon_type == IconType.INDICATOR) {
+                warning("appindicator requires an icon name in a theme " +
+                        "path instead of the full path: %s", icon_name);
+                m_indicator.set_icon_full("ibus-engine", "");
+            }
+        } else {
             string language = null;
 
             if (engine != null) {
@@ -1159,14 +1262,32 @@ class Panel : IBus.PanelService {
             }
 
             if (language != null) {
-                Gdk.Pixbuf pixbuf = create_icon_pixbuf_with_string(language);
-                m_status_icon.set_from_pixbuf(pixbuf);
+                if (m_icon_type == IconType.STATUS_ICON) {
+                    Gdk.Pixbuf pixbuf =
+                            create_icon_pixbuf_with_string(language);
+                    m_status_icon.set_from_pixbuf(pixbuf);
+                }
+                else if (m_icon_type == IconType.INDICATOR) {
+                    /* Appindicator does not support pixbuf. */
+                    m_indicator.set_icon_full(icon_name, "");
+                }
             } else {
                 var theme = Gtk.IconTheme.get_default();
-                if (theme.lookup_icon(icon_name, 48, 0) != null)
-                    m_status_icon.set_from_icon_name(icon_name);
-                else
-                    m_status_icon.set_from_icon_name("ibus-engine");
+                if (theme.lookup_icon(icon_name, 48, 0) != null) {
+                    if (m_icon_type == IconType.STATUS_ICON) {
+                        m_status_icon.set_from_icon_name(icon_name);
+                    }
+                    else if (m_icon_type == IconType.INDICATOR) {
+                        m_indicator.set_icon_full(icon_name, "");
+                    }
+                } else {
+                    if (m_icon_type == IconType.STATUS_ICON) {
+                        m_status_icon.set_from_icon_name("ibus-engine");
+                    }
+                    else if (m_icon_type == IconType.INDICATOR) {
+                        m_indicator.set_icon_full("ibus-engine", "");
+                    }
+                }
             }
         }
 

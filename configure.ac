@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -206,6 +206,15 @@ AC_ARG_ENABLE(wayland,
 )
 AM_CONDITIONAL([ENABLE_WAYLAND], [test x"$enable_wayland" = x"yes"])
 
+# --enable-appindicator option.
+AC_ARG_ENABLE(appindicator,
+    AS_HELP_STRING([--enable-appindicator],
+                   [Build appindicator support]),
+    [enable_appindicator=$enableval],
+    [enable_appindicator=yes]
+)
+AM_CONDITIONAL([ENABLE_APPINDICATOR], [test x"$enable_appindicator" = x"yes"])
+
 if test x"$enable_gtk2" = x"yes" -o x"$enable_xim" = x"yes" ; then
     # check for gtk2
     PKG_CHECK_MODULES(GTK2, [
@@ -259,6 +268,10 @@ if test x"$enable_wayland" = x"yes"; then
     ])
 else
     enable_wayland="no (disabled, use --enable-wayland to enable)"
+fi
+
+if test x"$enable_appindicator" = x"yes"; then
+    enable_appindicator="yes (enabled, use --disable-appindicator to disable)"
 fi
 
 # GObject introspection
@@ -612,34 +625,35 @@ tools/Makefile
 AC_OUTPUT
 AC_MSG_RESULT([
 Build options:
-  Version                   $IBUS_VERSION
-  Install prefix            $prefix
-  Build shared libs         $enable_shared
-  Build static libs         $enable_static
-  CFLAGS                    $CFLAGS
-  PYTHON                    $PYTHON
-  PYTHON2                   $PYTHON2
-  Gtk2 immodule dir         $GTK2_IM_MODULEDIR
-  Gtk3 immodule dir         $GTK3_IM_MODULEDIR
-  Build gtk2 immodule       $enable_gtk2
-  Build gtk3 immodule       $enable_gtk3
-  Build XIM agent server    $enable_xim
-  Build wayland support     $enable_wayland
-  Build python library      $enable_python_library
-  Build gconf modules       $enable_gconf
-  Build memconf modules     $enable_memconf
-  Build dconf modules       $enable_dconf
-  Build introspection       $found_introspection
-  IBus-1.0.gir scannerflags "$IBUS_GIR_SCANNERFLAGS"
-  Build vala binding        $enable_vala
-  Build document            $enable_gtk_doc
-  Build UI                  $enable_ui
-  Build engine              $enable_engine
-  Enable key snooper        $enable_key_snooper
-  No snooper regexes        "$NO_SNOOPER_APPS"
-  Panel icon                "$IBUS_ICON_KEYBOARD"
-  Enable surrounding-text   $enable_surrounding_text
-  Enable libnotify          $enable_libnotify
-  Run test cases            $enable_tests
+  Version                       $IBUS_VERSION
+  Install prefix                $prefix
+  Build shared libs             $enable_shared
+  Build static libs             $enable_static
+  CFLAGS                        $CFLAGS
+  PYTHON                        $PYTHON
+  PYTHON2                       $PYTHON2
+  Gtk2 immodule dir             $GTK2_IM_MODULEDIR
+  Gtk3 immodule dir             $GTK3_IM_MODULEDIR
+  Build gtk2 immodule           $enable_gtk2
+  Build gtk3 immodule           $enable_gtk3
+  Build XIM agent server        $enable_xim
+  Build wayland support         $enable_wayland
+  Build appindicator support    $enable_appindicator
+  Build python library          $enable_python_library
+  Build gconf modules           $enable_gconf
+  Build memconf modules         $enable_memconf
+  Build dconf modules           $enable_dconf
+  Build introspection           $found_introspection
+  IBus-1.0.gir scannerflags     "$IBUS_GIR_SCANNERFLAGS"
+  Build vala binding            $enable_vala
+  Build document                $enable_gtk_doc
+  Build UI                      $enable_ui
+  Build engine                  $enable_engine
+  Enable key snooper            $enable_key_snooper
+  No snooper regexes            "$NO_SNOOPER_APPS"
+  Panel icon                    "$IBUS_ICON_KEYBOARD"
+  Enable surrounding-text       $enable_surrounding_text
+  Enable libnotify              $enable_libnotify
+  Run test cases                $enable_tests
 ])
 

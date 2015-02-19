@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -502,7 +502,6 @@ ibus_service_register (IBusService     *service,
 {
     g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
     g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
-    g_return_val_if_fail (connection != service->priv->connection || service->priv->constructed == FALSE, FALSE);
     g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
     GArray *array = NULL;
