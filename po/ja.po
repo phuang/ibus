@@ -1,6 +1,6 @@
 # translation of ibus.pot to Japanese
 # Japanese translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2014-07-18 13:09+0900\n"
-"PO-Revision-Date: 2014-07-18 04:14+0000\n"
-"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
+"POT-Creation-Date: 2015-02-20 17:16+0900\n"
+"PO-Revision-Date: 2015-02-20 08:40+0000\n"
+"Last-Translator: fujiwara <tfujiwar@redhat.com>\n"
 "Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -164,7 +164,7 @@ msgstr "一般"
 
 #. add button
 #: ../setup/setup.ui.h:35 ../setup/enginedialog.py:60
-#: ../setup/keyboardshortcut.py:128
+#: ../setup/keyboardshortcut.py:124
 msgid "_Add"
 msgstr "追加(_A)"
 
@@ -266,7 +266,8 @@ msgstr "ログイン時に IBus を起動"
 msgid "<b>Startup</b>"
 msgstr "<b>スタートアップ</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35 ../ui/gtk3/panel.vala:932
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35
+#: ../ui/gtk3/panel.vala:1053
 msgid "About"
 msgstr "情報"
 
@@ -515,12 +516,12 @@ msgstr "説明:\n"
 msgid "Select an input method"
 msgstr "入力メソッドの選択"
 
-#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:341
+#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:337
 #: ../setup/main.py:413
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
-#: ../setup/enginedialog.py:203
+#: ../setup/enginedialog.py:204
 msgid "More…"
 msgstr "さらに…"
 
@@ -545,26 +546,26 @@ msgid "Modifiers:"
 msgstr "修飾キー:"
 
 #. apply button
-#: ../setup/keyboardshortcut.py:134
+#: ../setup/keyboardshortcut.py:130
 msgid "_Apply"
 msgstr "適用(_A)"
 
 #. delete button
-#: ../setup/keyboardshortcut.py:140
+#: ../setup/keyboardshortcut.py:136
 msgid "_Delete"
 msgstr "削除(_D)"
 
-#: ../setup/keyboardshortcut.py:256
+#: ../setup/keyboardshortcut.py:252
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr "キーもしくはキーの組み合わせを入力してください。\nキーを離すとダイアログを閉じます。"
 
-#: ../setup/keyboardshortcut.py:259
+#: ../setup/keyboardshortcut.py:255
 msgid "Please press a key (or a key combination)"
 msgstr "キーもしくはキーの組み合わせを入力してください"
 
-#: ../setup/keyboardshortcut.py:342 ../setup/main.py:414
+#: ../setup/keyboardshortcut.py:338 ../setup/main.py:414
 msgid "_OK"
 msgstr "OK(_O)"
 
@@ -717,31 +718,35 @@ msgstr "コマンド:\n"
 msgid "%s is unknown command!\n"
 msgstr "%s は不明なコマンドです。\n"
 
-#: ../ui/gtk3/panel.vala:611
+#: ../ui/gtk3/panel.vala:225 ../ui/gtk3/panel.vala:256
+msgid "IBus Panel"
+msgstr "IBus パネル"
+
+#: ../ui/gtk3/panel.vala:712
 msgid "IBus Update"
 msgstr "IBus の更新"
 
-#: ../ui/gtk3/panel.vala:612 ../ui/gtk3/panel.vala:623
+#: ../ui/gtk3/panel.vala:713 ../ui/gtk3/panel.vala:724
 msgid "Super+space is now the default hotkey."
 msgstr "Super+space が現在のデフォルトのホットキーです。"
 
-#: ../ui/gtk3/panel.vala:903
+#: ../ui/gtk3/panel.vala:1026
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus は Linux/Unix のためのインテリジェントなインプットバスです。"
 
-#: ../ui/gtk3/panel.vala:907
+#: ../ui/gtk3/panel.vala:1030
 msgid "translator-credits"
 msgstr "UTUMI Hirosi <utuhiro78@yahoo.co.jp>\nIWAI, Masaharu <iwai@alib.jp>\n日向原 龍一 <hyu_gabaru@yahoo.co.jp>\nMIZUMOTO, Noriko <noriko@fedoraproject.org>"
 
-#: ../ui/gtk3/panel.vala:928
+#: ../ui/gtk3/panel.vala:1049
 msgid "Preferences"
 msgstr "設定"
 
-#: ../ui/gtk3/panel.vala:938
+#: ../ui/gtk3/panel.vala:1059
 msgid "Restart"
 msgstr "再起動"
 
-#: ../ui/gtk3/panel.vala:942
+#: ../ui/gtk3/panel.vala:1063
 msgid "Quit"
 msgstr "終了"
 

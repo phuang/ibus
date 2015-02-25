@@ -1,18 +1,19 @@
 # translation of ibus.pot to Traditional Chinese
 # Traditional Chinese translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2012,2014
+# Ding-Yi Chen <dchen@redhat.com>, 2009
 # Ding-Yi Chen <dchen@redhat.com>, 2009
 # Walter Cheuk <wwycheuk@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2014-07-08 12:15+0900\n"
-"PO-Revision-Date: 2014-07-08 14:02+0000\n"
+"POT-Creation-Date: 2014-07-18 13:09+0900\n"
+"PO-Revision-Date: 2014-10-10 06:56+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) <trans-zh_TW@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -158,7 +159,8 @@ msgid "General"
 msgstr "通用"
 
 #. add button
-#: ../setup/setup.ui.h:35 ../setup/keyboardshortcut.py:127
+#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:60
+#: ../setup/keyboardshortcut.py:128
 msgid "_Add"
 msgstr "加入(_A)"
 
@@ -260,11 +262,11 @@ msgstr "在登入時啟動 iBus"
 msgid "<b>Startup</b>"
 msgstr "<b>啟動</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:932
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35 ../ui/gtk3/panel.vala:932
 msgid "About"
 msgstr "關於"
 
-#: ../setup/setup.ui.h:65 ../setup/engineabout.py:36
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:38
 msgid "_Close"
 msgstr "關閉(_C)"
 
@@ -486,28 +488,37 @@ msgstr "版權所有 (c) 2007-2010 黃鵬\n版權所有 (c) 2007-2010 Red Hat, I
 msgid "Other"
 msgstr "其他"
 
-#: ../setup/engineabout.py:68
+#: ../setup/engineabout.py:70
 #, python-format
 msgid "Language: %s\n"
 msgstr "語言：%s\n"
 
-#: ../setup/engineabout.py:71
+#: ../setup/engineabout.py:73
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "鍵盤配置: %s\n"
 
-#: ../setup/engineabout.py:74
+#: ../setup/engineabout.py:76
 #, python-format
 msgid "Author: %s\n"
 msgstr "作者：%s\n"
 
-#: ../setup/engineabout.py:77
+#: ../setup/engineabout.py:79
 msgid "Description:\n"
 msgstr "描述：\n"
 
-#: ../setup/enginecombobox.py:139
+#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:56
 msgid "Select an input method"
 msgstr "選取輸入法"
+
+#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:341
+#: ../setup/main.py:413
+msgid "_Cancel"
+msgstr "取消(_C)"
+
+#: ../setup/enginedialog.py:203
+msgid "More…"
+msgstr "其他…"
 
 #: ../setup/enginetreeview.py:94
 msgid "Kbd"
@@ -517,55 +528,51 @@ msgstr "鍵盤"
 msgid "Set IBus Preferences"
 msgstr "設置 iBus 偏好設定"
 
-#: ../setup/keyboardshortcut.py:55
+#: ../setup/keyboardshortcut.py:56
 msgid "Keyboard shortcuts"
 msgstr "鍵盤快捷鍵"
 
-#: ../setup/keyboardshortcut.py:66
+#: ../setup/keyboardshortcut.py:67
 msgid "Key code:"
 msgstr "按鍵碼："
 
-#: ../setup/keyboardshortcut.py:81
+#: ../setup/keyboardshortcut.py:82
 msgid "Modifiers:"
 msgstr "修飾鍵："
 
 #. apply button
-#: ../setup/keyboardshortcut.py:133
+#: ../setup/keyboardshortcut.py:134
 msgid "_Apply"
 msgstr "套用(_A)"
 
 #. delete button
-#: ../setup/keyboardshortcut.py:139
+#: ../setup/keyboardshortcut.py:140
 msgid "_Delete"
 msgstr "刪除(_D)"
 
-#: ../setup/keyboardshortcut.py:254
+#: ../setup/keyboardshortcut.py:256
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr "請按鍵盤按鍵 (或是按鍵組合)\n當您放開按鍵時，對話框會自動關閉。"
 
-#: ../setup/keyboardshortcut.py:256
+#: ../setup/keyboardshortcut.py:259
 msgid "Please press a key (or a key combination)"
 msgstr "請按鍵盤按鍵 (或是按鍵組合)"
 
-#: ../setup/keyboardshortcut.py:338 ../setup/main.py:375
-msgid "_Cancel"
-msgstr "取消(_C)"
-
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:376
+#: ../setup/keyboardshortcut.py:342 ../setup/main.py:414
 msgid "_OK"
 msgstr "確定(_O)"
 
-#: ../setup/main.py:102 ../setup/main.py:398
+#: ../setup/main.py:113 ../setup/main.py:438
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "使用含 Shift 鍵之快捷鍵來切換至前個輸入法"
 
-#: ../setup/main.py:330
+#: ../setup/main.py:368
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "IBus 幕後程式並非執行中。您是否要啟動它？"
 
-#: ../setup/main.py:351
+#: ../setup/main.py:389
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
 "  export GTK_IM_MODULE=ibus\n"
@@ -574,18 +581,18 @@ msgid ""
 msgstr "IBus 已經啟動！若您無法使用 IBus，請將下列文字加入您的 $HOME/.bashrc 中；接著重新登入桌面。\nexport GTK_IM_MODULE=ibus\nexport XMODIFIERS=@im=ibus\nexport QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:365
+#: ../setup/main.py:403
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus 幕後程式無法在 %d 秒後啟動"
 
-#: ../setup/main.py:377
+#: ../setup/main.py:415
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "為 %s 選取鍵盤快捷鍵"
 
 #. Translators: Title of the window
-#: ../setup/main.py:379
+#: ../setup/main.py:417
 msgid "switching input methods"
 msgstr "切換輸入法"
 
@@ -736,6 +743,6 @@ msgstr "結束"
 
 #. Translators: If your locale is RTL, the msgstr is "default:RTL".
 #. * Otherwise the msgstr is "default:LTR".
-#: ../ui/gtk3/propertypanel.vala:366
+#: ../ui/gtk3/propertypanel.vala:371
 msgid "default:LTR"
 msgstr "default:LTR"

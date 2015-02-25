@@ -1,6 +1,6 @@
 # translation of ibus.pot to Korean
 # Korean translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -8,6 +8,7 @@
 # eukim <eukim@redhat.com>, 2009
 # eukim <eukim@redhat.com>, 2012
 # Hyunsok Oh <hoh@redhat.com>, 2010
+# lego37yoon <lego37yoon@outlook.com>, 2014
 # Michelle Kim <mkim33@gmail.com>, 2012-2014
 # Seong-ho Cho <darkcircle.0426@gmail.com>, 2014
 msgid ""
@@ -15,8 +16,8 @@ msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
 "POT-Creation-Date: 2014-07-18 13:09+0900\n"
-"PO-Revision-Date: 2014-08-02 10:03+0000\n"
-"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
+"PO-Revision-Date: 2014-12-21 11:47+0000\n"
+"Last-Translator: lego37yoon <lego37yoon@outlook.com>\n"
 "Language-Team: Korean <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -309,15 +310,15 @@ msgstr "저장된 버전 번호"
 msgid ""
 "The saved version number will be used to check the difference between the "
 "version of the previous installed ibus and one of the current ibus."
-msgstr ""
+msgstr "저장된 버전 번호는 이전에 설치된 Ibus 입력기와의 다른점을 비교하는 데 사용됩니다."
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Latin layouts which have no ASCII"
-msgstr ""
+msgstr "ASCII가 없는 라틴어 레이아웃"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "US layout is appended to the latin layouts. variant can be omitted."
-msgstr ""
+msgstr "US 레이아웃이 라틴어 레인아웃에 추가되었습니다. 변형된 것은 생략될 수 있습니다."
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Use xmodmap"
@@ -520,7 +521,7 @@ msgstr "취소(_C)"
 
 #: ../setup/enginedialog.py:203
 msgid "More…"
-msgstr ""
+msgstr "더보기..."
 
 #: ../setup/enginetreeview.py:94
 msgid "Kbd"
@@ -625,23 +626,23 @@ msgstr "글로벌 엔진의 취득에 실패했습니다.\n"
 
 #: ../tools/main.vala:210
 msgid "Read the system registry cache."
-msgstr ""
+msgstr "시스템 레지스트리 캐시 읽어들이기"
 
 #: ../tools/main.vala:212
 msgid "Read the registry cache FILE."
-msgstr ""
+msgstr "레지스트리 캐시 파일 읽어들이기"
 
 #: ../tools/main.vala:230 ../tools/main.vala:235
 msgid "The registry cache is invalid.\n"
-msgstr ""
+msgstr "레지스트리 캐시가 잘못되었습니다.\n"
 
 #: ../tools/main.vala:250
 msgid "Write the system registry cache."
-msgstr ""
+msgstr "시스템 레지스트리 캐시 쓰기"
 
 #: ../tools/main.vala:252
 msgid "Write the registry cache FILE."
-msgstr ""
+msgstr "레지스트리 캐시파일 쓰기"
 
 #: ../tools/main.vala:304
 msgid "Resetting…"
@@ -653,7 +654,7 @@ msgstr "완료"
 
 #: ../tools/main.vala:337
 msgid "Set or get engine"
-msgstr ""
+msgstr "엔진을 설정하거나 얻기"
 
 #: ../tools/main.vala:338
 msgid "Exit ibus-daemon"
