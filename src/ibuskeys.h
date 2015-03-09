@@ -74,5 +74,38 @@ guint            ibus_unicode_to_keyval (gunichar        wc);
  **/
 gunichar         ibus_keyval_to_unicode (guint           keyval);
 
+/**
+ * ibus_keyval_to_upper:
+ * @keyval: a key value.
+ *
+ * Converts a key value to upper case, if applicable.
+ *
+ * Returns: the upper case form of @keyval, or @keyval itself if it is already
+ *   in upper case or it is not subject to case conversion.
+ */
+guint            ibus_keyval_to_upper (guint keyval);
+
+/**
+ * ibus_keyval_to_lower:
+ * @keyval: a key value.
+ *
+ * Converts a key value to lower case, if applicable.
+ *
+ * Returns: the lower case form of @keyval, or @keyval itself if it is already
+ *  in lower case or it is not subject to case conversion.
+ */
+guint            ibus_keyval_to_lower (guint keyval);
+
+/**
+ * ibus_keyval_convert_case:
+ * @symbol: a keyval
+ * @lower: (out): return location for lowercase version of @symbol
+ * @upper: (out): return location for uppercase version of @symbol
+ *
+ * Obtains the upper- and lower-case versions of the keyval @symbol.
+ * Examples of keyvals are #IBUS_KEY_a, #IBUS_KEY_Enter, #IBUS_KEY_F1, etc.
+ */
+void ibus_keyval_convert_case (guint symbol, guint *lower, guint *upper);
+
 G_END_DECLS
 #endif // __IBUS_KEYS_H_

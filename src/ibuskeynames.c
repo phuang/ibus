@@ -31,6 +31,7 @@
 #include <string.h>
 #include "ibuskeysyms.h"
 #include "keyname-table.h"
+#include "ibuskeys.h"
 
 #define IBUS_NUM_KEYS G_N_ELEMENTS (gdk_keys_by_keyval)
 
@@ -196,3 +197,149 @@ _out:
     return retval;
 }
 
+guint
+ibus_keyval_to_upper (guint keyval)
+{
+  guint result;
+
+  ibus_keyval_convert_case (keyval, NULL, &result);
+
+  return result;
+}
+
+guint
+ibus_keyval_to_lower (guint keyval)
+{
+  guint result;
+
+  ibus_keyval_convert_case (keyval, &result, NULL);
+
+  return result;
+}
+
+void
+ibus_keyval_convert_case (guint symbol,
+                         guint *lower,
+                         guint *upper)
+{
+  guint xlower, xupper;
+
+  xlower = symbol;
+  xupper = symbol;
+
+  /* Check for directly encoded 24-bit UCS characters: */
+  if ((symbol & 0xff000000) == 0x01000000)
+    {
+      if (lower)
+        *lower = ibus_unicode_to_keyval (g_unichar_tolower (symbol & 0x00ffffff));
+      if (upper)
+        *upper = ibus_unicode_to_keyval (g_unichar_toupper (symbol & 0x00ffffff));
+      return;
+    }
+
+  switch (symbol >> 8)
+    {
+    case 0: /* Latin 1 */
+      if ((symbol >= IBUS_KEY_A) && (symbol <= IBUS_KEY_Z))
+        xlower += (IBUS_KEY_a - IBUS_KEY_A);
+      else if ((symbol >= IBUS_KEY_a) && (symbol <= IBUS_KEY_z))
+        xupper -= (IBUS_KEY_a - IBUS_KEY_A);
+      else if ((symbol >= IBUS_KEY_Agrave) && (symbol <= IBUS_KEY_Odiaeresis))
+        xlower += (IBUS_KEY_agrave - IBUS_KEY_Agrave);
+      else if ((symbol >= IBUS_KEY_agrave) && (symbol <= IBUS_KEY_odiaeresis))
+        xupper -= (IBUS_KEY_agrave - IBUS_KEY_Agrave);
+      else if ((symbol >= IBUS_KEY_Ooblique) && (symbol <= IBUS_KEY_Thorn))
+        xlower += (IBUS_KEY_oslash - IBUS_KEY_Ooblique);
+      else if ((symbol >= IBUS_KEY_oslash) && (symbol <= IBUS_KEY_thorn))
+        xupper -= (IBUS_KEY_oslash - IBUS_KEY_Ooblique);
+      break;
+
+    case 1: /* Latin 2 */
+      /* Assume the KeySym is a legal value (ignore discontinuities) */
+      if (symbol == IBUS_KEY_Aogonek)
+        xlower = IBUS_KEY_aogonek;
+      else if (symbol >= IBUS_KEY_Lstroke && symbol <= IBUS_KEY_Sacute)
+        xlower += (IBUS_KEY_lstroke - IBUS_KEY_Lstroke);
+      else if (symbol >= IBUS_KEY_Scaron && symbol <= IBUS_KEY_Zacute)
+        xlower += (IBUS_KEY_scaron - IBUS_KEY_Scaron);
+      else if (symbol >= IBUS_KEY_Zcaron && symbol <= IBUS_KEY_Zabovedot)
+        xlower += (IBUS_KEY_zcaron - IBUS_KEY_Zcaron);
+      else if (symbol == IBUS_KEY_aogonek)
+        xupper = IBUS_KEY_Aogonek;
+      else if (symbol >= IBUS_KEY_lstroke && symbol <= IBUS_KEY_sacute)
+        xupper -= (IBUS_KEY_lstroke - IBUS_KEY_Lstroke);
+      else if (symbol >= IBUS_KEY_scaron && symbol <= IBUS_KEY_zacute)
+        xupper -= (IBUS_KEY_scaron - IBUS_KEY_Scaron);
+      else if (symbol >= IBUS_KEY_zcaron && symbol <= IBUS_KEY_zabovedot)
+        xupper -= (IBUS_KEY_zcaron - IBUS_KEY_Zcaron);
+      else if (symbol >= IBUS_KEY_Racute && symbol <= IBUS_KEY_Tcedilla)
+        xlower += (IBUS_KEY_racute - IBUS_KEY_Racute);
+      else if (symbol >= IBUS_KEY_racute && symbol <= IBUS_KEY_tcedilla)
+        xupper -= (IBUS_KEY_racute - IBUS_KEY_Racute);
+      break;
+
+    case 2: /* Latin 3 */
+      /* Assume the KeySym is a legal value (ignore discontinuities) */
+      if (symbol >= IBUS_KEY_Hstroke && symbol <= IBUS_KEY_Hcircumflex)
+        xlower += (IBUS_KEY_hstroke - IBUS_KEY_Hstroke);
+      else if (symbol >= IBUS_KEY_Gbreve && symbol <= IBUS_KEY_Jcircumflex)
+        xlower += (IBUS_KEY_gbreve - IBUS_KEY_Gbreve);
+      else if (symbol >= IBUS_KEY_hstroke && symbol <= IBUS_KEY_hcircumflex)
+        xupper -= (IBUS_KEY_hstroke - IBUS_KEY_Hstroke);
+      else if (symbol >= IBUS_KEY_gbreve && symbol <= IBUS_KEY_jcircumflex)
+        xupper -= (IBUS_KEY_gbreve - IBUS_KEY_Gbreve);
+      else if (symbol >= IBUS_KEY_Cabovedot && symbol <= IBUS_KEY_Scircumflex)
+        xlower += (IBUS_KEY_cabovedot - IBUS_KEY_Cabovedot);
+      else if (symbol >= IBUS_KEY_cabovedot && symbol <= IBUS_KEY_scircumflex)
+        xupper -= (IBUS_KEY_cabovedot - IBUS_KEY_Cabovedot);
+      break;
+
+    case 3: /* Latin 4 */
+      /* Assume the KeySym is a legal value (ignore discontinuities) */
+      if (symbol >= IBUS_KEY_Rcedilla && symbol <= IBUS_KEY_Tslash)
+        xlower += (IBUS_KEY_rcedilla - IBUS_KEY_Rcedilla);
+      else if (symbol >= IBUS_KEY_rcedilla && symbol <= IBUS_KEY_tslash)
+        xupper -= (IBUS_KEY_rcedilla - IBUS_KEY_Rcedilla);
+      else if (symbol == IBUS_KEY_ENG)
+        xlower = IBUS_KEY_eng;
+      else if (symbol == IBUS_KEY_eng)
+        xupper = IBUS_KEY_ENG;
+      else if (symbol >= IBUS_KEY_Amacron && symbol <= IBUS_KEY_Umacron)
+        xlower += (IBUS_KEY_amacron - IBUS_KEY_Amacron);
+      else if (symbol >= IBUS_KEY_amacron && symbol <= IBUS_KEY_umacron)
+        xupper -= (IBUS_KEY_amacron - IBUS_KEY_Amacron);
+      break;
+
+    case 6: /* Cyrillic */
+      /* Assume the KeySym is a legal value (ignore discontinuities) */
+      if (symbol >= IBUS_KEY_Serbian_DJE && symbol <= IBUS_KEY_Serbian_DZE)
+        xlower -= (IBUS_KEY_Serbian_DJE - IBUS_KEY_Serbian_dje);
+      else if (symbol >= IBUS_KEY_Serbian_dje && symbol <= IBUS_KEY_Serbian_dze)
+        xupper += (IBUS_KEY_Serbian_DJE - IBUS_KEY_Serbian_dje);
+      else if (symbol >= IBUS_KEY_Cyrillic_YU && symbol <= IBUS_KEY_Cyrillic_HARDSIGN)
+        xlower -= (IBUS_KEY_Cyrillic_YU - IBUS_KEY_Cyrillic_yu);
+      else if (symbol >= IBUS_KEY_Cyrillic_yu && symbol <= IBUS_KEY_Cyrillic_hardsign)
+        xupper += (IBUS_KEY_Cyrillic_YU - IBUS_KEY_Cyrillic_yu);
+      break;
+
+    case 7: /* Greek */
+      /* Assume the KeySym is a legal value (ignore discontinuities) */
+      if (symbol >= IBUS_KEY_Greek_ALPHAaccent && symbol <= IBUS_KEY_Greek_OMEGAaccent)
+        xlower += (IBUS_KEY_Greek_alphaaccent - IBUS_KEY_Greek_ALPHAaccent);
+      else if (symbol >= IBUS_KEY_Greek_alphaaccent && symbol <= IBUS_KEY_Greek_omegaaccent &&
+               symbol != IBUS_KEY_Greek_iotaaccentdieresis &&
+               symbol != IBUS_KEY_Greek_upsilonaccentdieresis)
+        xupper -= (IBUS_KEY_Greek_alphaaccent - IBUS_KEY_Greek_ALPHAaccent);
+      else if (symbol >= IBUS_KEY_Greek_ALPHA && symbol <= IBUS_KEY_Greek_OMEGA)
+        xlower += (IBUS_KEY_Greek_alpha - IBUS_KEY_Greek_ALPHA);
+      else if (symbol >= IBUS_KEY_Greek_alpha && symbol <= IBUS_KEY_Greek_omega &&
+               symbol != IBUS_KEY_Greek_finalsmallsigma)
+        xupper -= (IBUS_KEY_Greek_alpha - IBUS_KEY_Greek_ALPHA);
+      break;
+    }
+
+  if (lower)
+    *lower = xlower;
+  if (upper)
+    *upper = xupper;
+}
