@@ -625,6 +625,18 @@
                         <icon>ibus-keyboard</icon>
 			<rank>99</rank>
 		</engine>
+                <engine>
+                        <name>xkb:se:svdvorak:swe</name>
+                        <language>swe</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>se</layout>
+                        <layout_variant>svdvorak</layout_variant>
+                        <longname>Swedish (Svdvorak)</longname>
+                        <description>Swedish (Svdvorak)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>99</rank>
+                </engine>
 		<engine>
 			<name>xkb:ch::ger</name>
 			<language>ger</language>
