@@ -30,7 +30,7 @@
 			<longname>English (US, international with dead keys)</longname>
 			<description>English (US, international with dead keys)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:us:colemak:eng</name>
@@ -42,7 +42,7 @@
 			<longname>English (Colemak)</longname>
 			<description>English (Colemak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:us:dvorak:eng</name>
@@ -54,7 +54,7 @@
 			<longname>English (Dvorak)</longname>
 			<description>English (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:us:altgr-intl:eng</name>
@@ -66,7 +66,7 @@
 			<longname>English (international AltGr dead keys)</longname>
 			<description>English (international AltGr dead keys)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:ara::ara</name>
@@ -88,7 +88,7 @@
 			<longname>Belgian</longname>
 			<description>Belgian</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:be::nld</name>
@@ -110,7 +110,7 @@
 			<longname>Belgian</longname>
 			<description>Belgian</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:br::por</name>
@@ -133,7 +133,7 @@
 			<longname>Portuguese (Brazil, Dvorak)</longname>
 			<description>Portuguese (Brazil, Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:bg::bul</name>
@@ -167,7 +167,7 @@
 			<longname>French (Canada)</longname>
 			<description>French (Canada)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:ca:eng:eng</name>
@@ -179,7 +179,7 @@
 			<longname>English (Canada)</longname>
 			<description>English (Canada)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:hr::scr</name>
@@ -269,7 +269,7 @@
                         <longname>French (alternative)</longname>
                         <description>French (alternative)</description>
                         <icon>ibus-keyboard</icon>
-                        <rank>99</rank>
+                        <rank>1</rank>
                 </engine>
                 <engine>
                         <name>xkb:fr:bepo:fra</name>
@@ -281,7 +281,7 @@
                         <longname>French (Bepo, ergonomic, Dvorak way)</longname>
                         <description>French (Bepo, ergonomic, Dvorak way)</description>
                         <icon>ibus-keyboard</icon>
-                        <rank>99</rank>
+                        <rank>1</rank>
                 </engine>
                 <engine>
                         <name>xkb:fr:dvorak:fra</name>
@@ -316,7 +316,7 @@
 			<longname>German (Dvorak)</longname>
 			<description>German (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:de:neo:ger</name>
@@ -328,7 +328,7 @@
 			<longname>German (Neo 2)</longname>
 			<description>German (Neo 2)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
                 <engine>
                         <name>xkb:de:nodeadkeys:ger</name>
@@ -340,7 +340,7 @@
                         <longname>German (eliminate dead keys)</longname>
                         <description>German (eliminate dead keys)</description>
                         <icon>ibus-keyboard</icon>
-                        <rank>99</rank>
+                        <rank>1</rank>
                 </engine>
 		<engine>
 			<name>xkb:gr::gre</name>
@@ -395,7 +395,7 @@
 			<longname>Japanese</longname>
 			<description>Japanese</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:latam::spa</name>
@@ -406,7 +406,7 @@
 			<longname>Spanish (Latin American)</longname>
 			<description>Spanish (Latin American)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:lt::lit</name>
@@ -452,7 +452,7 @@
 			<longname>Norwegian (Dvorak)</longname>
 			<description>Norwegian (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:pl::pol</name>
@@ -475,7 +475,7 @@
 			<longname>Polish (Dvorak)</longname>
 			<description>Polish (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
                 <engine>
                         <name>xkb:pl:qwertz:pol</name>
@@ -532,7 +532,7 @@
 			<longname>Russian (phonetic)</longname>
 			<description>Russian (phonetic)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:rs::srp</name>
@@ -623,7 +623,7 @@
 			<longname>Swedish (Dvorak)</longname>
 			<description>Swedish (Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
                 <engine>
                         <name>xkb:se:svdvorak:swe</name>
@@ -635,7 +635,7 @@
                         <longname>Swedish (Svdvorak)</longname>
                         <description>Swedish (Svdvorak)</description>
                         <icon>ibus-keyboard</icon>
-                        <rank>99</rank>
+                        <rank>1</rank>
                 </engine>
 		<engine>
 			<name>xkb:ch::ger</name>
@@ -646,7 +646,7 @@
 			<longname>German (Switzerland)</longname>
 			<description>German (Switzerland)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:ch:fr:fra</name>
@@ -658,7 +658,7 @@
 			<longname>French (Switzerland)</longname>
 			<description>French (Switzerland)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:tr::tur</name>
@@ -692,7 +692,7 @@
 			<longname>English (UK, extended WinKeys)</longname>
 			<description>English (UK, extended WinKeys)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 		<engine>
 			<name>xkb:gb:dvorak:eng</name>
@@ -704,7 +704,7 @@
 			<longname>English (UK, Dvorak)</longname>
 			<description>English (UK, Dvorak)</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
+			<rank>1</rank>
 		</engine>
 	</engines>
 </component>
