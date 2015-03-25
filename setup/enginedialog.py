@@ -3,9 +3,9 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2013-2014 Red Hat, Inc.
+# Copyright (c) 2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2013-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -29,6 +29,7 @@ from gi.repository import IBus
 
 import functools
 import gettext
+import i18n
 import locale
 
 from icon import load_icon
@@ -227,10 +228,13 @@ class EngineDialog(Gtk.Dialog):
 
 
     def __engine_row_new(self, engine):
-        row = self.__list_box_row_new(engine.get_longname())
-        row.set_tooltip_text(engine.get_description())
+        longname = i18n.gettext_engine_longname(engine)
+        description = i18n.gettext_engine_description(engine)
+        row = self.__list_box_row_new(longname)
+        row.untrans = engine.get_longname()
+        row.set_tooltip_text(description)
         row.engine = engine
-        widget = self.__padded_label_new(engine.get_longname(),
+        widget = self.__padded_label_new(longname,
                                          engine.get_icon(),
                                          Gtk.Align.START,
                                          ROW_TRAVEL_DIRECTION_NONE)
@@ -257,7 +261,9 @@ class EngineDialog(Gtk.Dialog):
 
         def cmp_engine(a, b):
             if a.get_rank() == b.get_rank():
-                return locale.strcoll(a.get_longname(), b.get_longname())
+                a_longname = i18n.gettext_engine_longname(a)
+                b_longname = i18n.gettext_engine_longname(b)
+                return locale.strcoll(a_longname, b_longname)
             return int(b.get_rank() - a.get_rank())
 
         self.__engines_for_lang[lang].sort(
@@ -294,6 +300,7 @@ class EngineDialog(Gtk.Dialog):
         self.__list.add(row)
         self.__add_engine_rows_for_lang(row)
         self.__list.show_all()
+        self.__adjustment.set_value(self.__adjustment.get_lower())
 
 
     def __do_filter(self):
@@ -321,24 +328,14 @@ class EngineDialog(Gtk.Dialog):
                 l = ''
             if l not in self.__engines_for_lang:
                 self.__engines_for_lang[l] = []
+            i18n.init_textdomain(e.get_textdomain())
             self.__engines_for_lang[l].append(e)
 
             # Retrieve Untranslated language names.
-            backup_locale = locale.setlocale(locale.LC_ALL, None)
-            def __set_untrans_with_locale(en_locale):
-                locale.setlocale(locale.LC_ALL, en_locale)
-                untrans = IBus.get_language_name(e.get_language())
-                if untrans == None:
-                    untrans = ''
-                self.__untrans_for_lang[l] = untrans
-            try:
-                __set_untrans_with_locale('en_US.UTF-8')
-            except locale.Error:
-                try:
-                    __set_untrans_with_locale('C')
-                except locale.Error:
-                    pass
-            locale.setlocale(locale.LC_ALL, backup_locale)
+            untrans = IBus.get_untranslated_language_name(e.get_language())
+            if untrans == None:
+                untrans = ''
+            self.__untrans_for_lang[l] = untrans
 
         keys = list(self.__engines_for_lang.keys())
         keys.sort(key=functools.cmp_to_key(locale.strcoll))

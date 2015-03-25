@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -39,13 +39,14 @@ from gi.repository import Gtk
 from gi.repository import IBus
 from os import path
 
+import i18n
 import keyboardshortcut
 import locale
 from enginecombobox import EngineComboBox
 from enginedialog import EngineDialog
 from enginetreeview import EngineTreeView
 from engineabout import EngineAbout
-from i18n import DOMAINNAME, _, N_, init as i18n_init
+from i18n import DOMAINNAME, _, N_
 
 (
     COLUMN_NAME,
@@ -543,6 +544,7 @@ if __name__ == "__main__":
         print("Using the fallback 'C' locale", file=sys.stderr)
         locale.setlocale(locale.LC_ALL, 'C')
 
-    i18n_init()
+    i18n.init_textdomain(DOMAINNAME)
+    i18n.init_textdomain('xkeyboard-config')
     setup = Setup()
     setup.run()

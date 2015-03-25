@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,8 @@ from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import IBus
 from gi.repository import Pango
+
+import i18n
 
 from icon import load_icon
 from i18n import _, N_
@@ -106,8 +108,10 @@ class EngineTreeView(Gtk.TreeView):
         engine_b = model[b][0]
         language_a = IBus.get_language_name(engine_a.get_language())
         language_b = IBus.get_language_name(engine_b.get_language())
-        label_a = "%s - %s" % (language_a, engine_a.get_longname())
-        label_b = "%s - %s" % (language_b, engine_b.get_longname())
+        longname_a = i18n.gettext_engine_longname(engine_a)
+        longname_b = i18n.gettext_engine_longname(engine_b)
+        label_a = "%s - %s" % (language_a, longname_a)
+        label_b = "%s - %s" % (language_b, longname_b)
         # http://docs.python.org/3.0/whatsnew/3.0.html#ordering-comparisons
         return (label_a > label_b) - (label_a < label_b)
 
@@ -149,8 +153,9 @@ class EngineTreeView(Gtk.TreeView):
 
         renderer.set_property("sensitive", True)
         language = IBus.get_language_name(engine.get_language())
+        longname = i18n.gettext_engine_longname(engine)
         renderer.set_property("text",
-                "%s - %s" % (language, engine.get_longname()))
+                "%s - %s" % (language, longname))
         renderer.set_property("weight", Pango.Weight.NORMAL)
 
     def __layout_cell_data_cb(self, celllayout, renderer, model, it, data):
@@ -196,6 +201,7 @@ class EngineTreeView(Gtk.TreeView):
             if e in self.__engines:
                 continue
             it = self.__model.append(None)
+            i18n.init_textdomain(e.get_textdomain())
             self.__model.set(it, 0, e)
             self.__engines.append(e)
         self.__emit_changed()

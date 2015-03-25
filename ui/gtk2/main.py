@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright(c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright(c) 2007-2010 Red Hat, Inc.
+# Copyright(c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright(c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,7 @@ import gtk
 import gettext
 import panel
 import pynotify
-from i18n import _, N_
+from i18n import DOMAINNAME, _, N_
 
 class UIApplication:
     def __init__ (self, replace):
@@ -128,5 +128,5 @@ def main():
 
 if __name__ == "__main__":
     import i18n
-    i18n.init()
+    i18n.init_textdomain(DOMAINNAME)
     main()

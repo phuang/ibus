@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright(c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright(c) 2007-2010 Google, Inc.
+# Copyright(c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright(c) 2007-2015 Google, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -29,15 +29,35 @@ DOMAINNAME = "ibus10"
 _ = lambda a: gettext.dgettext(DOMAINNAME, a)
 N_ = lambda a: a
 
-def init():
-    localedir = os.getenv("IBUS_LOCALEDIR")
+LOCALEDIR = os.getenv("IBUS_LOCALEDIR")
+
+def init_textdomain(domainname):
+    if domainname == '':
+        return
     # Python's locale module doesn't provide all methods on some
     # operating systems like FreeBSD
     try:
-        # for non-standard localedir
-        locale.bindtextdomain(DOMAINNAME, localedir)
-        locale.bind_textdomain_codeset(DOMAINNAME, "UTF-8")
+        locale.bindtextdomain(domainname, LOCALEDIR)
+        locale.bind_textdomain_codeset(domainname, 'UTF-8')
     except AttributeError:
         pass
-    gettext.bindtextdomain(DOMAINNAME, localedir)
-    gettext.bind_textdomain_codeset(DOMAINNAME, "UTF-8")
+    gettext.bindtextdomain(domainname, LOCALEDIR)
+    gettext.bind_textdomain_codeset(domainname, 'UTF-8')
+
+def gettext_engine_longname(engine):
+    name = engine.get_name()
+    if (name.startswith('xkb:')):
+        return gettext.dgettext('xkeyboard-config', engine.get_longname())
+    textdomain = engine.get_textdomain()
+    if textdomain == '':
+        return engine.get_longname()
+    return gettext.dgettext(textdomain, engine.get_longname())
+
+def gettext_engine_description(engine):
+    name = engine.get_name()
+    if (name.startswith('xkb:')):
+        return gettext.dgettext('xkeyboard-config', engine.get_description())
+    textdomain = engine.get_textdomain()
+    if textdomain == '':
+        return engine.get_description()
+    return gettext.dgettext(textdomain, engine.get_description())

@@ -1,9 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2013 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,9 +37,17 @@
  */
 
 /**
+ * ibus_get_untranslated_language_name:
+ * @_locale: A const locale name.
+ * @returns: untranslated language name
+ */
+const gchar *    ibus_get_untranslated_language_name
+                                                (const gchar    *_locale);
+
+/**
  * ibus_get_language_name:
  * @_locale: A const locale name.
- * @returns: language name
+ * @returns: translated language name
  */
 const gchar *    ibus_get_language_name         (const gchar    *_locale);
 
