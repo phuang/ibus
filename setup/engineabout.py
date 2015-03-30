@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,8 @@ from gi.repository import Gdk
 from gi.repository import GdkPixbuf
 from gi.repository import Gtk
 from gi.repository import Pango
+
+import i18n
 
 from i18n import _, N_
 
@@ -64,7 +66,7 @@ class EngineAbout(Gtk.Dialog):
         text_buffer.insert_pixbuf(iter,
                 self.__load_icon(self.__engine_desc.get_icon()))
         text_buffer.insert_with_tags_by_name(iter,
-                "\n%s\n" % self.__engine_desc.get_longname(),
+                "\n%s\n" % i18n.gettext_engine_longname(self.__engine_desc),
                 "heading", "left_margin_16")
         text_buffer.insert_with_tags_by_name(iter,
                 _("Language: %s\n") % IBus.get_language_name(self.__engine_desc.get_language()),
@@ -78,7 +80,7 @@ class EngineAbout(Gtk.Dialog):
         text_buffer.insert_with_tags_by_name(iter,
                 _("Description:\n"), "small", "bold", "left_margin_16")
         text_buffer.insert_with_tags_by_name(iter,
-                self.__engine_desc.get_description(),
+                i18n.gettext_engine_description(self.__engine_desc),
                 "wrap_text", "left_margin_32")
 
 
