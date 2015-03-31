@@ -2,9 +2,9 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2013-2014 Red Hat, Inc.
- * Copyright(c) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2013-2014 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2013-2015 Red Hat, Inc.
+ * Copyright(c) 2013-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2013-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,8 @@ enum PanelShow {
 }
 
 public class PropertyPanel : Gtk.Box {
+    private unowned Gdk.Window m_root_window;
+    private unowned X.Display m_xdisplay;
     private Gtk.Window m_toplevel;
     private IBus.PropList m_props;
     private IPropToolItem[] m_items;
@@ -38,6 +40,7 @@ public class PropertyPanel : Gtk.Box {
     private uint m_auto_hide_timeout = 10000;
     private uint m_auto_hide_timeout_id = 0;
     private bool m_follow_input_cursor_when_always_shown = false;
+    private const uint MONITOR_NET_WORKAREA_TIMEOUT = 60000;
 
     public PropertyPanel() {
         /* Chain up base class constructor */
@@ -45,6 +48,14 @@ public class PropertyPanel : Gtk.Box {
                     spacing: 0);
 
         set_visible(true);
+
+        m_root_window = Gdk.get_default_root_window();
+        unowned Gdk.Display display = m_root_window.get_display();
+#if VALA_0_24
+        m_xdisplay = (display as Gdk.X11.Display).get_xdisplay();
+#else
+        m_xdisplay = Gdk.X11Display.get_xdisplay(display);
+#endif
 
         m_toplevel = new Gtk.Window(Gtk.WindowType.POPUP);
         m_toplevel.add_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -64,6 +75,10 @@ public class PropertyPanel : Gtk.Box {
                 m_cursor_location.y = 0;
             }
         });
+
+        // PropertyPanel runs before KDE5 panel runs and
+        // monitor the desktop size.
+        monitor_net_workarea_atom();
     }
 
     public void set_properties(IBus.PropList props) {
@@ -294,9 +309,8 @@ public class PropertyPanel : Gtk.Box {
             cursor_right_bottom.y + allocation.height
         };
 
-        Gdk.Window root = Gdk.get_default_root_window();
-        int root_width = root.get_width();
-        int root_height = root.get_height();
+        int root_width = m_root_window.get_width();
+        int root_height = m_root_window.get_height();
 
         int x, y;
         if (window_right_bottom.x > root_width)
@@ -312,71 +326,123 @@ public class PropertyPanel : Gtk.Box {
         move(x, y);
     }
 
+    private bool is_bottom_panel() {
+        string desktop = Environment.get_variable("XDG_CURRENT_DESKTOP");
+        // LXDE has not implemented DesktopNames yet.
+        if (desktop == null)
+            desktop = Environment.get_variable("XDG_SESSION_DESKTOP");
+        switch (desktop) {
+            case "KDE":         return true;
+            case "LXDE":        return true;
+            default:            return false;
+        }
+    }
+
     private void set_default_location() {
         Gtk.Allocation allocation;
         m_toplevel.get_allocation(out allocation);
 
-        unowned Gdk.Window root = Gdk.get_default_root_window();
-        int root_width = root.get_width();
+        int root_width = m_root_window.get_width();
+        int root_height = m_root_window.get_height();
         int root_x = 0;
         int root_y = 0;
         int ws_num = 0;
 
-        unowned Gdk.Display display = root.get_display();
 #if VALA_0_24
-        unowned X.Display xdisplay =
-                (display as Gdk.X11.Display).get_xdisplay();
-        X.Window xwindow = (root as Gdk.X11.Window).get_xid();
+        X.Window xwindow = (m_root_window as Gdk.X11.Window).get_xid();
 #else
-        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
-        X.Window xwindow = Gdk.X11Window.get_xid(root);
+        X.Window xwindow = Gdk.X11Window.get_xid(m_root_window);
 #endif
         X.Atom _net_current_desktop =
-                xdisplay.intern_atom("_NET_CURRENT_DESKTOP", false);
+                m_xdisplay.intern_atom("_NET_CURRENT_DESKTOP", false);
         X.Atom type = X.None;
         int format;
         ulong nitems = 0;
         ulong bytes_after;
         void *prop;
-        xdisplay.get_window_property(xwindow,
-                                     _net_current_desktop,
-                                     0, 32, false, X.XA_CARDINAL,
-                                     out type, out format,
-                                     out nitems, out bytes_after,
-                                     out prop);
+        m_xdisplay.get_window_property(xwindow,
+                                      _net_current_desktop,
+                                      0, 32, false, X.XA_CARDINAL,
+                                      out type, out format,
+                                      out nitems, out bytes_after,
+                                      out prop);
 
         if (type != X.None && nitems >= 1)
             ws_num = (int) ((ulong *)prop)[0];
 
         X.Atom _net_workarea =
-                xdisplay.intern_atom("_NET_WORKAREA", false);
+                m_xdisplay.intern_atom("_NET_WORKAREA", false);
         type = X.None;
         nitems = 0;
 
-        xdisplay.get_window_property(xwindow,
-                                     _net_workarea,
-                                     0, 32, false, X.XA_CARDINAL,
-                                     out type, out format,
-                                     out nitems, out bytes_after,
-                                     out prop);
+        m_xdisplay.get_window_property(xwindow,
+                                      _net_workarea,
+                                      0, 32, false, X.XA_CARDINAL,
+                                      out type, out format,
+                                      out nitems, out bytes_after,
+                                      out prop);
 
-        if (type != X.None && nitems >= 2) {
-            root_x = (int) ((ulong *)prop)[ws_num * 4];
-            root_y = (int) ((ulong *)prop)[ws_num * 4 + 1];
+        if (type != X.None) {
+            if (nitems >= 2) {
+                root_x = (int) ((ulong *)prop)[ws_num * 4];
+                root_y = (int) ((ulong *)prop)[ws_num * 4 + 1];
+            }
+            if (nitems >= 4) {
+                root_width = (int) ((ulong *)prop)[ws_num * 4 + 2];
+                root_height = (int) ((ulong *)prop)[ws_num * 4 + 3];
+            }
         }
 
         int x, y;
-        /* Translators: If your locale is RTL, the msgstr is "default:RTL".
-         * Otherwise the msgstr is "default:LTR". */
-        if (_("default:LTR") != "default:RTL") {
-            x = root_width - allocation.width;
-            y = root_y;
+        if (is_bottom_panel()) {
+            /* Translators: If your locale is RTL, the msgstr is "default:RTL".
+             * Otherwise the msgstr is "default:LTR". */
+            if (_("default:LTR") != "default:RTL") {
+                x = root_width - allocation.width;
+                y = root_height - allocation.height;
+            } else {
+                x = root_x;
+                y = root_height - allocation.height;
+            }
         } else {
-            x = root_x;
-            y = root_y;
+            if (_("default:LTR") != "default:RTL") {
+                x = root_width - allocation.width;
+                y = root_y;
+            } else {
+                x = root_x;
+                y = root_y;
+            }
         }
 
         move(x, y);
+    }
+
+    private Gdk.FilterReturn root_window_filter(Gdk.XEvent gdkxevent,
+                                                Gdk.Event  event) {
+        X.Event *xevent = (X.Event*) gdkxevent;
+        if (xevent.type == X.EventType.PropertyNotify) {
+            string aname = m_xdisplay.get_atom_name(xevent.xproperty.atom);
+            if (aname == "_NET_WORKAREA" && xevent.xproperty.state == 0) {
+                set_default_location();
+                return Gdk.FilterReturn.CONTINUE;
+            }
+        }
+        return Gdk.FilterReturn.CONTINUE;
+    }
+
+    private void monitor_net_workarea_atom() {
+        Gdk.EventMask events = m_root_window.get_events();
+        if ((events & Gdk.EventMask.PROPERTY_CHANGE_MASK) == 0)
+            m_root_window.set_events (events |
+                                      Gdk.EventMask.PROPERTY_CHANGE_MASK);
+
+        m_root_window.add_filter(root_window_filter);
+
+        GLib.Timeout.add(MONITOR_NET_WORKAREA_TIMEOUT, () => {
+            m_root_window.remove_filter(root_window_filter);
+            return false;
+        },
+        GLib.Priority.DEFAULT_IDLE);
     }
 
     private void show_with_auto_hide_timer() {
@@ -568,10 +634,12 @@ public class PropToolButton : Gtk.ToolButton, IPropToolItem {
     private IBus.Property m_prop = null;
 
     public PropToolButton(IBus.Property prop) {
-        string label = prop.get_symbol().get_text();
-
-        /* Chain up base class constructor */
-        GLib.Object(label: label);
+        /* Chain up base class constructor
+         *
+         * If the constructor sets "label" property, "halign" property
+         * does not work in KDE5 so use sync() for the label.
+         */
+        GLib.Object(halign: Gtk.Align.START);
 
         m_prop = prop;
 
@@ -627,8 +695,11 @@ public class PropToggleToolButton : Gtk.ToggleToolButton, IPropToolItem {
     private IBus.Property m_prop = null;
 
     public PropToggleToolButton(IBus.Property prop) {
-        /* Chain up base class constructor */
-        GLib.Object();
+        /* Chain up base class constructor
+         *
+         * Need to set halign for KDE5
+         */
+        GLib.Object(halign: Gtk.Align.START);
 
         m_prop = prop;
 
@@ -706,8 +777,11 @@ public class PropMenuToolButton : PropToggleToolButton, IPropToolItem {
     private PropMenu m_menu = null;
 
     public PropMenuToolButton(IBus.Property prop) {
-        /* Chain up base class constructor */
-        GLib.Object();
+        /* Chain up base class constructor
+         *
+         * Need to set halign for KDE5
+         */
+        GLib.Object(halign: Gtk.Align.START);
 
         m_menu = new PropMenu(prop);
         m_menu.deactivate.connect((m) =>
