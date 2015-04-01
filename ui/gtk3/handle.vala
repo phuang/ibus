@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,6 +36,19 @@ class Handle : Gtk.EventBox {
                              Gdk.EventMask.BUTTON1_MOTION_MASK;
         set_events(mask);
         m_move_begined = false;
+
+        // Currently it is too hard to notice this Handle on PropertyPanel
+        // so now this widget is drawn by the gray color for the visibility.
+        Gtk.CssProvider css_provider = new Gtk.CssProvider();
+        try {
+            css_provider.load_from_data(
+                    "GtkEventBox { background-color: gray }", -1);
+        } catch (GLib.Error error) {
+            warning("Parse error in Handle: %s", error.message);
+        }
+        Gtk.StyleContext context = get_style_context();
+        context.add_provider(css_provider,
+                             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void realize() {
