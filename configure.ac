@@ -270,9 +270,25 @@ else
     enable_wayland="no (disabled, use --enable-wayland to enable)"
 fi
 
+enable_appindicator_engine_icon="no"
 if test x"$enable_appindicator" = x"yes"; then
     enable_appindicator="yes (enabled, use --disable-appindicator to disable)"
+
+    # Need qt5-qtbase-devel package
+    # There is no way to check the version of KStatusNotifierItem and
+    # check the version of qtbase here.
+    AC_MSG_CHECKING([for KDE5 appindicator engine icon])
+    PKG_CHECK_EXISTS([Qt5Gui >= 5.4],
+        enable_appindicator_engine_icon="yes"
+    )
+    AC_MSG_RESULT([$enable_appindicator_engine_icon])
+
 fi
+if test x"$enable_appindicator_engine_icon" != x"yes" ; then
+    enable_appindicator_engine_icon="no (disabled, need qtbase-devel 5.4 or later)"
+fi
+AM_CONDITIONAL([ENABLE_APPINDICATOR_ENGINE_ICON],
+               [test x"$enable_appindicator_engine_icon" = x"yes"])
 
 # GObject introspection
 GOBJECT_INTROSPECTION_CHECK([0.6.8])
@@ -639,6 +655,7 @@ Build options:
   Build XIM agent server        $enable_xim
   Build wayland support         $enable_wayland
   Build appindicator support    $enable_appindicator
+  Build appindicator engine icon $enable_appindicator_engine_icon
   Build python library          $enable_python_library
   Build gconf modules           $enable_gconf
   Build memconf modules         $enable_memconf

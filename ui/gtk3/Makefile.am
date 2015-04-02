@@ -98,6 +98,10 @@ if ENABLE_APPINDICATOR
 AM_VALAFLAGS += --define=INDICATOR
 endif
 
+if ENABLE_APPINDICATOR_ENGINE_ICON
+AM_VALAFLAGS += --define=INDICATOR_ENGINE_ICON
+endif
+
 libexec_PROGRAMS = ibus-ui-gtk3
 
 ibus_ui_gtk3_SOURCES = \
@@ -136,8 +140,8 @@ CLEANFILES = \
 # References:
 # libappindicator/src/notification-item.xml
 # libappindicator/src/notification-watcher.xml
-# knotifications/src/org.kde.StatusNotifierItem.xml
-# knotifications/src/org.kde.StatusNotifierWatcher.xml
+# kdelibs/kdeui/knotifications/src/org.kde.StatusNotifierItem.xml
+# kdelibs/kdeui/knotifications/src/org.kde.StatusNotifierWatcher.xml
 EXTRA_DIST = \
 	gtkpanel.xml.in \
 	notification-item.xml \

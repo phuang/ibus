@@ -1248,9 +1248,15 @@ class Panel : IBus.PanelService {
                 m_status_icon.set_from_file(icon_name);
             }
             else if (m_icon_type == IconType.INDICATOR) {
-                warning("appindicator requires an icon name in a theme " +
-                        "path instead of the full path: %s", icon_name);
+#if INDICATOR_ENGINE_ICON
+                m_indicator.set_icon_full(icon_name, "");
+#else
+                warning("plasma-workspace 5.2 or later is required to " +
+                        "show the absolute path icon %s. Currently check " +
+                        "qtbase 5.4 since there is no way to check " +
+                        "the version of plasma-workspace.", icon_name);
                 m_indicator.set_icon_full("ibus-engine", "");
+#endif
             }
         } else {
             string language = null;
