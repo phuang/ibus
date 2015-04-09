@@ -72,6 +72,9 @@ class Panel : IBus.PanelService {
     private GLib.HashTable<string, Gdk.Pixbuf> m_xkb_icon_pixbufs =
             new GLib.HashTable<string, Gdk.Pixbuf>(GLib.str_hash,
                                                    GLib.str_equal);
+    private GLib.HashTable<string, Cairo.ImageSurface> m_xkb_icon_image =
+            new GLib.HashTable<string, Cairo.ImageSurface>(GLib.str_hash,
+                                                           GLib.str_equal);
     private Gdk.RGBA m_xkb_icon_rgba = Gdk.RGBA(){
             red = 0.0, green = 0.0, blue = 0.0, alpha = 1.0 };
     private XKBLayout m_xkblayout = new XKBLayout();
@@ -649,13 +652,17 @@ class Panel : IBus.PanelService {
         } else
             m_xkb_icon_rgba = rgba;
 
-        if (m_xkb_icon_pixbufs.size() > 0) {
-            m_xkb_icon_pixbufs.remove_all();
+        if (m_icon_type == IconType.STATUS_ICON) {
+            if (m_xkb_icon_pixbufs.size() > 0) {
+                m_xkb_icon_pixbufs.remove_all();
 
-            if (m_icon_type == IconType.STATUS_ICON) {
                 if (m_status_icon != null && m_switcher != null)
                     state_changed();
-            } else if (m_icon_type == IconType.INDICATOR) {
+            }
+        } else if (m_icon_type == IconType.INDICATOR) {
+            if (m_xkb_icon_image.size() > 0) {
+                m_xkb_icon_image.remove_all();
+
                 if (m_indicator != null && m_switcher != null)
                     state_changed();
             }
@@ -962,13 +969,18 @@ class Panel : IBus.PanelService {
         Pango.cairo_show_layout(cr, layout);
     }
 
-    private Gdk.Pixbuf create_icon_pixbuf_with_string(string symbol) {
-        Gdk.Pixbuf pixbuf = m_xkb_icon_pixbufs[symbol];
+    private Cairo.ImageSurface
+    create_cairo_image_surface_with_string(string symbol, bool cache) {
+        Cairo.ImageSurface image = null;
 
-        if (pixbuf != null)
-            return pixbuf;
+        if (cache) {
+            image = m_xkb_icon_image[symbol];
 
-        var image = new Cairo.ImageSurface(Cairo.Format.ARGB32, 48, 48);
+            if (image != null)
+                return image;
+        }
+
+        image = new Cairo.ImageSurface(Cairo.Format.ARGB32, 48, 48);
         var cr = new Cairo.Context(image);
         int width = image.get_width();
         int height = image.get_height();
@@ -978,6 +990,23 @@ class Panel : IBus.PanelService {
         cr.paint();
         cr.set_operator(Cairo.Operator.OVER);
         context_render_string(cr, symbol, width, height);
+        image.flush();
+
+        if (cache)
+            m_xkb_icon_image.insert(symbol, image);
+
+        return image;
+    }
+
+    private Gdk.Pixbuf create_icon_pixbuf_with_string(string symbol) {
+        Gdk.Pixbuf pixbuf = m_xkb_icon_pixbufs[symbol];
+
+        if (pixbuf != null)
+            return pixbuf;
+
+        var image = create_cairo_image_surface_with_string(symbol, false);
+        int width = image.get_width();
+        int height = image.get_height();
         pixbuf = Gdk.pixbuf_get_from_surface(image, 0, 0, width, height);
         m_xkb_icon_pixbufs.insert(symbol, pixbuf);
         return pixbuf;
@@ -1274,8 +1303,10 @@ class Panel : IBus.PanelService {
                     m_status_icon.set_from_pixbuf(pixbuf);
                 }
                 else if (m_icon_type == IconType.INDICATOR) {
-                    /* Appindicator does not support pixbuf. */
-                    m_indicator.set_icon_full(icon_name, "");
+                    Cairo.ImageSurface image =
+                            create_cairo_image_surface_with_string(language,
+                                                                   true);
+                    m_indicator.set_cairo_image_surface_full(image, "");
                 }
             } else {
                 var theme = Gtk.IconTheme.get_default();

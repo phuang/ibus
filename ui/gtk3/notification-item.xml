@@ -7,6 +7,12 @@
                 <property name="Category" type="s" access="read" />
                 <property name="Status" type="s" access="read" />
                 <property name="IconName" type="s" access="read" />
+                <!-- IconPixmap is missed in AppIndicator
+                     struct containing width, height and image data-->
+                <property name="IconPixmap" type="a(iiay)" access="read">
+                        <annotation name="org.qtproject.QtDBus.QtTypeName"
+                                    value="KDbusImageVector" />
+                </property>
                 <property name="IconAccessibleDesc" type="s" access="read" />
                 <property name="AttentionIconName" type="s" access="read" />
                 <property name="AttentionAccessibleDesc" type="s" access="read" />

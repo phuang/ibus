@@ -44,6 +44,7 @@ class Indicator : IBus.Service
     public string label_s { get; set; }
     public string label_guide_s { get; set; }
     public uint32 ordering_index { get; set; }
+    public GLib.Variant icon_vector { get; set; }
 
     public enum Category {
         APPLICATION_STATUS,
@@ -234,6 +235,10 @@ class Indicator : IBus.Service
         return new GLib.Variant.string(this.icon_name);
     }
 
+    private GLib.Variant _get_icon_vector(GLib.DBusConnection connection) {
+        return this.icon_vector;
+    }
+
     private GLib.Variant _get_icon_desc(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_desc);
     }
@@ -318,6 +323,8 @@ class Indicator : IBus.Service
             return _get_status(connection);
         if (property_name == "IconName")
             return _get_icon_name(connection);
+        if (property_name == "IconPixmap")
+            return _get_icon_vector(connection);
         if (property_name == "IconAccessibleDesc")
             return _get_icon_desc(connection);
         if (property_name == "AttentionIconName")
@@ -359,6 +366,12 @@ class Indicator : IBus.Service
         if (this.status_s == status_s)
             return;
         this.status_s = status_s;
+
+        /* This API does not require (this.connection != null)
+         * because service_get_property() can be called when
+         * this.connection emits the "NewStatus" signal or
+         * or m_proxy calls the "RegisterStatusNotifierItem" signal.
+         */
         if (this.connection == null)
             return;
         try {
@@ -377,6 +390,7 @@ class Indicator : IBus.Service
         bool changed = false;
         if (this.icon_name != icon_name) {
             this.icon_name = icon_name;
+            this.icon_vector = null;
             changed = true;
         }
         if (this.icon_desc != icon_desc) {
@@ -385,6 +399,61 @@ class Indicator : IBus.Service
         }
         if (!changed)
             return;
+
+        /* This API does not require (this.connection != null)
+         * because service_get_property() can be called when
+         * this.connection emits the "NewIcon" signal or
+         * or m_proxy calls the "RegisterStatusNotifierItem" signal.
+         */
+        if (this.connection == null)
+            return;
+        try {
+            this.connection.emit_signal(null,
+                                        this.object_path,
+                                        NOTIFICATION_ITEM_DBUS_IFACE,
+                                        "NewIcon",
+                                        null);
+        } catch(GLib.Error e) {
+            warning("Unable to send signal for NewIcon: %s", e.message);
+        }
+    }
+
+    public void set_cairo_image_surface_full(Cairo.ImageSurface image,
+                                             string?            icon_desc) {
+        int width = image.get_width();
+        int height = image.get_height();
+        int stride = image.get_stride();
+        unowned uint[] data = (uint[]) image.get_data();
+        int length = stride * height / (int) sizeof(uint);
+        if (GLib.BYTE_ORDER == GLib.ByteOrder.LITTLE_ENDIAN) {
+            for (int i = 0; i < length; i++)
+                data[i] = data[i].to_big_endian();
+        }
+        unowned uint8[] data8 = (uint8[]) data;
+        data8.length = stride * height;
+        GLib.Bytes bytes = new GLib.Bytes(data8);
+        GLib.Variant bs =
+                new GLib.Variant.from_bytes(GLib.VariantType.BYTESTRING,
+                                            bytes,
+                                            true);
+        GLib.VariantBuilder builder = new GLib.VariantBuilder(
+                new GLib.VariantType("a(iiay)"));
+        builder.open(new GLib.VariantType("(iiay)"));
+        builder.add("i", width);
+        builder.add("i", height);
+        builder.add_value(bs);
+        builder.close();
+        this.icon_vector = new GLib.Variant("a(iiay)", builder);
+        this.icon_name = "";
+
+        if (this.icon_desc != icon_desc)
+            this.icon_desc = icon_desc;
+
+        /* This API does not require (this.connection != null)
+         * because service_get_property() can be called when
+         * this.connection emits the "NewIcon" signal or
+         * or m_proxy calls the "RegisterStatusNotifierItem" signal.
+         */
         if (this.connection == null)
             return;
         try {
