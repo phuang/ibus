@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus
- * Copyright (C) 2008 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * gdk-private.c: Copied some code from gtk2
  *
@@ -52,7 +52,11 @@ translate_key_event (GdkDisplay *display,
 
   event->key.hardware_keycode = xevent->xkey.keycode;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+  event->key.keyval = GDK_KEY_VoidSymbol;
+#else
   event->key.keyval = GDK_VoidSymbol;
+#endif
 
   gdk_keymap_translate_keyboard_state (keymap,
 				       event->key.hardware_keycode,

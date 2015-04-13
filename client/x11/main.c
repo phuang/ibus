@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus
- * Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2007-2010 Red Hat, Inc.
+ * Copyright (C) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2007-2015 Red Hat, Inc.
  *
  * main.c:
  *
@@ -1069,9 +1069,13 @@ _xim_init_IMdkit ()
         sizeof (ims_encodings)/sizeof (XIMEncoding) - 1;
     encodings.supported_encodings = ims_encodings;
 
-    _xims = IMOpenIM(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+    _xims = IMOpenIM (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
         IMModifiers, "Xi18n",
-        IMServerWindow, GDK_WINDOW_XWINDOW(win),
+#if GTK_CHECK_VERSION (3, 0, 0)
+        IMServerWindow, GDK_WINDOW_XID (win),
+#else
+        IMServerWindow, GDK_WINDOW_XWINDOW (win),
+#endif
         IMServerName, _server_name != NULL ? _server_name : "ibus",
         IMLocale, _locale != NULL ? _locale : LOCALES_STRING,
         IMServerTransport, "X/",

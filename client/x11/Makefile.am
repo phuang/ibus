@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,14 @@ libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
 libexec_PROGRAMS = ibus-x11
 
+if ENABLE_GTK3
+GTK_CFLAGS = @GTK3_CFLAGS@
+GTK_LIBS = @GTK3_LIBS@
+else
+GTK_CFLAGS = @GTK2_CFLAGS@
+GTK_LIBS = @GTK2_LIBS@
+endif
+
 ibus_x11_SOURCES = \
 	main.c \
 	gdk-private.c \
@@ -40,12 +48,12 @@ ibus_x11_LDADD = \
 	$(libIMdkit) \
 	$(libibus) \
 	@X11_LIBS@ \
-	@GTK2_LIBS@ \
+	$(GTK_LIBS) \
 	$(NULL)
 
 ibus_x11_CFLAGS = \
 	@X11_CFLAGS@ \
-	@GTK2_CFLAGS@ \
+	$(GTK_CFLAGS) \
 	@DBUS_CFLAGS@ \
 	-I$(top_srcdir)/util/IMdkit \
 	-I$(top_srcdir)/src \
