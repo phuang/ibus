@@ -984,6 +984,7 @@ class Panel : IBus.PanelService {
         var cr = new Cairo.Context(image);
         int width = image.get_width();
         int height = image.get_height();
+        int stride = image.get_stride();
 
         cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
         cr.set_operator(Cairo.Operator.SOURCE);
@@ -991,6 +992,15 @@ class Panel : IBus.PanelService {
         cr.set_operator(Cairo.Operator.OVER);
         context_render_string(cr, symbol, width, height);
         image.flush();
+
+        if (m_icon_type == IconType.INDICATOR) {
+            if (GLib.BYTE_ORDER == GLib.ByteOrder.LITTLE_ENDIAN) {
+                unowned uint[] data = (uint[]) image.get_data();
+                int length = stride * height / (int) sizeof(uint);
+                for (int i = 0; i < length; i++)
+                    data[i] = data[i].to_big_endian();
+            }
+        }
 
         if (cache)
             m_xkb_icon_image.insert(symbol, image);

@@ -423,15 +423,9 @@ class Indicator : IBus.Service
         int width = image.get_width();
         int height = image.get_height();
         int stride = image.get_stride();
-        unowned uint[] data = (uint[]) image.get_data();
-        int length = stride * height / (int) sizeof(uint);
-        if (GLib.BYTE_ORDER == GLib.ByteOrder.LITTLE_ENDIAN) {
-            for (int i = 0; i < length; i++)
-                data[i] = data[i].to_big_endian();
-        }
-        unowned uint8[] data8 = (uint8[]) data;
-        data8.length = stride * height;
-        GLib.Bytes bytes = new GLib.Bytes(data8);
+        unowned uint8[] data = (uint8[]) image.get_data();
+        data.length = stride * height;
+        GLib.Bytes bytes = new GLib.Bytes(data);
         GLib.Variant bs =
                 new GLib.Variant.from_bytes(GLib.VariantType.BYTESTRING,
                                             bytes,
