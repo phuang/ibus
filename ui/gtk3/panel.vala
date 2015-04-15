@@ -882,6 +882,8 @@ class Panel : IBus.PanelService {
                 Timeout.add(
                         PRELOAD_ENGINES_DELAY_TIME,
                         () => {
+                            if (!m_bus.is_connected())
+                                return false;
                             m_bus.preload_engines_async.begin(names,
                                                               -1,
                                                               null);

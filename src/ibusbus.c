@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1431,6 +1431,8 @@ ibus_bus_exit (IBusBus *bus,
                                  "Exit",
                                  g_variant_new ("(b)", restart),
                                  NULL);
+
+    ibus_bus_close_connection (bus);
 
     if (result) {
         g_variant_unref (result);
