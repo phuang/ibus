@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -51,13 +51,13 @@ class KeyboardShortcutSelection(Gtk.Box):
         # shortcuts view
         self.__shortcut_view = Gtk.TreeView(
                 model = Gtk.ListStore(GObject.TYPE_STRING))
-        self.__shortcut_view.set_size_request(-1, 100)
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Keyboard shortcuts"), renderer, text = 0)
         self.__shortcut_view.append_column(column)
         self.__shortcut_view.connect("cursor-changed", self.__shortcut_view_cursor_changed_cb)
         scrolledwindow = Gtk.ScrolledWindow()
         scrolledwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrolledwindow.set_min_content_height(100)
         scrolledwindow.add(self.__shortcut_view)
         scrolledwindow.set_shadow_type(Gtk.ShadowType.IN)
         self.pack_start(scrolledwindow, True, True, 4)
@@ -265,7 +265,9 @@ class KeyboardShortcutSelection(Gtk.Box):
                               GObject.TYPE_UINT,
                               GObject.TYPE_UINT)
         accel_view = Gtk.TreeView(model = model)
+        accel_view.set_headers_visible(False)
         sw.add(accel_view)
+        sw.set_min_content_height(30)
         column = Gtk.TreeViewColumn()
         renderer = Gtk.CellRendererAccel(accel_mode=Gtk.CellRendererAccelMode.OTHER,
                                          editable=True)
