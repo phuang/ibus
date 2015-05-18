@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2015 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -102,6 +102,7 @@ ibus_sources =              \
     $(NULL)
 libibus_1_0_la_SOURCES =    \
     ibusmarshalers.c        \
+    ibuscomposetable.c      \
     ibusenumtypes.c         \
     $(ibus_sources)         \
     $(NULL)
@@ -226,24 +227,6 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	$(AM_V_GEN) (echo "#include \"ibusmarshalers.h\""; \
 	$(GLIB_GENMARSHAL) --prefix=_ibus_marshal $(srcdir)/ibusmarshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
-
-ibuscomposetable.h:
-	$(AM_V_GEN) $(builddir)/gencomposetable > $@.tmp && \
-	mv $@.tmp $@
-	$(NULL)
-
-noinst_PROGRAMS = gencomposetable
-
-gencomposetable_SOURCES = \
-    gencomposetable.c \
-    $(NULL)
-gencomposetable_CFLAGS = \
-    @GLIB_CFLAGS@ \
-    $(NULL)
-gencomposetable_LDADD = \
-    $(libibus) \
-    @GLIB_LIBS@ \
-    $(NULL)
 
 EXTRA_DIST =                    \
     ibusversion.h.in            \

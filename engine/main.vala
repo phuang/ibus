@@ -2,7 +2,8 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (c) 2011-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,12 +61,24 @@ public int main(string[] args) {
          * X11 uses compose by locale:
          * In /usr/share/X11/locale/en_US.UTF-8/Compose ,
          * <Multi_key> <apostrophe> <c> : U0107
-         * At the moment, LC_CTYPE is checked here.
-         * I am not sure if cedilla_compose_seqs is needed for us layout.
-         * FIXME: Need to provide the customization.
          */
         IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
         simple.add_table_by_locale(null);
+
+        string user_file = null;
+
+        var home = GLib.Environment.get_home_dir();
+        if (home != null) {
+            user_file = home + "/.XCompose";
+            if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
+                simple.add_compose_file(user_file);
+        }
+
+        user_file = GLib.Environment.get_variable("XCOMPOSEFILE");
+        if (user_file != null) {
+            if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
+                simple.add_compose_file(user_file);
+        }
 
         return engine;
     });

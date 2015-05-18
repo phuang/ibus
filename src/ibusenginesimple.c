@@ -2,6 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -38,17 +39,9 @@
 #include <memory.h>
 #include <stdlib.h>
 
+#define X11_DATADIR "/usr/share/X11/locale"
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
-
-typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
-struct _IBusComposeTableCompact
-{
-    const guint16 *data;
-    gint max_seq_len;
-    gint n_index_size;
-    gint n_index_stride;
-};
 
 struct _IBusEngineSimplePrivate {
     GSList     *tables;
@@ -58,24 +51,6 @@ struct _IBusEngineSimplePrivate {
 
     guint       in_hex_sequence : 1;
     guint       modifiers_dropped : 1;
-};
-
-/* This file contains the table of the compose sequences,
- * static const guint16 ibus_compose_seqs_compact[] = {}
- * IT is generated from the compose-parse.py script.
- */
-#include "gtkimcontextsimpleseqs.h"
-
-/* From the values below, the value 30 means the number of different first keysyms
- * that exist in the Compose file (from Xorg). When running compose-parse.py without
- * parameters, you get the count that you can put here. Needed when updating the
- * gtkimcontextsimpleseqs.h header file (contains the compose sequences).
- */
-static const IBusComposeTableCompact ibus_compose_table_compact = {
-    gtk_compose_seqs_compact,
-    5,
-    30,
-    6
 };
 
 static const guint16 ibus_compose_ignore[] = {
@@ -955,35 +930,58 @@ ibus_engine_simple_add_table (IBusEngineSimple *simple,
     table->n_seqs = n_seqs;
 
     priv->tables = g_slist_prepend (priv->tables, table);
-
 }
 
 gboolean
 ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
                                         const gchar      *locale)
 {
-    int i;
+    const gchar * const *langs = NULL;
+    const gchar * const *l = NULL;
+    gchar *path = NULL;
 
     if (locale == NULL) {
-#ifdef HAVE_LOCALE_H
-        locale = setlocale (LC_CTYPE, NULL);
-#endif
-        if (locale == NULL)
-            locale = "C";
-    }
-
-    for (i = 0; ibus_compose_table_locale_list[i].locale != NULL; i++) {
-        const gchar *locale2 = ibus_compose_table_locale_list[i].locale;
-        const IBusComposeTable *table = ibus_compose_table_locale_list[i].table;
-
-        if (g_ascii_strncasecmp (locale, locale2 , strlen (locale2)) == 0) {
-            ibus_engine_simple_add_table (simple,
-                                          table->data,
-                                          table->max_seq_len,
-                                          table->n_seqs);
-            return TRUE;
+        langs = g_get_language_names ();
+        for (l = langs; *l; l++) {
+            if (g_str_has_prefix (*l, "en_US"))
+                break;
+            if (g_strcmp0 (*l, "C") == 0)
+                break;
+            path = g_build_filename (X11_DATADIR, *l, "Compose", NULL);
+            if (g_file_test (path, G_FILE_TEST_EXISTS))
+                break;
+            g_free (path);
+            path = NULL;
         }
+    } else {
+        path = g_build_filename (X11_DATADIR, locale, "Compose", NULL);
+        do {
+            if (g_file_test (path, G_FILE_TEST_EXISTS))
+                break;
+            g_free (path);
+            path = NULL;
+        } while (0);
     }
 
-    return FALSE;
+    if (path == NULL)
+        return FALSE;
+
+    return ibus_engine_simple_add_compose_file (simple, path);
+}
+
+gboolean
+ibus_engine_simple_add_compose_file (IBusEngineSimple *simple,
+                                     const gchar      *compose_file)
+{
+    IBusEngineSimplePrivate *priv = simple->priv;
+    IBusComposeTable *table;
+
+    g_assert (compose_file != NULL);
+
+    table = ibus_compose_table_new_with_file (compose_file);
+    if (table == NULL)
+        return FALSE;
+
+    priv->tables = g_slist_prepend (priv->tables, table);
+    return TRUE;
 }

@@ -128,6 +128,19 @@ void             ibus_engine_simple_add_table   (IBusEngineSimple  *simple,
 gboolean         ibus_engine_simple_add_table_by_locale
                                                 (IBusEngineSimple  *simple,
                                                  const gchar       *locale);
+
+/**
+ * ibus_engine_simple_add_compose_file:
+ * @simple: An IBusEngineSimple.
+ * @file: The compose file. If the @file is %NULL,
+ *        the current locale is used.
+ * @returns: %TRUE if the @file is loaded.
+ *
+ * Call ibus_engine_simple_add_table() internally by locale.
+ */
+gboolean         ibus_engine_simple_add_compose_file
+                                                (IBusEngineSimple  *simple,
+                                                 const gchar       *file);
 G_END_DECLS
 
 #endif // __IBUS_ENGINE_SIMPLE_H__

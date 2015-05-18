@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2010-2013, Google Inc. All rights reserved.
-# Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2010-2015, Google Inc. All rights reserved.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -52,6 +52,7 @@ AM_LDADD = \
 AM_VALAFLAGS = \
 	--vapidir=$(top_builddir)/bindings/vala \
 	--pkg=ibus-1.0 \
+	--pkg=posix \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
 
@@ -71,30 +72,6 @@ ibus_engine_simple_LDADD = \
 ibus_engine_simple_DEPENDENCIES = \
 	$(libibus) \
 	$(NULL)
-
-if ENABLE_GTK3
-noinst_PROGRAMS = test-compose
-endif
-
-test_compose_DEPENDENCIES = \
-        $(libibus) \
-        $(NULL)
-test_compose_SOURCES = \
-        test-compose.vala \
-        $(NULL)
-test_compose_CFLAGS = \
-        $(AM_CFLAGS) \
-        @GTK3_CFLAGS@ \
-        $(NULL)
-test_compose_LDADD = \
-        $(AM_LDADD) \
-        @GTK3_LIBS@ \
-        $(NULL)
-test_compose_VALAFLAGS = \
-        $(AM_VALAFLAGS) \
-        --pkg=gtk+-3.0 \
-        --pkg=ibus-private \
-        $(NULL)
 
 component_DATA = \
 	simple.xml \

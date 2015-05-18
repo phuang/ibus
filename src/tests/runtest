@@ -26,6 +26,7 @@ ibus-factory
 ibus-inputcontext
 ibus-inputcontext-create
 ibus-engine-switch
+ibus-compose
 "
 
 # Portable replacement of basename.
