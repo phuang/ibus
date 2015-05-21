@@ -219,45 +219,45 @@ class Indicator : IBus.Service
         activate();
     }
 
-    private GLib.Variant _get_id(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_id(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.id);
     }
 
-    private GLib.Variant _get_category(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_category(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.category_s);
     }
 
-    private GLib.Variant _get_status(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_status(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.status_s);
     }
 
-    private GLib.Variant _get_icon_name(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_icon_name(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_name);
     }
 
-    private GLib.Variant _get_icon_vector(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_icon_vector(GLib.DBusConnection connection) {
         return this.icon_vector;
     }
 
-    private GLib.Variant _get_icon_desc(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_icon_desc(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_desc);
     }
 
-    private GLib.Variant _get_attention_icon_name(GLib.DBusConnection
-                                                            connection) {
+    private GLib.Variant? _get_attention_icon_name(GLib.DBusConnection
+                                                             connection) {
         return new GLib.Variant.string(this.attention_icon_name);
     }
 
-    private GLib.Variant _get_attention_icon_desc(GLib.DBusConnection
-                                                            connection) {
+    private GLib.Variant? _get_attention_icon_desc(GLib.DBusConnection
+                                                             connection) {
         return new GLib.Variant.string(this.attention_icon_desc);
     }
 
-    private GLib.Variant _get_title(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_title(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.title);
     }
 
-    private GLib.Variant _get_icon_theme_path(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_icon_theme_path(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_theme_path);
     }
 
@@ -265,17 +265,17 @@ class Indicator : IBus.Service
         return null;
     }
 
-    private GLib.Variant _get_xayatana_label(GLib.DBusConnection connection) {
+    private GLib.Variant? _get_xayatana_label(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.label_s);
     }
 
-    private GLib.Variant _get_xayatana_label_guide(GLib.DBusConnection
-                                                             connection) {
+    private GLib.Variant? _get_xayatana_label_guide(GLib.DBusConnection
+                                                              connection) {
         return new GLib.Variant.string(this.label_guide_s);
     }
 
-    private GLib.Variant _get_xayatana_ordering_index(GLib.DBusConnection
-                                                             connection) {
+    private GLib.Variant? _get_xayatana_ordering_index(GLib.DBusConnection
+                                                              connection) {
         return new GLib.Variant.uint32(this.ordering_index);
     }
 
@@ -304,12 +304,12 @@ class Indicator : IBus.Service
                 method_name);
     }
 
-    public override GLib.Variant service_get_property(GLib.DBusConnection
-                                                               connection,
-                                                      string   sender,
-                                                      string   object_path,
-                                                      string   interface_name,
-                                                      string   property_name) {
+    public override GLib.Variant? service_get_property(GLib.DBusConnection
+                                                                connection,
+                                                       string   sender,
+                                                       string   object_path,
+                                                       string   interface_name,
+                                                       string   property_name) {
         GLib.return_val_if_fail (object_path == this.object_path, null);
         GLib.return_val_if_fail (
                 interface_name == NOTIFICATION_ITEM_DBUS_IFACE,

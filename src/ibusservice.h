@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -79,6 +79,20 @@ struct _IBusServiceClass {
 
     /*< public >*/
     /* virtual functions */
+    /**
+     * IBusServiceClass::service_method_call:
+     * @service: An #IBusService.
+     * @connection: A dbus connection.
+     * @sender: A sender.
+     * @object_path: An object path.
+     * @interface_name: An interface name.
+     * @method_name: A method name.
+     * @parameters: A parameters.
+     * @invocation: A dbus method invocation.
+     *
+     * The ::service_method_call class method is to connect
+     * GDBusInterfaceMethodCallFunc().
+     */
     void        (* service_method_call)
                                     (IBusService        *service,
                                      GDBusConnection    *connection,
@@ -89,6 +103,20 @@ struct _IBusServiceClass {
                                      GVariant           *parameters,
                                      GDBusMethodInvocation
                                                         *invocation);
+    /**
+     * IBusServiceClass::service_get_property:
+     * @service: An #IBusService.
+     * @connection: A dbus connection.
+     * @sender: A sender.
+     * @object_path: An object path.
+     * @interface_name: An interface name.
+     * @property_name: A property name.
+     * @error: Return location for error or %NULL.
+     * @returns: (nullable) (transfer full): A variant.
+     *
+     * The ::service_get_property class method is to connect
+     * GDBusInterfaceGetPropertyFunc().
+     */
     GVariant *  (* service_get_property)
                                     (IBusService        *service,
                                      GDBusConnection    *connection,
@@ -97,6 +125,21 @@ struct _IBusServiceClass {
                                      const gchar        *interface_name,
                                      const gchar        *property_name,
                                      GError            **error);
+    /**
+     * IBusServiceClass::service_set_property:
+     * @service: An #IBusService.
+     * @connection: A dbus connection.
+     * @sender: A sender.
+     * @object_path: An object path.
+     * @interface_name: An interface name.
+     * @property_name: An property name.
+     * @value: An property value.
+     * @error: Return location for error or %NULL.
+     * @returns: %TRUE if set the value else %FALSE.
+     *
+     * The ::service_set_property class method is to connect
+     * GDBusInterfaceSetPropertyFunc().
+     */
     gboolean    (* service_set_property)
                                     (IBusService        *service,
                                      GDBusConnection    *connection,

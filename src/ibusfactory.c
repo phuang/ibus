@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -164,7 +164,7 @@ ibus_factory_class_init (IBusFactoryClass *class)
      * IBusFactory::create-engine:
      * @factory: the factory which received the signal
      * @engine_name: the engine_name which received the signal
-     * @returns: (transfer full): An IBusEngine
+     * @returns: (nullable) (transfer full): An IBusEngine
      *
      * The ::create-engine signal is a signal to create IBusEngine
      * with @engine_name, which gets emitted when IBusFactory

@@ -46,6 +46,9 @@ public int main(string[] args) {
     int id = 0;
 
     factory.create_engine.connect((factory, name) => {
+        if (!name.has_prefix("xkb:"))
+            return null;
+
         const string path = "/org/freedesktop/IBus/engine/simple/%d";
 
         IBus.Engine engine = new IBus.Engine.with_type(
