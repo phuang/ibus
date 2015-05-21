@@ -52,7 +52,6 @@ AM_LDADD = \
 AM_VALAFLAGS = \
 	--vapidir=$(top_builddir)/bindings/vala \
 	--pkg=ibus-1.0 \
-	--pkg=posix \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
 

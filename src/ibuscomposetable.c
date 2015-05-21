@@ -27,13 +27,11 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <X11/Xlib.h>
 #include <locale.h>
-#include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <unistd.h>
+
 #include "ibuserror.h"
 #include "ibuskeys.h"
 #include "ibuskeysyms.h"

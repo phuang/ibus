@@ -52,33 +52,38 @@ public int main(string[] args) {
             typeof(IBus.EngineSimple), name,
             path.printf(++id), bus.get_connection());
 
-        /* I think "c" + "'" is c with acute U+0107 and
-         * "c" + "," is c with cedilla U+00E7 and they are
-         * visually comprehensible. But pt-br people need
-         * "c" + "'" is c with cedilla and I think the
-         * cedilla_compose_seqs is needed for the specific keyboards
-         * or regions.
-         * X11 uses compose by locale:
-         * In /usr/share/X11/locale/en_US.UTF-8/Compose ,
-         * <Multi_key> <apostrophe> <c> : U0107
-         */
-        IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
-        simple.add_table_by_locale(null);
+        /* Use Idle.add() to reduce the lag caused by file io */
+        GLib.Idle.add(() => {
+            /* I think "c" + "'" is c with acute U+0107 and
+             * "c" + "," is c with cedilla U+00E7 and they are
+             * visually comprehensible. But pt-br people need
+             * "c" + "'" is c with cedilla and I think the
+             * cedilla_compose_seqs is needed for the specific keyboards
+             * or regions.
+             * X11 uses compose by locale:
+             * In /usr/share/X11/locale/en_US.UTF-8/Compose ,
+             * <Multi_key> <apostrophe> <c> : U0107
+             */
+            IBus.EngineSimple? simple = (IBus.EngineSimple ?) engine; 
+            simple.add_table_by_locale(null);
 
-        string user_file = null;
+            string user_file = null;
 
-        var home = GLib.Environment.get_home_dir();
-        if (home != null) {
-            user_file = home + "/.XCompose";
-            if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
-                simple.add_compose_file(user_file);
-        }
+            var home = GLib.Environment.get_home_dir();
+            if (home != null) {
+                user_file = home + "/.XCompose";
+                if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
+                    simple.add_compose_file(user_file);
+            }
 
-        user_file = GLib.Environment.get_variable("XCOMPOSEFILE");
-        if (user_file != null) {
-            if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
-                simple.add_compose_file(user_file);
-        }
+            user_file = GLib.Environment.get_variable("XCOMPOSEFILE");
+            if (user_file != null) {
+                if (GLib.FileUtils.test(user_file, GLib.FileTest.EXISTS))
+                    simple.add_compose_file(user_file);
+            }
+
+            return false;
+        });
 
         return engine;
     });
