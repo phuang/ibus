@@ -1137,6 +1137,13 @@ main (int argc, char **argv)
     gint option_index = 0;
     gint c;
 
+    /* GDK_DISPLAY_XDISPLAY() and GDK_WINDOW_XID() does not work
+     * with GdkWaylandDisplay.
+     */
+#if GTK_CHECK_VERSION (3, 10, 0)
+    gdk_set_allowed_backends ("x11");
+#endif
+
     gtk_init (&argc, &argv);
     XSetErrorHandler (_xerror_handler);
 
