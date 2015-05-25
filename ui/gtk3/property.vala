@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -133,7 +133,7 @@ public class PropImageMenuItem : Gtk.MenuItem, IPropItem {
     }
 }
 
-public class PropCheckMenuItem : Gtk.RadioMenuItem, IPropItem {
+public class PropCheckMenuItem : Gtk.CheckMenuItem, IPropItem {
     private IBus.Property m_property;
     public PropCheckMenuItem(IBus.Property property) {
         assert(property != null);
@@ -173,13 +173,50 @@ public class PropCheckMenuItem : Gtk.RadioMenuItem, IPropItem {
     }
 }
 
-public class PropRadioMenuItem : PropCheckMenuItem {
+public class PropRadioMenuItem : Gtk.RadioMenuItem, IPropItem {
+    private IBus.Property m_property;
     public PropRadioMenuItem(IBus.Property property,
         PropRadioMenuItem ?group_source) {
-        base(property);
+        assert(property != null);
+
+        m_property = property;
+        set_no_show_all(true);
 
         if (group_source != null)
             set_group(group_source.get_group());
+
+        /* Call sync() after call set_group() because
+         * gtk_radio_menu_item_set_group() sets active = 0. */
+        sync();
+    }
+
+    public void update_property(IBus.Property property) {
+        if (m_property.get_key() != property.get_key())
+            return;
+
+        m_property.set_label(property.get_label());
+        m_property.set_icon(property.get_icon());
+        m_property.set_visible(property.get_visible());
+        m_property.set_sensitive(property.get_sensitive());
+        m_property.set_tooltip(property.get_tooltip());
+        m_property.set_state(property.get_state());
+        sync();
+    }
+
+    private void sync() {
+        set_label(m_property.get_label().get_text());
+        set_visible(m_property.get_visible());
+        set_sensitive(m_property.get_sensitive());
+        set_active(m_property.get_state() == IBus.PropState.CHECKED);
+    }
+
+    public override void toggled() {
+        IBus.PropState new_state =
+            get_active() ? IBus.PropState.CHECKED : IBus.PropState.UNCHECKED;
+        if (m_property.get_state() != new_state) {
+            m_property.set_state(new_state);
+            property_activate(m_property.get_key(), m_property.get_state());
+        }
     }
 }
 
