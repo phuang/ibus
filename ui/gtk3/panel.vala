@@ -1059,13 +1059,13 @@ class Panel : IBus.PanelService {
             m_about_dialog.set_version(Config.PACKAGE_VERSION);
 
             string copyright =
-                "Copyright © 2007-2014 Peng Huang\n" +
-                "Copyright © 2007-2014 Red Hat, Inc.\n";
+                "Copyright © 2007-2015 Peng Huang\n" +
+                "Copyright © 2007-2015 Red Hat, Inc.\n";
 
             m_about_dialog.set_copyright(copyright);
             m_about_dialog.set_license("LGPL");
             m_about_dialog.set_comments(_("IBus is an intelligent input bus for Linux/Unix."));
-            m_about_dialog.set_website("http://code.google.com/p/ibus");
+            m_about_dialog.set_website("https://github.com/ibus/ibus/wiki");
             m_about_dialog.set_authors({"Peng Huang <shawn.p.huang@gmail.com>"});
             m_about_dialog.set_documenters({"Peng Huang <shawn.p.huang@gmail.com>"});
             m_about_dialog.set_translator_credits(_("translator-credits"));

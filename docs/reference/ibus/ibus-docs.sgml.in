@@ -7,7 +7,7 @@
     <releaseinfo>
       Intelligent Input Bus (IBus) @VERSION@ reference manual.
       The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://code.google.com/p/ibus">http://code.google.com/p/ibus</ulink>.
+      <ulink role="online-location" url="https://github.com/ibus/ibus/wiki">https://github.com/ibus/ibus/wiki</ulink>.
     </releaseinfo>
   </bookinfo>
 

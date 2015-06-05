@@ -1043,7 +1043,7 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;IBus&lt;/b&gt;&lt;/big&gt;
 &lt;small&gt;The intelligent input bus&lt;/small&gt;
-Homepage: http://code.google.com/p/ibus
+Homepage: https://github.com/ibus/ibus/wiki
 
 
 
