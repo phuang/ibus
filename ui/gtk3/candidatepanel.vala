@@ -301,11 +301,15 @@ public class CandidatePanel : Gtk.Box{
             x = root_width - allocation.width;
         else
             x = cursor_right_bottom.x;
+        if (x < 0)
+            x = 0;
 
         if (window_right_bottom.y > root_height)
             y = m_cursor_location.y - allocation.height;
         else
             y = cursor_right_bottom.y;
+        if (y < 0)
+            y = 0;
 
         move(x, y);
     }
