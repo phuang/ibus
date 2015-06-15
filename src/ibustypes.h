@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -280,6 +280,7 @@ typedef enum
  *     first word of each sentence
  * @IBUS_INPUT_HINT_INHIBIT_OSK: Suggest to not show an onscreen keyboard
  *     (e.g for a calculator that already has all the keys).
+ * @IBUS_INPUT_HINT_VERTICAL_WRITING: The text is vertical.
  *
  * Describes hints that might be taken into account by engines.  Note
  * that engines may already tailor their behaviour according to the
@@ -295,7 +296,8 @@ typedef enum
   IBUS_INPUT_HINT_UPPERCASE_CHARS     = 1 << 4,
   IBUS_INPUT_HINT_UPPERCASE_WORDS     = 1 << 5,
   IBUS_INPUT_HINT_UPPERCASE_SENTENCES = 1 << 6,
-  IBUS_INPUT_HINT_INHIBIT_OSK         = 1 << 7
+  IBUS_INPUT_HINT_INHIBIT_OSK         = 1 << 7,
+  IBUS_INPUT_HINT_VERTICAL_WRITING    = 1 << 8
 } IBusInputHints;
 
 #endif

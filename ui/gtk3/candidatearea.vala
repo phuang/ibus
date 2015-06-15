@@ -2,7 +2,8 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,6 +55,10 @@ class CandidateArea : Gtk.Box {
     public CandidateArea(bool vertical) {
         GLib.Object();
         set_vertical(vertical, true);
+    }
+
+    public bool get_vertical() {
+        return m_vertical;
     }
 
     public void set_vertical(bool vertical, bool force = false) {

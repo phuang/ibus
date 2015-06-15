@@ -1267,6 +1267,10 @@ class Panel : IBus.PanelService {
         m_candidate_panel.set_lookup_table(null);
     }
 
+    public override void set_content_type(uint purpose, uint hints) {
+        m_candidate_panel.set_content_type(purpose, hints);
+    }
+
     public override void state_changed() {
         /* Do not change the order of m_engines during running switcher. */
         if (m_switcher_is_running)

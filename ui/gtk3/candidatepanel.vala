@@ -2,7 +2,8 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,7 +22,8 @@
  */
 
 public class CandidatePanel : Gtk.Box{
-    private bool m_vertical = true;
+    private bool m_vertical_panel_system = true;
+    private bool m_vertical_writing;
     private Gtk.Window m_toplevel;
     private Gtk.Box m_vbox;
 
@@ -53,7 +55,7 @@ public class CandidatePanel : Gtk.Box{
         m_toplevel.button_press_event.connect((w, e) => {
             if (e.button != 1 || (e.state & Gdk.ModifierType.CONTROL_MASK) == 0)
                 return false;
-            set_vertical(!m_vertical);
+            set_vertical(!m_vertical_panel_system);
             return true;
         });
         m_toplevel.size_allocate.connect((w, a) => {
@@ -74,9 +76,9 @@ public class CandidatePanel : Gtk.Box{
     }
 
     public void set_vertical(bool vertical) {
-        if (m_vertical == vertical)
+        if (m_vertical_panel_system == vertical)
             return;
-        m_vertical = vertical;
+        m_vertical_panel_system = vertical;
         m_candidate_area.set_vertical(vertical);
     }
 
@@ -89,7 +91,7 @@ public class CandidatePanel : Gtk.Box{
             m_candidate_area.set_vertical(false);
             break;
         case IBus.Orientation.SYSTEM:
-            m_candidate_area.set_vertical(m_vertical);
+            m_candidate_area.set_vertical(m_vertical_panel_system);
             break;
         }
     }
@@ -204,6 +206,11 @@ public class CandidatePanel : Gtk.Box{
         update();
     }
 
+    public void set_content_type(uint purpose, uint hints) {
+        m_vertical_writing =
+                ((hints & IBus.InputHints.VERTICAL_WRITING) != 0);
+    }
+
     private void update() {
         if (m_candidate_area.get_visible() ||
             m_preedit_label.get_visible() ||
@@ -246,7 +253,7 @@ public class CandidatePanel : Gtk.Box{
         m_aux_label.set_padding(8, 0);
         m_aux_label.set_no_show_all(true);
 
-        m_candidate_area = new CandidateArea(m_vertical);
+        m_candidate_area = new CandidateArea(m_vertical_panel_system);
         m_candidate_area.candidate_clicked.connect(
                 (w, i, b, s) => candidate_clicked(i, b, s));
         m_candidate_area.page_up.connect((c) => page_up());
@@ -280,6 +287,13 @@ public class CandidatePanel : Gtk.Box{
     }
 
     private void adjust_window_position() {
+        if (!m_vertical_writing)
+            adjust_window_position_horizontal();
+        else
+            adjust_window_position_vertical();
+    }
+
+    private void adjust_window_position_horizontal() {
         Gdk.Point cursor_right_bottom = {
                 m_cursor_location.x + m_cursor_location.width,
                 m_cursor_location.y + m_cursor_location.height
@@ -308,6 +322,67 @@ public class CandidatePanel : Gtk.Box{
             y = m_cursor_location.y - allocation.height;
         else
             y = cursor_right_bottom.y;
+        if (y < 0)
+            y = 0;
+
+        move(x, y);
+    }
+
+    private void adjust_window_position_vertical() {
+        /* Not sure in which top or left cursor appears
+         * in the vertical writing mode.
+         * Max (m_cursor_location.width, m_cursor_location.height)
+         * can be considered as a char size.
+         */
+        int char_size = int.max(m_cursor_location.width,
+                                m_cursor_location.height);
+        Gdk.Point cursor_right_bottom = {
+                m_cursor_location.x + char_size,
+                m_cursor_location.y + char_size
+        };
+
+        Gtk.Allocation allocation;
+        m_toplevel.get_allocation(out allocation);
+        Gdk.Point hwindow_right_bottom = {
+            m_cursor_location.x + allocation.width,
+            cursor_right_bottom.y + allocation.height
+        };
+        Gdk.Point vwindow_left_bottom = {
+            m_cursor_location.x - allocation.width,
+            m_cursor_location.y + allocation.height
+        };
+
+        Gdk.Window root = Gdk.get_default_root_window();
+        int root_width = root.get_width();
+        int root_height = root.get_height();
+
+        int x, y;
+        if (!m_candidate_area.get_vertical()) {
+            if (hwindow_right_bottom.x > root_width)
+                x = root_width - allocation.width;
+            else
+                x = m_cursor_location.x;
+
+            if (hwindow_right_bottom.y > root_height)
+                y = m_cursor_location.y - allocation.height;
+            else
+                y = cursor_right_bottom.y;
+        } else {
+            if (vwindow_left_bottom.x > root_width)
+                x = root_width - allocation.width;
+            else if (vwindow_left_bottom.x < 0)
+                x = cursor_right_bottom.x;
+            else
+                x = vwindow_left_bottom.x;
+
+            if (vwindow_left_bottom.y > root_height)
+                y = root_height - allocation.height;
+            else
+                y = m_cursor_location.y;
+        }
+
+        if (x < 0)
+            x = 0;
         if (y < 0)
             y = 0;
 
