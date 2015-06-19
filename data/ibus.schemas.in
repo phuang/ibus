@@ -305,6 +305,22 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/property-icon-delay-time</key>
+      <applyto>/desktop/ibus/panel/property-icon-delay-time</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>500</default>
+      <locale name="C">
+        <short>The milliseconds to show the panel icon for a property</short>
+          <long>The milliseconds to show the panel icon from the
+                engine icon to a property icon whenever engines are
+                switched if the property is specified by the value of
+                icon-prop-key in IBusEngineDesc.
+                If the value is 0, no delay time and the property icon
+                is shown immediately.</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/use_system_keyboard_layout</key>
       <applyto>/desktop/ibus/general/use_system_keyboard_layout</applyto>
       <owner>ibus</owner>

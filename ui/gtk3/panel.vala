@@ -81,6 +81,9 @@ class Panel : IBus.PanelService {
     private bool inited_engines_order = true;
     private uint m_preload_engines_id;
     private const uint PRELOAD_ENGINES_DELAY_TIME = 30000;
+    private string m_icon_prop_key = "";
+    private int m_property_icon_delay_time = 500;
+    private uint m_property_icon_delay_time_id;
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -204,6 +207,10 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["xkb-icon-rgba"].connect((key) => {
                 set_xkb_icon_rgba();
+        });
+
+        m_settings_panel.changed["property-icon-delay-time"].connect((key) => {
+                set_property_icon_delay_time();
         });
     }
 
@@ -669,6 +676,11 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private void set_property_icon_delay_time() {
+        m_property_icon_delay_time =
+                m_settings_panel.get_int("property-icon-delay-time");
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -780,6 +792,7 @@ class Panel : IBus.PanelService {
         set_timeout_property_panel();
         set_follow_input_cursor_when_always_shown_property_panel();
         set_xkb_icon_rgba();
+        set_property_icon_delay_time();
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {
@@ -805,6 +818,11 @@ class Panel : IBus.PanelService {
             m_xkblayout.set_layout(engine);
 
         engine_contexts_insert(engine);
+
+        if (m_property_icon_delay_time_id > 0) {
+            GLib.Source.remove(m_property_icon_delay_time_id);
+            m_property_icon_delay_time_id = 0;
+        }
     }
 
     private void switch_engine(int i, bool force = false) {
@@ -1147,6 +1165,55 @@ class Panel : IBus.PanelService {
         return m_ime_menu;
     }
 
+    private void set_properties(IBus.PropList props) {
+        int i = 0;
+        while (true) {
+            IBus.Property prop = props.get(i);
+            if (prop == null)
+                break;
+            set_property(props.get(i), true);
+            i++;
+        }
+    }
+
+    private new void set_property(IBus.Property prop, bool all_update) {
+        string symbol = prop.get_symbol().get_text();
+
+        if (m_icon_prop_key != "" && prop.get_key() == m_icon_prop_key
+            && symbol != "")
+            animate_icon(symbol, all_update);
+    }
+
+    private void animate_icon(string symbol, bool all_update) {
+        if (m_property_icon_delay_time < 0)
+            return;
+
+        uint timeout = 0;
+        if (all_update)
+            timeout = (uint) m_property_icon_delay_time;
+
+        if (m_property_icon_delay_time_id > 0) {
+            GLib.Source.remove(m_property_icon_delay_time_id);
+            m_property_icon_delay_time_id = 0;
+        }
+
+        m_property_icon_delay_time_id = GLib.Timeout.add(timeout, () => {
+            m_property_icon_delay_time_id = 0;
+
+            if (m_icon_type == IconType.STATUS_ICON) {
+                Gdk.Pixbuf pixbuf = create_icon_pixbuf_with_string(symbol);
+                m_status_icon.set_from_pixbuf(pixbuf);
+            }
+            else if (m_icon_type == IconType.INDICATOR) {
+                Cairo.ImageSurface image =
+                        create_cairo_image_surface_with_string(symbol, true);
+                m_indicator.set_cairo_image_surface_full(image, "");
+            }
+
+            return false;
+        });
+    }
+
     /* override virtual functions */
     public override void set_cursor_location(int x, int y,
                                              int width, int height) {
@@ -1224,11 +1291,13 @@ class Panel : IBus.PanelService {
     public override void register_properties(IBus.PropList props) {
         m_property_manager.set_properties(props);
         m_property_panel.set_properties(props);
+        set_properties(props);
     }
 
     public override void update_property(IBus.Property prop) {
         m_property_manager.update_property(prop);
         m_property_panel.update_property(prop);
+        set_property(prop, false);
     }
 
     public override void update_preedit_text(IBus.Text text,
@@ -1285,8 +1354,12 @@ class Panel : IBus.PanelService {
         var icon_name = "ibus-keyboard";
 
         var engine = m_bus.get_global_engine();
-        if (engine != null)
+        if (engine != null) {
             icon_name = engine.get_icon();
+            m_icon_prop_key = engine.get_icon_prop_key();
+        } else {
+            m_icon_prop_key = "";
+        }
 
         if (icon_name[0] == '/') {
             if (m_icon_type == IconType.STATUS_ICON) {

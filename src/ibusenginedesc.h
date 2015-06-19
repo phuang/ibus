@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,6 +95,7 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  * setup: Exec lists of the engine setup command.
  * version: Version number of the input method engine.
  * textdomain: Domain name for dgettext()
+ * icon_prop_key: Key of IBusProperty to change panel icon dynamically.
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
@@ -308,6 +309,17 @@ const gchar     *ibus_engine_desc_get_version   (IBusEngineDesc *info);
  * Return the textdomain property in IBusEngineDesc. It should not be freed.
  */
 const gchar     *ibus_engine_desc_get_textdomain
+                                                (IBusEngineDesc *info);
+
+/**
+ * ibus_engine_desc_get_icon_prop_key:
+ * @info: An IBusEngineDesc
+ * @returns: IBusProperty.key for dynamic panel icon in IBusEngineDesc
+ *
+ * Return the key of IBusProperty to load the panel icon dynamically
+   in IBusEngineDesc. It should not be freed.
+ */
+const gchar     *ibus_engine_desc_get_icon_prop_key
                                                 (IBusEngineDesc *info);
 
 /**
