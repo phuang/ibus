@@ -27,7 +27,7 @@ is the configuration program for IBus.
 Homepage: https://github.com/ibus/ibus/wiki
 
 .SH BUGS
-If you find a bug, please report it at https://github.com/ibus/ibus/wiki/BugReport
+If you find a bug, please report it at http://code.google.com/p/ibus/issues/list
 
 .SH "SEE ALSO"
 .BR ibus (1)

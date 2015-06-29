@@ -72,7 +72,7 @@ enable memory profile, send SIGUSR2 to print out the memory profile.
 verbose.
 
 .SH BUGS
-If you find a bug, please report it at http://code.google.com/p/ibus/issues/list
+If you find a bug, please report it at https://github.com/ibus/ibus/issues
 
 .SH "SEE ALSO"
 .BR ibus (1)

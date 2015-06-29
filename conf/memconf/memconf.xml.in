@@ -6,6 +6,6 @@
 	<version>@VERSION@</version>
 	<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;, modified by the Chromium OS Authors</author>
 	<license>GPL</license>
-	<homepage>http://code.google.com/p/ibus</homepage>
+	<homepage>https://github.com/ibus/ibus/wiki</homepage>
 	<textdomain>ibus</textdomain>
 </component>

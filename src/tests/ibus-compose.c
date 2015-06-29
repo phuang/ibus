@@ -79,7 +79,7 @@ register_ibus_engine ()
             "0.0.1",
             "GPL",
             "Takao Fujiwara <takao.fujiwara1@gmail.com>",
-            "http://code.google.com/p/ibus/",
+            "https://github.com/ibus/ibus/wiki",
             "",
             "ibus");
     desc = ibus_engine_desc_new (

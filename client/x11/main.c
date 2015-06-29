@@ -1015,7 +1015,7 @@ _init_ibus (void)
     g_signal_connect (_bus, "disconnected",
                         G_CALLBACK (_bus_disconnected_cb), NULL);
 
-    /* https://code.google.com/p/ibus/issues/detail?id=1697 */
+    /* https://github.com/ibus/ibus/issues/1713 */
     _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", TRUE);
 }
 

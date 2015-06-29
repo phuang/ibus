@@ -25,7 +25,7 @@ is a command line utility which can restart or exit ibus-daemon,
 get or set the current ibus engine or list the ibus engines.
 
 .PP
-Homepage: http://code.google.com/p/ibus/
+Homepage: https://github.com/ibus/ibus/wiki
 
 .SH "COMMAND"
 .TP
@@ -97,4 +97,4 @@ Under construction.
 .TP
 
 .SH BUGS
-If you find a bug, please report it at http://code.google.com/p/ibus/issues/list.
+If you find a bug, please report it at https://github.com/ibus/ibus/issues
