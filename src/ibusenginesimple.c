@@ -32,10 +32,6 @@
 
 #include "ibuscomposetable.h"
 
-#ifdef HAVE_LOCALE_H
-#include <locale.h>
-#endif
-
 #include <memory.h>
 #include <stdlib.h>
 
@@ -936,12 +932,21 @@ gboolean
 ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
                                         const gchar      *locale)
 {
-    const gchar * const *langs = NULL;
-    const gchar * const *l = NULL;
+    const gchar *_locale = locale;
+    gchar **langs = NULL;
+    gchar **l = NULL;
     gchar *path = NULL;
 
-    if (locale == NULL) {
-        langs = g_get_language_names ();
+    if (_locale == NULL) {
+        _locale = g_getenv ("LC_CTYPE");
+        if (_locale == NULL) {
+            _locale = g_getenv ("LANG");
+        }
+        if (_locale == NULL) {
+            _locale = "C";
+        }
+        /* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=751826 */
+        langs = g_get_locale_variants (_locale);
         for (l = langs; *l; l++) {
             if (g_str_has_prefix (*l, "en_US"))
                 break;
@@ -953,6 +958,7 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             g_free (path);
             path = NULL;
         }
+        g_strfreev (langs);
     } else {
         path = g_build_filename (X11_DATADIR, locale, "Compose", NULL);
         do {
