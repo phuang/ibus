@@ -331,12 +331,13 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @state: Key modifier flags.
      *
      * Emitted when a key event is received.
-     * Implement the member function process_key_event() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::process_key_event
+     * in extended class to receive this signal.
      * Both the key symbol and keycode are passed to the member function.
      * See ibus_input_context_process_key_event() for further explanation of
      * key symbol, keycode and which to use.
      *
-     * Returns: TRUE for successfully process the key; FALSE otherwise.
+     * Returns: %TRUE for successfully process the key; %FALSE otherwise.
      * See also:  ibus_input_context_process_key_event().
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -359,7 +360,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the client application get the focus.
-     * Implement the member function focus_in() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::focus_in
+     * in extended class to receive this signal.
      *
      * See also: ibus_input_context_focus_in()
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -379,7 +381,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the client application  lost the focus.
-     * Implement the member function focus_out() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::focus_out
+     * in extended class to receive this signal.
      *
      * See also: ibus_input_context_focus_out()
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -399,7 +402,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is reset.
-     * Implement the member function reset() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::reset
+     * in extended class to receive this signal.
      *
      * See also:  ibus_input_context_reset().
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -419,9 +423,10 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is enabled.
-     * Implement the member function set_enable() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::enable
+     * in extended class to receive this signal.
      *
-     * See also:  ibus_input_context_enable().
+     * See also:  ibus_bus_set_global_engine().
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[ENABLE] =
@@ -439,9 +444,10 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the IME is disabled.
-     * Implement the member function set_disable() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::disable
+     * in extended class to receive this signal.
      *
-     * See also:  ibus_input_context_disable().
+     * See also:  ibus_bus_set_global_engine().
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
     engine_signals[DISABLE] =
@@ -463,7 +469,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @h: Height of the cursor.
      *
      * Emitted when the location of IME is set.
-     * Implement the member function set_cursor_location() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::set_cursor_location
+     * in extended class to receive this signal.
      *
      * See also:  ibus_input_context_set_cursor_location().
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -488,7 +495,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @caps: Capabilities flags of IBusEngine, see #IBusCapabilite
      *
      * Emitted when the client application capabilities is set.
-     * Implement the member function set_capabilities() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::set_capabilities
+     * in extended class to receive this signal.
      *
      * See also:  ibus_input_context_set_capabilities().
      * <note><para>Argument @user_data is ignored in this function.</para></note>
@@ -509,7 +517,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the page-up button is pressed.
-     * Implement the member function page_up() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::page_up
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -528,7 +537,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the page-down button is pressed.
-     * Implement the member function page_down() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::page_down
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -547,7 +557,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the up cursor button is pressed.
-     * Implement the member function cursor_up() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::cursor_up
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -566,7 +577,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @engine: An IBusEngine.
      *
      * Emitted when the down cursor button is pressed.
-     * Implement the member function cursor_down() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::cursor_down
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -588,7 +600,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @state:  Keyboard state.
      *
      * Emitted when candidate on lookup table is clicked.
-     * Implement the member function candidate_clicked() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::candidate_clicked
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -612,7 +625,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @state:  Property state.
      *
      * Emitted when a property is activated or change changed.
-     * Implement the member function property_activate() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::property_activate
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -634,7 +648,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @name:   Property name.
      *
      * Emitted when a property is shown.
-     * Implement the member function property_side() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::property_side
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -655,7 +670,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @name:   Property name.
      *
      * Emitted when a property is hidden.
-     * Implement the member function property_hide() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::property_hide
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -677,7 +693,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @coordinates_len: The number of elements in the array.
      *
      * Emitted when a hand writing operation is cancelled.
-     * Implement the member function cancel_hand_writing() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::cancel_hand_writing
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -699,7 +716,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @n_strokes: The number of strokes to be removed. 0 means "remove all".
      *
      * Emitted when a hand writing operation is cancelled.
-     * Implement the member function cancel_hand_writing() in extended class to receive this signal.
+     * Implement the member function IBusEngineClass::cancel_hand_writing
+     * in extended class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -722,9 +740,10 @@ ibus_engine_class_init (IBusEngineClass *class)
      * @anchor_pos: The anchor position on selection area.
      *
      * Emitted when a surrounding text is set.
-     * Implement the member function set_surrounding_text() in extended class to receive this signal.
-     * If anchor_pos equals to cursor_pos, it means "there are no selection" or "does not support
-     * selection retrival".
+     * Implement the member function IBusEngineClass::set_surrounding_text
+     * in extended class to receive this signal.
+     * If anchor_pos equals to cursor_pos, it means "there are no selection"
+     * or "does not support selection retrival".
      *
      * <note><para>Argument @user_data is ignored in this function.</para></note>
      */
@@ -750,8 +769,8 @@ ibus_engine_class_init (IBusEngineClass *class)
      * Emitted when the client application content-type (primary
      * purpose and hints) is set.  The engine could change the
      * behavior according to the content-type.  Implement the member
-     * function set_content_type() in extended class to receive this
-     * signal.
+     * function IBusEngineClass::set_content_type
+     * in extended class to receive this signal.
      *
      * For example, if the client application wants to restrict input
      * to numbers, this signal will be emitted with @purpose set to

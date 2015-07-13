@@ -58,6 +58,15 @@
 #define IBUS_OBJECT_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_OBJECT, IBusObjectClass))
 
+/**
+ * IBusObjectFlags:
+ * @IBUS_IN_DESTRUCTION: Used in GObjectClass::dispose
+ * @IBUS_DESTROYED: Used during emitting IBusObject::destroy signal.
+ * @IBUS_RESERVED_1: Reserved.
+ * @IBUS_RESERVED_2: Reserved.
+ *
+ * The flags are used internally.
+ */
 typedef enum {
     IBUS_IN_DESTRUCTION = (1 << 0),
     IBUS_DESTROYED      = (1 << 1),
@@ -108,9 +117,10 @@ GType           ibus_object_get_type            (void);
 
 /**
  * ibus_object_new:
- * @returns: A newly allocated IBusObject
  *
- * New an IBusObject.
+ * Creates  a new #IBusObject.
+ *
+ * Returns: A newly allocated #IBusObject
  */
 IBusObject     *ibus_object_new                 (void);
 

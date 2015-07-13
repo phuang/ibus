@@ -111,9 +111,10 @@ GType                ibus_lookup_table_get_type (void);
  * @cursor_pos: position index of cursor.
  * @cursor_visible: whether the cursor is visible.
  * @round: TRUE for lookup table wrap around.
- * @returns: A newly allocated IBusLookupTable.
  *
- * New a IBusLookupTable.
+ * Craetes a new #IBusLookupTable.
+ *
+ * Returns: A newly allocated #IBusLookupTable.
  */
 IBusLookupTable     *ibus_lookup_table_new      (guint               page_size,
                                                  guint               cursor_pos,
@@ -134,9 +135,10 @@ void                 ibus_lookup_table_append_candidate
 /**
  * ibus_lookup_table_get_number_of_candidates:
  * @table: An IBusLookupTable.
- * @returns: The number of candidates in the table
  *
  * Return the number of candidate in the table.
+ *
+ * Returns: The number of candidates in the table
  */
 guint               ibus_lookup_table_get_number_of_candidates
                                                 (IBusLookupTable    *table);
@@ -145,9 +147,11 @@ guint               ibus_lookup_table_get_number_of_candidates
  * ibus_lookup_table_get_candidate:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.
- * @returns: (transfer none): IBusText at the given index; NULL if no such IBusText.
  *
- * Return IBusText at the given index. Borrowed reference.
+ * Return #IBusText at the given index. Borrowed reference.
+ *
+ * Returns: (transfer none): IBusText at the given index; NULL if no such
+ *         #IBusText.
  */
 IBusText            *ibus_lookup_table_get_candidate
                                                 (IBusLookupTable    *table,
@@ -185,9 +189,11 @@ void                 ibus_lookup_table_set_label
  * ibus_lookup_table_get_label:
  * @table: An IBusLookupTable.
  * @index: Index in the Lookup table.
- * @returns: (transfer none): IBusText at the given index; NULL if no such IBusText.
  *
- * Return IBusText at the given index. Borrowed reference.
+ * Return #IBusText at the given index. Borrowed reference.
+ *
+ * Returns: (transfer none): #IBusText at the given index; %NULL if no such
+ *         #IBusText.
  */
 IBusText            *ibus_lookup_table_get_label
                                                 (IBusLookupTable    *table,
@@ -208,9 +214,10 @@ void                 ibus_lookup_table_set_cursor_pos
 /**
  * ibus_lookup_table_get_cursor_pos:
  * @table: An IBusLookupTable.
- * @returns: The position of cursor.
  *
- * Get the cursor position of IBusLookupTable.
+ * Gets the cursor position of #IBusLookupTable.
+ *
+ * Returns: The position of cursor.
  */
 guint                ibus_lookup_table_get_cursor_pos
                                                 (IBusLookupTable    *table);
@@ -228,10 +235,11 @@ void                 ibus_lookup_table_set_cursor_visible
 
 /**
  * ibus_lookup_table_is_cursor_visible:
- * @table: An IBusLookupTable.
- * @returns: Whether the cursor of @table is visible.
+ * @table: An #IBusLookupTable.
  *
- * Returns whether the cursor of an IBusLookupTable is visible.
+ * Returns whether the cursor of an #IBusLookupTable is visible.
+ *
+ * Returns: Whether the cursor of @table is visible.
  */
 gboolean             ibus_lookup_table_is_cursor_visible
                                                 (IBusLookupTable    *table);
@@ -239,9 +247,10 @@ gboolean             ibus_lookup_table_is_cursor_visible
 /**
  * ibus_lookup_table_get_cursor_in_page:
  * @table: An IBusLookupTable.
- * @returns: The position of cursor in current page.
  *
- * Get the cursor position in current page of IBusLookupTable.
+ * Gets the cursor position in current page of #IBusLookupTable.
+ *
+ * Returns: The position of cursor in current page.
  */
 guint                ibus_lookup_table_get_cursor_in_page
                                                 (IBusLookupTable    *table);
@@ -259,9 +268,11 @@ void                 ibus_lookup_table_set_page_size
 /**
  * ibus_lookup_table_get_page_size:
  * @table: An IBusLookupTable.
- * @returns: Page size, i.e., number of candidate shown per page.
  *
- * Get the number of candidate shown per page.
+ * Gets the number of candidate shown per page.
+ *
+ * Returns: Page size, i.e., number of candidate shown per page.
+dd
  */
 guint                ibus_lookup_table_get_page_size
                                                 (IBusLookupTable    *table);
@@ -279,9 +290,10 @@ void                 ibus_lookup_table_set_round
 /**
  * ibus_lookup_table_is_round:
  * @table: An IBusLookupTable.
- * @returns: Whether the @table is round.
  *
- * Returns whether the IBusLookupTable is round.
+ * Returns whether the #IBusLookupTable is round.
+ *
+ * Returns: Whether the @table is round.
  */
 gboolean             ibus_lookup_table_is_round (IBusLookupTable    *table);
 
@@ -299,9 +311,10 @@ void                 ibus_lookup_table_set_orientation
 /**
  * ibus_lookup_table_get_orientation:
  * @table: An IBusLookupTable.
- * @returns: The orientation of the @table.
  *
- * Returns the orientation of the IBusLookupTable.
+ * Returns the orientation of the #IBusLookupTable.
+ *
+ * Returns: The orientation of the @table.
  */
 gint                 ibus_lookup_table_get_orientation
                                                 (IBusLookupTable    *table);
@@ -318,52 +331,56 @@ void                 ibus_lookup_table_clear    (IBusLookupTable    *table);
 /**
  * ibus_lookup_table_page_up:
  * @table: An IBusLookupTable.
- * @returns: TRUE if succeed.
  *
- * Go to previous page of an IBusLookupTable.
+ * Go to previous page of an #IBusLookupTable.
  *
  * It returns FALSE if it is already at the first page,
  * unless  <code>table&gt;-round==TRUE</code>, where it will go
  * to the last page.
+ *
+ * Returns: %TRUE if succeed.
  */
 gboolean             ibus_lookup_table_page_up  (IBusLookupTable    *table);
 
 /**
  * ibus_lookup_table_page_down:
  * @table: An IBusLookupTable.
- * @returns: TRUE if succeed.
  *
- * Go to next page of an IBusLookupTable.
+ * Go to next page of an #IBusLookupTable.
  *
  * It returns FALSE if it is already at the last page,
  * unless  <code>table&gt;-round==TRUE</code>, where it will go
  * to the first page.
+ *
+ * Returns: %TRUE if succeed.
  */
 gboolean             ibus_lookup_table_page_down(IBusLookupTable    *table);
 
 /**
  * ibus_lookup_table_cursor_up:
  * @table: An IBusLookupTable.
- * @returns: TRUE if succeed.
  *
- * Go to previous candidate of an IBusLookupTable.
+ * Go to previous candidate of an #IBusLookupTable.
  *
  * It returns FALSE if it is already at the first candidate,
  * unless  <code>table&gt;-round==TRUE</code>, where it will go
  * to the last candidate.
+ *
+ * Returns: %TRUE if succeed.
  */
 gboolean             ibus_lookup_table_cursor_up(IBusLookupTable    *table);
 
 /**
  * ibus_lookup_table_cursor_down:
  * @table: An IBusLookupTable.
- * @returns: TRUE if succeed.
  *
- * Go to next candidate of an IBusLookupTable.
+ * Go to next candidate of an #IBusLookupTable.
  *
  * It returns FALSE if it is already at the last candidate,
  * unless  <code>table&gt;-round==TRUE</code>, where it will go
  * to the first candidate.
+ *
+ * Returns: %TRUE if succeed.
  */
 gboolean             ibus_lookup_table_cursor_down
                                                 (IBusLookupTable    *table);

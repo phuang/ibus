@@ -95,9 +95,10 @@ GType                ibus_observed_path_get_type            (void);
  * ibus_observed_path_new_from_xml_node:
  * @node: An XML node that contain path.
  * @fill_stat: Auto-fill the path status.
- * @returns: A newly allocated IBusObservedPath.
  *
- * New an IBusObservedPath from an XML node.
+ * Creates an new #IBusObservedPath from an XML node.
+ *
+ * Returns: A newly allocated #IBusObservedPath.
  */
 IBusObservedPath    *ibus_observed_path_new_from_xml_node   (XMLNode            *node,
                                                              gboolean            fill_stat);
@@ -106,9 +107,10 @@ IBusObservedPath    *ibus_observed_path_new_from_xml_node   (XMLNode            
  * ibus_observed_path_new:
  * @path: The path string.
  * @fill_stat: Auto-fill the path status.
- * @returns: A newly allocated IBusObservedPath.
  *
- * New an IBusObservedPath from an XML node.
+ * Creates a new #IBusObservedPath from an XML node.
+ *
+ * Returns: A newly allocated #IBusObservedPath.
  */
 IBusObservedPath    *ibus_observed_path_new                 (const gchar        *path,
                                                              gboolean            fill_stat);
@@ -117,12 +119,13 @@ IBusObservedPath    *ibus_observed_path_new                 (const gchar        
  * ibus_observed_path_traverse:
  * @path: An IBusObservedPath.
  * @dir_only: Only looks for subdirs, not files
- * @returns: (transfer full) (element-type IBusObservedPath): A newly allocate
- * GList which holds content in path; NULL if @path is not directory.
  *
  * Recursively traverse the path and put the files and subdirectory in to
  * a newly allocated
  * GLists, if the @path is a directory. Otherwise returns NULL.
+ *
+ * Returns: (transfer full) (element-type IBusObservedPath): A newly allocate
+ * GList which holds content in path; NULL if @path is not directory.
  */
 GList               *ibus_observed_path_traverse            (IBusObservedPath   *path,
                                                              gboolean            dir_only);
@@ -130,10 +133,11 @@ GList               *ibus_observed_path_traverse            (IBusObservedPath   
 /**
  * ibus_observed_path_check_modification:
  * @path: An IBusObservedPath.
- * @returns: TRUE if mtime is changed; FALSE otherwise.
  *
- * Checks whether the path is modified by comparing the mtime in object and mtime in file system.
- * Returns TRUE if imtime is changed, otherwise FALSE.
+ * Checks whether the path is modified by comparing the mtime in object and
+ * mtime in file system.
+ *
+ * Returns: %TRUE if imtime is changed, otherwise %FALSE.
  */
 gboolean             ibus_observed_path_check_modification  (IBusObservedPath   *path);
 

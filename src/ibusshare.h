@@ -168,9 +168,10 @@ G_BEGIN_DECLS
 
 /**
  * ibus_get_local_machine_id:
- * @returns: A newly allocated string that shows the UUID of the machine.
  *
  * Obtains the machine UUID of the machine this process is running on.
+ *
+ * Returns: A newly allocated string that shows the UUID of the machine.
  */
 const gchar     *ibus_get_local_machine_id
                                         (void);
@@ -185,7 +186,6 @@ void             ibus_set_display       (const gchar    *display);
 
 /**
  * ibus_get_address:
- * @returns: D-Bus address of IBus. %NULL for not found.
  *
  * Return the D-Bus address of IBus.
  * It will find the address from following source:
@@ -193,6 +193,8 @@ void             ibus_set_display       (const gchar    *display);
  *    <listitem><para>Environment variable IBUS_ADDRESS</para></listitem>
  *    <listitem><para>Socket file under ~/.config/ibus/bus/</para></listitem>
  * </orderedlist>
+ *
+ * Returns: D-Bus address of IBus. %NULL for not found.
  *
  * See also: ibus_write_address().
  */
@@ -210,7 +212,6 @@ void             ibus_write_address     (const gchar    *address);
 
 /**
  * ibus_get_user_name:
- * @returns: A newly allocated string that stores current user name.
  *
  * Get the current user name.
  * It is determined by:
@@ -223,14 +224,17 @@ void             ibus_write_address     (const gchar    *address);
  *    <listitem><para>Environment variable USER</para></listitem>
  *    <listitem><para>Environment variable LNAME</para></listitem>
  * </orderedlist>
+ *
+ * Returns: A newly allocated string that stores current user name.
  */
 const gchar     *ibus_get_user_name     (void);
 
 /**
  * ibus_get_daemon_uid:
- * @returns: UID of ibus-daemon; or 0 if UID is not available.
  *
  * Get UID of ibus-daemon.
+ *
+ * Returns: UID of ibus-daemon; or 0 if UID is not available.
  *
  * Deprecated: This function has been deprecated and should
  * not be used in newly written code.
@@ -239,18 +243,23 @@ glong            ibus_get_daemon_uid    (void) G_GNUC_DEPRECATED;
 
 /**
  * ibus_get_socket_path:
- * @returns: A newly allocated string that stores the path of socket file.
  *
  * Get the path of socket file.
+ *
+ * Returns: A newly allocated string that stores the path of socket file.
  */
 const gchar     *ibus_get_socket_path   (void);
 
 /**
  * ibus_get_timeout:
- * @returns: A GDBus timeout in milliseconds. -1 when default timeout for GDBus should be used.
  *
- * Get the GDBus timeout in milliseconds. The timeout is for clients (e.g. im-ibus.so), not for ibus-daemon.
- * Note that the timeout for ibus-daemon could be set by --timeout command line option of the daemon.
+ * Get the GDBus timeout in milliseconds. The timeout is for clients (e.g.
+ * im-ibus.so), not for ibus-daemon.
+ * Note that the timeout for ibus-daemon could be set by --timeout command
+ * line option of the daemon.
+ *
+ * Returns: A GDBus timeout in milliseconds. -1 when default timeout for
+ *     GDBus should be used.
  */
 gint             ibus_get_timeout       (void);
 
@@ -269,12 +278,13 @@ void             ibus_free_strv         (gchar          **strv)
  * ibus_key_event_to_string:
  * @keyval: Key symbol.
  * @modifiers: Modifiers such as Ctrl or Shift.
- * @returns: The name of a key symbol and modifier.
  *
  * Return the name of a key symbol and modifiers.
  *
  * For example, if press ctrl, shift, and enter, then this function returns:
  * Shift+Control+enter.
+ *
+ * Returns: The name of a key symbol and modifier.
  */
 const gchar     *ibus_key_event_to_string
                                         (guint           keyval,
@@ -285,9 +295,10 @@ const gchar     *ibus_key_event_to_string
  * @string: Key event string.
  * @keyval: Variable that hold key symbol result.
  * @modifiers: Variable that hold modifiers result.
- * @returns: TRUE for succeed; FALSE if failed.
  *
  * Parse key event string and return key symbol and modifiers.
+ *
+ * Returns: %TRUE for succeed; %FALSE if failed.
  */
 gboolean         ibus_key_event_from_string
                                         (const gchar    *string,

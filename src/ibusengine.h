@@ -74,8 +74,6 @@ typedef struct _IBusEnginePrivate IBusEnginePrivate;
  * @has_focus: Whether the engine has focus.
  * @cursor_area: Area of cursor.
  * @client_capabilities: IBusCapabilite (client capabilities) flags.
- * @client_purpose: IBusInputPurpose (client input purpose).
- * @client_hints: IBusInputHints (client input hints) flags.
  *
  * IBusEngine properties.
  */
@@ -168,9 +166,10 @@ GType        ibus_engine_get_type       (void);
  * @engine_name: Name of the IBusObject.
  * @object_path: Path for IBusService.
  * @connection: An opened GDBusConnection.
- * @returns: A newly allocated IBusEngine.
  *
- * New an IBusEngine.
+ * Create a new #IBusEngine.
+ *
+ * Returns: A newly allocated IBusEngine.
  */
 IBusEngine  *ibus_engine_new            (const gchar        *engine_name,
                                          const gchar        *object_path,
@@ -181,9 +180,10 @@ IBusEngine  *ibus_engine_new            (const gchar        *engine_name,
  * @engine_name: Name of the IBusObject.
  * @object_path: Path for IBusService.
  * @connection: An opened GDBusConnection.
- * @returns: A newly allocated IBusEngine.
  *
- * New an IBusEngine.
+ * Create a new #IBusEngine.
+ *
+ * Returns: A newly allocated IBusEngine.
  */
 IBusEngine  *ibus_engine_new_with_type  (GType               engine_type,
                                          const gchar        *engine_name,
@@ -456,9 +456,10 @@ void ibus_engine_get_content_type       (IBusEngine         *engine,
 /**
  * ibus_engine_get_name:
  * @engine: An IBusEngine.
- * @returns: Name of IBusEngine.
  *
- * Return the name of IBusEngine.
+ * Return the name of #IBusEngine.
+ *
+ * Returns: Name of #IBusEngine.
  */
 const gchar *ibus_engine_get_name       (IBusEngine         *engine);
 

@@ -90,12 +90,13 @@ GType        ibus_input_context_get_type    (void);
 /**
  * ibus_input_context_new:
  * @path: The path to the object that emitting the signal.
- * @connection: An #GDBusConnection.
+ * @connection: A #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @error: Return location for error or %NULL.
- * @returns: A newly allocated IBusInputContext.
  *
- * New an IBusInputContext.
+ * Creates a new #IBusInputContext.
+ *
+ * Returns: A newly allocated #IBusInputContext.
  */
 IBusInputContext *
              ibus_input_context_new         (const gchar        *path,
@@ -105,13 +106,13 @@ IBusInputContext *
 /**
  * ibus_input_context_new_async:
  * @path: The path to the object that emitting the signal.
- * @connection: An #GDBusConnection.
+ * @connection: A #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
  *      The callback should not be %NULL.
  * @user_data: The data to pass to callback.
  *
- * New an #IBusInputContext asynchronously.
+ * Creates a new #IBusInputContext asynchronously.
  */
 void         ibus_input_context_new_async   (const gchar        *path,
                                              GDBusConnection    *connection,
@@ -124,9 +125,10 @@ void         ibus_input_context_new_async   (const gchar        *path,
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_new_async().
  * @error: Return location for error or %NULL.
- * @returns: A newly allocated #IBusInputContext.
  *
  * Finishes an operation started with ibus_input_context_new_async().
+ *
+ * Returns: A newly allocated #IBusInputContext.
  */
 IBusInputContext *
              ibus_input_context_new_async_finish
@@ -135,10 +137,11 @@ IBusInputContext *
 /**
  * ibus_input_context_get_input_context:
  * @path: The path to the object that emitting the signal.
- * @connection: An #GDBusConnection.
- * @returns: (transfer none): An existing #IBusInputContext.
+ * @connection: A GDBusConnection.
  *
  * Gets an existing IBusInputContext.
+ *
+ * Returns: (transfer none): An existing #IBusInputContext.
  */
 IBusInputContext *
              ibus_input_context_get_input_context
@@ -147,13 +150,13 @@ IBusInputContext *
 /**
  * ibus_input_context_get_input_context_async:
  * @path: The path to the object that emitting the signal.
- * @connection: An #GDBusConnection.
+ * @connection: A #GDBusConnection.
  * @cancellable: A #GCancellable or %NULL.
  * @callback: A #GAsyncReadyCallback to call when the request is satisfied.
  *      The callback should not be %NULL.
  * @user_data: The data to pass to callback.
  *
- * Get an existing #IBusInputContext asynchronously.
+ * Gets an existing #IBusInputContext asynchronously.
  */
 void         ibus_input_context_get_input_context_async
                                             (const gchar        *path,
@@ -167,9 +170,11 @@ void         ibus_input_context_get_input_context_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback pass to
  *      ibus_input_context_get_input_context_async().
  * @error: Return location for error or %NULL.
- * @returns: (transfer none): An existing #IBusInputContext.
  *
- * Finishes an operation started with ibus_input_contex_get_input_context_async().
+ * Finishes an operation started with
+ * ibus_input_context_get_input_context_async().
+ *
+ * Returns: (transfer none): An existing #IBusInputContext.
  */
 IBusInputContext *
              ibus_input_context_get_input_context_async_finish
@@ -256,14 +261,16 @@ void        ibus_input_context_process_key_event_async
 
 /**
  * ibus_input_context_process_key_event_async_finish:
- * @context: An IBusInputContext.
- * @res: A GAsyncResult obtained from the GAsyncReadyCallback passed to
+ * @context: An #IBusInputContext.
+ * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *      ibus_input_context_process_key_event_async().
- * @error: Return location for error or NULL.
- * @returns: %TRUE if the key event is processed;
- *      %FALSE otherwise or some errors happen and the @error will be set.
+ * @error: Return location for error or %NULL.
  *
- * Finishes an operation started with ibus_input_context_process_key_event_async().
+ * Finishes an operation started with
+ *      ibus_input_context_process_key_event_async().
+ *
+ * Returns: %TRUE if the key event is processed;
+ *      %FALSE otherwise or some errors happen and the @error will be set.
  */
 gboolean     ibus_input_context_process_key_event_async_finish
                                             (IBusInputContext   *context,
@@ -272,13 +279,15 @@ gboolean     ibus_input_context_process_key_event_async_finish
 
 /**
  * ibus_input_context_process_key_event:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  * @keyval: Key symbol of a key event.
  * @keycode: Keycode of a key event.
  * @state: Key modifier flags.
- * @returns: TRUE for successfully process the key; FALSE otherwise.
  *
- * Pass the key event to input method engine and wait for the reply from ibus (i.e. synchronous IPC).
+ * Pass the key event to input method engine and wait for the reply from
+ * ibus (i.e. synchronous IPC).
+ *
+ * Returns: %TRUE for successfully process the key; %FALSE otherwise.
  *
  * See also: ibus_input_context_process_key_event_async()
  */
@@ -324,7 +333,7 @@ void         ibus_input_context_set_capabilities
 
 /**
  * ibus_input_context_property_activate:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  * @prop_name: A property name (e.g. "InputMode.WideLatin")
  * @state: A status of the property (e.g. PROP_STATE_CHECKED)
  *
@@ -339,9 +348,10 @@ void         ibus_input_context_property_activate
 
 /**
  * ibus_input_context_focus_in:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  *
- * Invoked when the client application get focus. An asynchronous IPC will be performed.
+ * Invoked when the client application get focus. An asynchronous IPC will
+ * be performed.
  *
  * see_also: #IBusEngine::focus_in.
  */
@@ -349,7 +359,7 @@ void         ibus_input_context_focus_in    (IBusInputContext   *context);
 
 /**
  * ibus_input_context_focus_out:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  *
  * Invoked when the client application get focus. An asynchronous IPC will be performed.
  *
@@ -360,7 +370,7 @@ void         ibus_input_context_focus_out   (IBusInputContext   *context);
 
 /**
  * ibus_input_context_reset:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  *
  * Invoked when the IME is reset. An asynchronous IPC will be performed.
  *
@@ -373,8 +383,8 @@ void         ibus_input_context_reset       (IBusInputContext   *context);
  * @context: An #IBusInputContext.
  * @timeout_msec: The timeout in milliseconds or -1 to use the default timeout.
  * @cancellable: A #GCancellable or %NULL.
- * @callback: A #GAsyncReadyCallback to call when the request is satisfied or %NULL
- *      if you don't care about the result of the method invocation.
+ * @callback: A #GAsyncReadyCallback to call when the request is satisfied or
+ *     %NULL if you don't care about the result of the method invocation.
  * @user_data: The data to pass to callback.
  *
  * An asynchronous IPC will be performed.
@@ -392,9 +402,11 @@ void         ibus_input_context_get_engine_async
  * @res: A #GAsyncResult obtained from the #GAsyncReadyCallback passed to
  *   ibus_input_context_get_engine_async().
  * @error: Return location for error or %NULL.
- * @returns: (transfer none): An IME engine description for the context, or %NULL.
  *
  * Finishes an operation started with ibus_input_context_get_engine_async().
+ *
+ * Returns: (transfer none): An IME engine description for the context, or
+ *     %NULL.
  */
 IBusEngineDesc *
              ibus_input_context_get_engine_async_finish
@@ -404,18 +416,19 @@ IBusEngineDesc *
 
 /**
  * ibus_input_context_get_engine:
- * @context: An IBusInputContext.
- * @returns: (transfer none): An IME engine description for the context, or NULL.
+ * @context: An #IBusInputContext.
  *
- * Returns an IME engine description for the context.
+ * Gets an IME engine description for the context.
  * A synchronous IPC will be performed.
+ *
+ * Returns: (transfer none): An IME engine description for the context, or NULL.
  */
 IBusEngineDesc *
              ibus_input_context_get_engine  (IBusInputContext   *context);
 
 /**
  * ibus_input_context_set_engine:
- * @context: An IBusInputContext.
+ * @context: An #IBusInputContext.
  * @name: A name of the engine.
  *
  * Invoked when the IME engine is changed.
@@ -440,10 +453,11 @@ void         ibus_input_context_set_surrounding_text
 /**
  * ibus_input_context_needs_surrounding_text:
  * @context: An #IBusInputContext.
- * @returns: %TRUE if surrounding-text is needed by the current engine;
- * %FALSE otherwise.
  *
  * Check whether the current engine requires surrounding-text.
+ *
+ * Returns: %TRUE if surrounding-text is needed by the current engine;
+ * %FALSE otherwise.
  */
 gboolean     ibus_input_context_needs_surrounding_text
                                             (IBusInputContext   *context);

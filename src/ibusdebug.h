@@ -38,7 +38,7 @@
 /**
  * ibus_warning:
  * @msg: A printf formatted message to be print.
- * @args...: Necessary arguments for @msg.
+ * @...: Necessary arguments for @msg.
  *
  * A convenient wrapper for g_warning.
  * The output format will be

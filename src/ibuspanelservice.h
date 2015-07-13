@@ -132,9 +132,10 @@ GType            ibus_panel_service_get_type  (void);
 /**
  * ibus_panel_service_new:
  * @connection: An GDBusConnection.
- * @returns: A newly allocated IBusPanelService.
  *
- * New an IBusPanelService from an GDBusConnection.
+ * Creates a new #IBusPanelService from an #GDBusConnection.
+ *
+ * Returns: A newly allocated #IBusPanelService.
  */
 IBusPanelService *ibus_panel_service_new (GDBusConnection    *connection);
 

@@ -124,18 +124,6 @@ typedef struct _IBusPropListClass IBusPropListClass;
 
 /**
  * IBusProperty:
- * key: Unique Identity for the IBusProperty.
- * icon: Icon file for the IBusProperty.
- * label: Text shown in UI.
- * symbol: A symbol char showned on a button or status icon for IBusProperty.
- * tooltip: Message shown if mouse hovered the  IBusProperty.
- * sensitive: Whether the IBusProperty is sensitive to keyboard and mouse event.
- * visible: Whether the IBusProperty is visible.
- * type: IBusPropType of IBusProperty.
- * state: IBusPropState of IBusProperty.
- * sub_props: IBusPropList that contains sub IBusProperties. These IBusProperties are usually
- * shown as sub menu item.
- *
  * UI component for input method engine property.
  */
 struct _IBusProperty {
@@ -163,9 +151,10 @@ GType            ibus_property_get_type     ();
  * @visible: Whether the #IBusProperty is visible.
  * @state: IBusPropState of #IBusProperty.
  * @prop_list: (allow-none): #IBusPropList that contains sub IBusProperties.
- * @returns: A newly allocated #IBusProperty.
  *
- * New a #IBusProperty.
+ * Creates a new #IBusProperty.
+ *
+ * Returns: A newly allocated #IBusProperty.
  */
 IBusProperty    *ibus_property_new          (const gchar    *key,
                                              IBusPropType    type,
@@ -180,12 +169,14 @@ IBusProperty    *ibus_property_new          (const gchar    *key,
 /**
  * ibus_property_new_varargs:
  * @first_property_name: Name of the first property.
- * @Varargs: the NULL-terminated arguments of the properties and values.
+ * @...: the NULL-terminated arguments of the properties and values.
  *
- * New a #IBusProperty.
+ * Creates a new #IBusProperty.
  * ibus_property_new_varargs() supports the va_list format.
  * name property is required. e.g.
  * ibus_property_new_varargs("key", "TypingMode", "type", PROP_TYPE_MENU, NULL)
+ *
+ * Returns: A newly allocated #IBusProperty.
  */
 IBusProperty    *ibus_property_new_varargs  (const gchar    *first_property_name,
                                                              ...);
@@ -193,18 +184,20 @@ IBusProperty    *ibus_property_new_varargs  (const gchar    *first_property_name
 /**
  * ibus_property_get_key:
  * @prop: An #IBusProperty.
- * @returns: the key of #IBusProperty. Should not be freed.
  *
  * Get the key of #IBusProperty.
+ *
+ * Returns: the key of #IBusProperty. Should not be freed.
  */
 const gchar *    ibus_property_get_key      (IBusProperty   *prop);
 
 /**
  * ibus_property_get_label:
  * @prop: An #IBusProperty.
- * @returns: (transfer none): the label of #IBusProperty. Should not be freed.
  *
  * Get the label of #IBusProperty.
+ *
+ * Returns: (transfer none): the label of #IBusProperty. Should not be freed.
  */
 IBusText *       ibus_property_get_label    (IBusProperty   *prop);
 
@@ -221,9 +214,10 @@ void             ibus_property_set_label    (IBusProperty   *prop,
 /**
  * ibus_property_get_symbol:
  * @prop: An #IBusProperty.
- * @returns: (transfer none): the symbol of #IBusProperty. Should not be freed.
  *
  * Get the symbol of #IBusProperty.
+ *
+ * Returns: (transfer none): the symbol of #IBusProperty. Should not be freed.
  */
 IBusText *       ibus_property_get_symbol   (IBusProperty   *prop);
 
@@ -240,9 +234,10 @@ void             ibus_property_set_symbol   (IBusProperty   *prop,
 /**
  * ibus_property_get_icon:
  * @prop: An #IBusProperty.
- * @returns: the icon of #IBusProperty. Should not be freed.
  *
  * Get the icon of #IBusProperty.
+ *
+ * Returns: the icon of #IBusProperty. Should not be freed.
  */
 const gchar *    ibus_property_get_icon     (IBusProperty   *prop);
 
@@ -259,9 +254,10 @@ void             ibus_property_set_icon     (IBusProperty   *prop,
 /**
  * ibus_property_get_tooltip:
  * @prop: An #IBusProperty.
- * @returns: (transfer none): the tooltip of #IBusProperty. Should not be freed.
  *
  * Get the tooltip of #IBusProperty.
+ *
+ * Returns: (transfer none): the tooltip of #IBusProperty. Should not be freed.
  */
 IBusText *       ibus_property_get_tooltip  (IBusProperty   *prop);
 
@@ -278,9 +274,10 @@ void             ibus_property_set_tooltip  (IBusProperty   *prop,
 /**
  * ibus_property_get_sensitive:
  * @prop: An #IBusProperty.
- * @returns: the sensitive of #IBusProperty.
  *
  * Get the sensitive of #IBusProperty.
+ *
+ * Returns: the sensitive of #IBusProperty.
  */
 gboolean         ibus_property_get_sensitive(IBusProperty   *prop);
 
@@ -297,9 +294,10 @@ void             ibus_property_set_sensitive(IBusProperty   *prop,
 /**
  * ibus_property_get_visible:
  * @prop: An #IBusProperty.
- * @returns: the visible of #IBusProperty.
  *
  * Get the visible of #IBusProperty.
+ *
+ * Returns: the visible of #IBusProperty.
  */
 gboolean         ibus_property_get_visible  (IBusProperty   *prop);
 
@@ -316,18 +314,20 @@ void             ibus_property_set_visible  (IBusProperty   *prop,
 /**
  * ibus_property_get_property_type:
  * @prop: An #IBusProperty.
- * @returns: the type of #IBusProperty.
  *
  * Get the type of #IBusProperty.
+ *
+ * Returns: the type of #IBusProperty.
  */
 IBusPropType     ibus_property_get_prop_type(IBusProperty   *prop);
 
 /**
  * ibus_property_get_state:
  * @prop: An #IBusProperty.
- * @returns: the state of #IBusProperty.
  *
  * Get the state of #IBusProperty.
+ *
+ * Returns: the state of #IBusProperty.
  */
 IBusPropState    ibus_property_get_state    (IBusProperty   *prop);
 
@@ -344,10 +344,11 @@ void             ibus_property_set_state    (IBusProperty   *prop,
 /**
  * ibus_property_get_sub_props:
  * @prop: An #IBusProperty.
- * @returns: (transfer none): the IBusPropList of #IBusProperty.
- *     Should not be freed.
  *
  * Get the IBusPropList of #IBusProperty.
+ *
+ * Returns: (transfer none): the IBusPropList of #IBusProperty.
+ *     Should not be freed.
  */
 IBusPropList *   ibus_property_get_sub_props(IBusProperty   *prop);
 
@@ -365,11 +366,12 @@ void             ibus_property_set_sub_props(IBusProperty   *prop,
  * ibus_property_update:
  * @prop: An #IBusProperty.
  * @prop_update: #IBusPropList that contains sub IBusProperties.
- * @returns: TRUE for update suceeded; FALSE otherwise.
  *
  * Update the content of an #IBusProperty.
  * #IBusProperty @prop_update can either be sub-property of @prop,
  * or holds new values for @prop.
+ *
+ * Returns: TRUE for update suceeded; FALSE otherwise.
  */
 
 gboolean         ibus_property_update       (IBusProperty   *prop,

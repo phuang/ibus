@@ -129,12 +129,13 @@ struct _IBusSerializable {
  * IBusSerializableSerializeFunc:
  * @serializable: An #IBusSerializable.
  * @builder: A #GVariantBuilder.
- * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Prototype of serialize function.
  * Serialize function convert an #IBusSerializable to #GVariantBuilder.
  * Returns a gboolean value which indicates whether the conversion is success.
  * Return %TRUE if succeed.
+ *
+ * Returns: %TRUE if succeed; %FALSE otherwise.
  */
 typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       *serializable,
                                                          GVariantBuilder        *builder);
@@ -143,12 +144,13 @@ typedef gboolean    (* IBusSerializableSerializeFunc)   (IBusSerializable       
  * IBusSerializableDeserializeFunc:
  * @serializable: An #IBusSerializable.
  * @variant: A #GVariant contains a tuple.
- * @returns: The number of values in the variant(tuple) are consumed.
  *
  * Prototype of deserialize function.
  * Deserialize function convert a #GVariant to #IBusSerializable.
  * Returns an integer value which indicates how many values in
  * the variant(tuple) are consumed.
+ *
+ * Returns: The number of values in the variant(tuple) are consumed.
  */
 typedef gint        (* IBusSerializableDeserializeFunc) (IBusSerializable       *serializable,
                                                          GVariant               *variant);
@@ -157,11 +159,12 @@ typedef gint        (* IBusSerializableDeserializeFunc) (IBusSerializable       
  * IBusSerializableCopyFunc:
  * @dest: The destination #IBusSerializable.
  * @src: A source #IBusSerializable.
- * @returns: %TRUE if succeed; %FALSE otherwise.
  *
  * Prototype of copy function.
  * Copy function copy from source #IBusSerializable to the destination one.
  * Returns a gboolean value which indicates whether the copying is success.
+ *
+ * Returns: %TRUE if succeed; %FALSE otherwise.
  */
 typedef gboolean    (* IBusSerializableCopyFunc)        (IBusSerializable       *dest,
                                                          const IBusSerializable *src);
@@ -211,9 +214,11 @@ void                 ibus_serializable_set_qattachment  (IBusSerializable   *ser
  * ibus_serializable_get_qattachment:
  * @serializable: An #IBusSerializable.
  * @key: String formatted key for indexing value.
- * @returns: The attached value; or %NULL if fail to retrieve the value.
  *
- * Get a value from attachment of an #IBusSerializable.
+ * Gets a value from attachment of an #IBusSerializable.
+ *
+ * Returns: The attached value; or %NULL if fail to retrieve the value.
+ *
  * See also: ibus_serializable_set_attachment().
  */
 GVariant            *ibus_serializable_get_qattachment  (IBusSerializable   *serializable,
@@ -234,11 +239,12 @@ void                 ibus_serializable_remove_qattachment
 /**
  * ibus_serializable_copy:
  * @serializable: An #IBusSerializable.
- * @returns: (transfer none): A newly allocated clone object; or %NULL
- *     if @object is not serializable.
  *
  * Clone an #IBusSerializable.
  * The copy method should be implemented in extended class.
+ *
+ * Returns: (transfer none): A newly allocated clone object; or %NULL
+ *     if @object is not serializable.
  *
  * See also: IBusSerializableCopyFunc().
  */
@@ -247,10 +253,11 @@ IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *ser
 /**
  * ibus_serializable_serialize:
  * @serializable: An #IBusSerializable.
- * @returns: A #GVariant.
  *
  * Serialize an #IBusSerializable to a #GVariant.
  * The serialize method should be implemented in extended class.
+ *
+ * Returns: A #GVariant.
  *
  * See also: IBusSerializableCopyFunc().
  */
@@ -259,10 +266,11 @@ GVariant            *ibus_serializable_serialize        (IBusSerializable   *ser
 /**
  * ibus_serializable_deserialize:
  * @variant: A #GVariant.
- * @returns: (transfer none): The deserialized #IBusSerializable.
  *
  * Deserialize a #GVariant to an #IBusSerializable/
  * The deserialize method should be implemented in extended class.
+ *
+ * Returns: (transfer none): The deserialized #IBusSerializable.
  *
  * See also: IBusSerializableCopyFunc().
  */

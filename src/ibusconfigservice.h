@@ -186,11 +186,12 @@ struct _IBusConfigServiceClass {
                                  GError              **error);
     /**
      * get_value:
-     * @config: An IBusConfig.
+     * @config: An #IBusConfig.
      * @section: section name
      * @name: value name
-     * @returns: (transfer full): The value in config associated with section and name.
      *
+     * Returns: (transfer full): The value in config associated with section
+     *         and name.
      */
     GVariant *  (* get_value)   (IBusConfigService    *config,
                                  const gchar          *section,
@@ -213,10 +214,11 @@ GType                ibus_config_service_get_type   (void);
 
 /**
  * ibus_config_service_new:
- * @connection: An GDBusConnection.
- * @returns: A newly allocated IBusConfigServices.
+ * @connection: An #GDBusConnection.
  *
- * New an IBusConfigService from an GDBusConnection.
+ * Creates an new #IBusConfigService from an #GDBusConnection.
+ *
+ * Returns: A newly allocated #IBusConfigServices.
  */
 IBusConfigService   *ibus_config_service_new        (GDBusConnection     *connection);
 

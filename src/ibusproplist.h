@@ -59,6 +59,19 @@ G_BEGIN_DECLS
 #define IBUS_PROP_LIST_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_PROP_LIST, IBusPropListClass))
 
+/* FIXME: https://mail.gnome.org/archives/gtk-doc-list/2015-July/msg00004.html
+ * If ibusproperty.h and ibusproplist.h includes each other,
+ * gtk-doc build outputs several warnings:
+ *
+ * # cd html && gtkdoc-mkhtml ibus ../ibus-docs.sgml
+ * ../ibus-docs.sgml:4: element refentry: validity error : ID IBusPropList
+ * already defined
+ * ../ibus-docs.sgml:172: element refsect2: validity error : ID
+ * IBusPropListClass already defined
+ * Warning: multiple "IDs" for constraint linkend: IBusPropList.
+ * Warning: multiple "IDs" for constraint linkend: IBusPropList.
+ * Warning: multiple "IDs" for constraint linkend: IBusPropListClass.
+ */
 #ifndef __PROPLIST_DEFINED
 #define __PROPLIST_DEFINED
 typedef struct _IBusPropList IBusPropList;
@@ -78,6 +91,12 @@ struct _IBusPropList {
     GArray *properties;
 };
 
+/**
+ * IBusPropListClass:
+ * @parent: The parent class.
+ *
+ * Class structure for #IBusPropList.
+ */
 struct _IBusPropListClass {
     IBusSerializableClass parent;
 };
@@ -86,9 +105,10 @@ GType            ibus_prop_list_get_type    ();
 
 /**
  * ibus_prop_list_new:
- * @returns: A newly allocated IBusPropList.
  *
- * New a IBusPropList.
+ * Create a new #IBusPropList.
+ *
+ * Returns: A newly allocated #IBusPropList.
  */
 IBusPropList    *ibus_prop_list_new         ();
 
@@ -106,9 +126,11 @@ void             ibus_prop_list_append      (IBusPropList   *prop_list,
  * ibus_prop_list_get:
  * @prop_list: An IBusPropList.
  * @index: Index of an IBusPropList.
- * @returns: (transfer none): IBusProperty at given index, NULL if no such IBusProperty.
  *
- * Returns IBusProperty at given index. Borrowed reference.
+ * Gets #IBusProperty at given index. Borrowed reference.
+ *
+ * Returns: (transfer none): #IBusProperty at given index, %NULL if no such
+ *     #IBusProperty.
  */
 IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
                                              guint           index);
@@ -117,9 +139,10 @@ IBusProperty    *ibus_prop_list_get         (IBusPropList   *prop_list,
  * ibus_prop_list_update_property:
  * @prop_list: An IBusPropList.
  * @prop: IBusProperty to be update.
- * @returns: TRUE if succeeded, FALSE otherwise.
  *
  * Update an IBusProperty in IBusPropList.
+ *
+ * Returns: %TRUE if succeeded, %FALSE otherwise.
  */
 gboolean         ibus_prop_list_update_property
                                             (IBusPropList   *prop_list,

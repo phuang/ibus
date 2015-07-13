@@ -112,10 +112,11 @@ struct _IBusServiceClass {
      * @interface_name: An interface name.
      * @property_name: A property name.
      * @error: Return location for error or %NULL.
-     * @returns: (nullable) (transfer full): A variant.
      *
      * The ::service_get_property class method is to connect
      * GDBusInterfaceGetPropertyFunc().
+     *
+     * Returns: (nullable) (transfer full): A variant.
      */
     GVariant *  (* service_get_property)
                                     (IBusService        *service,
@@ -135,10 +136,11 @@ struct _IBusServiceClass {
      * @property_name: An property name.
      * @value: An property value.
      * @error: Return location for error or %NULL.
-     * @returns: %TRUE if set the value else %FALSE.
      *
      * The ::service_set_property class method is to connect
      * GDBusInterfaceSetPropertyFunc().
+     *
+     * Returns: %TRUE if set the value else %FALSE.
      */
     gboolean    (* service_set_property)
                                     (IBusService        *service,
@@ -161,28 +163,32 @@ GType            ibus_service_get_type          (void);
 
 /**
  * ibus_service_new:
+ * @connection: A GDBusConnection.
  * @path: Object path.
- * @returns: A newly allocated IBusService
  *
- * New an IBusService.
+ * Creantes a new #IBusService.
+ *
+ * Returns: A newly allocated #IBusService
  */
 IBusService     *ibus_service_new               (GDBusConnection    *connection,
                                                  const gchar        *path);
 /**
  * ibus_service_get_object_path:
  * @service: An IBusService.
- * @returns: The object path of @service
  *
- * Returns the object path of an IBusService.
+ * Gets the object path of an IBusService.
+ *
+ * Returns: The object path of @service
  */
 const gchar     *ibus_service_get_object_path   (IBusService        *service);
 
 /**
  * ibus_service_get_connection:
  * @service: An IBusService.
- * @returns: (transfer none): A #GDBusConnection of an #IBusService instance.
  *
- * Returns a connections.
+ * Gets a connections.
+ *
+ * Returns: (transfer none): A #GDBusConnection of an #IBusService instance.
  */
 GDBusConnection *ibus_service_get_connection    (IBusService        *service);
 
@@ -191,9 +197,10 @@ GDBusConnection *ibus_service_get_connection    (IBusService        *service);
  * @service: An IBusService.
  * @connection: A GDBusConnection the service will be registered to.
  * @error: Return location for error or NULL.
- * @returns: TRUE if the service was registered, FALSE otherwise.
  *
  * Registers service to a connection.
+ *
+ * Returns: %TRUE if the service was registered, %FALSE otherwise.
  */
 gboolean         ibus_service_register          (IBusService        *service,
                                                  GDBusConnection    *connection,
@@ -217,9 +224,10 @@ void             ibus_service_unregister        (IBusService        *service,
  * @name: Name of the signal.
  * @first_arg_type: Type of first argument.
  * @...: Rest of arguments, NULL to mark the end.
- * @returns: TRUE if succeed; FALSE otherwise.
  *
- * Send signal to all the IBusConnections of an IBusService.
+ * Sends signal to all the #IBusConnections of an #IBusService.
+ *
+ * Returns: %TRUE if succeed; %FALSE otherwise.
  *
  * see_also: g_dbus_connection_emit_signal()
  */
@@ -235,6 +243,9 @@ gboolean         ibus_service_emit_signal       (IBusService        *service,
  * @xml_data: The introspection xml data.
  *
  * Set the interface introspection information with the service class.
+ *
+ * Returns: %TRUE if @xml_data is valid and succeeded to be added;
+ *          %FALSE otherwise.
  */
 gboolean         ibus_service_class_add_interfaces
                                                 (IBusServiceClass   *klass,

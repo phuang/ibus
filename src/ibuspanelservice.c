@@ -281,8 +281,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @cursor_pos: The cursor position of the text.
      * @visible: Whether the update is visible.
      *
-     * Emitted when the client application get the update-preedit-text.
-     * Implement the member function update_preedit_text() in extended class
+     * Emitted when the client application get the ::update-preedit-text.
+     * Implement the member function
+     * IBusPanelServiceClass::update_preedit_text in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -307,8 +308,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @text: A preedit text to be updated.
      * @visible: Whether the update is visible.
      *
-     * Emitted when the client application get the update-auxiliary-text.
-     * Implement the member function update_auxiliary_text() in extended class
+     * Emitted when the client application get the ::update-auxiliary-text.
+     * Implement the member function
+     * IBusPanelServiceClass::update_auxiliary_text in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -332,8 +334,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @lookup_table: A lookup table to be updated.
      * @visible: Whether the update is visible.
      *
-     * Emitted when the client application get the update-lookup-table.
-     * Implement the member function update_lookup_table() in extended class
+     * Emitted when the client application get the ::update-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::update_lookup_table in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -356,8 +359,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
-     * Emitted when the client application get the focus-in.
-     * Implement the member function focus_in() in extended class to receive
+     * Emitted when the client application get the ::focus-in.
+     * Implement the member function
+     * IBusPanelServiceClass::focus_in in extended class to receive
      * this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -379,8 +383,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @panel: An #IBusPanelService
      * @input_context_path: Object path of InputContext.
      *
-     * Emitted when the client application get the focus-out.
-     * Implement the member function focus_out() in extended class to receive
+     * Emitted when the client application get the ::focus-out.
+     * Implement the member function
+     * IBusPanelServiceClass::focus_out in extended class to receive
      * this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -402,8 +407,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @panel: An #IBusPanelService
      * @prop_list: An IBusPropList that contains properties.
      *
-     * Emitted when the client application get the register-properties.
-     * Implement the member function register_properties() in extended class
+     * Emitted when the client application get the ::register-properties.
+     * Implement the member function
+     * IBusPanelServiceClass::register_properties in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -425,8 +431,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @panel: An #IBusPanelService
      * @prop: The IBusProperty to be updated.
      *
-     * Emitted when the client application get the update-property.
-     * Implement the member function update_property() in extended class to
+     * Emitted when the client application get the ::update-property.
+     * Implement the member function
+     * IBusPanelServiceClass::update_property in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -451,8 +458,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @w: Width of the cursor.
      * @h: Height of the cursor.
      *
-     * Emitted when the client application get the set-cursor-location.
-     * Implement the member function set_cursor_location() in extended class
+     * Emitted when the client application get the ::set-cursor-location.
+     * Implement the member function
+     * IBusPanelServiceClass::set_cursor_location in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -476,8 +484,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::cursor-up-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the cursor-up-lookup-table.
-     * Implement the member function cursor_up_lookup_table() in extended
+     * Emitted when the client application get the ::cursor-up-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::cursor_up_lookup_table in extended
      * class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -496,8 +505,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::cursor-down-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the cursor-down-lookup-table.
-     * Implement the member function cursor_down_lookup_table() in extended
+     * Emitted when the client application get the ::cursor-down-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::cursor_down_lookup_table in extended
      * class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -516,8 +526,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::hide-auxiliary-text:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the hide-auxiliary-text.
-     * Implement the member function hide_auxiliary_text() in extended class
+     * Emitted when the client application get the ::hide-auxiliary-text.
+     * Implement the member function
+     * IBusPanelServiceClass::hide_auxiliary_text in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -536,8 +547,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::hide-language-bar:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the hide-language-bar.
-     * Implement the member function hide_language_bar() in extended class to
+     * Emitted when the client application get the ::hide-language-bar.
+     * Implement the member function
+     * IBusPanelServiceClass::hide_language_bar in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -556,8 +568,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::hide-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the hide-lookup-table.
-     * Implement the member function hide_lookup_table() in extended class to
+     * Emitted when the client application get the ::hide-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::hide_lookup_table in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -576,8 +589,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::hide-preedit-text:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the hide-preedit-text.
-     * Implement the member function hide_preedit_text() in extended class to
+     * Emitted when the client application get the ::hide-preedit-text.
+     * Implement the member function
+     * IBusPanelServiceClass::hide_preedit_text in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -596,8 +610,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::page-up-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the page-up-lookup-table.
-     * Implement the member function page_up_lookup_table() in extended class
+     * Emitted when the client application get the ::page-up-lookup-table.
+     * Implement the member function 
+     * IBusPanelServiceClass::page_up_lookup_table in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -616,8 +631,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::page-down-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the page-down-lookup-table.
-     * Implement the member function page_down_lookup_table() in extended
+     * Emitted when the client application get the ::page-down-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::page_down_lookup_table in extended
      * class to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -636,8 +652,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::reset:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the reset.
-     * Implement the member function reset() in extended class to receive this
+     * Emitted when the client application get the ::reset.
+     * Implement the member function
+     * IBusPanelServiceClass::reset in extended class to receive this
      * signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -656,8 +673,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::show-auxiliary-text:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the show-auxiliary-text.
-     * Implement the member function show_auxiliary_text() in extended class
+     * Emitted when the client application get the ::show-auxiliary-text.
+     * Implement the member function
+     * IBusPanelServiceClass::show_auxiliary_text in extended class
      * to receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -676,8 +694,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::show-language-bar:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the show-language-bar.
-     * Implement the member function show_language_bar() in extended class to
+     * Emitted when the client application get the ::show-language-bar.
+     * Implement the member function
+     * IBusPanelServiceClass::show_language_bar in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -696,8 +715,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::show-lookup-table:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the show-lookup-table.
-     * Implement the member function show_lookup_table() in extended class to
+     * Emitted when the client application get the ::show-lookup-table.
+     * Implement the member function
+     * IBusPanelServiceClass::show_lookup_table in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -716,8 +736,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::show-preedit-text:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the show-preedit-text.
-     * Implement the member function show_preedit_text() in extended class to
+     * Emitted when the client application get the ::show-preedit-text.
+     * Implement the member function
+     * IBusPanelServiceClass::show_preedit_text in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -736,8 +757,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::start-setup:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the start-setup.
-     * Implement the member function start_setup() in extended class to
+     * Emitted when the client application get the ::start-setup.
+     * Implement the member function
+     * IBusPanelServiceClass::start_setup in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -756,8 +778,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * IBusPanelService::state-changed:
      * @panel: An #IBusPanelService
      *
-     * Emitted when the client application get the state-changed.
-     * Implement the member function state_changed() in extended class to
+     * Emitted when the client application get the ::state-changed.
+     * Implement the member function
+     * IBusPanelServiceClass::state_changed in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -778,7 +801,8 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @input_context_path: Object path of InputContext.
      *
      * Emitted when the client application destroys.
-     * Implement the member function destroy_context() in extended class to
+     * Implement the member function
+     * IBusPanelServiceClass::destroy_context in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>
@@ -801,8 +825,9 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
      * @purpose: Input purpose.
      * @hints: Input hints.
      *
-     * Emitted when the client application get the set-content-type.
-     * Implement the member function set_content_type() in extended class to
+     * Emitted when the client application get the ::set-content-type.
+     * Implement the member function
+     * IBusPanelServiceClass::set_content_type in extended class to
      * receive this signal.
      *
      * <note><para>Argument @user_data is ignored in this function.</para>

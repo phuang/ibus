@@ -80,17 +80,19 @@ struct _IBusAttrListClass {
 
 /**
  * ibus_attr_list_get_type:
- * @returns: GType of IBusAttrList.
  *
- * Returns GType of IBusAttrList.
+ * Returns GType of #IBusAttrList.
+ *
+ * Returns: GType of #IBusAttrList.
  */
 GType                ibus_attr_list_get_type    ();
 
 /**
  * ibus_attr_list_new:
- * @returns: A newly allocated IBusAttrList.
  *
- * New an IBusAttrList.
+ * Creates an new #IBusAttrList.
+ *
+ * Returns: A newly allocated #IBusAttrList.
  */
 IBusAttrList        *ibus_attr_list_new         ();
 
@@ -107,9 +109,11 @@ void                 ibus_attr_list_append      (IBusAttrList   *attr_list,
  * ibus_attr_list_get:
  * @attr_list: An IBusAttrList instance.
  * @index: Index of the @attr_list.
- * @returns: (transfer none): IBusAttribute at given index, NULL if no such IBusAttribute.
  *
- * Returns IBusAttribute at given index. Borrowed reference.
+ * Returns #IBusAttribute at given index. Borrowed reference.
+ *
+ * Returns: (transfer none): #IBusAttribute at given index, %NULL if no such
+ *        #IBusAttribute.
  */
 IBusAttribute       *ibus_attr_list_get         (IBusAttrList   *attr_list,
                                                  guint           index);

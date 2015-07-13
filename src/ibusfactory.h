@@ -142,18 +142,20 @@ struct _IBusFactoryClass {
 
 /**
  * ibus_factory_info_get_type:
- * @returns: GType of IBus factory information.
  *
- * Return GType of IBus factory information.
+ * Gets GType of IBus factory information.
+ *
+ * Returns: GType of IBus factory information.
  */
 GType            ibus_factory_get_type          (void);
 
 /**
  * ibus_factory_new:
  * @connection: An GDBusConnection.
- * @returns: A newly allocated IBusFactory.
  *
- * New an IBusFactory.
+ * Creates a new #IBusFactory.
+ *
+ * Returns: A newly allocated #IBusFactory.
  */
 IBusFactory     *ibus_factory_new               (GDBusConnection *connection);
 
@@ -173,9 +175,10 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
  * ibus_factory_create_engine:
  * @factory: An #IBusFactory.
  * @engine_name: Name of an engine.
- * @returns: (transfer full): #IBusEngine with @engine_name.
  *
- * Create an #IBusEngine with @engine_name.
+ * Creates an #IBusEngine with @engine_name.
+ *
+ * Returns: (transfer full): #IBusEngine with @engine_name.
  */
 IBusEngine      *ibus_factory_create_engine     (IBusFactory    *factory,
                                                  const gchar    *engine_name);

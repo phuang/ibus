@@ -78,24 +78,6 @@ typedef struct _IBusEngineDescClass IBusEngineDescClass;
  *
  * Input method engine description data.
  * You can get extended values with g_object_get_properties.
- * name: Name of the engine.
- * longname: Long name of the input method engine.
- * description: Input method engine description.
- * language: Language (e.g. zh, jp) supported by this input method engine.
- * license: License of the input method engine.
- * author: Author of the input method engine.
- * icon: Icon file of this engine.
- * layout: Keyboard layout
- * layout_variant: Keyboard variant
- * layout_option: Keyboard option
- * rank: Preference rank among engines, the highest ranked IME will put in
- * the front.
- * hotkeys: One or more hotkeys for switching to this engine, separated by
- *  semi-colon.
- * setup: Exec lists of the engine setup command.
- * version: Version number of the input method engine.
- * textdomain: Domain name for dgettext()
- * icon_prop_key: Key of IBusProperty to change panel icon dynamically.
  */
 struct _IBusEngineDesc {
     IBusSerializable parent;
@@ -123,9 +105,10 @@ GType            ibus_engine_desc_get_type      (void);
  * @author: Author of the input method engine.
  * @icon: Icon file of this engine.
  * @layout: Keyboard layout
- * @returns: A newly allocated IBusEngineDesc.
  *
- * New a IBusEngineDesc.
+ * Creates a new #IBusEngineDesc.
+ *
+ * Returns: A newly allocated IBusEngineDesc.
  */
 IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
                                                  const gchar    *longname,
@@ -139,12 +122,14 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
 /**
  * ibus_engine_desc_new_varargs:
  * @first_property_name: Name of the first property.
- * @Varargs: the NULL-terminated arguments of the properties and values.
+ * @...: the NULL-terminated arguments of the properties and values.
  *
- * New a IBusEngineDesc.
+ * Creates a new #IBusEngineDesc.
  * ibus_engine_desc_new_varargs() supports the va_list format.
  * name property is required. e.g.
  * ibus_engine_desc_new_varargs("name", "ibus-foo", "language", "us", NULL)
+ *
+ * Returns: A newly allocated IBusEngineDesc.
  */
 IBusEngineDesc  *ibus_engine_desc_new_varargs   (const gchar *first_property_name,
                                                  ...);
@@ -153,40 +138,44 @@ IBusEngineDesc  *ibus_engine_desc_new_varargs   (const gchar *first_property_nam
 /**
  * ibus_engine_desc_new_from_xml_node:
  * @node: An XML node
- * @returns: A newly allocated IBusEngineDesc that contains description from
- * @node.
  *
- * New a IBusEngineDesc from an XML node.
+ * Creates a new IBusEngineDesc from an XML node.
  * <note><para>This function is called by ibus_component_new_from_file(),
  *  so developers normally do not need to call it directly.
  * </para></note>
+ *
+ * Returns: A newly allocated IBusEngineDesc that contains description from
+ * @node.
  */
 IBusEngineDesc  *ibus_engine_desc_new_from_xml_node
                                                 (XMLNode        *node);
 /**
  * ibus_engine_desc_get_name:
  * @info: An IBusEngineDesc
- * @returns: name property in IBusEngineDesc
  *
- * Return the name property in IBusEngineDesc. It should not be freed.
+ * Gets the name property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: name property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_name      (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_longname:
  * @info: An IBusEngineDesc
- * @returns: longname property in IBusEngineDesc
  *
- * Return the longname property in IBusEngineDesc. It should not be freed.
+ * Gets the longname property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: longname property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_longname  (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_description:
  * @info: An IBusEngineDesc
- * @returns: description property in IBusEngineDesc
  *
- * Return the description property in IBusEngineDesc. It should not be freed.
+ * Gets the description property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: description property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_description
                                                 (IBusEngineDesc *info);
@@ -194,54 +183,61 @@ const gchar     *ibus_engine_desc_get_description
 /**
  * ibus_engine_desc_get_language:
  * @info: An IBusEngineDesc
- * @returns: language property in IBusEngineDesc
  *
- * Return the language property in IBusEngineDesc. It should not be freed.
+ * Gets the language property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: language property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_language  (IBusEngineDesc *info);
+
 
 /**
  * ibus_engine_desc_get_license:
  * @info: An IBusEngineDesc
- * @returns: license property in IBusEngineDesc
  *
- * Return the license property in IBusEngineDesc. It should not be freed.
+ * Gets the license property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: license property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_license   (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_author:
  * @info: An IBusEngineDesc
- * @returns: author property in IBusEngineDesc
  *
- * Return the author property in IBusEngineDesc. It should not be freed.
+ * Gets the author property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: author property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_author    (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_icon:
  * @info: An IBusEngineDesc
- * @returns: icon property in IBusEngineDesc
  *
- * Return the icon property in IBusEngineDesc. It should not be freed.
+ * Gets the icon property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: icon property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_icon      (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_layout:
  * @info: An IBusEngineDesc
- * @returns: layout property in IBusEngineDesc
  *
- * Return the layout property in IBusEngineDesc. It should not be freed.
+ * Gets the layout property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: layout property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_layout    (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_layout_variant:
  * @info: An IBusEngineDesc
- * @returns: keyboard variant property in IBusEngineDesc
  *
- * Return the keyboard variant property in IBusEngineDesc. It should not be freed.
+ * Gets the keyboard variant property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: keyboard variant property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_layout_variant
                                                 (IBusEngineDesc *info);
@@ -249,9 +245,10 @@ const gchar     *ibus_engine_desc_get_layout_variant
 /**
  * ibus_engine_desc_get_layout_option:
  * @info: An IBusEngineDesc
- * @returns: keyboard option property in IBusEngineDesc
  *
- * Return the keyboard option property in IBusEngineDesc. It should not be freed.
+ * Gets the keyboard option property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: keyboard option property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_layout_option
                                                 (IBusEngineDesc *info);
@@ -259,54 +256,60 @@ const gchar     *ibus_engine_desc_get_layout_option
 /**
  * ibus_engine_desc_get_rank:
  * @info: An IBusEngineDesc
- * @returns: rank property in IBusEngineDesc
  *
- * Return the rank property in IBusEngineDesc.
+ * Gets the rank property in IBusEngineDesc.
+ *
+ * Returns: rank property in IBusEngineDesc
  */
 guint            ibus_engine_desc_get_rank      (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_hotkeys:
  * @info: An IBusEngineDesc
- * @returns: hotkeys property in IBusEngineDesc
  *
- * Return the hotkeys property in IBusEngineDesc. It should not be freed.
+ * Gets the hotkeys property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: hotkeys property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_hotkeys   (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_symbol:
  * @info: An IBusEngineDesc
- * @returns: symbol property in IBusEngineDesc
  *
- * Return the symbol property in IBusEngineDesc. It should not be freed.
+ * Gets the symbol property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: symbol property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_symbol    (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_setup:
  * @info: An IBusEngineDesc
- * @returns: setup property in IBusEngineDesc
  *
- * Return the setup property in IBusEngineDesc. It should not be freed.
+ * Gets the setup property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: setup property in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_setup     (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_version:
  * @info: An IBusEngineDesc
- * @returns: version in IBusEngineDesc
  *
- * Return the version property in IBusEngineDesc. It should not be freed.
+ * Gets the version property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: version in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_version   (IBusEngineDesc *info);
 
 /**
  * ibus_engine_desc_get_textdomain:
  * @info: An IBusEngineDesc
- * @returns: textdomain in IBusEngineDesc
  *
- * Return the textdomain property in IBusEngineDesc. It should not be freed.
+ * Gets the textdomain property in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: textdomain in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_textdomain
                                                 (IBusEngineDesc *info);
@@ -314,10 +317,11 @@ const gchar     *ibus_engine_desc_get_textdomain
 /**
  * ibus_engine_desc_get_icon_prop_key:
  * @info: An IBusEngineDesc
- * @returns: IBusProperty.key for dynamic panel icon in IBusEngineDesc
  *
- * Return the key of IBusProperty to load the panel icon dynamically
-   in IBusEngineDesc. It should not be freed.
+ * Gets the key of IBusProperty to load the panel icon dynamically
+ * in IBusEngineDesc. It should not be freed.
+ *
+ * Returns: IBusProperty.key for dynamic panel icon in IBusEngineDesc
  */
 const gchar     *ibus_engine_desc_get_icon_prop_key
                                                 (IBusEngineDesc *info);

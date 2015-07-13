@@ -39,7 +39,8 @@
 /**
  * ibus_get_untranslated_language_name:
  * @_locale: A const locale name.
- * @returns: untranslated language name
+ *
+ * Returns: untranslated language name
  */
 const gchar *    ibus_get_untranslated_language_name
                                                 (const gchar    *_locale);
@@ -47,7 +48,8 @@ const gchar *    ibus_get_untranslated_language_name
 /**
  * ibus_get_language_name:
  * @_locale: A const locale name.
- * @returns: translated language name
+ *
+ * Returns: translated language name
  */
 const gchar *    ibus_get_language_name         (const gchar    *_locale);
 

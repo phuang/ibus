@@ -82,9 +82,10 @@ struct _IBusHotkeyProfileClass {
 GType            ibus_hotkey_profile_get_type   (void);
 /**
  * ibus_hotkey_profile_new:
- * @returns: A newly allocated IBusHotkeyProfile.
  *
- * New an IBusHotkeyProfile.
+ * Creates a new #IBusHotkeyProfile.
+ *
+ * Returns: A newly allocated #IBusHotkeyProfile.
  */
 IBusHotkeyProfile
                 *ibus_hotkey_profile_new        (void);
@@ -95,9 +96,10 @@ IBusHotkeyProfile
  * @keyval: Keycode of the hotkey.
  * @modifiers: Modifiers of the hotkey.
  * @event: The event to be associated.
- * @returns: Always TRUE.
  *
- * Add a hotkey and its associated event to an IBusHotkeyProfile.
+ * Adds a hotkey and its associated event to an #IBusHotkeyProfile.
+ *
+ * Returns: Always %TRUE.
  */
 gboolean         ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile  *profile,
                                                  guint               keyval,
@@ -109,10 +111,12 @@ gboolean         ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile  *profile,
  * @profile: An IBusHotkeyProfile.
  * @str: Key in string representation.  '+' is the separator.
  * @event: The event to be associated.
- * @returns: FALSE if @str contains invalid symbol; TRUE otherwise.
  *
- * Add a hotkey and its associated event to an IBusHotkeyProfile.
- * The hotkey is in string format, such like <constant>Control+Shift+A</constant>.
+ * Adds a hotkey and its associated event to an #IBusHotkeyProfile.
+ * The hotkey is in string format, such like
+ * <constant>Control+Shift+A</constant>.
+ *
+ * Returns: FALSE if @str contains invalid symbol; TRUE otherwise.
  */
 gboolean         ibus_hotkey_profile_add_hotkey_from_string
                                                 (IBusHotkeyProfile  *profile,
@@ -124,9 +128,10 @@ gboolean         ibus_hotkey_profile_add_hotkey_from_string
  * @profile: An IBusHotkeyProfile.
  * @keyval: Keycode of the hotkey.
  * @modifiers: Modifiers of the hotkey.
- * @returns: FALSE if the key is not in @profile, TRUE otherwise.
  *
- * Remove the hotkey for an IBusHotkeyProfile.
+ * Removes the hotkey for an #IBusHotkeyProfile.
+ *
+ * Returns: %FALSE if the key is not in @profile, %TRUE otherwise.
  */
 gboolean         ibus_hotkey_profile_remove_hotkey
                                                 (IBusHotkeyProfile  *profile,
@@ -137,9 +142,10 @@ gboolean         ibus_hotkey_profile_remove_hotkey
  * ibus_hotkey_profile_remove_hotkey_by_event:
  * @profile: An IBusHotkeyProfile.
  * @event: The associated event.
- * @returns: FALSE if no such event in @profile, TRUE otherwise.
  *
- * Remove the hotkey for an IBusHotkeyProfile by event.
+ * Removes the hotkey for an #IBusHotkeyProfile by event.
+ *
+ * Returns: %FALSE if no such event in @profile, %TRUE otherwise.
  */
 gboolean         ibus_hotkey_profile_remove_hotkey_by_event
                                                 (IBusHotkeyProfile  *profile,
@@ -153,9 +159,11 @@ gboolean         ibus_hotkey_profile_remove_hotkey_by_event
  * @prev_keyval: Keycode of the hotkey.
  * @prev_modifiers: Modifiers of the hotkey.
  * @user_data: user data for signal "trigger".
- * @returns: 0 if releasing a hotkey and the hotkey is not in the profile ; an associated event otherwise.
  *
- * Emit a <constant>::trigger</constant> signal when a hotkey is in a profile.
+ * Emits a <constant>::trigger</constant> signal when a hotkey is in a profile.
+ *
+ * Returns: 0 if releasing a hotkey and the hotkey is not in the profile;
+ * an associated event otherwise.
  *
  * See also: ::trigger
  */
@@ -172,7 +180,8 @@ GQuark           ibus_hotkey_profile_filter_key_event
  * @profile: An IBusHotkeyProfile.
  * @keyval: Keycode of the hotkey.
  * @modifiers: Modifiers of the hotkey.
- * @returns: The event associated to the hotkey or 0 if the hotkey is not in the
+ *
+ * Returns: The event associated to the hotkey or 0 if the hotkey is not in the
  * profile.
  */
 GQuark           ibus_hotkey_profile_lookup_hotkey

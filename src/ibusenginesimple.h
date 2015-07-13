@@ -28,7 +28,7 @@
 #define __IBUS_ENGINE_SIMPLE_H__
 
 /**
- * SECTION: ibussimpleengine
+ * SECTION: ibusenginesimple
  * @short_description: Input method engine supporting table-based input method
  * @title: IBusEngineSimple
  * @stability: Stable
@@ -102,6 +102,7 @@ GType   ibus_engine_simple_get_type       (void);
  *      during the whole life of the simple engine.
  * @max_seq_len: Maximum length of a swquence in the table (cannot be greater
  *      than %IBUS_MAX_COMPOSE_LEN)
+ * @n_seqs: number of sequences in the table
  *
  * Adds an additional table to search to the engine. Each row of the table
  * consists of max_seq_len key symbols followed by two guint16 interpreted as
@@ -121,9 +122,10 @@ void             ibus_engine_simple_add_table   (IBusEngineSimple  *simple,
  * @simple: An IBusEngineSimple.
  * @locale: (allow-none): The locale name. If the locale is %NULL,
  *                        the current locale is used.
- * @returns: %TRUE if the @locale is matched to the table.
  *
  * Call ibus_engine_simple_add_table() internally by locale.
+ *
+ * Returns: %TRUE if the @locale is matched to the table.
  */
 gboolean         ibus_engine_simple_add_table_by_locale
                                                 (IBusEngineSimple  *simple,
@@ -134,9 +136,10 @@ gboolean         ibus_engine_simple_add_table_by_locale
  * @simple: An IBusEngineSimple.
  * @file: The compose file. If the @file is %NULL,
  *        the current locale is used.
- * @returns: %TRUE if the @file is loaded.
  *
  * Call ibus_engine_simple_add_table() internally by locale.
+ *
+ * Returns: %TRUE if the @file is loaded.
  */
 gboolean         ibus_engine_simple_add_compose_file
                                                 (IBusEngineSimple  *simple,

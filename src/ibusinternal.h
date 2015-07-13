@@ -24,15 +24,6 @@
 #error "Only <ibus.h> can be included directly"
 #endif
 
-/**
- * SECTION: ibusinternal
- * @short_description: IBus internal.
- * @title: IBusInternal
- * @stability: Stable
- *
- * This section contain several IBus house keeping functions.
- *
- */
 #ifndef __IBUS_INTERNEL_H_
 #define __IBUS_INTERNEL_H_
 

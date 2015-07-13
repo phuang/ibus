@@ -56,19 +56,21 @@ typedef struct {
 /**
  * ibus_xml_parse_file:
  * @name: File name to be parsed.
- * @returns: Root node of parsed XML tree.
  *
  * Parse an XML file and return a corresponding XML tree.
+ *
+ * Returns: Root node of parsed XML tree.
  */
 XMLNode *ibus_xml_parse_file    (const gchar    *name);
 
 /**
  * ibus_xml_parse_buffer:
  * @buffer: Buffer to be parsed.
- * @returns: Root node of parsed XML tree.
  *
  * Parse a string buffer which contains an XML-formatted string,
  * and return a corresponding XML tree.
+ *
+ * Returns: Root node of parsed XML tree.
  */
 XMLNode *ibus_xml_parse_buffer  (const gchar    *buffer);
 

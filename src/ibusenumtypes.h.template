@@ -2,14 +2,6 @@
 #ifndef __IBUS_ENUM_TYPES_H__
 #define __IBUS_ENUM_TYPES_H__
 
-/**
- * SECTION: ibusenumtypes
- * @short_description: Enumeration definition in IBus.
- * @stability: Stable
- *
- * IBusEnumTypes lists IBus enumeration types.
- */
-
 #include <glib-object.h>
 
 G_BEGIN_DECLS

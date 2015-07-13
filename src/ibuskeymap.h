@@ -113,12 +113,13 @@ GType            ibus_keymap_get_type               (void);
 /**
  * ibus_keymap_new:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
  *
- * Get an IBusKeymap associated with the giving name.
+ * Get an #IBusKeymap associated with the giving name.
  *
  * This function loads the keymap file specified in @name
  * in the IBUS_DATA_DIR/keymaps directory.
+ *
+ * Returns: An #IBusKeymap associated with the giving name; or %NULL if failed.
  *
  * Deprecated: This function has been deprecated and should
  * not be used in newly written code. Please use ibus_keymap_get().
@@ -129,13 +130,14 @@ IBusKeymap        *ibus_keymap_new                  (const gchar        *name)
 /**
  * ibus_keymap_get:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: (transfer full): An IBusKeymap associated with the giving name;
- * or %NULL if failed.
  *
  * Get an IBusKeymap associated with the giving name.
  *
  * This function loads the keymap file specified in @name
  * in the IBUS_DATA_DIR/keymaps directory.
+ *
+ * Returns: (transfer full): An #IBusKeymap associated with the giving name;
+ * or %NULL if failed.
  */
 IBusKeymap        *ibus_keymap_get                  (const gchar        *name);
 
@@ -144,9 +146,10 @@ IBusKeymap        *ibus_keymap_get                  (const gchar        *name);
  * @keymap: An IBusKeymap.
  * @keycode: A scancode to be converted.
  * @state: Modifier flags(such as Ctrl, Shift).
- * @returns: Corresponding keysym.
  *
- * Convert the scancode to keysym, given the keymap.
+ * Converts the scancode to keysym, given the keymap.
+ *
+ * Returns: Corresponding keysym.
  */
 guint              ibus_keymap_lookup_keysym        (IBusKeymap         *keymap,
                                                      guint16             keycode,

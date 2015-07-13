@@ -33,20 +33,22 @@ G_BEGIN_DECLS
 /**
  * ibus_keyval_name:
  * @keyval: Key symbol.
- * @returns: Corresponding key name. %NULL if no such key symbol.
  *
  * Return the name of a key symbol.
  *
  * Note that the returned string is used internally, so don't free it.
+ *
+ * Returns: Corresponding key name. %NULL if no such key symbol.
  */
 const gchar     *ibus_keyval_name       (guint           keyval);
 
 /**
  * ibus_keyval_from_name:
  * @keyval_name: Key name in #gdk_keys_by_name.
- * @returns: Corresponding key symbol.
  *
  * Return the key symbol that associate with the key name.
+ *
+ * Returns: Corresponding key symbol.
  */
 guint            ibus_keyval_from_name  (const gchar    *keyval_name);
 
@@ -56,9 +58,9 @@ guint            ibus_keyval_from_name  (const gchar    *keyval_name);
  * 
  * Convert from a ISO10646 character to a key symbol.
  * 
- * Return value: the corresponding IBus key symbol, if one exists.
- *               or, if there is no corresponding symbol,
- *               wc | 0x01000000
+ * Returns: the corresponding IBus key symbol, if one exists.
+ *          or, if there is no corresponding symbol,
+ *          wc | 0x01000000
  **/
 guint            ibus_unicode_to_keyval (gunichar        wc);
 
@@ -69,8 +71,8 @@ guint            ibus_unicode_to_keyval (gunichar        wc);
  * Convert from an IBus key symbol to the corresponding ISO10646 (Unicode)
  * character.
  * 
- * Return value: the corresponding unicode character, or 0 if there
- *               is no corresponding character.
+ * Returns: the corresponding unicode character, or 0 if there
+ *          is no corresponding character.
  **/
 gunichar         ibus_keyval_to_unicode (guint           keyval);
 
@@ -103,7 +105,7 @@ guint            ibus_keyval_to_lower (guint keyval);
  * @upper: (out): return location for uppercase version of @symbol
  *
  * Obtains the upper- and lower-case versions of the keyval @symbol.
- * Examples of keyvals are #IBUS_KEY_a, #IBUS_KEY_Enter, #IBUS_KEY_F1, etc.
+ * Examples of keyvals are #IBUS_KEY_a, #IBUS_KEY_Return, #IBUS_KEY_F1, etc.
  */
 void ibus_keyval_convert_case (guint symbol, guint *lower, guint *upper);
 

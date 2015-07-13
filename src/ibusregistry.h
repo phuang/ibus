@@ -88,9 +88,10 @@ GType            ibus_registry_get_type         (void);
 
 /**
  * ibus_registry_new:
- * @returns: A newly allocated #IBusRegistry.
  *
- * New a #IBusRegistry
+ * Creates a new #IBusRegistry
+ *
+ * Returns: A newly allocated #IBusRegistry.
  */
 IBusRegistry    *ibus_registry_new              (void);
 
@@ -122,10 +123,11 @@ void             ibus_registry_load_in_dir      (IBusRegistry   *registry,
  * ibus_registry_load_cache:
  * @registry: An #IBusRegistry.
  * @is_user: %TRUE if the registry cache is loaded in the user directory.
- * @returns: %TRUE if the cache exists and is loaded successfully,
- *           %FALSE otherwise.
  *
  * Load the user or system registry cache.
+ *
+ * Returns: %TRUE if the cache exists and is loaded successfully,
+ *           %FALSE otherwise.
  */
 gboolean         ibus_registry_load_cache       (IBusRegistry   *registry,
                                                  gboolean        is_user);
@@ -134,10 +136,11 @@ gboolean         ibus_registry_load_cache       (IBusRegistry   *registry,
  * ibus_registry_load_cache_file:
  * @registry: An #IBusRegistry.
  * @filename: The file path of the registry cache
- * @returns: %TRUE if the cache exists and is loaded successfully,
- *           %FALSE otherwise.
  *
  * Load the registry cache @filename.
+ *
+ * Returns: %TRUE if the cache exists and is loaded successfully,
+ *           %FALSE otherwise.
  */
 gboolean         ibus_registry_load_cache_file  (IBusRegistry   *registry,
                                                  const gchar    *filename);
@@ -146,9 +149,10 @@ gboolean         ibus_registry_load_cache_file  (IBusRegistry   *registry,
  * ibus_registry_save_cache:
  * @registry: An #IBusRegistry.
  * @is_user: %TRUE if the registry cache is saved in the user directory.
- * @returns: %TRUE if the cache is saved successfully, %FALSE otherwise.
  *
  * Save the registry in a user directory or system directory.
+ *
+ * Returns: %TRUE if the cache is saved successfully, %FALSE otherwise.
  */
 gboolean         ibus_registry_save_cache       (IBusRegistry   *registry,
                                                  gboolean        is_user);
@@ -157,9 +161,10 @@ gboolean         ibus_registry_save_cache       (IBusRegistry   *registry,
  * ibus_registry_save_cache_file:
  * @registry: An #IBusRegistry.
  * @filename: The file path of the registry cache
- * @returns: %TRUE if the cache is saved successfully, %FALSE otherwise.
  *
  * Save the registry cache @filename.
+ *
+ * Returns: %TRUE if the cache is saved successfully, %FALSE otherwise.
  */
 gboolean         ibus_registry_save_cache_file  (IBusRegistry   *registry,
                                                  const gchar    *filename);
@@ -180,9 +185,10 @@ void             ibus_registry_output           (IBusRegistry   *registry,
 /**
  * ibus_registry_check_modification:
  * @registry: An #IBusRegistry.
- * @returns: %TRUE if mtime is changed; %FALSE otherwise.
  *
  * Check if the registry is updated.
+ *
+ * Returns: %TRUE if mtime is changed; %FALSE otherwise.
  */
 gboolean         ibus_registry_check_modification
                                                 (IBusRegistry   *registry);
@@ -190,22 +196,24 @@ gboolean         ibus_registry_check_modification
 /**
  * ibus_registry_get_components:
  * @registry: An #IBusRegistry.
- * @returns: (transfer container) (element-type IBusComponent):
- * a list of #IBusComponent objects.
- * The caller has to call g_list_free() for the returned list.
  *
  * List components.
+ *
+ * Returns: (transfer container) (element-type IBusComponent):
+ * a list of #IBusComponent objects.
+ * The caller has to call g_list_free() for the returned list.
  */
 GList           *ibus_registry_get_components   (IBusRegistry   *registry);
 
 /**
  * ibus_registry_get_observed_paths:
  * @registry: An #IBusRegistry.
- * @returns: (transfer container) (element-type IBusObservedPath):
- * a list of #IBusObservedPath objects.
- * The caller has to call g_list_free() for the returned list.
  *
  * List observed paths.
+ *
+ * Returns: (transfer container) (element-type IBusObservedPath):
+ * a list of #IBusObservedPath objects.
+ * The caller has to call g_list_free() for the returned list.
  */
 GList           *ibus_registry_get_observed_paths
                                                 (IBusRegistry   *registry);
