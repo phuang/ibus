@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +24,25 @@
 #include "ibusxml.h"
 
 static GMarkupParser parser;
+
+G_DEFINE_BOXED_TYPE (IBusXML, ibus_xml,
+                     ibus_xml_copy,
+                     ibus_xml_free);
+
+XMLNode*
+ibus_xml_copy (const XMLNode *node)
+{
+    XMLNode *ret;
+
+    if (node == NULL)
+        return NULL;
+
+    ret = g_slice_new (XMLNode);
+
+    *ret = *node;
+
+    return ret;
+}
 
 void
 ibus_xml_free (XMLNode *node)

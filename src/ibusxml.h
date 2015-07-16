@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,22 +36,46 @@
  */
 
 #include <glib.h>
+#include <glib-object.h>
+
+#define IBUS_TYPE_XML (ibus_xml_get_type ())
+
+G_BEGIN_DECLS
 
 /**
- * XMLNode:
+ * IBusXML:
  * @name: Name of XML tag.
  * @text: Text enclosed by XML start tag and end tag. i.e. <tag>text</tag>.
  * @attributes: Attributes of the XML node.
  * @sub_nodes: Children node of this XML node.
  *
- * A data type representing an XML nod.
+ * A data type representing an XML node.
  */
 typedef struct {
     gchar  *name;
     gchar  *text;
     gchar  **attributes;
     GList *sub_nodes;
-} XMLNode;
+} IBusXML;
+
+#define XMLNode IBusXML
+
+GType    ibus_xml_get_type      (void) G_GNUC_CONST;
+
+/**
+ * ibus_xml_copy:
+ * @node: Root node of an XML tree.
+ *
+ * Creates a copy of @node, which should be freed with
+ * ibus_xml_free(). Primarily used by language bindings,
+ * not that useful otherwise (since @node can just be copied
+ * by assignment in C).
+ *
+ * Returns: the newly allocated #IBusXML, which should
+ *          be freed with ibus_xml_free(), or %NULL
+ *          if @node was %NULL.
+ **/
+XMLNode *ibus_xml_copy          (const XMLNode  *node);
 
 /**
  * ibus_xml_parse_file:
@@ -91,4 +115,5 @@ void     ibus_xml_free          (XMLNode        *node);
  */
 void     ibus_xml_output        (const XMLNode  *node,
                                  GString        *output);
+G_END_DECLS
 #endif
