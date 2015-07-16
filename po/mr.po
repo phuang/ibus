@@ -1,6 +1,6 @@
 # translation of mr.po to Marathi
 # Marathi translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2014-07-18 13:09+0900\n"
 "PO-Revision-Date: 2014-09-22 06:57+0000\n"
 "Last-Translator: sandeeps <sshedmak@redhat.com>\n"
@@ -248,11 +248,11 @@ msgstr "प्रगत"
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
 "\n"
 "\n"
 "\n"
-msgstr "<big><b>IBus</b></big>\n<small>हुशार इनपुट बस</small>\nमुख्यपान: http://code.google.com/p/ibus\n\n\n\n"
+msgstr "<big><b>IBus</b></big>\n<small>हुशार इनपुट बस</small>\nमुख्यपान: https://github.com/ibus/ibus/wiki\n\n\n\n"
 
 #: ../setup/setup.ui.h:62
 msgid "Start ibus on login"

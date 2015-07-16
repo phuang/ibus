@@ -1,6 +1,6 @@
 # translation of ibus.pot to Oriya
 # Oriya translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2014-02-18 13:46+0900\n"
 "PO-Revision-Date: 2014-02-18 05:48+0000\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
@@ -245,11 +245,11 @@ msgstr "ଉନ୍ନତ"
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
 "\n"
 "\n"
 "\n"
-msgstr "<big><b>IBus</b></big>\n<small>ବୁଦ୍ଧିମାନ ନିବେଶ ପରିପଥ</small>\nମୂଖ୍ୟ ପୃଷ୍ଠା: http://code.google.com/p/ibus\n\n\n\n"
+msgstr "<big><b>IBus</b></big>\n<small>ବୁଦ୍ଧିମାନ ନିବେଶ ପରିପଥ</small>\nମୂଖ୍ୟ ପୃଷ୍ଠା: https://github.com/ibus/ibus/wiki\n\n\n\n"
 
 #: ../setup/setup.ui.h:62
 msgid "Start ibus on login"

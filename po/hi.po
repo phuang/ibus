@@ -1,6 +1,6 @@
 # translation of ibus.pot to Hindi
 # Hindi translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2014-02-18 13:46+0900\n"
 "PO-Revision-Date: 2014-02-18 05:46+0000\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
@@ -246,11 +246,11 @@ msgstr "उन्नत"
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
 "\n"
 "\n"
 "\n"
-msgstr "<big><b>IBus</b></big>\n<small>तेज-तर्रार इनपुट बस</small>\nहोमपेज: http://code.google.com/p/ibus\n\n\n\n"
+msgstr "<big><b>IBus</b></big>\n<small>तेज-तर्रार इनपुट बस</small>\nहोमपेज: https://github.com/ibus/ibus/wiki\n\n\n\n"
 
 #: ../setup/setup.ui.h:62
 msgid "Start ibus on login"

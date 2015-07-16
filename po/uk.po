@@ -1,6 +1,6 @@
 # translation of ibus.pot to Ukrainian
 # Ukrainian translation of ibus.
-# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -10,18 +10,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
-"Report-Msgid-Bugs-To: http://code.google.com/p/ibus/issues/list\n"
-"POT-Creation-Date: 2015-02-20 17:16+0900\n"
-"PO-Revision-Date: 2015-03-13 07:19-0400\n"
-"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
+"POT-Creation-Date: 2015-07-13 19:48+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-07-13 09:20-0400\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.5.1\n"
+"X-Generator: Zanata 3.6.2\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -165,7 +165,7 @@ msgid "General"
 msgstr "Загальне"
 
 #. add button
-#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:60
+#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:61
 #: ../setup/keyboardshortcut.py:124
 msgid "_Add"
 msgstr "_Додати"
@@ -231,15 +231,15 @@ msgstr ""
 "small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:66
+#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:68
 msgid "Input Method"
 msgstr "Спосіб введення"
 
-#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:42
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
 msgstr "Використовувати розкладку клавіатури системи"
 
-#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:43
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
 msgstr "Використовувати розкладку клавіатури системи (XKB)"
 
@@ -247,7 +247,7 @@ msgstr "Використовувати розкладку клавіатури �
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Розкладка клавіатури</b>"
 
-#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:51
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:53
 msgid "Share the same input method among all applications"
 msgstr "Використовувати один спосіб введення для всіх програм"
 
@@ -263,14 +263,14 @@ msgstr "Додатково"
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
 "\n"
 "\n"
 "\n"
 msgstr ""
 "<big><b>IBus</b></big>\n"
 "<small>Інтелектуальний канал введення</small>\n"
-"Домашня сторінка: http://code.google.com/p/ibus\n"
+"Домашня сторінка: https://github.com/ibus/ibus/wiki\n"
 "\n"
 "\n"
 "\n"
@@ -283,12 +283,12 @@ msgstr "Запускати ibus при вході"
 msgid "<b>Startup</b>"
 msgstr "<b>Запуск</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35
-#: ../ui/gtk3/panel.vala:1053
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:37
+#: ../ui/gtk3/panel.vala:1113
 msgid "About"
 msgstr "Інформація"
 
-#: ../setup/setup.ui.h:65 ../setup/engineabout.py:38
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:40
 msgid "_Close"
 msgstr "_Закрити"
 
@@ -485,48 +485,65 @@ msgstr ""
 "значеннями від 0% до 100%, а «п» є значенням з рухомою крапкою для "
 "прозорості у діапазоні від 0 до 1."
 
-#: ../data/ibus.schemas.in.h:44
+#: ../data/ibus.schemas.in.h:42
+msgid "The milliseconds to show the panel icon for a property"
+msgstr ""
+"Час у мілісекундах для приготування показу піктограми панелі для властивості"
+
+#: ../data/ibus.schemas.in.h:43
+msgid ""
+"The milliseconds to show the panel icon from the engine icon to a property "
+"icon whenever engines are switched if the property is specified by the value "
+"of icon-prop-key in IBusEngineDesc. If the value is 0, no delay time and the "
+"property icon is shown immediately."
+msgstr ""
+"Час у мілісекундах, протягом якого слід показувати перехід піктограми панелі "
+"з піктограми рушія на піктограму властивості після зміни рушія, якщо "
+"властивість задається значенням icon-prop-key у IBusEngineDesc. Якщо вказано "
+"значення 0, затримки не буде і піктограму властивості буде показано негайно."
+
+#: ../data/ibus.schemas.in.h:46
 msgid "Use custom font"
 msgstr "Використовувати нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:45
+#: ../data/ibus.schemas.in.h:47
 msgid "Use custom font name for language panel"
 msgstr "Використовувати нетиповий шрифт для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:46
+#: ../data/ibus.schemas.in.h:48
 msgid "Custom font"
 msgstr "Нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:47
+#: ../data/ibus.schemas.in.h:49
 msgid "Custom font name for language panel"
 msgstr "Назва нетипового шрифту для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:48
+#: ../data/ibus.schemas.in.h:50
 msgid "Embed Preedit Text"
 msgstr "Вбудувати попередньо створений текст"
 
-#: ../data/ibus.schemas.in.h:49
+#: ../data/ibus.schemas.in.h:51
 msgid "Embed Preedit Text in Application Window"
 msgstr "Вбудувати попередньо створений текст у вікно програми"
 
-#: ../data/ibus.schemas.in.h:50
+#: ../data/ibus.schemas.in.h:52
 msgid "Use global input method"
 msgstr "Використовувати загальний спосіб введення"
 
-#: ../data/ibus.schemas.in.h:52
+#: ../data/ibus.schemas.in.h:54
 msgid "Enable input method by default"
 msgstr "Типово увімкнути спосіб введення"
 
-#: ../data/ibus.schemas.in.h:53
+#: ../data/ibus.schemas.in.h:55
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
 "Типово увімкнути спосіб введення, коли програма отримує фокус введення"
 
-#: ../data/ibus.schemas.in.h:54
+#: ../data/ibus.schemas.in.h:56
 msgid "DConf preserve name prefixes"
 msgstr "Збереження DConf префіксів назв"
 
-#: ../data/ibus.schemas.in.h:55
+#: ../data/ibus.schemas.in.h:57
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Префікси ключів DConf для припинення перетворення назв"
 
@@ -537,43 +554,43 @@ msgid ""
 msgstr "© Peng Huang, 2007–2010\n"
 "© Red Hat, Inc., 2007–2010"
 
-#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+#: ../ibus/lang.py:41 ../src/ibusutil.c:158
 msgid "Other"
 msgstr "Інше"
 
-#: ../setup/engineabout.py:70
+#: ../setup/engineabout.py:72
 #, python-format
 msgid "Language: %s\n"
 msgstr "Мова: %s\n"
 
-#: ../setup/engineabout.py:73
+#: ../setup/engineabout.py:75
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Розкладка клавіатури: %s\n"
 
-#: ../setup/engineabout.py:76
+#: ../setup/engineabout.py:78
 #, python-format
 msgid "Author: %s\n"
 msgstr "Автор: %s\n"
 
-#: ../setup/engineabout.py:79
+#: ../setup/engineabout.py:81
 msgid "Description:\n"
 msgstr "Опис:\n"
 
-#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:56
+#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:57
 msgid "Select an input method"
 msgstr "Виберіть спосіб введення"
 
-#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:337
-#: ../setup/main.py:413
+#: ../setup/enginedialog.py:60 ../setup/keyboardshortcut.py:339
+#: ../setup/main.py:414
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: ../setup/enginedialog.py:204
+#: ../setup/enginedialog.py:205
 msgid "More…"
 msgstr "Більше…"
 
-#: ../setup/enginetreeview.py:94
+#: ../setup/enginetreeview.py:96
 msgid "Kbd"
 msgstr "Kbd"
 
@@ -581,7 +598,7 @@ msgstr "Kbd"
 msgid "Set IBus Preferences"
 msgstr "Налаштувати IBus"
 
-#: ../setup/keyboardshortcut.py:56
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "Клавіатурні скорочення"
 
@@ -615,21 +632,21 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Будь ласка, натисніть клавішу (або комбінацію клавіш)"
 
-#: ../setup/keyboardshortcut.py:338 ../setup/main.py:414
+#: ../setup/keyboardshortcut.py:340 ../setup/main.py:415
 msgid "_OK"
 msgstr "_Гаразд"
 
-#: ../setup/main.py:113 ../setup/main.py:438
+#: ../setup/main.py:114 ../setup/main.py:439
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr ""
 "Використовувати комбінацію з Shift для перемикання на попередній спосіб "
 "введення"
 
-#: ../setup/main.py:368
+#: ../setup/main.py:369
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "Фонову службу IBus не запущено. Хочете її запустити?"
 
-#: ../setup/main.py:389
+#: ../setup/main.py:390
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -645,18 +662,18 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:403
+#: ../setup/main.py:404
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "Не вдалося запустити фонову службу IBus протягом %d секунд"
 
-#: ../setup/main.py:415
+#: ../setup/main.py:416
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Виберіть клавіатурне скорочення для дії %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:417
+#: ../setup/main.py:418
 msgid "switching input methods"
 msgstr "перемикання способів введення"
 
@@ -777,40 +794,40 @@ msgstr "Команди:\n"
 msgid "%s is unknown command!\n"
 msgstr "Команда %s є невідомою програмі!\n"
 
-#: ../ui/gtk3/panel.vala:225 ../ui/gtk3/panel.vala:256
+#: ../ui/gtk3/panel.vala:235 ../ui/gtk3/panel.vala:266
 msgid "IBus Panel"
 msgstr "Панель IBus"
 
-#: ../ui/gtk3/panel.vala:712
+#: ../ui/gtk3/panel.vala:731
 msgid "IBus Update"
 msgstr "Оновлення IBus"
 
-#: ../ui/gtk3/panel.vala:713 ../ui/gtk3/panel.vala:724
+#: ../ui/gtk3/panel.vala:732 ../ui/gtk3/panel.vala:743
 msgid "Super+space is now the default hotkey."
 msgstr "Тепер типовим клавіатурним скороченням є Super+Пробіл."
 
-#: ../ui/gtk3/panel.vala:1026
+#: ../ui/gtk3/panel.vala:1086
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus — інтелектуальний канал введення даних у Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:1030
+#: ../ui/gtk3/panel.vala:1090
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 
-#: ../ui/gtk3/panel.vala:1049
+#: ../ui/gtk3/panel.vala:1109
 msgid "Preferences"
 msgstr "Параметри"
 
-#: ../ui/gtk3/panel.vala:1059
+#: ../ui/gtk3/panel.vala:1119
 msgid "Restart"
 msgstr "Перезапустити"
 
-#: ../ui/gtk3/panel.vala:1063
+#: ../ui/gtk3/panel.vala:1123
 msgid "Quit"
 msgstr "Вийти"
 
 #. Translators: If your locale is RTL, the msgstr is "default:RTL".
 #. * Otherwise the msgstr is "default:LTR".
-#: ../ui/gtk3/propertypanel.vala:371
+#: ../ui/gtk3/propertypanel.vala:400 ../ui/gtk3/propertypanel.vala:408
 msgid "default:LTR"
 msgstr "default:LTR"
