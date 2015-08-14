@@ -511,7 +511,7 @@ AC_ARG_WITH(no-snooper-apps,
     AS_HELP_STRING([--with-no-snooper-apps[=regex1,regex2]],
         [Does not enable keyboard snooper in those applications (like: .*chrome.*,firefox.*)]),
     NO_SNOOPER_APPS=$with_no_snooper_apps,
-    NO_SNOOPER_APPS=[firefox.*,.*chrome.*,.*chromium.*]
+    NO_SNOOPER_APPS=[firefox.*,.*chrome.*,.*chromium.*,terminator]
 )
 AC_DEFINE_UNQUOTED(NO_SNOOPER_APPS, "$NO_SNOOPER_APPS",
     [Does not enbale keyboard snooper in those applications])
