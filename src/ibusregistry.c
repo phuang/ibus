@@ -29,7 +29,7 @@
 #include "ibusregistry.h"
 
 #define IBUS_CACHE_MAGIC 0x49425553 /* "IBUS" */
-#define IBUS_CACHE_VERSION 0x00010502
+#define IBUS_CACHE_VERSION 0x00010512
 
 enum {
     CHANGED,

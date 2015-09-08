@@ -51,12 +51,12 @@ m4_define([ibus_binary_version],
           [ibus_major_version.ibus_abi_current_minus_age.ibus_abi_age.ibus_abi_revision])
 
 # Required versions of other packages.
-m4_define([glib_required_version], [2.32.0])
+m4_define([glib_required_version], [2.36.0])
 
 # VALA_TARGET_GLIB_VERSION is used by valac --ccode --target-glib .
 # VALA_TARGET_GLIB_VERSION and glib_required_version will be different
 # in the future.
-VALA_TARGET_GLIB_VERSION=2.32
+VALA_TARGET_GLIB_VERSION=2.36
 AC_SUBST(VALA_TARGET_GLIB_VERSION)
 
 # Init automake.
