@@ -342,75 +342,28 @@ public class PropertyPanel : Gtk.Box {
         Gtk.Allocation allocation;
         m_toplevel.get_allocation(out allocation);
 
-        int root_width = m_root_window.get_width();
-        int root_height = m_root_window.get_height();
-        int root_x = 0;
-        int root_y = 0;
-        int ws_num = 0;
-
-#if VALA_0_24
-        X.Window xwindow = (m_root_window as Gdk.X11.Window).get_xid();
-#else
-        X.Window xwindow = Gdk.X11Window.get_xid(m_root_window);
-#endif
-        X.Atom _net_current_desktop =
-                m_xdisplay.intern_atom("_NET_CURRENT_DESKTOP", false);
-        X.Atom type = X.None;
-        int format;
-        ulong nitems = 0;
-        ulong bytes_after;
-        void *prop;
-        m_xdisplay.get_window_property(xwindow,
-                                      _net_current_desktop,
-                                      0, 32, false, X.XA_CARDINAL,
-                                      out type, out format,
-                                      out nitems, out bytes_after,
-                                      out prop);
-
-        if (type != X.None && nitems >= 1)
-            ws_num = (int) ((ulong *)prop)[0];
-
-        X.Atom _net_workarea =
-                m_xdisplay.intern_atom("_NET_WORKAREA", false);
-        type = X.None;
-        nitems = 0;
-
-        m_xdisplay.get_window_property(xwindow,
-                                      _net_workarea,
-                                      0, 32, false, X.XA_CARDINAL,
-                                      out type, out format,
-                                      out nitems, out bytes_after,
-                                      out prop);
-
-        if (type != X.None) {
-            if (nitems >= 2) {
-                root_x = (int) ((ulong *)prop)[ws_num * 4];
-                root_y = (int) ((ulong *)prop)[ws_num * 4 + 1];
-            }
-            if (nitems >= 4) {
-                root_width = (int) ((ulong *)prop)[ws_num * 4 + 2];
-                root_height = (int) ((ulong *)prop)[ws_num * 4 + 3];
-            }
-        }
-
+        Gdk.Screen screen = Gdk.Screen.get_default();
+        Gdk.Rectangle monitor_area = screen.get_monitor_workarea(0);
+        int monitor_right = monitor_area.x + monitor_area.width;
+        int monitor_bottom = monitor_area.y + monitor_area.height;
         int x, y;
         if (is_bottom_panel()) {
             /* Translators: If your locale is RTL, the msgstr is "default:RTL".
              * Otherwise the msgstr is "default:LTR". */
             if (_("default:LTR") != "default:RTL") {
-                x = root_width - allocation.width;
-                y = root_height - allocation.height;
+                x = monitor_right - allocation.width;
+                y = monitor_bottom - allocation.height;
             } else {
-                x = root_x;
-                y = root_height - allocation.height;
+                x = monitor_area.x;
+                y = monitor_bottom - allocation.height;
             }
         } else {
             if (_("default:LTR") != "default:RTL") {
-                x = root_width - allocation.width;
-                y = root_y;
+                x = monitor_right - allocation.width;
+                y = monitor_area.y;
             } else {
-                x = root_x;
-                y = root_y;
+                x = monitor_area.x;
+                y = monitor_area.y;
             }
         }
 
