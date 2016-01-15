@@ -11,7 +11,7 @@
 	<engines>
 		<engine>
 			<name>xkb:us::eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>us</layout>
@@ -22,7 +22,7 @@
 		</engine>
 		<engine>
 			<name>xkb:us:intl:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>us</layout>
@@ -34,7 +34,7 @@
 		</engine>
 		<engine>
 			<name>xkb:us:colemak:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>us</layout>
@@ -46,7 +46,7 @@
 		</engine>
 		<engine>
 			<name>xkb:us:dvorak:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>us</layout>
@@ -58,7 +58,7 @@
 		</engine>
 		<engine>
 			<name>xkb:us:altgr-intl:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>us</layout>
@@ -70,7 +70,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ara::ara</name>
-			<language>ara</language>
+			<language>ar</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ara</layout>
@@ -81,7 +81,7 @@
 		</engine>
 		<engine>
 			<name>xkb:be::ger</name>
-			<language>ger</language>
+			<language>de</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>be</layout>
@@ -92,7 +92,7 @@
 		</engine>
 		<engine>
 			<name>xkb:be::nld</name>
-			<language>nld</language>
+			<language>nl</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>be</layout>
@@ -103,7 +103,7 @@
 		</engine>
 		<engine>
 			<name>xkb:be::fra</name>
-			<language>fra</language>
+			<language>fr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>be</layout>
@@ -114,7 +114,7 @@
 		</engine>
 		<engine>
 			<name>xkb:br::por</name>
-			<language>por</language>
+			<language>pt</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>br</layout>
@@ -125,7 +125,7 @@
 		</engine>
 		<engine>
 			<name>xkb:br:dvorak:por</name>
-			<language>por</language>
+			<language>pt</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>br</layout>
@@ -137,7 +137,7 @@
 		</engine>
 		<engine>
 			<name>xkb:bg::bul</name>
-			<language>bul</language>
+			<language>bg</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>bg</layout>
@@ -148,7 +148,7 @@
 		</engine>
 		<engine>
 			<name>xkb:bg:phonetic:bul</name>
-			<language>bul</language>
+			<language>bg</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>bg</layout>
@@ -160,7 +160,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ca::fra</name>
-			<language>fra</language>
+			<language>fr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ca</layout>
@@ -171,7 +171,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ca:eng:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ca</layout>
@@ -194,7 +194,7 @@
 		</engine>
 		<engine>
 			<name>xkb:cz::cze</name>
-			<language>cze</language>
+			<language>cs</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>cz</layout>
@@ -205,7 +205,7 @@
 		</engine>
                 <engine>
                         <name>xkb:cz:qwerty:cze</name>
-                        <language>cze</language>
+                        <language>cs</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>cz</layout>
@@ -217,7 +217,7 @@
                 </engine>
 		<engine>
 			<name>xkb:dk::dan</name>
-			<language>dan</language>
+			<language>da</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>dk</layout>
@@ -228,7 +228,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ee::est</name>
-			<language>est</language>
+			<language>et</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ee</layout>
@@ -239,7 +239,7 @@
 		</engine>
 		<engine>
 			<name>xkb:fi::fin</name>
-			<language>fin</language>
+			<language>fi</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>fi</layout>
@@ -250,7 +250,7 @@
 		</engine>
                 <engine>
                         <name>xkb:fr::fra</name>
-                        <language>fra</language>
+                        <language>fr</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>fr</layout>
@@ -261,7 +261,7 @@
                 </engine>
                 <engine>
                         <name>xkb:fr:oss:fra</name>
-                        <language>fra</language>
+                        <language>fr</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>fr</layout>
@@ -273,7 +273,7 @@
                 </engine>
                 <engine>
                         <name>xkb:fr:bepo:fra</name>
-                        <language>fra</language>
+                        <language>fr</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>fr</layout>
@@ -285,7 +285,7 @@
                 </engine>
                 <engine>
                         <name>xkb:fr:dvorak:fra</name>
-                        <language>fra</language>
+                        <language>fr</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>fr</layout>
@@ -297,7 +297,7 @@
                 </engine>
 		<engine>
 			<name>xkb:de::ger</name>
-			<language>ger</language>
+			<language>de</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>de</layout>
@@ -308,7 +308,7 @@
 		</engine>
 		<engine>
 			<name>xkb:de:dvorak:ger</name>
-			<language>ger</language>
+			<language>de</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>de</layout>
@@ -320,7 +320,7 @@
 		</engine>
 		<engine>
 			<name>xkb:de:neo:ger</name>
-			<language>ger</language>
+			<language>de</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>de</layout>
@@ -332,7 +332,7 @@
 		</engine>
                 <engine>
                         <name>xkb:de:nodeadkeys:ger</name>
-                        <language>ger</language>
+                        <language>de</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>de</layout>
@@ -344,7 +344,7 @@
                 </engine>
 		<engine>
 			<name>xkb:gr::gre</name>
-			<language>gre</language>
+			<language>el</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>gr</layout>
@@ -355,7 +355,7 @@
 		</engine>
 		<engine>
 			<name>xkb:hu::hun</name>
-			<language>hun</language>
+			<language>hu</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>hu</layout>
@@ -366,7 +366,7 @@
 		</engine>
 		<engine>
 			<name>xkb:il::heb</name>
-			<language>heb</language>
+			<language>he</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>il</layout>
@@ -377,7 +377,7 @@
 		</engine>
 		<engine>
 			<name>xkb:it::ita</name>
-			<language>ita</language>
+			<language>it</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>it</layout>
@@ -388,7 +388,7 @@
 		</engine>
 		<engine>
 			<name>xkb:jp::jpn</name>
-			<language>jpn</language>
+			<language>ja</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>jp</layout>
@@ -399,7 +399,7 @@
 		</engine>
 		<engine>
 			<name>xkb:latam::spa</name>
-			<language>spa</language>
+			<language>es</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>latam</layout>
@@ -410,7 +410,7 @@
 		</engine>
 		<engine>
 			<name>xkb:lt::lit</name>
-			<language>lit</language>
+			<language>lt</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>lt</layout>
@@ -421,7 +421,7 @@
 		</engine>
 		<engine>
 			<name>xkb:lv:apostrophe:lav</name>
-			<language>lav</language>
+			<language>lv</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>lv</layout>
@@ -433,7 +433,7 @@
 		</engine>
 		<engine>
 			<name>xkb:no::nor</name>
-			<language>nor</language>
+			<language>no</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>no</layout>
@@ -444,7 +444,7 @@
 		</engine>
 		<engine>
 			<name>xkb:no:dvorak:nor</name>
-			<language>nor</language>
+			<language>no</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>no</layout>
@@ -456,7 +456,7 @@
 		</engine>
 		<engine>
 			<name>xkb:pl::pol</name>
-			<language>pol</language>
+			<language>pl</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>pl</layout>
@@ -467,7 +467,7 @@
 		</engine>
 		<engine>
 			<name>xkb:pl:dvorak:pol</name>
-			<language>pol</language>
+			<language>pl</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>pl</layout>
@@ -479,7 +479,7 @@
 		</engine>
                 <engine>
                         <name>xkb:pl:qwertz:pol</name>
-                        <language>pol</language>
+                        <language>pl</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>pl</layout>
@@ -491,7 +491,7 @@
                 </engine>
 		<engine>
 			<name>xkb:pt::por</name>
-			<language>por</language>
+			<language>pt</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>pt</layout>
@@ -502,7 +502,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ro::rum</name>
-			<language>rum</language>
+			<language>ro</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ro</layout>
@@ -513,7 +513,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ru::rus</name>
-			<language>rus</language>
+			<language>ru</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ru</layout>
@@ -524,7 +524,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ru:phonetic:rus</name>
-			<language>rus</language>
+			<language>ru</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ru</layout>
@@ -536,7 +536,7 @@
 		</engine>
 		<engine>
 			<name>xkb:rs::srp</name>
-			<language>srp</language>
+			<language>sr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>rs</layout>
@@ -547,7 +547,7 @@
 		</engine>
 		<engine>
 			<name>xkb:si::slv</name>
-			<language>slv</language>
+			<language>sl</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>si</layout>
@@ -558,7 +558,7 @@
 		</engine>
 		<engine>
 			<name>xkb:sk::slo</name>
-			<language>slo</language>
+			<language>sk</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>sk</layout>
@@ -569,7 +569,7 @@
 		</engine>
                 <engine>
                         <name>xkb:sk:qwerty:slo</name>
-                        <language>slo</language>
+                        <language>sk</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>sk</layout>
@@ -581,7 +581,7 @@
                 </engine>
 		<engine>
 			<name>xkb:es::spa</name>
-			<language>spa</language>
+			<language>es</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>es</layout>
@@ -592,7 +592,7 @@
 		</engine>
 		<engine>
 			<name>xkb:es:cat:cat</name>
-			<language>cat</language>
+			<language>ca</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>es</layout>
@@ -604,7 +604,7 @@
 		</engine>
 		<engine>
 			<name>xkb:se::swe</name>
-			<language>swe</language>
+			<language>sv</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>se</layout>
@@ -615,7 +615,7 @@
 		</engine>
 		<engine>
 			<name>xkb:se:dvorak:swe</name>
-			<language>swe</language>
+			<language>sv</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>se</layout>
@@ -627,7 +627,7 @@
 		</engine>
                 <engine>
                         <name>xkb:se:svdvorak:swe</name>
-                        <language>swe</language>
+                        <language>sv</language>
                         <license>GPL</license>
                         <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
                         <layout>se</layout>
@@ -639,7 +639,7 @@
                 </engine>
 		<engine>
 			<name>xkb:ch::ger</name>
-			<language>ger</language>
+			<language>de</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ch</layout>
@@ -650,7 +650,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ch:fr:fra</name>
-			<language>fra</language>
+			<language>fr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ch</layout>
@@ -662,7 +662,7 @@
 		</engine>
 		<engine>
 			<name>xkb:tr::tur</name>
-			<language>tur</language>
+			<language>tr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>tr</layout>
@@ -673,7 +673,7 @@
 		</engine>
 		<engine>
 			<name>xkb:ua::ukr</name>
-			<language>ukr</language>
+			<language>uk</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>ua</layout>
@@ -684,7 +684,7 @@
 		</engine>
 		<engine>
 			<name>xkb:gb:extd:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>gb</layout>
@@ -696,7 +696,7 @@
 		</engine>
 		<engine>
 			<name>xkb:gb:dvorak:eng</name>
-			<language>eng</language>
+			<language>en</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>gb</layout>

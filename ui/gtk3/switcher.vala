@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -434,17 +434,18 @@ class Switcher : Gtk.Window {
             return language;
 
         language = engine.get_language();
+        int length = language.length;
 
         /* Maybe invalid layout */
-        if (language.length < 2)
+        if (length < 2)
             return language;
 
-        language = language[0:2].up();
+        language = language.up();
 
         int index = 0;
 
         foreach (var saved_language in m_xkb_languages.get_values()) {
-            if (language == saved_language[0:2])
+            if (language == saved_language[0:length])
                 index++;
         }
 

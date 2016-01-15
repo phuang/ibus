@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2010-2015, Google Inc. All rights reserved.
-# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2010-2016, Google Inc. All rights reserved.
+# Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -83,6 +83,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	iso639converter.py \
 	simple.xml.in \
 	$(NULL)
 
