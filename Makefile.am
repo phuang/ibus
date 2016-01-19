@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -95,11 +95,19 @@ DISTCHECK_CONFIGURE_FLAGS = \
 dist-hook:
 	if test -d .git ; then \
 		git log --name-status --date=iso > $(distdir)/ChangeLog ; \
+		IBUS_PREV_MICRO_VERSION=`expr $(IBUS_MICRO_VERSION) - 1`; \
+		IBUS_PREV_VERSION=\
+"$(IBUS_MAJOR_VERSION).$(IBUS_MINOR_VERSION).$$IBUS_PREV_MICRO_VERSION"; \
+		echo "Changes in IBus $(IBUS_VERSION)" > $(distdir)/NEWS; \
+		echo "" >> $(distdir)/NEWS; \
+		git log $$IBUS_PREV_VERSION...$(IBUS_VERSION) --reverse \
+		        --pretty=format:'%s (%an) %h' >> $(distdir)/NEWS; \
 	fi
 
 distclean-local:
 	if test "x$(srcdir)" = "x."; then :; else \
 		rm -f ChangeLog; \
+		echo > NEWS; \
 	fi
 
 MAINTAINERCLEANFILES = \
