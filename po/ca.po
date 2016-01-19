@@ -13,16 +13,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2015-02-20 17:16+0900\n"
+"POT-Creation-Date: 2015-07-13 19:48+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-05-09 04:16-0400\n"
+"PO-Revision-Date: 2015-10-13 02:53-0400\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan <fedora@llistes.softcatala.org>\n"
 "Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.6.2\n"
+"X-Generator: Zanata 3.7.3\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -58,7 +58,7 @@ msgstr "No mostrar"
 
 #: ../setup/setup.ui.h:9
 msgid "Hide automatically"
-msgstr "Oculta-ho automàticament"
+msgstr "Ocultar automàticament"
 
 #: ../setup/setup.ui.h:10
 msgid "Always"
@@ -170,7 +170,7 @@ msgid "General"
 msgstr "General"
 
 #. add button
-#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:60
+#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:61
 #: ../setup/keyboardshortcut.py:124
 msgid "_Add"
 msgstr "_Afegeix"
@@ -230,19 +230,19 @@ msgid ""
 "the panel icon.</i></small>"
 msgstr ""
 "<small><i>El mètode d'entrada actiu pot canviar-se amb els seleccionats en "
-"l'anterior llista prement les dreceres de teclat o fent clic a la icona del "
-"quadre.</i></small>"
+"l'anterior llista prement les dreceres de teclat o en fer clic a la icona "
+"del quadre.</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:66
+#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:68
 msgid "Input Method"
 msgstr "Mètode d'entrada"
 
-#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:42
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
 msgstr "Utilitza la disposició de teclat del sistema"
 
-#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:43
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
 msgstr "Utilitza la disposició de teclat del sistema (XKB)"
 
@@ -250,7 +250,7 @@ msgstr "Utilitza la disposició de teclat del sistema (XKB)"
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Disposició del teclat</b>"
 
-#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:51
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:53
 msgid "Share the same input method among all applications"
 msgstr "Comparteix el mateix mètode d'entrada amb totes les aplicacions"
 
@@ -286,12 +286,12 @@ msgstr "Inicia l'IBus en entrar"
 msgid "<b>Startup</b>"
 msgstr "<b>Inici</b>"
 
-#: ../setup/setup.ui.h:64 ../setup/engineabout.py:35
-#: ../ui/gtk3/panel.vala:1053
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:37
+#: ../ui/gtk3/panel.vala:1113
 msgid "About"
 msgstr "Quant a"
 
-#: ../setup/setup.ui.h:65 ../setup/engineabout.py:38
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:40
 msgid "_Close"
 msgstr "_Tanca"
 
@@ -360,7 +360,7 @@ msgstr "Utilitza xmodmap"
 msgid ""
 "Run xmodmap if .xmodmap or .Xmodmap exists when ibus engines are switched."
 msgstr ""
-"Executa xmodmap sí existeix .xmodmap o .Xmodmap quan es commutin els motors "
+"Executa xmodmap si existeix .xmodmap o .Xmodmap quan es commutin els motors "
 "de l'ibus."
 
 #: ../data/ibus.schemas.in.h:15
@@ -487,53 +487,69 @@ msgstr ""
 "un valor hexadecimal amb el format «#rrggbb» on «r», «g» i «b» són dígits "
 "hexadecimals per al roig, verd i blau, 3. un color RGB amb el format "
 "«rgb(r,g,b)» o 4. Un color RGBA amb el format «rgba(r,g,b,a)» on «r», «g», i "
-"«b» són nombres enters amb rang de 0 a 255 o valors de percentatge amb rang "
-"de 0% a 100%, i «a» té un valor en punt flotant amb rang de 0 a 1 per l'alfa."
-""
+"«b» són nombres enters en l'interval de 0 a 255 o valors de percentatge en "
+"l'interval de 0% a 100%, i «a» té un valor en punt flotant en l'interval de "
+"0 a 1 per l'alfa."
 
-#: ../data/ibus.schemas.in.h:44
+#: ../data/ibus.schemas.in.h:42
+msgid "The milliseconds to show the panel icon for a property"
+msgstr "Els mil·lisegons per mostrar el quadre d'icona amb una propietat"
+
+#: ../data/ibus.schemas.in.h:43
+msgid ""
+"The milliseconds to show the panel icon from the engine icon to a property "
+"icon whenever engines are switched if the property is specified by the value "
+"of icon-prop-key in IBusEngineDesc. If the value is 0, no delay time and the "
+"property icon is shown immediately."
+msgstr ""
+"Els mil·lisegons per mostrar el quadre d'icona des de la icona del motor, en "
+"una icona de propietat, sempre que s'activin els motors, si la propietat "
+"s'especifica amb el valor icon-prop-key a IBusEngineDesc. Si el valor és 0, "
+"no hi ha retard i la icona de propietat es mostra automàticament."
+
+#: ../data/ibus.schemas.in.h:46
 msgid "Use custom font"
 msgstr "Utilitza un tipus de lletra personalitzat"
 
-#: ../data/ibus.schemas.in.h:45
+#: ../data/ibus.schemas.in.h:47
 msgid "Use custom font name for language panel"
 msgstr "Utilitza un tipus de lletra personalitzat per al quadre d'idiomes"
 
-#: ../data/ibus.schemas.in.h:46
+#: ../data/ibus.schemas.in.h:48
 msgid "Custom font"
 msgstr "Tipus de lletra personalitzat"
 
-#: ../data/ibus.schemas.in.h:47
+#: ../data/ibus.schemas.in.h:49
 msgid "Custom font name for language panel"
 msgstr "Tipus de lletra personalitzat per al quadre d'idiomes"
 
-#: ../data/ibus.schemas.in.h:48
+#: ../data/ibus.schemas.in.h:50
 msgid "Embed Preedit Text"
 msgstr "Incrusta el text pre-editat"
 
-#: ../data/ibus.schemas.in.h:49
+#: ../data/ibus.schemas.in.h:51
 msgid "Embed Preedit Text in Application Window"
 msgstr "Incrusta el text pre-editat en la finestra de l'aplicació"
 
-#: ../data/ibus.schemas.in.h:50
+#: ../data/ibus.schemas.in.h:52
 msgid "Use global input method"
 msgstr "Utilitza el mètode d'entrada global"
 
-#: ../data/ibus.schemas.in.h:52
+#: ../data/ibus.schemas.in.h:54
 msgid "Enable input method by default"
 msgstr "Habilita els mètodes d'entrada per defecte"
 
-#: ../data/ibus.schemas.in.h:53
+#: ../data/ibus.schemas.in.h:55
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
 "Habilita els mètodes d'entrada per defecte quan l'aplicació obté el focus "
 "d'entrada"
 
-#: ../data/ibus.schemas.in.h:54
+#: ../data/ibus.schemas.in.h:56
 msgid "DConf preserve name prefixes"
 msgstr "DConf preserva els prefixes"
 
-#: ../data/ibus.schemas.in.h:55
+#: ../data/ibus.schemas.in.h:57
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Prefixos de tecles DConf per aturar la conversió del nom"
 
@@ -545,43 +561,43 @@ msgstr ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 
-#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+#: ../ibus/lang.py:41 ../src/ibusutil.c:158
 msgid "Other"
 msgstr "Altres"
 
-#: ../setup/engineabout.py:70
+#: ../setup/engineabout.py:72
 #, python-format
 msgid "Language: %s\n"
 msgstr "Idioma: %s\n"
 
-#: ../setup/engineabout.py:73
+#: ../setup/engineabout.py:75
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Disposició del teclat: %s\n"
 
-#: ../setup/engineabout.py:76
+#: ../setup/engineabout.py:78
 #, python-format
 msgid "Author: %s\n"
 msgstr "Autor: %s\n"
 
-#: ../setup/engineabout.py:79
+#: ../setup/engineabout.py:81
 msgid "Description:\n"
-msgstr "Descripció: \n"
+msgstr "Descripció:\n"
 
-#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:56
+#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:57
 msgid "Select an input method"
 msgstr "Seleccioneu un mètode d'entrada"
 
-#: ../setup/enginedialog.py:59 ../setup/keyboardshortcut.py:337
-#: ../setup/main.py:413
+#: ../setup/enginedialog.py:60 ../setup/keyboardshortcut.py:339
+#: ../setup/main.py:414
 msgid "_Cancel"
 msgstr "_Cancel·la"
 
-#: ../setup/enginedialog.py:204
+#: ../setup/enginedialog.py:205
 msgid "More…"
 msgstr "Més..."
 
-#: ../setup/enginetreeview.py:94
+#: ../setup/enginetreeview.py:96
 msgid "Kbd"
 msgstr "Kbd"
 
@@ -589,7 +605,7 @@ msgstr "Kbd"
 msgid "Set IBus Preferences"
 msgstr "Estableix les preferències de l'IBus"
 
-#: ../setup/keyboardshortcut.py:56
+#: ../setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "Dreceres de teclat"
 
@@ -623,21 +639,21 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Premeu una tecla (o una combinació de tecles)"
 
-#: ../setup/keyboardshortcut.py:338 ../setup/main.py:414
+#: ../setup/keyboardshortcut.py:340 ../setup/main.py:415
 msgid "_OK"
 msgstr "_D'acord"
 
-#: ../setup/main.py:113 ../setup/main.py:438
+#: ../setup/main.py:114 ../setup/main.py:439
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr ""
 "Utilitza la drecera de teclat amb la tecla de majúscules per canviar a "
 "l'anterior mètode d'entrada"
 
-#: ../setup/main.py:368
+#: ../setup/main.py:369
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "No s'està executant el dimoni de l'IBus. Voleu iniciar-ho?"
 
-#: ../setup/main.py:389
+#: ../setup/main.py:390
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -652,24 +668,24 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:403
+#: ../setup/main.py:404
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "El dimoni d'IBus no es va poder iniciar en %d segons"
 
-#: ../setup/main.py:415
+#: ../setup/main.py:416
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Seleccioneu la drecera de teclat per a %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:417
+#: ../setup/main.py:418
 msgid "switching input methods"
 msgstr "commutació dels mètodes d'entrada"
 
 #: ../tools/main.vala:48
 msgid "List engine name only"
-msgstr "Mostra tan sols els nom del motor"
+msgstr "Mostra tan sols el nom del motor"
 
 #: ../tools/main.vala:64 ../tools/main.vala:185 ../tools/main.vala:195
 msgid "Can't connect to IBus.\n"
@@ -682,7 +698,7 @@ msgstr "idioma: %s\n"
 
 #: ../tools/main.vala:158
 msgid "No engine is set.\n"
-msgstr "No s'ha establer cap motor.\n"
+msgstr "No s'ha establert cap motor.\n"
 
 #: ../tools/main.vala:166
 msgid "Set global engine failed.\n"
@@ -784,45 +800,45 @@ msgstr "Ordres:\n"
 msgid "%s is unknown command!\n"
 msgstr "%s no és una ordre reconeguda!\n"
 
-#: ../ui/gtk3/panel.vala:225 ../ui/gtk3/panel.vala:256
+#: ../ui/gtk3/panel.vala:235 ../ui/gtk3/panel.vala:266
 msgid "IBus Panel"
 msgstr "Quadre de l'IBus"
 
-#: ../ui/gtk3/panel.vala:712
+#: ../ui/gtk3/panel.vala:731
 msgid "IBus Update"
 msgstr "Actualització d'IBus"
 
-#: ../ui/gtk3/panel.vala:713 ../ui/gtk3/panel.vala:724
+#: ../ui/gtk3/panel.vala:732 ../ui/gtk3/panel.vala:743
 msgid "Super+space is now the default hotkey."
 msgstr "Súper+espai ara és l'accés de teclat per defecte."
 
-#: ../ui/gtk3/panel.vala:1026
+#: ../ui/gtk3/panel.vala:1086
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "L'IBus és un bus d'entrada intel·ligent per al Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:1030
+#: ../ui/gtk3/panel.vala:1090
 msgid "translator-credits"
 msgstr ""
 "Joan Duran <jodufi@gmail.com>\n"
 "Oscar Osta Pueyo <oostap@gmail.com>,\n"
 "Patricia Rivera Escuder <patysya@gmail.com>,\n"
-"Robert Antoni Buj Gelonch <robert.buj@gmail.com>,\n"
+"Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>,\n"
 "Xavier Conde Rueda <xavi.conde@gmail.com>"
 
-#: ../ui/gtk3/panel.vala:1049
+#: ../ui/gtk3/panel.vala:1109
 msgid "Preferences"
 msgstr "Preferències"
 
-#: ../ui/gtk3/panel.vala:1059
+#: ../ui/gtk3/panel.vala:1119
 msgid "Restart"
 msgstr "Reinicia"
 
-#: ../ui/gtk3/panel.vala:1063
+#: ../ui/gtk3/panel.vala:1123
 msgid "Quit"
 msgstr "Surt"
 
 #. Translators: If your locale is RTL, the msgstr is "default:RTL".
 #. * Otherwise the msgstr is "default:LTR".
-#: ../ui/gtk3/propertypanel.vala:371
+#: ../ui/gtk3/propertypanel.vala:400 ../ui/gtk3/propertypanel.vala:408
 msgid "default:LTR"
 msgstr "default:LTR"
