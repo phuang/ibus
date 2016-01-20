@@ -107,7 +107,7 @@ dist-hook:
 distclean-local:
 	if test "x$(srcdir)" = "x."; then :; else \
 		rm -f ChangeLog; \
-		echo > NEWS; \
+		rm -f NEWS; \
 	fi
 
 MAINTAINERCLEANFILES = \
