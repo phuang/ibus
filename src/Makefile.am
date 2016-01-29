@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -159,11 +160,12 @@ ibus_public_headers =       \
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
-ibus_private_headers =       \
-    ibuscomposetable.h       \
-    ibusinternal.h           \
-    keyname-table.h          \
-    gtkimcontextsimpleseqs.h \
+ibus_private_headers =          \
+    ibuscomposetable.h          \
+    ibusenginesimpleprivate.h   \
+    ibusinternal.h              \
+    keyname-table.h             \
+    gtkimcontextsimpleseqs.h    \
     $(NULL)
 noinst_HEADERS =            \
     $(ibus_private_headers) \

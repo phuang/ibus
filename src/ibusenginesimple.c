@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,12 +25,18 @@
 #  include "config.h"
 #endif
 
+#include "ibuscomposetable.h"
 #include "ibusenginesimple.h"
+#include "ibusenginesimpleprivate.h"
 
 #include "ibuskeys.h"
 #include "ibuskeysyms.h"
 
-#include "ibuscomposetable.h"
+/* This file contains the table of the compose sequences,
+ * static const guint16 gtk_compose_seqs_compact[] = {}
+ * It is generated from the compose-parse.py script.
+ */
+#include "gtkimcontextsimpleseqs.h"
 
 #include <memory.h>
 #include <stdlib.h>
@@ -47,6 +53,18 @@ struct _IBusEngineSimplePrivate {
 
     guint       in_hex_sequence : 1;
     guint       modifiers_dropped : 1;
+};
+
+/* From the values below, the value 30 means the number of different first keysyms
+ * that exist in the Compose file (from Xorg). When running compose-parse.py without
+ * parameters, you get the count that you can put here. Needed when updating the
+ * gtkimcontextsimpleseqs.h header file (contains the compose sequences).
+ */
+const IBusComposeTableCompact ibus_compose_table_compact = {
+    gtk_compose_seqs_compact,
+    5,
+    30,
+    6
 };
 
 static const guint16 ibus_compose_ignore[] = {
@@ -360,17 +378,22 @@ check_table (IBusEngineSimple *simple,
     return TRUE;
 }
 
-static gboolean
-check_compact_table (IBusEngineSimple              *simple,
-                     const IBusComposeTableCompact *table,
-                     gint                           n_compose)
+gboolean
+ibus_check_compact_table (const IBusComposeTableCompact *table,
+                          guint                         *compose_buffer,
+                          gint                           n_compose,
+                          gboolean                      *compose_finish,
+                          gunichar                      *output_char)
 {
-    IBusEngineSimplePrivate *priv = simple->priv;
-
     gint row_stride;
     guint16 *seq_index;
     guint16 *seq;
     gint i;
+
+    if (compose_finish)
+        *compose_finish = FALSE;
+    if (output_char)
+        *output_char = 0;
 
     /* Will never match, if the sequence in the compose buffer is longer
      * than the sequences in the table.  Further, compare_seq (key, val)
@@ -380,12 +403,12 @@ check_compact_table (IBusEngineSimple              *simple,
 
     // g_debug ("check_compact_table(n_compose=%d) [%04x, %04x, %04x, %04x]",
     //          n_compose,
-    //          priv->compose_buffer[0],
-    //          priv->compose_buffer[1],
-    //          priv->compose_buffer[2],
-    //          priv->compose_buffer[3]);
+    //          compose_buffer[0],
+    //          compose_buffer[1],
+    //          compose_buffer[2],
+    //          compose_buffer[3]);
 
-    seq_index = bsearch (priv->compose_buffer,
+    seq_index = bsearch (compose_buffer,
                          table->data,
                          table->n_index_size,
                          sizeof (guint16) *  table->n_index_stride,
@@ -408,7 +431,7 @@ check_compact_table (IBusEngineSimple              *simple,
         row_stride = i + 1;
 
         if (seq_index[i + 1] - seq_index[i] > 0) {
-            seq = bsearch (priv->compose_buffer + 1,
+            seq = bsearch (compose_buffer + 1,
                            table->data + seq_index[i],
                            (seq_index[i + 1] - seq_index[i]) / row_stride,
                            sizeof (guint16) * row_stride,
@@ -418,11 +441,8 @@ check_compact_table (IBusEngineSimple              *simple,
             if (seq) {
                 if (i == n_compose - 1)
                     break;
-                else {
-                    ibus_engine_simple_update_preedit_text (simple);
-                    // g_debug ("yes\n");
+                else
                     return TRUE;
-                }
             }
         }
     }
@@ -432,11 +452,10 @@ check_compact_table (IBusEngineSimple              *simple,
         return FALSE;
     }
     else {
-        gunichar value;
-
-        value = seq[row_stride - 1];
-        ibus_engine_simple_commit_char (simple, value);
-        priv->compose_buffer[0] = 0;
+        if (compose_finish)
+            *compose_finish = TRUE;
+        if (output_char)
+            *output_char = seq[row_stride - 1];
 
         // g_debug ("U+%04X\n", value);
         return TRUE;
@@ -520,31 +539,33 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
     return FALSE;
 }
 
-static gboolean
-check_algorithmically (IBusEngineSimple *simple,
-                       gint                n_compose)
+gboolean
+ibus_check_algorithmically (const guint *compose_buffer,
+                            gint         n_compose,
+                            gunichar    *output_char)
 
 {
-    IBusEngineSimplePrivate *priv = simple->priv;
-
     gint i;
     gunichar combination_buffer[IBUS_MAX_COMPOSE_LEN];
     gchar *combination_utf8, *nfc;
 
+    if (output_char)
+        *output_char = 0;
+
     if (n_compose >= IBUS_MAX_COMPOSE_LEN)
         return FALSE;
 
-    for (i = 0; i < n_compose && IS_DEAD_KEY (priv->compose_buffer[i]); i++)
+    for (i = 0; i < n_compose && IS_DEAD_KEY (compose_buffer[i]); i++)
         ;
     if (i == n_compose)
         return TRUE;
 
     if (i > 0 && i == n_compose - 1) {
-        combination_buffer[0] = ibus_keyval_to_unicode (priv->compose_buffer[i]);
+        combination_buffer[0] = ibus_keyval_to_unicode (compose_buffer[i]);
         combination_buffer[n_compose] = 0;
         i--;
         while (i >= 0) {
-        switch (priv->compose_buffer[i]) {
+        switch (compose_buffer[i]) {
 #define CASE(keysym, unicode) \
         case IBUS_KEY_dead_##keysym: \
             combination_buffer[i+1] = unicode; \
@@ -581,7 +602,7 @@ check_algorithmically (IBusEngineSimple *simple,
         /* CASE (psili, 0x343); */
 #undef CASE
         default:
-            combination_buffer[i+1] = ibus_keyval_to_unicode (priv->compose_buffer[i]);
+            combination_buffer[i+1] = ibus_keyval_to_unicode (compose_buffer[i]);
         }
         i--;
     }
@@ -591,13 +612,11 @@ check_algorithmically (IBusEngineSimple *simple,
          * and return TRUE.
          */
         if (check_normalize_nfc (combination_buffer, n_compose)) {
-            gunichar value;
             combination_utf8 = g_ucs4_to_utf8 (combination_buffer, -1, NULL, NULL, NULL);
             nfc = g_utf8_normalize (combination_utf8, -1, G_NORMALIZE_NFC);
 
-            value = g_utf8_get_char (nfc);
-            ibus_engine_simple_commit_char (simple, value);
-            priv->compose_buffer[0] = 0;
+            if (output_char)
+                *output_char = g_utf8_get_char (nfc);
 
             g_free (combination_utf8);
             g_free (nfc);
@@ -687,6 +706,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     gboolean is_escape;
     guint hex_keyval;
     gint i;
+    gboolean compose_finish;
+    gunichar output_char;
 
     while (priv->compose_buffer[n_compose] != 0)
         n_compose++;
@@ -894,14 +915,29 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             list = list->next;
         }
 
-        if (check_compact_table (simple,
-                                 &ibus_compose_table_compact,
-                                 n_compose)) {
+        if (ibus_check_compact_table (&ibus_compose_table_compact,
+                                      priv->compose_buffer,
+                                      n_compose,
+                                      &compose_finish,
+                                      &output_char)) {
+            if (compose_finish) {
+                ibus_engine_simple_commit_char (simple, output_char);
+                priv->compose_buffer[0] = 0;
+            } else {
+                ibus_engine_simple_update_preedit_text (simple);
+            }
             return TRUE;
         }
 
-        if (check_algorithmically (simple, n_compose))
+        if (ibus_check_algorithmically (priv->compose_buffer,
+                                        n_compose,
+                                        &output_char)) {
+            if (output_char) {
+                ibus_engine_simple_commit_char (simple, output_char);
+                priv->compose_buffer[0] = 0;
+            }
             return TRUE;
+        }
     }
 
     /* The current compose_buffer doesn't match anything */

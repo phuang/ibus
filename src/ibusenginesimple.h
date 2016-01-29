@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -134,8 +135,7 @@ gboolean         ibus_engine_simple_add_table_by_locale
 /**
  * ibus_engine_simple_add_compose_file:
  * @simple: An IBusEngineSimple.
- * @file: The compose file. If the @file is %NULL,
- *        the current locale is used.
+ * @file: The compose file.
  *
  * Call ibus_engine_simple_add_table() internally by locale.
  *
