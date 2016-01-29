@@ -47,7 +47,7 @@
 
 struct _IBusEngineSimplePrivate {
     GSList     *tables;
-    guint       compose_buffer[IBUS_MAX_COMPOSE_LEN + 1];
+    guint16     compose_buffer[IBUS_MAX_COMPOSE_LEN + 1];
     gunichar    tentative_match;
     gint        tentative_match_len;
 
@@ -284,7 +284,7 @@ check_hex (IBusEngineSimple *simple,
 static int
 compare_seq_index (const void *key, const void *value)
 {
-    const guint *keysyms = key;
+    const guint16 *keysyms = key;
     const guint16 *seq = value;
 
     if (keysyms[0] < seq[0])
@@ -298,7 +298,7 @@ static int
 compare_seq (const void *key, const void *value)
 {
     int i = 0;
-    const guint *keysyms = key;
+    const guint16 *keysyms = key;
     const guint16 *seq = value;
 
     while (keysyms[i]) {
@@ -380,7 +380,7 @@ check_table (IBusEngineSimple *simple,
 
 gboolean
 ibus_check_compact_table (const IBusComposeTableCompact *table,
-                          guint                         *compose_buffer,
+                          guint16                       *compose_buffer,
                           gint                           n_compose,
                           gboolean                      *compose_finish,
                           gunichar                      *output_char)
@@ -540,9 +540,9 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
 }
 
 gboolean
-ibus_check_algorithmically (const guint *compose_buffer,
-                            gint         n_compose,
-                            gunichar    *output_char)
+ibus_check_algorithmically (const guint16 *compose_buffer,
+                            gint           n_compose,
+                            gunichar      *output_char)
 
 {
     gint i;

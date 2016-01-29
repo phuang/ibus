@@ -28,12 +28,12 @@ G_BEGIN_DECLS
 
 extern const IBusComposeTableCompact ibus_compose_table_compact;
 
-gboolean ibus_check_algorithmically (const guint                *compose_buffer,
+gboolean ibus_check_algorithmically (const guint16              *compose_buffer,
                                      gint                        n_compose,
                                      gunichar                   *output);
 gboolean ibus_check_compact_table   (const IBusComposeTableCompact
                                                                 *table,
-                                     guint                      *compose_buffer,
+                                     guint16                    *compose_buffer,
                                      gint                        n_compose,
                                      gboolean                   *compose_finish,
                                      gunichar                   *output_char);
