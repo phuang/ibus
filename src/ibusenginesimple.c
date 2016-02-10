@@ -41,12 +41,11 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#define X11_DATADIR "/usr/share/X11/locale"
+#define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
 
 struct _IBusEngineSimplePrivate {
-    GSList     *tables;
     guint16     compose_buffer[IBUS_MAX_COMPOSE_LEN + 1];
     gunichar    tentative_match;
     gint        tentative_match_len;
@@ -66,6 +65,8 @@ const IBusComposeTableCompact ibus_compose_table_compact = {
     30,
     6
 };
+
+static GSList *global_tables;
 
 static const guint16 ibus_compose_ignore[] = {
     IBUS_KEY_Shift_L,
@@ -127,11 +128,6 @@ ibus_engine_simple_init (IBusEngineSimple *simple)
 static void
 ibus_engine_simple_destroy (IBusEngineSimple *simple)
 {
-    IBusEngineSimplePrivate *priv = simple->priv;
-
-    g_slist_free_full (priv->tables, g_free);
-    priv->tables = NULL;
-
     IBUS_OBJECT_CLASS(ibus_engine_simple_parent_class)->destroy (
         IBUS_OBJECT (simple));
 }
@@ -315,9 +311,9 @@ compare_seq (const void *key, const void *value)
 
 
 static gboolean
-check_table (IBusEngineSimple *simple,
-             IBusComposeTable *table,
-             gint              n_compose)
+check_table (IBusEngineSimple       *simple,
+             const IBusComposeTable *table,
+             gint                    n_compose)
 {
     // g_debug("check_table");
     IBusEngineSimplePrivate *priv = simple->priv;
@@ -904,7 +900,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         }
     }
     else {
-        GSList *list = priv->tables;
+        GSList *list = global_tables;
         while (list) {
             if (check_table (simple,
                              (IBusComposeTable *)list->data,
@@ -950,51 +946,102 @@ ibus_engine_simple_add_table (IBusEngineSimple *simple,
                               gint              max_seq_len,
                               gint              n_seqs)
 {
-    IBusEngineSimplePrivate *priv = simple->priv;
-
     g_return_if_fail (IBUS_IS_ENGINE_SIMPLE (simple));
-    g_return_if_fail (data != NULL);
-    g_return_if_fail (max_seq_len <= IBUS_MAX_COMPOSE_LEN);
 
-    IBusComposeTable *table = g_new (IBusComposeTable, 1);
-    table->data = data;
-    table->max_seq_len = max_seq_len;
-    table->n_seqs = n_seqs;
-
-    priv->tables = g_slist_prepend (priv->tables, table);
+    global_tables = ibus_compose_table_list_add_array (global_tables,
+                                                       data,
+                                                       max_seq_len,
+                                                       n_seqs);
 }
 
 gboolean
 ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
                                         const gchar      *locale)
 {
-    const gchar *_locale = locale;
-    gchar **langs = NULL;
-    gchar **l = NULL;
+    /* Now ibus_engine_simple_add_compose_file() always returns TRUE. */
+    gboolean retval = TRUE;
     gchar *path = NULL;
+    const gchar *home;
+    const gchar *_locale;
+    gchar **langs = NULL;
+    gchar **lang = NULL;
+    gchar * const sys_langs[] = { "el_gr", "fi_fi", "pt_br", NULL };
+    gchar * const *sys_lang = NULL;
 
-    if (_locale == NULL) {
+    if (locale == NULL) {
+        path = g_build_filename (g_get_user_config_dir (),
+                                 "ibus", "Compose", NULL);
+        if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+            ibus_engine_simple_add_compose_file (simple, path);
+            g_free (path);
+            return retval;
+        }
+        g_free (path);
+        path = NULL;
+
+        path = g_build_filename (g_get_user_config_dir (),
+                                 "gtk-3.0", "Compose", NULL);
+        if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+            ibus_engine_simple_add_compose_file (simple, path);
+            g_free (path);
+            return retval;
+        }
+        g_free (path);
+        path = NULL;
+
+        home = g_get_home_dir ();
+        if (home == NULL)
+            return retval;
+
+        path = g_build_filename (home, ".XCompose", NULL);
+        if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+            ibus_engine_simple_add_compose_file (simple, path);
+            g_free (path);
+            return retval;
+        }
+        g_free (path);
+        path = NULL;
+
         _locale = g_getenv ("LC_CTYPE");
-        if (_locale == NULL) {
+        if (_locale == NULL)
             _locale = g_getenv ("LANG");
-        }
-        if (_locale == NULL) {
+        if (_locale == NULL)
             _locale = "C";
-        }
+
         /* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=751826 */
         langs = g_get_locale_variants (_locale);
-        for (l = langs; *l; l++) {
-            if (g_str_has_prefix (*l, "en_US"))
+
+        for (lang = langs; *lang; lang++) {
+            if (g_str_has_prefix (*lang, "en_US"))
                 break;
-            if (g_strcmp0 (*l, "C") == 0)
+            if (**lang == 'C')
                 break;
-            path = g_build_filename (X11_DATADIR, *l, "Compose", NULL);
+
+            /* Other languages just include en_us compose table. */
+            for (sys_lang = sys_langs; *sys_lang; sys_lang++) {
+                if (g_ascii_strncasecmp (*lang, *sys_lang,
+                                         strlen (*sys_lang)) == 0) {
+                    path = g_build_filename (X11_DATADIR,
+                                             *lang, "Compose", NULL);
+                    break;
+                }
+            }
+
+            if (path == NULL)
+                continue;
+
             if (g_file_test (path, G_FILE_TEST_EXISTS))
                 break;
             g_free (path);
             path = NULL;
         }
+
         g_strfreev (langs);
+
+        if (path != NULL)
+            ibus_engine_simple_add_compose_file (simple, path);
+        g_free (path);
+        path = NULL;
     } else {
         path = g_build_filename (X11_DATADIR, locale, "Compose", NULL);
         do {
@@ -1003,27 +1050,21 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             g_free (path);
             path = NULL;
         } while (0);
+        if (path == NULL)
+            return retval;
+        ibus_engine_simple_add_compose_file (simple, path);
     }
 
-    if (path == NULL)
-        return FALSE;
-
-    return ibus_engine_simple_add_compose_file (simple, path);
+    return retval;
 }
 
 gboolean
 ibus_engine_simple_add_compose_file (IBusEngineSimple *simple,
                                      const gchar      *compose_file)
 {
-    IBusEngineSimplePrivate *priv = simple->priv;
-    IBusComposeTable *table;
+    g_return_val_if_fail (IBUS_IS_ENGINE_SIMPLE (simple), TRUE);
 
-    g_assert (compose_file != NULL);
-
-    table = ibus_compose_table_new_with_file (compose_file);
-    if (table == NULL)
-        return FALSE;
-
-    priv->tables = g_slist_prepend (priv->tables, table);
+    global_tables = ibus_compose_table_list_add_file (global_tables,
+                                                      compose_file);
     return TRUE;
 }

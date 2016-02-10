@@ -25,13 +25,6 @@
 
 #include <glib.h>
 
-/* if ibus_compose_seqs[N - 1] is an outputed compose character,
- * ibus_compose_seqs[N * 2 - 1] is also an outputed compose character.
- * and ibus_compose_seqs[0] to ibus_compose_seqs[0 + N - 3] are the
- * sequences and call ibus_engine_simple_add_table:
- * ibus_engine_simple_add_table(engine, ibus_compose_seqs,
- *                              N - 2, G_N_ELEMENTS(ibus_compose_seqs) / N)
- * The compose sequences are allowed within G_MAXUINT16 */
 
 G_BEGIN_DECLS
 
@@ -40,9 +33,10 @@ typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
 
 struct _IBusComposeTable
 {
-    const guint16 *data;
+    guint16 *data;
     gint max_seq_len;
     gint n_seqs;
+    guint32 id;
 };
 
 struct _IBusComposeTableCompact
@@ -54,6 +48,16 @@ struct _IBusComposeTableCompact
 };
 
 IBusComposeTable *ibus_compose_table_new_with_file (const gchar *compose_file);
+GSList           *ibus_compose_table_list_add_array
+                                                   (GSList
+                                                                *compose_tables,
+                                                    const guint16
+                                                                *data,
+                                                    gint         max_seq_len,
+                                                    gint         n_seqs);
+GSList           *ibus_compose_table_list_add_file (GSList
+                                                                *compose_tables,
+                                                    const gchar *compose_file);
 
 G_BEGIN_DECLS
 #endif

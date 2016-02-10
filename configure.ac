@@ -3,6 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -256,6 +257,15 @@ if test x"$enable_xim" = x"yes"; then
 else
     enable_xim="no (disabled, use --enable-xim to enable)"
 fi
+
+if $PKG_CONFIG --exists x11; then
+    X11_PREFIX="`$PKG_CONFIG --variable=prefix x11`"
+elif test x"$prefix" != xNONE; then
+    X11_PREFIX="$prefix"
+else
+    X11_PREFIX="$ac_default_prefix"
+fi
+AC_SUBST(X11_PREFIX)
 
 if test x"$enable_wayland" = x"yes"; then
     # Check for wayland
