@@ -33,6 +33,7 @@ enum {
     REGISTER_PROPERTIES,
     UPDATE_PROPERTY,
     SET_CURSOR_LOCATION,
+    SET_CURSOR_LOCATION_RELATIVE,
     CURSOR_UP_LOOKUP_TABLE,
     CURSOR_DOWN_LOOKUP_TABLE,
     HIDE_AUXILIARY_TEXT,
@@ -118,6 +119,12 @@ static void      ibus_panel_service_set_cursor_location
                                     gint                    y,
                                     gint                    w,
                                     gint                    h);
+static void      ibus_panel_service_set_cursor_location_relative
+                                   (IBusPanelService       *panel,
+                                    gint                    x,
+                                    gint                    y,
+                                    gint                    w,
+                                    gint                    h);
 static void      ibus_panel_service_update_auxiliary_text
                                    (IBusPanelService       *panel,
                                     IBusText               *text,
@@ -189,6 +196,12 @@ static const gchar introspection_xml[] =
     "      <arg direction='in' type='i' name='w' />"
     "      <arg direction='in' type='i' name='h' />"
     "    </method>"
+    "    <method name='SetCursorLocationRelative'>"
+    "      <arg direction='in' type='i' name='x' />"
+    "      <arg direction='in' type='i' name='y' />"
+    "      <arg direction='in' type='i' name='w' />"
+    "      <arg direction='in' type='i' name='h' />"
+    "    </method>"
     "    <method name='Reset' />"
     "    <method name='StartSetup' />"
     "    <method name='StateChanged' />"
@@ -251,6 +264,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
     class->destroy_context       = ibus_panel_service_destroy_context;
     class->register_properties   = ibus_panel_service_register_properties;
     class->set_cursor_location   = ibus_panel_service_set_cursor_location;
+    class->set_cursor_location_relative = ibus_panel_service_set_cursor_location_relative;
     class->update_lookup_table   = ibus_panel_service_update_lookup_table;
     class->update_auxiliary_text = ibus_panel_service_update_auxiliary_text;
     class->update_preedit_text   = ibus_panel_service_update_preedit_text;
@@ -471,6 +485,35 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
             G_TYPE_FROM_CLASS (gobject_class),
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusPanelServiceClass, set_cursor_location),
+            NULL, NULL,
+            _ibus_marshal_VOID__INT_INT_INT_INT,
+            G_TYPE_NONE,
+            4,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT);
+
+    /**
+     * IBusPanelService::set-cursor-location-relative:
+     * @panel: An #IBusPanelService
+     * @x: X coordinate of the cursor.
+     * @y: Y coordinate of the cursor.
+     * @w: Width of the cursor.
+     * @h: Height of the cursor.
+     *
+     * Emitted when the client application get the set-cursor-location-relative.
+     * Implement the member function set_cursor_location_relative() in
+     * extended class to receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
+     */
+    panel_signals[SET_CURSOR_LOCATION_RELATIVE] =
+        g_signal_new (I_("set-cursor-location-relative"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass, set_cursor_location_relative),
             NULL, NULL,
             _ibus_marshal_VOID__INT_INT_INT_INT,
             G_TYPE_NONE,
@@ -1011,6 +1054,15 @@ ibus_panel_service_service_method_call (IBusService           *service,
         return;
     }
 
+    if (g_strcmp0 (method_name, "SetCursorLocationRelative") == 0) {
+        gint x, y, w, h;
+        g_variant_get (parameters, "(iiii)", &x, &y, &w, &h);
+        g_signal_emit (panel, panel_signals[SET_CURSOR_LOCATION_RELATIVE],
+                       0, x, y, w, h);
+        g_dbus_method_invocation_return_value (invocation, NULL);
+        return;
+    }
+
     if (g_strcmp0 (method_name, "ContentType") == 0) {
         guint purpose, hints;
         g_variant_get (parameters, "(uu)", &purpose, &hints);
@@ -1137,6 +1189,16 @@ ibus_panel_service_set_cursor_location (IBusPanelService *panel,
                                         gint              y,
                                         gint              w,
                                         gint              h)
+{
+    ibus_panel_service_not_implemented(panel);
+}
+
+static void
+ibus_panel_service_set_cursor_location_relative (IBusPanelService *panel,
+                                                 gint              x,
+                                                 gint              y,
+                                                 gint              w,
+                                                 gint              h)
 {
     ibus_panel_service_not_implemented(panel);
 }

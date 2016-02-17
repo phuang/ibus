@@ -105,6 +105,7 @@ struct _BusInputContextClass {
 enum {
     PROCESS_KEY_EVENT,
     SET_CURSOR_LOCATION,
+    SET_CURSOR_LOCATION_RELATIVE,
     FOCUS_IN,
     FOCUS_OUT,
     UPDATE_PREEDIT_TEXT,
@@ -225,6 +226,12 @@ static const gchar introspection_xml[] =
     "      <arg direction='out' type='b' name='handled' />"
     "    </method>"
     "    <method name='SetCursorLocation'>"
+    "      <arg direction='in' type='i' name='x' />"
+    "      <arg direction='in' type='i' name='y' />"
+    "      <arg direction='in' type='i' name='w' />"
+    "      <arg direction='in' type='i' name='h' />"
+    "    </method>"
+    "    <method name='SetCursorLocationRelative'>"
     "      <arg direction='in' type='i' name='x' />"
     "      <arg direction='in' type='i' name='y' />"
     "      <arg direction='in' type='i' name='w' />"
@@ -361,6 +368,20 @@ bus_input_context_class_init (BusInputContextClass *class)
 
     context_signals[SET_CURSOR_LOCATION] =
         g_signal_new (I_("set-cursor-location"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__INT_INT_INT_INT,
+            G_TYPE_NONE,
+            4,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT,
+            G_TYPE_INT);
+
+    context_signals[SET_CURSOR_LOCATION_RELATIVE] =
+        g_signal_new (I_("set-cursor-location-relative"),
             G_TYPE_FROM_CLASS (class),
             G_SIGNAL_RUN_LAST,
             0,
@@ -846,6 +867,38 @@ _ic_set_cursor_location (BusInputContext       *context,
     }
 }
 
+/**
+ * _ic_set_cursor_location_relative:
+ *
+ * Implement the "SetCursorLocationRelative" method call of the
+ * org.freedesktop.IBus.InputContext interface.
+ *
+ * Unlike _ic_set_cursor_location, this doesn't deliver the location
+ * to the engine proxy, since the relative coordinates are not very
+ * useful for engines.
+ */
+static void
+_ic_set_cursor_location_relative (BusInputContext       *context,
+                                  GVariant              *parameters,
+                                  GDBusMethodInvocation *invocation)
+{
+    gint x, y, w, h;
+
+    g_dbus_method_invocation_return_value (invocation, NULL);
+
+    g_variant_get (parameters, "(iiii)", &x, &y, &w, &h);
+
+    if (context->capabilities & IBUS_CAP_FOCUS) {
+        g_signal_emit (context,
+                       context_signals[SET_CURSOR_LOCATION_RELATIVE],
+                       0,
+                       x,
+                       y,
+                       w,
+                       h);
+    }
+}
+
 static void
 _ic_process_hand_writing_event (BusInputContext       *context,
                                 GVariant              *parameters,
@@ -1127,6 +1180,7 @@ bus_input_context_service_method_call (IBusService            *service,
     } methods [] =  {
         { "ProcessKeyEvent",   _ic_process_key_event },
         { "SetCursorLocation", _ic_set_cursor_location },
+        { "SetCursorLocationRelative", _ic_set_cursor_location_relative },
         { "ProcessHandWritingEvent",
                                _ic_process_hand_writing_event },
         { "CancelHandWriting", _ic_cancel_hand_writing },

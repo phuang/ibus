@@ -121,10 +121,16 @@ struct _IBusPanelServiceClass {
     void     (* set_content_type)          (IBusPanelService       *panel,
                                             guint                   purpose,
                                             guint                   hints);
+    void     (* set_cursor_location_relative)
+                                           (IBusPanelService       *panel,
+                                            gint                    x,
+                                            gint                    y,
+                                            gint                    w,
+                                            gint                    h);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[6];  // We can add 8 pointers without breaking the ABI.
+    gpointer pdummy[5];  // We can add 8 pointers without breaking the ABI.
 };
 
 GType            ibus_panel_service_get_type  (void);

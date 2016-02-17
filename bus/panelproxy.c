@@ -320,6 +320,21 @@ bus_panel_proxy_set_cursor_location (BusPanelProxy *panel,
 }
 
 void
+bus_panel_proxy_set_cursor_location_relative (BusPanelProxy *panel,
+                                              gint           x,
+                                              gint           y,
+                                              gint           w,
+                                              gint           h)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "SetCursorLocationRelative",
+                       g_variant_new ("(iiii)", x, y, w, h),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+}
+
+void
 bus_panel_proxy_update_preedit_text (BusPanelProxy  *panel,
                                      IBusText       *text,
                                      guint           cursor_pos,
@@ -499,6 +514,22 @@ _context_set_cursor_location_cb (BusInputContext *context,
 }
 
 static void
+_context_set_cursor_location_relative_cb (BusInputContext *context,
+                                          gint             x,
+                                          gint             y,
+                                          gint             w,
+                                          gint             h,
+                                          BusPanelProxy   *panel)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    g_return_if_fail (panel->focused_context == context);
+
+    bus_panel_proxy_set_cursor_location_relative (panel, x, y, w, h);
+}
+
+static void
 _context_update_preedit_text_cb (BusInputContext *context,
                                  IBusText        *text,
                                  guint            cursor_pos,
@@ -634,6 +665,7 @@ static const struct {
     GCallback callback;
 } input_context_signals[] = {
     { "set-cursor-location",        G_CALLBACK (_context_set_cursor_location_cb) },
+    { "set-cursor-location-relative", G_CALLBACK (_context_set_cursor_location_relative_cb) },
 
     { "update-preedit-text",        G_CALLBACK (_context_update_preedit_text_cb) },
     { "show-preedit-text",          G_CALLBACK (_context_show_preedit_text_cb) },

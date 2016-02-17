@@ -944,6 +944,26 @@ ibus_input_context_set_cursor_location (IBusInputContext *context,
 }
 
 void
+ibus_input_context_set_cursor_location_relative (IBusInputContext *context,
+                                                 gint32            x,
+                                                 gint32            y,
+                                                 gint32            w,
+                                                 gint32            h)
+{
+    g_assert (IBUS_IS_INPUT_CONTEXT (context));
+
+    g_dbus_proxy_call ((GDBusProxy *) context,
+                       "SetCursorLocationRelative",         /* method_name */
+                       g_variant_new ("(iiii)", x, y, w, h),/* parameters */
+                       G_DBUS_CALL_FLAGS_NONE,              /* flags */
+                       -1,                                  /* timeout */
+                       NULL,                                /* cancellable */
+                       NULL,                                /* callback */
+                       NULL                                 /* user_data */
+                       );
+}
+
+void
 ibus_input_context_set_capabilities (IBusInputContext   *context,
                                      guint32             capabilites)
 {

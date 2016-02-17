@@ -317,6 +317,22 @@ void         ibus_input_context_set_cursor_location
                                              gint32              w,
                                              gint32              h);
 /**
+ * ibus_input_context_set_cursor_location_relative:
+ * @context: An IBusInputContext.
+ * @x: X coordinate of the cursor.
+ * @y: Y coordinate of the cursor.
+ * @w: Width of the cursor.
+ * @h: Height of the cursor.
+ *
+ * Set the relative cursor location of IBus input context asynchronously.
+ */
+void         ibus_input_context_set_cursor_location_relative
+                                            (IBusInputContext   *context,
+                                             gint32              x,
+                                             gint32              y,
+                                             gint32              w,
+                                             gint32              h);
+/**
  * ibus_input_context_set_capabilities:
  * @context: An IBusInputContext.
  * @capabilities: Capabilities flags of IBusEngine, see #IBusCapabilite

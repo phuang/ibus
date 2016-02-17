@@ -30,6 +30,10 @@
 #include <ibus.h>
 #include "ibusimcontext.h"
 
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
+
 #if !GTK_CHECK_VERSION (2, 91, 0)
 #  define DEPRECATED_GDK_KEYSYMS 1
 #endif
@@ -1011,6 +1015,30 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
     }
 
     area = ibusimcontext->cursor_area;
+
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (gdk_display_get_default ())) {
+        gdouble px, py;
+        GdkWindow *parent;
+        GdkWindow *window = ibusimcontext->client_window;
+
+        while ((parent = gdk_window_get_effective_parent (window)) != NULL) {
+            gdk_window_coords_to_parent (window, area.x, area.y, &px, &py);
+            area.x = px;
+            area.y = py;
+            window = parent;
+        }
+
+        ibus_input_context_set_cursor_location_relative (
+            ibusimcontext->ibuscontext,
+            area.x,
+            area.y,
+            area.width,
+            area.height);
+        return FALSE;
+    }
+#endif
+
     if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
 #if GTK_CHECK_VERSION (2, 91, 0)
         area.x = 0;
