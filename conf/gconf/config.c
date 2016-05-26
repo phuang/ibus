@@ -304,7 +304,7 @@ ibus_config_gconf_get_values (IBusConfigService      *config,
     g_free (dir);
 
     GSList *p;
-    GVariantBuilder *builder;
+    GVariantBuilder builder;
 
     g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
     for (p = entries; p != NULL; p = p->next) {
