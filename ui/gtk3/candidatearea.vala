@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,10 @@ class CandidateArea : Gtk.Box {
     private IBus.Text[] m_ibus_candidates;
     private uint m_focus_candidate;
     private bool m_show_cursor;
+
+    private bool m_use_latest_css_format =
+            ((Gtk.MAJOR_VERSION > 3) ||
+             (Gtk.MAJOR_VERSION == 3) && (Gtk.MINOR_VERSION >= 20));
 
     private const string LABELS[] = {
         "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.",
@@ -103,7 +107,8 @@ class CandidateArea : Gtk.Box {
                 Pango.AttrList attrs = get_pango_attr_list_from_ibus_text(candidates[i]);
                 if (i == focus_candidate && show_cursor) {
                     Gtk.StyleContext context = m_candidates[i].get_style_context();
-                    Gdk.RGBA color = context.get_color(Gtk.StateFlags.SELECTED);
+                    Gdk.RGBA *color = null;
+                    context.get(Gtk.StateFlags.SELECTED, "color", out color);
                     Pango.Attribute pango_attr = Pango.attr_foreground_new(
                             (uint16)(color.red * uint16.MAX),
                             (uint16)(color.green * uint16.MAX),
@@ -112,7 +117,12 @@ class CandidateArea : Gtk.Box {
                     pango_attr.end_index = candidates[i].get_text().length;
                     attrs.insert((owned)pango_attr);
 
-                    color = context.get_background_color(Gtk.StateFlags.SELECTED);
+                    color = null;
+                    string bg_prop =
+                            m_use_latest_css_format
+                            ? "-gtk-secondary-caret-color"
+                            : "background-color";
+                    context.get(Gtk.StateFlags.SELECTED, bg_prop, out color);
                     pango_attr = Pango.attr_background_new(
                             (uint16)(color.red * uint16.MAX),
                             (uint16)(color.green * uint16.MAX),

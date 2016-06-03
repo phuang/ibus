@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2016 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -543,7 +543,12 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        string data_format = "GtkLabel { font: %s; }";
+        string data_format = "label { font: %s; }";
+        if (Gtk.MAJOR_VERSION < 3 ||
+            (Gtk.MAJOR_VERSION == 3 && Gtk.MINOR_VERSION < 20)) {
+            data_format = "GtkLabel { font: %s; }";
+        }
+
         string data = data_format.printf(font_name);
         m_css_provider = new Gtk.CssProvider();
 

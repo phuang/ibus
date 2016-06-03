@@ -2,7 +2,8 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +30,11 @@ class Handle : Gtk.EventBox {
     public signal void move_end();
 
     public Handle() {
+        // Call base class constructor
+        GLib.Object(
+            name : "IBusHandle"
+        );
+
         set_size_request(6, -1);
         Gdk.EventMask mask = Gdk.EventMask.EXPOSURE_MASK |
                              Gdk.EventMask.BUTTON_PRESS_MASK |
@@ -42,7 +48,7 @@ class Handle : Gtk.EventBox {
         Gtk.CssProvider css_provider = new Gtk.CssProvider();
         try {
             css_provider.load_from_data(
-                    "GtkEventBox { background-color: gray }", -1);
+                    "#IBusHandle { background-color: gray }", -1);
         } catch (GLib.Error error) {
             warning("Parse error in Handle: %s", error.message);
         }
