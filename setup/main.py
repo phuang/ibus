@@ -275,8 +275,11 @@ class Setup(object):
         self.__init_general()
 
     def __gdk_window_set_cb(self, object, pspec):
-        str = '%u' % GdkX11.X11Window.get_xid(object.get_window())
-        GLib.setenv('IBUS_SETUP_XID', str, True)
+        window = object.get_window()
+        if type(window) != GdkX11.X11Window:
+            return
+        s = '%u' % GdkX11.X11Window.get_xid(window)
+        GLib.setenv('IBUS_SETUP_XID', s, True)
 
     def __combobox_notify_active_engine_cb(self, combobox, property):
         engine = self.__combobox.get_active_engine()

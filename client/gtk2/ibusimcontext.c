@@ -583,11 +583,6 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 
     /* init bus object */
     if (_bus == NULL) {
-        const gchar *dname = gdk_display_get_name (gdk_display_get_default ());
-        /* ibus-daemon uses DISPLAY variable. */
-        if (g_strcmp0 (dname, "Wayland") == 0)
-            dname = g_getenv ("DISPLAY");
-        ibus_set_display (dname);
         _bus = ibus_bus_new_async ();
 
         /* init the global fake context */
