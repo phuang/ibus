@@ -599,6 +599,21 @@ if test x"$enable_libnotify" = x"yes"; then
     enable_libnotify="yes (enabled, use --disable-libnotify to disable)"
 fi
 
+# --disable-emoji-dict option.
+AC_ARG_ENABLE(emoji-dict,
+    AS_HELP_STRING([--disable-emoji-dict],
+                   [Do not build Emoji dict files]),
+    [enable_emoji_dict=$enableval],
+    [enable_emoji_dict=yes]
+)
+AM_CONDITIONAL([ENABLE_EMOJI_DICT], [test x"$enable_emoji_dict" = x"yes"])
+if test x"$enable_emoji_dict" = x"yes"; then
+    PKG_CHECK_MODULES(LIBXML2, [
+        libxml-2.0
+    ])
+    enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
+fi
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -682,6 +697,7 @@ Build options:
   Panel icon                    "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text       $enable_surrounding_text
   Enable libnotify              $enable_libnotify
+  Enable Emoji dict             $enable_emoji_dict
   Run test cases                $enable_tests
 ])
 

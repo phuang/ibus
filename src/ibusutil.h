@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,4 +53,31 @@ const gchar *    ibus_get_untranslated_language_name
  */
 const gchar *    ibus_get_language_name         (const gchar    *_locale);
 
+/**
+ * ibus_emoji_dict_save:
+ * @path: A path of the saved dictionary file.
+ * @dict: (element-type utf8 gpointer) (transfer none): An Emoji dictionary
+ *
+ * Save the Emoji dictionary to the cache file.
+ */
+void             ibus_emoji_dict_save           (const gchar    *path,
+                                                 GHashTable     *dict);
+/**
+ * ibus_emoji_dict_load:
+ * @path: A path of the saved dictionary file.
+ *
+ * Returns: (element-type utf8 gpointer) (transfer none): An Emoji dictionary file loaded from the saved cache file.
+ */
+GHashTable *     ibus_emoji_dict_load           (const gchar    *path);
+
+/**
+ * ibus_emoji_dict_lookup:
+ * @dict: (element-type utf8 gpointer) (transfer none): An Emoji dictionary
+ * @annotation: Annotation for Emoji characters
+ *
+ * Returns: (element-type utf8) (transfer none): List of Emoji characters
+ * This API is for gobject-introspection.
+ */
+GSList *         ibus_emoji_dict_lookup         (GHashTable     *dict,
+                                                 const gchar    *annotation);
 #endif

@@ -231,7 +231,38 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	$(GLIB_GENMARSHAL) --prefix=_ibus_marshal $(srcdir)/ibusmarshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
 
+if ENABLE_EMOJI_DICT
+AM_CPPFLAGS += -DENABLE_EMOJI_DICT
+
+dictdir = $(pkgdatadir)/dicts
+dict_DATA = emoji.dict
+
+noinst_PROGRAMS = emoji-parser
+
+emoji.dict: emoji-parser emoji-list.html
+	$(builddir)/emoji-parser emoji-list.html $@
+
+emoji_parser_SOURCES =          \
+    emoji-parser.c              \
+    $(NULL)
+emoji_parser_CFLAGS =           \
+    $(GLIB2_CFLAGS)             \
+    $(LIBXML2_CFLAGS)           \
+    $(NULL)
+emoji_parser_LDADD =            \
+    $(GLIB2_LIBS)               \
+    $(LIBXML2_LIBS)             \
+    $(libibus)                  \
+    $(NULL)
+
+CLEANFILES +=                   \
+    $(dict_DATA)                \
+    $(NULL)
+endif
+
 EXTRA_DIST =                    \
+    emoji-list.html             \
+    emoji-parser.c              \
     ibusversion.h.in            \
     ibusmarshalers.list         \
     ibusenumtypes.h.template    \
