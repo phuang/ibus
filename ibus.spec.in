@@ -5,6 +5,7 @@
 
 # Build flags
 %define build_python_library 0
+%define build_emoji_dictionary 1
 
 %define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 %define gconf2_version 2.12.0
@@ -40,6 +41,10 @@ BuildRequires:  dconf-devel
 BuildRequires:  pygobject2-devel
 BuildRequires:  intltool
 BuildRequires:  iso-codes-devel
+%if %build_emoji_dictionary
+BuildRequires:  nodejs-emojione
+BuildRequires:  json-glib
+%endif
 
 Requires:   %{name}-libs = %{version}-%{release}
 Requires:   %{name}-gtk2 = %{version}-%{release}
@@ -151,6 +156,12 @@ OPTIONS="$OPTIONS --enable-python-library"
 %else
 OPTIONS="$OPTIONS --disable-python-library"
 %endif
+%if %build_emoji_dictionary
+OPTIONS="$OPTIONS --enable-emoji-dict"
+%else
+OPTIONS="$OPTIONS --disable-emoji-dict"
+%endif
+
 
 %configure $OPTIONS
 
@@ -258,6 +269,9 @@ dconf update &> /dev/null || :
 %{_bindir}/ibus-setup
 %{_datadir}/ibus/component/gtkpanel.xml
 %{_datadir}/ibus/component/simple.xml
+%if %build_emoji_dictionary
+%{_datadir}/ibus/dicts
+%endif
 %{_datadir}/ibus/keymaps/*
 %{_datadir}/ibus/setup/*
 

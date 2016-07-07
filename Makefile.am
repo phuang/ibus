@@ -69,6 +69,7 @@ pkgconfig_DATA = ibus-@IBUS_API_VERSION@.pc
 
 ibus_pc_in = ibus-@IBUS_API_VERSION@.pc.in
 EXTRA_DIST = \
+	COPYING.unicode \
 	autogen.sh \
 	$(ibus_pc_in) \
 	ibus.spec.in \

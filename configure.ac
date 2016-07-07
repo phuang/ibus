@@ -608,11 +608,19 @@ AC_ARG_ENABLE(emoji-dict,
 )
 AM_CONDITIONAL([ENABLE_EMOJI_DICT], [test x"$enable_emoji_dict" = x"yes"])
 if test x"$enable_emoji_dict" = x"yes"; then
-    PKG_CHECK_MODULES(LIBXML2, [
-        libxml-2.0
+    PKG_CHECK_MODULES(JSON_GLIB1, [
+        json-glib-1.0
     ])
     enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
 fi
+
+AC_ARG_WITH(emoji-json-file,
+    AS_HELP_STRING([--with-emoji-json-file[=DIR/emoji.json]],
+        [Set emoji.json. (default: "/usr/lib/node_modules/emojione/emoji.json")]),
+    EMOJI_JSON_FILE=$with_emoji_json_file,
+    EMOJI_JSON_FILE="/usr/lib/node_modules/emojione/emoji.json"
+)
+AC_SUBST(EMOJI_JSON_FILE)
 
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
@@ -639,6 +647,7 @@ engine/Makefile
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
+data/annotations/Makefile.am
 data/icons/Makefile
 data/keymaps/Makefile
 data/dconf/Makefile
@@ -698,6 +707,7 @@ Build options:
   Enable surrounding-text       $enable_surrounding_text
   Enable libnotify              $enable_libnotify
   Enable Emoji dict             $enable_emoji_dict
+  emoji.json path               $EMOJI_JSON_FILE
   Run test cases                $enable_tests
 ])
 

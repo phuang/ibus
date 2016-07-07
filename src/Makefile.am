@@ -29,15 +29,6 @@ endif
 
 SUBDIRS = . $(TESTS_DIR)
 
-IBUS_V_wget = $(ibus__v_wget_@AM_V@)
-ibus__v_wget_ = $(ibus__v_wget_@AM_DEFAULT_V@)
-ibus__v_wget_0 = -nv
-ibus__v_wget_1 =
-IBUS_V_diff = $(ibus__v_diff_@AM_V@)
-ibus__v_diff_ = $(ibus__v_diff_@AM_DEFAULT_V@)
-ibus__v_diff_0 = -q
-ibus__v_diff_1 =
-
 # libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la
 
@@ -248,37 +239,25 @@ dict_DATA = emoji.dict
 
 noinst_PROGRAMS = emoji-parser
 
-emoji-list.html:
-	$(AM_V_at)wget $(IBUS_V_wget) \
-                http://ibus.github.io/files/ibus/emoji-list.html
-	$(AM_V_at)wget $(IBUS_V_wget) \
-                http://unicode.org/emoji/charts/emoji-list.html \
-	        -O latest-emoji-list.html
-	$(AM_V_at)diff $(IBUS_V_diff) emoji-list.html latest-emoji-list.html; \
-	if test $$? -ne 0; then \
-	    echo "#### WARNING: emoji-list.html is old." >&2; \
-	fi; \
-	rm latest-emoji-list.html;
-
-emoji.dict: emoji-parser emoji-list.html
-	$(builddir)/emoji-parser emoji-list.html $@
+emoji.dict: emoji-parser
+	$(builddir)/emoji-parser --xml $(srcdir)/../data/annotations/en.xml \
+	--json $(EMOJI_JSON_FILE) --out $@
 
 emoji_parser_SOURCES =          \
     emoji-parser.c              \
     $(NULL)
 emoji_parser_CFLAGS =           \
     $(GLIB2_CFLAGS)             \
-    $(LIBXML2_CFLAGS)           \
+    $(JSON_GLIB1_CFLAGS)        \
     $(NULL)
 emoji_parser_LDADD =            \
     $(GLIB2_LIBS)               \
-    $(LIBXML2_LIBS)             \
+    $(JSON_GLIB1_LIBS)          \
     $(libibus)                  \
     $(NULL)
 
 CLEANFILES +=                   \
     $(dict_DATA)                \
-    emoji-list.html             \
     $(NULL)
 endif
 
