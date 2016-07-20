@@ -647,7 +647,7 @@ engine/Makefile
 util/Makefile
 util/IMdkit/Makefile
 data/Makefile
-data/annotations/Makefile.am
+data/annotations/Makefile
 data/icons/Makefile
 data/keymaps/Makefile
 data/dconf/Makefile
