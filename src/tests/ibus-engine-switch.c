@@ -44,26 +44,34 @@ change_context_engine (IBusInputContext *context)
 
 typedef struct {
     gint count;
+    guint timeout_id;
+    guint idle_id;
 } GlobalEngineChangedData;
 
 static void
 global_engine_changed_cb (IBusBus *bus, gchar *name, gpointer user_data)
 {
     GlobalEngineChangedData *data = (GlobalEngineChangedData *) user_data;
-    data->count++;
+    if (data->count++ == 0)
+        ibus_quit ();
 }
 
 static gboolean
 timeout_cb (gpointer user_data)
 {
-    ibus_quit ();
+    GlobalEngineChangedData *data = (GlobalEngineChangedData *) user_data;
+    if (data->count == 0)
+        ibus_quit ();
+    data->timeout_id = 0;
     return FALSE;
 }
 
 static gboolean
 change_global_engine_cb (gpointer user_data)
 {
+    GlobalEngineChangedData *data = (GlobalEngineChangedData *) user_data;
     change_global_engine ();
+    data->idle_id = 0;
     return FALSE;
 }
 
@@ -71,7 +79,7 @@ static void
 test_global_engine (void)
 {
     GlobalEngineChangedData data;
-    guint handler_id, timeout_id, idle_id;
+    guint handler_id;
 
     if (!ibus_bus_get_use_global_engine (bus))
         return;
@@ -82,15 +90,17 @@ test_global_engine (void)
                                    "global-engine-changed",
                                    G_CALLBACK (global_engine_changed_cb),
                                    &data);
-    timeout_id = g_timeout_add_seconds (1, timeout_cb, &data);
-    idle_id = g_idle_add ((GSourceFunc) change_global_engine_cb, NULL);
+    data.timeout_id = g_timeout_add_seconds (1, timeout_cb, &data);
+    data.idle_id = g_idle_add ((GSourceFunc) change_global_engine_cb, &data);
 
     ibus_main ();
 
     g_assert_cmpint (data.count, ==, G_N_ELEMENTS (engine_names));
 
-    g_source_remove (idle_id);
-    g_source_remove (timeout_id);
+    if (data.idle_id > 0)
+        g_source_remove (data.idle_id);
+    if (data.timeout_id > 0)
+        g_source_remove (data.timeout_id);
     g_signal_handler_disconnect (bus, handler_id);
 }
 

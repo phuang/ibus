@@ -113,6 +113,14 @@ TESTS = \
 	$(NULL)
 endif
 
+TESTS_ENVIRONMENT = \
+    top_builddir=$(top_builddir) \
+    top_srcdir=$(top_srcdir) \
+    builddir=$(builddir) \
+    $(NULL)
+
+LOG_COMPILER = $(top_srcdir)/src/tests/runtest
+
 noinst_PROGRAMS = $(TESTS)
 
 test_matchrule_DEPENDENCIES = \

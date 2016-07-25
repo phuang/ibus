@@ -27,6 +27,7 @@ ibus-inputcontext
 ibus-inputcontext-create
 ibus-engine-switch
 ibus-compose
+test-stress
 "
 
 # Portable replacement of basename.
