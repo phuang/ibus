@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -43,6 +43,8 @@ vapidir = $(datadir)/vala/vapi
 vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
 
 MAINTAINERCLEANFILES = $(VAPIGEN_VAPIS)
+# for make distclean
+CONFIG_CLEAN_FILES = $(VAPIGEN_VAPIS)
 
 EXTRA_DIST = \
 	$(VAPIGEN_VAPIS) \

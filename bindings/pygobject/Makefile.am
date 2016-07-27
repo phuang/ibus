@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
-# Copyright (c) 2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2014-2016 Peng Huang <shawn.p.huang@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -39,10 +39,12 @@ if ENABLE_TESTS
 TESTS += test-override-ibus.py
 endif
 
+# IBus.Keymap() accesses keymap files
 TESTS_ENVIRONMENT = \
 	PYTHONPATH=$(top_srcdir)/tests:$${PYTHONPATH:+:$$PYTHONPATH} \
 	LD_LIBRARY_PATH=$(top_builddir)/src/.libs:$$LD_LIBRARY_PATH \
 	GI_TYPELIB_PATH=$(top_builddir)/src:$$GI_TYPELIB_PATH \
+	IBUS_KEYMAP_PATH=$(top_srcdir)/data/keymaps \
 	$(NULL)
 
 LOG_COMPILER = $(PYTHON) -B

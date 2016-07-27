@@ -159,13 +159,17 @@ static gboolean
 ibus_keymap_load (const gchar *name,
                   KEYMAP       keymap)
 {
+    const gchar *envstr;
     gchar *fname;
     FILE *pf;
     gchar buf[256];
     gint lineno;
 
 
-    fname = g_build_filename (IBUS_DATA_DIR, "keymaps", name, NULL);
+    if ((envstr = g_getenv ("IBUS_KEYMAP_PATH")) != NULL)
+        fname = g_build_filename (envstr, name, NULL);
+    else
+        fname = g_build_filename (IBUS_DATA_DIR, "keymaps", name, NULL);
 
     if (fname == NULL) {
         return FALSE;

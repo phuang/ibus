@@ -90,7 +90,6 @@ install-data-hook:
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--disable-schemas-install \
-	--disable-introspection \
 	$(NULL)
 
 dist-hook:

@@ -66,9 +66,12 @@ func_cleanup () {
 func_copy_component () {
   file=$1
   base=`func_basename $file`
+  libexecdir=`func_dirname $file`
+  # top_srcdir != top_builddir in make dist
+  libexecdir=`echo "$libexecdir" | sed -e "s|$top_srcdir|$top_builddir|"`
   if test -f $file.in; then
     mkdir -p components
-    sed 's|@libexecdir@|'`func_dirname $file`'|g' < $file.in > components/$base
+    sed "s|@libexecdir@|$libexecdir|g" < $file.in > components/$base
   fi
 }
 
