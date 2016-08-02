@@ -182,8 +182,8 @@
 			<rank>1</rank>
 		</engine>
 		<engine>
-			<name>xkb:hr::scr</name>
-			<language>scr</language>
+			<name>xkb:hr::hr</name>
+			<language>hr</language>
 			<license>GPL</license>
 			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
 			<layout>hr</layout>
