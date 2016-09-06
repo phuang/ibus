@@ -2,9 +2,9 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2013-2015 Red Hat, Inc.
+ * Copyright(c) 2013-2016 Red Hat, Inc.
  * Copyright(c) 2013-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2013-2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2013-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -85,7 +85,7 @@ public class PropertyPanel : Gtk.Box {
         debug("set_properties()\n");
 
         foreach (var item in m_items)
-            (item as Gtk.Widget).destroy();
+            remove((item as Gtk.Widget));
         m_items = {};
 
         m_props = props;
@@ -481,6 +481,8 @@ public class PropMenu : Gtk.Menu, IPropToolItem {
 
     public override void destroy() {
         m_parent_button = null;
+        foreach (var item in m_items)
+            remove((item as Gtk.Widget));
         m_items = {};
         base.destroy();
     }
@@ -739,7 +741,7 @@ public class PropMenuToolButton : PropToggleToolButton, IPropToolItem {
         m_menu = new PropMenu(prop);
         m_menu.deactivate.connect((m) =>
                                   set_active(false));
-        m_menu.property_activate.connect((w, k, s) =>
+        m_menu.property_activate.connect((k, s) =>
                                          property_activate(k, s));
 
         base.set_property(prop);
