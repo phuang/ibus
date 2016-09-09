@@ -1,27 +1,29 @@
-# translation of ibus.pot to Traditional Chinese (Hong Kong)
-# Traditional Chinese (Hong Kong) translation for ibus.
-# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Traditional Chinese (Hong Kong) translation of ibus.
+# Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2010
 # Peng Huang <shawn.p.huang@gmail.com>, 2008
+# Terry Chuang <tchuang@redhat.com>, 2010
 # Terry Chuang <tchuang@redhat.com>, 2014
 # tomoe_musashi <hkg.musashi@gmail.com>, 2015
+# tomoe musashi <hkg.musashi@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2015-11-09 13:46+0900\n"
+"POT-Creation-Date: 2015-07-13 19:48+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-11-09 12:50-0500\n"
-"Last-Translator: tomoe_musashi <hkg.musashi@gmail.com>\n"
+"PO-Revision-Date: 2016-03-10 11:57-0500\n"
+"Last-Translator: tomoe musashi <hkg.musashi@gmail.com>\n"
 "Language-Team: Traditional Chinese <zh@li.org>\n"
 "Language: zh-HK\n"
 "Plural-Forms: nplurals=2; plural=n!=1;\n"
-"X-Generator: Zanata 3.7.3\n"
+"X-Generator: Zanata 3.9.3\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -224,15 +226,15 @@ msgstr "輸入法"
 
 #: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
-msgstr "使用系統鍵盤配置"
+msgstr "使用系統鍵盤佈局"
 
 #: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
-msgstr "使用系統鍵盤 (XKB) 配置"
+msgstr "使用系統鍵盤 (XKB) 佈局"
 
 #: ../setup/setup.ui.h:51
 msgid "<b>Keyboard Layout</b>"
-msgstr "<b>鍵盤配置</b>"
+msgstr "<b>鍵盤佈局</b>"
 
 #: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:53
 msgid "Share the same input method among all applications"
@@ -322,20 +324,20 @@ msgstr "儲存的版本號碼可以用來查看上次安裝的 ibus 版本與目
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Latin layouts which have no ASCII"
-msgstr ""
+msgstr "無 ASCII 的拉丁鍵盤佈局"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "US layout is appended to the latin layouts. variant can be omitted."
-msgstr ""
+msgstr "US 鍵盤佈局附加到拉丁鍵盤佈局。variant 可被省略。"
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Use xmodmap"
-msgstr ""
+msgstr "使用 xmodmap"
 
 #: ../data/ibus.schemas.in.h:14
 msgid ""
 "Run xmodmap if .xmodmap or .Xmodmap exists when ibus engines are switched."
-msgstr ""
+msgstr "當 ibus 引擎切換時，若 .xmodmap 或 .Xmodmap 存在，則執行 xmodmap。 "
 
 #: ../data/ibus.schemas.in.h:15
 msgid "Trigger shortcut keys"
@@ -431,7 +433,7 @@ msgstr "顯示輸入法名稱"
 
 #: ../data/ibus.schemas.in.h:39
 msgid "RGBA value of XKB icon"
-msgstr ""
+msgstr "XKB 圖示的 RGBA 值"
 
 #: ../data/ibus.schemas.in.h:41
 #, no-c-format
@@ -444,6 +446,10 @@ msgid ""
 "to 255 or precentage values in the range 0% to 100%, and 'a' is a floating "
 "point value in the range 0 to 1 of the alpha."
 msgstr ""
+"XKB 圖示會顯示鍵盤佈局的字串，而且該字串會以 RGBA 值繪製。RGBA 值可以是 1. X11 定義的顏色，2."
+"「#rrggbb」格式的十六進制值，其中 r、g、b 分別是紅色、綠色和藍色，3. 「rgb(r,g,b,)」格式的 RGB 顏色，4."
+"「rgba(r,g,b,a)」格式的 RGBA 顏色，其中 r、g、b 為 0 至 255 之間的整數值，或 0% 至 100% 之間的百分比，而 a "
+"則是 0 至 1 之間的浮點 alpha 值。"
 
 #: ../data/ibus.schemas.in.h:42
 msgid "The milliseconds to show the panel icon for a property"
@@ -520,7 +526,7 @@ msgstr "語言：%s\n"
 #: ../setup/engineabout.py:75
 #, python-format
 msgid "Keyboard layout: %s\n"
-msgstr "鍵盤配置: %s\n"
+msgstr "鍵盤佈局：%s\n"
 
 #: ../setup/engineabout.py:78
 #, python-format
@@ -542,7 +548,7 @@ msgstr "取消(_C)"
 
 #: ../setup/enginedialog.py:205
 msgid "More…"
-msgstr ""
+msgstr "更多…"
 
 #: ../setup/enginetreeview.py:96
 msgid "Kbd"
@@ -673,11 +679,11 @@ msgstr "寫入註冊快取 FILE。"
 
 #: ../tools/main.vala:304
 msgid "Resetting…"
-msgstr ""
+msgstr "重設中…"
 
 #: ../tools/main.vala:318
 msgid "Done"
-msgstr ""
+msgstr "完成"
 
 #: ../tools/main.vala:337
 msgid "Set or get engine"
@@ -717,11 +723,11 @@ msgstr "列印 ibus-daemon 的 D-Bus 位址"
 
 #: ../tools/main.vala:346
 msgid "Show the configuration values"
-msgstr ""
+msgstr "顯示組態值"
 
 #: ../tools/main.vala:347
 msgid "Reset the configuration values"
-msgstr ""
+msgstr "重設組態值"
 
 #: ../tools/main.vala:348
 msgid "Show this information"
@@ -745,7 +751,7 @@ msgstr "%s 為未知指令！\n"
 
 #: ../ui/gtk3/panel.vala:235 ../ui/gtk3/panel.vala:266
 msgid "IBus Panel"
-msgstr ""
+msgstr "IBus 面板"
 
 #: ../ui/gtk3/panel.vala:731
 msgid "IBus Update"

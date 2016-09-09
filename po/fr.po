@@ -1,14 +1,17 @@
-# translation of ibus.pot to French
 # French translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
 # Charles-Antoine Couret <cacouret@wanadoo.fr>, 2009
-# Sam Friedmann <sam.friedmann@redhat.com>, 2010
-# Jérôme Fenal <jfenal@gmail.com>, 2012-2013
 # dominique bribanick <chepioq@gmail.com>, 2011,2014
+# Jérôme Fenal <jfenal@gmail.com>, 2012-2013
+# Julien Humbert <julroy67@gmail.com>, 2009-2014
+# Sam Friedmann <sam.friedmann@redhat.com>, 2010
 # Julien Humbert <julroy67@gmail.com>, 2009-2015
+# Jibec <jean-baptiste@holcroft.fr>, 2016. #zanata
+# José Fournier <jaaf64@zoraldia.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
@@ -17,12 +20,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-07-10 09:29-0400\n"
-"Last-Translator: Julien Humbert <julroy67@gmail.com>\n"
+"PO-Revision-Date: 2016-08-30 01:49-0400\n"
+"Last-Translator: Jibec <jean-baptiste@holcroft.fr>\n"
 "Language-Team: French <trans-fr@lists.fedoraproject.org>\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 3.6.2\n"
+"X-Generator: Zanata 3.9.3\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -92,9 +95,7 @@ msgstr "…"
 
 #: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:16
 msgid "The shortcut keys for turning input method on or off"
-msgstr ""
-"Sélection des raccourcis claviers pour activer ou désactiver les méthodes "
-"d'entrées"
+msgstr "Raccourcis claviers pour activer ou désactiver les méthodes d'entrées"
 
 #: ../setup/setup.ui.h:18
 msgid "Enable or disable:"
@@ -122,15 +123,15 @@ msgstr "Orientation de la liste des candidats :"
 
 #: ../setup/setup.ui.h:24
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "Permet de choisir l'affichage de la barre de langue d'ibus"
+msgstr "Permet de choisir l'affichage de la barre de langues d'ibus"
 
 #: ../setup/setup.ui.h:25
 msgid "Show property panel:"
-msgstr "Afficher le panneau de propriété :"
+msgstr "Afficher le panneau de propriétés :"
 
 #: ../setup/setup.ui.h:26
 msgid "Language panel position:"
-msgstr "Afficher la barre de langue :"
+msgstr "Afficher la barre de langues :"
 
 #: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:36
 msgid "Show icon on system tray"
@@ -138,7 +139,7 @@ msgstr "Afficher l'icône dans la boîte à miniatures"
 
 #: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:38
 msgid "Show input method name on language bar"
-msgstr "Afficher le nom de la méthode d'entrée sur la barre de langue"
+msgstr "Afficher le nom de la méthode d'entrée sur la barre de langues"
 
 #: ../setup/setup.ui.h:29
 msgid "Show input method's name on language bar when check the checkbox"
@@ -386,7 +387,7 @@ msgstr "Désactiver les raccourcis clavier"
 
 #: ../data/ibus.schemas.in.h:21
 msgid "The shortcut keys for turning input method off"
-msgstr "Les raccourcis clavier pour la méthode d'entrée sont désactivés"
+msgstr "Les raccourcis clavier pour désactiver  la méthode d'entrée"
 
 #: ../data/ibus.schemas.in.h:22
 msgid "Next engine shortcut keys"
@@ -414,12 +415,12 @@ msgid ""
 "The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
 "show"
 msgstr ""
-"Comportement du panneau de propriété. 0 = Ne pas afficher, 1 = Cacher "
+"Comportement du panneau de propriétés. 0 = Ne pas afficher, 1 = Cacher "
 "automatiquement, 2 = Toujours afficher"
 
 #: ../data/ibus.schemas.in.h:28
 msgid "Language panel position"
-msgstr "Position de la barre"
+msgstr "Position de la barre de langues"
 
 #: ../data/ibus.schemas.in.h:29
 msgid ""
@@ -444,15 +445,15 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:32
 msgid "The milliseconds to show property panel"
-msgstr "Millisecondes pour afficher le panneau de propriété"
+msgstr "Temps en millisecondes pour afficher le panneau de propriétés"
 
 #: ../data/ibus.schemas.in.h:33
 msgid ""
 "The milliseconds to show property panel after focus-in or properties are "
 "changed."
 msgstr ""
-"Millisecondes pour afficher le panneau de propriété après prise du focus ou "
-"changement des propriétés."
+"Temps en millisecondes pour afficher le panneau de propriétés après prise du "
+"focus ou changement des propriétés."
 
 #: ../data/ibus.schemas.in.h:34
 msgid "Orientation of lookup table"
@@ -481,19 +482,20 @@ msgid ""
 "to 255 or precentage values in the range 0% to 100%, and 'a' is a floating "
 "point value in the range 0 to 1 of the alpha."
 msgstr ""
-"L'icône XKB affiche la chaîne de caractère de la disposition et cette chaîne "
-"de caractère est affichée par sa valeur RGBA. Cette valeur RGBA peut être 1. "
-"le nom d'une couleur X11, 2. une valeur héxadécimale sous la forme '#rrggbb' "
-"où 'r', 'g', et 'b' sont des chiffres héxadécimaux correspondant "
-"respectivement au rouge, vert et bleu, 3. une couleur RGB sous la forme "
-"'rgb(r,g,b)' ou 4. une couleur RGBA sous la forme 'rgba(r,g,b,a)' où 'r', "
-"'g' et 'b' sont soit des entiers compris entre 0 et 255, soit un pourcentage "
-"compris entre 0 et 100 %, et 'a', la valeur alpha, étant un nombre à virgule "
-"flottante compris entre 0 et 1."
+"L'icône XKB affiche la chaîne de caractères de la disposition et cette "
+"chaîne de caractères est affichée avec sa valeur RGBA. Cette valeur RGBA "
+"peut être 1. le nom d'une couleur X11, 2. une valeur hexadécimale sous la "
+"forme '#rrggbb' où 'r', 'g', et 'b' sont des chiffres hexadécimaux "
+"correspondant respectivement au rouge, vert et bleu, 3. une couleur RGB sous "
+"la forme 'rgb(r,g,b)' ou 4. une couleur RGBA sous la forme 'rgba(r,g,b,a)' "
+"où 'r', 'g' et 'b' sont soit des entiers compris entre 0 et 255, soit un "
+"pourcentage compris entre 0 et 100 %, et 'a', la valeur alpha, est un nombre "
+"à virgule flottante compris entre 0 et 1."
 
 #: ../data/ibus.schemas.in.h:42
 msgid "The milliseconds to show the panel icon for a property"
 msgstr ""
+"Temps en millisecondes pour afficher l'icône de panneau d'une propriété"
 
 #: ../data/ibus.schemas.in.h:43
 msgid ""
@@ -502,6 +504,10 @@ msgid ""
 "of icon-prop-key in IBusEngineDesc. If the value is 0, no delay time and the "
 "property icon is shown immediately."
 msgstr ""
+"Millisecondes d’affichage de l’icône du panneau d’une propriété lorsqu’un "
+"moteur est chargé si la propriété est renseignée par a valeur de icon-prop-"
+"key dans IBusEngineDesc. Si la valeur est 0, sans délai et l’icône de "
+"propriété est montrée immédiatement."
 
 #: ../data/ibus.schemas.in.h:46
 msgid "Use custom font"
@@ -509,7 +515,7 @@ msgstr "Utiliser une police personnalisée :"
 
 #: ../data/ibus.schemas.in.h:47
 msgid "Use custom font name for language panel"
-msgstr "Utiliser une police personnalisée pour la barre de langue"
+msgstr "Utiliser une police personnalisée pour la barre de langues"
 
 #: ../data/ibus.schemas.in.h:48
 msgid "Custom font"
@@ -517,7 +523,7 @@ msgstr "Police personnalisée"
 
 #: ../data/ibus.schemas.in.h:49
 msgid "Custom font name for language panel"
-msgstr "Police personnalisée pour le panneau de langue"
+msgstr "Police personnalisée pour la barre de langues"
 
 #: ../data/ibus.schemas.in.h:50
 msgid "Embed Preedit Text"
@@ -591,7 +597,7 @@ msgstr "A_nnuler"
 
 #: ../setup/enginedialog.py:205
 msgid "More…"
-msgstr ""
+msgstr "Plus..."
 
 #: ../setup/enginetreeview.py:96
 msgid "Kbd"
@@ -672,12 +678,12 @@ msgstr "Le démon IBus n'a pas pu être démarré en %d secondes"
 #: ../setup/main.py:416
 #, python-format
 msgid "Select keyboard shortcut for %s"
-msgstr "Raccourci clavier pour %s"
+msgstr "Sélection du raccourci clavier pour %s"
 
 #. Translators: Title of the window
 #: ../setup/main.py:418
 msgid "switching input methods"
-msgstr "Changer de méthodes d'entrée"
+msgstr "Changement de méthode d'entrée"
 
 #: ../tools/main.vala:48
 msgid "List engine name only"
@@ -685,7 +691,7 @@ msgstr "Ne lister que les noms des moteurs"
 
 #: ../tools/main.vala:64 ../tools/main.vala:185 ../tools/main.vala:195
 msgid "Can't connect to IBus.\n"
-msgstr "Connexion impossible à IBus.\n"
+msgstr "Connexion à IBus impossible.\n"
 
 #: ../tools/main.vala:90
 #, c-format
@@ -798,7 +804,7 @@ msgstr "%s n'est pas une commande connue !\n"
 
 #: ../ui/gtk3/panel.vala:235 ../ui/gtk3/panel.vala:266
 msgid "IBus Panel"
-msgstr ""
+msgstr "Panneau IBUS"
 
 #: ../ui/gtk3/panel.vala:731
 msgid "IBus Update"

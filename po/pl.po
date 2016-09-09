@@ -1,11 +1,12 @@
-# translation of pl.po to Polish
 # Polish translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
 # Piotr Drąg <piotrdrag@gmail.com>, 2011-2014
 # Piotr Drąg <piotrdrag@gmail.com>, 2015. #zanata
+# Piotr Drąg <piotrdrag@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
@@ -14,13 +15,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-07-13 01:25-0400\n"
+"PO-Revision-Date: 2016-08-31 10:43-0400\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
 "Language: pl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.6.2\n"
+"X-Generator: Zanata 3.9.5\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -86,7 +87,7 @@ msgstr "Poprzednia metoda wprowadzania:"
 
 #: ../setup/setup.ui.h:16
 msgid "..."
-msgstr "..."
+msgstr "…"
 
 #: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:16
 msgid "The shortcut keys for turning input method on or off"
@@ -110,7 +111,7 @@ msgstr "<b>Skróty klawiszowe</b>"
 
 #: ../setup/setup.ui.h:22
 msgid "Set the orientation of candidates in lookup table"
-msgstr "Ustawienie orientacji kandydatów w tablicy wyszukiwania"
+msgstr "Ustawienie orientacji kandydatów w tablicy wyszukiwania"
 
 #: ../setup/setup.ui.h:23
 msgid "Candidates orientation:"
@@ -130,34 +131,34 @@ msgstr "Pozycja panelu języków:"
 
 #: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:36
 msgid "Show icon on system tray"
-msgstr "Wyświetlanie ikony w obszarze powiadamiania"
+msgstr "Ikona w obszarze powiadamiania"
 
 #: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:38
 msgid "Show input method name on language bar"
-msgstr "Wyświetlanie nazwy metody wprowadzania na panelu języków"
+msgstr "Nazwa metody wprowadzania na panelu języków"
 
 #: ../setup/setup.ui.h:29
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
-"Wyświetlanie nazwy metody wprowadzania na panelu języków podczas zaznaczania "
-"pola wyboru"
+"Nazwa metody wprowadzania na panelu języków podczas zaznaczania pola wyboru"
 
 #: ../setup/setup.ui.h:30
 msgid "Embed preedit text in application window"
-msgstr "Osadzanie wcześniej wprowadzonego tekstu metody wejścia"
+msgstr "Osadzanie wcześniej wprowadzonego tekstu metody wprowadzania"
 
 #: ../setup/setup.ui.h:31
 msgid "Embed the preedit text of input method in the application window"
 msgstr ""
-"Osadzanie wcześniej wprowadzonego tekstu metody wejścia w oknie aplikacji"
+"Osadzanie wcześniej wprowadzonego tekstu metody wprowadzania w oknie "
+"aplikacji"
 
 #: ../setup/setup.ui.h:32
 msgid "Use custom font:"
-msgstr "Użycie własnej czcionki:"
+msgstr "Własna czcionka:"
 
 #: ../setup/setup.ui.h:33
 msgid "<b>Font and Style</b>"
-msgstr "<b>Czcionka i styl</b>"
+msgstr "<b>Czcionka i styl</b>"
 
 #: ../setup/setup.ui.h:34
 msgid "General"
@@ -185,31 +186,31 @@ msgstr ""
 
 #: ../setup/setup.ui.h:39
 msgid "_Up"
-msgstr "W _górę"
+msgstr "W _górę"
 
 #: ../setup/setup.ui.h:40
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
-"Przeniesienie w górę zaznaczonej metody wprowadzania we włączonych metodach "
+"Przeniesienie w górę zaznaczonej metody wprowadzania we włączonych metodach "
 "wprowadzania"
 
 #: ../setup/setup.ui.h:41
 msgid "_Down"
-msgstr "W _dół"
+msgstr "W _dół"
 
 #: ../setup/setup.ui.h:42
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
-"Przeniesienie w dół zaznaczonej metody wprowadzania we włączonych metodach "
+"Przeniesienie w dół zaznaczonej metody wprowadzania we włączonych metodach "
 "wprowadzania"
 
 #: ../setup/setup.ui.h:43
 msgid "_About"
-msgstr "_O programie"
+msgstr "_O programie"
 
 #: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
-msgstr "Wyświetlanie informacji o wybranej metodzie wprowadzania"
+msgstr "Wyświetlanie informacji o wybranej metodzie wprowadzania"
 
 #: ../setup/setup.ui.h:45
 msgid "_Preferences"
@@ -225,7 +226,7 @@ msgid ""
 "ones in the above list by pressing the keyboard shortcut keys or clicking "
 "the panel icon.</i></small>"
 msgstr ""
-"<small><i>Aktywna metoda wprowadzania może być przełączana z wybranych metod "
+"<small><i>Aktywna metoda wprowadzania może być przełączana z wybranych metod "
 "na powyższej liście za pomocą skrótu klawiszowego lub kliknięcia ikony na "
 "panelu.</i></small>"
 
@@ -285,7 +286,7 @@ msgstr "<b>Uruchomienie</b>"
 #: ../setup/setup.ui.h:64 ../setup/engineabout.py:37
 #: ../ui/gtk3/panel.vala:1113
 msgid "About"
-msgstr "O programie"
+msgstr "O programie"
 
 #: ../setup/setup.ui.h:65 ../setup/engineabout.py:40
 msgid "_Close"
@@ -311,7 +312,7 @@ msgstr "Kolejność zapisanych mechanizmów na liście metod wprowadzania"
 
 #: ../data/ibus.schemas.in.h:7
 msgid "Popup delay milliseconds for IME switcher window"
-msgstr "Opóźnienie wyświetlenia okna przełącznika IME w milisekundach"
+msgstr "Opóźnienie wyświetlenia okna przełącznika IME w milisekundach"
 
 #: ../data/ibus.schemas.in.h:8
 msgid ""
@@ -319,9 +320,9 @@ msgid ""
 " 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do not "
 "show the window and switch prev/next engines."
 msgstr ""
-"Ustawia opóźnienie wyświetlenia okna przełącznika IME w milisekundach. "
+"Ustawia opóźnienie wyświetlenia okna przełącznika IME w milisekundach. "
 "Domyślnie wynosi 400. 0 = natychmiastowe wyświetlanie okna. 0 &lt; "
-"milisekundy opóźnienia. 0 &gt; Bez wyświetlania okna i przełączania na "
+"milisekundy opóźnienia. 0 &gt; Bez wyświetlania okna i przełączania na "
 "następny/poprzedni mechanizm."
 
 #: ../data/ibus.schemas.in.h:9
@@ -334,15 +335,16 @@ msgid ""
 "version of the previous installed ibus and one of the current ibus."
 msgstr ""
 "Zapisany numer wersji będzie używany do sprawdzania różnicy między wersją "
-"poprzednio zainstalowanego IBus a obecnego."
+"poprzednio zainstalowanego IBus a obecnego."
 
 #: ../data/ibus.schemas.in.h:11
 msgid "Latin layouts which have no ASCII"
-msgstr "Układy łacińskie nie posiadające ASCII"
+msgstr "Układy łacińskie nieposiadające ASCII"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "US layout is appended to the latin layouts. variant can be omitted."
-msgstr "Układ US jest dołączany do układów łacińskich. Można pominąć variant."
+msgstr ""
+"Układ US jest dołączany do układów łacińskich. Można pominąć „variant”."
 
 #: ../data/ibus.schemas.in.h:13
 msgid "Use xmodmap"
@@ -361,7 +363,7 @@ msgstr "Klawisze skrótów przełącznika"
 
 #: ../data/ibus.schemas.in.h:17
 msgid "Trigger shortcut keys for gtk_accelerator_parse"
-msgstr "Klawisz skrótu dla gtk_accelerator_parse"
+msgstr "Klawisz skrótu dla „gtk_accelerator_parse”"
 
 #: ../data/ibus.schemas.in.h:18
 msgid "Enable shortcut keys"
@@ -431,9 +433,9 @@ msgid ""
 "If true, the panel follows the input cursor in case the panel is always "
 "shown. If false, the panel is shown at a fixed location."
 msgstr ""
-"Jeśli jest ustawione na \"true\", to panel podążą za kursorem wprowadzania, "
-"kiedy panel jest zawsze wyświetlany. Jeśli jest ustawione na \"false\", to "
-"panel jest wyświetlany w stałym położeniu."
+"Jeśli jest ustawione na wartość „true”, to panel podążą za kursorem "
+"wprowadzania, kiedy panel jest zawsze wyświetlany. Jeśli jest ustawione na "
+"wartość „false”, to panel jest wyświetlany w stałym położeniu."
 
 #: ../data/ibus.schemas.in.h:32
 msgid "The milliseconds to show property panel"
@@ -475,13 +477,13 @@ msgid ""
 "point value in the range 0 to 1 of the alpha."
 msgstr ""
 "Ikona XKB wyświetla ciąg układu, który jest wyświetlany za pomocą wartości "
-"RGBA. Wartość RGBA może wynosić 1. nazwę kolory z X11, 2. wartość "
-"szesnastkową w formie \"#rrggbb\", gdzie \"r\", \"g\" i \"b\" są cyframi "
-"szesnastkowymi koloru czerwonego, zielonego i niebieskiego, 3. kolor RGB w "
-"formie \"rgb(r,g,b)\" lub 4. kolor RGBA w formie \"rgba(r,g,b,a)\", gdzie "
-"\"r\", \"g\" i \"b\" są liczbami całkowitymi w zakresie od 0 do 255 lub "
-"wartościami procentowymi w zakresie od 0% do 100%, a \"a\" jest wartością "
-"zmiennoprzecinkową w zakresie od 0 do 1 alfy."
+"RGBA. Wartość RGBA może wynosić 1. nazwę kolory z X11, 2. wartość "
+"szesnastkową w formie „#rrggbb”, gdzie „r”, „g” i „b” są cyframi "
+"szesnastkowymi koloru czerwonego, zielonego i niebieskiego, 3. kolor RGB "
+"w formie „rgb(r,g,b)” lub 4. kolor RGBA w formie „rgba(r,g,b,a)”, gdzie „r”, "
+"„g” i „b” są liczbami całkowitymi w zakresie od 0 do 255 lub wartościami "
+"procentowymi w zakresie od 0% do 100%, a „a” jest wartością "
+"zmiennoprzecinkową w zakresie od 0 do 1 alfy."
 
 #: ../data/ibus.schemas.in.h:42
 msgid "The milliseconds to show the panel icon for a property"
@@ -494,10 +496,10 @@ msgid ""
 "of icon-prop-key in IBusEngineDesc. If the value is 0, no delay time and the "
 "property icon is shown immediately."
 msgstr ""
-"Milisekundy do wyświetlenia ikony panelu z ikony mechanizmu do ikony "
+"Milisekundy do wyświetlenia ikony panelu z ikony mechanizmu do ikony "
 "właściwości, kiedy mechanizmy są przełączane, jeśli właściwość została "
-"podana za pomocą wartości \"icon-prop-key\" w IBusEngineDesc. Jeśli wartość "
-"wynosi 0, to nie będzie żadnego opóźnienia i ikona zostanie wyświetlona od "
+"podana za pomocą wartości „icon-prop-key” w IBusEngineDesc. Jeśli wartość "
+"wynosi 0, to nie będzie żadnego opóźnienia i ikona zostanie wyświetlona od "
 "razu."
 
 #: ../data/ibus.schemas.in.h:46
@@ -506,7 +508,7 @@ msgstr "Użycie własnej czcionki"
 
 #: ../data/ibus.schemas.in.h:47
 msgid "Use custom font name for language panel"
-msgstr "Nazwa własnej czcionki użytej w panelu języków"
+msgstr "Nazwa własnej czcionki użytej w panelu języków"
 
 #: ../data/ibus.schemas.in.h:48
 msgid "Custom font"
@@ -522,7 +524,7 @@ msgstr "Osadzanie wcześniej wprowadzonego tekstu"
 
 #: ../data/ibus.schemas.in.h:51
 msgid "Embed Preedit Text in Application Window"
-msgstr "Osadzanie wcześniej wprowadzonego tekstu w oknie aplikacji"
+msgstr "Osadzanie wcześniej wprowadzonego tekstu w oknie aplikacji"
 
 #: ../data/ibus.schemas.in.h:52
 msgid "Use global input method"
@@ -550,9 +552,8 @@ msgstr "Przedrostki kluczy DConf zatrzymujące konwersję nazw"
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr "Copyright © 2007-2010 Peng Huang\n"
+"Copyright © 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:158
 msgid "Other"
@@ -639,7 +640,7 @@ msgstr "_OK"
 #: ../setup/main.py:114 ../setup/main.py:439
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr ""
-"Użycie skrótu z klawiszem Shift do przełączania do poprzedniej metody "
+"Użycie skrótu z klawiszem Shift do przełączania do poprzedniej metody "
 "wprowadzania"
 
 #: ../setup/main.py:369
@@ -655,7 +656,7 @@ msgid ""
 "  export QT_IM_MODULE=ibus"
 msgstr ""
 "IBus został uruchomiony. Jeśli nie można używać IBus, należy dodać poniższe "
-"wiersze do pliku $HOME/.bashrc i zalogować się ponownie.\n"
+"wiersze do pliku $HOME/.bashrc i zalogować się ponownie.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -664,7 +665,7 @@ msgstr ""
 #: ../setup/main.py:404
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
-msgstr "Nie można uruchomić usługi IBus od %d sekund"
+msgstr "Nie można uruchomić usługi IBus od %d s"
 
 #: ../setup/main.py:416
 #, python-format
@@ -682,7 +683,7 @@ msgstr "Wyświetla tylko nazwę mechanizmu"
 
 #: ../tools/main.vala:64 ../tools/main.vala:185 ../tools/main.vala:195
 msgid "Can't connect to IBus.\n"
-msgstr "Nie można połączyć z IBus.\n"
+msgstr "Nie można połączyć z IBus.\n"
 
 #: ../tools/main.vala:90
 #, c-format
@@ -781,7 +782,7 @@ msgstr "Wyświetla tę informację"
 #, c-format
 msgid "Usage: %s COMMAND [OPTION...]\n"
 "\n"
-msgstr "Użycie: %s POLECENIE [OPCJA...]\n"
+msgstr "Użycie: %s POLECENIE [OPCJA…]\n"
 "\n"
 
 #: ../tools/main.vala:355
@@ -812,7 +813,7 @@ msgstr ""
 
 #: ../ui/gtk3/panel.vala:1090
 msgid "translator-credits"
-msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009-2014"
+msgstr "Piotr Drąg <piotrdrag@gmail.com>, 2009-2016"
 
 #: ../ui/gtk3/panel.vala:1109
 msgid "Preferences"
