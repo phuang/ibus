@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -212,6 +212,15 @@ public class CandidatePanel : Gtk.Box{
     }
 
     private void update() {
+        /* Do not call gtk_window_resize() in
+         * GtkWidgetClass->get_preferred_width()
+         * because the following warning is shown in GTK 3.20:
+         * "Allocating size to GtkWindow %x without calling
+         * gtk_widget_get_preferred_width/height(). How does the code
+         * know the size to allocate?"
+         * in gtk_widget_size_allocate_with_baseline() */
+        m_toplevel.resize(1, 1);
+
         if (m_candidate_area.get_visible() ||
             m_preedit_label.get_visible() ||
             m_aux_label.get_visible())
@@ -224,16 +233,6 @@ public class CandidatePanel : Gtk.Box{
             m_hseparator.show();
         else
             m_hseparator.hide();
-    }
-
-    public override void get_preferred_width(out int minimum_width, out int natural_width) {
-        base.get_preferred_width(out minimum_width, out natural_width);
-        m_toplevel.resize(1, 1);
-    }
-
-    public override void get_preferred_height(out int minimum_width, out int natural_width) {
-        base.get_preferred_height(out minimum_width, out natural_width);
-        m_toplevel.resize(1, 1);
     }
 
     private void create_ui() {

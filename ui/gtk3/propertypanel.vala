@@ -244,18 +244,6 @@ public class PropertyPanel : Gtk.Box {
         m_follow_input_cursor_when_always_shown = is_follow;
     }
 
-    public override void get_preferred_width(out int minimum_width,
-                                             out int natural_width) {
-        base.get_preferred_width(out minimum_width, out natural_width);
-        m_toplevel.resize(1, 1);
-    }
-
-    public override void get_preferred_height(out int minimum_width,
-                                              out int natural_width) {
-        base.get_preferred_height(out minimum_width, out natural_width);
-        m_toplevel.resize(1, 1);
-    }
-
     private void create_menu_items() {
         int i = 0;
         while (true) {
@@ -399,6 +387,15 @@ public class PropertyPanel : Gtk.Box {
     }
 
     private void show_with_auto_hide_timer() {
+        /* Do not call gtk_window_resize() in
+         * GtkWidgetClass->get_preferred_width()
+         * because the following warning is shown in GTK 3.20:
+         * "Allocating size to GtkWindow %x without calling
+         * gtk_widget_get_preferred_width/height(). How does the code
+         * know the size to allocate?"
+         * in gtk_widget_size_allocate_with_baseline() */
+        m_toplevel.resize(1, 1);
+
         if (m_items.length == 0) {
             /* Do not blink the panel with focus-in in case the panel
              * is always shown. */
