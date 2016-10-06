@@ -1018,6 +1018,10 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         }
         else if (is_escape) {
             ibus_engine_simple_reset (engine);
+            if (priv->lookup_table != NULL && priv->lookup_table_visible) {
+                priv->lookup_table_visible = FALSE;
+                ibus_engine_simple_update_lookup_and_aux_table (simple);
+            }
             return TRUE;
         }
 
@@ -1165,6 +1169,10 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         }
         else if (is_escape) {
             ibus_engine_simple_reset (engine);
+            if (priv->lookup_table != NULL && priv->lookup_table_visible) {
+                priv->lookup_table_visible = FALSE;
+                ibus_engine_simple_update_lookup_and_aux_table (simple);
+            }
             return TRUE;
         }
     } else {
@@ -1243,8 +1251,10 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
                         priv->lookup_table_visible = FALSE;
                         update_lookup_table = TRUE;
                     }
-                }
-                else if (check_emoji_table (simple, n_compose, -1)) {
+                } else if (check_emoji_table (simple, n_compose, -1)) {
+                    update_lookup_table = TRUE;
+                } else {
+                    priv->lookup_table_visible = FALSE;
                     update_lookup_table = TRUE;
                 }
             }
