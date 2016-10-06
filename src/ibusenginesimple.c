@@ -901,6 +901,66 @@ ibus_engine_simple_update_lookup_and_aux_table (IBusEngineSimple *simple)
 }
 
 static gboolean
+ibus_engine_simple_if_in_range_of_lookup_table (IBusEngineSimple *simple,
+                                                guint             keyval)
+{
+    IBusEngineSimplePrivate *priv;
+    int index, candidates, cursor_pos, cursor_in_page, page_size;
+
+    priv = simple->priv;
+
+    if (priv->lookup_table == NULL || !priv->lookup_table_visible)
+        return FALSE;
+    if (keyval < IBUS_KEY_0 || keyval > IBUS_KEY_9)
+        return FALSE;
+    if (keyval == IBUS_KEY_0)
+        keyval = IBUS_KEY_9 + 1;
+    index = keyval - IBUS_KEY_1;
+    candidates =
+            ibus_lookup_table_get_number_of_candidates (priv->lookup_table);
+    cursor_pos = ibus_lookup_table_get_cursor_pos (priv->lookup_table);
+    cursor_in_page = ibus_lookup_table_get_cursor_in_page (priv->lookup_table);
+    page_size = ibus_lookup_table_get_page_size (priv->lookup_table);
+    if (index > ((candidates - (cursor_pos - cursor_in_page)) % page_size))
+        return FALSE;
+    return TRUE;
+}
+
+static void
+ibus_engine_simple_set_number_on_lookup_table (IBusEngineSimple *simple,
+                                               guint             keyval,
+                                               int               n_compose)
+{
+    IBusEngineSimplePrivate *priv;
+    int index, cursor_pos, cursor_in_page, real_index;
+
+    priv = simple->priv;
+
+    if (keyval == IBUS_KEY_0)
+        keyval = IBUS_KEY_9 + 1;
+    index = keyval - IBUS_KEY_1;
+    cursor_pos = ibus_lookup_table_get_cursor_pos (priv->lookup_table);
+    cursor_in_page = ibus_lookup_table_get_cursor_in_page (priv->lookup_table);
+    real_index = cursor_pos - cursor_in_page + index;
+
+    ibus_lookup_table_set_cursor_pos (priv->lookup_table, real_index);
+    check_emoji_table (simple, n_compose, real_index);
+    priv->lookup_table_visible = FALSE;
+    ibus_engine_simple_update_lookup_and_aux_table (simple);
+
+    if (priv->tentative_emoji && *priv->tentative_emoji) {
+        ibus_engine_simple_commit_str (simple, priv->tentative_emoji);
+        priv->compose_buffer[0] = 0;
+    } else {
+        g_clear_pointer (&priv->tentative_emoji, g_free);
+        priv->in_emoji_sequence = FALSE;
+        priv->compose_buffer[0] = 0;
+    }
+
+    ibus_engine_simple_update_preedit_text (simple);
+}
+
+static gboolean
 ibus_engine_simple_process_key_event (IBusEngine *engine,
                                       guint       keyval,
                                       guint       keycode,
@@ -1162,7 +1222,15 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         }
     } else if (priv->in_emoji_sequence) {
         if (printable_keyval) {
-            priv->compose_buffer[n_compose++] = printable_keyval;
+            if (!ibus_engine_simple_if_in_range_of_lookup_table (simple,
+                        printable_keyval)) {
+                /* digit keyval can be an index on the current lookup table
+                 * but it also can be a part of an emoji annotation.
+                 * E.g. "1" and "2" are  indexes of emoji "1".
+                 * "100" is an annotation of the emoji "100".
+                 */
+                priv->compose_buffer[n_compose++] = printable_keyval;
+            }
         }
         else if (is_space && (modifiers & IBUS_SHIFT_MASK)) {
             priv->compose_buffer[n_compose++] = IBUS_KEY_space;
@@ -1243,7 +1311,15 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             }
 
             if (!update_lookup_table) {
-                if (is_hex_end && !is_space) {
+                if (ibus_engine_simple_if_in_range_of_lookup_table (simple,
+                            keyval)) {
+                        ibus_engine_simple_set_number_on_lookup_table (
+                                simple,
+                                keyval,
+                                n_compose);
+                        return TRUE;
+                }
+                else if (is_hex_end && !is_space) {
                     if (priv->lookup_table) {
                         int index = (int) ibus_lookup_table_get_cursor_pos (
                                 priv->lookup_table);
