@@ -107,6 +107,13 @@ static gboolean ibus_engine_simple_process_key_event
                                                  guint               keyval,
                                                  guint               keycode,
                                                  guint               modifiers);
+static void     ibus_engine_simple_page_down   (IBusEngine          *engine);
+static void     ibus_engine_simple_page_up     (IBusEngine          *engine);
+static void     ibus_engine_simple_candidate_clicked
+                                               (IBusEngine          *engine,
+                                                guint                index,
+                                                guint                button,
+                                                guint                state);
 static void     ibus_engine_simple_commit_char (IBusEngineSimple    *simple,
                                                 gunichar             ch);
 static void     ibus_engine_simple_commit_str  (IBusEngineSimple    *simple,
@@ -128,6 +135,10 @@ ibus_engine_simple_class_init (IBusEngineSimpleClass *class)
     engine_class->reset     = ibus_engine_simple_reset;
     engine_class->process_key_event
                             = ibus_engine_simple_process_key_event;
+    engine_class->page_down = ibus_engine_simple_page_down;
+    engine_class->page_up   = ibus_engine_simple_page_up;
+    engine_class->candidate_clicked
+                            = ibus_engine_simple_candidate_clicked;
 
     g_type_class_add_private (class, sizeof (IBusEngineSimplePrivate));
 }
@@ -1393,6 +1404,50 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
     /* The current compose_buffer doesn't match anything */
     return no_sequence_matches (simple, n_compose, keyval, keycode, modifiers);
+}
+
+static void
+ibus_engine_simple_page_down (IBusEngine *engine)
+{
+    IBusEngineSimple *simple = (IBusEngineSimple *)engine;
+    IBusEngineSimplePrivate *priv = simple->priv;
+    if (priv->lookup_table == NULL)
+        return;
+    ibus_lookup_table_page_down (priv->lookup_table);
+    ibus_engine_simple_update_lookup_and_aux_table (simple);
+}
+
+static void
+ibus_engine_simple_page_up (IBusEngine *engine)
+{
+    IBusEngineSimple *simple = (IBusEngineSimple *)engine;
+    IBusEngineSimplePrivate *priv = simple->priv;
+    if (priv->lookup_table == NULL)
+        return;
+    ibus_lookup_table_page_up (priv->lookup_table);
+    ibus_engine_simple_update_lookup_and_aux_table (simple);
+}
+
+static void
+ibus_engine_simple_candidate_clicked (IBusEngine *engine,
+                                      guint       index,
+                                      guint       button,
+                                      guint       state)
+{
+    IBusEngineSimple *simple = (IBusEngineSimple *)engine;
+    IBusEngineSimplePrivate *priv = simple->priv;
+    guint keyval;
+    gint n_compose = 0;
+
+    if (priv->lookup_table == NULL || !priv->lookup_table_visible)
+        return;
+    if (index == 9)
+        keyval = IBUS_KEY_0;
+    else
+        keyval = IBUS_KEY_1 + index;
+    while (priv->compose_buffer[n_compose] != 0)
+        n_compose++;
+    ibus_engine_simple_set_number_on_lookup_table (simple, keyval, n_compose);
 }
 
 void
