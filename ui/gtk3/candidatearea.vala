@@ -61,6 +61,18 @@ class CandidateArea : Gtk.Box {
         set_vertical(vertical, true);
     }
 
+    public bool candidate_scrolled(Gdk.EventScroll event) {
+        switch (event.direction) {
+        case Gdk.ScrollDirection.UP:
+            cursor_up();
+            break;
+        case Gdk.ScrollDirection.DOWN:
+            cursor_down();
+            break;
+        }
+        return true;
+    }
+
     public bool get_vertical() {
         return m_vertical;
     }
@@ -167,9 +179,17 @@ class CandidateArea : Gtk.Box {
         next_button.set_relief(Gtk.ReliefStyle.NONE);
 
         if (m_vertical) {
+            Gtk.EventBox container_ebox = new Gtk.EventBox();
+            container_ebox.add_events(Gdk.EventMask.SCROLL_MASK);
+            container_ebox.scroll_event.connect(candidate_scrolled);
+            add(container_ebox);
+
+            Gtk.Box vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            container_ebox.add(vbox);
+
             // Add Candidates
             Gtk.Box candidates_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            pack_start(candidates_hbox, false, false, 0);
+            vbox.pack_start(candidates_hbox, false, false, 0);
             Gtk.Box labels_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
             labels_vbox.set_homogeneous(true);
             Gtk.Box candidates_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -179,7 +199,7 @@ class CandidateArea : Gtk.Box {
             candidates_hbox.pack_start(candidates_vbox, true, true, 4);
 
             // Add HSeparator
-            pack_start(new HSeparator(), false, false, 0);
+            vbox.pack_start(new HSeparator(), false, false, 0);
 
             // Add buttons
             Gtk.Box buttons_hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -188,7 +208,7 @@ class CandidateArea : Gtk.Box {
             buttons_hbox.pack_start(state_label, true, true, 0);
             buttons_hbox.pack_start(prev_button, false, false, 0);
             buttons_hbox.pack_start(next_button, false, false, 0);
-            pack_start(buttons_hbox, false, false, 0);
+            vbox.pack_start(buttons_hbox, false, false, 0);
 
             m_labels = {};
             m_candidates = {};
@@ -234,8 +254,13 @@ class CandidateArea : Gtk.Box {
                 m_widgets += candidate_ebox;
             }
         } else {
+            Gtk.EventBox container_ebox = new Gtk.EventBox();
+            container_ebox.add_events(Gdk.EventMask.SCROLL_MASK);
+            container_ebox.scroll_event.connect(candidate_scrolled);
+            add(container_ebox);
+
             Gtk.Box hbox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            add(hbox);
+            container_ebox.add(hbox);
 
             m_labels = {};
             m_candidates = {};
