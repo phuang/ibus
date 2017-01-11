@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2016 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -538,26 +538,33 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        string font_name = m_settings_panel.get_string("custom-font");
+        string custom_font = m_settings_panel.get_string("custom-font");
 
-        if (font_name == null) {
+        if (custom_font == null) {
             warning("No config panel:custom-font.");
             return;
         }
 
-        string data_format = "label { font: %s; }";
+        Pango.FontDescription font_desc =
+                Pango.FontDescription.from_string(custom_font);
+        string font_family = font_desc.get_family();
+        int font_size = font_desc.get_size() / Pango.SCALE;
+        string data;
+
         if (Gtk.MAJOR_VERSION < 3 ||
             (Gtk.MAJOR_VERSION == 3 && Gtk.MINOR_VERSION < 20)) {
-            data_format = "GtkLabel { font: %s; }";
+            data = "GtkLabel { font: %s; }".printf(custom_font);
+        } else {
+            data = "label { font-family: %s; font-size: %dpt; }"
+                           .printf(font_family, font_size);
         }
 
-        string data = data_format.printf(font_name);
         m_css_provider = new Gtk.CssProvider();
 
         try {
             m_css_provider.load_from_data(data, -1);
         } catch (GLib.Error e) {
-            warning("Failed css_provider_from_data: %s: %s", font_name,
+            warning("Failed css_provider_from_data: %s: %s", custom_font,
                                                              e.message);
             return;
         }
