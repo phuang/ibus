@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2014-2016 Red Hat, Inc.
+ * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2014-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1187,7 +1187,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     }
 
     /* Check for hex sequence start */
-    if (!priv->in_hex_sequence && have_hex_mods && is_hex_start) {
+    if (!priv->in_hex_sequence && !priv->in_emoji_sequence &&
+        have_hex_mods && is_hex_start) {
         priv->compose_buffer[0] = 0;
         priv->in_hex_sequence = TRUE;
         priv->in_emoji_sequence = FALSE;
@@ -1200,7 +1201,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         ibus_engine_simple_update_preedit_text (simple);
 
         return TRUE;
-    } else if (!priv->in_emoji_sequence && have_hex_mods && is_emoji_start) {
+    } else if (!priv->in_hex_sequence && !priv->in_emoji_sequence &&
+               have_hex_mods && is_emoji_start) {
         priv->compose_buffer[0] = 0;
         priv->in_hex_sequence = FALSE;
         priv->in_emoji_sequence = TRUE;
