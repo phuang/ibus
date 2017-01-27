@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,10 +30,9 @@ class CandidateArea : Gtk.Box {
     private IBus.Text[] m_ibus_candidates;
     private uint m_focus_candidate;
     private bool m_show_cursor;
-
-    private bool m_use_latest_css_format =
-            ((Gtk.MAJOR_VERSION > 3) ||
-             (Gtk.MAJOR_VERSION == 3) && (Gtk.MINOR_VERSION >= 20));
+    Gtk.StyleContext m_style_context;
+    private Gdk.RGBA *m_selected_fg_color = null;
+    private Gdk.RGBA *m_selected_bg_color = null;
 
     private const string LABELS[] = {
         "1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.",
@@ -59,6 +58,38 @@ class CandidateArea : Gtk.Box {
     public CandidateArea(bool vertical) {
         GLib.Object();
         set_vertical(vertical, true);
+
+        /* Use the color of Gtk.TextView instead of Gtk.Label
+         * because the selected label "color" is not configured
+         * in "Adwaita" theme and the selected label "background-color"
+         * is not configured in "Maia" theme.
+         * https://github.com/ibus/ibus/issues/1871
+         */
+        Gtk.WidgetPath widget_path = new Gtk.WidgetPath();
+        widget_path.append_type(typeof(Gtk.TextView));
+        m_style_context = new Gtk.StyleContext();
+        m_style_context.set_path(widget_path);
+        m_style_context.add_class(Gtk.STYLE_CLASS_VIEW);
+
+        /* "-gtk-secondary-caret-color" value is different
+         * if the parent widget is set in "Menta" theme.
+         */
+        m_style_context.set_parent(get_style_context());
+
+        get_selected_color();
+
+        m_style_context.changed.connect(() => { get_selected_color(); });
+    }
+
+    ~CandidateArea() {
+        if (m_selected_bg_color != null) {
+            m_selected_bg_color.free();
+            m_selected_bg_color = null;
+        }
+        if (m_selected_bg_color != null) {
+            m_selected_bg_color.free();
+            m_selected_bg_color = null;
+        }
     }
 
     public bool candidate_scrolled(Gdk.EventScroll event) {
@@ -118,27 +149,18 @@ class CandidateArea : Gtk.Box {
             if (i < candidates.length) {
                 Pango.AttrList attrs = get_pango_attr_list_from_ibus_text(candidates[i]);
                 if (i == focus_candidate && show_cursor) {
-                    Gtk.StyleContext context = m_candidates[i].get_style_context();
-                    Gdk.RGBA *color = null;
-                    context.get(Gtk.StateFlags.SELECTED, "color", out color);
                     Pango.Attribute pango_attr = Pango.attr_foreground_new(
-                            (uint16)(color.red * uint16.MAX),
-                            (uint16)(color.green * uint16.MAX),
-                            (uint16)(color.blue * uint16.MAX));
+                            (uint16)(m_selected_fg_color.red * uint16.MAX),
+                            (uint16)(m_selected_fg_color.green * uint16.MAX),
+                            (uint16)(m_selected_fg_color.blue * uint16.MAX));
                     pango_attr.start_index = 0;
                     pango_attr.end_index = candidates[i].get_text().length;
                     attrs.insert((owned)pango_attr);
 
-                    color = null;
-                    string bg_prop =
-                            m_use_latest_css_format
-                            ? "-gtk-secondary-caret-color"
-                            : "background-color";
-                    context.get(Gtk.StateFlags.SELECTED, bg_prop, out color);
                     pango_attr = Pango.attr_background_new(
-                            (uint16)(color.red * uint16.MAX),
-                            (uint16)(color.green * uint16.MAX),
-                            (uint16)(color.blue * uint16.MAX));
+                            (uint16)(m_selected_bg_color.red * uint16.MAX),
+                            (uint16)(m_selected_bg_color.green * uint16.MAX),
+                            (uint16)(m_selected_bg_color.blue * uint16.MAX));
                     pango_attr.start_index = 0;
                     pango_attr.end_index = candidates[i].get_text().length;
                     attrs.insert((owned)pango_attr);
@@ -156,6 +178,40 @@ class CandidateArea : Gtk.Box {
             } else {
                 m_widgets[i].set_visible(visible);
             }
+        }
+    }
+
+    private void get_selected_color() {
+        if (m_selected_fg_color != null) {
+            m_selected_fg_color.free();
+            m_selected_fg_color = null;
+        }
+        m_style_context.get(Gtk.StateFlags.SELECTED,
+                            "color",
+                            out m_selected_fg_color);
+
+        string bg_prop = "background-color";
+        Gdk.RGBA *normal_color = null;
+        if (m_selected_bg_color != null) {
+            m_selected_bg_color.free();
+            m_selected_bg_color = null;
+        }
+        m_style_context.get(Gtk.StateFlags.NORMAL,
+                            bg_prop,
+                            out normal_color);
+        m_style_context.get(Gtk.StateFlags.SELECTED,
+                            bg_prop,
+                            out m_selected_bg_color);
+        if (normal_color.red   == m_selected_bg_color.red &&
+            normal_color.green == m_selected_bg_color.green &&
+            normal_color.blue  == m_selected_bg_color.blue &&
+            normal_color.alpha == m_selected_bg_color.alpha) {
+            m_selected_bg_color.free();
+            m_selected_bg_color = null;
+            bg_prop = "-gtk-secondary-caret-color";
+            m_style_context.get(Gtk.StateFlags.SELECTED,
+                                bg_prop,
+                                out m_selected_bg_color);
         }
     }
 
