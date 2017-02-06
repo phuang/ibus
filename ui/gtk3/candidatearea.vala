@@ -213,6 +213,7 @@ class CandidateArea : Gtk.Box {
                                 bg_prop,
                                 out m_selected_bg_color);
         }
+        normal_color.free();
     }
 
     private void recreate_ui() {
