@@ -58,10 +58,11 @@ class Panel : IBus.PanelService {
             new GLib.HashTable<string, IBus.EngineDesc>(GLib.str_hash,
                                                         GLib.str_equal);
     private string m_current_context_path = "";
+    private string m_real_current_context_path = "";
     private bool m_use_global_engine = true;
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
-    private bool m_switcher_is_running = false;
+    private uint m_switcher_focus_set_engine_id;
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
     private GLib.Pid m_setup_pid = 0;
@@ -822,21 +823,27 @@ class Panel : IBus.PanelService {
     }
 
     private void set_engine(IBus.EngineDesc engine) {
+        if (m_property_icon_delay_time_id > 0) {
+            GLib.Source.remove(m_property_icon_delay_time_id);
+            m_property_icon_delay_time_id = 0;
+        }
+
         if (!m_bus.set_global_engine(engine.get_name())) {
             warning("Switch engine to %s failed.", engine.get_name());
             return;
         }
+        /* Engine.update_property() will be called with a time lag
+         * by another engine because of DBus delay so need to
+         * clear m_icon_prop_key here to avoid wrong panel icon in
+         * disabled m_use_global_engine.
+         */
+        m_icon_prop_key = "";
 
         // set xkb layout
         if (!m_use_system_keyboard_layout)
             m_xkblayout.set_layout(engine);
 
         engine_contexts_insert(engine);
-
-        if (m_property_icon_delay_time_id > 0) {
-            GLib.Source.remove(m_property_icon_delay_time_id);
-            m_property_icon_delay_time_id = 0;
-        }
     }
 
     private void switch_engine(int i, bool force = false) {
@@ -872,24 +879,24 @@ class Panel : IBus.PanelService {
         if (pressed && m_switcher_delay_time >= 0) {
             int i = revert ? m_engines.length - 1 : 1;
 
-            /* The flag of m_switcher_is_running avoids the following problem:
+            /* The flag of m_switcher.is_running avoids the following problem:
              *
              * When an IME is chosen on m_switcher, focus_in() is called
-             * for the root window. If an engine is set in focus_in()
+             * for the fake input context. If an engine is set in focus_in()
              * during running m_switcher when m_use_global_engine is false,
              * state_changed() is also called and m_engines[] is modified
              * in state_changed() and m_switcher.run() returns the index
              * for m_engines[] but m_engines[] was modified by state_changed()
              * and the index is not correct. */
-            m_switcher_is_running = true;
-            i = m_switcher.run(keyval, modifiers, event, m_engines, i);
-            m_switcher_is_running = false;
+            i = m_switcher.run(keyval, modifiers, event, m_engines, i,
+                               m_real_current_context_path);
 
             if (i < 0) {
                 debug("switch cancelled");
+            } else if (i == 0) {
+                debug("do not have to switch");
             } else {
-                GLib.assert(i < m_engines.length);
-                switch_engine(i);
+                this.switcher_focus_set_engine();
             }
         } else {
             int i = revert ? m_engines.length - 1 : 1;
@@ -1236,19 +1243,68 @@ class Panel : IBus.PanelService {
         m_property_panel.set_cursor_location(x, y, width, height);
     }
 
+    private bool switcher_focus_set_engine_real() {
+        IBus.EngineDesc? selected_engine = m_switcher.get_selected_engine();
+        string? prev_context_path = m_switcher.get_input_context_path();
+        if (selected_engine != null &&
+            prev_context_path != "" &&
+            prev_context_path == m_current_context_path) {
+            set_engine(selected_engine);
+            m_switcher.reset();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void switcher_focus_set_engine() {
+        IBus.EngineDesc? selected_engine = m_switcher.get_selected_engine();
+        string? prev_context_path = m_switcher.get_input_context_path();
+        if (selected_engine == null &&
+            prev_context_path != "" &&
+            m_switcher.is_running()) {
+            if (m_switcher_focus_set_engine_id > 0) {
+                GLib.Source.remove(m_switcher_focus_set_engine_id);
+            }
+            m_switcher_focus_set_engine_id = GLib.Timeout.add(100, () => {
+                // focus_in is comming before switcher returns
+                switcher_focus_set_engine_real();
+                if (m_switcher_focus_set_engine_id > 0) {
+                    GLib.Source.remove(m_switcher_focus_set_engine_id);
+                    m_switcher_focus_set_engine_id = -1;
+                }
+                return false;
+            });
+        } else {
+            if (switcher_focus_set_engine_real()) {
+                if (m_switcher_focus_set_engine_id > 0) {
+                    GLib.Source.remove(m_switcher_focus_set_engine_id);
+                    m_switcher_focus_set_engine_id = -1;
+                }
+            }
+        }
+    }
+
     public override void focus_in(string input_context_path) {
-        m_property_panel.focus_in();
+        m_current_context_path = input_context_path;
+
+        /* 'fake' input context is named as 
+         * '/org/freedesktop/IBus/InputContext_1' and always send in
+         * focus-out events by ibus-daemon for the global engine mode.
+         * Now ibus-daemon assumes to always use the global engine.
+         * But this event should not be used for modal dialogs
+         * such as Switcher.
+         */
+        if (!input_context_path.has_suffix("InputContext_1")) {
+            m_real_current_context_path = m_current_context_path;
+            m_property_panel.focus_in();
+            this.switcher_focus_set_engine();
+        }
 
         if (m_use_global_engine)
             return;
 
-        /* Do not change the order of m_engines during running switcher. */
-        if (m_switcher_is_running)
-            return;
-
-        m_current_context_path = input_context_path;
-
-        var engine = m_engine_contexts[m_current_context_path];
+        var engine = m_engine_contexts[input_context_path];
 
         if (engine == null) {
             /* If engine == null, need to call set_engine(m_engines[0])
@@ -1286,13 +1342,6 @@ class Panel : IBus.PanelService {
     }
 
     public override void focus_out(string input_context_path) {
-        if (m_use_global_engine)
-            return;
-
-        /* Do not change the order of m_engines during running switcher. */
-        if (m_switcher_is_running)
-            return;
-
         m_current_context_path = "";
     }
 
@@ -1357,7 +1406,7 @@ class Panel : IBus.PanelService {
 
     public override void state_changed() {
         /* Do not change the order of m_engines during running switcher. */
-        if (m_switcher_is_running)
+        if (m_switcher.is_running())
             return;
 
         if (m_icon_type == IconType.INDICATOR) {

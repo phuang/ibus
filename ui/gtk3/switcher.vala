@@ -3,6 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -81,8 +82,11 @@ class Switcher : Gtk.Window {
     private uint m_keyval;
     private uint m_modifiers;
     private Gdk.ModifierType m_primary_modifier;
+    private bool m_is_running = false;
+    private string m_input_context_path = "";
     private GLib.MainLoop m_loop;
-    private int m_result;
+    private int m_result = -1;
+    private IBus.EngineDesc? m_result_engine = null;
     private uint m_popup_delay_time = 0;
     private uint m_popup_delay_time_id = 0;
     private int m_root_x;
@@ -124,25 +128,29 @@ class Switcher : Gtk.Window {
         grab_focus();
     }
 
-    public int run(uint keyval,
-                   uint state,
-                   Gdk.Event event,
+    public int run(uint              keyval,
+                   uint              state,
+                   Gdk.Event         event,
                    IBus.EngineDesc[] engines,
-                   int index) {
+                   int               index,
+                   string            input_context_path) {
         assert (m_loop == null);
         assert (index < engines.length);
 
+        m_is_running = true;
         m_keyval = keyval;
         m_modifiers = state;
         m_primary_modifier =
             KeybindingManager.get_primary_modifier(
                 state & KeybindingManager.MODIFIER_FILTER);
+        m_selected_engine = m_result = index;
+        m_input_context_path = input_context_path;
+        m_result_engine = null;
 
         update_engines(engines);
         /* Let gtk recalculate the window size. */
         resize(1, 1);
 
-        m_selected_engine = index;
         m_label.set_text(m_buttons[index].longname);
         m_buttons[index].grab_focus();
 
@@ -226,6 +234,10 @@ class Switcher : Gtk.Window {
         // Make sure the switcher is hidden before returning from this function.
         while (Gtk.events_pending())
             Gtk.main_iteration ();
+
+        GLib.assert(m_result < m_engines.length);
+        m_result_engine = m_engines[m_result];
+        m_is_running = false;
 
         return m_result;
     }
@@ -456,5 +468,23 @@ class Switcher : Gtk.Window {
 
         m_xkb_languages.insert(name, language);
         return language;
+    }
+
+    public bool is_running() {
+        return m_is_running;
+    }
+
+    public string? get_input_context_path() {
+        return m_input_context_path;
+    }
+
+    public IBus.EngineDesc? get_selected_engine() {
+        return m_result_engine;
+    }
+
+    public void reset() {
+        m_input_context_path = "";
+        m_result = -1;
+        m_result_engine = null;
     }
 }
