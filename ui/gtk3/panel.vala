@@ -832,7 +832,7 @@ class Panel : IBus.PanelService {
             warning("Switch engine to %s failed.", engine.get_name());
             return;
         }
-        /* Engine.update_property() will be called with a time lag
+        /* Panel.update_property() will be called with a time lag
          * by another engine because of DBus delay so need to
          * clear m_icon_prop_key here to avoid wrong panel icon in
          * disabled m_use_global_engine.
@@ -1245,7 +1245,7 @@ class Panel : IBus.PanelService {
 
     private bool switcher_focus_set_engine_real() {
         IBus.EngineDesc? selected_engine = m_switcher.get_selected_engine();
-        string? prev_context_path = m_switcher.get_input_context_path();
+        string prev_context_path = m_switcher.get_input_context_path();
         if (selected_engine != null &&
             prev_context_path != "" &&
             prev_context_path == m_current_context_path) {
@@ -1259,7 +1259,7 @@ class Panel : IBus.PanelService {
 
     private void switcher_focus_set_engine() {
         IBus.EngineDesc? selected_engine = m_switcher.get_selected_engine();
-        string? prev_context_path = m_switcher.get_input_context_path();
+        string prev_context_path = m_switcher.get_input_context_path();
         if (selected_engine == null &&
             prev_context_path != "" &&
             m_switcher.is_running()) {

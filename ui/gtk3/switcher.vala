@@ -474,7 +474,7 @@ class Switcher : Gtk.Window {
         return m_is_running;
     }
 
-    public string? get_input_context_path() {
+    public string get_input_context_path() {
         return m_input_context_path;
     }
 
