@@ -56,6 +56,7 @@
 #include <ibuspanelservice.h>
 #include <ibusutil.h>
 #include <ibusregistry.h>
+#include <ibusemoji.h>
 
 #ifndef IBUS_DISABLE_DEPRECATED
 #include <ibuskeysyms-compat.h>

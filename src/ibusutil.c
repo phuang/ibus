@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -33,9 +33,6 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #endif
-
-#define IBUS_DICT_MAGIC "IBusDict"
-#define IBUS_DICT_VERSION (1)
 
 /* gettext macro */
 #define N_(t) t
@@ -128,74 +125,6 @@ _load_lang()
     ibus_xml_free (node);
 }
 
-static void
-free_dict_words (gpointer list)
-{
-    g_slist_free_full (list, g_free);
-}
-
-static void
-variant_foreach_add_emoji (gchar           *annotation,
-                           GSList          *emojis,
-                           GVariantBuilder *builder)
-{
-    int i;
-    int length = (int) g_slist_length (emojis);
-    gchar **buff = g_new0 (gchar *, length);
-    GSList *l = emojis;
-
-    for (i = 0; i < length; i++, l = l->next)
-        buff[i] = (gchar *) l->data;
-
-    g_variant_builder_add (builder,
-                           "{sv}",
-                           annotation,
-                           g_variant_new_strv ((const gchar * const  *) buff,
-                                               length));
-    g_free (buff);
-}
-
-static GVariant *
-ibus_emoji_dict_serialize (GHashTable *dict)
-{
-    GVariantBuilder builder;
-
-    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
-    g_hash_table_foreach (dict,  (GHFunc) variant_foreach_add_emoji, &builder);
-    return g_variant_builder_end (&builder);
-}
-
-static GHashTable *
-ibus_emoji_dict_deserialize (GVariant *variant)
-{
-    GHashTable *dict = NULL;
-    GVariantIter iter;
-    gchar *annotate = NULL;
-    GVariant *emojis_variant = NULL;
-
-    dict = g_hash_table_new_full (g_str_hash,
-                                  g_str_equal,
-                                  g_free,
-                                  free_dict_words);
-
-    g_variant_iter_init (&iter, variant);
-    while (g_variant_iter_loop (&iter, "{sv}", &annotate, &emojis_variant)) {
-        gsize i;
-        gsize length = 0;
-        const gchar **array = g_variant_get_strv (emojis_variant, &length);
-        GSList *emojis = NULL;
-
-        for (i = 0; i < length; i++) {
-            emojis = g_slist_append (emojis, g_strdup (array[i]));
-        }
-        g_hash_table_insert (dict, annotate, emojis);
-        annotate = NULL;
-        g_clear_pointer (&emojis_variant, g_variant_unref);
-    }
-
-    return dict;
-}
-
 const gchar *
 ibus_get_untranslated_language_name (const gchar *_locale)
 {
@@ -241,122 +170,4 @@ ibus_g_variant_get_child_string (GVariant *variant, gsize index, char **str)
 
     g_free (*str);
     g_variant_get_child (variant, index, "s", str);
-}
-
-void
-ibus_emoji_dict_save (const gchar *path, GHashTable *dict)
-{
-    GVariant *variant;
-    const gchar *header = IBUS_DICT_MAGIC;
-    const guint16 version = IBUS_DICT_VERSION;
-    const gchar *contents;
-    gsize length;
-    GError *error = NULL;
-
-    variant = g_variant_new ("(sqv)",
-                             header,
-                             version,
-                             ibus_emoji_dict_serialize (dict));
-
-    contents =  g_variant_get_data (variant);
-    length =  g_variant_get_size (variant);
-
-    if (!g_file_set_contents (path, contents, length, &error)) {
-        g_warning ("Failed to save emoji dict %s: %s", path, error->message);
-        g_error_free (error);
-    }
-
-    g_variant_unref (variant);
-}
-
-GHashTable *
-ibus_emoji_dict_load (const gchar *path)
-{
-    gchar *contents = NULL;
-    gsize length = 0;
-    GError *error = NULL;
-    GVariant *variant_table = NULL;
-    GVariant *variant = NULL;
-    const gchar *header = NULL;
-    guint16 version = 0;
-    GHashTable *retval = NULL;
-
-    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("Emoji dict does not exist: %s", path);
-        goto out_load_cache;
-    }
-
-    if (!g_file_get_contents (path, &contents, &length, &error)) {
-        g_warning ("Failed to get dict content %s: %s", path, error->message);
-        g_error_free (error);
-        goto out_load_cache;
-    }
-
-    variant_table = g_variant_new_from_data (G_VARIANT_TYPE ("(sq)"),
-                                             contents,
-                                             length,
-                                             FALSE,
-                                             NULL,
-                                             NULL);
-
-    if (variant_table == NULL) {
-        g_warning ("cache table is broken.");
-        goto out_load_cache;
-    }
-
-    g_variant_get (variant_table, "(&sq)", &header, &version);
-
-    if (g_strcmp0 (header, IBUS_DICT_MAGIC) != 0) {
-        g_warning ("cache is not IBusDict.");
-        goto out_load_cache;
-    }
-
-    if (version != IBUS_DICT_VERSION) {
-        g_warning ("cache version is different: %u != %u",
-                   version, IBUS_DICT_VERSION);
-        goto out_load_cache;
-    }
-
-    version = 0;
-    header = NULL;
-    g_variant_unref (variant_table);
-
-    variant_table = g_variant_new_from_data (G_VARIANT_TYPE ("(sqv)"),
-                                             contents,
-                                             length,
-                                             FALSE,
-                                             NULL,
-                                             NULL);
-
-    if (variant_table == NULL) {
-        g_warning ("cache table is broken.");
-        goto out_load_cache;
-    }
-
-    g_variant_get (variant_table, "(&sqv)",
-                   NULL,
-                   NULL,
-                   &variant);
-
-    if (variant == NULL) {
-        g_warning ("cache dict is broken.");
-        goto out_load_cache;
-    }
-
-    retval = ibus_emoji_dict_deserialize (variant);
-
-out_load_cache:
-    if (variant)
-        g_variant_unref (variant);
-    if (variant_table)
-        g_variant_unref (variant_table);
-
-    return retval;
-}
-
-GSList *
-ibus_emoji_dict_lookup (GHashTable  *dict,
-                        const gchar *annotation)
-{
-    return (GSList *) g_hash_table_lookup (dict, annotation);
 }

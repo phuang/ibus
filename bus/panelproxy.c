@@ -2,6 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -49,6 +50,7 @@ enum {
     PROPERTY_ACTIVATE,
     PROPERTY_SHOW,
     PROPERTY_HIDE,
+    COMMIT_TEXT,
     LAST_SIGNAL,
 };
 
@@ -75,6 +77,8 @@ struct _BusPanelProxyClass {
     void (* property_activate)  (BusPanelProxy   *panel,
                                  const gchar     *prop_name,
                                  gint             prop_state);
+    void (* commit_text)        (BusPanelProxy   *panel,
+                                 IBusText        *text);
 };
 
 static guint    panel_signals[LAST_SIGNAL] = { 0 };
@@ -99,6 +103,9 @@ static void     bus_panel_proxy_property_activate
                                                 (BusPanelProxy          *panel,
                                                  const gchar            *prop_name,
                                                  gint                    prop_state);
+static void     bus_panel_proxy_commit_text
+                                                (BusPanelProxy          *panel,
+                                                 IBusText               *text);
 
 G_DEFINE_TYPE(BusPanelProxy, bus_panel_proxy, IBUS_TYPE_PROXY)
 
@@ -133,6 +140,7 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
     class->cursor_down = bus_panel_proxy_cursor_down;
     class->candidate_clicked = bus_panel_proxy_candidate_clicked;
     class->property_activate = bus_panel_proxy_property_activate;
+    class->commit_text = bus_panel_proxy_commit_text;
 
     /* install signals */
     panel_signals[PAGE_UP] =
@@ -214,6 +222,22 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
             G_TYPE_NONE, 1,
             G_TYPE_STRING);
 
+    panel_signals[COMMIT_TEXT] =
+        g_signal_new (I_("commit-text"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET(BusPanelProxyClass, commit_text),
+            NULL, NULL,
+            bus_marshal_VOID__OBJECT,
+            G_TYPE_NONE, 1,
+            IBUS_TYPE_TEXT);
+}
+
+static void
+_g_object_unref_if_floating (gpointer instance)
+{
+    if (g_object_is_floating (instance))
+        g_object_unref (instance);
 }
 
 static void
@@ -232,7 +256,8 @@ bus_panel_proxy_real_destroy (IBusProxy *proxy)
         panel->focused_context = NULL;
     }
 
-    IBUS_PROXY_CLASS(bus_panel_proxy_parent_class)->destroy ((IBusProxy *)panel);
+    IBUS_PROXY_CLASS(bus_panel_proxy_parent_class)->
+            destroy ((IBusProxy *)panel);
 }
 
 /**
@@ -296,6 +321,19 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
         gchar *prop_name = NULL;
         g_variant_get (parameters, "(&s)", &prop_name);
         g_signal_emit (panel, panel_signals[PROPERTY_HIDE], 0, prop_name);
+        return;
+    }
+
+    if (g_strcmp0 ("CommitText", signal_name) == 0) {
+        GVariant *arg0 = NULL;
+        g_variant_get (parameters, "(v)", &arg0);
+        g_return_if_fail (arg0 != NULL);
+
+        IBusText *text = IBUS_TEXT (ibus_serializable_deserialize (arg0));
+        g_variant_unref (arg0);
+        g_return_if_fail (text != NULL);
+        g_signal_emit (panel, panel_signals[COMMIT_TEXT], 0, text);
+        _g_object_unref_if_floating (text);
         return;
     }
 
@@ -469,6 +507,18 @@ bus_panel_proxy_property_activate (BusPanelProxy *panel,
 
     if (panel->focused_context) {
         bus_input_context_property_activate (panel->focused_context, prop_name, prop_state);
+    }
+}
+
+static void
+bus_panel_proxy_commit_text (BusPanelProxy *panel,
+                             IBusText      *text)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (text != NULL);
+
+    if (panel->focused_context) {
+        bus_input_context_commit_text (panel->focused_context, text);
     }
 }
 
@@ -697,6 +747,10 @@ void
 bus_panel_proxy_focus_in (BusPanelProxy     *panel,
                           BusInputContext   *context)
 {
+    const gchar *path;
+    guint purpose, hints;
+    gint i;
+
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
@@ -709,7 +763,7 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
     g_object_ref_sink (context);
     panel->focused_context = context;
 
-    const gchar *path = ibus_service_get_object_path ((IBusService *)context);
+    path = ibus_service_get_object_path ((IBusService *)context);
 
     g_dbus_proxy_call ((GDBusProxy *)panel,
                        "FocusIn",
@@ -718,7 +772,6 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
                        -1, NULL, NULL, NULL);
 
     /* install signal handlers */
-    gint i;
     for (i = 0; i < G_N_ELEMENTS (input_context_signals); i++) {
         g_signal_connect (context,
                           input_context_signals[i].name,
@@ -726,7 +779,6 @@ bus_panel_proxy_focus_in (BusPanelProxy     *panel,
                           panel);
     }
 
-    guint purpose, hints;
     bus_input_context_get_content_type (context, &purpose, &hints);
     bus_panel_proxy_set_content_type (panel, purpose, hints);
 }

@@ -50,6 +50,7 @@ AM_CFLAGS = \
 	@X11_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
 	-DBINDIR=\"$(bindir)\" \
+	-DPKGDATADIR=\"$(pkgdatadir)\" \
 	-DIBUS_DISABLE_DEPRECATED \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \
@@ -102,12 +103,17 @@ if ENABLE_APPINDICATOR_ENGINE_ICON
 AM_VALAFLAGS += --define=INDICATOR_ENGINE_ICON
 endif
 
+if ENABLE_EMOJI_DICT
+AM_VALAFLAGS += --define=EMOJI_DICT
+endif
+
 libexec_PROGRAMS = ibus-ui-gtk3
 
 ibus_ui_gtk3_SOURCES = \
 	application.vala \
 	candidatearea.vala \
 	candidatepanel.vala \
+	emojier.vala \
 	handle.vala \
 	iconwidget.vala \
 	indicator.vala \

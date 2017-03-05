@@ -626,6 +626,16 @@ AC_ARG_WITH(emoji-json-file,
 )
 AC_SUBST(EMOJI_JSON_FILE)
 
+AC_ARG_WITH(emoji-annotation-dir,
+    AS_HELP_STRING([--with-emoji-annotation-dir[=DIR]],
+        [Set the directory of CLDR annotation files.
+         (default: "/usr/share/unicode/cldr/common/annotations")
+         You can get https://github.com/fujiwarat/cldr-emoji-annotation]),
+    EMOJI_ANNOTATION_DIR=$with_emoji_annotation_dir,
+    EMOJI_ANNOTATION_DIR="/usr/share/unicode/cldr/common/annotations"
+)
+AC_SUBST(EMOJI_ANNOTATION_DIR)
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -712,6 +722,7 @@ Build options:
   Enable libnotify              $enable_libnotify
   Enable Emoji dict             $enable_emoji_dict
   emoji.json path               $EMOJI_JSON_FILE
+  CLDR annotation dir           $EMOJI_ANNOTATION_DIR
   Run test cases                $enable_tests
 ])
 

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -161,9 +161,6 @@ static gboolean bus_input_context_service_set_property
                                     GError               **error);
 static void     bus_input_context_unset_engine
                                    (BusInputContext       *context);
-static void     bus_input_context_commit_text
-                                   (BusInputContext       *context,
-                                    IBusText              *text);
 static void     bus_input_context_update_preedit_text
                                    (BusInputContext       *context,
                                     IBusText              *text,
@@ -1434,22 +1431,6 @@ bus_input_context_property_activate (BusInputContext *context,
     }
 }
 
-static void
-bus_input_context_commit_text (BusInputContext *context,
-                               IBusText        *text)
-{
-    g_assert (BUS_IS_INPUT_CONTEXT (context));
-
-    if (text == text_empty || text == NULL)
-        return;
-
-    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
-    bus_input_context_emit_signal (context,
-                                   "CommitText",
-                                   g_variant_new ("(v)", variant),
-                                   NULL);
-}
-
 /**
  * bus_input_context_update_preedit_text:
  *
@@ -2604,4 +2585,20 @@ bus_input_context_set_content_type (BusInputContext *context,
     value = g_variant_ref_sink (g_variant_new ("(uu)", purpose, hints));
     _ic_set_content_type (context, value);
     g_variant_unref (value);
+}
+
+void
+bus_input_context_commit_text (BusInputContext *context,
+                               IBusText        *text)
+{
+    g_assert (BUS_IS_INPUT_CONTEXT (context));
+
+    if (text == text_empty || text == NULL)
+        return;
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    bus_input_context_emit_signal (context,
+                                   "CommitText",
+                                   g_variant_new ("(v)", variant),
+                                   NULL);
 }

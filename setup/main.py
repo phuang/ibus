@@ -3,6 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -109,16 +110,24 @@ class Setup(object):
         self.__builder.add_from_file(gtk_builder_file);
         self.__init_ui()
 
-    def __init_hotkey(self):
+    def __init_hotkeys(self):
         name = 'triggers'
         label = 'switch_engine'
+        comment = \
+            _("Use shortcut with shift to switch to the previous input method") 
+        self.__init_hotkey(name, label, comment)
+        name = 'emoji'
+        label = 'emoji_dialog'
+        self.__init_hotkey(name, label)
+
+    def __init_hotkey(self, name, label, comment=None):
         shortcuts = self.__settings_hotkey.get_strv(name)
         button = self.__builder.get_object("button_%s" % label)
         entry = self.__builder.get_object("entry_%s" % label)
         entry.set_text("; ".join(shortcuts))
         tooltip = "\n".join(shortcuts)
-        tooltip += "\n" + \
-            _("Use shortcut with shift to switch to the previous input method") 
+        if comment != None:
+            tooltip += "\n" + comment
         entry.set_tooltip_text(tooltip)
         button.connect("clicked", self.__shortcut_button_clicked_cb,
                 name, "general/hotkey", label, entry)
@@ -159,12 +168,22 @@ class Setup(object):
 
         self.__fontbutton_custom_font = self.__builder.get_object(
                 "fontbutton_custom_font")
+        self.__fontbutton_emoji_font = self.__builder.get_object(
+                "fontbutton_emoji_font")
         self.__settings_panel.bind('custom-font',
                                     self.__fontbutton_custom_font,
                                    'font-name',
                                    Gio.SettingsBindFlags.DEFAULT)
+        self.__settings_panel.bind('emoji-font',
+                                    self.__fontbutton_emoji_font,
+                                   'font-name',
+                                   Gio.SettingsBindFlags.DEFAULT)
         self.__settings_panel.bind('use-custom-font',
                                     self.__fontbutton_custom_font,
+                                   'sensitive',
+                                   Gio.SettingsBindFlags.GET)
+        self.__settings_panel.bind('use-custom-font',
+                                    self.__fontbutton_emoji_font,
                                    'sensitive',
                                    Gio.SettingsBindFlags.GET)
 
@@ -270,7 +289,7 @@ class Setup(object):
         self.__checkbutton_auto_start.connect("toggled",
                 self.__checkbutton_auto_start_toggled_cb)
 
-        self.__init_hotkey()
+        self.__init_hotkeys()
         self.__init_panel()
         self.__init_general()
 

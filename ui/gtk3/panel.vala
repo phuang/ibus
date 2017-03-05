@@ -25,20 +25,29 @@ class Panel : IBus.PanelService {
     private class Keybinding {
         public Keybinding(uint keysym,
                           Gdk.ModifierType modifiers,
-                          bool reverse) {
+                          bool reverse,
+                          KeyEventFuncType ftype) {
             this.keysym = keysym;
             this.modifiers = modifiers;
             this.reverse = reverse;
+            this.ftype = ftype;
         }
 
         public uint keysym { get; set; }
         public Gdk.ModifierType modifiers { get; set; }
         public bool reverse { get; set; }
+        public KeyEventFuncType ftype { get; set; }
     }
 
     private enum IconType {
         STATUS_ICON,
         INDICATOR,
+    }
+
+    private enum KeyEventFuncType {
+        ANY,
+        IME_SWITCHER,
+        EMOJI_TYPING,
     }
 
     private IBus.Bus m_bus;
@@ -63,6 +72,8 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private uint m_switcher_focus_set_engine_id;
+    private Emojier m_emojier;
+    private uint m_emojier_focus_commit_text_id;
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
     private GLib.Pid m_setup_pid = 0;
@@ -125,6 +136,9 @@ class Panel : IBus.PanelService {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
 
+        m_emojier = new Emojier();
+        bind_emoji_shortcut();
+
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((w, k, s) => {
             property_activate(k, s);
@@ -139,7 +153,7 @@ class Panel : IBus.PanelService {
     }
 
     ~Panel() {
-        unbind_switch_shortcut();
+        unbind_switch_shortcut(KeyEventFuncType.ANY);
     }
 
     private void init_settings() {
@@ -175,11 +189,20 @@ class Panel : IBus.PanelService {
         });
 
         m_settings_hotkey.changed["triggers"].connect((key) => {
-                unbind_switch_shortcut();
+                unbind_switch_shortcut(KeyEventFuncType.IME_SWITCHER);
                 bind_switch_shortcut();
         });
 
+        m_settings_hotkey.changed["emoji"].connect((key) => {
+                unbind_switch_shortcut(KeyEventFuncType.EMOJI_TYPING);
+                bind_emoji_shortcut();
+        });
+
         m_settings_panel.changed["custom-font"].connect((key) => {
+                set_custom_font();
+        });
+
+        m_settings_panel.changed["emoji-font"].connect((key) => {
                 set_custom_font();
         });
 
@@ -214,6 +237,10 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["property-icon-delay-time"].connect((key) => {
                 set_property_icon_delay_time();
+        });
+
+        m_settings_panel.changed["emoji-favorites"].connect((key) => {
+                set_emoji_favorites();
         });
     }
 
@@ -287,7 +314,8 @@ class Panel : IBus.PanelService {
     }
 
     private void keybinding_manager_bind(KeybindingManager keybinding_manager,
-                                         string?           accelerator) {
+                                         string?           accelerator,
+                                         KeyEventFuncType  ftype) {
         uint switch_keysym = 0;
         Gdk.ModifierType switch_modifiers = 0;
         Gdk.ModifierType reverse_modifier = Gdk.ModifierType.SHIFT_MASK;
@@ -323,11 +351,19 @@ class Panel : IBus.PanelService {
 
         keybinding = new Keybinding(switch_keysym,
                                     switch_modifiers,
-                                    false);
+                                    false,
+                                    ftype);
         m_keybindings.append(keybinding);
 
-        keybinding_manager.bind(switch_keysym, switch_modifiers,
-                (e) => handle_engine_switch(e, false));
+        /* Workaround not to free the pointer of handle_engine_switch() */
+        if (ftype == KeyEventFuncType.IME_SWITCHER) {
+            keybinding_manager.bind(switch_keysym, switch_modifiers,
+                    (e) => handle_engine_switch(e, false));
+        } else if (ftype == KeyEventFuncType.EMOJI_TYPING) {
+            keybinding_manager.bind(switch_keysym, switch_modifiers,
+                    (e) => handle_emoji_typing(e));
+            return;
+        }
 
         // accelerator already has Shift mask
         if ((switch_modifiers & reverse_modifier) != 0) {
@@ -338,11 +374,14 @@ class Panel : IBus.PanelService {
 
         keybinding = new Keybinding(switch_keysym,
                                     switch_modifiers,
-                                    true);
+                                    true,
+                                    ftype);
         m_keybindings.append(keybinding);
 
-        keybinding_manager.bind(switch_keysym, switch_modifiers,
-                (e) => handle_engine_switch(e, true));
+        if (ftype == KeyEventFuncType.IME_SWITCHER) {
+            keybinding_manager.bind(switch_keysym, switch_modifiers,
+                    (e) => handle_engine_switch(e, true));
+        }
     }
 
     private void bind_switch_shortcut() {
@@ -351,11 +390,27 @@ class Panel : IBus.PanelService {
         var keybinding_manager = KeybindingManager.get_instance();
 
         foreach (var accelerator in accelerators) {
-            keybinding_manager_bind(keybinding_manager, accelerator);
+            keybinding_manager_bind(keybinding_manager,
+                                    accelerator,
+                                    KeyEventFuncType.IME_SWITCHER);
         }
     }
 
-    private void unbind_switch_shortcut() {
+    private void bind_emoji_shortcut() {
+#if EMOJI_DICT
+        string[] accelerators = m_settings_hotkey.get_strv("emoji");
+
+        var keybinding_manager = KeybindingManager.get_instance();
+
+        foreach (var accelerator in accelerators) {
+            keybinding_manager_bind(keybinding_manager,
+                                    accelerator,
+                                    KeyEventFuncType.EMOJI_TYPING);
+        }
+#endif
+    }
+
+    private void unbind_switch_shortcut(KeyEventFuncType ftype) {
         var keybinding_manager = KeybindingManager.get_instance();
 
         unowned GLib.List<Keybinding> keybindings = m_keybindings;
@@ -363,8 +418,10 @@ class Panel : IBus.PanelService {
         while (keybindings != null) {
             Keybinding keybinding = keybindings.data;
 
-            keybinding_manager.unbind(keybinding.keysym,
-                                      keybinding.modifiers);
+            if (ftype == KeyEventFuncType.ANY || ftype == keybinding.ftype) {
+                keybinding_manager.unbind(keybinding.keysym,
+                                          keybinding.modifiers);
+            }
             keybindings = keybindings.next;
         }
 
@@ -540,11 +597,17 @@ class Panel : IBus.PanelService {
         }
 
         string custom_font = m_settings_panel.get_string("custom-font");
-
         if (custom_font == null) {
             warning("No config panel:custom-font.");
             return;
         }
+
+        string emoji_font = m_settings_panel.get_string("emoji-font");
+        if (emoji_font == null) {
+            warning("No config panel:emoji-font.");
+            return;
+        }
+        m_emojier.set_emoji_font(emoji_font);
 
         Pango.FontDescription font_desc =
                 Pango.FontDescription.from_string(custom_font);
@@ -696,6 +759,10 @@ class Panel : IBus.PanelService {
                 m_settings_panel.get_int("property-icon-delay-time");
     }
 
+    private void set_emoji_favorites() {
+        m_emojier.set_favorites(m_settings_panel.get_strv("emoji-favorites"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -796,8 +863,9 @@ class Panel : IBus.PanelService {
         set_use_xmodmap();
         update_engines(m_settings_general.get_strv("preload-engines"),
                        m_settings_general.get_strv("engines-order"));
-        unbind_switch_shortcut();
+        unbind_switch_shortcut(KeyEventFuncType.ANY);
         bind_switch_shortcut();
+        bind_emoji_shortcut();
         set_switcher_delay_time();
         set_embed_preedit_text();
         set_custom_font();
@@ -808,6 +876,7 @@ class Panel : IBus.PanelService {
         set_follow_input_cursor_when_always_shown_property_panel();
         set_xkb_icon_rgba();
         set_property_icon_delay_time();
+        set_emoji_favorites();
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {
@@ -902,6 +971,15 @@ class Panel : IBus.PanelService {
             int i = revert ? m_engines.length - 1 : 1;
             switch_engine(i);
         }
+    }
+
+    private void handle_emoji_typing(Gdk.Event event) {
+        if (m_emojier.is_running())
+            return;
+        string emoji = m_emojier.run(event, m_real_current_context_path);
+        if (emoji == null)
+            return;
+        this.emojier_focus_commit();
     }
 
     private void run_preload_engines(IBus.EngineDesc[] engines, int index) {
@@ -1131,6 +1209,15 @@ class Panel : IBus.PanelService {
             item.activate.connect((i) => show_setup_dialog());
             m_sys_menu.append(item);
 
+#if EMOJI_DICT
+            item = new Gtk.MenuItem.with_label(_("Emoji Dialog"));
+            item.activate.connect((i) => {
+                Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+                handle_emoji_typing(event);
+            });
+            m_sys_menu.append(item);
+#endif
+
             item = new Gtk.MenuItem.with_label(_("About"));
             item.activate.connect((i) => show_about_dialog());
             m_sys_menu.append(item);
@@ -1285,6 +1372,46 @@ class Panel : IBus.PanelService {
         }
     }
 
+    private bool emojier_focus_commit_real() {
+        string selected_string = m_emojier.get_selected_string();
+        string prev_context_path = m_emojier.get_input_context_path();
+        if (selected_string != null &&
+            prev_context_path != "" &&
+            prev_context_path == m_current_context_path) {
+            IBus.Text text = new IBus.Text.from_string(selected_string);
+            commit_text(text);
+            m_emojier.reset();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void emojier_focus_commit() {
+        string selected_string = m_emojier.get_selected_string();
+        string prev_context_path = m_emojier.get_input_context_path();
+        if (selected_string == null &&
+            prev_context_path != "" &&
+            m_emojier.is_running()) {
+            if (m_emojier_focus_commit_text_id > 0) {
+                GLib.Source.remove(m_emojier_focus_commit_text_id);
+            }
+            m_emojier_focus_commit_text_id = GLib.Timeout.add(100, () => {
+                // focus_in is comming before switcher returns
+                emojier_focus_commit_real();
+                m_emojier_focus_commit_text_id = -1;
+                return false;
+            });
+        } else {
+            if (emojier_focus_commit_real()) {
+                if (m_emojier_focus_commit_text_id > 0) {
+                    GLib.Source.remove(m_emojier_focus_commit_text_id);
+                    m_emojier_focus_commit_text_id = -1;
+                }
+            }
+        }
+    }
+
     public override void focus_in(string input_context_path) {
         m_current_context_path = input_context_path;
 
@@ -1299,6 +1426,7 @@ class Panel : IBus.PanelService {
             m_real_current_context_path = m_current_context_path;
             m_property_panel.focus_in();
             this.switcher_focus_set_engine();
+            this.emojier_focus_commit();
         }
 
         if (m_use_global_engine)

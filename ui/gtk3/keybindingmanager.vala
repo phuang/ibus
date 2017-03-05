@@ -200,8 +200,13 @@ public class KeybindingManager : GLib.Object {
 
             if (event.type == Gdk.EventType.KEY_PRESS) {
                 uint modifiers = event.key.state & MODIFIER_FILTER;
+                uint keyval = event.key.keyval;
+                if (keyval >= IBus.KEY_A && keyval <= IBus.KEY_Z &&
+                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
+                    keyval = keyval - IBus.KEY_A + IBus.KEY_a;
+                }
                 foreach (var binding in m_bindings) {
-                    if (event.key.keyval != binding.keysym ||
+                    if (keyval != binding.keysym ||
                         modifiers != binding.modifiers)
                         continue;
                     binding.handler(event);

@@ -132,6 +132,21 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkLabel" id="emoji_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">The shortcut keys for showing emoji dialog</property>
+                            <property name="halign">start</property>
+                            <property name="label" translatable="yes">Emoji dialog:</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">5</property>
+                            <property name="bottom_attach">6</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="y_options">GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkBox" id="hbox4">
                             <property name="orientation">horizontal</property>
                             <property name="no_show_all">True</property>
@@ -257,6 +272,49 @@
                             <property name="right_attach">2</property>
                             <property name="top_attach">4</property>
                             <property name="bottom_attach">5</property>
+                            <property name="y_options">GTK_FILL</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="emoji_hbox">
+                            <property name="orientation">horizontal</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkEntry" id="entry_emoji_dialog">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="editable">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="button_emoji_dialog">
+                                <property name="label" translatable="yes">...</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="use_underline">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">5</property>
+                            <property name="bottom_attach">6</property>
                             <property name="y_options">GTK_FILL</property>
                           </packing>
                         </child>
@@ -603,12 +661,38 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkFontButton" id="fontbutton_custom_font">
-                            <property name="use_action_appearance">False</property>
+                          <object class="GtkBox" id="fontbutton_box">
+                            <property name="orientation">vertical</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="use_action_appearance">False</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkFontButton" id="fontbutton_custom_font">
+                              <property name="use_action_appearance">False</property>
+                              <property name="visible">True</property>
+                              <property name="can_focus">True</property>
+                              <property name="receives_default">True</property>
+                              <property name="use_action_appearance">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkFontButton" id="fontbutton_emoji_font">
+                              <property name="use_action_appearance">False</property>
+                              <property name="visible">True</property>
+                              <property name="can_focus">True</property>
+                              <property name="receives_default">True</property>
+                              <property name="use_action_appearance">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>

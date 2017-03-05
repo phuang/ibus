@@ -106,6 +106,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/general/hotkey/emoji</key>
+      <applyto>/desktop/ibus/general/hotkey/emoji</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[&lt;Control&gt;&lt;Shift&gt;e]</default>
+      <locale name="C">
+        <short>Emoji shortcut keys for gtk_accelerator_parse</short>
+          <long>The shortcut keys for turning emoji typing on or off</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/enable_unconditional</key>
       <applyto>/desktop/ibus/general/hotkey/enable_unconditional</applyto>
       <owner>ibus</owner>
@@ -351,6 +363,30 @@
       <locale name="C">
         <short>Custom font</short>
 	    <long>Custom font name for language panel</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji_font</key>
+      <applyto>/desktop/ibus/panel/emoji_font</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default>Monospace 16</default>
+      <locale name="C">
+        <short>Custom font</short>
+	    <long>Custom font name for emoji chracters on emoji dialog</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji_favorites</key>
+      <applyto>/desktop/ibus/panel/emoji_favorites</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>favorite emoji list on emoji dialog</short>
+	    <long>You can show the favorite emojis on emoji list
+                  if this list has any characters.</long>
       </locale>
     </schema>
     <schema>

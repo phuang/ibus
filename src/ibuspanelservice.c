@@ -3,6 +3,7 @@
 /* ibus - The Input Bus
  * Copyright (c) 2009-2014 Google Inc. All rights reserved.
  * Copyright (C) 2010-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -230,6 +231,9 @@ static const gchar introspection_xml[] =
     "      <arg type='u' name='index' />"
     "      <arg type='u' name='button' />"
     "      <arg type='u' name='state' />"
+    "    </signal>"
+    "    <signal name='CommitText'>"
+    "      <arg type='v' name='text' />"
     "    </signal>"
     "  </interface>"
     "</node>";
@@ -1309,6 +1313,26 @@ ibus_panel_service_property_hide (IBusPanelService *panel,
                               "PropertyHide",
                               g_variant_new ("(s)", prop_name),
                               NULL);
+}
+
+void
+ibus_panel_service_commit_text (IBusPanelService *panel,
+                                IBusText         *text)
+{
+    g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    ibus_service_emit_signal ((IBusService *) panel,
+                              NULL,
+                              IBUS_INTERFACE_PANEL,
+                              "CommitText",
+                              g_variant_new ("(v)", variant),
+                              NULL);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
 }
 
 #define DEFINE_FUNC(name, Name)                             \

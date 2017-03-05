@@ -55,6 +55,7 @@ tools/main.vala
 ui/gtk3/application.vala
 ui/gtk3/candidatearea.vala
 ui/gtk3/candidatepanel.vala
+ui/gtk3/emojier.vala
 ui/gtk3/handle.vala
 ui/gtk3/iconwidget.vala
 ui/gtk3/keybindingmanager.vala

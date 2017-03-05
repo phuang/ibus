@@ -2,6 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2014 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -259,6 +260,14 @@ void                 bus_input_context_set_content_type
                                                 (BusInputContext *context,
                                                  guint            purpose,
                                                  guint            hints);
+
+/**
+ * bus_input_context_commit_text:
+ * @text: a commited text.
+ */
+void                 bus_input_context_commit_text
+                                                (BusInputContext *context,
+                                                 IBusText        *text);
 
 G_END_DECLS
 #endif

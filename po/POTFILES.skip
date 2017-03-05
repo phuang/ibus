@@ -11,6 +11,7 @@ ui/gtk2/panel.py
 ui/gtk3/application.c
 ui/gtk3/candidatearea.c
 ui/gtk3/candidatepanel.c
+ui/gtk3/emojier.c
 ui/gtk3/handle.c
 ui/gtk3/iconwidget.c
 ui/gtk3/keybindingmanager.c

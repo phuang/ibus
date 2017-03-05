@@ -2,6 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (c) 2009-2014 Google Inc. All rights reserved.
+ * Copyright (c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -230,6 +231,16 @@ void ibus_panel_service_property_show     (IBusPanelService *panel,
 void ibus_panel_service_property_hide     (IBusPanelService *panel,
                                            const gchar      *prop_name);
 
+/**
+ * ibus_panel_service_commit_text:
+ * @panel: An #IBusPanelService
+ * @text: An #IBusText
+ *
+ * Notify that a text is sent
+ * by sending a "CommitText" message to IBus service.
+ */
+void ibus_panel_service_commit_text       (IBusPanelService *panel,
+                                           IBusText         *text);
 
 G_END_DECLS
 #endif
