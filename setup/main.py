@@ -1,4 +1,5 @@
 # vim:set et sts=4 sw=4:
+# -*- coding: utf-8 -*-
 #
 # ibus - The Input Bus
 #
@@ -170,6 +171,7 @@ class Setup(object):
                 "fontbutton_custom_font")
         self.__fontbutton_emoji_font = self.__builder.get_object(
                 "fontbutton_emoji_font")
+        self.__fontbutton_emoji_font.set_preview_text("🙂🍎🚃💓📧⚽🐳");
         self.__settings_panel.bind('custom-font',
                                     self.__fontbutton_custom_font,
                                    'font-name',
@@ -180,10 +182,6 @@ class Setup(object):
                                    Gio.SettingsBindFlags.DEFAULT)
         self.__settings_panel.bind('use-custom-font',
                                     self.__fontbutton_custom_font,
-                                   'sensitive',
-                                   Gio.SettingsBindFlags.GET)
-        self.__settings_panel.bind('use-custom-font',
-                                    self.__fontbutton_emoji_font,
                                    'sensitive',
                                    Gio.SettingsBindFlags.GET)
 
