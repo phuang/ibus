@@ -72,7 +72,7 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private uint m_switcher_focus_set_engine_id;
-    private Emojier m_emojier;
+    private IBusEmojier m_emojier;
     private uint m_emojier_focus_commit_text_id;
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
@@ -136,7 +136,7 @@ class Panel : IBus.PanelService {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
 
-        m_emojier = new Emojier();
+        m_emojier = new IBusEmojier();
         bind_emoji_shortcut();
 
         m_property_manager = new PropertyManager();
@@ -584,6 +584,13 @@ class Panel : IBus.PanelService {
             return;
         }
 
+        string emoji_font = m_settings_panel.get_string("emoji-font");
+        if (emoji_font == null) {
+            warning("No config panel:emoji-font.");
+            return;
+        }
+        m_emojier.set_emoji_font(emoji_font);
+
         bool use_custom_font = m_settings_panel.get_boolean("use-custom-font");
 
         if (m_css_provider != null) {
@@ -601,13 +608,6 @@ class Panel : IBus.PanelService {
             warning("No config panel:custom-font.");
             return;
         }
-
-        string emoji_font = m_settings_panel.get_string("emoji-font");
-        if (emoji_font == null) {
-            warning("No config panel:emoji-font.");
-            return;
-        }
-        m_emojier.set_emoji_font(emoji_font);
 
         Pango.FontDescription font_desc =
                 Pango.FontDescription.from_string(custom_font);

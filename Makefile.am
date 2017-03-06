@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -50,13 +51,13 @@ SUBDIRS = \
 	util \
 	conf \
 	client \
-	tools \
 	data \
 	m4 \
 	po \
 	docs \
 	$(ENGINE_DIR) \
 	$(UI_DIR) \
+	tools \
 	$(DAEMON_DIR) \
 	$(PYTHON_LIB_DIRS) \
 	$(SETUP_DIR) \

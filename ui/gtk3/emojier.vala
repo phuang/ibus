@@ -20,7 +20,7 @@
  * USA
  */
 
-class Emojier : Gtk.Window {
+class IBusEmojier : Gtk.Window {
     private class EEntry : Gtk.SearchEntry {
         public EEntry() {
             GLib.Object(
@@ -177,9 +177,12 @@ class Emojier : Gtk.Window {
     private string m_current_lang = "en";
     private string? m_unicode_point = null;
     private bool m_candidate_panel_is_visible;
-    private GLib.HashTable<string, GLib.SList> m_annotation_to_emojis_dict;
-    private GLib.HashTable<string, IBus.EmojiData> m_emoji_to_data_dict;
-    private GLib.HashTable<string, GLib.SList> m_category_to_emojis_dict;
+    private GLib.HashTable<string, GLib.SList>?
+            m_annotation_to_emojis_dict = null;
+    private GLib.HashTable<string, IBus.EmojiData>?
+            m_emoji_to_data_dict = null;
+    private GLib.HashTable<string, GLib.SList>?
+            m_category_to_emojis_dict = null;
     int m_category_active_index;
     private int m_emoji_max_seq_len = 0;
     private IBus.LookupTable m_lookup_table;
@@ -193,8 +196,9 @@ class Emojier : Gtk.Window {
             red = 0.300, green = 0.565, blue = 0.851, alpha = 1.0 };
 
     public signal void candidate_clicked(uint index, uint button, uint state);
+    public signal void loaded_emoji_dict();
 
-    public Emojier() {
+    public IBusEmojier() {
         GLib.Object(
             type : Gtk.WindowType.POPUP,
             events : Gdk.EventMask.KEY_PRESS_MASK |
@@ -323,6 +327,7 @@ class Emojier : Gtk.Window {
         make_emoji_dict("en");
         if (m_current_lang != "en")
             make_emoji_dict(m_current_lang);
+        loaded_emoji_dict();
     }
 
     private void init_emoji_dict() {
@@ -355,7 +360,7 @@ class Emojier : Gtk.Window {
         }
     }
 
-    private void update_annotation_to_emojis_dict (IBus.EmojiData data) {
+    private void update_annotation_to_emojis_dict(IBus.EmojiData data) {
         string emoji = data.get_emoji();
         unowned GLib.SList<string> annotations = data.get_annotations();
         foreach (string annotation in annotations) {
@@ -375,8 +380,8 @@ class Emojier : Gtk.Window {
         }
     }
 
-    private void update_emoji_to_data_dict (IBus.EmojiData data,
-                                            string         lang) {
+    private void update_emoji_to_data_dict(IBus.EmojiData data,
+                                           string         lang) {
         string emoji = data.get_emoji();
         if (lang == "en") {
             m_emoji_to_data_dict.replace(emoji, data);
@@ -399,8 +404,8 @@ class Emojier : Gtk.Window {
         }
     }
 
-    private void update_category_to_emojis_dict (IBus.EmojiData data,
-                                                 string         lang) {
+    private void update_category_to_emojis_dict(IBus.EmojiData data,
+                                                string         lang) {
         string emoji = data.get_emoji();
         string category = data.get_category();
         if (lang == "en" && category != "") {
@@ -955,7 +960,7 @@ class Emojier : Gtk.Window {
         hide();
         // Make sure the switcher is hidden before returning from this function.
         while (Gtk.events_pending())
-            Gtk.main_iteration ();
+            Gtk.main_iteration();
         m_is_running = false;
 
         return m_result;
@@ -1069,7 +1074,7 @@ class Emojier : Gtk.Window {
             }
             break;
         default:
-            unichar ch = IBus.keyval_to_unicode (keyval);
+            unichar ch = IBus.keyval_to_unicode(keyval);
             if (!ch.isgraph())
                 return true;
             m_buffer_string.append_unichar(ch);
@@ -1103,10 +1108,19 @@ class Emojier : Gtk.Window {
         m_emoji_font = emoji_font;
     }
 
-    public void set_favorites (string[]? unowned_favorites) {
+    public void set_favorites(string[]? unowned_favorites) {
         m_favorites = {};
         foreach (string favorite in unowned_favorites) {
             m_favorites += favorite;
         }
+    }
+
+    public bool has_loaded_emoji_dict() {
+        if (m_emoji_to_data_dict == null)
+            return false;
+        GLib.List keys = m_emoji_to_data_dict.get_keys();
+        if (keys.length() == 0)
+            return false;
+        return true;
     }
 }

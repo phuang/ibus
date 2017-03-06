@@ -3,6 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -320,6 +321,45 @@ int reset_config(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+private void run_dialog(IBus.Emojier emojier) {
+    Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+    var display = Gdk.Display.get_default();
+    var device_manager = display.get_device_manager();
+    var device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
+    event.set_device(device);
+    string emoji = emojier.run(event, "");
+    if (emoji == null) {
+        emojier.reset();
+        print("%s\n", _("Canceled to choose an emoji."));
+        return;
+    }
+    Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+    clipboard.set_text(emoji, -1);
+    clipboard.store();
+    emojier.reset();
+    print("%s\n", _("Copied an emoji to your clipboard."));
+}
+
+int emoji_dialog(string[] argv) {
+    Gtk.init(ref argv);
+    GLib.Settings settings_panel =
+            new GLib.Settings("org.freedesktop.ibus.panel");
+    string emoji_font = settings_panel.get_string("emoji-font");
+    IBus.Emojier emojier = new IBus.Emojier();
+    emojier.set_emoji_font(emoji_font);
+    if (emojier.has_loaded_emoji_dict()) {
+        run_dialog(emojier);
+    } else {
+        GLib.MainLoop loop = new GLib.MainLoop();
+        emojier.loaded_emoji_dict.connect(() => {
+            run_dialog(emojier);
+            loop.quit();
+        });
+        loop.run();
+    }
+    return Posix.EXIT_SUCCESS;
+}
+
 int print_help(string[] argv) {
     print_usage(stdout);
     return Posix.EXIT_SUCCESS;
@@ -345,6 +385,7 @@ static const CommandEntry commands[]  = {
     { "address", N_("Print the D-Bus address of ibus-daemon"), print_address },
     { "read-config", N_("Show the configuration values"), read_config },
     { "reset-config", N_("Reset the configuration values"), reset_config },
+    { "emoji", N_("Save emoji on dialog to clipboard "), emoji_dialog },
     { "help", N_("Show this information"), print_help }
 };
 
