@@ -321,6 +321,7 @@ int reset_config(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
+#if EMOJI_DICT
 private void run_dialog(IBus.Emojier emojier) {
     Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
     var display = Gdk.Display.get_default();
@@ -359,6 +360,7 @@ int emoji_dialog(string[] argv) {
     }
     return Posix.EXIT_SUCCESS;
 }
+#endif
 
 int print_help(string[] argv) {
     print_usage(stdout);
@@ -385,7 +387,9 @@ static const CommandEntry commands[]  = {
     { "address", N_("Print the D-Bus address of ibus-daemon"), print_address },
     { "read-config", N_("Show the configuration values"), read_config },
     { "reset-config", N_("Reset the configuration values"), reset_config },
+#if EMOJI_DICT
     { "emoji", N_("Save emoji on dialog to clipboard "), emoji_dialog },
+#endif
     { "help", N_("Show this information"), print_help }
 };
 
