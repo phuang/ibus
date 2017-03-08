@@ -96,6 +96,8 @@ bus_new_connection_cb (GDBusServer     *server,
 void
 bus_server_init (void)
 {
+    GError *error = NULL;
+
     dbus = bus_dbus_impl_get_default ();
     ibus = bus_ibus_impl_get_default ();
     bus_dbus_impl_register_object (dbus, (IBusService *)ibus);
@@ -103,12 +105,21 @@ bus_server_init (void)
     /* init server */
     GDBusServerFlags flags = G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS;
     gchar *guid = g_dbus_generate_guid ();
+    if (!g_str_has_prefix (g_address, "unix:tmpdir=")) {
+        g_error ("Your socket address does not have the format unix:tmpdir=$DIR; %s",
+                 g_address);
+    }
     server =  g_dbus_server_new_sync (
                     g_address, /* the place where the socket file lives, e.g. /tmp, abstract namespace, etc. */
                     flags, guid,
                     NULL /* observer */,
                     NULL /* cancellable */,
-                    NULL /* error */);
+                    &error);
+    if (server == NULL) {
+        g_error ("g_dbus_server_new_sync() is failed with address %s "
+                 "and guid %s: %s",
+                 g_address, guid, error->message);
+    }
     g_free (guid);
 
     g_signal_connect (server, "new-connection", G_CALLBACK (bus_new_connection_cb), NULL);
