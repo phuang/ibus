@@ -353,6 +353,9 @@ int emoji_dialog(string[] argv) {
     } else {
         GLib.MainLoop loop = new GLib.MainLoop();
         emojier.loaded_emoji_dict.connect(() => {
+            // The signal is called when the language is changed.
+            if (emojier.is_running())
+                return;
             run_dialog(emojier);
             loop.quit();
         });
