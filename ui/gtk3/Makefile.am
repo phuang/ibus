@@ -172,8 +172,11 @@ libibus_emoji_dialog_1_0_la_LDFLAGS =   \
     -version-info @LT_VERSION_INFO@     \
     $(NULL)
 libibus_emoji_dialog_1_0_la_SOURCES =   \
+    candidatearea.c                     \
     emojier.c                           \
     iconwidget.c                        \
+    pango.c                             \
+    separator.c                         \
     $(NULL)
 
 -include $(INTROSPECTION_MAKEFILE)
