@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2016-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,9 +20,11 @@
  * USA
  */
 
-/* Convert ../data/annotations/en.xml and
+/* Convert /usr/share/unicode/cldr/common/annotations/*.xml and
  * /usr/lib/node_modules/emojione/emoji.json
  * to the dictionary file which look up the Emoji from the annotation.
+ * Get *.xml from https://github.com/fujiwarat/cldr-emoji-annotation
+ * or http://www.unicode.org/repos/cldr/trunk/common/annotations .
  * Get emoji.json with 'npm install -g emojione'.
  * en.xml is used for the Unicode annotations and emoji.json is used
  * for the aliases_ascii, e.g. ":)", and category, e.g. "people".

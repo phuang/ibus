@@ -431,10 +431,10 @@ ibus_emoji_dict_load (const gchar *path)
     GHashTable *dict = g_hash_table_new_full (g_str_hash,
                                               g_str_equal,
                                               g_free,
-                                              free_dict_words);
+                                              g_object_unref);
 
     for (l = list; l; l = l->next) {
-        IBusEmojiData *data = list->data;
+        IBusEmojiData *data = l->data;
         if (!IBUS_IS_EMOJI_DATA (data)) {
             g_warning ("Your dict format is no longer supported.\n"
                        "Need to create the dictionaries again.");
@@ -442,7 +442,7 @@ ibus_emoji_dict_load (const gchar *path)
         }
         g_hash_table_insert (dict,
                              g_strdup (ibus_emoji_data_get_emoji (data)),
-                             data);
+                             g_object_ref_sink (data));
     }
 
     g_slist_free (list);

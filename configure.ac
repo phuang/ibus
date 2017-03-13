@@ -620,7 +620,8 @@ fi
 
 AC_ARG_WITH(emoji-json-file,
     AS_HELP_STRING([--with-emoji-json-file[=DIR/emoji.json]],
-        [Set emoji.json. (default: "/usr/lib/node_modules/emojione/emoji.json")]),
+        [Set emoji.json. (default: "/usr/lib/node_modules/emojione/emoji.json")
+         You can get emoji.json with "npm install -g emojione".]),
     EMOJI_JSON_FILE=$with_emoji_json_file,
     EMOJI_JSON_FILE="/usr/lib/node_modules/emojione/emoji.json"
 )
