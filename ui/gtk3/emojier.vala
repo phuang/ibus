@@ -370,8 +370,14 @@ class IBusEmojier : Gtk.Window {
     private void reload_emoji_dict() {
         init_emoji_dict();
         make_emoji_dict("en");
-        if (m_current_lang_id != "en")
+        if (m_current_lang_id != "en") {
+            var lang_ids = m_current_lang_id.split("_");
+            if (lang_ids.length > 1) {
+                string sub_id = lang_ids[0];
+                make_emoji_dict(sub_id);
+            }
             make_emoji_dict(m_current_lang_id);
+        }
         loaded_emoji_dict();
     }
 
@@ -393,8 +399,8 @@ class IBusEmojier : Gtk.Window {
         if (emoji_list == null)
             return;
         foreach (IBus.EmojiData data in emoji_list) {
-            update_annotation_to_emojis_dict(data);
             update_emoji_to_data_dict(data, lang);
+            update_annotation_to_emojis_dict(data);
             update_category_to_emojis_dict(data, lang);
         }
         GLib.List<unowned string> annotations =
@@ -434,11 +440,16 @@ class IBusEmojier : Gtk.Window {
             unowned IBus.EmojiData? en_data =
                     m_emoji_to_data_dict.lookup(emoji);
             if (en_data == null) {
-                warning("No IBusEmojiData for English: %s".printf(emoji));
                 m_emoji_to_data_dict.insert(emoji, data);
                 return;
             }
+            string trans_description = data.get_description();
+            en_data.set_description(trans_description);
             unowned GLib.SList<string> annotations = data.get_annotations();
+            var words = trans_description.split(" ");
+            // If the description has less than 3 words, add it to annotations
+            if (words.length < 3)
+                annotations.append(trans_description);
             unowned GLib.SList<string> en_annotations
                 = en_data.get_annotations();
             foreach (string annotation in en_annotations) {

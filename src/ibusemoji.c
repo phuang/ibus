@@ -29,7 +29,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_EMOJI_DATA_MAGIC "IBusEmojiData"
-#define IBUS_EMOJI_DATA_VERSION (1)
+#define IBUS_EMOJI_DATA_VERSION (2)
 
 enum {
     PROP_0 = 0,
@@ -128,7 +128,7 @@ ibus_emoji_data_class_init (IBusEmojiDataClass *class)
                         "emoji description",
                         "The emoji description",
                         "",
-                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                        G_PARAM_READWRITE));
 
     /**
      * IBusEmojiData:category:
@@ -352,6 +352,16 @@ ibus_emoji_data_get_description (IBusEmojiData *emoji)
     return emoji->priv->description;
 }
 
+void
+ibus_emoji_data_set_description (IBusEmojiData *emoji,
+                                 const gchar   *description)
+{
+    g_return_if_fail (IBUS_IS_EMOJI_DATA (emoji));
+
+    g_free (emoji->priv->description);
+    emoji->priv->description = g_strdup (description);
+}
+
 const gchar *
 ibus_emoji_data_get_category (IBusEmojiData *emoji)
 {
@@ -541,7 +551,7 @@ ibus_emoji_data_load (const gchar *path)
         goto out_load_cache;
     }
 
-    if (version != IBUS_EMOJI_DATA_VERSION) {
+    if (version > IBUS_EMOJI_DATA_VERSION) {
         g_warning ("cache version is different: %u != %u",
                    version, IBUS_EMOJI_DATA_VERSION);
         goto out_load_cache;

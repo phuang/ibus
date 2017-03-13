@@ -134,6 +134,17 @@ void            ibus_emoji_data_set_annotations (IBusEmojiData *emoji,
 const gchar *   ibus_emoji_data_get_description (IBusEmojiData *emoji);
 
 /**
+ * ibus_emoji_data_set_description:
+ * @emoji : An #IBusEmojiData
+ * @description: An emoji description
+ *
+ * Sets the description in #IBusEmojiData.
+ */
+void            ibus_emoji_data_set_description (IBusEmojiData *emoji,
+                                                 const gchar   *description);
+
+
+/**
  * ibus_emoji_data_get_category:
  * @emoji : An #IBusEmojiData
  *

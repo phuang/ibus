@@ -43,6 +43,7 @@ struct _EmojiData {
     GSList     *annotations;
     gboolean    is_annotation;
     gchar      *description;
+    gboolean    is_tts;
     gchar      *category;
     GSList     *list;
 };
@@ -97,6 +98,8 @@ update_emoji_list (EmojiData *data)
                                        (GCopyFunc) g_strdup,
                                        NULL));
         }
+        if (data->description)
+            ibus_emoji_data_set_description (emoji, data->description);
     } else {
         IBusEmojiData *emoji =
                 ibus_emoji_data_new ("emoji",
@@ -149,13 +152,12 @@ unicode_annotations_start_element_cb (GMarkupParseContext *context,
                 data->emoji = g_strdup (value);
             }
         }
-        else if (g_strcmp0 (attribute, "tts") == 0) {
-            GSList *duplicated = g_slist_find_custom (data->annotations,
-                                                      value,
-                                                      (GCompareFunc) g_strcmp0);
-            if (duplicated == NULL) {
-                data->annotations = g_slist_prepend (data->annotations,
-                                                     g_strdup (value));
+        /* tts seems 'text to speach' and it would be a description
+         * instead of annotation.
+         */
+        else if (g_strcmp0 (attribute, "type") == 0) {
+            if (g_strcmp0 (value, "tts") == 0) {
+                data->is_tts = TRUE;
             }
         }
     }
@@ -177,6 +179,7 @@ unicode_annotations_end_element_cb (GMarkupParseContext *context,
 
     update_emoji_list (data);
     data->is_annotation = FALSE;
+    data->is_tts = FALSE;
 }
 
 void
@@ -194,6 +197,15 @@ unicode_annotations_text_cb (GMarkupParseContext *context,
     g_assert (data != NULL);
     if (!data->is_annotation)
         return;
+    if (data->is_tts) {
+        if (data->description) {
+            g_warning ("Duplicated 'tts' is found: %s: %s",
+                       data->description, text);
+            g_clear_pointer (&data->description, g_free);
+        }
+        data->description = g_strdup (text);
+        return;
+    }
     annotations = g_strsplit (text, " | ", -1);
     for (i = 0; (annotation = annotations[i]) != NULL; i++) {
         GSList *duplicated = g_slist_find_custom (data->annotations,
